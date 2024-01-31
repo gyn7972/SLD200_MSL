@@ -1,0 +1,1081 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using QMC.Common;
+using QMC.Common.Parts;
+
+
+
+namespace QMC.Common.UI
+{
+    [Serializable]
+    public enum JogControlAxisInfo
+    {
+        Axis, AbsolutePos, RelativePos, SetZero, GoHome
+    }
+    [Serializable]
+    public enum JogControlButtonList
+    {
+        buttonUp, buttonDown, buttonAxisXDownYDown, buttonAxisXUpYDown, buttonAxisXDownYUp, buttonAxisXUpYUp, buttonCW, buttonCCW, buttonLeft, buttonRight, combButtonUp, combButtonDown, combButtonLeft, combButtonRight
+    }
+    [Serializable]
+    public enum ButtonDirection
+    {
+        Plus,
+        Minus,
+    }
+    public partial class JogControl : UserControl
+    {
+
+        private List<MotionAxis> m_axis;
+        private AxisXRevision m_AxisXRevision;
+        private AxisYRevision m_AxisYRevision;
+        private JogButtonTheta m_JogButtonTheta;
+        private JogButtonCombination m_JogButtonCombination;
+        private Dictionary<MotionAxis, double> m_relativeZeroPositions;
+        private List<BaseToggleButton> m_StepButtonList;
+        private int m_nDefaultPercent;
+        public int m_IntervalTime { get; set; }
+        FormBaseConfiguration m_Configuration { get; set; }
+        MotionPart m_Part;
+        private int m_nindex;
+
+        private bool m_bStop;
+        private Thread m_workThread;
+
+        public JogControl(Part part)
+        {
+            InitializeComponent();
+            m_Part = part as MotionPart;
+            m_Configuration = new FormBaseConfiguration();
+            this.flowLayoutPanelJogButtonAxisX.FlowDirection = FlowDirection.TopDown;
+            InitdataGridViewParameterColumns();
+            m_axis = part.GetAxisList();
+            m_JogButtonCombination = new JogButtonCombination();
+            m_relativeZeroPositions = new Dictionary<MotionAxis, double>();
+            if (m_axis != null)
+            {
+                UpdateDataGridViewValue();
+            }
+            AddJogButton();
+
+
+            #region ControlConstructor
+
+            this.flowLayoutPanelJogButtonComb.Location = new Point(this.radioButtonContinuous.Location.X, this.radioButtonContinuous.Location.Y + this.radioButtonContinuous.Height + 3);
+            this.flowLayoutPanelJogButtonAxisX.Location = new Point(this.flowLayoutPanelJogButtonComb.Location.X + this.flowLayoutPanelJogButtonComb.Width + 5, this.flowLayoutPanelJogButtonComb.Location.Y);
+            this.flowLayoutPanelJogButtonAxisY.Location = new Point(this.flowLayoutPanelJogButtonAxisX.Location.X + this.flowLayoutPanelJogButtonAxisX.Width - 10, this.flowLayoutPanelJogButtonComb.Location.Y);
+            this.flowLayoutPanelJogButtonComb.Size = new Size(this.m_JogButtonCombination.Size.Width + 5, this.m_JogButtonCombination.Size.Height);
+            this.flowLayoutPanelJogButtonAxisX.FlowDirection = FlowDirection.TopDown;
+
+            if (this.flowLayoutPanelJogButtonAxisX.Controls.Count > 0)
+            {
+                this.flowLayoutPanelJogButtonAxisX.Size = new Size((m_Configuration.ButtonSize.Height + 20) * 3, (m_Configuration.ButtonSize.Height + 25) * this.flowLayoutPanelJogButtonAxisX.Controls.Count);
+            }
+            if (this.flowLayoutPanelJogButtonAxisY.Controls.Count > 0)
+            {
+                this.flowLayoutPanelJogButtonAxisY.Size = new Size((m_Configuration.ButtonSize.Height + 30) * this.flowLayoutPanelJogButtonAxisY.Controls.Count, (m_Configuration.ButtonSize.Height + 20) * 3);
+            }
+            if (this.flowLayoutPanelJogButtonComb.Controls.Count == 0)
+            {
+                this.flowLayoutPanelJogButtonComb.Visible = false;
+                this.flowLayoutPanelJogButtonAxisX.Location = new Point(this.radioButtonContinuous.Location.X, this.radioButtonContinuous.Location.Y + this.radioButtonContinuous.Height + 10);
+                this.flowLayoutPanelJogButtonAxisY.Location = new Point(this.flowLayoutPanelJogButtonAxisX.Location.X + this.flowLayoutPanelJogButtonAxisX.Width, this.flowLayoutPanelJogButtonComb.Location.Y);
+            }
+            if (this.flowLayoutPanelJogButtonAxisX.Controls.Count == 0)
+            {
+                this.flowLayoutPanelJogButtonAxisX.Visible = false;
+                this.flowLayoutPanelJogButtonAxisY.Location = new Point(this.flowLayoutPanelJogButtonComb.Location.X + this.
+                    flowLayoutPanelJogButtonComb.Width + 10, this.flowLayoutPanelJogButtonComb.Location.Y + 5);
+            }
+            if (this.flowLayoutPanelJogButtonComb.Controls.Count == 0 && this.flowLayoutPanelJogButtonAxisX.Controls.Count == 0)
+            {
+                this.flowLayoutPanelJogButtonComb.Visible = false;
+                this.flowLayoutPanelJogButtonAxisX.Visible = false;
+                this.flowLayoutPanelJogButtonAxisY.Location = new Point(this.radioButtonContinuous.Location.X, this.radioButtonContinuous.Location.Y + this.radioButtonContinuous.Height + 10);
+            }
+            if (this.flowLayoutPanelJogButtonAxisY.Controls.Count == 0)
+            {
+                this.flowLayoutPanelJogButtonAxisY.Visible = false;
+            }
+            this.radioButtonStep.Checked = true;
+
+
+            m_nDefaultPercent = 5;
+            m_StepButtonList = new List<BaseToggleButton>();
+            UpdateButtonList();
+            InitButton();
+            #endregion
+
+        }
+
+        public void AddAxis(MotionAxis axis)
+        {
+            if (axis != null && m_axis != null)
+            {
+                this.m_axis.Add(axis);
+            }
+        }
+
+        private void UpdateButtonList()
+        {
+            if (m_StepButtonList == null)
+            {
+                m_StepButtonList = new List<BaseToggleButton>();
+            }
+
+            m_StepButtonList.Add(this.baseToggleButton1);
+            m_StepButtonList.Add(this.baseToggleButton01);
+            m_StepButtonList.Add(this.baseToggleButton001);
+            m_StepButtonList.Add(this.baseToggleButton0001);
+        }
+
+        private void Btn_DoubleClick(object sender, EventArgs e)
+        {
+            BaseToggleButton btn = sender as BaseToggleButton;
+            if (btn != null)
+            {
+                this.baseTextBoxPercent.Text = btn.Tag.ToString();
+            }
+        }
+
+        private void InitButton()
+        {
+            this.baseToggleButton1.UpdateToggleStatus(true);
+            this.baseTextBoxStep.Text = baseToggleButton1.Tag.ToString();
+            this.baseTextBoxPercent.Text = this.m_nDefaultPercent.ToString();
+            InitButtonTag();
+        }
+
+        private void InitButtonTag()
+        {
+            this.buttonPercentMinus.Tag = ButtonDirection.Minus;
+            this.buttonPercentPlus.Tag = ButtonDirection.Plus;
+        }
+
+        #region InitdataGridViewParameterColumns
+        private void InitdataGridViewParameterColumns()
+        {
+            dataGridViewJogControl.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            dataGridViewJogControl.Columns.Clear();
+            dataGridViewJogControl.AutoGenerateColumns = false;
+            {
+                DataGridViewColumn column = new DataGridViewTextBoxColumn();
+                column.DataPropertyName = "Axis";
+                column.Name = "Axis";
+                column.ReadOnly = true;
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+                column.Resizable = DataGridViewTriState.False;
+                dataGridViewJogControl.RowTemplate.Height = 25;
+                dataGridViewJogControl.Columns.Add(column);
+            }
+            {
+                DataGridViewColumn column = new DataGridViewTextBoxColumn();
+                column.DataPropertyName = "AbsolutePos";
+                column.Name = "AbsolutePos";
+                column.ReadOnly = true;
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+                column.Resizable = DataGridViewTriState.False;
+                dataGridViewJogControl.Columns.Add(column);
+            }
+            {
+                DataGridViewColumn column = new DataGridViewTextBoxColumn();
+                column.DataPropertyName = "RelativePos";
+                column.Name = "RelativePos";
+                column.ReadOnly = true;
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+                column.Resizable = DataGridViewTriState.False;
+                dataGridViewJogControl.Columns.Add(column);
+            }
+            {
+                DataGridViewColumn column = new DataGridViewTextBoxColumn();
+                column.Resizable = DataGridViewTriState.False;
+                dataGridViewJogControl.Columns.Add(column);
+            }
+            {
+                DataGridViewColumn column = new DataGridViewTextBoxColumn();
+                column.Resizable = DataGridViewTriState.False;
+                dataGridViewJogControl.Columns.Add(column);
+            }
+        }
+        #endregion
+
+        #region UpdateDataGridViewValue
+        public void UpdateDataGridViewValue()
+        {
+            dataGridViewJogControl.Rows.Clear();
+            for (int i = 0; i < m_axis.Count; i++)
+            {
+                DataGridViewButtonCell buttonCellSetZero = new DataGridViewButtonCell();
+                buttonCellSetZero.Value = "Set Zero";
+
+                DataGridViewButtonCell buttonCellGoHome = new DataGridViewButtonCell();
+                buttonCellGoHome.Value = "Go Home";
+                dataGridViewJogControl.Rows.Add();
+
+                if (m_axis[i] != null)
+                {
+                    double dPos = 0;
+                    m_axis[i].GetCurrentActualPosition(ref dPos);
+                    this.dataGridViewJogControl[(int)JogControlAxisInfo.AbsolutePos, i].Value = dPos;
+                    this.dataGridViewJogControl[(int)JogControlAxisInfo.Axis, i].Value = m_axis[i].Name;
+                    this.dataGridViewJogControl[(int)JogControlAxisInfo.RelativePos, i].Value = dPos;
+                    this.dataGridViewJogControl.Rows[i].Cells[3] = buttonCellSetZero;
+                    this.dataGridViewJogControl.Rows[i].Cells[4] = buttonCellGoHome;
+                }
+
+            }
+        }
+        #endregion
+
+        #region daragridview_buttonCellClick
+        private void daragridview_buttonCellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dataGridViewJogControl.SelectedCells[0].RowIndex >= 0)
+            {
+                m_nindex = dataGridViewJogControl.SelectedCells[0].RowIndex;
+                if (m_nindex >= 0)
+                {
+                    MotionAxis ax = m_axis[m_nindex];
+                    if (e.ColumnIndex == (int)JogControlAxisInfo.SetZero)
+                    {
+                        double dPos = 0;
+                        dPos = (double)dataGridViewJogControl[(int)JogControlAxisInfo.AbsolutePos, m_nindex].Value;
+                        if (m_relativeZeroPositions.ContainsKey(ax))
+                        {
+                            m_relativeZeroPositions[ax] = dPos;
+                        }
+                        else
+                        {
+                            m_relativeZeroPositions.Add(ax, dPos);
+                        }
+
+                    }
+                    else if (e.ColumnIndex == (int)JogControlAxisInfo.GoHome)
+                    {
+                        ax.MovePosition(0);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region AddJogButton
+        public void AddJogButton()
+        {
+            flowLayoutPanelJogButtonAxisY.Controls.Clear();
+            flowLayoutPanelJogButtonAxisX.Controls.Clear();
+            flowLayoutPanelJogButtonComb.Controls.Clear();
+
+            foreach (MotionAxis axe in m_axis)
+            {
+                if (axe == null)
+                {
+                    continue;
+                }
+                if (axe.Configuration.DisplayAxisType == DisplayAxisType.Vertical)
+                {
+                    m_AxisYRevision = new AxisYRevision();
+                    m_AxisYRevision.Location = new Point(0, 0);
+                    m_AxisYRevision.AxisValue = axe;
+                    m_AxisYRevision.AxisList.Add(axe);
+                    m_AxisYRevision.SetButtonName(axe.Name);
+                    flowLayoutPanelJogButtonAxisY.Controls.Add(m_AxisYRevision);
+                    m_AxisYRevision.JogButtonClick += JogbuttonEvent;
+                    m_AxisYRevision.JogButtonDown += JogbuttonDownEvent;
+                    m_AxisYRevision.JogButtonUp += JogbuttonUpEvent;
+                }
+                else if (axe.Configuration.DisplayAxisType == DisplayAxisType.Horizontal)
+                {
+                    m_AxisXRevision = new AxisXRevision();
+                    m_AxisXRevision.Location = new Point(0, 0);
+                    m_AxisXRevision.AxisValue = axe;
+                    m_AxisXRevision.AxisList.Add(axe);
+                    m_AxisXRevision.SetButtonName(axe.Name);
+                    flowLayoutPanelJogButtonAxisX.Controls.Add(m_AxisXRevision);
+                    m_AxisXRevision.JogButtonClick += JogbuttonEvent;
+                    m_AxisXRevision.JogButtonDown += JogbuttonDownEvent;
+                    m_AxisXRevision.JogButtonUp += JogbuttonUpEvent;
+                }
+                else if (axe.Configuration.DisplayAxisType == DisplayAxisType.Theta)
+                {
+                    m_JogButtonTheta = new JogButtonTheta();
+                    m_JogButtonTheta.thetaValue = axe;
+                    m_JogButtonTheta.AxisList.Add(axe);
+                    m_JogButtonTheta.SetButtonName(axe.Name);
+                    flowLayoutPanelJogButtonAxisX.Controls.Add(m_JogButtonTheta);
+                    m_JogButtonTheta.JogButtonClick += JogbuttonEvent;
+                    m_JogButtonTheta.JogButtonDown += JogbuttonDownEvent;
+                    m_JogButtonTheta.JogButtonUp += JogbuttonUpEvent;
+                }
+                else if (axe.Configuration.DisplayAxisType == DisplayAxisType.CombinationVertical)
+                {
+                    if (m_JogButtonCombination.VerticalAxis == null)
+                    {
+                        m_JogButtonCombination.VerticalAxis = axe;
+                        m_JogButtonCombination.AxisList.Add(axe);
+                    }
+                    else
+                    {
+                        if (axe.Configuration.DisplayAxisType == DisplayAxisType.CombinationVertical)
+                        {
+                            m_AxisYRevision = new AxisYRevision();
+                            m_AxisYRevision.Location = new Point(0, 0);
+                            m_AxisYRevision.AxisValue = axe;
+                            m_AxisYRevision.AxisList.Add(axe);
+                            m_AxisYRevision.SetButtonName(axe.Name);
+                            flowLayoutPanelJogButtonAxisY.Controls.Add(m_AxisYRevision);
+                            m_AxisYRevision.JogButtonClick += JogbuttonEvent;
+                            m_AxisYRevision.JogButtonDown += JogbuttonDownEvent;
+                            m_AxisYRevision.JogButtonUp += JogbuttonUpEvent;
+                        }
+                        else if (axe.Configuration.DisplayAxisType == DisplayAxisType.CombinationHorizontal)
+                        {
+                            m_AxisXRevision = new AxisXRevision();
+                            m_AxisXRevision.Location = new Point(0, 0);
+                            m_AxisXRevision.AxisValue = axe;
+                            m_AxisXRevision.AxisList.Add(axe);
+                            m_AxisXRevision.SetButtonName(axe.Name);
+                            flowLayoutPanelJogButtonAxisX.Controls.Add(m_AxisXRevision);
+                            m_AxisXRevision.JogButtonClick += JogbuttonEvent;
+                            m_AxisXRevision.JogButtonDown += JogbuttonDownEvent;
+                            m_AxisXRevision.JogButtonUp += JogbuttonUpEvent;
+                        }
+                    }
+                }
+                else if (axe.Configuration.DisplayAxisType == DisplayAxisType.CombinationHorizontal)
+                {
+                    if (m_JogButtonCombination.HorizontalAxis == null)
+                    {
+                        m_JogButtonCombination.HorizontalAxis = axe;
+                        m_JogButtonCombination.AxisList.Add(axe);
+                    }
+                    else
+                    {
+                        if (axe.Configuration.DisplayAxisType == DisplayAxisType.CombinationVertical)
+                        {
+                            m_AxisYRevision = new AxisYRevision();
+                            m_AxisYRevision.Location = new Point(0, 0);
+                            m_AxisYRevision.AxisValue = axe;
+                            m_AxisYRevision.AxisList.Add(axe);
+                            m_AxisYRevision.SetButtonName(axe.Name);
+                            flowLayoutPanelJogButtonAxisY.Controls.Add(m_AxisYRevision);
+                            m_AxisYRevision.JogButtonClick += JogbuttonEvent;
+                            m_AxisYRevision.JogButtonDown += JogbuttonDownEvent;
+                            m_AxisYRevision.JogButtonUp += JogbuttonUpEvent;
+                        }
+                        else if (axe.Configuration.DisplayAxisType == DisplayAxisType.CombinationHorizontal)
+                        {
+                            m_AxisXRevision = new AxisXRevision();
+                            m_AxisXRevision.Location = new Point(0, 0);
+                            m_AxisXRevision.AxisValue = axe;
+                            m_AxisXRevision.AxisList.Add(axe);
+                            m_AxisXRevision.SetButtonName(axe.Name);
+                            flowLayoutPanelJogButtonAxisX.Controls.Add(m_AxisXRevision);
+                            m_AxisXRevision.JogButtonClick += JogbuttonEvent;
+                            m_AxisXRevision.JogButtonDown += JogbuttonDownEvent;
+                            m_AxisXRevision.JogButtonUp += JogbuttonUpEvent;
+                        }
+                    }
+                }
+            }
+
+            if (m_JogButtonCombination.HorizontalAxis != null && m_JogButtonCombination.VerticalAxis != null)
+            {
+                m_JogButtonCombination.JogButtonClick += JogbuttonEvent;
+                m_JogButtonCombination.JogButtonDown += JogbuttonDownEvent;
+                m_JogButtonCombination.JogButtonUp += JogbuttonUpEvent;
+                m_JogButtonCombination.SetButtonName(m_JogButtonCombination.HorizontalAxis.Name, m_JogButtonCombination.VerticalAxis.Name);
+
+                if (flowLayoutPanelJogButtonComb.Controls != null)
+                {
+                    flowLayoutPanelJogButtonComb.Controls.Add(m_JogButtonCombination);
+                }
+            }
+            else if (m_JogButtonCombination.HorizontalAxis != null)
+            {
+                m_AxisXRevision = new AxisXRevision();
+                m_AxisXRevision.AxisValue = m_JogButtonCombination.HorizontalAxis;
+                m_AxisXRevision.AxisList.Add(m_AxisXRevision.AxisValue);
+                m_AxisXRevision.SetButtonName(m_JogButtonCombination.HorizontalAxis.Name);
+                flowLayoutPanelJogButtonAxisX.Controls.Add(m_AxisXRevision);
+                m_AxisXRevision.JogButtonClick += JogbuttonEvent;
+                m_AxisXRevision.JogButtonDown += JogbuttonDownEvent;
+                m_AxisXRevision.JogButtonUp += JogbuttonUpEvent;
+                m_JogButtonCombination.HorizontalAxis = null;
+            }
+            else if (m_JogButtonCombination.VerticalAxis != null)
+            {
+                m_AxisYRevision = new AxisYRevision();
+                m_AxisYRevision.AxisValue = m_JogButtonCombination.VerticalAxis;
+                m_AxisYRevision.AxisList.Add(m_AxisYRevision.AxisValue);
+                m_AxisYRevision.SetButtonName(m_JogButtonCombination.VerticalAxis.Name);
+                flowLayoutPanelJogButtonAxisY.Controls.Add(m_AxisYRevision);
+                m_AxisYRevision.JogButtonClick += JogbuttonEvent;
+                m_AxisYRevision.JogButtonDown += JogbuttonDownEvent;
+                m_AxisYRevision.JogButtonUp += JogbuttonUpEvent;
+            }
+
+        }
+        #endregion
+
+        #region MouseClickEvent
+        public void JogbuttonEvent(JogControlButtonList type, List<MotionAxis> axisList)
+        {
+            switch (type)
+            {
+                case JogControlButtonList.buttonUp:
+                case JogControlButtonList.buttonCW:
+                case JogControlButtonList.buttonRight:
+                    buttonUp_Click(axisList);
+                    break;
+                case JogControlButtonList.combButtonUp:
+                case JogControlButtonList.combButtonRight:
+                    combButtonUp_Click(axisList, type);
+                    break;
+                case JogControlButtonList.buttonDown:
+                case JogControlButtonList.buttonCCW:
+                case JogControlButtonList.buttonLeft:
+                    buttonDown_Click(axisList);
+                    break;
+                case JogControlButtonList.combButtonDown:
+                case JogControlButtonList.combButtonLeft:
+                    combButtonDown_Click(axisList, type);
+                    break;
+                case JogControlButtonList.buttonAxisXUpYUp:
+                case JogControlButtonList.buttonAxisXUpYDown:
+                case JogControlButtonList.buttonAxisXDownYUp:
+                case JogControlButtonList.buttonAxisXDownYDown:
+                    combbutton_Click(axisList, type);
+                    break;
+
+            }
+        }
+
+
+
+        private void combButtonUp_Click(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            if (radioButtonStep.Checked == true)
+            {
+                double dDistance = 0.0;
+                double.TryParse(this.baseTextBoxStep.Text, out dDistance);
+                int nVelPercent = 0;
+                int.TryParse(this.baseTextBoxPercent.Text, out nVelPercent);
+
+                int nDirection = 1;
+                switch (type)
+                {
+                    case JogControlButtonList.combButtonRight:
+
+                        if (axisList[0].Direction == MotionDirection.Backward)
+                            nDirection = -1;
+                        axisList[0].MoveJogDistance(dDistance * nDirection, nVelPercent);
+                        break;
+                    case JogControlButtonList.combButtonUp:
+                        if (axisList[1].Direction == MotionDirection.Backward)
+                            nDirection = -1;
+                        axisList[1].MoveJogDistance(dDistance * nDirection, nVelPercent);
+                        break;
+                }
+            }
+        }
+        private void combButtonDown_Click(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            if (radioButtonStep.Checked == true)
+            {
+                double dDistance = 0.0;
+                double.TryParse(this.baseTextBoxStep.Text, out dDistance);
+                int nVelPercent = 0;
+                int.TryParse(this.baseTextBoxPercent.Text, out nVelPercent);
+
+                int nDirection = -1;
+                switch (type)
+                {
+                    case JogControlButtonList.combButtonLeft:
+                        if (axisList[0].Direction == MotionDirection.Backward)
+                            nDirection = 1;
+                        axisList[0].MoveJogDistance(dDistance * nDirection, nVelPercent);
+                        break;
+                    case JogControlButtonList.combButtonDown:
+                        if (axisList[1].Direction == MotionDirection.Backward)
+                            nDirection = 1;
+                        axisList[1].MoveJogDistance(dDistance * nDirection, nVelPercent);
+                        break;
+                }
+            }
+        }
+
+        private void buttonUp_Click(List<MotionAxis> axisList)
+        {
+            int nDirection = 1;
+            if (radioButtonStep.Checked == true)
+            {
+                if (axisList != null)
+                {
+                    double dDistance = 0.0;
+                    double.TryParse(this.baseTextBoxStep.Text, out dDistance);
+
+                    int nVelPercent = 0;
+                    int.TryParse(this.baseTextBoxPercent.Text, out nVelPercent);
+
+                    foreach (MotionAxis axis in axisList)
+                    {
+                        if (axis.Direction == MotionDirection.Backward)
+                            nDirection = -1;
+                        axis.MoveJogDistance(dDistance * nDirection, nVelPercent); //참고 Step Move
+                    }
+                }
+            }
+        }
+        private void buttonDown_Click(List<MotionAxis> axisList)
+        {
+            int nDirection = -1;
+            if (radioButtonStep.Checked == true)
+            {
+                if (axisList != null)
+                {
+                    double dDistance = 0.0;
+                    double.TryParse(this.baseTextBoxStep.Text, out dDistance);
+
+                    int nVelPercent = 0;
+                    int.TryParse(this.baseTextBoxPercent.Text, out nVelPercent);
+
+                    foreach (MotionAxis axis in axisList)
+                    {
+                        if (axis.Direction == MotionDirection.Backward)
+                            nDirection = 1;
+                        axis.MoveJogDistance(dDistance * nDirection, nVelPercent);
+                    }
+                }
+            }
+        }
+        private void combbutton_Click(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            if (radioButtonStep.Checked == true)
+            {
+                int nFirstDirection = 1;
+                int nSecondDirection = 1;
+
+                double dDistance = 0.0;
+                double.TryParse(this.baseTextBoxStep.Text, out dDistance);
+
+                int nVelPercent = 0;
+                int.TryParse(this.baseTextBoxPercent.Text, out nVelPercent);
+
+                double x = dDistance;
+                double y = dDistance;
+
+                if (axisList != null)
+                {
+                    if (type == JogControlButtonList.buttonAxisXUpYDown)
+                    {
+                        y = y * -1;
+
+                    }
+                    else if (type == JogControlButtonList.buttonAxisXDownYUp)
+                    {
+                        x = x * -1;
+                    }
+                    else if (type == JogControlButtonList.buttonAxisXDownYDown)
+                    {
+                        x = x * -1;
+                        y = y * -1;
+                    }
+                    else
+                    {
+
+                    }
+                    if (axisList[0].Direction == MotionDirection.Backward)
+                        nFirstDirection = -1;
+                    if (axisList[1].Direction == MotionDirection.Backward)
+                        nSecondDirection = -1;
+                    axisList[0].MoveJogDistance(x * nFirstDirection, nVelPercent);
+                    axisList[1].MoveJogDistance(y * nSecondDirection, nVelPercent);
+                }
+            }
+        }
+
+        #endregion
+
+        #region MouseDownEvent
+        public void JogbuttonDownEvent(JogControlButtonList type, List<MotionAxis> axisList)
+        {
+            switch (type)
+            {
+                case JogControlButtonList.buttonUp:
+                case JogControlButtonList.buttonRight:
+                case JogControlButtonList.buttonCW:
+                    buttonUp_Down(axisList);
+                    break;
+                case JogControlButtonList.combButtonUp:
+                case JogControlButtonList.combButtonRight:
+                    combButtonUp_Down(axisList, type);
+                    break;
+                case JogControlButtonList.buttonDown:
+                case JogControlButtonList.buttonLeft:
+                case JogControlButtonList.buttonCCW:
+                    buttonDown_Down(axisList);
+                    break;
+                case JogControlButtonList.combButtonDown:
+                case JogControlButtonList.combButtonLeft:
+                    combButtonDown_Down(axisList, type);
+                    break;
+                case JogControlButtonList.buttonAxisXUpYUp:
+                case JogControlButtonList.buttonAxisXUpYDown:
+                case JogControlButtonList.buttonAxisXDownYUp:
+                case JogControlButtonList.buttonAxisXDownYDown:
+                    Combbutton_Down(axisList, type);
+                    break;
+            }
+        }
+        private void combButtonUp_Down(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            int nDirection = 1;
+            if (radioButtonContinuous.Checked == true)
+            {
+                double dVelocity = 0;
+                double dAcceleration = 0.0;
+                double dDeceleration = 0.0;
+
+                switch (type)
+                {
+                    case JogControlButtonList.combButtonRight:
+                        CalculateSpeed(axisList[0], out dVelocity, out dAcceleration, out dDeceleration);
+                        if (axisList[0].Direction == MotionDirection.Backward)
+                            nDirection = -1;
+                        axisList[0].MoveVelocity(dVelocity * nDirection, dAcceleration, dDeceleration);
+                        break;
+                    case JogControlButtonList.combButtonUp:
+                        CalculateSpeed(axisList[1], out dVelocity, out dAcceleration, out dDeceleration);
+                        if (axisList[1].Direction == MotionDirection.Backward)
+                            nDirection = -1;
+                        axisList[1].MoveVelocity(dVelocity * nDirection, dAcceleration, dDeceleration);
+                        break;
+                }
+            }
+        }
+        private void combButtonDown_Down(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            int nDirection = -1;
+            if (radioButtonContinuous.Checked == true)
+            {
+                double dVelocity = 0;
+                double dAcceleration = 0.0;
+                double dDeceleration = 0.0;
+
+                switch (type)
+                {
+                    case JogControlButtonList.combButtonLeft:
+                        CalculateSpeed(axisList[0], out dVelocity, out dAcceleration, out dDeceleration);
+                        if (axisList[0].Direction == MotionDirection.Backward)
+                            nDirection = 1;
+                        axisList[0].MoveVelocity(dVelocity * nDirection, dAcceleration, dDeceleration);
+                        break;
+                    case JogControlButtonList.combButtonDown:
+                        CalculateSpeed(axisList[0], out dVelocity, out dAcceleration, out dDeceleration);
+                        if (axisList[1].Direction == MotionDirection.Backward)
+                            nDirection = 1;
+                        axisList[1].MoveVelocity(dVelocity * nDirection, dAcceleration, dDeceleration);
+                        break;
+                }
+            }
+        }
+        private void buttonUp_Down(List<MotionAxis> axisList)
+        {
+            int nDirection = 1;
+            if (radioButtonContinuous.Checked == true)
+            {
+                if (axisList != null)
+                {
+                    double dVelocity = 0;
+                    double dAcceleration = 0.0;
+                    double dDeceleration = 0.0;
+
+                    foreach (MotionAxis axis in axisList)
+                    {
+                        if (axis.Direction == MotionDirection.Backward)
+                            nDirection = -1;
+                        CalculateSpeed(axis, out dVelocity, out dAcceleration, out dDeceleration);
+                        axis.MoveVelocity(dVelocity * nDirection, dAcceleration, dDeceleration); //참고  axis move
+                    }
+                }
+            }
+        }
+        private void buttonDown_Down(List<MotionAxis> axisList)
+        {
+            int nDirection = -1;
+            if (radioButtonContinuous.Checked == true)
+            {
+                if (axisList != null)
+                {
+                    double dVelocity = 0;
+                    double dAcceleration = 0.0;
+                    double dDeceleration = 0.0;
+
+                    foreach (MotionAxis axis in axisList)
+                    {
+                        if (axis.Direction == MotionDirection.Backward)
+                            nDirection = 1;
+                        CalculateSpeed(axis, out dVelocity, out dAcceleration, out dDeceleration);
+                        axis.MoveVelocity(dVelocity * nDirection, dAcceleration, dDeceleration);
+                    }
+                }
+            }
+        }
+        private void Combbutton_Down(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            if (radioButtonContinuous.Checked == true)
+            {
+                double x = 0.0;
+                CalculateVelocity(axisList[0], out x);
+                double y = 0.0;
+                CalculateVelocity(axisList[1], out y);
+
+                double dVelocity = 0;
+                double dAcceleration = 0.0;
+                double dDeceleration = 0.0;
+
+                int nFirstDirection = 1;
+                int nSecondDirection = 1;
+                if (axisList != null)
+                {
+                    if (type == JogControlButtonList.buttonAxisXUpYDown)
+                    {
+                        y = y * -1;
+                    }
+                    else if (type == JogControlButtonList.buttonAxisXDownYUp)
+                    {
+                        x = x * -1;
+                    }
+                    else if (type == JogControlButtonList.buttonAxisXDownYDown)
+                    {
+                        x = x * -1;
+                        y = y * -1;
+                    }
+                    else
+                    {
+
+                    }
+                    if (axisList[0].Direction == MotionDirection.Backward)
+                        nFirstDirection = -1;
+                    if (axisList[1].Direction == MotionDirection.Backward)
+                        nSecondDirection = -1;
+                    CalculateSpeed(axisList[0], out dVelocity, out dAcceleration, out dDeceleration);
+                    axisList[0].MoveVelocity(x * nFirstDirection, dAcceleration, dDeceleration);
+
+                    CalculateSpeed(axisList[1], out dVelocity, out dAcceleration, out dDeceleration);
+                    axisList[1].MoveVelocity(y * nSecondDirection, dAcceleration, dDeceleration);
+                }
+            }
+        }
+        #endregion
+
+        #region MouseUpEvent
+        public void JogbuttonUpEvent(JogControlButtonList type, List<MotionAxis> axisList)
+        {
+            switch (type)
+            {
+                case JogControlButtonList.buttonUp:
+                case JogControlButtonList.buttonDown:
+                case JogControlButtonList.buttonLeft:
+                case JogControlButtonList.buttonRight:
+                case JogControlButtonList.buttonCW:
+                case JogControlButtonList.buttonCCW:
+                case JogControlButtonList.combButtonUp:
+                case JogControlButtonList.combButtonDown:
+                case JogControlButtonList.combButtonLeft:
+                case JogControlButtonList.combButtonRight:
+                case JogControlButtonList.buttonAxisXUpYUp:
+                case JogControlButtonList.buttonAxisXUpYDown:
+                case JogControlButtonList.buttonAxisXDownYUp:
+                case JogControlButtonList.buttonAxisXDownYDown:
+                    button_Up(axisList);
+                    break;
+            }
+        }
+
+        private void button_Up(List<MotionAxis> axisList)
+        {
+            if (radioButtonContinuous.Checked == true)
+            {
+                if (axisList != null)
+                {
+                    int nVelPercent = 0;
+                    int.TryParse(this.baseTextBoxPercent.Text, out nVelPercent);
+                    foreach (MotionAxis axis in axisList)
+                    {
+                        axis.StopJogVelocity(nVelPercent);
+                    }
+                }
+            }
+        }
+
+        private void CalculateSpeed(MotionAxis axis, out double dVelocity, out double dAcceleration, out double dDeceleration)
+        {
+            int nVelocityPercente = 0;
+            int.TryParse(this.baseTextBoxPercent.Text, out nVelocityPercente);
+            dVelocity = axis.Configuration.Velocity * nVelocityPercente / 100;
+            dAcceleration = axis.Configuration.Acceleration * nVelocityPercente / 100;
+            dDeceleration = axis.Configuration.Deceleration * nVelocityPercente / 100;
+        }
+
+        private void CalculateVelocity(MotionAxis axis, out double dVelocity)
+        {
+            int nVelocityPercente = 0;
+            int.TryParse(this.baseTextBoxPercent.Text, out nVelocityPercente);
+            dVelocity = axis.Configuration.Velocity * nVelocityPercente / 100;
+        }
+        #endregion
+
+        private void ThreadProc()
+        {
+            while (true)
+            {
+                if (m_bStop)
+                    break;
+
+                if (this.InvokeRequired)
+                {
+                    BeginInvoke(new Action(() =>
+                    {
+                        resetDataGrid();
+                    }));
+                }
+                else
+                {
+                    resetDataGrid();
+                }
+
+                Thread.Sleep(100);
+            }
+        }
+
+        public void UpdateUI(bool bStart)
+        {
+            if (bStart)
+            {
+                m_bStop = false;
+                if (m_workThread == null || m_workThread.IsAlive == false)
+                {
+                    m_workThread = new Thread(new ThreadStart(ThreadProc));
+                    m_workThread.Name = "JogControl";
+                }
+
+                if (m_workThread.IsAlive == false)
+                {
+                    m_workThread.Start();
+                }
+            }
+            else
+            {
+                m_bStop = true;
+                if (m_workThread != null)
+                {
+                    if (!m_workThread.Join(1000))
+                    {
+                        m_workThread.Abort();
+                        m_workThread = null;
+                    }
+                }
+
+            }
+        }
+
+        #region resetDataGrid
+        private void resetDataGrid()
+        {
+            if (m_axis != null)
+            {
+                for (int i = 0; i < m_axis.Count; i++)
+                {
+                    double dPos = 0;
+                    if (m_axis[i] != null)
+                    {
+                        m_axis[i].GetCurrentActualPosition(ref dPos);
+                        this.dataGridViewJogControl[(int)JogControlAxisInfo.AbsolutePos, i].Value = dPos;
+                        if (m_relativeZeroPositions.ContainsKey(m_axis[i]))
+                        {
+                            dPos = dPos - m_relativeZeroPositions[m_axis[i]];
+                        }
+
+                        this.dataGridViewJogControl[(int)JogControlAxisInfo.RelativePos, i].Value = dPos;
+                    }
+
+                }
+            }
+        }
+
+        #endregion
+
+        #region radioButtonCheckedChanged
+        private void radioButtonStep_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.radioButtonStep.Checked == true)
+            {
+                radioButtonContinuous.Checked = false;
+            }
+        }
+
+        private void radioButtonContinuous_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.radioButtonContinuous.Checked == true)
+            {
+                radioButtonStep.Checked = false;
+            }
+        }
+
+        #endregion
+
+        #region dataGridViewJogControl_CellValueChanged
+        private void dataGridViewJogControl_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            //if (dataGridViewJogControl.SelectedCells.Count > 0 && dataGridViewJogControl.SelectedCells[0] != null)
+            //{
+            //    int nIndex = dataGridViewJogControl.SelectedCells[0].RowIndex;
+            //    for (int i = 0; i < dataGridViewJogControl.RowCount; i++)
+            //    {
+            //        string cellData = dataGridViewJogControl[e.ColumnIndex, i].Value.ToString();
+            //        switch ((JogControlAxisInfo)e.ColumnIndex)
+            //        {
+            //            case JogControlAxisInfo.Step:
+            //                //Step[m_axis[i]] = double.Parse(cellData);
+            //                break;
+            //            case JogControlAxisInfo.Velocity:
+            //                //Velocity[m_axis[i]] = double.Parse(cellData);
+            //                break;
+            //        }
+
+            //    }
+            //}
+        }
+
+
+        #endregion
+
+        #region Step
+        private void baseToggleButton_Click(object sender, EventArgs e)
+        {
+            BaseToggleButton toggleButton = sender as BaseToggleButton;
+            if (toggleButton != null)
+            {
+                foreach (BaseToggleButton button in m_StepButtonList)
+                {
+                    if (button.Name == toggleButton.Name)
+                    {
+                        button.UpdateToggleStatus(true);
+                    }
+                    else
+                    {
+                        button.UpdateToggleStatus(false);
+                    }
+                }
+                this.baseTextBoxStep.Text = toggleButton.Tag.ToString();
+            }
+        }
+
+        private void baseButton_Click(object sender, EventArgs e)
+        {
+            Button btn = sender as Button;
+            double dDistance = 0;
+            if (btn != null)
+            {
+                foreach (BaseToggleButton button in m_StepButtonList)
+                {
+                    if (button.GetButtonStatus())
+                    {
+                        double.TryParse(button.Tag.ToString(), out dDistance);
+                        break;
+                    }
+                }
+                if (btn.Tag.ToString() == ButtonDirection.Minus.ToString())
+                {
+                    double dSetDistance = 0;
+                    double.TryParse(this.baseTextBoxStep.Text, out dSetDistance);
+                    dSetDistance -= dDistance;
+                    if (dSetDistance <= 0)
+                    {
+                        dSetDistance = 0;
+                    }
+                    this.baseTextBoxStep.Text = dSetDistance.ToString();
+                }
+                else
+                {
+                    double dSetDistance = 0;
+                    double.TryParse(this.baseTextBoxStep.Text, out dSetDistance);
+                    dSetDistance += dDistance;
+                    if (dSetDistance <= 0)
+                    {
+                        dSetDistance = 0;
+                    }
+                    this.baseTextBoxStep.Text = dSetDistance.ToString();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Percent
+
+        //private void basePercentToggleButton_Click(object sender, EventArgs e)
+        //{
+        //    BaseToggleButton toggleButton = sender as BaseToggleButton;
+        //    if (toggleButton != null)
+        //    {
+        //        foreach (BaseToggleButton button in m_PercentButtonList)
+        //        {
+        //            if (button.Name == toggleButton.Name)
+        //            {
+        //                button.UpdateToggleStatus(true);
+        //            }
+        //            else
+        //            {
+        //                button.UpdateToggleStatus(false);
+        //            }
+        //        }
+        //    }
+        //}
+
+        private void basePercentButton_Click(object sender, EventArgs e)
+        {
+            Button btn = sender as Button;
+            if (btn != null)
+            {
+                if (btn.Tag.ToString() == ButtonDirection.Minus.ToString())
+                {
+                    double dSetDistance = 0;
+                    double.TryParse(this.baseTextBoxPercent.Text, out dSetDistance);
+                    dSetDistance -= this.m_nDefaultPercent;
+                    if (dSetDistance > 0)
+                    {
+                        this.baseTextBoxPercent.Text = dSetDistance.ToString();
+                    }
+                }
+                else
+                {
+                    double dSetDistance = 0;
+                    double.TryParse(this.baseTextBoxPercent.Text, out dSetDistance);
+                    dSetDistance += this.m_nDefaultPercent;
+                    if (dSetDistance <= 0)
+                    {
+                        dSetDistance = 0;
+                    }
+                    if (dSetDistance >= 100)
+                    {
+                        dSetDistance = 100;
+                    }
+                    this.baseTextBoxPercent.Text = dSetDistance.ToString();
+                }
+            }
+        }
+
+        #endregion
+    }
+}

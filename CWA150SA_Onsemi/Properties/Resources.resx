@@ -1,0 +1,424 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Buzzera" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Buzzera.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Logo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LeftDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LeftDown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_LeftDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_LeftDown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LogOff" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LogOff.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Operationa" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Operationa.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LoadPort-CarrierSubstrate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LoadPort-CarrierSubstrate1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_CW_Edited" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_CW_Edited.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IO" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IO.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Buzzer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Buzzer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MainConveyor-NotExist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MainConveyor-NotExist1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightDown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlarmEmpty" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AlarmEmpty.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Right" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Right.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlarmInform" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AlarmInform.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_VW_UP" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_VW_UP.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ExitPressed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ExitPressed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="StartOn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\StartOn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DioEllipseOn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DioEllipseOn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlarmError" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AlarmError.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="StopOn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\StopOn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_VW_DOWN_Edited" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_VW_DOWN_Edited.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="StopOff" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\StopOff.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Left" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Left.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="(New)WidthSizeDownNormal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\(New)WidthSizeDownNormal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_LeftDown_Edited" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_LeftDown_Edited.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_LeftUp_Edited" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_LeftUp_Edited.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TargetStage-NotExist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TargetStage-NotExist1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Up" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Up.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Alarma" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Alarma.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="megaphone_80px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\megaphone_80px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="(New)HeightSizeDownNormal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\(New)HeightSizeDownNormal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CCW" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CCW.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Alarm" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Alarm.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LogIna" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LogIna.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Recipea" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Recipea.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Configuration" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Configuration.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_U_LEFT" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_U_LEFT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_U_RIGHT" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_U_RIGHT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LoadPort-Carrier" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LoadPort-Carrier1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SetUpa" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SetUpa.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LogOffa" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LogOffa.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_RightUp_Edited" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_RightUp_Edited.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_U_LEFT_Edited" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_U_LEFT_Edited.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="megaphone_80px_q" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\megaphone_80px_q.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Recipe" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Recipe.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DieTransfer-Working" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DieTransfer-Working1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="(New)HeightSizeUpNormal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\(New)HeightSizeUpNormal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Configurationa" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Configurationa.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SourceStage-NotExist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SourceStage-NotExist1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_U_RIGHT_Edited" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_U_RIGHT_Edited.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_LeftUp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_LeftUp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DioEllipseOff" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DioEllipseOff.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Module" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Module.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlarmOn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AlarmOn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DieTransfer-NonWorking" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DieTransfer-NonWorking1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="(New)WidthSizeUpNormal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\(New)WidthSizeUpNormal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SetUpa1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SetUpa1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IOa" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IOa.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightUp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightUp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_RightDown_Edited" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_RightDown_Edited.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="OutputConveyor-NotExist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\OutputConveyor-NotExist1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_VW_UP_Edited" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_VW_UP_Edited.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="OutputConveyor-Exist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\OutputConveyor-Exist1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Charta" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Charta.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Conveyor-Exist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Conveyor-Exist1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Z_Up" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Z_Up.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_CCW" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_CCW.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SourceStage-Exist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SourceStage-Exist1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_VW_DOWN" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_VW_DOWN.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Feeder-NotExist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Feeder-NotExist1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LoadPort-NotExist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LoadPort-NotExist1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_RightUp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_RightUp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SetUp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SetUp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="(New)CenterNormal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\(New)CenterNormal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Feeder-Exist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Feeder-Exist1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ExitNormal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ExitNormal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Chart" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Chart.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Modulea" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Modulea.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DefaultLogOffNormal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DefaultLogOffNormal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MainConveyor-Exist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MainConveyor-Exist1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DioRectangleOn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DioRectangleOn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LeftUp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LeftUp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Down" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Down.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_RightDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_RightDown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Mainta" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Mainta.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Maint" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Maint.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LogIn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LogIn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Z_Down" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Z_Down.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DioRectangleOff" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DioRectangleOff.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="InputConveyor-NotExist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\InputConveyor-NotExist1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="InputConveyor-Exist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\InputConveyor-Exist1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Operation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Operation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="StartOff" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\StartOff.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Conveyor-NotExist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Conveyor-NotExist1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_CCW_Edited" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_CCW_Edited.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TargetStage-Exist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TargetStage-Exist1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CW" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CW.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="(New)WidthSizeDownHover" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\(New)WidthSizeDownHover.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SetUp1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SetUp1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UVW_CW" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UVW_CW.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+</root>

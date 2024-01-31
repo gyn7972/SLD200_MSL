@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E8E7DDF3-6FAF-40AE-990E-ABEBF8440CC2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>QMC.Core.Laser</RootNamespace>
+    <AssemblyName>qmc.core.laser</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\bin\qmc.core.laser.xml</DocumentationFile>
+    <NoWarn>CS1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>C:\QMC\bin\Release\qmc.core.laser.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="serial\serial.cs" />
+    <Compile Include="serial\serialdefault.cs" />
+    <Compile Include="serial\serialsio.cs" />
+    <Compile Include="serial\sio\SIOWrap.cs" />
+    <Compile Include="winforms\FormPowerMap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="winforms\FormPowerMap.Designer.cs">
+      <DependentUpon>FormPowerMap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="winforms\FormRTC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="winforms\FormRTC.Designer.cs">
+      <DependentUpon>FormRTC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="laser\laser.cs" />
+    <Compile Include="laser\lasercepheus.cs" />
+    <Compile Include="laser\laservirtual.cs" />
+    <Compile Include="powermap\powermap.cs" />
+    <Compile Include="powermap\powermapserializer.cs" />
+    <Compile Include="powermap\powermapjson.cs" />
+    <Compile Include="powermeter\powermeter_coherent_pm10_19c.cs" />
+    <Compile Include="powermeter\powermeter.cs" />
+    <Compile Include="rtc\matrixstack.cs" />
+    <Compile Include="rtc\rtcvirtual.cs" />
+    <Compile Include="rtc\rtc6.cs" />
+    <Compile Include="correction\correction.cs" />
+    <Compile Include="rtc\rtc.cs" />
+    <Compile Include="rtc\rtc5.cs" />
+    <Compile Include="correction\rtccorrection2d.cs" />
+    <Compile Include="rtc\scanlab\RTC5Wrap.cs" />
+    <Compile Include="rtc\scanlab\RTC6Wrap.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="winforms\FormPowerMap.resx">
+      <DependentUpon>FormPowerMap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="winforms\FormRTC.resx">
+      <DependentUpon>FormRTC.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="CepheusWrapLib">
+      <Guid>{28877E33-4F3B-4A69-9B4E-081CA599CED9}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\core\qmc.core.csproj">
+      <Project>{e1521566-f40c-4c91-8e80-e3ca10e91815}</Project>
+      <Name>qmc.core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

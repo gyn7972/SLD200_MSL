@@ -1,0 +1,123 @@
+﻿using QMC.Common;
+using QMC.Common.Interpolator;
+using QMC.Common.Modules;
+using QMC.Common.Parts;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace QMC.Vision
+{
+    public delegate void LoadButtonClickEventHandler();
+    public partial class _2DMappingFileControl : UserControl
+    {        
+        private XytStage m_Owner;
+<<<<<<< HEAD
+        private PerspectiveProjectionInterpolator m_interpolator;
+=======
+        public event LoadButtonClickEventHandler LoadButtonClick;
+>>>>>>> origin/master
+        public _2DMappingFileControl(XytStage xytStage)
+        {
+            m_Owner = xytStage as XytStage;            
+            InitializeComponent();
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
+            this.UpdateStyles();
+
+            Update(m_Owner.Config);
+
+            this.Load += _2DMappingFileControl_Load;
+        }
+
+        private void _2DMappingFileControl_Load(object sender, EventArgs e)
+        {
+           
+        }
+        #region Method
+
+        public void Update(XytStageConfig config)
+        {
+            m_Owner.Config = config;
+            if (m_Owner.Config != null)
+            {
+                this.baseTextFilePath.Text = m_Owner.Config.FileName;
+                UpdateToggleButton(m_Owner.Config.Use2DMap);
+            }
+        }
+
+        private void baseBtn_Load_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+
+            string strFileName = "";
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                strFileName = dialog.FileName;
+                this.baseTextFilePath.Text = strFileName;
+                this.m_Owner.Config.FileName = strFileName;
+
+                if(m_interpolator == null)
+                    m_interpolator = new PerspectiveProjectionInterpolator();
+                m_interpolator.Load(strFileName);
+                XyCoordinate source = new XyCoordinate(-54, 108);
+                XyCoordinate target = new XyCoordinate();
+                m_interpolator.Interpolate(source, ref target);
+                if (m_Owner.Axes[XytStage.MotionKey.X.ToString()] != null && m_Owner.Axes[XytStage.MotionKey.Y.ToString()] != null)
+                {
+                    m_interpolator.SetAxis(m_Owner.Axes[XytStage.MotionKey.X.ToString()], m_Owner.Axes[XytStage.MotionKey.Y.ToString()]);
+                }
+                if(m_Owner.Config.Use2DMap)
+                    m_Owner.Interpolator= m_interpolator;
+            }
+
+            if(LoadButtonClick != null)
+            {
+                LoadButtonClick();
+            }
+
+        }
+
+        private void UpdateToggleButton(bool bOn)
+        {
+            if (bOn)
+            {
+                baseToggleBtn_Use.UpdateToggleStatus(true);
+            }
+            else
+            {
+                baseToggleBtn_Use.UpdateToggleStatus(false);
+            }
+        }
+        private void baseToggleBtn_Use_Click(object sender, EventArgs e)
+        {
+            if (m_Owner.Config != null)
+            {
+                bool bOn = m_Owner.Config.Use2DMap;
+                m_Owner.Config.Use2DMap = !bOn;
+
+                if(m_Owner.Config.Use2DMap)
+                {
+                    m_Owner.Interpolator = m_interpolator;
+                }
+                else
+                {
+                    m_Owner.Interpolator = null;
+                }
+                
+                UpdateToggleButton(m_Owner.Config.Use2DMap);
+            }
+
+        }
+        #endregion
+
+
+
+    }
+}

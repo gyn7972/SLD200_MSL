@@ -1,0 +1,637 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C4902B52-22F3-4340-8F8F-5699211D0788}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>QMC.Common</RootNamespace>
+    <AssemblyName>QMC.Common</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ACS.SPiiPlusNET, Version=3.11.1.39447, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\ACS Motion Control\CommonFiles\ACS.SPiiPlusNET.dll</HintPath>
+    </Reference>
+    <Reference Include="Coaxlink_NetApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=827dda2b95af263a, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Vision\EureSys\Library\Coaxlink_NetApi.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.DataMan.CogNamer.PC, Version=5.6.3.122, Culture=neutral, PublicKeyToken=9f98866f2a3a2e78, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Vision\Cognex\Library\Cognex.DataMan.CogNamer.PC.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.DataMan.SDK.Discovery.PC, Version=5.6.3.122, Culture=neutral, PublicKeyToken=9f98866f2a3a2e78, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Vision\Cognex\Library\Cognex.DataMan.SDK.Discovery.PC.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.DataMan.SDK.PC, Version=5.6.3.122, Culture=neutral, PublicKeyToken=9f98866f2a3a2e78, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Vision\Cognex\Library\Cognex.DataMan.SDK.PC.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.DataMan.SDK.Utils.PC, Version=5.6.3.122, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Vision\Cognex\Library\Cognex.DataMan.SDK.Utils.PC.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Vision\Cognex\Library\Cognex.VisionPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.Blob, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Vision\Cognex\Library\Cognex.VisionPro.Blob.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.Caliper, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Vision\Cognex\Library\Cognex.VisionPro.Caliper.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.Core, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Vision\Cognex\Library\Cognex.VisionPro.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.Display.Controls, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Vision\Cognex\Library\Cognex.VisionPro.Display.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.ID, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Vision\Cognex\Library\Cognex.VisionPro.ID.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.ImageFile, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Vision\Cognex\Library\Cognex.VisionPro.ImageFile.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.ImageProcessing, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Vision\Cognex\Library\Cognex.VisionPro.ImageProcessing.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.LineMax, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Vision\Cognex\Library\Cognex.VisionPro.LineMax.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.PixelMap, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Vision\Cognex\Library\Cognex.VisionPro.PixelMap.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.PMAlign, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Vision\Cognex\Library\Cognex.VisionPro.PMAlign.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.CepheusWrapLib">
+      <HintPath>..\SLO400_LLO\bin\Debug\Interop.CepheusWrapLib.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Ivi.Visa, Version=5.11.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>NationalInstruments\Library\Ivi.Visa.dll</HintPath>
+    </Reference>
+    <Reference Include="Matrox.MatroxImagingLibrary, Version=10.0.2564.1, Culture=neutral, PublicKeyToken=5a83d419d44a9d98, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Vision\Matrox\Library\Matrox.MatroxImagingLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="MvCameraControl.Net, Version=3.4.0.1, Culture=neutral, PublicKeyToken=52fddfb3f94be800, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Vision\HIKVISION\Library\MvCameraControl.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NationalInstruments.Visa, Version=19.0.0.49152, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>NationalInstruments\Library\NationalInstruments.Visa.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="spirallab.core, Version=1.109.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MicroLedDieTransfers2\spirallab.core.dll</HintPath>
+    </Reference>
+    <Reference Include="spirallab.sirius, Version=1.109.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MicroLedDieTransfers2\spirallab.sirius.dll</HintPath>
+    </Reference>
+    <Reference Include="spirallab.sirius.fieldcorrection, Version=1.109.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MicroLedDieTransfers2\spirallab.sirius.fieldcorrection.dll</HintPath>
+    </Reference>
+    <Reference Include="spirallab.sirius.rtc, Version=1.109.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MicroLedDieTransfers2\spirallab.sirius.rtc.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AlarmManager.cs" />
+    <Compile Include="AsyncSocket.cs" />
+    <Compile Include="bcd.cs" />
+    <Compile Include="CalibrationPitch.cs" />
+    <Compile Include="Carrier.cs" />
+    <Compile Include="CircularButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Collet.cs" />
+    <Compile Include="ColletCountData.cs" />
+    <Compile Include="ColletOffset.cs" />
+    <Compile Include="ColletZOffset.cs" />
+    <Compile Include="CompenMemory.cs" />
+    <Compile Include="Defines.cs" />
+    <Compile Include="DictionaryPropertyGridAdapter.cs" />
+    <Compile Include="DieLoadSubstrate.cs" />
+    <Compile Include="FileHelper.cs" />
+    <Compile Include="Hmi\NormalExpandableObjectConverter.cs" />
+    <Compile Include="IlluminationChannel.cs" />
+    <Compile Include="IlluminationDataSet.cs" />
+    <Compile Include="Interpolator\LinearXYInterpolator.cs" />
+    <Compile Include="Interpolator\PerspectiveProjectionInterpolator.cs" />
+    <Compile Include="Keithley\SourceMeter\KeithleySMU.cs" />
+    <Compile Include="Keithley\SourceMeter\KeithleySMURecipe.cs" />
+    <Compile Include="Laser\CepheusWrapDll.cs" />
+    <Compile Include="Laser\laser.cs" />
+    <Compile Include="Laser\lasercepheus.cs" />
+    <Compile Include="Laser\laservirtual.cs" />
+    <Compile Include="LPMCPKConfig.cs" />
+    <Compile Include="LPMSPCData.cs" />
+    <Compile Include="MaterialPitch.cs" />
+    <Compile Include="MeasureDataManager.cs" />
+    <Compile Include="MesDataManager.cs" />
+    <Compile Include="MesInfo.cs" />
+    <Compile Include="Modules\CommonConfig.cs" />
+    <Compile Include="Modules\CommonModule.cs" />
+    <Compile Include="Modules\DieLoader.cs" />
+    <Compile Include="Modules\DieLoaderConfig.cs" />
+    <Compile Include="Modules\DieLoaderRecipe.cs" />
+    <Compile Include="Modules\DieTransfer.cs" />
+    <Compile Include="Modules\DieTransferConfig.cs" />
+    <Compile Include="Modules\DieTransferRecipe.cs" />
+    <Compile Include="Modules\DieUnloader.cs" />
+    <Compile Include="Modules\DieUnloaderConfig.cs" />
+    <Compile Include="Modules\DieUnloaderRecipe.cs" />
+    <Compile Include="Modules\WaferProbeAlignProcessor.cs" />
+    <Compile Include="Modules\WaferProbeAlignProcessorConfig.cs" />
+    <Compile Include="Modules\WaferProbeAlignProcessorRecipe.cs" />
+    <Compile Include="Modules\WaferProbeAlign.cs" />
+    <Compile Include="Modules\WaferProbeAlignConfig.cs" />
+    <Compile Include="Modules\WaferProbeAlignRecipe.cs" />
+    <Compile Include="Motion\ACS\Motions\AcsAxis.cs" />
+    <Compile Include="Motion\ACS\Motions\AcsAxisConfiguration.cs" />
+    <Compile Include="Motion\ACS\Motions\AcsMotionBoard.cs" />
+    <Compile Include="Motion\ACS\Motions\ACSSPiiPlusAxis.cs" />
+    <Compile Include="Motion\ACS\Motions\ACSSPiiPlusAxisConfiguration.cs" />
+    <Compile Include="Motion\ACS\Motions\ACSSPiiPlusMotionBoard.cs" />
+    <Compile Include="Motion\ACS\Motions\ACS_Test.cs" />
+    <Compile Include="Motion\ACS\Motions\AxisParam.cs" />
+    <Compile Include="Motion\Ajin\IOFunc\DOFunction.cs" />
+    <Compile Include="Motion\Ajin\IOFunc\DIFunction.cs" />
+    <Compile Include="Motion\Ajin\MotionFunc\MotionFunction.cs" />
+    <Compile Include="Motion\Ajin\Motions\AjinGantryConfiguration.cs" />
+    <Compile Include="NationalInstruments\VISALAN.cs" />
+    <Compile Include="nativemethods.cs" />
+    <Compile Include="NetDrive.cs" />
+    <Compile Include="OpticonBCR\OpticonBarcodeReader.cs" />
+    <Compile Include="OpticonBCR\OpticonBarcodeReaderCommunicator.cs" />
+    <Compile Include="OpticonBCR\OpticonBarcodeReaderConfig.cs" />
+    <Compile Include="Parts\CarrierClamper.cs" />
+    <Compile Include="Parts\CarrierLocker.cs" />
+    <Compile Include="Parts\CarrierStopper.cs" />
+    <Compile Include="Parts\ColletZCalibrator.cs" />
+    <Compile Include="Parts\Conveyor.cs" />
+    <Compile Include="Parts\ConveyorConfig.cs" />
+    <Compile Include="Parts\DualGripper.cs" />
+    <Compile Include="Parts\DustCollector.cs" />
+    <Compile Include="Parts\Gripper.cs" />
+    <Compile Include="Parts\GripperLoader.cs" />
+    <Compile Include="Parts\IInterpolator.cs" />
+    <Compile Include="Parts\JigAligner.cs" />
+    <Compile Include="Parts\JigAlignerConfig.cs" />
+    <Compile Include="Parts\JigAlignerRecipe.cs" />
+    <Compile Include="Parts\LaserConfig.cs" />
+    <Compile Include="Parts\WaferProbeAlignParameter.cs" />
+    <Compile Include="Parts\WaferProbeAlignParameterConfig.cs" />
+    <Compile Include="Parts\WaferProbeAlignParameterRecipe.cs" />
+    <Compile Include="Parts\WaferProbeAlignPart.cs" />
+    <Compile Include="Parts\LaserPitchMoveShotter.cs" />
+    <Compile Include="Parts\LaserPitchMoveShotterConfig.cs" />
+    <Compile Include="Parts\LaserPowerCalibrator.cs" />
+    <Compile Include="Parts\LoadZ.cs" />
+    <Compile Include="Parts\LoadZConfig.cs" />
+    <Compile Include="Parts\OneAxis.cs" />
+    <Compile Include="Parts\OperationButtons.cs" />
+    <Compile Include="Parts\OperationButtonsConfig.cs" />
+    <Compile Include="Parts\PickupAgent.cs" />
+    <Compile Include="Parts\PickupAgentConfig.cs" />
+    <Compile Include="Parts\PositionResetter.cs" />
+    <Compile Include="Parts\RevisionZ.cs" />
+    <Compile Include="Parts\Scanner.cs" />
+    <Compile Include="Parts\ScannerCompensator.cs" />
+    <Compile Include="Parts\ScannerCompensatorConfig.cs" />
+    <Compile Include="Parts\ScannerCompensatorRecipe.cs" />
+    <Compile Include="Parts\ScannerConfig.cs" />
+    <Compile Include="Parts\ScannerRecipe.cs" />
+    <Compile Include="Parts\TowerLamp.cs" />
+    <Compile Include="Parts\Turret.cs" />
+    <Compile Include="Parts\TurretConfig.cs" />
+    <Compile Include="Parts\UnloadZ.cs" />
+    <Compile Include="Parts\UnloadZConfig.cs" />
+    <Compile Include="Parts\XyStage.cs" />
+    <Compile Include="Parts\XytStageConfig.cs" />
+    <Compile Include="Parts\XyzStage.cs" />
+    <Compile Include="Parts\UvwzxyzStage.cs" />
+    <Compile Include="Parts\XyzztStage.cs" />
+    <Compile Include="Parts\XyztStage.cs" />
+    <Compile Include="Parts\UvwzxyzStageConfig.cs" />
+    <Compile Include="Parts\XyzztStageConfig.cs" />
+    <Compile Include="Parts\XyztStageConfig.cs" />
+    <Compile Include="PathGenerators\PathGenerator.cs" />
+    <Compile Include="PathGenerators\SpiralTwoDimensionPathGenerator.cs" />
+    <Compile Include="PathGenerators\TwoDimensionPathGenertor.cs" />
+    <Compile Include="ProductionData.cs" />
+    <Compile Include="QMCCPKCalculator.cs" />
+    <Compile Include="QMCEdgeDetector.cs" />
+    <Compile Include="QMCFindLenzCenter.cs" />
+    <Compile Include="QmcLowPassFilter.cs" />
+    <Compile Include="ScoreSet.cs" />
+    <Compile Include="SerialCommChiller.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SerialCommSpectraPhysics.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SerialCommPowerMeter2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SerialCommPowerMeter1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SerialCommOpticonBarcode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SerialCommWeighCells.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SerialCommDigitalContactSensor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SerialCommDispenser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SharedMemoryServer.cs" />
+    <Compile Include="SmtUnit.cs" />
+    <Compile Include="SpeedSet.cs" />
+    <Compile Include="StageCompenGlass.cs" />
+    <Compile Include="tcpserver.cs" />
+    <Compile Include="ToggleButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UnitInfoManager.cs" />
+    <Compile Include="UserInfo.cs" />
+    <Compile Include="VisionPart\Aligner.cs" />
+    <Compile Include="VisionPart\AlignerParameter.cs" />
+    <Compile Include="VisionPart\AlignerRecipe.cs" />
+    <Compile Include="VisionPart\AlignerResult.cs" />
+    <Compile Include="VisionPart\AutoFocuerConfig.cs" />
+    <Compile Include="VisionPart\AutoFocuser.cs" />
+    <Compile Include="VisionPart\ColletXYPositionCalibrator.cs" />
+    <Compile Include="VisionPart\ColletXYPositionCalibratorConfig.cs" />
+    <Compile Include="VisionPart\ColletXYPositionCalibratorRecipe.cs" />
+    <Compile Include="VisionPart\DieFinder.cs" />
+    <Compile Include="VisionPart\DieFinderRecipe.cs" />
+    <Compile Include="VisionPart\DieSearcher.cs" />
+    <Compile Include="VisionPart\DieSearcherRecipe.cs" />
+    <Compile Include="VisionPart\MaterialCompansator.cs" />
+    <Compile Include="VisionPart\MaterialCompansatorRecipe.cs" />
+    <Compile Include="VisionPart\MaterialCompensatorResult.cs" />
+    <Compile Include="VisionPart\RealTimeScanner.cs" />
+    <Compile Include="VisionPart\RealTimeScannerConfig.cs" />
+    <Compile Include="VisionPart\RealTimeScannerRecipe.cs" />
+    <Compile Include="VisionPart\RealTimeScannerResult.cs" />
+    <Compile Include="VisionPart\RealTimeScanParameter.cs" />
+    <Compile Include="VisionPart\StageThetaAgingTester.cs" />
+    <Compile Include="VisionPart\StageThetaAgingTesterRecipe.cs" />
+    <Compile Include="VisionPart\VisionCompensator.cs" />
+    <Compile Include="VisionPart\MCVisionCalibrator.cs" />
+    <Compile Include="VisionPart\TwoPointAligner.cs" />
+    <Compile Include="VisionPart\TwoPointAlignerRecipe.cs" />
+    <Compile Include="VisionPart\PatternMatchingParameters.cs" />
+    <Compile Include="VisionPart\PatternMatchingVisionPart.cs" />
+    <Compile Include="VisionPart\Revision.cs" />
+    <Compile Include="VisionPart\RevisionRecipe.cs" />
+    <Compile Include="VisionPart\RevisionResult.cs" />
+    <Compile Include="VisionPart\VisionCalibrator.cs" />
+    <Compile Include="VisionPart\VisionCalibratorConfig.cs" />
+    <Compile Include="VisionPart\VisionCalibratorRecipe.cs" />
+    <Compile Include="VisionPart\VisionCompensatorConfig.cs" />
+    <Compile Include="VisionPart\VisionCompensatorRecipe.cs" />
+    <Compile Include="VisionScale.cs" />
+    <Compile Include="Vision\Cameras\CameraConfig.cs" />
+    <Compile Include="Vision\EureSys\CoaxlinkCamera.cs" />
+    <Compile Include="Vision\EureSys\CoaxlinkCameraConfig.cs" />
+    <Compile Include="Vision\EureSys\GenICam.cs" />
+    <Compile Include="Vision\EureSys\GrabLinkMultiCamCameraConfig.cs" />
+    <Compile Include="Vision\EureSys\MultiCamCameraConfig.cs" />
+    <Compile Include="Parts\MotionPart.cs" />
+    <Compile Include="MovingProjection.cs" />
+    <Compile Include="Parts\NeedleBlock.cs" />
+    <Compile Include="Parts\NeedleBlockConfig.cs" />
+    <Compile Include="Parts\XytStage.cs" />
+    <Compile Include="SettingParameter.cs" />
+    <Compile Include="AioModuleConfiguration.cs" />
+    <Compile Include="Alarm.cs" />
+    <Compile Include="AnalogValue.cs" />
+    <Compile Include="AsyncMethod.cs" />
+    <Compile Include="AsyncResult.cs" />
+    <Compile Include="BehaviorState.cs" />
+    <Compile Include="BytesConverter.cs" />
+    <Compile Include="CircleD.cs" />
+    <Compile Include="CopyUtility.cs" />
+    <Compile Include="CycleTimer.cs" />
+    <Compile Include="DataManager.cs" />
+    <Compile Include="Equipment.cs" />
+    <Compile Include="EquipmentEventArgs.cs" />
+    <Compile Include="ExecuteCondition.cs" />
+    <Compile Include="Hmi\Define.cs" />
+    <Compile Include="Hmi\FractionConverter.cs" />
+    <Compile Include="Hmi\UIMakerEditor.cs" />
+    <Compile Include="Hmi\VisionImageViewer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="IExecuter.cs" />
+    <Compile Include="IncomparableAttribute.cs" />
+    <Compile Include="IShape.cs" />
+    <Compile Include="LineD.cs" />
+    <Compile Include="LoadingQueue.cs" />
+    <Compile Include="Log.cs" />
+    <Compile Include="LogInfo.cs" />
+    <Compile Include="LogManager.cs" />
+    <Compile Include="MaterialInfo.cs" />
+    <Compile Include="Motion\Ajin\AXA.cs" />
+    <Compile Include="Motion\Ajin\AXD.cs" />
+    <Compile Include="Motion\Ajin\AXDEV.cs" />
+    <Compile Include="Motion\Ajin\AXHD.cs" />
+    <Compile Include="Motion\Ajin\AXHS.cs" />
+    <Compile Include="Motion\Ajin\AXL.cs" />
+    <Compile Include="Motion\Ajin\AXM.cs" />
+    <Compile Include="Motion\Ajin\IO\AjinAxlAioModule.cs" />
+    <Compile Include="Motion\Ajin\IO\AjinAxlAioModuleConfiguration.cs" />
+    <Compile Include="Motion\Ajin\IO\AjinAxlDioModule.cs" />
+    <Compile Include="Motion\Ajin\IO\AjinAxlDioModuleConfiguration.cs" />
+    <Compile Include="Motion\Ajin\IO\AjinAxlIoBoard.cs" />
+    <Compile Include="Motion\Ajin\Motions\AjinAxlAxis.cs" />
+    <Compile Include="Motion\Ajin\Motions\AjinAxlAxisConfiguration.cs" />
+    <Compile Include="Motion\Ajin\Motions\AjinAxlMotionBoard.cs" />
+    <Compile Include="Motion\Ajin\Motions\AxisHomeSequenceConfiguration.cs" />
+    <Compile Include="MotorSimulator.cs" />
+    <Compile Include="PointD.cs" />
+    <Compile Include="Vision\EureSys\ServerGrabLinkMultiCamCamera.cs" />
+    <Compile Include="Vision\EureSys\ServerGrabLinkMultiCamCameraConfig.cs" />
+    <Compile Include="Vision\HIKVISION\HIKGigECamera.cs" />
+    <Compile Include="Vision\HIKVISION\HIKGigECameraConfig.cs" />
+    <Compile Include="Vision\Matrox\Tools\MILCustomizedVisionImage.cs" />
+    <Compile Include="Vision\Matrox\Tools\MILPatternMatchingVisionTool.cs" />
+    <Compile Include="Vision\Matrox\Tools\MILRoiVisionTool.cs" />
+    <Compile Include="Vision\Matrox\Tools\MImageBuffer.cs" />
+    <Compile Include="Vision\Matrox\Tools\MSystem.cs" />
+    <Compile Include="Vision\Optics\Leesos\DigitalIlluminatorConfig.cs" />
+    <Compile Include="Vision\VisionAlign\QMCMatrix.cs" />
+    <Compile Include="Vision\VisionScale.cs" />
+    <Compile Include="XyOfUvwCoordinate.cs" />
+    <Compile Include="XytPositionData.cs" />
+    <Compile Include="qGeometry.cs" />
+    <Compile Include="qMath.cs" />
+    <Compile Include="Quadrangle.cs" />
+    <Compile Include="Range.cs" />
+    <Compile Include="RecipeInfo.cs" />
+    <Compile Include="RecipeParameters.cs" />
+    <Compile Include="RectangleD.cs" />
+    <Compile Include="SerialComm.cs" />
+    <Compile Include="SizeD.cs" />
+    <Compile Include="StopWatch.cs" />
+    <Compile Include="TimeoutChecker.cs" />
+    <Compile Include="TimeoutCheckerStateEnum.cs" />
+    <Compile Include="TimeSpanInfo.cs" />
+    <Compile Include="TimeSpanInfoTypeConverter.cs" />
+    <Compile Include="TypeUtility.cs" />
+    <Compile Include="Unit.cs" />
+    <Compile Include="VisionPart\VisionPart.cs" />
+    <Compile Include="Vision\Cameras\Camera.cs" />
+    <Compile Include="ConfigManager.cs" />
+    <Compile Include="DoubleCollection.cs" />
+    <Compile Include="Fraction.cs" />
+    <Compile Include="HomingSpecification.cs" />
+    <Compile Include="HomingSpecificationConverter.cs" />
+    <Compile Include="IActor.cs" />
+    <Compile Include="InitializeSequence.cs" />
+    <Compile Include="Interlock.cs" />
+    <Compile Include="IOBoard.cs" />
+    <Compile Include="IOBuffer.cs" />
+    <Compile Include="IODefine.cs" />
+    <Compile Include="IOModule.cs" />
+    <Compile Include="IoModuleConfiguration.cs" />
+    <Compile Include="IOPoint.cs" />
+    <Compile Include="Module.cs" />
+    <Compile Include="MotionAxis.cs" />
+    <Compile Include="MotionBoard.cs" />
+    <Compile Include="MotionDefine.cs" />
+    <Compile Include="MotorState.cs" />
+    <Compile Include="Part.cs" />
+    <Compile Include="PositionConverter.cs" />
+    <Compile Include="PositionOffset.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SaveManager.cs" />
+    <Compile Include="Vision\Cameras\CameraSwitch.cs" />
+    <Compile Include="Vision\Cameras\ICanGrabImage.cs" />
+    <Compile Include="Vision\Cognex\VisionProBlobVisionTool.cs" />
+    <Compile Include="Vision\Cognex\VisionProCustomizedVisionImage.cs" />
+    <Compile Include="Vision\Cognex\VisionProLineSearchingVisionTool.cs" />
+    <Compile Include="Vision\Cognex\VisionProPatternMatchingVisionTool.cs" />
+    <Compile Include="Vision\Cognex\VisionProRoiVisionTool.cs" />
+    <Compile Include="Vision\Cognex\VisionProSharpnessVisionTool.cs" />
+    <Compile Include="Vision\EureSys\GrabLinkMultiCamCamera.cs" />
+    <Compile Include="Vision\EureSys\MultiCam.cs" />
+    <Compile Include="Vision\EureSys\MultiCamCamera.cs" />
+    <Compile Include="Vision\ICustomizedVisionImage.cs" />
+    <Compile Include="Vision\Optics\Illuminator.cs" />
+    <Compile Include="Vision\Optics\Leesos\DigitalIlluminator.cs" />
+    <Compile Include="Vision\Optics\Leesos\DigitalIlluminatorCommunicator.cs" />
+    <Compile Include="Vision\Tools\BlobVisionTool.cs" />
+    <Compile Include="Vision\Tools\LineSearchingVisionTool.cs" />
+    <Compile Include="Vision\Tools\PatternMatchingVisionTool.cs" />
+    <Compile Include="Vision\Tools\RoiVisionTool.cs" />
+    <Compile Include="Vision\Tools\SharpnessVisionTool.cs" />
+    <Compile Include="Vision\Tools\VisionResult.cs" />
+    <Compile Include="Vision\Tools\VisionTool.cs" />
+    <Compile Include="Vision\VisionImage.cs" />
+    <Compile Include="Vision\VisionImageHeader.cs" />
+    <Compile Include="Vision\VisionImageOverlay.cs" />
+    <Compile Include="XyCoordinate.cs" />
+    <Compile Include="XytCoordinate.cs" />
+    <Compile Include="UvwCoordinate.cs" />
+    <Compile Include="XyzCoordinate.cs" />
+    <Compile Include="XryztCoordinate.cs" />
+    <Compile Include="UvwzxyzCoordinate.cs" />
+    <Compile Include="XyzztCoordinate.cs" />
+    <Compile Include="XyztCoordinate.cs" />
+    <Compile Include="Yamatake\MCW400A100Gauge.cs" />
+    <Compile Include="Yamatake\MCW400A100GaugeCommunicator.cs" />
+    <Compile Include="Yamatake\MCW400A100GaugeCommunicatorConfig.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Motion\ACS\Library\ACS.SPiiPlusNET.dll" />
+    <Content Include="Motion\Ajin\Library\Axl.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Motion\Ajin\Library\AxlEncoderLib.dll" />
+    <Content Include="Motion\Ajin\Library\AxtWaferScanLib.dll" />
+    <Content Include="Motion\Ajin\Library\EzbasicAxl.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NationalInstruments\Library\Ivi.Visa.dll" />
+    <Content Include="NationalInstruments\Library\NationalInstruments.Visa.dll" />
+    <Content Include="NationalInstruments\Library\visa32.dll" />
+    <Content Include="SpiralLab\Sirius\spirallab.core.dll" />
+    <Content Include="SpiralLab\Sirius\spirallab.sirius.dll" />
+    <Content Include="SpiralLab\Sirius\spirallab.sirius.fieldcorrection.dll" />
+    <Content Include="SpiralLab\Sirius\spirallab.sirius.rtc.dll" />
+    <Content Include="SpiralLab\Sirius\x64\ACS.SPiiPlusNET.dll" />
+    <Content Include="SpiralLab\Sirius\x64\ACS.SPiiPlusNET.StrongSigned.dll" />
+    <Content Include="SpiralLab\Sirius\x64\ACS.SPiiPlusNETStandard.dll" />
+    <Content Include="SpiralLab\Sirius\x64\ACS.SPiiPlusNETStandard.StrongSigned.dll" />
+    <Content Include="SpiralLab\Sirius\x64\ACSCL_x64.dll" />
+    <Content Include="SpiralLab\Sirius\x64\AXL.dll" />
+    <Content Include="SpiralLab\Sirius\x64\EzBasicAxl.dll" />
+    <Content Include="SpiralLab\Sirius\x64\freetype6.dll" />
+    <Content Include="SpiralLab\Sirius\x64\mfc100.dll" />
+    <Content Include="SpiralLab\Sirius\x64\msvcr100.dll" />
+    <Content Include="SpiralLab\Sirius\x64\OpenCvSharpExtern.dll" />
+    <Content Include="SpiralLab\Sirius\x64\PCI-Dask.dll" />
+    <Content Include="SpiralLab\Sirius\x64\Rockey4ND_X64.dll" />
+    <Content Include="SpiralLab\Sirius\x64\RTC4DLLx64.dll" />
+    <Content Include="SpiralLab\Sirius\x64\RTC5DLLx64.dll" />
+    <Content Include="SpiralLab\Sirius\x64\RTC6DLLx64.dll" />
+    <Content Include="SpiralLab\Sirius\x64\RtosLib64.dll" />
+    <Content Include="SpiralLab\Sirius\x64\SPiiPlusCOM660_x64.dll" />
+    <Content Include="SpiralLab\Sirius\x64\SQLite.Interop.dll" />
+    <Content Include="SpiralLab\Sirius\x64\syncAXIS.dll" />
+    <Content Include="SpiralLab\Sirius\x64\xerces-c_3_2.dll" />
+    <Content Include="SpiralLab\Sirius\x86\ACS.SPiiPlusNET.dll" />
+    <Content Include="SpiralLab\Sirius\x86\ACS.SPiiPlusNET.StrongSigned.dll" />
+    <Content Include="SpiralLab\Sirius\x86\ACS.SPiiPlusNETStandard.dll" />
+    <Content Include="SpiralLab\Sirius\x86\ACS.SPiiPlusNETStandard.StrongSigned.dll" />
+    <Content Include="SpiralLab\Sirius\x86\ACSC.dll" />
+    <Content Include="SpiralLab\Sirius\x86\ACSCL_x86.dll" />
+    <Content Include="SpiralLab\Sirius\x86\AXL.dll" />
+    <Content Include="SpiralLab\Sirius\x86\EzBasicAxl.dll" />
+    <Content Include="SpiralLab\Sirius\x86\freetype6.dll" />
+    <Content Include="SpiralLab\Sirius\x86\mfc100.dll" />
+    <Content Include="SpiralLab\Sirius\x86\msvcr100.dll" />
+    <Content Include="SpiralLab\Sirius\x86\OpenCvSharpExtern.dll" />
+    <Content Include="SpiralLab\Sirius\x86\PCI-Dask.dll" />
+    <Content Include="SpiralLab\Sirius\x86\Rockey4ND.dll" />
+    <Content Include="SpiralLab\Sirius\x86\RTC4DLL.dll" />
+    <Content Include="SpiralLab\Sirius\x86\RTC5DLL.dll" />
+    <Content Include="SpiralLab\Sirius\x86\RTC6DLL.dll" />
+    <Content Include="SpiralLab\Sirius\x86\RtosLib32.dll" />
+    <Content Include="SpiralLab\Sirius\x86\SPiiPlusCOM660_x86.dll" />
+    <Content Include="SpiralLab\Sirius\x86\SQLite.Interop.dll" />
+    <Content Include="SpiralLab\Sirius\x86\syncAXIS.dll" />
+    <Content Include="SpiralLab\Sirius\x86\xerces-c_3_2.dll" />
+    <Content Include="syncAXIS\bin64\dll\RTC6DLLx64.dll" />
+    <Content Include="syncAXIS\bin64\dll\syncAXIS.dll" />
+    <Content Include="syncAXIS\bin64\dll\xerces-c_3_2.dll" />
+    <Content Include="syncAXIS\bin64\Wrapper\syncAXIS.NET.dll" />
+    <Content Include="syncAXIS\bin64\Wrapper\syncAXISWrapper.dll" />
+    <Content Include="syncAXIS\bin\dll\RTC6DLL.dll" />
+    <Content Include="syncAXIS\bin\dll\syncAXIS.dll" />
+    <Content Include="syncAXIS\bin\dll\xerces-c_3_2.dll" />
+    <Content Include="syncAXIS\bin\Wrapper\syncAXIS.NET.dll" />
+    <Content Include="syncAXIS\bin\Wrapper\syncAXISWrapper.dll" />
+    <Content Include="syncAXIS\include\syncAXIS.h" />
+    <Content Include="syncAXIS\include\syncAXISDefinitions.h" />
+    <Content Include="Vision\Cognex\Library\Cognex.DataMan.CogNamer.PC.dll" />
+    <Content Include="Vision\Cognex\Library\Cognex.DataMan.SDK.Discovery.PC.dll" />
+    <Content Include="Vision\Cognex\Library\Cognex.DataMan.SDK.PC.dll" />
+    <Content Include="Vision\Cognex\Library\Cognex.DataMan.SDK.Utils.PC.dll" />
+    <Content Include="Vision\Cognex\Library\Cognex.VisionPro.Blob.dll" />
+    <Content Include="Vision\Cognex\Library\Cognex.VisionPro.Caliper.dll" />
+    <Content Include="Vision\Cognex\Library\Cognex.VisionPro.Core.dll" />
+    <Content Include="Vision\Cognex\Library\Cognex.VisionPro.Display.Controls.dll" />
+    <Content Include="Vision\Cognex\Library\Cognex.VisionPro.dll" />
+    <Content Include="Vision\Cognex\Library\Cognex.VisionPro.ID.dll" />
+    <Content Include="Vision\Cognex\Library\Cognex.VisionPro.ImageFile.dll" />
+    <Content Include="Vision\Cognex\Library\Cognex.VisionPro.ImageProcessing.dll" />
+    <Content Include="Vision\Cognex\Library\Cognex.VisionPro.LineMax.dll" />
+    <Content Include="Vision\Cognex\Library\Cognex.VisionPro.PixelMap.dll" />
+    <Content Include="Vision\Cognex\Library\Cognex.VisionPro.PMAlign.dll" />
+    <Content Include="Vision\EureSys\Library\Coaxlink_NetApi.dll" />
+    <Content Include="Vision\HIKVISION\Library\MvCameraControl.Net.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Vision\Matrox\Library\Matrox.MatroxImagingLibrary.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="syncAXIS\bin64\lib\syncAXIS.lib" />
+    <None Include="syncAXIS\bin\lib\syncAXIS.lib" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>mkdir "C:\Program Files\QMC\CWA150SA_Onsemi\"
+copy "$(TargetPath)" "C:\Program Files\QMC\CWA150SA_Onsemi\"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

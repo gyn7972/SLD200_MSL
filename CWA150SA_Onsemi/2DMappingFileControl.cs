@@ -1,0 +1,248 @@
+﻿using QMC.Common;
+using QMC.Common.Interpolator;
+using QMC.Common.Modules;
+using QMC.Common.Parts;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+
+namespace QMC.Vision
+{
+    public delegate void LoadButtonClickEventHandler();
+    public partial class _2DMappingFileControl : UserControl
+    {
+        static WaferProbeAlign waferProbeAlign;
+        private UvwzxyzStage m_Owner;
+        private PerspectiveProjectionInterpolator m_interpolator;
+        public event LoadButtonClickEventHandler LoadButtonClick;
+        public _2DMappingFileControl(UvwzxyzStage uvwzxyzStage)
+        {
+            string strFileName = "";
+
+            m_Owner = uvwzxyzStage as UvwzxyzStage;
+
+            ModuleCollection m_collectionModules;
+            m_collectionModules = Equipment.Modules;
+
+            foreach (Module module in m_collectionModules)
+            {
+                if (module.Name == "WaferProbeAlign")
+                {
+                    waferProbeAlign = module as WaferProbeAlign;
+                }
+            }
+
+            InitializeComponent();
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
+            this.UpdateStyles();
+
+            Update(m_Owner.Config);
+
+
+            if (waferProbeAlign.Config.ParamConfig.MapFile_Path != null)
+            {
+                strFileName = waferProbeAlign.Config.ParamConfig.MapFile_Path;
+
+                FileInfo fi = new FileInfo(strFileName);
+                if (fi.Exists)
+                {
+                    this.baseTextFilePath.Text = strFileName;
+                    this.m_Owner.Config.FileName = strFileName;
+
+                    if (m_interpolator == null)
+                        m_interpolator = new PerspectiveProjectionInterpolator();
+                    m_interpolator.Load(strFileName);
+                    XyCoordinate source = new XyCoordinate(-54, 108);
+                    XyCoordinate target = new XyCoordinate();
+                    m_interpolator.Interpolate(source, ref target);
+                    if (m_Owner.Axes[XytStage.MotionKey.X.ToString()] != null && m_Owner.Axes[XytStage.MotionKey.Y.ToString()] != null)
+                    {
+                        m_interpolator.SetAxis(m_Owner.Axes[XytStage.MotionKey.X.ToString()], m_Owner.Axes[XytStage.MotionKey.Y.ToString()]);
+                    }
+
+                    m_Owner.Config.Use2DMap = waferProbeAlign.Config.ParamConfig.MapFileApply_WhenPgmStart;
+
+                    if (m_Owner.Config.Use2DMap)
+                    {
+                        m_Owner.Interpolator = m_interpolator;
+                        waferProbeAlign.Stage.Interpolator = m_interpolator;
+                    }
+                    else
+                    {
+                        waferProbeAlign.Stage.Interpolator = null;
+                        m_Owner.Interpolator = null;
+                    }
+
+                    if (LoadButtonClick != null)
+                    {
+                        LoadButtonClick();
+                    }
+
+                    UpdateToggleButton(m_Owner.Config.Use2DMap);
+                }
+                else
+                {
+                    waferProbeAlign.Stage.Interpolator = null;
+
+                    string m_strTemp;
+                    m_strTemp = "[ " + strFileName + " ] 경로에 맵 파일이 없습니다.";
+                    MessageBox.Show(m_strTemp, "Information!!");
+                }
+            }
+
+            this.Load += _2DMappingFileControl_Load;
+        }
+
+        private void _2DMappingFileControl_Load(object sender, EventArgs e)
+        {
+
+        }
+        #region Method
+
+        public void Update(UvwzxyzStageConfig config)
+        {
+            m_Owner.Config = config;
+            if (m_Owner.Config != null)
+            {
+                this.baseTextFilePath.Text = m_Owner.Config.FileName;
+                UpdateToggleButton(m_Owner.Config.Use2DMap);
+            }
+        }
+
+        private void baseBtn_Load_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+
+            string strFileName = "";
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                strFileName = dialog.FileName;
+                this.baseTextFilePath.Text = strFileName;
+                this.m_Owner.Config.FileName = strFileName;
+
+                waferProbeAlign.Config.ParamConfig.MapFile_Path = strFileName;
+
+
+
+
+                string m_strRecipe = "";
+                RecipeInfo m_recipeInfo = new RecipeInfo();
+                m_recipeInfo = Equipment.GetCurrentRecipe();
+
+                if (m_recipeInfo != null)
+                {
+                    m_strRecipe = m_recipeInfo.Name;
+
+                    //DataManager.Instance.UpdateConfigData(waferProbeAlign); // 참고 : param save
+                    //Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
+                    Equipment.SaveConfig(m_strRecipe);                                            //  2022. 06. 30.  SCH : Recipe 에 따라 Config 파라미터를 변경하기 위해 이걸로 함.
+                }
+                else
+                {
+                    //DataManager.Instance.UpdateConfigData(waferProbeAlign); // 참고 : param save
+                    Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
+                }
+
+                DataManager.Instance.ApplyConfigData(waferProbeAlign);
+
+                //  Config 창 데이터 갱신을 위해서
+                Equipment.m_bRedraw_FormWaferProbeAlignParameterConfig = true;
+
+
+
+
+                if (m_interpolator == null)
+                    m_interpolator = new PerspectiveProjectionInterpolator();
+                m_interpolator.Load(strFileName);
+                XyCoordinate source = new XyCoordinate(-54, 108);
+                XyCoordinate target = new XyCoordinate();
+                m_interpolator.Interpolate(source, ref target);
+                if (m_Owner.Axes[XytStage.MotionKey.X.ToString()] != null && m_Owner.Axes[XytStage.MotionKey.Y.ToString()] != null)
+                {
+                    m_interpolator.SetAxis(m_Owner.Axes[XytStage.MotionKey.X.ToString()], m_Owner.Axes[XytStage.MotionKey.Y.ToString()]);
+                }
+                if(m_Owner.Config.Use2DMap)
+                    m_Owner.Interpolator= m_interpolator;
+
+                if (LoadButtonClick != null)
+                {
+                    LoadButtonClick();
+                }
+            }
+        }
+
+        private void UpdateToggleButton(bool bOn)
+        {
+            if (bOn)
+            {
+                baseToggleBtn_Use.UpdateToggleStatus(true);                
+            }
+            else
+            {
+                baseToggleBtn_Use.UpdateToggleStatus(false);
+            }
+        }
+        private void baseToggleBtn_Use_Click(object sender, EventArgs e)
+        {
+            if (m_Owner.Config != null)
+            {
+                bool bOn = m_Owner.Config.Use2DMap;
+                m_Owner.Config.Use2DMap = !bOn;
+
+                if(m_Owner.Config.Use2DMap)
+                {
+                    m_Owner.Interpolator = m_interpolator;
+                    waferProbeAlign.Stage.Interpolator = m_interpolator;
+
+                    waferProbeAlign.Config.ParamConfig.MapFileApply_WhenPgmStart = true;
+                }
+                else
+                {
+                    m_Owner.Interpolator = null;
+                    waferProbeAlign.Stage.Interpolator = null;
+
+                    waferProbeAlign.Config.ParamConfig.MapFileApply_WhenPgmStart = false;
+                }
+                
+                UpdateToggleButton(m_Owner.Config.Use2DMap);
+
+
+
+                string m_strRecipe = "";
+                RecipeInfo m_recipeInfo = new RecipeInfo();
+                m_recipeInfo = Equipment.GetCurrentRecipe();
+
+                if (m_recipeInfo != null)
+                {
+                    m_strRecipe = m_recipeInfo.Name;
+
+                    //DataManager.Instance.UpdateConfigData(waferProbeAlign); // 참고 : param save
+                    //Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
+                    Equipment.SaveConfig(m_strRecipe);                                            //  2022. 06. 30.  SCH : Recipe 에 따라 Config 파라미터를 변경하기 위해 이걸로 함.
+                }
+                else
+                {
+                    //DataManager.Instance.UpdateConfigData(waferProbeAlign); // 참고 : param save
+                    Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
+                }
+
+                //DataManager.Instance.ApplyConfigData(waferProbeAlign);                   //  이게 있으니 Toggle 이 안됨
+
+                //  Config 창 데이터 갱신을 위해서
+                //Equipment.m_bRedraw_FormWaferProbeAlignParameterConfig = true;
+            }
+        }
+        #endregion
+
+
+
+    }
+}

@@ -1,0 +1,37 @@
+1. 저해상도
+   - MC-A500M-35
+   - Resolution : 2448 X 2048
+   - name : Low
+   - BoardIndex : 0
+   - camfile : MC-A500M-35_RG_3tap.cam
+   - connector : CameraCL.Connector.A
+   - scaleX : 0.0034462952
+   - scaleY : 0.0034462952
+   - exposure : 100000
+   - TapConfiguration : BASE_3T8
+   - TapGeometry : A1X3_1Y
+   - NextTrigMode : Same
+   - TrigMode : Immediate
+
+
+2. 고해상도
+   - MC-A500M-35
+   - Resolution : 2448 X 2048
+   - name : High
+   - BoardIndex : 0
+   - camfile : MC-A500M-35_RG_3tap.cam
+   - connector : CameraCL.Connector.B
+   - scaleX : 0.00043272
+   - scaleY : 0.00043272
+   - exposure : 100000
+   - TapConfiguration : BASE_3T8
+   - TapGeometry : A1X3_1Y
+   - NextTrigMode : Same
+   - TrigMode : Immediate
+
+
+
+* MC-A500M-163 은 2440 X 2056  -> 사용하지 않는 카메라
+* exposure 값이 너무 크면 (Shutter Speed 가 너무 느리면) Acquire 에 문제가 있다.
+* exposure 100,000 으로 하면 5.2 fps (이건 안됨)
+* exposure 5,000 으로 하면 27 fps (이건 잘 됨)

@@ -1,0 +1,676 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C5A06C50-980D-4E94-8FCE-E1EED34C46D1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>QMC.Common.UI</RootNamespace>
+    <AssemblyName>QMC.Common.UI</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AutoFocusConfigControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AutoFocusConfigControl.designer.cs">
+      <DependentUpon>AutoFocusConfigControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AutoFocusControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AutoFocusControl.designer.cs">
+      <DependentUpon>AutoFocusControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AutoScaleControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AutoScaleControl.designer.cs">
+      <DependentUpon>AutoScaleControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BarcodeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BarcodeControl.Designer.cs">
+      <DependentUpon>BarcodeControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BaseButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CarrierStateControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CarrierStateControl.designer.cs">
+      <DependentUpon>CarrierStateControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ClockControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ClockControl.Designer.cs">
+      <DependentUpon>ClockControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConveyorStateControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ConveyorStateControl.designer.cs">
+      <DependentUpon>ConveyorStateControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAddMesData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAddMesData.Designer.cs">
+      <DependentUpon>FormAddMesData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAlarm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAlarm.designer.cs">
+      <DependentUpon>FormAlarm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormBaseContent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBaseContent.Designer.cs">
+      <DependentUpon>FormBaseContent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormContentBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormContentBase.designer.cs">
+      <DependentUpon>FormContentBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormSetRoi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSetRoi.designer.cs">
+      <DependentUpon>FormSetRoi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormSPCMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSPCMain.Designer.cs">
+      <DependentUpon>FormSPCMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormSubContentBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSubContentBase.designer.cs">
+      <DependentUpon>FormSubContentBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InOutputStop.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="InOutputStop.Designer.cs">
+      <DependentUpon>InOutputStop.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IOListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IOListControl.designer.cs">
+      <DependentUpon>IOListControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LineInfoControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LineInfoControl.Designer.cs">
+      <DependentUpon>LineInfoControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LineSearchResultControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LineSearchResultControl.Designer.cs">
+      <DependentUpon>LineSearchResultControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MenuButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ModulePositionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ModulePositionControl.designer.cs">
+      <DependentUpon>ModulePositionControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PatternMatchingRecipeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PatternMatchingRecipeControl.Designer.cs">
+      <DependentUpon>PatternMatchingRecipeControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AxisXRevision.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AxisXRevision.Designer.cs">
+      <DependentUpon>AxisXRevision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AxisYRevision.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AxisYRevision.Designer.cs">
+      <DependentUpon>AxisYRevision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BaseDataGridView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BaseGroupBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BaseLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BaseListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BasePorpertyGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BaseTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BaseToggleButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BaseTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CarrierLockControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CarrierLockControl.Designer.cs">
+      <DependentUpon>CarrierLockControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CarrierClampControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CarrierClampControl.Designer.cs">
+      <DependentUpon>CarrierClampControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConveyorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ConveyorControl.Designer.cs">
+      <DependentUpon>ConveyorControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DoubleBufferPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="EngineerButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EngineerButton.Designer.cs">
+      <DependentUpon>EngineerButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormBaseConfiguration.cs" />
+    <Compile Include="IlluminatorChannelControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IlluminatorChannelControl.Designer.cs">
+      <DependentUpon>IlluminatorChannelControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IlluminatorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IlluminatorControl.Designer.cs">
+      <DependentUpon>IlluminatorControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IlluminatorRecipeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IlluminatorRecipeControl.Designer.cs">
+      <DependentUpon>IlluminatorRecipeControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="JogButtonCombination.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="JogButtonCombination.Designer.cs">
+      <DependentUpon>JogButtonCombination.cs</DependentUpon>
+    </Compile>
+    <Compile Include="JogButtonTheta.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="JogButtonTheta.Designer.cs">
+      <DependentUpon>JogButtonTheta.cs</DependentUpon>
+    </Compile>
+    <Compile Include="JogControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="JogControl.Designer.cs">
+      <DependentUpon>JogControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MessageBox\MessageBoxOk.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageBox\MessageBoxOk.Designer.cs">
+      <DependentUpon>MessageBox\MessageBoxOk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MessageBox\MessageBoxRetrySkip.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageBox\MessageBoxRetrySkip.Designer.cs">
+      <DependentUpon>MessageBox\MessageBoxRetrySkip.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MessageBox\MessageBoxYesNo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageBox\MessageBoxYesNo.Designer.cs">
+      <DependentUpon>MessageBox\MessageBoxYesNo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MessageBox\MessageBoxYesNoRetry.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageBox\MessageBoxYesNoRetry.Designer.cs">
+      <DependentUpon>MessageBox\MessageBoxYesNoRetry.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ModuleButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ModuleButton.Designer.cs">
+      <DependentUpon>ModuleButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ModuleStateControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ModuleStateControl.Designer.cs">
+      <DependentUpon>ModuleStateControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProductionControl.Designer.cs">
+      <DependentUpon>ProductionControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProgressForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProgressForm.Designer.cs">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="NormalDataConfigControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NormalDataConfigControl.Designer.cs">
+      <DependentUpon>NormalDataConfigControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CylinderZControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CylinderZControl.Designer.cs">
+      <DependentUpon>CylinderZControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ResultAlignControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ResultAlignControl.Designer.cs">
+      <DependentUpon>ResultAlignControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RoiListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RoiListControl.Designer.cs">
+      <DependentUpon>RoiListControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SearchResultControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SearchResultControl.Designer.cs">
+      <DependentUpon>SearchResultControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SPCOptionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SPCOptionControl.Designer.cs">
+      <DependentUpon>SPCOptionControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StageThetaAgingTestControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StageThetaAgingTestControl.designer.cs">
+      <DependentUpon>StageThetaAgingTestControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TrainImageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TrainImageControl.designer.cs">
+      <DependentUpon>TrainImageControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TrainPictureBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TrainPictureBox.designer.cs">
+      <DependentUpon>TrainPictureBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VisionCalScaleControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VisionCalScaleControl.designer.cs">
+      <DependentUpon>VisionCalScaleControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="XRsChartControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="XRsChartControl.Designer.cs">
+      <DependentUpon>XRsChartControl.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AutoFocusConfigControl.resx">
+      <DependentUpon>AutoFocusConfigControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AutoFocusControl.resx">
+      <DependentUpon>AutoFocusControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AutoScaleControl.resx">
+      <DependentUpon>AutoScaleControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BarcodeControl.resx">
+      <DependentUpon>BarcodeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CarrierStateControl.resx">
+      <DependentUpon>CarrierStateControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ClockControl.resx">
+      <DependentUpon>ClockControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConveyorStateControl.resx">
+      <DependentUpon>ConveyorStateControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAddMesData.resx">
+      <DependentUpon>FormAddMesData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAlarm.resx">
+      <DependentUpon>FormAlarm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormContentBase.resx">
+      <DependentUpon>FormContentBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormSetRoi.resx">
+      <DependentUpon>FormSetRoi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormSPCMain.resx">
+      <DependentUpon>FormSPCMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormSubContentBase.resx">
+      <DependentUpon>FormSubContentBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InOutputStop.resx">
+      <DependentUpon>InOutputStop.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IOListControl.resx">
+      <DependentUpon>IOListControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LineInfoControl.resx">
+      <DependentUpon>LineInfoControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LineSearchResultControl.resx">
+      <DependentUpon>LineSearchResultControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ModulePositionControl.resx">
+      <DependentUpon>ModulePositionControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PatternMatchingRecipeControl.resx">
+      <DependentUpon>PatternMatchingRecipeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AxisXRevision.resx">
+      <DependentUpon>AxisXRevision.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AxisYRevision.resx">
+      <DependentUpon>AxisYRevision.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CarrierLockControl.resx">
+      <DependentUpon>CarrierLockControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CarrierClampControl.resx">
+      <DependentUpon>CarrierClampControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConveyorControl.resx">
+      <DependentUpon>ConveyorControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EngineerButton.resx">
+      <DependentUpon>EngineerButton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IlluminatorChannelControl.resx">
+      <DependentUpon>IlluminatorChannelControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IlluminatorControl.resx">
+      <DependentUpon>IlluminatorControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IlluminatorRecipeControl.resx">
+      <DependentUpon>IlluminatorRecipeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JogButtonCombination.resx">
+      <DependentUpon>JogButtonCombination.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JogButtonTheta.resx">
+      <DependentUpon>JogButtonTheta.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JogControl.resx">
+      <DependentUpon>JogControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MessageBox\MessageBoxOk.resx" />
+    <EmbeddedResource Include="MessageBox\MessageBoxRetrySkip.resx" />
+    <EmbeddedResource Include="MessageBox\MessageBoxYesNo.resx" />
+    <EmbeddedResource Include="MessageBox\MessageBoxYesNoRetry.resx" />
+    <EmbeddedResource Include="ModuleButton.resx">
+      <DependentUpon>ModuleButton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ModuleStateControl.resx">
+      <DependentUpon>ModuleStateControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductionControl.resx">
+      <DependentUpon>ProductionControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProgressForm.resx">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NormalDataConfigControl.resx">
+      <DependentUpon>NormalDataConfigControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CylinderZControl.resx">
+      <DependentUpon>CylinderZControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ResultAlignControl.resx">
+      <DependentUpon>ResultAlignControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RoiListControl.resx">
+      <DependentUpon>RoiListControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SearchResultControl.resx">
+      <DependentUpon>SearchResultControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SPCOptionControl.resx">
+      <DependentUpon>SPCOptionControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StageThetaAgingTestControl.resx">
+      <DependentUpon>StageThetaAgingTestControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TrainImageControl.resx">
+      <DependentUpon>TrainImageControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TrainPictureBox.resx">
+      <DependentUpon>TrainPictureBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VisionCalScaleControl.resx">
+      <DependentUpon>VisionCalScaleControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XRsChartControl.resx">
+      <DependentUpon>XRsChartControl.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QMC.Common\QMC.Common.csproj">
+      <Project>{c4902b52-22f3-4340-8f8f-5699211d0788}</Project>
+      <Name>QMC.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\[NewForm]Common_splash.gif" />
+    <None Include="Resources\%28New%29CenterDisable.png" />
+    <None Include="Resources\%28New%29CenterHover.png" />
+    <Content Include="Resources\%28New%29CenterNormal.png" />
+    <None Include="Resources\%28New%29CenterNormal1.png" />
+    <None Include="Resources\%28New%29CenterPressed.png" />
+    <None Include="Resources\%28New%29HeightSizeDownDisable.png" />
+    <None Include="Resources\%28New%29HeightSizeDownHover.png" />
+    <Content Include="Resources\%28New%29HeightSizeDownNormal.png" />
+    <None Include="Resources\%28New%29HeightSizeDownPressed.png" />
+    <None Include="Resources\%28New%29HeightSizeUpDisable.png" />
+    <None Include="Resources\%28New%29HeightSizeUpHover.png" />
+    <Content Include="Resources\%28New%29HeightSizeUpNormal.png" />
+    <None Include="Resources\%28New%29HeightSizeUpPressed.png" />
+    <None Include="Resources\%28New%29WidthSizeDownDisable.png" />
+    <None Include="Resources\%28New%29WidthSizeDownHover.png" />
+    <Content Include="Resources\%28New%29WidthSizeDownNormal.png" />
+    <None Include="Resources\%28New%29WidthSizeDownPressed.png" />
+    <None Include="Resources\%28New%29WidthSizeUpDisable.png" />
+    <None Include="Resources\%28New%29WidthSizeUpHover.png" />
+    <Content Include="Resources\%28New%29WidthSizeUpNormal.png" />
+    <None Include="Resources\AlarmError.png" />
+    <None Include="Resources\AlarmInform.png" />
+    <None Include="Resources\AlarmWarning.png" />
+    <None Include="Resources\%28New%29WidthSizeUpPressed.png" />
+    <None Include="Resources\Alarm.png" />
+    <None Include="Resources\AlarmEmpty.png" />
+    <None Include="Resources\AlarmOff.png" />
+    <None Include="Resources\AlarmOn.png" />
+    <None Include="Resources\BuzzerOff.png" />
+    <None Include="Resources\BuzzerOn.png" />
+    <Content Include="Resources\Carrier.png" />
+    <Content Include="Resources\CCW.png" />
+    <None Include="Resources\ChartOff.png" />
+    <None Include="Resources\ChartOn.png" />
+    <None Include="Resources\ConfigurationOff.png" />
+    <None Include="Resources\ConfigurationOn.png" />
+    <None Include="Resources\Conveyor-Exist.png" />
+    <None Include="Resources\Conveyor-Exist1.png" />
+    <None Include="Resources\Conveyor-NotExist.png" />
+    <None Include="Resources\Conveyor-NotExist1.png" />
+    <Content Include="Resources\CW.png" />
+    <None Include="Resources\DefaultLogOffNormal.png" />
+    <None Include="Resources\DieTransfer-NonWorking1.png" />
+    <None Include="Resources\DieTransfer-Working.png" />
+    <None Include="Resources\DieTransfer-Working1.png" />
+    <Content Include="Resources\DioEllipseOff.png" />
+    <Content Include="Resources\DioEllipseOn.png" />
+    <Content Include="Resources\DioRectangleOff.png" />
+    <Content Include="Resources\DioRectangleOn.png" />
+    <Content Include="Resources\Down.png" />
+    <Content Include="Resources\empty_Carrier.png" />
+    <None Include="Resources\ExitNormal.png" />
+    <None Include="Resources\ExitPressed.png" />
+    <None Include="Resources\Feeder-Exist.png" />
+    <None Include="Resources\Feeder-Exist1.png" />
+    <None Include="Resources\Feeder-NotExist.png" />
+    <None Include="Resources\Feeder-NotExist1.png" />
+    <None Include="Resources\InputConveyor-Exist.png" />
+    <None Include="Resources\InputConveyor-Exist1.png" />
+    <None Include="Resources\InputConveyor-NotExist.png" />
+    <None Include="Resources\InputConveyor-NotExist1.png" />
+    <None Include="Resources\IO_Off.png" />
+    <None Include="Resources\IO_On.png" />
+    <Content Include="Resources\Left.png" />
+    <Content Include="Resources\LeftDown.png" />
+    <Content Include="Resources\LeftUp.png" />
+    <None Include="Resources\LoadPort-Carrier.png" />
+    <None Include="Resources\LoadPort-Carrier1.png" />
+    <None Include="Resources\LoadPort-CarrierSubstrate.png" />
+    <None Include="Resources\LoadPort-CarrierSubstrate1.png" />
+    <None Include="Resources\LoadPort-NotExist.png" />
+    <None Include="Resources\LoadPort-NotExist1.png" />
+    <None Include="Resources\LogIn.png" />
+    <None Include="Resources\LogInOn.png" />
+    <None Include="Resources\Logo.png" />
+    <None Include="Resources\LogOut.png" />
+    <None Include="Resources\LogOutOn.png" />
+    <None Include="Resources\MainConveyor-Exist.png" />
+    <None Include="Resources\MainConveyor-Exist1.png" />
+    <None Include="Resources\MainConveyor-NotExist.png" />
+    <None Include="Resources\MainConveyor-NotExist1.png" />
+    <None Include="Resources\MaintOff.png" />
+    <None Include="Resources\MaintOn.png" />
+    <Content Include="Resources\megaphone_80px.png" />
+    <Content Include="Resources\megaphone_80px_q.png" />
+    <None Include="Resources\Module.png" />
+    <None Include="Resources\Modulea.png" />
+    <None Include="Resources\OperationOff.png" />
+    <None Include="Resources\OperationOn.png" />
+    <None Include="Resources\OutputConveyor-Exist.png" />
+    <None Include="Resources\OutputConveyor-Exist1.png" />
+    <None Include="Resources\OutputConveyor-NotExist.png" />
+    <None Include="Resources\OutputConveyor-NotExist1.png" />
+    <None Include="Resources\RecipeOff.png" />
+    <None Include="Resources\RecipeOn.png" />
+    <Content Include="Resources\Right.png" />
+    <Content Include="Resources\RightDown.png" />
+    <Content Include="Resources\RightUp.png" />
+    <None Include="Resources\SetUp1.png" />
+    <None Include="Resources\SetUpa1.png" />
+    <None Include="Resources\SetUpOff.png" />
+    <None Include="Resources\SetUpOn.png" />
+    <Content Include="Resources\smt.png" />
+    <Content Include="Resources\smt_180.png" />
+    <Content Include="Resources\smt_270.png" />
+    <Content Include="Resources\smt_90.png" />
+    <Content Include="Resources\smt_empty.png" />
+    <Content Include="Resources\smt_empty_90.png" />
+    <None Include="Resources\SourceStage-Exist.png" />
+    <None Include="Resources\SourceStage-Exist1.png" />
+    <None Include="Resources\SourceStage-NotExist.png" />
+    <None Include="Resources\SourceStage-NotExist1.png" />
+    <None Include="Resources\StartOff.png" />
+    <None Include="Resources\StartOn.png" />
+    <None Include="Resources\StopOff.png" />
+    <None Include="Resources\StopOn.png" />
+    <None Include="Resources\TargetStage-Exist.png" />
+    <None Include="Resources\TargetStage-Exist1.png" />
+    <None Include="Resources\TargetStage-NotExist.png" />
+    <None Include="Resources\TargetStage-NotExist1.png" />
+    <Content Include="Resources\Up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
