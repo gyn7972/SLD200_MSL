@@ -6473,6 +6473,22 @@ namespace QMC.Common.Modules
         #endregion
 
 
+        #region 드라이브 용량 확인
+
+        public double GetDriveSpace( string m_strDrive )
+        {
+            double m_dSpace = 0.0;
+
+            DriveInfo drv = new DriveInfo(m_strDrive);
+            m_dSpace = (double)drv.TotalFreeSpace / 1024.0 / 1024.0 / 1024.0;
+
+            return m_dSpace;
+        }
+
+        #endregion
+
+
+
 
 
 
@@ -11215,6 +11231,18 @@ namespace QMC.Common.Modules
                 NativeMethods.GetPrivateProfileString("Align_Stage", "Movement_Amount_1Deg_Rotation", "1.221668451", temp, 255, strFIle);
                 Config.ParamConfig.Align_Theta_Movement_MM_Per_1Deg = Convert.ToDouble(temp.ToString());
 
+                //  얼라인 이미지 저장 여부
+                NativeMethods.GetPrivateProfileString("Align_Image", "Image_Save_Use", "True", temp, 255, strFIle);
+                Config.ParamConfig.AlignImageSave_Usage = temp.ToString() == "False" ? false : true;
+
+                //  얼라인 이미지 저장 위치 용량 부족 경고 여부 (D 드라이브)
+                NativeMethods.GetPrivateProfileString("Align_Image", "Image_Save_DriveSpace_Warning_Use", "True", temp, 255, strFIle);
+                Config.ParamConfig.AlignImageSaveFolder_FreeSpaceCheck_Usage = temp.ToString() == "False" ? false : true;
+
+                //  얼라인 이미지 저장 위치 용량 부족 경고 기준치 (GB)
+                NativeMethods.GetPrivateProfileString("Align_Image", "Image_Save_DriveSpace_Warning_Value", "10", temp, 255, strFIle);
+                Config.ParamConfig.AlignImageSaveFolder_WarningSpace = Convert.ToDouble(temp.ToString());
+
 
 
                 /// Position 로드
@@ -11483,6 +11511,15 @@ namespace QMC.Common.Modules
 
             //  얼라인 스테이지 - Theta 1˚ 회전을 위한 UVW 각 축 이동량 (mm)
             NativeMethods.WritePrivateProfileString("Align_Stage", "Movement_Amount_1Deg_Rotation", Config.ParamConfig.Align_Theta_Movement_MM_Per_1Deg.ToString(), strFIle);
+
+            //  얼라인 이미지 저장 여부
+            NativeMethods.WritePrivateProfileString("Align_Image", "Image_Save_Use", Config.ParamConfig.AlignImageSave_Usage.ToString(), strFIle);
+
+            //  얼라인 이미지 저장 위치 용량 부족 경고 여부 (D 드라이브)
+            NativeMethods.WritePrivateProfileString("Align_Image", "Image_Save_DriveSpace_Warning_Use", Config.ParamConfig.AlignImageSaveFolder_FreeSpaceCheck_Usage.ToString(), strFIle);
+
+            //  얼라인 이미지 저장 위치 용량 부족 경고 기준치 (GB)
+            NativeMethods.WritePrivateProfileString("Align_Image", "Image_Save_DriveSpace_Warning_Value", Config.ParamConfig.AlignImageSaveFolder_WarningSpace.ToString(), strFIle);
 
 
 

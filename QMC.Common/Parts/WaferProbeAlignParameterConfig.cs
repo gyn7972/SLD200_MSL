@@ -438,6 +438,16 @@ namespace QMC.Common.Parts
             DisplayName("얼라인 이미지 저장 여부")]
         public bool AlignImageSave_Usage { set; get; }
 
+        [Category("[99] 장비 공통 파라미터"),
+            Description("얼라인 시작할 때, D 드라이브 용량을 확인하여 경고메세지를 보일 것인지 여부.\r\n\r\n[얼라인 이미지를 저장하기 위해 여유 공간이 필요함]"),
+            DisplayName("얼라인 이미지 저장 위치 용량 부족 경고 여부 (D 드라이브)")]
+        public bool AlignImageSaveFolder_FreeSpaceCheck_Usage { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("D 드라이브 잔여 용량이 기준값 이하일 경우 경고메세지 출력 (매 얼라인 시작 시 체크)\r\n\r\n[default 0 : 10 GB]"),
+            DisplayName("얼라인 이미지 저장 위치 용량 부족 경고 기준치 (GB)")]
+        public double AlignImageSaveFolder_WarningSpace { set; get; }
+
 
 
         /// <summary>

@@ -2661,6 +2661,24 @@ namespace CWA150SA_Onsemi300
                 return;
             }
 
+            //  이미지 저장소 용량 체크
+            if (waferProbeAlign.Config.ParamConfig.AlignImageSaveFolder_FreeSpaceCheck_Usage)
+            {
+                double m_dSpace = 0.0;
+                double m_dWarningSpace = 0.0;
+                m_dSpace = waferProbeAlign.GetDriveSpace("D");
+
+                m_dWarningSpace = waferProbeAlign.Config.ParamConfig.AlignImageSaveFolder_WarningSpace <= 0 ? 10.0 : waferProbeAlign.Config.ParamConfig.AlignImageSaveFolder_WarningSpace;
+                if (m_dSpace <= m_dWarningSpace)
+                {
+                    string m_strWarningMessage;
+                    m_strWarningMessage = string.Format("D 드라이브 남은 용량이 {0:0.00} GB 이하입니다. \r\n과거 얼라인 이미지 또는 불필요한 데이터를 삭제하여 공간을 확보하십시오.", m_dWarningSpace);
+
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", m_strWarningMessage);
+                }
+            }
+
             if (waferProbeAlign.m_nWaferProbeAlign_MainStep == (int)WaferProbeAlign.WaferProbeAlign_Step.None)
             {
                 var mb = new MessageBoxYesNo();
