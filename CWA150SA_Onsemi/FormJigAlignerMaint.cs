@@ -444,7 +444,7 @@ namespace CWA150SA_Onsemi
             if (result != null && result.Values.Count > 0)
             { //? 스케일값 제대로 넣어줘야함
                 PointD converted = new PointD((result.Values[0].X - this.m_Owner.Camera.Resolution.Width / 2) * ((WaferProbeAlign)this.m_Owner.Owner).Scale.X * (((WaferProbeAlign)this.m_Owner.Owner).Scale.InvertedX ? 1 : -1),
-                                                  (result.Values[0].Y - this.m_Owner.Camera.Resolution.Height / 2) * ((WaferProbeAlign)this.m_Owner.Owner).Scale.Y * (((WaferProbeAlign)this.m_Owner.Owner).Scale.InvertedY ? 1 : -1));
+                                              (result.Values[0].Y - this.m_Owner.Camera.Resolution.Height / 2) * ((WaferProbeAlign)this.m_Owner.Owner).Scale.Y * (((WaferProbeAlign)this.m_Owner.Owner).Scale.InvertedY ? 1 : -1));
                 m_SearchResultControl.UpdataPositionData(result.Values[0].X, result.Values[0].Y, result.Values[0].R);
             }
 

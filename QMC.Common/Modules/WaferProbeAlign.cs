@@ -2034,6 +2034,9 @@ namespace QMC.Common.Modules
                 case (int)WaferProbeAlign_Step.Start:
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "Wafer Align 시작");
 
+                    //  얼라인 시작 시간
+                    Equipment.AlignStart_Time = DateTime.Now.ToString("hh_mm_ss");
+
                     Equipment.MachineStop_byAlarm = false;
 
                     //m_bFindFirstAlignMarkOnly = false;
@@ -6311,6 +6314,26 @@ namespace QMC.Common.Modules
 
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 XY 오차 확인 파트 완료");
 
+                    //  얼라인 이미지 저장
+                    if (Config.ParamConfig.AlignImageSave_Usage)
+                    {
+                        if (m_nWaferProbeAlign_ErrorCheck_Count == 0)                               //  Top
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "TOP 위치 얼라인 이미지 저장");
+                            ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "TOP");
+                        }
+                        else if (m_nWaferProbeAlign_ErrorCheck_Count == 1)                          //  Middle
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "MIDDLE 위치 얼라인 이미지 저장");
+                            ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "MID");
+                        }
+                        else                                                                        //  Bottom
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "BOTTOM 위치 얼라인 이미지 저장");
+                            ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "BOT");
+                        }                        
+                    }
+
                     m_nWaferProbeAlign_ErrorCheck_Count++;
 
                     m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ErrorCheck_Position_Remained_Check;
@@ -6321,6 +6344,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "Wafer Align Error Check 완료");
 
+                    Equipment.AlignStart_Time = null;                               //  이미지 저장할 때 사용했으므로 null 로 초기화. (Align 진행하면 시간이 저장된다.)
                     m_bWaferProbeAlign_ErrorCheck_Complete = true;
 
                     timer_SubWork.Enabled = false;
@@ -6377,7 +6401,76 @@ namespace QMC.Common.Modules
 
 
 
+        #region Align Image Save
 
+        public bool ResultImage_Save( string m_strOperator, string m_strStartTime, string m_strAlignPos )
+        {
+            bool m_bRet = true;
+            string m_strDirectory = null;
+            string m_strRoot = null;
+            string m_strDate = null;
+            string m_strImageFile_Upper = null;
+            string m_strImageFile_Lower = null;
+
+            //  데이터 확인
+            if (m_strOperator == null)                                             //  Align 을 진행하지 않았으면?
+            {
+                m_strOperator = "UnknownOperator";
+            }
+
+            if (m_strStartTime == null)                                             //  Align 을 진행하지 않았으면?
+            {
+                m_strStartTime = "NoAlign";
+            }
+
+
+            //  이미지 저장 경로 (꼭대기)
+            m_strRoot = "D:\\CWA-150SA_AlignImage";
+            DirectoryInfo di = new DirectoryInfo(m_strRoot);
+            if (!di.Exists)                                                         //  없으면 생성
+            {
+                di.Create();
+            }
+
+            //  이미지 저장 경로 (꼭대기 / 날짜)
+            m_strDate = DateTime.Now.ToString("yyyy-MM-dd");
+            m_strDirectory = string.Format("{0}\\{1}", m_strRoot, m_strDate);
+            DirectoryInfo di2 = new DirectoryInfo(m_strDirectory);
+            if (!di2.Exists)                                                         //  없으면 생성
+            {
+                di2.Create();
+            }
+
+            //  이미지 저장 경로 (꼭대기 / 날짜 / 작업자)
+            m_strDirectory = string.Format("{0}\\{1}\\{2}", m_strRoot, m_strDate, m_strOperator);
+            DirectoryInfo di3 = new DirectoryInfo(m_strDirectory);
+            if (!di3.Exists)                                                         //  없으면 생성
+            {
+                di3.Create();
+            }
+
+            //  이미지 저장 경로 (꼭대기 / 날짜 / 작업자 / 작업자_얼라인시작시간_얼라인위치_카메라방향)
+            //  작업자 : 작업자 이름
+            //  얼라인시작시간 : 얼라인 시작 버튼을 눌렀을 때의 시간 (년-월-일)
+            //  얼라인위치 : 얼라인 검사 위치 (TOP, MID, BOT)
+            //  카메라 방향 : ProbeCard or Wafer
+            m_strImageFile_Upper = string.Format("{0}\\{1}\\{2}\\{3}_{4}_{5}_ProbeCard.jpg", m_strRoot, m_strDate, m_strOperator, m_strOperator, m_strStartTime, m_strAlignPos);
+            m_strImageFile_Lower = string.Format("{0}\\{1}\\{2}\\{3}_{4}_{5}_Wafer.jpg", m_strRoot, m_strDate, m_strOperator, m_strOperator, m_strStartTime, m_strAlignPos);
+
+            if (Camera_Upper != null)
+            {
+                Camera_Upper.LatestImage.Save( m_strImageFile_Upper, Vision.VisionImage.FileFilter.jpg) ;
+            }
+
+            if (Camera_Lower != null)
+            {
+                Camera_Lower.LatestImage.Save(m_strImageFile_Lower, Vision.VisionImage.FileFilter.jpg);
+            }
+
+            return m_bRet;
+        }
+
+        #endregion
 
 
 

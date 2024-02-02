@@ -433,6 +433,11 @@ namespace QMC.Common.Parts
             DisplayName("얼라인 - 얼라인 각도 계산 시 Atan 함수 사용")]
         public bool Align_ThetaCalcFunction_Atan { set; get; }
 
+        [Category("[99] 장비 공통 파라미터"),
+            Description("저장 위치 : \"D:\\CWA-150SA_AlignImage\"\r\n웨이퍼 얼라인을 완료하고, 얼라인 오차 검증할 때 저장되는 이미지"),
+            DisplayName("얼라인 이미지 저장 여부")]
+        public bool AlignImageSave_Usage { set; get; }
+
 
 
         /// <summary>

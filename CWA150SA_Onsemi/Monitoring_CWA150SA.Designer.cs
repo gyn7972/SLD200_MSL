@@ -804,6 +804,7 @@ namespace CWA150SA_Onsemi300
             this.baseLabelPosition_Bot.TabIndex = 143;
             this.baseLabelPosition_Bot.Text = "BOT";
             this.baseLabelPosition_Bot.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.baseLabelPosition_Bot.Click += new System.EventHandler(this.baseLabelPosition_Bot_Click);
             // 
             // baseLabelPosition_Mid
             // 
@@ -817,6 +818,7 @@ namespace CWA150SA_Onsemi300
             this.baseLabelPosition_Mid.TabIndex = 143;
             this.baseLabelPosition_Mid.Text = "MID";
             this.baseLabelPosition_Mid.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.baseLabelPosition_Mid.Click += new System.EventHandler(this.baseLabelPosition_Mid_Click);
             // 
             // baseLabelPosition_Top
             // 
@@ -830,6 +832,7 @@ namespace CWA150SA_Onsemi300
             this.baseLabelPosition_Top.TabIndex = 143;
             this.baseLabelPosition_Top.Text = "TOP";
             this.baseLabelPosition_Top.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.baseLabelPosition_Top.Click += new System.EventHandler(this.baseLabelPosition_Top_Click);
             // 
             // baseButton_Y_Pos_GO3
             // 

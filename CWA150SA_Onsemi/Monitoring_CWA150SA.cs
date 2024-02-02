@@ -8207,5 +8207,29 @@ namespace CWA150SA_Onsemi300
 
             waferProbeAlign.Machine_Parameter_Save();
         }
+
+        private void baseLabelPosition_Top_Click(object sender, EventArgs e)
+        {
+            //  테스트 (TOP 이미지 저장)
+
+            Equipment.AlignStart_Time = DateTime.Now.ToString("hh_mm_ss");
+            waferProbeAlign.ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "TOP");
+        }
+
+        private void baseLabelPosition_Mid_Click(object sender, EventArgs e)
+        {
+            //  테스트 (MID 이미지 저장)
+
+            Equipment.AlignStart_Time = DateTime.Now.ToString("hh_mm_ss");
+            waferProbeAlign.ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "MID");
+        }
+
+        private void baseLabelPosition_Bot_Click(object sender, EventArgs e)
+        {
+            //  테스트 (BOT 이미지 저장)
+
+            Equipment.AlignStart_Time = DateTime.Now.ToString("hh_mm_ss");
+            waferProbeAlign.ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "BOT");
+        }
     }
 }

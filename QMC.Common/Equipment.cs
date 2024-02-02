@@ -146,6 +146,10 @@ namespace QMC.Common
         public static string User_Name { set; get; }
 
 
+        //  얼라인 시작할 때 시간
+        public static string AlignStart_Time { set; get; }  
+
+
         //  로그아웃 할 때 메인화면을 보여주도록 하기 위한 Flag
         public static bool User_LogOut_1time {  set; get; }
 
@@ -172,6 +176,7 @@ namespace QMC.Common
 
             User_Mode = null;
             User_Name = null;
+            AlignStart_Time = null;
             User_LogOut_1time = false;
 
             AjinBoard_Opened = false;

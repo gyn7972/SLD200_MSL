@@ -41,6 +41,7 @@ namespace QMC.Common
 
             return builder.ToString();
         }
+
         public static string GetConfigPath()
         {
             StringBuilder builder = new StringBuilder();
