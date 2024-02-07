@@ -149,12 +149,6 @@ namespace CWA150SA_Onsemi300
             this.btnPAK_Leak_Check = new System.Windows.Forms.Button();
             this.pictureBoxProbePackingCheck = new System.Windows.Forms.PictureBox();
             this.lblProbePackingCheck = new CWA150SA_Onsemi300.BaseLabel();
-            this.pictureBoxProbeBWDetect = new System.Windows.Forms.PictureBox();
-            this.baseLabelProbeBWDetect = new CWA150SA_Onsemi300.BaseLabel();
-            this.pictureBoxTopCoverDown = new System.Windows.Forms.PictureBox();
-            this.baseLabelTopCoverDown = new CWA150SA_Onsemi300.BaseLabel();
-            this.pictureBoxTopCoverUp = new System.Windows.Forms.PictureBox();
-            this.baseLabelTopCoverUp = new CWA150SA_Onsemi300.BaseLabel();
             this.pictureBoxWaferVacuumCheck = new System.Windows.Forms.PictureBox();
             this.lblWaferVacuumCheck = new CWA150SA_Onsemi300.BaseLabel();
             this.pictureBoxThinChuckVacuumCheck = new System.Windows.Forms.PictureBox();
@@ -165,8 +159,6 @@ namespace CWA150SA_Onsemi300
             this.baseLabel6 = new CWA150SA_Onsemi300.BaseLabel();
             this.baseLabel5 = new CWA150SA_Onsemi300.BaseLabel();
             this.baseLabel4 = new CWA150SA_Onsemi300.BaseLabel();
-            this.baseButtonTopCoverDown = new CWA150SA_Onsemi300.BaseButton();
-            this.baseButtonTopCoverUp = new CWA150SA_Onsemi300.BaseButton();
             this.baseLabel3 = new CWA150SA_Onsemi300.BaseLabel();
             this.baseLabel2 = new CWA150SA_Onsemi300.BaseLabel();
             this.baseButtonWaferVacuum = new CWA150SA_Onsemi300.BaseButton();
@@ -179,6 +171,30 @@ namespace CWA150SA_Onsemi300
             this.btnRunStatus_Drilling2 = new System.Windows.Forms.Button();
             this.btnRunStatus_Drilling = new System.Windows.Forms.Button();
             this.btnMainWork_Start = new System.Windows.Forms.Button();
+            this.tabControl_ProbeCard_ClampType = new System.Windows.Forms.TabControl();
+            this.tabPage_TypeA = new System.Windows.Forms.TabPage();
+            this.pictureBoxProbeBWDetect = new System.Windows.Forms.PictureBox();
+            this.baseLabelProbeBWDetect = new CWA150SA_Onsemi300.BaseLabel();
+            this.pictureBoxTopCoverDown = new System.Windows.Forms.PictureBox();
+            this.baseLabelTopCoverDown = new CWA150SA_Onsemi300.BaseLabel();
+            this.pictureBoxTopCoverUp = new System.Windows.Forms.PictureBox();
+            this.baseLabelTopCoverUp = new CWA150SA_Onsemi300.BaseLabel();
+            this.baseButtonTopCoverDown = new CWA150SA_Onsemi300.BaseButton();
+            this.baseButtonTopCoverUp = new CWA150SA_Onsemi300.BaseButton();
+            this.tabPage_TypeB = new System.Windows.Forms.TabPage();
+            this.baseButtonProbeClamp_BW = new CWA150SA_Onsemi300.BaseButton();
+            this.baseButtonProbeClamp_FW = new CWA150SA_Onsemi300.BaseButton();
+            this.baseButtonProbeUnpackingCyl_Down = new CWA150SA_Onsemi300.BaseButton();
+            this.pictureBoxProbeRightClamp_FW = new System.Windows.Forms.PictureBox();
+            this.pictureBoxProbeLeftClamp_FW = new System.Windows.Forms.PictureBox();
+            this.pictureBoxProbeRightClamp_BW = new System.Windows.Forms.PictureBox();
+            this.pictureBoxProbeLeftClamp_BW = new System.Windows.Forms.PictureBox();
+            this.pictureBoxProbeUnpackingCyl_Down = new System.Windows.Forms.PictureBox();
+            this.pictureBoxProbeUnpackingCyl_Up = new System.Windows.Forms.PictureBox();
+            this.baseButtonProbeUnpackingCyl_Up = new CWA150SA_Onsemi300.BaseButton();
+            this.baseButtonProbeClamp_Down = new CWA150SA_Onsemi300.BaseButton();
+            this.baseLabel_BW = new CWA150SA_Onsemi300.BaseLabel();
+            this.baseLabel_FW = new CWA150SA_Onsemi300.BaseLabel();
             this.baseGroupBox_ManualButton = new CWA150SA_Onsemi300.BaseGroupBox();
             this.baseButtonProbeUnpacking = new CWA150SA_Onsemi300.BaseButton();
             this.baseButtonProbePacking = new CWA150SA_Onsemi300.BaseButton();
@@ -209,12 +225,21 @@ namespace CWA150SA_Onsemi300
             ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_Upper)).BeginInit();
             this.baseGroupBox_CycleButton.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbePackingCheck)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeBWDetect)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTopCoverDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTopCoverUp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWaferVacuumCheck)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxThinChuckVacuumCheck)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxThinChuckDetect)).BeginInit();
+            this.tabControl_ProbeCard_ClampType.SuspendLayout();
+            this.tabPage_TypeA.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeBWDetect)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTopCoverDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTopCoverUp)).BeginInit();
+            this.tabPage_TypeB.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeRightClamp_FW)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeLeftClamp_FW)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeRightClamp_BW)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeLeftClamp_BW)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeUnpackingCyl_Down)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeUnpackingCyl_Up)).BeginInit();
             this.baseGroupBox_ManualButton.SuspendLayout();
             this.baseGroupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -840,7 +865,7 @@ namespace CWA150SA_Onsemi300
             this.baseButton_Y_Pos_GO3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButton_Y_Pos_GO3.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButton_Y_Pos_GO3.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButton_Y_Pos_GO3.Location = new System.Drawing.Point(89, 204);
+            this.baseButton_Y_Pos_GO3.Location = new System.Drawing.Point(89, 205);
             this.baseButton_Y_Pos_GO3.Name = "baseButton_Y_Pos_GO3";
             this.baseButton_Y_Pos_GO3.Size = new System.Drawing.Size(74, 59);
             this.baseButton_Y_Pos_GO3.TabIndex = 122;
@@ -868,7 +893,7 @@ namespace CWA150SA_Onsemi300
             this.baseButton_Y_Pos_GO1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButton_Y_Pos_GO1.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButton_Y_Pos_GO1.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButton_Y_Pos_GO1.Location = new System.Drawing.Point(89, 72);
+            this.baseButton_Y_Pos_GO1.Location = new System.Drawing.Point(89, 71);
             this.baseButton_Y_Pos_GO1.Name = "baseButton_Y_Pos_GO1";
             this.baseButton_Y_Pos_GO1.Size = new System.Drawing.Size(74, 59);
             this.baseButton_Y_Pos_GO1.TabIndex = 112;
@@ -884,7 +909,7 @@ namespace CWA150SA_Onsemi300
             this.baseLabel18.ForeColor = System.Drawing.Color.Black;
             this.baseLabel18.Location = new System.Drawing.Point(63, 71);
             this.baseLabel18.Name = "baseLabel18";
-            this.baseLabel18.Size = new System.Drawing.Size(23, 192);
+            this.baseLabel18.Size = new System.Drawing.Size(23, 193);
             this.baseLabel18.TabIndex = 109;
             this.baseLabel18.Text = "▲\r\n▲\r\n▲\r\n\r\n\r\n▼\r\n▼\r\n▼";
             this.baseLabel18.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1071,7 +1096,7 @@ namespace CWA150SA_Onsemi300
             this.baseLabelManualPacking3_Title.Name = "baseLabelManualPacking3_Title";
             this.baseLabelManualPacking3_Title.Size = new System.Drawing.Size(149, 30);
             this.baseLabelManualPacking3_Title.TabIndex = 191;
-            this.baseLabelManualPacking3_Title.Text = "[             3 단계             ]";
+            this.baseLabelManualPacking3_Title.Text = "[            3   단계            ]";
             this.baseLabelManualPacking3_Title.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // baseLabelManualPacking2
@@ -1097,7 +1122,7 @@ namespace CWA150SA_Onsemi300
             this.baseLabelManualPacking2_Title.Name = "baseLabelManualPacking2_Title";
             this.baseLabelManualPacking2_Title.Size = new System.Drawing.Size(149, 30);
             this.baseLabelManualPacking2_Title.TabIndex = 187;
-            this.baseLabelManualPacking2_Title.Text = "[             2 단계             ]";
+            this.baseLabelManualPacking2_Title.Text = "[            2   단계            ]";
             this.baseLabelManualPacking2_Title.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // baseLabelManualPacking1_Title
@@ -1110,7 +1135,7 @@ namespace CWA150SA_Onsemi300
             this.baseLabelManualPacking1_Title.Name = "baseLabelManualPacking1_Title";
             this.baseLabelManualPacking1_Title.Size = new System.Drawing.Size(149, 30);
             this.baseLabelManualPacking1_Title.TabIndex = 186;
-            this.baseLabelManualPacking1_Title.Text = "[             1 단계             ]";
+            this.baseLabelManualPacking1_Title.Text = "[            1   단계            ]";
             this.baseLabelManualPacking1_Title.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // baseLabelManualPacking1
@@ -1413,7 +1438,7 @@ namespace CWA150SA_Onsemi300
             this.baseLabelPackingOffsetChange2_Title.Name = "baseLabelPackingOffsetChange2_Title";
             this.baseLabelPackingOffsetChange2_Title.Size = new System.Drawing.Size(140, 30);
             this.baseLabelPackingOffsetChange2_Title.TabIndex = 203;
-            this.baseLabelPackingOffsetChange2_Title.Text = "[            2 단계            ]";
+            this.baseLabelPackingOffsetChange2_Title.Text = "[           2   단계           ]";
             this.baseLabelPackingOffsetChange2_Title.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // baseLabelPackingOffsetChange1_Title
@@ -1426,7 +1451,7 @@ namespace CWA150SA_Onsemi300
             this.baseLabelPackingOffsetChange1_Title.Name = "baseLabelPackingOffsetChange1_Title";
             this.baseLabelPackingOffsetChange1_Title.Size = new System.Drawing.Size(140, 30);
             this.baseLabelPackingOffsetChange1_Title.TabIndex = 202;
-            this.baseLabelPackingOffsetChange1_Title.Text = "[            1 단계            ]";
+            this.baseLabelPackingOffsetChange1_Title.Text = "[           1   단계           ]";
             this.baseLabelPackingOffsetChange1_Title.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // baseLabelPackingOffsetChange1
@@ -1710,7 +1735,7 @@ namespace CWA150SA_Onsemi300
             this.baseLabelReticlePositionChange2_Title.Name = "baseLabelReticlePositionChange2_Title";
             this.baseLabelReticlePositionChange2_Title.Size = new System.Drawing.Size(140, 30);
             this.baseLabelReticlePositionChange2_Title.TabIndex = 227;
-            this.baseLabelReticlePositionChange2_Title.Text = "[            2 단계            ]";
+            this.baseLabelReticlePositionChange2_Title.Text = "[           2   단계           ]";
             this.baseLabelReticlePositionChange2_Title.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // baseLabelReticlePositionChange1_Title
@@ -1723,7 +1748,7 @@ namespace CWA150SA_Onsemi300
             this.baseLabelReticlePositionChange1_Title.Name = "baseLabelReticlePositionChange1_Title";
             this.baseLabelReticlePositionChange1_Title.Size = new System.Drawing.Size(140, 30);
             this.baseLabelReticlePositionChange1_Title.TabIndex = 226;
-            this.baseLabelReticlePositionChange1_Title.Text = "[            1 단계            ]";
+            this.baseLabelReticlePositionChange1_Title.Text = "[           1   단계           ]";
             this.baseLabelReticlePositionChange1_Title.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // baseLabelReticlePositionChange1
@@ -1841,12 +1866,6 @@ namespace CWA150SA_Onsemi300
             this.baseGroupBox_CycleButton.Controls.Add(this.btnPAK_Leak_Check);
             this.baseGroupBox_CycleButton.Controls.Add(this.pictureBoxProbePackingCheck);
             this.baseGroupBox_CycleButton.Controls.Add(this.lblProbePackingCheck);
-            this.baseGroupBox_CycleButton.Controls.Add(this.pictureBoxProbeBWDetect);
-            this.baseGroupBox_CycleButton.Controls.Add(this.baseLabelProbeBWDetect);
-            this.baseGroupBox_CycleButton.Controls.Add(this.pictureBoxTopCoverDown);
-            this.baseGroupBox_CycleButton.Controls.Add(this.baseLabelTopCoverDown);
-            this.baseGroupBox_CycleButton.Controls.Add(this.pictureBoxTopCoverUp);
-            this.baseGroupBox_CycleButton.Controls.Add(this.baseLabelTopCoverUp);
             this.baseGroupBox_CycleButton.Controls.Add(this.pictureBoxWaferVacuumCheck);
             this.baseGroupBox_CycleButton.Controls.Add(this.lblWaferVacuumCheck);
             this.baseGroupBox_CycleButton.Controls.Add(this.pictureBoxThinChuckVacuumCheck);
@@ -1857,8 +1876,6 @@ namespace CWA150SA_Onsemi300
             this.baseGroupBox_CycleButton.Controls.Add(this.baseLabel6);
             this.baseGroupBox_CycleButton.Controls.Add(this.baseLabel5);
             this.baseGroupBox_CycleButton.Controls.Add(this.baseLabel4);
-            this.baseGroupBox_CycleButton.Controls.Add(this.baseButtonTopCoverDown);
-            this.baseGroupBox_CycleButton.Controls.Add(this.baseButtonTopCoverUp);
             this.baseGroupBox_CycleButton.Controls.Add(this.baseLabel3);
             this.baseGroupBox_CycleButton.Controls.Add(this.baseLabel2);
             this.baseGroupBox_CycleButton.Controls.Add(this.baseButtonWaferVacuum);
@@ -1871,6 +1888,7 @@ namespace CWA150SA_Onsemi300
             this.baseGroupBox_CycleButton.Controls.Add(this.btnRunStatus_Drilling2);
             this.baseGroupBox_CycleButton.Controls.Add(this.btnRunStatus_Drilling);
             this.baseGroupBox_CycleButton.Controls.Add(this.btnMainWork_Start);
+            this.baseGroupBox_CycleButton.Controls.Add(this.tabControl_ProbeCard_ClampType);
             this.baseGroupBox_CycleButton.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseGroupBox_CycleButton.ForeColor = System.Drawing.Color.White;
             this.baseGroupBox_CycleButton.Location = new System.Drawing.Point(917, 460);
@@ -1887,7 +1905,7 @@ namespace CWA150SA_Onsemi300
             this.baseLabel21.AutoSize = true;
             this.baseLabel21.Font = new System.Drawing.Font("나눔바른고딕", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel21.ForeColor = System.Drawing.Color.White;
-            this.baseLabel21.Location = new System.Drawing.Point(552, 245);
+            this.baseLabel21.Location = new System.Drawing.Point(565, 245);
             this.baseLabel21.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel21.Name = "baseLabel21";
             this.baseLabel21.Size = new System.Drawing.Size(27, 22);
@@ -1902,7 +1920,7 @@ namespace CWA150SA_Onsemi300
             this.btnPAK_Leak_Check.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.btnPAK_Leak_Check.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btnPAK_Leak_Check.ForeColor = System.Drawing.Color.DarkRed;
-            this.btnPAK_Leak_Check.Location = new System.Drawing.Point(585, 206);
+            this.btnPAK_Leak_Check.Location = new System.Drawing.Point(596, 206);
             this.btnPAK_Leak_Check.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnPAK_Leak_Check.Name = "btnPAK_Leak_Check";
             this.btnPAK_Leak_Check.Size = new System.Drawing.Size(192, 83);
@@ -1933,75 +1951,6 @@ namespace CWA150SA_Onsemi300
             this.lblProbePackingCheck.TabIndex = 151;
             this.lblProbePackingCheck.Text = "프로브 패킹 공압";
             this.lblProbePackingCheck.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // pictureBoxProbeBWDetect
-            // 
-            this.pictureBoxProbeBWDetect.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
-            this.pictureBoxProbeBWDetect.Location = new System.Drawing.Point(257, 171);
-            this.pictureBoxProbeBWDetect.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.pictureBoxProbeBWDetect.Name = "pictureBoxProbeBWDetect";
-            this.pictureBoxProbeBWDetect.Size = new System.Drawing.Size(22, 22);
-            this.pictureBoxProbeBWDetect.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBoxProbeBWDetect.TabIndex = 150;
-            this.pictureBoxProbeBWDetect.TabStop = false;
-            // 
-            // baseLabelProbeBWDetect
-            // 
-            this.baseLabelProbeBWDetect.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.baseLabelProbeBWDetect.ForeColor = System.Drawing.Color.White;
-            this.baseLabelProbeBWDetect.Location = new System.Drawing.Point(282, 167);
-            this.baseLabelProbeBWDetect.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.baseLabelProbeBWDetect.Name = "baseLabelProbeBWDetect";
-            this.baseLabelProbeBWDetect.Size = new System.Drawing.Size(139, 33);
-            this.baseLabelProbeBWDetect.TabIndex = 149;
-            this.baseLabelProbeBWDetect.Text = "프로브 카드 트레이 감지";
-            this.baseLabelProbeBWDetect.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // pictureBoxTopCoverDown
-            // 
-            this.pictureBoxTopCoverDown.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
-            this.pictureBoxTopCoverDown.Location = new System.Drawing.Point(257, 260);
-            this.pictureBoxTopCoverDown.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.pictureBoxTopCoverDown.Name = "pictureBoxTopCoverDown";
-            this.pictureBoxTopCoverDown.Size = new System.Drawing.Size(22, 22);
-            this.pictureBoxTopCoverDown.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBoxTopCoverDown.TabIndex = 148;
-            this.pictureBoxTopCoverDown.TabStop = false;
-            // 
-            // baseLabelTopCoverDown
-            // 
-            this.baseLabelTopCoverDown.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.baseLabelTopCoverDown.ForeColor = System.Drawing.Color.White;
-            this.baseLabelTopCoverDown.Location = new System.Drawing.Point(282, 256);
-            this.baseLabelTopCoverDown.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.baseLabelTopCoverDown.Name = "baseLabelTopCoverDown";
-            this.baseLabelTopCoverDown.Size = new System.Drawing.Size(127, 33);
-            this.baseLabelTopCoverDown.TabIndex = 147;
-            this.baseLabelTopCoverDown.Text = "프로브 카드 커버 하강";
-            this.baseLabelTopCoverDown.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // pictureBoxTopCoverUp
-            // 
-            this.pictureBoxTopCoverUp.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
-            this.pictureBoxTopCoverUp.Location = new System.Drawing.Point(257, 232);
-            this.pictureBoxTopCoverUp.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.pictureBoxTopCoverUp.Name = "pictureBoxTopCoverUp";
-            this.pictureBoxTopCoverUp.Size = new System.Drawing.Size(22, 22);
-            this.pictureBoxTopCoverUp.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBoxTopCoverUp.TabIndex = 146;
-            this.pictureBoxTopCoverUp.TabStop = false;
-            // 
-            // baseLabelTopCoverUp
-            // 
-            this.baseLabelTopCoverUp.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.baseLabelTopCoverUp.ForeColor = System.Drawing.Color.White;
-            this.baseLabelTopCoverUp.Location = new System.Drawing.Point(282, 228);
-            this.baseLabelTopCoverUp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.baseLabelTopCoverUp.Name = "baseLabelTopCoverUp";
-            this.baseLabelTopCoverUp.Size = new System.Drawing.Size(127, 33);
-            this.baseLabelTopCoverUp.TabIndex = 145;
-            this.baseLabelTopCoverUp.Text = "프로브 카드 커버 상승";
-            this.baseLabelTopCoverUp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // pictureBoxWaferVacuumCheck
             // 
@@ -2122,36 +2071,6 @@ namespace CWA150SA_Onsemi300
             this.baseLabel4.Text = "패킹";
             this.baseLabel4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // baseButtonTopCoverDown
-            // 
-            this.baseButtonTopCoverDown.BackColor = System.Drawing.Color.LightGray;
-            this.baseButtonTopCoverDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.baseButtonTopCoverDown.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.baseButtonTopCoverDown.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButtonTopCoverDown.Location = new System.Drawing.Point(424, 226);
-            this.baseButtonTopCoverDown.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.baseButtonTopCoverDown.Name = "baseButtonTopCoverDown";
-            this.baseButtonTopCoverDown.Size = new System.Drawing.Size(116, 63);
-            this.baseButtonTopCoverDown.TabIndex = 134;
-            this.baseButtonTopCoverDown.Text = "프로브 카드\r\n커버 내림";
-            this.baseButtonTopCoverDown.UseVisualStyleBackColor = false;
-            this.baseButtonTopCoverDown.Click += new System.EventHandler(this.baseButtonTopCoverDown_Click);
-            // 
-            // baseButtonTopCoverUp
-            // 
-            this.baseButtonTopCoverUp.BackColor = System.Drawing.Color.LightGray;
-            this.baseButtonTopCoverUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.baseButtonTopCoverUp.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.baseButtonTopCoverUp.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButtonTopCoverUp.Location = new System.Drawing.Point(424, 160);
-            this.baseButtonTopCoverUp.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.baseButtonTopCoverUp.Name = "baseButtonTopCoverUp";
-            this.baseButtonTopCoverUp.Size = new System.Drawing.Size(116, 63);
-            this.baseButtonTopCoverUp.TabIndex = 133;
-            this.baseButtonTopCoverUp.Text = "프로브 카드\r\n커버 올림";
-            this.baseButtonTopCoverUp.UseVisualStyleBackColor = false;
-            this.baseButtonTopCoverUp.Click += new System.EventHandler(this.baseButtonTopCoverUp_Click);
-            // 
             // baseLabel3
             // 
             this.baseLabel3.BackColor = System.Drawing.Color.Black;
@@ -2247,14 +2166,14 @@ namespace CWA150SA_Onsemi300
             this.btnProbeCardLocking.FlatAppearance.BorderColor = System.Drawing.SystemColors.ButtonShadow;
             this.btnProbeCardLocking.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.btnProbeCardLocking.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
-            this.btnProbeCardLocking.Font = new System.Drawing.Font("나눔바른고딕", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btnProbeCardLocking.Font = new System.Drawing.Font("나눔바른고딕", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btnProbeCardLocking.ForeColor = System.Drawing.Color.DarkRed;
             this.btnProbeCardLocking.Location = new System.Drawing.Point(408, 49);
             this.btnProbeCardLocking.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnProbeCardLocking.Name = "btnProbeCardLocking";
-            this.btnProbeCardLocking.Size = new System.Drawing.Size(149, 95);
+            this.btnProbeCardLocking.Size = new System.Drawing.Size(149, 65);
             this.btnProbeCardLocking.TabIndex = 65;
-            this.btnProbeCardLocking.Text = "프로브  카드\r\n고정 작업\r\n시작";
+            this.btnProbeCardLocking.Text = "프로브  카드\r\n고정 작업 시작";
             this.btnProbeCardLocking.UseVisualStyleBackColor = false;
             this.btnProbeCardLocking.Click += new System.EventHandler(this.btnProbeCardLocking_Click);
             // 
@@ -2264,14 +2183,14 @@ namespace CWA150SA_Onsemi300
             this.btnProbeCardLoadingReady.FlatAppearance.BorderColor = System.Drawing.SystemColors.ButtonShadow;
             this.btnProbeCardLoadingReady.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.btnProbeCardLoadingReady.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
-            this.btnProbeCardLoadingReady.Font = new System.Drawing.Font("나눔바른고딕", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btnProbeCardLoadingReady.Font = new System.Drawing.Font("나눔바른고딕", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btnProbeCardLoadingReady.ForeColor = System.Drawing.Color.DarkRed;
             this.btnProbeCardLoadingReady.Location = new System.Drawing.Point(254, 49);
             this.btnProbeCardLoadingReady.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnProbeCardLoadingReady.Name = "btnProbeCardLoadingReady";
-            this.btnProbeCardLoadingReady.Size = new System.Drawing.Size(149, 95);
+            this.btnProbeCardLoadingReady.Size = new System.Drawing.Size(149, 65);
             this.btnProbeCardLoadingReady.TabIndex = 65;
-            this.btnProbeCardLoadingReady.Text = "프로브  카드\r\n투입 위치로\r\n이동";
+            this.btnProbeCardLoadingReady.Text = "프로브  카드\r\n투입 위치로 이동";
             this.btnProbeCardLoadingReady.UseVisualStyleBackColor = false;
             this.btnProbeCardLoadingReady.Click += new System.EventHandler(this.btnProbeCardLoadingReady_Click);
             // 
@@ -2330,6 +2249,325 @@ namespace CWA150SA_Onsemi300
             this.btnMainWork_Start.Text = "[ 프로브 카드\r\n-  웨이퍼 ]\r\n\r\n얼라인 시작";
             this.btnMainWork_Start.UseVisualStyleBackColor = false;
             this.btnMainWork_Start.Click += new System.EventHandler(this.btnMainWork_Start_Click_1);
+            // 
+            // tabControl_ProbeCard_ClampType
+            // 
+            this.tabControl_ProbeCard_ClampType.Controls.Add(this.tabPage_TypeA);
+            this.tabControl_ProbeCard_ClampType.Controls.Add(this.tabPage_TypeB);
+            this.tabControl_ProbeCard_ClampType.Font = new System.Drawing.Font("나눔바른고딕", 8.999999F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.tabControl_ProbeCard_ClampType.ItemSize = new System.Drawing.Size(52, 20);
+            this.tabControl_ProbeCard_ClampType.Location = new System.Drawing.Point(254, 128);
+            this.tabControl_ProbeCard_ClampType.Name = "tabControl_ProbeCard_ClampType";
+            this.tabControl_ProbeCard_ClampType.SelectedIndex = 0;
+            this.tabControl_ProbeCard_ClampType.Size = new System.Drawing.Size(303, 161);
+            this.tabControl_ProbeCard_ClampType.TabIndex = 190;
+            // 
+            // tabPage_TypeA
+            // 
+            this.tabPage_TypeA.BackColor = System.Drawing.Color.Cornsilk;
+            this.tabPage_TypeA.Controls.Add(this.pictureBoxProbeBWDetect);
+            this.tabPage_TypeA.Controls.Add(this.baseLabelProbeBWDetect);
+            this.tabPage_TypeA.Controls.Add(this.pictureBoxTopCoverDown);
+            this.tabPage_TypeA.Controls.Add(this.baseLabelTopCoverDown);
+            this.tabPage_TypeA.Controls.Add(this.pictureBoxTopCoverUp);
+            this.tabPage_TypeA.Controls.Add(this.baseLabelTopCoverUp);
+            this.tabPage_TypeA.Controls.Add(this.baseButtonTopCoverDown);
+            this.tabPage_TypeA.Controls.Add(this.baseButtonTopCoverUp);
+            this.tabPage_TypeA.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.tabPage_TypeA.Location = new System.Drawing.Point(4, 24);
+            this.tabPage_TypeA.Name = "tabPage_TypeA";
+            this.tabPage_TypeA.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_TypeA.Size = new System.Drawing.Size(295, 133);
+            this.tabPage_TypeA.TabIndex = 0;
+            this.tabPage_TypeA.Text = "    Type - A  ";
+            // 
+            // pictureBoxProbeBWDetect
+            // 
+            this.pictureBoxProbeBWDetect.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+            this.pictureBoxProbeBWDetect.Location = new System.Drawing.Point(3, 9);
+            this.pictureBoxProbeBWDetect.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.pictureBoxProbeBWDetect.Name = "pictureBoxProbeBWDetect";
+            this.pictureBoxProbeBWDetect.Size = new System.Drawing.Size(22, 22);
+            this.pictureBoxProbeBWDetect.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxProbeBWDetect.TabIndex = 158;
+            this.pictureBoxProbeBWDetect.TabStop = false;
+            // 
+            // baseLabelProbeBWDetect
+            // 
+            this.baseLabelProbeBWDetect.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseLabelProbeBWDetect.ForeColor = System.Drawing.Color.Black;
+            this.baseLabelProbeBWDetect.Location = new System.Drawing.Point(28, 5);
+            this.baseLabelProbeBWDetect.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.baseLabelProbeBWDetect.Name = "baseLabelProbeBWDetect";
+            this.baseLabelProbeBWDetect.Size = new System.Drawing.Size(139, 33);
+            this.baseLabelProbeBWDetect.TabIndex = 157;
+            this.baseLabelProbeBWDetect.Text = "프로브 카드 트레이 감지";
+            this.baseLabelProbeBWDetect.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // pictureBoxTopCoverDown
+            // 
+            this.pictureBoxTopCoverDown.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+            this.pictureBoxTopCoverDown.Location = new System.Drawing.Point(3, 100);
+            this.pictureBoxTopCoverDown.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.pictureBoxTopCoverDown.Name = "pictureBoxTopCoverDown";
+            this.pictureBoxTopCoverDown.Size = new System.Drawing.Size(22, 22);
+            this.pictureBoxTopCoverDown.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxTopCoverDown.TabIndex = 156;
+            this.pictureBoxTopCoverDown.TabStop = false;
+            // 
+            // baseLabelTopCoverDown
+            // 
+            this.baseLabelTopCoverDown.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseLabelTopCoverDown.ForeColor = System.Drawing.Color.Black;
+            this.baseLabelTopCoverDown.Location = new System.Drawing.Point(28, 96);
+            this.baseLabelTopCoverDown.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.baseLabelTopCoverDown.Name = "baseLabelTopCoverDown";
+            this.baseLabelTopCoverDown.Size = new System.Drawing.Size(127, 33);
+            this.baseLabelTopCoverDown.TabIndex = 155;
+            this.baseLabelTopCoverDown.Text = "프로브 카드 커버 하강";
+            this.baseLabelTopCoverDown.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // pictureBoxTopCoverUp
+            // 
+            this.pictureBoxTopCoverUp.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+            this.pictureBoxTopCoverUp.Location = new System.Drawing.Point(3, 72);
+            this.pictureBoxTopCoverUp.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.pictureBoxTopCoverUp.Name = "pictureBoxTopCoverUp";
+            this.pictureBoxTopCoverUp.Size = new System.Drawing.Size(22, 22);
+            this.pictureBoxTopCoverUp.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxTopCoverUp.TabIndex = 154;
+            this.pictureBoxTopCoverUp.TabStop = false;
+            // 
+            // baseLabelTopCoverUp
+            // 
+            this.baseLabelTopCoverUp.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseLabelTopCoverUp.ForeColor = System.Drawing.Color.Black;
+            this.baseLabelTopCoverUp.Location = new System.Drawing.Point(28, 68);
+            this.baseLabelTopCoverUp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.baseLabelTopCoverUp.Name = "baseLabelTopCoverUp";
+            this.baseLabelTopCoverUp.Size = new System.Drawing.Size(127, 33);
+            this.baseLabelTopCoverUp.TabIndex = 153;
+            this.baseLabelTopCoverUp.Text = "프로브 카드 커버 상승";
+            this.baseLabelTopCoverUp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // baseButtonTopCoverDown
+            // 
+            this.baseButtonTopCoverDown.BackColor = System.Drawing.Color.LightGray;
+            this.baseButtonTopCoverDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.baseButtonTopCoverDown.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseButtonTopCoverDown.ForeColor = System.Drawing.Color.DarkRed;
+            this.baseButtonTopCoverDown.Location = new System.Drawing.Point(178, 70);
+            this.baseButtonTopCoverDown.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.baseButtonTopCoverDown.Name = "baseButtonTopCoverDown";
+            this.baseButtonTopCoverDown.Size = new System.Drawing.Size(114, 60);
+            this.baseButtonTopCoverDown.TabIndex = 152;
+            this.baseButtonTopCoverDown.Text = "프로브 카드\r\n고정 커버 내림";
+            this.baseButtonTopCoverDown.UseVisualStyleBackColor = false;
+            this.baseButtonTopCoverDown.Click += new System.EventHandler(this.baseButtonTopCoverDown_Click);
+            // 
+            // baseButtonTopCoverUp
+            // 
+            this.baseButtonTopCoverUp.BackColor = System.Drawing.Color.LightGray;
+            this.baseButtonTopCoverUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.baseButtonTopCoverUp.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseButtonTopCoverUp.ForeColor = System.Drawing.Color.DarkRed;
+            this.baseButtonTopCoverUp.Location = new System.Drawing.Point(178, 6);
+            this.baseButtonTopCoverUp.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.baseButtonTopCoverUp.Name = "baseButtonTopCoverUp";
+            this.baseButtonTopCoverUp.Size = new System.Drawing.Size(114, 60);
+            this.baseButtonTopCoverUp.TabIndex = 151;
+            this.baseButtonTopCoverUp.Text = "프로브 카드\r\n고정 커버 올림";
+            this.baseButtonTopCoverUp.UseVisualStyleBackColor = false;
+            this.baseButtonTopCoverUp.Click += new System.EventHandler(this.baseButtonTopCoverUp_Click);
+            // 
+            // tabPage_TypeB
+            // 
+            this.tabPage_TypeB.BackColor = System.Drawing.Color.Cornsilk;
+            this.tabPage_TypeB.Controls.Add(this.baseButtonProbeClamp_BW);
+            this.tabPage_TypeB.Controls.Add(this.baseButtonProbeClamp_FW);
+            this.tabPage_TypeB.Controls.Add(this.baseButtonProbeUnpackingCyl_Down);
+            this.tabPage_TypeB.Controls.Add(this.pictureBoxProbeRightClamp_FW);
+            this.tabPage_TypeB.Controls.Add(this.pictureBoxProbeLeftClamp_FW);
+            this.tabPage_TypeB.Controls.Add(this.pictureBoxProbeRightClamp_BW);
+            this.tabPage_TypeB.Controls.Add(this.pictureBoxProbeLeftClamp_BW);
+            this.tabPage_TypeB.Controls.Add(this.pictureBoxProbeUnpackingCyl_Down);
+            this.tabPage_TypeB.Controls.Add(this.pictureBoxProbeUnpackingCyl_Up);
+            this.tabPage_TypeB.Controls.Add(this.baseButtonProbeUnpackingCyl_Up);
+            this.tabPage_TypeB.Controls.Add(this.baseButtonProbeClamp_Down);
+            this.tabPage_TypeB.Controls.Add(this.baseLabel_BW);
+            this.tabPage_TypeB.Controls.Add(this.baseLabel_FW);
+            this.tabPage_TypeB.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.tabPage_TypeB.Location = new System.Drawing.Point(4, 24);
+            this.tabPage_TypeB.Name = "tabPage_TypeB";
+            this.tabPage_TypeB.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_TypeB.Size = new System.Drawing.Size(295, 133);
+            this.tabPage_TypeB.TabIndex = 1;
+            this.tabPage_TypeB.Text = "    Type - B    ";
+            // 
+            // baseButtonProbeClamp_BW
+            // 
+            this.baseButtonProbeClamp_BW.BackColor = System.Drawing.Color.LightGray;
+            this.baseButtonProbeClamp_BW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.baseButtonProbeClamp_BW.Font = new System.Drawing.Font("나눔바른고딕", 8.999999F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseButtonProbeClamp_BW.ForeColor = System.Drawing.Color.DarkRed;
+            this.baseButtonProbeClamp_BW.Location = new System.Drawing.Point(80, 92);
+            this.baseButtonProbeClamp_BW.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.baseButtonProbeClamp_BW.Name = "baseButtonProbeClamp_BW";
+            this.baseButtonProbeClamp_BW.Size = new System.Drawing.Size(65, 38);
+            this.baseButtonProbeClamp_BW.TabIndex = 173;
+            this.baseButtonProbeClamp_BW.Text = "클램프\r\n열기";
+            this.baseButtonProbeClamp_BW.UseVisualStyleBackColor = false;
+            this.baseButtonProbeClamp_BW.Click += new System.EventHandler(this.baseButtonProbeClamp_BW_Click);
+            // 
+            // baseButtonProbeClamp_FW
+            // 
+            this.baseButtonProbeClamp_FW.BackColor = System.Drawing.Color.LightGray;
+            this.baseButtonProbeClamp_FW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.baseButtonProbeClamp_FW.Font = new System.Drawing.Font("나눔바른고딕", 8.999999F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseButtonProbeClamp_FW.ForeColor = System.Drawing.Color.DarkRed;
+            this.baseButtonProbeClamp_FW.Location = new System.Drawing.Point(12, 92);
+            this.baseButtonProbeClamp_FW.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.baseButtonProbeClamp_FW.Name = "baseButtonProbeClamp_FW";
+            this.baseButtonProbeClamp_FW.Size = new System.Drawing.Size(65, 38);
+            this.baseButtonProbeClamp_FW.TabIndex = 172;
+            this.baseButtonProbeClamp_FW.Text = "클램프\r\n닫기";
+            this.baseButtonProbeClamp_FW.UseVisualStyleBackColor = false;
+            this.baseButtonProbeClamp_FW.Click += new System.EventHandler(this.baseButtonProbeClamp_FW_Click);
+            // 
+            // baseButtonProbeUnpackingCyl_Down
+            // 
+            this.baseButtonProbeUnpackingCyl_Down.BackColor = System.Drawing.Color.LightGray;
+            this.baseButtonProbeUnpackingCyl_Down.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.baseButtonProbeUnpackingCyl_Down.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseButtonProbeUnpackingCyl_Down.ForeColor = System.Drawing.Color.DarkRed;
+            this.baseButtonProbeUnpackingCyl_Down.Location = new System.Drawing.Point(200, 70);
+            this.baseButtonProbeUnpackingCyl_Down.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.baseButtonProbeUnpackingCyl_Down.Name = "baseButtonProbeUnpackingCyl_Down";
+            this.baseButtonProbeUnpackingCyl_Down.Size = new System.Drawing.Size(92, 60);
+            this.baseButtonProbeUnpackingCyl_Down.TabIndex = 171;
+            this.baseButtonProbeUnpackingCyl_Down.Text = "프로브 카드\r\n언패킹 실린더\r\n내림";
+            this.baseButtonProbeUnpackingCyl_Down.UseVisualStyleBackColor = false;
+            this.baseButtonProbeUnpackingCyl_Down.Click += new System.EventHandler(this.baseButtonProbeUnpackingCyl_Down_Click);
+            // 
+            // pictureBoxProbeRightClamp_FW
+            // 
+            this.pictureBoxProbeRightClamp_FW.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+            this.pictureBoxProbeRightClamp_FW.Location = new System.Drawing.Point(108, 68);
+            this.pictureBoxProbeRightClamp_FW.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.pictureBoxProbeRightClamp_FW.Name = "pictureBoxProbeRightClamp_FW";
+            this.pictureBoxProbeRightClamp_FW.Size = new System.Drawing.Size(22, 22);
+            this.pictureBoxProbeRightClamp_FW.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxProbeRightClamp_FW.TabIndex = 170;
+            this.pictureBoxProbeRightClamp_FW.TabStop = false;
+            // 
+            // pictureBoxProbeLeftClamp_FW
+            // 
+            this.pictureBoxProbeLeftClamp_FW.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+            this.pictureBoxProbeLeftClamp_FW.Location = new System.Drawing.Point(27, 68);
+            this.pictureBoxProbeLeftClamp_FW.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.pictureBoxProbeLeftClamp_FW.Name = "pictureBoxProbeLeftClamp_FW";
+            this.pictureBoxProbeLeftClamp_FW.Size = new System.Drawing.Size(22, 22);
+            this.pictureBoxProbeLeftClamp_FW.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxProbeLeftClamp_FW.TabIndex = 169;
+            this.pictureBoxProbeLeftClamp_FW.TabStop = false;
+            // 
+            // pictureBoxProbeRightClamp_BW
+            // 
+            this.pictureBoxProbeRightClamp_BW.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+            this.pictureBoxProbeRightClamp_BW.Location = new System.Drawing.Point(131, 68);
+            this.pictureBoxProbeRightClamp_BW.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.pictureBoxProbeRightClamp_BW.Name = "pictureBoxProbeRightClamp_BW";
+            this.pictureBoxProbeRightClamp_BW.Size = new System.Drawing.Size(22, 22);
+            this.pictureBoxProbeRightClamp_BW.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxProbeRightClamp_BW.TabIndex = 168;
+            this.pictureBoxProbeRightClamp_BW.TabStop = false;
+            // 
+            // pictureBoxProbeLeftClamp_BW
+            // 
+            this.pictureBoxProbeLeftClamp_BW.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+            this.pictureBoxProbeLeftClamp_BW.Location = new System.Drawing.Point(4, 68);
+            this.pictureBoxProbeLeftClamp_BW.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.pictureBoxProbeLeftClamp_BW.Name = "pictureBoxProbeLeftClamp_BW";
+            this.pictureBoxProbeLeftClamp_BW.Size = new System.Drawing.Size(22, 22);
+            this.pictureBoxProbeLeftClamp_BW.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxProbeLeftClamp_BW.TabIndex = 166;
+            this.pictureBoxProbeLeftClamp_BW.TabStop = false;
+            // 
+            // pictureBoxProbeUnpackingCyl_Down
+            // 
+            this.pictureBoxProbeUnpackingCyl_Down.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+            this.pictureBoxProbeUnpackingCyl_Down.Location = new System.Drawing.Point(177, 108);
+            this.pictureBoxProbeUnpackingCyl_Down.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.pictureBoxProbeUnpackingCyl_Down.Name = "pictureBoxProbeUnpackingCyl_Down";
+            this.pictureBoxProbeUnpackingCyl_Down.Size = new System.Drawing.Size(22, 22);
+            this.pictureBoxProbeUnpackingCyl_Down.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxProbeUnpackingCyl_Down.TabIndex = 164;
+            this.pictureBoxProbeUnpackingCyl_Down.TabStop = false;
+            // 
+            // pictureBoxProbeUnpackingCyl_Up
+            // 
+            this.pictureBoxProbeUnpackingCyl_Up.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+            this.pictureBoxProbeUnpackingCyl_Up.Location = new System.Drawing.Point(177, 6);
+            this.pictureBoxProbeUnpackingCyl_Up.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.pictureBoxProbeUnpackingCyl_Up.Name = "pictureBoxProbeUnpackingCyl_Up";
+            this.pictureBoxProbeUnpackingCyl_Up.Size = new System.Drawing.Size(22, 22);
+            this.pictureBoxProbeUnpackingCyl_Up.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxProbeUnpackingCyl_Up.TabIndex = 162;
+            this.pictureBoxProbeUnpackingCyl_Up.TabStop = false;
+            // 
+            // baseButtonProbeUnpackingCyl_Up
+            // 
+            this.baseButtonProbeUnpackingCyl_Up.BackColor = System.Drawing.Color.LightGray;
+            this.baseButtonProbeUnpackingCyl_Up.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.baseButtonProbeUnpackingCyl_Up.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseButtonProbeUnpackingCyl_Up.ForeColor = System.Drawing.Color.DarkRed;
+            this.baseButtonProbeUnpackingCyl_Up.Location = new System.Drawing.Point(200, 6);
+            this.baseButtonProbeUnpackingCyl_Up.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.baseButtonProbeUnpackingCyl_Up.Name = "baseButtonProbeUnpackingCyl_Up";
+            this.baseButtonProbeUnpackingCyl_Up.Size = new System.Drawing.Size(92, 60);
+            this.baseButtonProbeUnpackingCyl_Up.TabIndex = 160;
+            this.baseButtonProbeUnpackingCyl_Up.Text = "프로브 카드\r\n언패킹 실린더\r\n올림";
+            this.baseButtonProbeUnpackingCyl_Up.UseVisualStyleBackColor = false;
+            this.baseButtonProbeUnpackingCyl_Up.Click += new System.EventHandler(this.baseButtonProbeUnpackingCyl_Up_Click);
+            // 
+            // baseButtonProbeClamp_Down
+            // 
+            this.baseButtonProbeClamp_Down.BackColor = System.Drawing.Color.LightGray;
+            this.baseButtonProbeClamp_Down.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.baseButtonProbeClamp_Down.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseButtonProbeClamp_Down.ForeColor = System.Drawing.Color.DarkRed;
+            this.baseButtonProbeClamp_Down.Location = new System.Drawing.Point(12, 6);
+            this.baseButtonProbeClamp_Down.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.baseButtonProbeClamp_Down.Name = "baseButtonProbeClamp_Down";
+            this.baseButtonProbeClamp_Down.Size = new System.Drawing.Size(133, 41);
+            this.baseButtonProbeClamp_Down.TabIndex = 159;
+            this.baseButtonProbeClamp_Down.Text = "프로브 카드 클램프\r\n내림    [Off: 올림]";
+            this.baseButtonProbeClamp_Down.UseVisualStyleBackColor = false;
+            this.baseButtonProbeClamp_Down.Click += new System.EventHandler(this.baseButtonProbeClamp_Down_Click);
+            // 
+            // baseLabel_BW
+            // 
+            this.baseLabel_BW.Font = new System.Drawing.Font("나눔바른고딕", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseLabel_BW.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_BW.Location = new System.Drawing.Point(2, 50);
+            this.baseLabel_BW.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.baseLabel_BW.Name = "baseLabel_BW";
+            this.baseLabel_BW.Size = new System.Drawing.Size(155, 19);
+            this.baseLabel_BW.TabIndex = 167;
+            this.baseLabel_BW.Text = "┏─── Open ───┓";
+            this.baseLabel_BW.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // baseLabel_FW
+            // 
+            this.baseLabel_FW.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseLabel_FW.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_FW.Location = new System.Drawing.Point(48, 71);
+            this.baseLabel_FW.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.baseLabel_FW.Name = "baseLabel_FW";
+            this.baseLabel_FW.Size = new System.Drawing.Size(64, 19);
+            this.baseLabel_FW.TabIndex = 165;
+            this.baseLabel_FW.Text = "- Close -";
+            this.baseLabel_FW.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // baseGroupBox_ManualButton
             // 
@@ -2582,12 +2820,21 @@ namespace CWA150SA_Onsemi300
             this.baseGroupBox_CycleButton.ResumeLayout(false);
             this.baseGroupBox_CycleButton.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbePackingCheck)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeBWDetect)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTopCoverDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTopCoverUp)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWaferVacuumCheck)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxThinChuckVacuumCheck)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxThinChuckDetect)).EndInit();
+            this.tabControl_ProbeCard_ClampType.ResumeLayout(false);
+            this.tabPage_TypeA.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeBWDetect)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTopCoverDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTopCoverUp)).EndInit();
+            this.tabPage_TypeB.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeRightClamp_FW)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeLeftClamp_FW)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeRightClamp_BW)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeLeftClamp_BW)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeUnpackingCyl_Down)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeUnpackingCyl_Up)).EndInit();
             this.baseGroupBox_ManualButton.ResumeLayout(false);
             this.baseGroupBox1.ResumeLayout(false);
             this.baseGroupBox1.PerformLayout();
@@ -2643,8 +2890,6 @@ namespace CWA150SA_Onsemi300
         private BaseButton baseButtonWaferVacuum;
         private BaseButton baseButtonThinChuckVacuum;
         private BaseLabel baseLabel2;
-        private BaseButton baseButtonTopCoverDown;
-        private BaseButton baseButtonTopCoverUp;
         private BaseLabel baseLabel3;
         private BaseLabel baseLabel4;
         private BaseLabel baseLabel7;
@@ -2689,12 +2934,6 @@ namespace CWA150SA_Onsemi300
         private BaseLabel lblThinChuckVacuumCheck;
         private System.Windows.Forms.PictureBox pictureBoxThinChuckDetect;
         private BaseLabel baseLabelThinChuckDetect;
-        private System.Windows.Forms.PictureBox pictureBoxProbeBWDetect;
-        private BaseLabel baseLabelProbeBWDetect;
-        private System.Windows.Forms.PictureBox pictureBoxTopCoverDown;
-        private BaseLabel baseLabelTopCoverDown;
-        private System.Windows.Forms.PictureBox pictureBoxTopCoverUp;
-        private BaseLabel baseLabelTopCoverUp;
         private System.Windows.Forms.PictureBox pictureBoxProbePackingCheck;
         private BaseLabel lblProbePackingCheck;
         private System.Windows.Forms.TabControl tabControl_User;
@@ -2758,5 +2997,29 @@ namespace CWA150SA_Onsemi300
         private BaseLabel baseLabelReticlePositionChange1_Title;
         private BaseLabel baseLabelReticlePositionChange1;
         private System.Windows.Forms.Button baseButton_ReticleGlass_Pos_Get;
+        private System.Windows.Forms.TabControl tabControl_ProbeCard_ClampType;
+        private System.Windows.Forms.TabPage tabPage_TypeA;
+        private System.Windows.Forms.TabPage tabPage_TypeB;
+        private System.Windows.Forms.PictureBox pictureBoxProbeBWDetect;
+        private BaseLabel baseLabelProbeBWDetect;
+        private System.Windows.Forms.PictureBox pictureBoxTopCoverDown;
+        private BaseLabel baseLabelTopCoverDown;
+        private System.Windows.Forms.PictureBox pictureBoxTopCoverUp;
+        private BaseLabel baseLabelTopCoverUp;
+        private BaseButton baseButtonTopCoverDown;
+        private BaseButton baseButtonTopCoverUp;
+        private System.Windows.Forms.PictureBox pictureBoxProbeLeftClamp_BW;
+        private BaseLabel baseLabel_FW;
+        private System.Windows.Forms.PictureBox pictureBoxProbeUnpackingCyl_Down;
+        private System.Windows.Forms.PictureBox pictureBoxProbeUnpackingCyl_Up;
+        private BaseButton baseButtonProbeUnpackingCyl_Up;
+        private BaseButton baseButtonProbeClamp_Down;
+        private BaseLabel baseLabel_BW;
+        private System.Windows.Forms.PictureBox pictureBoxProbeRightClamp_FW;
+        private System.Windows.Forms.PictureBox pictureBoxProbeLeftClamp_FW;
+        private System.Windows.Forms.PictureBox pictureBoxProbeRightClamp_BW;
+        private BaseButton baseButtonProbeUnpackingCyl_Down;
+        private BaseButton baseButtonProbeClamp_FW;
+        private BaseButton baseButtonProbeClamp_BW;
     }
 }

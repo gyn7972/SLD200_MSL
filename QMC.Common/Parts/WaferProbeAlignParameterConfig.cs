@@ -448,6 +448,11 @@ namespace QMC.Common.Parts
             DisplayName("얼라인 이미지 저장 위치 용량 부족 경고 기준치 (GB)")]
         public double AlignImageSaveFolder_WarningSpace { set; get; }
 
+        [Category("[99] 장비 공통 파라미터"),
+            Description("Type-A : 트레이에 프로브 카드를 넣고 서랍처럼 로딩(언로딩), 업다운 실린더로 고정\r\nType-B : 프로브 카드 정위치에 직접 투입, 좌우 && 업다운 실린더로 고정, 언패킹 실린더 있음\r\n[Type-A: #1 호기,  Type-B: #2 ~ #6 호기]"),
+            DisplayName("프로브 카드 클램프 타입 [0: Type-A,  1: Type-B]")]
+        public int ProbeCard_ClampType { set; get; }
+
 
 
         /// <summary>

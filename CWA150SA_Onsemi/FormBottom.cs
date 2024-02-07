@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using QMC.Common.Parts;
 using static CWA150SA_Onsemi300.Monitoring_CWA150SA;
+using System.Linq.Expressions;
 
 namespace CWA150SA_Onsemi300
 {
@@ -119,6 +120,7 @@ namespace CWA150SA_Onsemi300
             this.buttonLogOut.Visible = false;
             this.buttonLogOut.Enabled = false;
             this.buttonLogOut.TextAlign = ContentAlignment.BottomCenter;
+
             #endregion
 
             m_Timer = new Timer();
@@ -514,6 +516,66 @@ namespace CWA150SA_Onsemi300
 
                 CommonModule.Instance.OperationButtons.Start(false);
                 CommonModule.Instance.OperationButtons.Stop(true);
+            }
+
+
+            //  실내 조명 상태
+            if (CommonModule.Instance.TowerLamp.IsLamp0())
+            {
+                if (button_Lamp0.BackColor != Color.GreenYellow)
+                {
+                    button_Lamp0.BackColor = Color.GreenYellow;
+                }
+            }
+            else
+            {
+                if (button_Lamp0.BackColor != Color.LightGray)
+                {
+                    button_Lamp0.BackColor = Color.LightGray;
+                }
+            }
+
+            if (CommonModule.Instance.TowerLamp.IsLamp1())
+            {
+                if (button_Lamp1.BackColor != Color.GreenYellow)
+                {
+                    button_Lamp1.BackColor = Color.GreenYellow;
+                }
+            }
+            else
+            {
+                if (button_Lamp1.BackColor != Color.LightGray)
+                {
+                    button_Lamp1.BackColor = Color.LightGray;
+                }
+            }
+        }
+
+        private void button_Lamp1_Click(object sender, EventArgs e)
+        {
+            //  실내조명 1 켜기
+
+            if (CommonModule.Instance.TowerLamp.IsLamp0())
+            {
+                CommonModule.Instance.TowerLamp.Lamp0_Off();
+            }
+            else
+            {
+                CommonModule.Instance.TowerLamp.Lamp0_On();
+            }
+        }
+
+        private void button_Lamp2_Click(object sender, EventArgs e)
+        {
+            //  실내조명 2 켜기
+
+            if (CommonModule.Instance.TowerLamp.IsLamp1())
+            {
+                CommonModule.Instance.TowerLamp.Lamp1_Off();
+            }
+            else
+            {
+                CommonModule.Instance.TowerLamp.Lamp1_On();
             }
         }
     }

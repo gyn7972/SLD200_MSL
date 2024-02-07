@@ -280,7 +280,23 @@ namespace CWA150SA_Onsemi300
                 {
                     lblPackAirLineCheck_Before_AlignStart.BackColor = Color.Gray;
                 }
-            }            
+            }
+
+            //  프로브 카드 클램프 타입
+            if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A)
+            {
+                if (lbl_MachineType.Text != "Type - A")
+                {
+                    lbl_MachineType.Text = "Type - A";
+                }
+            }
+            else if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_B)
+            {
+                if (lbl_MachineType.Text != "Type - B")
+                {
+                    lbl_MachineType.Text = "Type - B";
+                }
+            }
 
 
             if (Equipment.User_Mode != null)

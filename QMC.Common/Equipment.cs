@@ -153,6 +153,11 @@ namespace QMC.Common
         //  로그아웃 할 때 메인화면을 보여주도록 하기 위한 Flag
         public static bool User_LogOut_1time {  set; get; }
 
+
+        //  프로브 카드 클램프 타입 (1호기 or 2~6호기)
+        public static int ProbeCard_ClampType { set; get; }
+
+
         public static SiriusViewerForm EqpSiriusViewer { set; get; }
         public static bool m_bAlignVisionThread_1time { set; get; }
 
@@ -171,6 +176,8 @@ namespace QMC.Common
             AlignErrorCheck_AutoStart_Mode = false;
             PackingOffset_Use = false;
             Pak_AirLineCheck_Use = false;
+
+            ProbeCard_ClampType = 0;                    //  0: 1호기,     1: 2~6호기
 
             Vision_SpiralMove_Use = true;
 

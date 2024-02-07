@@ -66,6 +66,12 @@ namespace QMC.Common.Modules
             Cam_Lower,
         }
 
+        public enum nProbeClampType
+        {
+            Type_A = 0,                         //  1호기
+            Type_B,                             //  2 ~ 6호기
+        }
+
         public enum nAlignErrorCheckPos
         {
             Pos_Top = 0,
@@ -899,11 +905,25 @@ namespace QMC.Common.Modules
             None = 0,
             Start,                                              //  시작
 
-            PAK_Check_Condition_Check,                          //  PAK Check 조건 확인 (Probe Card Exist)
 
-            Top_Cover_Down,                                     //  Top Cover Down
-            Top_Cover_Down_Check,                               //  Top Cover Down Check
-            
+            _MachineType_Check,                                 //  Machine Type 확인
+
+
+            _MachineType_A_Start,                               //  Type A 시작
+
+                PAK_Check_Condition_Check,                          //  PAK Check 조건 확인 (Probe Card Exist)
+
+                Top_Cover_Down,                                     //  Top Cover Down
+                Top_Cover_Down_Check,                               //  Top Cover Down Check    
+
+            _MachineType_A_Complete,                            //  Type A 완료
+
+
+            _MachineType_B_Start,                               //  Type B 시작
+
+            _MachineType_B_Complete,                            //  Type B 완료
+
+
             Packing_Signal_On,                                  //  Packing Signal On
             Packing_Signal_On_StableTime,                       //  Packing Signal On 후 확인 시간
 
@@ -943,8 +963,34 @@ namespace QMC.Common.Modules
             UVW_Move_WaferLoadingPos,                           //  UVW 축, Wafer Loading 위치로 이동
             UVW_Move_WaferLoadingPos_DoneCheck,                 //  UVW 축, Wafer Loading 위치로 이동 완료 확인
 
-            Top_Cover_Up,                                       //  Top Cover Up
-            Top_Cover_Up_Check,                                 //  Top Cover Up Check
+
+            _MachineType_Check,                                 //  Machine Type 확인
+
+
+            _MachineType_A_Start,                               //  Type A 시작
+
+                Top_Cover_Up,                                       //  Top Cover Up
+                Top_Cover_Up_Check,                                 //  Top Cover Up Check
+
+            _MachineType_A_Complete,                            //  Type A 완료
+
+
+            _MachineType_B_Start,                               //  Type B 시작
+
+                ProbeCard_UnpackingSignal_Off,                      //  프로브 카드 패킹, 언패킹 신호 Off
+                ProbeCard_UnpackingSignal_Off_Check,                //  프로브 카드 패킹, 언패킹 신호 Off 확인
+
+                ProbeCard_UnpackingCyl_Up,                          //  프로브 카드 언패킹 실린더 Up 
+                ProbeCard_UnpackingCyl_Up_Check,                    //  프로브 카드 언패킹 실린더 Up 확인
+
+                ProbeCard_Clamp_Up,                                 //  프로브 카드 클램프 Up 
+                ProbeCard_Clamp_Up_Check,                           //  프로브 카드 클램프 Up 확인
+
+                ProbeCard_Clamp_BW,                                 //  프로브 카드 클램프 BW 
+                ProbeCard_Clamp_BW_Check,                           //  프로브 카드 클램프 BW 확인
+
+            _MachineType_B_Complete,                            //  Type B 완료
+
 
             Complete                                            //  완료
         }
@@ -960,8 +1006,34 @@ namespace QMC.Common.Modules
             Unpacking_Signal_Off,                               //  Unpacking Signal Off
             Unpacking_Signal_Off_Check,                         //  Unpacking Signal Off 확인
 
-            Top_Cover_Up,                                       //  Top Cover Up
-            Top_Cover_Up_Check,                                 //  Top Cover Up Check
+
+            _MachineType_Check,                                 //  Machine Type 확인
+
+
+            _MachineType_A_Start,                               //  Type A 시작
+
+                Top_Cover_Up,                                       //  Top Cover Up
+                Top_Cover_Up_Check,                                 //  Top Cover Up Check
+
+            _MachineType_A_Complete,                            //  Type A 완료
+
+
+            _MachineType_B_Start,                               //  Type B 시작
+
+                ProbeCard_UnpackingSignal_Off,                      //  프로브 카드 패킹, 언패킹 신호 Off
+                ProbeCard_UnpackingSignal_Off_Check,                //  프로브 카드 패킹, 언패킹 신호 Off 확인
+
+                ProbeCard_UnpackingCyl_Up,                          //  프로브 카드 언패킹 실린더 Up 
+                ProbeCard_UnpackingCyl_Up_Check,                    //  프로브 카드 언패킹 실린더 Up 확인
+
+                ProbeCard_Clamp_Up,                                 //  프로브 카드 클램프 Up 
+                ProbeCard_Clamp_Up_Check,                           //  프로브 카드 클램프 Up 확인
+
+                ProbeCard_Clamp_BW,                                 //  프로브 카드 클램프 BW 
+                ProbeCard_Clamp_BW_Check,                           //  프로브 카드 클램프 BW 확인
+
+            _MachineType_B_Complete,                            //  Type B 완료
+
 
             VisionXYZ_Move_ReadyPos,                            //  Vision XYZ 축, 대기 위치로 이동
             VisionXYZ_Move_ReadyPos_DoneCheck,                  //  Vision XYZ 축, 대기 위치로 이동 완료 확인
@@ -983,8 +1055,40 @@ namespace QMC.Common.Modules
 
             Unpacking_Condition_Check,                          //  Unpacking 조건 확인 (Thin Chuck Exist, Probe Card Exist)
 
-            Top_Cover_Down,                                     //  Top Cover Down
-            Top_Cover_Down_Check,                               //  Top Cover Down Check
+
+            _MachineType_Check,                                 //  Machine Type 확인
+
+
+            _MachineType_A_Start,                               //  Type A 시작
+
+                Top_Cover_Down,                                     //  Top Cover Down
+                Top_Cover_Down_Check,                               //  Top Cover Down Check
+
+            _MachineType_A_Complete,                            //  Type A 완료
+
+
+            _MachineType_B_Start,                               //  Type B 시작
+
+                ProbeCard_UnpackingSignal_Off,                      //  프로브 카드 패킹, 언패킹 신호 Off
+                ProbeCard_UnpackingSignal_Off_Check,                //  프로브 카드 패킹, 언패킹 신호 Off 확인
+
+                ProbeCard_UnpackingCyl_Up,                          //  프로브 카드 언패킹 실린더 Up 
+                ProbeCard_UnpackingCyl_Up_Check,                    //  프로브 카드 언패킹 실린더 Up 확인
+
+                ProbeCard_Clamp_Up,                                 //  프로브 카드 클램프 Up 
+                ProbeCard_Clamp_Up_Check,                           //  프로브 카드 클램프 Up 확인
+
+                ProbeCard_Clamp_FW,                                 //  프로브 카드 클램프 FW 
+                ProbeCard_Clamp_FW_Check,                           //  프로브 카드 클램프 FW 확인
+
+                ProbeCard_Clamp_Down,                               //  프로브 카드 클램프 Down 
+                ProbeCard_Clamp_Down_Check,                         //  프로브 카드 클램프 Down 확인
+
+                ProbeCard_UnpackingCyl_Down,                        //  프로브 카드 언패킹 실린더 Down 
+                ProbeCard_UnpackingCyl_Down_Check,                  //  프로브 카드 언패킹 실린더 Down 확인
+
+            _MachineType_B_Complete,                            //  Type B 완료
+
 
             VisionXYZ_Move_ReadyPos,                            //  Vision XYZ 축, 대기 위치로 이동
             VisionXYZ_Move_ReadyPos_DoneCheck,                  //  Vision XYZ 축, 대기 위치로 이동 완료 확인
@@ -1023,10 +1127,39 @@ namespace QMC.Common.Modules
             None = 0,
             Start,                                              //  시작
 
-            ProbeCard_Detect,                                   //  ProbeCard 확인
 
-            TopCover_Down,                                      //  Top Cover Down 
-            TopCover_Down_Check,                                //  Top Cover Down 완료 확인
+            _MachineType_Check,                                 //  Machine Type 확인
+
+
+            _MachineType_A_Start,                               //  Type A 시작
+
+                ProbeCard_Detect,                                   //  ProbeCard 확인
+
+                TopCover_Down,                                      //  Top Cover Down 
+                TopCover_Down_Check,                                //  Top Cover Down 완료 확인
+
+            _MachineType_A_Complete,                            //  Type A 완료
+
+
+            _MachineType_B_Start,                               //  Type B 시작
+
+                ProbeCard_UnpackingSignal_Off,                      //  프로브 카드 패킹, 언패킹 신호 Off
+                ProbeCard_UnpackingSignal_Off_Check,                //  프로브 카드 패킹, 언패킹 신호 Off 확인
+
+                ProbeCard_UnpackingCyl_Up,                          //  프로브 카드 언패킹 실린더 Up 
+                ProbeCard_UnpackingCyl_Up_Check,                    //  프로브 카드 언패킹 실린더 Up 확인
+
+                ProbeCard_Clamp_Up,                                 //  프로브 카드 클램프 Up 
+                ProbeCard_Clamp_Up_Check,                           //  프로브 카드 클램프 Up 확인
+
+                ProbeCard_Clamp_FW,                                 //  프로브 카드 클램프 FW 
+                ProbeCard_Clamp_FW_Check,                           //  프로브 카드 클램프 FW 확인
+
+                ProbeCard_Clamp_Down,                               //  프로브 카드 클램프 Down 
+                ProbeCard_Clamp_Down_Check,                         //  프로브 카드 클램프 Down 확인
+
+            _MachineType_B_Complete,                            //  Type B 완료
+
 
             Complete                                            //  완료
         }
@@ -1088,8 +1221,34 @@ namespace QMC.Common.Modules
             UVW_Move_WaferLoadingPos,                           //  UVW 축, Wafer Loading 위치로 이동
             UVW_Move_WaferLoadingPos_DoneCheck,                 //  UVW 축, Wafer Loading 위치로 이동 완료 확인
 
-            Top_Cover_Up,                                       //  Top Cover Up
-            Top_Cover_Up_Check,                                 //  Top Cover Up Check
+
+            _MachineType_Check,                                 //  Machine Type 확인
+
+
+            _MachineType_A_Start,                               //  Type A 시작
+
+                Top_Cover_Up,                                       //  Top Cover Up
+                Top_Cover_Up_Check,                                 //  Top Cover Up Check
+
+            _MachineType_A_Complete,                            //  Type A 완료
+
+
+            _MachineType_B_Start,                               //  Type B 시작
+
+                ProbeCard_UnpackingSignal_Off,                      //  프로브 카드 패킹, 언패킹 신호 Off
+                ProbeCard_UnpackingSignal_Off_Check,                //  프로브 카드 패킹, 언패킹 신호 Off 확인
+
+                ProbeCard_UnpackingCyl_Up,                          //  프로브 카드 언패킹 실린더 Up 
+                ProbeCard_UnpackingCyl_Up_Check,                    //  프로브 카드 언패킹 실린더 Up 확인
+
+                ProbeCard_Clamp_Up,                                 //  프로브 카드 클램프 Up 
+                ProbeCard_Clamp_Up_Check,                           //  프로브 카드 클램프 Up 확인
+
+                ProbeCard_Clamp_BW,                                 //  프로브 카드 클램프 BW 
+                ProbeCard_Clamp_BW_Check,                           //  프로브 카드 클램프 BW 확인
+
+            _MachineType_B_Complete,                            //  Type B 완료
+
 
             Complete                                            //  완료
         }
@@ -8069,6 +8228,32 @@ namespace QMC.Common.Modules
                     m_bPAK_AirLineCheck_Complete = false;
                     m_bPAK_AirLineCheck_OK = true;
 
+                    m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step._MachineType_Check;
+                    break;
+
+
+                case (int)PAK_AirLine_Check_Step._MachineType_Check:                                    //  Machine Type 확인
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "PAK Air-Line Check", "Machine Type 확인");
+
+                    if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A)
+                    {
+                        m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step._MachineType_A_Start;
+                    }
+                    else if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_B)
+                    {
+                        m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step._MachineType_B_Start;
+                    }
+                    break;
+
+
+                //////////////////////////////////////////////////////////////////
+                //  Type-A 시작
+                ///
+                case (int)PAK_AirLine_Check_Step._MachineType_A_Start:                                    //  Type A 시작
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "PAK Air-Line Check", "Machine Type A 시작");
+
                     m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step.PAK_Check_Condition_Check;
                     break;
 
@@ -8095,7 +8280,7 @@ namespace QMC.Common.Modules
                     else
                     {
                         //m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step.Top_Cover_Down;
-                        m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step.Packing_Signal_On;
+                        m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step._MachineType_A_Complete;
                     }                    
                     break;
 
@@ -8138,6 +8323,42 @@ namespace QMC.Common.Modules
                         m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step.None;
                     }
                     break;
+
+
+                case (int)PAK_AirLine_Check_Step._MachineType_A_Complete:                                    //  Type A 완료
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "PAK Air-Line Check", "Machine Type A 완료");
+
+                    m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step.Packing_Signal_On;
+                    break;
+                ///
+                //  Type-A 완료
+                //////////////////////////////////////////////////////////////////
+
+
+                //////////////////////////////////////////////////////////////////
+                //  Type-B 시작
+                ///
+                case (int)PAK_AirLine_Check_Step._MachineType_B_Start:                                    //  Type B 시작
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "PAK Air-Line Check", "Machine Type B 시작");
+
+                    m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step._MachineType_B_Complete;                                       
+                    break;
+
+
+                //  B 타입 장비 (#2 ~ #6 호기) 는 클램핑 동작 없이 바로 Packing Signal 체크 한다.
+
+
+                case (int)PAK_AirLine_Check_Step._MachineType_B_Complete:                                    //  Type B 완료
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "PAK Air-Line Check", "Machine Type B 완료");
+
+                    m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step.Packing_Signal_On;
+                    break;
+                ///
+                //  Type-B 완료
+                //////////////////////////////////////////////////////////////////
 
 
                 case (int)PAK_AirLine_Check_Step.Packing_Signal_On:                                        //  Packing Signal On
@@ -8642,7 +8863,8 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "UVW Stage, 웨이퍼 로딩 위치로 이동 완료");
 
-                        m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.Top_Cover_Up;
+                        //m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.Top_Cover_Up;
+                        m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step._MachineType_Check;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
                     {
@@ -8657,6 +8879,32 @@ namespace QMC.Common.Modules
 
                         m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
                     }
+                    break;
+
+
+                case (int)ProbeCard_Loading_Ready_Step._MachineType_Check:                                    //  Machine Type 확인
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "Machine Type 확인");
+
+                    if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A)
+                    {
+                        m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step._MachineType_A_Start;
+                    }
+                    else if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_B)
+                    {
+                        m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step._MachineType_B_Start;
+                    }
+                    break;
+
+
+                //////////////////////////////////////////////////////////////////
+                //  Type-A 시작
+                ///
+                case (int)ProbeCard_Loading_Ready_Step._MachineType_A_Start:                                    //  Type A 시작
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "Machine Type A 시작");
+
+                    m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.Top_Cover_Up;
                     break;
 
 
@@ -8679,7 +8927,7 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "UVW Stage, 상부 커버 Up 완료");
 
-                        m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.Complete;
+                        m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step._MachineType_A_Complete;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
                     {
@@ -8695,6 +8943,187 @@ namespace QMC.Common.Modules
                         m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
                     }
                     break;
+
+
+                case (int)ProbeCard_Loading_Ready_Step._MachineType_A_Complete:                                    //  Type A 완료
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "Machine Type A 완료");
+
+                    m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.Complete;
+                    break;
+                ///
+                //  Type-A 완료
+                //////////////////////////////////////////////////////////////////
+
+
+                //////////////////////////////////////////////////////////////////
+                //  Type-B 시작
+                ///
+                case (int)ProbeCard_Loading_Ready_Step._MachineType_B_Start:                                    //  Type B 시작
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "Machine Type B 시작");
+
+                    m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.ProbeCard_UnpackingSignal_Off;                                       
+                    break;
+
+
+                case (int)ProbeCard_Loading_Ready_Step.ProbeCard_UnpackingSignal_Off:                                     //  프로브 카드 패킹, 언패킹 신호 Off
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "프로브 카드 패킹, 언패킹 신호 Off");
+
+                    waferProbeAlignParameter.DO_Probe_Packing(false);
+                    waferProbeAlignParameter.DO_Probe_UnPacking(false);
+
+                    TickCount_Start((int)TickType.TICK_SUB);
+
+                    m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.ProbeCard_UnpackingSignal_Off_Check;
+                    break;
+
+
+                case (int)ProbeCard_Loading_Ready_Step.ProbeCard_UnpackingSignal_Off_Check:                               //  프로브 카드 패킹, 언패킹 신호 Off 확인
+
+                    if (!waferProbeAlignParameter.IsDO_Probe_Packing() && !waferProbeAlignParameter.IsDO_Probe_Unpacking())
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "프로브 카드 패킹, 언패킹 신호 Off 완료");
+
+                        m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.ProbeCard_UnpackingCyl_Up;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "프로브 카드 패킹, 언패킹 신호 Off 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_SubWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 패킹, 언패킹 신호 Off 실패. (Time Out)", "Error");
+
+                        m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
+                    }
+                    break;
+
+
+                case (int)ProbeCard_Loading_Ready_Step.ProbeCard_UnpackingCyl_Up:                                     //  프로브 카드 언패킹 실린더 Up
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "프로브 카드 언패킹 실린더 Up");
+
+                    waferProbeAlignParameter.DO_Probe_UnpackingCyl_Up(true);
+                    waferProbeAlignParameter.DO_Probe_UnpackingCyl_Down(false);
+
+                    TickCount_Start((int)TickType.TICK_SUB);
+
+                    m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.ProbeCard_UnpackingCyl_Up_Check;
+                    break;
+
+
+                case (int)ProbeCard_Loading_Ready_Step.ProbeCard_UnpackingCyl_Up_Check:                               //  프로브 카드 언패킹 실린더 Up 확인
+
+                    if (waferProbeAlignParameter.DI_Probe_UnpackingCyl_Up() && !waferProbeAlignParameter.DI_Probe_UnpackingCyl_Down())
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "프로브 카드 언패킹 실린더 Up 완료");
+
+                        m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.ProbeCard_Clamp_Up;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "프로브 카드 언패킹 실린더 Up 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_SubWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 언패킹 실린더 Up 실패. (Time Out)", "Error");
+
+                        m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
+                    }
+                    break;
+
+
+                case (int)ProbeCard_Loading_Ready_Step.ProbeCard_Clamp_Up:                                     //  프로브 카드 클램프 Up
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "프로브 카드 클램프 Up");
+
+                    waferProbeAlignParameter.DO_ProbeClampModule_Down(false);
+
+                    TickCount_Start((int)TickType.TICK_SUB);
+
+                    m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.ProbeCard_Clamp_Up_Check;
+                    break;
+
+
+                case (int)ProbeCard_Loading_Ready_Step.ProbeCard_Clamp_Up_Check:                               //  프로브 카드 클램프 Up 확인
+
+                    if (!waferProbeAlignParameter.IsDO_Probe_ClampModule_Down() && (TickCount_Elapsed((int)TickType.TICK_SUB) >= 1000))
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "프로브 카드 클램프 Up 완료");
+
+                        m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.ProbeCard_Clamp_BW;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "프로브 카드 클램프 Up 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_SubWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 클램프 Up 실패. (Time Out)", "Error");
+
+                        m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
+                    }
+                    break;
+
+
+                case (int)ProbeCard_Loading_Ready_Step.ProbeCard_Clamp_BW:                                     //  프로브 카드 클램프 BW
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "프로브 카드 클램프 BW");
+
+                    waferProbeAlignParameter.DO_ProbeClampModule_BW(true);
+                    waferProbeAlignParameter.DO_ProbeClampModule_FW(false);
+
+                    TickCount_Start((int)TickType.TICK_SUB);
+
+                    m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.ProbeCard_Clamp_BW_Check;
+                    break;
+
+
+                case (int)ProbeCard_Loading_Ready_Step.ProbeCard_Clamp_BW_Check:                               //  프로브 카드 클램프 BW 확인
+
+                    if (!waferProbeAlignParameter.DI_Probe_LeftClampModule_FW() && waferProbeAlignParameter.DI_Probe_LeftClampModule_BW() &&
+                        !waferProbeAlignParameter.DI_Probe_RightClampModule_FW() && waferProbeAlignParameter.DI_Probe_RightClampModule_BW() )
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "프로브 카드 클램프 BW 완료");
+
+                        m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step._MachineType_B_Complete;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "프로브 카드 클램프 BW 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_SubWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 클램프 BW 실패. (Time Out)", "Error");
+
+                        m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
+                    }
+                    break;
+
+
+                case (int)ProbeCard_Loading_Ready_Step._MachineType_B_Complete:                                    //  Type B 완료
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "Machine Type B 완료");
+
+                    m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.Complete;
+                    break;
+                ///
+                //  Type-B 완료
+                //////////////////////////////////////////////////////////////////
 
 
                 case (int)ProbeCard_Loading_Ready_Step.Complete:
@@ -8780,7 +9209,8 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "언패킹 신호 Off 완료");
 
-                        m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.Top_Cover_Up;
+                        //m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.Top_Cover_Up;
+                        m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step._MachineType_Check;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
                     {
@@ -8795,6 +9225,32 @@ namespace QMC.Common.Modules
 
                         m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
                     }
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Ready_Step._MachineType_Check:                                    //  Machine Type 확인
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "Machine Type 확인");
+
+                    if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A)
+                    {
+                        m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step._MachineType_A_Start;
+                    }
+                    else if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_B)
+                    {
+                        m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step._MachineType_B_Start;
+                    }
+                    break;
+
+
+                //////////////////////////////////////////////////////////////////
+                //  Type-A 시작
+                ///
+                case (int)WaferProbeCard_Unpacking_Ready_Step._MachineType_A_Start:                                    //  Type A 시작
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "Machine Type A 시작");
+
+                    m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.Top_Cover_Up;
                     break;
 
 
@@ -8817,7 +9273,7 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "상부 커버 Up 완료");
 
-                        m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.VisionXYZ_Move_ReadyPos;
+                        m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step._MachineType_A_Complete;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
                     {
@@ -8833,6 +9289,187 @@ namespace QMC.Common.Modules
                         m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
                     }
                     break;
+
+
+                case (int)WaferProbeCard_Unpacking_Ready_Step._MachineType_A_Complete:                                    //  Type A 완료
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "Machine Type A 완료");
+
+                    m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.VisionXYZ_Move_ReadyPos;
+                    break;
+                ///
+                //  Type-A 완료
+                //////////////////////////////////////////////////////////////////
+
+
+                //////////////////////////////////////////////////////////////////
+                //  Type-B 시작
+                ///
+                case (int)WaferProbeCard_Unpacking_Ready_Step._MachineType_B_Start:                                    //  Type B 시작
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "Machine Type B 시작");
+
+                    m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.ProbeCard_UnpackingSignal_Off;                                       
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Ready_Step.ProbeCard_UnpackingSignal_Off:                                     //  프로브 카드 패킹, 언패킹 신호 Off
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "프로브 카드 패킹, 언패킹 신호 Off");
+
+                    waferProbeAlignParameter.DO_Probe_Packing(false);
+                    waferProbeAlignParameter.DO_Probe_UnPacking(false);
+
+                    TickCount_Start((int)TickType.TICK_SUB);
+
+                    m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.ProbeCard_UnpackingSignal_Off_Check;
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Ready_Step.ProbeCard_UnpackingSignal_Off_Check:                               //  프로브 카드 패킹, 언패킹 신호 Off 확인
+
+                    if (!waferProbeAlignParameter.IsDO_Probe_Packing() && !waferProbeAlignParameter.IsDO_Probe_Unpacking())
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "프로브 카드 패킹, 언패킹 신호 Off 완료");
+
+                        m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.ProbeCard_UnpackingCyl_Up;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "프로브 카드 패킹, 언패킹 신호 Off 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_SubWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 패킹, 언패킹 신호 Off 실패. (Time Out)", "Error");
+
+                        m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
+                    }
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Ready_Step.ProbeCard_UnpackingCyl_Up:                                     //  프로브 카드 언패킹 실린더 Up
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "프로브 카드 언패킹 실린더 Up");
+
+                    waferProbeAlignParameter.DO_Probe_UnpackingCyl_Up(true);
+                    waferProbeAlignParameter.DO_Probe_UnpackingCyl_Down(false);
+
+                    TickCount_Start((int)TickType.TICK_SUB);
+
+                    m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.ProbeCard_UnpackingCyl_Up_Check;
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Ready_Step.ProbeCard_UnpackingCyl_Up_Check:                               //  프로브 카드 언패킹 실린더 Up 확인
+
+                    if (waferProbeAlignParameter.DI_Probe_UnpackingCyl_Up() && !waferProbeAlignParameter.DI_Probe_UnpackingCyl_Down())
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "프로브 카드 언패킹 실린더 Up 완료");
+
+                        m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.ProbeCard_Clamp_Up;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "프로브 카드 언패킹 실린더 Up 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_SubWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 언패킹 실린더 Up 실패. (Time Out)", "Error");
+
+                        m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
+                    }
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Ready_Step.ProbeCard_Clamp_Up:                                     //  프로브 카드 클램프 Up
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "프로브 카드 클램프 Up");
+
+                    waferProbeAlignParameter.DO_ProbeClampModule_Down(false);
+
+                    TickCount_Start((int)TickType.TICK_SUB);
+
+                    m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.ProbeCard_Clamp_Up_Check;
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Ready_Step.ProbeCard_Clamp_Up_Check:                               //  프로브 카드 클램프 Up 확인
+
+                    if (!waferProbeAlignParameter.IsDO_Probe_ClampModule_Down() && (TickCount_Elapsed((int)TickType.TICK_SUB) >= 1000))
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "프로브 카드 클램프 Up 완료");
+
+                        m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.ProbeCard_Clamp_BW;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "프로브 카드 클램프 Up 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_SubWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 클램프 Up 실패. (Time Out)", "Error");
+
+                        m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
+                    }
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Ready_Step.ProbeCard_Clamp_BW:                                     //  프로브 카드 클램프 BW
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "프로브 카드 클램프 BW");
+
+                    waferProbeAlignParameter.DO_ProbeClampModule_BW(true);
+                    waferProbeAlignParameter.DO_ProbeClampModule_FW(false);
+
+                    TickCount_Start((int)TickType.TICK_SUB);
+
+                    m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.ProbeCard_Clamp_BW_Check;
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Ready_Step.ProbeCard_Clamp_BW_Check:                               //  프로브 카드 클램프 BW 확인
+
+                    if (!waferProbeAlignParameter.DI_Probe_LeftClampModule_FW() && waferProbeAlignParameter.DI_Probe_LeftClampModule_BW() &&
+                        !waferProbeAlignParameter.DI_Probe_RightClampModule_FW() && waferProbeAlignParameter.DI_Probe_RightClampModule_BW())
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "프로브 카드 클램프 BW 완료");
+
+                        m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step._MachineType_B_Complete;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "프로브 카드 클램프 BW 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_SubWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 클램프 BW 실패. (Time Out)", "Error");
+
+                        m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
+                    }
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Ready_Step._MachineType_B_Complete:                                    //  Type B 완료
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Unpacking Ready Func", "Machine Type B 완료");
+
+                    m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.VisionXYZ_Move_ReadyPos;
+                    break;
+                ///
+                //  Type-B 완료
+                //////////////////////////////////////////////////////////////////
 
 
                 case (int)WaferProbeCard_Unpacking_Ready_Step.VisionXYZ_Move_ReadyPos:                                      //  Vision XYZ 축, 대기 위치로 이동
@@ -9084,6 +9721,32 @@ namespace QMC.Common.Modules
                     break;
 
 
+                case (int)ProbeCard_Locking_Step._MachineType_Check:                                    //  Machine Type 확인
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "Machine Type 확인");
+
+                    if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A)
+                    {
+                        m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step._MachineType_A_Start;
+                    }
+                    else if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_B)
+                    {
+                        m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step._MachineType_B_Start;
+                    }
+                    break;
+
+
+                //////////////////////////////////////////////////////////////////
+                //  Type-A 시작
+                ///
+                case (int)ProbeCard_Locking_Step._MachineType_A_Start:                                    //  Type A 시작
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "Machine Type A 시작");
+
+                    m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.ProbeCard_Detect;
+                    break;
+
+
                 case (int)ProbeCard_Locking_Step.ProbeCard_Detect:              //  ProbeCard 확인
 
                     if (!waferProbeAlignParameter.DI_Probe_BW_Detect())
@@ -9125,7 +9788,7 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "상부 커버 Down 완료");
 
-                        m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.Complete;
+                        m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step._MachineType_A_Complete;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
                     {
@@ -9141,6 +9804,223 @@ namespace QMC.Common.Modules
                         m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
                     }
                     break;
+
+
+                case (int)ProbeCard_Locking_Step._MachineType_A_Complete:                                    //  Type A 완료
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "Machine Type A 완료");
+
+                    m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.Complete;
+                    break;
+                ///
+                //  Type-A 완료
+                //////////////////////////////////////////////////////////////////
+
+
+                //////////////////////////////////////////////////////////////////
+                //  Type-B 시작
+                ///
+                case (int)ProbeCard_Locking_Step._MachineType_B_Start:                                    //  Type B 시작
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "Machine Type B 시작");
+
+                    m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.ProbeCard_UnpackingSignal_Off;
+                    break;
+
+
+                case (int)ProbeCard_Locking_Step.ProbeCard_UnpackingSignal_Off:                                     //  프로브 카드 패킹, 언패킹 신호 Off
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "프로브 카드 패킹, 언패킹 신호 Off");
+
+                    waferProbeAlignParameter.DO_Probe_Packing(false);
+                    waferProbeAlignParameter.DO_Probe_UnPacking(false);
+
+                    TickCount_Start((int)TickType.TICK_SUB);
+
+                    m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.ProbeCard_UnpackingSignal_Off_Check;
+                    break;
+
+
+                case (int)ProbeCard_Locking_Step.ProbeCard_UnpackingSignal_Off_Check:                               //  프로브 카드 패킹, 언패킹 신호 Off 확인
+
+                    if (!waferProbeAlignParameter.IsDO_Probe_Packing() && !waferProbeAlignParameter.IsDO_Probe_Unpacking())
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "프로브 카드 패킹, 언패킹 신호 Off 완료");
+
+                        m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.ProbeCard_UnpackingCyl_Up;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "프로브 카드 패킹, 언패킹 신호 Off 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_SubWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 패킹, 언패킹 신호 Off 실패. (Time Out)", "Error");
+
+                        m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
+                    }
+                    break;
+
+
+                case (int)ProbeCard_Locking_Step.ProbeCard_UnpackingCyl_Up:                                     //  프로브 카드 언패킹 실린더 Up
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "프로브 카드 언패킹 실린더 Up");
+
+                    waferProbeAlignParameter.DO_Probe_UnpackingCyl_Up(true);
+                    waferProbeAlignParameter.DO_Probe_UnpackingCyl_Down(false);
+
+                    TickCount_Start((int)TickType.TICK_SUB);
+
+                    m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.ProbeCard_UnpackingCyl_Up_Check;
+                    break;
+
+
+                case (int)ProbeCard_Locking_Step.ProbeCard_UnpackingCyl_Up_Check:                               //  프로브 카드 언패킹 실린더 Up 확인
+
+                    if (waferProbeAlignParameter.DI_Probe_UnpackingCyl_Up() && !waferProbeAlignParameter.DI_Probe_UnpackingCyl_Down())
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "프로브 카드 언패킹 실린더 Up 완료");
+
+                        m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.ProbeCard_Clamp_Up;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "프로브 카드 언패킹 실린더 Up 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_SubWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 언패킹 실린더 Up 실패. (Time Out)", "Error");
+
+                        m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
+                    }
+                    break;
+
+
+                case (int)ProbeCard_Locking_Step.ProbeCard_Clamp_Up:                                     //  프로브 카드 클램프 Up
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "프로브 카드 클램프 Up");
+
+                    waferProbeAlignParameter.DO_ProbeClampModule_Down(false);
+
+                    TickCount_Start((int)TickType.TICK_SUB);
+
+                    m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.ProbeCard_Clamp_Up_Check;
+                    break;
+
+
+                case (int)ProbeCard_Locking_Step.ProbeCard_Clamp_Up_Check:                               //  프로브 카드 클램프 Up 확인
+
+                    if (!waferProbeAlignParameter.IsDO_Probe_ClampModule_Down() && (TickCount_Elapsed((int)TickType.TICK_SUB) >= 1000))
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "프로브 카드 클램프 Up 완료");
+
+                        m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.ProbeCard_Clamp_FW;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "프로브 카드 클램프 Up 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_SubWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 클램프 Up 실패. (Time Out)", "Error");
+
+                        m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
+                    }
+                    break;
+
+
+                case (int)ProbeCard_Locking_Step.ProbeCard_Clamp_FW:                                     //  프로브 카드 클램프 FW
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "프로브 카드 클램프 FW");
+
+                    waferProbeAlignParameter.DO_ProbeClampModule_FW(true);
+                    waferProbeAlignParameter.DO_ProbeClampModule_BW(false);
+
+                    TickCount_Start((int)TickType.TICK_SUB);
+
+                    m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.ProbeCard_Clamp_FW_Check;
+                    break;
+
+
+                case (int)ProbeCard_Locking_Step.ProbeCard_Clamp_FW_Check:                               //  프로브 카드 클램프 FW 확인
+
+                    if (waferProbeAlignParameter.DI_Probe_LeftClampModule_FW() && !waferProbeAlignParameter.DI_Probe_LeftClampModule_BW() &&
+                        waferProbeAlignParameter.DI_Probe_RightClampModule_FW() && !waferProbeAlignParameter.DI_Probe_RightClampModule_BW())
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "프로브 카드 클램프 FW 완료");
+
+                        m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.ProbeCard_Clamp_Down;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "프로브 카드 클램프 FW 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_SubWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 클램프 FW 실패. (Time Out)", "Error");
+
+                        m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
+                    }
+                    break;
+
+
+                case (int)ProbeCard_Locking_Step.ProbeCard_Clamp_Down:                                     //  프로브 카드 클램프 Down
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "프로브 카드 클램프 Down");
+
+                    waferProbeAlignParameter.DO_ProbeClampModule_Down(true);
+
+                    TickCount_Start((int)TickType.TICK_SUB);
+
+                    m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.ProbeCard_Clamp_Down_Check;
+                    break;
+
+
+                case (int)ProbeCard_Locking_Step.ProbeCard_Clamp_Down_Check:                               //  프로브 카드 클램프 Down 확인
+
+                    if (waferProbeAlignParameter.IsDO_Probe_ClampModule_Down() && (TickCount_Elapsed((int)TickType.TICK_SUB) >= 1000))
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "프로브 카드 클램프 Down 완료");
+
+                        m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step._MachineType_B_Complete;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "프로브 카드 클램프 Down 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_SubWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 클램프 Down 실패. (Time Out)", "Error");
+
+                        m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
+                    }
+                    break;
+
+
+                case (int)ProbeCard_Locking_Step._MachineType_B_Complete:                                    //  Type B 완료
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "Machine Type B 완료");
+
+                    m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.Complete;
+                    break;
+                ///
+                //  Type-B 완료
+                //////////////////////////////////////////////////////////////////
 
 
                 case (int)ProbeCard_Locking_Step.Complete:
@@ -9214,7 +10094,7 @@ namespace QMC.Common.Modules
 
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
                     }
-                    else if (!waferProbeAlignParameter.DI_Probe_BW_Detect())
+                    else if ((Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A) && !waferProbeAlignParameter.DI_Probe_BW_Detect())
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "작업 중지. (프로브 카드가 감지되지 않음)");
 
@@ -9227,7 +10107,7 @@ namespace QMC.Common.Modules
 
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
                     }
-                    else if (waferProbeAlignParameter.DI_TopCover_Up() || !waferProbeAlignParameter.DI_TopCover_Down())
+                    else if ((Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A) && (waferProbeAlignParameter.DI_TopCover_Up() || !waferProbeAlignParameter.DI_TopCover_Down()))
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "작업 중지. (상부 커버가 Down 상태가 아님)");
 
@@ -10130,7 +11010,8 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "UVW Stage, 웨이퍼 로딩 위치로 이동 완료");
 
-                        m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.Top_Cover_Up;
+                        //m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.Top_Cover_Up;
+                        m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step._MachineType_Check;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 10000)
                     {
@@ -10145,6 +11026,32 @@ namespace QMC.Common.Modules
 
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
                     }
+                    break;
+
+
+                case (int)WaferProbeCard_Packing_Step._MachineType_Check:                                    //  Machine Type 확인
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "Machine Type 확인");
+
+                    if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A)
+                    {
+                        m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step._MachineType_A_Start;
+                    }
+                    else if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_B)
+                    {
+                        m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step._MachineType_B_Start;
+                    }
+                    break;
+
+
+                //////////////////////////////////////////////////////////////////
+                //  Type-A 시작
+                ///
+                case (int)WaferProbeCard_Packing_Step._MachineType_A_Start:                                    //  Type A 시작
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "Machine Type A 시작");
+
+                    m_nPAK_AirLine_Check_Step = (int)WaferProbeCard_Packing_Step.Top_Cover_Up;
                     break;
 
 
@@ -10167,7 +11074,7 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "상부 커버 Up 완료");
 
-                        m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.Complete;
+                        m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step._MachineType_A_Complete;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 10000)
                     {
@@ -10183,6 +11090,187 @@ namespace QMC.Common.Modules
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
                     }
                     break;
+
+
+                case (int)WaferProbeCard_Packing_Step._MachineType_A_Complete:                                    //  Type A 완료
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "Machine Type A 완료");
+
+                    m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.Complete;
+                    break;
+                ///
+                //  Type-A 완료
+                //////////////////////////////////////////////////////////////////
+
+
+                //////////////////////////////////////////////////////////////////
+                //  Type-B 시작
+                ///
+                case (int)WaferProbeCard_Packing_Step._MachineType_B_Start:                                    //  Type B 시작
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "Machine Type B 시작");
+
+                    m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step._MachineType_B_Complete;
+                    break;
+
+
+                case (int)WaferProbeCard_Packing_Step.ProbeCard_UnpackingSignal_Off:                                     //  프로브 카드 패킹, 언패킹 신호 Off
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "프로브 카드 패킹, 언패킹 신호 Off");
+
+                    waferProbeAlignParameter.DO_Probe_Packing(false);
+                    waferProbeAlignParameter.DO_Probe_UnPacking(false);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.ProbeCard_UnpackingSignal_Off_Check;
+                    break;
+
+
+                case (int)WaferProbeCard_Packing_Step.ProbeCard_UnpackingSignal_Off_Check:                               //  프로브 카드 패킹, 언패킹 신호 Off 확인
+
+                    if (!waferProbeAlignParameter.IsDO_Probe_Packing() && !waferProbeAlignParameter.IsDO_Probe_Unpacking())
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "프로브 카드 패킹, 언패킹 신호 Off 완료");
+
+                        m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.ProbeCard_UnpackingCyl_Up;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "프로브 카드 패킹, 언패킹 신호 Off 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_MainWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 패킹, 언패킹 신호 Off 실패. (Time Out)", "Error");
+
+                        m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+                    }
+                    break;
+
+
+                case (int)WaferProbeCard_Packing_Step.ProbeCard_UnpackingCyl_Up:                                     //  프로브 카드 언패킹 실린더 Up
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "프로브 카드 언패킹 실린더 Up");
+
+                    waferProbeAlignParameter.DO_Probe_UnpackingCyl_Up(true);
+                    waferProbeAlignParameter.DO_Probe_UnpackingCyl_Down(false);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.ProbeCard_UnpackingCyl_Up_Check;
+                    break;
+
+
+                case (int)WaferProbeCard_Packing_Step.ProbeCard_UnpackingCyl_Up_Check:                               //  프로브 카드 언패킹 실린더 Up 확인
+
+                    if (waferProbeAlignParameter.DI_Probe_UnpackingCyl_Up() && !waferProbeAlignParameter.DI_Probe_UnpackingCyl_Down())
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "프로브 카드 언패킹 실린더 Up 완료");
+
+                        m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.ProbeCard_Clamp_Up;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "프로브 카드 언패킹 실린더 Up 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_MainWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 언패킹 실린더 Up 실패. (Time Out)", "Error");
+
+                        m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+                    }
+                    break;
+
+
+                case (int)WaferProbeCard_Packing_Step.ProbeCard_Clamp_Up:                                     //  프로브 카드 클램프 Up
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "프로브 카드 클램프 Up");
+
+                    waferProbeAlignParameter.DO_ProbeClampModule_Down(false);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.ProbeCard_Clamp_Up_Check;
+                    break;
+
+
+                case (int)WaferProbeCard_Packing_Step.ProbeCard_Clamp_Up_Check:                               //  프로브 카드 클램프 Up 확인
+
+                    if (!waferProbeAlignParameter.IsDO_Probe_ClampModule_Down() && (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 1000))
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "프로브 카드 클램프 Up 완료");
+
+                        m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.ProbeCard_Clamp_BW;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "프로브 카드 클램프 Up 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_MainWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 클램프 Up 실패. (Time Out)", "Error");
+
+                        m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+                    }
+                    break;
+
+
+                case (int)WaferProbeCard_Packing_Step.ProbeCard_Clamp_BW:                                     //  프로브 카드 클램프 BW
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "프로브 카드 클램프 BW");
+
+                    waferProbeAlignParameter.DO_ProbeClampModule_FW(true);
+                    waferProbeAlignParameter.DO_ProbeClampModule_BW(false);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.ProbeCard_Clamp_BW_Check;
+                    break;
+
+
+                case (int)WaferProbeCard_Packing_Step.ProbeCard_Clamp_BW_Check:                               //  프로브 카드 클램프 BW 확인
+
+                    if (!waferProbeAlignParameter.DI_Probe_LeftClampModule_FW() && waferProbeAlignParameter.DI_Probe_LeftClampModule_BW() &&
+                        !waferProbeAlignParameter.DI_Probe_RightClampModule_FW() && waferProbeAlignParameter.DI_Probe_RightClampModule_BW())
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "프로브 카드 클램프 BW 완료");
+
+                        m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step._MachineType_B_Complete;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "프로브 카드 클램프 BW 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_MainWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 클램프 BW 실패. (Time Out)", "Error");
+
+                        m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+                    }
+                    break;
+
+
+                case (int)WaferProbeCard_Packing_Step._MachineType_B_Complete:                                    //  Type B 완료
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "Machine Type B 완료");
+
+                    m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.Complete;
+                    break;
+                ///
+                //  Type-B 완료
+                //////////////////////////////////////////////////////////////////
 
 
                 case (int)WaferProbeCard_Packing_Step.Complete:
@@ -10258,7 +11346,7 @@ namespace QMC.Common.Modules
 
                         MessageBox.Show("Thin Chuck 이 감지됨.", "Error");
                     }
-                    else if (!waferProbeAlignParameter.DI_Probe_BW_Detect())
+                    else if ((Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A) && !waferProbeAlignParameter.DI_Probe_BW_Detect())
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "작업 중지. (프로브 카드가 감지되지 않음)");
 
@@ -10286,8 +11374,35 @@ namespace QMC.Common.Modules
                     }
                     else
                     {
-                        m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.Top_Cover_Down;
+                        //m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.Top_Cover_Down;
+                        m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step._MachineType_Check;
                     }
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Step._MachineType_Check:                                    //  Machine Type 확인
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "Machine Type 확인");
+
+                    if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A)
+                    {
+                        m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step._MachineType_A_Start;
+                    }
+                    else if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_B)
+                    {
+                        m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step._MachineType_B_Start;
+                    }
+                    break;
+
+
+                //////////////////////////////////////////////////////////////////
+                //  Type-A 시작
+                ///
+                case (int)WaferProbeCard_Unpacking_Step._MachineType_A_Start:                                    //  Type A 시작
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "Machine Type A 시작");
+
+                    m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.Top_Cover_Down;
                     break;
 
 
@@ -10310,7 +11425,7 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "상부 커버 Down 완료");
 
-                        m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.VisionXYZ_Move_ReadyPos;
+                        m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step._MachineType_A_Complete;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 10000)
                     {
@@ -10326,6 +11441,260 @@ namespace QMC.Common.Modules
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
                     }
                     break;
+
+
+                case (int)WaferProbeCard_Unpacking_Step._MachineType_A_Complete:                                    //  Type A 완료
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "Machine Type A 완료");
+
+                    m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.VisionXYZ_Move_ReadyPos;
+                    break;
+                ///
+                //  Type-A 완료
+                //////////////////////////////////////////////////////////////////
+
+
+                //////////////////////////////////////////////////////////////////
+                //  Type-B 시작
+                ///
+                case (int)WaferProbeCard_Unpacking_Step._MachineType_B_Start:                                    //  Type B 시작
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "Machine Type B 시작");
+
+                    m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.ProbeCard_UnpackingSignal_Off;
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Step.ProbeCard_UnpackingSignal_Off:                                     //  프로브 카드 패킹, 언패킹 신호 Off
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "프로브 카드 패킹, 언패킹 신호 Off");
+
+                    waferProbeAlignParameter.DO_Probe_Packing(false);
+                    waferProbeAlignParameter.DO_Probe_UnPacking(false);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.ProbeCard_UnpackingSignal_Off_Check;
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Step.ProbeCard_UnpackingSignal_Off_Check:                               //  프로브 카드 패킹, 언패킹 신호 Off 확인
+
+                    if (!waferProbeAlignParameter.IsDO_Probe_Packing() && !waferProbeAlignParameter.IsDO_Probe_Unpacking())
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "프로브 카드 패킹, 언패킹 신호 Off 완료");
+
+                        m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.ProbeCard_UnpackingCyl_Up;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "프로브 카드 패킹, 언패킹 신호 Off 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_MainWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 패킹, 언패킹 신호 Off 실패. (Time Out)", "Error");
+
+                        m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+                    }
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Step.ProbeCard_UnpackingCyl_Up:                                     //  프로브 카드 언패킹 실린더 Up
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "프로브 카드 언패킹 실린더 Up");
+
+                    waferProbeAlignParameter.DO_Probe_UnpackingCyl_Up(true);
+                    waferProbeAlignParameter.DO_Probe_UnpackingCyl_Down(false);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.ProbeCard_UnpackingCyl_Up_Check;
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Step.ProbeCard_UnpackingCyl_Up_Check:                               //  프로브 카드 언패킹 실린더 Up 확인
+
+                    if (waferProbeAlignParameter.DI_Probe_UnpackingCyl_Up() && !waferProbeAlignParameter.DI_Probe_UnpackingCyl_Down())
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "프로브 카드 언패킹 실린더 Up 완료");
+
+                        m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.ProbeCard_Clamp_Up;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "프로브 카드 언패킹 실린더 Up 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_MainWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 언패킹 실린더 Up 실패. (Time Out)", "Error");
+
+                        m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+                    }
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Step.ProbeCard_Clamp_Up:                                     //  프로브 카드 클램프 Up
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "프로브 카드 클램프 Up");
+
+                    waferProbeAlignParameter.DO_ProbeClampModule_Down(false);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.ProbeCard_Clamp_Up_Check;
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Step.ProbeCard_Clamp_Up_Check:                               //  프로브 카드 클램프 Up 확인
+
+                    if (!waferProbeAlignParameter.IsDO_Probe_ClampModule_Down() && (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 1000))
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "프로브 카드 클램프 Up 완료");
+
+                        m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.ProbeCard_Clamp_FW;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "프로브 카드 클램프 Up 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_MainWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 클램프 Up 실패. (Time Out)", "Error");
+
+                        m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+                    }
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Step.ProbeCard_Clamp_FW:                                     //  프로브 카드 클램프 FW
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "프로브 카드 클램프 FW");
+
+                    waferProbeAlignParameter.DO_ProbeClampModule_FW(true);
+                    waferProbeAlignParameter.DO_ProbeClampModule_BW(false);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.ProbeCard_Clamp_FW_Check;
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Step.ProbeCard_Clamp_FW_Check:                               //  프로브 카드 클램프 FW 확인
+
+                    if (waferProbeAlignParameter.DI_Probe_LeftClampModule_FW() && !waferProbeAlignParameter.DI_Probe_LeftClampModule_BW() &&
+                        waferProbeAlignParameter.DI_Probe_RightClampModule_FW() && !waferProbeAlignParameter.DI_Probe_RightClampModule_BW())
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "프로브 카드 클램프 FW 완료");
+
+                        m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.ProbeCard_Clamp_Down;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "프로브 카드 클램프 FW 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_MainWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 클램프 FW 실패. (Time Out)", "Error");
+
+                        m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+                    }
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Step.ProbeCard_Clamp_Down:                                     //  프로브 카드 클램프 Down
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "프로브 카드 클램프 Down");
+
+                    waferProbeAlignParameter.DO_ProbeClampModule_Down(true);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.ProbeCard_Clamp_Down_Check;
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Step.ProbeCard_Clamp_Down_Check:                               //  프로브 카드 클램프 Down 확인
+
+                    if (waferProbeAlignParameter.IsDO_Probe_ClampModule_Down() && (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 1000))
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "프로브 카드 클램프 Down 완료");
+
+                        m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.ProbeCard_UnpackingCyl_Down;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "프로브 카드 클램프 Down 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_MainWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 클램프 Down 실패. (Time Out)", "Error");
+
+                        m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+                    }
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Step.ProbeCard_UnpackingCyl_Down:                                     //  프로브 카드 언패킹 실린더 Down
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "프로브 카드 언패킹 실린더 Down");
+
+                    waferProbeAlignParameter.DO_Probe_UnpackingCyl_Up(false);
+                    waferProbeAlignParameter.DO_Probe_UnpackingCyl_Down(true);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.ProbeCard_UnpackingCyl_Down_Check;
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Step.ProbeCard_UnpackingCyl_Down_Check:                               //  프로브 카드 언패킹 실린더 Down 확인
+
+                    if (!waferProbeAlignParameter.DI_Probe_UnpackingCyl_Up() && waferProbeAlignParameter.DI_Probe_UnpackingCyl_Down())
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "프로브 카드 언패킹 실린더 Down 완료");
+
+                        m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step._MachineType_B_Complete;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 10000)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "프로브 카드 언패킹 실린더 Down 시간 초과. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        timer_MainWork.Enabled = false;
+
+                        MessageBox.Show("프로브 카드 언패킹 실린더 Down 실패. (Time Out)", "Error");
+
+                        m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+                    }
+                    break;
+
+
+                case (int)WaferProbeCard_Unpacking_Step._MachineType_B_Complete:                                    //  Type B 완료
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard UnPacking Func", "Machine Type B 완료");
+
+                    m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.VisionXYZ_Move_ReadyPos;
+                    break;
+                ///
+                //  Type-B 완료
+                //////////////////////////////////////////////////////////////////
 
 
                 case (int)WaferProbeCard_Unpacking_Step.VisionXYZ_Move_ReadyPos:                                      //  Vision XYZ 축, 대기 위치로 이동
@@ -11243,6 +12612,10 @@ namespace QMC.Common.Modules
                 NativeMethods.GetPrivateProfileString("Align_Image", "Image_Save_DriveSpace_Warning_Value", "10", temp, 255, strFIle);
                 Config.ParamConfig.AlignImageSaveFolder_WarningSpace = Convert.ToDouble(temp.ToString());
 
+                //  프로브 카드 클램프 타입 (0:1호기, 1:2~6호기)
+                NativeMethods.GetPrivateProfileString("Machine_Type", "ProbeCard_Clamp_Type", "0", temp, 255, strFIle);
+                Config.ParamConfig.ProbeCard_ClampType = Convert.ToInt16(temp.ToString());
+
 
 
                 /// Position 로드
@@ -11521,6 +12894,8 @@ namespace QMC.Common.Modules
             //  얼라인 이미지 저장 위치 용량 부족 경고 기준치 (GB)
             NativeMethods.WritePrivateProfileString("Align_Image", "Image_Save_DriveSpace_Warning_Value", Config.ParamConfig.AlignImageSaveFolder_WarningSpace.ToString(), strFIle);
 
+            //  프로브 카드 클램프 타입 (0:1호기, 1:2~6호기)
+            NativeMethods.WritePrivateProfileString("Machine_Type", "ProbeCard_Clamp_Type", Config.ParamConfig.ProbeCard_ClampType.ToString(), strFIle);
 
 
             /// Position 저장

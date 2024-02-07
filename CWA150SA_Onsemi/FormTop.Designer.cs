@@ -36,9 +36,11 @@
             this.lblWaferAlignAfterAlignErrorCheckStart = new System.Windows.Forms.Label();
             this.lblWaferOffsetMoveBeforePacking = new System.Windows.Forms.Label();
             this.lblPackAirLineCheck_Before_AlignStart = new System.Windows.Forms.Label();
-            this.lbl_UserMode = new CWA150SA_Onsemi300.BaseLabel();
-            this.lbl_UserName = new CWA150SA_Onsemi300.BaseLabel();
+            this.lbl_Machine = new CWA150SA_Onsemi300.BaseLabel();
+            this.lbl_MachineType = new CWA150SA_Onsemi300.BaseLabel();
             this.lbl_User = new CWA150SA_Onsemi300.BaseLabel();
+            this.lbl_UserName = new CWA150SA_Onsemi300.BaseLabel();
+            this.lbl_UserMode = new CWA150SA_Onsemi300.BaseLabel();
             this.SuspendLayout();
             // 
             // panelLogo
@@ -77,81 +79,80 @@
             // lblWaferAlignAfterPackingAutoStart
             // 
             this.lblWaferAlignAfterPackingAutoStart.BackColor = System.Drawing.Color.Gray;
-            this.lblWaferAlignAfterPackingAutoStart.Font = new System.Drawing.Font("나눔고딕", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblWaferAlignAfterPackingAutoStart.Font = new System.Drawing.Font("나눔고딕", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lblWaferAlignAfterPackingAutoStart.ForeColor = System.Drawing.Color.Black;
-            this.lblWaferAlignAfterPackingAutoStart.Location = new System.Drawing.Point(1729, 5);
+            this.lblWaferAlignAfterPackingAutoStart.Location = new System.Drawing.Point(1553, 5);
             this.lblWaferAlignAfterPackingAutoStart.Margin = new System.Windows.Forms.Padding(0);
             this.lblWaferAlignAfterPackingAutoStart.Name = "lblWaferAlignAfterPackingAutoStart";
-            this.lblWaferAlignAfterPackingAutoStart.Size = new System.Drawing.Size(184, 69);
+            this.lblWaferAlignAfterPackingAutoStart.Size = new System.Drawing.Size(176, 69);
             this.lblWaferAlignAfterPackingAutoStart.TabIndex = 5;
-            this.lblWaferAlignAfterPackingAutoStart.Text = "웨이퍼 얼라인 후\r\n패킹 자동 시작";
+            this.lblWaferAlignAfterPackingAutoStart.Text = "[웨이퍼]  얼라인 후\r\n패킹 자동 시작";
             this.lblWaferAlignAfterPackingAutoStart.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblWaferAlignAfterAlignErrorCheckStart
             // 
             this.lblWaferAlignAfterAlignErrorCheckStart.BackColor = System.Drawing.Color.GreenYellow;
-            this.lblWaferAlignAfterAlignErrorCheckStart.Font = new System.Drawing.Font("나눔고딕", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblWaferAlignAfterAlignErrorCheckStart.Font = new System.Drawing.Font("나눔고딕", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lblWaferAlignAfterAlignErrorCheckStart.ForeColor = System.Drawing.Color.Black;
-            this.lblWaferAlignAfterAlignErrorCheckStart.Location = new System.Drawing.Point(1538, 5);
+            this.lblWaferAlignAfterAlignErrorCheckStart.Location = new System.Drawing.Point(1374, 5);
             this.lblWaferAlignAfterAlignErrorCheckStart.Margin = new System.Windows.Forms.Padding(0);
             this.lblWaferAlignAfterAlignErrorCheckStart.Name = "lblWaferAlignAfterAlignErrorCheckStart";
-            this.lblWaferAlignAfterAlignErrorCheckStart.Size = new System.Drawing.Size(187, 69);
+            this.lblWaferAlignAfterAlignErrorCheckStart.Size = new System.Drawing.Size(175, 69);
             this.lblWaferAlignAfterAlignErrorCheckStart.TabIndex = 6;
-            this.lblWaferAlignAfterAlignErrorCheckStart.Text = "웨이퍼 얼라인 후\r\n오차 검증 사용";
+            this.lblWaferAlignAfterAlignErrorCheckStart.Text = "[웨이퍼]  얼라인 후\r\n오차 검증 사용";
             this.lblWaferAlignAfterAlignErrorCheckStart.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblWaferOffsetMoveBeforePacking
             // 
             this.lblWaferOffsetMoveBeforePacking.BackColor = System.Drawing.Color.Gray;
-            this.lblWaferOffsetMoveBeforePacking.Font = new System.Drawing.Font("나눔고딕", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblWaferOffsetMoveBeforePacking.Font = new System.Drawing.Font("나눔고딕", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lblWaferOffsetMoveBeforePacking.ForeColor = System.Drawing.Color.Black;
-            this.lblWaferOffsetMoveBeforePacking.Location = new System.Drawing.Point(1230, 5);
+            this.lblWaferOffsetMoveBeforePacking.Location = new System.Drawing.Point(1097, 5);
             this.lblWaferOffsetMoveBeforePacking.Margin = new System.Windows.Forms.Padding(0);
             this.lblWaferOffsetMoveBeforePacking.Name = "lblWaferOffsetMoveBeforePacking";
-            this.lblWaferOffsetMoveBeforePacking.Size = new System.Drawing.Size(304, 69);
+            this.lblWaferOffsetMoveBeforePacking.Size = new System.Drawing.Size(273, 69);
             this.lblWaferOffsetMoveBeforePacking.TabIndex = 7;
-            this.lblWaferOffsetMoveBeforePacking.Text = "[웨이퍼 - 프로브 카드] 패킹 시\r\n웨이퍼 오프셋 이동 후 패킹";
+            this.lblWaferOffsetMoveBeforePacking.Text = "[웨이퍼 - 프로브 카드]  패킹 시\r\n웨이퍼 오프셋 이동 후 패킹";
             this.lblWaferOffsetMoveBeforePacking.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblPackAirLineCheck_Before_AlignStart
             // 
             this.lblPackAirLineCheck_Before_AlignStart.BackColor = System.Drawing.Color.Gray;
-            this.lblPackAirLineCheck_Before_AlignStart.Font = new System.Drawing.Font("나눔고딕", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblPackAirLineCheck_Before_AlignStart.Font = new System.Drawing.Font("나눔고딕", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lblPackAirLineCheck_Before_AlignStart.ForeColor = System.Drawing.Color.Black;
-            this.lblPackAirLineCheck_Before_AlignStart.Location = new System.Drawing.Point(998, 5);
+            this.lblPackAirLineCheck_Before_AlignStart.Location = new System.Drawing.Point(870, 5);
             this.lblPackAirLineCheck_Before_AlignStart.Margin = new System.Windows.Forms.Padding(0);
             this.lblPackAirLineCheck_Before_AlignStart.Name = "lblPackAirLineCheck_Before_AlignStart";
-            this.lblPackAirLineCheck_Before_AlignStart.Size = new System.Drawing.Size(228, 69);
+            this.lblPackAirLineCheck_Before_AlignStart.Size = new System.Drawing.Size(223, 69);
             this.lblPackAirLineCheck_Before_AlignStart.TabIndex = 8;
-            this.lblPackAirLineCheck_Before_AlignStart.Text = "웨이퍼 얼라인 시작 전\r\nPAK 관로 막힘 확인";
+            this.lblPackAirLineCheck_Before_AlignStart.Text = "[웨이퍼]  얼라인 시작 전\r\nPAK 관로 막힘 확인";
             this.lblPackAirLineCheck_Before_AlignStart.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // lbl_UserMode
+            // lbl_Machine
             // 
-            this.lbl_UserMode.BackColor = System.Drawing.Color.Black;
-            this.lbl_UserMode.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.lbl_UserMode.Font = new System.Drawing.Font("나눔바른고딕", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lbl_UserMode.ForeColor = System.Drawing.Color.Yellow;
-            this.lbl_UserMode.Location = new System.Drawing.Point(615, 5);
-            this.lbl_UserMode.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lbl_UserMode.Name = "lbl_UserMode";
-            this.lbl_UserMode.Size = new System.Drawing.Size(145, 69);
-            this.lbl_UserMode.TabIndex = 109;
-            this.lbl_UserMode.Text = "로그인 필요";
-            this.lbl_UserMode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lbl_Machine.BackColor = System.Drawing.Color.DarkGray;
+            this.lbl_Machine.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lbl_Machine.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lbl_Machine.ForeColor = System.Drawing.Color.Black;
+            this.lbl_Machine.Location = new System.Drawing.Point(1754, 5);
+            this.lbl_Machine.Name = "lbl_Machine";
+            this.lbl_Machine.Size = new System.Drawing.Size(159, 24);
+            this.lbl_Machine.TabIndex = 189;
+            this.lbl_Machine.Text = "프로브 카드 고정 타입";
+            this.lbl_Machine.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // lbl_UserName
+            // lbl_MachineType
             // 
-            this.lbl_UserName.BackColor = System.Drawing.Color.Cornsilk;
-            this.lbl_UserName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lbl_UserName.Font = new System.Drawing.Font("나눔바른고딕", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lbl_UserName.ForeColor = System.Drawing.Color.Black;
-            this.lbl_UserName.Location = new System.Drawing.Point(763, 28);
-            this.lbl_UserName.Name = "lbl_UserName";
-            this.lbl_UserName.Size = new System.Drawing.Size(151, 46);
-            this.lbl_UserName.TabIndex = 186;
-            this.lbl_UserName.Text = "- - - - -";
-            this.lbl_UserName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lbl_MachineType.BackColor = System.Drawing.Color.Cornsilk;
+            this.lbl_MachineType.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lbl_MachineType.Font = new System.Drawing.Font("나눔바른고딕", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lbl_MachineType.ForeColor = System.Drawing.Color.Black;
+            this.lbl_MachineType.Location = new System.Drawing.Point(1754, 28);
+            this.lbl_MachineType.Name = "lbl_MachineType";
+            this.lbl_MachineType.Size = new System.Drawing.Size(159, 46);
+            this.lbl_MachineType.TabIndex = 188;
+            this.lbl_MachineType.Text = "Type - A";
+            this.lbl_MachineType.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lbl_User
             // 
@@ -159,16 +160,45 @@
             this.lbl_User.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lbl_User.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lbl_User.ForeColor = System.Drawing.Color.Black;
-            this.lbl_User.Location = new System.Drawing.Point(763, 5);
+            this.lbl_User.Location = new System.Drawing.Point(693, 5);
             this.lbl_User.Name = "lbl_User";
             this.lbl_User.Size = new System.Drawing.Size(151, 24);
             this.lbl_User.TabIndex = 187;
             this.lbl_User.Text = "사용자  이름";
             this.lbl_User.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // lbl_UserName
+            // 
+            this.lbl_UserName.BackColor = System.Drawing.Color.Cornsilk;
+            this.lbl_UserName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lbl_UserName.Font = new System.Drawing.Font("나눔바른고딕", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lbl_UserName.ForeColor = System.Drawing.Color.Black;
+            this.lbl_UserName.Location = new System.Drawing.Point(693, 28);
+            this.lbl_UserName.Name = "lbl_UserName";
+            this.lbl_UserName.Size = new System.Drawing.Size(151, 46);
+            this.lbl_UserName.TabIndex = 186;
+            this.lbl_UserName.Text = "- - - - -";
+            this.lbl_UserName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lbl_UserMode
+            // 
+            this.lbl_UserMode.BackColor = System.Drawing.Color.Black;
+            this.lbl_UserMode.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.lbl_UserMode.Font = new System.Drawing.Font("나눔바른고딕", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lbl_UserMode.ForeColor = System.Drawing.Color.Yellow;
+            this.lbl_UserMode.Location = new System.Drawing.Point(545, 5);
+            this.lbl_UserMode.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lbl_UserMode.Name = "lbl_UserMode";
+            this.lbl_UserMode.Size = new System.Drawing.Size(145, 69);
+            this.lbl_UserMode.TabIndex = 109;
+            this.lbl_UserMode.Text = "로그인 필요";
+            this.lbl_UserMode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // FormTop
             // 
             this.ClientSize = new System.Drawing.Size(1919, 121);
+            this.Controls.Add(this.lbl_Machine);
+            this.Controls.Add(this.lbl_MachineType);
             this.Controls.Add(this.lbl_User);
             this.Controls.Add(this.lbl_UserName);
             this.Controls.Add(this.lbl_UserMode);
@@ -199,5 +229,7 @@
         private BaseLabel lbl_UserMode;
         private BaseLabel lbl_UserName;
         private BaseLabel lbl_User;
+        private BaseLabel lbl_Machine;
+        private BaseLabel lbl_MachineType;
     }
 }

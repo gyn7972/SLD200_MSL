@@ -33,6 +33,8 @@
             this.buttonLogOut = new System.Windows.Forms.Button();
             this.buttonLogin = new System.Windows.Forms.Button();
             this.buttonExit = new System.Windows.Forms.Button();
+            this.button_Lamp0 = new System.Windows.Forms.Button();
+            this.button_Lamp1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // flowLayoutPanelBottom
@@ -45,7 +47,7 @@
             // 
             // flowLayoutPanelStartAndStop
             // 
-            this.flowLayoutPanelStartAndStop.Location = new System.Drawing.Point(624, -1);
+            this.flowLayoutPanelStartAndStop.Location = new System.Drawing.Point(1465, -1);
             this.flowLayoutPanelStartAndStop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.flowLayoutPanelStartAndStop.Name = "flowLayoutPanelStartAndStop";
             this.flowLayoutPanelStartAndStop.Size = new System.Drawing.Size(175, 80);
@@ -54,7 +56,7 @@
             // buttonLogOut
             // 
             this.buttonLogOut.Image = global::CWA150SA_Onsemi.Properties.Resources.LogOffa;
-            this.buttonLogOut.Location = new System.Drawing.Point(774, 5);
+            this.buttonLogOut.Location = new System.Drawing.Point(1615, 5);
             this.buttonLogOut.Name = "buttonLogOut";
             this.buttonLogOut.Size = new System.Drawing.Size(143, 61);
             this.buttonLogOut.TabIndex = 1;
@@ -66,7 +68,7 @@
             // buttonLogin
             // 
             this.buttonLogin.Image = global::CWA150SA_Onsemi.Properties.Resources.LogIna;
-            this.buttonLogin.Location = new System.Drawing.Point(856, 2);
+            this.buttonLogin.Location = new System.Drawing.Point(1697, 2);
             this.buttonLogin.Name = "buttonLogin";
             this.buttonLogin.Size = new System.Drawing.Size(143, 61);
             this.buttonLogin.TabIndex = 1;
@@ -78,7 +80,7 @@
             // buttonExit
             // 
             this.buttonExit.Image = global::CWA150SA_Onsemi.Properties.Resources.ExitNormal;
-            this.buttonExit.Location = new System.Drawing.Point(923, 5);
+            this.buttonExit.Location = new System.Drawing.Point(1764, 5);
             this.buttonExit.Name = "buttonExit";
             this.buttonExit.Size = new System.Drawing.Size(143, 61);
             this.buttonExit.TabIndex = 1;
@@ -89,11 +91,39 @@
             this.buttonExit.MouseDown += new System.Windows.Forms.MouseEventHandler(this.buttonExit_MouseDown);
             this.buttonExit.MouseUp += new System.Windows.Forms.MouseEventHandler(this.buttonExit_MouseUp);
             // 
+            // button_Lamp0
+            // 
+            this.button_Lamp0.BackColor = System.Drawing.Color.LightGray;
+            this.button_Lamp0.Font = new System.Drawing.Font("나눔바른고딕", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.button_Lamp0.ForeColor = System.Drawing.Color.DarkRed;
+            this.button_Lamp0.Location = new System.Drawing.Point(944, 9);
+            this.button_Lamp0.Name = "button_Lamp0";
+            this.button_Lamp0.Size = new System.Drawing.Size(150, 81);
+            this.button_Lamp0.TabIndex = 10;
+            this.button_Lamp0.Text = "실내 조명 1";
+            this.button_Lamp0.UseVisualStyleBackColor = false;
+            this.button_Lamp0.Click += new System.EventHandler(this.button_Lamp1_Click);
+            // 
+            // button_Lamp1
+            // 
+            this.button_Lamp1.BackColor = System.Drawing.Color.LightGray;
+            this.button_Lamp1.Font = new System.Drawing.Font("나눔바른고딕", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.button_Lamp1.ForeColor = System.Drawing.Color.DarkRed;
+            this.button_Lamp1.Location = new System.Drawing.Point(1109, 9);
+            this.button_Lamp1.Name = "button_Lamp1";
+            this.button_Lamp1.Size = new System.Drawing.Size(150, 81);
+            this.button_Lamp1.TabIndex = 11;
+            this.button_Lamp1.Text = "실내 조명 2";
+            this.button_Lamp1.UseVisualStyleBackColor = false;
+            this.button_Lamp1.Click += new System.EventHandler(this.button_Lamp2_Click);
+            // 
             // FormBottom
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1078, 66);
+            this.ClientSize = new System.Drawing.Size(1919, 101);
+            this.Controls.Add(this.button_Lamp1);
+            this.Controls.Add(this.button_Lamp0);
             this.Controls.Add(this.flowLayoutPanelStartAndStop);
             this.Controls.Add(this.buttonLogOut);
             this.Controls.Add(this.buttonLogin);
@@ -113,5 +143,7 @@
         private System.Windows.Forms.Button buttonLogin;
         private System.Windows.Forms.Button buttonLogOut;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelStartAndStop;
+        private System.Windows.Forms.Button button_Lamp0;
+        private System.Windows.Forms.Button button_Lamp1;
     }
 }

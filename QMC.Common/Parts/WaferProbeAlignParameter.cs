@@ -94,14 +94,30 @@ namespace QMC.Common.Parts
             //  Thin Chuck
             Input_ThinChuck_Detect,             //  X016
 
+
+            /// #1 호기 - 시작
+            ///
             //  Top Cover
             Input_TopCover_Up,                  //  X017
             Input_TopCover_Down,                //  X018
 
             //  Probe card
             Input_Probe_BW_Detect,              //  X019
+            ///
+            /// #1 호기 - 끝
 
 
+            /// #2 ~ #6 호기 - 시작
+            /// 
+            //  Probe-Card Clamp Module
+            Input_Probe_LeftClampModule_FW,     //  X017
+            Input_Probe_LeftClampModule_BW,     //  X018
+            Input_Probe_RightClampModule_FW,    //  X019
+            Input_Probe_RightClampModule_BW,    //  X020
+            Input_Probe_UnpackingCyl_Down,      //  X021
+            Input_Probe_UnpackingCyl_Up,        //  X022
+            ///
+            /// #2 ~ #6 호기 - 끝
 
 
 
@@ -140,8 +156,25 @@ namespace QMC.Common.Parts
             Output_ThinChuck_Vacuum,            //  Y021
             Output_Wafer_Vacuum,                //  Y022
             Output_Probe_Packing,               //  Y023
+
+
+            /// #1 호기 - 시작
+            ///
             Output_TopCover_Up,                 //  Y024
             Output_TopCover_Down,               //  Y025
+            ///
+            /// #1 호기 - 끝
+
+
+            /// #2 ~ #6 호기 - 시작
+            ///
+            Output_Probe_ClampModule_Down,      //  Y024
+            Output_Probe_ClampModule_FW,        //  Y025
+            Output_Probe_ClampModule_BW,        //  Y026
+            Output_Probe_UnpackingCyl_Down,     //  Y027
+            Output_Probe_UnpackingCyl_Up,       //  Y028
+            ///
+            /// #2 ~ #6 호기 - 끝
         }
 
 
@@ -712,7 +745,7 @@ namespace QMC.Common.Parts
 
 
 
-        #region DI Functions
+        #region DI Functions (공통)
 
         public bool DI_OpSwitch_Start()
         {
@@ -913,7 +946,10 @@ namespace QMC.Common.Parts
 
             return bRet;
         }
+        #endregion
 
+
+        #region DI Functions (1호기)
         public bool DI_TopCover_Up()
         {
             bool bRet = false;
@@ -973,11 +1009,133 @@ namespace QMC.Common.Parts
 
             return !bRet;
         }
-
         #endregion
 
 
-        #region DO Functions
+        #region DI Functions (2 ~ 6호기)
+        public bool DI_Probe_LeftClampModule_FW()
+        {
+            bool bRet = false;
+
+            DioPoint dioString = null;
+
+            //  해당 채널 상태 리턴
+            dioString = m_dicDioPoints[DioPointKey.Input_Probe_LeftClampModule_FW.ToString()];
+
+            if (dioString == null)
+                return bRet;
+
+            DioValue ioValue = dioString.GetValue();
+
+            if (ioValue == DioValue.On)
+                bRet = true;
+
+            return bRet;
+        }
+
+        public bool DI_Probe_LeftClampModule_BW()
+        {
+            bool bRet = false;
+
+            DioPoint dioString = null;
+
+            //  해당 채널 상태 리턴
+            dioString = m_dicDioPoints[DioPointKey.Input_Probe_LeftClampModule_BW.ToString()];
+
+            if (dioString == null)
+                return bRet;
+
+            DioValue ioValue = dioString.GetValue();
+
+            if (ioValue == DioValue.On)
+                bRet = true;
+
+            return bRet;
+        }
+
+        public bool DI_Probe_RightClampModule_FW()
+        {
+            bool bRet = false;
+
+            DioPoint dioString = null;
+
+            //  해당 채널 상태 리턴
+            dioString = m_dicDioPoints[DioPointKey.Input_Probe_RightClampModule_FW.ToString()];
+
+            if (dioString == null)
+                return bRet;
+
+            DioValue ioValue = dioString.GetValue();
+
+            if (ioValue == DioValue.On)
+                bRet = true;
+
+            return bRet;
+        }
+
+        public bool DI_Probe_RightClampModule_BW()
+        {
+            bool bRet = false;
+
+            DioPoint dioString = null;
+
+            //  해당 채널 상태 리턴
+            dioString = m_dicDioPoints[DioPointKey.Input_Probe_RightClampModule_BW.ToString()];
+
+            if (dioString == null)
+                return bRet;
+
+            DioValue ioValue = dioString.GetValue();
+
+            if (ioValue == DioValue.On)
+                bRet = true;
+
+            return bRet;
+        }
+
+        public bool DI_Probe_UnpackingCyl_Down()
+        {
+            bool bRet = false;
+
+            DioPoint dioString = null;
+
+            //  해당 채널 상태 리턴
+            dioString = m_dicDioPoints[DioPointKey.Input_Probe_UnpackingCyl_Down.ToString()];
+
+            if (dioString == null)
+                return bRet;
+
+            DioValue ioValue = dioString.GetValue();
+
+            if (ioValue == DioValue.On)
+                bRet = true;
+
+            return bRet;
+        }
+
+        public bool DI_Probe_UnpackingCyl_Up()
+        {
+            bool bRet = false;
+
+            DioPoint dioString = null;
+
+            //  해당 채널 상태 리턴
+            dioString = m_dicDioPoints[DioPointKey.Input_Probe_UnpackingCyl_Up.ToString()];
+
+            if (dioString == null)
+                return bRet;
+
+            DioValue ioValue = dioString.GetValue();
+
+            if (ioValue == DioValue.On)
+                bRet = true;
+
+            return bRet;
+        }
+        #endregion
+
+
+        #region DO Functions (공통)
 
         public int DO_OpLamp_Start(bool m_bOnOff)
         {
@@ -1035,69 +1193,6 @@ namespace QMC.Common.Parts
 
             return nRet;
         }
-
-        //public int DO_LED_Light(int m_nCh, int m_nRGB, bool m_bOnOff)
-        //{
-        //    int nRet = 0;
-
-        //    DioPoint dioString = null;
-
-        //    //  해당 채널 출력 성공 여부 리턴
-        //    switch( m_nCh )
-        //    {
-        //        case 0:
-        //            switch( m_nRGB )
-        //            {
-        //                case (int)LED_Light.Red:    dioString = m_dicDioPoints[DioPointKey.Output_Lamp0_Red.ToString()];    break;
-        //                case (int)LED_Light.Green:  dioString = m_dicDioPoints[DioPointKey.Output_Lamp0_Green.ToString()];  break;
-        //                case (int)LED_Light.Blue:   dioString = m_dicDioPoints[DioPointKey.Output_Lamp0_Blue.ToString()]; break;
-        //            }
-
-        //            break;
-
-
-        //        case 1:
-        //            switch( m_nRGB )
-        //            {
-        //                case (int)LED_Light.Red:    dioString = m_dicDioPoints[DioPointKey.Output_Lamp1_Red.ToString()];    break;
-        //                case (int)LED_Light.Green:  dioString = m_dicDioPoints[DioPointKey.Output_Lamp1_Green.ToString()];  break;
-        //                case (int)LED_Light.Blue:   dioString = m_dicDioPoints[DioPointKey.Output_Lamp1_Blue.ToString()]; break;
-        //            }
-
-        //            break;
-
-
-        //        case 2:
-        //            switch( m_nRGB )
-        //            {
-        //                case (int)LED_Light.Red:    dioString = m_dicDioPoints[DioPointKey.Output_Lamp2_Red.ToString()];    break;
-        //                case (int)LED_Light.Green:  dioString = m_dicDioPoints[DioPointKey.Output_Lamp2_Green.ToString()];  break;
-        //                case (int)LED_Light.Blue:   dioString = m_dicDioPoints[DioPointKey.Output_Lamp2_Blue.ToString()]; break;
-        //            }
-
-        //            break;
-
-
-        //        case 3:
-        //            switch( m_nRGB )
-        //            {
-        //                case (int)LED_Light.Red:    dioString = m_dicDioPoints[DioPointKey.Output_Lamp3_Red.ToString()];    break;
-        //                case (int)LED_Light.Green:  dioString = m_dicDioPoints[DioPointKey.Output_Lamp3_Green.ToString()];  break;
-        //                case (int)LED_Light.Blue:   dioString = m_dicDioPoints[DioPointKey.Output_Lamp3_Blue.ToString()]; break;
-        //            }
-
-        //            break;
-        //    }            
-
-        //    if (dioString == null) return -1;
-
-        //    if (m_bOnOff) nRet = dioString.Write(DioValue.On);
-        //    else nRet = dioString.Write(DioValue.Off);
-
-        //    if (nRet != 0) return nRet;
-
-        //    return nRet;
-        //}
 
         public int DO_Probe_UnPacking(bool m_bOnOff)
         {
@@ -1194,6 +1289,10 @@ namespace QMC.Common.Parts
             return nRet;
         }
 
+        #endregion
+
+
+        #region DO Functions (1 호기)
         public int DO_TopCover_Up(bool m_bOnOff)
         {
             int nRet = 0;
@@ -1231,9 +1330,105 @@ namespace QMC.Common.Parts
 
             return nRet;
         }
-
         #endregion
 
+
+        #region DO Functions (2 ~ 6 호기)
+        public int DO_ProbeClampModule_Down(bool m_bOnOff)
+        {
+            int nRet = 0;
+
+            DioPoint dioString = null;
+
+            //  해당 채널 출력 성공 여부 리턴
+            dioString = m_dicDioPoints[DioPointKey.Output_Probe_ClampModule_Down.ToString()];
+
+            if (dioString == null) return -1;
+
+            if (m_bOnOff) nRet = dioString.Write(DioValue.On);
+            else nRet = dioString.Write(DioValue.Off);
+
+            if (nRet != 0) return nRet;
+
+            return nRet;
+        }
+
+        public int DO_ProbeClampModule_FW(bool m_bOnOff)
+        {
+            int nRet = 0;
+
+            DioPoint dioString = null;
+
+            //  해당 채널 출력 성공 여부 리턴
+            dioString = m_dicDioPoints[DioPointKey.Output_Probe_ClampModule_FW.ToString()];
+
+            if (dioString == null) return -1;
+
+            if (m_bOnOff) nRet = dioString.Write(DioValue.On);
+            else nRet = dioString.Write(DioValue.Off);
+
+            if (nRet != 0) return nRet;
+
+            return nRet;
+        }
+
+        public int DO_ProbeClampModule_BW(bool m_bOnOff)
+        {
+            int nRet = 0;
+
+            DioPoint dioString = null;
+
+            //  해당 채널 출력 성공 여부 리턴
+            dioString = m_dicDioPoints[DioPointKey.Output_Probe_ClampModule_BW.ToString()];
+
+            if (dioString == null) return -1;
+
+            if (m_bOnOff) nRet = dioString.Write(DioValue.On);
+            else nRet = dioString.Write(DioValue.Off);
+
+            if (nRet != 0) return nRet;
+
+            return nRet;
+        }
+
+        public int DO_Probe_UnpackingCyl_Down(bool m_bOnOff)
+        {
+            int nRet = 0;
+
+            DioPoint dioString = null;
+
+            //  해당 채널 출력 성공 여부 리턴
+            dioString = m_dicDioPoints[DioPointKey.Output_Probe_UnpackingCyl_Down.ToString()];
+
+            if (dioString == null) return -1;
+
+            if (m_bOnOff) nRet = dioString.Write(DioValue.On);
+            else nRet = dioString.Write(DioValue.Off);
+
+            if (nRet != 0) return nRet;
+
+            return nRet;
+        }
+
+        public int DO_Probe_UnpackingCyl_Up(bool m_bOnOff)
+        {
+            int nRet = 0;
+
+            DioPoint dioString = null;
+
+            //  해당 채널 출력 성공 여부 리턴
+            dioString = m_dicDioPoints[DioPointKey.Output_Probe_UnpackingCyl_Up.ToString()];
+
+            if (dioString == null) return -1;
+
+            if (m_bOnOff) nRet = dioString.Write(DioValue.On);
+            else nRet = dioString.Write(DioValue.Off);
+
+            if (nRet != 0) return nRet;
+
+            return nRet;
+        }
+        #endregion
 
         #region DO Status
 
@@ -1461,7 +1656,7 @@ namespace QMC.Common.Parts
             return bRet;
         }
 
-        public bool IsDO_TopCover_Up()
+        public bool IsDO_TopCover_Up()          //  1호기 (Type-A)
         {
             bool bRet = false;
 
@@ -1481,7 +1676,7 @@ namespace QMC.Common.Parts
             return bRet;
         }
 
-        public bool IsDO_TopCover_Down()
+        public bool IsDO_TopCover_Down()        //  1호기 (Type-A)
         {
             bool bRet = false;
 
@@ -1489,6 +1684,106 @@ namespace QMC.Common.Parts
 
             //  해당 출력 채널 상태 리턴
             dioString = m_dicDioPoints[DioPointKey.Output_TopCover_Down.ToString()];
+
+            if (dioString == null)
+                return bRet;
+
+            DioValue ioValue = dioString.GetValue();
+
+            if (ioValue == DioValue.On)
+                bRet = true;
+
+            return bRet;
+        }
+
+        public bool IsDO_Probe_ClampModule_Down()        //  2 ~ 6호기 (Type-B)
+        {
+            bool bRet = false;
+
+            DioPoint dioString = null;
+
+            //  해당 출력 채널 상태 리턴
+            dioString = m_dicDioPoints[DioPointKey.Output_Probe_ClampModule_Down.ToString()];
+
+            if (dioString == null)
+                return bRet;
+
+            DioValue ioValue = dioString.GetValue();
+
+            if (ioValue == DioValue.On)
+                bRet = true;
+
+            return bRet;
+        }
+
+        public bool IsDO_Probe_ClampModule_FW()        //  2 ~ 6호기 (Type-B)
+        {
+            bool bRet = false;
+
+            DioPoint dioString = null;
+
+            //  해당 출력 채널 상태 리턴
+            dioString = m_dicDioPoints[DioPointKey.Output_Probe_ClampModule_FW.ToString()];
+
+            if (dioString == null)
+                return bRet;
+
+            DioValue ioValue = dioString.GetValue();
+
+            if (ioValue == DioValue.On)
+                bRet = true;
+
+            return bRet;
+        }
+
+        public bool IsDO_Probe_ClampModule_BW()        //  2 ~ 6호기 (Type-B)
+        {
+            bool bRet = false;
+
+            DioPoint dioString = null;
+
+            //  해당 출력 채널 상태 리턴
+            dioString = m_dicDioPoints[DioPointKey.Output_Probe_ClampModule_BW.ToString()];
+
+            if (dioString == null)
+                return bRet;
+
+            DioValue ioValue = dioString.GetValue();
+
+            if (ioValue == DioValue.On)
+                bRet = true;
+
+            return bRet;
+        }
+
+        public bool IsDO_Probe_UnpackingCyl_Down()        //  2 ~ 6호기 (Type-B)
+        {
+            bool bRet = false;
+
+            DioPoint dioString = null;
+
+            //  해당 출력 채널 상태 리턴
+            dioString = m_dicDioPoints[DioPointKey.Output_Probe_UnpackingCyl_Down.ToString()];
+
+            if (dioString == null)
+                return bRet;
+
+            DioValue ioValue = dioString.GetValue();
+
+            if (ioValue == DioValue.On)
+                bRet = true;
+
+            return bRet;
+        }
+
+        public bool IsDO_Probe_UnpackingCyl_Up()        //  2 ~ 6호기 (Type-B)
+        {
+            bool bRet = false;
+
+            DioPoint dioString = null;
+
+            //  해당 출력 채널 상태 리턴
+            dioString = m_dicDioPoints[DioPointKey.Output_Probe_UnpackingCyl_Up.ToString()];
 
             if (dioString == null)
                 return bRet;

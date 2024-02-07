@@ -15,10 +15,26 @@ namespace QMC.Common.Parts
             Output_TowerLamp_Green,
             Output_Buzzer,
 
+
             //  LED Bar Lamp Bar
+
+            /// #1 호기 - 시작
+            ///
             Output_Lamp0_Red,                   //  Y007
             Output_Lamp0_Green,                 //  Y008
             Output_Lamp0_Blue,                  //  Y009
+            ///
+            /// #1 호기 - 끝
+
+
+            /// #2 ~ #6 호기 - 시작
+            ///
+            Output_Lamp4,                       //  Y007
+            Output_Lamp5,                       //  Y008
+            ///
+            /// #2 ~ #6 호기 - 끝
+
+
             Output_Lamp1_Red,                   //  Y010
             Output_Lamp1_Green,                 //  Y011
             Output_Lamp1_Blue,                  //  Y012
@@ -344,7 +360,7 @@ namespace QMC.Common.Parts
         public virtual int Is_LedBar_Red_On()
         {
             int ret = 0;
-            DioPoint dioLamp_Red = m_dicDioPoints[DioPointKey.Output_Lamp0_Red.ToString()];
+            DioPoint dioLamp_Red = m_dicDioPoints[DioPointKey.Output_Lamp1_Red.ToString()];
 
             if (dioLamp_Red == null)
             {
@@ -359,23 +375,21 @@ namespace QMC.Common.Parts
         public virtual int LedBar_Red_On()
         {
             int ret = 0;
-            DioPoint dioLamp_Red0 = m_dicDioPoints[DioPointKey.Output_Lamp0_Red.ToString()];
             DioPoint dioLamp_Red1 = m_dicDioPoints[DioPointKey.Output_Lamp1_Red.ToString()];
             DioPoint dioLamp_Red2 = m_dicDioPoints[DioPointKey.Output_Lamp2_Red.ToString()];
             DioPoint dioLamp_Red3 = m_dicDioPoints[DioPointKey.Output_Lamp3_Red.ToString()];
 
-            if (dioLamp_Red0 == null)
+            if (dioLamp_Red1 == null)
             {
                 return ret;
             }
 
-            if ((ret = dioLamp_Red0.Write(DioValue.On)) != 0)
+            if ((ret = dioLamp_Red1.Write(DioValue.On)) != 0)
             {
                 return ret;
             }
 
-            //  0 번째 채널 Write 성공이면 나머지도 Write
-            dioLamp_Red1.Write(DioValue.On);
+            //  1 번째 채널 Write 성공이면 나머지도 Write
             dioLamp_Red2.Write(DioValue.On);
             dioLamp_Red3.Write(DioValue.On);
 
@@ -385,23 +399,21 @@ namespace QMC.Common.Parts
         public virtual int LedBar_Red_Off()
         {
             int ret = 0;
-            DioPoint dioLamp_Red0 = m_dicDioPoints[DioPointKey.Output_Lamp0_Red.ToString()];
             DioPoint dioLamp_Red1 = m_dicDioPoints[DioPointKey.Output_Lamp1_Red.ToString()];
             DioPoint dioLamp_Red2 = m_dicDioPoints[DioPointKey.Output_Lamp2_Red.ToString()];
             DioPoint dioLamp_Red3 = m_dicDioPoints[DioPointKey.Output_Lamp3_Red.ToString()];
 
-            if (dioLamp_Red0 == null)
+            if (dioLamp_Red1 == null)
             {
                 return ret;
             }
 
-            if ((ret = dioLamp_Red0.Write(DioValue.Off)) != 0)
+            if ((ret = dioLamp_Red1.Write(DioValue.Off)) != 0)
             {
                 return ret;
             }
 
-            //  0 번째 채널 Write 성공이면 나머지도 Write
-            dioLamp_Red1.Write(DioValue.Off);
+            //  1 번째 채널 Write 성공이면 나머지도 Write
             dioLamp_Red2.Write(DioValue.Off);
             dioLamp_Red3.Write(DioValue.Off);
 
@@ -411,7 +423,7 @@ namespace QMC.Common.Parts
         public virtual int Is_LedBar_Green_On()
         {
             int ret = 0;
-            DioPoint dioLamp_Green = m_dicDioPoints[DioPointKey.Output_Lamp0_Green.ToString()];
+            DioPoint dioLamp_Green = m_dicDioPoints[DioPointKey.Output_Lamp1_Green.ToString()];
 
             if (dioLamp_Green == null)
             {
@@ -426,23 +438,21 @@ namespace QMC.Common.Parts
         public virtual int LedBar_Green_On()
         {
             int ret = 0;
-            DioPoint dioLamp_Green0 = m_dicDioPoints[DioPointKey.Output_Lamp0_Green.ToString()];
             DioPoint dioLamp_Green1 = m_dicDioPoints[DioPointKey.Output_Lamp1_Green.ToString()];
             DioPoint dioLamp_Green2 = m_dicDioPoints[DioPointKey.Output_Lamp2_Green.ToString()];
             DioPoint dioLamp_Green3 = m_dicDioPoints[DioPointKey.Output_Lamp3_Green.ToString()];
 
-            if (dioLamp_Green0 == null)
+            if (dioLamp_Green1 == null)
             {
                 return ret;
             }
 
-            if ((ret = dioLamp_Green0.Write(DioValue.On)) != 0)
+            if ((ret = dioLamp_Green1.Write(DioValue.On)) != 0)
             {
                 return ret;
             }
 
-            //  0 번째 채널 Write 성공이면 나머지도 Write
-            dioLamp_Green1.Write(DioValue.On);
+            //  1 번째 채널 Write 성공이면 나머지도 Write
             dioLamp_Green2.Write(DioValue.On);
             dioLamp_Green3.Write(DioValue.On);
 
@@ -452,23 +462,21 @@ namespace QMC.Common.Parts
         public virtual int LedBar_Green_Off()
         {
             int ret = 0;
-            DioPoint dioLamp_Green0 = m_dicDioPoints[DioPointKey.Output_Lamp0_Green.ToString()];
             DioPoint dioLamp_Green1 = m_dicDioPoints[DioPointKey.Output_Lamp1_Green.ToString()];
             DioPoint dioLamp_Green2 = m_dicDioPoints[DioPointKey.Output_Lamp2_Green.ToString()];
             DioPoint dioLamp_Green3 = m_dicDioPoints[DioPointKey.Output_Lamp3_Green.ToString()];
 
-            if (dioLamp_Green0 == null)
+            if (dioLamp_Green1 == null)
             {
                 return ret;
             }
 
-            if ((ret = dioLamp_Green0.Write(DioValue.Off)) != 0)
+            if ((ret = dioLamp_Green1.Write(DioValue.Off)) != 0)
             {
                 return ret;
             }
 
-            //  0 번째 채널 Write 성공이면 나머지도 Write
-            dioLamp_Green1.Write(DioValue.Off);
+            //  1 번째 채널 Write 성공이면 나머지도 Write
             dioLamp_Green2.Write(DioValue.Off);
             dioLamp_Green3.Write(DioValue.Off);
 
@@ -478,7 +486,7 @@ namespace QMC.Common.Parts
         public virtual int Is_LedBar_Blue_On()
         {
             int ret = 0;
-            DioPoint dioLamp_Blue = m_dicDioPoints[DioPointKey.Output_Lamp0_Blue.ToString()];
+            DioPoint dioLamp_Blue = m_dicDioPoints[DioPointKey.Output_Lamp1_Blue.ToString()];
 
             if (dioLamp_Blue == null)
             {
@@ -493,23 +501,21 @@ namespace QMC.Common.Parts
         public virtual int LedBar_Blue_On()
         {
             int ret = 0;
-            DioPoint dioLamp_Blue0 = m_dicDioPoints[DioPointKey.Output_Lamp0_Blue.ToString()];
             DioPoint dioLamp_Blue1 = m_dicDioPoints[DioPointKey.Output_Lamp1_Blue.ToString()];
             DioPoint dioLamp_Blue2 = m_dicDioPoints[DioPointKey.Output_Lamp2_Blue.ToString()];
             DioPoint dioLamp_Blue3 = m_dicDioPoints[DioPointKey.Output_Lamp3_Blue.ToString()];
 
-            if (dioLamp_Blue0 == null)
+            if (dioLamp_Blue1 == null)
             {
                 return ret;
             }
 
-            if ((ret = dioLamp_Blue0.Write(DioValue.On)) != 0)
+            if ((ret = dioLamp_Blue1.Write(DioValue.On)) != 0)
             {
                 return ret;
             }
 
-            //  0 번째 채널 Write 성공이면 나머지도 Write
-            dioLamp_Blue1.Write(DioValue.On);
+            //  1 번째 채널 Write 성공이면 나머지도 Write
             dioLamp_Blue2.Write(DioValue.On);
             dioLamp_Blue3.Write(DioValue.On);
 
@@ -519,23 +525,21 @@ namespace QMC.Common.Parts
         public virtual int LedBar_Blue_Off()
         {
             int ret = 0;
-            DioPoint dioLamp_Blue0 = m_dicDioPoints[DioPointKey.Output_Lamp0_Blue.ToString()];
             DioPoint dioLamp_Blue1 = m_dicDioPoints[DioPointKey.Output_Lamp1_Blue.ToString()];
             DioPoint dioLamp_Blue2 = m_dicDioPoints[DioPointKey.Output_Lamp2_Blue.ToString()];
             DioPoint dioLamp_Blue3 = m_dicDioPoints[DioPointKey.Output_Lamp3_Blue.ToString()];
 
-            if (dioLamp_Blue0 == null)
+            if (dioLamp_Blue1 == null)
             {
                 return ret;
             }
 
-            if ((ret = dioLamp_Blue0.Write(DioValue.Off)) != 0)
+            if ((ret = dioLamp_Blue1.Write(DioValue.Off)) != 0)
             {
                 return ret;
             }
 
-            //  0 번째 채널 Write 성공이면 나머지도 Write
-            dioLamp_Blue1.Write(DioValue.Off);
+            //  1 번째 채널 Write 성공이면 나머지도 Write
             dioLamp_Blue2.Write(DioValue.Off);
             dioLamp_Blue3.Write(DioValue.Off);
 
@@ -545,10 +549,10 @@ namespace QMC.Common.Parts
         public bool IsLedBar_Red()
         {
             bool ret = false;
-            DioPoint dioRed0 = m_dicDioPoints[DioPointKey.Output_Lamp0_Red.ToString()];
-            if (dioRed0 != null)
+            DioPoint dioRed1 = m_dicDioPoints[DioPointKey.Output_Lamp1_Red.ToString()];
+            if (dioRed1 != null)
             {
-                DioValue Red = dioRed0.GetValue();
+                DioValue Red = dioRed1.GetValue();
 
                 if (Red == DioValue.On)
                 {
@@ -561,10 +565,10 @@ namespace QMC.Common.Parts
         public bool IsLedBar_Green()
         {
             bool ret = false;
-            DioPoint dioGreen0 = m_dicDioPoints[DioPointKey.Output_Lamp0_Green.ToString()];
-            if (dioGreen0 != null)
+            DioPoint dioGreen1 = m_dicDioPoints[DioPointKey.Output_Lamp1_Green.ToString()];
+            if (dioGreen1 != null)
             {
-                DioValue Green = dioGreen0.GetValue();
+                DioValue Green = dioGreen1.GetValue();
 
                 if (Green == DioValue.On)
                 {
@@ -577,10 +581,115 @@ namespace QMC.Common.Parts
         public bool IsLedBar_Blue()
         {
             bool ret = false;
-            DioPoint dioBlue0 = m_dicDioPoints[DioPointKey.Output_Lamp0_Blue.ToString()];
-            if (dioBlue0 != null)
+            DioPoint dioBlue1 = m_dicDioPoints[DioPointKey.Output_Lamp1_Blue.ToString()];
+            if (dioBlue1 != null)
             {
-                DioValue Blue = dioBlue0.GetValue();
+                DioValue Blue = dioBlue1.GetValue();
+
+                if (Blue == DioValue.On)
+                {
+                    ret = true;
+                }
+            }
+            return ret;
+        }
+
+
+        public virtual int Lamp0_On()
+        {
+            int ret = 0;
+            DioPoint dioLamp0 = m_dicDioPoints[DioPointKey.Output_Lamp4.ToString()];
+
+            if (dioLamp0 == null)
+            {
+                return ret;
+            }
+
+            if ((ret = dioLamp0.Write(DioValue.On)) != 0)
+            {
+                return ret;
+            }
+
+            return ret;
+        }
+
+        public virtual int Lamp0_Off()
+        {
+            int ret = 0;
+            DioPoint dioLamp0 = m_dicDioPoints[DioPointKey.Output_Lamp4.ToString()];
+
+            if (dioLamp0 == null)
+            {
+                return ret;
+            }
+
+            if ((ret = dioLamp0.Write(DioValue.Off)) != 0)
+            {
+                return ret;
+            }
+
+            return ret;
+        }
+
+        public virtual int Lamp1_On()
+        {
+            int ret = 0;
+            DioPoint dioLamp1 = m_dicDioPoints[DioPointKey.Output_Lamp5.ToString()];
+
+            if (dioLamp1 == null)
+            {
+                return ret;
+            }
+
+            if ((ret = dioLamp1.Write(DioValue.On)) != 0)
+            {
+                return ret;
+            }
+
+            return ret;
+        }
+
+        public virtual int Lamp1_Off()
+        {
+            int ret = 0;
+            DioPoint dioLamp1 = m_dicDioPoints[DioPointKey.Output_Lamp5.ToString()];
+
+            if (dioLamp1 == null)
+            {
+                return ret;
+            }
+
+            if ((ret = dioLamp1.Write(DioValue.Off)) != 0)
+            {
+                return ret;
+            }
+
+            return ret;
+        }
+
+        public bool IsLamp0()
+        {
+            bool ret = false;
+            DioPoint dioLamp = m_dicDioPoints[DioPointKey.Output_Lamp4.ToString()];
+            if (dioLamp != null)
+            {
+                DioValue Blue = dioLamp.GetValue();
+
+                if (Blue == DioValue.On)
+                {
+                    ret = true;
+                }
+            }
+            return ret;
+        }
+
+        public bool IsLamp1()
+        {
+            bool ret = false;
+            DioPoint dioLamp = m_dicDioPoints[DioPointKey.Output_Lamp5.ToString()];
+            if (dioLamp != null)
+            {
+                DioValue Blue = dioLamp.GetValue();
 
                 if (Blue == DioValue.On)
                 {
