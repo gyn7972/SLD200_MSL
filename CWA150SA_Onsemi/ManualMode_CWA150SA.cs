@@ -866,8 +866,11 @@ namespace CWA150SA_Onsemi300
                 return;
             }
 
-            CommonModule.Instance.TowerLamp.Lamp0_Off();
-            CommonModule.Instance.TowerLamp.Lamp1_Off();
+            if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_B)       //  실내 조명이 설치되는 2호기 부터는 Start 시 실내 조명을 Off 시킨다.
+            {
+                CommonModule.Instance.TowerLamp.Lamp0_Off();
+                CommonModule.Instance.TowerLamp.Lamp1_Off();
+            }
 
             waferProbeAlign.m_bProbeCard_TiltCheck_Only = false;               //  ProbeCard Tilt Check Only
             waferProbeAlign.m_bWafer_Align_Only = false;                       //  Wafer Align Only
@@ -3687,8 +3690,11 @@ namespace CWA150SA_Onsemi300
                 return;
             }
 
-            CommonModule.Instance.TowerLamp.Lamp0_Off();
-            CommonModule.Instance.TowerLamp.Lamp1_Off();
+            if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_B)       //  실내 조명이 설치되는 2호기 부터는 Start 시 실내 조명을 Off 시킨다.
+            {
+                CommonModule.Instance.TowerLamp.Lamp0_Off();
+                CommonModule.Instance.TowerLamp.Lamp1_Off();
+            }
 
             if (!waferProbeAlign.m_bHomeOK)
             {
