@@ -1206,6 +1206,20 @@ namespace CWA150SA_Onsemi300
                 return;
             }
 
+            //  Manual Packing 일 경우
+            if (waferProbeAlign.m_nManualPacking_Step == (int)ManualPackingStep.STEP1_OK)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "수동 패킹 진행중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nManualPacking_Step == (int)ManualPackingStep.STEP2_OK)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "수동 패킹 페이지의 패킹 버튼으로 패킹 작업을 진행해야 합니다.");
+                return;
+            }
+
             if (waferProbeAlign.m_nWafer_ProbeCard_Packing_Step == (int)WaferProbeAlign.WaferProbeCard_Packing_Step.None)
             {
                 var mb = new MessageBoxYesNo();

@@ -3289,6 +3289,20 @@ namespace CWA150SA_Onsemi300
                 return;
             }
 
+            //  Manual Packing 일 경우
+            if (waferProbeAlign.m_nManualPacking_Step == (int)ManualPackingStep.STEP1_OK)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "수동 패킹 진행중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nManualPacking_Step == (int)ManualPackingStep.STEP2_OK)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "수동 패킹 페이지의 [패킹 시작] 버튼으로 패킹 작업을 진행해야 합니다.");
+                return;
+            }
+
             if (waferProbeAlign.m_nWafer_ProbeCard_Packing_Step == (int)WaferProbeAlign.WaferProbeCard_Packing_Step.None)
             {
                 var mb = new MessageBoxYesNo();
@@ -4678,6 +4692,11 @@ namespace CWA150SA_Onsemi300
                 return;
             }
 
+            if (waferProbeAlign.m_nManualPacking_Step == (int)ManualPackingStep.STEP1_OK)
+            {
+                waferProbeAlign.m_nManualPacking_Step = (int)ManualPackingStep.STEP2_OK;                //  프로브 카드 아래까지 조그로 씬-척 엘리베이터를 이동했는지?
+            }
+
             double dVelocity = 50.0;
             double dPitch = 0.1;
             double dDirection = 1.0;
@@ -4897,6 +4916,13 @@ namespace CWA150SA_Onsemi300
                 mb1.ShowDialog("Information !", "PAK 공압 관로 상태 확인 작업 진행중입니다.");
                 return;
             }
+
+
+            if (waferProbeAlign.m_nManualPacking_Step == (int)ManualPackingStep.STEP1_OK)
+            {
+                waferProbeAlign.m_nManualPacking_Step = (int)ManualPackingStep.STEP2_OK;                //  프로브 카드 아래까지 조그로 씬-척 엘리베이터를 이동했는지?
+            }
+
 
             double dVelocity = 5.0;
             double dDirection = 1.0;
@@ -7845,6 +7871,8 @@ namespace CWA150SA_Onsemi300
                 else
                 {
                     MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, lfTargetPos_EZ, lfVelocity, lfAccDec, lfAccDec);
+
+                    waferProbeAlign.m_nManualPacking_Step = (int)ManualPackingStep.STEP1_OK;                //  프로브 카드 아래 30mm 위치로 씬-척 엘리베이터가 이동했는지?
                 }
             }
             else
@@ -7992,6 +8020,15 @@ namespace CWA150SA_Onsemi300
                 mb1.ShowDialog("Information !", "PAK 공압 관로 상태 확인 작업 진행중입니다.");
                 return;
             }
+
+
+            if (waferProbeAlign.m_nManualPacking_Step != (int)ManualPackingStep.STEP2_OK)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "수동 패킹 작업 [1 단계] 와 [2 단계] 가 선행되어야 합니다.");
+                return;
+            }
+
 
             if (waferProbeAlign.m_nWafer_ProbeCard_Packing_Step == (int)WaferProbeAlign.WaferProbeCard_Packing_Step.None)
             {
@@ -8491,6 +8528,124 @@ namespace CWA150SA_Onsemi300
 
                 waferProbeAlign.waferProbeAlignParameter.DO_Probe_UnpackingCyl_Down(true);
                 waferProbeAlign.waferProbeAlignParameter.DO_Probe_UnpackingCyl_Up(false);
+            }
+        }
+
+        private void baseButton_CameraY_GoPos_Safety_Click(object sender, EventArgs e)
+        {
+            //  카메라 안전위치로 이동
+
+            if (Equipment.User_Mode == null)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 로그인 하십시오.");
+                return;
+            }
+
+            if (!waferProbeAlign.m_bHomeOK)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  Inter-Lock
+            if (waferProbeAlign.m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 작업 진행중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nFindAlignMark_Step != (int)FindAlignMark_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "마크를 찾는 중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Step != (int)WaferProbeAlignErrorCheck_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 상태 확인중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nReticleCheck_UpperCam_Step != (int)ReticleCheck_UpperCam_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "상부 카메라 레티클 글래스 센터 확인 진행중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nReticleCheck_LowerCam_Step != (int)ReticleCheck_LowerCam_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "하부 카메라 레티클 글래스 센터 확인 진행중입니다.");
+                return;
+            }
+            //if (waferProbeAlign.m_nSafetyPos_Move_Step != (int)SafetyPos_Move_Step.None)
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Information !", "안전 위치로 이동중입니다.");
+            //    return;
+            //}
+            if (waferProbeAlign.m_nWafer_Loading_Ready_Step != (int)WaferLoading_Ready_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "웨이퍼 로딩 위치로 이동중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nWafer_ProbeCard_Packing_Step != (int)WaferProbeCard_Packing_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 패킹 작업 진행중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Step != (int)WaferProbeCard_Unpacking_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 작업 진행중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Ready_Step != (int)WaferProbeCard_Unpacking_Ready_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 준비 위치로 이동중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nProbeCard_Locking_Step != (int)ProbeCard_Locking_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "프로브 카드 고정 작업 진행중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nProbeCard_Loading_Ready_Step != (int)ProbeCard_Loading_Ready_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "프로브 카드 로딩 위치로 이동중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nPAK_AirLine_Check_Step != (int)PAK_AirLine_Check_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "PAK 공압 관로 상태 확인 작업 진행중입니다.");
+                return;
+            }
+
+            if (waferProbeAlign.m_nSafetyPos_Move_Step == (int)WaferProbeAlign.SafetyPos_Move_Step.None)
+            {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "안전 위치로 이동하시겠습니까?"))
+                    return;
+
+                waferProbeAlign.m_nSafetyPos_Move_Step = (int)WaferProbeAlign.SafetyPos_Move_Step.Start;
+                waferProbeAlign.timer_SubWork.Enabled = true;
+            }
+            else
+            {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "안전 위치로 이동 동작을 중지하시겠습니까?"))
+                    return;
+
+                waferProbeAlign.timer_SubWork.Enabled = false;
+                waferProbeAlign.m_nSafetyPos_Move_Step = (int)WaferProbeAlign.SafetyPos_Move_Step.None;
             }
         }
     }

@@ -776,6 +776,18 @@ namespace QMC.Common.Modules
 
         #region Variable And Function
 
+        //  Manual Packing Step
+        public int m_nManualPacking_Step {  set; get; }
+
+        public enum ManualPackingStep : int
+        {
+            NONE = 0,
+            STEP1_OK = 1,
+            STEP2_OK = 1,
+        }
+
+
+
         public enum VisionType : int
         {
             NONE = 0,
@@ -1604,6 +1616,8 @@ namespace QMC.Common.Modules
             m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
             m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step.None;
 
+            m_nManualPacking_Step = (int)ManualPackingStep.NONE;
+
             m_bProbeCard_TiltCheck_Only = false;               //  ProbeCard Tilt Check Only
             m_bWafer_Align_Only = false;                       //  Wafer Align Only
 
@@ -2200,6 +2214,8 @@ namespace QMC.Common.Modules
                     Equipment.MachineStop_byAlarm = false;
 
                     //m_bFindFirstAlignMarkOnly = false;
+
+                    m_nManualPacking_Step = (int)ManualPackingStep.NONE;
 
                     m_nWaferAlign_Count = 0;
 
@@ -6820,6 +6836,8 @@ namespace QMC.Common.Modules
                     m_bWafer_ThetaAlign_OK = false;
                     m_bWafer_XYAlign_OK = false;
 
+                    m_nManualPacking_Step = (int)ManualPackingStep.NONE;
+
                     m_bHomeOK = false;
 
                     m_dWafer_ProbeCard_PackingPos_Axis_U = -1;                  //  패킹할 때의 UVW Stage 좌표 (언패킹 시 사용한다.)
@@ -11293,6 +11311,7 @@ namespace QMC.Common.Modules
                         }
                     }
 
+                    m_nManualPacking_Step = (int)ManualPackingStep.NONE;
 
                     timer_MainWork.Enabled = false;
 
