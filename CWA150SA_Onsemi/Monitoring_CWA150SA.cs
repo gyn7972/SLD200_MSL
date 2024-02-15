@@ -694,7 +694,7 @@ namespace CWA150SA_Onsemi300
             //  버튼 활성화 여부
             if (waferProbeAlign.m_bHomeOK)
             {
-                btnMainWork_Start.Enabled = true;
+                //btnMainWork_Start.Enabled = true;
 
                 if (waferProbeAlign.m_nWaferProbeAlign_MainStep == (int)WaferProbeAlign.WaferProbeAlign_Step.None)
                 {
@@ -709,7 +709,7 @@ namespace CWA150SA_Onsemi300
             {
                 //if (btnJobFile_Load.Enabled)        btnJobFile_Load.Enabled = false;
                 if (!btnHomeAll.Enabled)            btnHomeAll.Enabled = true;
-                if (btnMainWork_Start.Enabled)      btnMainWork_Start.Enabled = false;
+                //if (btnMainWork_Start.Enabled)      btnMainWork_Start.Enabled = false;
             }
 
             ////  가공 상태 메세지 표시
@@ -2618,6 +2618,9 @@ namespace CWA150SA_Onsemi300
 
             waferProbeAlign.m_bProbeCard_TiltCheck_Only = false;               //  ProbeCard Tilt Check Only
             waferProbeAlign.m_bWafer_Align_Only = false;                       //  Wafer Align Only
+
+            //  얼라인 버튼을 누르면 수동 패킹 탭으로 변경 (얼라인 후 수동으로 패킹 해야 하기 때문에, 미리 페이지를 수동패킹 페이지로 변경한다.)
+            tabControl_User.SelectedIndex = 0;                                  //  0: 수동 패킹        1: 패킹 오프셋 변경        2: 레티클 글래스 위치 변경
 
             if (!waferProbeAlign.m_bHomeOK)
             {

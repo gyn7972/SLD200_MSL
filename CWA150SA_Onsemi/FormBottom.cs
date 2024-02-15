@@ -519,34 +519,60 @@ namespace CWA150SA_Onsemi300
             }
 
 
-            //  실내 조명 상태
-            if (CommonModule.Instance.TowerLamp.IsLamp0())
+            //  ProbeCard Clamp Type 에 따라 UI 변경
+            if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A)
             {
-                if (button_Lamp0.BackColor != Color.GreenYellow)
+                if (button_Lamp0.Visible)
                 {
-                    button_Lamp0.BackColor = Color.GreenYellow;
+                    button_Lamp0.Visible = false;
                 }
-            }
-            else
-            {
-                if (button_Lamp0.BackColor != Color.LightGray)
-                {
-                    button_Lamp0.BackColor = Color.LightGray;
-                }
-            }
 
-            if (CommonModule.Instance.TowerLamp.IsLamp1())
-            {
-                if (button_Lamp1.BackColor != Color.GreenYellow)
+                if (button_Lamp1.Visible)
                 {
-                    button_Lamp1.BackColor = Color.GreenYellow;
-                }
+                    button_Lamp1.Visible = false;
+                }                
             }
-            else
+            else if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_B)
             {
-                if (button_Lamp1.BackColor != Color.LightGray)
+                if (!button_Lamp0.Visible)
                 {
-                    button_Lamp1.BackColor = Color.LightGray;
+                    button_Lamp0.Visible = true;
+                }
+
+                if (!button_Lamp1.Visible)
+                {
+                    button_Lamp1.Visible = true;
+                }
+
+                //  실내 조명 상태
+                if (CommonModule.Instance.TowerLamp.IsLamp0())
+                {
+                    if (button_Lamp0.BackColor != Color.GreenYellow)
+                    {
+                        button_Lamp0.BackColor = Color.GreenYellow;
+                    }
+                }
+                else
+                {
+                    if (button_Lamp0.BackColor != Color.LightGray)
+                    {
+                        button_Lamp0.BackColor = Color.LightGray;
+                    }
+                }
+
+                if (CommonModule.Instance.TowerLamp.IsLamp1())
+                {
+                    if (button_Lamp1.BackColor != Color.GreenYellow)
+                    {
+                        button_Lamp1.BackColor = Color.GreenYellow;
+                    }
+                }
+                else
+                {
+                    if (button_Lamp1.BackColor != Color.LightGray)
+                    {
+                        button_Lamp1.BackColor = Color.LightGray;
+                    }
                 }
             }
         }
