@@ -77,7 +77,7 @@ namespace CWA150SA_Onsemi300
 
 
         Button[] control = new Button[Enum.GetValues(typeof(TopButtons)).Length];
-        string path = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName;
+        //string path = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName;
         public void CreateButton()
         {
             foreach (TopButtons item in Enum.GetValues(typeof(TopButtons)))

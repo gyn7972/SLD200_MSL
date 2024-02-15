@@ -18,7 +18,7 @@ namespace CWA150SA_Onsemi300
 
         protected Size m_imagesize = new Size(30, 25);
 
-        public string m_path = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName;
+        //public string m_path = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName;
         public FormAlarm()
             : base(FormType.withButton.ToString(), "Alarm Viewer")
 

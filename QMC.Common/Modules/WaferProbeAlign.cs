@@ -1602,6 +1602,7 @@ namespace QMC.Common.Modules
             m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
             m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
             m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
+            m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step.None;
 
             m_bProbeCard_TiltCheck_Only = false;               //  ProbeCard Tilt Check Only
             m_bWafer_Align_Only = false;                       //  Wafer Align Only
@@ -11051,7 +11052,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "Machine Type A 시작");
 
-                    m_nPAK_AirLine_Check_Step = (int)WaferProbeCard_Packing_Step.Top_Cover_Up;
+                    m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.Top_Cover_Up;
                     break;
 
 

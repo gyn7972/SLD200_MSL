@@ -143,7 +143,7 @@ namespace CWA150SA_Onsemi300
         #region Method
         private Button[] control = new Button[Enum.GetValues(typeof(ButtonBottomType)).Length];
         private Button[] StartAndStopButton = new Button[Enum.GetValues(typeof(ButtonControl)).Length];
-        private string path = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName;
+        //private string path = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName;
 
 
         private void FlowPanelBottom()
