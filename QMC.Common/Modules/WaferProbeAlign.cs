@@ -11051,7 +11051,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "Machine Type A 시작");
 
-                    m_nPAK_AirLine_Check_Step = (int)WaferProbeCard_Packing_Step.Top_Cover_Up;
+                    m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.Top_Cover_Up;
                     break;
 
 
