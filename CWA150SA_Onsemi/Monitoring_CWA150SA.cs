@@ -1323,9 +1323,63 @@ namespace CWA150SA_Onsemi300
 
 
             ///////////////////////////////////////////////////////////////////////////////////////
+            //  비상 정지 시
+            //
+            if (!waferProbeAlign.waferProbeAlignParameter.DI_OpSwitch_EMG())
+            {
+                //  Main Work 타이머
+                waferProbeAlign.timer_MainWork.Enabled = false;
+
+                //  Sub Work 타이머
+                waferProbeAlign.timer_SubWork.Enabled = false;
+
+                //  Product Align 타이머
+                waferProbeAlign.timer_VisionAlign.Enabled = false;
+
+                //  Motion 홈 실행 타이머
+                waferProbeAlign.timer_Motion_Home.Enabled = false;
+
+                //  Reticle Glass check 타이머
+                waferProbeAlign.timer_ReticleGlass_Check.Enabled = false;
+
+
+                waferProbeAlign.m_nHomeStep = (int)Home_Step.None;
+                waferProbeAlign.m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+                waferProbeAlign.m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                waferProbeAlign.m_nReticleCheck_UpperCam_Step = (int)ReticleCheck_UpperCam_Step.None;
+                waferProbeAlign.m_nReticleCheck_LowerCam_Step = (int)ReticleCheck_LowerCam_Step.None;
+                waferProbeAlign.m_nSafetyPos_Move_Step = (int)SafetyPos_Move_Step.None;
+                waferProbeAlign.m_nWafer_Loading_Ready_Step = (int)WaferLoading_Ready_Step.None;
+                waferProbeAlign.m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+                waferProbeAlign.m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+                waferProbeAlign.m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
+                waferProbeAlign.m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
+                waferProbeAlign.m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
+                waferProbeAlign.m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step.None;
+                waferProbeAlign.m_nManualPacking_Step = (int)ManualPackingStep.NONE;
+
+
+                Equipment.MachineStop_byUser = true;
+
+                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.U, 500);
+                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.V, 500);
+                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.W, 500);
+                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, 500);
+                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.X, 500);
+                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.Y, 500);
+                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.VZ, 500);
+
+                waferProbeAlign.m_bHomeOK = false;
+            }
+            //
+            ///////////////////////////////////////////////////////////////////////////////////////
+
+
+            ///////////////////////////////////////////////////////////////////////////////////////
             //  Input
             //   
-            
+
             if (CommonModule.Instance.OperationButtons.IsStop() ||
                 CommonModule.Instance.OperationButtons.IsReset())
             {
