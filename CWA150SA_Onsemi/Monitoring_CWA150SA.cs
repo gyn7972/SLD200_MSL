@@ -3957,7 +3957,7 @@ namespace CWA150SA_Onsemi300
             if (waferProbeAlign.m_nReticleCheck_UpperCam_Step == (int)WaferProbeAlign.ReticleCheck_UpperCam_Step.None)
             {
                 var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Reticle Glass 확인 위치로 이동하시겠습니까?\r\n\r\n[Upper Camera]"))
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Reticle Glass 확인 위치로 이동하시겠습니까?\r\n\r\n[Upper Camera]\r\n\r\n##  프로브 카드는 반드시 제거해야 합니다. [충돌 경고]  ##"))
                     return;
 
                 waferProbeAlign.m_nReticleCheck_UpperCam_Step = (int)WaferProbeAlign.ReticleCheck_UpperCam_Step.Start;
