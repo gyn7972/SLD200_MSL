@@ -15,6 +15,8 @@ using QMC.Process.WaferProbeAlign.Parts;
 using SpiralLab.Sirius;
 using Timer = System.Windows.Forms.Timer;
 using Point = System.Drawing.Point;
+using System.Reflection;
+using Module = QMC.Common.Module;
 
 namespace CWA150SA_Onsemi300
 {
@@ -55,6 +57,8 @@ namespace CWA150SA_Onsemi300
 
             this.LaserParameterGrid.Size = new Size((Configuration.MainSize.Width / 2) - 10, Configuration.ContentSize.Height - Configuration.PanelSize.Height * 7 + 58);
             this.LaserParameterGrid.Location = new Point(LaserPositionPropertyGrid.Location.X + LaserPositionPropertyGrid.Size.Width + 20, Configuration.ContentLocation.Y + Configuration.PanelSize.Height * 1 + Configuration.ButtonSize.Height);
+
+            SetLabelColumnWidth(LaserParameterGrid, 10);
 
             //this.baseLabelModuleConfiguration.Size = new Size(this.LaserPositionGrid.Width + LaserPositionPropertyGrid.Size.Width, Configuration.ButtonSize.Height);
             this.baseLabelModuleConfiguration.Size = new Size(this.LaserPositionGrid.Width, Configuration.ButtonSize.Height);
@@ -114,6 +118,15 @@ namespace CWA150SA_Onsemi300
 
                 waferProbeAlign.Machine_Parameter_Load();
             }
+        }
+
+        public static void SetLabelColumnWidth(PropertyGrid grid, int width)
+        {
+            FieldInfo fi = grid.GetType().BaseType.GetField("gridView", BindingFlags.Instance | BindingFlags.NonPublic);
+            object view = fi.GetValue(grid);
+            MethodInfo mi = view.GetType().GetMethod("MoveSplitterTo", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            mi.Invoke(view, new object[] { width });
         }
 
         private void ButtonCommonParam_Save_Click(object sender, System.EventArgs e)
