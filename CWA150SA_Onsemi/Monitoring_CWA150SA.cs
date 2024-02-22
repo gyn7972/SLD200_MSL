@@ -2422,47 +2422,100 @@ namespace CWA150SA_Onsemi300
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "장비를 초기화 하시겠습니까?"))
                     return;
 
-                //if (!waferProbeAlign.waferProbeAlignParameter.DI_FrontDoor() && waferProbeAlign.Config.ParamConfig.DoorInterlock_Enable)
-                //{
-                //    var mb1 = new MessageBoxOk();
-                //    mb1.ShowDialog("Warning !", "Front Door 가 열려있습니다.");
-                //    return;
-                //}
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //  이것저것 다 리셋 - 시작
+                waferProbeAlign.m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+                waferProbeAlign.m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                waferProbeAlign.m_nReticleCheck_UpperCam_Step = (int)ReticleCheck_UpperCam_Step.None;
+                waferProbeAlign.m_nReticleCheck_LowerCam_Step = (int)ReticleCheck_LowerCam_Step.None;
+                waferProbeAlign.m_nSafetyPos_Move_Step = (int)SafetyPos_Move_Step.None;
+                waferProbeAlign.m_nWafer_Loading_Ready_Step = (int)WaferLoading_Ready_Step.None;
+                waferProbeAlign.m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+                waferProbeAlign.m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+                waferProbeAlign.m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
+                waferProbeAlign.m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
+                waferProbeAlign.m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
+                waferProbeAlign.m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step.None;
+                waferProbeAlign.m_nManualPacking_Step = (int)ManualPackingStep.NONE;
 
-                //if (!waferProbeAlign.waferProbeAlignParameter.DI_LeftDoor() && waferProbeAlign.Config.ParamConfig.DoorInterlock_Enable)
-                //{
-                //    var mb1 = new MessageBoxOk();
-                //    mb1.ShowDialog("Warning !", "Left Door 가 열려있습니다.");
-                //    return;
-                //}
+                waferProbeAlign.m_bProbeCard_TiltCheck_Only = false;               //  ProbeCard Tilt Check Only
+                waferProbeAlign.m_bWafer_Align_Only = false;                       //  Wafer Align Only
 
-                //if (!waferProbeAlign.waferProbeAlignParameter.DI_RightDoor() && waferProbeAlign.Config.ParamConfig.DoorInterlock_Enable)
-                //{
-                //    var mb1 = new MessageBoxOk();
-                //    mb1.ShowDialog("Warning !", "Right Door 가 열려있습니다.");
-                //    return;
-                //}
+                waferProbeAlign.m_bFindAlignMark_OK = false;
 
-                //if (!waferProbeAlign.waferProbeAlignParameter.DI_RearDoor() && waferProbeAlign.Config.ParamConfig.DoorInterlock_Enable)
-                //{
-                //    var mb1 = new MessageBoxOk();
-                //    mb1.ShowDialog("Warning !", "Rear Door 가 열려있습니다.");
-                //    return;
-                //}
+                waferProbeAlign.m_bProbeCard_XYAlign_ErrorCheck_OK = false;         //  Probe Card XY Align Error Check OK
+                waferProbeAlign.m_bWafer_XYAlign_ErrorCheck_OK = false;             //  Wafer XY Align Error Check OK
 
-                //  여기서 카메라 초기화 해 줌
-                //waferProbeAlign.Camera.BeginInitialize();
-                //waferProbeAlign.Camera_LowRes.BeginInitialize();
-                //waferProbeAlign.Camera_Upper.Initialize();
-                //waferProbeAlign.Camera_Lower.Initialize();
+                waferProbeAlign.m_bPAK_AirLineCheck_Complete = false;
+                waferProbeAlign.m_bPAK_AirLineCheck_OK = true;                      //  PAK 공압 라인이 막혔는지 확인
 
-                //Task<int> task = dispenserAndScale.Camera.BeginInitialize();
-                //ProgressForm progressForm = new ProgressForm("Camera Initialize", "Working...", task);
-                //progressForm.StopProcess += ProgressForm_StopProcess;
-                //progressForm.ShowDialog();
+                waferProbeAlign.m_bMyWaferAlign_fromManualMode = false;
+
+                Equipment.MachineStop_byUser = true;
+
+
+                //  Main Work 타이머
+                waferProbeAlign.timer_MainWork.Enabled = false;
+
+                //  Sub Work 타이머
+                waferProbeAlign.timer_SubWork.Enabled = false;
+
+                //  Product Align 타이머
+                waferProbeAlign.timer_VisionAlign.Enabled = false;
+
+                //  Motion 홈 실행 타이머
+                waferProbeAlign.timer_Motion_Home.Enabled = false;
+
+                //  Reticle Glass check 타이머
+                waferProbeAlign.timer_ReticleGlass_Check.Enabled = false;
+
+
+                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.U, 500);
+                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.V, 500);
+                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.W, 500);
+                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, 500);
+                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.X, 500);
+                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.Y, 500);
+                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.VZ, 500);
+
+
+
+                waferProbeAlign.m_bUpperCam_AlignPattern_Reset = false;
+                waferProbeAlign.m_bLowerCam_AlignPattern_Reset = false;
+
+                waferProbeAlign.m_strProbeCard_TiltData_for_Display = "- - -";
+                waferProbeAlign.m_strWafer_TiltData_for_Display = "- - -";
+
+                waferProbeAlign.m_dWafer_ProbeCard_PackingPos_Axis_U = -1;                  //  패킹할 때의 UVW Stage 좌표 (언패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_PackingPos_Axis_V = -1;                  //  패킹할 때의 UVW Stage 좌표 (언패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_PackingPos_Axis_W = -1;                  //  패킹할 때의 UVW Stage 좌표 (언패킹 시 사용한다.)
+
+                waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_U = -1;                    //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_V = -1;                    //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_W = -1;                    //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+
+                waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Count_Total = 3;              //  오차 확인 위치 총 개수
+                waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Count = 0;                    //  오차 확인 위치 카운트 (3개,   0: TOP, 1: MID, 2: BOT)
+
+                for (int nPos = 0; nPos < 3; nPos++)
+                {
+                    waferProbeAlign.AlignmentErrorCheck_Position[nPos].X = 0.0;
+                    waferProbeAlign.AlignmentErrorCheck_Position[nPos].Y = 0.0;
+
+                    for (int nSide = 0; nSide < 2; nSide++)
+                    {
+                        waferProbeAlign.AlignmentErrorCheck_Status[nPos, nSide] = false;
+
+                        waferProbeAlign.AlignmentErrorCheck_MarkPosition[nPos, nSide].X = 0.0;
+                        waferProbeAlign.AlignmentErrorCheck_MarkPosition[nPos, nSide].Y = 0.0;
+                    }
+                }
+                //  이것저것 다 리셋 - 끝
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
                 waferProbeAlign.m_bHomeOK = false;
-
                 waferProbeAlign.m_nHomeStep = (int)Home_Step.Start;
 
                 //  Motion 홈 실행 타이머

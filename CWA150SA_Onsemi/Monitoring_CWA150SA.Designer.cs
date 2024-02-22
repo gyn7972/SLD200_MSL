@@ -50,6 +50,8 @@ namespace CWA150SA_Onsemi300
             this.btnReticlePos_LowerCam_GO = new System.Windows.Forms.Button();
             this.btnReticlePos_UpperCam_GO = new System.Windows.Forms.Button();
             this.groupBoxAlignCheckPosParameter = new System.Windows.Forms.GroupBox();
+            this.baseLabel8 = new CWA150SA_Onsemi300.BaseLabel();
+            this.baseButton_CameraY_GoPos_Safety = new CWA150SA_Onsemi300.BaseButton();
             this.baseLabel19 = new CWA150SA_Onsemi300.BaseLabel();
             this.baseLabel17 = new CWA150SA_Onsemi300.BaseLabel();
             this.baseLabel15 = new CWA150SA_Onsemi300.BaseLabel();
@@ -137,8 +139,6 @@ namespace CWA150SA_Onsemi300
             this.baseLabelReticlePositionChange2_Title = new CWA150SA_Onsemi300.BaseLabel();
             this.baseLabelReticlePositionChange1_Title = new CWA150SA_Onsemi300.BaseLabel();
             this.baseLabelReticlePositionChange1 = new CWA150SA_Onsemi300.BaseLabel();
-            this.m_visionImageViewer_Lower = new QMC.Common.Hmi.VisionImageViewer();
-            this.m_visionImageViewer_Upper = new QMC.Common.Hmi.VisionImageViewer();
             this.lblLowerCamera_AlignData = new CWA150SA_Onsemi300.BaseLabel();
             this.baseLabelAngle_Lower = new CWA150SA_Onsemi300.BaseLabel();
             this.lblUpperCamera_AlignData = new CWA150SA_Onsemi300.BaseLabel();
@@ -202,13 +202,14 @@ namespace CWA150SA_Onsemi300
             this.baseLabelTeachingImage_Upper1 = new CWA150SA_Onsemi300.BaseLabel();
             this.baseLabel_WaferChuck_Camera1 = new CWA150SA_Onsemi300.BaseLabel();
             this.baseLabel_ProbeCard_Camera1 = new CWA150SA_Onsemi300.BaseLabel();
+            this.m_visionImageViewer_Lower = new QMC.Common.Hmi.VisionImageViewer();
+            this.m_visionImageViewer_Upper = new QMC.Common.Hmi.VisionImageViewer();
             this.baseGroupBox1 = new CWA150SA_Onsemi300.BaseGroupBox();
             this.baseButtonChangeRecipe = new CWA150SA_Onsemi300.BaseButton();
             this.baseTextBoxCurrentRecipe = new CWA150SA_Onsemi300.BaseTextBox();
             this.baseLabelCurrentRecipe = new CWA150SA_Onsemi300.BaseLabel();
             this.lblMachine_Status = new CWA150SA_Onsemi300.BaseLabel();
             this.lblStatus_ScannerPowerMeter_Connected = new CWA150SA_Onsemi300.BaseLabel();
-            this.baseButton_CameraY_GoPos_Safety = new CWA150SA_Onsemi300.BaseButton();
             this.groupBoxStatus.SuspendLayout();
             this.groupBoxMainPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMainVacuumCheck)).BeginInit();
@@ -221,8 +222,6 @@ namespace CWA150SA_Onsemi300
             this.tabPage_ManualPacking.SuspendLayout();
             this.tabPage_PackingOffsetChange.SuspendLayout();
             this.tabPage_ReticlePositionChange.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_Lower)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_Upper)).BeginInit();
             this.baseGroupBox_CycleButton.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbePackingCheck)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWaferVacuumCheck)).BeginInit();
@@ -241,6 +240,8 @@ namespace CWA150SA_Onsemi300
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeUnpackingCyl_Down)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeUnpackingCyl_Up)).BeginInit();
             this.baseGroupBox_ManualButton.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_Lower)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_Upper)).BeginInit();
             this.baseGroupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -483,6 +484,7 @@ namespace CWA150SA_Onsemi300
             // groupBoxAlignCheckPosParameter
             // 
             this.groupBoxAlignCheckPosParameter.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.groupBoxAlignCheckPosParameter.Controls.Add(this.baseLabel8);
             this.groupBoxAlignCheckPosParameter.Controls.Add(this.baseButton_CameraY_GoPos_Safety);
             this.groupBoxAlignCheckPosParameter.Controls.Add(this.baseLabel19);
             this.groupBoxAlignCheckPosParameter.Controls.Add(this.baseLabel17);
@@ -520,6 +522,32 @@ namespace CWA150SA_Onsemi300
             this.groupBoxAlignCheckPosParameter.TabIndex = 188;
             this.groupBoxAlignCheckPosParameter.TabStop = false;
             this.groupBoxAlignCheckPosParameter.Text = " [ 얼라인 위치 확인 ] ";
+            // 
+            // baseLabel8
+            // 
+            this.baseLabel8.AutoSize = true;
+            this.baseLabel8.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseLabel8.ForeColor = System.Drawing.Color.White;
+            this.baseLabel8.Location = new System.Drawing.Point(7, 28);
+            this.baseLabel8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.baseLabel8.Name = "baseLabel8";
+            this.baseLabel8.Size = new System.Drawing.Size(37, 38);
+            this.baseLabel8.TabIndex = 210;
+            this.baseLabel8.Text = "판정\r\n결과";
+            // 
+            // baseButton_CameraY_GoPos_Safety
+            // 
+            this.baseButton_CameraY_GoPos_Safety.BackColor = System.Drawing.Color.LightGray;
+            this.baseButton_CameraY_GoPos_Safety.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.baseButton_CameraY_GoPos_Safety.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseButton_CameraY_GoPos_Safety.ForeColor = System.Drawing.Color.DarkRed;
+            this.baseButton_CameraY_GoPos_Safety.Location = new System.Drawing.Point(89, 27);
+            this.baseButton_CameraY_GoPos_Safety.Name = "baseButton_CameraY_GoPos_Safety";
+            this.baseButton_CameraY_GoPos_Safety.Size = new System.Drawing.Size(113, 40);
+            this.baseButton_CameraY_GoPos_Safety.TabIndex = 209;
+            this.baseButton_CameraY_GoPos_Safety.Text = "카메라 안전 위치\r\n이동";
+            this.baseButton_CameraY_GoPos_Safety.UseVisualStyleBackColor = false;
+            this.baseButton_CameraY_GoPos_Safety.Click += new System.EventHandler(this.baseButton_CameraY_GoPos_Safety_Click);
             // 
             // baseLabel19
             // 
@@ -784,11 +812,11 @@ namespace CWA150SA_Onsemi300
             // baseLabel9
             // 
             this.baseLabel9.BackColor = System.Drawing.Color.Red;
-            this.baseLabel9.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseLabel9.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel9.ForeColor = System.Drawing.Color.White;
-            this.baseLabel9.Location = new System.Drawing.Point(44, 27);
+            this.baseLabel9.Location = new System.Drawing.Point(44, 47);
             this.baseLabel9.Name = "baseLabel9";
-            this.baseLabel9.Size = new System.Drawing.Size(33, 40);
+            this.baseLabel9.Size = new System.Drawing.Size(33, 19);
             this.baseLabel9.TabIndex = 146;
             this.baseLabel9.Text = "NG";
             this.baseLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -796,11 +824,11 @@ namespace CWA150SA_Onsemi300
             // baseLabel_OK
             // 
             this.baseLabel_OK.BackColor = System.Drawing.Color.Lime;
-            this.baseLabel_OK.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseLabel_OK.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel_OK.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_OK.Location = new System.Drawing.Point(11, 27);
+            this.baseLabel_OK.Location = new System.Drawing.Point(44, 28);
             this.baseLabel_OK.Name = "baseLabel_OK";
-            this.baseLabel_OK.Size = new System.Drawing.Size(33, 40);
+            this.baseLabel_OK.Size = new System.Drawing.Size(33, 19);
             this.baseLabel_OK.TabIndex = 145;
             this.baseLabel_OK.Text = "OK";
             this.baseLabel_OK.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1752,46 +1780,6 @@ namespace CWA150SA_Onsemi300
             this.baseLabelReticlePositionChange1.Text = "\"[상부 카메라]\r\n레티클 글래스 센터\r\n확인 위치 이동\"\r\n\r\n버튼 클릭";
             this.baseLabelReticlePositionChange1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // m_visionImageViewer_Lower
-            // 
-            this.m_visionImageViewer_Lower.BackColor = System.Drawing.Color.Black;
-            this.m_visionImageViewer_Lower.Camera = null;
-            this.m_visionImageViewer_Lower.CameraSwitch = null;
-            this.m_visionImageViewer_Lower.FrameRate = 1D;
-            this.m_visionImageViewer_Lower.InputImage = null;
-            this.m_visionImageViewer_Lower.IsViewCustomizedImage = false;
-            this.m_visionImageViewer_Lower.Location = new System.Drawing.Point(515, 26);
-            this.m_visionImageViewer_Lower.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.m_visionImageViewer_Lower.Name = "m_visionImageViewer_Lower";
-            this.m_visionImageViewer_Lower.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
-            this.m_visionImageViewer_Lower.Simulated = false;
-            this.m_visionImageViewer_Lower.Size = new System.Drawing.Size(503, 422);
-            this.m_visionImageViewer_Lower.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.m_visionImageViewer_Lower.TabIndex = 106;
-            this.m_visionImageViewer_Lower.TabStop = false;
-            this.m_visionImageViewer_Lower.UpdateDelayTime = 160;
-            this.m_visionImageViewer_Lower.VisibleCrossLine = true;
-            // 
-            // m_visionImageViewer_Upper
-            // 
-            this.m_visionImageViewer_Upper.BackColor = System.Drawing.Color.Black;
-            this.m_visionImageViewer_Upper.Camera = null;
-            this.m_visionImageViewer_Upper.CameraSwitch = null;
-            this.m_visionImageViewer_Upper.FrameRate = 1D;
-            this.m_visionImageViewer_Upper.InputImage = null;
-            this.m_visionImageViewer_Upper.IsViewCustomizedImage = false;
-            this.m_visionImageViewer_Upper.Location = new System.Drawing.Point(4, 26);
-            this.m_visionImageViewer_Upper.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.m_visionImageViewer_Upper.Name = "m_visionImageViewer_Upper";
-            this.m_visionImageViewer_Upper.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
-            this.m_visionImageViewer_Upper.Simulated = false;
-            this.m_visionImageViewer_Upper.Size = new System.Drawing.Size(503, 422);
-            this.m_visionImageViewer_Upper.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.m_visionImageViewer_Upper.TabIndex = 105;
-            this.m_visionImageViewer_Upper.TabStop = false;
-            this.m_visionImageViewer_Upper.UpdateDelayTime = 160;
-            this.m_visionImageViewer_Upper.VisibleCrossLine = true;
-            // 
             // lblLowerCamera_AlignData
             // 
             this.lblLowerCamera_AlignData.BackColor = System.Drawing.Color.Cornsilk;
@@ -2674,6 +2662,46 @@ namespace CWA150SA_Onsemi300
             this.baseLabel_ProbeCard_Camera1.Text = "프로브 카드";
             this.baseLabel_ProbeCard_Camera1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // m_visionImageViewer_Lower
+            // 
+            this.m_visionImageViewer_Lower.BackColor = System.Drawing.Color.Black;
+            this.m_visionImageViewer_Lower.Camera = null;
+            this.m_visionImageViewer_Lower.CameraSwitch = null;
+            this.m_visionImageViewer_Lower.FrameRate = 1D;
+            this.m_visionImageViewer_Lower.InputImage = null;
+            this.m_visionImageViewer_Lower.IsViewCustomizedImage = false;
+            this.m_visionImageViewer_Lower.Location = new System.Drawing.Point(515, 26);
+            this.m_visionImageViewer_Lower.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.m_visionImageViewer_Lower.Name = "m_visionImageViewer_Lower";
+            this.m_visionImageViewer_Lower.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.m_visionImageViewer_Lower.Simulated = false;
+            this.m_visionImageViewer_Lower.Size = new System.Drawing.Size(503, 422);
+            this.m_visionImageViewer_Lower.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.m_visionImageViewer_Lower.TabIndex = 106;
+            this.m_visionImageViewer_Lower.TabStop = false;
+            this.m_visionImageViewer_Lower.UpdateDelayTime = 160;
+            this.m_visionImageViewer_Lower.VisibleCrossLine = true;
+            // 
+            // m_visionImageViewer_Upper
+            // 
+            this.m_visionImageViewer_Upper.BackColor = System.Drawing.Color.Black;
+            this.m_visionImageViewer_Upper.Camera = null;
+            this.m_visionImageViewer_Upper.CameraSwitch = null;
+            this.m_visionImageViewer_Upper.FrameRate = 1D;
+            this.m_visionImageViewer_Upper.InputImage = null;
+            this.m_visionImageViewer_Upper.IsViewCustomizedImage = false;
+            this.m_visionImageViewer_Upper.Location = new System.Drawing.Point(4, 26);
+            this.m_visionImageViewer_Upper.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.m_visionImageViewer_Upper.Name = "m_visionImageViewer_Upper";
+            this.m_visionImageViewer_Upper.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.m_visionImageViewer_Upper.Simulated = false;
+            this.m_visionImageViewer_Upper.Size = new System.Drawing.Size(503, 422);
+            this.m_visionImageViewer_Upper.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.m_visionImageViewer_Upper.TabIndex = 105;
+            this.m_visionImageViewer_Upper.TabStop = false;
+            this.m_visionImageViewer_Upper.UpdateDelayTime = 160;
+            this.m_visionImageViewer_Upper.VisibleCrossLine = true;
+            // 
             // baseGroupBox1
             // 
             this.baseGroupBox1.Controls.Add(this.baseButtonChangeRecipe);
@@ -2756,20 +2784,6 @@ namespace CWA150SA_Onsemi300
             this.lblStatus_ScannerPowerMeter_Connected.Text = "Power Meter #2  [Stage]";
             this.lblStatus_ScannerPowerMeter_Connected.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // baseButton_CameraY_GoPos_Safety
-            // 
-            this.baseButton_CameraY_GoPos_Safety.BackColor = System.Drawing.Color.LightGray;
-            this.baseButton_CameraY_GoPos_Safety.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.baseButton_CameraY_GoPos_Safety.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.baseButton_CameraY_GoPos_Safety.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButton_CameraY_GoPos_Safety.Location = new System.Drawing.Point(89, 27);
-            this.baseButton_CameraY_GoPos_Safety.Name = "baseButton_CameraY_GoPos_Safety";
-            this.baseButton_CameraY_GoPos_Safety.Size = new System.Drawing.Size(113, 40);
-            this.baseButton_CameraY_GoPos_Safety.TabIndex = 209;
-            this.baseButton_CameraY_GoPos_Safety.Text = "카메라 안전 위치\r\n이동";
-            this.baseButton_CameraY_GoPos_Safety.UseVisualStyleBackColor = false;
-            this.baseButton_CameraY_GoPos_Safety.Click += new System.EventHandler(this.baseButton_CameraY_GoPos_Safety_Click);
-            // 
             // Monitoring_CWA150SA
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -2811,14 +2825,13 @@ namespace CWA150SA_Onsemi300
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTrainImage_Lower)).EndInit();
             this.groupBoxCameraOpticalAxisCheck.ResumeLayout(false);
             this.groupBoxAlignCheckPosParameter.ResumeLayout(false);
+            this.groupBoxAlignCheckPosParameter.PerformLayout();
             this.tabControl_User.ResumeLayout(false);
             this.tabPage_ManualPacking.ResumeLayout(false);
             this.tabPage_PackingOffsetChange.ResumeLayout(false);
             this.tabPage_PackingOffsetChange.PerformLayout();
             this.tabPage_ReticlePositionChange.ResumeLayout(false);
             this.tabPage_ReticlePositionChange.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_Lower)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_Upper)).EndInit();
             this.baseGroupBox_CycleButton.ResumeLayout(false);
             this.baseGroupBox_CycleButton.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbePackingCheck)).EndInit();
@@ -2838,6 +2851,8 @@ namespace CWA150SA_Onsemi300
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeUnpackingCyl_Down)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProbeUnpackingCyl_Up)).EndInit();
             this.baseGroupBox_ManualButton.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_Lower)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_Upper)).EndInit();
             this.baseGroupBox1.ResumeLayout(false);
             this.baseGroupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -3023,5 +3038,6 @@ namespace CWA150SA_Onsemi300
         private BaseButton baseButtonProbeClamp_FW;
         private BaseButton baseButtonProbeClamp_BW;
         private BaseButton baseButton_CameraY_GoPos_Safety;
+        private BaseLabel baseLabel8;
     }
 }

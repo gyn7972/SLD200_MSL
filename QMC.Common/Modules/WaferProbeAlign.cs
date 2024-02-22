@@ -917,7 +917,7 @@ namespace QMC.Common.Modules
             None = 0,
             Start,                                              //  시작
 
-
+            
             _MachineType_Check,                                 //  Machine Type 확인
 
 
@@ -2283,11 +2283,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Thin Chuck 이 감지되지 않음.", "Error");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        MessageBox.Show("Thin Chuck 이 감지되지 않음.", "Error");                        
                     }
                     else
                     {
@@ -2359,11 +2359,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
                         MessageBox.Show("Wafer 가 감지되지 않음.", "Error");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
                     }
                     break;
 
@@ -2401,11 +2401,11 @@ namespace QMC.Common.Modules
                             //  알람 정지 (LED Bar - Red Blink)
                             Equipment.MachineStop_byAlarm = true;
 
-                            timer_MainWork.Enabled = false;
-                            timer_SubWork.Enabled = false;
-
                             m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
                             m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step.None;
+
+                            timer_MainWork.Enabled = false;
+                            timer_SubWork.Enabled = false;
 
                             MessageBox.Show("PAK 공압라인 막힘 검사 완료.\r\n\r\n[ NG ]\r\n\r\n(PAK 관로 막힘)", "Error");
                         }
@@ -2417,11 +2417,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
-                        timer_MainWork.Enabled = false;
-                        timer_SubWork.Enabled = false;
-
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
                         m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step.None;
+
+                        timer_MainWork.Enabled = false;
+                        timer_SubWork.Enabled = false;
 
                         MessageBox.Show("PAK 공압라인 막힘 점검 실패. (Time Out)", "Error");
                     }
@@ -2489,11 +2489,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
                         MessageBox.Show("Vision XYZ 축, Safety 위치로 이동 실패.", "Error");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
                     }
                     break;
 
@@ -2559,11 +2559,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
                         MessageBox.Show("UVW 축, Wafer Loading 위치로 이동 실패.", "Error");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
                     }
                     break;
 
@@ -2588,11 +2588,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
                         MessageBox.Show("Elev. Z 축, Wafer Align 한계 높이를 초과하여 이동하려는 시도로 작업 중지.", "Information");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
                     }
                     else
                     {
@@ -2644,11 +2644,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
                         MessageBox.Show("Elev. Z 축, Wafer Align 위치로 이동 실패.", "Error");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
                     }
                     break;
 
@@ -2736,11 +2736,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
                         MessageBox.Show("Elev. Z 축이 Vision Y 축과 충돌하는 위치에 있어 작업 중지.", "Information");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
                     }
                     else
                     {
@@ -2796,11 +2796,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Vision XYZ 축, Probe Card Top Align 마크 위치로 이동 실패.", "Error");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        MessageBox.Show("Vision XYZ 축, Probe Card Top Align 마크 위치로 이동 실패.", "Error");                        
                     }
                     break;
 
@@ -2850,12 +2850,7 @@ namespace QMC.Common.Modules
 
                     if (Equipment.MachineStop_byUser == true)
                     {
-                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "작업 중지. (사용자에 의해 작업이 중지됨)");
-
-                        //if (!m_bAlignVisionThread_Use)
-                        {
-                            timer_MainWork.Enabled = false;
-                        }
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "작업 중지. (사용자에 의해 작업이 중지됨)");                        
 
                         m_bMyWaferAlign_fromManualMode = false;
                         //m_nMyWaferAlign_ManualMode_VisionType = (int)VisionType.NONE;
@@ -2870,6 +2865,11 @@ namespace QMC.Common.Modules
                         MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.X, 500);
                         MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.Y, 500);
                         MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, 500);
+
+                        //if (!m_bAlignVisionThread_Use)
+                        {
+                            timer_MainWork.Enabled = false;
+                        }
                     }
                     else
                     {
@@ -2912,6 +2912,10 @@ namespace QMC.Common.Modules
 
                             Equipment.MachineStop_byUser = true;
 
+                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
+                            timer_MainWork.Enabled = false;
+
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.U, 500);
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.V, 500);
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.W, 500);
@@ -2920,11 +2924,7 @@ namespace QMC.Common.Modules
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.Y, 500);
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, 500);
 
-                            timer_MainWork.Enabled = false;
-
-                            MessageBox.Show("상부 카메라, 1번 얼라인 마크 찾기 실패\r\n\r\n[Time Out]", "Error");
-
-                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                            MessageBox.Show("상부 카메라, 1번 얼라인 마크 찾기 실패\r\n\r\n[Time Out]", "Error");                            
                         }
                     }
                     else
@@ -2996,11 +2996,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축이 Vision Y 축과 충돌하는 위치에 있어 작업 중지.", "Information");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        MessageBox.Show("Elev. Z 축이 Vision Y 축과 충돌하는 위치에 있어 작업 중지.", "Information");                        
                     }
                     else
                     {
@@ -3056,11 +3056,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Vision XYZ 축, Bottom Align 마크 위치로 이동 실패.", "Error");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        MessageBox.Show("Vision XYZ 축, Bottom Align 마크 위치로 이동 실패.", "Error");                        
                     }
                     break;
 
@@ -3111,17 +3111,17 @@ namespace QMC.Common.Modules
                     if (Equipment.MachineStop_byUser == true)
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "작업 중지. (사용자에 의해 작업이 중지됨)");
-
-                        //if (!m_bAlignVisionThread_Use)
-                        {
-                            timer_MainWork.Enabled = false;
-                        }
-
+                        
                         m_bMyWaferAlign_fromManualMode = false;
                         //m_nMyWaferAlign_ManualMode_VisionType = (int)VisionType.NONE;
 
                         m_bProbeCard_TiltCheck_OK = false;
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
+                        //if (!m_bAlignVisionThread_Use)
+                        {
+                            timer_MainWork.Enabled = false;
+                        }
 
                         MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.U, 500);
                         MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.V, 500);
@@ -3172,6 +3172,10 @@ namespace QMC.Common.Modules
 
                             Equipment.MachineStop_byUser = true;
 
+                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
+                            timer_MainWork.Enabled = false;
+
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.U, 500);
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.V, 500);
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.W, 500);
@@ -3180,11 +3184,7 @@ namespace QMC.Common.Modules
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.Y, 500);
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, 500);
 
-                            timer_MainWork.Enabled = false;
-
-                            MessageBox.Show("상부 카메라, 2번 얼라인 마크 찾기 실패\r\n\r\n[Time Out]", "Error");
-
-                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                            MessageBox.Show("상부 카메라, 2번 얼라인 마크 찾기 실패\r\n\r\n[Time Out]", "Error");                            
                         }
                     }
                     else
@@ -3342,11 +3342,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축이 Vision Y 축과 충돌하는 위치에 있어 작업 중지.", "Information");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        MessageBox.Show("Elev. Z 축이 Vision Y 축과 충돌하는 위치에 있어 작업 중지.", "Information");                        
                     }
                     else
                     {
@@ -3402,11 +3402,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Vision XYZ 축, Top XY Align 마크 위치로 이동 실패.", "Error");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        MessageBox.Show("Vision XYZ 축, Top XY Align 마크 위치로 이동 실패.", "Error");                        
                     }
                     break;
 
@@ -3518,6 +3518,10 @@ namespace QMC.Common.Modules
 
                             Equipment.MachineStop_byUser = true;
 
+                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
+                            timer_MainWork.Enabled = false;
+
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.U, 500);
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.V, 500);
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.W, 500);
@@ -3526,11 +3530,7 @@ namespace QMC.Common.Modules
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.Y, 500);
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, 500);
 
-                            timer_MainWork.Enabled = false;
-
-                            MessageBox.Show("상부 카메라, 1번 얼라인 마크 찾기 실패\r\n\r\n[Time Out]", "Error");
-
-                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                            MessageBox.Show("상부 카메라, 1번 얼라인 마크 찾기 실패\r\n\r\n[Time Out]", "Error");                            
                         }
                     }
                     else
@@ -3851,11 +3851,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축이 Vision Y 축과 충돌하는 위치에 있어 작업 중지.", "Information");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        MessageBox.Show("Elev. Z 축이 Vision Y 축과 충돌하는 위치에 있어 작업 중지.", "Information");                        
                     }
                     else
                     {
@@ -3911,11 +3911,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Vision XYZ 축, Top Align 마크 위치로 이동 실패.", "Error");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        MessageBox.Show("Vision XYZ 축, Top Align 마크 위치로 이동 실패.", "Error");                        
                     }
                     break;
 
@@ -4027,6 +4027,10 @@ namespace QMC.Common.Modules
 
                             Equipment.MachineStop_byUser = true;
 
+                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
+                            timer_MainWork.Enabled = false;
+
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.U, 500);
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.V, 500);
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.W, 500);
@@ -4035,11 +4039,7 @@ namespace QMC.Common.Modules
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.Y, 500);
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, 500);
 
-                            timer_MainWork.Enabled = false;
-
-                            MessageBox.Show("하부 카메라, 1번 얼라인 마크 찾기 실패\r\n\r\n[Time Out]", "Error");
-
-                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                            MessageBox.Show("하부 카메라, 1번 얼라인 마크 찾기 실패\r\n\r\n[Time Out]", "Error");                            
                         }
                     }
                     else
@@ -4111,11 +4111,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축이 Vision Y 축과 충돌하는 위치에 있어 작업 중지.", "Information");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        MessageBox.Show("Elev. Z 축이 Vision Y 축과 충돌하는 위치에 있어 작업 중지.", "Information");                        
                     }
                     else
                     {
@@ -4171,11 +4171,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Vision XYZ 축, Bottom Align 마크 위치로 이동 실패.", "Error");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        MessageBox.Show("Vision XYZ 축, Bottom Align 마크 위치로 이동 실패.", "Error");                        
                     }
                     break;
 
@@ -4287,6 +4287,10 @@ namespace QMC.Common.Modules
 
                             Equipment.MachineStop_byUser = true;
 
+                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
+                            timer_MainWork.Enabled = false;
+
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.U, 500);
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.V, 500);
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.W, 500);
@@ -4295,11 +4299,7 @@ namespace QMC.Common.Modules
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.Y, 500);
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, 500);
 
-                            timer_MainWork.Enabled = false;
-
-                            MessageBox.Show("하부 카메라, 2번 얼라인 마크 찾기 실패\r\n\r\n[Time Out]", "Error");
-
-                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                            MessageBox.Show("하부 카메라, 2번 얼라인 마크 찾기 실패\r\n\r\n[Time Out]", "Error");                            
                         }
                     }
                     else
@@ -4662,11 +4662,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축이 Vision Y 축과 충돌하는 위치에 있어 작업 중지.", "Information");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        MessageBox.Show("Elev. Z 축이 Vision Y 축과 충돌하는 위치에 있어 작업 중지.", "Information");                        
                     }
                     else
                     {
@@ -4722,11 +4722,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Vision XYZ 축, Top XY Align 마크 위치로 이동 실패.", "Error");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        MessageBox.Show("Vision XYZ 축, Top XY Align 마크 위치로 이동 실패.", "Error");                        
                     }
                     break;
 
@@ -4838,6 +4838,10 @@ namespace QMC.Common.Modules
 
                             Equipment.MachineStop_byUser = true;
 
+                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
+                            timer_MainWork.Enabled = false;
+
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.U, 500);
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.V, 500);
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.W, 500);
@@ -4846,11 +4850,7 @@ namespace QMC.Common.Modules
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.Y, 500);
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, 500);
 
-                            timer_MainWork.Enabled = false;
-
-                            MessageBox.Show("하부 카메라, 1번 얼라인 마크 찾기 실패\r\n\r\n[Time Out]", "Error");
-
-                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                            MessageBox.Show("하부 카메라, 1번 얼라인 마크 찾기 실패\r\n\r\n[Time Out]", "Error");                            
                         }
                     }
                     else
@@ -5145,11 +5145,11 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("얼라인 오차 검증 실패. (TimeOut)", "Error");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        MessageBox.Show("얼라인 오차 검증 실패. (TimeOut)", "Error");                        
                     }
                     break;
 
@@ -5216,10 +5216,10 @@ namespace QMC.Common.Modules
                         Equipment.MachineStop_byAlarm = true;
 
                         timer_MainWork.Enabled = false;
+                                                
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
                         MessageBox.Show("Vision XYZ 축, Safety 위치로 이동 실패.", "Error");
-
-                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
                     }
                     break;
 
@@ -5497,9 +5497,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Thin Chuck 이 감지되지 않음.", "Error");
-
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                        MessageBox.Show("Thin Chuck 이 감지되지 않음.", "Error");
                     }
                     else
                     {
@@ -5571,9 +5571,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Vision XYZ 축, Safety 위치로 이동 실패.", "Error");
-
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                        MessageBox.Show("Vision XYZ 축, Safety 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -5600,9 +5600,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축, Wafer Align 한계 높이를 초과하여 이동하려는 시도로 작업 중지.", "Information");
-
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                        MessageBox.Show("Elev. Z 축, Wafer Align 한계 높이를 초과하여 이동하려는 시도로 작업 중지.", "Information");
                     }
                     else
                     {
@@ -5638,9 +5638,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축, Wafer Align 위치로 이동 실패.", "Error");
-
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                        MessageBox.Show("Elev. Z 축, Wafer Align 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -5787,9 +5787,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축이 Vision Y 축과 충돌하는 위치에 있어 작업 중지.", "Information");
-
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                        MessageBox.Show("Elev. Z 축이 Vision Y 축과 충돌하는 위치에 있어 작업 중지.", "Information");
                     }
                     else
                     {
@@ -5869,9 +5869,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Vision XYZ 축, Probe-Card XY Align 마크 위치로 이동 실패.", "Error");
-
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                        MessageBox.Show("Vision XYZ 축, Probe-Card XY Align 마크 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -6003,9 +6003,9 @@ namespace QMC.Common.Modules
 
                             timer_SubWork.Enabled = false;
 
-                            MessageBox.Show("상부 카메라, 얼라인 마크 찾기 실패\r\n\r\n[Time Out]", "Error");
-
                             m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                            MessageBox.Show("상부 카메라, 얼라인 마크 찾기 실패\r\n\r\n[Time Out]", "Error");
                         }
                     }
                     else
@@ -6386,9 +6386,9 @@ namespace QMC.Common.Modules
 
                             timer_SubWork.Enabled = false;
 
-                            MessageBox.Show("하부 카메라, 얼라인 마크 찾기 실패\r\n\r\n[Time Out]", "Error");
-
                             m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                            MessageBox.Show("하부 카메라, 얼라인 마크 찾기 실패\r\n\r\n[Time Out]", "Error");
                         }
                     }
                     else
@@ -6974,9 +6974,9 @@ namespace QMC.Common.Modules
 
                         timer_Motion_Home.Enabled = false;
 
-                        MessageBox.Show("Vision Y 축 초기화 실패", "Error");
-
                         m_nHomeStep = (int)Home_Step.None;
+
+                        MessageBox.Show("Vision Y 축 초기화 실패", "Error");
                     }
                     break;
 
@@ -7022,9 +7022,9 @@ namespace QMC.Common.Modules
 
                         timer_Motion_Home.Enabled = false;
 
-                        MessageBox.Show("Vision XZ, UVW, Elev.Z 축 초기화 실패", "Error");
-
                         m_nHomeStep = (int)Home_Step.None;
+
+                        MessageBox.Show("Vision XZ, UVW, Elev.Z 축 초기화 실패", "Error");
                     }
                     break;
 
@@ -7066,9 +7066,9 @@ namespace QMC.Common.Modules
 
                         timer_Motion_Home.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축, Ready 위치로 이동 실패.", "Error");
-
                         m_nHomeStep = (int)Home_Step.None;
+
+                        MessageBox.Show("Elev. Z 축, Ready 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -7130,9 +7130,9 @@ namespace QMC.Common.Modules
 
                         timer_Motion_Home.Enabled = false;
 
-                        MessageBox.Show("UVW 축, Ready 위치로 이동 실패.", "Error");
-
                         m_nHomeStep = (int)Home_Step.None;
+
+                        MessageBox.Show("UVW 축, Ready 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -7194,9 +7194,9 @@ namespace QMC.Common.Modules
 
                         timer_Motion_Home.Enabled = false;
 
-                        MessageBox.Show("Vision XYZ 축, Ready 위치로 이동 실패.", "Error");
-
                         m_nHomeStep = (int)Home_Step.None;
+
+                        MessageBox.Show("Vision XYZ 축, Ready 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -7211,9 +7211,9 @@ namespace QMC.Common.Modules
 
                     m_strTemp = "===  장비 초기화 완료  ===";
 
-                    MessageBox.Show(m_strTemp, "Information!");
-
                     m_nHomeStep = (int)Home_Step.None;
+
+                    MessageBox.Show(m_strTemp, "Information!");
                     break;
             }
         }
@@ -7324,9 +7324,9 @@ namespace QMC.Common.Modules
 
                         timer_ReticleGlass_Check.Enabled = false;
 
-                        MessageBox.Show("Vision XY 축, Ready 위치로 이동 실패.", "Error");
-
                         m_nReticleCheck_UpperCam_Step = (int)ReticleCheck_UpperCam_Step.None;
+
+                        MessageBox.Show("Vision XY 축, Ready 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -7394,9 +7394,9 @@ namespace QMC.Common.Modules
 
                         timer_ReticleGlass_Check.Enabled = false;
 
-                        MessageBox.Show("UVW 축, Reticle 확인 위치로 이동 실패.", "Error");
-
                         m_nReticleCheck_UpperCam_Step = (int)ReticleCheck_UpperCam_Step.None;
+
+                        MessageBox.Show("UVW 축, Reticle 확인 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -7421,9 +7421,9 @@ namespace QMC.Common.Modules
 
                         timer_ReticleGlass_Check.Enabled = false;
 
-                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
-
                         m_nReticleCheck_UpperCam_Step = (int)ReticleCheck_UpperCam_Step.None;
+
+                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
                     }
                     else
                     {
@@ -7461,9 +7461,9 @@ namespace QMC.Common.Modules
 
                         timer_ReticleGlass_Check.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축, Reticle 확인 위치로 이동 실패.", "Error");
-
                         m_nReticleCheck_UpperCam_Step = (int)ReticleCheck_UpperCam_Step.None;
+
+                        MessageBox.Show("Elev. Z 축, Reticle 확인 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -7505,9 +7505,9 @@ namespace QMC.Common.Modules
 
                         timer_ReticleGlass_Check.Enabled = false;
 
-                        MessageBox.Show("Vision Z 축, Reticle 확인 위치로 이동 실패.", "Error");
-
                         m_nReticleCheck_UpperCam_Step = (int)ReticleCheck_UpperCam_Step.None;
+
+                        MessageBox.Show("Vision Z 축, Reticle 확인 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -7565,9 +7565,9 @@ namespace QMC.Common.Modules
 
                         timer_ReticleGlass_Check.Enabled = false;
 
-                        MessageBox.Show("Vision XY 축, Reticle 확인 위치로 이동 실패.", "Error");
-
                         m_nReticleCheck_UpperCam_Step = (int)ReticleCheck_UpperCam_Step.None;
+
+                        MessageBox.Show("Vision XY 축, Reticle 확인 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -7580,9 +7580,9 @@ namespace QMC.Common.Modules
 
                     m_strTemp = "===  Reticle 확인 위치로 이동 완료  ===\r\n\r\n\r\n[Upper Camera]";
 
-                    MessageBox.Show(m_strTemp, "Information!");
-
                     m_nReticleCheck_UpperCam_Step = (int)ReticleCheck_UpperCam_Step.None;
+
+                    MessageBox.Show(m_strTemp, "Information!");
 
                     break;
             }
@@ -7690,9 +7690,9 @@ namespace QMC.Common.Modules
 
                         timer_ReticleGlass_Check.Enabled = false;
 
-                        MessageBox.Show("Vision XY 축, Ready 위치로 이동 실패.", "Error");
-
                         m_nReticleCheck_LowerCam_Step = (int)ReticleCheck_LowerCam_Step.None;
+
+                        MessageBox.Show("Vision XY 축, Ready 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -7760,9 +7760,9 @@ namespace QMC.Common.Modules
 
                         timer_ReticleGlass_Check.Enabled = false;
 
-                        MessageBox.Show("UVW 축, Reticle 확인 위치로 이동 실패.", "Error");
-
                         m_nReticleCheck_LowerCam_Step = (int)ReticleCheck_LowerCam_Step.None;
+
+                        MessageBox.Show("UVW 축, Reticle 확인 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -7787,9 +7787,9 @@ namespace QMC.Common.Modules
 
                         timer_ReticleGlass_Check.Enabled = false;
 
-                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
-
                         m_nReticleCheck_LowerCam_Step = (int)ReticleCheck_LowerCam_Step.None;
+
+                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
                     }
                     else
                     {
@@ -7827,9 +7827,9 @@ namespace QMC.Common.Modules
 
                         timer_ReticleGlass_Check.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축, Reticle 확인 위치로 이동 실패.", "Error");
-
                         m_nReticleCheck_LowerCam_Step = (int)ReticleCheck_LowerCam_Step.None;
+
+                        MessageBox.Show("Elev. Z 축, Reticle 확인 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -7871,9 +7871,9 @@ namespace QMC.Common.Modules
 
                         timer_ReticleGlass_Check.Enabled = false;
 
-                        MessageBox.Show("Vision Z 축, Reticle 확인 위치로 이동 실패.", "Error");
-
                         m_nReticleCheck_LowerCam_Step = (int)ReticleCheck_LowerCam_Step.None;
+
+                        MessageBox.Show("Vision Z 축, Reticle 확인 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -7931,9 +7931,9 @@ namespace QMC.Common.Modules
 
                         timer_ReticleGlass_Check.Enabled = false;
 
-                        MessageBox.Show("Vision XY 축, Reticle 확인 위치로 이동 실패.", "Error");
-
                         m_nReticleCheck_LowerCam_Step = (int)ReticleCheck_LowerCam_Step.None;
+
+                        MessageBox.Show("Vision XY 축, Reticle 확인 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -7946,9 +7946,9 @@ namespace QMC.Common.Modules
 
                     m_strTemp = "===  Reticle 확인 위치로 이동 완료  ===\r\n\r\n\r\n[Lower Camera]";
 
-                    MessageBox.Show(m_strTemp, "Information!");
-
                     m_nReticleCheck_LowerCam_Step = (int)ReticleCheck_LowerCam_Step.None;
+
+                    MessageBox.Show(m_strTemp, "Information!");
 
                     break;
             }
@@ -8046,9 +8046,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Vision XYZ 축, Safety 위치로 이동 실패.", "Error");
-
                         m_nSafetyPos_Move_Step = (int)SafetyPos_Move_Step.None;
+
+                        MessageBox.Show("Vision XYZ 축, Safety 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -8091,9 +8091,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Vision Z 축, Safety 위치로 이동 실패.", "Error");
-
                         m_nSafetyPos_Move_Step = (int)SafetyPos_Move_Step.None;
+
+                        MessageBox.Show("Vision Z 축, Safety 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -8141,9 +8141,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축, Safety 위치로 이동 실패.", "Error");
-
                         m_nSafetyPos_Move_Step = (int)SafetyPos_Move_Step.None;
+
+                        MessageBox.Show("Elev. Z 축, Safety 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -8211,9 +8211,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("UVW 축, Safety 위치로 이동 실패.", "Error");
-
                         m_nSafetyPos_Move_Step = (int)SafetyPos_Move_Step.None;
+
+                        MessageBox.Show("UVW 축, Safety 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -8226,9 +8226,9 @@ namespace QMC.Common.Modules
 
                     m_strTemp = "===  Safety 위치로 이동 완료  ===";
 
-                    MessageBox.Show(m_strTemp, "Information!");
-
                     m_nSafetyPos_Move_Step = (int)SafetyPos_Move_Step.None;
+
+                    MessageBox.Show(m_strTemp, "Information!");
 
                     break;
             }
@@ -8342,12 +8342,12 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
+                        m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step.None;
+
                         if (m_nWaferProbeAlign_MainStep == (int)WaferProbeAlign_Step.None)
                         {
                             MessageBox.Show("Top Cover Down 실패. (Time Out)", "Error");
                         }
-
-                        m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step.None;
                     }
                     break;
 
@@ -8549,9 +8549,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Vision XYZ 축, Safety 위치로 이동 실패.", "Error");
-
                         m_nWafer_Loading_Ready_Step = (int)WaferLoading_Ready_Step.None;
+
+                        MessageBox.Show("Vision XYZ 축, Safety 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -8599,9 +8599,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축, Wafer Loading 위치로 이동 실패.", "Error");
-
                         m_nWafer_Loading_Ready_Step = (int)WaferLoading_Ready_Step.None;
+
+                        MessageBox.Show("Elev. Z 축, Wafer Loading 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -8669,9 +8669,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("UVW 축, Wafer Loading 위치로 이동 실패.", "Error");
-
                         m_nWafer_Loading_Ready_Step = (int)WaferLoading_Ready_Step.None;
+
+                        MessageBox.Show("UVW 축, Wafer Loading 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -8684,9 +8684,9 @@ namespace QMC.Common.Modules
 
                     m_strTemp = "===  Wafer Loading 위치로 이동 완료  ===";
 
-                    MessageBox.Show(m_strTemp, "Information!");
-
                     m_nWafer_Loading_Ready_Step = (int)WaferLoading_Ready_Step.None;
+
+                    MessageBox.Show(m_strTemp, "Information!");
 
                     break;
             }
@@ -8781,9 +8781,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Vision XYZ 축, Safety 위치로 이동 실패.", "Error");
-
                         m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
+
+                        MessageBox.Show("Vision XYZ 축, Safety 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -8831,9 +8831,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축, Wafer Loading 위치로 이동 실패.", "Error");
-
                         m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
+
+                        MessageBox.Show("Elev. Z 축, Wafer Loading 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -8902,9 +8902,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("UVW 축, Wafer Loading 위치로 이동 실패.", "Error");
-
                         m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
+
+                        MessageBox.Show("UVW 축, Wafer Loading 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -8965,9 +8965,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Top Cover Up 실패. (Time Out)", "Error");
-
                         m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
+
+                        MessageBox.Show("Top Cover Up 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -9024,9 +9024,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 패킹, 언패킹 신호 Off 실패. (Time Out)", "Error");
-
                         m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
+
+                        MessageBox.Show("프로브 카드 패킹, 언패킹 신호 Off 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -9061,9 +9061,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 언패킹 실린더 Up 실패. (Time Out)", "Error");
-
                         m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
+
+                        MessageBox.Show("프로브 카드 언패킹 실린더 Up 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -9097,9 +9097,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 클램프 Up 실패. (Time Out)", "Error");
-
                         m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
+
+                        MessageBox.Show("프로브 카드 클램프 Up 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -9135,9 +9135,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 클램프 BW 실패. (Time Out)", "Error");
-
                         m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
+
+                        MessageBox.Show("프로브 카드 클램프 BW 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -9161,9 +9161,9 @@ namespace QMC.Common.Modules
 
                     m_strTemp = "===  Probe Card 장착 준비 완료  ===";
 
-                    MessageBox.Show(m_strTemp, "Information!");
-
                     m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
+
+                    MessageBox.Show(m_strTemp, "Information!");
 
                     break;
             }
@@ -9206,9 +9206,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Thin Chuck 이 감지됨.", "Error");
-
                         m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
+
+                        MessageBox.Show("Thin Chuck 이 감지됨.", "Error");
                     }
                     else
                     {
@@ -9248,9 +9248,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Unpacking Signal Off 실패. (Time Out)", "Error");
-
                         m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
+
+                        MessageBox.Show("Unpacking Signal Off 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -9311,9 +9311,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Top Cover Up 실패. (Time Out)", "Error");
-
                         m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
+
+                        MessageBox.Show("Top Cover Up 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -9370,9 +9370,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 패킹, 언패킹 신호 Off 실패. (Time Out)", "Error");
-
                         m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
+
+                        MessageBox.Show("프로브 카드 패킹, 언패킹 신호 Off 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -9407,9 +9407,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 언패킹 실린더 Up 실패. (Time Out)", "Error");
-
                         m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
+
+                        MessageBox.Show("프로브 카드 언패킹 실린더 Up 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -9443,9 +9443,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 클램프 Up 실패. (Time Out)", "Error");
-
                         m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
+
+                        MessageBox.Show("프로브 카드 클램프 Up 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -9481,9 +9481,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 클램프 BW 실패. (Time Out)", "Error");
-
                         m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
+
+                        MessageBox.Show("프로브 카드 클램프 BW 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -9562,9 +9562,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Vision XYZ 축, Safety 위치로 이동 실패.", "Error");
-
                         m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
+
+                        MessageBox.Show("Vision XYZ 축, Safety 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -9591,9 +9591,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
-
                         m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
+
+                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
                     }
                     else
                     {
@@ -9634,9 +9634,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축, Wafer Loading 위치로 이동 실패.", "Error");
-
                         m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
+
+                        MessageBox.Show("Elev. Z 축, Wafer Loading 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -9704,9 +9704,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("UVW 축, Wafer ProbeCard Unpacking 준비 위치로 이동 실패.", "Error");
-
                         m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
+
+                        MessageBox.Show("UVW 축, Wafer ProbeCard Unpacking 준비 위치로 이동 실패.", "Error");
                     }
                     break;                                    
 
@@ -9719,9 +9719,9 @@ namespace QMC.Common.Modules
 
                     m_strTemp = "===  Wafer, ProbeCard 분리 준비 완료  ===";
 
-                    MessageBox.Show(m_strTemp, "Information!");
-
                     m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeCard_Unpacking_Ready_Step.None;
+
+                    MessageBox.Show(m_strTemp, "Information!");
 
                     break;
             }
@@ -9785,9 +9785,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Probe Card 가 감지되지 않음.", "Error");
-
                         m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
+
+                        MessageBox.Show("Probe Card 가 감지되지 않음.", "Error");
                     }
                     else
                     {
@@ -9826,9 +9826,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("Top Cover Down 실패. (Time Out)", "Error");
-
                         m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
+
+                        MessageBox.Show("Top Cover Down 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -9885,9 +9885,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 패킹, 언패킹 신호 Off 실패. (Time Out)", "Error");
-
                         m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
+
+                        MessageBox.Show("프로브 카드 패킹, 언패킹 신호 Off 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -9922,9 +9922,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 언패킹 실린더 Up 실패. (Time Out)", "Error");
-
                         m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
+
+                        MessageBox.Show("프로브 카드 언패킹 실린더 Up 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -9958,9 +9958,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 클램프 Up 실패. (Time Out)", "Error");
-
                         m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
+
+                        MessageBox.Show("프로브 카드 클램프 Up 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -9996,9 +9996,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 클램프 FW 실패. (Time Out)", "Error");
-
                         m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
+
+                        MessageBox.Show("프로브 카드 클램프 FW 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -10032,9 +10032,9 @@ namespace QMC.Common.Modules
 
                         timer_SubWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 클램프 Down 실패. (Time Out)", "Error");
-
                         m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
+
+                        MessageBox.Show("프로브 카드 클램프 Down 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -10058,9 +10058,9 @@ namespace QMC.Common.Modules
 
                     m_strTemp = "===  Probe Card 고정 완료  ===";
 
-                    MessageBox.Show(m_strTemp, "Information!");
-
                     m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
+
+                    MessageBox.Show(m_strTemp, "Information!");
 
                     break;
             }
@@ -10117,9 +10117,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Thin Chuck 이 감지되지 않음.", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Thin Chuck 이 감지되지 않음.", "Error");
                     }
                     else if ((Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A) && !waferProbeAlignParameter.DI_Probe_BW_Detect())
                     {
@@ -10130,9 +10130,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Probe Card 가 감지되지 않음.", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Probe Card 가 감지되지 않음.", "Error");
                     }
                     else if ((Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A) && (waferProbeAlignParameter.DI_TopCover_Up() || !waferProbeAlignParameter.DI_TopCover_Down()))
                     {
@@ -10143,9 +10143,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Top Cover 가 Down 상태가 아님.", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Top Cover 가 Down 상태가 아님.", "Error");
                     }
                     else if (Config.ParamConfig.ThinChuck_VacuumSignal_Usage && !waferProbeAlignParameter.DI_ThinChuck_VacuumCheck())
                     {
@@ -10156,9 +10156,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Thin Chuck Vacuum 이 감지되지 않음.", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Thin Chuck Vacuum 이 감지되지 않음.", "Error");
                     }
                     else if (Config.ParamConfig.Wafer_VacuumSignal_Usage && !waferProbeAlignParameter.DI_Wafer_VacuumCheck())
                     {
@@ -10169,9 +10169,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Wafer Vacuum 이 감지되지 않음.", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Wafer Vacuum 이 감지되지 않음.", "Error");
                     }
                     else if ((m_dWafer_ProbeCard_AlignPos_Axis_U == -1) && (m_dWafer_ProbeCard_AlignPos_Axis_V == -1) && (m_dWafer_ProbeCard_AlignPos_Axis_W == -1))
                     {
@@ -10281,9 +10281,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Vision XYZ 축, Safety 위치로 이동 실패.", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Vision XYZ 축, Safety 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -10401,9 +10401,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("UVW Stage, 패킹 옵셋 위치로 이동 실패.", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("UVW Stage, 패킹 옵셋 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -10484,9 +10484,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("얼라인 스테이지와 프로브 카드가 충돌할 가능성이 있어 작업이 중지됩니다.", "Warning!!");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("얼라인 스테이지와 프로브 카드가 충돌할 가능성이 있어 작업이 중지됩니다.", "Warning!!");
                     }
                     break;
 
@@ -10511,9 +10511,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
                     }
                     else
                     {
@@ -10561,9 +10561,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축, Wafer ProbeCard Packing 대기 위치로 이동 (fast) 실패.", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Elev. Z 축, Wafer ProbeCard Packing 대기 위치로 이동 (fast) 실패.", "Error");
                     }
                     break;
 
@@ -10588,9 +10588,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
                     }
                     else
                     {
@@ -10630,9 +10630,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축, Wafer ProbeCard Packing 위치로 이동 (slow) 실패.", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Elev. Z 축, Wafer ProbeCard Packing 위치로 이동 (slow) 실패.", "Error");
                     }
                     break;
 
@@ -10735,9 +10735,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Wafer Vacuum Off 실패. (Time Out)", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Wafer Vacuum Off 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -10772,9 +10772,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Wafer Vacuum Off 실패. (Time Out)", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Wafer Vacuum Off 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -10808,9 +10808,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Thin Chuck Vacuum Off 실패. (Time Out)", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Thin Chuck Vacuum Off 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -10835,9 +10835,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
                     }
                     else
                     {
@@ -10885,9 +10885,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축, Wafer Loading 대기 위치로 이동 (slow) 실패.", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Elev. Z 축, Wafer Loading 대기 위치로 이동 (slow) 실패.", "Error");
                     }
                     break;
 
@@ -10911,9 +10911,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Wafer - Probe Card Packing 실패.\r\n\r\n[Thin-Chuck 분리됨]", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Wafer - Probe Card Packing 실패.\r\n\r\n[Thin-Chuck 분리됨]", "Error");
                     }
                     break;
 
@@ -10938,9 +10938,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
                     }
                     else
                     {
@@ -10978,9 +10978,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축, Wafer Loading 위치로 이동 실패.", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Elev. Z 축, Wafer Loading 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -11049,9 +11049,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("UVW 축, Wafer Loading 위치로 이동 실패.", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("UVW 축, Wafer Loading 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -11112,9 +11112,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Top Cover Up 실패. (Time Out)", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("Top Cover Up 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -11171,9 +11171,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 패킹, 언패킹 신호 Off 실패. (Time Out)", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("프로브 카드 패킹, 언패킹 신호 Off 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -11208,9 +11208,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 언패킹 실린더 Up 실패. (Time Out)", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("프로브 카드 언패킹 실린더 Up 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -11244,9 +11244,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 클램프 Up 실패. (Time Out)", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("프로브 카드 클램프 Up 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -11282,9 +11282,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 클램프 BW 실패. (Time Out)", "Error");
-
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                        MessageBox.Show("프로브 카드 클램프 BW 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -11325,9 +11325,9 @@ namespace QMC.Common.Modules
 
                     m_strTemp = "===  Wafer - ProbeCard Packing 완료  ===";
 
-                    MessageBox.Show(m_strTemp, "Information!");
-
                     m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                    MessageBox.Show(m_strTemp, "Information!");
 
                     break;
             }
@@ -11464,9 +11464,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Top Cover Down 실패. (Time Out)", "Error");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("Top Cover Down 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -11523,9 +11523,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 패킹, 언패킹 신호 Off 실패. (Time Out)", "Error");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("프로브 카드 패킹, 언패킹 신호 Off 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -11560,9 +11560,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 언패킹 실린더 Up 실패. (Time Out)", "Error");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("프로브 카드 언패킹 실린더 Up 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -11596,9 +11596,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 클램프 Up 실패. (Time Out)", "Error");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("프로브 카드 클램프 Up 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -11634,9 +11634,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 클램프 FW 실패. (Time Out)", "Error");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("프로브 카드 클램프 FW 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -11670,9 +11670,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 클램프 Down 실패. (Time Out)", "Error");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("프로브 카드 클램프 Down 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -11707,9 +11707,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("프로브 카드 언패킹 실린더 Down 실패. (Time Out)", "Error");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("프로브 카드 언패킹 실린더 Down 실패. (Time Out)", "Error");
                     }
                     break;
 
@@ -11788,9 +11788,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Vision XYZ 축, Safety 위치로 이동 실패.", "Error");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("Vision XYZ 축, Safety 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -11863,9 +11863,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("UVW 축, Wafer ProbeCard Unpacking 위치로 이동 실패.", "Error");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("UVW 축, Wafer ProbeCard Unpacking 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -11890,9 +11890,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
                     }
                     else
                     {
@@ -11940,9 +11940,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축, Wafer ProbeCard Unpacking 대기 위치로 이동 실패.", "Error");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("Elev. Z 축, Wafer ProbeCard Unpacking 대기 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -11967,9 +11967,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
                     }
                     else
                     {
@@ -12017,9 +12017,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축, Wafer ProbeCard Unpacking 위치로 이동 실패.", "Error");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("Elev. Z 축, Wafer ProbeCard Unpacking 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -12054,9 +12054,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Thin-Chuck 과 Wafer 공압 체크 실패.", "Error");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("Thin-Chuck 과 Wafer 공압 체크 실패.", "Error");
                     }
                     break;
 
@@ -12091,9 +12091,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Wafer ProbeCard Unpacking Signal On 실패.", "Error");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("Wafer ProbeCard Unpacking Signal On 실패.", "Error");
                     }
                     break;
 
@@ -12129,9 +12129,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
                     }
                     else
                     {
@@ -12179,9 +12179,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축, Wafer ProbeCard Unpacking 대기 위치로 이동 실패.", "Error");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("Elev. Z 축, Wafer ProbeCard Unpacking 대기 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -12216,9 +12216,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축, Wafer ProbeCard Unpacking Signal Off 실패.", "Error");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("Elev. Z 축, Wafer ProbeCard Unpacking Signal Off 실패.", "Error");
                     }
                     break;
 
@@ -12243,9 +12243,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌하는 위치에 있어 작업 중지.", "Information");
                     }
                     else
                     {
@@ -12283,9 +12283,9 @@ namespace QMC.Common.Modules
 
                         timer_MainWork.Enabled = false;
 
-                        MessageBox.Show("Elev. Z 축, Wafer Loading 위치로 이동 실패.", "Error");
-
                         m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                        MessageBox.Show("Elev. Z 축, Wafer Loading 위치로 이동 실패.", "Error");
                     }
                     break;
 
@@ -12302,9 +12302,9 @@ namespace QMC.Common.Modules
 
                     m_strTemp = "===  Wafer ProbeCard Unpacking 완료  ===";
 
-                    MessageBox.Show(m_strTemp, "Information!");
-
                     m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeCard_Unpacking_Step.None;
+
+                    MessageBox.Show(m_strTemp, "Information!");
 
                     break;
             }
