@@ -4448,9 +4448,17 @@ namespace QMC.Common.Modules
 
                     m_dWaferAlign_CorrectionAngle = m_dWaferAlign_CorrectionAngle - m_dProbeCardAlign_CorrectionAngle;
 
-                    waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.U] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U) + ((m_dWaferAlign_CorrectionAngle * -1.0) / (dMmPer1Deg / 2.0));
-                    waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.V] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V) + ((m_dWaferAlign_CorrectionAngle * -1.0) / (dMmPer1Deg / 2.0));
-                    waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.W] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W) - ((m_dWaferAlign_CorrectionAngle * -1.0) / (dMmPer1Deg / 2.0));
+                    if (Config.ParamConfig.Align_AngleInvert == true)
+                    {
+                        invertAngle *= -1;
+                    }
+
+                    //waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.U] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U) + ((m_dWaferAlign_CorrectionAngle * -1.0) / (dMmPer1Deg / 2.0));
+                    //waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.V] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V) + ((m_dWaferAlign_CorrectionAngle * -1.0) / (dMmPer1Deg / 2.0));
+                    //waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.W] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W) - ((m_dWaferAlign_CorrectionAngle * -1.0) / (dMmPer1Deg / 2.0));
+                    waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.U] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U) + ((m_dWaferAlign_CorrectionAngle * invertAngle) / (dMmPer1Deg / 2.0));
+                    waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.V] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V) + ((m_dWaferAlign_CorrectionAngle * invertAngle) / (dMmPer1Deg / 2.0));
+                    waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.W] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W) - ((m_dWaferAlign_CorrectionAngle * invertAngle) / (dMmPer1Deg / 2.0));
 
                     //  Theta 축 속도 변경
                     if (Config.ParamConfig.Align_Theta_Velocity <= 0.0)
