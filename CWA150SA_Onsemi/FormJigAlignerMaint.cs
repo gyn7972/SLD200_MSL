@@ -129,6 +129,13 @@ namespace CWA150SA_Onsemi
             this.m_StagePositionControl.SetGroupboxName(" Jig-Aligner Position ");
             this.m_StagePositionControl.ButtonClick += PositionControlButtonClick;
 
+            //  조명
+            this.m_IlluminatorControl = new IlluminatorControl(waferProbeAlign.visionCalibrator_Upper.Recipe.IlluminationDataSet.ToList());
+            this.m_IlluminatorControl.Location = new Point(this.m_StagePositionControl.Location.X, m_StagePositionControl.Location.Y + m_StagePositionControl.Size.Height + Configuration.ControlGap);
+            this.m_IlluminatorControl.Illuminator = waferProbeAlign.visionCalibrator_Upper.Illuminator;
+            this.m_IlluminatorControl.IlluminatorControlButton_Click += M_IlluminatorControl_IlluminatorControlButton_Click;
+            this.Controls.Add(m_IlluminatorControl);
+
             this.m_JigAlignerResultControl = new JigAlignerControl(m_Owner);
             this.m_JigAlignerResultControl.Location = new Point(this.m_SearchResultControl.Location.X, this.m_SearchResultControl.Location.Y + this.m_SearchResultControl.Height + Configuration.ControlGap);
             this.m_JigAlignerResultControl.RunButtonClick += M_JigAlignerResultControl_RunButtonClick;
@@ -164,6 +171,45 @@ namespace CWA150SA_Onsemi
 
             m_Owner.UpdateResult += M_Owner_UpdateResult;
             this.VisibleChanged += FormVisionCalibratorMaint_VisibleChanged;
+        }
+
+        private void M_IlluminatorControl_IlluminatorControlButton_Click(IlluminatorControl.ButtonType type)
+        {
+            if (type == IlluminatorControl.ButtonType.Save)
+            {
+                //Module module = waferProbeAlign m_Owner.Owner as Module;               
+
+                //string m_strRecipe = "";
+                //RecipeInfo m_recipeInfo = new RecipeInfo();
+                //m_recipeInfo = Equipment.GetCurrentRecipe();
+
+                //if (m_recipeInfo != null)
+                //{
+                //    m_strRecipe = m_recipeInfo.Name;
+
+                //    DataManager.Instance.UpdateConfigData(waferProbeAlign); // 참고 : param save
+                //    //Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
+                //    Equipment.SaveConfig(m_strRecipe);                                            //  2022. 06. 30.  SCH : Recipe 에 따라 Config 파라미터를 변경하기 위해 이걸로 함.
+                //}
+                //else
+                //{
+                //    DataManager.Instance.UpdateConfigData(waferProbeAlign); // 참고 : param save
+                //    Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
+                //}
+
+                //DataManager.Instance.ApplyConfigData(waferProbeAlign);
+
+                ////  Config 창 데이터 갱신을 위해서
+                //Equipment.m_bRedraw_FormWaferProbeAlignParameterConfig = true;
+
+                //Equipment.UpdateRecipeData();
+                //Equipment.SaveRecipe();
+            }
+            else if (type == IlluminatorControl.ButtonType.AllOff)
+            {
+
+            }
+            else { }
         }
 
         private void M_CameraInit_Click(object sender, EventArgs e)

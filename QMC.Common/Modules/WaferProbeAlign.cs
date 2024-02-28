@@ -691,6 +691,8 @@ namespace QMC.Common.Modules
         public PointD[,] AlignmentErrorCheck_MarkPosition = new PointD[3, 2];                       //  얼라인 마크 위치값 [위치 개수, 상하부] --> 프로브 핀 마크 위치를 기준으로 웨이퍼전극 마크 위치의 차이를 얼라인 오차로 본다.
         public PointD[] AlignmentErrorCheck_Position = new PointD[3];                               //  얼라인 에러 체크 위치 [위치 개수]
 
+        public double[] ManualPacking_OffsetPosition_UVW = new double[3];                           //  매뉴얼 패킹 모드이고, 패킹 옵셋을 사용할 경우, 옵셋 이동된 위치 (UVW) --> 패킹 시 위치 확인용
+
         public WaferProbeAlignParameter waferProbeAlignParameter { set; get; }
 
         //public SerialPowerMeter1Port m_powerMeter_ExitPos_Comm { set; get; }                        //  2023. 04. 12.  SCH : Laser PowerMeter Comm (Exit Position) - COM3
@@ -1712,6 +1714,8 @@ namespace QMC.Common.Modules
                 AlignmentErrorCheck_Position[nPos].X = 0.0;
                 AlignmentErrorCheck_Position[nPos].Y = 0.0;
 
+                ManualPacking_OffsetPosition_UVW[nPos] = 0.0;
+
                 for (int nSide = 0; nSide < 2; nSide++)
                 {
                     AlignmentErrorCheck_Status[nPos, nSide] = false;
@@ -2209,7 +2213,7 @@ namespace QMC.Common.Modules
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "Wafer Align 시작");
 
                     //  얼라인 시작 시간
-                    Equipment.AlignStart_Time = DateTime.Now.ToString("hh_mm_ss");
+                    Equipment.AlignStart_Time = DateTime.Now.ToString("HH_mm_ss");
 
                     Equipment.MachineStop_byAlarm = false;
 
@@ -2237,6 +2241,8 @@ namespace QMC.Common.Modules
                     {
                         AlignmentErrorCheck_Position[nPos].X = 0.0;
                         AlignmentErrorCheck_Position[nPos].Y = 0.0;
+
+                        ManualPacking_OffsetPosition_UVW[nPos] = 0.0;
 
                         for (int nSide = 0; nSide < 2; nSide++)
                         {
@@ -2914,6 +2920,12 @@ namespace QMC.Common.Modules
 
                             m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
+                            if (m_bAlignVisionThread_Use)
+                            {
+                                //  Thread 를 사용할 경우
+                                m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                            }
+
                             timer_MainWork.Enabled = false;
 
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.U, 500);
@@ -3173,6 +3185,12 @@ namespace QMC.Common.Modules
                             Equipment.MachineStop_byUser = true;
 
                             m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
+                            if (m_bAlignVisionThread_Use)
+                            {
+                                //  Thread 를 사용할 경우
+                                m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                            }
 
                             timer_MainWork.Enabled = false;
 
@@ -3519,6 +3537,12 @@ namespace QMC.Common.Modules
                             Equipment.MachineStop_byUser = true;
 
                             m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
+                            if (m_bAlignVisionThread_Use)
+                            {
+                                //  Thread 를 사용할 경우
+                                m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                            }
 
                             timer_MainWork.Enabled = false;
 
@@ -4029,6 +4053,12 @@ namespace QMC.Common.Modules
 
                             m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
+                            if (m_bAlignVisionThread_Use)
+                            {
+                                //  Thread 를 사용할 경우
+                                m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                            }
+
                             timer_MainWork.Enabled = false;
 
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.U, 500);
@@ -4288,6 +4318,12 @@ namespace QMC.Common.Modules
                             Equipment.MachineStop_byUser = true;
 
                             m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
+                            if (m_bAlignVisionThread_Use)
+                            {
+                                //  Thread 를 사용할 경우
+                                m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                            }
 
                             timer_MainWork.Enabled = false;
 
@@ -4839,6 +4875,12 @@ namespace QMC.Common.Modules
                             Equipment.MachineStop_byUser = true;
 
                             m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+
+                            if (m_bAlignVisionThread_Use)
+                            {
+                                //  Thread 를 사용할 경우
+                                m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                            }
 
                             timer_MainWork.Enabled = false;
 
@@ -5465,6 +5507,8 @@ namespace QMC.Common.Modules
                         AlignmentErrorCheck_Position[nPos].X = 0.0;
                         AlignmentErrorCheck_Position[nPos].Y = 0.0;
 
+                        ManualPacking_OffsetPosition_UVW[nPos] = 0.0;
+
                         for (int nSide = 0; nSide < 2; nSide++)
                         {
                             AlignmentErrorCheck_Status[nPos, nSide] = false;
@@ -6005,6 +6049,12 @@ namespace QMC.Common.Modules
 
                             m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
 
+                            if (m_bAlignVisionThread_Use)
+                            {
+                                //  Thread 를 사용할 경우
+                                m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                            }
+
                             MessageBox.Show("상부 카메라, 얼라인 마크 찾기 실패\r\n\r\n[Time Out]", "Error");
                         }
                     }
@@ -6388,6 +6438,12 @@ namespace QMC.Common.Modules
 
                             m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
 
+                            if (m_bAlignVisionThread_Use)
+                            {
+                                //  Thread 를 사용할 경우
+                                m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                            }
+
                             MessageBox.Show("하부 카메라, 얼라인 마크 찾기 실패\r\n\r\n[Time Out]", "Error");
                         }
                     }
@@ -6593,6 +6649,7 @@ namespace QMC.Common.Modules
             string m_strDirectory = null;
             string m_strRoot = null;
             string m_strDate = null;
+            string m_strRecipe = null;
             string m_strImageFile_Upper = null;
             string m_strImageFile_Lower = null;
 
@@ -6625,21 +6682,41 @@ namespace QMC.Common.Modules
                 di2.Create();
             }
 
-            //  이미지 저장 경로 (꼭대기 / 날짜 / 작업자)
-            m_strDirectory = string.Format("{0}\\{1}\\{2}", m_strRoot, m_strDate, m_strOperator);
+            //  이미지 저장 경로 (꼭대기 / 날짜 / 레시피)
+            RecipeInfo m_recipeInfo = new RecipeInfo();
+            m_recipeInfo = Equipment.GetCurrentRecipe();
+
+            if (m_recipeInfo != null)
+            {
+                m_strRecipe = m_recipeInfo.Name;                
+            }
+            else
+            {
+                m_strRecipe = "NO_RECIPE";
+            }
+
+            m_strDirectory = string.Format("{0}\\{1}\\{2}", m_strRoot, m_strDate, m_strRecipe);
             DirectoryInfo di3 = new DirectoryInfo(m_strDirectory);
             if (!di3.Exists)                                                         //  없으면 생성
             {
                 di3.Create();
             }
 
-            //  이미지 저장 경로 (꼭대기 / 날짜 / 작업자 / 작업자_얼라인시작시간_얼라인위치_카메라방향)
+            //  이미지 저장 경로 (꼭대기 / 날짜 / 레시피 / 작업자)
+            m_strDirectory = string.Format("{0}\\{1}\\{2}\\{3}", m_strRoot, m_strDate, m_strRecipe, m_strOperator);
+            DirectoryInfo di4 = new DirectoryInfo(m_strDirectory);
+            if (!di4.Exists)                                                         //  없으면 생성
+            {
+                di4.Create();
+            }
+
+            //  이미지 저장 경로 (꼭대기 / 날짜 / 레시피 / 작업자 / 작업자_얼라인시작시간_얼라인위치_카메라방향)
             //  작업자 : 작업자 이름
             //  얼라인시작시간 : 얼라인 시작 버튼을 눌렀을 때의 시간 (년-월-일)
             //  얼라인위치 : 얼라인 검사 위치 (TOP, MID, BOT)
             //  카메라 방향 : ProbeCard or Wafer
-            m_strImageFile_Upper = string.Format("{0}\\{1}\\{2}\\{3}_{4}_{5}_ProbeCard.jpg", m_strRoot, m_strDate, m_strOperator, m_strOperator, m_strStartTime, m_strAlignPos);
-            m_strImageFile_Lower = string.Format("{0}\\{1}\\{2}\\{3}_{4}_{5}_Wafer.jpg", m_strRoot, m_strDate, m_strOperator, m_strOperator, m_strStartTime, m_strAlignPos);
+            m_strImageFile_Upper = string.Format("{0}\\{1}\\{2}\\{3}\\{4}_{5}_{6}_ProbeCard.jpg", m_strRoot, m_strDate, m_strRecipe, m_strOperator, m_strOperator, m_strStartTime, m_strAlignPos);
+            m_strImageFile_Lower = string.Format("{0}\\{1}\\{2}\\{3}\\{4}_{5}_{6}_Wafer.jpg", m_strRoot, m_strDate, m_strRecipe, m_strOperator, m_strOperator, m_strStartTime, m_strAlignPos);
 
             if (Camera_Upper != null)
             {
@@ -11309,6 +11386,8 @@ namespace QMC.Common.Modules
                     {
                         AlignmentErrorCheck_Position[nPos].X = 0.0;
                         AlignmentErrorCheck_Position[nPos].Y = 0.0;
+
+                        ManualPacking_OffsetPosition_UVW[nPos] = 0.0;
 
                         for (int nSide = 0; nSide < 2; nSide++)
                         {

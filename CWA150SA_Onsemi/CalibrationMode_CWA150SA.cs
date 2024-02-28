@@ -4861,26 +4861,31 @@ namespace CWA150SA_Onsemi300
                 if (m_nIndex_Mid > -1)
                 {
                     waferProbeAlign.Config.Positions[m_nIndex_Mid].EZ = m_dPos_EZ_TOP;
+                    waferProbeAlign.Config.Positions[m_nIndex_Mid].VZ = m_dPos_VZ_TOP;
                 }
 
                 if (m_nIndex_Bot > -1)
                 {
                     waferProbeAlign.Config.Positions[m_nIndex_Bot].EZ = m_dPos_EZ_TOP;
+                    waferProbeAlign.Config.Positions[m_nIndex_Bot].VZ = m_dPos_VZ_TOP;
                 }
 
                 if (m_nIndex_Left > -1)
                 {
                     waferProbeAlign.Config.Positions[m_nIndex_Left].EZ = m_dPos_EZ_TOP;
+                    waferProbeAlign.Config.Positions[m_nIndex_Left].VZ = m_dPos_VZ_TOP;
                 }
 
                 if (m_nIndex_Center > -1)
                 {
                     waferProbeAlign.Config.Positions[m_nIndex_Center].EZ = m_dPos_EZ_TOP;
+                    waferProbeAlign.Config.Positions[m_nIndex_Center].VZ = m_dPos_VZ_TOP;
                 }
 
                 if (m_nIndex_Right > -1)
                 {
                     waferProbeAlign.Config.Positions[m_nIndex_Right].EZ = m_dPos_EZ_TOP;
+                    waferProbeAlign.Config.Positions[m_nIndex_Right].VZ = m_dPos_VZ_TOP;
                 }
 
 

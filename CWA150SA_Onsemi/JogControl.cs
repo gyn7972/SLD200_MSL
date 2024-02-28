@@ -591,8 +591,8 @@ namespace CWA150SA_Onsemi300
                     //case JogControlButtonList.combButtonRight:
                     case JogControlButtonList.combButtonUp:
                         dVelocity = Velocity[axisList[1]];
-                        //if (axisList[1].Direction == MotionDirection.Backward)
-                        if (axisList[1].Direction == MotionDirection.Forward)
+                        if (axisList[1].Direction == MotionDirection.Backward)
+                        //if (axisList[1].Direction == MotionDirection.Forward)
                             nDirection = -1;
                         //axisList[0].MoveDistance(x * nDirection, dVelocity, dVelocity * 5, dVelocity * 5);
 
@@ -623,8 +623,8 @@ namespace CWA150SA_Onsemi300
                     //case JogControlButtonList.combButtonUp:
                     case JogControlButtonList.combButtonRight:
                         dVelocity = Velocity[axisList[0]];
-                        //if (axisList[0].Direction == MotionDirection.Backward)
-                        if (axisList[0].Direction == MotionDirection.Forward)
+                        if (axisList[0].Direction == MotionDirection.Backward)
+                        //if (axisList[0].Direction == MotionDirection.Forward)
                             nDirection = -1;
                         //axisList[1].MoveDistance(y * nDirection, dVelocity, dVelocity * 5, dVelocity * 5);
 
@@ -670,8 +670,8 @@ namespace CWA150SA_Onsemi300
                     //case JogControlButtonList.combButtonLeft:
                     case JogControlButtonList.combButtonDown:
                         dVelocity = Velocity[axisList[1]];
-                        //if (axisList[1].Direction == MotionDirection.Backward)
-                        if (axisList[1].Direction == MotionDirection.Forward)
+                        if (axisList[1].Direction == MotionDirection.Backward)
+                        //if (axisList[1].Direction == MotionDirection.Forward)
                             nDirection = 1;
                         //axisList[0].MoveDistance(x * nDirection, dVelocity, dVelocity * 5, dVelocity * 5);
 
@@ -701,8 +701,8 @@ namespace CWA150SA_Onsemi300
                     //case JogControlButtonList.combButtonDown:
                     case JogControlButtonList.combButtonLeft:
                         dVelocity = Velocity[axisList[0]];
-                        //if (axisList[0].Direction == MotionDirection.Backward)
-                        if (axisList[0].Direction == MotionDirection.Forward)
+                        if (axisList[0].Direction == MotionDirection.Backward)
+                        //if (axisList[0].Direction == MotionDirection.Forward)
                             nDirection = 1;
                         //axisList[1].MoveDistance(y * nDirection, dVelocity, dVelocity * 5, dVelocity * 5);
 
@@ -873,10 +873,11 @@ namespace CWA150SA_Onsemi300
                         x = x * -1;
                     }
 
-                    if (axisList[0].Direction == MotionDirection.Backward)
+                    //if (axisList[0].Direction == MotionDirection.Backward)
+                    if (axisList[0].Direction == MotionDirection.Forward)
                         nFirstDirection = -1;
-                    //if (axisList[1].Direction == MotionDirection.Backward)
-                    if (axisList[1].Direction == MotionDirection.Forward)
+                    if (axisList[1].Direction == MotionDirection.Backward)
+                    //if (axisList[1].Direction == MotionDirection.Forward)
                         nSecondDirection = -1;
 
                     dVelocity1 = Velocity[axisList[0]];
@@ -1486,8 +1487,9 @@ namespace CWA150SA_Onsemi300
                 switch (type)
                 {
                     case JogControlButtonList.combButtonUp:
-                        if (axisList[1].Direction == MotionDirection.Forward)
-                                nDirection = -1;
+                        //if (axisList[1].Direction == MotionDirection.Forward)
+                        if (axisList[1].Direction == MotionDirection.Backward)
+                            nDirection = -1;
 
                         if (axisList[1].Board.Configuration.BoardType == MotionBoardType.Ajin)
                         {
@@ -1507,7 +1509,8 @@ namespace CWA150SA_Onsemi300
                         break;
 
                     case JogControlButtonList.combButtonRight:
-                        if (axisList[0].Direction == MotionDirection.Forward)
+                        //if (axisList[0].Direction == MotionDirection.Forward)
+                        if (axisList[0].Direction == MotionDirection.Backward)    
                             nDirection = -1;
 
                         if (axisList[0].Board.Configuration.BoardType == MotionBoardType.Ajin)
@@ -1545,7 +1548,8 @@ namespace CWA150SA_Onsemi300
                 switch (type)
                 {
                     case JogControlButtonList.combButtonDown:
-                        if (axisList[1].Direction == MotionDirection.Forward)
+                        //if (axisList[1].Direction == MotionDirection.Forward)
+                        if (axisList[1].Direction == MotionDirection.Backward)
                             nDirection = 1;
 
                         if (axisList[1].Board.Configuration.BoardType == MotionBoardType.Ajin)
@@ -1569,7 +1573,8 @@ namespace CWA150SA_Onsemi300
                         break;
 
                     case JogControlButtonList.combButtonLeft:
-                        if (axisList[0].Direction == MotionDirection.Forward)
+                        //if (axisList[0].Direction == MotionDirection.Forward)
+                        if (axisList[0].Direction == MotionDirection.Backward)
                             nDirection = 1;
 
                         if (axisList[0].Board.Configuration.BoardType == MotionBoardType.Ajin)
@@ -1607,6 +1612,7 @@ namespace CWA150SA_Onsemi300
                     foreach (MotionAxis axis in axisList)
                     {
                         if (axis.Direction == MotionDirection.Forward)
+                        //if (axis.Direction == MotionDirection.Backward)
                             nDirection = -1;
 
                         if (axis.Board.Configuration.BoardType == MotionBoardType.Ajin)
@@ -1650,6 +1656,7 @@ namespace CWA150SA_Onsemi300
                     foreach (MotionAxis axis in axisList)
                     {
                         if (axis.Direction == MotionDirection.Forward)
+                        //if (axis.Direction == MotionDirection.Backward)
                             nDirection = 1;
 
                         if (axis.Board.Configuration.BoardType == MotionBoardType.Ajin)
@@ -1713,10 +1720,12 @@ namespace CWA150SA_Onsemi300
                         x = x * -1;
                     }
 
-                    if (axisList[0].Direction == MotionDirection.Backward)
+                    //if (axisList[0].Direction == MotionDirection.Backward)
+                    if (axisList[0].Direction == MotionDirection.Forward)
                         nFirstDirection = -1;
 
-                    if (axisList[1].Direction == MotionDirection.Forward)
+                    //if (axisList[1].Direction == MotionDirection.Forward)
+                    if (axisList[1].Direction == MotionDirection.Backward)
                         nSecondDirection = -1;
 
                     if (axisList[0].Board.Configuration.BoardType == MotionBoardType.Ajin)

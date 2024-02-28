@@ -863,7 +863,7 @@ namespace CWA150SA_Onsemi300
             // 
             // baseLabelPosition_Top
             // 
-            this.baseLabelPosition_Top.BackColor = System.Drawing.Color.Red;
+            this.baseLabelPosition_Top.BackColor = System.Drawing.Color.DodgerBlue;
             this.baseLabelPosition_Top.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.baseLabelPosition_Top.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabelPosition_Top.ForeColor = System.Drawing.Color.Yellow;
