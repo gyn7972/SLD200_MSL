@@ -418,7 +418,7 @@ namespace CWA150SA_Onsemi300
             // 
             // btnUpperCamera_StartLive
             // 
-            this.btnUpperCamera_StartLive.BackColor = System.Drawing.Color.LightGray;
+            this.btnUpperCamera_StartLive.BackColor = System.Drawing.Color.LightGreen;
             this.btnUpperCamera_StartLive.FlatAppearance.BorderColor = System.Drawing.SystemColors.ButtonShadow;
             this.btnUpperCamera_StartLive.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.btnUpperCamera_StartLive.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;

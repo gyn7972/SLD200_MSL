@@ -68,14 +68,24 @@ namespace QMC.Common.Parts
         public double AlignMark_2nd_Offset_Y { set; get; }
 
         [Category("[01] 웨이퍼 얼라인"),
-            Description("얼라인 - 비전 허용 오차 (Deg, mm)"),
-            DisplayName("얼라인 - 비전 허용 오차 (Deg, mm)")]
+            Description("얼라인 - 비전 허용 오차 (Theta Deg, mm)"),
+            DisplayName("얼라인 - 비전 허용 오차 (Theta Deg, mm)")]
         public double Align_Vision_Allowable_Angle { set; get; }
 
         [Category("[01] 웨이퍼 얼라인"),
             Description("얼라인 - 비전 허용 오차 (XY, mm)"),
             DisplayName("얼라인 - 비전 허용 오차 (XY, mm)")]
         public double Align_Vision_Allowable_XY { set; get; }
+
+        [Category("[01] 웨이퍼 얼라인"),
+            Description("얼라인 - 프로브 카드의 얼라인 마크 검출 시, 이 회수만큼 마크를 찾은 후 평균 위치값을 사용한다.\r\n[default 0 : 1회]"),
+            DisplayName("얼라인 - 프로브 카드 얼라인 마크 측정 회수 (평균 계산)")]
+        public int ProbeCard_AlignMarkCount_forAverage { set; get; }
+
+        [Category("[01] 웨이퍼 얼라인"),
+            Description("얼라인 - 웨이퍼의 얼라인 마크 검출 시, 이 회수만큼 마크를 찾은 후 평균 위치값을 사용한다.\r\n[default 0 : 1회]"),
+            DisplayName("얼라인 - 웨이퍼 얼라인 마크 측정 회수 (평균 계산)")]
+        public int Wafer_AlignMarkCount_forAverage { set; get; }
 
         [Category("[01] 웨이퍼 얼라인"),
             Description("얼라인 후 오차 확인 - 비전 허용 오차 (XY)\r\n\r\n(프로브 핀 위치 기준 웨이퍼 허용 오차 범위"),

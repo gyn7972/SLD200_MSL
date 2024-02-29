@@ -1317,13 +1317,24 @@ namespace QMC.Common.Modules
         public bool m_bWafer_ThetaAlign_OK { set; get; }                    //  Wafer Theta Align OK
         public bool m_bWafer_XYAlign_OK { set; get; }                       //  Wafer XY Align OK
         public double m_dProbeCardAlign_CorrectionAngle { set; get; }       //  Wafer Align 시 이 각도로 얼라인 한다.
-        public double m_dProbeCard_XYAlign_CorrectionAngle { set; get; }        
+        public double m_dProbeCard_XYAlign_CorrectionAngle { set; get; }    
         public double m_dWaferAlign_CorrectionAngle { set; get; }
-        public string m_strProbeCard_TiltData_for_Display {  set; get; }      //  각도 보여주기
-        public string m_strWafer_TiltData_for_Display { set; get; }           //  각도 보여주기
-        public double m_dWafer_ProbeCard_AlignPos_Axis_U { set; get; }        //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
-        public double m_dWafer_ProbeCard_AlignPos_Axis_V { set; get; }        //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
-        public double m_dWafer_ProbeCard_AlignPos_Axis_W { set; get; }        //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+        public string m_strProbeCard_TiltData_for_Display {  set; get; }    //  각도 보여주기
+        public string m_strWafer_TiltData_for_Display { set; get; }         //  각도 보여주기
+        public double m_dWafer_ProbeCard_AlignPos_Axis_U { set; get; }      //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+        public double m_dWafer_ProbeCard_AlignPos_Axis_V { set; get; }      //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+        public double m_dWafer_ProbeCard_AlignPos_Axis_W { set; get; }      //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+
+        //  얼라인 마크 위치 평균 계산
+        public int m_nProbeCard_AlignMarkCount_Max;                         //  프로브 카드 얼라인 마크 검사 최대 회수. (평균 계산용)
+        public int m_nWafer_AlignMarkCount_Max;                             //  웨이퍼 얼라인 마크 검사 최대 회수. (평균 계산용)
+        public int m_nProbeCard_AlignMark_Count;                            //  프로브 카드 얼라인 마크 개수. (평균 계산용)
+        public int m_nWafer_AlignMark_Count;                                //  웨이퍼 얼라인 마크 개수. (평균 계산용)
+        public PointD[] m_pProbeCard_AlignMarkPosition_Sum;                 //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+        public PointD[] m_pWafer_AlignMarkPosition_Sum;                     //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+        public PointD[] m_pProbeCard_AlignMarkPosition_Average;             //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+        public PointD[] m_pWafer_AlignMarkPosition_Average;                 //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+
         public enum WaferProbeAlign_Step
         {
             None = 0,
@@ -1637,6 +1648,16 @@ namespace QMC.Common.Modules
             m_bWaferHighResAutoFocus_OK = false;
 
             m_bAlignVisionThread_Use = true;                                            //  Align Vision 을 Thread 로 할지 말지?
+
+            m_nProbeCard_AlignMarkCount_Max = 0;                                        //  프로브 카드 얼라인 마크 검사 최대 회수. (평균 계산용)
+            m_nWafer_AlignMarkCount_Max = 0;                                            //  웨이퍼 얼라인 마크 검사 최대 회수. (평균 계산용)
+            m_nProbeCard_AlignMark_Count = 0;                                           //  프로브 카드 얼라인 마크 개수. (평균 계산용)
+            m_nWafer_AlignMark_Count = 0;                                               //  웨이퍼 얼라인 마크 개수. (평균 계산용)
+            m_pProbeCard_AlignMarkPosition_Sum = new PointD[3];                         //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+            m_pWafer_AlignMarkPosition_Sum = new PointD[3];                             //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+            m_pProbeCard_AlignMarkPosition_Average = new PointD[3];                     //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+            m_pWafer_AlignMarkPosition_Average = new PointD[3];                         //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+
 
             m_bSelected_HighResCamera = false;
             m_bMyWaferAlign_fromManualMode = false;
@@ -2261,6 +2282,23 @@ namespace QMC.Common.Modules
                     m_dWafer_ProbeCard_AlignPos_Axis_V = -1;
                     m_dWafer_ProbeCard_AlignPos_Axis_W = -1;
 
+                    m_nProbeCard_AlignMarkCount_Max = Config.ParamConfig.ProbeCard_AlignMarkCount_forAverage <= 1 ? 1 : Config.ParamConfig.ProbeCard_AlignMarkCount_forAverage;     //  프로브 카드 얼라인 마크 검사 최대 회수. (평균 계산용)
+                    m_nWafer_AlignMarkCount_Max = Config.ParamConfig.Wafer_AlignMarkCount_forAverage <= 1 ? 1 : Config.ParamConfig.Wafer_AlignMarkCount_forAverage;                 //  웨이퍼 얼라인 마크 검사 최대 회수. (평균 계산용)
+                    m_nProbeCard_AlignMark_Count = 0;                                                                                                                               //  프로브 카드 얼라인 마크 개수. (평균 계산용)
+                    m_nWafer_AlignMark_Count = 0;                                                                                                                                   //  웨이퍼 얼라인 마크 개수. (평균 계산용)
+                    for (int i = 0; i < System.Enum.GetValues(typeof(nAlignErrorCheckPos)).Length; i++)
+                    {
+                        m_pProbeCard_AlignMarkPosition_Sum[i].X = 0.0;                                 //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pProbeCard_AlignMarkPosition_Sum[i].Y = 0.0;                                 //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Sum[i].X = 0.0;                                     //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Sum[i].Y = 0.0;                                     //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pProbeCard_AlignMarkPosition_Average[i].X = 0.0;                             //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pProbeCard_AlignMarkPosition_Average[i].Y = 0.0;                             //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Average[i].X = 0.0;                                 //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Average[i].Y = 0.0;                                 //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                    }
+
+
                     Equipment.Vision_SpiralMove_Use = true;
 
                     if (m_bProbeCard_TiltCheck_Only && !m_bWafer_Align_Only)           //  ProbeCard Tilt Check Only
@@ -2704,6 +2742,12 @@ namespace QMC.Common.Modules
 
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "프로브 카드 틀어짐 각도 측정, TOP 위치 마크 검출을 위한 파라미터 세팅");
 
+                    m_nProbeCard_AlignMark_Count = 0;                                                           //  프로브 카드 얼라인 마크 개수. (평균 계산용)
+                    m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                    m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                    m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                    m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+
                     //  마크 1개만 찾기 위한 설정
                     m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
 
@@ -2892,10 +2936,9 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "프로브 카드 틀어짐 각도 측정, 프로브 카드 TOP 위치에서 얼라인 마크 검출 완료");
 
-                            m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = jigAligner_Upper.FirstPosition.X;
-                            m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
-                            //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].X = jigAligner_LowRes.Result;
-                            //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].Y = jigAligner_LowRes.Result;
+                            //  여기서 마크 위치값을 가져오던 것을... 저~ 아래에서 평균으로 계산
+                            //m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = jigAligner_Upper.FirstPosition.X;
+                            //m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
 
                             //  마크를 찾긴 했는데, Position 값이 0인 경우가 있다. 
                             if ((jigAligner_Upper.FirstPosition.X == 0) || (jigAligner_Upper.FirstPosition.Y == 0))
@@ -2906,7 +2949,34 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCard_Tilt_Check_BottomMarkFind_Ready;
+                                m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X += jigAligner_Upper.FirstPosition.X;
+                                m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y += jigAligner_Upper.FirstPosition.Y;
+
+                                //  평균 계산을 위해 반복
+                                m_nProbeCard_AlignMark_Count++;
+                                if (m_nProbeCard_AlignMark_Count < m_nProbeCard_AlignMarkCount_Max)
+                                {
+                                    //  마크 1개만 찾기 위한 설정
+                                    m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
+
+                                    //  0번 인덱스 위치 (마크 찾을 위치)
+                                    //waferProbeAlignParameter.stWaferProbeAlignPosParam = waferProbeAlignParameter.GetPositionInformation("AlignPosition_Ver_Top");
+                                    jigAligner_Upper.m_AlignPositions[0].X = m_dMy1stMarkVisionPos_X;
+                                    jigAligner_Upper.m_AlignPositions[0].Y = m_dMy1stMarkVisionPos_Y;
+
+                                    m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCard_Tilt_Check_TopMarkFind;
+                                }
+                                else
+                                {
+                                    //  여기서 평균 계산
+                                    m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X / m_nProbeCard_AlignMark_Count;
+                                    m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y / m_nProbeCard_AlignMark_Count;
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+
+                                    m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCard_Tilt_Check_BottomMarkFind_Ready;
+                                }
                             }
                         }
                         else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 60000)               //  1분 동안 마크를 찾지 못할 경우
@@ -2943,10 +3013,9 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "프로브 카드 틀어짐 각도 측정, 프로브 카드 TOP 위치에서 얼라인 마크 검출 완료");
 
-                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = jigAligner_Upper.FirstPosition.X;
-                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
-                        //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].X = jigAligner_LowRes.Result;
-                        //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].Y = jigAligner_LowRes.Result;
+                        //  여기서 마크 위치값을 가져오던 것을... 저~ 아래에서 평균으로 계산
+                        //m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = jigAligner_Upper.FirstPosition.X;
+                        //m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
 
                         //  마크를 찾긴 했는데, Position 값이 0인 경우가 있다. 
                         if ((jigAligner_Upper.FirstPosition.X == 0) || (jigAligner_Upper.FirstPosition.Y == 0))
@@ -2957,7 +3026,34 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCard_Tilt_Check_BottomMarkFind_Ready;
+                            m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X += jigAligner_Upper.FirstPosition.X;
+                            m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y += jigAligner_Upper.FirstPosition.Y;
+
+                            //  평균 계산을 위해 반복
+                            m_nProbeCard_AlignMark_Count++;
+                            if (m_nProbeCard_AlignMark_Count < m_nProbeCard_AlignMarkCount_Max)
+                            {
+                                //  마크 1개만 찾기 위한 설정
+                                m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
+
+                                //  0번 인덱스 위치 (마크 찾을 위치)
+                                //waferProbeAlignParameter.stWaferProbeAlignPosParam = waferProbeAlignParameter.GetPositionInformation("AlignPosition_Ver_Top");
+                                jigAligner_Upper.m_AlignPositions[0].X = m_dMy1stMarkVisionPos_X;
+                                jigAligner_Upper.m_AlignPositions[0].Y = m_dMy1stMarkVisionPos_Y;
+
+                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCard_Tilt_Check_TopMarkFind;
+                            }
+                            else
+                            {
+                                //  여기서 평균 계산
+                                m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X / m_nProbeCard_AlignMark_Count;
+                                m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y / m_nProbeCard_AlignMark_Count;
+
+                                m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
+                                m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+
+                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCard_Tilt_Check_BottomMarkFind_Ready;
+                            }
                         }
                     }
                     break;
@@ -2967,6 +3063,12 @@ namespace QMC.Common.Modules
                     //  TOP 위치의 얼라인 마크 위치를 찾기 위한 데이터 세팅
 
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "프로브 카드 틀어짐 각도 측정, BOTTOM 위치 마크 검출을 위한 파라미터 세팅");
+
+                    m_nProbeCard_AlignMark_Count = 0;                                                           //  프로브 카드 얼라인 마크 개수. (평균 계산용)
+                    m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].X = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                    m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].Y = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                    m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                    m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
 
                     //  마크 1개만 찾기 위한 설정
                     m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
@@ -3158,10 +3260,9 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "프로브 카드 틀어짐 각도 측정, 프로브 카드 BOTTOM 위치에서 얼라인 마크 검출 완료");
 
-                            m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_SECONDMARKPOS].X = jigAligner_Upper.FirstPosition.X;
-                            m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_SECONDMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
-                            //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].X = jigAligner_LowRes.Result;
-                            //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].Y = jigAligner_LowRes.Result;
+                            //  여기서 마크 위치값을 가져오던 것을... 저~ 아래에서 평균으로 계산
+                            //m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_SECONDMARKPOS].X = jigAligner_Upper.FirstPosition.X;
+                            //m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_SECONDMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
 
                             //  마크를 찾긴 했는데, Position 값이 0인 경우가 있다. 
                             if ((jigAligner_Upper.FirstPosition.X == 0) || (jigAligner_Upper.FirstPosition.Y == 0))
@@ -3172,7 +3273,33 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCard_Tilt_Data_Calc;
+                                m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].X += jigAligner_Upper.FirstPosition.X;
+                                m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].Y += jigAligner_Upper.FirstPosition.Y;
+
+                                //  평균 계산을 위해 반복
+                                m_nProbeCard_AlignMark_Count++;
+                                if (m_nProbeCard_AlignMark_Count < m_nProbeCard_AlignMarkCount_Max)
+                                {
+                                    //  마크 1개만 찾기 위한 설정
+                                    m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
+
+                                    //  0번 인덱스 위치 (마크 찾을 위치)
+                                    jigAligner_Upper.m_AlignPositions[0].X = MC_Func.MC_GetEncPos((int)nAxis.X);        //  m_dMy1stMarkVisionPos_X;
+                                    jigAligner_Upper.m_AlignPositions[0].Y = MC_Func.MC_GetEncPos((int)nAxis.Y);        //  m_dMy1stMarkVisionPos_Y;
+
+                                    m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCard_Tilt_Check_BottomMarkFind;
+                                }
+                                else
+                                {
+                                    //  여기서 평균 계산
+                                    m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].X / m_nProbeCard_AlignMark_Count;
+                                    m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].Y / m_nProbeCard_AlignMark_Count;
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_SECONDMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_SECONDMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y;
+
+                                    m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCard_Tilt_Data_Calc;
+                                }                                
                             }
                         }
                         else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 60000)               //  1분 동안 마크를 찾지 못할 경우
@@ -3321,6 +3448,12 @@ namespace QMC.Common.Modules
                     //  TOP 위치의 얼라인 마크 위치를 찾기 위한 데이터 세팅
 
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "프로브 카드 XY 위치 보정, TOP 위치 마크 검출을 위한 파라미터 세팅");
+
+                    m_nProbeCard_AlignMark_Count = 0;                                                           //  프로브 카드 얼라인 마크 개수. (평균 계산용)
+                    m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                    m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                    m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                    m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
 
                     //  마크 1개만 찾기 위한 설정
                     m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
@@ -3510,10 +3643,9 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "프로브 카드 XY 위치 보정, 프로브 카드 TOP 위치에서 얼라인 마크 검출 완료");
 
-                            m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = jigAligner_Upper.FirstPosition.X;
-                            m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
-                            //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].X = jigAligner_LowRes.Result;
-                            //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].Y = jigAligner_LowRes.Result;
+                            //  여기서 마크 위치값을 가져오던 것을... 저~ 아래에서 평균으로 계산
+                            //m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = jigAligner_Upper.FirstPosition.X;
+                            //m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
 
                             //  마크를 찾긴 했는데, Position 값이 0인 경우가 있다. 
                             if ((jigAligner_Upper.FirstPosition.X == 0) || (jigAligner_Upper.FirstPosition.Y == 0))
@@ -3524,7 +3656,33 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCardXYAlignData_Calc;
+                                m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X += jigAligner_Upper.FirstPosition.X;
+                                m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y += jigAligner_Upper.FirstPosition.Y;
+
+                                //  평균 계산을 위해 반복
+                                m_nProbeCard_AlignMark_Count++;
+                                if (m_nProbeCard_AlignMark_Count < m_nProbeCard_AlignMarkCount_Max)
+                                {
+                                    //  마크 1개만 찾기 위한 설정
+                                    m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
+
+                                    //  0번 인덱스 위치 (마크 찾을 위치)
+                                    jigAligner_Upper.m_AlignPositions[0].X = MC_Func.MC_GetEncPos((int)nAxis.X);        //  m_dMy1stMarkVisionPos_X;
+                                    jigAligner_Upper.m_AlignPositions[0].Y = MC_Func.MC_GetEncPos((int)nAxis.Y);        //  m_dMy1stMarkVisionPos_Y;
+
+                                    m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCardXYAlign_TopMarkFind;
+                                }
+                                else
+                                {
+                                    //  여기서 평균 계산
+                                    m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X / m_nProbeCard_AlignMark_Count;
+                                    m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y / m_nProbeCard_AlignMark_Count;
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+
+                                    m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCardXYAlignData_Calc;
+                                }
                             }
                         }
                         else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 60000)               //  1분 동안 마크를 찾지 못할 경우
@@ -3561,10 +3719,9 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "프로브 카드 XY 위치 보정, 프로브 카드 TOP 위치에서 얼라인 마크 검출 완료");
 
-                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = jigAligner_Upper.FirstPosition.X;
-                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
-                        //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].X = jigAligner_LowRes.Result;
-                        //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].Y = jigAligner_LowRes.Result;
+                        //  여기서 마크 위치값을 가져오던 것을... 저~ 아래에서 평균으로 계산
+                        //m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = jigAligner_Upper.FirstPosition.X;
+                        //m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
 
                         //  마크를 찾긴 했는데, Position 값이 0인 경우가 있다. 
                         if ((jigAligner_Upper.FirstPosition.X == 0) || (jigAligner_Upper.FirstPosition.Y == 0))
@@ -3575,7 +3732,33 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCardXYAlignData_Calc;
+                            m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X += jigAligner_Upper.FirstPosition.X;
+                            m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y += jigAligner_Upper.FirstPosition.Y;
+
+                            //  평균 계산을 위해 반복
+                            m_nProbeCard_AlignMark_Count++;
+                            if (m_nProbeCard_AlignMark_Count < m_nProbeCard_AlignMarkCount_Max)
+                            {
+                                //  마크 1개만 찾기 위한 설정
+                                m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
+
+                                //  0번 인덱스 위치 (마크 찾을 위치)
+                                jigAligner_Upper.m_AlignPositions[0].X = MC_Func.MC_GetEncPos((int)nAxis.X);        //  m_dMy1stMarkVisionPos_X;
+                                jigAligner_Upper.m_AlignPositions[0].Y = MC_Func.MC_GetEncPos((int)nAxis.Y);        //  m_dMy1stMarkVisionPos_Y;
+
+                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCardXYAlign_TopMarkFind;
+                            }
+                            else
+                            {
+                                //  여기서 평균 계산
+                                m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X / m_nProbeCard_AlignMark_Count;
+                                m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y / m_nProbeCard_AlignMark_Count;
+
+                                m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
+                                m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+
+                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCardXYAlignData_Calc;
+                            }
                         }
                     }
                     break;
@@ -3700,6 +3883,12 @@ namespace QMC.Common.Modules
 
                         //m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlign_TopMarkFind_Ready;       //   VisionXYZ_Move_WaferAlignPos_TopCenter;
 
+
+                        m_nProbeCard_AlignMark_Count = 0;                                                           //  프로브 카드 얼라인 마크 개수. (평균 계산용)
+                        m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
 
 
                         //  마크 1개만 찾기 위한 설정
@@ -3834,6 +4023,12 @@ namespace QMC.Common.Modules
                     //  TOP 위치의 얼라인 마크 위치를 찾기 위한 데이터 세팅
 
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 틀어짐 각도 보정, TOP 위치 마크 검출을 위한 파라미터 세팅");
+
+                    m_nWafer_AlignMark_Count = 0;                                                               //  웨이퍼 얼라인 마크 개수. (평균 계산용)
+                    m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;                   //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                    m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;                   //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                    m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;               //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                    m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;               //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
 
                     //  마크 1개만 찾기 위한 설정
                     m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
@@ -4025,10 +4220,9 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 틀어짐 각도 보정, 웨이퍼 TOP 위치에서 얼라인 마크 검출 완료");
 
-                            m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = jigAligner_Lower.FirstPosition.X;
-                            m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
-                            //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].X = jigAligner_LowRes.Result;
-                            //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].Y = jigAligner_LowRes.Result;
+                            //  여기서 마크 위치값을 가져오던 것을... 저~ 아래에서 평균으로 계산
+                            //m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = jigAligner_Lower.FirstPosition.X;
+                            //m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
 
                             //  마크를 찾긴 했는데, Position 값이 0인 경우가 있다. 
                             if ((jigAligner_Lower.FirstPosition.X == 0) || (jigAligner_Lower.FirstPosition.Y == 0))
@@ -4039,7 +4233,33 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlign_BottomMarkFind_Ready;
+                                m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X += jigAligner_Lower.FirstPosition.X;
+                                m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y += jigAligner_Lower.FirstPosition.Y;
+
+                                //  평균 계산을 위해 반복
+                                m_nWafer_AlignMark_Count++;
+                                if (m_nWafer_AlignMark_Count < m_nWafer_AlignMarkCount_Max)
+                                {
+                                    //  마크 1개만 찾기 위한 설정
+                                    m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
+
+                                    //  0번 인덱스 위치 (마크 찾을 위치)
+                                    jigAligner_Upper.m_AlignPositions[0].X = MC_Func.MC_GetEncPos((int)nAxis.X);        //  m_dMy1stMarkVisionPos_X;
+                                    jigAligner_Upper.m_AlignPositions[0].Y = MC_Func.MC_GetEncPos((int)nAxis.Y);        //  m_dMy1stMarkVisionPos_Y;
+
+                                    m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlign_TopMarkFind;
+                                }
+                                else
+                                {
+                                    //  여기서 평균 계산
+                                    m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X / m_nWafer_AlignMark_Count;
+                                    m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y / m_nWafer_AlignMark_Count;
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+
+                                    m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlign_BottomMarkFind_Ready;
+                                }
                             }
                         }
                         else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 60000)               //  1분 동안 마크를 찾지 못할 경우
@@ -4076,10 +4296,9 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 틀어짐 각도 보정, 웨이퍼 TOP 위치에서 얼라인 마크 검출 완료");
 
-                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = jigAligner_Lower.FirstPosition.X;
-                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
-                        //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].X = jigAligner_LowRes.Result;
-                        //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].Y = jigAligner_LowRes.Result;
+                        //  여기서 마크 위치값을 가져오던 것을... 저~ 아래에서 평균으로 계산
+                        //m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = jigAligner_Lower.FirstPosition.X;
+                        //m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
 
                         //  마크를 찾긴 했는데, Position 값이 0인 경우가 있다. 
                         if ((jigAligner_Lower.FirstPosition.X == 0) || (jigAligner_Lower.FirstPosition.Y == 0))
@@ -4090,7 +4309,33 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlign_BottomMarkFind_Ready;
+                            m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X += jigAligner_Lower.FirstPosition.X;
+                            m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y += jigAligner_Lower.FirstPosition.Y;
+
+                            //  평균 계산을 위해 반복
+                            m_nWafer_AlignMark_Count++;
+                            if (m_nWafer_AlignMark_Count < m_nWafer_AlignMarkCount_Max)
+                            {
+                                //  마크 1개만 찾기 위한 설정
+                                m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
+
+                                //  0번 인덱스 위치 (마크 찾을 위치)
+                                jigAligner_Lower.m_AlignPositions[0].X = MC_Func.MC_GetEncPos((int)nAxis.X);        //  m_dMy1stMarkVisionPos_X;
+                                jigAligner_Lower.m_AlignPositions[0].Y = MC_Func.MC_GetEncPos((int)nAxis.Y);        //  m_dMy1stMarkVisionPos_Y;
+
+                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlign_TopMarkFind;
+                            }
+                            else
+                            {
+                                //  여기서 평균 계산
+                                m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X / m_nWafer_AlignMark_Count;
+                                m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y / m_nWafer_AlignMark_Count;
+
+                                m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
+                                m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+
+                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlign_BottomMarkFind_Ready;
+                            }
                         }
                     }                    
                     break;
@@ -4100,6 +4345,12 @@ namespace QMC.Common.Modules
                     //  TOP 위치의 얼라인 마크 위치를 찾기 위한 데이터 세팅
 
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 틀어짐 각도 보정, BOTTOM 위치 마크 검출을 위한 파라미터 세팅");
+
+                    m_nWafer_AlignMark_Count = 0;                                                               //  웨이퍼 얼라인 마크 개수. (평균 계산용)
+                    m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].X = 0.0;                   //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                    m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].Y = 0.0;                   //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                    m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X = 0.0;               //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                    m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y = 0.0;               //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
 
                     //  마크 1개만 찾기 위한 설정
                     m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
@@ -4291,10 +4542,9 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 틀어짐 각도 보정, 웨이퍼 BOTTOM 위치에서 얼라인 마크 검출 완료");
 
-                            m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].X = jigAligner_Lower.FirstPosition.X;
-                            m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
-                            //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].X = jigAligner_LowRes.Result;
-                            //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].Y = jigAligner_LowRes.Result;
+                            //  여기서 마크 위치값을 가져오던 것을... 저~ 아래에서 평균으로 계산
+                            //m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].X = jigAligner_Lower.FirstPosition.X;
+                            //m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
 
                             //  마크를 찾긴 했는데, Position 값이 0인 경우가 있다. 
                             if ((jigAligner_Lower.FirstPosition.X == 0) || (jigAligner_Lower.FirstPosition.Y == 0))
@@ -4305,7 +4555,33 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlignData_Calc;
+                                m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].X += jigAligner_Lower.FirstPosition.X;
+                                m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].Y += jigAligner_Lower.FirstPosition.Y;
+
+                                //  평균 계산을 위해 반복
+                                m_nWafer_AlignMark_Count++;
+                                if (m_nWafer_AlignMark_Count < m_nWafer_AlignMarkCount_Max)
+                                {
+                                    //  마크 1개만 찾기 위한 설정
+                                    m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
+
+                                    //  0번 인덱스 위치 (마크 찾을 위치)
+                                    jigAligner_Lower.m_AlignPositions[0].X = MC_Func.MC_GetEncPos((int)nAxis.X);        //  m_dMy1stMarkVisionPos_X;
+                                    jigAligner_Lower.m_AlignPositions[0].Y = MC_Func.MC_GetEncPos((int)nAxis.Y);        //  m_dMy1stMarkVisionPos_Y;
+
+                                    m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlign_BottomMarkFind;
+                                }
+                                else
+                                {
+                                    //  여기서 평균 계산
+                                    m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].X / m_nWafer_AlignMark_Count;
+                                    m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].Y / m_nWafer_AlignMark_Count;
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].X = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y;
+
+                                    m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlignData_Calc;
+                                }
                             }
                         }
                         else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 60000)               //  1분 동안 마크를 찾지 못할 경우
@@ -4342,10 +4618,9 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 틀어짐 각도 보정, 웨이퍼 BOTTOM 위치에서 얼라인 마크 검출 완료");
 
-                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].X = jigAligner_Lower.FirstPosition.X;
-                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
-                        //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].X = jigAligner_LowRes.Result;
-                        //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].Y = jigAligner_LowRes.Result;
+                        //  여기서 마크 위치값을 가져오던 것을... 저~ 아래에서 평균으로 계산
+                        //m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].X = jigAligner_Lower.FirstPosition.X;
+                        //m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
 
                         //  마크를 찾긴 했는데, Position 값이 0인 경우가 있다. 
                         if ((jigAligner_Lower.FirstPosition.X == 0) || (jigAligner_Lower.FirstPosition.Y == 0))
@@ -4356,7 +4631,33 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlignData_Calc;
+                            m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].X += jigAligner_Lower.FirstPosition.X;
+                            m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].Y += jigAligner_Lower.FirstPosition.Y;
+
+                            //  평균 계산을 위해 반복
+                            m_nWafer_AlignMark_Count++;
+                            if (m_nWafer_AlignMark_Count < m_nWafer_AlignMarkCount_Max)
+                            {
+                                //  마크 1개만 찾기 위한 설정
+                                m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
+
+                                //  0번 인덱스 위치 (마크 찾을 위치)
+                                jigAligner_Lower.m_AlignPositions[0].X = MC_Func.MC_GetEncPos((int)nAxis.X);        //  m_dMy1stMarkVisionPos_X;
+                                jigAligner_Lower.m_AlignPositions[0].Y = MC_Func.MC_GetEncPos((int)nAxis.Y);        //  m_dMy1stMarkVisionPos_Y;
+
+                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlign_BottomMarkFind;
+                            }
+                            else
+                            {
+                                //  여기서 평균 계산
+                                m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].X / m_nWafer_AlignMark_Count;
+                                m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].Y / m_nWafer_AlignMark_Count;
+
+                                m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].X = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X;
+                                m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y;
+
+                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlignData_Calc;
+                            }
                         }
                     }                    
                     break;
@@ -4414,6 +4715,15 @@ namespace QMC.Common.Modules
                             if (Math.Abs(m_dWaferAlign_CorrectionAngle) >= 5.0)
                             {
                                 Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 틀어짐 각도 보정, 계산된 각도에 문제가 있음. (5도 이상 틀어짐)");
+
+                                m_nWafer_AlignMark_Count = 0;                                                               //  웨이퍼 얼라인 마크 개수. (평균 계산용)
+                                m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;                   //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                                m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;                   //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                                m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;               //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                                m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;               //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+
+                                //  마크 1개만 찾기 위한 설정
+                                m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
 
                                 jigAligner_Lower.m_AlignPositions[0].X = m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X;
                                 jigAligner_Lower.m_AlignPositions[0].Y = m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y;
@@ -4589,6 +4899,12 @@ namespace QMC.Common.Modules
                         //m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlign_TopMarkFind_Ready;       //   VisionXYZ_Move_WaferAlignPos_TopCenter;
 
 
+                        m_nWafer_AlignMark_Count = 0;                                                               //  웨이퍼 얼라인 마크 개수. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;                   //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;                   //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;               //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;               //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+
 
                         //  마크 1개만 찾기 위한 설정
                         m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
@@ -4657,6 +4973,12 @@ namespace QMC.Common.Modules
                     //  TOP 위치의 얼라인 마크 위치를 찾기 위한 데이터 세팅
 
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 XY 위치 보정, TOP 위치 마크 검출을 위한 파라미터 세팅");
+
+                    m_nWafer_AlignMark_Count = 0;                                                               //  웨이퍼 얼라인 마크 개수. (평균 계산용)
+                    m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;                   //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                    m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;                   //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                    m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;               //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                    m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;               //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
 
                     //  마크 1개만 찾기 위한 설정
                     m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
@@ -4848,10 +5170,9 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 XY 위치 보정, 웨이퍼 TOP 위치에서 얼라인 마크 검출 완료");
 
-                            m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = jigAligner_Lower.FirstPosition.X;
-                            m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
-                            //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].X = jigAligner_LowRes.Result;
-                            //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].Y = jigAligner_LowRes.Result;
+                            //  여기서 마크 위치값을 가져오던 것을... 저~ 아래에서 평균으로 계산
+                            //m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = jigAligner_Lower.FirstPosition.X;
+                            //m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
 
                             //  마크를 찾긴 했는데, Position 값이 0인 경우가 있다. 
                             if ((jigAligner_Lower.FirstPosition.X == 0) || (jigAligner_Lower.FirstPosition.Y == 0))
@@ -4862,7 +5183,33 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferXYAlignData_Calc;
+                                m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X += jigAligner_Lower.FirstPosition.X;
+                                m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y += jigAligner_Lower.FirstPosition.Y;
+
+                                //  평균 계산을 위해 반복
+                                m_nWafer_AlignMark_Count++;
+                                if (m_nWafer_AlignMark_Count < m_nWafer_AlignMarkCount_Max)
+                                {
+                                    //  마크 1개만 찾기 위한 설정
+                                    m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
+
+                                    //  0번 인덱스 위치 (마크 찾을 위치)
+                                    jigAligner_Lower.m_AlignPositions[0].X = MC_Func.MC_GetEncPos((int)nAxis.X);        //  m_dMy1stMarkVisionPos_X;
+                                    jigAligner_Lower.m_AlignPositions[0].Y = MC_Func.MC_GetEncPos((int)nAxis.Y);        //  m_dMy1stMarkVisionPos_Y;
+
+                                    m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferXYAlign_TopMarkFind;
+                                }
+                                else
+                                {
+                                    //  여기서 평균 계산
+                                    m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X / m_nWafer_AlignMark_Count;
+                                    m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y / m_nWafer_AlignMark_Count;
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+
+                                    m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferXYAlignData_Calc;
+                                }
                             }
                         }
                         else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 60000)               //  1분 동안 마크를 찾지 못할 경우
@@ -4899,10 +5246,9 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 XY 위치 보정, 웨이퍼 TOP 위치에서 얼라인 마크 검출 완료");
 
-                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = jigAligner_Lower.FirstPosition.X;
-                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
-                        //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].X = jigAligner_LowRes.Result;
-                        //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].Y = jigAligner_LowRes.Result;
+                        //  여기서 마크 위치값을 가져오던 것을... 저~ 아래에서 평균으로 계산
+                        //m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = jigAligner_Lower.FirstPosition.X;
+                        //m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
 
                         //  마크를 찾긴 했는데, Position 값이 0인 경우가 있다. 
                         if ((jigAligner_Lower.FirstPosition.X == 0) || (jigAligner_Lower.FirstPosition.Y == 0))
@@ -4913,7 +5259,33 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferXYAlignData_Calc;
+                            m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X += jigAligner_Lower.FirstPosition.X;
+                            m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y += jigAligner_Lower.FirstPosition.Y;
+
+                            //  평균 계산을 위해 반복
+                            m_nWafer_AlignMark_Count++;
+                            if (m_nWafer_AlignMark_Count < m_nWafer_AlignMarkCount_Max)
+                            {
+                                //  마크 1개만 찾기 위한 설정
+                                m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
+
+                                //  0번 인덱스 위치 (마크 찾을 위치)
+                                jigAligner_Lower.m_AlignPositions[0].X = MC_Func.MC_GetEncPos((int)nAxis.X);        //  m_dMy1stMarkVisionPos_X;
+                                jigAligner_Lower.m_AlignPositions[0].Y = MC_Func.MC_GetEncPos((int)nAxis.Y);        //  m_dMy1stMarkVisionPos_Y;
+
+                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferXYAlign_TopMarkFind;
+                            }
+                            else
+                            {
+                                //  여기서 평균 계산
+                                m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X / m_nWafer_AlignMark_Count;
+                                m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y / m_nWafer_AlignMark_Count;
+
+                                m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
+                                m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+
+                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferXYAlignData_Calc;
+                            }
                         }
                     }                    
                     break;
@@ -5097,6 +5469,12 @@ namespace QMC.Common.Modules
                         //m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlign_TopMarkFind_Ready;       //   VisionXYZ_Move_WaferAlignPos_TopCenter;
 
 
+                        m_nWafer_AlignMark_Count = 0;                                                               //  웨이퍼 얼라인 마크 개수. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;                   //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;                   //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;               //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;               //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+
 
                         //  마크 1개만 찾기 위한 설정
                         m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
@@ -5180,14 +5558,23 @@ namespace QMC.Common.Modules
 
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.VisionXYZ_Move_ReadyPos2;
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 60000)
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 120000)
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "작업 중지. (웨이퍼 XY 위치 에러 검증 시간 초과)");
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        Equipment.MachineStop_byUser = true;
+
+                        if (m_bAlignVisionThread_Use)
+                        {
+                            //  Thread 를 사용할 경우
+                            m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                        }
+
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
 
                         timer_MainWork.Enabled = false;
 
@@ -5524,6 +5911,23 @@ namespace QMC.Common.Modules
                     m_bProbeCard_XYAlign_ErrorCheck_OK = false;         //  Probe Card XY Align Error Check OK
                     m_bWafer_XYAlign_ErrorCheck_OK = false;             //  Wafer XY Align Error Check OK
 
+                    m_nProbeCard_AlignMarkCount_Max = Config.ParamConfig.ProbeCard_AlignMarkCount_forAverage <= 1 ? 1 : Config.ParamConfig.ProbeCard_AlignMarkCount_forAverage;     //  프로브 카드 얼라인 마크 검사 최대 회수. (평균 계산용)
+                    m_nWafer_AlignMarkCount_Max = Config.ParamConfig.Wafer_AlignMarkCount_forAverage <= 1 ? 1 : Config.ParamConfig.Wafer_AlignMarkCount_forAverage;                 //  웨이퍼 얼라인 마크 검사 최대 회수. (평균 계산용)
+                    m_nProbeCard_AlignMark_Count = 0;                                                                                                                               //  프로브 카드 얼라인 마크 개수. (평균 계산용)
+                    m_nWafer_AlignMark_Count = 0;                                                                                                                                   //  웨이퍼 얼라인 마크 개수. (평균 계산용)
+                    for (int i = 0; i < System.Enum.GetValues(typeof(nAlignErrorCheckPos)).Length; i++)
+                    {
+                        m_pProbeCard_AlignMarkPosition_Sum[i].X = 0.0;                                 //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pProbeCard_AlignMarkPosition_Sum[i].Y = 0.0;                                 //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Sum[i].X = 0.0;                                     //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Sum[i].Y = 0.0;                                     //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+
+                        m_pProbeCard_AlignMarkPosition_Average[i].X = 0.0;                             //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pProbeCard_AlignMarkPosition_Average[i].Y = 0.0;                             //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Average[i].X = 0.0;                                 //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Average[i].Y = 0.0;                                 //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                    }
+
                     m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.Align_Condition_Check;
                     break;
 
@@ -5770,15 +6174,32 @@ namespace QMC.Common.Modules
                     if (m_nWaferProbeAlign_ErrorCheck_Count == 0)                               //  Top
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "프로브 카드 TOP 마크 검출을 위한 파라미터 세팅");
+
+                        m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
                     }
                     else if (m_nWaferProbeAlign_ErrorCheck_Count == 1)                          //  Middle
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "프로브 카드 MID 마크 검출을 위한 파라미터 세팅");
+
+                        m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Mid].X = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Mid].Y = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Mid].X = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Mid].Y = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
                     }
                     else                                                                        //  Bottom
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "프로브 카드 BOT 마크 검출을 위한 파라미터 세팅");
+
+                        m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].X = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].Y = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
                     }
+
+                    m_nProbeCard_AlignMark_Count = 0;                                                           //  프로브 카드 얼라인 마크 개수. (평균 계산용)
 
                     //  마크 1개만 찾기 위한 설정
                     m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
@@ -6013,8 +6434,9 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "프로브 카드 XY 위치 보정, 프로브 카드 얼라인 마크 검출 완료");
 
-                            m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = jigAligner_Upper.FirstPosition.X;
-                            m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
+                            //  여기서 마크 위치값을 가져오던 것을... 저~ 아래에서 평균으로 계산
+                            //m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = jigAligner_Upper.FirstPosition.X;
+                            //m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
 
                             //  마크를 찾긴 했는데, Position 값이 0인 경우가 있다. 
                             if ((jigAligner_Upper.FirstPosition.X == 0) || (jigAligner_Upper.FirstPosition.Y == 0))
@@ -6025,7 +6447,33 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ProbeCardXYAlignData_Calc;
+                                m_pProbeCard_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].X += jigAligner_Upper.FirstPosition.X;
+                                m_pProbeCard_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].Y += jigAligner_Upper.FirstPosition.Y;
+
+                                //  평균 계산을 위해 반복
+                                m_nProbeCard_AlignMark_Count++;
+                                if (m_nProbeCard_AlignMark_Count < m_nProbeCard_AlignMarkCount_Max)
+                                {
+                                    //  마크 1개만 찾기 위한 설정
+                                    m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
+
+                                    //  0번 인덱스 위치 (마크 찾을 위치)
+                                    jigAligner_Upper.m_AlignPositions[0].X = MC_Func.MC_GetEncPos((int)nAxis.X);        //  m_dMy1stMarkVisionPos_X;
+                                    jigAligner_Upper.m_AlignPositions[0].Y = MC_Func.MC_GetEncPos((int)nAxis.Y);        //  m_dMy1stMarkVisionPos_Y;
+
+                                    m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ProbeCardXYAlign_MarkFind;
+                                }
+                                else
+                                {
+                                    //  여기서 평균 계산
+                                    m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X = m_pProbeCard_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].X / m_nProbeCard_AlignMark_Count;
+                                    m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y = m_pProbeCard_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].Y / m_nProbeCard_AlignMark_Count;
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y;
+
+                                    m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ProbeCardXYAlignData_Calc;
+                                }
                             }
                         }
                         else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 60000)               //  1분 동안 마크를 찾지 못할 경우
@@ -6062,10 +6510,9 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "프로브 카드 XY 위치 보정, 프로브 카드 얼라인 마크 검출 완료");
 
-                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = jigAligner_Upper.FirstPosition.X;
-                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
-                        //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].X = jigAligner_LowRes.Result;
-                        //m_forAlign_Data[(int)AlignParam.RESULT_LOWVISION_THETA].Y = jigAligner_LowRes.Result;
+                        //  여기서 마크 위치값을 가져오던 것을... 저~ 아래에서 평균으로 계산
+                        //m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = jigAligner_Upper.FirstPosition.X;
+                        //m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
 
                         //  마크를 찾긴 했는데, Position 값이 0인 경우가 있다. 
                         if ((jigAligner_Upper.FirstPosition.X == 0) || (jigAligner_Upper.FirstPosition.Y == 0))
@@ -6076,7 +6523,33 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ProbeCardXYAlignData_Calc;
+                            m_pProbeCard_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].X += jigAligner_Upper.FirstPosition.X;
+                            m_pProbeCard_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].Y += jigAligner_Upper.FirstPosition.Y;
+
+                            //  평균 계산을 위해 반복
+                            m_nProbeCard_AlignMark_Count++;
+                            if (m_nProbeCard_AlignMark_Count < m_nProbeCard_AlignMarkCount_Max)
+                            {
+                                //  마크 1개만 찾기 위한 설정
+                                m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
+
+                                //  0번 인덱스 위치 (마크 찾을 위치)
+                                jigAligner_Upper.m_AlignPositions[0].X = MC_Func.MC_GetEncPos((int)nAxis.X);        //  m_dMy1stMarkVisionPos_X;
+                                jigAligner_Upper.m_AlignPositions[0].Y = MC_Func.MC_GetEncPos((int)nAxis.Y);        //  m_dMy1stMarkVisionPos_Y;
+
+                                m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ProbeCardXYAlign_MarkFind;
+                            }
+                            else
+                            {
+                                //  여기서 평균 계산
+                                m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X = m_pProbeCard_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].X / m_nProbeCard_AlignMark_Count;
+                                m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y = m_pProbeCard_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].Y / m_nProbeCard_AlignMark_Count;
+
+                                m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X;
+                                m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y;
+
+                                m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ProbeCardXYAlignData_Calc;
+                            }
                         }
                     }
                     break;
@@ -6205,6 +6678,36 @@ namespace QMC.Common.Modules
                         //m_nWaferProbeAlign_MainStep = (int)WaferProbeAlignErrorCheck_Step.WaferAlign_TopMarkFind_Ready;       //   VisionXYZ_Move_WaferAlignPos_TopCenter;
 
 
+                        if (m_nWaferProbeAlign_ErrorCheck_Count == 0)                               //  Top
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "프로브 카드 TOP 마크 검출을 위한 파라미터 세팅");
+
+                            m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                            m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                            m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                            m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        }
+                        else if (m_nWaferProbeAlign_ErrorCheck_Count == 1)                          //  Middle
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "프로브 카드 MID 마크 검출을 위한 파라미터 세팅");
+
+                            m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Mid].X = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                            m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Mid].Y = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                            m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Mid].X = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                            m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Mid].Y = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        }
+                        else                                                                        //  Bottom
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "프로브 카드 BOT 마크 검출을 위한 파라미터 세팅");
+
+                            m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].X = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                            m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].Y = 0.0;               //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                            m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                            m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y = 0.0;           //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
+                        }
+
+                        m_nProbeCard_AlignMark_Count = 0;
+
 
                         //  마크 1개만 찾기 위한 설정
                         m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
@@ -6305,6 +6808,31 @@ namespace QMC.Common.Modules
 
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 XY 오차 확인 마크 검출을 위한 파라미터 세팅");
 
+                    if (m_nWaferProbeAlign_ErrorCheck_Count == 0)                               //  Top
+                    {
+                        m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;                   //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;                   //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = 0.0;               //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = 0.0;               //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                    }
+                    else if (m_nWaferProbeAlign_ErrorCheck_Count == 1)                          //  Middle
+                    {
+                        m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Mid].X = 0.0;                   //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Mid].Y = 0.0;                   //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Mid].X = 0.0;               //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Mid].Y = 0.0;               //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                    }
+                    else                                                                        //  Bottom
+                    {
+                        m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].X = 0.0;                   //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].Y = 0.0;                   //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X = 0.0;               //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                        m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y = 0.0;               //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
+                    }
+
+                    m_nWafer_AlignMark_Count = 0;                                                               //  웨이퍼 얼라인 마크 개수. (평균 계산용)
+
+
                     //  마크 1개만 찾기 위한 설정
                     m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
 
@@ -6402,8 +6930,9 @@ namespace QMC.Common.Modules
 
                             Equipment.Vision_SpiralMove_Use = true;
 
-                            m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = jigAligner_Lower.FirstPosition.X;
-                            m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
+                            //  여기서 마크 위치값을 가져오던 것을... 저~ 아래에서 평균으로 계산
+                            //m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = jigAligner_Lower.FirstPosition.X;
+                            //m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
 
                             //  마크를 찾긴 했는데, Position 값이 0인 경우가 있다. 
                             if ((jigAligner_Lower.FirstPosition.X == 0) || (jigAligner_Lower.FirstPosition.Y == 0))
@@ -6414,7 +6943,33 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.WaferXYAlignData_ErrorCalc;
+                                m_pWafer_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].X += jigAligner_Lower.FirstPosition.X;
+                                m_pWafer_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].Y += jigAligner_Lower.FirstPosition.Y;
+
+                                //  평균 계산을 위해 반복
+                                m_nWafer_AlignMark_Count++;
+                                if (m_nWafer_AlignMark_Count < m_nWafer_AlignMarkCount_Max)
+                                {
+                                    //  마크 1개만 찾기 위한 설정
+                                    m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
+
+                                    //  0번 인덱스 위치 (마크 찾을 위치)
+                                    jigAligner_Lower.m_AlignPositions[0].X = MC_Func.MC_GetEncPos((int)nAxis.X);        //  m_dMy1stMarkVisionPos_X;
+                                    jigAligner_Lower.m_AlignPositions[0].Y = MC_Func.MC_GetEncPos((int)nAxis.Y);        //  m_dMy1stMarkVisionPos_Y;
+
+                                    m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.WaferXYAlign_MarkFind;
+                                }
+                                else
+                                {
+                                    //  여기서 평균 계산
+                                    m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X = m_pWafer_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].X / m_nWafer_AlignMark_Count;
+                                    m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y = m_pWafer_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].Y / m_nWafer_AlignMark_Count;
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y;
+
+                                    m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.WaferXYAlignData_ErrorCalc;
+                                }
                             }
                         }
                         else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 60000)               //  1분 동안 마크를 찾지 못할 경우
@@ -6451,8 +7006,9 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 XY 오차 확인, 웨이퍼 얼라인 마크 검출 완료");
 
-                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = jigAligner_Lower.FirstPosition.X;
-                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
+                        //  여기서 마크 위치값을 가져오던 것을... 저~ 아래에서 평균으로 계산
+                        //m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = jigAligner_Lower.FirstPosition.X;
+                        //m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
 
                         //  마크를 찾긴 했는데, Position 값이 0인 경우가 있다. 
                         if ((jigAligner_Lower.FirstPosition.X == 0) || (jigAligner_Lower.FirstPosition.Y == 0))
@@ -6463,7 +7019,33 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.WaferXYAlignData_ErrorCalc;
+                            m_pWafer_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].X += jigAligner_Lower.FirstPosition.X;
+                            m_pWafer_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].Y += jigAligner_Lower.FirstPosition.Y;
+
+                            //  평균 계산을 위해 반복
+                            m_nWafer_AlignMark_Count++;
+                            if (m_nWafer_AlignMark_Count < m_nWafer_AlignMarkCount_Max)
+                            {
+                                //  마크 1개만 찾기 위한 설정
+                                m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
+
+                                //  0번 인덱스 위치 (마크 찾을 위치)
+                                jigAligner_Lower.m_AlignPositions[0].X = MC_Func.MC_GetEncPos((int)nAxis.X);        //  m_dMy1stMarkVisionPos_X;
+                                jigAligner_Lower.m_AlignPositions[0].Y = MC_Func.MC_GetEncPos((int)nAxis.Y);        //  m_dMy1stMarkVisionPos_Y;
+
+                                m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.WaferXYAlign_MarkFind;
+                            }
+                            else
+                            {
+                                //  여기서 평균 계산
+                                m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X = m_pWafer_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].X / m_nWafer_AlignMark_Count;
+                                m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y = m_pWafer_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].Y / m_nWafer_AlignMark_Count;
+
+                                m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X;
+                                m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y;
+
+                                m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.WaferXYAlignData_ErrorCalc;
+                            }
                         }
                     }                    
                     break;

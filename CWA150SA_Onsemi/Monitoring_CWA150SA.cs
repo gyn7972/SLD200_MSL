@@ -756,6 +756,20 @@ namespace CWA150SA_Onsemi300
             }
 
 
+            //  카메라 라이브 상태인지 표시
+            if ((waferProbeAlign.jigAligner_Upper != null) && (waferProbeAlign.jigAligner_Lower != null))
+            {
+                if (waferProbeAlign.jigAligner_Upper.Camera.IsLiveOn && waferProbeAlign.jigAligner_Lower.Camera.IsLiveOn)
+                {
+                    btnUpperCamera_StartLive.BackColor = Color.LightGreen;
+                }
+                else
+                {
+                    btnUpperCamera_StartLive.BackColor = Color.LightGray;
+                }
+            }
+
+
             //  패턴 이미지 다시 보여주기
             //if (waferProbeAlign.m_bUpperCam_AlignPattern_Reset)
             if (waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage != null)
@@ -1086,6 +1100,8 @@ namespace CWA150SA_Onsemi300
                         }
                         else if (waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Count == 1)      //  MID
                         {
+                            baseLabelPosition_Top.BackColor = Color.DodgerBlue;                     //  MID 위치 진행할 때는 TOP 위치는 파란색으로 표시 (확인 끝난 위치)
+
                             if (m_bBlink)
                             {
                                 baseLabelPosition_Mid.BackColor = Color.DodgerBlue;
@@ -1097,6 +1113,9 @@ namespace CWA150SA_Onsemi300
                         }
                         else                                                                    //  BOT
                         {
+                            baseLabelPosition_Top.BackColor = Color.DodgerBlue;                     //  BOT 위치 진행할 때는 TOP 위치는 파란색으로 표시 (확인 끝난 위치)
+                            baseLabelPosition_Mid.BackColor = Color.DodgerBlue;                     //  BOT 위치 진행할 때는 MID 위치는 파란색으로 표시 (확인 끝난 위치)
+
                             if (m_bBlink)
                             {
                                 baseLabelPosition_Bot.BackColor = Color.DodgerBlue;

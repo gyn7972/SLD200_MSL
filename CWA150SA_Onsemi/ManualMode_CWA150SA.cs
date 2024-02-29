@@ -179,6 +179,20 @@ namespace CWA150SA_Onsemi300
 
         void Timer_IOStatus(object sender, EventArgs e)
         {
+            //  카메라 라이브 상태인지 표시
+            if ((waferProbeAlign.jigAligner_Upper != null) && (waferProbeAlign.jigAligner_Lower != null))
+            {
+                if (waferProbeAlign.jigAligner_Upper.Camera.IsLiveOn && waferProbeAlign.jigAligner_Lower.Camera.IsLiveOn)
+                {
+                    btnUpperCamera_StartLive.BackColor = Color.LightGreen;
+                }
+                else
+                {
+                    btnUpperCamera_StartLive.BackColor = Color.LightGray;
+                }
+            }
+
+
             //  ProbeCard Clamp Type 에 따라 UI 변경
             if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A)
             {

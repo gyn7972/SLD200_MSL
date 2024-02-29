@@ -308,9 +308,9 @@ namespace CWA150SA_Onsemi300
 
             //  ACS and Ajin Motion 의 상태를 갱신하는 타이머
             timer_Motion_Status = new System.Windows.Forms.Timer();
-            timer_Motion_Status.Interval = 30;
+            timer_Motion_Status.Interval = 50;
             timer_Motion_Status.Tick += new System.EventHandler(Timer_Motion_StatusFunc);
-            //timer_Motion_Status.Enabled = true;
+            timer_Motion_Status.Enabled = true;
 
             //  Laser 1 Shot 을 위한 타이머
             timer_Laser1Shot = new System.Windows.Forms.Timer();
@@ -619,7 +619,20 @@ namespace CWA150SA_Onsemi300
         void Timer_Motion_StatusFunc(object sender, EventArgs e)
         {
             //ACSMotion_Status();
-            AJINMotion_Status();
+            //AJINMotion_Status();
+
+            //  카메라 라이브 상태인지 표시
+            if ((waferProbeAlign.jigAligner_Upper != null) && (waferProbeAlign.jigAligner_Lower != null))
+            {
+                if (waferProbeAlign.jigAligner_Upper.Camera.IsLiveOn && waferProbeAlign.jigAligner_Lower.Camera.IsLiveOn)
+                {
+                    btnUpperCamera_StartLive.BackColor = Color.LightGreen;
+                }
+                else
+                {
+                    btnUpperCamera_StartLive.BackColor = Color.LightGray;
+                }
+            }
         }
 
         //private void ACSMotion_Status()
