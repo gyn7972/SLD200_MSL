@@ -78,13 +78,13 @@ namespace QMC.Common.Parts
         public double Align_Vision_Allowable_XY { set; get; }
 
         [Category("[01] 웨이퍼 얼라인"),
-            Description("얼라인 - 프로브 카드의 얼라인 마크 검출 시, 이 회수만큼 마크를 찾은 후 평균 위치값을 사용한다.\r\n[default 0 : 1회]"),
-            DisplayName("얼라인 - 프로브 카드 얼라인 마크 측정 회수 (평균 계산)")]
+            Description("얼라인 위치 평균 계산 - 프로브 카드의 얼라인 마크 검출 시, 이 회수만큼 마크를 찾은 후 평균 위치값을 사용한다.\r\n[default 0 : 1회]"),
+            DisplayName("얼라인 위치 평균 계산 - 프로브 카드 얼라인 마크 측정 회수")]
         public int ProbeCard_AlignMarkCount_forAverage { set; get; }
 
         [Category("[01] 웨이퍼 얼라인"),
-            Description("얼라인 - 웨이퍼의 얼라인 마크 검출 시, 이 회수만큼 마크를 찾은 후 평균 위치값을 사용한다.\r\n[default 0 : 1회]"),
-            DisplayName("얼라인 - 웨이퍼 얼라인 마크 측정 회수 (평균 계산)")]
+            Description("얼라인 위치 평균 계산 - 웨이퍼의 얼라인 마크 검출 시, 이 회수만큼 마크를 찾은 후 평균 위치값을 사용한다.\r\n[default 0 : 1회]"),
+            DisplayName("얼라인 위치 평균 계산 - 웨이퍼 얼라인 마크 측정 회수")]
         public int Wafer_AlignMarkCount_forAverage { set; get; }
 
         [Category("[01] 웨이퍼 얼라인"),
@@ -126,6 +126,16 @@ namespace QMC.Common.Parts
             Description("프로브 카드 얼라인 시 조명 밝기값"),
             DisplayName("공통 - 얼라인 조명 밝기값 (프로브 카드, 자동 저장)")]
         public int Align_UpperVision_LightValue { set; get; }
+
+        [Category("[01] 웨이퍼 얼라인"),
+            Description("웨이퍼에서 특정 위치에는 Chip 이 없다. 프로브 카드와 웨이퍼의 얼라인이 완료된 후, 해당 위치로 이동해서 육안으로 확인하기 위한 이동 Offset 값.\r\n[Center Chip 기준, Offset X]"),
+            DisplayName("얼라인 정도 확인 - 얼라인 후 Empty Chip 확인 위치 (Center Chip 기준,   Offset X,   + : 오른쪽 위치)")]
+        public double Align_EmptyChipOffset_X { set; get; }
+
+        [Category("[01] 웨이퍼 얼라인"),
+            Description("웨이퍼에서 특정 위치에는 Chip 이 없다. 프로브 카드와 웨이퍼의 얼라인이 완료된 후, 해당 위치로 이동해서 육안으로 확인하기 위한 이동 Offset 값.\r\n[Center Chip 기준, Offset Y]"),
+            DisplayName("얼라인 정도 확인 - 얼라인 후 Empty Chip 확인 위치 (Center Chip 기준,   Offset Y,   + : 위쪽 위치)")]
+        public double Align_EmptyChipOffset_Y { set; get; }
 
 
 

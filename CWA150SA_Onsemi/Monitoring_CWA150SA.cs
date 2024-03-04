@@ -8913,5 +8913,198 @@ namespace CWA150SA_Onsemi300
                 waferProbeAlign.m_nSafetyPos_Move_Step = (int)WaferProbeAlign.SafetyPos_Move_Step.None;
             }
         }
+
+        private void baseButton_EmptyChip_XYPos_GO_Click(object sender, EventArgs e)
+        {
+            //  웨이퍼 얼라인이 정상적으로 이루어졌는지 확인하기 위해, Chip 이 없는 위치로 이동해 본다.
+            //  웨이퍼 Center 에서 좌, 우, 상, 하 위치에 Chip 이 없는 위치가 있다.
+
+            double lfTargetPos_X = 0.0;
+            double lfTargetPos_Y = 0.0;
+
+            double lfVelocity = 0.0;
+            double lfAccDec = 0.0f;
+
+            if (Equipment.User_Mode == null)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 로그인 하십시오.");
+                return;
+            }
+
+            if (!Equipment.AjinBoard_Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
+                return;
+            }
+
+            if (!waferProbeAlign.m_bHomeOK)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  Inter-Lock
+            if (waferProbeAlign.m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 작업 진행중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nFindAlignMark_Step != (int)FindAlignMark_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "마크를 찾는 중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Step != (int)WaferProbeAlignErrorCheck_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 상태 확인중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nReticleCheck_UpperCam_Step != (int)ReticleCheck_UpperCam_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "상부 카메라 레티클 글래스 센터 확인 진행중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nReticleCheck_LowerCam_Step != (int)ReticleCheck_LowerCam_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "하부 카메라 레티클 글래스 센터 확인 진행중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nSafetyPos_Move_Step != (int)SafetyPos_Move_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "안전 위치로 이동중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nWafer_Loading_Ready_Step != (int)WaferLoading_Ready_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "웨이퍼 로딩 위치로 이동중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nWafer_ProbeCard_Packing_Step != (int)WaferProbeCard_Packing_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 패킹 작업 진행중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Step != (int)WaferProbeCard_Unpacking_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 작업 진행중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Ready_Step != (int)WaferProbeCard_Unpacking_Ready_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 준비 위치로 이동중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nProbeCard_Locking_Step != (int)ProbeCard_Locking_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "프로브 카드 고정 작업 진행중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nProbeCard_Loading_Ready_Step != (int)ProbeCard_Loading_Ready_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "프로브 카드 로딩 위치로 이동중입니다.");
+                return;
+            }
+            if (waferProbeAlign.m_nPAK_AirLine_Check_Step != (int)PAK_AirLine_Check_Step.None)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "PAK 공압 관로 상태 확인 작업 진행중입니다.");
+                return;
+            }
+            if ((waferProbeAlign.Config.ParamConfig.Align_EmptyChipOffset_X == 0) && (waferProbeAlign.Config.ParamConfig.Align_EmptyChipOffset_Y == 0))
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "Empty Chip 위치 확인 Offset 의 XY 값이 모두 0 입니다.");
+                return;
+            }
+
+            if (waferProbeAlign.Camera_Upper != null)
+            {
+                waferProbeAlign.Camera_Upper.StartLive();
+                waferProbeAlign.visionCalibrator_Upper.Illuminator.SetVolume(waferProbeAlign.Config.ParamConfig.Align_UpperVision_LightValue, 1);
+                waferProbeAlign.visionCalibrator_Upper.Illuminator.TurnOnOff(true, 1);       //  Probe Card 조명
+            }
+
+            if (waferProbeAlign.Camera_Lower != null)
+            {
+                waferProbeAlign.Camera_Lower.StartLive();
+                waferProbeAlign.visionCalibrator_Upper.Illuminator.SetVolume(waferProbeAlign.Config.ParamConfig.Align_LowerVision_LightValue, 2);
+                waferProbeAlign.visionCalibrator_Upper.Illuminator.TurnOnOff(true, 2);       //  Wafer 조명
+            }
+
+            //if ((waferProbeAlign.AlignmentErrorCheck_Position[(int)WaferProbeAlign.nAlignErrorCheckPos.Pos_Mid].X == 0.0) ||
+            //    (waferProbeAlign.AlignmentErrorCheck_Position[(int)WaferProbeAlign.nAlignErrorCheckPos.Pos_Mid].Y == 0.0))
+            //{
+            //    var mb = new MessageBoxOk();
+            //    mb.ShowDialog("Information !", "얼라인 에러 검사를 진행하지 않았습니다.");
+            //    return;
+            //}
+            //else
+            {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "카메라를 Empty-Chip 위치로 보내시겠습니까?\r\n\r\n[Center Chip 기준, Offset XY 이동]"))
+                    return;
+
+                waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam = waferProbeAlign.waferProbeAlignParameter.GetPositionInformation("AlignPosition_Ver_Middle");
+
+                lfTargetPos_X = waferProbeAlign.AlignmentErrorCheck_Position[(int)WaferProbeAlign.nAlignErrorCheckPos.Pos_Mid].X;
+                lfTargetPos_Y = waferProbeAlign.AlignmentErrorCheck_Position[(int)WaferProbeAlign.nAlignErrorCheckPos.Pos_Mid].Y;
+
+                lfVelocity = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.Y.ToString()].Configuration.Velocity;
+                lfAccDec = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.Y.ToString()].Configuration.Acceleration;
+
+                //  Vision XY 축 이동 시 Elev. Z 축과 충돌하는지 체크
+                if (MC_Func.MC_GetEncPos((int)nAxis.EZ) >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
+                {
+                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!");
+                }
+                else if (waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.EZ] >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
+                {
+                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!");
+                }
+                else
+                {
+                    if ((waferProbeAlign.AlignmentErrorCheck_Position[(int)WaferProbeAlign.nAlignErrorCheckPos.Pos_Mid].X == 0.0) ||
+                        (waferProbeAlign.AlignmentErrorCheck_Position[(int)WaferProbeAlign.nAlignErrorCheckPos.Pos_Mid].Y == 0.0))
+                    {
+                        MessageBox.Show("얼라인 에러 검사를 진행하지 않아 기본 MID 위치에서 Offset XY 만큼 보냅니다.", "Information!!");
+
+                        lfTargetPos_X = waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)nAxis.X];
+                        lfTargetPos_Y = waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)nAxis.Y];
+                    }
+
+                    lfTargetPos_X += waferProbeAlign.Config.ParamConfig.Align_EmptyChipOffset_X;
+                    lfTargetPos_Y -= waferProbeAlign.Config.ParamConfig.Align_EmptyChipOffset_Y;
+
+                    MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, lfTargetPos_X, lfVelocity, lfAccDec, lfAccDec);
+                    MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.Y, lfTargetPos_Y, lfVelocity, lfAccDec, lfAccDec);
+
+                    MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ,
+                                        waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)nAxis.EZ],
+                                        waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dVel[(int)nAxis.EZ],
+                                        waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dAcc[(int)nAxis.EZ],
+                                        waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dDec[(int)nAxis.EZ]);
+                    MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.VZ,
+                                        waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)nAxis.VZ],
+                                        waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dVel[(int)nAxis.VZ],
+                                        waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dAcc[(int)nAxis.VZ],
+                                        waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dDec[(int)nAxis.VZ]);
+                }
+            }
+        }
     }
 }
