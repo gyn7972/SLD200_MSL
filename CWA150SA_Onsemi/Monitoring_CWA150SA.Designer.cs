@@ -1933,7 +1933,7 @@ namespace CWA150SA_Onsemi300
             this.baseLabel21.AutoSize = true;
             this.baseLabel21.Font = new System.Drawing.Font("나눔바른고딕", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel21.ForeColor = System.Drawing.Color.White;
-            this.baseLabel21.Location = new System.Drawing.Point(565, 237);
+            this.baseLabel21.Location = new System.Drawing.Point(533, 237);
             this.baseLabel21.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel21.Name = "baseLabel21";
             this.baseLabel21.Size = new System.Drawing.Size(27, 22);
@@ -1948,10 +1948,10 @@ namespace CWA150SA_Onsemi300
             this.btnPAK_Leak_Check.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.btnPAK_Leak_Check.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btnPAK_Leak_Check.ForeColor = System.Drawing.Color.DarkRed;
-            this.btnPAK_Leak_Check.Location = new System.Drawing.Point(596, 206);
+            this.btnPAK_Leak_Check.Location = new System.Drawing.Point(564, 206);
             this.btnPAK_Leak_Check.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnPAK_Leak_Check.Name = "btnPAK_Leak_Check";
-            this.btnPAK_Leak_Check.Size = new System.Drawing.Size(192, 83);
+            this.btnPAK_Leak_Check.Size = new System.Drawing.Size(205, 83);
             this.btnPAK_Leak_Check.TabIndex = 153;
             this.btnPAK_Leak_Check.Text = "수동 기능  :    PAK 점검\r\n\r\n(패킹 공압 관로 막힘 확인)";
             this.btnPAK_Leak_Check.UseVisualStyleBackColor = false;
@@ -1960,7 +1960,7 @@ namespace CWA150SA_Onsemi300
             // pictureBoxProbePackingCheck
             // 
             this.pictureBoxProbePackingCheck.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
-            this.pictureBoxProbePackingCheck.Location = new System.Drawing.Point(828, 184);
+            this.pictureBoxProbePackingCheck.Location = new System.Drawing.Point(790, 186);
             this.pictureBoxProbePackingCheck.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.pictureBoxProbePackingCheck.Name = "pictureBoxProbePackingCheck";
             this.pictureBoxProbePackingCheck.Size = new System.Drawing.Size(22, 22);
@@ -1972,7 +1972,7 @@ namespace CWA150SA_Onsemi300
             // 
             this.lblProbePackingCheck.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lblProbePackingCheck.ForeColor = System.Drawing.Color.White;
-            this.lblProbePackingCheck.Location = new System.Drawing.Point(853, 184);
+            this.lblProbePackingCheck.Location = new System.Drawing.Point(815, 186);
             this.lblProbePackingCheck.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblProbePackingCheck.Name = "lblProbePackingCheck";
             this.lblProbePackingCheck.Size = new System.Drawing.Size(102, 22);
@@ -1983,7 +1983,7 @@ namespace CWA150SA_Onsemi300
             // pictureBoxWaferVacuumCheck
             // 
             this.pictureBoxWaferVacuumCheck.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
-            this.pictureBoxWaferVacuumCheck.Location = new System.Drawing.Point(119, 197);
+            this.pictureBoxWaferVacuumCheck.Location = new System.Drawing.Point(119, 195);
             this.pictureBoxWaferVacuumCheck.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.pictureBoxWaferVacuumCheck.Name = "pictureBoxWaferVacuumCheck";
             this.pictureBoxWaferVacuumCheck.Size = new System.Drawing.Size(22, 22);
@@ -1995,7 +1995,7 @@ namespace CWA150SA_Onsemi300
             // 
             this.lblWaferVacuumCheck.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lblWaferVacuumCheck.ForeColor = System.Drawing.Color.White;
-            this.lblWaferVacuumCheck.Location = new System.Drawing.Point(144, 197);
+            this.lblWaferVacuumCheck.Location = new System.Drawing.Point(142, 195);
             this.lblWaferVacuumCheck.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblWaferVacuumCheck.Name = "lblWaferVacuumCheck";
             this.lblWaferVacuumCheck.Size = new System.Drawing.Size(72, 22);
@@ -2006,7 +2006,7 @@ namespace CWA150SA_Onsemi300
             // pictureBoxThinChuckVacuumCheck
             // 
             this.pictureBoxThinChuckVacuumCheck.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
-            this.pictureBoxThinChuckVacuumCheck.Location = new System.Drawing.Point(13, 197);
+            this.pictureBoxThinChuckVacuumCheck.Location = new System.Drawing.Point(13, 195);
             this.pictureBoxThinChuckVacuumCheck.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.pictureBoxThinChuckVacuumCheck.Name = "pictureBoxThinChuckVacuumCheck";
             this.pictureBoxThinChuckVacuumCheck.Size = new System.Drawing.Size(22, 22);
@@ -2018,7 +2018,7 @@ namespace CWA150SA_Onsemi300
             // 
             this.lblThinChuckVacuumCheck.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lblThinChuckVacuumCheck.ForeColor = System.Drawing.Color.White;
-            this.lblThinChuckVacuumCheck.Location = new System.Drawing.Point(38, 197);
+            this.lblThinChuckVacuumCheck.Location = new System.Drawing.Point(36, 195);
             this.lblThinChuckVacuumCheck.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblThinChuckVacuumCheck.Name = "lblThinChuckVacuumCheck";
             this.lblThinChuckVacuumCheck.Size = new System.Drawing.Size(68, 22);
@@ -2029,7 +2029,7 @@ namespace CWA150SA_Onsemi300
             // pictureBoxThinChuckDetect
             // 
             this.pictureBoxThinChuckDetect.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
-            this.pictureBoxThinChuckDetect.Location = new System.Drawing.Point(13, 171);
+            this.pictureBoxThinChuckDetect.Location = new System.Drawing.Point(13, 169);
             this.pictureBoxThinChuckDetect.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.pictureBoxThinChuckDetect.Name = "pictureBoxThinChuckDetect";
             this.pictureBoxThinChuckDetect.Size = new System.Drawing.Size(22, 22);
@@ -2041,7 +2041,7 @@ namespace CWA150SA_Onsemi300
             // 
             this.baseLabelThinChuckDetect.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabelThinChuckDetect.ForeColor = System.Drawing.Color.White;
-            this.baseLabelThinChuckDetect.Location = new System.Drawing.Point(38, 171);
+            this.baseLabelThinChuckDetect.Location = new System.Drawing.Point(36, 169);
             this.baseLabelThinChuckDetect.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabelThinChuckDetect.Name = "baseLabelThinChuckDetect";
             this.baseLabelThinChuckDetect.Size = new System.Drawing.Size(68, 22);
@@ -2054,7 +2054,7 @@ namespace CWA150SA_Onsemi300
             this.baseLabel7.AutoSize = true;
             this.baseLabel7.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel7.ForeColor = System.Drawing.Color.White;
-            this.baseLabel7.Location = new System.Drawing.Point(775, 27);
+            this.baseLabel7.Location = new System.Drawing.Point(758, 27);
             this.baseLabel7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel7.Name = "baseLabel7";
             this.baseLabel7.Size = new System.Drawing.Size(23, 19);
@@ -2066,7 +2066,7 @@ namespace CWA150SA_Onsemi300
             this.baseLabel6.AutoSize = true;
             this.baseLabel6.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel6.ForeColor = System.Drawing.Color.White;
-            this.baseLabel6.Location = new System.Drawing.Point(565, 27);
+            this.baseLabel6.Location = new System.Drawing.Point(534, 27);
             this.baseLabel6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel6.Name = "baseLabel6";
             this.baseLabel6.Size = new System.Drawing.Size(23, 19);
@@ -2078,7 +2078,7 @@ namespace CWA150SA_Onsemi300
             this.baseLabel5.AutoSize = true;
             this.baseLabel5.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel5.ForeColor = System.Drawing.Color.White;
-            this.baseLabel5.Location = new System.Drawing.Point(223, 27);
+            this.baseLabel5.Location = new System.Drawing.Point(215, 27);
             this.baseLabel5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel5.Name = "baseLabel5";
             this.baseLabel5.Size = new System.Drawing.Size(23, 19);
@@ -2091,10 +2091,10 @@ namespace CWA150SA_Onsemi300
             this.baseLabel_Packing.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.baseLabel_Packing.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel_Packing.ForeColor = System.Drawing.Color.Yellow;
-            this.baseLabel_Packing.Location = new System.Drawing.Point(804, 26);
+            this.baseLabel_Packing.Location = new System.Drawing.Point(788, 26);
             this.baseLabel_Packing.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Packing.Name = "baseLabel_Packing";
-            this.baseLabel_Packing.Size = new System.Drawing.Size(170, 20);
+            this.baseLabel_Packing.Size = new System.Drawing.Size(186, 20);
             this.baseLabel_Packing.TabIndex = 135;
             this.baseLabel_Packing.Text = "[ 프로브 카드, 씬 - 척 ]   패킹";
             this.baseLabel_Packing.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2105,10 +2105,10 @@ namespace CWA150SA_Onsemi300
             this.baseLabel_Align.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.baseLabel_Align.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel_Align.ForeColor = System.Drawing.Color.Yellow;
-            this.baseLabel_Align.Location = new System.Drawing.Point(596, 26);
+            this.baseLabel_Align.Location = new System.Drawing.Point(564, 26);
             this.baseLabel_Align.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Align.Name = "baseLabel_Align";
-            this.baseLabel_Align.Size = new System.Drawing.Size(170, 20);
+            this.baseLabel_Align.Size = new System.Drawing.Size(186, 20);
             this.baseLabel_Align.TabIndex = 132;
             this.baseLabel_Align.Text = "[ 웨이퍼 ]   얼라인";
             this.baseLabel_Align.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2119,10 +2119,10 @@ namespace CWA150SA_Onsemi300
             this.baseLabel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.baseLabel2.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel2.ForeColor = System.Drawing.Color.Yellow;
-            this.baseLabel2.Location = new System.Drawing.Point(254, 26);
+            this.baseLabel2.Location = new System.Drawing.Point(243, 26);
             this.baseLabel2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel2.Name = "baseLabel2";
-            this.baseLabel2.Size = new System.Drawing.Size(302, 20);
+            this.baseLabel2.Size = new System.Drawing.Size(282, 20);
             this.baseLabel2.TabIndex = 131;
             this.baseLabel2.Text = "[ 프로브 카드 ]   투입";
             this.baseLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2133,7 +2133,7 @@ namespace CWA150SA_Onsemi300
             this.baseButtonWaferVacuum.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButtonWaferVacuum.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButtonWaferVacuum.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButtonWaferVacuum.Location = new System.Drawing.Point(119, 223);
+            this.baseButtonWaferVacuum.Location = new System.Drawing.Point(112, 223);
             this.baseButtonWaferVacuum.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseButtonWaferVacuum.Name = "baseButtonWaferVacuum";
             this.baseButtonWaferVacuum.Size = new System.Drawing.Size(95, 66);
@@ -2151,7 +2151,7 @@ namespace CWA150SA_Onsemi300
             this.baseButtonThinChuckVacuum.Location = new System.Drawing.Point(13, 223);
             this.baseButtonThinChuckVacuum.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseButtonThinChuckVacuum.Name = "baseButtonThinChuckVacuum";
-            this.baseButtonThinChuckVacuum.Size = new System.Drawing.Size(95, 66);
+            this.baseButtonThinChuckVacuum.Size = new System.Drawing.Size(90, 66);
             this.baseButtonThinChuckVacuum.TabIndex = 127;
             this.baseButtonThinChuckVacuum.Text = "씬-척 공압\r\nOn";
             this.baseButtonThinChuckVacuum.UseVisualStyleBackColor = false;
@@ -2166,7 +2166,7 @@ namespace CWA150SA_Onsemi300
             this.baseLabel1.Location = new System.Drawing.Point(13, 26);
             this.baseLabel1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel1.Name = "baseLabel1";
-            this.baseLabel1.Size = new System.Drawing.Size(201, 20);
+            this.baseLabel1.Size = new System.Drawing.Size(194, 20);
             this.baseLabel1.TabIndex = 108;
             this.baseLabel1.Text = "[ 씬 - 척 ] , [ 웨이퍼 ]   투입";
             this.baseLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2177,14 +2177,14 @@ namespace CWA150SA_Onsemi300
             this.btnPacking.FlatAppearance.BorderColor = System.Drawing.SystemColors.ButtonShadow;
             this.btnPacking.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.btnPacking.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
-            this.btnPacking.Font = new System.Drawing.Font("나눔바른고딕", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btnPacking.Font = new System.Drawing.Font("나눔바른고딕", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btnPacking.ForeColor = System.Drawing.Color.DarkRed;
-            this.btnPacking.Location = new System.Drawing.Point(804, 49);
+            this.btnPacking.Location = new System.Drawing.Point(788, 49);
             this.btnPacking.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnPacking.Name = "btnPacking";
-            this.btnPacking.Size = new System.Drawing.Size(170, 124);
+            this.btnPacking.Size = new System.Drawing.Size(186, 130);
             this.btnPacking.TabIndex = 66;
-            this.btnPacking.Text = "[ 프로브 카드\r\n-  웨이퍼 ]\r\n\r\n패킹 시작\r\n";
+            this.btnPacking.Text = " [ 프로브  카드    \r\n         -  웨이퍼 ]\r\n\r\n패킹  시작\r\n";
             this.btnPacking.UseVisualStyleBackColor = false;
             this.btnPacking.Click += new System.EventHandler(this.btnPacking_Click);
             // 
@@ -2196,10 +2196,10 @@ namespace CWA150SA_Onsemi300
             this.btnProbeCardLocking.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.btnProbeCardLocking.Font = new System.Drawing.Font("나눔바른고딕", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btnProbeCardLocking.ForeColor = System.Drawing.Color.DarkRed;
-            this.btnProbeCardLocking.Location = new System.Drawing.Point(408, 49);
+            this.btnProbeCardLocking.Location = new System.Drawing.Point(388, 49);
             this.btnProbeCardLocking.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnProbeCardLocking.Name = "btnProbeCardLocking";
-            this.btnProbeCardLocking.Size = new System.Drawing.Size(149, 65);
+            this.btnProbeCardLocking.Size = new System.Drawing.Size(137, 65);
             this.btnProbeCardLocking.TabIndex = 65;
             this.btnProbeCardLocking.Text = "프로브  카드\r\n고정 작업 시작";
             this.btnProbeCardLocking.UseVisualStyleBackColor = false;
@@ -2213,12 +2213,12 @@ namespace CWA150SA_Onsemi300
             this.btnProbeCardLoadingReady.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.btnProbeCardLoadingReady.Font = new System.Drawing.Font("나눔바른고딕", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btnProbeCardLoadingReady.ForeColor = System.Drawing.Color.DarkRed;
-            this.btnProbeCardLoadingReady.Location = new System.Drawing.Point(254, 49);
+            this.btnProbeCardLoadingReady.Location = new System.Drawing.Point(243, 49);
             this.btnProbeCardLoadingReady.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnProbeCardLoadingReady.Name = "btnProbeCardLoadingReady";
-            this.btnProbeCardLoadingReady.Size = new System.Drawing.Size(149, 65);
+            this.btnProbeCardLoadingReady.Size = new System.Drawing.Size(137, 65);
             this.btnProbeCardLoadingReady.TabIndex = 65;
-            this.btnProbeCardLoadingReady.Text = "프로브  카드\r\n투입 위치로 이동";
+            this.btnProbeCardLoadingReady.Text = "프로브  카드\r\n투입 위치 이동";
             this.btnProbeCardLoadingReady.UseVisualStyleBackColor = false;
             this.btnProbeCardLoadingReady.Click += new System.EventHandler(this.btnProbeCardLoadingReady_Click);
             // 
@@ -2233,7 +2233,7 @@ namespace CWA150SA_Onsemi300
             this.btnLoadingPos.Location = new System.Drawing.Point(13, 49);
             this.btnLoadingPos.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnLoadingPos.Name = "btnLoadingPos";
-            this.btnLoadingPos.Size = new System.Drawing.Size(201, 95);
+            this.btnLoadingPos.Size = new System.Drawing.Size(194, 95);
             this.btnLoadingPos.TabIndex = 65;
             this.btnLoadingPos.Text = "씬 - 척  &&  웨이퍼\r\n투입 위치 이동";
             this.btnLoadingPos.UseVisualStyleBackColor = false;
@@ -2245,14 +2245,14 @@ namespace CWA150SA_Onsemi300
             this.btnMainWork_Start.FlatAppearance.BorderColor = System.Drawing.SystemColors.ButtonShadow;
             this.btnMainWork_Start.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.btnMainWork_Start.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
-            this.btnMainWork_Start.Font = new System.Drawing.Font("나눔바른고딕", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btnMainWork_Start.Font = new System.Drawing.Font("나눔바른고딕", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btnMainWork_Start.ForeColor = System.Drawing.Color.DarkRed;
-            this.btnMainWork_Start.Location = new System.Drawing.Point(596, 49);
+            this.btnMainWork_Start.Location = new System.Drawing.Point(564, 49);
             this.btnMainWork_Start.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnMainWork_Start.Name = "btnMainWork_Start";
-            this.btnMainWork_Start.Size = new System.Drawing.Size(170, 124);
+            this.btnMainWork_Start.Size = new System.Drawing.Size(186, 130);
             this.btnMainWork_Start.TabIndex = 62;
-            this.btnMainWork_Start.Text = "[ 프로브 카드\r\n-  웨이퍼 ]\r\n\r\n얼라인 시작";
+            this.btnMainWork_Start.Text = " [ 프로브  카드    \r\n         -  웨이퍼 ]\r\n\r\n얼라인  시작";
             this.btnMainWork_Start.UseVisualStyleBackColor = false;
             this.btnMainWork_Start.Click += new System.EventHandler(this.btnMainWork_Start_Click_1);
             // 
@@ -2262,10 +2262,10 @@ namespace CWA150SA_Onsemi300
             this.tabControl_ProbeCard_ClampType.Controls.Add(this.tabPage_TypeB);
             this.tabControl_ProbeCard_ClampType.Font = new System.Drawing.Font("나눔바른고딕", 8.999999F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.tabControl_ProbeCard_ClampType.ItemSize = new System.Drawing.Size(52, 20);
-            this.tabControl_ProbeCard_ClampType.Location = new System.Drawing.Point(254, 128);
+            this.tabControl_ProbeCard_ClampType.Location = new System.Drawing.Point(243, 128);
             this.tabControl_ProbeCard_ClampType.Name = "tabControl_ProbeCard_ClampType";
             this.tabControl_ProbeCard_ClampType.SelectedIndex = 0;
-            this.tabControl_ProbeCard_ClampType.Size = new System.Drawing.Size(303, 161);
+            this.tabControl_ProbeCard_ClampType.Size = new System.Drawing.Size(282, 161);
             this.tabControl_ProbeCard_ClampType.TabIndex = 190;
             // 
             // tabPage_TypeA
@@ -2283,14 +2283,14 @@ namespace CWA150SA_Onsemi300
             this.tabPage_TypeA.Location = new System.Drawing.Point(4, 24);
             this.tabPage_TypeA.Name = "tabPage_TypeA";
             this.tabPage_TypeA.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_TypeA.Size = new System.Drawing.Size(295, 133);
+            this.tabPage_TypeA.Size = new System.Drawing.Size(274, 133);
             this.tabPage_TypeA.TabIndex = 0;
             this.tabPage_TypeA.Text = "    Type - A  ";
             // 
             // pictureBoxProbeBWDetect
             // 
             this.pictureBoxProbeBWDetect.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
-            this.pictureBoxProbeBWDetect.Location = new System.Drawing.Point(3, 9);
+            this.pictureBoxProbeBWDetect.Location = new System.Drawing.Point(3, 13);
             this.pictureBoxProbeBWDetect.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.pictureBoxProbeBWDetect.Name = "pictureBoxProbeBWDetect";
             this.pictureBoxProbeBWDetect.Size = new System.Drawing.Size(22, 22);
@@ -2302,10 +2302,10 @@ namespace CWA150SA_Onsemi300
             // 
             this.baseLabelProbeBWDetect.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabelProbeBWDetect.ForeColor = System.Drawing.Color.Black;
-            this.baseLabelProbeBWDetect.Location = new System.Drawing.Point(28, 5);
+            this.baseLabelProbeBWDetect.Location = new System.Drawing.Point(28, 9);
             this.baseLabelProbeBWDetect.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabelProbeBWDetect.Name = "baseLabelProbeBWDetect";
-            this.baseLabelProbeBWDetect.Size = new System.Drawing.Size(139, 33);
+            this.baseLabelProbeBWDetect.Size = new System.Drawing.Size(113, 33);
             this.baseLabelProbeBWDetect.TabIndex = 157;
             this.baseLabelProbeBWDetect.Text = "프로브 카드 트레이 감지";
             this.baseLabelProbeBWDetect.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -2362,7 +2362,7 @@ namespace CWA150SA_Onsemi300
             this.baseButtonTopCoverDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButtonTopCoverDown.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButtonTopCoverDown.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButtonTopCoverDown.Location = new System.Drawing.Point(178, 70);
+            this.baseButtonTopCoverDown.Location = new System.Drawing.Point(157, 70);
             this.baseButtonTopCoverDown.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseButtonTopCoverDown.Name = "baseButtonTopCoverDown";
             this.baseButtonTopCoverDown.Size = new System.Drawing.Size(114, 60);
@@ -2377,7 +2377,7 @@ namespace CWA150SA_Onsemi300
             this.baseButtonTopCoverUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButtonTopCoverUp.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButtonTopCoverUp.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButtonTopCoverUp.Location = new System.Drawing.Point(178, 6);
+            this.baseButtonTopCoverUp.Location = new System.Drawing.Point(157, 6);
             this.baseButtonTopCoverUp.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseButtonTopCoverUp.Name = "baseButtonTopCoverUp";
             this.baseButtonTopCoverUp.Size = new System.Drawing.Size(114, 60);
@@ -2406,7 +2406,7 @@ namespace CWA150SA_Onsemi300
             this.tabPage_TypeB.Location = new System.Drawing.Point(4, 24);
             this.tabPage_TypeB.Name = "tabPage_TypeB";
             this.tabPage_TypeB.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_TypeB.Size = new System.Drawing.Size(295, 133);
+            this.tabPage_TypeB.Size = new System.Drawing.Size(274, 133);
             this.tabPage_TypeB.TabIndex = 1;
             this.tabPage_TypeB.Text = "    Type - B    ";
             // 
@@ -2416,7 +2416,7 @@ namespace CWA150SA_Onsemi300
             this.baseButtonProbeClamp_BW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButtonProbeClamp_BW.Font = new System.Drawing.Font("나눔바른고딕", 8.999999F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButtonProbeClamp_BW.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButtonProbeClamp_BW.Location = new System.Drawing.Point(80, 92);
+            this.baseButtonProbeClamp_BW.Location = new System.Drawing.Point(75, 92);
             this.baseButtonProbeClamp_BW.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseButtonProbeClamp_BW.Name = "baseButtonProbeClamp_BW";
             this.baseButtonProbeClamp_BW.Size = new System.Drawing.Size(65, 38);
@@ -2431,7 +2431,7 @@ namespace CWA150SA_Onsemi300
             this.baseButtonProbeClamp_FW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButtonProbeClamp_FW.Font = new System.Drawing.Font("나눔바른고딕", 8.999999F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButtonProbeClamp_FW.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButtonProbeClamp_FW.Location = new System.Drawing.Point(12, 92);
+            this.baseButtonProbeClamp_FW.Location = new System.Drawing.Point(7, 92);
             this.baseButtonProbeClamp_FW.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseButtonProbeClamp_FW.Name = "baseButtonProbeClamp_FW";
             this.baseButtonProbeClamp_FW.Size = new System.Drawing.Size(65, 38);
@@ -2446,7 +2446,7 @@ namespace CWA150SA_Onsemi300
             this.baseButtonProbeUnpackingCyl_Down.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButtonProbeUnpackingCyl_Down.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButtonProbeUnpackingCyl_Down.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButtonProbeUnpackingCyl_Down.Location = new System.Drawing.Point(200, 70);
+            this.baseButtonProbeUnpackingCyl_Down.Location = new System.Drawing.Point(179, 70);
             this.baseButtonProbeUnpackingCyl_Down.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseButtonProbeUnpackingCyl_Down.Name = "baseButtonProbeUnpackingCyl_Down";
             this.baseButtonProbeUnpackingCyl_Down.Size = new System.Drawing.Size(92, 60);
@@ -2458,7 +2458,7 @@ namespace CWA150SA_Onsemi300
             // pictureBoxProbeRightClamp_FW
             // 
             this.pictureBoxProbeRightClamp_FW.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
-            this.pictureBoxProbeRightClamp_FW.Location = new System.Drawing.Point(108, 68);
+            this.pictureBoxProbeRightClamp_FW.Location = new System.Drawing.Point(99, 68);
             this.pictureBoxProbeRightClamp_FW.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.pictureBoxProbeRightClamp_FW.Name = "pictureBoxProbeRightClamp_FW";
             this.pictureBoxProbeRightClamp_FW.Size = new System.Drawing.Size(22, 22);
@@ -2469,7 +2469,7 @@ namespace CWA150SA_Onsemi300
             // pictureBoxProbeLeftClamp_FW
             // 
             this.pictureBoxProbeLeftClamp_FW.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
-            this.pictureBoxProbeLeftClamp_FW.Location = new System.Drawing.Point(27, 68);
+            this.pictureBoxProbeLeftClamp_FW.Location = new System.Drawing.Point(25, 68);
             this.pictureBoxProbeLeftClamp_FW.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.pictureBoxProbeLeftClamp_FW.Name = "pictureBoxProbeLeftClamp_FW";
             this.pictureBoxProbeLeftClamp_FW.Size = new System.Drawing.Size(22, 22);
@@ -2480,7 +2480,7 @@ namespace CWA150SA_Onsemi300
             // pictureBoxProbeRightClamp_BW
             // 
             this.pictureBoxProbeRightClamp_BW.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
-            this.pictureBoxProbeRightClamp_BW.Location = new System.Drawing.Point(131, 68);
+            this.pictureBoxProbeRightClamp_BW.Location = new System.Drawing.Point(122, 68);
             this.pictureBoxProbeRightClamp_BW.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.pictureBoxProbeRightClamp_BW.Name = "pictureBoxProbeRightClamp_BW";
             this.pictureBoxProbeRightClamp_BW.Size = new System.Drawing.Size(22, 22);
@@ -2491,7 +2491,7 @@ namespace CWA150SA_Onsemi300
             // pictureBoxProbeLeftClamp_BW
             // 
             this.pictureBoxProbeLeftClamp_BW.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
-            this.pictureBoxProbeLeftClamp_BW.Location = new System.Drawing.Point(4, 68);
+            this.pictureBoxProbeLeftClamp_BW.Location = new System.Drawing.Point(2, 68);
             this.pictureBoxProbeLeftClamp_BW.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.pictureBoxProbeLeftClamp_BW.Name = "pictureBoxProbeLeftClamp_BW";
             this.pictureBoxProbeLeftClamp_BW.Size = new System.Drawing.Size(22, 22);
@@ -2502,7 +2502,7 @@ namespace CWA150SA_Onsemi300
             // pictureBoxProbeUnpackingCyl_Down
             // 
             this.pictureBoxProbeUnpackingCyl_Down.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
-            this.pictureBoxProbeUnpackingCyl_Down.Location = new System.Drawing.Point(177, 108);
+            this.pictureBoxProbeUnpackingCyl_Down.Location = new System.Drawing.Point(156, 108);
             this.pictureBoxProbeUnpackingCyl_Down.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.pictureBoxProbeUnpackingCyl_Down.Name = "pictureBoxProbeUnpackingCyl_Down";
             this.pictureBoxProbeUnpackingCyl_Down.Size = new System.Drawing.Size(22, 22);
@@ -2513,7 +2513,7 @@ namespace CWA150SA_Onsemi300
             // pictureBoxProbeUnpackingCyl_Up
             // 
             this.pictureBoxProbeUnpackingCyl_Up.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
-            this.pictureBoxProbeUnpackingCyl_Up.Location = new System.Drawing.Point(177, 6);
+            this.pictureBoxProbeUnpackingCyl_Up.Location = new System.Drawing.Point(156, 6);
             this.pictureBoxProbeUnpackingCyl_Up.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.pictureBoxProbeUnpackingCyl_Up.Name = "pictureBoxProbeUnpackingCyl_Up";
             this.pictureBoxProbeUnpackingCyl_Up.Size = new System.Drawing.Size(22, 22);
@@ -2527,7 +2527,7 @@ namespace CWA150SA_Onsemi300
             this.baseButtonProbeUnpackingCyl_Up.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButtonProbeUnpackingCyl_Up.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButtonProbeUnpackingCyl_Up.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButtonProbeUnpackingCyl_Up.Location = new System.Drawing.Point(200, 6);
+            this.baseButtonProbeUnpackingCyl_Up.Location = new System.Drawing.Point(179, 6);
             this.baseButtonProbeUnpackingCyl_Up.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseButtonProbeUnpackingCyl_Up.Name = "baseButtonProbeUnpackingCyl_Up";
             this.baseButtonProbeUnpackingCyl_Up.Size = new System.Drawing.Size(92, 60);
@@ -2542,7 +2542,7 @@ namespace CWA150SA_Onsemi300
             this.baseButtonProbeClamp_Down.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButtonProbeClamp_Down.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButtonProbeClamp_Down.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButtonProbeClamp_Down.Location = new System.Drawing.Point(12, 6);
+            this.baseButtonProbeClamp_Down.Location = new System.Drawing.Point(7, 6);
             this.baseButtonProbeClamp_Down.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseButtonProbeClamp_Down.Name = "baseButtonProbeClamp_Down";
             this.baseButtonProbeClamp_Down.Size = new System.Drawing.Size(133, 41);
@@ -2553,24 +2553,24 @@ namespace CWA150SA_Onsemi300
             // 
             // baseLabel_BW
             // 
-            this.baseLabel_BW.Font = new System.Drawing.Font("나눔바른고딕", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseLabel_BW.Font = new System.Drawing.Font("나눔바른고딕", 8.999999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel_BW.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_BW.Location = new System.Drawing.Point(2, 50);
+            this.baseLabel_BW.Location = new System.Drawing.Point(1, 52);
             this.baseLabel_BW.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_BW.Name = "baseLabel_BW";
-            this.baseLabel_BW.Size = new System.Drawing.Size(155, 19);
+            this.baseLabel_BW.Size = new System.Drawing.Size(143, 19);
             this.baseLabel_BW.TabIndex = 167;
             this.baseLabel_BW.Text = "┏─── Open ───┓";
             this.baseLabel_BW.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // baseLabel_FW
             // 
-            this.baseLabel_FW.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseLabel_FW.Font = new System.Drawing.Font("나눔바른고딕", 8.999999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel_FW.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_FW.Location = new System.Drawing.Point(48, 71);
+            this.baseLabel_FW.Location = new System.Drawing.Point(44, 71);
             this.baseLabel_FW.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_FW.Name = "baseLabel_FW";
-            this.baseLabel_FW.Size = new System.Drawing.Size(64, 19);
+            this.baseLabel_FW.Size = new System.Drawing.Size(58, 19);
             this.baseLabel_FW.TabIndex = 165;
             this.baseLabel_FW.Text = "- Close -";
             this.baseLabel_FW.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
