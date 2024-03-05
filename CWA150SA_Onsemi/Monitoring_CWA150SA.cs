@@ -1030,13 +1030,19 @@ namespace CWA150SA_Onsemi300
 
                     if (m_bBlink)
                     {
-                        btnRunStatus_Drilling.BackColor = Color.Lime;
-                        btnRunStatus_Drilling2.BackColor = Color.Gray;
+                        baseLabel_Align.BackColor = Color.Yellow;
+                        baseLabel_Align.ForeColor = Color.Black;
                     }
                     else
                     {
-                        btnRunStatus_Drilling.BackColor = Color.Gray;
-                        btnRunStatus_Drilling2.BackColor = Color.Lime;
+                        baseLabel_Align.BackColor = Color.Black;
+                        baseLabel_Align.ForeColor = Color.Yellow;
+                    }
+
+                    if (waferProbeAlign.m_nWafer_ProbeCard_Packing_Step == (int)WaferProbeAlign.WaferProbeCard_Packing_Step.None)
+                    {
+                        baseLabel_Packing.BackColor = Color.Black;
+                        baseLabel_Packing.ForeColor = Color.Yellow;
                     }
 
                     if (!waferProbeAlign.waferProbeAlignParameter.IsDO_OpLamp_Start())
@@ -1133,6 +1139,23 @@ namespace CWA150SA_Onsemi300
                         (waferProbeAlign.m_nWaferProbeCard_Unpacking_Step < (int)WaferProbeAlign.WaferProbeCard_Unpacking_Step.Complete)))
                 {
                     Equipment.Start();
+
+                    if (m_bBlink)
+                    {
+                        baseLabel_Packing.BackColor = Color.Yellow;
+                        baseLabel_Packing.ForeColor = Color.Black;
+                    }
+                    else
+                    {
+                        baseLabel_Packing.BackColor = Color.Black;
+                        baseLabel_Packing.ForeColor = Color.Yellow;
+                    }
+
+                    if (waferProbeAlign.m_nWaferProbeAlign_MainStep == (int)WaferProbeAlign.WaferProbeAlign_Step.None)
+                    {
+                        baseLabel_Align.BackColor = Color.Black;
+                        baseLabel_Align.ForeColor = Color.Yellow;
+                    }
 
                     if (!waferProbeAlign.waferProbeAlignParameter.IsDO_OpLamp_Start())
                     {
@@ -1287,8 +1310,11 @@ namespace CWA150SA_Onsemi300
                 {
                     Equipment.Stop();
 
-                    btnRunStatus_Drilling.BackColor = Color.Maroon;
-                    btnRunStatus_Drilling2.BackColor = Color.Maroon;
+                    baseLabel_Align.BackColor = Color.Black;
+                    baseLabel_Align.ForeColor = Color.Yellow;
+
+                    baseLabel_Packing.BackColor = Color.Black;
+                    baseLabel_Packing.ForeColor = Color.Yellow;
 
                     if (waferProbeAlign.waferProbeAlignParameter.IsDO_OpLamp_Start())
                     {

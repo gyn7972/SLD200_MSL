@@ -76,8 +76,6 @@
             this.btnReticlePos_LowerCam_GO = new System.Windows.Forms.Button();
             this.btnReticlePos_UpperCam_GO = new System.Windows.Forms.Button();
             this.btnPacking = new System.Windows.Forms.Button();
-            this.btnRunStatus_Drilling2 = new System.Windows.Forms.Button();
-            this.btnRunStatus_Drilling = new System.Windows.Forms.Button();
             this.btnMainWork_Start = new System.Windows.Forms.Button();
             this.baseGroupBox_ManualButton = new CWA150SA_Onsemi300.BaseGroupBox();
             this.tabControl_ProbeCard_ClampType = new System.Windows.Forms.TabControl();
@@ -635,8 +633,6 @@
             this.baseGroupBox_CycleButton.Controls.Add(this.btnReticlePos_LowerCam_GO);
             this.baseGroupBox_CycleButton.Controls.Add(this.btnReticlePos_UpperCam_GO);
             this.baseGroupBox_CycleButton.Controls.Add(this.btnPacking);
-            this.baseGroupBox_CycleButton.Controls.Add(this.btnRunStatus_Drilling2);
-            this.baseGroupBox_CycleButton.Controls.Add(this.btnRunStatus_Drilling);
             this.baseGroupBox_CycleButton.Controls.Add(this.btnMainWork_Start);
             this.baseGroupBox_CycleButton.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseGroupBox_CycleButton.ForeColor = System.Drawing.Color.White;
@@ -665,7 +661,7 @@
             // 
             // btnWaferProbeCardUnpacking
             // 
-            this.btnWaferProbeCardUnpacking.BackColor = System.Drawing.Color.LightGray;
+            this.btnWaferProbeCardUnpacking.BackColor = System.Drawing.Color.LightBlue;
             this.btnWaferProbeCardUnpacking.FlatAppearance.BorderColor = System.Drawing.SystemColors.ButtonShadow;
             this.btnWaferProbeCardUnpacking.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.btnWaferProbeCardUnpacking.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
@@ -807,37 +803,17 @@
             this.btnPacking.UseVisualStyleBackColor = false;
             this.btnPacking.Click += new System.EventHandler(this.btnPacking_Click);
             // 
-            // btnRunStatus_Drilling2
-            // 
-            this.btnRunStatus_Drilling2.BackColor = System.Drawing.Color.Maroon;
-            this.btnRunStatus_Drilling2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRunStatus_Drilling2.Location = new System.Drawing.Point(450, 34);
-            this.btnRunStatus_Drilling2.Name = "btnRunStatus_Drilling2";
-            this.btnRunStatus_Drilling2.Size = new System.Drawing.Size(20, 100);
-            this.btnRunStatus_Drilling2.TabIndex = 64;
-            this.btnRunStatus_Drilling2.UseVisualStyleBackColor = false;
-            // 
-            // btnRunStatus_Drilling
-            // 
-            this.btnRunStatus_Drilling.BackColor = System.Drawing.Color.Maroon;
-            this.btnRunStatus_Drilling.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRunStatus_Drilling.Location = new System.Drawing.Point(239, 34);
-            this.btnRunStatus_Drilling.Name = "btnRunStatus_Drilling";
-            this.btnRunStatus_Drilling.Size = new System.Drawing.Size(20, 100);
-            this.btnRunStatus_Drilling.TabIndex = 63;
-            this.btnRunStatus_Drilling.UseVisualStyleBackColor = false;
-            // 
             // btnMainWork_Start
             // 
             this.btnMainWork_Start.BackColor = System.Drawing.Color.LightGray;
             this.btnMainWork_Start.FlatAppearance.BorderColor = System.Drawing.SystemColors.ButtonShadow;
             this.btnMainWork_Start.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.btnMainWork_Start.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
-            this.btnMainWork_Start.Font = new System.Drawing.Font("나눔바른고딕", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btnMainWork_Start.Font = new System.Drawing.Font("나눔바른고딕", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btnMainWork_Start.ForeColor = System.Drawing.Color.DarkRed;
-            this.btnMainWork_Start.Location = new System.Drawing.Point(262, 33);
+            this.btnMainWork_Start.Location = new System.Drawing.Point(239, 33);
             this.btnMainWork_Start.Name = "btnMainWork_Start";
-            this.btnMainWork_Start.Size = new System.Drawing.Size(185, 102);
+            this.btnMainWork_Start.Size = new System.Drawing.Size(231, 102);
             this.btnMainWork_Start.TabIndex = 62;
             this.btnMainWork_Start.Text = "웨이퍼 - 프로브 카드\r\n\r\n얼라인 시작";
             this.btnMainWork_Start.UseVisualStyleBackColor = false;
@@ -1308,8 +1284,6 @@
         private System.Windows.Forms.ColorDialog colorDialog1;
         private BaseGroupBox baseGroupBox_CycleButton;
         private System.Windows.Forms.Button btnPacking;
-        private System.Windows.Forms.Button btnRunStatus_Drilling2;
-        private System.Windows.Forms.Button btnRunStatus_Drilling;
         private System.Windows.Forms.Button btnMainWork_Start;
         private BaseGroupBox baseGroupBox_ManualButton;
         private System.Windows.Forms.PictureBox pictureBoxProbePackingCheck;
