@@ -137,6 +137,11 @@ namespace QMC.Common.Parts
             DisplayName("얼라인 정도 확인 - 얼라인 후 Empty Chip 확인 위치 (Center Chip 기준,   Offset Y,   + : 위쪽 위치)")]
         public double Align_EmptyChipOffset_Y { set; get; }
 
+        [Category("[01] 웨이퍼 얼라인"),
+            Description("얼라인 마크의 평균값 계산 후, 평균값이 기본 마크 위치값과 얼마나 차이가 있는지 비교. 너무 크면 기본 마크 위치값을 사용하도록 하기 위함.\r\n[default 0 : 0.05 mm]"),
+            DisplayName("얼라인 평균 계산 - 마크 위치 평균값 신뢰 공차 (mm)")]
+        public double AlignPosition_AverageCheck_Range { set; get; }
+
 
 
         /// <summary>

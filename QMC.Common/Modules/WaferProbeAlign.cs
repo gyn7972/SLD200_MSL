@@ -1335,6 +1335,8 @@ namespace QMC.Common.Modules
         public PointD[] m_pProbeCard_AlignMarkPosition_Average;             //  프로브 카드 얼라인 마크 위치 누적. (평균 계산용)
         public PointD[] m_pWafer_AlignMarkPosition_Average;                 //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
 
+        public double m_dAlignPosition_AverageCheck_Range;                  //  얼라인 마크 위치 평균값 신뢰성 확인
+
         public enum WaferProbeAlign_Step
         {
             None = 0,
@@ -2298,6 +2300,14 @@ namespace QMC.Common.Modules
                         m_pWafer_AlignMarkPosition_Average[i].Y = 0.0;                                 //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
                     }
 
+                    if (Config.ParamConfig.AlignPosition_AverageCheck_Range <= 0)
+                    {
+                        m_dAlignPosition_AverageCheck_Range = 0.05;
+                    }
+                    else
+                    {
+                        m_dAlignPosition_AverageCheck_Range = Config.ParamConfig.AlignPosition_AverageCheck_Range;
+                    }
 
                     Equipment.Vision_SpiralMove_Use = true;
 
@@ -2972,8 +2982,32 @@ namespace QMC.Common.Modules
                                     m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X / m_nProbeCard_AlignMark_Count;
                                     m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y / m_nProbeCard_AlignMark_Count;
 
-                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
-                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+                                    //  평균값 범위 체크 (마지막에 찾은 위치에서 50um 이내의 범위에 있는지 확인
+                                    if ((m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X >= (jigAligner_Upper.FirstPosition.X - m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X <= (jigAligner_Upper.FirstPosition.X + m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y >= (jigAligner_Upper.FirstPosition.Y - m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y <= (jigAligner_Upper.FirstPosition.Y + m_dAlignPosition_AverageCheck_Range)))
+                                    {
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "프로브 카드 틀어짐 각도 측정, 프로브 카드 TOP 위치에서 얼라인 마크 평균값 OK");
+
+                                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
+                                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+                                    }
+                                    else
+                                    {
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "프로브 카드 틀어짐 각도 측정, 프로브 카드 TOP 위치에서 얼라인 마크 평균값 NG");
+
+                                        m_strTemp = string.Format("AvgX : {0:0.000}, Avg Y: {1:0.000}, LastX : {2:0.000}, LastY: {3:0.000}", 
+                                            m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X,
+                                            m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y,
+                                            jigAligner_Upper.FirstPosition.X, 
+                                            jigAligner_Upper.FirstPosition.Y);
+
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", m_strTemp);
+
+                                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = jigAligner_Upper.FirstPosition.X;
+                                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
+                                    }
 
                                     m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCard_Tilt_Check_BottomMarkFind_Ready;
                                 }
@@ -3050,8 +3084,32 @@ namespace QMC.Common.Modules
                                 m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X / m_nProbeCard_AlignMark_Count;
                                 m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y / m_nProbeCard_AlignMark_Count;
 
-                                m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
-                                m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+                                //  평균값 범위 체크 (마지막에 찾은 위치에서 50um 이내의 범위에 있는지 확인
+                                if ((m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X >= (jigAligner_Upper.FirstPosition.X - m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X <= (jigAligner_Upper.FirstPosition.X + m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y >= (jigAligner_Upper.FirstPosition.Y - m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y <= (jigAligner_Upper.FirstPosition.Y + m_dAlignPosition_AverageCheck_Range)))
+                                {
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "프로브 카드 틀어짐 각도 측정, 프로브 카드 TOP 위치에서 얼라인 마크 평균값 OK");
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+                                }
+                                else
+                                {
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "프로브 카드 틀어짐 각도 측정, 프로브 카드 TOP 위치에서 얼라인 마크 평균값 NG");
+
+                                    m_strTemp = string.Format("AvgX : {0:0.000}, Avg Y: {1:0.000}, LastX : {2:0.000}, LastY: {3:0.000}",
+                                        m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X,
+                                        m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y,
+                                        jigAligner_Upper.FirstPosition.X,
+                                        jigAligner_Upper.FirstPosition.Y);
+
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", m_strTemp);
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = jigAligner_Upper.FirstPosition.X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
+                                }
 
                                 m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCard_Tilt_Check_BottomMarkFind_Ready;
                             }
@@ -3296,8 +3354,32 @@ namespace QMC.Common.Modules
                                     m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].X / m_nProbeCard_AlignMark_Count;
                                     m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].Y / m_nProbeCard_AlignMark_Count;
 
-                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_SECONDMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X;
-                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_SECONDMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y;
+                                    //  평균값 범위 체크 (마지막에 찾은 위치에서 50um 이내의 범위에 있는지 확인
+                                    if ((m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X >= (jigAligner_Upper.FirstPosition.X - m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X <= (jigAligner_Upper.FirstPosition.X + m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y >= (jigAligner_Upper.FirstPosition.Y - m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y <= (jigAligner_Upper.FirstPosition.Y + m_dAlignPosition_AverageCheck_Range)))
+                                    {
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "프로브 카드 틀어짐 각도 측정, 프로브 카드 BOTTOM 위치에서 얼라인 마크 평균값 OK");
+
+                                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_SECONDMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X;
+                                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_SECONDMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y;
+                                    }
+                                    else
+                                    {
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "프로브 카드 틀어짐 각도 측정, 프로브 카드 BOTTOM 위치에서 얼라인 마크 평균값 NG");
+
+                                        m_strTemp = string.Format("AvgX : {0:0.000}, Avg Y: {1:0.000}, LastX : {2:0.000}, LastY: {3:0.000}",
+                                            m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X,
+                                            m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y,
+                                            jigAligner_Upper.FirstPosition.X,
+                                            jigAligner_Upper.FirstPosition.Y);
+
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", m_strTemp);
+
+                                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_SECONDMARKPOS].X = jigAligner_Upper.FirstPosition.X;
+                                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_SECONDMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
+                                    }
 
                                     m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCard_Tilt_Data_Calc;
                                 }                                
@@ -3681,8 +3763,32 @@ namespace QMC.Common.Modules
                                     m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X / m_nProbeCard_AlignMark_Count;
                                     m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y / m_nProbeCard_AlignMark_Count;
 
-                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
-                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+                                    //  평균값 범위 체크 (마지막에 찾은 위치에서 50um 이내의 범위에 있는지 확인
+                                    if ((m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X >= (jigAligner_Upper.FirstPosition.X - m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X <= (jigAligner_Upper.FirstPosition.X + m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y >= (jigAligner_Upper.FirstPosition.Y - m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y <= (jigAligner_Upper.FirstPosition.Y + m_dAlignPosition_AverageCheck_Range)))
+                                    {
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "프로브 카드 XY 위치 보정, 프로브 카드 TOP 위치에서 얼라인 마크 평균값 OK");
+
+                                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
+                                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+                                    }
+                                    else
+                                    {
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "프로브 카드 XY 위치 보정, 프로브 카드 TOP 위치에서 얼라인 마크 평균값 NG");
+
+                                        m_strTemp = string.Format("AvgX : {0:0.000}, Avg Y: {1:0.000}, LastX : {2:0.000}, LastY: {3:0.000}",
+                                            m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X,
+                                            m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y,
+                                            jigAligner_Upper.FirstPosition.X,
+                                            jigAligner_Upper.FirstPosition.Y);
+
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", m_strTemp);
+
+                                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = jigAligner_Upper.FirstPosition.X;
+                                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
+                                    }
 
                                     m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCardXYAlignData_Calc;
                                 }
@@ -3758,8 +3864,32 @@ namespace QMC.Common.Modules
                                 m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X / m_nProbeCard_AlignMark_Count;
                                 m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = m_pProbeCard_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y / m_nProbeCard_AlignMark_Count;
 
-                                m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
-                                m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+                                //  평균값 범위 체크 (마지막에 찾은 위치에서 50um 이내의 범위에 있는지 확인
+                                if ((m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X >= (jigAligner_Upper.FirstPosition.X - m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X <= (jigAligner_Upper.FirstPosition.X + m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y >= (jigAligner_Upper.FirstPosition.Y - m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y <= (jigAligner_Upper.FirstPosition.Y + m_dAlignPosition_AverageCheck_Range)))
+                                {
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "프로브 카드 XY 위치 보정, 프로브 카드 TOP 위치에서 얼라인 마크 평균값 OK");
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+                                }
+                                else
+                                {
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "프로브 카드 XY 위치 보정, 프로브 카드 TOP 위치에서 얼라인 마크 평균값 NG");
+
+                                    m_strTemp = string.Format("AvgX : {0:0.000}, Avg Y: {1:0.000}, LastX : {2:0.000}, LastY: {3:0.000}",
+                                        m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X,
+                                        m_pProbeCard_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y,
+                                        jigAligner_Upper.FirstPosition.X,
+                                        jigAligner_Upper.FirstPosition.Y);
+
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", m_strTemp);
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = jigAligner_Upper.FirstPosition.X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
+                                }
 
                                 m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.ProbeCardXYAlignData_Calc;
                             }
@@ -4259,8 +4389,32 @@ namespace QMC.Common.Modules
                                     m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X / m_nWafer_AlignMark_Count;
                                     m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y / m_nWafer_AlignMark_Count;
 
-                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
-                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+                                    //  평균값 범위 체크 (마지막에 찾은 위치에서 50um 이내의 범위에 있는지 확인
+                                    if ((m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X >= (jigAligner_Lower.FirstPosition.X - m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X <= (jigAligner_Lower.FirstPosition.X + m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y >= (jigAligner_Lower.FirstPosition.Y - m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y <= (jigAligner_Lower.FirstPosition.Y + m_dAlignPosition_AverageCheck_Range)))
+                                    {
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 틀어짐 각도 보정, 웨이퍼 TOP 위치에서 얼라인 마크 평균값 OK");
+                                        
+                                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
+                                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+                                    }
+                                    else
+                                    {
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 틀어짐 각도 보정, 웨이퍼 TOP 위치에서 얼라인 마크 평균값 NG");
+
+                                        m_strTemp = string.Format("AvgX : {0:0.000}, Avg Y: {1:0.000}, LastX : {2:0.000}, LastY: {3:0.000}",
+                                            m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X,
+                                            m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y,
+                                            jigAligner_Lower.FirstPosition.X,
+                                            jigAligner_Lower.FirstPosition.Y);
+
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", m_strTemp);
+
+                                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = jigAligner_Lower.FirstPosition.X;
+                                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
+                                    }
 
                                     m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlign_BottomMarkFind_Ready;
                                 }
@@ -4336,8 +4490,32 @@ namespace QMC.Common.Modules
                                 m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X / m_nWafer_AlignMark_Count;
                                 m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y / m_nWafer_AlignMark_Count;
 
-                                m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
-                                m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+                                //  평균값 범위 체크 (마지막에 찾은 위치에서 50um 이내의 범위에 있는지 확인
+                                if ((m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X >= (jigAligner_Lower.FirstPosition.X - m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X <= (jigAligner_Lower.FirstPosition.X + m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y >= (jigAligner_Lower.FirstPosition.Y - m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y <= (jigAligner_Lower.FirstPosition.Y + m_dAlignPosition_AverageCheck_Range)))
+                                {
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 틀어짐 각도 보정, 웨이퍼 TOP 위치에서 얼라인 마크 평균값 OK");
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+                                }
+                                else
+                                {
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 틀어짐 각도 보정, 웨이퍼 TOP 위치에서 얼라인 마크 평균값 NG");
+
+                                    m_strTemp = string.Format("AvgX : {0:0.000}, Avg Y: {1:0.000}, LastX : {2:0.000}, LastY: {3:0.000}",
+                                        m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X,
+                                        m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y,
+                                        jigAligner_Lower.FirstPosition.X,
+                                        jigAligner_Lower.FirstPosition.Y);
+
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", m_strTemp);
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = jigAligner_Lower.FirstPosition.X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
+                                }
 
                                 m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlign_BottomMarkFind_Ready;
                             }
@@ -4582,8 +4760,32 @@ namespace QMC.Common.Modules
                                     m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].X / m_nWafer_AlignMark_Count;
                                     m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].Y / m_nWafer_AlignMark_Count;
 
-                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].X = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X;
-                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y;
+                                    //  평균값 범위 체크 (마지막에 찾은 위치에서 50um 이내의 범위에 있는지 확인
+                                    if ((m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X >= (jigAligner_Lower.FirstPosition.X - m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X <= (jigAligner_Lower.FirstPosition.X + m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y >= (jigAligner_Lower.FirstPosition.Y - m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y <= (jigAligner_Lower.FirstPosition.Y + m_dAlignPosition_AverageCheck_Range)))
+                                    {
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 틀어짐 각도 보정, 웨이퍼 BOTTOM 위치에서 얼라인 마크 평균값 OK");
+
+                                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].X = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X;
+                                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y;
+                                    }
+                                    else
+                                    {
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 틀어짐 각도 보정, 웨이퍼 BOTTOM 위치에서 얼라인 마크 평균값 NG");
+
+                                        m_strTemp = string.Format("AvgX : {0:0.000}, Avg Y: {1:0.000}, LastX : {2:0.000}, LastY: {3:0.000}",
+                                            m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X,
+                                            m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y,
+                                            jigAligner_Lower.FirstPosition.X,
+                                            jigAligner_Lower.FirstPosition.Y);
+
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", m_strTemp);
+
+                                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].X = jigAligner_Lower.FirstPosition.X;
+                                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
+                                    }
 
                                     m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlignData_Calc;
                                 }
@@ -4659,9 +4861,33 @@ namespace QMC.Common.Modules
                                 m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].X / m_nWafer_AlignMark_Count;
                                 m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Bot].Y / m_nWafer_AlignMark_Count;
 
-                                m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].X = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X;
-                                m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y;
+                                //  평균값 범위 체크 (마지막에 찾은 위치에서 50um 이내의 범위에 있는지 확인
+                                if ((m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X >= (jigAligner_Lower.FirstPosition.X - m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X <= (jigAligner_Lower.FirstPosition.X + m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y >= (jigAligner_Lower.FirstPosition.Y - m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y <= (jigAligner_Lower.FirstPosition.Y + m_dAlignPosition_AverageCheck_Range)))
+                                {
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 틀어짐 각도 보정, 웨이퍼 BOTTOM 위치에서 얼라인 마크 평균값 OK");
 
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].X = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y;
+                                }
+                                else
+                                {
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 틀어짐 각도 보정, 웨이퍼 BOTTOM 위치에서 얼라인 마크 평균값 NG");
+
+                                    m_strTemp = string.Format("AvgX : {0:0.000}, Avg Y: {1:0.000}, LastX : {2:0.000}, LastY: {3:0.000}",
+                                        m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].X,
+                                        m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Bot].Y,
+                                        jigAligner_Lower.FirstPosition.X,
+                                        jigAligner_Lower.FirstPosition.Y);
+
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", m_strTemp);
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].X = jigAligner_Lower.FirstPosition.X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_SECONDMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
+                                }
+                                
                                 m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferAlignData_Calc;
                             }
                         }
@@ -5218,8 +5444,32 @@ namespace QMC.Common.Modules
                                     m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X / m_nWafer_AlignMark_Count;
                                     m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y / m_nWafer_AlignMark_Count;
 
-                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
-                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+                                    //  평균값 범위 체크 (마지막에 찾은 위치에서 50um 이내의 범위에 있는지 확인
+                                    if ((m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X >= (jigAligner_Lower.FirstPosition.X - m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X <= (jigAligner_Lower.FirstPosition.X + m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y >= (jigAligner_Lower.FirstPosition.Y - m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y <= (jigAligner_Lower.FirstPosition.Y + m_dAlignPosition_AverageCheck_Range)))
+                                    {
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 XY 위치 보정, 웨이퍼 TOP 위치에서 얼라인 마크 평균값 OK");
+
+                                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
+                                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+                                    }
+                                    else
+                                    {
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 XY 위치 보정, 웨이퍼 TOP 위치에서 얼라인 마크 평균값 NG");
+
+                                        m_strTemp = string.Format("AvgX : {0:0.000}, Avg Y: {1:0.000}, LastX : {2:0.000}, LastY: {3:0.000}",
+                                            m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X,
+                                            m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y,
+                                            jigAligner_Lower.FirstPosition.X,
+                                            jigAligner_Lower.FirstPosition.Y);
+
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", m_strTemp);
+
+                                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = jigAligner_Lower.FirstPosition.X;
+                                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
+                                    }
 
                                     m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferXYAlignData_Calc;
                                 }
@@ -5295,8 +5545,32 @@ namespace QMC.Common.Modules
                                 m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].X / m_nWafer_AlignMark_Count;
                                 m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y = m_pWafer_AlignMarkPosition_Sum[(int)nAlignErrorCheckPos.Pos_Top].Y / m_nWafer_AlignMark_Count;
 
-                                m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
-                                m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+                                //  평균값 범위 체크 (마지막에 찾은 위치에서 50um 이내의 범위에 있는지 확인
+                                if ((m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X >= (jigAligner_Lower.FirstPosition.X - m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X <= (jigAligner_Lower.FirstPosition.X + m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y >= (jigAligner_Lower.FirstPosition.Y - m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y <= (jigAligner_Lower.FirstPosition.Y + m_dAlignPosition_AverageCheck_Range)))
+                                {
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 XY 위치 보정, 웨이퍼 TOP 위치에서 얼라인 마크 평균값 OK");
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y;
+                                }
+                                else
+                                {
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "웨이퍼 XY 위치 보정, 웨이퍼 TOP 위치에서 얼라인 마크 평균값 NG");
+
+                                    m_strTemp = string.Format("AvgX : {0:0.000}, Avg Y: {1:0.000}, LastX : {2:0.000}, LastY: {3:0.000}",
+                                        m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].X,
+                                        m_pWafer_AlignMarkPosition_Average[(int)nAlignErrorCheckPos.Pos_Top].Y,
+                                        jigAligner_Lower.FirstPosition.X,
+                                        jigAligner_Lower.FirstPosition.Y);
+
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", m_strTemp);
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = jigAligner_Lower.FirstPosition.X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
+                                }
 
                                 m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.WaferXYAlignData_Calc;
                             }
@@ -5943,6 +6217,15 @@ namespace QMC.Common.Modules
                         m_pWafer_AlignMarkPosition_Average[i].Y = 0.0;                                 //  웨이퍼 얼라인 마크 위치 누적. (평균 계산용)
                     }
 
+                    if (Config.ParamConfig.AlignPosition_AverageCheck_Range <= 0)
+                    {
+                        m_dAlignPosition_AverageCheck_Range = 0.05;
+                    }
+                    else
+                    {
+                        m_dAlignPosition_AverageCheck_Range = Config.ParamConfig.AlignPosition_AverageCheck_Range;
+                    }
+
                     m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.Align_Condition_Check;
                     break;
 
@@ -6493,8 +6776,32 @@ namespace QMC.Common.Modules
                                     m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X = m_pProbeCard_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].X / m_nProbeCard_AlignMark_Count;
                                     m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y = m_pProbeCard_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].Y / m_nProbeCard_AlignMark_Count;
 
-                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X;
-                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y;
+                                    //  평균값 범위 체크 (마지막에 찾은 위치에서 50um 이내의 범위에 있는지 확인
+                                    if ((m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X >= (jigAligner_Upper.FirstPosition.X - m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X <= (jigAligner_Upper.FirstPosition.X + m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y >= (jigAligner_Upper.FirstPosition.Y - m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y <= (jigAligner_Upper.FirstPosition.Y + m_dAlignPosition_AverageCheck_Range)))
+                                    {
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "프로브 카드 XY 위치 보정, 프로브 카드 얼라인 마크 평균값 OK");
+                                        
+                                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X;
+                                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y;
+                                    }
+                                    else
+                                    {
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "프로브 카드 XY 위치 보정, 프로브 카드 얼라인 마크 평균값 NG");
+
+                                        m_strTemp = string.Format("AvgX : {0:0.000}, Avg Y: {1:0.000}, LastX : {2:0.000}, LastY: {3:0.000}",
+                                            m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X,
+                                            m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y,
+                                            jigAligner_Upper.FirstPosition.X,
+                                            jigAligner_Upper.FirstPosition.Y);
+
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", m_strTemp);
+
+                                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = jigAligner_Upper.FirstPosition.X;
+                                        m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
+                                    }
 
                                     m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ProbeCardXYAlignData_Calc;
                                 }
@@ -6571,8 +6878,32 @@ namespace QMC.Common.Modules
                                 m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X = m_pProbeCard_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].X / m_nProbeCard_AlignMark_Count;
                                 m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y = m_pProbeCard_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].Y / m_nProbeCard_AlignMark_Count;
 
-                                m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X;
-                                m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y;
+                                //  평균값 범위 체크 (마지막에 찾은 위치에서 50um 이내의 범위에 있는지 확인
+                                if ((m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X >= (jigAligner_Upper.FirstPosition.X - m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X <= (jigAligner_Upper.FirstPosition.X + m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y >= (jigAligner_Upper.FirstPosition.Y - m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y <= (jigAligner_Upper.FirstPosition.Y + m_dAlignPosition_AverageCheck_Range)))
+                                {
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "프로브 카드 XY 위치 보정, 프로브 카드 얼라인 마크 평균값 OK");
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y;
+                                }
+                                else
+                                {
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "프로브 카드 XY 위치 보정, 프로브 카드 얼라인 마크 평균값 NG");
+
+                                    m_strTemp = string.Format("AvgX : {0:0.000}, Avg Y: {1:0.000}, LastX : {2:0.000}, LastY: {3:0.000}",
+                                        m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X,
+                                        m_pProbeCard_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y,
+                                        jigAligner_Upper.FirstPosition.X,
+                                        jigAligner_Upper.FirstPosition.Y);
+
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", m_strTemp);
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = jigAligner_Upper.FirstPosition.X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = jigAligner_Upper.FirstPosition.Y;
+                                }
 
                                 m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ProbeCardXYAlignData_Calc;
                             }
@@ -7000,8 +7331,32 @@ namespace QMC.Common.Modules
                                     m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X = m_pWafer_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].X / m_nWafer_AlignMark_Count;
                                     m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y = m_pWafer_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].Y / m_nWafer_AlignMark_Count;
 
-                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X;
-                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y;
+                                    //  평균값 범위 체크 (마지막에 찾은 위치에서 50um 이내의 범위에 있는지 확인
+                                    if ((m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X >= (jigAligner_Lower.FirstPosition.X - m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X <= (jigAligner_Lower.FirstPosition.X + m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y >= (jigAligner_Lower.FirstPosition.Y - m_dAlignPosition_AverageCheck_Range)) &&
+                                        (m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y <= (jigAligner_Lower.FirstPosition.Y + m_dAlignPosition_AverageCheck_Range)))
+                                    {
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 XY 오차 확인, 웨이퍼 얼라인 마크 평균값 OK");
+
+                                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X;
+                                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y;
+                                    }
+                                    else
+                                    {
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 XY 오차 확인, 웨이퍼 얼라인 마크 평균값 NG");
+
+                                        m_strTemp = string.Format("AvgX : {0:0.000}, Avg Y: {1:0.000}, LastX : {2:0.000}, LastY: {3:0.000}",
+                                            m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X,
+                                            m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y,
+                                            jigAligner_Lower.FirstPosition.X,
+                                            jigAligner_Lower.FirstPosition.Y);
+
+                                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", m_strTemp);
+
+                                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = jigAligner_Lower.FirstPosition.X;
+                                        m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
+                                    }
 
                                     m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.WaferXYAlignData_ErrorCalc;
                                 }
@@ -7078,8 +7433,32 @@ namespace QMC.Common.Modules
                                 m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X = m_pWafer_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].X / m_nWafer_AlignMark_Count;
                                 m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y = m_pWafer_AlignMarkPosition_Sum[m_nWaferProbeAlign_ErrorCheck_Count].Y / m_nWafer_AlignMark_Count;
 
-                                m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X;
-                                m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y;
+                                //  평균값 범위 체크 (마지막에 찾은 위치에서 50um 이내의 범위에 있는지 확인
+                                if ((m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X >= (jigAligner_Lower.FirstPosition.X - m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X <= (jigAligner_Lower.FirstPosition.X + m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y >= (jigAligner_Lower.FirstPosition.Y - m_dAlignPosition_AverageCheck_Range)) &&
+                                    (m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y <= (jigAligner_Lower.FirstPosition.Y + m_dAlignPosition_AverageCheck_Range)))
+                                {
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 XY 오차 확인, 웨이퍼 얼라인 마크 평균값 OK");
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y;
+                                }
+                                else
+                                {
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 XY 오차 확인, 웨이퍼 얼라인 마크 평균값 NG");
+
+                                    m_strTemp = string.Format("AvgX : {0:0.000}, Avg Y: {1:0.000}, LastX : {2:0.000}, LastY: {3:0.000}",
+                                        m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].X,
+                                        m_pWafer_AlignMarkPosition_Average[m_nWaferProbeAlign_ErrorCheck_Count].Y,
+                                        jigAligner_Lower.FirstPosition.X,
+                                        jigAligner_Lower.FirstPosition.Y);
+
+                                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", m_strTemp);
+
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X = jigAligner_Lower.FirstPosition.X;
+                                    m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y = jigAligner_Lower.FirstPosition.Y;
+                                }
 
                                 m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.WaferXYAlignData_ErrorCalc;
                             }
