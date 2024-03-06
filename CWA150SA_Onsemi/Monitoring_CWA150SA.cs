@@ -8652,7 +8652,7 @@ namespace CWA150SA_Onsemi300
             //  테스트 (TOP 이미지 저장)
 
             Equipment.AlignStart_Time = DateTime.Now.ToString("HH_mm_ss");
-            waferProbeAlign.ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "TOP");
+            waferProbeAlign.ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "TOP", true, true);
         }
 
         private void baseLabelPosition_Mid_Click(object sender, EventArgs e)
@@ -8662,7 +8662,7 @@ namespace CWA150SA_Onsemi300
             //  테스트 (MID 이미지 저장)
 
             Equipment.AlignStart_Time = DateTime.Now.ToString("HH_mm_ss");
-            waferProbeAlign.ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "MID");
+            waferProbeAlign.ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "MID", true, true);
         }
 
         private void baseLabelPosition_Bot_Click(object sender, EventArgs e)
@@ -8672,7 +8672,7 @@ namespace CWA150SA_Onsemi300
             //  테스트 (BOT 이미지 저장)
 
             Equipment.AlignStart_Time = DateTime.Now.ToString("HH_mm_ss");
-            waferProbeAlign.ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "BOT");
+            waferProbeAlign.ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "BOT", true, true);
         }
 
         private void baseButtonProbeClamp_Down_Click(object sender, EventArgs e)

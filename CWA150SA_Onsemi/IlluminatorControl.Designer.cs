@@ -200,6 +200,7 @@
             this.Controls.Add(this.baseGroupBoxIlluminatorControl);
             this.Name = "IlluminatorControl";
             this.Size = new System.Drawing.Size(270, 305);
+            this.VisibleChanged += new System.EventHandler(this.IlluminatorControl_VisibleChanged);
             this.baseGroupBoxIlluminatorControl.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.IlluminatorGrid)).EndInit();
             this.ResumeLayout(false);

@@ -7142,17 +7142,17 @@ namespace QMC.Common.Modules
                         if (m_nWaferProbeAlign_ErrorCheck_Count == 0)                               //  Top
                         {
                             Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "TOP 위치 얼라인 이미지 저장");
-                            ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "TOP");
+                            ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "TOP", AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Upper], AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower]);
                         }
                         else if (m_nWaferProbeAlign_ErrorCheck_Count == 1)                          //  Middle
                         {
                             Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "MIDDLE 위치 얼라인 이미지 저장");
-                            ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "MID");
+                            ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "MID", AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Upper], AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower]);
                         }
                         else                                                                        //  Bottom
                         {
                             Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "BOTTOM 위치 얼라인 이미지 저장");
-                            ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "BOT");
+                            ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "BOT", AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Upper], AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower]);
                         }                        
                     }
 
@@ -7225,7 +7225,7 @@ namespace QMC.Common.Modules
 
         #region Align Image Save
 
-        public bool ResultImage_Save( string m_strOperator, string m_strStartTime, string m_strAlignPos )
+        public bool ResultImage_Save( string m_strOperator, string m_strStartTime, string m_strAlignPos, bool m_bResult_Upper, bool m_bResult_Lower )
         {
             bool m_bRet = true;
             string m_strDirectory = null;
@@ -7297,8 +7297,24 @@ namespace QMC.Common.Modules
             //  얼라인시작시간 : 얼라인 시작 버튼을 눌렀을 때의 시간 (년-월-일)
             //  얼라인위치 : 얼라인 검사 위치 (TOP, MID, BOT)
             //  카메라 방향 : ProbeCard or Wafer
-            m_strImageFile_Upper = string.Format("{0}\\{1}\\{2}\\{3}\\{4}_{5}_{6}_ProbeCard.jpg", m_strRoot, m_strDate, m_strRecipe, m_strOperator, m_strOperator, m_strStartTime, m_strAlignPos);
-            m_strImageFile_Lower = string.Format("{0}\\{1}\\{2}\\{3}\\{4}_{5}_{6}_Wafer.jpg", m_strRoot, m_strDate, m_strRecipe, m_strOperator, m_strOperator, m_strStartTime, m_strAlignPos);
+
+            if (m_bResult_Upper)
+            {
+                m_strImageFile_Upper = string.Format("{0}\\{1}\\{2}\\{3}\\{4}_{5}_{6}_ProbeCard_OK.jpg", m_strRoot, m_strDate, m_strRecipe, m_strOperator, m_strOperator, m_strStartTime, m_strAlignPos);
+            }
+            else
+            {
+                m_strImageFile_Upper = string.Format("{0}\\{1}\\{2}\\{3}\\{4}_{5}_{6}_ProbeCard_NG.jpg", m_strRoot, m_strDate, m_strRecipe, m_strOperator, m_strOperator, m_strStartTime, m_strAlignPos);
+            }
+
+            if (m_bResult_Lower)
+            {
+                m_strImageFile_Lower = string.Format("{0}\\{1}\\{2}\\{3}\\{4}_{5}_{6}_Wafer_OK.jpg", m_strRoot, m_strDate, m_strRecipe, m_strOperator, m_strOperator, m_strStartTime, m_strAlignPos);
+            }
+            else
+            {
+                m_strImageFile_Lower = string.Format("{0}\\{1}\\{2}\\{3}\\{4}_{5}_{6}_Wafer_NG.jpg", m_strRoot, m_strDate, m_strRecipe, m_strOperator, m_strOperator, m_strStartTime, m_strAlignPos);
+            }
 
             if (Camera_Upper != null)
             {

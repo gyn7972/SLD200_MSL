@@ -410,6 +410,23 @@ namespace CWA150SA_Onsemi300
             }
         }
         #endregion
+
+        private void IlluminatorControl_VisibleChanged(object sender, EventArgs e)
+        {
+            //  조명 컨트롤러의 변경된 값이, 모든 조명 컨트롤러에 적용되게 하기 위해서 추가됨.
+
+            m_CurrentDataSet.Values[0].Value = waferProbeAlign.Config.ParamConfig.Align_UpperVision_LightValue;
+            m_CurrentDataSet.Values[1].Value = waferProbeAlign.Config.ParamConfig.Align_LowerVision_LightValue;
+
+            SetScroll();
+            UpdateIlluminatorGridColumns();
+
+            if (Illuminator != null)
+            {
+                Illuminator.SetVolume(0, m_CurrentDataSet.Values[0].Value);
+                Illuminator.SetVolume(1, m_CurrentDataSet.Values[1].Value);
+            }
+        }
     }
     #endregion
 }
