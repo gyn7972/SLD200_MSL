@@ -79,53 +79,53 @@
             // lblWaferAlignAfterPackingAutoStart
             // 
             this.lblWaferAlignAfterPackingAutoStart.BackColor = System.Drawing.Color.Gray;
-            this.lblWaferAlignAfterPackingAutoStart.Font = new System.Drawing.Font("나눔고딕", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblWaferAlignAfterPackingAutoStart.Font = new System.Drawing.Font("나눔고딕", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lblWaferAlignAfterPackingAutoStart.ForeColor = System.Drawing.Color.Black;
-            this.lblWaferAlignAfterPackingAutoStart.Location = new System.Drawing.Point(1553, 5);
+            this.lblWaferAlignAfterPackingAutoStart.Location = new System.Drawing.Point(1535, 5);
             this.lblWaferAlignAfterPackingAutoStart.Margin = new System.Windows.Forms.Padding(0);
             this.lblWaferAlignAfterPackingAutoStart.Name = "lblWaferAlignAfterPackingAutoStart";
-            this.lblWaferAlignAfterPackingAutoStart.Size = new System.Drawing.Size(176, 69);
+            this.lblWaferAlignAfterPackingAutoStart.Size = new System.Drawing.Size(173, 69);
             this.lblWaferAlignAfterPackingAutoStart.TabIndex = 5;
-            this.lblWaferAlignAfterPackingAutoStart.Text = "[웨이퍼]  얼라인 후\r\n패킹 자동 시작";
+            this.lblWaferAlignAfterPackingAutoStart.Text = "[ 웨이퍼 ]  얼라인 후\r\n패킹 자동 시작";
             this.lblWaferAlignAfterPackingAutoStart.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblWaferAlignAfterAlignErrorCheckStart
             // 
             this.lblWaferAlignAfterAlignErrorCheckStart.BackColor = System.Drawing.Color.GreenYellow;
-            this.lblWaferAlignAfterAlignErrorCheckStart.Font = new System.Drawing.Font("나눔고딕", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblWaferAlignAfterAlignErrorCheckStart.Font = new System.Drawing.Font("나눔고딕", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lblWaferAlignAfterAlignErrorCheckStart.ForeColor = System.Drawing.Color.Black;
-            this.lblWaferAlignAfterAlignErrorCheckStart.Location = new System.Drawing.Point(1374, 5);
+            this.lblWaferAlignAfterAlignErrorCheckStart.Location = new System.Drawing.Point(1355, 5);
             this.lblWaferAlignAfterAlignErrorCheckStart.Margin = new System.Windows.Forms.Padding(0);
             this.lblWaferAlignAfterAlignErrorCheckStart.Name = "lblWaferAlignAfterAlignErrorCheckStart";
-            this.lblWaferAlignAfterAlignErrorCheckStart.Size = new System.Drawing.Size(175, 69);
+            this.lblWaferAlignAfterAlignErrorCheckStart.Size = new System.Drawing.Size(171, 69);
             this.lblWaferAlignAfterAlignErrorCheckStart.TabIndex = 6;
-            this.lblWaferAlignAfterAlignErrorCheckStart.Text = "[웨이퍼]  얼라인 후\r\n오차 검증 사용";
+            this.lblWaferAlignAfterAlignErrorCheckStart.Text = "[ 웨이퍼 ]  얼라인 후\r\n오차 검증 사용";
             this.lblWaferAlignAfterAlignErrorCheckStart.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblWaferOffsetMoveBeforePacking
             // 
             this.lblWaferOffsetMoveBeforePacking.BackColor = System.Drawing.Color.Gray;
-            this.lblWaferOffsetMoveBeforePacking.Font = new System.Drawing.Font("나눔고딕", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblWaferOffsetMoveBeforePacking.Font = new System.Drawing.Font("나눔고딕", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lblWaferOffsetMoveBeforePacking.ForeColor = System.Drawing.Color.Black;
-            this.lblWaferOffsetMoveBeforePacking.Location = new System.Drawing.Point(1097, 5);
+            this.lblWaferOffsetMoveBeforePacking.Location = new System.Drawing.Point(1089, 5);
             this.lblWaferOffsetMoveBeforePacking.Margin = new System.Windows.Forms.Padding(0);
             this.lblWaferOffsetMoveBeforePacking.Name = "lblWaferOffsetMoveBeforePacking";
-            this.lblWaferOffsetMoveBeforePacking.Size = new System.Drawing.Size(273, 69);
+            this.lblWaferOffsetMoveBeforePacking.Size = new System.Drawing.Size(257, 69);
             this.lblWaferOffsetMoveBeforePacking.TabIndex = 7;
-            this.lblWaferOffsetMoveBeforePacking.Text = "[웨이퍼 - 프로브 카드]  패킹 시\r\n웨이퍼 오프셋 이동 후 패킹";
+            this.lblWaferOffsetMoveBeforePacking.Text = "[ 프로브 카드 - 웨이퍼 ]  패킹 시\r\n웨이퍼 오프셋 이동 후 패킹";
             this.lblWaferOffsetMoveBeforePacking.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblPackAirLineCheck_Before_AlignStart
             // 
             this.lblPackAirLineCheck_Before_AlignStart.BackColor = System.Drawing.Color.Gray;
-            this.lblPackAirLineCheck_Before_AlignStart.Font = new System.Drawing.Font("나눔고딕", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblPackAirLineCheck_Before_AlignStart.Font = new System.Drawing.Font("나눔고딕", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lblPackAirLineCheck_Before_AlignStart.ForeColor = System.Drawing.Color.Black;
             this.lblPackAirLineCheck_Before_AlignStart.Location = new System.Drawing.Point(870, 5);
             this.lblPackAirLineCheck_Before_AlignStart.Margin = new System.Windows.Forms.Padding(0);
             this.lblPackAirLineCheck_Before_AlignStart.Name = "lblPackAirLineCheck_Before_AlignStart";
-            this.lblPackAirLineCheck_Before_AlignStart.Size = new System.Drawing.Size(223, 69);
+            this.lblPackAirLineCheck_Before_AlignStart.Size = new System.Drawing.Size(210, 69);
             this.lblPackAirLineCheck_Before_AlignStart.TabIndex = 8;
-            this.lblPackAirLineCheck_Before_AlignStart.Text = "[웨이퍼]  얼라인 시작 전\r\nPAK 관로 막힘 확인";
+            this.lblPackAirLineCheck_Before_AlignStart.Text = "[ 웨이퍼 ]  얼라인 시작 전\r\nPAK 관로 막힘 확인";
             this.lblPackAirLineCheck_Before_AlignStart.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lbl_Machine
@@ -134,11 +134,11 @@
             this.lbl_Machine.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lbl_Machine.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lbl_Machine.ForeColor = System.Drawing.Color.Black;
-            this.lbl_Machine.Location = new System.Drawing.Point(1754, 5);
+            this.lbl_Machine.Location = new System.Drawing.Point(1736, 5);
             this.lbl_Machine.Name = "lbl_Machine";
-            this.lbl_Machine.Size = new System.Drawing.Size(159, 24);
+            this.lbl_Machine.Size = new System.Drawing.Size(177, 24);
             this.lbl_Machine.TabIndex = 189;
-            this.lbl_Machine.Text = "프로브 카드 고정 타입";
+            this.lbl_Machine.Text = "[ 프로브 카드 ] 고정 타입";
             this.lbl_Machine.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lbl_MachineType
@@ -147,9 +147,9 @@
             this.lbl_MachineType.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lbl_MachineType.Font = new System.Drawing.Font("나눔바른고딕", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lbl_MachineType.ForeColor = System.Drawing.Color.Black;
-            this.lbl_MachineType.Location = new System.Drawing.Point(1754, 28);
+            this.lbl_MachineType.Location = new System.Drawing.Point(1736, 28);
             this.lbl_MachineType.Name = "lbl_MachineType";
-            this.lbl_MachineType.Size = new System.Drawing.Size(159, 46);
+            this.lbl_MachineType.Size = new System.Drawing.Size(177, 46);
             this.lbl_MachineType.TabIndex = 188;
             this.lbl_MachineType.Text = "Type - A";
             this.lbl_MachineType.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

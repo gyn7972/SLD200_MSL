@@ -2989,6 +2989,7 @@ namespace QMC.Common.Modules
                             Equipment.MachineStop_byUser = true;
 
                             m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                            m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
 
                             if (m_bAlignVisionThread_Use)
                             {
@@ -3312,6 +3313,7 @@ namespace QMC.Common.Modules
                             Equipment.MachineStop_byUser = true;
 
                             m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                            m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
 
                             if (m_bAlignVisionThread_Use)
                             {
@@ -3414,6 +3416,7 @@ namespace QMC.Common.Modules
 
                         m_bProbeCard_TiltCheck_OK = false;
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
 
                         MessageBox.Show("Probe Card Tilt 계산 실패\r\n\r\n[틀어진 각도가 너무 큼. (5˚ 이상)]");
                     }
@@ -3695,6 +3698,7 @@ namespace QMC.Common.Modules
                             Equipment.MachineStop_byUser = true;
 
                             m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                            m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
 
                             if (m_bAlignVisionThread_Use)
                             {
@@ -4272,6 +4276,7 @@ namespace QMC.Common.Modules
                             Equipment.MachineStop_byUser = true;
 
                             m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                            m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
 
                             if (m_bAlignVisionThread_Use)
                             {
@@ -4594,6 +4599,7 @@ namespace QMC.Common.Modules
                             Equipment.MachineStop_byUser = true;
 
                             m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                            m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
 
                             if (m_bAlignVisionThread_Use)
                             {
@@ -5146,6 +5152,13 @@ namespace QMC.Common.Modules
 
                         m_bWafer_XYAlign_OK = false;
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                        if (m_bAlignVisionThread_Use)
+                        {
+                            //  Thread 를 사용할 경우
+                            m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                        }
 
                         MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.U, 500);
                         MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.V, 500);
@@ -5222,6 +5235,7 @@ namespace QMC.Common.Modules
                             Equipment.MachineStop_byUser = true;
 
                             m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                            m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
 
                             if (m_bAlignVisionThread_Use)
                             {
@@ -5576,6 +5590,7 @@ namespace QMC.Common.Modules
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
 
+                        timer_SubWork.Enabled = false;
                         timer_MainWork.Enabled = false;
 
                         MessageBox.Show("얼라인 오차 검증 실패. (TimeOut)", "Error");                        
@@ -6408,8 +6423,17 @@ namespace QMC.Common.Modules
                         m_bMyWaferAlign_fromManualMode = false;
                         //m_nMyWaferAlign_ManualMode_VisionType = (int)VisionType.NONE;
 
+                        if (m_bAlignVisionThread_Use)
+                        {
+                            //  Thread 를 사용할 경우
+                            m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                        }
+
                         m_bProbeCard_XYAlign_ErrorCheck_OK = false;
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                        timer_MainWork.Enabled = false;
 
                         MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.U, 500);
                         MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.V, 500);
@@ -6494,7 +6518,9 @@ namespace QMC.Common.Modules
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, 500);
 
                             timer_SubWork.Enabled = false;
+                            timer_MainWork.Enabled = false;
 
+                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
                             m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
 
                             if (m_bAlignVisionThread_Use)
@@ -6903,7 +6929,16 @@ namespace QMC.Common.Modules
                         //m_nMyWaferAlign_ManualMode_VisionType = (int)VisionType.NONE;
 
                         m_bWafer_XYAlign_ErrorCheck_OK = false;
+                        m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                        timer_MainWork.Enabled = false;
+
+                        if (m_bAlignVisionThread_Use)
+                        {
+                            //  Thread 를 사용할 경우
+                            m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                        }
 
                         MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.U, 500);
                         MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.V, 500);
@@ -6990,7 +7025,9 @@ namespace QMC.Common.Modules
                             MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, 500);
 
                             timer_SubWork.Enabled = false;
+                            timer_MainWork.Enabled = false;
 
+                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
                             m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
 
                             if (m_bAlignVisionThread_Use)

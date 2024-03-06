@@ -821,6 +821,17 @@ namespace CWA150SA_Onsemi300
             }
 
 
+            //  수동 패킹 시, 엘리베이터 Z 축의 Offset 거리
+            if ( waferProbeAlign.Config.ParamConfig.Wafer_ProbeCard_ManualPacking_ElevZ_Offset_Distance <= 0 )
+            {
+                baseLabelManualPacking1.Text = "웨이퍼 && 프로브 카드\r\n패킹 전 높이까지 이동\r\n\r\n[ 설정된 패킹 높이에서\r\n   30mm 아래 위치 ]";
+            }
+            else
+            {
+                baseLabelManualPacking1.Text = string.Format("웨이퍼 && 프로브 카드\r\n패킹 전 높이까지 이동\r\n\r\n[ 설정된 패킹 높이에서\r\n   {0}mm 아래 위치 ]", waferProbeAlign.Config.ParamConfig.Wafer_ProbeCard_ManualPacking_ElevZ_Offset_Distance);
+            }
+
+
             //  웨이퍼 얼라인 에러 상태 보여주기
             //  패킹을 완료했으니, 얼라인 상태 값들은 초기화 한다.
             if (waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Step == (int)WaferProbeAlignErrorCheck_Step.None)
@@ -8040,7 +8051,14 @@ namespace CWA150SA_Onsemi300
             waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam = waferProbeAlign.waferProbeAlignParameter.GetPositionInformation("ProbeWafer_Packing");
             waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam2 = waferProbeAlign.waferProbeAlignParameter.GetPositionInformation("Ready");
 
-            lfTargetPos_EZ = waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.EZ] - 30.0;
+            if (waferProbeAlign.Config.ParamConfig.Wafer_ProbeCard_ManualPacking_ElevZ_Offset_Distance <= 0)
+            {
+                lfTargetPos_EZ = waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.EZ] - 30.0;
+            }
+            else
+            {
+                lfTargetPos_EZ = waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.EZ] - waferProbeAlign.Config.ParamConfig.Wafer_ProbeCard_ManualPacking_ElevZ_Offset_Distance;
+            }            
 
             if (Equipment.AjinBoard_Opened)
             {

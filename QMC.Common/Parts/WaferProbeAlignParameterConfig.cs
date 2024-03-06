@@ -178,6 +178,11 @@ namespace QMC.Common.Parts
             DisplayName("웨이퍼 && 프로브카드 UnPacking 시, Packing 높이 대비 아래로 내리는 거리 (mm)")]
         public double Wafer_ProbeCard_UnPackingStartOffset_Distance { set; get; }
 
+        [Category("[05] Offset && Delay"),
+            Description("수동 패킹 시, 패킹 위치에서 몇 mm 아래까지 엘리베이터 Z 축을 올릴 것인지.\r\n\r\n[default 0 : 30 mm]"),
+            DisplayName("웨이퍼 && 프로브카드 수동 패킹 시, 엘리베이터 Z 축의 1단계 Offset 거리 (mm, > 0)")]
+        public double Wafer_ProbeCard_ManualPacking_ElevZ_Offset_Distance { set; get; }
+
 
 
         /// <summary>
