@@ -7473,35 +7473,9 @@ namespace QMC.Common.Modules
 
                     m_dWaferAlign_CorrectionAngle = 0.0;
 
-                    //  기존
-                    //deltaX = m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X - jigAligner_Lower.m_AlignPositions[0].X;
-                    //deltaY = m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y - jigAligner_Lower.m_AlignPositions[0].Y;
-
-                    //  기존
-                    ////  얼라인 에러 값
-                    //AlignmentErrorCheck_Delta[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower].X = deltaX;
-                    //AlignmentErrorCheck_Delta[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower].Y = deltaY;
-
                     //  얼라인 마크 위치값
                     AlignmentErrorCheck_MarkPosition[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower].X = m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].X;
                     AlignmentErrorCheck_MarkPosition[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower].Y = m_forAlign_Data[(int)AlignParam.RESULT_LowerVISION_FIRSTMARKPOS].Y;
-
-                    ////  판정. (OK 범위 이내가 아니면 Retry)
-                    //if ((Math.Abs(deltaX) <= Config.ParamConfig.Align_Vision_Allowable_XY) &&
-                    //    (Math.Abs(deltaY) <= Config.ParamConfig.Align_Vision_Allowable_XY))
-                    //{
-                    //    m_bWafer_XYAlign_ErrorCheck_OK = true;
-
-                    //    //  현재 마크 위치, 하부 얼라인 OK
-                    //    AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower] = true;
-                    //}
-                    //else
-                    //{
-                    //    m_bWafer_XYAlign_ErrorCheck_OK = false;
-
-                    //    //  현재 마크 위치, 하부 얼라인 NG
-                    //    AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower] = false;
-                    //}
 
                     deltaX = AlignmentErrorCheck_MarkPosition[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Upper].X - AlignmentErrorCheck_MarkPosition[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower].X;
                     deltaY = AlignmentErrorCheck_MarkPosition[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Upper].Y - AlignmentErrorCheck_MarkPosition[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower].Y;
@@ -7530,7 +7504,11 @@ namespace QMC.Common.Modules
                             {
                                 Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 XY 오차 확인, 웨이퍼 XY 위치 오차가 너무 커서 재시도");
 
-                                m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.WaferXYAlign_MarkFind_Ready;
+                                //m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.WaferXYAlign_MarkFind_Ready;
+
+                                //  값이 이상하면 Probe Card 부터 다시 검사해야 한다. 
+                                //  Wafer 만 다시 검사하면 계속 값이 이상할 수 있다. (Probe Card 값 때문에 데이터가 이상하게 계산될 수 있기 때문에)
+                                m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ErrorCheck_Position_Remained_Check;
                             }
                         }
                         else

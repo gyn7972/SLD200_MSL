@@ -127,6 +127,8 @@ namespace CWA150SA_Onsemi300
         string m_strTemp;
         int m_nBlink;
         bool m_bBlink;
+        int m_nBlink_Fast;
+        bool m_bBlink_Fast;
 
         int m_nLedBar_Blink;
         int m_nLedBar_Blink_Step;
@@ -237,6 +239,8 @@ namespace CWA150SA_Onsemi300
 
             m_nBlink = 0;
             m_bBlink = false;
+            m_nBlink_Fast = 0;
+            m_bBlink_Fast = false;
             m_nLedBar_Blink = 0;
             m_nLedBar_Blink_Step = 0;
 
@@ -997,6 +1001,21 @@ namespace CWA150SA_Onsemi300
                 m_nBlink = 0;
             }
 
+            //  Blink_Fast
+            m_nBlink_Fast++;
+            if ((m_nBlink_Fast > 0) && (m_nBlink_Fast <= 10))
+            {
+                m_bBlink_Fast = true;
+            }
+            else if ((m_nBlink_Fast > 10) && (m_nBlink_Fast <= 20))
+            {
+                m_bBlink_Fast = false;
+            }
+            else
+            {
+                m_nBlink_Fast = 0;
+            }
+
             //  알람 발생 시 빨간색 LED Bar Blink
             if (Equipment.MachineStop_byAlarm == true)
             {
@@ -1039,7 +1058,7 @@ namespace CWA150SA_Onsemi300
                 {
                     Equipment.Start();
 
-                    if (m_bBlink)
+                    if (m_bBlink_Fast)
                     {
                         baseLabel_Align.BackColor = Color.Yellow;
                         baseLabel_Align.ForeColor = Color.Black;
@@ -1106,7 +1125,7 @@ namespace CWA150SA_Onsemi300
                     {
                         if (waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Count == 0)           //  TOP
                         {
-                            if (m_bBlink)
+                            if (m_bBlink_Fast)
                             {
                                 baseLabelPosition_Top.BackColor = Color.DodgerBlue;
                             }
@@ -1119,7 +1138,7 @@ namespace CWA150SA_Onsemi300
                         {
                             baseLabelPosition_Top.BackColor = Color.DodgerBlue;                     //  MID 위치 진행할 때는 TOP 위치는 파란색으로 표시 (확인 끝난 위치)
 
-                            if (m_bBlink)
+                            if (m_bBlink_Fast)
                             {
                                 baseLabelPosition_Mid.BackColor = Color.DodgerBlue;
                             }
@@ -1133,7 +1152,7 @@ namespace CWA150SA_Onsemi300
                             baseLabelPosition_Top.BackColor = Color.DodgerBlue;                     //  BOT 위치 진행할 때는 TOP 위치는 파란색으로 표시 (확인 끝난 위치)
                             baseLabelPosition_Mid.BackColor = Color.DodgerBlue;                     //  BOT 위치 진행할 때는 MID 위치는 파란색으로 표시 (확인 끝난 위치)
 
-                            if (m_bBlink)
+                            if (m_bBlink_Fast)
                             {
                                 baseLabelPosition_Bot.BackColor = Color.DodgerBlue;
                             }
@@ -1151,7 +1170,7 @@ namespace CWA150SA_Onsemi300
                 {
                     Equipment.Start();
 
-                    if (m_bBlink)
+                    if (m_bBlink_Fast)
                     {
                         baseLabel_Packing.BackColor = Color.Yellow;
                         baseLabel_Packing.ForeColor = Color.Black;
@@ -1245,77 +1264,7 @@ namespace CWA150SA_Onsemi300
                         {
                             CommonModule.Instance.TowerLamp.LedBar_Blue_Off();
                         }
-                    }
-
-                    ////  LED Bar Blink
-                    //m_nLedBar_Blink++;
-                    //if ((m_nLedBar_Blink > 0) && (m_nLedBar_Blink <= 20))
-                    //{
-                    //    m_nLedBar_Blink_Step = 0;
-                    //}
-                    //else if ((m_nLedBar_Blink > 20) && (m_nLedBar_Blink <= 40))
-                    //{
-                    //    m_nLedBar_Blink_Step = 1;
-                    //}
-                    //else if ((m_nLedBar_Blink > 40) && (m_nLedBar_Blink <= 60))
-                    //{
-                    //    m_nLedBar_Blink_Step = 2;
-                    //}
-                    //else
-                    //{
-                    //    m_nLedBar_Blink = 0;
-                    //}
-
-                    ////  LED Bar Step
-                    //switch(m_nLedBar_Blink_Step)
-                    //{
-                    //    case 0:                             //  Green + Red
-                    //        if (CommonModule.Instance.TowerLamp.Is_LedBar_Red_On() == 0)
-                    //        {
-                    //            CommonModule.Instance.TowerLamp.LedBar_Red_On();
-                    //        }
-                    //        if (CommonModule.Instance.TowerLamp.Is_LedBar_Green_On() == 0)
-                    //        {
-                    //            CommonModule.Instance.TowerLamp.LedBar_Green_On();
-                    //        }
-                    //        if (CommonModule.Instance.TowerLamp.Is_LedBar_Blue_On() != 0)
-                    //        {
-                    //            CommonModule.Instance.TowerLamp.LedBar_Blue_Off();
-                    //        }
-                    //        break;
-
-
-                    //    case 1:                             //  Green + Blue
-                    //        if (CommonModule.Instance.TowerLamp.Is_LedBar_Red_On() != 0)
-                    //        {
-                    //            CommonModule.Instance.TowerLamp.LedBar_Red_Off();
-                    //        }
-                    //        if (CommonModule.Instance.TowerLamp.Is_LedBar_Green_On() == 0)
-                    //        {
-                    //            CommonModule.Instance.TowerLamp.LedBar_Green_On();
-                    //        }
-                    //        if (CommonModule.Instance.TowerLamp.Is_LedBar_Blue_On() == 0)
-                    //        {
-                    //            CommonModule.Instance.TowerLamp.LedBar_Blue_On();
-                    //        }
-                    //        break;
-
-
-                    //    case 2:                             //  Blue + Red
-                    //        if (CommonModule.Instance.TowerLamp.Is_LedBar_Red_On() == 0)
-                    //        {
-                    //            CommonModule.Instance.TowerLamp.LedBar_Red_On();
-                    //        }
-                    //        if (CommonModule.Instance.TowerLamp.Is_LedBar_Green_On() != 0)
-                    //        {
-                    //            CommonModule.Instance.TowerLamp.LedBar_Green_Off();
-                    //        }
-                    //        if (CommonModule.Instance.TowerLamp.Is_LedBar_Blue_On() == 0)
-                    //        {
-                    //            CommonModule.Instance.TowerLamp.LedBar_Blue_On();
-                    //        }
-                    //        break;
-                    //}    
+                    }   
                 }
                 else
                 {
