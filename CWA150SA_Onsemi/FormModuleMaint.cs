@@ -120,6 +120,9 @@ namespace CWA150SA_Onsemi300
         }
         public void Button_Click(object sender, EventArgs e)
         {
+            //  2024. 03. 08.  SCH : OP 모드일 때, 마크 등록 창만 접근할 수 있도록 여기서 제한해야 함.
+            //                      OP 모드일 때, JigAligner Upper / Lower 두개의 버튼만 활성화 시켜야 함.
+
             BaseButton button = sender as BaseButton;
             if (button != null)
                 ShowSubForm((Part)button.Tag);

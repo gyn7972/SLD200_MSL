@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using QMC.Common;
+using MessageBoxYesNo = QMC.Core.MessageBoxYesNo;
 
 namespace CWA150SA_Onsemi300
 {
@@ -264,6 +265,10 @@ namespace CWA150SA_Onsemi300
         #region CreateButton_Click
         public void CreateButton_Click(object sender, EventArgs e)
         {
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "현재 설정으로 레시피를 생성하시겠습니까?"))
+                return;
+
             FormAddRecipeInfo FormAddRecipeName = new FormAddRecipeInfo();
             FormAddRecipeName.StartPosition = FormStartPosition.CenterScreen;
             if (FormAddRecipeName.ShowDialog() == DialogResult.OK)
@@ -282,6 +287,10 @@ namespace CWA150SA_Onsemi300
         {
             if (baseDataGridViewRecipeList.RowCount > 0)
             {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "선택하신 레시피를 삭제하시겠습니까?"))
+                    return;
+
                 m_nIndex = baseDataGridViewRecipeList.SelectedCells[0].RowIndex;
                 m_recipes.RemoveAt(m_nIndex);
                 baseDataGridViewRecipeList.Rows.RemoveAt(m_nIndex);
@@ -294,6 +303,10 @@ namespace CWA150SA_Onsemi300
         {
             if (baseDataGridViewRecipeList.RowCount > 0)
             {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "선택하신 레시피의 설정값을 클립보드로 복사하시겠습니까?\r\n\r\n[\"Paste\" 하여 레시피 생성]"))
+                    return;
+
                 m_copyRecipe = new RecipeInfo();
                 m_nIndex = baseDataGridViewRecipeList.SelectedCells[0].RowIndex;
 
@@ -307,6 +320,10 @@ namespace CWA150SA_Onsemi300
         {
             if (baseDataGridViewRecipeList.RowCount > 0 && m_copyRecipe != null)
             {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "클립보드에 복사된 설정값으로 레시피를 생성(복사) 하시겠습니까?\r\n\r\n[\"Copy\" 한 레시피 설정값]"))
+                    return;
+
                 RecipeInfo newRecipe = m_copyRecipe.DeepCopy();
                 char[] chars = "_".ToCharArray();
                 string str = m_recipes[m_nIndex].Name.Split(chars).Last();

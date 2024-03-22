@@ -68,8 +68,8 @@ namespace QMC.Common.Parts
         public double AlignMark_2nd_Offset_Y { set; get; }
 
         [Category("[01] 웨이퍼 얼라인"),
-            Description("얼라인 - 비전 허용 오차 (Theta Deg, mm)"),
-            DisplayName("얼라인 - 비전 허용 오차 (Theta Deg, mm)")]
+            Description("얼라인 - 비전 허용 오차 (Theta Deg, °)"),
+            DisplayName("얼라인 - 비전 허용 오차 (Theta Deg, °)")]
         public double Align_Vision_Allowable_Angle { set; get; }
 
         [Category("[01] 웨이퍼 얼라인"),
@@ -128,6 +128,11 @@ namespace QMC.Common.Parts
         public int Align_UpperVision_LightValue { set; get; }
 
         [Category("[01] 웨이퍼 얼라인"),
+            Description("웨이퍼에서 특정 위치에는 Chip 이 없다. 프로브 카드와 웨이퍼의 얼라인이 완료된 후, 해당 위치로 이동해서 육안으로 확인하는 기능을 사용할 것인지 여부."),
+            DisplayName("얼라인 정도 확인 - 얼라인 후 Empty Chip 확인 여부")]
+        public bool Align_EmptyChipOffset_Usage { set; get; }
+
+        [Category("[01] 웨이퍼 얼라인"),
             Description("웨이퍼에서 특정 위치에는 Chip 이 없다. 프로브 카드와 웨이퍼의 얼라인이 완료된 후, 해당 위치로 이동해서 육안으로 확인하기 위한 이동 Offset 값.\r\n[Center Chip 기준, Offset X]"),
             DisplayName("얼라인 정도 확인 - 얼라인 후 Empty Chip 확인 위치 (Center Chip 기준,   Offset X,   + : 오른쪽 위치)")]
         public double Align_EmptyChipOffset_X { set; get; }
@@ -161,6 +166,26 @@ namespace QMC.Common.Parts
             Description("웨이퍼 얼라인 후 프로브 카드와 패킹할 때, 웨이퍼를 이동시키는 옵셋 거리 Y (mm)\r\n\r\n[+Y : (뒤쪽으로 이동, 핀 컨택 위치가 아래쪽으로 이동함),   -Y : (앞쪽으로 이동, 핀 컨택 위치가 위쪽으로 이동함)"),
             DisplayName("웨이퍼 패킹 옵셋 Y (mm)")]
         public double Wafer_ProbreCard_PackingPos_Offset_Y { set; get; }
+
+
+
+        /// <summary>
+        /// PAK Tip Contact Position Overlay
+        /// </summary>
+        [Category("[04] 웨이퍼 - Tip Contact 위치 표시"),
+            Description("웨이퍼의 게이트에 Contact 되는 프로브 카드의 2개 Pin 간격\r\n\r\n[default 0 : 0.4 mm]"),
+            DisplayName("PAK 의 Pin 간격 (mm)")]
+        public double PAK_GatePin_Gap { set; get; }
+
+        [Category("[04] 웨이퍼 - Tip Contact 위치 표시"),
+            Description("웨이퍼의 게이트에 Contact 되는 프로브 카드의 Pin 직경. (이 크기를 이용해 Pin 위치의 사각형을 그린다.)\r\n\r\n[default 0 : 0.11mm]"),
+            DisplayName("PAK 의 Pin 크기 (직경, mm)")]
+        public double PAK_GatePin_Diameter { set; get; }
+
+        [Category("[04] 웨이퍼 - Tip Contact 위치 표시"),
+            Description("웨이퍼의 게이트에 Contact 되는 프로브 카드의 Pin 위치 표시용 사각형 크기\r\n\r\n[default 0 : 0.07 mm]"),
+            DisplayName("웨이퍼 Gate 에 그려지는 PAK Contact 위치 크기 (mm)")]
+        public double Wafer_GateContactPosition_OverlaySize { set; get; }
 
 
 
@@ -482,6 +507,16 @@ namespace QMC.Common.Parts
             Description("Type-A : 트레이에 프로브 카드를 넣고 서랍처럼 로딩(언로딩), 업다운 실린더로 고정\r\nType-B : 프로브 카드 정위치에 직접 투입, 좌우 && 업다운 실린더로 고정, 언패킹 실린더 있음\r\n[Type-A: #1 호기,  Type-B: #2 ~ #6 호기]"),
             DisplayName("프로브 카드 클램프 타입 [0: Type-A,  1: Type-B]")]
         public int ProbeCard_ClampType { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("Type-B 의 클램프 실린더에 업다운 확인 센서가 없으므로, 실린더를 동작시킨 후 정해진 대기시간만큼 지난 후 다음 동작을 진행하도록 한다.\r\n[default 0: 1000 ms]"),
+            DisplayName("프로브 카드 클램프 \"Type-B\" 의 경우, 업다운 실린더 동작 대기 시간 (ms)")]
+        public int ProbeCard_ClampTypeB_CylUpDown_StableTime { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("레시피를 변경할 때마다 상하부 카메라의 광축이 일치하는 지 확인 후 작업 진행하도록 한다.\r\n[상부 카메라 레티클 센터 확인 -> 하부 카메라 레티클 센터 확인]"),
+            DisplayName("레티클 글래스 - 레시피 변경 시, 레티클 글래스 센터를 확인해야 작업 진행 가능")]
+        public bool ReticleGlass_CenterCheck_forAlign { set; get; }
 
 
 

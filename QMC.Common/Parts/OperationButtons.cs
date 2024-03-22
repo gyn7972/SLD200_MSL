@@ -306,10 +306,10 @@ namespace QMC.Common.Parts
         }
         public virtual void OnReset()
         {
-            if(ButtonClick != null)
-            {
-                ButtonClick(ButtonType.Reset);
-            }
+            //if(ButtonClick != null)
+            //{
+            //    ButtonClick(ButtonType.Reset);
+            //}
         }
 
         public virtual void OnEmg()

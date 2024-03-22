@@ -327,6 +327,8 @@ namespace CWA150SA_Onsemi300
 
                     Equipment.MachineStop_byAlarm = false;
 
+                    Equipment.MachineStop_byUser = true;                    //  테스트 : Stop 버튼을 누를 때, 얼라인 마크 검출하던 Thread 도 종료시키기 위해 "true" 로 만들어 줌.
+
                     //  Stop
                     Equipment.Stop();
                 }
@@ -353,7 +355,28 @@ namespace CWA150SA_Onsemi300
                 m_formTop.EnableButton(m_formLogIn.bLogin);
                 this.flowLayoutPanelBottom.Enabled = true;
 
-                Equipment.Machine_LogIn = true;
+                if (m_formLogIn.bLogin_Admin)               //  관리자 (전체 버튼 활성화)
+                {
+                    control[0].Enabled = true;                  //  Operation 버튼
+                    control[1].Enabled = true;                  //  Configuration 버튼
+                    control[2].Enabled = true;                  //  Maint 버튼
+                    control[3].Enabled = true;                  //  Recipe 버튼
+                    control[4].Enabled = true;                  //  Setup 버튼
+                    control[5].Enabled = true;                  //  IO 버튼
+
+                    Equipment.Machine_LogIn = true;
+                }
+                else                                        //  작업자 (Maint 버튼만 활성화)
+                {
+                    control[0].Enabled = true;                  //  Operation 버튼
+                    control[1].Enabled = false;                 //  Configuration 버튼
+                    control[2].Enabled = true;                  //  Maint 버튼
+                    control[3].Enabled = false;                 //  Recipe 버튼
+                    control[4].Enabled = false;                 //  Setup 버튼
+                    control[5].Enabled = true;                  //  IO 버튼
+
+                    Equipment.Machine_LogIn = false;
+                }
             }
             else
             {
@@ -497,8 +520,8 @@ namespace CWA150SA_Onsemi300
                     }
                 }
 
-                CommonModule.Instance.OperationButtons.Start(true);
-                CommonModule.Instance.OperationButtons.Stop(false);
+                //CommonModule.Instance.OperationButtons.Start(true);
+                //CommonModule.Instance.OperationButtons.Stop(false);
             }
             else
             {
@@ -514,8 +537,8 @@ namespace CWA150SA_Onsemi300
                     }
                 }
 
-                CommonModule.Instance.OperationButtons.Start(false);
-                CommonModule.Instance.OperationButtons.Stop(true);
+                //CommonModule.Instance.OperationButtons.Start(false);
+                //CommonModule.Instance.OperationButtons.Stop(true);
             }
 
 

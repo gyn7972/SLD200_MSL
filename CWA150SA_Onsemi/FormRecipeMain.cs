@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using QMC.Common;
 using QMC.Common.Modules;
+using static QMC.Common.Modules.WaferProbeAlign;
 
 namespace CWA150SA_Onsemi300
 {
@@ -163,6 +164,8 @@ namespace CWA150SA_Onsemi300
             formRecipeList.StartPosition = FormStartPosition.CenterScreen;
             if (formRecipeList.ShowDialog() == DialogResult.OK)
             {
+                waferProbeAlign.m_nReticleCheck_Step_forALIGN = (int)ReticleCheck_Step.None;                //  프로그램 시작 시, 레시피 변경 시 레티클 확인 Step 초기화 
+
                 CurrentRecipe = formRecipeList.m_recipe;
                 OnChangedCurrentRecipe();
                 this.baseTextBoxRecipeName.Text = CurrentRecipe.Name;

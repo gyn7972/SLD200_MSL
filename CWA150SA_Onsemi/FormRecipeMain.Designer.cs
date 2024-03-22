@@ -125,7 +125,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(0, 0);
+            this.ClientSize = new System.Drawing.Size(1942, 993);
             this.Location = new System.Drawing.Point(0, 0);
             this.Name = "FormRecipeMain";
             this.Text = "FormRecipe";

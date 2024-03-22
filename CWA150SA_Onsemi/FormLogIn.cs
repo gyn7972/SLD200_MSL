@@ -21,7 +21,8 @@ namespace CWA150SA_Onsemi300
         private FormBaseConfiguration m_Configuration = new FormBaseConfiguration();
         public event OkClickEventHandler buttonClick;
         public bool bLoginReady { get; set; }
-        public bool bLogin { get; set; }
+        public bool bLogin { get; set; }                    //  로그인 상태인지? (false : 하부 메뉴 전체 비활성화)
+        public bool bLogin_Admin { get; set; }              //  관리자로 로그인 되었는지? (false : 작업자)
         private Dictionary<string, string> m_LoginInfo;
         private string m_ID;
         private string m_PW;
@@ -39,7 +40,8 @@ namespace CWA150SA_Onsemi300
             InitializeComponent();
             this.Load += LoadLogInBox;
             bLoginReady = false;
-            bLogin = true;
+            bLogin = false;
+            bLogin_Admin = false;
             m_LoginInfo = new Dictionary<string, string>();
             m_LoginInfo.Add("QMC", "123");
 
@@ -142,6 +144,7 @@ namespace CWA150SA_Onsemi300
 
                     DialogResult = DialogResult.OK;
                     bLogin = true;
+                    bLogin_Admin = true;
                     bLoginReady = true;
                     if (buttonClick != null)
                     {
@@ -166,11 +169,17 @@ namespace CWA150SA_Onsemi300
                                 Equipment.User_Mode = strUserData_Authority[i];
                                 Equipment.User_Name = strUserData_Name[i];
 
+                                bLogin = true;
+                                bLoginReady = true;
+
                                 //  작업자인지 관리자인지 확인
                                 if (strUserData_Authority[i] == "관리자")
                                 {
-                                    bLogin = true;
-                                    bLoginReady = true;
+                                    bLogin_Admin = true;
+                                }
+                                else
+                                {
+                                    bLogin_Admin = false;
                                 }
 
                                 DialogResult = DialogResult.OK;

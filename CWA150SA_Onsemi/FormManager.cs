@@ -221,8 +221,5 @@ namespace CWA150SA_Onsemi300
 
             return form;
         }
-
-
-
     }
 }

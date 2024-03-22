@@ -217,81 +217,81 @@ namespace CWA150SA_Onsemi300
             if (waferProbeAlign.waferProbeAlignParameter.DI_Main_CDACheck())
                 pictureBoxMainAirCheck.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOn;
             else
-                pictureBoxMainAirCheck.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+                pictureBoxMainAirCheck.Image = global::CWA150SA_Onsemi.Properties.Resources.StopOn;
 
             if (waferProbeAlign.waferProbeAlignParameter.DI_Main_VacuumCheck())
                 pictureBoxMainVacuumCheck.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOn;
             else
-                pictureBoxMainVacuumCheck.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+                pictureBoxMainVacuumCheck.Image = global::CWA150SA_Onsemi.Properties.Resources.StopOn;
 
             if (waferProbeAlign.waferProbeAlignParameter.DI_ThinChuck_VacuumCheck())
                 pictureBoxThinChuckVacuumCheck.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOn;
             else
-                pictureBoxThinChuckVacuumCheck.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+                pictureBoxThinChuckVacuumCheck.Image = global::CWA150SA_Onsemi.Properties.Resources.StopOn;
 
             if (waferProbeAlign.waferProbeAlignParameter.DI_Wafer_VacuumCheck())
                 pictureBoxWaferVacuumCheck.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOn;
             else
-                pictureBoxWaferVacuumCheck.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+                pictureBoxWaferVacuumCheck.Image = global::CWA150SA_Onsemi.Properties.Resources.StopOn;
 
             if (waferProbeAlign.waferProbeAlignParameter.DI_Probe_PackingCheck())
                 pictureBoxProbePackingCheck.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOn;
             else
-                pictureBoxProbePackingCheck.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+                pictureBoxProbePackingCheck.Image = global::CWA150SA_Onsemi.Properties.Resources.StopOn;
 
             if (waferProbeAlign.waferProbeAlignParameter.DI_ThinChuck_Detect())
                 pictureBoxThinChuckDetect.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOn;
             else
-                pictureBoxThinChuckDetect.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+                pictureBoxThinChuckDetect.Image = global::CWA150SA_Onsemi.Properties.Resources.StopOn;
 
             if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A)                                       //  1호기
             {
                 if (waferProbeAlign.waferProbeAlignParameter.DI_Probe_BW_Detect())
                     pictureBoxProbeBWDetect.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOn;
                 else
-                    pictureBoxProbeBWDetect.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+                    pictureBoxProbeBWDetect.Image = global::CWA150SA_Onsemi.Properties.Resources.StopOn;
 
                 if (waferProbeAlign.waferProbeAlignParameter.DI_TopCover_Up())
                     pictureBoxTopCoverUp.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOn;
                 else
-                    pictureBoxTopCoverUp.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+                    pictureBoxTopCoverUp.Image = global::CWA150SA_Onsemi.Properties.Resources.StopOn;
 
                 if (waferProbeAlign.waferProbeAlignParameter.DI_TopCover_Down())
                     pictureBoxTopCoverDown.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOn;
                 else
-                    pictureBoxTopCoverDown.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+                    pictureBoxTopCoverDown.Image = global::CWA150SA_Onsemi.Properties.Resources.StopOn;
             }
             else if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_B)                                  //  2 ~ 6호기
             {
                 if (waferProbeAlign.waferProbeAlignParameter.DI_Probe_LeftClampModule_FW())
                     pictureBoxProbeLeftClamp_FW.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOn;
                 else
-                    pictureBoxProbeLeftClamp_FW.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+                    pictureBoxProbeLeftClamp_FW.Image = global::CWA150SA_Onsemi.Properties.Resources.StopOn;
 
                 if (waferProbeAlign.waferProbeAlignParameter.DI_Probe_LeftClampModule_BW())
                     pictureBoxProbeLeftClamp_BW.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOn;
                 else
-                    pictureBoxProbeLeftClamp_BW.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+                    pictureBoxProbeLeftClamp_BW.Image = global::CWA150SA_Onsemi.Properties.Resources.StopOn;
 
                 if (waferProbeAlign.waferProbeAlignParameter.DI_Probe_RightClampModule_FW())
                     pictureBoxProbeRightClamp_FW.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOn;
                 else
-                    pictureBoxProbeRightClamp_FW.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+                    pictureBoxProbeRightClamp_FW.Image = global::CWA150SA_Onsemi.Properties.Resources.StopOn;
 
                 if (waferProbeAlign.waferProbeAlignParameter.DI_Probe_RightClampModule_BW())
                     pictureBoxProbeRightClamp_BW.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOn;
                 else
-                    pictureBoxProbeRightClamp_BW.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+                    pictureBoxProbeRightClamp_BW.Image = global::CWA150SA_Onsemi.Properties.Resources.StopOn;
 
                 if (waferProbeAlign.waferProbeAlignParameter.DI_Probe_UnpackingCyl_Down())
                     pictureBoxProbeUnpackingCyl_Down.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOn;
                 else
-                    pictureBoxProbeUnpackingCyl_Down.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+                    pictureBoxProbeUnpackingCyl_Down.Image = global::CWA150SA_Onsemi.Properties.Resources.StopOn;
 
                 if (waferProbeAlign.waferProbeAlignParameter.DI_Probe_UnpackingCyl_Up())
                     pictureBoxProbeUnpackingCyl_Up.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOn;
                 else
-                    pictureBoxProbeUnpackingCyl_Up.Image = global::CWA150SA_Onsemi.Properties.Resources.DioEllipseOff;
+                    pictureBoxProbeUnpackingCyl_Up.Image = global::CWA150SA_Onsemi.Properties.Resources.StopOn;
             }
 
 
@@ -896,6 +896,29 @@ namespace CWA150SA_Onsemi300
                 return;
             }
 
+            //  레티클 글래스 확인
+            if (waferProbeAlign.Config.ParamConfig.ReticleGlass_CenterCheck_forAlign)
+            {
+                if (waferProbeAlign.m_nReticleCheck_Step_forALIGN == (int)ReticleCheck_Step.None)
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "PAK 카메라 - 레티클 글래스 센터 확인 작업을 진행해야 합니다.\r\n\r\n##  PAK 카드를 제거하세요.!!  ##");
+                    return;
+                }
+                if (waferProbeAlign.m_nReticleCheck_Step_forALIGN == (int)ReticleCheck_Step.UpperCam_Complete)
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "웨이퍼 카메라 - 레티클 글래스 센터 확인 작업을 진행해야 합니다.");
+                    return;
+                }
+                if (waferProbeAlign.m_nReticleCheck_Step_forALIGN != (int)ReticleCheck_Step.LowerCam_Complete)
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "레티클 글래스 센터 확인 작업을 진행해야 합니다.");
+                    return;
+                }
+            }
+
             //  Probe Card 유무 확인
             if (!waferProbeAlign.waferProbeAlignParameter.DI_Probe_BW_Detect())
             {
@@ -1279,6 +1302,29 @@ namespace CWA150SA_Onsemi300
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
                 return;
+            }
+
+            //  레티클 글래스 확인
+            if (waferProbeAlign.Config.ParamConfig.ReticleGlass_CenterCheck_forAlign)
+            {
+                if (waferProbeAlign.m_nReticleCheck_Step_forALIGN == (int)ReticleCheck_Step.None)
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "PAK 카메라 - 레티클 글래스 센터 확인 작업을 진행해야 합니다.\r\n\r\n##  PAK 카드를 제거하세요.!!  ##");
+                    return;
+                }
+                if (waferProbeAlign.m_nReticleCheck_Step_forALIGN == (int)ReticleCheck_Step.UpperCam_Complete)
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "웨이퍼 카메라 - 레티클 글래스 센터 확인 작업을 진행해야 합니다.");
+                    return;
+                }
+                if (waferProbeAlign.m_nReticleCheck_Step_forALIGN != (int)ReticleCheck_Step.LowerCam_Complete)
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "레티클 글래스 센터 확인 작업을 진행해야 합니다.");
+                    return;
+                }
             }
 
             //  Inter-Lock

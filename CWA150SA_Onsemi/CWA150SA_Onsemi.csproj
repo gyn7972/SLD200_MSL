@@ -190,6 +190,12 @@
       <DependentUpon>BlobSearchResultControl.cs</DependentUpon>
     </Compile>
     <Compile Include="EquipmentVision.cs" />
+    <Compile Include="FormWaferTipContactPosition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormWaferTipContactPosition.Designer.cs">
+      <DependentUpon>FormWaferTipContactPosition.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormOperationManualMode.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1059,6 +1065,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="BlobSearchResultControl.resx">
       <DependentUpon>BlobSearchResultControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormWaferTipContactPosition.resx">
+      <DependentUpon>FormWaferTipContactPosition.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormOperationLaserLiftOff.resx">
       <DependentUpon>FormOperationLaserLiftOff.cs</DependentUpon>

@@ -339,6 +339,7 @@ namespace CWA150SA_Onsemi300
                 Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
             }
 
+            m_Module.Initialize();
 
             WaferProbeAlign waferProbeAlign = m_Module as WaferProbeAlign;
             waferProbeAlign.Machine_Parameter_Save();

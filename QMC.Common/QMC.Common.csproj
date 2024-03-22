@@ -135,7 +135,7 @@
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="MvCameraControl.Net, Version=3.4.0.1, Culture=neutral, PublicKeyToken=52fddfb3f94be800, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Vision\HIKVISION\Library\MvCameraControl.Net.dll</HintPath>
+      <HintPath>..\..\..\## 2. SLD-100  (MHT) ##\SLD-100_MHT\QMC.Common\Vision\HIKVISION\Library\MvCameraControl.Net.dll</HintPath>
     </Reference>
     <Reference Include="NationalInstruments.Visa, Version=19.0.0.49152, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
