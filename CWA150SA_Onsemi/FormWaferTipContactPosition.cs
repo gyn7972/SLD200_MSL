@@ -168,9 +168,9 @@ namespace CWA150SA_Onsemi300
             {
                 grp_TOP_PAK = Graphics.FromImage(m_TOP_PAK);
 
-                grp_TOP_PAK.DrawLine(new Pen(Color.LightGreen, 4), m_nImage_Width / 2, 1, m_nImage_Width / 2, m_nImage_Height - 1);             //  Cross Line (세로)
-                grp_TOP_PAK.DrawLine(new Pen(Color.LightGreen, 4), 1, m_nImage_Height / 2, m_nImage_Width / 2 - 1, m_nImage_Height / 2);        //  Cross Line (가로)
-                grp_TOP_PAK.DrawRectangle(new Pen(Color.Red, 8), rect_PAK_Pin);                         //  ROI
+                grp_TOP_PAK.DrawLine(new Pen(Color.Lime, 4), m_nImage_Width / 2, 1, m_nImage_Width / 2, m_nImage_Height - 1);               //  Cross Line (세로)
+                grp_TOP_PAK.DrawLine(new Pen(Color.Lime, 4), 1, m_nImage_Height / 2, m_nImage_Width - 1, m_nImage_Height / 2);              //  Cross Line (가로)
+                grp_TOP_PAK.DrawRectangle(new Pen(Color.Red, 12), rect_PAK_Pin);                                    //  ROI
             }
 
             //  MID 위치, PAK
@@ -178,9 +178,9 @@ namespace CWA150SA_Onsemi300
             {
                 grp_MID_PAK = Graphics.FromImage(m_MID_PAK);
 
-                grp_MID_PAK.DrawLine(new Pen(Color.LightGreen, 4), m_nImage_Width / 2, 1, m_nImage_Width / 2, m_nImage_Height - 1);             //  Cross Line (세로)
-                grp_MID_PAK.DrawLine(new Pen(Color.LightGreen, 4), 1, m_nImage_Height / 2, m_nImage_Width / 2 - 1, m_nImage_Height / 2);        //  Cross Line (가로)
-                grp_MID_PAK.DrawRectangle(new Pen(Color.Red, 8), rect_PAK_Pin);                         //  ROI
+                grp_MID_PAK.DrawLine(new Pen(Color.Lime, 4), m_nImage_Width / 2, 1, m_nImage_Width / 2, m_nImage_Height - 1);               //  Cross Line (세로)
+                grp_MID_PAK.DrawLine(new Pen(Color.Lime, 4), 1, m_nImage_Height / 2, m_nImage_Width - 1, m_nImage_Height / 2);              //  Cross Line (가로)
+                grp_MID_PAK.DrawRectangle(new Pen(Color.Red, 12), rect_PAK_Pin);                                    //  ROI
             }
 
             //  BOT 위치, PAK
@@ -188,9 +188,9 @@ namespace CWA150SA_Onsemi300
             {
                 grp_BOT_PAK = Graphics.FromImage(m_BOT_PAK);
 
-                grp_BOT_PAK.DrawLine(new Pen(Color.LightGreen, 4), m_nImage_Width / 2, 1, m_nImage_Width / 2, m_nImage_Height - 1);             //  Cross Line (세로)
-                grp_BOT_PAK.DrawLine(new Pen(Color.LightGreen, 4), 1, m_nImage_Height / 2, m_nImage_Width / 2 - 1, m_nImage_Height / 2);        //  Cross Line (가로)
-                grp_BOT_PAK.DrawRectangle(new Pen(Color.Red, 8), rect_PAK_Pin);                         //  ROI
+                grp_BOT_PAK.DrawLine(new Pen(Color.Lime, 4), m_nImage_Width / 2, 1, m_nImage_Width / 2, m_nImage_Height - 1);               //  Cross Line (세로)
+                grp_BOT_PAK.DrawLine(new Pen(Color.Lime, 4), 1, m_nImage_Height / 2, m_nImage_Width - 1, m_nImage_Height / 2);              //  Cross Line (가로)
+                grp_BOT_PAK.DrawRectangle(new Pen(Color.Red, 12), rect_PAK_Pin);                                    //  ROI
             }
 
 
@@ -199,10 +199,10 @@ namespace CWA150SA_Onsemi300
             {
                 grp_TOP_Wafer = Graphics.FromImage(m_TOP_Wafer);
 
-                grp_TOP_Wafer.DrawLine(new Pen(Color.LightGreen, 4), m_nImage_Width / 2, 1, m_nImage_Width / 2, m_nImage_Height - 1);           //  Cross Line (세로)
-                grp_TOP_Wafer.DrawLine(new Pen(Color.LightGreen, 4), 1, m_nImage_Height / 2, m_nImage_Width / 2 - 1, m_nImage_Height / 2);      //  Cross Line (가로)
-                grp_TOP_Wafer.DrawRectangle(new Pen(Color.Red, 8), rect_Wafer_Pin_Left);                         //  ROI
-                grp_TOP_Wafer.DrawRectangle(new Pen(Color.Red, 8), rect_Wafer_Pin_Right);                         //  ROI
+                grp_TOP_Wafer.DrawLine(new Pen(Color.Lime, 4), m_nImage_Width / 2, 1, m_nImage_Width / 2, m_nImage_Height - 1);             //  Cross Line (세로)
+                grp_TOP_Wafer.DrawLine(new Pen(Color.Lime, 4), 1, m_nImage_Height / 2, m_nImage_Width - 1, m_nImage_Height / 2);            //  Cross Line (가로)
+                grp_TOP_Wafer.DrawRectangle(new Pen(Color.Red, 12), rect_Wafer_Pin_Left);                           //  ROI
+                grp_TOP_Wafer.DrawRectangle(new Pen(Color.Red, 12), rect_Wafer_Pin_Right);                          //  ROI
             }
 
             //  MID 위치, Wafer
@@ -210,10 +210,10 @@ namespace CWA150SA_Onsemi300
             {
                 grp_MID_Wafer = Graphics.FromImage(m_MID_Wafer);
 
-                grp_MID_Wafer.DrawLine(new Pen(Color.LightGreen, 4), m_nImage_Width / 2, 1, m_nImage_Width / 2, m_nImage_Height - 1);           //  Cross Line (세로)
-                grp_MID_Wafer.DrawLine(new Pen(Color.LightGreen, 4), 1, m_nImage_Height / 2, m_nImage_Width / 2 - 1, m_nImage_Height / 2);      //  Cross Line (가로)
-                grp_MID_Wafer.DrawRectangle(new Pen(Color.Red, 8), rect_Wafer_Pin_Left);                         //  ROI
-                grp_MID_Wafer.DrawRectangle(new Pen(Color.Red, 8), rect_Wafer_Pin_Right);                         //  ROI
+                grp_MID_Wafer.DrawLine(new Pen(Color.Lime, 4), m_nImage_Width / 2, 1, m_nImage_Width / 2, m_nImage_Height - 1);             //  Cross Line (세로)
+                grp_MID_Wafer.DrawLine(new Pen(Color.Lime, 4), 1, m_nImage_Height / 2, m_nImage_Width - 1, m_nImage_Height / 2);            //  Cross Line (가로)
+                grp_MID_Wafer.DrawRectangle(new Pen(Color.Red, 12), rect_Wafer_Pin_Left);                           //  ROI
+                grp_MID_Wafer.DrawRectangle(new Pen(Color.Red, 12), rect_Wafer_Pin_Right);                          //  ROI
             }
 
             //  BOT 위치, Wafer
@@ -221,10 +221,10 @@ namespace CWA150SA_Onsemi300
             {
                 grp_BOT_Wafer = Graphics.FromImage(m_BOT_Wafer);
 
-                grp_BOT_Wafer.DrawLine(new Pen(Color.LightGreen, 4), m_nImage_Width / 2, 1, m_nImage_Width / 2, m_nImage_Height - 1);           //  Cross Line (세로)
-                grp_BOT_Wafer.DrawLine(new Pen(Color.LightGreen, 4), 1, m_nImage_Height / 2, m_nImage_Width / 2 - 1, m_nImage_Height / 2);      //  Cross Line (가로)
-                grp_BOT_Wafer.DrawRectangle(new Pen(Color.Red, 8), rect_Wafer_Pin_Left);                         //  ROI
-                grp_BOT_Wafer.DrawRectangle(new Pen(Color.Red, 8), rect_Wafer_Pin_Right);                         //  ROI
+                grp_BOT_Wafer.DrawLine(new Pen(Color.Lime, 4), m_nImage_Width / 2, 1, m_nImage_Width / 2, m_nImage_Height - 1);             //  Cross Line (세로)
+                grp_BOT_Wafer.DrawLine(new Pen(Color.Lime, 4), 1, m_nImage_Height / 2, m_nImage_Width - 1, m_nImage_Height / 2);            //  Cross Line (가로)
+                grp_BOT_Wafer.DrawRectangle(new Pen(Color.Red, 12), rect_Wafer_Pin_Left);                           //  ROI
+                grp_BOT_Wafer.DrawRectangle(new Pen(Color.Red, 12), rect_Wafer_Pin_Right);                          //  ROI
             }
         }
 

@@ -1605,6 +1605,8 @@ namespace QMC.Common.Modules
 
             WaferXYAlignData_ErrorCalc,                                     //  XY 얼라인 데이터 오차 계산
 
+            Camera_Reset,                                                   //  카메라 초기화. (두 카메라 중 하나 이상의 데이터가 안들어옴. 0으로 들어옴)
+
             __Wafer_XYAlign_Complete,                                       //  Wafer XY Align 완료
 
 
@@ -6383,6 +6385,21 @@ namespace QMC.Common.Modules
 
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
 
+                        timer_SubWork.Enabled = false;
+                        m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                        if (m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
+                        {
+                            timer_MainWork.Enabled = false;
+                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        }
+
+                        if (m_bAlignVisionThread_Use)
+                        {
+                            //  Thread 를 사용할 경우
+                            m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                        }
+
                         MessageBox.Show("Thin Chuck 이 감지되지 않음.", "Error");
                     }
                     else
@@ -6454,8 +6471,19 @@ namespace QMC.Common.Modules
                         Equipment.MachineStop_byAlarm = true;
 
                         timer_SubWork.Enabled = false;
-
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                        if (m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
+                        {
+                            timer_MainWork.Enabled = false;
+                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        }
+
+                        if (m_bAlignVisionThread_Use)
+                        {
+                            //  Thread 를 사용할 경우
+                            m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                        }
 
                         MessageBox.Show("Vision XYZ 축, Safety 위치로 이동 실패.", "Error");
                     }
@@ -6521,8 +6549,19 @@ namespace QMC.Common.Modules
                         Equipment.MachineStop_byAlarm = true;
 
                         timer_SubWork.Enabled = false;
-
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                        if (m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
+                        {
+                            timer_MainWork.Enabled = false;
+                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        }
+
+                        if (m_bAlignVisionThread_Use)
+                        {
+                            //  Thread 를 사용할 경우
+                            m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                        }
 
                         MessageBox.Show("Elev. Z 축, Wafer Align 위치로 이동 실패.", "Error");
                     }
@@ -6699,8 +6738,19 @@ namespace QMC.Common.Modules
                         Equipment.MachineStop_byAlarm = true;
 
                         timer_SubWork.Enabled = false;
-
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                        if (m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
+                        {
+                            timer_MainWork.Enabled = false;
+                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        }
+
+                        if (m_bAlignVisionThread_Use)
+                        {
+                            //  Thread 를 사용할 경우
+                            m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                        }
 
                         MessageBox.Show("Elev. Z 축이 Vision Y 축과 충돌하는 위치에 있어 작업 중지.", "Information");
                     }
@@ -6781,8 +6831,19 @@ namespace QMC.Common.Modules
                         Equipment.MachineStop_byAlarm = true;
 
                         timer_SubWork.Enabled = false;
-
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                        if (m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
+                        {
+                            timer_MainWork.Enabled = false;
+                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        }
+
+                        if (m_bAlignVisionThread_Use)
+                        {
+                            //  Thread 를 사용할 경우
+                            m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                        }
 
                         MessageBox.Show("Vision XYZ 축, Probe-Card XY Align 마크 위치로 이동 실패.", "Error");
                     }
@@ -7250,6 +7311,18 @@ namespace QMC.Common.Modules
                         m_nMyWaferAlign_ManualMode_VisionType = (int)VisionType.NONE;
 
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                        if (m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
+                        {
+                            timer_MainWork.Enabled = false;
+                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        }
+
+                        if (m_bAlignVisionThread_Use)
+                        {
+                            //  Thread 를 사용할 경우
+                            m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                        }
                     }
                     break;
 
@@ -7735,7 +7808,15 @@ namespace QMC.Common.Modules
 
                                 //  값이 이상하면 Probe Card 부터 다시 검사해야 한다. 
                                 //  Wafer 만 다시 검사하면 계속 값이 이상할 수 있다. (Probe Card 값 때문에 데이터가 이상하게 계산될 수 있기 때문에)
-                                m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ErrorCheck_Position_Remained_Check;
+                                if ((Math.Abs(deltaX) >= 100.0) ||            //  오차가 100mm 이상이면 두개의 카메라 중 하나 이상의 값이 0이므로 카메라를 초기화 한다.
+                                    (Math.Abs(deltaY) >= 100.0))
+                                {
+                                    m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.Camera_Reset;
+                                }
+                                else
+                                {
+                                    m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ErrorCheck_Position_Remained_Check;
+                                }
                             }
                         }
                         else
@@ -7749,6 +7830,57 @@ namespace QMC.Common.Modules
 
                             m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.__Wafer_XYAlign_Complete;
                         }
+                    }                    
+                    break;
+
+
+                case (int)WaferProbeAlignErrorCheck_Step.Camera_Reset:                                  //  카메라 초기화. (두 카메라 중 하나 이상의 데이터가 안들어옴. 0으로 들어옴)
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "카메라 초기화 시도");
+
+                    int m_nRet1 = 0;
+                    int m_nRet2 = 0;
+
+                    m_nRet1 = Camera_Upper.Initialize();
+                    m_nRet2 = Camera_Lower.Initialize();
+
+                    if ((m_nRet1 == -1) || (m_nRet2 == -1))                 //  카메라 초기화 실패
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "카메라 초기화 실패");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        Equipment.MachineStop_byUser = true;
+
+                        MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.U, 500);
+                        MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.V, 500);
+                        MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.W, 500);
+
+                        MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.X, 500);
+                        MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.Y, 500);
+                        MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, 500);
+
+                        timer_SubWork.Enabled = false;
+                        m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                        if (m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
+                        {
+                            timer_MainWork.Enabled = false;
+                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        }
+
+                        if (m_bAlignVisionThread_Use)
+                        {
+                            //  Thread 를 사용할 경우
+                            m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                        }
+
+                        MessageBox.Show("카메라 초기화에 실패하여 작업 중지.", "Error");
+                    }
+                    else
+                    {
+                        m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ErrorCheck_Position_Remained_Check;
                     }                    
                     break;
 
@@ -7793,7 +7925,6 @@ namespace QMC.Common.Modules
                 case (int)WaferProbeAlignErrorCheck_Step.__Wafer_EmptyPosImageSave_Start:                                       //  Wafer Chip Empty (먹다이) 위치 이미지 저장 시작
 
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 Empty Chip 위치 이미지 저장 파트 시작");
-
 
                     m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.VisionXYZ_Move_WaferChipEmptyPos;
                     break;
@@ -7861,8 +7992,19 @@ namespace QMC.Common.Modules
                         Equipment.MachineStop_byAlarm = true;
 
                         timer_SubWork.Enabled = false;
-
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                        if (m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
+                        {
+                            timer_MainWork.Enabled = false;
+                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        }
+
+                        if (m_bAlignVisionThread_Use)
+                        {
+                            //  Thread 를 사용할 경우
+                            m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                        }
 
                         MessageBox.Show("Vision XY 축, 웨이퍼 Empty Chip 위치로 이동 실패.", "Error");
                     }

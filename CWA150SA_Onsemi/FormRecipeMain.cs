@@ -147,6 +147,9 @@ namespace CWA150SA_Onsemi300
 
         private void baseButtonList_Click(object sender, EventArgs e)
         {
+            string m_strBeforeRecipe = null;
+            string m_strTemp = null;
+
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
 
@@ -158,12 +161,16 @@ namespace CWA150SA_Onsemi300
                 }
             }
 
+            m_strBeforeRecipe = CurrentRecipe.Name;                                                            //  현재 레시피
+
             RecipeInfoCollection recipes = DataManager.Instance.Recipe;
             FormRecipeList formRecipeList = new FormRecipeList(recipes);
             formRecipeList.BringToFront();
             formRecipeList.StartPosition = FormStartPosition.CenterScreen;
             if (formRecipeList.ShowDialog() == DialogResult.OK)
             {
+                Log.Write("CWA150SA", Equipment.User_Name, "Recipe Form, Button Click", "레시피 선택 완료");
+
                 waferProbeAlign.m_nReticleCheck_Step_forALIGN = (int)ReticleCheck_Step.None;                //  프로그램 시작 시, 레시피 변경 시 레티클 확인 Step 초기화 
 
                 CurrentRecipe = formRecipeList.m_recipe;
@@ -199,10 +206,16 @@ namespace CWA150SA_Onsemi300
 
 
                 waferProbeAlign.Machine_Parameter_Load();
+
+
+                m_strTemp = string.Format("레시피 변경.  [이전 : \"{0}\", 현재 : \"{1}\"]",
+                                            m_strBeforeRecipe, CurrentRecipe.Name);
+
+                Log.Write("CWA150SA", Equipment.User_Name, "Recipe Form, Button Click", m_strTemp);
             }
             else
             {
-
+                Log.Write("CWA150SA", Equipment.User_Name, "Recipe Form, Button Click", "레시피 선택 취소");
             }
 
         }

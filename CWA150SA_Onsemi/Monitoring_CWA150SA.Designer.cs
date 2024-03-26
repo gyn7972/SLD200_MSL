@@ -530,9 +530,9 @@ namespace CWA150SA_Onsemi300
             this.baseButton_EmptyChip_XYPos_GO.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButton_EmptyChip_XYPos_GO.Font = new System.Drawing.Font("나눔바른고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButton_EmptyChip_XYPos_GO.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButton_EmptyChip_XYPos_GO.Location = new System.Drawing.Point(144, 133);
+            this.baseButton_EmptyChip_XYPos_GO.Location = new System.Drawing.Point(144, 137);
             this.baseButton_EmptyChip_XYPos_GO.Name = "baseButton_EmptyChip_XYPos_GO";
-            this.baseButton_EmptyChip_XYPos_GO.Size = new System.Drawing.Size(49, 79);
+            this.baseButton_EmptyChip_XYPos_GO.Size = new System.Drawing.Size(49, 71);
             this.baseButton_EmptyChip_XYPos_GO.TabIndex = 211;
             this.baseButton_EmptyChip_XYPos_GO.Text = "None\r\nChip\r\n위치\r\n□";
             this.baseButton_EmptyChip_XYPos_GO.UseVisualStyleBackColor = false;
@@ -897,9 +897,9 @@ namespace CWA150SA_Onsemi300
             this.baseButton_Y_Pos_GO3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButton_Y_Pos_GO3.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButton_Y_Pos_GO3.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButton_Y_Pos_GO3.Location = new System.Drawing.Point(77, 220);
+            this.baseButton_Y_Pos_GO3.Location = new System.Drawing.Point(77, 214);
             this.baseButton_Y_Pos_GO3.Name = "baseButton_Y_Pos_GO3";
-            this.baseButton_Y_Pos_GO3.Size = new System.Drawing.Size(116, 49);
+            this.baseButton_Y_Pos_GO3.Size = new System.Drawing.Size(116, 55);
             this.baseButton_Y_Pos_GO3.TabIndex = 122;
             this.baseButton_Y_Pos_GO3.Text = "BOT 위치  ▼";
             this.baseButton_Y_Pos_GO3.UseVisualStyleBackColor = false;
@@ -911,9 +911,9 @@ namespace CWA150SA_Onsemi300
             this.baseButton_Y_Pos_GO2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButton_Y_Pos_GO2.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButton_Y_Pos_GO2.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButton_Y_Pos_GO2.Location = new System.Drawing.Point(77, 133);
+            this.baseButton_Y_Pos_GO2.Location = new System.Drawing.Point(77, 136);
             this.baseButton_Y_Pos_GO2.Name = "baseButton_Y_Pos_GO2";
-            this.baseButton_Y_Pos_GO2.Size = new System.Drawing.Size(64, 79);
+            this.baseButton_Y_Pos_GO2.Size = new System.Drawing.Size(64, 73);
             this.baseButton_Y_Pos_GO2.TabIndex = 117;
             this.baseButton_Y_Pos_GO2.Text = "MID\r\n위치\r\n▣";
             this.baseButton_Y_Pos_GO2.UseVisualStyleBackColor = false;
@@ -927,7 +927,7 @@ namespace CWA150SA_Onsemi300
             this.baseButton_Y_Pos_GO1.ForeColor = System.Drawing.Color.DarkRed;
             this.baseButton_Y_Pos_GO1.Location = new System.Drawing.Point(77, 76);
             this.baseButton_Y_Pos_GO1.Name = "baseButton_Y_Pos_GO1";
-            this.baseButton_Y_Pos_GO1.Size = new System.Drawing.Size(116, 49);
+            this.baseButton_Y_Pos_GO1.Size = new System.Drawing.Size(116, 55);
             this.baseButton_Y_Pos_GO1.TabIndex = 112;
             this.baseButton_Y_Pos_GO1.Text = "TOP 위치  ▲";
             this.baseButton_Y_Pos_GO1.UseVisualStyleBackColor = false;

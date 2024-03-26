@@ -2861,6 +2861,9 @@ namespace CWA150SA_Onsemi300
 
         private void baseButtonChangeRecipe_Click(object sender, EventArgs e)
         {
+            string m_strBeforeRecipe = null;
+            string m_strTemp = null;
+
             if (Equipment.User_Mode == null)
             {
                 var mb1 = new MessageBoxOk();
@@ -2869,6 +2872,8 @@ namespace CWA150SA_Onsemi300
             }
 
             Log.Write("CWA150SA", Equipment.User_Name, "Button Click", "레시피 변경 시작");
+
+            m_strBeforeRecipe = CurrentRecipe.Name;                                                            //  현재 레시피
 
             RecipeInfoCollection recipes = DataManager.Instance.Recipe;
             FormRecipeList formRecipeList = new FormRecipeList(recipes);
@@ -2909,10 +2914,16 @@ namespace CWA150SA_Onsemi300
 
 
                 waferProbeAlign.Machine_Parameter_Load();
+
+
+                m_strTemp = string.Format("레시피 변경.  [이전 : \"{0}\", 현재 : \"{1}\"]",
+                                            m_strBeforeRecipe, CurrentRecipe.Name);
+
+                Log.Write("CWA150SA", Equipment.User_Name, "Button Click", m_strTemp);
             }
             else
             {
-
+                Log.Write("CWA150SA", Equipment.User_Name, "Button Click", "레시피 선택 취소");
             }
         }
 
@@ -8356,9 +8367,19 @@ namespace CWA150SA_Onsemi300
                         double deltaX = waferProbeAlign.Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_X;
                         double deltaY = waferProbeAlign.Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_Y;
 
-                        waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.U] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U) + deltaX;
-                        waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.V] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V) + deltaY;
-                        waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.W] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W) + deltaY;
+                        //  Align 이 된 상태이면, Align 데이터에 Packing Offset 을 적용한다.
+                        if ((waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_U != -1) && (waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_V != -1) && (waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_W != -1))
+                        {
+                            waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.U] = waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_U + deltaX;
+                            waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.V] = waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_V + deltaY;
+                            waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.W] = waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_W + deltaY;
+                        }
+                        else        //  Align 이 되지 않았으므로, 현재 위치에 Packing Offset 을 적용한다.
+                        {
+                            waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.U] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U) + deltaX;
+                            waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.V] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V) + deltaY;
+                            waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.W] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W) + deltaY;
+                        }
 
                         waferProbeAlign.ManualPacking_OffsetPosition_UVW[(int)WaferProbeAlign.nAxis.U] = waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.U];
                         waferProbeAlign.ManualPacking_OffsetPosition_UVW[(int)WaferProbeAlign.nAxis.V] = waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.V];
