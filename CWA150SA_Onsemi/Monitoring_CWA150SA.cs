@@ -2916,7 +2916,7 @@ namespace CWA150SA_Onsemi300
                 waferProbeAlign.Machine_Parameter_Load();
 
 
-                m_strTemp = string.Format("레시피 변경.  [이전 : \"{0}\", 현재 : \"{1}\"]",
+                m_strTemp = string.Format("레시피 변경.    [변경 전 : \"{0}\",   변경 후 : \"{1}\"]",
                                             m_strBeforeRecipe, CurrentRecipe.Name);
 
                 Log.Write("CWA150SA", Equipment.User_Name, "Button Click", m_strTemp);
@@ -8339,7 +8339,7 @@ namespace CWA150SA_Onsemi300
             if (Equipment.AjinBoard_Opened)
             {
                 var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Elevator Z축을 Wafer && ProbeCard 패킹 위치 아래 30mm 로 보내시겠습니까?"))
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Elevator Z축을 Wafer && ProbeCard 패킹 위치 하단부로 보내시겠습니까?"))
                     return;
 
                 lfVelocity = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.EZ.ToString()].Configuration.Velocity;
@@ -8364,8 +8364,10 @@ namespace CWA150SA_Onsemi300
                         waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam = waferProbeAlign.waferProbeAlignParameter.GetPositionInformation("AlignPosition_Ver_Top");
 
                         //  UVW Stage XY 방향 옵셋 이동
-                        double deltaX = waferProbeAlign.Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_X;
-                        double deltaY = waferProbeAlign.Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_Y;
+                        //double deltaX = waferProbeAlign.Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_X;
+                        //double deltaY = waferProbeAlign.Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_Y;
+                        double deltaX = waferProbeAlign.Config.ParamConfig.PAK_WaferGate_Centering_Offset_X + waferProbeAlign.Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_X;
+                        double deltaY = waferProbeAlign.Config.ParamConfig.PAK_WaferGate_Centering_Offset_Y + waferProbeAlign.Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_Y;
 
                         //  Align 이 된 상태이면, Align 데이터에 Packing Offset 을 적용한다.
                         if ((waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_U != -1) && (waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_V != -1) && (waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_W != -1))

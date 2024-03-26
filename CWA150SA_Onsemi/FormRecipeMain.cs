@@ -208,7 +208,7 @@ namespace CWA150SA_Onsemi300
                 waferProbeAlign.Machine_Parameter_Load();
 
 
-                m_strTemp = string.Format("레시피 변경.  [이전 : \"{0}\", 현재 : \"{1}\"]",
+                m_strTemp = string.Format("레시피 변경.    [변경 전 : \"{0}\",   변경 후 : \"{1}\"]",
                                             m_strBeforeRecipe, CurrentRecipe.Name);
 
                 Log.Write("CWA150SA", Equipment.User_Name, "Recipe Form, Button Click", m_strTemp);

@@ -12008,8 +12008,10 @@ namespace QMC.Common.Modules
                     waferProbeAlignParameter.stWaferProbeAlignPosParam = waferProbeAlignParameter.GetPositionInformation("AlignPosition_Ver_Top");
 
                     //  UVW Stage XY 방향 옵셋 이동
-                    deltaX = Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_X;
-                    deltaY = Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_Y;
+                    //deltaX = Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_X;
+                    //deltaY = Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_Y;
+                    deltaX = Config.ParamConfig.PAK_WaferGate_Centering_Offset_X + Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_X;
+                    deltaY = Config.ParamConfig.PAK_WaferGate_Centering_Offset_Y + Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_Y;
 
                     waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.U] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U) + deltaX;
                     waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.V] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V) + deltaY;
@@ -14363,6 +14365,21 @@ namespace QMC.Common.Modules
                 NativeMethods.GetPrivateProfileString("Machine_Type", "ProbeCard_Clamp_Type", "0", temp, 255, strFIle);
                 Config.ParamConfig.ProbeCard_ClampType = Convert.ToInt16(temp.ToString());
 
+                //  프로브 카드 클램프 타입 1 일 경우, 업다운 실린더 동작 대기 시간
+                NativeMethods.GetPrivateProfileString("Machine_Type", "ProbeCard_ClampTypeB_CylUpDown_StableTime", "1000", temp, 255, strFIle);
+                Config.ParamConfig.ProbeCard_ClampTypeB_CylUpDown_StableTime = Convert.ToInt16(temp.ToString());
+
+                //  레티클 글래스 - 레시피 변경 시, 레티클 글래스 센터를 확인해야 작업 진행 가능
+                NativeMethods.GetPrivateProfileString("Reticle_Glass", "ReticleGlass_CenterCheck_forAlign", "False", temp, 255, strFIle);
+                Config.ParamConfig.ReticleGlass_CenterCheck_forAlign = temp.ToString() == "False" ? false : true;
+
+                //  PAK, 웨이퍼 Gate - Center 가 일치할 때의 Offset X"
+                NativeMethods.GetPrivateProfileString("PAK_Gate_Center", "PAK_WaferGate_Centering_Offset_X", "0", temp, 255, strFIle);
+                Config.ParamConfig.PAK_WaferGate_Centering_Offset_X = Convert.ToDouble(temp.ToString());
+
+                //  PAK, 웨이퍼 Gate - Center 가 일치할 때의 Offset Y"
+                NativeMethods.GetPrivateProfileString("PAK_Gate_Center", "PAK_WaferGate_Centering_Offset_Y", "0", temp, 255, strFIle);
+                Config.ParamConfig.PAK_WaferGate_Centering_Offset_Y = Convert.ToDouble(temp.ToString());
 
 
                 /// Position 로드
@@ -14643,6 +14660,20 @@ namespace QMC.Common.Modules
 
             //  프로브 카드 클램프 타입 (0:1호기, 1:2~6호기)
             NativeMethods.WritePrivateProfileString("Machine_Type", "ProbeCard_Clamp_Type", Config.ParamConfig.ProbeCard_ClampType.ToString(), strFIle);
+
+            //  프로브 카드 클램프 타입 1 일 경우, 업다운 실린더 동작 대기 시간
+            NativeMethods.WritePrivateProfileString("Machine_Type", "ProbeCard_ClampTypeB_CylUpDown_StableTime", Config.ParamConfig.ProbeCard_ClampTypeB_CylUpDown_StableTime.ToString(), strFIle);
+
+            //  레티클 글래스 - 레시피 변경 시, 레티클 글래스 센터를 확인해야 작업 진행 가능
+            NativeMethods.WritePrivateProfileString("Reticle_Glass", "ReticleGlass_CenterCheck_forAlign", Config.ParamConfig.ReticleGlass_CenterCheck_forAlign.ToString(), strFIle);
+
+            //  PAK, 웨이퍼 Gate - Center 가 일치할 때의 Offset X"
+            NativeMethods.WritePrivateProfileString("PAK_Gate_Center", "PAK_WaferGate_Centering_Offset_X", Config.ParamConfig.PAK_WaferGate_Centering_Offset_X.ToString(), strFIle);
+
+            //  PAK, 웨이퍼 Gate - Center 가 일치할 때의 Offset Y"
+            NativeMethods.WritePrivateProfileString("PAK_Gate_Center", "PAK_WaferGate_Centering_Offset_Y", Config.ParamConfig.PAK_WaferGate_Centering_Offset_Y.ToString(), strFIle);
+
+
 
 
             /// Position 저장

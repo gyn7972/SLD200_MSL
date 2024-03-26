@@ -158,12 +158,12 @@ namespace QMC.Common.Parts
         public bool Wafer_ProbreCard_PackingPos_Offset_Usage { set; get; }
 
         [Category("[03] 웨이퍼 - 프로브 카드 패킹 옵셋"),
-            Description("웨이퍼 얼라인 후 프로브 카드와 패킹할 때, 웨이퍼를 이동시키는 옵셋 거리 X (mm)\r\n\r\n[+X : (오른쪽으로 이동, 핀 컨택 위치가 왼쪽으로 이동함),   -X : (왼쪽으로 이동, 핀 컨택 위치가 오른쪽으로 이동함)"),
+            Description("웨이퍼 얼라인 후 프로브 카드와 패킹할 때, 웨이퍼를 이동시키는 옵셋 거리 X (mm)\r\n\r\n[+X : (스테이지가 오른쪽으로 이동, 핀 컨택 위치가 왼쪽으로 이동함),   -X : (스테이지가 왼쪽으로 이동, 핀 컨택 위치가 오른쪽으로 이동함)]"),
             DisplayName("웨이퍼 패킹 옵셋 X (mm)")]
         public double Wafer_ProbreCard_PackingPos_Offset_X { set; get; }
 
         [Category("[03] 웨이퍼 - 프로브 카드 패킹 옵셋"),
-            Description("웨이퍼 얼라인 후 프로브 카드와 패킹할 때, 웨이퍼를 이동시키는 옵셋 거리 Y (mm)\r\n\r\n[+Y : (뒤쪽으로 이동, 핀 컨택 위치가 아래쪽으로 이동함),   -Y : (앞쪽으로 이동, 핀 컨택 위치가 위쪽으로 이동함)"),
+            Description("웨이퍼 얼라인 후 프로브 카드와 패킹할 때, 웨이퍼를 이동시키는 옵셋 거리 Y (mm)\r\n\r\n[+Y : (스테이지가 뒤쪽으로 이동, 핀 컨택 위치가 아래쪽으로 이동함),   -Y : (스테이지가 앞쪽으로 이동, 핀 컨택 위치가 위쪽으로 이동함)]"),
             DisplayName("웨이퍼 패킹 옵셋 Y (mm)")]
         public double Wafer_ProbreCard_PackingPos_Offset_Y { set; get; }
 
@@ -518,6 +518,15 @@ namespace QMC.Common.Parts
             DisplayName("레티클 글래스 - 레시피 변경 시, 레티클 글래스 센터를 확인해야 작업 진행 가능")]
         public bool ReticleGlass_CenterCheck_forAlign { set; get; }
 
+        [Category("[99] 장비 공통 파라미터"),
+            Description("PAK 과 웨이퍼 Gate 의 Center 를 일치시키기 위한 Offset X 값,     [# 조건 : [03] 웨이퍼 패킹 옵셋이 0 일 경우 #]\r\n\r\n[+X : (스테이지가 오른쪽으로 이동, 핀 컨택 위치가 왼쪽으로 이동함),   -X : (스테이지가 왼쪽으로 이동, 핀 컨택 위치가 오른쪽으로 이동함)]"),
+            DisplayName("PAK, 웨이퍼 Gate - Center 가 일치할 때의 Offset X")]
+        public double PAK_WaferGate_Centering_Offset_X { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("PAK 과 웨이퍼 Gate 의 Center 를 일치시키기 위한 Offset Y 값,     [# 조건 : [03] 웨이퍼 패킹 옵셋이 0 일 경우 #]\r\n\r\n[+Y : (스테이지가 뒤쪽으로 이동, 핀 컨택 위치가 아래쪽으로 이동함),   -Y : (스테이지가 앞쪽으로 이동, 핀 컨택 위치가 위쪽으로 이동함)]"),
+            DisplayName("PAK, 웨이퍼 Gate - Center 가 일치할 때의 Offset Y")]
+        public double PAK_WaferGate_Centering_Offset_Y { set; get; }
 
 
         /// <summary>
