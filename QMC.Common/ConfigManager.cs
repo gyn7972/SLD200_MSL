@@ -66,6 +66,19 @@ namespace QMC.Common
             return builder.ToString();
         }
 
+        public static string GetPatternImagePath()
+        {
+            StringBuilder builder = new StringBuilder();
+
+            builder.AppendFormat("C:\\Program Files\\QMC");
+            //builder.Append("D:\\Test");
+            builder.AppendFormat("\\{0}", g_strEquipmentName);
+            builder.AppendFormat("\\{0}", g_strRecipePath);
+            builder.AppendFormat("\\{0}", "PatternImage");
+
+            return builder.ToString();
+        }
+
         public static string GetMotionFilePath()
         {
             StringBuilder builder = new StringBuilder();

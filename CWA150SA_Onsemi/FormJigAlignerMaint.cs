@@ -282,6 +282,9 @@ namespace CWA150SA_Onsemi
         private void FormVisionCalibratorMaint_VisibleChanged(object sender, EventArgs e)
         {
             this.m_SearchResultControl.SetPatternMatchingData(m_Owner.Recipe.PatternMatchingParameter);
+
+            //  Train Image 바꿔주기
+            this.m_TrainImageControl.SetTrainImage(m_Owner.Recipe.PatternMatchingParameter.TrainImage);
         }
 
         private void M_Owner_UpdateResult(PatternMatchingResult result)
@@ -440,12 +443,14 @@ namespace CWA150SA_Onsemi
 
         private void TrainButtonClick(TrainImageControl.ButtonType type)
         {
+            string m_strFile = "";
             string m_strRecipe = "";
             RecipeInfo m_recipeInfo = new RecipeInfo();
             m_recipeInfo = Equipment.GetCurrentRecipe();
 
             m_Owner.Train();
             m_TrainImageControl.SetTrainImage(m_Owner.TrainImage);
+
 
             //  train 할 때 레시피를 저장해줘야 정상적으로 패턴 이미지가 변경된다.
             if (m_recipeInfo != null)
@@ -454,16 +459,23 @@ namespace CWA150SA_Onsemi
             }
             Equipment.SetCurrentRecipe(m_recipeInfo);
             Equipment.SaveRecipe();
-            //FormManager.FireUpdateRecipeEvent();
+            FormManager.FireUpdateRecipeEvent();
 
             Equipment.ApplyRecipeData();
 
+
             if (m_Owner.Name == "JigAligner Upper" )
             {
+                m_strFile = string.Format("{0}\\{1}_PAK.jpg", ConfigManager.GetPatternImagePath(), m_recipeInfo.Name);
+                m_Owner.TrainImage.Save(m_strFile, QMC.Common.Vision.VisionImage.FileFilter.jpg);
+
                 waferProbeAlign.m_bUpperCam_AlignPattern_Reset = true;
             }
             else if (m_Owner.Name == "JigAligner Lower")
             {
+                m_strFile = string.Format("{0}\\{1}_Wafer.jpg", ConfigManager.GetPatternImagePath(), m_recipeInfo.Name);
+                m_Owner.TrainImage.Save(m_strFile, QMC.Common.Vision.VisionImage.FileFilter.jpg);
+
                 waferProbeAlign.m_bLowerCam_AlignPattern_Reset = true;
             }
         }

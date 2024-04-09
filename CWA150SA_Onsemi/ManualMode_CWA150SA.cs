@@ -1063,6 +1063,9 @@ namespace CWA150SA_Onsemi300
                 }
             }
 
+            //  TIp Contact 위치 표시용 이미지 삭제
+            waferProbeAlign.TipContactImage_Delete();
+
             if (waferProbeAlign.m_nWaferProbeAlign_MainStep == (int)WaferProbeAlign.WaferProbeAlign_Step.None)
             {
                 var mb = new MessageBoxYesNo();

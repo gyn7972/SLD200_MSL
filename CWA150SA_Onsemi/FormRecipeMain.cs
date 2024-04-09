@@ -212,6 +212,44 @@ namespace CWA150SA_Onsemi300
                                             m_strBeforeRecipe, CurrentRecipe.Name);
 
                 Log.Write("CWA150SA", Equipment.User_Name, "Recipe Form, Button Click", m_strTemp);
+
+
+                waferProbeAlign.m_bWafer_ThetaAlign_OK = false;
+                waferProbeAlign.m_bWafer_XYAlign_OK = false;
+                waferProbeAlign.m_bProbeCard_TiltCheck_OK = false;
+                waferProbeAlign.m_bProbeCard_XYAlign_OK = false;
+
+                waferProbeAlign.m_bProbeCard_XYAlign_ErrorCheck_OK = false;         //  Probe Card XY Align Error Check OK
+                waferProbeAlign.m_bWafer_XYAlign_ErrorCheck_OK = false;             //  Wafer XY Align Error Check OK
+                waferProbeAlign.m_bWaferProbeAlign_ErrorCheck_Complete = false;
+                waferProbeAlign.m_bWaferProbeAlign_ErrorCheck_All_OK = false;
+
+                waferProbeAlign.m_dWafer_ProbeCard_PackingPos_Axis_U = -1;                  //  패킹할 때의 UVW Stage 좌표 (언패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_PackingPos_Axis_V = -1;                  //  패킹할 때의 UVW Stage 좌표 (언패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_PackingPos_Axis_W = -1;                  //  패킹할 때의 UVW Stage 좌표 (언패킹 시 사용한다.)
+
+                waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_U = -1;                    //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_V = -1;                    //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_W = -1;                    //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+
+                waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Count_Total = 3;              //  오차 확인 위치 총 개수
+                waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Count = 0;                    //  오차 확인 위치 카운트 (3개,   0: TOP, 1: MID, 2: BOT)
+
+                for (int nPos = 0; nPos < 3; nPos++)
+                {
+                    waferProbeAlign.AlignmentErrorCheck_Position[nPos].X = 0.0;
+                    waferProbeAlign.AlignmentErrorCheck_Position[nPos].Y = 0.0;
+
+                    waferProbeAlign.ManualPacking_OffsetPosition_UVW[nPos] = 0.0;
+
+                    for (int nSide = 0; nSide < 2; nSide++)
+                    {
+                        waferProbeAlign.AlignmentErrorCheck_Status[nPos, nSide] = false;
+
+                        waferProbeAlign.AlignmentErrorCheck_MarkPosition[nPos, nSide].X = 0.0;
+                        waferProbeAlign.AlignmentErrorCheck_MarkPosition[nPos, nSide].Y = 0.0;
+                    }
+                }
             }
             else
             {

@@ -6234,7 +6234,8 @@ namespace QMC.Common.Modules
                                             {
                                                 Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "Wafer Align 오차 검증 완료 (NG), 위치별 마크 좌표값이 0 인 위치가 있음 (NG).");
 
-                                                MessageBox.Show("Wafer Theta Align 완료. [ Theta Align 성공 ]\r\nWafer XY Align 완료. [ XY Align 성공 ]\r\n\r\n[ 얼라인 검증 실패 ]\r\n\r\n[ 위치별 마크 좌표값이 0 인 위치가 있음. ]\r\n\r\n\r\n==========================\r\n [ 카메라 초기화 후 얼라인 재시도 필요. ]\r\n==========================", "Information!");
+                                                //MessageBox.Show("Wafer Theta Align 완료. [ Theta Align 성공 ]\r\nWafer XY Align 완료. [ XY Align 성공 ]\r\n\r\n[ 얼라인 검증 실패 ]\r\n\r\n[ 위치별 마크 좌표값이 0 인 위치가 있음. ]\r\n\r\n\r\n==========================\r\n [ 카메라 초기화 후 얼라인 재시도 필요. ]\r\n==========================", "Information!");
+                                                MessageBox.Show("Wafer Theta Align 완료. [ Theta Align 성공 ]\r\nWafer XY Align 완료. [ XY Align 성공 ]\r\n\r\n[ 얼라인 마크 좌표값 이상 ]\r\n\r\n\r\n==========================\r\n [ Tip Contact 위치 확인 후 패킹 진행 ]\r\n==========================", "Information!");
                                             }
                                             else
                                             {
@@ -6604,7 +6605,7 @@ namespace QMC.Common.Modules
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "에러 검사 위치가 남아 있지 않음");
 
                         //  Wafer Empty Chip 위치 이미지를 저장하는지?
-                        if (Config.ParamConfig.Align_EmptyChipOffset_Usage && (Config.ParamConfig.Align_EmptyChipOffset_X != 0) && (Config.ParamConfig.Align_EmptyChipOffset_Y != 0))
+                        if (Config.ParamConfig.Align_EmptyChipOffset_Usage && ((Config.ParamConfig.Align_EmptyChipOffset_X != 0) || (Config.ParamConfig.Align_EmptyChipOffset_Y != 0)))
                         {
                             Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "Wafer Empty Chip 위치 확인 모드 사용");
 
@@ -8238,6 +8239,92 @@ namespace QMC.Common.Modules
             if (Camera_Lower != null)
             {
                 Camera_Lower.LatestImage.Save(m_strImageFile_Lower, Vision.VisionImage.FileFilter.jpg);
+            }
+
+            return m_bRet;
+        }
+
+        public bool TipContactImage_Delete()
+        {
+            bool m_bRet = true;
+            string m_strTemp = null;
+            string m_strDirectory = null;
+            string m_strRoot = null;
+            string m_strDate = null;
+            string m_strRecipe = null;
+            string m_strImageFile_Upper = null;
+            string m_strImageFile_Lower = null;
+            string m_strAlignPos = null;
+
+
+            //  이미지 저장 경로 (꼭대기)
+            m_strRoot = "D:\\CWA-150SA_AlignImage";
+            DirectoryInfo di = new DirectoryInfo(m_strRoot);
+            if (!di.Exists)                                                         //  없으면 생성
+            {
+                di.Create();
+            }
+
+
+            //  기존 파일이 있으면 삭제
+            for( int i = 0; i < 4; i++ )                //  0:TOP,  1:MID,  2:BOT,  3:EMPTY
+            {
+                if ( i == 0)
+                {
+                    m_strAlignPos = "TOP";
+                    m_strImageFile_Upper = string.Format("{0}\\{1}_PAK.jpg", m_strRoot, m_strAlignPos.ToUpper());
+                    m_strImageFile_Lower = string.Format("{0}\\{1}_Wafer.jpg", m_strRoot, m_strAlignPos.ToUpper());
+                }
+                else if ( i == 1)
+                {
+                    m_strAlignPos = "MID";
+                    m_strImageFile_Upper = string.Format("{0}\\{1}_PAK.jpg", m_strRoot, m_strAlignPos.ToUpper());
+                    m_strImageFile_Lower = string.Format("{0}\\{1}_Wafer.jpg", m_strRoot, m_strAlignPos.ToUpper());
+                }
+                else if (i == 2)
+                {
+                    m_strAlignPos = "BOT";
+                    m_strImageFile_Upper = string.Format("{0}\\{1}_PAK.jpg", m_strRoot, m_strAlignPos.ToUpper());
+                    m_strImageFile_Lower = string.Format("{0}\\{1}_Wafer.jpg", m_strRoot, m_strAlignPos.ToUpper());
+                }
+                else
+                {
+                    m_strAlignPos = "EMPTY";
+                    m_strImageFile_Upper = null;
+                    m_strImageFile_Lower = string.Format("{0}\\{1}.jpg", m_strRoot, m_strAlignPos.ToUpper());
+                }
+
+                if ((m_strImageFile_Upper != null) && File.Exists(m_strImageFile_Upper))
+                {
+                    try
+                    {
+                        File.Delete(m_strImageFile_Upper);
+
+                        m_strTemp = string.Format("PAK 이미지 삭제 완료. [{0}]", m_strAlignPos);
+                        Log.Write("CWA150SA", Equipment.User_Name, "Gate Tip Contact Position Save", m_strTemp);
+                    }
+                    catch (Exception e)
+                    {
+                        m_strTemp = string.Format("PAK 이미지 삭제 실패. [{0}]", m_strAlignPos);
+                        Log.Write("CWA150SA", Equipment.User_Name, "Gate Tip Contact Position Save", m_strTemp);
+                    }
+                }
+
+                if ((m_strImageFile_Lower != null) && File.Exists(m_strImageFile_Lower))
+                {
+                    try
+                    {
+                        File.Delete(m_strImageFile_Lower);
+
+                        m_strTemp = string.Format("Wafer 이미지 삭제 완료. [{0}]", m_strAlignPos);
+                        Log.Write("CWA150SA", Equipment.User_Name, "Gate Tip Contact Position Save", m_strTemp);
+                    }
+                    catch (Exception e)
+                    {
+                        m_strTemp = string.Format("Wafer 이미지 삭제 실패. [{0}]", m_strAlignPos);
+                        Log.Write("CWA150SA", Equipment.User_Name, "Gate Tip Contact Position Save", m_strTemp);
+                    }
+                }
             }
 
             return m_bRet;

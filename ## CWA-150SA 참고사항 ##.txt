@@ -41,3 +41,5 @@
 
 8. 2~6호기는 1호기와 설계가 조금 다름
    - Top Cover 구성 변경 (Clamping 방법, Unpacking 실린더 추가)
+
+9. Packages \ PatternImage 폴더에 NoImage.jpg 파일 있음. (폴더 내 ReadMe.txt 파일 참조)

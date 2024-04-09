@@ -213,6 +213,7 @@
             this.basePropertyGridParameter.ViewBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
             this.basePropertyGridParameter.ViewBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
             this.basePropertyGridParameter.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.basePropertyGridParameter_PropertyValueChanged);
+            this.basePropertyGridParameter.Click += new System.EventHandler(this.basePropertyGridParameter_Click);
             // 
             // PatternMatchingRecipeControl
             // 

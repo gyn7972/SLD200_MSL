@@ -70,8 +70,8 @@
             // 
             // groupBoxSearchResult
             // 
-            this.groupBoxSearchResult.Controls.Add(this.baseGroupBoxPatternMatching);
             this.groupBoxSearchResult.Controls.Add(this.tabControl1);
+            this.groupBoxSearchResult.Controls.Add(this.baseGroupBoxPatternMatching);
             this.groupBoxSearchResult.ForeColor = System.Drawing.Color.White;
             this.groupBoxSearchResult.Location = new System.Drawing.Point(0, 0);
             this.groupBoxSearchResult.Name = "groupBoxSearchResult";

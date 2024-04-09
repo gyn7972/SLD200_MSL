@@ -196,5 +196,10 @@ namespace CWA150SA_Onsemi300
         {
             
         }
+
+        private void basePropertyGridParameter_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

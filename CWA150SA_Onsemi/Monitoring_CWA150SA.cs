@@ -36,6 +36,7 @@ using QMC.Common.UI;
 using Point = System.Drawing.Point;
 using MessageBoxOk = QMC.Core.MessageBoxOk;
 using MessageBoxYesNo = QMC.Core.MessageBoxYesNo;
+using Bitmap = System.Drawing.Bitmap;
 
 namespace CWA150SA_Onsemi300
 {
@@ -308,15 +309,67 @@ namespace CWA150SA_Onsemi300
 
             m_strWorkingStatus_Message = "";
 
-            //  현재 등록되어 있는 Pattern Image 보여주기
-            if (waferProbeAlign.jigAligner_Upper != null)
+
+            ////  현재 등록되어 있는 Pattern Image 보여주기
+            //if (waferProbeAlign.jigAligner_Upper != null)
+            //{
+            //    pictureBoxTrainImage_Upper.Image = waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+            //}
+
+            //if (waferProbeAlign.jigAligner_Lower != null)
+            //{
+            //    pictureBoxTrainImage_Lower.Image = waferProbeAlign.jigAligner_Lower.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+            //}
+
+
+            //  패턴 매칭 이미지 가져오기
+            string m_strFile = "";
+
+            //  PAK
+            m_strFile = string.Format("{0}\\{1}_PAK.jpg", ConfigManager.GetPatternImagePath(), CurrentRecipe.Name);
+            if (File.Exists(m_strFile))
             {
-                pictureBoxTrainImage_Upper.Image = waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+                if (waferProbeAlign.jigAligner_Upper != null)
+                {
+                    waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
+                    //waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage.Load(m_strFile, VisionImage.FileFilter.jpg);
+                    pictureBoxTrainImage_Upper.Image = waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+                }
+            }
+            else
+            {
+                if (waferProbeAlign.jigAligner_Upper != null)
+                {
+                    m_strFile = string.Format("{0}\\NoImage.jpg", ConfigManager.GetPatternImagePath());
+                    if (File.Exists(m_strFile))
+                    {
+                        waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
+                        pictureBoxTrainImage_Upper.Image = waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+                    }
+                }
             }
 
-            if (waferProbeAlign.jigAligner_Lower != null)
+            //  Wafer
+            m_strFile = string.Format("{0}\\{1}_Wafer.jpg", ConfigManager.GetPatternImagePath(), CurrentRecipe.Name);
+            if (File.Exists(m_strFile))
             {
-                pictureBoxTrainImage_Lower.Image = waferProbeAlign.jigAligner_Lower.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+                if (waferProbeAlign.jigAligner_Lower != null)
+                {
+                    waferProbeAlign.jigAligner_Lower.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
+                    pictureBoxTrainImage_Lower.Image = waferProbeAlign.jigAligner_Lower.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+                }
+            }
+            else
+            {
+                if (waferProbeAlign.jigAligner_Lower != null)
+                {
+                    m_strFile = string.Format("{0}\\NoImage.jpg", ConfigManager.GetPatternImagePath());
+                    if (File.Exists(m_strFile))
+                    {
+                        waferProbeAlign.jigAligner_Lower.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
+                        pictureBoxTrainImage_Lower.Image = waferProbeAlign.jigAligner_Lower.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+                    }
+                }
             }
 
             //  패킹 오프셋 변경용 변수
@@ -2916,10 +2969,99 @@ namespace CWA150SA_Onsemi300
                 waferProbeAlign.Machine_Parameter_Load();
 
 
+                //  패턴 매칭 이미지 가져오기
+                string m_strFile = "";
+
+                //  PAK
+                m_strFile = string.Format("{0}\\{1}_PAK.jpg", ConfigManager.GetPatternImagePath(), CurrentRecipe.Name);
+                if (File.Exists(m_strFile))
+                {
+                    if (waferProbeAlign.jigAligner_Upper != null)
+                    {
+                        waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
+                        //waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage.Load(m_strFile, VisionImage.FileFilter.jpg);
+                        pictureBoxTrainImage_Upper.Image = waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+                    }
+                }
+                else
+                {
+                    if (waferProbeAlign.jigAligner_Upper != null)
+                    {
+                        m_strFile = string.Format("{0}\\NoImage.jpg", ConfigManager.GetPatternImagePath());
+                        if (File.Exists(m_strFile))
+                        {
+                            waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
+                            pictureBoxTrainImage_Upper.Image = waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+                        }
+                    }
+                }
+
+                //  Wafer
+                m_strFile = string.Format("{0}\\{1}_Wafer.jpg", ConfigManager.GetPatternImagePath(), CurrentRecipe.Name);
+                if (File.Exists(m_strFile))
+                {
+                    if (waferProbeAlign.jigAligner_Lower != null)
+                    {
+                        waferProbeAlign.jigAligner_Lower.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
+                        pictureBoxTrainImage_Lower.Image = waferProbeAlign.jigAligner_Lower.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+                    }
+                }
+                else
+                {
+                    if (waferProbeAlign.jigAligner_Lower != null)
+                    {
+                        m_strFile = string.Format("{0}\\NoImage.jpg", ConfigManager.GetPatternImagePath());
+                        if (File.Exists(m_strFile))
+                        {
+                            waferProbeAlign.jigAligner_Lower.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
+                            pictureBoxTrainImage_Lower.Image = waferProbeAlign.jigAligner_Lower.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+                        }
+                    }
+                }
+
+
                 m_strTemp = string.Format("레시피 변경.    [변경 전 : \"{0}\",   변경 후 : \"{1}\"]",
                                             m_strBeforeRecipe, CurrentRecipe.Name);
 
                 Log.Write("CWA150SA", Equipment.User_Name, "Button Click", m_strTemp);
+
+
+                waferProbeAlign.m_bWafer_ThetaAlign_OK = false;
+                waferProbeAlign.m_bWafer_XYAlign_OK = false;
+                waferProbeAlign.m_bProbeCard_TiltCheck_OK = false;
+                waferProbeAlign.m_bProbeCard_XYAlign_OK = false;
+
+                waferProbeAlign.m_bProbeCard_XYAlign_ErrorCheck_OK = false;         //  Probe Card XY Align Error Check OK
+                waferProbeAlign.m_bWafer_XYAlign_ErrorCheck_OK = false;             //  Wafer XY Align Error Check OK
+                waferProbeAlign.m_bWaferProbeAlign_ErrorCheck_Complete = false;
+                waferProbeAlign.m_bWaferProbeAlign_ErrorCheck_All_OK = false;
+
+                waferProbeAlign.m_dWafer_ProbeCard_PackingPos_Axis_U = -1;                  //  패킹할 때의 UVW Stage 좌표 (언패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_PackingPos_Axis_V = -1;                  //  패킹할 때의 UVW Stage 좌표 (언패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_PackingPos_Axis_W = -1;                  //  패킹할 때의 UVW Stage 좌표 (언패킹 시 사용한다.)
+
+                waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_U = -1;                    //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_V = -1;                    //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_W = -1;                    //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+
+                waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Count_Total = 3;              //  오차 확인 위치 총 개수
+                waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Count = 0;                    //  오차 확인 위치 카운트 (3개,   0: TOP, 1: MID, 2: BOT)
+
+                for (int nPos = 0; nPos < 3; nPos++)
+                {
+                    waferProbeAlign.AlignmentErrorCheck_Position[nPos].X = 0.0;
+                    waferProbeAlign.AlignmentErrorCheck_Position[nPos].Y = 0.0;
+
+                    waferProbeAlign.ManualPacking_OffsetPosition_UVW[nPos] = 0.0;
+
+                    for (int nSide = 0; nSide < 2; nSide++)
+                    {
+                        waferProbeAlign.AlignmentErrorCheck_Status[nPos, nSide] = false;
+
+                        waferProbeAlign.AlignmentErrorCheck_MarkPosition[nPos, nSide].X = 0.0;
+                        waferProbeAlign.AlignmentErrorCheck_MarkPosition[nPos, nSide].Y = 0.0;
+                    }
+                }
             }
             else
             {
@@ -3198,6 +3340,9 @@ namespace CWA150SA_Onsemi300
                     mb1.ShowDialog("Information !", m_strWarningMessage);
                 }
             }
+
+            //  TIp Contact 위치 표시용 이미지 삭제
+            waferProbeAlign.TipContactImage_Delete();
 
             if (waferProbeAlign.m_nWaferProbeAlign_MainStep == (int)WaferProbeAlign.WaferProbeAlign_Step.None)
             {
@@ -8459,7 +8604,7 @@ namespace CWA150SA_Onsemi300
         }
 
         private void btnManualPacking_Click(object sender, EventArgs e)
-        {
+        {            
             //  Wafer - ProbeCard Manual Packing (패킹 위치까지 엘리베이터가 올라가 있는 상태 다음부터 진행)
 
             if (Equipment.User_Mode == null)
@@ -9448,7 +9593,7 @@ namespace CWA150SA_Onsemi300
 
         }
 
-        private void baseLabel_LowerCam_DoubleClick(object sender, EventArgs e)
+        private void baseLabel_LowerCam_Click(object sender, EventArgs e)
         {
             //  Tip Contact 위치 표시 이미지 창 보여주기
 

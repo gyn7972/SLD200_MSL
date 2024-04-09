@@ -87,10 +87,27 @@ namespace CWA150SA_Onsemi300
             try { m_Empty = Image.FromFile(string.Format("{0}\\EMPTY.jpg", m_strRoot)); }
             catch (Exception e) { m_Empty = null; }
 
-            //m_nImage_Width = waferProbeAlign.Camera_Upper.Resolution.Width;
-            //m_nImage_Height = waferProbeAlign.Camera_Upper.Resolution.Height;
-            m_nImage_Width = m_TOP_PAK.Width;
-            m_nImage_Height = m_TOP_PAK.Height;
+            if (m_TOP_PAK != null)
+            {
+                m_nImage_Width = m_TOP_PAK.Width;
+                m_nImage_Height = m_TOP_PAK.Height;
+            }
+            else if (m_MID_PAK != null)
+            {
+                m_nImage_Width = m_MID_PAK.Width;
+                m_nImage_Height = m_MID_PAK.Height;
+            }
+            else if (m_BOT_PAK != null)
+            {
+                m_nImage_Width = m_BOT_PAK.Width;
+                m_nImage_Height = m_BOT_PAK.Height;
+            }
+            else
+            {
+                m_nImage_Width = waferProbeAlign.Camera_Upper.Resolution.Width;
+                m_nImage_Height = waferProbeAlign.Camera_Upper.Resolution.Height;
+            }
+            
 
             Graphics grp_TOP_PAK = null;
             Graphics grp_MID_PAK = null;
@@ -151,17 +168,17 @@ namespace CWA150SA_Onsemi300
                 }
             }
 
-            Rectangle rect_PAK_Pin = new Rectangle((m_TOP_PAK.Width / 2) - (m_nPAKPin_Gap_Width_Pixel / 2) - (m_nPAKPin_Diameter_Pixel / 2),
-                                                    (m_TOP_PAK.Height / 2) - (m_nPAKPin_Diameter_Pixel / 2),
+            Rectangle rect_PAK_Pin = new Rectangle((m_nImage_Width / 2) - (m_nPAKPin_Gap_Width_Pixel / 2) - (m_nPAKPin_Diameter_Pixel / 2),
+                                                    (m_nImage_Height / 2) - (m_nPAKPin_Diameter_Pixel / 2),
                                                     m_nPAKPin_Gap_Width_Pixel + m_nPAKPin_Diameter_Pixel, m_nPAKPin_Diameter_Pixel);                        //  PAK ROI 크기 (PAK Pin 간격 + Pin 직경 + margin)
 
-            Rectangle rect_Wafer_Pin_Left = new Rectangle((m_TOP_PAK.Width / 2) - (m_nPAKPin_Gap_Width_Pixel / 2) - (m_nWafer_GateContactPos_Size_Pixel / 2) - m_nPackingOffset_X_Pixel,
-                                                    (m_TOP_PAK.Height / 2) - (m_nWafer_GateContactPos_Size_Pixel / 2) + m_nPackingOffset_Y_Pixel,
+            Rectangle rect_Wafer_Pin_Left = new Rectangle((m_nImage_Width / 2) - (m_nPAKPin_Gap_Width_Pixel / 2) - (m_nWafer_GateContactPos_Size_Pixel / 2) - m_nPackingOffset_X_Pixel,
+                                                    (m_nImage_Height / 2) - (m_nWafer_GateContactPos_Size_Pixel / 2) + m_nPackingOffset_Y_Pixel,
                                                     m_nWafer_GateContactPos_Size_Pixel, m_nWafer_GateContactPos_Size_Pixel);                                            //  Wafer ROI 크기 (Wafer Pin 직경)
 
-            Rectangle rect_Wafer_Pin_Right = new Rectangle((m_TOP_PAK.Width / 2) + (m_nPAKPin_Gap_Width_Pixel / 2) - (m_nWafer_GateContactPos_Size_Pixel / 2) - m_nPackingOffset_X_Pixel,
-                                                    (m_TOP_PAK.Height / 2) - (m_nWafer_GateContactPos_Size_Pixel / 2) + m_nPackingOffset_Y_Pixel,
-                                                    m_nWafer_GateContactPos_Size_Pixel, m_nWafer_GateContactPos_Size_Pixel);                                            //  Wafer ROI 크기 (Wafer Pin 직경)
+            Rectangle rect_Wafer_Pin_Right = new Rectangle((m_nImage_Width / 2) + (m_nPAKPin_Gap_Width_Pixel / 2) - (m_nWafer_GateContactPos_Size_Pixel / 2) - m_nPackingOffset_X_Pixel,
+                                                    (m_nImage_Height / 2) - (m_nWafer_GateContactPos_Size_Pixel / 2) + m_nPackingOffset_Y_Pixel,
+                                                     m_nWafer_GateContactPos_Size_Pixel, m_nWafer_GateContactPos_Size_Pixel);                                            //  Wafer ROI 크기 (Wafer Pin 직경)
 
             //  TOP 위치, PAK
             if (m_TOP_PAK != null)

@@ -258,7 +258,17 @@ namespace QMC.Common
             foreach (var board in IOBoards)
             {
                 board.Open();
-            }            
+            }
+
+
+            //  2024. 04. 08.  SCH : Pattern Matching Image 저장 폴더 생성
+            string strFolderPath = ConfigManager.GetPatternImagePath();
+            if (!VerifyFile(strFolderPath))
+            {
+                Directory.CreateDirectory(ConfigManager.GetPatternImagePath());
+            }
+
+
 
             //FunctionManager.Instance.SetModuleCollection(Modules);
 
