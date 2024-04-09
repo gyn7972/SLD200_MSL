@@ -550,10 +550,10 @@ namespace CWA150SA_Onsemi300
                     button_Lamp0.Visible = false;
                 }
 
-                if (button_Lamp1.Visible)
-                {
-                    button_Lamp1.Visible = false;
-                }                
+                //if (button_Lamp1.Visible)
+                //{
+                //    button_Lamp1.Visible = false;
+                //}                
             }
             else if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_B)
             {
@@ -562,10 +562,10 @@ namespace CWA150SA_Onsemi300
                     button_Lamp0.Visible = true;
                 }
 
-                if (!button_Lamp1.Visible)
-                {
-                    button_Lamp1.Visible = true;
-                }
+                //if (!button_Lamp1.Visible)
+                //{
+                //    button_Lamp1.Visible = true;
+                //}
 
                 //  실내 조명 상태
                 if (CommonModule.Instance.TowerLamp.IsLamp0())
@@ -583,34 +583,36 @@ namespace CWA150SA_Onsemi300
                     }
                 }
 
-                if (CommonModule.Instance.TowerLamp.IsLamp1())
-                {
-                    if (button_Lamp1.BackColor != Color.GreenYellow)
-                    {
-                        button_Lamp1.BackColor = Color.GreenYellow;
-                    }
-                }
-                else
-                {
-                    if (button_Lamp1.BackColor != Color.LightGray)
-                    {
-                        button_Lamp1.BackColor = Color.LightGray;
-                    }
-                }
+                //if (CommonModule.Instance.TowerLamp.IsLamp1())
+                //{
+                //    if (button_Lamp1.BackColor != Color.GreenYellow)
+                //    {
+                //        button_Lamp1.BackColor = Color.GreenYellow;
+                //    }
+                //}
+                //else
+                //{
+                //    if (button_Lamp1.BackColor != Color.LightGray)
+                //    {
+                //        button_Lamp1.BackColor = Color.LightGray;
+                //    }
+                //}
             }
         }
 
         private void button_Lamp1_Click(object sender, EventArgs e)
         {
-            //  실내조명 1 켜기
+            //  실내조명 1, 2 켜기(끄기)
 
             if (CommonModule.Instance.TowerLamp.IsLamp0())
             {
                 CommonModule.Instance.TowerLamp.Lamp0_Off();
+                CommonModule.Instance.TowerLamp.Lamp1_Off();
             }
             else
             {
                 CommonModule.Instance.TowerLamp.Lamp0_On();
+                CommonModule.Instance.TowerLamp.Lamp1_On();
             }
         }
 

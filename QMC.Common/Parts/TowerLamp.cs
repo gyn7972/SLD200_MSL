@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QMC.Common.Modules;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -347,6 +348,15 @@ namespace QMC.Common.Parts
             {
                 LedBar_Blue_Off();
             }
+
+
+            //  실내 조명
+            if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_B)       //  실내 조명이 설치되는 2호기 부터는 Start 시 실내 조명을 Off 시킨다.
+            {
+                Lamp0_Off();
+                Lamp1_Off();
+            }
+
 
             return ret;
         }

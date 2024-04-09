@@ -4033,6 +4033,10 @@ namespace CWA150SA_Onsemi300
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Probe-Card 로딩 대기 위치로 이동하시겠습니까?"))
                     return;
 
+                //  내부 조명 켜기
+                CommonModule.Instance.TowerLamp.Lamp0_On();
+                CommonModule.Instance.TowerLamp.Lamp1_On();
+
                 waferProbeAlign.m_nProbeCard_Loading_Ready_Step = (int)WaferProbeAlign.ProbeCard_Loading_Ready_Step.Start;
                 waferProbeAlign.timer_SubWork.Enabled = true;
 
@@ -4154,6 +4158,10 @@ namespace CWA150SA_Onsemi300
                 var mb = new MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Probe-Card 고정 작업을 진행하시겠습니까?"))
                     return;
+
+                //  내부 조명 끄기
+                CommonModule.Instance.TowerLamp.Lamp0_Off();
+                CommonModule.Instance.TowerLamp.Lamp1_Off();
 
                 waferProbeAlign.m_nProbeCard_Locking_Step = (int)WaferProbeAlign.ProbeCard_Locking_Step.Start;
                 waferProbeAlign.timer_SubWork.Enabled = true;

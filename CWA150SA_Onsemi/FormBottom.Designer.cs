@@ -94,13 +94,13 @@
             // button_Lamp0
             // 
             this.button_Lamp0.BackColor = System.Drawing.Color.LightGray;
-            this.button_Lamp0.Font = new System.Drawing.Font("나눔바른고딕", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.button_Lamp0.Font = new System.Drawing.Font("나눔바른고딕", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.button_Lamp0.ForeColor = System.Drawing.Color.DarkRed;
-            this.button_Lamp0.Location = new System.Drawing.Point(944, 9);
+            this.button_Lamp0.Location = new System.Drawing.Point(1004, 9);
             this.button_Lamp0.Name = "button_Lamp0";
-            this.button_Lamp0.Size = new System.Drawing.Size(150, 81);
+            this.button_Lamp0.Size = new System.Drawing.Size(183, 81);
             this.button_Lamp0.TabIndex = 10;
-            this.button_Lamp0.Text = "실내 조명 1";
+            this.button_Lamp0.Text = "내부   조명";
             this.button_Lamp0.UseVisualStyleBackColor = false;
             this.button_Lamp0.Click += new System.EventHandler(this.button_Lamp1_Click);
             // 
@@ -115,6 +115,7 @@
             this.button_Lamp1.TabIndex = 11;
             this.button_Lamp1.Text = "실내 조명 2";
             this.button_Lamp1.UseVisualStyleBackColor = false;
+            this.button_Lamp1.Visible = false;
             this.button_Lamp1.Click += new System.EventHandler(this.button_Lamp2_Click);
             // 
             // FormBottom
@@ -122,8 +123,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1919, 101);
-            this.Controls.Add(this.button_Lamp1);
             this.Controls.Add(this.button_Lamp0);
+            this.Controls.Add(this.button_Lamp1);
             this.Controls.Add(this.flowLayoutPanelStartAndStop);
             this.Controls.Add(this.buttonLogOut);
             this.Controls.Add(this.buttonLogin);
