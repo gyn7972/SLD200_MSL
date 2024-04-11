@@ -276,8 +276,8 @@
             // 
             // FormWaferTipContactPosition
             // 
-            this.BackColor = System.Drawing.Color.CadetBlue;
-            this.ClientSize = new System.Drawing.Size(1850, 857);
+            this.BackColor = System.Drawing.Color.DarkSlateGray;
+            this.ClientSize = new System.Drawing.Size(1851, 858);
             this.ControlBox = false;
             this.Controls.Add(this.baseLabel_BOT2);
             this.Controls.Add(this.baseLabel_MID2);
@@ -296,7 +296,8 @@
             this.Controls.Add(this.baseLabel_BOT);
             this.Controls.Add(this.baseLabel_MID);
             this.Controls.Add(this.baseLabel_TOP);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.ForeColor = System.Drawing.Color.Coral;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormWaferTipContactPosition";

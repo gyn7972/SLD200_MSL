@@ -661,6 +661,12 @@ namespace QMC.Common.Modules
         public AutoFocuser autoFocuser_Lower { set; get; }
         public AutoFocusResult autoFocusResult_Lower;
 
+
+        //  패턴 매칭 이미지가 로드 되었는지?
+        public bool PatternMatchingImage_Loaded_Upper = false;
+        public bool PatternMatchingImage_Loaded_Lower = false;
+
+
         public int m_nProductAlign_CameraType {  set; get; }
         public int m_nProbeCardClamp_TypeB_CylUpDown_StableTime {  set; get; }
         //public Api ACS_Motion { set; get; }
@@ -1741,6 +1747,11 @@ namespace QMC.Common.Modules
             //timer_Calibration.Tick += new System.EventHandler(Timer_LaserCalibration_Func);
 
             //SpiralLab.Core.Initialize();
+
+
+            PatternMatchingImage_Loaded_Upper = false;
+            PatternMatchingImage_Loaded_Lower = false;
+
 
             m_nProductAlign_CameraType = (int)CameraType.CAMERA_HIGH;
 

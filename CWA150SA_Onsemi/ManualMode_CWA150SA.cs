@@ -959,6 +959,23 @@ namespace CWA150SA_Onsemi300
                 return;
             }
 
+            //  패턴 매칭 이미지 로드 확인 (PAK)
+            if (!waferProbeAlign.PatternMatchingImage_Loaded_Upper)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "PAK 얼라인 이미지를 등록해야 합니다.\r\n\r\n[Maint] -> [JigAligner Upper] -> [Train Image]");
+                return;
+            }
+
+            //  패턴 매칭 이미지 로드 확인 (Wafer)
+            if (!waferProbeAlign.PatternMatchingImage_Loaded_Lower)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "Wafer 얼라인 이미지를 등록해야 합니다.\r\n\r\n[Maint] -> [JigAligner Lower] -> [Train Image]");
+                return;
+            }
+
+
             //  Inter-Lock
             //if (waferProbeAlign.m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
             //{

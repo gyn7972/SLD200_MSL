@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -206,6 +207,64 @@ namespace CWA150SA_Onsemi300
 
 
                 waferProbeAlign.Machine_Parameter_Load();
+
+
+                //  패턴 매칭 Train Image 설정
+                string m_strFile = "";
+
+                waferProbeAlign.PatternMatchingImage_Loaded_Upper = false;
+                waferProbeAlign.PatternMatchingImage_Loaded_Lower = false;
+
+                //  PAK
+                m_strFile = string.Format("{0}\\{1}_PAK.jpg", ConfigManager.GetPatternImagePath(), CurrentRecipe.Name);
+                if (File.Exists(m_strFile))
+                {
+                    if (waferProbeAlign.jigAligner_Upper != null)
+                    {
+                        waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
+                        //waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage.Load(m_strFile, VisionImage.FileFilter.jpg);
+                        //pictureBoxTrainImage_Upper.Image = waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+
+                        waferProbeAlign.PatternMatchingImage_Loaded_Upper = true;
+                    }
+                }
+                else
+                {
+                    if (waferProbeAlign.jigAligner_Upper != null)
+                    {
+                        m_strFile = string.Format("{0}\\NoImage.jpg", ConfigManager.GetPatternImagePath());
+                        if (File.Exists(m_strFile))
+                        {
+                            waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
+                            //pictureBoxTrainImage_Upper.Image = waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+                        }
+                    }
+                }
+
+                //  Wafer
+                m_strFile = string.Format("{0}\\{1}_Wafer.jpg", ConfigManager.GetPatternImagePath(), CurrentRecipe.Name);
+                if (File.Exists(m_strFile))
+                {
+                    if (waferProbeAlign.jigAligner_Lower != null)
+                    {
+                        waferProbeAlign.jigAligner_Lower.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
+                        //pictureBoxTrainImage_Lower.Image = waferProbeAlign.jigAligner_Lower.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+
+                        waferProbeAlign.PatternMatchingImage_Loaded_Lower = true;
+                    }
+                }
+                else
+                {
+                    if (waferProbeAlign.jigAligner_Lower != null)
+                    {
+                        m_strFile = string.Format("{0}\\NoImage.jpg", ConfigManager.GetPatternImagePath());
+                        if (File.Exists(m_strFile))
+                        {
+                            waferProbeAlign.jigAligner_Lower.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
+                            //pictureBoxTrainImage_Lower.Image = waferProbeAlign.jigAligner_Lower.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+                        }
+                    }
+                }
 
 
                 m_strTemp = string.Format("레시피 변경.    [변경 전 : \"{0}\",   변경 후 : \"{1}\"]",

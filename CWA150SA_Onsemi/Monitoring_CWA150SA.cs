@@ -325,6 +325,9 @@ namespace CWA150SA_Onsemi300
             //  패턴 매칭 이미지 가져오기
             string m_strFile = "";
 
+            waferProbeAlign.PatternMatchingImage_Loaded_Upper = false;
+            waferProbeAlign.PatternMatchingImage_Loaded_Lower = false;
+
             //  PAK
             m_strFile = string.Format("{0}\\{1}_PAK.jpg", ConfigManager.GetPatternImagePath(), CurrentRecipe.Name);
             if (File.Exists(m_strFile))
@@ -334,6 +337,8 @@ namespace CWA150SA_Onsemi300
                     waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
                     //waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage.Load(m_strFile, VisionImage.FileFilter.jpg);
                     pictureBoxTrainImage_Upper.Image = waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+
+                    waferProbeAlign.PatternMatchingImage_Loaded_Upper = true;
                 }
             }
             else
@@ -357,6 +362,8 @@ namespace CWA150SA_Onsemi300
                 {
                     waferProbeAlign.jigAligner_Lower.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
                     pictureBoxTrainImage_Lower.Image = waferProbeAlign.jigAligner_Lower.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+
+                    waferProbeAlign.PatternMatchingImage_Loaded_Lower = true;
                 }
             }
             else
@@ -2969,7 +2976,7 @@ namespace CWA150SA_Onsemi300
                 waferProbeAlign.Machine_Parameter_Load();
 
 
-                //  패턴 매칭 이미지 가져오기
+                //  패턴 매칭 Train Image 설정
                 string m_strFile = "";
 
                 //  PAK
@@ -3242,6 +3249,23 @@ namespace CWA150SA_Onsemi300
                 mb1.ShowDialog("Information !", "Thin-Chuck Vacuum 이 감지되지 않습니다.");
                 return;
             }
+
+            //  패턴 매칭 이미지 로드 확인 (PAK)
+            if (!waferProbeAlign.PatternMatchingImage_Loaded_Upper)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "PAK 얼라인 이미지를 등록해야 합니다.\r\n\r\n[Maint] -> [JigAligner Upper] -> [Train Image]");
+                return;
+            }
+
+            //  패턴 매칭 이미지 로드 확인 (Wafer)
+            if (!waferProbeAlign.PatternMatchingImage_Loaded_Lower)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "Wafer 얼라인 이미지를 등록해야 합니다.\r\n\r\n[Maint] -> [JigAligner Lower] -> [Train Image]");
+                return;
+            }
+
 
             //  Inter-Lock
             //if (waferProbeAlign.m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
