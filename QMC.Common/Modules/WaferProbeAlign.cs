@@ -671,6 +671,8 @@ namespace QMC.Common.Modules
         public int m_nProbeCardClamp_TypeB_CylUpDown_StableTime {  set; get; }
         //public Api ACS_Motion { set; get; }
 
+        public bool m_bPAK_Clamp_Handling_byButton {  set; get; }
+
         //  가공 도면 Align 을 위한 변수
         public double m_dALIGN_FACTOR_RotationCenter_X { set; get; }                //  전체 가공 도면 회전 중심 X
         public double m_dALIGN_FACTOR_RotationCenter_Y { set; get; }                //  전체 가공 도면 회전 중심 Y
@@ -1668,7 +1670,6 @@ namespace QMC.Common.Modules
             m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
             m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
             m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step.None;
-
             m_nManualPacking_Step = (int)ManualPackingStep.NONE;
 
             m_bProbeCard_TiltCheck_Only = false;               //  ProbeCard Tilt Check Only
@@ -1707,6 +1708,8 @@ namespace QMC.Common.Modules
             m_bMyWaferAlign_fromManualMode = false;
 
             m_nProbeCardClamp_TypeB_CylUpDown_StableTime = 0;
+
+            m_bPAK_Clamp_Handling_byButton = false;
 
             ScannerTotalCountX = 0;          //  Scanner FOV 만큼 X 방향으로 몇 번 이동해야 하는 지
             ScannerTotalCountY = 0;          //  Scanner FOV 만큼 Y 방향으로 몇 번 이동해야 하는 지
@@ -10864,13 +10867,22 @@ namespace QMC.Common.Modules
 
                 case (int)ProbeCard_Loading_Ready_Step.ProbeCard_Clamp_Up:                                     //  프로브 카드 클램프 Up
 
-                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "프로브 카드 클램프 Up");
+                    if (!waferProbeAlignParameter.IsDO_Probe_ClampModule_Down())
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "프로브 카드 클램프 Up 상태이므로 다음 Step 진행");
 
-                    waferProbeAlignParameter.DO_ProbeClampModule_Down(false);
+                        m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.ProbeCard_Clamp_BW;
+                    }
+                    else
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "프로브 카드 클램프 Up");
 
-                    TickCount_Start((int)TickType.TICK_SUB);
+                        waferProbeAlignParameter.DO_ProbeClampModule_Down(false);
 
-                    m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.ProbeCard_Clamp_Up_Check;
+                        TickCount_Start((int)TickType.TICK_SUB);
+
+                        m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.ProbeCard_Clamp_Up_Check;
+                    }
                     break;
 
 
@@ -10957,7 +10969,12 @@ namespace QMC.Common.Modules
 
                     m_nProbeCard_Loading_Ready_Step = (int)ProbeCard_Loading_Ready_Step.None;
 
-                    MessageBox.Show(m_strTemp, "Information!");
+                    if (!m_bPAK_Clamp_Handling_byButton)
+                    {
+                        MessageBox.Show(m_strTemp, "Information!");
+                    }
+
+                    m_bPAK_Clamp_Handling_byButton = false;
 
                     break;
             }
@@ -11544,7 +11561,7 @@ namespace QMC.Common.Modules
                     //  Clamp Type-B 의 경우, Clamp Up/Down 실린더 센서가 없으므로 이 안정화 시간 이후에 다음 동작을 하도록 한다.
                     m_nProbeCardClamp_TypeB_CylUpDown_StableTime = Config.ParamConfig.ProbeCard_ClampTypeB_CylUpDown_StableTime <= 0 ? 1000 : Config.ParamConfig.ProbeCard_ClampTypeB_CylUpDown_StableTime;
 
-                    m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.ProbeCard_Detect;
+                    m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step._MachineType_Check;
                     break;
 
 
@@ -11731,13 +11748,22 @@ namespace QMC.Common.Modules
 
                 case (int)ProbeCard_Locking_Step.ProbeCard_Clamp_Up:                                     //  프로브 카드 클램프 Up
 
-                    Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "프로브 카드 클램프 Up");
+                    if (!waferProbeAlignParameter.IsDO_Probe_ClampModule_Down())
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "프로브 카드 클램프 Up 상태이므로 다음 Step 진행");
 
-                    waferProbeAlignParameter.DO_ProbeClampModule_Down(false);
+                        m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.ProbeCard_Clamp_FW;
+                    }
+                    else
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Locking Func", "프로브 카드 클램프 Up");
 
-                    TickCount_Start((int)TickType.TICK_SUB);
+                        waferProbeAlignParameter.DO_ProbeClampModule_Down(false);
 
-                    m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.ProbeCard_Clamp_Up_Check;
+                        TickCount_Start((int)TickType.TICK_SUB);
+
+                        m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.ProbeCard_Clamp_Up_Check;
+                    }
                     break;
 
 
@@ -11860,7 +11886,12 @@ namespace QMC.Common.Modules
 
                     m_nProbeCard_Locking_Step = (int)ProbeCard_Locking_Step.None;
 
-                    MessageBox.Show(m_strTemp, "Information!");
+                    if (!m_bPAK_Clamp_Handling_byButton)
+                    {
+                        MessageBox.Show(m_strTemp, "Information!");
+                    }
+
+                    m_bPAK_Clamp_Handling_byButton = false;
 
                     break;
             }
@@ -11919,7 +11950,7 @@ namespace QMC.Common.Modules
                         Equipment.MachineStop_byAlarm = true;
 
                         timer_MainWork.Enabled = false;
-
+                                                
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
 
                         MessageBox.Show("Thin Chuck 이 감지되지 않음.", "Error");

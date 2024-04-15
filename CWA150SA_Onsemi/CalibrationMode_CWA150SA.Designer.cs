@@ -1760,7 +1760,7 @@ namespace CWA150SA_Onsemi300
             this.btnLoadingPos_ProbeCard_GO.Name = "btnLoadingPos_ProbeCard_GO";
             this.btnLoadingPos_ProbeCard_GO.Size = new System.Drawing.Size(181, 69);
             this.btnLoadingPos_ProbeCard_GO.TabIndex = 178;
-            this.btnLoadingPos_ProbeCard_GO.Text = "[ 프로브 카드 ]\r\n투입 위치 이동";
+            this.btnLoadingPos_ProbeCard_GO.Text = "[ 프로브 카드 ]\r\n고정 해제";
             this.btnLoadingPos_ProbeCard_GO.UseVisualStyleBackColor = false;
             this.btnLoadingPos_ProbeCard_GO.Click += new System.EventHandler(this.btnLoadingPos_ProbeCard_GO_Click);
             // 
@@ -1776,7 +1776,7 @@ namespace CWA150SA_Onsemi300
             this.btn_ProbeCard_Locking.Name = "btn_ProbeCard_Locking";
             this.btn_ProbeCard_Locking.Size = new System.Drawing.Size(181, 69);
             this.btn_ProbeCard_Locking.TabIndex = 179;
-            this.btn_ProbeCard_Locking.Text = "[ 프로브 카드 ]\r\n고정 작업 시작";
+            this.btn_ProbeCard_Locking.Text = "[ 프로브 카드 ]\r\n고정";
             this.btn_ProbeCard_Locking.UseVisualStyleBackColor = false;
             this.btn_ProbeCard_Locking.Click += new System.EventHandler(this.btn_ProbeCard_Locking_Click);
             // 

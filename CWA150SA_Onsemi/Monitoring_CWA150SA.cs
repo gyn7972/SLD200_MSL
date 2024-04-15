@@ -126,10 +126,13 @@ namespace CWA150SA_Onsemi300
 
         public bool m_bStartBtn_Status;
         public bool m_bStartBtn_Status_Before;
+        public int m_nStartBtn_Ignore_Time;
         public bool m_bStopBtn_Status;
         public bool m_bStopBtn_Status_Before;
+        public int m_nStopBtn_Ignore_Time;
         public bool m_bResetBtn_Status;
         public bool m_bResetBtn_Status_Before;
+        public int m_nResetBtn_Ignore_Time;
 
 
         //  Test용 변수
@@ -268,10 +271,13 @@ namespace CWA150SA_Onsemi300
 
             m_bStartBtn_Status = false ;
             m_bStartBtn_Status_Before = false;
+            m_nStartBtn_Ignore_Time = 0;
             m_bStopBtn_Status = false;
             m_bStopBtn_Status_Before = false;
+            m_nStopBtn_Ignore_Time = 0;
             m_bResetBtn_Status = false;
             m_bResetBtn_Status_Before = false;
+            m_nResetBtn_Ignore_Time = 0;
 
             m_dDustCollector_AutoShutdown = 10.0;
 
@@ -1643,9 +1649,15 @@ namespace CWA150SA_Onsemi300
                 (waferProbeAlign.m_nPAK_AirLine_Check_Step == (int)PAK_AirLine_Check_Step.None) &&
                 (waferProbeAlign.m_nManualPacking_Step == (int)ManualPackingStep.NONE))
             {
-                if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A)                                       //  1호기
+                //  Start 버튼 누를 때 --> PAK 고정 / 고정 해제
+                m_bStartBtn_Status = CommonModule.Instance.OperationButtons.IsStart();
+
+                if (!m_bStartBtn_Status_Before && m_bStartBtn_Status &&
+                    m_nStartBtn_Ignore_Time == 0)
                 {
-                    if (CommonModule.Instance.OperationButtons.IsStart())
+                    m_nStartBtn_Ignore_Time++;
+
+                    if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A)                               //  1호기
                     {
                         if (waferProbeAlign.waferProbeAlignParameter.DI_Probe_BW_Detect() &&
 
@@ -1663,16 +1675,54 @@ namespace CWA150SA_Onsemi300
                             waferProbeAlign.waferProbeAlignParameter.DO_TopCover_Down(true);
                             waferProbeAlign.waferProbeAlignParameter.DO_TopCover_Up(false);
                         }
-                        else
+                    }
+                    else                                                                                                            //  2 ~ 6호기
+                    {
+                        if (waferProbeAlign.waferProbeAlignParameter.DI_Probe_LeftClampModule_FW() || waferProbeAlign.waferProbeAlignParameter.DI_Probe_RightClampModule_FW())        //  고정 상태이면? -> 고정 해제
                         {
-                            waferProbeAlign.waferProbeAlignParameter.DO_TopCover_Down(false);
-                            waferProbeAlign.waferProbeAlignParameter.DO_TopCover_Up(true);
+                            //  내부 조명 켜기
+                            CommonModule.Instance.TowerLamp.Lamp0_On();
+                            CommonModule.Instance.TowerLamp.Lamp1_On();
+
+                            waferProbeAlign.m_bPAK_Clamp_Handling_byButton = true;
+
+                            waferProbeAlign.m_nProbeCard_Loading_Ready_Step = (int)WaferProbeAlign.ProbeCard_Loading_Ready_Step.Start;
+                            waferProbeAlign.timer_SubWork.Enabled = true;
                         }
+                        else                                                                                    //  고정 해제 상태이면? -> 고정
+                        {
+                            //  내부 조명 끄기
+                            CommonModule.Instance.TowerLamp.Lamp0_Off();
+                            CommonModule.Instance.TowerLamp.Lamp1_Off();
+
+                            waferProbeAlign.m_bPAK_Clamp_Handling_byButton = true;
+
+                            waferProbeAlign.m_nProbeCard_Locking_Step = (int)WaferProbeAlign.ProbeCard_Locking_Step.Start;
+                            waferProbeAlign.timer_SubWork.Enabled = true;
+                        }
+                    }
+
+                    Thread.Sleep(500);      //  2024. 04. 15.  SCH : 이거 안넣으니 true 됐다가 바로 false 되어버리네 -_-;
+                }
+                m_bStartBtn_Status_Before = m_bStartBtn_Status;
+
+                if (m_nStartBtn_Ignore_Time > 0)
+                {
+                    m_nStartBtn_Ignore_Time++;
+
+                    if (m_nStartBtn_Ignore_Time > 50)
+                    {
+                        m_nStartBtn_Ignore_Time = 0;
                     }
                 }
 
-                if (CommonModule.Instance.OperationButtons.IsStop())
+                //  Stop 버튼 누를 때 --> 씬-척 Vacuum On / Off
+                m_bStopBtn_Status = CommonModule.Instance.OperationButtons.IsStop();
+                if (!m_bStopBtn_Status_Before && m_bStopBtn_Status &&
+                    m_nStopBtn_Ignore_Time == 0)
                 {
+                    m_nStopBtn_Ignore_Time++;
+
                     if (waferProbeAlign.waferProbeAlignParameter.DI_ThinChuck_Detect())
                     {
                         if (waferProbeAlign.waferProbeAlignParameter.IsDO_ThinChuck_Vacuum())
@@ -1683,11 +1733,44 @@ namespace CWA150SA_Onsemi300
                         {
                             waferProbeAlign.waferProbeAlignParameter.DO_ThinChuck_Vacuum(true);
                         }
+
+                        Thread.Sleep(500);      //  2024. 04. 15.  SCH : 이거 안넣으니 true 됐다가 바로 false 되어버리네 -_-;
+                    }
+                }
+                m_bStopBtn_Status_Before = m_bStopBtn_Status;
+
+                if (m_nStopBtn_Ignore_Time > 0)
+                {
+                    m_nStopBtn_Ignore_Time++;
+
+                    if (m_nStopBtn_Ignore_Time > 50)
+                    {
+                        m_nStopBtn_Ignore_Time = 0;
                     }
                 }
 
-                if (CommonModule.Instance.OperationButtons.IsReset())
+                //if (CommonModule.Instance.OperationButtons.IsStop())
+                //{
+                //    if (waferProbeAlign.waferProbeAlignParameter.DI_ThinChuck_Detect())
+                //    {
+                //        if (waferProbeAlign.waferProbeAlignParameter.IsDO_ThinChuck_Vacuum())
+                //        {
+                //            waferProbeAlign.waferProbeAlignParameter.DO_ThinChuck_Vacuum(false);
+                //        }
+                //        else
+                //        {
+                //            waferProbeAlign.waferProbeAlignParameter.DO_ThinChuck_Vacuum(true);
+                //        }
+                //    }
+                //}
+
+                //  Reset 버튼 누를 때 --> Wafer Vacuum On / Off
+                m_bResetBtn_Status = CommonModule.Instance.OperationButtons.IsReset();
+                if (!m_bResetBtn_Status_Before && m_bResetBtn_Status &&
+                    m_nResetBtn_Ignore_Time == 0)
                 {
+                    m_nResetBtn_Ignore_Time++;
+
                     if (waferProbeAlign.waferProbeAlignParameter.IsDO_Wafer_Vacuum())
                     {
                         waferProbeAlign.waferProbeAlignParameter.DO_Wafer_Vacuum(false);
@@ -1696,7 +1779,32 @@ namespace CWA150SA_Onsemi300
                     {
                         waferProbeAlign.waferProbeAlignParameter.DO_Wafer_Vacuum(true);
                     }
+
+                    Thread.Sleep(500);      //  2024. 04. 15.  SCH : 이거 안넣으니 true 됐다가 바로 false 되어버리네 -_-;
                 }
+                m_bResetBtn_Status_Before = m_bResetBtn_Status;
+
+                if (m_nResetBtn_Ignore_Time > 0)
+                {
+                    m_nResetBtn_Ignore_Time++;
+
+                    if (m_nResetBtn_Ignore_Time > 50)
+                    {
+                        m_nResetBtn_Ignore_Time = 0;
+                    }
+                }
+
+                //if (CommonModule.Instance.OperationButtons.IsReset())
+                //{
+                //    if (waferProbeAlign.waferProbeAlignParameter.IsDO_Wafer_Vacuum())
+                //    {
+                //        waferProbeAlign.waferProbeAlignParameter.DO_Wafer_Vacuum(false);
+                //    }
+                //    else
+                //    {
+                //        waferProbeAlign.waferProbeAlignParameter.DO_Wafer_Vacuum(true);
+                //    }
+                //}
             }
 
             //  Start, Stop, Reset 버튼 표시
@@ -1704,31 +1812,44 @@ namespace CWA150SA_Onsemi300
             {
                 if (waferProbeAlign.waferProbeAlignParameter.DI_TopCover_Down() && !waferProbeAlign.waferProbeAlignParameter.DI_TopCover_Up())
                 {
-                    waferProbeAlign.waferProbeAlignParameter.DO_OpLamp_Start(true);
+                    CommonModule.Instance.OperationButtons.Start(true);
                 }
                 else
                 {
-                    waferProbeAlign.waferProbeAlignParameter.DO_OpLamp_Start(false);
+                    CommonModule.Instance.OperationButtons.Start(false);
+                }
+            }
+            else
+            {
+                if (!waferProbeAlign.waferProbeAlignParameter.DI_Probe_LeftClampModule_BW() && waferProbeAlign.waferProbeAlignParameter.DI_Probe_LeftClampModule_FW() &&
+                    !waferProbeAlign.waferProbeAlignParameter.DI_Probe_RightClampModule_BW() && waferProbeAlign.waferProbeAlignParameter.DI_Probe_RightClampModule_FW() &&
+                    waferProbeAlign.waferProbeAlignParameter.IsDO_Probe_ClampModule_Down())
+                {
+                    CommonModule.Instance.OperationButtons.Start(true);
+                }
+                else
+                {
+                    CommonModule.Instance.OperationButtons.Start(false);
                 }
             }
 
             if (waferProbeAlign.waferProbeAlignParameter.DI_ThinChuck_Detect() && 
                 waferProbeAlign.waferProbeAlignParameter.DI_ThinChuck_VacuumCheck())
             {
-                waferProbeAlign.waferProbeAlignParameter.DO_OpLamp_Stop(true);
+                CommonModule.Instance.OperationButtons.Stop(true);
             }
             else
             {
-                waferProbeAlign.waferProbeAlignParameter.DO_OpLamp_Stop(false);
+                CommonModule.Instance.OperationButtons.Stop(false);
             }
 
             if (waferProbeAlign.waferProbeAlignParameter.DI_Wafer_VacuumCheck())
             {
-                waferProbeAlign.waferProbeAlignParameter.DO_OpLamp_Reset(true);
+                CommonModule.Instance.OperationButtons.Reset(true);
             }
             else
             {
-                waferProbeAlign.waferProbeAlignParameter.DO_OpLamp_Reset(false);
+                CommonModule.Instance.OperationButtons.Reset(false);
             }
 
 
@@ -3210,20 +3331,42 @@ namespace CWA150SA_Onsemi300
                 }
             }
 
-            //  Probe Card 유무 확인
-            if (!waferProbeAlign.waferProbeAlignParameter.DI_Probe_BW_Detect())
+            if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A)
             {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Probe-Card 가 없습니다.");
-                return;
-            }
+                //  Probe Card 유무 확인
+                if (!waferProbeAlign.waferProbeAlignParameter.DI_Probe_BW_Detect())
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "Probe-Card 가 없습니다.");
+                    return;
+                }
 
-            //  Probe Card Locking 확인
-            if (waferProbeAlign.waferProbeAlignParameter.DI_TopCover_Up() || !waferProbeAlign.waferProbeAlignParameter.DI_TopCover_Down())
+                //  Probe Card Locking 확인
+                if (waferProbeAlign.waferProbeAlignParameter.DI_TopCover_Up() || !waferProbeAlign.waferProbeAlignParameter.DI_TopCover_Down())
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "Probe-Card Top Cover 상태를 확인하십시오.\r\n\r\n[Top Cover Down Check]");
+                    return;
+                }
+            }
+            else
             {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Probe-Card Top Cover 상태를 확인하십시오.\r\n\r\n[Top Cover Down Check]");
-                return;
+                //  Probe Card Clamp Down 확인
+                if (!waferProbeAlign.waferProbeAlignParameter.IsDO_Probe_ClampModule_Down())
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "Probe-Card Clamp 가 올라가 있습니다.");
+                    return;
+                }
+
+                //  Probe Card Clamp 닫힘 확인
+                if (!waferProbeAlign.waferProbeAlignParameter.DI_Probe_LeftClampModule_FW() || waferProbeAlign.waferProbeAlignParameter.DI_Probe_LeftClampModule_BW() ||
+                    !waferProbeAlign.waferProbeAlignParameter.DI_Probe_RightClampModule_FW() || waferProbeAlign.waferProbeAlignParameter.DI_Probe_RightClampModule_BW())
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "Probe-Card Clamp 가 열려있습니다.");
+                    return;
+                }
             }
 
             //  Wafer 유무 확인
@@ -3533,25 +3676,28 @@ namespace CWA150SA_Onsemi300
                 return;
             }
 
-            if (!waferProbeAlign.waferProbeAlignParameter.DI_Probe_BW_Detect())
+            if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A)
             {
-                var mb = new MessageBoxOk();
-                mb.ShowDialog("Information !", "프로브 카드 트레이가 로딩 위치에 있습니다.");
-                return;
-            }
+                if (!waferProbeAlign.waferProbeAlignParameter.DI_Probe_BW_Detect())
+                {
+                    var mb = new MessageBoxOk();
+                    mb.ShowDialog("Information !", "프로브 카드 트레이가 로딩 위치에 있습니다.");
+                    return;
+                }
 
-            if (waferProbeAlign.waferProbeAlignParameter.IsDO_TopCover_Down())
-            {
-                Log.Write("CWA150SA", Equipment.User_Name, "Button Click", "프로브 카드 고정 실린더 내림 신호 Off");
+                if (waferProbeAlign.waferProbeAlignParameter.IsDO_TopCover_Down())
+                {
+                    Log.Write("CWA150SA", Equipment.User_Name, "Button Click", "프로브 카드 고정 실린더 내림 신호 Off");
 
-                waferProbeAlign.waferProbeAlignParameter.DO_TopCover_Down(false);
-            }
-            else
-            {
-                Log.Write("CWA150SA", Equipment.User_Name, "Button Click", "프로브 카드 고정 실린더 내림");
+                    waferProbeAlign.waferProbeAlignParameter.DO_TopCover_Down(false);
+                }
+                else
+                {
+                    Log.Write("CWA150SA", Equipment.User_Name, "Button Click", "프로브 카드 고정 실린더 내림");
 
-                waferProbeAlign.waferProbeAlignParameter.DO_TopCover_Down(true);
-                waferProbeAlign.waferProbeAlignParameter.DO_TopCover_Up(false);
+                    waferProbeAlign.waferProbeAlignParameter.DO_TopCover_Down(true);
+                    waferProbeAlign.waferProbeAlignParameter.DO_TopCover_Up(false);
+                }
             }
         }
 
@@ -3786,20 +3932,42 @@ namespace CWA150SA_Onsemi300
                 return;
             }
 
-            //  Probe Card 유무 확인
-            if (!waferProbeAlign.waferProbeAlignParameter.DI_Probe_BW_Detect())
+            if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A)
             {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Probe-Card 가 없습니다.");
-                return;
-            }
+                //  Probe Card 유무 확인
+                if (!waferProbeAlign.waferProbeAlignParameter.DI_Probe_BW_Detect())
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "Probe-Card 가 없습니다.");
+                    return;
+                }
 
-            //  Probe Card Locking 확인
-            if (waferProbeAlign.waferProbeAlignParameter.DI_TopCover_Up() || !waferProbeAlign.waferProbeAlignParameter.DI_TopCover_Down())
+                //  Probe Card Locking 확인
+                if (waferProbeAlign.waferProbeAlignParameter.DI_TopCover_Up() || !waferProbeAlign.waferProbeAlignParameter.DI_TopCover_Down())
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "Probe-Card Top Cover 상태를 확인하십시오.\r\n\r\n[Top Cover Down Check]");
+                    return;
+                }
+            }
+            else
             {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Probe-Card Top Cover 상태를 확인하십시오.\r\n\r\n[Top Cover Down Check]");
-                return;
+                //  Probe Card Clamp Down 확인
+                if (!waferProbeAlign.waferProbeAlignParameter.IsDO_Probe_ClampModule_Down())
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "Probe-Card Clamp 가 올라가 있습니다.");
+                    return;
+                }
+
+                //  Probe Card Clamp 닫힘 확인
+                if (!waferProbeAlign.waferProbeAlignParameter.DI_Probe_LeftClampModule_FW() || waferProbeAlign.waferProbeAlignParameter.DI_Probe_LeftClampModule_BW() ||
+                    !waferProbeAlign.waferProbeAlignParameter.DI_Probe_RightClampModule_FW() || waferProbeAlign.waferProbeAlignParameter.DI_Probe_RightClampModule_BW())
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "Probe-Card Clamp 가 열려있습니다.");
+                    return;
+                }
             }
 
             //  Wafer 유무 확인
@@ -8653,20 +8821,42 @@ namespace CWA150SA_Onsemi300
                 return;
             }
 
-            //  Probe Card 유무 확인
-            if (!waferProbeAlign.waferProbeAlignParameter.DI_Probe_BW_Detect())
+            if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A)
             {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Probe-Card 가 없습니다.");
-                return;
-            }
+                //  Probe Card 유무 확인
+                if (!waferProbeAlign.waferProbeAlignParameter.DI_Probe_BW_Detect())
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "Probe-Card 가 없습니다.");
+                    return;
+                }
 
-            //  Probe Card Locking 확인
-            if (waferProbeAlign.waferProbeAlignParameter.DI_TopCover_Up() || !waferProbeAlign.waferProbeAlignParameter.DI_TopCover_Down())
+                //  Probe Card Locking 확인
+                if (waferProbeAlign.waferProbeAlignParameter.DI_TopCover_Up() || !waferProbeAlign.waferProbeAlignParameter.DI_TopCover_Down())
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "Probe-Card Top Cover 상태를 확인하십시오.\r\n\r\n[Top Cover Down Check]");
+                    return;
+                }
+            }
+            else
             {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Probe-Card Top Cover 상태를 확인하십시오.\r\n\r\n[Top Cover Down Check]");
-                return;
+                //  Probe Card Clamp Down 확인
+                if (!waferProbeAlign.waferProbeAlignParameter.IsDO_Probe_ClampModule_Down())
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "Probe-Card Clamp 가 올라가 있습니다.");
+                    return;
+                }
+
+                //  Probe Card Clamp 닫힘 확인
+                if (!waferProbeAlign.waferProbeAlignParameter.DI_Probe_LeftClampModule_FW() || waferProbeAlign.waferProbeAlignParameter.DI_Probe_LeftClampModule_BW() ||
+                    !waferProbeAlign.waferProbeAlignParameter.DI_Probe_RightClampModule_FW() || waferProbeAlign.waferProbeAlignParameter.DI_Probe_RightClampModule_BW())
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "Probe-Card Clamp 가 열려있습니다.");
+                    return;
+                }
             }
 
             //  Wafer 유무 확인
@@ -8811,6 +9001,7 @@ namespace CWA150SA_Onsemi300
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Wafer - ProbeCard 수동 Packing 을 시작하시겠습니까?\r\n\r\n[ 씬-척이 프로브 카드와 접촉한 상태인지 확인하십시오. ]"))
                     return;
 
+                waferProbeAlign.m_nManualPacking_Step = (int)WaferProbeAlign.ManualPackingStep.NONE;
                 waferProbeAlign.m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeAlign.WaferProbeCard_Packing_Step.Probe_Packing;
                 waferProbeAlign.timer_MainWork.Enabled = true;
             }
