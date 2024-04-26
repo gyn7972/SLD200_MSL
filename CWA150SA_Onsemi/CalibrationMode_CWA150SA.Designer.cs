@@ -1031,7 +1031,7 @@ namespace CWA150SA_Onsemi300
             this.groupBoxAlignCheckPosParameter.Size = new System.Drawing.Size(564, 265);
             this.groupBoxAlignCheckPosParameter.TabIndex = 146;
             this.groupBoxAlignCheckPosParameter.TabStop = false;
-            this.groupBoxAlignCheckPosParameter.Text = " [ 얼라인 확인 위치   ( Top / Middle / Bottom )   (Probe Card Pin 기준) ] ";
+            this.groupBoxAlignCheckPosParameter.Text = " [ 얼라인 확인 위치   ( Top / Middle / Bottom )   (프로브 카드 핀 기준) ] ";
             // 
             // baseLabelAlignCenter_PackingPos
             // 
@@ -1856,7 +1856,7 @@ namespace CWA150SA_Onsemi300
             this.baseLabelUVWPosition_Loading.Name = "baseLabelUVWPosition_Loading";
             this.baseLabelUVWPosition_Loading.Size = new System.Drawing.Size(270, 49);
             this.baseLabelUVWPosition_Loading.TabIndex = 184;
-            this.baseLabelUVWPosition_Loading.Text = "현재 UVW 스테이지의 위치값 저장\r\n[ Ready / Loading / Unloading ]";
+            this.baseLabelUVWPosition_Loading.Text = "UVW 스테이지의 현재 위치값 저장\r\n[  Ready  /  Loading  /  Unloading  ]";
             this.baseLabelUVWPosition_Loading.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.baseLabelUVWPosition_Loading.Click += new System.EventHandler(this.baseLabelUVWPosition_Loading_Click);
             // 

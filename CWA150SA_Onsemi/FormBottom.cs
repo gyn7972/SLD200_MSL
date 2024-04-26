@@ -332,7 +332,6 @@ namespace CWA150SA_Onsemi300
                     //  Stop
                     Equipment.Stop();
                 }
-
             }
         }
 

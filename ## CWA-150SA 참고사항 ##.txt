@@ -36,10 +36,20 @@
 
 
 7. Config 에 장비 공통으로 적용되는 파라미터 
-     - [99] 번 파라미터
+	- [99] 번 파라미터
 
 
 8. 2~6호기는 1호기와 설계가 조금 다름
-   - Top Cover 구성 변경 (Clamping 방법, Unpacking 실린더 추가)
+	- Top Cover 구성 변경 (Clamping 방법, Unpacking 실린더 추가)
+
 
 9. Packages \ PatternImage 폴더에 NoImage.jpg 파일 있음. (폴더 내 ReadMe.txt 파일 참조)
+
+
+10. Ajin E-CAT 보드 펌웨어 버전, EzSoftwareUC 버전
+	- 1호기 : Ajin (v3.1) / UC (5.0.7.3)
+	- 2~6호기 : Ajin (v3.1) / UC (5.0.7.3)
+
+
+
+

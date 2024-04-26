@@ -15,6 +15,7 @@ using QMC.Common;
 using QMC.Common.Modules;
 using QMC.Common.Vision;
 using QMC.Common.Parts;
+using System.Threading;
 
 
 namespace CWA150SA_Onsemi300
@@ -63,7 +64,8 @@ namespace CWA150SA_Onsemi300
             Image m_TOP_Wafer = null;
             Image m_MID_Wafer = null;
             Image m_BOT_Wafer = null;
-            Image m_Empty = null;
+            Image m_Empty_PAK = null;
+            Image m_Empty_Wafer = null;
 
 
             try { m_TOP_PAK = Image.FromFile(string.Format("{0}\\TOP_PAK.jpg", m_strRoot)); }
@@ -84,8 +86,11 @@ namespace CWA150SA_Onsemi300
             try { m_BOT_Wafer = Image.FromFile(string.Format("{0}\\BOT_Wafer.jpg", m_strRoot)); }
             catch (Exception e) { m_BOT_Wafer = null; }
 
-            try { m_Empty = Image.FromFile(string.Format("{0}\\EMPTY.jpg", m_strRoot)); }
-            catch (Exception e) { m_Empty = null; }
+            try { m_Empty_PAK = Image.FromFile(string.Format("{0}\\EMPTY_PAK.jpg", m_strRoot)); }
+            catch (Exception e) { m_Empty_PAK = null; }
+
+            try { m_Empty_Wafer = Image.FromFile(string.Format("{0}\\EMPTY_Wafer.jpg", m_strRoot)); }
+            catch (Exception e) { m_Empty_Wafer = null; }
 
             if (m_TOP_PAK != null)
             {
@@ -123,7 +128,8 @@ namespace CWA150SA_Onsemi300
             pictureBox_MID_Wafer.Image = m_MID_Wafer;
             pictureBox_BOT_Wafer.Image = m_BOT_Wafer;
 
-            pictureBox_Empty_Wafer.Image = m_Empty;
+            pictureBox_Empty_PAK.Image = m_Empty_PAK;
+            pictureBox_Empty_Wafer.Image = m_Empty_Wafer;
 
             int m_nPAKPin_Gap_Width_Pixel = 0;
             int m_nPAKPin_Diameter_Pixel = 0;
@@ -245,8 +251,116 @@ namespace CWA150SA_Onsemi300
             }
         }
 
+        public bool TipContactImage_TotalSave(string m_strOperator, string m_strStartTime)
+        {
+            bool m_bRet = true;
+            string m_strDirectory = null;
+            string m_strRoot = null;
+            string m_strDate = null;
+            string m_strRecipe = null;
+            string m_strImageFile = null;
+
+            //  데이터 확인
+            if (m_strOperator == null)                                             //  Align 을 진행하지 않았으면?
+            {
+                m_strOperator = "UnknownOperator";
+            }
+
+            if (m_strStartTime == null)                                             //  Align 을 진행하지 않았으면? --> 이미지 저장할 필요 없음
+            {
+                return false;
+                //m_strStartTime = "NoAlign";
+            }
+
+
+            //  이미지 저장 경로 (꼭대기)
+            m_strRoot = "D:\\CWA-150SA_AlignImage";
+            DirectoryInfo di = new DirectoryInfo(m_strRoot);
+            if (!di.Exists)                                                         //  없으면 생성
+            {
+                di.Create();
+            }
+
+            //  이미지 저장 경로 (꼭대기 / 날짜)
+            m_strDate = DateTime.Now.ToString("yyyy-MM-dd");
+            m_strDirectory = string.Format("{0}\\{1}", m_strRoot, m_strDate);
+            DirectoryInfo di2 = new DirectoryInfo(m_strDirectory);
+            if (!di2.Exists)                                                         //  없으면 생성
+            {
+                di2.Create();
+            }
+
+            //  이미지 저장 경로 (꼭대기 / 날짜 / 레시피)
+            RecipeInfo m_recipeInfo = new RecipeInfo();
+            m_recipeInfo = Equipment.GetCurrentRecipe();
+
+            if (m_recipeInfo != null)
+            {
+                m_strRecipe = m_recipeInfo.Name;
+            }
+            else
+            {
+                m_strRecipe = "NO_RECIPE";
+            }
+
+            m_strDirectory = string.Format("{0}\\{1}\\{2}", m_strRoot, m_strDate, m_strRecipe);
+            DirectoryInfo di3 = new DirectoryInfo(m_strDirectory);
+            if (!di3.Exists)                                                         //  없으면 생성
+            {
+                di3.Create();
+            }
+
+            //  이미지 저장 경로 (꼭대기 / 날짜 / 레시피 / 작업자)
+            m_strDirectory = string.Format("{0}\\{1}\\{2}\\{3}", m_strRoot, m_strDate, m_strRecipe, m_strOperator);
+            DirectoryInfo di4 = new DirectoryInfo(m_strDirectory);
+            if (!di4.Exists)                                                         //  없으면 생성
+            {
+                di4.Create();
+            }
+
+            //  이미지 저장 경로 (꼭대기 / 날짜 / 레시피 / 작업자 / 작업자_얼라인시작시간_얼라인위치_카메라방향)
+            //  작업자 : 작업자 이름
+            //  얼라인시작시간 : 얼라인 시작 버튼을 눌렀을 때의 시간 (년-월-일)
+
+            m_strImageFile = string.Format("{0}_{1}_AllTipPos", m_strOperator, m_strStartTime);
+
+            ImgCapture imgCapture = new ImgCapture();
+            imgCapture.SetPath(m_strDirectory);
+            imgCapture.ScreenCapture(m_strImageFile, ActiveForm.Width, ActiveForm.Height, ActiveForm.Location);
+
+            return m_bRet;
+        }
+
         private void btn_Close_Click(object sender, EventArgs e)
         {
+            //  Tip Contact 화면을 이미지로 저장
+            //string pngFilePath = "D:\\aaa.png";
+
+            //int m_nStartX = 0;
+            //int m_nStartY = 0;
+
+            //m_nStartX = (Screen.PrimaryScreen.Bounds.Width - this.Width) / 2;
+            //m_nStartY = (Screen.PrimaryScreen.Bounds.Height - this.Height) / 2;
+
+            //ImgCapture imgCapture = new ImgCapture(m_nStartX, m_nStartY - 50, this.Width, this.Height);
+            //imgCapture.SetPath(pngFilePath);
+            //imgCapture.DoCaptureImage();
+
+            //ImgCapture imgCapture = new ImgCapture();
+            //imgCapture.SetPath(pngFilePath);
+            //imgCapture.ScreenCapture(ActiveForm.Width, ActiveForm.Height, ActiveForm.Location);
+
+
+            //  닫기 버튼 안보이게 (저장 이미지에 닫기 버튼이 보이면 좀 거시기 허니까)
+            btn_Close.Visible = false;
+
+            TipContactImage_TotalSave(Equipment.User_Name, Equipment.AlignStart_Time);
+            Equipment.AlignStart_Time = null;
+
+            //  닫기 버튼 보이게
+            btn_Close.Visible = true;
+
+
             this.Close();
 
             waferProbeAlign.m_nGateTipContactPosForm_Show = 0;

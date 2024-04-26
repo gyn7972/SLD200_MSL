@@ -156,7 +156,7 @@
             this.groupBoxDetectStatus.Size = new System.Drawing.Size(508, 68);
             this.groupBoxDetectStatus.TabIndex = 129;
             this.groupBoxDetectStatus.TabStop = false;
-            this.groupBoxDetectStatus.Text = " [ 센서 상태 확인 ] ";
+            this.groupBoxDetectStatus.Text = " [ 감지 센서 상태 확인 ] ";
             this.groupBoxDetectStatus.Enter += new System.EventHandler(this.groupBoxDetectStatus_Enter);
             // 
             // pictureBoxMainVacuumCheck
@@ -651,7 +651,7 @@
             this.btnAlignErrorCheck.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.btnAlignErrorCheck.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btnAlignErrorCheck.ForeColor = System.Drawing.Color.DarkRed;
-            this.btnAlignErrorCheck.Location = new System.Drawing.Point(274, 137);
+            this.btnAlignErrorCheck.Location = new System.Drawing.Point(277, 137);
             this.btnAlignErrorCheck.Name = "btnAlignErrorCheck";
             this.btnAlignErrorCheck.Size = new System.Drawing.Size(167, 102);
             this.btnAlignErrorCheck.TabIndex = 187;
@@ -667,9 +667,9 @@
             this.btnWaferProbeCardUnpacking.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.btnWaferProbeCardUnpacking.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btnWaferProbeCardUnpacking.ForeColor = System.Drawing.Color.DarkRed;
-            this.btnWaferProbeCardUnpacking.Location = new System.Drawing.Point(483, 137);
+            this.btnWaferProbeCardUnpacking.Location = new System.Drawing.Point(491, 137);
             this.btnWaferProbeCardUnpacking.Name = "btnWaferProbeCardUnpacking";
-            this.btnWaferProbeCardUnpacking.Size = new System.Drawing.Size(133, 102);
+            this.btnWaferProbeCardUnpacking.Size = new System.Drawing.Size(130, 102);
             this.btnWaferProbeCardUnpacking.TabIndex = 186;
             this.btnWaferProbeCardUnpacking.Text = "[ 프로브 카드 ]\r\n[ 웨이퍼 ]\r\n\r\n언패킹 시작";
             this.btnWaferProbeCardUnpacking.UseVisualStyleBackColor = false;
@@ -683,9 +683,9 @@
             this.btnWaferProbeCardUnpackingReady.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.btnWaferProbeCardUnpackingReady.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btnWaferProbeCardUnpackingReady.ForeColor = System.Drawing.Color.DarkRed;
-            this.btnWaferProbeCardUnpackingReady.Location = new System.Drawing.Point(483, 33);
+            this.btnWaferProbeCardUnpackingReady.Location = new System.Drawing.Point(491, 33);
             this.btnWaferProbeCardUnpackingReady.Name = "btnWaferProbeCardUnpackingReady";
-            this.btnWaferProbeCardUnpackingReady.Size = new System.Drawing.Size(133, 102);
+            this.btnWaferProbeCardUnpackingReady.Size = new System.Drawing.Size(130, 102);
             this.btnWaferProbeCardUnpackingReady.TabIndex = 185;
             this.btnWaferProbeCardUnpackingReady.Text = "[ 프로브 카드 ]\r\n[ 웨이퍼 ]\r\n언패킹 준비 위치\r\n이동";
             this.btnWaferProbeCardUnpackingReady.UseVisualStyleBackColor = false;
@@ -763,9 +763,9 @@
             this.btnReticlePos_LowerCam_GO.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.btnReticlePos_LowerCam_GO.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btnReticlePos_LowerCam_GO.ForeColor = System.Drawing.Color.DarkRed;
-            this.btnReticlePos_LowerCam_GO.Location = new System.Drawing.Point(627, 137);
+            this.btnReticlePos_LowerCam_GO.Location = new System.Drawing.Point(632, 137);
             this.btnReticlePos_LowerCam_GO.Name = "btnReticlePos_LowerCam_GO";
-            this.btnReticlePos_LowerCam_GO.Size = new System.Drawing.Size(123, 102);
+            this.btnReticlePos_LowerCam_GO.Size = new System.Drawing.Size(118, 102);
             this.btnReticlePos_LowerCam_GO.TabIndex = 180;
             this.btnReticlePos_LowerCam_GO.Text = "[ 하부 카메라 ]\r\n\r\n레티클 센터\r\n확인 위치 이동";
             this.btnReticlePos_LowerCam_GO.UseVisualStyleBackColor = false;
@@ -779,9 +779,9 @@
             this.btnReticlePos_UpperCam_GO.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.btnReticlePos_UpperCam_GO.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btnReticlePos_UpperCam_GO.ForeColor = System.Drawing.Color.DarkRed;
-            this.btnReticlePos_UpperCam_GO.Location = new System.Drawing.Point(627, 33);
+            this.btnReticlePos_UpperCam_GO.Location = new System.Drawing.Point(632, 33);
             this.btnReticlePos_UpperCam_GO.Name = "btnReticlePos_UpperCam_GO";
-            this.btnReticlePos_UpperCam_GO.Size = new System.Drawing.Size(123, 102);
+            this.btnReticlePos_UpperCam_GO.Size = new System.Drawing.Size(118, 102);
             this.btnReticlePos_UpperCam_GO.TabIndex = 179;
             this.btnReticlePos_UpperCam_GO.Text = "[ 상부 카메라 ]\r\n\r\n레티클 센터\r\n확인 위치 이동";
             this.btnReticlePos_UpperCam_GO.UseVisualStyleBackColor = false;
@@ -795,7 +795,7 @@
             this.btnPacking.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.btnPacking.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btnPacking.ForeColor = System.Drawing.Color.DarkRed;
-            this.btnPacking.Location = new System.Drawing.Point(359, 33);
+            this.btnPacking.Location = new System.Drawing.Point(362, 33);
             this.btnPacking.Name = "btnPacking";
             this.btnPacking.Size = new System.Drawing.Size(113, 102);
             this.btnPacking.TabIndex = 66;
@@ -811,7 +811,7 @@
             this.btnMainWork_Start.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.btnMainWork_Start.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btnMainWork_Start.ForeColor = System.Drawing.Color.DarkRed;
-            this.btnMainWork_Start.Location = new System.Drawing.Point(243, 33);
+            this.btnMainWork_Start.Location = new System.Drawing.Point(246, 33);
             this.btnMainWork_Start.Name = "btnMainWork_Start";
             this.btnMainWork_Start.Size = new System.Drawing.Size(113, 102);
             this.btnMainWork_Start.TabIndex = 62;

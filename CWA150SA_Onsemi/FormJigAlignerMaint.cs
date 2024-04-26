@@ -469,12 +469,16 @@ namespace CWA150SA_Onsemi
                 m_strFile = string.Format("{0}\\{1}_PAK.jpg", ConfigManager.GetPatternImagePath(), m_recipeInfo.Name);
                 m_Owner.TrainImage.Save(m_strFile, QMC.Common.Vision.VisionImage.FileFilter.jpg);
 
+                waferProbeAlign.PatternMatchingImage_Loaded_Upper = true;
+
                 waferProbeAlign.m_bUpperCam_AlignPattern_Reset = true;
             }
             else if (m_Owner.Name == "JigAligner Lower")
             {
                 m_strFile = string.Format("{0}\\{1}_Wafer.jpg", ConfigManager.GetPatternImagePath(), m_recipeInfo.Name);
                 m_Owner.TrainImage.Save(m_strFile, QMC.Common.Vision.VisionImage.FileFilter.jpg);
+
+                waferProbeAlign.PatternMatchingImage_Loaded_Lower = true;
 
                 waferProbeAlign.m_bLowerCam_AlignPattern_Reset = true;
             }

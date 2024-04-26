@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using QMC.Common;
+using QMC.Common.Modules;
 using MessageBoxYesNo = QMC.Core.MessageBoxYesNo;
 
 namespace CWA150SA_Onsemi300
@@ -246,16 +249,67 @@ namespace CWA150SA_Onsemi300
         #region ModifyButton_Click
         public void ModifyButton_Click(object sender, EventArgs e)
         {
+            string m_strRecipeName_Before = "";
+            string m_strRecipeName_After = "";
+            string m_strImage_srcPAK = "";
+            string m_strImage_srcWafer = "";
+            string m_strImage_destPAK = "";
+            string m_strImage_destWafer = "";
+
             FormAddRecipeInfo FormAddRecipeName = new FormAddRecipeInfo();
             if (baseDataGridViewRecipeList.RowCount > 0)
             {
                 m_nIndex = baseDataGridViewRecipeList.SelectedCells[0].RowIndex;
                 FormAddRecipeName.m_recipe = m_recipes[m_nIndex];
                 FormAddRecipeName.StartPosition = FormStartPosition.CenterScreen;
+
+                m_strRecipeName_Before = FormAddRecipeName.m_recipe.Name;
+
                 if (FormAddRecipeName.ShowDialog() == DialogResult.OK)
                 {
                     m_recipes[m_nIndex].Name = FormAddRecipeName.m_recipe.Name;
                     m_recipes[m_nIndex].Description = FormAddRecipeName.m_recipe.Description;
+
+                    m_strRecipeName_After = FormAddRecipeName.m_recipe.Name;
+
+                    //  패턴매칭 이미지가 존재하면, 이미지 파일명도 변경한다.
+                    m_strImage_srcPAK = string.Format("{0}\\{1}_PAK.jpg", ConfigManager.GetPatternImagePath(), m_strRecipeName_Before);
+                    m_strImage_destPAK = string.Format("{0}\\{1}_PAK.jpg", ConfigManager.GetPatternImagePath(), m_strRecipeName_After);
+                    if (File.Exists(m_strImage_srcPAK))
+                    {
+                        try
+                        {
+                            File.Move(m_strImage_srcPAK, m_strImage_destPAK);
+
+                            if (File.Exists(m_strImage_srcPAK) || !File.Exists(m_strImage_destPAK))
+                            {
+                                MessageBox.Show("[PAK] 패턴 이미지 파일명 변경 실패.", "Error");
+                            }
+                        }
+                        catch (IOException ex)
+                        {
+                            Console.WriteLine("The PAK renaming failed: {0}", ex.ToString());
+                        }
+                    }
+
+                    m_strImage_srcWafer = string.Format("{0}\\{1}_Wafer.jpg", ConfigManager.GetPatternImagePath(), m_strRecipeName_Before);
+                    m_strImage_destWafer = string.Format("{0}\\{1}_Wafer.jpg", ConfigManager.GetPatternImagePath(), m_strRecipeName_After);
+                    if (File.Exists(m_strImage_srcWafer))
+                    {
+                        try
+                        {
+                            File.Move(m_strImage_srcWafer, m_strImage_destWafer);
+
+                            if (File.Exists(m_strImage_srcWafer) || !File.Exists(m_strImage_destWafer))
+                            {
+                                MessageBox.Show("[Wafer] 패턴 이미지 파일명 변경 실패.", "Error");
+                            }
+                        }
+                        catch (IOException ex)
+                        {
+                            Console.WriteLine("The Wafer renaming failed: {0}", ex.ToString());
+                        }
+                    }
                 }
                 UpdateDataGrid();
             }

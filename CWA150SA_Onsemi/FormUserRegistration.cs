@@ -95,6 +95,7 @@ namespace CWA150SA_Onsemi300
             bool m_bRet = false;
             string strKey = "";
             string strFIle = "";
+            string strPW = "";
             int m_nItemCount = 0;
 
             //string strUserData_Authority = "";

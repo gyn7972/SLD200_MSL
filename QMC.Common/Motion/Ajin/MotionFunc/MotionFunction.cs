@@ -641,7 +641,9 @@ namespace QMC.Common.Motion.Ajin.Motions
 
             if (Axis == (int)WaferProbeAlign.nAxis.X)
             {
-                if (waferProbeAlign.Stage.Interpolator != null)
+                //if (waferProbeAlign.Stage.Interpolator != null)
+                if (waferProbeAlign.Config.ParamConfig.MapFileApply_WhenPgmStart && 
+                    (waferProbeAlign.Stage.Interpolator != null))
                 {
                     OriginPosition.X = position;
                     OriginPosition.Y = MC_GetEncPos( (int)WaferProbeAlign.nAxis.Y);
@@ -656,7 +658,9 @@ namespace QMC.Common.Motion.Ajin.Motions
             }
             else if (Axis == (int)WaferProbeAlign.nAxis.Y)
             {
-                if (waferProbeAlign.Stage.Interpolator != null)
+                //if (waferProbeAlign.Stage.Interpolator != null)
+                if (waferProbeAlign.Config.ParamConfig.MapFileApply_WhenPgmStart &&
+                    (waferProbeAlign.Stage.Interpolator != null))
                 {
                     OriginPosition.X = MC_GetEncPos((int)WaferProbeAlign.nAxis.X);
                     OriginPosition.Y = position;
@@ -700,7 +704,9 @@ namespace QMC.Common.Motion.Ajin.Motions
 
             if (Axis == (int)WaferProbeAlign.nAxis.X)
             {
-                if (waferProbeAlign.Stage.Interpolator != null)
+                //if (waferProbeAlign.Stage.Interpolator != null)
+                if (waferProbeAlign.Config.ParamConfig.MapFileApply_WhenPgmStart &&
+                    (waferProbeAlign.Stage.Interpolator != null))
                 {
                     OriginPosition.X = m_dTarget;
                     OriginPosition.Y = MC_GetEncPos((int)WaferProbeAlign.nAxis.Y);
@@ -711,7 +717,9 @@ namespace QMC.Common.Motion.Ajin.Motions
             }
             else if (Axis == (int)WaferProbeAlign.nAxis.Y)
             {
-                if (waferProbeAlign.Stage.Interpolator != null)
+                //if (waferProbeAlign.Stage.Interpolator != null)
+                if (waferProbeAlign.Config.ParamConfig.MapFileApply_WhenPgmStart &&
+                    (waferProbeAlign.Stage.Interpolator != null))
                 {
                     OriginPosition.X = MC_GetEncPos((int)WaferProbeAlign.nAxis.X);
                     OriginPosition.Y = m_dTarget;

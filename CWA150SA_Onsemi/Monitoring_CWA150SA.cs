@@ -945,15 +945,6 @@ namespace CWA150SA_Onsemi300
                     baseLabelPosition_Bot.BackColor = Color.Black;
                     baseLabelPosition_Bot.ForeColor = Color.Yellow;
 
-                    //lblUpperCamera_Top_ErrorData_X.Text = "- - -";
-                    //lblUpperCamera_Top_ErrorData_Y.Text = "- - -";
-
-                    //lblUpperCamera_Mid_ErrorData_X.Text = "- - -";
-                    //lblUpperCamera_Mid_ErrorData_Y.Text = "- - -";
-
-                    //lblUpperCamera_Bot_ErrorData_X.Text = "- - -";
-                    //lblUpperCamera_Bot_ErrorData_Y.Text = "- - -";
-
                     lblLowerCamera_Top_ErrorData_X.Text = "- - -";
                     lblLowerCamera_Top_ErrorData_Y.Text = "- - -";
 
@@ -965,15 +956,6 @@ namespace CWA150SA_Onsemi300
                 }
                 else
                 {
-                    //lblUpperCamera_Top_ErrorData_X.Text = waferProbeAlign.AlignmentErrorCheck_Delta[(int)WaferProbeAlign.nAlignErrorCheckPos.Pos_Top, (int)WaferProbeAlign.nCameraType.Cam_Upper].X.ToString();
-                    //lblUpperCamera_Top_ErrorData_Y.Text = waferProbeAlign.AlignmentErrorCheck_Delta[(int)WaferProbeAlign.nAlignErrorCheckPos.Pos_Top, (int)WaferProbeAlign.nCameraType.Cam_Upper].Y.ToString();
-
-                    //lblUpperCamera_Mid_ErrorData_X.Text = waferProbeAlign.AlignmentErrorCheck_Delta[(int)WaferProbeAlign.nAlignErrorCheckPos.Pos_Mid, (int)WaferProbeAlign.nCameraType.Cam_Upper].X.ToString();
-                    //lblUpperCamera_Mid_ErrorData_Y.Text = waferProbeAlign.AlignmentErrorCheck_Delta[(int)WaferProbeAlign.nAlignErrorCheckPos.Pos_Mid, (int)WaferProbeAlign.nCameraType.Cam_Upper].Y.ToString();
-
-                    //lblUpperCamera_Bot_ErrorData_X.Text = waferProbeAlign.AlignmentErrorCheck_Delta[(int)WaferProbeAlign.nAlignErrorCheckPos.Pos_Bot, (int)WaferProbeAlign.nCameraType.Cam_Upper].X.ToString();
-                    //lblUpperCamera_Bot_ErrorData_Y.Text = waferProbeAlign.AlignmentErrorCheck_Delta[(int)WaferProbeAlign.nAlignErrorCheckPos.Pos_Bot, (int)WaferProbeAlign.nCameraType.Cam_Upper].Y.ToString();
-
                     if (waferProbeAlign.m_bWaferProbeAlign_ErrorCheck_Complete)
                     {
                         if ((waferProbeAlign.AlignmentErrorCheck_Status[(int)WaferProbeAlign.nAlignErrorCheckPos.Pos_Top, (int)WaferProbeAlign.nCameraType.Cam_Upper] == true) &&
@@ -1646,8 +1628,8 @@ namespace CWA150SA_Onsemi300
                 (waferProbeAlign.m_nWaferProbeCard_Unpacking_Ready_Step == (int)WaferProbeCard_Unpacking_Ready_Step.None) &&
                 (waferProbeAlign.m_nProbeCard_Locking_Step == (int)ProbeCard_Locking_Step.None) &&
                 (waferProbeAlign.m_nProbeCard_Loading_Ready_Step == (int)ProbeCard_Loading_Ready_Step.None) &&
-                (waferProbeAlign.m_nPAK_AirLine_Check_Step == (int)PAK_AirLine_Check_Step.None) &&
-                (waferProbeAlign.m_nManualPacking_Step == (int)ManualPackingStep.NONE))
+                (waferProbeAlign.m_nPAK_AirLine_Check_Step == (int)PAK_AirLine_Check_Step.None)) //&&
+                //(waferProbeAlign.m_nManualPacking_Step == (int)ManualPackingStep.NONE))                                           //  요건 임시로 주석 처리 
             {
                 //  Start 버튼 누를 때 --> PAK 고정 / 고정 해제
                 m_bStartBtn_Status = CommonModule.Instance.OperationButtons.IsStart();
@@ -2917,6 +2899,9 @@ namespace CWA150SA_Onsemi300
 
                 waferProbeAlign.m_bMyWaferAlign_fromManualMode = false;
 
+                waferProbeAlign.m_bWaferProbeAlign_ErrorCheck_Complete = false;
+                waferProbeAlign.m_bWaferProbeAlign_ErrorCheck_All_OK = false;
+
                 Equipment.MachineStop_byUser = true;
 
 
@@ -3100,6 +3085,9 @@ namespace CWA150SA_Onsemi300
                 //  패턴 매칭 Train Image 설정
                 string m_strFile = "";
 
+                waferProbeAlign.PatternMatchingImage_Loaded_Upper = false;
+                waferProbeAlign.PatternMatchingImage_Loaded_Lower = false;
+
                 //  PAK
                 m_strFile = string.Format("{0}\\{1}_PAK.jpg", ConfigManager.GetPatternImagePath(), CurrentRecipe.Name);
                 if (File.Exists(m_strFile))
@@ -3109,6 +3097,8 @@ namespace CWA150SA_Onsemi300
                         waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
                         //waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage.Load(m_strFile, VisionImage.FileFilter.jpg);
                         pictureBoxTrainImage_Upper.Image = waferProbeAlign.jigAligner_Upper.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+
+                        waferProbeAlign.PatternMatchingImage_Loaded_Upper = true;
                     }
                 }
                 else
@@ -3132,6 +3122,8 @@ namespace CWA150SA_Onsemi300
                     {
                         waferProbeAlign.jigAligner_Lower.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
                         pictureBoxTrainImage_Lower.Image = waferProbeAlign.jigAligner_Lower.Recipe.PatternMatchingParameter.TrainImage.GetImage();
+
+                        waferProbeAlign.PatternMatchingImage_Loaded_Lower = true;
                     }
                 }
                 else
@@ -3280,7 +3272,7 @@ namespace CWA150SA_Onsemi300
 
         private void btnMainWork_Start_Click_1(object sender, EventArgs e)
         {
-            //  Wafer Align            
+            //  Wafer Align
 
             if (Equipment.User_Mode == null)
             {
@@ -3896,6 +3888,13 @@ namespace CWA150SA_Onsemi300
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Wafer 로딩 대기 위치로 이동하시겠습니까?"))
                     return;
 
+                //  내부 조명 켜기
+                if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_B)
+                {
+                    CommonModule.Instance.TowerLamp.Lamp0_On();
+                    CommonModule.Instance.TowerLamp.Lamp1_On();
+                }
+
                 waferProbeAlign.m_nWafer_Loading_Ready_Step = (int)WaferProbeAlign.WaferLoading_Ready_Step.Start;
                 waferProbeAlign.timer_SubWork.Enabled = true;
 
@@ -4225,9 +4224,11 @@ namespace CWA150SA_Onsemi300
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Probe-Card 로딩 대기 위치로 이동하시겠습니까?"))
                     return;
 
-                //  내부 조명 켜기
-                CommonModule.Instance.TowerLamp.Lamp0_On();
-                CommonModule.Instance.TowerLamp.Lamp1_On();
+                if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_B)       //  실내 조명이 설치되는 2호기부터
+                {
+                    CommonModule.Instance.TowerLamp.Lamp0_On();
+                    CommonModule.Instance.TowerLamp.Lamp1_On();
+                }
 
                 waferProbeAlign.m_nProbeCard_Loading_Ready_Step = (int)WaferProbeAlign.ProbeCard_Loading_Ready_Step.Start;
                 waferProbeAlign.timer_SubWork.Enabled = true;
@@ -4351,9 +4352,11 @@ namespace CWA150SA_Onsemi300
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Probe-Card 고정 작업을 진행하시겠습니까?"))
                     return;
 
-                //  내부 조명 끄기
-                CommonModule.Instance.TowerLamp.Lamp0_Off();
-                CommonModule.Instance.TowerLamp.Lamp1_Off();
+                if (Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_B)       //  실내 조명이 설치되는 2호기부터
+                {
+                    CommonModule.Instance.TowerLamp.Lamp0_Off();
+                    CommonModule.Instance.TowerLamp.Lamp1_Off();
+                }
 
                 waferProbeAlign.m_nProbeCard_Locking_Step = (int)WaferProbeAlign.ProbeCard_Locking_Step.Start;
                 waferProbeAlign.timer_SubWork.Enabled = true;

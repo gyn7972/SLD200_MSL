@@ -183,6 +183,7 @@
     <Compile Include="CircularButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ScreenCapture.cs" />
     <Compile Include="Collet.cs" />
     <Compile Include="ColletCountData.cs" />
     <Compile Include="ColletOffset.cs" />

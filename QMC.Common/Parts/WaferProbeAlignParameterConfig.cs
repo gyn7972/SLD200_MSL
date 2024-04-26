@@ -194,7 +194,7 @@ namespace QMC.Common.Parts
         /// </summary>
         /// 
         [Category("[05] Offset && Delay"),
-            Description("Elevator Z 축이 Packing 위치로 이동할 때, Packing 위치에서 이 값만큼 뺀 거리까지 고속으로 이동하고, 이 구간은 저속으로 이동한다.\r\n[default : 10]"),
+            Description("Elevator Z 축이 Packing 위치로 이동할 때, Packing 위치에서 이 값만큼 뺀 거리까지 고속으로 이동하고, 이 구간은 저속으로 이동한다.\r\n씬-척이 PAK 에 Packing 되고난 후 Elevator Z 축을 내리는 거리에도 사용된다. (값이 너무 작으면 씬-척 감지로 인한 오동작이 발생할 수 있음)\r\n[default : 10]"),
             DisplayName("웨이퍼 && 프로브카드 Packing 시, 저속 이동 거리 (mm)")]
         public double Wafer_ProbeCard_PackingOffset_Distance { set; get; }
 
@@ -346,6 +346,22 @@ namespace QMC.Common.Parts
             Description("웨이퍼 얼라인 시, 마크 검사 위치로 이동한 후에 진동 억제를 위한 안정화 시간 (ms)"),
             DisplayName("Wafer 얼라인 시, 마크 위치 이동 후 안정화 시간 (ms)")]
         public int WaferAlign_Move_StableTime { set; get; }
+
+
+
+        /// <summary>
+        /// 2D Mapping Options
+        /// </summary>
+        /// 
+        [Category("[98] 2D Mapping Option"),
+            Description("for AJIN - 2D 맵 파일 경로"),
+            DisplayName("for AJIN - 2D 맵 파일 경로")]
+        public string MapFile_Path { set; get; }
+
+        [Category("[98] 2D Mapping Option"),
+            Description("for AJIN - 2D 맵 파일 적용 여부 (프로그램 로딩 시 맵 적용할 것인지)"),
+            DisplayName("for AJIN - 2D 맵 파일 적용 여부")]
+        public bool MapFileApply_WhenPgmStart { set; get; }
 
 
 
@@ -528,20 +544,6 @@ namespace QMC.Common.Parts
             DisplayName("PAK, 웨이퍼 Gate - Center 가 일치할 때의 Offset Y")]
         public double PAK_WaferGate_Centering_Offset_Y { set; get; }
 
-
-        /// <summary>
-        /// 2D Mapping Options
-        /// </summary>
-        /// 
-        [Category("[99] 2D Mapping Option"),
-            Description("for AJIN - 2D 맵 파일 경로"),
-            DisplayName("for AJIN - 2D 맵 파일 경로")]
-        public string MapFile_Path { set; get; }
-
-        [Category("[99] 2D Mapping Option"),
-            Description("for AJIN - 2D 맵 파일 적용 여부 (프로그램 로딩 시 맵 적용할 것인지)"),
-            DisplayName("for AJIN - 2D 맵 파일 적용 여부")]
-        public bool MapFileApply_WhenPgmStart { set; get; }
 
         #endregion
 

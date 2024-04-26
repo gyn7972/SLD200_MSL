@@ -35,6 +35,7 @@ using static QMC.Common.Parts.WaferProbeAlignParameter;
 using System.Diagnostics.Eventing.Reader;
 using Cognex.VisionPro;
 using System.Runtime.InteropServices.ComTypes;
+using Cognex.VisionPro.Implementation.Internal;
 
 
 namespace QMC.Common.Modules
@@ -1558,6 +1559,9 @@ namespace QMC.Common.Modules
         public int m_nWaferProbeAlign_ErrorCheck_Count_Total { set; get; }  //  오차 확인 위치 총 개수
         public int m_nWaferProbeAlign_ErrorCheck_Count {  set; get; }       //  오차 확인 위치 카운트 (3개,   0: TOP, 1: MID, 2: BOT)
         public int m_nGateTipContactPosForm_Show {  set; get; }             //  Gate Tip Contact 위치 표시창 보여주기 (0:창 닫힌 상태, 1:창 열린 상태)
+
+        public int m_nImageSave_RetryCount {  set; get; }                   //  이미지 저장 후 파일이 없을 경우, 다시 시도 카운트
+        public int m_nImageSave_RetryTotal { set; get; }                    //  이미지 저장 후 파일이 없을 경우, 다시 시도 최대 회수
         public enum WaferProbeAlignErrorCheck_Step
         {
             None = 0,
@@ -1710,6 +1714,9 @@ namespace QMC.Common.Modules
             m_nProbeCardClamp_TypeB_CylUpDown_StableTime = 0;
 
             m_bPAK_Clamp_Handling_byButton = false;
+
+            m_nImageSave_RetryCount = 0;                                                //  이미지 저장 후 파일이 없을 경우, 다시 시도 카운트
+            m_nImageSave_RetryTotal = 3;                                                //  이미지 저장 후 파일이 없을 경우, 다시 시도 최대 회수 (임시로 3번만 하자)
 
             ScannerTotalCountX = 0;          //  Scanner FOV 만큼 X 방향으로 몇 번 이동해야 하는 지
             ScannerTotalCountY = 0;          //  Scanner FOV 만큼 Y 방향으로 몇 번 이동해야 하는 지
@@ -2391,6 +2398,8 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        Equipment.AlignStart_Time = null;
+
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
                         timer_MainWork.Enabled = false;
@@ -2467,6 +2476,8 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        Equipment.AlignStart_Time = null;
+
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
                         timer_MainWork.Enabled = false;
@@ -2509,6 +2520,8 @@ namespace QMC.Common.Modules
                             //  알람 정지 (LED Bar - Red Blink)
                             Equipment.MachineStop_byAlarm = true;
 
+                            Equipment.AlignStart_Time = null;
+
                             m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
                             m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step.None;
 
@@ -2524,6 +2537,8 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
+
+                        Equipment.AlignStart_Time = null;
 
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
                         m_nPAK_AirLine_Check_Step = (int)PAK_AirLine_Check_Step.None;
@@ -2597,6 +2612,8 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        Equipment.AlignStart_Time = null;
+
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
                         timer_MainWork.Enabled = false;
@@ -2667,6 +2684,8 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        Equipment.AlignStart_Time = null;
+
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
                         timer_MainWork.Enabled = false;
@@ -2695,6 +2714,8 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
+
+                        Equipment.AlignStart_Time = null;
 
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
@@ -2751,6 +2772,8 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
+
+                        Equipment.AlignStart_Time = null;
 
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
@@ -2850,6 +2873,8 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        Equipment.AlignStart_Time = null;
+
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
                         timer_MainWork.Enabled = false;
@@ -2909,6 +2934,8 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
+
+                        Equipment.AlignStart_Time = null;
 
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
@@ -2974,6 +3001,8 @@ namespace QMC.Common.Modules
 
                         m_bMyWaferAlign_fromManualMode = false;
                         //m_nMyWaferAlign_ManualMode_VisionType = (int)VisionType.NONE;
+
+                        Equipment.AlignStart_Time = null;   
 
                         m_bProbeCard_TiltCheck_OK = false;
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
@@ -3079,6 +3108,8 @@ namespace QMC.Common.Modules
 
                             //  알람 정지 (LED Bar - Red Blink)
                             Equipment.MachineStop_byAlarm = true;
+
+                            Equipment.AlignStart_Time = null;
 
                             Equipment.MachineStop_byUser = true;
 
@@ -3229,6 +3260,8 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        Equipment.AlignStart_Time = null;
+
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
                         timer_MainWork.Enabled = false;
@@ -3288,6 +3321,8 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
+
+                        Equipment.AlignStart_Time = null;
 
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
@@ -3350,7 +3385,9 @@ namespace QMC.Common.Modules
                     if (Equipment.MachineStop_byUser == true)
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer ProbeCard Align", "작업 중지. (사용자에 의해 작업이 중지됨)");
-                        
+
+                        Equipment.AlignStart_Time = null;
+
                         m_bMyWaferAlign_fromManualMode = false;
                         //m_nMyWaferAlign_ManualMode_VisionType = (int)VisionType.NONE;
 
@@ -3458,6 +3495,8 @@ namespace QMC.Common.Modules
                             //  알람 정지 (LED Bar - Red Blink)
                             Equipment.MachineStop_byAlarm = true;
 
+                            Equipment.AlignStart_Time = null;
+
                             Equipment.MachineStop_byUser = true;
 
                             m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
@@ -3550,6 +3589,8 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
+
+                        Equipment.AlignStart_Time = null;
 
                         m_strProbeCard_TiltData_for_Display = "각도 오류 (5˚이상)";
                         m_strWafer_TiltData_for_Display = "- - -";
@@ -3644,6 +3685,8 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        Equipment.AlignStart_Time = null;
+
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
                         timer_MainWork.Enabled = false;
@@ -3703,6 +3746,8 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
+
+                        Equipment.AlignStart_Time = null;
 
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
@@ -3770,6 +3815,8 @@ namespace QMC.Common.Modules
                         {
                             timer_MainWork.Enabled = false;
                         }
+
+                        Equipment.AlignStart_Time = null;
 
                         m_bMyWaferAlign_fromManualMode = false;
                         //m_nMyWaferAlign_ManualMode_VisionType = (int)VisionType.NONE;
@@ -3872,6 +3919,8 @@ namespace QMC.Common.Modules
 
                             //  알람 정지 (LED Bar - Red Blink)
                             Equipment.MachineStop_byAlarm = true;
+
+                            Equipment.AlignStart_Time = null;
 
                             Equipment.MachineStop_byUser = true;
 
@@ -4011,6 +4060,8 @@ namespace QMC.Common.Modules
                             //  알람 정지 (LED Bar - Red Blink)
                             Equipment.MachineStop_byAlarm = true;
 
+                            Equipment.AlignStart_Time = null;
+
                             //if (!m_bAlignVisionThread_Use)
                             {
                                 timer_MainWork.Enabled = false;
@@ -4116,6 +4167,8 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        Equipment.AlignStart_Time = null;
+
                         //if (!m_bAlignVisionThread_Use)
                         {
                             timer_MainWork.Enabled = false;
@@ -4151,6 +4204,8 @@ namespace QMC.Common.Modules
 
                             //  알람 정지 (LED Bar - Red Blink)
                             Equipment.MachineStop_byAlarm = true;
+
+                            Equipment.AlignStart_Time = null;
 
                             timer_MainWork.Enabled = false;
 
@@ -4276,6 +4331,8 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        Equipment.AlignStart_Time = null;
+
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
                         timer_MainWork.Enabled = false;
@@ -4335,6 +4392,8 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
+
+                        Equipment.AlignStart_Time = null;
 
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
@@ -4402,6 +4461,8 @@ namespace QMC.Common.Modules
                         {
                             timer_MainWork.Enabled = false;
                         }
+
+                        Equipment.AlignStart_Time = null;
 
                         m_bMyWaferAlign_fromManualMode = false;
                         //m_nMyWaferAlign_ManualMode_VisionType = (int)VisionType.NONE;
@@ -4504,6 +4565,8 @@ namespace QMC.Common.Modules
 
                             //  알람 정지 (LED Bar - Red Blink)
                             Equipment.MachineStop_byAlarm = true;
+
+                            Equipment.AlignStart_Time = null;
 
                             Equipment.MachineStop_byUser = true;
 
@@ -4653,6 +4716,8 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        Equipment.AlignStart_Time = null;
+
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
                         timer_MainWork.Enabled = false;
@@ -4712,6 +4777,8 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
+
+                        Equipment.AlignStart_Time = null;
 
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
@@ -4779,6 +4846,8 @@ namespace QMC.Common.Modules
                         {
                             timer_MainWork.Enabled = false;
                         }
+
+                        Equipment.AlignStart_Time = null;
 
                         m_bMyWaferAlign_fromManualMode = false;
                         //m_nMyWaferAlign_ManualMode_VisionType = (int)VisionType.NONE;
@@ -4881,6 +4950,8 @@ namespace QMC.Common.Modules
 
                             //  알람 정지 (LED Bar - Red Blink)
                             Equipment.MachineStop_byAlarm = true;
+
+                            Equipment.AlignStart_Time = null;
 
                             Equipment.MachineStop_byUser = true;
 
@@ -5067,6 +5138,8 @@ namespace QMC.Common.Modules
                                 timer_MainWork.Enabled = false;
                             }
 
+                            Equipment.AlignStart_Time = null;
+
                             m_bMyWaferAlign_fromManualMode = false;
                             m_nMyWaferAlign_ManualMode_VisionType = (int)VisionType.NONE;
 
@@ -5238,6 +5311,8 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        Equipment.AlignStart_Time = null;
+
                         //if (!m_bAlignVisionThread_Use)
                         {
                             timer_MainWork.Enabled = false;
@@ -5336,6 +5411,8 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        Equipment.AlignStart_Time = null;
+
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
                         timer_MainWork.Enabled = false;
@@ -5395,6 +5472,8 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
+
+                        Equipment.AlignStart_Time = null;
 
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
 
@@ -5462,6 +5541,8 @@ namespace QMC.Common.Modules
                         {
                             timer_MainWork.Enabled = false;
                         }
+
+                        Equipment.AlignStart_Time = null;
 
                         m_bMyWaferAlign_fromManualMode = false;
                         //m_nMyWaferAlign_ManualMode_VisionType = (int)VisionType.NONE;
@@ -5571,6 +5652,8 @@ namespace QMC.Common.Modules
 
                             //  알람 정지 (LED Bar - Red Blink)
                             Equipment.MachineStop_byAlarm = true;
+
+                            Equipment.AlignStart_Time = null;
 
                             Equipment.MachineStop_byUser = true;
 
@@ -5728,6 +5811,8 @@ namespace QMC.Common.Modules
                                 timer_MainWork.Enabled = false;
                             }
 
+                            Equipment.AlignStart_Time = null;
+
                             m_bMyWaferAlign_fromManualMode = false;
                             m_nMyWaferAlign_ManualMode_VisionType = (int)VisionType.NONE;
 
@@ -5875,6 +5960,8 @@ namespace QMC.Common.Modules
                             timer_MainWork.Enabled = false;
                         }
 
+                        Equipment.AlignStart_Time = null;
+
                         m_bMyWaferAlign_fromManualMode = false;
                         m_nMyWaferAlign_ManualMode_VisionType = (int)VisionType.NONE;
 
@@ -5944,6 +6031,8 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
+
+                        Equipment.AlignStart_Time = null;
 
                         Equipment.MachineStop_byUser = true;
 
@@ -6024,6 +6113,8 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
+
+                        Equipment.AlignStart_Time = null;
 
                         timer_MainWork.Enabled = false;
                                                 
@@ -6305,6 +6396,7 @@ namespace QMC.Common.Modules
 
         private void Run_WaferProbeAlign_ErrorCheck_Func()
         {
+            bool m_bRet = false;
             string m_strTemp = "";
 
             double theta = 0.0;
@@ -6327,6 +6419,9 @@ namespace QMC.Common.Modules
                     Equipment.MachineStop_byAlarm = false;
 
                     //m_bFindFirstAlignMarkOnly = false;
+
+                    m_nImageSave_RetryCount = 0;                                                //  이미지 저장 후 파일이 없을 경우, 다시 시도 카운트
+                    m_nImageSave_RetryTotal = 3;                                                //  이미지 저장 후 파일이 없을 경우, 다시 시도 최대 회수 (임시로 3번만 하자)
 
                     m_bWaferProbeAlign_ErrorCheck_Complete = false;
                     m_bWaferProbeAlign_ErrorCheck_All_OK = false;
@@ -6395,6 +6490,8 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
+
+                        Equipment.AlignStart_Time = null;
 
                         timer_SubWork.Enabled = false;
 
@@ -6485,6 +6582,8 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        Equipment.AlignStart_Time = null;
+
                         timer_SubWork.Enabled = false;
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
 
@@ -6525,9 +6624,16 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
-                        timer_SubWork.Enabled = false;
+                        Equipment.AlignStart_Time = null;
 
+                        timer_SubWork.Enabled = false;
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                        if (m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
+                        {
+                            timer_MainWork.Enabled = false;
+                            m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                        }
 
                         MessageBox.Show("Elev. Z 축, Wafer Align 한계 높이를 초과하여 이동하려는 시도로 작업 중지.", "Information");
                     }
@@ -6562,6 +6668,8 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
+
+                        Equipment.AlignStart_Time = null;
 
                         timer_SubWork.Enabled = false;
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
@@ -6752,6 +6860,8 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        Equipment.AlignStart_Time = null;
+
                         timer_SubWork.Enabled = false;
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
 
@@ -6845,6 +6955,8 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        Equipment.AlignStart_Time = null;
+
                         timer_SubWork.Enabled = false;
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
 
@@ -6934,6 +7046,8 @@ namespace QMC.Common.Modules
                         {
                             timer_SubWork.Enabled = false;
                         }
+
+                        Equipment.AlignStart_Time = null;
 
                         m_bMyWaferAlign_fromManualMode = false;
                         //m_nMyWaferAlign_ManualMode_VisionType = (int)VisionType.NONE;
@@ -7045,6 +7159,8 @@ namespace QMC.Common.Modules
 
                             //  알람 정지 (LED Bar - Red Blink)
                             Equipment.MachineStop_byAlarm = true;
+
+                            Equipment.AlignStart_Time = null;
 
                             Equipment.MachineStop_byUser = true;
 
@@ -7317,6 +7433,8 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        Equipment.AlignStart_Time = null;
+
                         //if (!m_bAlignVisionThread_Use)
                         {
                             timer_SubWork.Enabled = false;
@@ -7506,6 +7624,8 @@ namespace QMC.Common.Modules
                             timer_SubWork.Enabled = false;
                         }
 
+                        Equipment.AlignStart_Time = null;
+
                         m_bMyWaferAlign_fromManualMode = false;
                         //m_nMyWaferAlign_ManualMode_VisionType = (int)VisionType.NONE;
 
@@ -7618,6 +7738,8 @@ namespace QMC.Common.Modules
 
                             //  알람 정지 (LED Bar - Red Blink)
                             Equipment.MachineStop_byAlarm = true;
+
+                            Equipment.AlignStart_Time = null;
 
                             Equipment.MachineStop_byUser = true;
 
@@ -7866,6 +7988,8 @@ namespace QMC.Common.Modules
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
 
+                        Equipment.AlignStart_Time = null;
+
                         Equipment.MachineStop_byUser = true;
 
                         MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.U, 500);
@@ -7909,37 +8033,107 @@ namespace QMC.Common.Modules
                     {
                         if (m_nWaferProbeAlign_ErrorCheck_Count == 0)                               //  Top
                         {
-                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "TOP 위치 얼라인 이미지 저장");
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "TOP 위치 얼라인 이미지 저장 시도");
                             ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "TOP", AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Upper], AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower]);
 
                             //  Tip Contact 위치 표시로 사용할 이미지 저장 (기존 파일 있으면 삭제)
-                            TipContactImage_Save("TOP");
+                            m_bRet = TipContactImage_Save("TOP");
                         }
                         else if (m_nWaferProbeAlign_ErrorCheck_Count == 1)                          //  Middle
                         {
-                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "MIDDLE 위치 얼라인 이미지 저장");
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "MIDDLE 위치 얼라인 이미지 저장 시도");
                             ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "MID", AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Upper], AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower]);
 
-                            TipContactImage_Save("MID");
+                            m_bRet = TipContactImage_Save("MID");
                         }
                         else                                                                        //  Bottom
                         {
-                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "BOTTOM 위치 얼라인 이미지 저장");
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "BOTTOM 위치 얼라인 이미지 저장 시도");
                             ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "BOT", AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Upper], AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower]);
 
-                            TipContactImage_Save("BOT");
+                            m_bRet = TipContactImage_Save("BOT");
                         }                        
                     }
 
-                    m_nWaferProbeAlign_ErrorCheck_Count++;
+                    if (m_bRet)                                 //  이미지가 정상적으로 저장되었을 경우
+                    {
+                        if (m_nWaferProbeAlign_ErrorCheck_Count == 0)                               //  Top
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "TOP 위치 얼라인 이미지 저장 성공");
+                        }
+                        else if (m_nWaferProbeAlign_ErrorCheck_Count == 1)                          //  Middle
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "MIDDLE 위치 얼라인 이미지 저장 성공");
+                        }
+                        else                                                                        //  Bottom
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "BOTTOM 위치 얼라인 이미지 저장 성공");
+                        }
 
-                    m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ErrorCheck_Position_Remained_Check;
+                        m_nWaferProbeAlign_ErrorCheck_Count++;
+
+                        m_nImageSave_RetryCount = 0;
+
+                        m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ErrorCheck_Position_Remained_Check;
+                    }
+                    else                                        //  이미지가 저장되지 않았을 경우 -> 다시 저장 시도
+                    {
+                        if (m_nWaferProbeAlign_ErrorCheck_Count == 0)                               //  Top
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "TOP 위치 얼라인 이미지 저장 실패");
+                        }
+                        else if (m_nWaferProbeAlign_ErrorCheck_Count == 1)                          //  Middle
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "MIDDLE 위치 얼라인 이미지 저장 실패");
+                        }
+                        else                                                                        //  Bottom
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "BOTTOM 위치 얼라인 이미지 저장 실패");
+                        }
+
+                        m_nImageSave_RetryCount++;
+
+                        if (m_nImageSave_RetryCount < m_nImageSave_RetryTotal)
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "얼라인 이미지 저장 재시도");
+
+                            m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ErrorCheck_Position_Remained_Check;
+                        }
+                        else
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "얼라인 이미지 저장 재시도 회수 초과로 작업 중지");
+
+                            //  알람 정지 (LED Bar - Red Blink)
+                            Equipment.MachineStop_byAlarm = true;
+
+                            Equipment.AlignStart_Time = null;
+
+                            timer_SubWork.Enabled = false;
+                            m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                            if (m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
+                            {
+                                timer_MainWork.Enabled = false;
+                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                            }
+
+                            if (m_bAlignVisionThread_Use)
+                            {
+                                //  Thread 를 사용할 경우
+                                m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                            }
+
+                            MessageBox.Show("얼라인 이미지 저장 실패.", "Error");
+                        }
+                    }
                     break;
 
 
                 case (int)WaferProbeAlignErrorCheck_Step.__Wafer_EmptyPosImageSave_Start:                                       //  Wafer Chip Empty (먹다이) 위치 이미지 저장 시작
 
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 Empty Chip 위치 이미지 저장 파트 시작");
+
+                    m_nImageSave_RetryCount = 0;
 
                     m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.VisionXYZ_Move_WaferChipEmptyPos;
                     break;
@@ -7988,6 +8182,13 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 Empty Chip 위치 이동 완료");
 
+                        if (Camera_Upper != null)
+                        {
+                            Camera_Upper.StartLive();
+                            visionCalibrator_Upper.Illuminator.SetVolume(Config.ParamConfig.Align_UpperVision_LightValue, 1);
+                            visionCalibrator_Upper.Illuminator.TurnOnOff(true, 1);       //  Probe Card 조명
+                        }
+
                         if (Camera_Lower != null)
                         {
                             Camera_Lower.StartLive();
@@ -8005,6 +8206,8 @@ namespace QMC.Common.Modules
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
+
+                        Equipment.AlignStart_Time = null;
 
                         timer_SubWork.Enabled = false;
                         m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
@@ -8049,6 +8252,11 @@ namespace QMC.Common.Modules
 
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 Empty Chip 위치 이미지 Grab");
 
+                    if (Camera_Upper != null)
+                    {
+                        Camera_Upper.Grab();
+                    }
+
                     if (Camera_Lower != null)
                     {
                         Camera_Lower.Grab();
@@ -8074,11 +8282,71 @@ namespace QMC.Common.Modules
 
                 case (int)WaferProbeAlignErrorCheck_Step.Wafer_EmptyChip_ImageSave:                                       //  Wafer Chip Empty 이미지 저장
 
-                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 Empty Chip 위치 이미지 저장");
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 Empty Chip 위치 이미지 저장 시도");
 
-                    TipContactImage_Save("EMPTY");
+                    m_bRet = TipContactImage_Save("EMPTY");
 
-                    m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.__Wafer_EmptyPosImageSave_Complete;
+                    if (m_bRet)                                 //  이미지가 정상적으로 저장되었을 경우
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 Empty Chip 위치 이미지 저장 성공");
+
+                        m_nImageSave_RetryCount = 0;
+
+                        m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.__Wafer_EmptyPosImageSave_Complete;
+                    }
+                    else                                        //  이미지가 저장되지 않았을 경우 -> 다시 저장 시도
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 Empty Chip 위치 이미지 저장 실패");
+
+                        m_nImageSave_RetryCount++;
+
+                        if (m_nImageSave_RetryCount < m_nImageSave_RetryTotal)
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 Empty Chip 위치 이미지 저장 재시도");
+
+                            if (Camera_Upper != null)
+                            {
+                                Camera_Upper.StartLive();
+                                visionCalibrator_Upper.Illuminator.SetVolume(Config.ParamConfig.Align_UpperVision_LightValue, 1);
+                                visionCalibrator_Upper.Illuminator.TurnOnOff(true, 1);       //  Probe Card 조명
+                            }
+
+                            if (Camera_Lower != null)
+                            {
+                                Camera_Lower.StartLive();
+                                visionCalibrator_Upper.Illuminator.SetVolume(Config.ParamConfig.Align_LowerVision_LightValue, 2);
+                                visionCalibrator_Upper.Illuminator.TurnOnOff(true, 2);       //  Wafer 조명
+                            }
+
+                            m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.Wafer_Image_Grab;
+                        }
+                        else
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 Empty Chip 위치 이미지 저장 재시도 회수 초과로 작업 중지");
+
+                            //  알람 정지 (LED Bar - Red Blink)
+                            Equipment.MachineStop_byAlarm = true;
+
+                            Equipment.AlignStart_Time = null;
+
+                            timer_SubWork.Enabled = false;
+                            m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                            if (m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
+                            {
+                                timer_MainWork.Enabled = false;
+                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                            }
+
+                            if (m_bAlignVisionThread_Use)
+                            {
+                                //  Thread 를 사용할 경우
+                                m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                            }
+
+                            MessageBox.Show("웨이퍼 Empty Chip 위치 이미지 저장 실패.", "Error");
+                        }
+                    }
                     break;
 
 
@@ -8095,7 +8363,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "Wafer Align Error Check 완료");
 
-                    Equipment.AlignStart_Time = null;                               //  이미지 저장할 때 사용했으므로 null 로 초기화. (Align 진행하면 시간이 저장된다.)
+                    //Equipment.AlignStart_Time = null;                               //  이미지 저장할 때 사용했으므로 null 로 초기화. (Align 진행하면 시간이 저장된다.)
                     m_bWaferProbeAlign_ErrorCheck_Complete = true;
 
                     timer_SubWork.Enabled = false;
@@ -8304,8 +8572,8 @@ namespace QMC.Common.Modules
                 else
                 {
                     m_strAlignPos = "EMPTY";
-                    m_strImageFile_Upper = null;
-                    m_strImageFile_Lower = string.Format("{0}\\{1}.jpg", m_strRoot, m_strAlignPos.ToUpper());
+                    m_strImageFile_Upper = string.Format("{0}\\{1}_PAK.jpg", m_strRoot, m_strAlignPos.ToUpper());
+                    m_strImageFile_Lower = string.Format("{0}\\{1}_Wafer.jpg", m_strRoot, m_strAlignPos.ToUpper());
                 }
 
                 if ((m_strImageFile_Upper != null) && File.Exists(m_strImageFile_Upper))
@@ -8346,7 +8614,7 @@ namespace QMC.Common.Modules
 
         public bool TipContactImage_Save(string m_strAlignPos)
         {
-            bool m_bRet = true;
+            bool m_bRet = false;
             string m_strTemp = null;
             string m_strDirectory = null;
             string m_strRoot = null;
@@ -8354,6 +8622,8 @@ namespace QMC.Common.Modules
             string m_strRecipe = null;
             string m_strImageFile_Upper = null;
             string m_strImageFile_Lower = null;
+            bool m_bPAK_Image_Exist = false;
+            bool m_bWafer_Image_Exist = false;
 
 
             //  이미지 저장 경로 (꼭대기)
@@ -8364,16 +8634,8 @@ namespace QMC.Common.Modules
                 di.Create();
             }
 
-            if (m_strAlignPos.ToUpper() == "EMPTY")
-            {
-                m_strImageFile_Lower = string.Format("{0}\\{1}.jpg", m_strRoot, m_strAlignPos.ToUpper());
-            }
-            else
-            {
-                m_strImageFile_Upper = string.Format("{0}\\{1}_PAK.jpg", m_strRoot, m_strAlignPos.ToUpper());
-                m_strImageFile_Lower = string.Format("{0}\\{1}_Wafer.jpg", m_strRoot, m_strAlignPos.ToUpper());
-            }
-
+            m_strImageFile_Upper = string.Format("{0}\\{1}_PAK.jpg", m_strRoot, m_strAlignPos.ToUpper());
+            m_strImageFile_Lower = string.Format("{0}\\{1}_Wafer.jpg", m_strRoot, m_strAlignPos.ToUpper());
 
             //  기존 파일이 있으면 삭제
             if (File.Exists(m_strImageFile_Upper))
@@ -8410,7 +8672,8 @@ namespace QMC.Common.Modules
 
 
             //  이미지 저장
-            if ((Camera_Upper != null) && (m_strAlignPos.ToUpper() != "EMPTY"))
+            //if ((Camera_Upper != null) && (m_strAlignPos.ToUpper() != "EMPTY"))
+            if (Camera_Upper != null)
             {
                 Camera_Upper.LatestImage.Save(m_strImageFile_Upper, Vision.VisionImage.FileFilter.jpg);
             }
@@ -8418,6 +8681,23 @@ namespace QMC.Common.Modules
             if (Camera_Lower != null)
             {
                 Camera_Lower.LatestImage.Save(m_strImageFile_Lower, Vision.VisionImage.FileFilter.jpg);
+            }
+
+
+            //  저장된 이미지 파일이 존재하는지 체크
+            if (File.Exists(m_strImageFile_Upper))
+            {
+                m_bPAK_Image_Exist = true;
+            }
+
+            if (File.Exists(m_strImageFile_Lower))
+            {
+                m_bWafer_Image_Exist = true;
+            }
+
+            if ( m_bPAK_Image_Exist && m_bWafer_Image_Exist )
+            {
+                m_bRet = true;
             }
 
             return m_bRet;
@@ -10224,13 +10504,25 @@ namespace QMC.Common.Modules
 
                     if (m_nWaferProbeAlign_MainStep == (int)WaferProbeAlign_Step.None)
                     {
-                        if (waferProbeAlignParameter.DI_TopCover_Up() || !waferProbeAlignParameter.DI_TopCover_Down())
+                        if ((Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_A) &&
+                            (waferProbeAlignParameter.DI_TopCover_Up() || !waferProbeAlignParameter.DI_TopCover_Down()))
                         {
                             Log.Write("CWA150SA", Equipment.User_Name, "PAK Air-Line Check", "완료. [프로브 카드 커버가 열려있음]");
 
                             m_bPAK_AirLineCheck_OK = false;
 
                             MessageBox.Show("PAK 점검 실패.\r\n\r\n[ 프로브 카드 커버 열려있음 ] ", "Information!");
+                        }
+                        else if ((Equipment.ProbeCard_ClampType == (int)WaferProbeAlign.nProbeClampType.Type_B) &&
+                            (waferProbeAlignParameter.DI_Probe_LeftClampModule_BW() || !waferProbeAlignParameter.DI_Probe_LeftClampModule_FW() ||
+                            waferProbeAlignParameter.DI_Probe_RightClampModule_BW() || !waferProbeAlignParameter.DI_Probe_RightClampModule_FW() ||
+                            !waferProbeAlignParameter.IsDO_Probe_ClampModule_Down()))
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "PAK Air-Line Check", "완료. [프로브 카드 Clamp 실린더가 열려있음]");
+
+                            m_bPAK_AirLineCheck_OK = false;
+
+                            MessageBox.Show("PAK 점검 실패.\r\n\r\n[ 프로브 카드 Clamp 실린더가 열려있음 ] ", "Information!");
                         }
                         else
                         {
@@ -10275,6 +10567,10 @@ namespace QMC.Common.Modules
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer Loading Ready Func", "시작");
 
                     Equipment.MachineStop_byAlarm = false;
+
+                    //  얼라인이 완료된 상태에서, 씬-척 및 웨이퍼 투입 위치로 이동하면 얼라인 위치가 초기화 되므로, 얼라인 완료 상태 Flag 를 false 로 바꿔준다. (Blue 점멸 끄도록)
+                    m_bWaferProbeAlign_ErrorCheck_Complete = false;
+                    m_bWaferProbeAlign_ErrorCheck_All_OK = false;
 
                     m_nWafer_Loading_Ready_Step = (int)WaferLoading_Ready_Step.VisionXYZ_Move_ReadyPos;
                     break;
@@ -10507,6 +10803,10 @@ namespace QMC.Common.Modules
                     Log.Write("CWA150SA", Equipment.User_Name, "ProbeCard Loading Ready Func", "시작");
 
                     Equipment.MachineStop_byAlarm = false;
+
+                    //  얼라인이 완료된 상태에서, PAK 고정 해제하면 얼라인 위치가 초기화 되므로, 얼라인 완료 상태 Flag 를 false 로 바꿔준다. (Blue 점멸 끄도록)
+                    m_bWaferProbeAlign_ErrorCheck_Complete = false;
+                    m_bWaferProbeAlign_ErrorCheck_All_OK = false;
 
                     //  Clamp Type-B 의 경우, Clamp Up/Down 실린더 센서가 없으므로 이 안정화 시간 이후에 다음 동작을 하도록 한다.
                     m_nProbeCardClamp_TypeB_CylUpDown_StableTime = Config.ParamConfig.ProbeCard_ClampTypeB_CylUpDown_StableTime <= 0 ? 1000 : Config.ParamConfig.ProbeCard_ClampTypeB_CylUpDown_StableTime;
@@ -12979,7 +13279,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "Machine Type B 시작");
 
-                    m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step._MachineType_B_Complete;
+                    m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.ProbeCard_UnpackingSignal_Off;
                     break;
 
 
@@ -13097,8 +13397,8 @@ namespace QMC.Common.Modules
 
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "프로브 카드 클램프 BW");
 
-                    waferProbeAlignParameter.DO_ProbeClampModule_FW(true);
-                    waferProbeAlignParameter.DO_ProbeClampModule_BW(false);
+                    waferProbeAlignParameter.DO_ProbeClampModule_FW(false);
+                    waferProbeAlignParameter.DO_ProbeClampModule_BW(true);
 
                     TickCount_Start((int)TickType.TICK_MAIN);
 

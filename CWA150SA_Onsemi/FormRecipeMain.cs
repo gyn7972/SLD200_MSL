@@ -314,7 +314,6 @@ namespace CWA150SA_Onsemi300
             {
                 Log.Write("CWA150SA", Equipment.User_Name, "Recipe Form, Button Click", "레시피 선택 취소");
             }
-
         }
         #endregion
 
