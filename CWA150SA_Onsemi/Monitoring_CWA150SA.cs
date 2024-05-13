@@ -69,6 +69,9 @@ namespace CWA150SA_Onsemi300
 
             PROBE_CARD_LOADING_READY = 14,          //  프로브 카드 투입 대기 위치로 이동 중...
             PROBE_CARD_LOCKING = 15,                //  프로브 카드 고정 진행 중...
+
+            LOGIN_REQUIRED = 16,                    //  로그인이 필요합니다.
+            AUTO_LOGOUT = 17,                       //  자동으로 로그아웃 되었습니다.
         }
 
 
@@ -133,6 +136,13 @@ namespace CWA150SA_Onsemi300
         public bool m_bResetBtn_Status;
         public bool m_bResetBtn_Status_Before;
         public int m_nResetBtn_Ignore_Time;
+
+
+        //  자동 로그아웃 관련 변수
+        bool m_bAutoLogOut_Counting;
+        double m_dAutoLogOut_Total;
+        int m_nAutoLogOut_TickStart;
+        bool m_bAutoLogOut_TickStart_1time;
 
 
         //  Test용 변수
@@ -390,6 +400,13 @@ namespace CWA150SA_Onsemi300
             m_dCurPackingPos_Y = 0.0;
             m_dTargetPackingPos_X = 0.0;
             m_dTargetPackingPos_Y = 0.0;
+
+            //  자동 로그아웃 타임
+            m_bAutoLogOut_Counting = false;
+            m_dAutoLogOut_Total = waferProbeAlign.Config.ParamConfig.Auto_LogOut_Time <= 0 ? 10 : waferProbeAlign.Config.ParamConfig.Auto_LogOut_Time;
+            m_dAutoLogOut_Total = m_dAutoLogOut_Total * 60 * 1000;
+            m_nAutoLogOut_TickStart = 0;
+            m_bAutoLogOut_TickStart_1time = false;
         }
 
         private void Monitoring_CWA150SA_VisibleChanged(object sender, EventArgs e)
@@ -710,7 +727,20 @@ namespace CWA150SA_Onsemi300
             MainUI_DIO_Status();
 
             //  장비 상태 변경
-            if (!waferProbeAlign.m_bHomeOK && (m_nMachineStatus != (int)MachineStatus.INITIALIZE_REQUIRED) &&
+            if (!Equipment.LogIn_Status)
+            {
+                if (Equipment.AutoLogOut_Executed)
+                {
+                    m_nMachineStatus = (int)MachineStatus.AUTO_LOGOUT;
+                    Set_Machine_Status((int)MachineStatus.AUTO_LOGOUT);
+                }
+                else
+                {
+                    m_nMachineStatus = (int)MachineStatus.LOGIN_REQUIRED;
+                    Set_Machine_Status((int)MachineStatus.LOGIN_REQUIRED);
+                }
+            }            
+            else if (!waferProbeAlign.m_bHomeOK && (m_nMachineStatus != (int)MachineStatus.INITIALIZE_REQUIRED) &&
                 (waferProbeAlign.m_nHomeStep == (int)WaferProbeAlign.Home_Step.None))
             {
                 m_nMachineStatus = (int)MachineStatus.INITIALIZE_REQUIRED;
@@ -1025,6 +1055,57 @@ namespace CWA150SA_Onsemi300
 
                 TipPos.StartPosition = FormStartPosition.CenterScreen;
                 TipPos.ShowDialog();
+            }
+
+
+            //  자동 로그아웃 타임
+            //  어떤 Cycle 도 동작하지 않으면 자동 종료 카운트 진행
+            if (waferProbeAlign.Config.ParamConfig.Auto_LogOut_Usage)
+            {
+                if (Equipment.LogIn_Status &&
+                    //m_bAutoLogOut_Counting == false &&
+                    waferProbeAlign.m_nHomeStep == (int)Home_Step.None &&
+                    waferProbeAlign.m_nWaferProbeAlign_MainStep == (int)WaferProbeAlign_Step.None &&
+                    waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Step == (int)WaferProbeAlignErrorCheck_Step.None &&
+                    waferProbeAlign.m_nFindAlignMark_Step == (int)FindAlignMark_Step.None &&
+                    waferProbeAlign.m_nReticleCheck_UpperCam_Step == (int)ReticleCheck_UpperCam_Step.None &&
+                    waferProbeAlign.m_nReticleCheck_LowerCam_Step == (int)ReticleCheck_LowerCam_Step.None &&
+                    waferProbeAlign.m_nSafetyPos_Move_Step == (int)SafetyPos_Move_Step.None &&
+                    waferProbeAlign.m_nWafer_Loading_Ready_Step == (int)WaferLoading_Ready_Step.None &&
+                    waferProbeAlign.m_nWafer_ProbeCard_Packing_Step == (int)WaferProbeCard_Packing_Step.None &&
+                    waferProbeAlign.m_nWaferProbeCard_Unpacking_Step == (int)WaferProbeCard_Unpacking_Step.None &&
+                    waferProbeAlign.m_nWaferProbeCard_Unpacking_Ready_Step == (int)WaferProbeCard_Unpacking_Ready_Step.None &&
+                    waferProbeAlign.m_nProbeCard_Locking_Step == (int)ProbeCard_Locking_Step.None &&
+                    waferProbeAlign.m_nProbeCard_Loading_Ready_Step == (int)ProbeCard_Loading_Ready_Step.None &&
+                    waferProbeAlign.m_nPAK_AirLine_Check_Step == (int)PAK_AirLine_Check_Step.None &&
+                    waferProbeAlign.m_nManualPacking_Step == (int)ManualPackingStep.NONE)
+                {
+                    m_bAutoLogOut_Counting = true;
+
+                    if (!m_bAutoLogOut_TickStart_1time)
+                    {
+                        m_bAutoLogOut_TickStart_1time = true;
+                        m_nAutoLogOut_TickStart = Environment.TickCount;
+                    }
+                }
+                else
+                {
+                    m_bAutoLogOut_Counting = false;
+                    m_bAutoLogOut_TickStart_1time = false;
+                    m_nAutoLogOut_TickStart = 0;
+
+                    Equipment.AutoLogOut_Execute = false;
+                }
+
+                if (m_bAutoLogOut_Counting && Equipment.LogIn_Status)
+                {
+                    if ((Environment.TickCount - m_nAutoLogOut_TickStart) >= m_dAutoLogOut_Total)
+                    {
+                        m_bAutoLogOut_Counting = false;
+
+                        Equipment.AutoLogOut_Execute = true;                        
+                    }
+                }
             }
         }
 
@@ -2073,6 +2154,16 @@ namespace CWA150SA_Onsemi300
 
             switch ( nStatus )
             {
+                case (int)MachineStatus.LOGIN_REQUIRED:
+                    lblMachine_Status.Text = "장비 로그인이 필요합니다.";
+                    break;
+
+
+                case (int)MachineStatus.AUTO_LOGOUT:
+                    lblMachine_Status.Text = "자동으로 로그아웃 되었습니다.";
+                    break;
+
+
                 case (int)MachineStatus.INITIALIZE_REQUIRED:
                     lblMachine_Status.Text = "장비 초기화가 필요합니다.";
                     break;
@@ -3306,7 +3397,7 @@ namespace CWA150SA_Onsemi300
                 if (waferProbeAlign.m_nReticleCheck_Step_forALIGN == (int)ReticleCheck_Step.None)
                 {
                     var mb1 = new MessageBoxOk();
-                    mb1.ShowDialog("Information !", "PAK 카메라 - 레티클 글래스 센터 확인 작업을 진행해야 합니다.\r\n\r\n##  PAK 카드를 제거하세요.!!  ##");
+                    mb1.ShowDialog("Information !", "PAK 카메라 - 레티클 글래스 센터 확인 작업을 진행해야 합니다.\r\n\r\n###   PAK 카드를 제거하세요.!!   ###");
                     return;
                 }
                 if (waferProbeAlign.m_nReticleCheck_Step_forALIGN == (int)ReticleCheck_Step.UpperCam_Complete)
@@ -3785,7 +3876,7 @@ namespace CWA150SA_Onsemi300
                 if (waferProbeAlign.m_nReticleCheck_Step_forALIGN == (int)ReticleCheck_Step.None)
                 {
                     var mb1 = new MessageBoxOk();
-                    mb1.ShowDialog("Information !", "PAK 카메라 - 레티클 글래스 센터 확인 작업을 진행해야 합니다.\r\n\r\n##  PAK 카드를 제거하세요.!!  ##");
+                    mb1.ShowDialog("Information !", "PAK 카메라 - 레티클 글래스 센터 확인 작업을 진행해야 합니다.\r\n\r\n###   PAK 카드를 제거하세요.!!   ###");
                     return;
                 }
                 if (waferProbeAlign.m_nReticleCheck_Step_forALIGN == (int)ReticleCheck_Step.UpperCam_Complete)

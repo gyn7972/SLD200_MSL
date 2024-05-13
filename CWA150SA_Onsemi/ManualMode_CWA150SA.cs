@@ -905,7 +905,7 @@ namespace CWA150SA_Onsemi300
                 if (waferProbeAlign.m_nReticleCheck_Step_forALIGN == (int)ReticleCheck_Step.None)
                 {
                     var mb1 = new MessageBoxOk();
-                    mb1.ShowDialog("Information !", "PAK 카메라 - 레티클 글래스 센터 확인 작업을 진행해야 합니다.\r\n\r\n##  PAK 카드를 제거하세요.!!  ##");
+                    mb1.ShowDialog("Information !", "PAK 카메라 - 레티클 글래스 센터 확인 작업을 진행해야 합니다.\r\n\r\n###   PAK 카드를 제거하세요.!!   ###");
                     return;
                 }
                 if (waferProbeAlign.m_nReticleCheck_Step_forALIGN == (int)ReticleCheck_Step.UpperCam_Complete)
@@ -1377,7 +1377,7 @@ namespace CWA150SA_Onsemi300
                 if (waferProbeAlign.m_nReticleCheck_Step_forALIGN == (int)ReticleCheck_Step.None)
                 {
                     var mb1 = new MessageBoxOk();
-                    mb1.ShowDialog("Information !", "PAK 카메라 - 레티클 글래스 센터 확인 작업을 진행해야 합니다.\r\n\r\n##  PAK 카드를 제거하세요.!!  ##");
+                    mb1.ShowDialog("Information !", "PAK 카메라 - 레티클 글래스 센터 확인 작업을 진행해야 합니다.\r\n\r\n###   PAK 카드를 제거하세요.!!   ###");
                     return;
                 }
                 if (waferProbeAlign.m_nReticleCheck_Step_forALIGN == (int)ReticleCheck_Step.UpperCam_Complete)

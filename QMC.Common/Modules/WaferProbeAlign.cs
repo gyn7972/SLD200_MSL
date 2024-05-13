@@ -1607,6 +1607,14 @@ namespace QMC.Common.Modules
 
 
 
+            ProbeCardResult_NG_ImageSave_All_Start,                         //  ProbeCard XY Align 결과 NG 일 경우, Wafer 도 곧바로 NG 처리를 하기 때문에 이미지가 저장되지 않는다. (여기서 이미지 저장하고 가자)
+            ProbeCardResult_NG_ImageSave_All_Grab,                          //  Grab
+            ProbeCardResult_NG_ImageSave_All_Grab_StableTime,               //  ProbeCard, Wafer 이미지 Grab 안정화 시간
+            ProbeCardResult_NG_ImageSave_All_ImageSave,                     //  ProbeCard, Wafer 이미지 저장
+            ProbeCardResult_NG_ImageSave_All_ImageSave_Complete,            //  ProbeCard, Wafer 이미지 저장 완료
+
+
+
             __Wafer_XYAlign_Start,                                          //  Wafer XY Align 시작
 
             WaferXYAlign_MarkFind_Ready,                                    //  얼라인 마크 찾기 준비
@@ -1620,6 +1628,14 @@ namespace QMC.Common.Modules
             Camera_Reset,                                                   //  카메라 초기화. (두 카메라 중 하나 이상의 데이터가 안들어옴. 0으로 들어옴)
 
             __Wafer_XYAlign_Complete,                                       //  Wafer XY Align 완료
+
+
+
+            __ProbeCard_Wafer_ImageSave_Start,                              //  ProbeCard, Wafer 이미지 저장 시작
+            ProbeCard_Wafer_Image_Grab,                                     //  ProbeCard, Wafer 이미지 Grab
+            ProbeCard_Wafer_Image_Grab_StableTime,                          //  ProbeCard, Wafer 이미지 Grab 안정화 시간
+            ProbeCard_Wafer_ImageSave,                                      //  ProbeCard, Wafer 이미지 저장
+            __ProbeCard_Wafer_ImageSave_Complete,                           //  ProbeCard, Wafer 이미지 저장 완료
 
 
 
@@ -7491,21 +7507,216 @@ namespace QMC.Common.Modules
                         //  현재 마크 위치, 상부 얼라인 NG 이므로 하부 얼라인도 NG 처리한다. 
                         AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower] = false;
 
-                        m_nWaferProbeAlign_ErrorCheck_Count++;
+                        //  2024. 05. 13.  SCH : 원래 코드
+                        //m_nWaferProbeAlign_ErrorCheck_Count++;
+                        //m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ErrorCheck_Position_Remained_Check;
 
-                        m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ErrorCheck_Position_Remained_Check;
-
-
-                        //timer_SubWork.Enabled = false;
-
-                        //m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
-
-                        //m_bProbeCard_XYAlign_ErrorCheck_OK = false;
-
-                        //MessageBox.Show("Probe Card XY Align 확인 실패.", "Error");
+                        //  2024. 05. 13.  SCH : 저장 부분 개선한 코드
+                        m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ProbeCardResult_NG_ImageSave_All_Start;
                     }
                     break;
-                    
+
+
+                case (int)WaferProbeAlignErrorCheck_Step.ProbeCardResult_NG_ImageSave_All_Start:                                       //  ProbeCard XY Align 결과 NG 일 경우, Wafer 도 곧바로 NG 처리를 하기 때문에 이미지가 저장되지 않는다. (여기서 이미지 저장하고 가자)
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "프로브 카드 XY 얼라인 NG 로 인한 이미지 저장 파트 시작");
+
+                    if (Camera_Upper != null)
+                    {
+                        Camera_Upper.StartLive();
+                        visionCalibrator_Upper.Illuminator.SetVolume(Config.ParamConfig.Align_UpperVision_LightValue, 1);
+                        visionCalibrator_Upper.Illuminator.TurnOnOff(true, 1);       //  Probe Card 조명
+                    }
+
+                    if (Camera_Lower != null)
+                    {
+                        Camera_Lower.StartLive();
+                        visionCalibrator_Upper.Illuminator.SetVolume(Config.ParamConfig.Align_LowerVision_LightValue, 2);
+                        visionCalibrator_Upper.Illuminator.TurnOnOff(true, 2);       //  Wafer 조명
+                    }
+
+                    m_nImageSave_RetryCount = 0;
+
+                    m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ProbeCardResult_NG_ImageSave_All_Grab;
+                    break;
+
+
+                case (int)WaferProbeAlignErrorCheck_Step.ProbeCardResult_NG_ImageSave_All_Grab:                                             //  ProbeCard, Wafer 이미지 Grab
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "프로브 카드 XY 얼라인 NG 로 인한 이미지 Grab");
+
+                    if (Camera_Upper != null)
+                    {
+                        Camera_Upper.Grab();
+                    }
+
+                    if (Camera_Lower != null)
+                    {
+                        Camera_Lower.Grab();
+                    }
+
+                    TickCount_Start((int)TickType.TICK_SUB);
+
+                    m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ProbeCardResult_NG_ImageSave_All_Grab_StableTime;
+                    break;
+
+
+                case (int)WaferProbeAlignErrorCheck_Step.ProbeCardResult_NG_ImageSave_All_Grab_StableTime:                                  //  ProbeCard, Wafer 이미지 Grab 안정화 시간
+
+                    if (((Config.ParamConfig.WaferAlign_Move_StableTime <= 0) && (TickCount_Elapsed((int)TickType.TICK_SUB) >= 3000)) ||                 //  임시로 3초 (옵션 처리 하자)
+                        (Config.ParamConfig.WaferAlign_Move_StableTime > 0) && (TickCount_Elapsed((int)TickType.TICK_SUB) >= Config.ParamConfig.WaferAlign_Move_StableTime))
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "프로브 카드 XY 얼라인 NG 로 인한 이미지 Grab 후 안정화 시간 완료");
+
+                        m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ProbeCardResult_NG_ImageSave_All_ImageSave;
+                    }
+                    break;
+
+
+                case (int)WaferProbeAlignErrorCheck_Step.ProbeCardResult_NG_ImageSave_All_ImageSave:                                        //  ProbeCard, Wafer 이미지 저장
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "프로브 카드 XY 얼라인 NG 로 인한 이미지 저장 시도");
+
+                    //  얼라인 이미지 저장
+                    if (Config.ParamConfig.AlignImageSave_Usage)
+                    {
+                        if (m_nWaferProbeAlign_ErrorCheck_Count == 0)                               //  Top
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "TOP 위치 얼라인 이미지 저장 시도");
+                            m_bRet = ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "TOP", AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Upper], AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower]);
+
+                            //  Tip Contact 위치 표시로 사용할 이미지 저장 (기존 파일 있으면 삭제)
+                            //m_bRet = TipContactImage_Save("TOP");
+                        }
+                        else if (m_nWaferProbeAlign_ErrorCheck_Count == 1)                          //  Middle
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "MIDDLE 위치 얼라인 이미지 저장 시도");
+                            m_bRet = ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "MID", AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Upper], AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower]);
+
+                            //m_bRet = TipContactImage_Save("MID");
+                        }
+                        else                                                                        //  Bottom
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "BOTTOM 위치 얼라인 이미지 저장 시도");
+                            m_bRet = ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "BOT", AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Upper], AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower]);
+
+                            //m_bRet = TipContactImage_Save("BOT");
+                        }
+                    }
+
+                    if (m_bRet)                                 //  이미지가 정상적으로 저장되었을 경우
+                    {
+                        if (m_nWaferProbeAlign_ErrorCheck_Count == 0)                               //  Top
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "TOP 위치 얼라인 이미지 저장 성공");
+                        }
+                        else if (m_nWaferProbeAlign_ErrorCheck_Count == 1)                          //  Middle
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "MIDDLE 위치 얼라인 이미지 저장 성공");
+                        }
+                        else                                                                        //  Bottom
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "BOTTOM 위치 얼라인 이미지 저장 성공");
+                        }
+
+                        m_nWaferProbeAlign_ErrorCheck_Count++;
+
+                        m_nImageSave_RetryCount = 0;
+
+                        m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ErrorCheck_Position_Remained_Check;
+                    }
+                    else                                        //  이미지가 저장되지 않았을 경우 -> 다시 저장 시도
+                    {
+                        if (m_nWaferProbeAlign_ErrorCheck_Count == 0)                               //  Top
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "TOP 위치 얼라인 이미지 저장 실패");
+                        }
+                        else if (m_nWaferProbeAlign_ErrorCheck_Count == 1)                          //  Middle
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "MIDDLE 위치 얼라인 이미지 저장 실패");
+                        }
+                        else                                                                        //  Bottom
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "BOTTOM 위치 얼라인 이미지 저장 실패");
+                        }
+
+                        m_nImageSave_RetryCount++;
+
+                        if (m_nImageSave_RetryCount < m_nImageSave_RetryTotal)
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "얼라인 이미지 저장 재시도");
+
+                            if (Camera_Upper != null)
+                            {
+                                Camera_Upper.StartLive();
+                                visionCalibrator_Upper.Illuminator.SetVolume(Config.ParamConfig.Align_UpperVision_LightValue, 1);
+                                visionCalibrator_Upper.Illuminator.TurnOnOff(true, 1);       //  Probe Card 조명
+                            }
+
+                            if (Camera_Lower != null)
+                            {
+                                Camera_Lower.StartLive();
+                                visionCalibrator_Upper.Illuminator.SetVolume(Config.ParamConfig.Align_LowerVision_LightValue, 2);
+                                visionCalibrator_Upper.Illuminator.TurnOnOff(true, 2);       //  Wafer 조명
+                            }
+
+                            m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ProbeCardResult_NG_ImageSave_All_Grab;
+                        }
+                        else
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "프로브 카드 XY 얼라인 NG 로 인한 이미지 저장 재시도 회수 초과로 작업 중지");
+
+                            //  알람 정지 (LED Bar - Red Blink)
+                            Equipment.MachineStop_byAlarm = true;
+
+                            Equipment.AlignStart_Time = null;
+
+                            timer_SubWork.Enabled = false;
+                            m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.None;
+
+                            if (m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
+                            {
+                                timer_MainWork.Enabled = false;
+                                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
+                            }
+
+                            if (m_bAlignVisionThread_Use)
+                            {
+                                //  Thread 를 사용할 경우
+                                m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                            }
+
+                            MessageBox.Show("프로브 카드 XY 얼라인 NG 로 인한 이미지 저장 실패.", "Error");
+                        }
+                    }
+                    break;
+
+
+                case (int)WaferProbeAlignErrorCheck_Step.ProbeCardResult_NG_ImageSave_All_ImageSave_Complete:                                  //  ProbeCard, Wafer 이미지 저장 완료
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "프로브 카드 XY 얼라인 NG 로 인한 이미지 저장 파트 완료");
+
+                    //  여긴 안들어옴. Cycle Part 구분을 위해서 걍 만들어 둠.
+
+                    m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ErrorCheck_Position_Remained_Check;
+                    break;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 case (int)WaferProbeAlignErrorCheck_Step.__Wafer_XYAlign_Start:                                  //  Wafer XY Align 시작
 
@@ -8028,30 +8239,94 @@ namespace QMC.Common.Modules
 
                     Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "웨이퍼 XY 오차 확인 파트 완료");
 
+                    m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.__ProbeCard_Wafer_ImageSave_Start;
+                    break;
+                 
+
+                case (int)WaferProbeAlignErrorCheck_Step.__ProbeCard_Wafer_ImageSave_Start:                                       //  ProbeCard, Wafer 이미지 저장 시작
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "얼라인 이미지 저장 파트 시작");
+
+                    if (Camera_Upper != null)
+                    {
+                        Camera_Upper.StartLive();
+                        visionCalibrator_Upper.Illuminator.SetVolume(Config.ParamConfig.Align_UpperVision_LightValue, 1);
+                        visionCalibrator_Upper.Illuminator.TurnOnOff(true, 1);       //  Probe Card 조명
+                    }
+
+                    if (Camera_Lower != null)
+                    {
+                        Camera_Lower.StartLive();
+                        visionCalibrator_Upper.Illuminator.SetVolume(Config.ParamConfig.Align_LowerVision_LightValue, 2);
+                        visionCalibrator_Upper.Illuminator.TurnOnOff(true, 2);       //  Wafer 조명
+                    }
+
+                    m_nImageSave_RetryCount = 0;
+
+                    m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ProbeCard_Wafer_Image_Grab;
+                    break;
+
+
+                case (int)WaferProbeAlignErrorCheck_Step.ProbeCard_Wafer_Image_Grab:                                            //  ProbeCard, Wafer 이미지 Grab
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "얼라인 이미지 Grab");
+
+                    if (Camera_Upper != null)
+                    {
+                        Camera_Upper.Grab();
+                    }
+
+                    if (Camera_Lower != null)
+                    {
+                        Camera_Lower.Grab();
+                    }
+
+                    TickCount_Start((int)TickType.TICK_SUB);
+
+                    m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ProbeCard_Wafer_Image_Grab_StableTime;
+                    break;
+
+
+                case (int)WaferProbeAlignErrorCheck_Step.ProbeCard_Wafer_Image_Grab_StableTime:                                 //  ProbeCard, Wafer 이미지 Grab 안정화 시간
+
+                    if (((Config.ParamConfig.WaferAlign_Move_StableTime <= 0) && (TickCount_Elapsed((int)TickType.TICK_SUB) >= 3000)) ||                 //  임시로 3초 (옵션 처리 하자)
+                        (Config.ParamConfig.WaferAlign_Move_StableTime > 0) && (TickCount_Elapsed((int)TickType.TICK_SUB) >= Config.ParamConfig.WaferAlign_Move_StableTime))
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "얼라인 이미지 Grab 후 안정화 시간 완료");
+
+                        m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ProbeCard_Wafer_ImageSave;
+                    }
+                    break;
+
+
+                case (int)WaferProbeAlignErrorCheck_Step.ProbeCard_Wafer_ImageSave:                                             //  ProbeCard, Wafer 이미지 저장
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "얼라인 이미지 저장 시도");
+
                     //  얼라인 이미지 저장
                     if (Config.ParamConfig.AlignImageSave_Usage)
                     {
                         if (m_nWaferProbeAlign_ErrorCheck_Count == 0)                               //  Top
                         {
                             Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "TOP 위치 얼라인 이미지 저장 시도");
-                            ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "TOP", AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Upper], AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower]);
+                            m_bRet = ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "TOP", AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Upper], AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower]);
 
                             //  Tip Contact 위치 표시로 사용할 이미지 저장 (기존 파일 있으면 삭제)
-                            m_bRet = TipContactImage_Save("TOP");
+                            //m_bRet = TipContactImage_Save("TOP");
                         }
                         else if (m_nWaferProbeAlign_ErrorCheck_Count == 1)                          //  Middle
                         {
                             Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "MIDDLE 위치 얼라인 이미지 저장 시도");
-                            ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "MID", AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Upper], AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower]);
+                            m_bRet = ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "MID", AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Upper], AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower]);
 
-                            m_bRet = TipContactImage_Save("MID");
+                            //m_bRet = TipContactImage_Save("MID");
                         }
                         else                                                                        //  Bottom
                         {
                             Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "BOTTOM 위치 얼라인 이미지 저장 시도");
-                            ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "BOT", AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Upper], AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower]);
+                            m_bRet = ResultImage_Save(Equipment.User_Name, Equipment.AlignStart_Time, "BOT", AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Upper], AlignmentErrorCheck_Status[m_nWaferProbeAlign_ErrorCheck_Count, (int)nCameraType.Cam_Lower]);
 
-                            m_bRet = TipContactImage_Save("BOT");
+                            //m_bRet = TipContactImage_Save("BOT");
                         }                        
                     }
 
@@ -8126,6 +8401,16 @@ namespace QMC.Common.Modules
                             MessageBox.Show("얼라인 이미지 저장 실패.", "Error");
                         }
                     }
+                    break;
+
+
+                case (int)WaferProbeAlignErrorCheck_Step.__ProbeCard_Wafer_ImageSave_Complete:                                  //  ProbeCard, Wafer 이미지 저장 완료
+
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer Align Error Check", "얼라인 이미지 저장 파트 완료");
+
+                    //  여긴 안들어옴. Cycle Part 구분을 위해서 걍 만들어 둠.
+
+                    m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ErrorCheck_Position_Remained_Check;
                     break;
 
 
@@ -8374,44 +8659,6 @@ namespace QMC.Common.Modules
                     {
                         MessageBox.Show("Wafer Align Error Check 완료.\r\n\r\n[메인화면에서 오차값 확인]", "Information!");
                     }
-
-                    //if (Config.ParamConfig.Wafer_Align_Cam_Usage)
-                    //{
-                    //    if (m_bWafer_ThetaAlign_OK && m_bWafer_XYAlign_OK)
-                    //    {
-                    //        Log.Write("CWA150SA", Equipment.User_Name, "Auto Run", "Wafer Align 완료 (OK)");
-
-                    //        if (Config.ParamConfig.Wafer_Align_After_Packing_AutoStart_Usage)
-                    //        {
-                    //            m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeAlign.WaferProbeCard_Packing_Step.Start;
-                    //            timer_MainWork.Enabled = true;
-                    //        }
-                    //        else
-                    //        {
-                    //            MessageBox.Show("Wafer Theta Align 완료. [Theta Align 성공]\r\nWafer XY Align 완료. [XY Align 성공]\r\n\r\n[얼라인 성공]", "Information!");
-                    //        }
-                    //    }
-                    //    else if (m_bWafer_ThetaAlign_OK && !m_bWafer_XYAlign_OK)
-                    //    {
-                    //        Log.Write("CWA150SA", Equipment.User_Name, "Auto Run", "Wafer Align 완료 (NG)");
-                    //        MessageBox.Show("Wafer Theta Align 완료. [Theta Align 성공]\r\nWafer XY Align 완료. [XY Align 실패]\r\n\r\n[얼라인 실패]", "Information!");
-                    //    }
-                    //    else if (!m_bWafer_ThetaAlign_OK && m_bWafer_XYAlign_OK)
-                    //    {
-                    //        Log.Write("CWA150SA", Equipment.User_Name, "Auto Run", "Wafer Align 완료 (NG)");
-                    //        MessageBox.Show("Wafer Theta Align 완료. [Theta Align 실패]\r\nWafer XY Align 완료. [XY Align 성공]\r\n\r\n[얼라인 실패]", "Information!");
-                    //    }
-                    //    else
-                    //    {
-                    //        Log.Write("CWA150SA", Equipment.User_Name, "Auto Run", "Wafer Align 완료 (NG)");
-                    //        MessageBox.Show("Wafer Theta Align 완료. [Theta Align 실패]\r\nWafer XY Align 완료. [XY Align 실패]\r\n\r\n[얼라인 실패]", "Information!");
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    Log.Write("CWA150SA", Equipment.User_Name, "Auto Run", "Wafer Align 완료 (Dry Run)");
-                    //    MessageBox.Show("Wafer Align 완료.\r\n\r\n[Dry Run]", "Information!");
-                    //}
                     break;
             }
         }
@@ -8425,12 +8672,17 @@ namespace QMC.Common.Modules
         public bool ResultImage_Save( string m_strOperator, string m_strStartTime, string m_strAlignPos, bool m_bResult_Upper, bool m_bResult_Lower )
         {
             bool m_bRet = true;
+            string m_strTemp = null;
             string m_strDirectory = null;
             string m_strRoot = null;
             string m_strDate = null;
             string m_strRecipe = null;
             string m_strImageFile_Upper = null;
             string m_strImageFile_Lower = null;
+            string m_strImageFile_Contact_Upper = null;
+            string m_strImageFile_Contact_Lower = null;
+            bool m_bPAK_Image_Exist = false;
+            bool m_bWafer_Image_Exist = false;
 
             //  데이터 확인
             if (m_strOperator == null)                                             //  Align 을 진행하지 않았으면?
@@ -8521,6 +8773,87 @@ namespace QMC.Common.Modules
             if (Camera_Lower != null)
             {
                 Camera_Lower.LatestImage.Save(m_strImageFile_Lower, Vision.VisionImage.FileFilter.jpg);
+            }
+
+
+
+            //  Tip Contact 위치 표시용 이미지 저장
+            m_strImageFile_Contact_Upper = string.Format("{0}\\{1}_PAK.jpg", m_strRoot, m_strAlignPos.ToUpper());
+            m_strImageFile_Contact_Lower = string.Format("{0}\\{1}_Wafer.jpg", m_strRoot, m_strAlignPos.ToUpper());
+
+            //  기존 파일이 있으면 삭제
+            if (File.Exists(m_strImageFile_Contact_Upper))
+            {
+                try
+                {
+                    File.Delete(m_strImageFile_Contact_Upper);
+
+                    m_strTemp = string.Format("PAK 이미지 삭제 완료. [{0}]", m_strAlignPos);
+                    Log.Write("CWA150SA", Equipment.User_Name, "Gate Tip Contact Position Save", m_strTemp);
+                }
+                catch (Exception e)
+                {
+                    m_strTemp = string.Format("PAK 이미지 삭제 실패. [{0}]", m_strAlignPos);
+                    Log.Write("CWA150SA", Equipment.User_Name, "Gate Tip Contact Position Save", m_strTemp);
+                }
+            }
+
+            if (File.Exists(m_strImageFile_Contact_Lower))
+            {
+                try
+                {
+                    File.Delete(m_strImageFile_Contact_Lower);
+
+                    m_strTemp = string.Format("Wafer 이미지 삭제 완료. [{0}]", m_strAlignPos);
+                    Log.Write("CWA150SA", Equipment.User_Name, "Gate Tip Contact Position Save", m_strTemp);
+                }
+                catch (Exception e)
+                {
+                    m_strTemp = string.Format("Wafer 이미지 삭제 실패. [{0}]", m_strAlignPos);
+                    Log.Write("CWA150SA", Equipment.User_Name, "Gate Tip Contact Position Save", m_strTemp);
+                }
+            }
+
+            //  이미지 복사 (얼라인 에러 검사 시 저장된 이미지 사용)
+            if (File.Exists(m_strImageFile_Upper))
+            {
+                try
+                {
+                    File.Copy(m_strImageFile_Upper, m_strImageFile_Contact_Upper, true);
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine("The PAK Image Copy failed: {0}", ex.ToString());
+                }
+            }
+
+            if (File.Exists(m_strImageFile_Lower))
+            {
+                try
+                {
+                    File.Copy(m_strImageFile_Lower, m_strImageFile_Contact_Lower, true);
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine("The Wafer Image Copy failed: {0}", ex.ToString());
+                }
+            }
+
+
+            //  저장된 이미지 파일이 존재하는지 체크
+            if (File.Exists(m_strImageFile_Contact_Upper))
+            {
+                m_bPAK_Image_Exist = true;
+            }
+
+            if (File.Exists(m_strImageFile_Contact_Lower))
+            {
+                m_bWafer_Image_Exist = true;
+            }
+
+            if (m_bPAK_Image_Exist && m_bWafer_Image_Exist)
+            {
+                m_bRet = true;
             }
 
             return m_bRet;

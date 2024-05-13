@@ -38,9 +38,6 @@
             this.pictureBox_Empty_Wafer = new System.Windows.Forms.PictureBox();
             this.pictureBox_Empty_PAK = new System.Windows.Forms.PictureBox();
             this.baseLabel_Empty_Wafer = new CWA150SA_Onsemi300.BaseLabel();
-            this.baseLabel_BOT2 = new CWA150SA_Onsemi300.BaseLabel();
-            this.baseLabel_MID2 = new CWA150SA_Onsemi300.BaseLabel();
-            this.baseLabel_TOP2 = new CWA150SA_Onsemi300.BaseLabel();
             this.baseLabel_Wafer = new CWA150SA_Onsemi300.BaseLabel();
             this.baseLabel_PAK = new CWA150SA_Onsemi300.BaseLabel();
             this.baseLabel_Empty_PAK = new CWA150SA_Onsemi300.BaseLabel();
@@ -65,7 +62,7 @@
             this.btn_Close.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.btn_Close.Font = new System.Drawing.Font("나눔바른고딕", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.btn_Close.ForeColor = System.Drawing.Color.DarkRed;
-            this.btn_Close.Location = new System.Drawing.Point(1439, 751);
+            this.btn_Close.Location = new System.Drawing.Point(1043, 915);
             this.btn_Close.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btn_Close.Name = "btn_Close";
             this.btn_Close.Size = new System.Drawing.Size(294, 98);
@@ -78,9 +75,9 @@
             // 
             this.pictureBox_TOP_PAK.BackColor = System.Drawing.Color.DimGray;
             this.pictureBox_TOP_PAK.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox_TOP_PAK.Location = new System.Drawing.Point(9, 52);
+            this.pictureBox_TOP_PAK.Location = new System.Drawing.Point(139, 52);
             this.pictureBox_TOP_PAK.Name = "pictureBox_TOP_PAK";
-            this.pictureBox_TOP_PAK.Size = new System.Drawing.Size(440, 368);
+            this.pictureBox_TOP_PAK.Size = new System.Drawing.Size(383, 320);
             this.pictureBox_TOP_PAK.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox_TOP_PAK.TabIndex = 127;
             this.pictureBox_TOP_PAK.TabStop = false;
@@ -89,9 +86,9 @@
             // 
             this.pictureBox_TOP_Wafer.BackColor = System.Drawing.Color.DimGray;
             this.pictureBox_TOP_Wafer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox_TOP_Wafer.Location = new System.Drawing.Point(9, 481);
+            this.pictureBox_TOP_Wafer.Location = new System.Drawing.Point(533, 52);
             this.pictureBox_TOP_Wafer.Name = "pictureBox_TOP_Wafer";
-            this.pictureBox_TOP_Wafer.Size = new System.Drawing.Size(440, 368);
+            this.pictureBox_TOP_Wafer.Size = new System.Drawing.Size(383, 320);
             this.pictureBox_TOP_Wafer.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox_TOP_Wafer.TabIndex = 128;
             this.pictureBox_TOP_Wafer.TabStop = false;
@@ -100,9 +97,9 @@
             // 
             this.pictureBox_MID_PAK.BackColor = System.Drawing.Color.DimGray;
             this.pictureBox_MID_PAK.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox_MID_PAK.Location = new System.Drawing.Point(460, 52);
+            this.pictureBox_MID_PAK.Location = new System.Drawing.Point(139, 374);
             this.pictureBox_MID_PAK.Name = "pictureBox_MID_PAK";
-            this.pictureBox_MID_PAK.Size = new System.Drawing.Size(440, 368);
+            this.pictureBox_MID_PAK.Size = new System.Drawing.Size(383, 320);
             this.pictureBox_MID_PAK.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox_MID_PAK.TabIndex = 129;
             this.pictureBox_MID_PAK.TabStop = false;
@@ -111,9 +108,9 @@
             // 
             this.pictureBox_MID_Wafer.BackColor = System.Drawing.Color.DimGray;
             this.pictureBox_MID_Wafer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox_MID_Wafer.Location = new System.Drawing.Point(460, 481);
+            this.pictureBox_MID_Wafer.Location = new System.Drawing.Point(533, 374);
             this.pictureBox_MID_Wafer.Name = "pictureBox_MID_Wafer";
-            this.pictureBox_MID_Wafer.Size = new System.Drawing.Size(440, 368);
+            this.pictureBox_MID_Wafer.Size = new System.Drawing.Size(383, 320);
             this.pictureBox_MID_Wafer.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox_MID_Wafer.TabIndex = 130;
             this.pictureBox_MID_Wafer.TabStop = false;
@@ -122,9 +119,9 @@
             // 
             this.pictureBox_BOT_PAK.BackColor = System.Drawing.Color.DimGray;
             this.pictureBox_BOT_PAK.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox_BOT_PAK.Location = new System.Drawing.Point(911, 52);
+            this.pictureBox_BOT_PAK.Location = new System.Drawing.Point(139, 696);
             this.pictureBox_BOT_PAK.Name = "pictureBox_BOT_PAK";
-            this.pictureBox_BOT_PAK.Size = new System.Drawing.Size(440, 368);
+            this.pictureBox_BOT_PAK.Size = new System.Drawing.Size(383, 320);
             this.pictureBox_BOT_PAK.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox_BOT_PAK.TabIndex = 131;
             this.pictureBox_BOT_PAK.TabStop = false;
@@ -133,9 +130,9 @@
             // 
             this.pictureBox_BOT_Wafer.BackColor = System.Drawing.Color.DimGray;
             this.pictureBox_BOT_Wafer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox_BOT_Wafer.Location = new System.Drawing.Point(911, 481);
+            this.pictureBox_BOT_Wafer.Location = new System.Drawing.Point(533, 696);
             this.pictureBox_BOT_Wafer.Name = "pictureBox_BOT_Wafer";
-            this.pictureBox_BOT_Wafer.Size = new System.Drawing.Size(440, 368);
+            this.pictureBox_BOT_Wafer.Size = new System.Drawing.Size(383, 320);
             this.pictureBox_BOT_Wafer.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox_BOT_Wafer.TabIndex = 132;
             this.pictureBox_BOT_Wafer.TabStop = false;
@@ -144,9 +141,9 @@
             // 
             this.pictureBox_Empty_Wafer.BackColor = System.Drawing.Color.DimGray;
             this.pictureBox_Empty_Wafer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox_Empty_Wafer.Location = new System.Drawing.Point(1404, 417);
+            this.pictureBox_Empty_Wafer.Location = new System.Drawing.Point(999, 465);
             this.pictureBox_Empty_Wafer.Name = "pictureBox_Empty_Wafer";
-            this.pictureBox_Empty_Wafer.Size = new System.Drawing.Size(364, 304);
+            this.pictureBox_Empty_Wafer.Size = new System.Drawing.Size(383, 320);
             this.pictureBox_Empty_Wafer.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox_Empty_Wafer.TabIndex = 133;
             this.pictureBox_Empty_Wafer.TabStop = false;
@@ -155,9 +152,9 @@
             // 
             this.pictureBox_Empty_PAK.BackColor = System.Drawing.Color.DimGray;
             this.pictureBox_Empty_PAK.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox_Empty_PAK.Location = new System.Drawing.Point(1404, 52);
+            this.pictureBox_Empty_PAK.Location = new System.Drawing.Point(999, 52);
             this.pictureBox_Empty_PAK.Name = "pictureBox_Empty_PAK";
-            this.pictureBox_Empty_PAK.Size = new System.Drawing.Size(364, 304);
+            this.pictureBox_Empty_PAK.Size = new System.Drawing.Size(383, 320);
             this.pictureBox_Empty_PAK.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox_Empty_PAK.TabIndex = 139;
             this.pictureBox_Empty_PAK.TabStop = false;
@@ -168,55 +165,13 @@
             this.baseLabel_Empty_Wafer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.baseLabel_Empty_Wafer.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel_Empty_Wafer.ForeColor = System.Drawing.Color.Yellow;
-            this.baseLabel_Empty_Wafer.Location = new System.Drawing.Point(1492, 373);
+            this.baseLabel_Empty_Wafer.Location = new System.Drawing.Point(1096, 421);
             this.baseLabel_Empty_Wafer.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Empty_Wafer.Name = "baseLabel_Empty_Wafer";
             this.baseLabel_Empty_Wafer.Size = new System.Drawing.Size(189, 41);
             this.baseLabel_Empty_Wafer.TabIndex = 140;
-            this.baseLabel_Empty_Wafer.Text = "[ Empty Pos. - Wafer ]";
+            this.baseLabel_Empty_Wafer.Text = "[ Tag Chip - Wafer ]";
             this.baseLabel_Empty_Wafer.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // baseLabel_BOT2
-            // 
-            this.baseLabel_BOT2.BackColor = System.Drawing.Color.Black;
-            this.baseLabel_BOT2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.baseLabel_BOT2.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.baseLabel_BOT2.ForeColor = System.Drawing.Color.Yellow;
-            this.baseLabel_BOT2.Location = new System.Drawing.Point(1071, 437);
-            this.baseLabel_BOT2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.baseLabel_BOT2.Name = "baseLabel_BOT2";
-            this.baseLabel_BOT2.Size = new System.Drawing.Size(120, 41);
-            this.baseLabel_BOT2.TabIndex = 138;
-            this.baseLabel_BOT2.Text = "[  BOTTOM  ]";
-            this.baseLabel_BOT2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // baseLabel_MID2
-            // 
-            this.baseLabel_MID2.BackColor = System.Drawing.Color.Black;
-            this.baseLabel_MID2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.baseLabel_MID2.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.baseLabel_MID2.ForeColor = System.Drawing.Color.Yellow;
-            this.baseLabel_MID2.Location = new System.Drawing.Point(620, 437);
-            this.baseLabel_MID2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.baseLabel_MID2.Name = "baseLabel_MID2";
-            this.baseLabel_MID2.Size = new System.Drawing.Size(120, 41);
-            this.baseLabel_MID2.TabIndex = 137;
-            this.baseLabel_MID2.Text = "[  MIDDLE  ]";
-            this.baseLabel_MID2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // baseLabel_TOP2
-            // 
-            this.baseLabel_TOP2.BackColor = System.Drawing.Color.Black;
-            this.baseLabel_TOP2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.baseLabel_TOP2.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.baseLabel_TOP2.ForeColor = System.Drawing.Color.Yellow;
-            this.baseLabel_TOP2.Location = new System.Drawing.Point(169, 437);
-            this.baseLabel_TOP2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.baseLabel_TOP2.Name = "baseLabel_TOP2";
-            this.baseLabel_TOP2.Size = new System.Drawing.Size(120, 41);
-            this.baseLabel_TOP2.TabIndex = 136;
-            this.baseLabel_TOP2.Text = "[  TOP  ]";
-            this.baseLabel_TOP2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // baseLabel_Wafer
             // 
@@ -224,7 +179,7 @@
             this.baseLabel_Wafer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.baseLabel_Wafer.Font = new System.Drawing.Font("나눔바른고딕", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel_Wafer.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Wafer.Location = new System.Drawing.Point(9, 437);
+            this.baseLabel_Wafer.Location = new System.Drawing.Point(664, 8);
             this.baseLabel_Wafer.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Wafer.Name = "baseLabel_Wafer";
             this.baseLabel_Wafer.Size = new System.Drawing.Size(120, 41);
@@ -238,7 +193,7 @@
             this.baseLabel_PAK.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.baseLabel_PAK.Font = new System.Drawing.Font("나눔바른고딕", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel_PAK.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_PAK.Location = new System.Drawing.Point(9, 8);
+            this.baseLabel_PAK.Location = new System.Drawing.Point(270, 8);
             this.baseLabel_PAK.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_PAK.Name = "baseLabel_PAK";
             this.baseLabel_PAK.Size = new System.Drawing.Size(120, 41);
@@ -252,12 +207,12 @@
             this.baseLabel_Empty_PAK.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.baseLabel_Empty_PAK.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel_Empty_PAK.ForeColor = System.Drawing.Color.Yellow;
-            this.baseLabel_Empty_PAK.Location = new System.Drawing.Point(1492, 8);
+            this.baseLabel_Empty_PAK.Location = new System.Drawing.Point(1096, 8);
             this.baseLabel_Empty_PAK.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Empty_PAK.Name = "baseLabel_Empty_PAK";
             this.baseLabel_Empty_PAK.Size = new System.Drawing.Size(189, 41);
             this.baseLabel_Empty_PAK.TabIndex = 124;
-            this.baseLabel_Empty_PAK.Text = "[ Empty Pos.   -   PAK ]";
+            this.baseLabel_Empty_PAK.Text = "[ Tag Chip   -   PAK ]";
             this.baseLabel_Empty_PAK.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // baseLabel_BOT
@@ -266,7 +221,7 @@
             this.baseLabel_BOT.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.baseLabel_BOT.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel_BOT.ForeColor = System.Drawing.Color.Yellow;
-            this.baseLabel_BOT.Location = new System.Drawing.Point(1071, 8);
+            this.baseLabel_BOT.Location = new System.Drawing.Point(9, 836);
             this.baseLabel_BOT.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_BOT.Name = "baseLabel_BOT";
             this.baseLabel_BOT.Size = new System.Drawing.Size(120, 41);
@@ -280,7 +235,7 @@
             this.baseLabel_MID.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.baseLabel_MID.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel_MID.ForeColor = System.Drawing.Color.Yellow;
-            this.baseLabel_MID.Location = new System.Drawing.Point(620, 8);
+            this.baseLabel_MID.Location = new System.Drawing.Point(9, 514);
             this.baseLabel_MID.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_MID.Name = "baseLabel_MID";
             this.baseLabel_MID.Size = new System.Drawing.Size(120, 41);
@@ -294,7 +249,7 @@
             this.baseLabel_TOP.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.baseLabel_TOP.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel_TOP.ForeColor = System.Drawing.Color.Yellow;
-            this.baseLabel_TOP.Location = new System.Drawing.Point(169, 8);
+            this.baseLabel_TOP.Location = new System.Drawing.Point(9, 192);
             this.baseLabel_TOP.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_TOP.Name = "baseLabel_TOP";
             this.baseLabel_TOP.Size = new System.Drawing.Size(120, 41);
@@ -305,13 +260,10 @@
             // FormWaferTipContactPosition
             // 
             this.BackColor = System.Drawing.Color.DarkSlateGray;
-            this.ClientSize = new System.Drawing.Size(1777, 858);
+            this.ClientSize = new System.Drawing.Size(1392, 1025);
             this.ControlBox = false;
             this.Controls.Add(this.baseLabel_Empty_Wafer);
             this.Controls.Add(this.pictureBox_Empty_PAK);
-            this.Controls.Add(this.baseLabel_BOT2);
-            this.Controls.Add(this.baseLabel_MID2);
-            this.Controls.Add(this.baseLabel_TOP2);
             this.Controls.Add(this.baseLabel_Wafer);
             this.Controls.Add(this.baseLabel_PAK);
             this.Controls.Add(this.pictureBox_Empty_Wafer);
@@ -360,9 +312,6 @@
         private System.Windows.Forms.PictureBox pictureBox_Empty_Wafer;
         private BaseLabel baseLabel_PAK;
         private BaseLabel baseLabel_Wafer;
-        private BaseLabel baseLabel_BOT2;
-        private BaseLabel baseLabel_MID2;
-        private BaseLabel baseLabel_TOP2;
         private System.Windows.Forms.PictureBox pictureBox_Empty_PAK;
         private BaseLabel baseLabel_Empty_Wafer;
     }

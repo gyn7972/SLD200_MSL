@@ -414,7 +414,6 @@ namespace CWA150SA_Onsemi300
 
         private void buttonLogin_Click(object sender, EventArgs e)
         {
-
             m_formLogIn.StartPosition = FormStartPosition.CenterScreen;
             m_formLogIn.bLoginReady = true;
             UpdateButtonOkImage();
@@ -441,6 +440,9 @@ namespace CWA150SA_Onsemi300
                 }
 
                 LogInInfo();
+
+                Equipment.LogIn_Status = true;
+                Equipment.AutoLogOut_Executed = false;
             }
             else if (m_formLogIn.DialogResult == DialogResult.Cancel)
             {
@@ -494,6 +496,8 @@ namespace CWA150SA_Onsemi300
                     control[i].Image = CWA150SA_Onsemi.Properties.Resources.IOa;
                 }
             }
+
+            Equipment.LogIn_Status = false;
         }
         #endregion
 
@@ -501,6 +505,16 @@ namespace CWA150SA_Onsemi300
         {
             m_Timer.Stop();
             UpdateStartStopButton();
+
+            //  자동 로그아웃을 위해 추가됨
+            if (Equipment.AutoLogOut_Execute)
+            {
+                Equipment.AutoLogOut_Execute = false;
+                Equipment.AutoLogOut_Executed = true;
+
+                buttonLogOut.PerformClick();
+            }
+
             m_Timer.Start();
         }
         private void UpdateStartStopButton()

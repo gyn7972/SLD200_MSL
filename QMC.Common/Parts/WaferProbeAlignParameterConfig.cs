@@ -544,6 +544,16 @@ namespace QMC.Common.Parts
             DisplayName("PAK, 웨이퍼 Gate - Center 가 일치할 때의 Offset Y")]
         public double PAK_WaferGate_Centering_Offset_Y { set; get; }
 
+        [Category("[99] 장비 공통 파라미터"),
+            Description("일정 시간 동안 장비를 사용하지 않을 경우 자동으로 로그아웃 한다."),
+            DisplayName("자동 로그아웃 기능 사용 여부")]
+        public bool Auto_LogOut_Usage { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("일정 시간 동안 장비를 사용하지 않을 경우 자동으로 로그아웃 한다.\r\n\r\n[default 0 : 10 min]"),
+            DisplayName("자동 로그아웃 시간 (min)")]
+        public double Auto_LogOut_Time { set; get; }
+
 
         #endregion
 

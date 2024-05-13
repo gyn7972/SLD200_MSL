@@ -157,6 +157,12 @@ namespace QMC.Common
         //  프로브 카드 클램프 타입 (1호기 or 2~6호기)
         public static int ProbeCard_ClampType { set; get; }
 
+        
+        //  자동 로그아웃
+        public static bool LogIn_Status {  set; get; }
+        public static bool AutoLogOut_Execute {  set; get; }
+        public static bool AutoLogOut_Executed { set; get; }
+
 
         public static SiriusViewerForm EqpSiriusViewer { set; get; }
         public static bool m_bAlignVisionThread_1time { set; get; }
@@ -171,6 +177,9 @@ namespace QMC.Common
             MachineStop_byAlarm = false;
 
             Machine_LogIn = false;
+            AutoLogOut_Execute = false;
+            AutoLogOut_Executed = false;
+            LogIn_Status = false;
 
             Packing_AutoStart_Mode = false;
             AlignErrorCheck_AutoStart_Mode = false;
