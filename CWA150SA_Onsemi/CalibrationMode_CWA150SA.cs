@@ -4919,6 +4919,11 @@ namespace CWA150SA_Onsemi300
                     //DataManager.Instance.UpdateConfigData(m_Module); // 참고 : param save
                     Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
                 }
+
+                //  2024. 05. 13.  SCH : Config 창 데이터 갱신을 위해서 추가됨.
+                DataManager.Instance.ApplyConfigData(waferProbeAlign);
+                //  Config 창 데이터 갱신을 위해서
+                Equipment.m_bRedraw_FormWaferProbeAlignParameterConfig = true;
             }
             else
             {
@@ -5053,6 +5058,11 @@ namespace CWA150SA_Onsemi300
                     //DataManager.Instance.UpdateConfigData(m_Module); // 참고 : param save
                     Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
                 }
+
+                //  2024. 05. 13.  SCH : Config 창 데이터 갱신을 위해서 추가됨.
+                DataManager.Instance.ApplyConfigData(waferProbeAlign);
+                //  Config 창 데이터 갱신을 위해서
+                Equipment.m_bRedraw_FormWaferProbeAlignParameterConfig = true;
             }
             else
             {
@@ -5187,6 +5197,11 @@ namespace CWA150SA_Onsemi300
                     //DataManager.Instance.UpdateConfigData(m_Module); // 참고 : param save
                     Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
                 }
+
+                //  2024. 05. 13.  SCH : Config 창 데이터 갱신을 위해서 추가됨.
+                DataManager.Instance.ApplyConfigData(waferProbeAlign);
+                //  Config 창 데이터 갱신을 위해서
+                Equipment.m_bRedraw_FormWaferProbeAlignParameterConfig = true;
             }
             else
             {
@@ -5321,6 +5336,11 @@ namespace CWA150SA_Onsemi300
                     //DataManager.Instance.UpdateConfigData(m_Module); // 참고 : param save
                     Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
                 }
+
+                //  2024. 05. 13.  SCH : Config 창 데이터 갱신을 위해서 추가됨.
+                DataManager.Instance.ApplyConfigData(waferProbeAlign);
+                //  Config 창 데이터 갱신을 위해서
+                Equipment.m_bRedraw_FormWaferProbeAlignParameterConfig = true;
             }
             else
             {
@@ -5455,6 +5475,11 @@ namespace CWA150SA_Onsemi300
                     //DataManager.Instance.UpdateConfigData(m_Module); // 참고 : param save
                     Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
                 }
+
+                //  2024. 05. 13.  SCH : Config 창 데이터 갱신을 위해서 추가됨.
+                DataManager.Instance.ApplyConfigData(waferProbeAlign);
+                //  Config 창 데이터 갱신을 위해서
+                Equipment.m_bRedraw_FormWaferProbeAlignParameterConfig = true;
             }
             else
             {
@@ -5589,6 +5614,11 @@ namespace CWA150SA_Onsemi300
                     //DataManager.Instance.UpdateConfigData(m_Module); // 참고 : param save
                     Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
                 }
+
+                //  2024. 05. 13.  SCH : Config 창 데이터 갱신을 위해서 추가됨.
+                DataManager.Instance.ApplyConfigData(waferProbeAlign);
+                //  Config 창 데이터 갱신을 위해서
+                Equipment.m_bRedraw_FormWaferProbeAlignParameterConfig = true;
             }
             else
             {
@@ -5697,6 +5727,11 @@ namespace CWA150SA_Onsemi300
                     //DataManager.Instance.UpdateConfigData(m_Module); // 참고 : param save
                     Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
                 }
+
+                //  2024. 05. 13.  SCH : Config 창 데이터 갱신을 위해서 추가됨.
+                DataManager.Instance.ApplyConfigData(waferProbeAlign);
+                //  Config 창 데이터 갱신을 위해서
+                Equipment.m_bRedraw_FormWaferProbeAlignParameterConfig = true;
             }
             else
             {
@@ -5737,6 +5772,11 @@ namespace CWA150SA_Onsemi300
                     //DataManager.Instance.UpdateConfigData(m_Module); // 참고 : param save
                     Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
                 }
+
+                //  2024. 05. 13.  SCH : Config 창 데이터 갱신을 위해서 추가됨.
+                DataManager.Instance.ApplyConfigData(waferProbeAlign);
+                //  Config 창 데이터 갱신을 위해서
+                Equipment.m_bRedraw_FormWaferProbeAlignParameterConfig = true;
             }
             else
             {
@@ -5798,6 +5838,11 @@ namespace CWA150SA_Onsemi300
                     //DataManager.Instance.UpdateConfigData(m_Module); // 참고 : param save
                     Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
                 }
+
+                //  2024. 05. 13.  SCH : Config 창 데이터 갱신을 위해서 추가됨.
+                DataManager.Instance.ApplyConfigData(waferProbeAlign);
+                //  Config 창 데이터 갱신을 위해서
+                Equipment.m_bRedraw_FormWaferProbeAlignParameterConfig = true;
             }
             else
             {
@@ -6025,6 +6070,11 @@ namespace CWA150SA_Onsemi300
                     //DataManager.Instance.UpdateConfigData(m_Module); // 참고 : param save
                     Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
                 }
+
+                //  2024. 05. 13.  SCH : Config 창 데이터 갱신을 위해서 추가됨.
+                DataManager.Instance.ApplyConfigData(waferProbeAlign);
+                //  Config 창 데이터 갱신을 위해서
+                Equipment.m_bRedraw_FormWaferProbeAlignParameterConfig = true;
             }
             else
             {

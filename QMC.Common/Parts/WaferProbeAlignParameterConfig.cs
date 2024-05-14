@@ -153,8 +153,8 @@ namespace QMC.Common.Parts
         /// Wafer - Probe Card Packing Position Offset
         /// </summary>
         [Category("[03] 웨이퍼 - 프로브 카드 패킹 옵셋"),
-            Description("웨이퍼 얼라인 후 프로브 카드와 합착할 때, 웨이퍼를 XY 옵셋 거리만큼 이동시키는 기능을 사용할 것인지 여부."),
-            DisplayName("웨이퍼 패킹 XY 옵셋 사용 여부")]
+            Description("웨이퍼 얼라인 후 프로브 카드와 합착할 때, 웨이퍼를 XY 옵셋 거리만큼 이동시키는 기능을 사용할 것인지 여부.\r\n\r\n[###  무조건 사용  ###]"),
+            DisplayName("웨이퍼 패킹 XY 옵셋 사용 여부                                                                                                --> ### 무조건 사용하도록 변경함 ###")]
         public bool Wafer_ProbreCard_PackingPos_Offset_Usage { set; get; }
 
         [Category("[03] 웨이퍼 - 프로브 카드 패킹 옵셋"),
@@ -178,7 +178,7 @@ namespace QMC.Common.Parts
         public double PAK_GatePin_Gap { set; get; }
 
         [Category("[04] 웨이퍼 - Tip Contact 위치 표시"),
-            Description("웨이퍼의 게이트에 Contact 되는 프로브 카드의 Pin 직경. (이 크기를 이용해 Pin 위치의 사각형을 그린다.)\r\n\r\n[default 0 : 0.11mm]"),
+            Description("웨이퍼의 게이트에 Contact 되는 프로브 카드의 Pin 직경. (이 크기를 이용해 Pin 위치의 사각형을 그린다.)\r\n\r\n[default 0 : 0.11 mm]"),
             DisplayName("PAK 의 Pin 크기 (직경, mm)")]
         public double PAK_GatePin_Diameter { set; get; }
 
@@ -194,23 +194,23 @@ namespace QMC.Common.Parts
         /// </summary>
         /// 
         [Category("[05] Offset && Delay"),
-            Description("Elevator Z 축이 Packing 위치로 이동할 때, Packing 위치에서 이 값만큼 뺀 거리까지 고속으로 이동하고, 이 구간은 저속으로 이동한다.\r\n씬-척이 PAK 에 Packing 되고난 후 Elevator Z 축을 내리는 거리에도 사용된다. (값이 너무 작으면 씬-척 감지로 인한 오동작이 발생할 수 있음)\r\n[default : 10]"),
+            Description("Elevator Z 축이 Packing 위치로 이동할 때, Packing 위치에서 이 값만큼 뺀 거리까지 고속으로 이동하고, 이 구간은 저속으로 이동한다.\r\n씬-척이 PAK 에 Packing 되고난 후 Elevator Z 축을 내리는 거리에도 사용된다. (값이 너무 작으면 씬-척 감지로 인한 오동작이 발생할 수 있음)\r\n[default : 10 mm]"),
             DisplayName("웨이퍼 && 프로브카드 Packing 시, 저속 이동 거리 (mm)")]
         public double Wafer_ProbeCard_PackingOffset_Distance { set; get; }
 
         [Category("[05] Offset && Delay"),
-            Description("UnPacking 할 때, UnPacking 신호를 주면서 Elevator Z 축을 살짝 아래로 내리는 거리\r\n[default : 5]"),
+            Description("UnPacking 할 때, UnPacking 신호를 주면서 Elevator Z 축을 약간 아래로 내리는 거리\r\n[Packing 완료 후, Leak 로 인해 씬-척이 분리될 경우 안전사고가 발생할 수 있으므로 너무 많이 내리지 않도록 한다.]\r\n[default : 5 mm]     [권장 : 30mm 이내]"),
             DisplayName("웨이퍼 && 프로브카드 UnPacking 시, UnPacking 신호 인가 후 이동하는 거리 (mm)")]
         public double Wafer_ProbeCard_UnPackingOffset_Distance { set; get; }
 
         [Category("[05] Offset && Delay"),
-            Description("UnPacking 할 때, Packing 높이에서 얼마나 아래에서 UnPacking 작업을 진행할 것인지.\r\n[Packing 높이는 Thin-Chuck 이 Probe Card 에 눌리는 높이이기 때문에, 약간 아래에서 작업을 진행한다.]\r\n[default : 1],   (음수를 넣을 경우 위로 올라감)"),
-            DisplayName("웨이퍼 && 프로브카드 UnPacking 시, Packing 높이 대비 아래로 내리는 거리 (mm)")]
+            Description("UnPacking 할 때, Packing 높이에서 얼마나 아래에서 UnPacking 작업을 진행할 것인지.\r\n[Packing 후 씬-척의 높이는 Packing 전보다 높기 때문에, Packing 높이보다 더 올라가야 한다.]\r\n[default : 1 mm],   (입력 값이 0 보다 작을 경우 위로 올라감)"),
+            DisplayName("웨이퍼 && 프로브카드 UnPacking 시, UnPacking 을 위한 Elevator Z 축 이동 거리 (기준 높이 : Packing 위치) (mm)")]
         public double Wafer_ProbeCard_UnPackingStartOffset_Distance { set; get; }
 
         [Category("[05] Offset && Delay"),
             Description("수동 패킹 시, 패킹 위치에서 몇 mm 아래까지 엘리베이터 Z 축을 올릴 것인지.\r\n\r\n[default 0 : 30 mm]"),
-            DisplayName("웨이퍼 && 프로브카드 수동 패킹 시, 엘리베이터 Z 축의 1단계 Offset 거리 (mm, > 0)")]
+            DisplayName("웨이퍼 && 프로브카드 Manual Packing 시, 엘리베이터 Z 축의 1단계 Offset 거리 (mm, > 0)")]
         public double Wafer_ProbeCard_ManualPacking_ElevZ_Offset_Distance { set; get; }
 
 
@@ -240,7 +240,7 @@ namespace QMC.Common.Parts
         public double Speed_Operation_Elev { set; get; }
 
         [Category("[06] Operation Speed"),
-            Description("자동운전 시 구동 속도 대비 가감속 배율 (mm/s * n -> mm/s² 으로 사용)\r\n\r\n[default : 5]"),
+            Description("자동운전 시 구동 속도 대비 가감속 배율 (mm/s * n -> mm/s² 으로 사용)\r\n\r\n[default : 5 배]"),
             DisplayName("자동운전 시 구동 속도 대비 가감속 배율 (n)")]
         public double Speed_Operation_Mag_forAccDec { set; get; }
 
@@ -266,9 +266,14 @@ namespace QMC.Common.Parts
         public bool Packing_VacuumSignal_Usage { set; get; }
 
         [Category("[80] 사용 옵션"),
-            Description("웨이퍼 && 프로브카드 Packing 시, Packing 공압 신호를 사용하지 않을 경우, 이 시간만큼 대기 후 다음 동작 진행"),
+            Description("웨이퍼 && 프로브카드 Packing 시 Packing 공압 신호를 사용하지 않을 경우, 이 시간만큼 대기 후 다음 동작 진행"),
             DisplayName("Packing 공압을 사용하지 않을 경우, 대기 시간 (ms)")]
         public int Packing_VacuumSignal_Time { set; get; }
+
+        [Category("[80] 사용 옵션"),
+            Description("웨이퍼 && 프로브카드 Packing 시 Packing 공압 신호를 사용할 경우, Packing 공압 신호가 들어온 후 이 시간만큼 대기 후 다음 동작 진행\r\n\r\n[PAK 에 씬-척이 충분히 밀착되도록 기다리는 시간]"),
+            DisplayName("Packing 공압을 사용할 경우, 추가 가압 시간 (ms)")]
+        public int Packing_VacuumSignal_AfterTime { set; get; }
 
         [Category("[80] 사용 옵션"),
             Description("웨이퍼 공압 신호를 사용할 것인지 여부."),
@@ -306,8 +311,8 @@ namespace QMC.Common.Parts
         public bool Packing_AutoStart_After_Wafer_Align_Usage { set; get; }
 
         [Category("[80] 사용 옵션"),
-            Description("웨이퍼 얼라인 완료 후, Top - Mid - Bottom 위치에서 프로브 핀 위치 대비 웨이퍼의 위치 오차 검증을 진행할 것인지 여부. (false : 사용 안함)"),
-            DisplayName("Wafer 얼라인 후 얼라인 위치 정확성 검증 여부. (false : 사용 안함)")]
+            Description("웨이퍼 얼라인 완료 후, Top - Mid - Bottom 위치에서 프로브 핀 위치 대비 웨이퍼의 위치 오차 검증을 진행할 것인지 여부. (false : 사용 안함)\r\n\r\n[###  무조건 사용  ###]"),
+            DisplayName("Wafer 얼라인 후 얼라인 위치 정확성 검증 여부. (false : 사용 안함)                                                --> ### 무조건 사용하도록 변경됨 ###")]
         public bool Wafer_Align_ErrorCheck_After_Wafer_Align_Usage { set; get; }
 
 
@@ -465,27 +470,27 @@ namespace QMC.Common.Parts
         public int ReticleAlign_LowerVision_LightValue { set; get; }
 
         [Category("[99] 장비 공통 파라미터"),
-            Description("얼라인 시 Theta 축 회전 속도 (mm/s)\r\n\r\n[default 0: 50]"),
+            Description("얼라인 시 Theta 축 회전 속도 (mm/s)\r\n\r\n[default 0: 50 mm/s]"),
             DisplayName("얼라인 - 얼라인 시 Theta 축 회전 속도 (mm/s)")]
         public double Align_Theta_Velocity { set; get; }
 
         [Category("[99] 장비 공통 파라미터"),
-            Description("얼라인 시 Theta 축 회전 가속도 (mm/s²)\r\n\r\n[default 0: 1000]"),
+            Description("얼라인 시 Theta 축 회전 가속도 (mm/s²)\r\n\r\n[default 0: 1000 mm/s²]"),
             DisplayName("얼라인 - 얼라인 시 Theta 축 회전 가속도 (mm/s²)")]
         public double Align_Theta_Accel { set; get; }
 
         [Category("[99] 장비 공통 파라미터"),
-            Description("얼라인 시 Theta 축 회전 감속도 (mm/s²)\r\n\r\n[default 0: 1000]"),
+            Description("얼라인 시 Theta 축 회전 감속도 (mm/s²)\r\n\r\n[default 0: 1000 mm/s²]"),
             DisplayName("얼라인 - 얼라인 시 Theta 축 회전 감속도 (mm/s²)")]
         public double Align_Theta_Decel { set; get; }
 
         [Category("[99] 장비 공통 파라미터"),
-            Description("Theta 축이 회전하기 위한 중심 축에서 각 UVW 축 까지의 거리(mm)\r\n[이 거리 값에 따라 1˚회전을 위한 이동량이 달라진다]\r\n[default : 70 mm]"),
+            Description("Theta 축이 회전하기 위한 중심 축에서 각 UVW 축 까지의 거리(mm)\r\n[이 거리 값에 따라 1˚회전을 위한 이동량이 달라진다]\r\n[default 0: 70 mm]"),
             DisplayName("얼라인 스테이지 - 회전 반경 (mm)")]
         public double Align_Theta_From_RotCenter_To_UVW_Distance { set; get; }
 
         [Category("[99] 장비 공통 파라미터"),
-            Description("Theta 축 1˚ 회전하기 위해 필요한 UVW Stage 이동량(mm)\r\n[default : 1.221668451 mm        (70mm / 1˚)]\r\n[주의 : Center 기준으로 회전하게 되면 양쪽 마크가 동시에 회전하므로 실제로는 회전량이 약 2배가 됨.]"),
+            Description("Theta 축 1˚ 회전하기 위해 필요한 UVW Stage 이동량(mm)\r\n[default 0: 1.221668451 mm        (70mm / 1˚)]\r\n[주의 : Center 기준으로 회전하게 되면 양쪽 마크가 동시에 회전하므로 실제로는 회전량이 약 2배가 됨.]"),
             DisplayName("얼라인 스테이지 - Theta 1˚ 회전을 위한 UVW 각 축 이동량 (mm)")]
         public double Align_Theta_Movement_MM_Per_1Deg { set; get; }
 

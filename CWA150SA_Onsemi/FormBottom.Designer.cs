@@ -100,7 +100,7 @@
             this.button_Lamp0.Name = "button_Lamp0";
             this.button_Lamp0.Size = new System.Drawing.Size(183, 81);
             this.button_Lamp0.TabIndex = 10;
-            this.button_Lamp0.Text = "내부   조명";
+            this.button_Lamp0.Text = "실내   조명";
             this.button_Lamp0.UseVisualStyleBackColor = false;
             this.button_Lamp0.Click += new System.EventHandler(this.button_Lamp1_Click);
             // 

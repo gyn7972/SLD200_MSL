@@ -407,6 +407,10 @@ namespace CWA150SA_Onsemi300
             m_dAutoLogOut_Total = m_dAutoLogOut_Total * 60 * 1000;
             m_nAutoLogOut_TickStart = 0;
             m_bAutoLogOut_TickStart_1time = false;
+
+
+            lblPackingPressure_OK.Visible = false;
+            lblPackingPressure_NG.Visible = false;
         }
 
         private void Monitoring_CWA150SA_VisibleChanged(object sender, EventArgs e)
@@ -924,8 +928,8 @@ namespace CWA150SA_Onsemi300
 
 
             Equipment.Packing_AutoStart_Mode = waferProbeAlign.Config.ParamConfig.Packing_AutoStart_After_Wafer_Align_Usage;
-            Equipment.AlignErrorCheck_AutoStart_Mode = waferProbeAlign.Config.ParamConfig.Wafer_Align_ErrorCheck_After_Wafer_Align_Usage;
-            Equipment.PackingOffset_Use = waferProbeAlign.Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_Usage;
+            Equipment.AlignErrorCheck_AutoStart_Mode = true;    //  waferProbeAlign.Config.ParamConfig.Wafer_Align_ErrorCheck_After_Wafer_Align_Usage;          //  2024. 05. 13.  SCH : 얼라인 에러 체크는 무조건 사용하도록
+            Equipment.PackingOffset_Use = true; //  waferProbeAlign.Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_Usage;                                //  2024. 05. 13.  SCH : 패킹 옵셋은 무조건 사용하도록
             Equipment.Pak_AirLineCheck_Use = waferProbeAlign.Config.ParamConfig.Pak_AirLineCheck_Usage;
             Equipment.ProbeCard_ClampType = waferProbeAlign.Config.ParamConfig.ProbeCard_ClampType;
 
@@ -1106,6 +1110,39 @@ namespace CWA150SA_Onsemi300
                         Equipment.AutoLogOut_Execute = true;                        
                     }
                 }
+            }
+
+
+            //  패킹 압력 상태 표시
+            switch(waferProbeAlign.m_nPackingPressure_Status)
+            {
+                case (int)PackingPressureStatus.PackingPressure_None:
+                    lblPackingPressure_OK.Visible = false;
+                    lblPackingPressure_NG.Visible = false;
+                    break;
+
+
+                case (int)PackingPressureStatus.PackingPressure_OK:
+                    lblPackingPressure_OK.Visible = true;
+                    lblPackingPressure_NG.Visible = false;
+                    break;
+
+
+                case (int)PackingPressureStatus.PackingPressure_NG:
+                    lblPackingPressure_OK.Visible = false;
+                    lblPackingPressure_NG.Visible = true;
+
+                    if (m_bBlink)
+                    {
+                        lblPackingPressure_NG.BackColor = Color.Red;
+                        lblPackingPressure_NG.ForeColor = Color.White;
+                    }
+                    else
+                    {
+                        lblPackingPressure_NG.BackColor = Color.Gray;
+                        lblPackingPressure_NG.ForeColor = Color.Black;
+                    }
+                    break;
             }
         }
 
@@ -2993,6 +3030,8 @@ namespace CWA150SA_Onsemi300
                 waferProbeAlign.m_bWaferProbeAlign_ErrorCheck_Complete = false;
                 waferProbeAlign.m_bWaferProbeAlign_ErrorCheck_All_OK = false;
 
+                waferProbeAlign.m_nPackingPressure_Status = (int)PackingPressureStatus.PackingPressure_None;
+
                 Equipment.MachineStop_byUser = true;
 
 
@@ -3380,6 +3419,8 @@ namespace CWA150SA_Onsemi300
 
             waferProbeAlign.m_bProbeCard_TiltCheck_Only = false;               //  ProbeCard Tilt Check Only
             waferProbeAlign.m_bWafer_Align_Only = false;                       //  Wafer Align Only
+
+            waferProbeAlign.m_nPackingPressure_Status = (int)PackingPressureStatus.PackingPressure_None;
 
             //  얼라인 버튼을 누르면 수동 패킹 탭으로 변경 (얼라인 후 수동으로 패킹 해야 하기 때문에, 미리 페이지를 수동패킹 페이지로 변경한다.)
             tabControl_User.SelectedIndex = 0;                                  //  0: 수동 패킹        1: 패킹 오프셋 변경        2: 레티클 글래스 위치 변경
@@ -3869,6 +3910,8 @@ namespace CWA150SA_Onsemi300
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
                 return;
             }
+
+            waferProbeAlign.m_nPackingPressure_Status = (int)PackingPressureStatus.PackingPressure_None;
 
             //  레티클 글래스 확인
             if (waferProbeAlign.Config.ParamConfig.ReticleGlass_CenterCheck_forAlign)
@@ -8642,6 +8685,11 @@ namespace CWA150SA_Onsemi300
                 Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
             }
 
+            //  2024. 05. 13.  SCH : Config 창 데이터 갱신을 위해서 추가됨.
+            DataManager.Instance.ApplyConfigData(waferProbeAlign);
+            //  Config 창 데이터 갱신을 위해서
+            Equipment.m_bRedraw_FormWaferProbeAlignParameterConfig = true;
+
             m_strTemp = "패킹 오프셋 변경 완료.\r\n\r\n" + "[ 기존 -  X: " + m_dBeforeDiff_X.ToString() + ",  Y: " + m_dBeforeDiff_Y.ToString() + " ]\r\n" +
                                                            "[ 변경 -  X: " + m_dAfterDiff_X.ToString() + ",  Y: " + m_dAfterDiff_Y.ToString() + " ]";
 
@@ -8798,7 +8846,8 @@ namespace CWA150SA_Onsemi300
                 }
                 else
                 {
-                    if (waferProbeAlign.Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_Usage)            //  패킹 옵셋을 사용하면, 해당 옵셋 만큼 이동하며 엘리베이터를 올린다.
+                    //if (waferProbeAlign.Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_Usage)            //  패킹 옵셋을 사용하면, 해당 옵셋 만큼 이동하며 엘리베이터를 올린다.
+                    if (Equipment.PackingOffset_Use)
                     {
                         waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam = waferProbeAlign.waferProbeAlignParameter.GetPositionInformation("AlignPosition_Ver_Top");
 
@@ -9066,7 +9115,8 @@ namespace CWA150SA_Onsemi300
             }
 
 
-            if (waferProbeAlign.Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_Usage)
+            //if (waferProbeAlign.Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_Usage)
+            if (Equipment.PackingOffset_Use)
             {
                 double m_dAxisU_Pos = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U);
                 double m_dAxisV_Pos = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V);
@@ -9403,6 +9453,11 @@ namespace CWA150SA_Onsemi300
                     //DataManager.Instance.UpdateConfigData(m_Module); // 참고 : param save
                     Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
                 }
+
+                //  2024. 05. 13.  SCH : Config 창 데이터 갱신을 위해서 추가됨.
+                DataManager.Instance.ApplyConfigData(waferProbeAlign);
+                //  Config 창 데이터 갱신을 위해서
+                Equipment.m_bRedraw_FormWaferProbeAlignParameterConfig = true;
             }
             else
             {

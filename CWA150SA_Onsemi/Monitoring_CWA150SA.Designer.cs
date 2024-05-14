@@ -209,6 +209,8 @@ namespace CWA150SA_Onsemi300
             this.baseLabelCurrentRecipe = new CWA150SA_Onsemi300.BaseLabel();
             this.lblMachine_Status = new CWA150SA_Onsemi300.BaseLabel();
             this.lblStatus_ScannerPowerMeter_Connected = new CWA150SA_Onsemi300.BaseLabel();
+            this.lblPackingPressure_OK = new System.Windows.Forms.Label();
+            this.lblPackingPressure_NG = new System.Windows.Forms.Label();
             this.groupBoxStatus.SuspendLayout();
             this.groupBoxMainPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMainVacuumCheck)).BeginInit();
@@ -1932,6 +1934,8 @@ namespace CWA150SA_Onsemi300
             // 
             // baseGroupBox_CycleButton
             // 
+            this.baseGroupBox_CycleButton.Controls.Add(this.lblPackingPressure_NG);
+            this.baseGroupBox_CycleButton.Controls.Add(this.lblPackingPressure_OK);
             this.baseGroupBox_CycleButton.Controls.Add(this.btnPAK_Leak_Check);
             this.baseGroupBox_CycleButton.Controls.Add(this.pictureBoxProbePackingCheck);
             this.baseGroupBox_CycleButton.Controls.Add(this.lblProbePackingCheck);
@@ -2801,6 +2805,32 @@ namespace CWA150SA_Onsemi300
             this.lblStatus_ScannerPowerMeter_Connected.Text = "Power Meter #2  [Stage]";
             this.lblStatus_ScannerPowerMeter_Connected.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // lblPackingPressure_OK
+            // 
+            this.lblPackingPressure_OK.BackColor = System.Drawing.Color.GreenYellow;
+            this.lblPackingPressure_OK.Font = new System.Drawing.Font("나눔고딕", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblPackingPressure_OK.ForeColor = System.Drawing.Color.Black;
+            this.lblPackingPressure_OK.Location = new System.Drawing.Point(808, 234);
+            this.lblPackingPressure_OK.Margin = new System.Windows.Forms.Padding(0);
+            this.lblPackingPressure_OK.Name = "lblPackingPressure_OK";
+            this.lblPackingPressure_OK.Size = new System.Drawing.Size(166, 55);
+            this.lblPackingPressure_OK.TabIndex = 191;
+            this.lblPackingPressure_OK.Text = "패킹 압력 도달";
+            this.lblPackingPressure_OK.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblPackingPressure_NG
+            // 
+            this.lblPackingPressure_NG.BackColor = System.Drawing.Color.Red;
+            this.lblPackingPressure_NG.Font = new System.Drawing.Font("나눔고딕", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblPackingPressure_NG.ForeColor = System.Drawing.Color.White;
+            this.lblPackingPressure_NG.Location = new System.Drawing.Point(808, 234);
+            this.lblPackingPressure_NG.Margin = new System.Windows.Forms.Padding(0);
+            this.lblPackingPressure_NG.Name = "lblPackingPressure_NG";
+            this.lblPackingPressure_NG.Size = new System.Drawing.Size(166, 55);
+            this.lblPackingPressure_NG.TabIndex = 192;
+            this.lblPackingPressure_NG.Text = "패킹 압력 부족";
+            this.lblPackingPressure_NG.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // Monitoring_CWA150SA
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -3057,5 +3087,7 @@ namespace CWA150SA_Onsemi300
         private BaseLabel baseLabel8;
         private BaseButton baseButton_EmptyChip_XYPos_GO;
         private System.Windows.Forms.Button baseButton_LowerReticleGlass_Pos_Get;
+        private System.Windows.Forms.Label lblPackingPressure_NG;
+        private System.Windows.Forms.Label lblPackingPressure_OK;
     }
 }

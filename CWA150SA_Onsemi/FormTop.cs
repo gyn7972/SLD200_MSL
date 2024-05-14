@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace CWA150SA_Onsemi300
 {
@@ -62,8 +63,14 @@ namespace CWA150SA_Onsemi300
             //lbTitle.Location = new Point(panelLogo.Right + 10, 40);
             this.lbTitle.Location = new Point(panelLogo.Left, panelLogo.Top + panelLogo.Size.Height);
             this.lbTitle.Size = new System.Drawing.Size(panelLogo.Size.Width, 25);
-            this.lbTitle.Text = "CWA150SA  (Onsemi)";
+            this.lbTitle.Text = "CWA150SA  (ONSEMI)";
             this.lbTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+
+            //  C 드라이브 이름 가져오기 (Title 에 쓰자)
+            DriveInfo[] drive = DriveInfo.GetDrives();
+            string m_strDriveName = drive[0].VolumeLabel;
+            this.lbTitle.Text = string.Format( "{0}  (ONSEMI)", m_strDriveName);
 
 
             m_bBlink = false;

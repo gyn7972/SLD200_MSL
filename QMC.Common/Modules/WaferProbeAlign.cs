@@ -708,6 +708,15 @@ namespace QMC.Common.Modules
 
         public double[] ManualPacking_OffsetPosition_UVW = new double[3];                           //  매뉴얼 패킹 모드이고, 패킹 옵셋을 사용할 경우, 옵셋 이동된 위치 (UVW) --> 패킹 시 위치 확인용
 
+        public int m_nPackingPressure_Status;                                                       //  패킹 압력 상태 (0: None,  1: OK,  2: NG)
+
+        public enum PackingPressureStatus
+        {
+            PackingPressure_None = 0,                       
+            PackingPressure_OK,                                 //  패킹 압력 OK
+            PackingPressure_NG,                                 //  패킹 압력 부족
+        }
+
         public WaferProbeAlignParameter waferProbeAlignParameter { set; get; }
 
         //public SerialPowerMeter1Port m_powerMeter_ExitPos_Comm { set; get; }                        //  2023. 04. 12.  SCH : Laser PowerMeter Comm (Exit Position) - COM3
@@ -1237,6 +1246,7 @@ namespace QMC.Common.Modules
 
             Probe_Packing,                                      //  Packing Signal On
             Probe_Packing_StableTime,                           //  Packing Signal On 후 안정화 시간
+            Probe_Packing_StableTime_After_SignalOn,            //  Packing Signal 사용 모드일 경우, Packing 신호가 들어오고 나서 추가로 압력을 더 인가하는 시간
 
             Wafer_Vacuum_Off,                                   //  Wafer Vacuum Off
             Wafer_Vacuum_Off_Check,                             //  Wafer Vacuum Off 확인
@@ -1822,6 +1832,8 @@ namespace QMC.Common.Modules
                     AlignmentErrorCheck_MarkPosition[nPos, nSide].Y = 0.0;                    
                 }
             }
+
+            m_nPackingPressure_Status = (int)PackingPressureStatus.PackingPressure_None;            //  패킹 압력 상태
 
             m_bLog_1time = false;
 
@@ -5992,7 +6004,8 @@ namespace QMC.Common.Modules
 
                     //m_bWaferAlign_OK = true;
 
-                    if (Config.ParamConfig.Wafer_Align_ErrorCheck_After_Wafer_Align_Usage)
+                    //if (Config.ParamConfig.Wafer_Align_ErrorCheck_After_Wafer_Align_Usage)
+                    if (Equipment.AlignErrorCheck_AutoStart_Mode)
                     {
                         m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.__Wafer_Align_ErrorCheck_Start;
                     }
@@ -6244,7 +6257,8 @@ namespace QMC.Common.Modules
                                 m_dWafer_ProbeCard_AlignPos_Axis_V = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V);
                                 m_dWafer_ProbeCard_AlignPos_Axis_W = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W);
 
-                                if (!Config.ParamConfig.Wafer_Align_ErrorCheck_After_Wafer_Align_Usage)
+                                //if (!Config.ParamConfig.Wafer_Align_ErrorCheck_After_Wafer_Align_Usage)
+                                if (!Equipment.AlignErrorCheck_AutoStart_Mode)
                                 {
                                     if (Config.ParamConfig.Packing_AutoStart_After_Wafer_Align_Usage)
                                     {
@@ -7700,22 +7714,6 @@ namespace QMC.Common.Modules
 
                     m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlignErrorCheck_Step.ErrorCheck_Position_Remained_Check;
                     break;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                 case (int)WaferProbeAlignErrorCheck_Step.__Wafer_XYAlign_Start:                                  //  Wafer XY Align 시작
@@ -12730,7 +12728,8 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "카메라 XYZ축, 대기 위치로 이동 완료");
 
-                        if (Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_Usage)
+                        //if (Config.ParamConfig.Wafer_ProbreCard_PackingPos_Offset_Usage)
+                        if (Equipment.PackingOffset_Use)
                         {
                             m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.__Wafer_OffsetMove_Start;
                         }
@@ -13147,7 +13146,7 @@ namespace QMC.Common.Modules
                         if (!m_bLog_1time)
                         {
                             m_bLog_1time = true;
-                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "패킹 신호 On 후 씬-척과 웨이퍼 진공압 파기하기 전까지 안정화 시간");
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "패킹 신호 On 후 씬-척과 웨이퍼 공압 파기하기 전까지 안정화 시간");
                         }
 
                         if (waferProbeAlignParameter.IsDO_Wafer_Vacuum())
@@ -13161,23 +13160,91 @@ namespace QMC.Common.Modules
                         }
                     }
 
-                    if ((TickCount_Elapsed((int)TickType.TICK_MAIN) >= Config.ParamConfig.StableTime_after_PackingSignal_On) && 
-                        ((Config.ParamConfig.Packing_VacuumSignal_Usage && waferProbeAlignParameter.DI_Probe_PackingCheck()) ||
-                        (!Config.ParamConfig.Packing_VacuumSignal_Usage && (TickCount_Elapsed((int)TickType.TICK_MAIN) >= Config.ParamConfig.Packing_VacuumSignal_Time))))
+                    if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= Config.ParamConfig.StableTime_after_PackingSignal_On)
                     {
-                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "패킹 신호 On 후 씬-척과 웨이퍼 진공압 파기. (진공압 신호 Off)");
+                        if (Config.ParamConfig.Packing_VacuumSignal_Usage && waferProbeAlignParameter.DI_Probe_PackingCheck())
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "패킹 신호 사용함, 패킹 공압 신호 들어온 후 씬-척과 웨이퍼 공압 파기. (공압 신호 Off)");
 
-                        waferProbeAlignParameter.DO_Wafer_Vacuum(false);
-                        waferProbeAlignParameter.DO_ThinChuck_Vacuum(false);
+                            waferProbeAlignParameter.DO_Wafer_Vacuum(false);
+                            waferProbeAlignParameter.DO_ThinChuck_Vacuum(false);
+
+                            //  Packing 공압 센서 OK
+                            m_nPackingPressure_Status = (int)PackingPressureStatus.PackingPressure_OK;
+
+                            TickCount_Start((int)TickType.TICK_MAIN);
+
+                            m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.Probe_Packing_StableTime_After_SignalOn;
+                        }
+                        else if (!Config.ParamConfig.Packing_VacuumSignal_Usage && (TickCount_Elapsed((int)TickType.TICK_MAIN) >= Config.ParamConfig.Packing_VacuumSignal_Time))
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "패킹 신호 사용 안함, 패킹 신호 On 후 씬-척과 웨이퍼 공압 파기. (공압 신호 Off)");
+
+                            waferProbeAlignParameter.DO_Wafer_Vacuum(false);
+                            waferProbeAlignParameter.DO_ThinChuck_Vacuum(false);
+
+                            //  Packing 공압 센서 확인
+                            if (waferProbeAlignParameter.DI_Probe_PackingCheck())           //  패킹 공압 OK
+                            {
+                                m_nPackingPressure_Status = (int)PackingPressureStatus.PackingPressure_OK;
+                            }
+                            else                                                            //  패킹 공압 부족
+                            {
+                                m_nPackingPressure_Status = (int)PackingPressureStatus.PackingPressure_NG;
+                            }
+
+                            m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.Wafer_Vacuum_Off;
+                        }
+                        else if (Config.ParamConfig.Packing_VacuumSignal_Usage && !waferProbeAlignParameter.DI_Probe_PackingCheck() &&              //  패킹 공압 신호 사용모드이고, 패킹 공압 On 시간의 2배가 지났는데도 패킹 공압 신호가 들어오지 않으면 에러처리
+                            (TickCount_Elapsed((int)TickType.TICK_MAIN) >= (Config.ParamConfig.Packing_VacuumSignal_Time * 2)))
+                        {
+                            Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "패킹 공압 신호 들어오지 않음. (Timeout)");
+
+                            waferProbeAlignParameter.DO_Wafer_Vacuum(false);
+                            waferProbeAlignParameter.DO_ThinChuck_Vacuum(false);
+                            waferProbeAlignParameter.DO_Probe_Packing(false);
+                            waferProbeAlignParameter.DO_Probe_UnPacking(false);
+
+                            //  Packing 공압 센서 NG
+                            m_nPackingPressure_Status = (int)PackingPressureStatus.PackingPressure_NG;
+
+                            //  알람 정지 (LED Bar - Red Blink)
+                            Equipment.MachineStop_byAlarm = true;
+
+                            timer_MainWork.Enabled = false;
+
+                            m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.None;
+
+                            MessageBox.Show("Packing Vacuum Signal 없음. (Time Out)\r\n\r\n[세팅된 패킹 공압에 도달하지 못함.]", "Error");
+                        }
+                    }
+                    break;
+
+
+                case (int)WaferProbeCard_Packing_Step.Probe_Packing_StableTime_After_SignalOn:                             //  Packing Signal 사용 모드일 경우, Packing 신호가 들어오고 나서 추가로 압력을 더 인가하는 시간
+
+                    if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= Config.ParamConfig.Packing_VacuumSignal_AfterTime)
+                    {
+                        Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "패킹 신호 사용함, 패킹 후 추가 가압시간 완료.");
 
                         m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeCard_Packing_Step.Wafer_Vacuum_Off;
-                    }                    
+                    }
                     break;
 
 
                 case (int)WaferProbeCard_Packing_Step.Wafer_Vacuum_Off:                                     //  Wafer Vacuum Off
 
-                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "웨이퍼 진공압 신호 Off");
+                    Log.Write("CWA150SA", Equipment.User_Name, "Wafer-ProbeCard Packing Func", "웨이퍼 공압 신호 Off");
+
+                    ////  Packing 공압 센서 확인
+                    //if (waferProbeAlignParameter.DI_Probe_PackingCheck())           //  패킹 공압 OK
+                    //{
+                    //    m_nPackingPressure_Status = (int)PackingPressureStatus.PackingPressure_OK;
+                    //}
+                    //else                                                            //  패킹 공압 부족
+                    //{
+                    //    m_nPackingPressure_Status = (int)PackingPressureStatus.PackingPressure_NG;
+                    //}
 
                     waferProbeAlignParameter.DO_Wafer_Vacuum(false);
 
@@ -15135,13 +15202,21 @@ namespace QMC.Common.Modules
                 NativeMethods.GetPrivateProfileString("Reticle_Glass", "ReticleGlass_CenterCheck_forAlign", "False", temp, 255, strFIle);
                 Config.ParamConfig.ReticleGlass_CenterCheck_forAlign = temp.ToString() == "False" ? false : true;
 
-                //  PAK, 웨이퍼 Gate - Center 가 일치할 때의 Offset X"
+                //  PAK, 웨이퍼 Gate - Center 가 일치할 때의 Offset X
                 NativeMethods.GetPrivateProfileString("PAK_Gate_Center", "PAK_WaferGate_Centering_Offset_X", "0", temp, 255, strFIle);
                 Config.ParamConfig.PAK_WaferGate_Centering_Offset_X = Convert.ToDouble(temp.ToString());
 
-                //  PAK, 웨이퍼 Gate - Center 가 일치할 때의 Offset Y"
+                //  PAK, 웨이퍼 Gate - Center 가 일치할 때의 Offset Y
                 NativeMethods.GetPrivateProfileString("PAK_Gate_Center", "PAK_WaferGate_Centering_Offset_Y", "0", temp, 255, strFIle);
                 Config.ParamConfig.PAK_WaferGate_Centering_Offset_Y = Convert.ToDouble(temp.ToString());
+
+                //  자동 로그아웃 기능 사용 여부
+                NativeMethods.GetPrivateProfileString("Auto_LogOut", "Auto_LogOut_Usage", "False", temp, 255, strFIle);
+                Config.ParamConfig.Auto_LogOut_Usage = temp.ToString() == "False" ? false : true;
+
+                //  자동 로그아웃 설정 시간
+                NativeMethods.GetPrivateProfileString("Auto_LogOut", "Auto_LogOut_Time", "10", temp, 255, strFIle);
+                Config.ParamConfig.Auto_LogOut_Time = Convert.ToDouble(temp.ToString());
 
 
                 /// Position 로드
@@ -15429,12 +15504,17 @@ namespace QMC.Common.Modules
             //  레티클 글래스 - 레시피 변경 시, 레티클 글래스 센터를 확인해야 작업 진행 가능
             NativeMethods.WritePrivateProfileString("Reticle_Glass", "ReticleGlass_CenterCheck_forAlign", Config.ParamConfig.ReticleGlass_CenterCheck_forAlign.ToString(), strFIle);
 
-            //  PAK, 웨이퍼 Gate - Center 가 일치할 때의 Offset X"
+            //  PAK, 웨이퍼 Gate - Center 가 일치할 때의 Offset X
             NativeMethods.WritePrivateProfileString("PAK_Gate_Center", "PAK_WaferGate_Centering_Offset_X", Config.ParamConfig.PAK_WaferGate_Centering_Offset_X.ToString(), strFIle);
 
-            //  PAK, 웨이퍼 Gate - Center 가 일치할 때의 Offset Y"
+            //  PAK, 웨이퍼 Gate - Center 가 일치할 때의 Offset Y
             NativeMethods.WritePrivateProfileString("PAK_Gate_Center", "PAK_WaferGate_Centering_Offset_Y", Config.ParamConfig.PAK_WaferGate_Centering_Offset_Y.ToString(), strFIle);
 
+            //  자동 로그아웃 기능 사용 여부
+            NativeMethods.WritePrivateProfileString("Auto_LogOut", "Auto_LogOut_Usage", Config.ParamConfig.Auto_LogOut_Usage.ToString(), strFIle);
+
+            //  자동 로그아웃 설정 시간
+            NativeMethods.WritePrivateProfileString("Auto_LogOut", "Auto_LogOut_Time", Config.ParamConfig.Auto_LogOut_Time.ToString(), strFIle);
 
 
 
