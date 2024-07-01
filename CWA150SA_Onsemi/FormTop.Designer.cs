@@ -73,7 +73,7 @@
             this.lbTitle.Name = "lbTitle";
             this.lbTitle.Size = new System.Drawing.Size(200, 25);
             this.lbTitle.TabIndex = 4;
-            this.lbTitle.Text = "CWA150SA (Onsemi)";
+            this.lbTitle.Text = "CWA150SA (onsemi)";
             this.lbTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblWaferAlignAfterPackingAutoStart

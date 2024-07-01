@@ -24,6 +24,7 @@ namespace CWA150SA_Onsemi300
         public bool bLogin { get; set; }                    //  로그인 상태인지? (false : 하부 메뉴 전체 비활성화)
         public bool bLogin_Admin { get; set; }              //  관리자로 로그인 되었는지? (false : 작업자)
         private Dictionary<string, string> m_LoginInfo;
+        private Dictionary<string, string> m_LoginInfo_onsemi;
         private string m_ID;
         private string m_PW;
 
@@ -44,6 +45,8 @@ namespace CWA150SA_Onsemi300
             bLogin_Admin = false;
             m_LoginInfo = new Dictionary<string, string>();
             m_LoginInfo.Add("QMC", "123");
+            m_LoginInfo_onsemi = new Dictionary<string, string>();
+            m_LoginInfo_onsemi.Add("ONSEMI", "RHKSFLWK1!");
 
             #region ControlConstuctor
             this.Text = "Log In";
@@ -92,6 +95,9 @@ namespace CWA150SA_Onsemi300
             #endregion
 
 
+            Equipment.User_AdminMode = false;
+
+
             //  작업자 100명만... 이것도 많다.
             m_nOperator_Count = 0;
             strUserData_Authority = new string[m_nOperator_Max];
@@ -127,6 +133,7 @@ namespace CWA150SA_Onsemi300
             bool m_bID_Exist = false;
             bool m_bPW_Exist = false;
 
+            Equipment.User_AdminMode = false;
 
             m_ID = baseTextBoxEnterID.Text;
             m_ID = m_ID.ToUpper();                      //  대문자로 만들자. (대소문자 구별하기 불편함)
@@ -134,27 +141,96 @@ namespace CWA150SA_Onsemi300
             m_PW = baseTextBoxEnterPW.Text;
             m_PW = m_PW.ToUpper();
 
-            if (m_ID != null && m_PW != null && m_LoginInfo.ContainsKey(m_ID) == true)
+            if (m_ID != null && m_PW != null && ((m_LoginInfo.ContainsKey(m_ID) == true) || (m_LoginInfo_onsemi.ContainsKey(m_ID) == true)))
             {
-                if (m_LoginInfo[m_ID].ToUpper() == m_PW)
+                try
                 {
-                    //  관리자 모드
-                    Equipment.User_Mode = "관리자";
-                    Equipment.User_Name = m_ID ;
-
-                    DialogResult = DialogResult.OK;
-                    bLogin = true;
-                    bLogin_Admin = true;
-                    bLoginReady = true;
-                    if (buttonClick != null)
+                    if (m_LoginInfo[m_ID].ToUpper() == m_PW)
                     {
-                        buttonClick();
+                        //  관리자 모드
+                        Equipment.User_Mode = "관리자";
+                        Equipment.User_Name = m_ID;
+                        Equipment.User_AdminMode = true;
+
+                        Equipment.User_QMC_Engineer = true;
+
+                        DialogResult = DialogResult.OK;
+                        bLogin = true;
+                        bLogin_Admin = true;
+                        bLoginReady = true;
+
+                        if (buttonClick != null)
+                        {
+                            buttonClick();
+                        }
                     }
                 }
-                else
+                catch(Exception ex)
                 {
-                    baseTextBoxExplain.Text = "PW 를 확인해 주세요.";
+                    try
+                    {
+                        if (m_LoginInfo_onsemi[m_ID].ToUpper() == m_PW)
+                        {
+                            //  관리자 모드
+                            Equipment.User_Mode = "관리자";
+                            Equipment.User_Name = m_ID;
+                            Equipment.User_AdminMode = true;
+
+                            Equipment.User_QMC_Engineer = false;
+
+                            DialogResult = DialogResult.OK;
+                            bLogin = true;
+                            bLogin_Admin = true;
+                            bLoginReady = true;
+                            if (buttonClick != null)
+                            {
+                                buttonClick();
+                            }
+                        }
+                    }
+                    catch (Exception ex1)
+                    {
+                        baseTextBoxExplain.Text = "PW 를 확인해 주세요.";
+                    }
                 }
+
+                //if (m_LoginInfo[m_ID].ToUpper() == m_PW)
+                //{
+                //    //  관리자 모드
+                //    Equipment.User_Mode = "관리자";
+                //    Equipment.User_Name = m_ID ;
+                //    Equipment.User_SuperAdminMode = true;
+
+                //    DialogResult = DialogResult.OK;
+                //    bLogin = true;
+                //    bLogin_Admin = true;
+                //    bLoginReady = true;
+                    
+                //    if (buttonClick != null)
+                //    {
+                //        buttonClick();
+                //    }
+                //}
+                //else if (m_LoginInfo_onsemi[m_ID].ToUpper() == m_PW)
+                //{
+                //    //  관리자 모드
+                //    Equipment.User_Mode = "관리자";
+                //    Equipment.User_Name = m_ID;
+                //    Equipment.User_SuperAdminMode = true;
+
+                //    DialogResult = DialogResult.OK;
+                //    bLogin = true;
+                //    bLogin_Admin = true;
+                //    bLoginReady = true;
+                //    if (buttonClick != null)
+                //    {
+                //        buttonClick();
+                //    }
+                //}
+                //else
+                //{
+                //    baseTextBoxExplain.Text = "PW 를 확인해 주세요.";
+                //}
             }
             else
             {
@@ -176,11 +252,14 @@ namespace CWA150SA_Onsemi300
                                 if (strUserData_Authority[i] == "관리자")
                                 {
                                     bLogin_Admin = true;
+                                    Equipment.User_AdminMode = true;
                                 }
                                 else
                                 {
                                     bLogin_Admin = false;
                                 }
+
+                                Equipment.User_QMC_Engineer = false;
 
                                 DialogResult = DialogResult.OK;
                                 if (buttonClick != null)

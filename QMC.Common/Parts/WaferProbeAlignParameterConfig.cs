@@ -57,15 +57,16 @@ namespace QMC.Common.Parts
         /// <summary>
         /// Align Parameter
         /// </summary>
-        [Category("[01] 웨이퍼 얼라인"),
-            Description("두번째 얼라인 마크 옵셋 X (mm)"),
-            DisplayName("공통 - 두번째 얼라인 마크 옵셋 X (mm)")]
-        public double AlignMark_2nd_Offset_X { set; get; }
+        /// 
+        //[Category("[01] 웨이퍼 얼라인"),
+        //    Description("두번째 얼라인 마크 옵셋 X (mm)"),
+        //    DisplayName("공통 - 두번째 얼라인 마크 옵셋 X (mm)")]
+        //public double AlignMark_2nd_Offset_X { set; get; }
         
-        [Category("[01] 웨이퍼 얼라인"),
-            Description("두번째 얼라인 마크 옵셋 Y (mm)"),
-            DisplayName("공통 - 두번째 얼라인 마크 옵셋 Y (mm)")]
-        public double AlignMark_2nd_Offset_Y { set; get; }
+        //[Category("[01] 웨이퍼 얼라인"),
+        //    Description("두번째 얼라인 마크 옵셋 Y (mm)"),
+        //    DisplayName("공통 - 두번째 얼라인 마크 옵셋 Y (mm)")]
+        //public double AlignMark_2nd_Offset_Y { set; get; }
 
         [Category("[01] 웨이퍼 얼라인"),
             Description("얼라인 - 비전 허용 오차 (Theta Deg, °)"),
@@ -97,25 +98,25 @@ namespace QMC.Common.Parts
             DisplayName("얼라인 - 상부 얼라인 사용 여부 (프로브 카드 얼라인)")]
         public bool ProbrCard_Align_Use { set; get; }
 
-        [Category("[01] 웨이퍼 얼라인"),
-            Description("메뉴얼 얼라인 시, 두 얼라인 위치 간격 X (mm)"),
-            DisplayName("공통 - 메뉴얼 얼라인 시, 두 얼라인 위치 간격 X (mm)")]
-        public double ManualAlign_MarkPos_Distance_X { set; get; }
+        //[Category("[01] 웨이퍼 얼라인"),
+        //    Description("메뉴얼 얼라인 시, 두 얼라인 위치 간격 X (mm)"),
+        //    DisplayName("공통 - 메뉴얼 얼라인 시, 두 얼라인 위치 간격 X (mm)")]
+        //public double ManualAlign_MarkPos_Distance_X { set; get; }
 
-        [Category("[01] 웨이퍼 얼라인"),
-            Description("메뉴얼 얼라인 시, 두 얼라인 위치 간격 Y (mm)"),
-            DisplayName("공통 - 메뉴얼 얼라인 시, 두 얼라인 위치 간격 Y (mm)")]
-        public double ManualAlign_MarkPos_Distance_Y { set; get; }
+        //[Category("[01] 웨이퍼 얼라인"),
+        //    Description("메뉴얼 얼라인 시, 두 얼라인 위치 간격 Y (mm)"),
+        //    DisplayName("공통 - 메뉴얼 얼라인 시, 두 얼라인 위치 간격 Y (mm)")]
+        //public double ManualAlign_MarkPos_Distance_Y { set; get; }
 
         [Category("[01] 웨이퍼 얼라인"),
             Description("true : Use MyAlignConcept\r\nfalse : use JigAligner"),
             DisplayName("My Align Process 사용")]
         public bool AlignConcept_MyWaferAligner { set; get; }
 
-        [Category("[01] 웨이퍼 얼라인"),
-            Description("얼라인 후 카메라 이동.\r\n[0: 이동 안함, 1: 1번 얼라인 마크 위치, 2: 1번 Chip 위치]"),
-            DisplayName("얼라인 후 카메라 이동 위치")]
-        public int AfterAlign_StagePosIndex { set; get; }
+        //[Category("[01] 웨이퍼 얼라인"),
+        //    Description("얼라인 후 카메라 이동.\r\n[0: 이동 안함, 1: 1번 얼라인 마크 위치, 2: 1번 Chip 위치]"),
+        //    DisplayName("얼라인 후 카메라 이동 위치")]
+        //public int AfterAlign_StagePosIndex { set; get; }
 
         [Category("[01] 웨이퍼 얼라인"),
             Description("웨이퍼 얼라인 시 조명 밝기값"),
@@ -129,17 +130,17 @@ namespace QMC.Common.Parts
 
         [Category("[01] 웨이퍼 얼라인"),
             Description("웨이퍼에서 특정 위치에는 Chip 이 없다. 프로브 카드와 웨이퍼의 얼라인이 완료된 후, 해당 위치로 이동해서 육안으로 확인하는 기능을 사용할 것인지 여부."),
-            DisplayName("얼라인 정도 확인 - 얼라인 후 Empty Chip 확인 여부")]
+            DisplayName("얼라인 정도 확인 - 얼라인 후 Tag - Chip 위치 확인 여부")]
         public bool Align_EmptyChipOffset_Usage { set; get; }
 
         [Category("[01] 웨이퍼 얼라인"),
             Description("웨이퍼에서 특정 위치에는 Chip 이 없다. 프로브 카드와 웨이퍼의 얼라인이 완료된 후, 해당 위치로 이동해서 육안으로 확인하기 위한 이동 Offset 값.\r\n[Center Chip 기준, Offset X]"),
-            DisplayName("얼라인 정도 확인 - 얼라인 후 Empty Chip 확인 위치 (Center Chip 기준,   Offset X,   + : 오른쪽 위치)")]
+            DisplayName("얼라인 정도 확인 - 얼라인 후 Tag - Chip 확인 위치 (Center Chip 기준,   Offset X,   + : 오른쪽 위치)")]
         public double Align_EmptyChipOffset_X { set; get; }
 
         [Category("[01] 웨이퍼 얼라인"),
             Description("웨이퍼에서 특정 위치에는 Chip 이 없다. 프로브 카드와 웨이퍼의 얼라인이 완료된 후, 해당 위치로 이동해서 육안으로 확인하기 위한 이동 Offset 값.\r\n[Center Chip 기준, Offset Y]"),
-            DisplayName("얼라인 정도 확인 - 얼라인 후 Empty Chip 확인 위치 (Center Chip 기준,   Offset Y,   + : 위쪽 위치)")]
+            DisplayName("얼라인 정도 확인 - 얼라인 후 Tag - Chip 확인 위치 (Center Chip 기준,   Offset Y,   + : 위쪽 위치)")]
         public double Align_EmptyChipOffset_Y { set; get; }
 
         [Category("[01] 웨이퍼 얼라인"),
@@ -154,7 +155,7 @@ namespace QMC.Common.Parts
         /// </summary>
         [Category("[03] 웨이퍼 - 프로브 카드 패킹 옵셋"),
             Description("웨이퍼 얼라인 후 프로브 카드와 합착할 때, 웨이퍼를 XY 옵셋 거리만큼 이동시키는 기능을 사용할 것인지 여부.\r\n\r\n[###  무조건 사용  ###]"),
-            DisplayName("웨이퍼 패킹 XY 옵셋 사용 여부                                                                                                --> ### 무조건 사용하도록 변경함 ###")]
+            DisplayName("웨이퍼 패킹 XY 옵셋 사용 여부                                                                                                --> ### 무조건 사용하도록 변경 ###")]
         public bool Wafer_ProbreCard_PackingPos_Offset_Usage { set; get; }
 
         [Category("[03] 웨이퍼 - 프로브 카드 패킹 옵셋"),
@@ -193,25 +194,30 @@ namespace QMC.Common.Parts
         /// Offset and Delay
         /// </summary>
         /// 
-        [Category("[05] Offset && Delay"),
-            Description("Elevator Z 축이 Packing 위치로 이동할 때, Packing 위치에서 이 값만큼 뺀 거리까지 고속으로 이동하고, 이 구간은 저속으로 이동한다.\r\n씬-척이 PAK 에 Packing 되고난 후 Elevator Z 축을 내리는 거리에도 사용된다. (값이 너무 작으면 씬-척 감지로 인한 오동작이 발생할 수 있음)\r\n[default : 10 mm]"),
-            DisplayName("웨이퍼 && 프로브카드 Packing 시, 저속 이동 거리 (mm)")]
-        public double Wafer_ProbeCard_PackingOffset_Distance { set; get; }
+        //[Category("[05] Offset && Delay"),
+        //    Description("Elevator Z 축이 Packing 위치로 이동할 때, Packing 위치에서 이 값만큼 뺀 거리까지 고속으로 이동하고, 이 구간은 저속으로 이동한다.\r\n\r\n[default : 10 mm]"),
+        //    DisplayName("웨이퍼 && 프로브카드 Packing 시, 저속 이동 거리 (mm)")]
+        //public double Wafer_ProbeCard_PackingOffset_Distance { set; get; }
 
-        [Category("[05] Offset && Delay"),
-            Description("UnPacking 할 때, UnPacking 신호를 주면서 Elevator Z 축을 약간 아래로 내리는 거리\r\n[Packing 완료 후, Leak 로 인해 씬-척이 분리될 경우 안전사고가 발생할 수 있으므로 너무 많이 내리지 않도록 한다.]\r\n[default : 5 mm]     [권장 : 30mm 이내]"),
-            DisplayName("웨이퍼 && 프로브카드 UnPacking 시, UnPacking 신호 인가 후 이동하는 거리 (mm)")]
-        public double Wafer_ProbeCard_UnPackingOffset_Distance { set; get; }
+        //[Category("[05] Offset && Delay"),
+        //    Description("Elevator Z 축이 Unpacking 을 위헤 Packing 위치로 이동할 때, Packing 위치에서 이 값만큼 뺀 거리까지 고속으로 이동하고, 이 구간은 저속으로 이동한다.\r\n\r\n[default : 10 mm]"),
+        //    DisplayName("웨이퍼 && 프로브카드 Unpacking 시, 저속 이동 거리 (mm)")]
+        //public double Wafer_ProbeCard_UnpackingOffset_Distance { set; get; }
 
-        [Category("[05] Offset && Delay"),
-            Description("UnPacking 할 때, Packing 높이에서 얼마나 아래에서 UnPacking 작업을 진행할 것인지.\r\n[Packing 후 씬-척의 높이는 Packing 전보다 높기 때문에, Packing 높이보다 더 올라가야 한다.]\r\n[default : 1 mm],   (입력 값이 0 보다 작을 경우 위로 올라감)"),
-            DisplayName("웨이퍼 && 프로브카드 UnPacking 시, UnPacking 을 위한 Elevator Z 축 이동 거리 (기준 높이 : Packing 위치) (mm)")]
-        public double Wafer_ProbeCard_UnPackingStartOffset_Distance { set; get; }
+        //[Category("[05] Offset && Delay"),
+        //    Description("UnPacking 할 때, UnPacking 신호를 주면서 Elevator Z 축을 약간 아래로 내리는 거리\r\n[Packing 완료 후, Leak 로 인해 씬-척이 분리될 경우 안전사고가 발생할 수 있으므로 너무 많이 내리지 않도록 한다.]\r\n[default : 5 mm]     [권장 : 30mm 이내]"),
+        //    DisplayName("웨이퍼 && 프로브카드 UnPacking 시, UnPacking 신호 인가 후 이동하는 거리 (mm)")]
+        //public double Wafer_ProbeCard_UnPackingOffset_Distance { set; get; }
 
-        [Category("[05] Offset && Delay"),
-            Description("수동 패킹 시, 패킹 위치에서 몇 mm 아래까지 엘리베이터 Z 축을 올릴 것인지.\r\n\r\n[default 0 : 30 mm]"),
-            DisplayName("웨이퍼 && 프로브카드 Manual Packing 시, 엘리베이터 Z 축의 1단계 Offset 거리 (mm, > 0)")]
-        public double Wafer_ProbeCard_ManualPacking_ElevZ_Offset_Distance { set; get; }
+        //[Category("[05] Offset && Delay"),
+        //    Description("UnPacking 할 때, Packing 높이에서 얼마나 아래에서 UnPacking 작업을 진행할 것인지.\r\n[Packing 후 씬-척의 높이는 Packing 전보다 높기 때문에, Packing 높이보다 더 올라가야 한다.]\r\n[default : 1 mm],   (입력 값이 0 보다 작을 경우 위로 올라감)"),
+        //    DisplayName("웨이퍼 && 프로브카드 UnPacking 시, UnPacking 을 위한 Elevator Z 축 이동 거리 (기준 높이 : Packing 위치) (mm)")]
+        //public double Wafer_ProbeCard_UnPackingStartOffset_Distance { set; get; }
+
+        //[Category("[05] Offset && Delay"),
+        //    Description("수동 패킹 시, 패킹 위치에서 몇 mm 아래까지 엘리베이터 Z 축을 올릴 것인지.\r\n\r\n[default 0 : 30 mm]"),
+        //    DisplayName("웨이퍼 && 프로브카드 Manual Packing 시, 엘리베이터 Z 축의 1단계 Offset 거리 (mm, > 0)")]
+        //public double Wafer_ProbeCard_ManualPacking_ElevZ_Offset_Distance { set; get; }
 
 
 
@@ -250,70 +256,70 @@ namespace QMC.Common.Parts
         /// 사용 옵션
         /// </summary>
         /// 
-        [Category("[80] 사용 옵션"),
-            Description("프로브 카드 커버가 닫힌 상태에서 Packing 공압을 인가했을 때, Packing 압력 신호가 뜨면 관로가 막힌것으로 본다."),
-            DisplayName("웨이퍼 얼라인 시작 전 PAK 공압 라인 막힘 검사 사용 여부")]
-        public bool Pak_AirLineCheck_Usage { set; get; }
+        //[Category("[80] 사용 옵션"),
+        //    Description("프로브 카드 커버가 닫힌 상태에서 Packing 공압을 인가했을 때, Packing 압력 신호가 뜨면 관로가 막힌것으로 본다."),
+        //    DisplayName("웨이퍼 얼라인 시작 전 PAK 공압 라인 막힘 검사 사용 여부")]
+        //public bool Pak_AirLineCheck_Usage { set; get; }
 
-        [Category("[80] 사용 옵션"),
-            Description("프로브 카드 커버가 닫힌 상태에서 Packing 공압을 인가했을 때, Packing 압력 신호가 뜨는지 확인하는 시간. 이 시간 이내에 신호가 뜨면 관로가 막힌것으로 본다."),
-            DisplayName("웨이퍼 얼라인 시작 전 PAK 공압 라인 막힘 검사 시간 (ms)")]
-        public int Pak_AirLineCheck_Time { set; get; }
+        //[Category("[80] 사용 옵션"),
+        //    Description("프로브 카드 커버가 닫힌 상태에서 Packing 공압을 인가했을 때, Packing 압력 신호가 뜨는지 확인하는 시간. 이 시간 이내에 신호가 뜨면 관로가 막힌것으로 본다."),
+        //    DisplayName("웨이퍼 얼라인 시작 전 PAK 공압 라인 막힘 검사 시간 (ms)")]
+        //public int Pak_AirLineCheck_Time { set; get; }
 
-        [Category("[80] 사용 옵션"),
-            Description("웨이퍼 && 프로브카드 Packing 시, Packing 공압 신호를 사용할 것인지 여부."),
-            DisplayName("Packing 공압 체크 사용 여부")]
-        public bool Packing_VacuumSignal_Usage { set; get; }
+        //[Category("[80] 사용 옵션"),
+        //    Description("웨이퍼 && 프로브카드 Packing 시, Packing 공압 신호를 사용할 것인지 여부."),
+        //    DisplayName("Packing 공압 신호 사용 여부")]
+        //public bool Packing_VacuumSignal_Usage { set; get; }
 
-        [Category("[80] 사용 옵션"),
-            Description("웨이퍼 && 프로브카드 Packing 시 Packing 공압 신호를 사용하지 않을 경우, 이 시간만큼 대기 후 다음 동작 진행"),
-            DisplayName("Packing 공압을 사용하지 않을 경우, 대기 시간 (ms)")]
-        public int Packing_VacuumSignal_Time { set; get; }
+        //[Category("[80] 사용 옵션"),
+        //    Description("웨이퍼 && 프로브카드 Packing 시 Packing 공압 신호를 사용하지 않을 경우, 이 시간만큼 대기 후 다음 동작 진행\r\n\r\n(Packing 공압 신호를 인가하고 Thin-Chuck 이 압력에 의해 프로브 카드에 밀착되는 시간 동안 기다려야 한다. 약 3~5초 소요)"),
+        //    DisplayName("Packing 공압 신호를 사용하지 않을 경우, 대기 시간 (ms)")]
+        //public int Packing_VacuumSignal_Time { set; get; }
 
-        [Category("[80] 사용 옵션"),
-            Description("웨이퍼 && 프로브카드 Packing 시 Packing 공압 신호를 사용할 경우, Packing 공압 신호가 들어온 후 이 시간만큼 대기 후 다음 동작 진행\r\n\r\n[PAK 에 씬-척이 충분히 밀착되도록 기다리는 시간]"),
-            DisplayName("Packing 공압을 사용할 경우, 추가 가압 시간 (ms)")]
-        public int Packing_VacuumSignal_AfterTime { set; get; }
+        //[Category("[80] 사용 옵션"),
+        //    Description("웨이퍼 && 프로브카드 Packing 시 Packing 공압 신호를 사용할 경우, Packing 공압 신호가 들어온 후 이 시간만큼 대기 후 다음 동작 진행\r\n\r\n[PAK 에 씬-척이 충분히 밀착되도록 기다리는 시간]"),
+        //    DisplayName("Packing 공압 신호를 사용할 경우, 추가 가압 시간 (ms)")]
+        //public int Packing_VacuumSignal_AfterTime { set; get; }
 
-        [Category("[80] 사용 옵션"),
-            Description("웨이퍼 공압 신호를 사용할 것인지 여부."),
-            DisplayName("Wafer 공압 체크 사용 여부")]
-        public bool Wafer_VacuumSignal_Usage { set; get; }
+        //[Category("[80] 사용 옵션"),
+        //    Description("웨이퍼 공압 신호를 사용할 것인지 여부."),
+        //    DisplayName("Wafer 공압 체크 사용 여부")]
+        //public bool Wafer_VacuumSignal_Usage { set; get; }
 
-        [Category("[80] 사용 옵션"),
-            Description("웨이퍼 공압 신호를 사용하지 않을 경우, 이 시간만큼 대기 후 다음 동작 진행"),
-            DisplayName("Wafer 공압을 사용하지 않을 경우, 대기 시간 (ms)")]
-        public int Wafer_VacuumSignal_Time { set; get; }
+        //[Category("[80] 사용 옵션"),
+        //    Description("웨이퍼 공압 신호를 사용하지 않을 경우, 이 시간만큼 대기 후 다음 동작 진행"),
+        //    DisplayName("Wafer 공압을 사용하지 않을 경우, 대기 시간 (ms)")]
+        //public int Wafer_VacuumSignal_Time { set; get; }
 
-        [Category("[80] 사용 옵션"),
-            Description("Thin-Chuck 감지 신호를 사용할 것인지 여부."),
-            DisplayName("Thin-Chuck 감지 센서 사용 여부")]
-        public bool ThinChuck_DetectSignal_Usage { set; get; }
+        //[Category("[80] 사용 옵션"),
+        //    Description("Thin-Chuck 감지 신호를 사용할 것인지 여부."),
+        //    DisplayName("Thin-Chuck 감지 센서 사용 여부")]
+        //public bool ThinChuck_DetectSignal_Usage { set; get; }
 
-        [Category("[80] 사용 옵션"),
-            Description("Thin-Chuck 공압 신호를 사용할 것인지 여부."),
-            DisplayName("Thin-Chuck 공압 체크 사용 여부")]
-        public bool ThinChuck_VacuumSignal_Usage { set; get; }
+        //[Category("[80] 사용 옵션"),
+        //    Description("Thin-Chuck 공압 신호를 사용할 것인지 여부."),
+        //    DisplayName("Thin-Chuck 공압 체크 사용 여부")]
+        //public bool ThinChuck_VacuumSignal_Usage { set; get; }
 
-        [Category("[80] 사용 옵션"),
-            Description("Thin-Chuck 공압 신호를 사용하지 않을 경우, 이 시간만큼 대기 후 다음 동작 진행"),
-            DisplayName("Thin-Chuck 공압을 사용하지 않을 경우, 대기 시간 (ms)")]
-        public int ThinChuck_VacuumSignal_Time { set; get; }
+        //[Category("[80] 사용 옵션"),
+        //    Description("Thin-Chuck 공압 신호를 사용하지 않을 경우, 이 시간만큼 대기 후 다음 동작 진행"),
+        //    DisplayName("Thin-Chuck 공압을 사용하지 않을 경우, 대기 시간 (ms)")]
+        //public int ThinChuck_VacuumSignal_Time { set; get; }
 
-        [Category("[80] 사용 옵션"),
-            Description("웨이퍼 얼라인 동작 중, 비전 검사 없이 모션 구동만 할 것인지 여부. (false : 사용 안함)"),
-            DisplayName("Wafer 얼라인 동작 중, 비전 사용 여부. (false : 사용 안함)")]
-        public bool Wafer_Align_Cam_Usage { set; get; }
+        //[Category("[80] 사용 옵션"),
+        //    Description("웨이퍼 얼라인 동작 중, 비전 검사 없이 모션 구동만 할 것인지 여부. (false : 사용 안함)"),
+        //    DisplayName("Wafer 얼라인 동작 중, 비전 사용 여부. (false : 사용 안함)")]
+        //public bool Wafer_Align_Cam_Usage { set; get; }
 
-        [Category("[80] 사용 옵션"),
-            Description("웨이퍼 얼라인 완료 후, 바로 Packing 작업을 진행할 것인지 여부. (false : 사용 안함)"),
-            DisplayName("Wafer 얼라인 후 Packing 작업 자동 시작 여부. (false : 얼라인 완료 후 Packing 작업 대기)")]
-        public bool Packing_AutoStart_After_Wafer_Align_Usage { set; get; }
+        //[Category("[80] 사용 옵션"),
+        //    Description("웨이퍼 얼라인 완료 후, 바로 Packing 작업을 진행할 것인지 여부. (false : 사용 안함)"),
+        //    DisplayName("Wafer 얼라인 후 Packing 작업 자동 시작 여부. (false : 얼라인 완료 후 Packing 작업 대기)")]
+        //public bool Packing_AutoStart_After_Wafer_Align_Usage { set; get; }
 
-        [Category("[80] 사용 옵션"),
-            Description("웨이퍼 얼라인 완료 후, Top - Mid - Bottom 위치에서 프로브 핀 위치 대비 웨이퍼의 위치 오차 검증을 진행할 것인지 여부. (false : 사용 안함)\r\n\r\n[###  무조건 사용  ###]"),
-            DisplayName("Wafer 얼라인 후 얼라인 위치 정확성 검증 여부. (false : 사용 안함)                                                --> ### 무조건 사용하도록 변경됨 ###")]
-        public bool Wafer_Align_ErrorCheck_After_Wafer_Align_Usage { set; get; }
+        //[Category("[80] 사용 옵션"),
+        //    Description("웨이퍼 얼라인 완료 후, Top - Mid - Bottom 위치에서 프로브 핀 위치 대비 웨이퍼의 위치 오차 검증을 진행할 것인지 여부. (false : 사용 안함)\r\n\r\n[###  무조건 사용  ###]"),
+        //    DisplayName("Wafer 얼라인 후 얼라인 위치 정확성 검증 여부. (false : 사용 안함)                                                --> ### 무조건 사용하도록 변경 ###")]
+        //public bool Wafer_Align_ErrorCheck_After_Wafer_Align_Usage { set; get; }
 
 
 
@@ -321,36 +327,37 @@ namespace QMC.Common.Parts
         /// 안정화 시간
         /// </summary>
         /// 
-        [Category("[81] 안정화 시간"),
-            Description("웨이퍼 && 프로브카드 Packing 공압 신호 On 후 대기 시간 (ms)\r\n(Packing 공압 신호를 인가하고 Thin-Chuck 이 압력에 의해 프로브 카드에 밀착되는 시간 동안 기다려야 한다. 약 3~5초 소요)"),
-            DisplayName("Packing 공압 신호 On 후 대기 시간 (ms)")]
-        public int StableTime_after_PackingSignal_On { set; get; }
+        //[Category("[81] 안정화 시간"),
+        //    //Description("웨이퍼 && 프로브카드 Packing 공압 신호 On 후 대기 시간 (ms)\r\n(Packing 공압 신호를 인가하고 Thin-Chuck 이 압력에 의해 프로브 카드에 밀착되는 시간 동안 기다려야 한다. 약 3~5초 소요)"),
+        //    Description("웨이퍼 && 프로브카드 Packing 공압 신호 On 후 대기 시간 (ms)\r\n(Packing 공압 신호를 사용하거나 사용하지 않거나, 이 시간만큼 기다린 후 진행된다.)"),
+        //    DisplayName("Packing 공압 신호 On 후 대기 시간 (ms)")]
+        //public int StableTime_after_PackingSignal_On { set; get; }
 
-        [Category("[81] 안정화 시간"),
-            Description("웨이퍼 && 프로브카드 Packing 공압 신호 On 후, Thin-Chuck 이 프로브 카드에 밀착될 때(딸려 올라갈 때) Thin-Chuck 공압을 해제해야 하는데, 얼마만큼 시간이 지난 후에 Thin-Chuck 공압을 해제할 것인지 (ms)"),
-            DisplayName("Packing 공압 신호 On 후 Thin-Chuck 과 Wafer 공압을 해제하기 위해 대기하는 시간 (ms)")]
-        public int StableTime_after_PackingSignal_On_before_ThinChuck_Vacuum_Off { set; get; }
+        //[Category("[81] 안정화 시간"),
+        //    Description("웨이퍼 && 프로브카드 Packing 공압 신호 On 후, Thin-Chuck 이 프로브 카드에 밀착될 때(딸려 올라갈 때) Thin-Chuck 공압을 해제해야 하는데, 얼마만큼 시간이 지난 후에 Thin-Chuck 공압을 해제할 것인지 (ms)"),
+        //    DisplayName("Packing 공압 신호 On 후 Thin-Chuck 과 Wafer 공압을 해제하기 위해 대기하는 시간 (ms)")]
+        //public int StableTime_after_PackingSignal_On_before_ThinChuck_Vacuum_Off { set; get; }
 
-        [Category("[81] 안정화 시간"),
-            Description("Packing 작업 중, Wafer 공압 해제 후 안정화(대기) 시간 (ms)"),
-            DisplayName("Packing 작업 중, Wafer 공압 해제 후 안정화(대기) 시간 (ms)")]
-        public int StableTime_after_WaferVacuumSignal_Off { set; get; }
+        //[Category("[81] 안정화 시간"),
+        //    Description("Packing 작업 중, Wafer 공압 해제 후 안정화(대기) 시간 (ms)"),
+        //    DisplayName("Packing 작업 중, Wafer 공압 해제 후 안정화(대기) 시간 (ms)")]
+        //public int StableTime_after_WaferVacuumSignal_Off { set; get; }
 
-        [Category("[81] 안정화 시간"),
-            Description("Packing 을 위해 Elev. Z 축이 프로브 카드 위치까지 이동한 후 안정화 시간 (ms)"),
-            DisplayName("Packing 을 위해 Elev. Z 축이 프로브 카드 위치까지 이동한 후 안정화 시간 (ms)")]
-        public int StableTime_before_PackingSignal_On { set; get; }
+        //[Category("[81] 안정화 시간"),
+        //    Description("Packing 을 위해 Elev. Z 축이 프로브 카드 위치까지 이동한 후 안정화 시간 (ms)"),
+        //    DisplayName("Packing 을 위해 Elev. Z 축이 프로브 카드 위치까지 이동한 후 안정화 시간 (ms)")]
+        //public int StableTime_before_PackingSignal_On { set; get; }
 
-        [Category("[81] 안정화 시간"),
-            Description("Packing 작업 중, Thin-Chuck 공압 해제 후 안정화(대기) 시간 (ms)"),
-            DisplayName("Packing 작업 중, Thin-Chuck 공압 해제 후 안정화(대기) 시간 (ms)")]
-        public int StableTime_after_ThinChuckVacuumSignal_Off { set; get; }
+        //[Category("[81] 안정화 시간"),
+        //    Description("Packing 작업 중, Thin-Chuck 공압 해제 후 안정화(대기) 시간 (ms)"),
+        //    DisplayName("Packing 작업 중, Thin-Chuck 공압 해제 후 안정화(대기) 시간 (ms)")]
+        //public int StableTime_after_ThinChuckVacuumSignal_Off { set; get; }
 
 
-        [Category("[81] 안정화 시간"),
-            Description("웨이퍼 얼라인 시, 마크 검사 위치로 이동한 후에 진동 억제를 위한 안정화 시간 (ms)"),
-            DisplayName("Wafer 얼라인 시, 마크 위치 이동 후 안정화 시간 (ms)")]
-        public int WaferAlign_Move_StableTime { set; get; }
+        //[Category("[81] 안정화 시간"),
+        //    Description("웨이퍼 얼라인 시, 마크 검사 위치로 이동한 후에 진동 억제를 위한 안정화 시간 (ms)"),
+        //    DisplayName("Wafer 얼라인 시, 마크 위치 이동 후 안정화 시간 (ms)")]
+        //public int WaferAlign_Move_StableTime { set; get; }
 
 
 
@@ -558,6 +565,168 @@ namespace QMC.Common.Parts
             Description("일정 시간 동안 장비를 사용하지 않을 경우 자동으로 로그아웃 한다.\r\n\r\n[default 0 : 10 min]"),
             DisplayName("자동 로그아웃 시간 (min)")]
         public double Auto_LogOut_Time { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("얼라인 시작할 때와 패킹 작업 완료할 때 작업자가 Leak 상태를 확인한 후 진행한다."),
+            DisplayName("패킹 작업 완료 시 && 얼라인 작업 시작 시, OP 주관 Leak Check 기능 사용 여부")]
+        public bool AlignPacking_OP_LeakCheck_Usage { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("패킹 동작 후 작업자가 Leak 상태를 확인하는 시간\r\n패킹 공압 신호를 Off 한 후, 이 시간만큼 지난 후에 다음 단계로 진행할 수 있다.\r\n[default 0: 30 sec]"),
+            DisplayName("패킹 작업 완료 시, OP 주관 Leak 확인 시간 (sec)")]
+        public double Packing_OP_LeakCheck_Time { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("패킹 완료 후 작업자가 제품을 꺼내기 위헤 엘리베이터를 내리는 거리 (값이 너무 작으면 씬-척 감지로 인한 오동작이 발생할 수 있음)\r\n기준 위치는 Lip-Seal 이 PAK 과 밀착되는 위치이다.\r\n[default 0: 20 mm]"),
+            DisplayName("패킹 작업 완료 후, 제품 언로딩을 위해 엘리베이터를 내리는 거리 (mm)")]
+        public double Wafer_ProbeCard_Down_Distance_After_Packing { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            //Description("전면 안전센서에 물체가 감지될 경우, 작업이 중지된다. \r\n감지된 물체가 해제되면 이어서 작업이 진행된다."),
+            Description("전면 안전센서에 물체가 감지될 경우, 작업이 중지된다. \r\n\r\n감지 해제 상태를 확인하고 다시 해당 작업을 시작한다."),
+            DisplayName("인터락 - 전면 안전센서 사용 여부")]
+        public bool AreaSensor_Usage { set; get; }
+
+        //[Category("[99] 장비 공통 파라미터"),
+        //    Description("전면 안전센서에 물체가 감지되어 작업이 중지되었을 경우, 감지된 물체가 해제되면 곧바로 작업이 진행되지 않고 일정 대기시간 이후에 동작시키도록 한다. (채터링 현상 방지 및 안전을 위해)\r\n[default 0: 3 sec]"),
+        //    DisplayName("인터락 - 전면 안전센서 해제 후 다시 동작시키기 위해 대기하는 시간 (sec)")]
+        //public double AreaSensor_Off_Pause_Time { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("수동패킹 모드의 권한 설정\r\n\r\n[true: 관리자만 수동패킹 사용 가능, false: 관리자와 작업자 모두 수동패킹 모드 사용 가능]"),
+            DisplayName("수동패킹 모드 사용 권한 설정.  (true: 관리자 Only)")]
+        public bool ManualPacking_Only_Admin { set; get; }
+
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("프로브 카드 커버가 닫힌 상태에서 Packing 공압을 인가했을 때, Packing 압력 신호가 뜨면 관로가 막힌것으로 본다."),
+            DisplayName("사용 옵션 - 웨이퍼 얼라인 시작 전 PAK 공압 라인 막힘 검사 사용 여부")]
+        public bool Pak_AirLineCheck_Usage { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("프로브 카드 커버가 닫힌 상태에서 Packing 공압을 인가했을 때, Packing 압력 신호가 뜨는지 확인하는 시간. 이 시간 이내에 신호가 뜨면 관로가 막힌것으로 본다."),
+            DisplayName("사용 옵션 - 웨이퍼 얼라인 시작 전 PAK 공압 라인 막힘 검사 시간 (ms)")]
+        public int Pak_AirLineCheck_Time { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("웨이퍼 && 프로브카드 Packing 시, Packing 공압 신호를 사용할 것인지 여부."),
+            DisplayName("사용 옵션 - Packing 공압 신호 사용 여부")]
+        public bool Packing_VacuumSignal_Usage { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("웨이퍼 && 프로브카드 Packing 시 Packing 공압 신호를 사용하지 않을 경우, 이 시간만큼 대기 후 다음 동작 진행\r\n\r\n(Packing 공압 신호를 인가하고 Thin-Chuck 이 압력에 의해 프로브 카드에 밀착되는 시간 동안 기다려야 한다. 약 3~5초 소요)"),
+            DisplayName("사용 옵션 - Packing 공압 신호를 사용하지 않을 경우, 대기 시간 (ms)")]
+        public int Packing_VacuumSignal_Time { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("웨이퍼 && 프로브카드 Packing 시 Packing 공압 신호를 사용할 경우, Packing 공압 신호가 들어온 후 이 시간만큼 대기 후 다음 동작 진행\r\n\r\n[PAK 에 씬-척이 충분히 밀착되도록 기다리는 시간]"),
+            DisplayName("사용 옵션 - Packing 공압 신호를 사용할 경우, 추가 가압 시간 (ms)")]
+        public int Packing_VacuumSignal_AfterTime { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("웨이퍼 공압 신호를 사용할 것인지 여부."),
+            DisplayName("사용 옵션 - Wafer 공압 체크 사용 여부")]
+        public bool Wafer_VacuumSignal_Usage { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("웨이퍼 공압 신호를 사용하지 않을 경우, 이 시간만큼 대기 후 다음 동작 진행"),
+            DisplayName("사용 옵션 - Wafer 공압을 사용하지 않을 경우, 대기 시간 (ms)")]
+        public int Wafer_VacuumSignal_Time { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("Thin-Chuck 감지 신호를 사용할 것인지 여부."),
+            DisplayName("사용 옵션 - Thin-Chuck 감지 센서 사용 여부")]
+        public bool ThinChuck_DetectSignal_Usage { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("Thin-Chuck 공압 신호를 사용할 것인지 여부."),
+            DisplayName("사용 옵션 - Thin-Chuck 공압 체크 사용 여부")]
+        public bool ThinChuck_VacuumSignal_Usage { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("Thin-Chuck 공압 신호를 사용하지 않을 경우, 이 시간만큼 대기 후 다음 동작 진행"),
+            DisplayName("사용 옵션 - Thin-Chuck 공압을 사용하지 않을 경우, 대기 시간 (ms)")]
+        public int ThinChuck_VacuumSignal_Time { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("웨이퍼 얼라인 동작 중, 비전 검사 없이 모션 구동만 할 것인지 여부. (false : 사용 안함)"),
+            DisplayName("사용 옵션 - Wafer 얼라인 동작 중, 비전 사용 여부. (false : 사용 안함)")]
+        public bool Wafer_Align_Cam_Usage { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("웨이퍼 얼라인 완료 후, 바로 Packing 작업을 진행할 것인지 여부. (false : 사용 안함)"),
+            DisplayName("사용 옵션 - Wafer 얼라인 후 Packing 작업 자동 시작 여부. (false : 얼라인 완료 후 Packing 작업 대기)")]
+        public bool Packing_AutoStart_After_Wafer_Align_Usage { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("웨이퍼 얼라인 완료 후, Top - Mid - Bottom 위치에서 프로브 핀 위치 대비 웨이퍼의 위치 오차 검증을 진행할 것인지 여부. (false : 사용 안함)\r\n\r\n[###  무조건 사용  ###]"),
+            DisplayName("사용 옵션 - Wafer 얼라인 후 얼라인 위치 정확성 검증 여부. (false : 사용 안함)                                                --> ### 무조건 사용하도록 변경 ###")]
+        public bool Wafer_Align_ErrorCheck_After_Wafer_Align_Usage { set; get; }
+
+
+        [Category("[99] 장비 공통 파라미터"),
+            //Description("웨이퍼 && 프로브카드 Packing 공압 신호 On 후 대기 시간 (ms)\r\n(Packing 공압 신호를 인가하고 Thin-Chuck 이 압력에 의해 프로브 카드에 밀착되는 시간 동안 기다려야 한다. 약 3~5초 소요)"),
+            Description("웨이퍼 && 프로브카드 Packing 공압 신호 On 후 대기 시간 (ms)\r\n(Packing 공압 신호를 사용하거나 사용하지 않거나, 이 시간만큼 기다린 후 진행된다.)"),
+            DisplayName("안정화 시간 - Packing 공압 신호 On 후 대기 시간 (ms)")]
+        public int StableTime_after_PackingSignal_On { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("웨이퍼 && 프로브카드 Packing 공압 신호 On 후, Thin-Chuck 이 프로브 카드에 밀착될 때(딸려 올라갈 때) Thin-Chuck 공압을 해제해야 하는데, 얼마만큼 시간이 지난 후에 Thin-Chuck 공압을 해제할 것인지 (ms)"),
+            DisplayName("안정화 시간 - Packing 공압 신호 On 후 Thin-Chuck 과 Wafer 공압을 해제하기 위해 대기하는 시간 (ms)")]
+        public int StableTime_after_PackingSignal_On_before_ThinChuck_Vacuum_Off { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("Packing 작업 중, Wafer 공압 해제 후 안정화(대기) 시간 (ms)"),
+            DisplayName("안정화 시간 - Packing 작업 중, Wafer 공압 해제 후 안정화(대기) 시간 (ms)")]
+        public int StableTime_after_WaferVacuumSignal_Off { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("Packing 을 위해 Elev. Z 축이 프로브 카드 위치까지 이동한 후 안정화 시간 (ms)"),
+            DisplayName("안정화 시간 - Packing 을 위해 Elev. Z 축이 프로브 카드 위치까지 이동한 후 안정화 시간 (ms)")]
+        public int StableTime_before_PackingSignal_On { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("Packing 작업 중, Thin-Chuck 공압 해제 후 안정화(대기) 시간 (ms)"),
+            DisplayName("안정화 시간 - Packing 작업 중, Thin-Chuck 공압 해제 후 안정화(대기) 시간 (ms)")]
+        public int StableTime_after_ThinChuckVacuumSignal_Off { set; get; }
+
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("웨이퍼 얼라인 시, 마크 검사 위치로 이동한 후에 진동 억제를 위한 안정화 시간 (ms)"),
+            DisplayName("안정화 시간 - Wafer 얼라인 시, 마크 위치 이동 후 안정화 시간 (ms)")]
+        public int WaferAlign_Move_StableTime { set; get; }
+
+
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("Elevator Z 축이 Packing 위치로 이동할 때, Packing 위치에서 이 값만큼 뺀 거리까지 고속으로 이동하고, 이 구간은 저속으로 이동한다.\r\n\r\n[default : 10 mm]"),
+            DisplayName("오프셋 - 웨이퍼 && 프로브카드 Packing 시, 저속 이동 거리 (mm)")]
+        public double Wafer_ProbeCard_PackingOffset_Distance { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("Elevator Z 축이 Unpacking 을 위헤 Packing 위치로 이동할 때, Packing 위치에서 이 값만큼 뺀 거리까지 고속으로 이동하고, 이 구간은 저속으로 이동한다.\r\n\r\n[default : 10 mm]"),
+            DisplayName("오프셋 - 웨이퍼 && 프로브카드 Unpacking 시, 저속 이동 거리 (mm)")]
+        public double Wafer_ProbeCard_UnpackingOffset_Distance { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("UnPacking 할 때, UnPacking 신호를 주면서 Elevator Z 축을 약간 아래로 내리는 거리\r\n[Packing 완료 후, Leak 로 인해 씬-척이 분리될 경우 안전사고가 발생할 수 있으므로 너무 많이 내리지 않도록 한다.]\r\n[default : 5 mm]     [권장 : 30mm 이내]"),
+            DisplayName("오프셋 - 웨이퍼 && 프로브카드 UnPacking 시, UnPacking 신호 인가 후 이동하는 거리 (mm)")]
+        public double Wafer_ProbeCard_UnPackingOffset_Distance { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("UnPacking 할 때, Packing 높이에서 얼마나 아래에서 UnPacking 작업을 진행할 것인지.\r\n[Packing 후 씬-척의 높이는 Packing 전보다 높기 때문에, Packing 높이보다 더 올라가야 한다.]\r\n[default : 1 mm],   (입력 값이 0 보다 작을 경우 위로 올라감)"),
+            DisplayName("오프셋 - 웨이퍼 && 프로브카드 UnPacking 시, UnPacking 을 위한 Elevator Z 축 이동 거리 (기준 높이 : Packing 위치) (mm)")]
+        public double Wafer_ProbeCard_UnPackingStartOffset_Distance { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("수동 패킹 시, 패킹 위치에서 몇 mm 아래까지 엘리베이터 Z 축을 올릴 것인지.\r\n\r\n[default 0 : 30 mm]"),
+            DisplayName("오프셋 - 웨이퍼 && 프로브카드 Manual Packing 시, 엘리베이터 Z 축의 1단계 Offset 거리 (mm, > 0)")]
+        public double Wafer_ProbeCard_ManualPacking_ElevZ_Offset_Distance { set; get; }
+
+        [Category("[99] 장비 공통 파라미터"),
+            Description("수동 패킹 시, 패킹 위치까지 엘리베이터 Z 축을 올리는 Concept.\r\n[True : 패킹 Offset 거리까지 고속으로 이동하고, 패킹 위치까지 저속으로 이동]\r\n[False : 1단계 Offset 거리만큼 이동 후 대기]"),
+            DisplayName("오프셋 - 웨이퍼 && 프로브카드 Manual Packing 시, 엘리베이터 Z 축의 1단계 Offset 이동 방법 (2 Step 이동 or 이동 후 대기)")]
+        public bool Wafer_ProbeCard_ManualPacking_1st_Step_ElevZ_OffsetMove_Concept { set; get; }
 
 
         #endregion

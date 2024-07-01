@@ -323,18 +323,18 @@ namespace CWA150SA_Onsemi300
             m_nExistCheck = UserData_ExistCheck(tb_Name.Text, tb_ID.Text);
             if ( m_nExistCheck == 1)
             {
-                MessageBox.Show("이미 등록된 이름입니다.", "Information !!");
+                MessageBox.Show("이미 등록된 이름입니다.", "Information !!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             else if (m_nExistCheck == 2)
             {
-                MessageBox.Show("이미 등록된 아이디 입니다.", "Information !!");
+                MessageBox.Show("이미 등록된 아이디 입니다.", "Information !!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (radioButton_Operator.Checked == false)
             {
-                if (DialogResult.No == MessageBox.Show("관리자 아이디로 등록하시겠습니까?", "Yes or No", MessageBoxButtons.YesNo))
+                if (DialogResult.No == MessageBox.Show("관리자 아이디로 등록하시겠습니까?", "Yes or No", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                 {
                     return;
                 }

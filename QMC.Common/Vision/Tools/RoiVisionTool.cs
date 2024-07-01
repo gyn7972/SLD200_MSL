@@ -201,7 +201,7 @@ namespace QMC.Common.Vision.Tools
             set
             {
                 this.m_Size = new Size(this.m_EndLocation.X - value.X, this.m_EndLocation.Y - value.Y);
-                this.m_CenterLocation = new Point(this.m_EndLocation.X - Size.Width / 2, this.m_EndLocation.Y - Size.Height / 2);
+                this.m_CenterLocation = new Point(this.m_EndLocation.X - Size.Width / 2, this.m_EndLocation.Y - Size.Height / 2);                
                 if (this.Overlay == null)
                     this.Overlay = new RectangleFrameVisionImageOverlay("");
                 this.m_StartLocation = this.Overlay.StartLocation = value;

@@ -293,7 +293,7 @@ namespace CWA150SA_Onsemi300
 
             //  조명
             this.m_IlluminatorControl = new IlluminatorControl(waferProbeAlign.visionCalibrator_Upper.Recipe.IlluminationDataSet.ToList());
-            this.m_IlluminatorControl.Location = new Point(this.groupBoxPosMoveParameter.Location.X + groupBoxPosMoveParameter.Size.Width + 22, groupBoxPosMoveParameter.Location.Y);
+            this.m_IlluminatorControl.Location = new Point(this.groupBoxAlignStageMoveLimit.Location.X + groupBoxAlignStageMoveLimit.Size.Width + 22, groupBoxAlignStageMoveLimit.Location.Y);
             this.m_IlluminatorControl.Illuminator = waferProbeAlign.visionCalibrator_Upper.Illuminator;
             this.m_IlluminatorControl.IlluminatorControlButton_Click += m_IlluminatorControl_IlluminatorControlButton_Click;
             this.Controls.Add(m_IlluminatorControl);
@@ -320,32 +320,6 @@ namespace CWA150SA_Onsemi300
 
             //  Thread Start
             //ThreadStart();
-
-            //  User Position
-            tb_Axis_U1.Text = ReadRegistry("CWA-150SA", "UserPos1", "UVW_U");
-            tb_Axis_V1.Text = ReadRegistry("CWA-150SA", "UserPos1", "UVW_V");
-            tb_Axis_W1.Text = ReadRegistry("CWA-150SA", "UserPos1", "UVW_W");
-            tb_Axis_ElevZ1.Text = ReadRegistry("CWA-150SA", "UserPos1", "ElevZ");
-            tb_Axis_VisionX1.Text = ReadRegistry("CWA-150SA", "UserPos1", "Vis_X");
-            tb_Axis_VisionY1.Text = ReadRegistry("CWA-150SA", "UserPos1", "Vis_Y");
-            tb_Axis_VisionZ1.Text = ReadRegistry("CWA-150SA", "UserPos1", "Vis_Z");
-
-            tb_Axis_U2.Text = ReadRegistry("CWA-150SA", "UserPos2", "UVW_U");
-            tb_Axis_V2.Text = ReadRegistry("CWA-150SA", "UserPos2", "UVW_V");
-            tb_Axis_W2.Text = ReadRegistry("CWA-150SA", "UserPos2", "UVW_W");
-            tb_Axis_ElevZ2.Text = ReadRegistry("CWA-150SA", "UserPos2", "ElevZ");
-            tb_Axis_VisionX2.Text = ReadRegistry("CWA-150SA", "UserPos2", "Vis_X");
-            tb_Axis_VisionY2.Text = ReadRegistry("CWA-150SA", "UserPos2", "Vis_Y");
-            tb_Axis_VisionZ2.Text = ReadRegistry("CWA-150SA", "UserPos2", "Vis_Z");
-
-            tb_Axis_U3.Text = ReadRegistry("CWA-150SA", "UserPos3", "UVW_U");
-            tb_Axis_V3.Text = ReadRegistry("CWA-150SA", "UserPos3", "UVW_V");
-            tb_Axis_W3.Text = ReadRegistry("CWA-150SA", "UserPos3", "UVW_W");
-            tb_Axis_ElevZ3.Text = ReadRegistry("CWA-150SA", "UserPos3", "ElevZ");
-            tb_Axis_VisionX3.Text = ReadRegistry("CWA-150SA", "UserPos3", "Vis_X");
-            tb_Axis_VisionY3.Text = ReadRegistry("CWA-150SA", "UserPos3", "Vis_Y");
-            tb_Axis_VisionZ3.Text = ReadRegistry("CWA-150SA", "UserPos3", "Vis_Z");
-
 
             PositionData_Show();
 
@@ -495,6 +469,17 @@ namespace CWA150SA_Onsemi300
 
                 tb_Axis_EZ_Wafer_ProbeCard_Packing.Text = waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)nAxis.EZ].ToString();
             }
+
+
+            //  UVW-Stage 제한 위치
+            tb_Axis_U_Limit_Minus.Text = waferProbeAlign.Config.ParamConfig.AlignLimit_UVW_U_Minus.ToString();
+            tb_Axis_U_Limit_Plus.Text = waferProbeAlign.Config.ParamConfig.AlignLimit_UVW_U_Plus.ToString();
+            tb_Axis_V_Limit_Minus.Text = waferProbeAlign.Config.ParamConfig.AlignLimit_UVW_V_Minus.ToString();
+            tb_Axis_V_Limit_Plus.Text = waferProbeAlign.Config.ParamConfig.AlignLimit_UVW_V_Plus.ToString();
+            tb_Axis_W_Limit_Minus.Text = waferProbeAlign.Config.ParamConfig.AlignLimit_UVW_W_Minus.ToString();
+            tb_Axis_W_Limit_Plus.Text = waferProbeAlign.Config.ParamConfig.AlignLimit_UVW_W_Plus.ToString();
+
+            tb_Axis_UVW_Limit_Range.Text = Math.Abs(Convert.ToDouble(tb_Axis_U_Limit_Plus.Text) - Convert.ToDouble(tb_Axis_U_Limit_Minus.Text)).ToString();
         }
 
 
@@ -632,6 +617,14 @@ namespace CWA150SA_Onsemi300
                 {
                     btnUpperCamera_StartLive.BackColor = Color.LightGray;
                 }
+            }
+
+            //  레시피 변경 시, 해당 레시피의 위치값으로 변경
+            if (waferProbeAlign.m_bCalibrationMode_PosData_Reload)
+            {
+                waferProbeAlign.m_bCalibrationMode_PosData_Reload = false;
+
+                PositionData_Show();
             }
         }
 
@@ -820,1074 +813,6 @@ namespace CWA150SA_Onsemi300
 
         #endregion
 
-
-        private void baseButton_UVWStage_GO1_Click(object sender, EventArgs e)
-        {
-            //if (waferProbeAlign.m_bRVA_CalibMode)                  //  RVA 조정 모드일 경우
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "RVA 조정 모드입니다.");
-            //    return;
-            //}
-
-            //if (!ACSSPiiPlusMotionBoard.Api.IsConnected)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "ACS 모션 제어기가 연결되지 않았습니다.");
-            //    return;
-            //}
-
-            if (!Equipment.AjinBoard_Opened)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
-                return;
-            }
-
-            if (!waferProbeAlign.m_bHomeOK)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
-                return;
-            }
-
-            //  Inter-Lock
-            if (waferProbeAlign.m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nFindAlignMark_Step != (int)FindAlignMark_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "마크를 찾는 중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Step != (int)WaferProbeAlignErrorCheck_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 상태 확인중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nReticleCheck_UpperCam_Step != (int)ReticleCheck_UpperCam_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "상부 카메라 레티클 글래스 센터 확인 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nReticleCheck_LowerCam_Step != (int)ReticleCheck_LowerCam_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "하부 카메라 레티클 글래스 센터 확인 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nSafetyPos_Move_Step != (int)SafetyPos_Move_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "안전 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWafer_Loading_Ready_Step != (int)WaferLoading_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 로딩 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWafer_ProbeCard_Packing_Step != (int)WaferProbeCard_Packing_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 패킹 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Step != (int)WaferProbeCard_Unpacking_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Ready_Step != (int)WaferProbeCard_Unpacking_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 준비 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nProbeCard_Locking_Step != (int)ProbeCard_Locking_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "프로브 카드 고정 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nProbeCard_Loading_Ready_Step != (int)ProbeCard_Loading_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "프로브 카드 로딩 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nPAK_AirLine_Check_Step != (int)PAK_AirLine_Check_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "PAK 공압 관로 상태 확인 작업 진행중입니다.");
-                return;
-            }
-
-            double lfTargetPos_U = 0.0;
-            double lfTargetPos_V = 0.0;
-            double lfTargetPos_W = 0.0;
-            //double lfTargetPos_ElevZ = 0.0;
-            //double lfTargetPos_X = 0.0;
-            //double lfTargetPos_Y = 0.0;
-            //double lfTargetPos_VisionZ = 0.0;
-
-            double lfVelocity = 0.0;
-            double lfAccDec = 0.0f;
-
-            lfTargetPos_U = Convert.ToDouble(tb_Axis_U1.Text.Trim());
-            lfTargetPos_V = Convert.ToDouble(tb_Axis_V1.Text.Trim());
-            lfTargetPos_W = Convert.ToDouble(tb_Axis_W1.Text.Trim());
-            //lfTargetPos_ElevZ = Convert.ToDouble(tb_Axis_ElevZ1.Text.Trim());
-            //lfTargetPos_X = Convert.ToDouble(tb_Axis_VisionX1.Text.Trim());
-            //lfTargetPos_Y = Convert.ToDouble(tb_Axis_VisionY1.Text.Trim());
-            //lfTargetPos_VisionZ = Convert.ToDouble(tb_Axis_VisionZ1.Text.Trim());
-
-            if (Equipment.AjinBoard_Opened)
-            {
-                var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "UVW Stage 를 Target 위치로 보내시겠습니까?"))
-                    return;
-
-                lfVelocity = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.U.ToString()].Configuration.Velocity;
-                lfAccDec = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.U.ToString()].Configuration.Acceleration;
-
-                //if (ACSSPiiPlusMotionBoard.Api.IsConnected)
-                //{
-                //    ACSSPiiPlusMotionBoard.Api.ToPoint(0,
-                //                            (Axis)WaferProbeAlignParameter.AxisAcsEnum.StageY,
-                //                            lfTargetPos_Y);
-
-                //    ACSSPiiPlusMotionBoard.Api.ToPoint(0,
-                //                            (Axis)WaferProbeAlignParameter.AxisAcsEnum.StageX,
-                //                            lfTargetPos_X);
-                //}
-
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.U, lfTargetPos_U, lfVelocity, lfAccDec, lfAccDec);
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.V, lfTargetPos_V, lfVelocity, lfAccDec, lfAccDec);
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.W, lfTargetPos_W, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, lfTargetPos_ElevZ, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, lfTargetPos_X, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.Y, lfTargetPos_Y, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.VZ, lfTargetPos_VisionZ, 5, 50, 50);
-            }
-            else
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Ajin 제어기가 연결되지 않았습니다.");
-                return;
-            }
-        }
-
-        private void baseButton_UVWStage_GO2_Click(object sender, EventArgs e)
-        {
-            //if (waferProbeAlign.m_bRVA_CalibMode)                  //  RVA 조정 모드일 경우
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "RVA 조정 모드입니다.");
-            //    return;
-            //}
-
-            //if (!ACSSPiiPlusMotionBoard.Api.IsConnected)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "ACS 모션 제어기가 연결되지 않았습니다.");
-            //    return;
-            //}
-
-            if (!Equipment.AjinBoard_Opened)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
-                return;
-            }
-
-            if (!waferProbeAlign.m_bHomeOK)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
-                return;
-            }
-
-            //  Inter-Lock
-            if (waferProbeAlign.m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nFindAlignMark_Step != (int)FindAlignMark_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "마크를 찾는 중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Step != (int)WaferProbeAlignErrorCheck_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 상태 확인중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nReticleCheck_UpperCam_Step != (int)ReticleCheck_UpperCam_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "상부 카메라 레티클 글래스 센터 확인 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nReticleCheck_LowerCam_Step != (int)ReticleCheck_LowerCam_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "하부 카메라 레티클 글래스 센터 확인 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nSafetyPos_Move_Step != (int)SafetyPos_Move_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "안전 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWafer_Loading_Ready_Step != (int)WaferLoading_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 로딩 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWafer_ProbeCard_Packing_Step != (int)WaferProbeCard_Packing_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 패킹 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Step != (int)WaferProbeCard_Unpacking_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Ready_Step != (int)WaferProbeCard_Unpacking_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 준비 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nProbeCard_Locking_Step != (int)ProbeCard_Locking_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "프로브 카드 고정 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nProbeCard_Loading_Ready_Step != (int)ProbeCard_Loading_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "프로브 카드 로딩 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nPAK_AirLine_Check_Step != (int)PAK_AirLine_Check_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "PAK 공압 관로 상태 확인 작업 진행중입니다.");
-                return;
-            }
-
-            double lfTargetPos_U = 0.0;
-            double lfTargetPos_V = 0.0;
-            double lfTargetPos_W = 0.0;
-            //double lfTargetPos_ElevZ = 0.0;
-            //double lfTargetPos_X = 0.0;
-            //double lfTargetPos_Y = 0.0;
-            //double lfTargetPos_VisionZ = 0.0;
-
-            double lfVelocity = 0.0;
-            double lfAccDec = 0.0f;
-
-            lfTargetPos_U = Convert.ToDouble(tb_Axis_U2.Text.Trim());
-            lfTargetPos_V = Convert.ToDouble(tb_Axis_V2.Text.Trim());
-            lfTargetPos_W = Convert.ToDouble(tb_Axis_W2.Text.Trim());
-            //lfTargetPos_ElevZ = Convert.ToDouble(tb_Axis_ElevZ2.Text.Trim());
-            //lfTargetPos_X = Convert.ToDouble(tb_Axis_VisionX2.Text.Trim());
-            //lfTargetPos_Y = Convert.ToDouble(tb_Axis_VisionY2.Text.Trim());
-            //lfTargetPos_VisionZ = Convert.ToDouble(tb_Axis_VisionZ2.Text.Trim());
-
-            if (Equipment.AjinBoard_Opened)
-            {
-                var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "UVW Stage 를 Target 위치로 보내시겠습니까?"))
-                    return;
-
-                lfVelocity = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.U.ToString()].Configuration.Velocity;
-                lfAccDec = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.U.ToString()].Configuration.Acceleration;
-
-                //if (ACSSPiiPlusMotionBoard.Api.IsConnected)
-                //{
-                //    ACSSPiiPlusMotionBoard.Api.ToPoint(0,
-                //                            (Axis)WaferProbeAlignParameter.AxisAcsEnum.StageY,
-                //                            lfTargetPos_Y);
-
-                //    ACSSPiiPlusMotionBoard.Api.ToPoint(0,
-                //                            (Axis)WaferProbeAlignParameter.AxisAcsEnum.StageX,
-                //                            lfTargetPos_X);
-                //}
-
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.U, lfTargetPos_U, lfVelocity, lfAccDec, lfAccDec);
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.V, lfTargetPos_V, lfVelocity, lfAccDec, lfAccDec);
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.W, lfTargetPos_W, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, lfTargetPos_ElevZ, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, lfTargetPos_X, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.Y, lfTargetPos_Y, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.VZ, lfTargetPos_VisionZ, 5, 50, 50);
-            }
-            else
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Ajin 제어기가 연결되지 않았습니다.");
-                return;
-            }
-        }
-
-        private void baseButton_UVWStage_GO3_Click(object sender, EventArgs e)
-        {
-            //if (waferProbeAlign.m_bRVA_CalibMode)                  //  RVA 조정 모드일 경우
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "RVA 조정 모드입니다.");
-            //    return;
-            //}
-
-            //if (!ACSSPiiPlusMotionBoard.Api.IsConnected)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "ACS 모션 제어기가 연결되지 않았습니다.");
-            //    return;
-            //}
-
-            if (!Equipment.AjinBoard_Opened)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
-                return;
-            }
-
-            if (!waferProbeAlign.m_bHomeOK)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
-                return;
-            }
-
-            //  Inter-Lock
-            if (waferProbeAlign.m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nFindAlignMark_Step != (int)FindAlignMark_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "마크를 찾는 중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Step != (int)WaferProbeAlignErrorCheck_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 상태 확인중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nReticleCheck_UpperCam_Step != (int)ReticleCheck_UpperCam_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "상부 카메라 레티클 글래스 센터 확인 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nReticleCheck_LowerCam_Step != (int)ReticleCheck_LowerCam_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "하부 카메라 레티클 글래스 센터 확인 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nSafetyPos_Move_Step != (int)SafetyPos_Move_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "안전 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWafer_Loading_Ready_Step != (int)WaferLoading_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 로딩 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWafer_ProbeCard_Packing_Step != (int)WaferProbeCard_Packing_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 패킹 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Step != (int)WaferProbeCard_Unpacking_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Ready_Step != (int)WaferProbeCard_Unpacking_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 준비 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nProbeCard_Locking_Step != (int)ProbeCard_Locking_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "프로브 카드 고정 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nProbeCard_Loading_Ready_Step != (int)ProbeCard_Loading_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "프로브 카드 로딩 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nPAK_AirLine_Check_Step != (int)PAK_AirLine_Check_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "PAK 공압 관로 상태 확인 작업 진행중입니다.");
-                return;
-            }
-
-            double lfTargetPos_U = 0.0;
-            double lfTargetPos_V = 0.0;
-            double lfTargetPos_W = 0.0;
-            //double lfTargetPos_ElevZ = 0.0;
-            //double lfTargetPos_X = 0.0;
-            //double lfTargetPos_Y = 0.0;
-            //double lfTargetPos_VisionZ = 0.0;
-
-            double lfVelocity = 0.0;
-            double lfAccDec = 0.0f;
-
-            lfTargetPos_U = Convert.ToDouble(tb_Axis_U3.Text.Trim());
-            lfTargetPos_V = Convert.ToDouble(tb_Axis_V3.Text.Trim());
-            lfTargetPos_W = Convert.ToDouble(tb_Axis_W3.Text.Trim());
-            //lfTargetPos_ElevZ = Convert.ToDouble(tb_Axis_ElevZ3.Text.Trim());
-            //lfTargetPos_X = Convert.ToDouble(tb_Axis_VisionX3.Text.Trim());
-            //lfTargetPos_Y = Convert.ToDouble(tb_Axis_VisionY3.Text.Trim());
-            //lfTargetPos_VisionZ = Convert.ToDouble(tb_Axis_VisionZ3.Text.Trim());
-
-            if (Equipment.AjinBoard_Opened)
-            {
-                var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "UVW Stage 를 Target 위치로 보내시겠습니까?"))
-                    return;
-
-                lfVelocity = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.U.ToString()].Configuration.Velocity;
-                lfAccDec = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.U.ToString()].Configuration.Acceleration;
-
-                //if (ACSSPiiPlusMotionBoard.Api.IsConnected)
-                //{
-                //    ACSSPiiPlusMotionBoard.Api.ToPoint(0,
-                //                            (Axis)WaferProbeAlignParameter.AxisAcsEnum.StageY,
-                //                            lfTargetPos_Y);
-
-                //    ACSSPiiPlusMotionBoard.Api.ToPoint(0,
-                //                            (Axis)WaferProbeAlignParameter.AxisAcsEnum.StageX,
-                //                            lfTargetPos_X);
-                //}
-
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.U, lfTargetPos_U, lfVelocity, lfAccDec, lfAccDec);
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.V, lfTargetPos_V, lfVelocity, lfAccDec, lfAccDec);
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.W, lfTargetPos_W, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, lfTargetPos_ElevZ, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, lfTargetPos_X, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.Y, lfTargetPos_Y, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.VZ, lfTargetPos_VisionZ, 5, 50, 50);
-            }
-            else
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Ajin 제어기가 연결되지 않았습니다.");
-                return;
-            }
-        }        
-
-        private void baseButton_XYZStage_GO1_Click(object sender, EventArgs e)
-        {
-            //if (waferProbeAlign.m_bRVA_CalibMode)                  //  RVA 조정 모드일 경우
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "RVA 조정 모드입니다.");
-            //    return;
-            //}
-
-            //if (!ACSSPiiPlusMotionBoard.Api.IsConnected)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "ACS 모션 제어기가 연결되지 않았습니다.");
-            //    return;
-            //}
-
-            if (!Equipment.AjinBoard_Opened)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
-                return;
-            }
-
-            if (!waferProbeAlign.m_bHomeOK)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
-                return;
-            }
-
-            //  Inter-Lock
-            if (waferProbeAlign.m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nFindAlignMark_Step != (int)FindAlignMark_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "마크를 찾는 중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Step != (int)WaferProbeAlignErrorCheck_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 상태 확인중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nReticleCheck_UpperCam_Step != (int)ReticleCheck_UpperCam_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "상부 카메라 레티클 글래스 센터 확인 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nReticleCheck_LowerCam_Step != (int)ReticleCheck_LowerCam_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "하부 카메라 레티클 글래스 센터 확인 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nSafetyPos_Move_Step != (int)SafetyPos_Move_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "안전 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWafer_Loading_Ready_Step != (int)WaferLoading_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 로딩 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWafer_ProbeCard_Packing_Step != (int)WaferProbeCard_Packing_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 패킹 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Step != (int)WaferProbeCard_Unpacking_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Ready_Step != (int)WaferProbeCard_Unpacking_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 준비 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nProbeCard_Locking_Step != (int)ProbeCard_Locking_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "프로브 카드 고정 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nProbeCard_Loading_Ready_Step != (int)ProbeCard_Loading_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "프로브 카드 로딩 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nPAK_AirLine_Check_Step != (int)PAK_AirLine_Check_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "PAK 공압 관로 상태 확인 작업 진행중입니다.");
-                return;
-            }
-
-            //double lfTargetPos_U = 0.0;
-            //double lfTargetPos_V = 0.0;
-            //double lfTargetPos_W = 0.0;
-            //double lfTargetPos_ElevZ = 0.0;
-            double lfTargetPos_X = 0.0;
-            double lfTargetPos_Y = 0.0;
-            double lfTargetPos_VisionZ = 0.0;
-
-            double lfVelocity = 0.0;
-            double lfAccDec = 0.0f;
-
-            //lfTargetPos_U = Convert.ToDouble(tb_Axis_U1.Text.Trim());
-            //lfTargetPos_V = Convert.ToDouble(tb_Axis_V1.Text.Trim());
-            //lfTargetPos_W = Convert.ToDouble(tb_Axis_W1.Text.Trim());
-            //lfTargetPos_ElevZ = Convert.ToDouble(tb_Axis_ElevZ1.Text.Trim());
-            lfTargetPos_X = Convert.ToDouble(tb_Axis_VisionX1.Text.Trim());
-            lfTargetPos_Y = Convert.ToDouble(tb_Axis_VisionY1.Text.Trim());
-            lfTargetPos_VisionZ = Convert.ToDouble(tb_Axis_VisionZ1.Text.Trim());
-
-            if (Equipment.AjinBoard_Opened)
-            {
-                var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "XYZ Stage 를 Target 위치로 보내시겠습니까?"))
-                    return;
-
-                lfVelocity = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.X.ToString()].Configuration.Velocity;
-                lfAccDec = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.X.ToString()].Configuration.Acceleration;
-
-                //if (ACSSPiiPlusMotionBoard.Api.IsConnected)
-                //{
-                //    ACSSPiiPlusMotionBoard.Api.ToPoint(0,
-                //                            (Axis)WaferProbeAlignParameter.AxisAcsEnum.StageY,
-                //                            lfTargetPos_Y);
-
-                //    ACSSPiiPlusMotionBoard.Api.ToPoint(0,
-                //                            (Axis)WaferProbeAlignParameter.AxisAcsEnum.StageX,
-                //                            lfTargetPos_X);
-                //}
-
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.U, lfTargetPos_U, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.V, lfTargetPos_V, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.W, lfTargetPos_W, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, lfTargetPos_ElevZ, lfVelocity, lfAccDec, lfAccDec);
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, lfTargetPos_X, lfVelocity, lfAccDec, lfAccDec);
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.Y, lfTargetPos_Y, lfVelocity, lfAccDec, lfAccDec);
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.VZ, lfTargetPos_VisionZ, 5, 50, 50);
-            }
-            else
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Ajin 제어기가 연결되지 않았습니다.");
-                return;
-            }
-        }
-
-        private void baseButton_XYZStage_GO2_Click(object sender, EventArgs e)
-        {
-            //if (waferProbeAlign.m_bRVA_CalibMode)                  //  RVA 조정 모드일 경우
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "RVA 조정 모드입니다.");
-            //    return;
-            //}
-
-            //if (!ACSSPiiPlusMotionBoard.Api.IsConnected)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "ACS 모션 제어기가 연결되지 않았습니다.");
-            //    return;
-            //}
-
-            if (!Equipment.AjinBoard_Opened)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
-                return;
-            }
-
-            if (!waferProbeAlign.m_bHomeOK)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
-                return;
-            }
-
-            //  Inter-Lock
-            if (waferProbeAlign.m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nFindAlignMark_Step != (int)FindAlignMark_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "마크를 찾는 중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Step != (int)WaferProbeAlignErrorCheck_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 상태 확인중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nReticleCheck_UpperCam_Step != (int)ReticleCheck_UpperCam_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "상부 카메라 레티클 글래스 센터 확인 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nReticleCheck_LowerCam_Step != (int)ReticleCheck_LowerCam_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "하부 카메라 레티클 글래스 센터 확인 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nSafetyPos_Move_Step != (int)SafetyPos_Move_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "안전 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWafer_Loading_Ready_Step != (int)WaferLoading_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 로딩 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWafer_ProbeCard_Packing_Step != (int)WaferProbeCard_Packing_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 패킹 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Step != (int)WaferProbeCard_Unpacking_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Ready_Step != (int)WaferProbeCard_Unpacking_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 준비 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nProbeCard_Locking_Step != (int)ProbeCard_Locking_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "프로브 카드 고정 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nProbeCard_Loading_Ready_Step != (int)ProbeCard_Loading_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "프로브 카드 로딩 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nPAK_AirLine_Check_Step != (int)PAK_AirLine_Check_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "PAK 공압 관로 상태 확인 작업 진행중입니다.");
-                return;
-            }
-
-            //double lfTargetPos_U = 0.0;
-            //double lfTargetPos_V = 0.0;
-            //double lfTargetPos_W = 0.0;
-            //double lfTargetPos_ElevZ = 0.0;
-            double lfTargetPos_X = 0.0;
-            double lfTargetPos_Y = 0.0;
-            double lfTargetPos_VisionZ = 0.0;
-
-            double lfVelocity = 0.0;
-            double lfAccDec = 0.0f;
-
-            //lfTargetPos_U = Convert.ToDouble(tb_Axis_U2.Text.Trim());
-            //lfTargetPos_V = Convert.ToDouble(tb_Axis_V2.Text.Trim());
-            //lfTargetPos_W = Convert.ToDouble(tb_Axis_W2.Text.Trim());
-            //lfTargetPos_ElevZ = Convert.ToDouble(tb_Axis_ElevZ2.Text.Trim());
-            lfTargetPos_X = Convert.ToDouble(tb_Axis_VisionX2.Text.Trim());
-            lfTargetPos_Y = Convert.ToDouble(tb_Axis_VisionY2.Text.Trim());
-            lfTargetPos_VisionZ = Convert.ToDouble(tb_Axis_VisionZ2.Text.Trim());
-
-            if (Equipment.AjinBoard_Opened)
-            {
-                var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "XYZ Stage 를 Target 위치로 보내시겠습니까?"))
-                    return;
-
-                lfVelocity = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.X.ToString()].Configuration.Velocity;
-                lfAccDec = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.X.ToString()].Configuration.Acceleration;
-
-                //if (ACSSPiiPlusMotionBoard.Api.IsConnected)
-                //{
-                //    ACSSPiiPlusMotionBoard.Api.ToPoint(0,
-                //                            (Axis)WaferProbeAlignParameter.AxisAcsEnum.StageY,
-                //                            lfTargetPos_Y);
-
-                //    ACSSPiiPlusMotionBoard.Api.ToPoint(0,
-                //                            (Axis)WaferProbeAlignParameter.AxisAcsEnum.StageX,
-                //                            lfTargetPos_X);
-                //}
-
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.U, lfTargetPos_U, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.V, lfTargetPos_V, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.W, lfTargetPos_W, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, lfTargetPos_ElevZ, lfVelocity, lfAccDec, lfAccDec);
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, lfTargetPos_X, lfVelocity, lfAccDec, lfAccDec);
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.Y, lfTargetPos_Y, lfVelocity, lfAccDec, lfAccDec);
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.VZ, lfTargetPos_VisionZ, 5, 50, 50);
-            }
-            else
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Ajin 제어기가 연결되지 않았습니다.");
-                return;
-            }
-        }
-
-        private void baseButton_XYZStage_GO3_Click(object sender, EventArgs e)
-        {
-            //if (waferProbeAlign.m_bRVA_CalibMode)                  //  RVA 조정 모드일 경우
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "RVA 조정 모드입니다.");
-            //    return;
-            //}
-
-            //if (!ACSSPiiPlusMotionBoard.Api.IsConnected)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "ACS 모션 제어기가 연결되지 않았습니다.");
-            //    return;
-            //}
-
-            if (!Equipment.AjinBoard_Opened)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
-                return;
-            }
-
-            if (!waferProbeAlign.m_bHomeOK)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
-                return;
-            }
-
-            //  Inter-Lock
-            if (waferProbeAlign.m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nFindAlignMark_Step != (int)FindAlignMark_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "마크를 찾는 중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Step != (int)WaferProbeAlignErrorCheck_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 상태 확인중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nReticleCheck_UpperCam_Step != (int)ReticleCheck_UpperCam_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "상부 카메라 레티클 글래스 센터 확인 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nReticleCheck_LowerCam_Step != (int)ReticleCheck_LowerCam_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "하부 카메라 레티클 글래스 센터 확인 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nSafetyPos_Move_Step != (int)SafetyPos_Move_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "안전 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWafer_Loading_Ready_Step != (int)WaferLoading_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 로딩 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWafer_ProbeCard_Packing_Step != (int)WaferProbeCard_Packing_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 패킹 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Step != (int)WaferProbeCard_Unpacking_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Ready_Step != (int)WaferProbeCard_Unpacking_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 준비 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nProbeCard_Locking_Step != (int)ProbeCard_Locking_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "프로브 카드 고정 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nProbeCard_Loading_Ready_Step != (int)ProbeCard_Loading_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "프로브 카드 로딩 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nPAK_AirLine_Check_Step != (int)PAK_AirLine_Check_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "PAK 공압 관로 상태 확인 작업 진행중입니다.");
-                return;
-            }
-
-            //double lfTargetPos_U = 0.0;
-            //double lfTargetPos_V = 0.0;
-            //double lfTargetPos_W = 0.0;
-            //double lfTargetPos_ElevZ = 0.0;
-            double lfTargetPos_X = 0.0;
-            double lfTargetPos_Y = 0.0;
-            double lfTargetPos_VisionZ = 0.0;
-
-            double lfVelocity = 0.0;
-            double lfAccDec = 0.0f;
-
-            //lfTargetPos_U = Convert.ToDouble(tb_Axis_U3.Text.Trim());
-            //lfTargetPos_V = Convert.ToDouble(tb_Axis_V3.Text.Trim());
-            //lfTargetPos_W = Convert.ToDouble(tb_Axis_W3.Text.Trim());
-            //lfTargetPos_ElevZ = Convert.ToDouble(tb_Axis_ElevZ3.Text.Trim());
-            lfTargetPos_X = Convert.ToDouble(tb_Axis_VisionX3.Text.Trim());
-            lfTargetPos_Y = Convert.ToDouble(tb_Axis_VisionY3.Text.Trim());
-            lfTargetPos_VisionZ = Convert.ToDouble(tb_Axis_VisionZ3.Text.Trim());
-
-            if (Equipment.AjinBoard_Opened)
-            {
-                var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "XYZ Stage 를 Target 위치로 보내시겠습니까?"))
-                    return;
-
-                lfVelocity = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.X.ToString()].Configuration.Velocity;
-                lfAccDec = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.X.ToString()].Configuration.Acceleration;
-
-                //if (ACSSPiiPlusMotionBoard.Api.IsConnected)
-                //{
-                //    ACSSPiiPlusMotionBoard.Api.ToPoint(0,
-                //                            (Axis)WaferProbeAlignParameter.AxisAcsEnum.StageY,
-                //                            lfTargetPos_Y);
-
-                //    ACSSPiiPlusMotionBoard.Api.ToPoint(0,
-                //                            (Axis)WaferProbeAlignParameter.AxisAcsEnum.StageX,
-                //                            lfTargetPos_X);
-                //}
-
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.U, lfTargetPos_U, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.V, lfTargetPos_V, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.W, lfTargetPos_W, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, lfTargetPos_ElevZ, lfVelocity, lfAccDec, lfAccDec);
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, lfTargetPos_X, lfVelocity, lfAccDec, lfAccDec);
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.Y, lfTargetPos_Y, lfVelocity, lfAccDec, lfAccDec);
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.VZ, lfTargetPos_VisionZ, 5, 50, 50);
-            }
-            else
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Ajin 제어기가 연결되지 않았습니다.");
-                return;
-            }
-        }        
-
-        private void baseLabel7_Click(object sender, EventArgs e)
-        {
-            //  현재 위치 가져오기
-
-            var mb = new MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "현재 위치값을 가져오시겠습니까?\r\n\r\n(기존 위치값 변경 및 저장.)"))
-                return;
-
-            tb_Axis_U1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U).ToString();
-            tb_Axis_V1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V).ToString();
-            tb_Axis_W1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W).ToString();
-            tb_Axis_ElevZ1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.EZ).ToString();
-            tb_Axis_VisionX1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.X).ToString();
-            tb_Axis_VisionY1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.Y).ToString();
-            tb_Axis_VisionZ1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.VZ).ToString();
-
-            //  위치 저장 (레지스트리)
-            WriteRegistry("CWA-150SA", "UserPos1", "UVW_U", tb_Axis_U1.Text);
-            WriteRegistry("CWA-150SA", "UserPos1", "UVW_V", tb_Axis_V1.Text);
-            WriteRegistry("CWA-150SA", "UserPos1", "UVW_W", tb_Axis_W1.Text);
-            WriteRegistry("CWA-150SA", "UserPos1", "ElevZ", tb_Axis_ElevZ1.Text);
-            WriteRegistry("CWA-150SA", "UserPos1", "Vis_X", tb_Axis_VisionX1.Text);
-            WriteRegistry("CWA-150SA", "UserPos1", "Vis_Y", tb_Axis_VisionY1.Text);
-            WriteRegistry("CWA-150SA", "UserPos1", "Vis_Z", tb_Axis_VisionZ1.Text);
-        }
-
-        private void baseLabel10_Click(object sender, EventArgs e)
-        {
-            //  현재 위치 가져오기
-
-            var mb = new MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "현재 위치값을 가져오시겠습니까?\r\n\r\n(기존 위치값 변경 및 저장.)"))
-                return;
-
-            tb_Axis_U2.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U).ToString();
-            tb_Axis_V2.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V).ToString();
-            tb_Axis_W2.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W).ToString();
-            tb_Axis_ElevZ2.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.EZ).ToString();
-            tb_Axis_VisionX2.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.X).ToString();
-            tb_Axis_VisionY2.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.Y).ToString();
-            tb_Axis_VisionZ2.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.VZ).ToString();
-
-            //  위치 저장 (레지스트리)
-            WriteRegistry("CWA-150SA", "UserPos2", "UVW_U", tb_Axis_U2.Text);
-            WriteRegistry("CWA-150SA", "UserPos2", "UVW_V", tb_Axis_V2.Text);
-            WriteRegistry("CWA-150SA", "UserPos2", "UVW_W", tb_Axis_W2.Text);
-            WriteRegistry("CWA-150SA", "UserPos2", "ElevZ", tb_Axis_ElevZ2.Text);
-            WriteRegistry("CWA-150SA", "UserPos2", "Vis_X", tb_Axis_VisionX2.Text);
-            WriteRegistry("CWA-150SA", "UserPos2", "Vis_Y", tb_Axis_VisionY2.Text);
-            WriteRegistry("CWA-150SA", "UserPos2", "Vis_Z", tb_Axis_VisionZ2.Text);
-        }
-
-        private void baseLabel13_Click(object sender, EventArgs e)
-        {
-            //  현재 위치 가져오기
-
-            var mb = new MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "현재 위치값을 가져오시겠습니까?\r\n\r\n(기존 위치값 변경 및 저장.)"))
-                return;
-
-            tb_Axis_U3.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U).ToString();
-            tb_Axis_V3.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V).ToString();
-            tb_Axis_W3.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W).ToString();
-            tb_Axis_ElevZ3.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.EZ).ToString();
-            tb_Axis_VisionX3.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.X).ToString();
-            tb_Axis_VisionY3.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.Y).ToString();
-            tb_Axis_VisionZ3.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.VZ).ToString();
-
-            //  위치 저장 (레지스트리)
-            WriteRegistry("CWA-150SA", "UserPos3", "UVW_U", tb_Axis_U3.Text);
-            WriteRegistry("CWA-150SA", "UserPos3", "UVW_V", tb_Axis_V3.Text);
-            WriteRegistry("CWA-150SA", "UserPos3", "UVW_W", tb_Axis_W3.Text);
-            WriteRegistry("CWA-150SA", "UserPos3", "ElevZ", tb_Axis_ElevZ3.Text);
-            WriteRegistry("CWA-150SA", "UserPos3", "Vis_X", tb_Axis_VisionX3.Text);
-            WriteRegistry("CWA-150SA", "UserPos3", "Vis_Y", tb_Axis_VisionY3.Text);
-            WriteRegistry("CWA-150SA", "UserPos3", "Vis_Z", tb_Axis_VisionZ3.Text);
-        }
 
         private void btnMoveLoadingPos_Click(object sender, EventArgs e)
         {
@@ -2302,735 +1227,6 @@ namespace CWA150SA_Onsemi300
             return;
         }
 
-        private void baseButton_ElevZ_GO1_Click(object sender, EventArgs e)
-        {
-            //if (waferProbeAlign.m_bRVA_CalibMode)                  //  RVA 조정 모드일 경우
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "RVA 조정 모드입니다.");
-            //    return;
-            //}
-
-            //if (!ACSSPiiPlusMotionBoard.Api.IsConnected)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "ACS 모션 제어기가 연결되지 않았습니다.");
-            //    return;
-            //}
-
-            if (!Equipment.AjinBoard_Opened)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
-                return;
-            }
-
-            if (!waferProbeAlign.m_bHomeOK)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
-                return;
-            }
-
-            //  Inter-Lock
-            if (waferProbeAlign.m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nFindAlignMark_Step != (int)FindAlignMark_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "마크를 찾는 중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Step != (int)WaferProbeAlignErrorCheck_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 상태 확인중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nReticleCheck_UpperCam_Step != (int)ReticleCheck_UpperCam_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "상부 카메라 레티클 글래스 센터 확인 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nReticleCheck_LowerCam_Step != (int)ReticleCheck_LowerCam_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "하부 카메라 레티클 글래스 센터 확인 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nSafetyPos_Move_Step != (int)SafetyPos_Move_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "안전 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWafer_Loading_Ready_Step != (int)WaferLoading_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 로딩 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWafer_ProbeCard_Packing_Step != (int)WaferProbeCard_Packing_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 패킹 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Step != (int)WaferProbeCard_Unpacking_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Ready_Step != (int)WaferProbeCard_Unpacking_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 준비 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nProbeCard_Locking_Step != (int)ProbeCard_Locking_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "프로브 카드 고정 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nProbeCard_Loading_Ready_Step != (int)ProbeCard_Loading_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "프로브 카드 로딩 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nPAK_AirLine_Check_Step != (int)PAK_AirLine_Check_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "PAK 공압 관로 상태 확인 작업 진행중입니다.");
-                return;
-            }
-
-            //double lfTargetPos_U = 0.0;
-            //double lfTargetPos_V = 0.0;
-            //double lfTargetPos_W = 0.0;
-            double lfTargetPos_ElevZ = 0.0;
-            //double lfTargetPos_X = 0.0;
-            //double lfTargetPos_Y = 0.0;
-            //double lfTargetPos_VisionZ = 0.0;
-
-            double lfVelocity = 0.0;
-            double lfAccDec = 0.0f;
-
-            //lfTargetPos_U = Convert.ToDouble(tb_Axis_U1.Text.Trim());
-            //lfTargetPos_V = Convert.ToDouble(tb_Axis_V1.Text.Trim());
-            //lfTargetPos_W = Convert.ToDouble(tb_Axis_W1.Text.Trim());
-            lfTargetPos_ElevZ = Convert.ToDouble(tb_Axis_ElevZ1.Text.Trim());
-            //lfTargetPos_X = Convert.ToDouble(tb_Axis_VisionX1.Text.Trim());
-            //lfTargetPos_Y = Convert.ToDouble(tb_Axis_VisionY1.Text.Trim());
-            //lfTargetPos_VisionZ = Convert.ToDouble(tb_Axis_VisionZ1.Text.Trim());
-
-            if (Equipment.AjinBoard_Opened)
-            {
-                var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Elev. Z 를 Target 위치로 보내시겠습니까?"))
-                    return;
-
-                lfVelocity = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.EZ.ToString()].Configuration.Velocity;
-                lfAccDec = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.EZ.ToString()].Configuration.Acceleration;
-
-                //if (ACSSPiiPlusMotionBoard.Api.IsConnected)
-                //{
-                //    ACSSPiiPlusMotionBoard.Api.ToPoint(0,
-                //                            (Axis)WaferProbeAlignParameter.AxisAcsEnum.StageY,
-                //                            lfTargetPos_Y);
-
-                //    ACSSPiiPlusMotionBoard.Api.ToPoint(0,
-                //                            (Axis)WaferProbeAlignParameter.AxisAcsEnum.StageX,
-                //                            lfTargetPos_X);
-                //}
-
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.U, lfTargetPos_U, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.V, lfTargetPos_V, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.W, lfTargetPos_W, lfVelocity, lfAccDec, lfAccDec);
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, lfTargetPos_ElevZ, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, lfTargetPos_X, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.Y, lfTargetPos_Y, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.VZ, lfTargetPos_VisionZ, 5, 50, 50);
-            }
-            else
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Ajin 제어기가 연결되지 않았습니다.");
-                return;
-            }
-        }
-
-        private void baseButton_ElevZ_GO2_Click(object sender, EventArgs e)
-        {
-            //if (waferProbeAlign.m_bRVA_CalibMode)                  //  RVA 조정 모드일 경우
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "RVA 조정 모드입니다.");
-            //    return;
-            //}
-
-            //if (!ACSSPiiPlusMotionBoard.Api.IsConnected)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "ACS 모션 제어기가 연결되지 않았습니다.");
-            //    return;
-            //}
-
-            if (!Equipment.AjinBoard_Opened)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
-                return;
-            }
-
-            if (!waferProbeAlign.m_bHomeOK)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
-                return;
-            }
-
-            //  Inter-Lock
-            if (waferProbeAlign.m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nFindAlignMark_Step != (int)FindAlignMark_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "마크를 찾는 중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Step != (int)WaferProbeAlignErrorCheck_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 상태 확인중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nReticleCheck_UpperCam_Step != (int)ReticleCheck_UpperCam_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "상부 카메라 레티클 글래스 센터 확인 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nReticleCheck_LowerCam_Step != (int)ReticleCheck_LowerCam_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "하부 카메라 레티클 글래스 센터 확인 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nSafetyPos_Move_Step != (int)SafetyPos_Move_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "안전 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWafer_Loading_Ready_Step != (int)WaferLoading_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 로딩 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWafer_ProbeCard_Packing_Step != (int)WaferProbeCard_Packing_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 패킹 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Step != (int)WaferProbeCard_Unpacking_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Ready_Step != (int)WaferProbeCard_Unpacking_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 준비 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nProbeCard_Locking_Step != (int)ProbeCard_Locking_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "프로브 카드 고정 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nProbeCard_Loading_Ready_Step != (int)ProbeCard_Loading_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "프로브 카드 로딩 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nPAK_AirLine_Check_Step != (int)PAK_AirLine_Check_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "PAK 공압 관로 상태 확인 작업 진행중입니다.");
-                return;
-            }
-
-            //double lfTargetPos_U = 0.0;
-            //double lfTargetPos_V = 0.0;
-            //double lfTargetPos_W = 0.0;
-            double lfTargetPos_ElevZ = 0.0;
-            //double lfTargetPos_X = 0.0;
-            //double lfTargetPos_Y = 0.0;
-            //double lfTargetPos_VisionZ = 0.0;
-
-            double lfVelocity = 0.0;
-            double lfAccDec = 0.0f;
-
-            //lfTargetPos_U = Convert.ToDouble(tb_Axis_U2.Text.Trim());
-            //lfTargetPos_V = Convert.ToDouble(tb_Axis_V2.Text.Trim());
-            //lfTargetPos_W = Convert.ToDouble(tb_Axis_W2.Text.Trim());
-            lfTargetPos_ElevZ = Convert.ToDouble(tb_Axis_ElevZ2.Text.Trim());
-            //lfTargetPos_X = Convert.ToDouble(tb_Axis_VisionX2.Text.Trim());
-            //lfTargetPos_Y = Convert.ToDouble(tb_Axis_VisionY2.Text.Trim());
-            //lfTargetPos_VisionZ = Convert.ToDouble(tb_Axis_VisionZ2.Text.Trim());
-
-            if (Equipment.AjinBoard_Opened)
-            {
-                var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Elev. Z 를 Target 위치로 보내시겠습니까?"))
-                    return;
-
-                lfVelocity = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.EZ.ToString()].Configuration.Velocity;
-                lfAccDec = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.EZ.ToString()].Configuration.Acceleration;
-
-                //if (ACSSPiiPlusMotionBoard.Api.IsConnected)
-                //{
-                //    ACSSPiiPlusMotionBoard.Api.ToPoint(0,
-                //                            (Axis)WaferProbeAlignParameter.AxisAcsEnum.StageY,
-                //                            lfTargetPos_Y);
-
-                //    ACSSPiiPlusMotionBoard.Api.ToPoint(0,
-                //                            (Axis)WaferProbeAlignParameter.AxisAcsEnum.StageX,
-                //                            lfTargetPos_X);
-                //}
-
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.U, lfTargetPos_U, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.V, lfTargetPos_V, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.W, lfTargetPos_W, lfVelocity, lfAccDec, lfAccDec);
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, lfTargetPos_ElevZ, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, lfTargetPos_X, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.Y, lfTargetPos_Y, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.VZ, lfTargetPos_VisionZ, 5, 50, 50);
-            }
-            else
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Ajin 제어기가 연결되지 않았습니다.");
-                return;
-            }
-        }
-
-        private void baseButton_ElevZ_GO3_Click(object sender, EventArgs e)
-        {
-            //if (waferProbeAlign.m_bRVA_CalibMode)                  //  RVA 조정 모드일 경우
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "RVA 조정 모드입니다.");
-            //    return;
-            //}
-
-            //if (!ACSSPiiPlusMotionBoard.Api.IsConnected)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "ACS 모션 제어기가 연결되지 않았습니다.");
-            //    return;
-            //}
-
-            if (!Equipment.AjinBoard_Opened)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
-                return;
-            }
-
-            if (!waferProbeAlign.m_bHomeOK)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
-                return;
-            }
-
-            //  Inter-Lock
-            if (waferProbeAlign.m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nFindAlignMark_Step != (int)FindAlignMark_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "마크를 찾는 중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Step != (int)WaferProbeAlignErrorCheck_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 상태 확인중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nReticleCheck_UpperCam_Step != (int)ReticleCheck_UpperCam_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "상부 카메라 레티클 글래스 센터 확인 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nReticleCheck_LowerCam_Step != (int)ReticleCheck_LowerCam_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "하부 카메라 레티클 글래스 센터 확인 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nSafetyPos_Move_Step != (int)SafetyPos_Move_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "안전 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWafer_Loading_Ready_Step != (int)WaferLoading_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 로딩 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWafer_ProbeCard_Packing_Step != (int)WaferProbeCard_Packing_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 패킹 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Step != (int)WaferProbeCard_Unpacking_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nWaferProbeCard_Unpacking_Ready_Step != (int)WaferProbeCard_Unpacking_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "웨이퍼 - 프로브 카드 언패킹 준비 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nProbeCard_Locking_Step != (int)ProbeCard_Locking_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "프로브 카드 고정 작업 진행중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nProbeCard_Loading_Ready_Step != (int)ProbeCard_Loading_Ready_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "프로브 카드 로딩 위치로 이동중입니다.");
-                return;
-            }
-            if (waferProbeAlign.m_nPAK_AirLine_Check_Step != (int)PAK_AirLine_Check_Step.None)
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "PAK 공압 관로 상태 확인 작업 진행중입니다.");
-                return;
-            }
-
-            //double lfTargetPos_U = 0.0;
-            //double lfTargetPos_V = 0.0;
-            //double lfTargetPos_W = 0.0;
-            double lfTargetPos_ElevZ = 0.0;
-            //double lfTargetPos_X = 0.0;
-            //double lfTargetPos_Y = 0.0;
-            //double lfTargetPos_VisionZ = 0.0;
-
-            double lfVelocity = 0.0;
-            double lfAccDec = 0.0f;
-
-            //lfTargetPos_U = Convert.ToDouble(tb_Axis_U3.Text.Trim());
-            //lfTargetPos_V = Convert.ToDouble(tb_Axis_V3.Text.Trim());
-            //lfTargetPos_W = Convert.ToDouble(tb_Axis_W3.Text.Trim());
-            lfTargetPos_ElevZ = Convert.ToDouble(tb_Axis_ElevZ3.Text.Trim());
-            //lfTargetPos_X = Convert.ToDouble(tb_Axis_VisionX3.Text.Trim());
-            //lfTargetPos_Y = Convert.ToDouble(tb_Axis_VisionY3.Text.Trim());
-            //lfTargetPos_VisionZ = Convert.ToDouble(tb_Axis_VisionZ3.Text.Trim());
-
-            if (Equipment.AjinBoard_Opened)
-            {
-                var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Elev. Z 를 Target 위치로 보내시겠습니까?"))
-                    return;
-
-                lfVelocity = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.EZ.ToString()].Configuration.Velocity;
-                lfAccDec = waferProbeAlign.waferProbeAlignParameter.Axes[WaferProbeAlignParameter.MotionKey.EZ.ToString()].Configuration.Acceleration;
-
-                //if (ACSSPiiPlusMotionBoard.Api.IsConnected)
-                //{
-                //    ACSSPiiPlusMotionBoard.Api.ToPoint(0,
-                //                            (Axis)WaferProbeAlignParameter.AxisAcsEnum.StageY,
-                //                            lfTargetPos_Y);
-
-                //    ACSSPiiPlusMotionBoard.Api.ToPoint(0,
-                //                            (Axis)WaferProbeAlignParameter.AxisAcsEnum.StageX,
-                //                            lfTargetPos_X);
-                //}
-
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.U, lfTargetPos_U, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.V, lfTargetPos_V, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.W, lfTargetPos_W, lfVelocity, lfAccDec, lfAccDec);
-                MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, lfTargetPos_ElevZ, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, lfTargetPos_X, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.Y, lfTargetPos_Y, lfVelocity, lfAccDec, lfAccDec);
-                //MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.VZ, lfTargetPos_VisionZ, 5, 50, 50);
-            }
-            else
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Information !", "Ajin 제어기가 연결되지 않았습니다.");
-                return;
-            }
-        }
-
-        private void baseLabel_UVW_GetPos1_Click(object sender, EventArgs e)
-        {
-            //  현재 위치 가져오기
-
-            var mb = new MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "현재 UVW 위치값을 가져오시겠습니까?\r\n\r\n(기존 위치값 변경 및 저장.)"))
-                return;
-
-            tb_Axis_U1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U).ToString();
-            tb_Axis_V1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V).ToString();
-            tb_Axis_W1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W).ToString();
-            //tb_Axis_ElevZ1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.EZ).ToString();
-            //tb_Axis_VisionX1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.X).ToString();
-            //tb_Axis_VisionY1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.Y).ToString();
-            //tb_Axis_VisionZ1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.VZ).ToString();
-
-            //  위치 저장 (레지스트리)
-            WriteRegistry("CWA-150SA", "UserPos1", "UVW_U", tb_Axis_U1.Text);
-            WriteRegistry("CWA-150SA", "UserPos1", "UVW_V", tb_Axis_V1.Text);
-            WriteRegistry("CWA-150SA", "UserPos1", "UVW_W", tb_Axis_W1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "ElevZ", tb_Axis_ElevZ1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "Vis_X", tb_Axis_VisionX1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "Vis_Y", tb_Axis_VisionY1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "Vis_Z", tb_Axis_VisionZ1.Text);
-        }
-
-        private void baseLabel_UVW_GetPos2_Click(object sender, EventArgs e)
-        {
-            //  현재 위치 가져오기
-
-            var mb = new MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "현재 UVW 위치값을 가져오시겠습니까?\r\n\r\n(기존 위치값 변경 및 저장.)"))
-                return;
-
-            tb_Axis_U2.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U).ToString();
-            tb_Axis_V2.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V).ToString();
-            tb_Axis_W2.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W).ToString();
-            //tb_Axis_ElevZ1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.EZ).ToString();
-            //tb_Axis_VisionX1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.X).ToString();
-            //tb_Axis_VisionY1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.Y).ToString();
-            //tb_Axis_VisionZ1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.VZ).ToString();
-
-            //  위치 저장 (레지스트리)
-            WriteRegistry("CWA-150SA", "UserPos2", "UVW_U", tb_Axis_U2.Text);
-            WriteRegistry("CWA-150SA", "UserPos2", "UVW_V", tb_Axis_V2.Text);
-            WriteRegistry("CWA-150SA", "UserPos2", "UVW_W", tb_Axis_W2.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "ElevZ", tb_Axis_ElevZ1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "Vis_X", tb_Axis_VisionX1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "Vis_Y", tb_Axis_VisionY1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "Vis_Z", tb_Axis_VisionZ1.Text);
-        }
-
-        private void baseLabel_UVW_GetPos3_Click(object sender, EventArgs e)
-        {
-            //  현재 위치 가져오기
-
-            var mb = new MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "현재 UVW 위치값을 가져오시겠습니까?\r\n\r\n(기존 위치값 변경 및 저장.)"))
-                return;
-
-            tb_Axis_U3.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U).ToString();
-            tb_Axis_V3.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V).ToString();
-            tb_Axis_W3.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W).ToString();
-            //tb_Axis_ElevZ1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.EZ).ToString();
-            //tb_Axis_VisionX1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.X).ToString();
-            //tb_Axis_VisionY1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.Y).ToString();
-            //tb_Axis_VisionZ1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.VZ).ToString();
-
-            //  위치 저장 (레지스트리)
-            WriteRegistry("CWA-150SA", "UserPos3", "UVW_U", tb_Axis_U3.Text);
-            WriteRegistry("CWA-150SA", "UserPos3", "UVW_V", tb_Axis_V3.Text);
-            WriteRegistry("CWA-150SA", "UserPos3", "UVW_W", tb_Axis_W3.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "ElevZ", tb_Axis_ElevZ1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "Vis_X", tb_Axis_VisionX1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "Vis_Y", tb_Axis_VisionY1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "Vis_Z", tb_Axis_VisionZ1.Text);
-        }
-
-        private void baseLabel_XYZ_GetPos1_Click(object sender, EventArgs e)
-        {
-            //  현재 위치 가져오기
-
-            var mb = new MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "현재 XYZ 위치값을 가져오시겠습니까?\r\n\r\n(기존 위치값 변경 및 저장.)"))
-                return;
-
-            //tb_Axis_U1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U).ToString();
-            //tb_Axis_V1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V).ToString();
-            //tb_Axis_W1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W).ToString();
-            //tb_Axis_ElevZ1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.EZ).ToString();
-            tb_Axis_VisionX1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.X).ToString();
-            tb_Axis_VisionY1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.Y).ToString();
-            tb_Axis_VisionZ1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.VZ).ToString();
-
-            //  위치 저장 (레지스트리)
-            //WriteRegistry("CWA-150SA", "UserPos1", "UVW_U", tb_Axis_U1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "UVW_V", tb_Axis_V1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "UVW_W", tb_Axis_W1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "ElevZ", tb_Axis_ElevZ1.Text);
-            WriteRegistry("CWA-150SA", "UserPos1", "Vis_X", tb_Axis_VisionX1.Text);
-            WriteRegistry("CWA-150SA", "UserPos1", "Vis_Y", tb_Axis_VisionY1.Text);
-            WriteRegistry("CWA-150SA", "UserPos1", "Vis_Z", tb_Axis_VisionZ1.Text);
-        }
-
-        private void baseLabel_XYZ_GetPos2_Click(object sender, EventArgs e)
-        {
-            //  현재 위치 가져오기
-
-            var mb = new MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "현재 XYZ 위치값을 가져오시겠습니까?\r\n\r\n(기존 위치값 변경 및 저장.)"))
-                return;
-
-            //tb_Axis_U1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U).ToString();
-            //tb_Axis_V1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V).ToString();
-            //tb_Axis_W1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W).ToString();
-            //tb_Axis_ElevZ1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.EZ).ToString();
-            tb_Axis_VisionX2.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.X).ToString();
-            tb_Axis_VisionY2.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.Y).ToString();
-            tb_Axis_VisionZ2.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.VZ).ToString();
-
-            //  위치 저장 (레지스트리)
-            //WriteRegistry("CWA-150SA", "UserPos1", "UVW_U", tb_Axis_U1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "UVW_V", tb_Axis_V1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "UVW_W", tb_Axis_W1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "ElevZ", tb_Axis_ElevZ1.Text);
-            WriteRegistry("CWA-150SA", "UserPos2", "Vis_X", tb_Axis_VisionX2.Text);
-            WriteRegistry("CWA-150SA", "UserPos2", "Vis_Y", tb_Axis_VisionY2.Text);
-            WriteRegistry("CWA-150SA", "UserPos2", "Vis_Z", tb_Axis_VisionZ2.Text);
-        }
-
-        private void baseLabel_XYZ_GetPos3_Click(object sender, EventArgs e)
-        {
-            //  현재 위치 가져오기
-
-            var mb = new MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "현재 XYZ 위치값을 가져오시겠습니까?\r\n\r\n(기존 위치값 변경 및 저장.)"))
-                return;
-
-            //tb_Axis_U1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U).ToString();
-            //tb_Axis_V1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V).ToString();
-            //tb_Axis_W1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W).ToString();
-            //tb_Axis_ElevZ1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.EZ).ToString();
-            tb_Axis_VisionX3.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.X).ToString();
-            tb_Axis_VisionY3.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.Y).ToString();
-            tb_Axis_VisionZ3.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.VZ).ToString();
-
-            //  위치 저장 (레지스트리)
-            //WriteRegistry("CWA-150SA", "UserPos1", "UVW_U", tb_Axis_U1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "UVW_V", tb_Axis_V1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "UVW_W", tb_Axis_W1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "ElevZ", tb_Axis_ElevZ1.Text);
-            WriteRegistry("CWA-150SA", "UserPos3", "Vis_X", tb_Axis_VisionX3.Text);
-            WriteRegistry("CWA-150SA", "UserPos3", "Vis_Y", tb_Axis_VisionY3.Text);
-            WriteRegistry("CWA-150SA", "UserPos3", "Vis_Z", tb_Axis_VisionZ3.Text);
-        }
-
-        private void baseLabel_ElevZ_GetPos1_Click(object sender, EventArgs e)
-        {
-            //  현재 위치 가져오기
-
-            var mb = new MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "현재 Elev. Z 위치값을 가져오시겠습니까?\r\n\r\n(기존 위치값 변경 및 저장.)"))
-                return;
-
-            //tb_Axis_U1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U).ToString();
-            //tb_Axis_V1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V).ToString();
-            //tb_Axis_W1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W).ToString();
-            tb_Axis_ElevZ1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.EZ).ToString();
-            //tb_Axis_VisionX1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.X).ToString();
-            //tb_Axis_VisionY1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.Y).ToString();
-            //tb_Axis_VisionZ1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.VZ).ToString();
-
-            //  위치 저장 (레지스트리)
-            //WriteRegistry("CWA-150SA", "UserPos1", "UVW_U", tb_Axis_U1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "UVW_V", tb_Axis_V1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "UVW_W", tb_Axis_W1.Text);
-            WriteRegistry("CWA-150SA", "UserPos1", "ElevZ", tb_Axis_ElevZ1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "Vis_X", tb_Axis_VisionX1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "Vis_Y", tb_Axis_VisionY1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "Vis_Z", tb_Axis_VisionZ1.Text);
-        }
-
-        private void baseLabel_ElevZ_GetPos2_Click(object sender, EventArgs e)
-        {
-            //  현재 위치 가져오기
-
-            var mb = new MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "현재 Elev. Z 위치값을 가져오시겠습니까?\r\n\r\n(기존 위치값 변경 및 저장.)"))
-                return;
-
-            //tb_Axis_U1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U).ToString();
-            //tb_Axis_V1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V).ToString();
-            //tb_Axis_W1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W).ToString();
-            tb_Axis_ElevZ2.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.EZ).ToString();
-            //tb_Axis_VisionX1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.X).ToString();
-            //tb_Axis_VisionY1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.Y).ToString();
-            //tb_Axis_VisionZ1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.VZ).ToString();
-
-            //  위치 저장 (레지스트리)
-            //WriteRegistry("CWA-150SA", "UserPos1", "UVW_U", tb_Axis_U1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "UVW_V", tb_Axis_V1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "UVW_W", tb_Axis_W1.Text);
-            WriteRegistry("CWA-150SA", "UserPos2", "ElevZ", tb_Axis_ElevZ2.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "Vis_X", tb_Axis_VisionX1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "Vis_Y", tb_Axis_VisionY1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "Vis_Z", tb_Axis_VisionZ1.Text);
-        }
-
-        private void baseLabel_ElevZ_GetPos3_Click(object sender, EventArgs e)
-        {
-            //  현재 위치 가져오기
-
-            var mb = new MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "현재 Elev. Z 위치값을 가져오시겠습니까?\r\n\r\n(기존 위치값 변경 및 저장.)"))
-                return;
-
-            //tb_Axis_U1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.U).ToString();
-            //tb_Axis_V1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V).ToString();
-            //tb_Axis_W1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W).ToString();
-            tb_Axis_ElevZ3.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.EZ).ToString();
-            //tb_Axis_VisionX1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.X).ToString();
-            //tb_Axis_VisionY1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.Y).ToString();
-            //tb_Axis_VisionZ1.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.VZ).ToString();
-
-            //  위치 저장 (레지스트리)
-            //WriteRegistry("CWA-150SA", "UserPos1", "UVW_U", tb_Axis_U1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "UVW_V", tb_Axis_V1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "UVW_W", tb_Axis_W1.Text);
-            WriteRegistry("CWA-150SA", "UserPos3", "ElevZ", tb_Axis_ElevZ3.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "Vis_X", tb_Axis_VisionX1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "Vis_Y", tb_Axis_VisionY1.Text);
-            //WriteRegistry("CWA-150SA", "UserPos1", "Vis_Z", tb_Axis_VisionZ1.Text);
-        }
-
         private void btnUpperCamera_Init_Click(object sender, EventArgs e)
         {
             //  카메라 초기화
@@ -3064,6 +1260,15 @@ namespace CWA150SA_Onsemi300
 
         private void btnUpperCamera_StartLive_Click(object sender, EventArgs e)
         {
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
+                return;
+            }
+
             if (waferProbeAlign.Camera_Upper != null)
             {
                 waferProbeAlign.Camera_Upper.StartLive();
@@ -3171,6 +1376,10 @@ namespace CWA150SA_Onsemi300
                 var mb = new MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Wafer 로딩 대기 위치로 이동하시겠습니까?"))
                     return;
+
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
 
                 waferProbeAlign.m_nWafer_Loading_Ready_Step = (int)WaferProbeAlign.WaferLoading_Ready_Step.Start;
                 waferProbeAlign.timer_SubWork.Enabled = true;
@@ -3283,6 +1492,10 @@ namespace CWA150SA_Onsemi300
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Probe-Card 로딩 대기 위치로 이동하시겠습니까?"))
                     return;
 
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                 waferProbeAlign.m_nProbeCard_Loading_Ready_Step = (int)WaferProbeAlign.ProbeCard_Loading_Ready_Step.Start;
                 waferProbeAlign.timer_SubWork.Enabled = true;
             }
@@ -3393,6 +1606,10 @@ namespace CWA150SA_Onsemi300
                 var mb = new MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Probe-Card 고정 작업을 진행하시겠습니까?"))
                     return;
+
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
 
                 waferProbeAlign.m_nProbeCard_Locking_Step = (int)WaferProbeAlign.ProbeCard_Locking_Step.Start;
                 waferProbeAlign.timer_SubWork.Enabled = true;
@@ -3505,6 +1722,10 @@ namespace CWA150SA_Onsemi300
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "안전 위치로 이동하시겠습니까?"))
                     return;
 
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                 waferProbeAlign.m_nSafetyPos_Move_Step = (int)WaferProbeAlign.SafetyPos_Move_Step.Start;
                 waferProbeAlign.timer_SubWork.Enabled = true;
             }
@@ -3527,6 +1748,15 @@ namespace CWA150SA_Onsemi300
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
@@ -3616,6 +1846,10 @@ namespace CWA150SA_Onsemi300
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Reticle Glass 확인 위치로 이동하시겠습니까?\r\n\r\n[Upper Camera]\r\n\r\n##  프로브 카드는 반드시 제거해야 합니다. [충돌 경고]  ##"))
                     return;
 
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                 waferProbeAlign.m_nReticleCheck_UpperCam_Step = (int)WaferProbeAlign.ReticleCheck_UpperCam_Step.Start;
                 waferProbeAlign.timer_ReticleGlass_Check.Enabled = true;
             }
@@ -3638,6 +1872,15 @@ namespace CWA150SA_Onsemi300
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
@@ -3727,6 +1970,10 @@ namespace CWA150SA_Onsemi300
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Reticle Glass 확인 위치로 이동하시겠습니까?\r\n\r\n[Lower Camera]"))
                     return;
 
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                 waferProbeAlign.m_nReticleCheck_LowerCam_Step = (int)WaferProbeAlign.ReticleCheck_LowerCam_Step.Start;
                 waferProbeAlign.timer_ReticleGlass_Check.Enabled = true;
             }
@@ -3756,6 +2003,15 @@ namespace CWA150SA_Onsemi300
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
@@ -3885,14 +2141,18 @@ namespace CWA150SA_Onsemi300
                 //  Vision XY 축 이동 시 Elev. Z 축과 충돌하는지 체크
                 if (MC_Func.MC_GetEncPos((int)nAxis.EZ) >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                 {
-                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!");
+                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else if (waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.EZ] >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                 {
-                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!");
+                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
+                    //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                    waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                    waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                     MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)nAxis.X], lfVelocity, lfAccDec, lfAccDec);
                     MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.Y, lfTargetPos_Y, lfVelocity, lfAccDec, lfAccDec);
 
@@ -3931,6 +2191,15 @@ namespace CWA150SA_Onsemi300
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
@@ -4060,14 +2329,18 @@ namespace CWA150SA_Onsemi300
                 //  Vision XY 축 이동 시 Elev. Z 축과 충돌하는지 체크
                 if (MC_Func.MC_GetEncPos((int)nAxis.EZ) >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                 {
-                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!");
+                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else if (waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.EZ] >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                 {
-                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!");
+                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
+                    //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                    waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                    waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                     MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)nAxis.X], lfVelocity, lfAccDec, lfAccDec);
                     MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.Y, lfTargetPos_Y, lfVelocity, lfAccDec, lfAccDec);
 
@@ -4106,6 +2379,15 @@ namespace CWA150SA_Onsemi300
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
@@ -4236,14 +2518,18 @@ namespace CWA150SA_Onsemi300
                 //  Vision XY 축 이동 시 Elev. Z 축과 충돌하는지 체크
                 if (MC_Func.MC_GetEncPos((int)nAxis.EZ) >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                 {
-                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!");
+                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else if (waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.EZ] >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                 {
-                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!");
+                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
+                    //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                    waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                    waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                     MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam2.dTarget[(int)nAxis.X], lfVelocity, lfAccDec, lfAccDec);
                     MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.Y, lfTargetPos_Y, lfVelocity, lfAccDec, lfAccDec);
 
@@ -4282,6 +2568,15 @@ namespace CWA150SA_Onsemi300
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
@@ -4411,14 +2706,18 @@ namespace CWA150SA_Onsemi300
                 //  Vision XY 축 이동 시 Elev. Z 축과 충돌하는지 체크
                 if (MC_Func.MC_GetEncPos((int)nAxis.EZ) >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                 {
-                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!");
+                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else if (waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.EZ] >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                 {
-                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!");
+                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
+                    //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                    waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                    waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                     MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, lfTargetPos_X, lfVelocity, lfAccDec, lfAccDec);
 
                     MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ,
@@ -4456,6 +2755,15 @@ namespace CWA150SA_Onsemi300
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
@@ -4585,11 +2893,11 @@ namespace CWA150SA_Onsemi300
                 //  Vision XY 축 이동 시 Elev. Z 축과 충돌하는지 체크
                 if (MC_Func.MC_GetEncPos((int)nAxis.EZ) >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                 {
-                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!");
+                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else if (waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.EZ] >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                 {
-                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!");
+                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
@@ -4630,6 +2938,15 @@ namespace CWA150SA_Onsemi300
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
@@ -4759,14 +3076,18 @@ namespace CWA150SA_Onsemi300
                 //  Vision XY 축 이동 시 Elev. Z 축과 충돌하는지 체크
                 if (MC_Func.MC_GetEncPos((int)nAxis.EZ) >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                 {
-                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!");
+                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else if (waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.EZ] >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                 {
-                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!");
+                    MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
+                    //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                    waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                    waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                     MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, lfTargetPos_X, lfVelocity, lfAccDec, lfAccDec);
 
                     MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ,
@@ -4801,10 +3122,18 @@ namespace CWA150SA_Onsemi300
             double m_dPos_V_TOP = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.V);
             double m_dPos_W_TOP = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.W);
             double m_dPos_EZ_TOP = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.EZ);
-
             double m_dPos_X_TOP = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.X);
             tb_Axis_Y_TOP.Text = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.Y).ToString();
             double m_dPos_VZ_TOP = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.VZ);
+
+            //  테스트용 코드
+            //double m_dPos_U_TOP = -0.915;
+            //double m_dPos_V_TOP = 0.195;
+            //double m_dPos_W_TOP = 0.925;
+            //double m_dPos_EZ_TOP = 58.818;
+            //double m_dPos_X_TOP = 155.38;
+            //tb_Axis_Y_TOP.Text = 244.764.ToString();
+            //double m_dPos_VZ_TOP = 2.400131;
 
             //  위치 저장 (Config)
             double m_dOldPos = 0.0;
@@ -4924,6 +3253,10 @@ namespace CWA150SA_Onsemi300
                 DataManager.Instance.ApplyConfigData(waferProbeAlign);
                 //  Config 창 데이터 갱신을 위해서
                 Equipment.m_bRedraw_FormWaferProbeAlignParameterConfig = true;
+
+
+                //  2024. 05. 28.  SCH : TOP 위치에서 저장되는 ElevZ 와 VisionZ 가 전체 레시피에 공통으로 사용된다.
+                waferProbeAlign.Machine_Parameter_Save();
             }
             else
             {
@@ -5868,10 +4201,10 @@ namespace CWA150SA_Onsemi300
                 {
                     waferProbeAlign.Config.ParamConfig.ReticleAlign_UpperVision_LightValue = channel.Value;
                 }
-                else if (channel.ChannelName == "Lower")
-                {
-                    waferProbeAlign.Config.ParamConfig.ReticleAlign_LowerVision_LightValue = channel.Value;
-                }
+                //else if (channel.ChannelName == "Lower")                                                          //  상부 카메라 조명값 저장할 때 하부는 필요 없음.
+                //{
+                //    waferProbeAlign.Config.ParamConfig.ReticleAlign_LowerVision_LightValue = channel.Value;
+                //}
             }
 
             string m_strRecipe1 = "";
@@ -5901,7 +4234,7 @@ namespace CWA150SA_Onsemi300
             //visionCalibrator.Illuminator.TurnOnOff(true, 2);       //  Ring 조명
 
             var mb4 = new MessageBoxOk();
-            mb4.ShowDialog("Information !", "Reticle 위치 및 조명값이 저장되었습니다.");
+            mb4.ShowDialog("Information !", "[상부 카메라, 엘리베이터 Z축]\r\n\r\nReticle 위치 및 조명값이 저장되었습니다.");
         }
 
         private void baseLabelPosition_LowerCamera_ReticleCenter_Click(object sender, EventArgs e)
@@ -5977,14 +4310,14 @@ namespace CWA150SA_Onsemi300
 
             foreach (IlluminationChannel channel in waferProbeAlign.visionCalibrator_Upper.IlluminationData.Values)
             {
-                if (channel.ChannelName == "Upper")
-                {
-                    waferProbeAlign.Config.ParamConfig.ReticleAlign_UpperVision_LightValue = channel.Value;
-                }
-                else if (channel.ChannelName == "Lower")
+                if (channel.ChannelName == "Lower")
                 {
                     waferProbeAlign.Config.ParamConfig.ReticleAlign_LowerVision_LightValue = channel.Value;
                 }
+                //else if (channel.ChannelName == "Upper")                                                          //  하부 카메라 조명값 저장할 때 상부는 필요 없음.
+                //{
+                //    waferProbeAlign.Config.ParamConfig.ReticleAlign_UpperVision_LightValue = channel.Value;
+                //}
             }
 
             string m_strRecipe2 = "";
@@ -6014,7 +4347,7 @@ namespace CWA150SA_Onsemi300
             //visionCalibrator.Illuminator.TurnOnOff(true, 2);       //  Ring 조명
 
             var mb4 = new MessageBoxOk();
-            mb4.ShowDialog("Information !", "Reticle 위치 및 조명값이 저장되었습니다.");
+            mb4.ShowDialog("Information !", "[하부 카메라, 엘리베이터 Z축]\r\n\r\nReticle 위치 및 조명값이 저장되었습니다.");
         }
 
         private void baseLabelPosition_Wafer_Probecard_Packing_Click(object sender, EventArgs e)
@@ -6075,6 +4408,10 @@ namespace CWA150SA_Onsemi300
                 DataManager.Instance.ApplyConfigData(waferProbeAlign);
                 //  Config 창 데이터 갱신을 위해서
                 Equipment.m_bRedraw_FormWaferProbeAlignParameterConfig = true;
+
+
+                //  2024. 05. 28.  SCH : 여기서 저장되는 패킹 높이(ElevZ)가 전체 레시피에 공통으로 사용된다.
+                waferProbeAlign.Machine_Parameter_Save();
             }
             else
             {
@@ -6241,6 +4578,10 @@ namespace CWA150SA_Onsemi300
                 //                            lfTargetPos_X);
                 //}
 
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                 //  Vision XY 축 이동 시 Elev. Z 축과 충돌하는지 체크
                 if (MC_Func.MC_GetEncPos((int)nAxis.EZ) >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                 {
@@ -6401,10 +4742,14 @@ namespace CWA150SA_Onsemi300
                 //  Vision XY 축 이동 시 Elev. Z 축과 충돌하는지 체크
                 if (MC_Func.MC_GetEncPos((int)nAxis.Y) >= waferProbeAlign.Config.ParamConfig.DriveLimit_VisionY_NotConflictWithElevZ)
                 {
-                    MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌 위치에 있습니다.", "Warning!!");
+                    MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌 위치에 있습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
+                    //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                    waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                    waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                     MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, lfTargetPos_EZ, lfVelocity, lfAccDec, lfAccDec);
                 }
             }
@@ -6544,10 +4889,14 @@ namespace CWA150SA_Onsemi300
                 //  Vision XY 축 이동 시 Elev. Z 축과 충돌하는지 체크
                 if (MC_Func.MC_GetEncPos((int)nAxis.Y) >= waferProbeAlign.Config.ParamConfig.DriveLimit_VisionY_NotConflictWithElevZ)
                 {
-                    MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌 위치에 있습니다.", "Warning!!");
+                    MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌 위치에 있습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
+                    //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                    waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                    waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                     MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, lfTargetPos_EZ, lfVelocity, lfAccDec, lfAccDec);
                 }
             }
@@ -6687,10 +5036,14 @@ namespace CWA150SA_Onsemi300
                 //  Vision XY 축 이동 시 Elev. Z 축과 충돌하는지 체크
                 if (MC_Func.MC_GetEncPos((int)nAxis.Y) >= waferProbeAlign.Config.ParamConfig.DriveLimit_VisionY_NotConflictWithElevZ)
                 {
-                    MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌 위치에 있습니다.", "Warning!!");
+                    MessageBox.Show("Vision Y 축이 Elev. Z 축과 충돌 위치에 있습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
+                    //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                    waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                    waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                     MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, lfTargetPos_EZ, lfVelocity, lfAccDec, lfAccDec);
                 }
             }
@@ -6831,6 +5184,116 @@ namespace CWA150SA_Onsemi300
             m_UserRegistration_CWA150SA.checkBox_Password_Visible.Checked = false;
             m_UserRegistration_CWA150SA.StartPosition = FormStartPosition.CenterScreen;
             m_UserRegistration_CWA150SA.ShowDialog();
+        }
+
+        private void btn_UVW_Limit_Save_Click(object sender, EventArgs e)
+        {
+            //  UVW Stage 구동 제한 영역 저장
+            waferProbeAlign.Config.ParamConfig.AlignLimit_UVW_U_Minus = Convert.ToDouble(tb_Axis_U_Limit_Minus.Text);
+            waferProbeAlign.Config.ParamConfig.AlignLimit_UVW_U_Plus = Convert.ToDouble(tb_Axis_U_Limit_Plus.Text);
+            waferProbeAlign.Config.ParamConfig.AlignLimit_UVW_V_Minus = Convert.ToDouble(tb_Axis_V_Limit_Minus.Text);
+            waferProbeAlign.Config.ParamConfig.AlignLimit_UVW_V_Plus = Convert.ToDouble(tb_Axis_V_Limit_Plus.Text);
+            waferProbeAlign.Config.ParamConfig.AlignLimit_UVW_W_Minus = Convert.ToDouble(tb_Axis_W_Limit_Minus.Text);
+            waferProbeAlign.Config.ParamConfig.AlignLimit_UVW_W_Plus = Convert.ToDouble(tb_Axis_W_Limit_Plus.Text);
+
+            string m_strRecipe = "";
+            RecipeInfo m_recipeInfo = new RecipeInfo();
+            m_recipeInfo = Equipment.GetCurrentRecipe();
+
+            if (m_recipeInfo != null)
+            {
+                m_strRecipe = m_recipeInfo.Name;
+
+                //DataManager.Instance.UpdateConfigData(m_Module); // 참고 : param save
+                //Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
+                Equipment.SaveConfig(m_strRecipe);                                            //  2022. 06. 30.  SCH : Recipe 에 따라 Config 파라미터를 변경하기 위해 이걸로 함.
+            }
+            else
+            {
+                //DataManager.Instance.UpdateConfigData(m_Module); // 참고 : param save
+                Equipment.SaveConfig();                                                     //  2022. 06. 30.  SCH : 원래 이건데...
+            }
+
+            //  2024. 05. 13.  SCH : Config 창 데이터 갱신을 위해서 추가됨.
+            DataManager.Instance.ApplyConfigData(waferProbeAlign);
+            //  Config 창 데이터 갱신을 위해서
+            Equipment.m_bRedraw_FormWaferProbeAlignParameterConfig = true;
+
+            waferProbeAlign.Machine_Parameter_Save();
+
+            var mb2 = new MessageBoxOk();
+            mb2.ShowDialog("Information !", "저장하였습니다.");
+        }
+
+        private void btn_UVW_Limit_Range_Calc_Click(object sender, EventArgs e)
+        {
+            //  입력 범위로 제한 영역 다시 계산
+            int m_nIndex_Load = -1;
+
+            double m_dU_Pos = 0;
+            double m_dV_Pos = 0;
+            double m_dW_Pos = 0;
+            double m_dU_Minus = 0;
+            double m_dU_Plus = 0;
+            double m_dV_Minus = 0;
+            double m_dV_Plus = 0;
+            double m_dW_Minus = 0;
+            double m_dW_Plus = 0;
+            double m_dLimit_Range = 0;
+
+            for (int i = 0; i < waferProbeAlign.Config.Positions.Count; i++)
+            {
+                //  Load
+                if (waferProbeAlign.Config.Positions[i].Name == "Load")
+                {
+                    m_nIndex_Load = i;
+                }
+            }
+
+            //  Load 좌표 변경
+            if (m_nIndex_Load != -1)
+            {
+                waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam = waferProbeAlign.waferProbeAlignParameter.GetPositionInformation("Load");
+
+                m_dU_Pos = waferProbeAlign.Config.Positions[m_nIndex_Load].U;
+                m_dV_Pos = waferProbeAlign.Config.Positions[m_nIndex_Load].V;
+                m_dW_Pos = waferProbeAlign.Config.Positions[m_nIndex_Load].W;
+            }
+            else
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "Config 창에 \"Load\" 항목이 없습니다.\r\n\r\n(이 메세지가 보이면 안됨)");
+                return;
+            }
+
+            m_dLimit_Range = Convert.ToDouble(tb_Axis_UVW_Limit_Range.Text);
+
+            if (m_dLimit_Range > 0)
+            {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "입력한 범위로 UVW 스테이지의 구동 제한 영역을 설정하시겠습니까?"))
+                    return;
+
+                m_dU_Minus = m_dU_Pos - (m_dLimit_Range / 2.0);
+                m_dU_Plus = m_dU_Pos + (m_dLimit_Range / 2.0);
+                m_dV_Minus = m_dV_Pos - (m_dLimit_Range / 2.0);
+                m_dV_Plus = m_dV_Pos + (m_dLimit_Range / 2.0);
+                m_dW_Minus = m_dW_Pos - (m_dLimit_Range / 2.0);
+                m_dW_Plus = m_dW_Pos + (m_dLimit_Range / 2.0);
+
+                //  UVW-Stage 제한 위치
+                tb_Axis_U_Limit_Minus.Text = m_dU_Minus.ToString();
+                tb_Axis_U_Limit_Plus.Text = m_dU_Plus.ToString();
+                tb_Axis_V_Limit_Minus.Text = m_dV_Minus.ToString();
+                tb_Axis_V_Limit_Plus.Text = m_dV_Plus.ToString();
+                tb_Axis_W_Limit_Minus.Text = m_dW_Minus.ToString();
+                tb_Axis_W_Limit_Plus.Text = m_dW_Plus.ToString();
+            }
+            else
+            {
+                var mb2 = new MessageBoxOk();
+                mb2.ShowDialog("Information !", "구동 제한 영역 크기를 입력해야 합니다.\r\n\r\n(n > 0)");
+            }
         }
     }
 }

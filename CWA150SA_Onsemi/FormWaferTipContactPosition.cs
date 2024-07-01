@@ -47,6 +47,23 @@ namespace CWA150SA_Onsemi300
 
         }
 
+        public static Image ResizeImage(Image image)
+        {
+            if (image != null)
+            {
+                Bitmap croppedBitmap = new Bitmap(image);
+                croppedBitmap = croppedBitmap.Clone(
+                        new Rectangle(100, 100, image.Width - 200, image.Height - 200),
+                        System.Drawing.Imaging.PixelFormat.DontCare);
+                return croppedBitmap;
+            }
+            else
+            {
+                return image;
+            }
+        }
+
+
         public void Draw_TipContact_Image()
         {
             string m_strRoot = "D:\\CWA-150SA_AlignImage";

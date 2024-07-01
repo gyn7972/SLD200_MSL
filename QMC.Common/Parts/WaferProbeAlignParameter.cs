@@ -91,6 +91,9 @@ namespace QMC.Common.Parts
             Input_Wafer_VacuumCheck,            //  X007
             Input_Probe_PackingCheck,           //  X008
 
+            //  Area Sensor
+            Input_AreaSensor_Detect,            //  X015
+
             //  Thin Chuck
             Input_ThinChuck_Detect,             //  X016
 
@@ -183,6 +186,7 @@ namespace QMC.Common.Parts
 
         public stWaferProbeAlignParam stWaferProbeAlignPosParam;
         public stWaferProbeAlignParam stWaferProbeAlignPosParam2;
+        public stWaferProbeAlignParam stWaferProbeAlignPosParam_Verify;             //  위치 좌표 무결성 검사
         public stWaferProbeAlignParam stStageLoadPosParam;
         public stWaferProbeAlignParam stStageCenterPosParam;
         public stWaferProbeAlignParam stHighVisionCenterPosParam;
@@ -915,6 +919,26 @@ namespace QMC.Common.Parts
 
             //  해당 채널 상태 리턴
             dioString = m_dicDioPoints[DioPointKey.Input_Probe_PackingCheck.ToString()];
+
+            if (dioString == null)
+                return bRet;
+
+            DioValue ioValue = dioString.GetValue();
+
+            if (ioValue == DioValue.On)
+                bRet = true;
+
+            return bRet;
+        }
+
+        public bool DI_AreaSensor_Detect()
+        {
+            bool bRet = false;
+
+            DioPoint dioString = null;
+
+            //  해당 채널 상태 리턴
+            dioString = m_dicDioPoints[DioPointKey.Input_AreaSensor_Detect.ToString()];
 
             if (dioString == null)
                 return bRet;

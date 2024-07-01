@@ -156,7 +156,7 @@
             this.groupBoxDetectStatus.Size = new System.Drawing.Size(508, 68);
             this.groupBoxDetectStatus.TabIndex = 129;
             this.groupBoxDetectStatus.TabStop = false;
-            this.groupBoxDetectStatus.Text = " [ 감지 센서 상태 확인 ] ";
+            this.groupBoxDetectStatus.Text = " [ 센서 상태 확인 ] ";
             this.groupBoxDetectStatus.Enter += new System.EventHandler(this.groupBoxDetectStatus_Enter);
             // 
             // pictureBoxMainVacuumCheck
@@ -271,9 +271,9 @@
             this.baseButton_X_Pos_GO3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButton_X_Pos_GO3.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButton_X_Pos_GO3.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButton_X_Pos_GO3.Location = new System.Drawing.Point(194, 71);
+            this.baseButton_X_Pos_GO3.Location = new System.Drawing.Point(189, 248);
             this.baseButton_X_Pos_GO3.Name = "baseButton_X_Pos_GO3";
-            this.baseButton_X_Pos_GO3.Size = new System.Drawing.Size(85, 45);
+            this.baseButton_X_Pos_GO3.Size = new System.Drawing.Size(75, 40);
             this.baseButton_X_Pos_GO3.TabIndex = 152;
             this.baseButton_X_Pos_GO3.Text = "이동  ▶";
             this.baseButton_X_Pos_GO3.UseVisualStyleBackColor = false;
@@ -285,9 +285,9 @@
             this.baseButton_X_Pos_GO2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButton_X_Pos_GO2.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButton_X_Pos_GO2.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButton_X_Pos_GO2.Location = new System.Drawing.Point(103, 71);
+            this.baseButton_X_Pos_GO2.Location = new System.Drawing.Point(108, 248);
             this.baseButton_X_Pos_GO2.Name = "baseButton_X_Pos_GO2";
-            this.baseButton_X_Pos_GO2.Size = new System.Drawing.Size(85, 45);
+            this.baseButton_X_Pos_GO2.Size = new System.Drawing.Size(75, 40);
             this.baseButton_X_Pos_GO2.TabIndex = 151;
             this.baseButton_X_Pos_GO2.Text = "▣  이동";
             this.baseButton_X_Pos_GO2.UseVisualStyleBackColor = false;
@@ -299,11 +299,11 @@
             this.baseButton_X_Pos_GO1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButton_X_Pos_GO1.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButton_X_Pos_GO1.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButton_X_Pos_GO1.Location = new System.Drawing.Point(12, 71);
+            this.baseButton_X_Pos_GO1.Location = new System.Drawing.Point(27, 248);
             this.baseButton_X_Pos_GO1.Name = "baseButton_X_Pos_GO1";
-            this.baseButton_X_Pos_GO1.Size = new System.Drawing.Size(85, 45);
+            this.baseButton_X_Pos_GO1.Size = new System.Drawing.Size(75, 40);
             this.baseButton_X_Pos_GO1.TabIndex = 150;
-            this.baseButton_X_Pos_GO1.Text = "◀  이동";
+            this.baseButton_X_Pos_GO1.Text = "◁  이동";
             this.baseButton_X_Pos_GO1.UseVisualStyleBackColor = false;
             this.baseButton_X_Pos_GO1.Click += new System.EventHandler(this.baseButton_X_Pos_GO1_Click);
             // 
@@ -313,9 +313,9 @@
             this.baseLabelPosition_RIGHT.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.baseLabelPosition_RIGHT.Font = new System.Drawing.Font("나눔바른고딕", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabelPosition_RIGHT.ForeColor = System.Drawing.Color.Yellow;
-            this.baseLabelPosition_RIGHT.Location = new System.Drawing.Point(194, 25);
+            this.baseLabelPosition_RIGHT.Location = new System.Drawing.Point(189, 202);
             this.baseLabelPosition_RIGHT.Name = "baseLabelPosition_RIGHT";
-            this.baseLabelPosition_RIGHT.Size = new System.Drawing.Size(85, 22);
+            this.baseLabelPosition_RIGHT.Size = new System.Drawing.Size(75, 22);
             this.baseLabelPosition_RIGHT.TabIndex = 149;
             this.baseLabelPosition_RIGHT.Text = "RIGHT";
             this.baseLabelPosition_RIGHT.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -326,9 +326,9 @@
             this.baseLabelPosition_Center.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.baseLabelPosition_Center.Font = new System.Drawing.Font("나눔바른고딕", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabelPosition_Center.ForeColor = System.Drawing.Color.Yellow;
-            this.baseLabelPosition_Center.Location = new System.Drawing.Point(103, 25);
+            this.baseLabelPosition_Center.Location = new System.Drawing.Point(108, 202);
             this.baseLabelPosition_Center.Name = "baseLabelPosition_Center";
-            this.baseLabelPosition_Center.Size = new System.Drawing.Size(85, 22);
+            this.baseLabelPosition_Center.Size = new System.Drawing.Size(75, 22);
             this.baseLabelPosition_Center.TabIndex = 148;
             this.baseLabelPosition_Center.Text = "CENTER";
             this.baseLabelPosition_Center.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -339,9 +339,9 @@
             this.baseLabelPosition_Left.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.baseLabelPosition_Left.Font = new System.Drawing.Font("나눔바른고딕", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabelPosition_Left.ForeColor = System.Drawing.Color.Yellow;
-            this.baseLabelPosition_Left.Location = new System.Drawing.Point(12, 25);
+            this.baseLabelPosition_Left.Location = new System.Drawing.Point(27, 202);
             this.baseLabelPosition_Left.Name = "baseLabelPosition_Left";
-            this.baseLabelPosition_Left.Size = new System.Drawing.Size(85, 22);
+            this.baseLabelPosition_Left.Size = new System.Drawing.Size(75, 22);
             this.baseLabelPosition_Left.TabIndex = 147;
             this.baseLabelPosition_Left.Text = "LEFT";
             this.baseLabelPosition_Left.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -352,9 +352,9 @@
             this.baseLabelPosition_Bot.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.baseLabelPosition_Bot.Font = new System.Drawing.Font("나눔바른고딕", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabelPosition_Bot.ForeColor = System.Drawing.Color.Yellow;
-            this.baseLabelPosition_Bot.Location = new System.Drawing.Point(39, 238);
+            this.baseLabelPosition_Bot.Location = new System.Drawing.Point(12, 133);
             this.baseLabelPosition_Bot.Name = "baseLabelPosition_Bot";
-            this.baseLabelPosition_Bot.Size = new System.Drawing.Size(66, 49);
+            this.baseLabelPosition_Bot.Size = new System.Drawing.Size(85, 47);
             this.baseLabelPosition_Bot.TabIndex = 143;
             this.baseLabelPosition_Bot.Text = "BOT";
             this.baseLabelPosition_Bot.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -365,9 +365,9 @@
             this.baseLabelPosition_Mid.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.baseLabelPosition_Mid.Font = new System.Drawing.Font("나눔바른고딕", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabelPosition_Mid.ForeColor = System.Drawing.Color.Yellow;
-            this.baseLabelPosition_Mid.Location = new System.Drawing.Point(39, 184);
+            this.baseLabelPosition_Mid.Location = new System.Drawing.Point(12, 81);
             this.baseLabelPosition_Mid.Name = "baseLabelPosition_Mid";
-            this.baseLabelPosition_Mid.Size = new System.Drawing.Size(66, 49);
+            this.baseLabelPosition_Mid.Size = new System.Drawing.Size(85, 47);
             this.baseLabelPosition_Mid.TabIndex = 143;
             this.baseLabelPosition_Mid.Text = "MID";
             this.baseLabelPosition_Mid.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -378,9 +378,9 @@
             this.baseLabelPosition_Top.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.baseLabelPosition_Top.Font = new System.Drawing.Font("나눔바른고딕", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabelPosition_Top.ForeColor = System.Drawing.Color.Black;
-            this.baseLabelPosition_Top.Location = new System.Drawing.Point(39, 130);
+            this.baseLabelPosition_Top.Location = new System.Drawing.Point(12, 29);
             this.baseLabelPosition_Top.Name = "baseLabelPosition_Top";
-            this.baseLabelPosition_Top.Size = new System.Drawing.Size(66, 49);
+            this.baseLabelPosition_Top.Size = new System.Drawing.Size(85, 47);
             this.baseLabelPosition_Top.TabIndex = 143;
             this.baseLabelPosition_Top.Text = "TOP";
             this.baseLabelPosition_Top.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -391,11 +391,11 @@
             this.baseButton_Y_Pos_GO3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButton_Y_Pos_GO3.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButton_Y_Pos_GO3.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButton_Y_Pos_GO3.Location = new System.Drawing.Point(181, 239);
+            this.baseButton_Y_Pos_GO3.Location = new System.Drawing.Point(176, 134);
             this.baseButton_Y_Pos_GO3.Name = "baseButton_Y_Pos_GO3";
-            this.baseButton_Y_Pos_GO3.Size = new System.Drawing.Size(74, 49);
+            this.baseButton_Y_Pos_GO3.Size = new System.Drawing.Size(103, 47);
             this.baseButton_Y_Pos_GO3.TabIndex = 122;
-            this.baseButton_Y_Pos_GO3.Text = "이동  ▼";
+            this.baseButton_Y_Pos_GO3.Text = "이동    ▽";
             this.baseButton_Y_Pos_GO3.UseVisualStyleBackColor = false;
             this.baseButton_Y_Pos_GO3.Click += new System.EventHandler(this.baseButton_Y_Pos_GO3_Click);
             // 
@@ -405,11 +405,11 @@
             this.baseButton_Y_Pos_GO2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButton_Y_Pos_GO2.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButton_Y_Pos_GO2.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButton_Y_Pos_GO2.Location = new System.Drawing.Point(181, 184);
+            this.baseButton_Y_Pos_GO2.Location = new System.Drawing.Point(176, 81);
             this.baseButton_Y_Pos_GO2.Name = "baseButton_Y_Pos_GO2";
-            this.baseButton_Y_Pos_GO2.Size = new System.Drawing.Size(74, 49);
+            this.baseButton_Y_Pos_GO2.Size = new System.Drawing.Size(103, 47);
             this.baseButton_Y_Pos_GO2.TabIndex = 117;
-            this.baseButton_Y_Pos_GO2.Text = "이동  ▣";
+            this.baseButton_Y_Pos_GO2.Text = "이동    ▣";
             this.baseButton_Y_Pos_GO2.UseVisualStyleBackColor = false;
             this.baseButton_Y_Pos_GO2.Click += new System.EventHandler(this.baseButton_Y_Pos_GO2_Click);
             // 
@@ -419,11 +419,11 @@
             this.baseButton_Y_Pos_GO1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.baseButton_Y_Pos_GO1.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseButton_Y_Pos_GO1.ForeColor = System.Drawing.Color.DarkRed;
-            this.baseButton_Y_Pos_GO1.Location = new System.Drawing.Point(181, 129);
+            this.baseButton_Y_Pos_GO1.Location = new System.Drawing.Point(176, 28);
             this.baseButton_Y_Pos_GO1.Name = "baseButton_Y_Pos_GO1";
-            this.baseButton_Y_Pos_GO1.Size = new System.Drawing.Size(74, 49);
+            this.baseButton_Y_Pos_GO1.Size = new System.Drawing.Size(103, 47);
             this.baseButton_Y_Pos_GO1.TabIndex = 112;
-            this.baseButton_Y_Pos_GO1.Text = "이동  ▲";
+            this.baseButton_Y_Pos_GO1.Text = "이동    ▲";
             this.baseButton_Y_Pos_GO1.UseVisualStyleBackColor = false;
             this.baseButton_Y_Pos_GO1.Click += new System.EventHandler(this.baseButton_Y_Pos_GO1_Click);
             // 
@@ -433,9 +433,9 @@
             this.baseLabel18.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.baseLabel18.Font = new System.Drawing.Font("나눔바른고딕", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel18.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel18.Location = new System.Drawing.Point(108, 129);
+            this.baseLabel18.Location = new System.Drawing.Point(102, 28);
             this.baseLabel18.Name = "baseLabel18";
-            this.baseLabel18.Size = new System.Drawing.Size(70, 159);
+            this.baseLabel18.Size = new System.Drawing.Size(70, 153);
             this.baseLabel18.TabIndex = 109;
             this.baseLabel18.Text = "▲\r\n▲\r\n\r\n[ V, W ]\r\n\r\n▼\r\n▼";
             this.baseLabel18.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -446,9 +446,9 @@
             this.baseLabel19.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.baseLabel19.Font = new System.Drawing.Font("나눔바른고딕", 8.999999F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.baseLabel19.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel19.Location = new System.Drawing.Point(12, 50);
+            this.baseLabel19.Location = new System.Drawing.Point(27, 227);
             this.baseLabel19.Name = "baseLabel19";
-            this.baseLabel19.Size = new System.Drawing.Size(267, 18);
+            this.baseLabel19.Size = new System.Drawing.Size(237, 18);
             this.baseLabel19.TabIndex = 108;
             this.baseLabel19.Text = "◀◀◀    [ Axis U ]    ▶▶▶";
             this.baseLabel19.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

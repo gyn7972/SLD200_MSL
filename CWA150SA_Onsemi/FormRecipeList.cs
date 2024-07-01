@@ -283,7 +283,7 @@ namespace CWA150SA_Onsemi300
 
                             if (File.Exists(m_strImage_srcPAK) || !File.Exists(m_strImage_destPAK))
                             {
-                                MessageBox.Show("[PAK] 패턴 이미지 파일명 변경 실패.", "Error");
+                                MessageBox.Show("[PAK] 패턴 이미지 파일명 변경 실패.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                         }
                         catch (IOException ex)
@@ -302,7 +302,7 @@ namespace CWA150SA_Onsemi300
 
                             if (File.Exists(m_strImage_srcWafer) || !File.Exists(m_strImage_destWafer))
                             {
-                                MessageBox.Show("[Wafer] 패턴 이미지 파일명 변경 실패.", "Error");
+                                MessageBox.Show("[Wafer] 패턴 이미지 파일명 변경 실패.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                         }
                         catch (IOException ex)
@@ -346,8 +346,51 @@ namespace CWA150SA_Onsemi300
                     return;
 
                 m_nIndex = baseDataGridViewRecipeList.SelectedCells[0].RowIndex;
+
+                //  삭제하려는 Recipe Name
+                string strRecipeName = m_recipes[m_nIndex].Name;
+
                 m_recipes.RemoveAt(m_nIndex);
                 baseDataGridViewRecipeList.Rows.RemoveAt(m_nIndex);
+
+
+                //  패턴매칭 이미지가 존재하면, 이미지 파일도 삭제한다.
+                string m_strImage_PAK = string.Format("{0}\\{1}_PAK.jpg", ConfigManager.GetPatternImagePath(), strRecipeName);
+                string m_strImage_Wafer = string.Format("{0}\\{1}_Wafer.jpg", ConfigManager.GetPatternImagePath(), strRecipeName);
+
+                if (File.Exists(m_strImage_PAK))
+                {
+                    try
+                    {
+                        File.Delete(m_strImage_PAK);
+
+                        if (File.Exists(m_strImage_PAK))
+                        {
+                            MessageBox.Show("[PAK] 패턴 이미지 파일 삭제 실패.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    catch (IOException ex)
+                    {
+                        Console.WriteLine("Failed to delete PAK pattern image file");
+                    }
+                }
+
+                if (File.Exists(m_strImage_Wafer))
+                {
+                    try
+                    {
+                        File.Delete(m_strImage_Wafer);
+
+                        if (File.Exists(m_strImage_Wafer))
+                        {
+                            MessageBox.Show("[Wafer] 패턴 이미지 파일 삭제 실패.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    catch (IOException ex)
+                    {
+                        Console.WriteLine("Failed to delete Wafer pattern image file");
+                    }
+                }
             }
         }
         #endregion

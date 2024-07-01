@@ -153,6 +153,12 @@ namespace CWA150SA_Onsemi300
                 size.Width = Convert.ToInt32(RoiWidth);
                 RoiVisionTool.Parameter.Size = size;
 
+                //  2024. 06. 27.  SCH : 좌우 동시에 크기 조정하기 위함
+                Point point_temp = new Point();
+                point_temp = RoiVisionTool.Parameter.StartLocation;
+                point_temp.X += (int.Parse(baseTextBoxSizeToke.Text) / 2);
+                RoiVisionTool.Parameter.StartLocation = point_temp;
+
                 RoiButtonClick(RoiVisionTool);
             }
             else if (button == this.baseButtonRoiXSizeUp)
@@ -161,6 +167,12 @@ namespace CWA150SA_Onsemi300
                 RoiWidth += double.Parse(baseTextBoxSizeToke.Text);
                 size.Width = Convert.ToInt32(RoiWidth);
                 RoiVisionTool.Parameter.Size = size;
+
+                //  2024. 06. 27.  SCH : 좌우 동시에 크기 조정하기 위함
+                Point point_temp = new Point();
+                point_temp = RoiVisionTool.Parameter.StartLocation;
+                point_temp.X -= (int.Parse(baseTextBoxSizeToke.Text) / 2);
+                RoiVisionTool.Parameter.StartLocation = point_temp;
 
                 RoiButtonClick(RoiVisionTool);
             }
@@ -171,6 +183,11 @@ namespace CWA150SA_Onsemi300
                 size.Height = Convert.ToInt32(RoiHeight);
                 RoiVisionTool.Parameter.Size = size;
 
+                //  2024. 06. 27.  SCH : 상하 동시에 크기 조정하기 위함
+                Point point_temp = new Point();
+                point_temp = RoiVisionTool.Parameter.StartLocation;
+                point_temp.Y += (int.Parse(baseTextBoxSizeToke.Text) / 2);
+                RoiVisionTool.Parameter.StartLocation = point_temp;
 
                 RoiButtonClick(RoiVisionTool);
             }
@@ -180,6 +197,12 @@ namespace CWA150SA_Onsemi300
                 RoiHeight += double.Parse(baseTextBoxSizeToke.Text);
                 size.Height = Convert.ToInt32(RoiHeight);
                 RoiVisionTool.Parameter.Size = size;
+
+                //  2024. 06. 27.  SCH : 상하 동시에 크기 조정하기 위함
+                Point point_temp = new Point();
+                point_temp = RoiVisionTool.Parameter.StartLocation;
+                point_temp.Y -= (int.Parse(baseTextBoxSizeToke.Text) / 2);
+                RoiVisionTool.Parameter.StartLocation = point_temp;
 
                 RoiButtonClick(RoiVisionTool);
             }
@@ -202,12 +225,11 @@ namespace CWA150SA_Onsemi300
                 //사이즈를 Full로 맞춘다
                 RoiButtonClick(RoiVisionTool);
             }
+
             baseTextBoxWidth.Text = RoiWidth.ToString();
             baseTextBoxHeight.Text = RoiHeight.ToString();
             baseTextBoxCenterX.Text = CenterX.ToString();
             baseTextBoxCenterY.Text = CenterY.ToString();
-
-
         }
 
         private void baseButtonClose_Click(object sender, EventArgs e)

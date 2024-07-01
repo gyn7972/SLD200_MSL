@@ -116,8 +116,13 @@ namespace QMC.Common
         //  User Stop
         public static bool MachineStop_byUser { set; get; }
 
+
         //  Stop by Alarm
         public static bool MachineStop_byAlarm { set; get; }
+
+
+        //  Area Sensor Detect Flag Reset
+        public static bool AreaSensorDetectFlag_Reset { set; get; }
 
 
         //  Log In
@@ -144,6 +149,8 @@ namespace QMC.Common
         //  작업자 모드인지 관리자 모드인지?
         public static string User_Mode { set; get; }
         public static string User_Name { set; get; }
+        public static bool User_AdminMode { set; get; }
+        public static bool User_QMC_Engineer { set; get; }
 
 
         //  얼라인 시작할 때 시간
@@ -175,6 +182,7 @@ namespace QMC.Common
             Machine_Run = false;
             MachineStop_byUser = false;
             MachineStop_byAlarm = false;
+            AreaSensorDetectFlag_Reset = false;
 
             Machine_LogIn = false;
             AutoLogOut_Execute = false;
@@ -192,6 +200,9 @@ namespace QMC.Common
 
             User_Mode = null;
             User_Name = null;
+            User_AdminMode = false;
+            User_QMC_Engineer = false;
+
             AlignStart_Time = null;
             User_LogOut_1time = false;
 

@@ -762,9 +762,52 @@ namespace CWA150SA_Onsemi300
             }
 
             if (waferProbeAlign.waferProbeAlignParameter.IsDO_ThinChuck_Vacuum())
+            {
                 waferProbeAlign.waferProbeAlignParameter.DO_ThinChuck_Vacuum(false);
+
+
+                //  2024. 06. 03.  SCH : 씬-척 공압을 끄면 얼라인을 다시 해야 한다.
+                waferProbeAlign.m_bWafer_ThetaAlign_OK = false;
+                waferProbeAlign.m_bWafer_XYAlign_OK = false;
+                waferProbeAlign.m_bProbeCard_TiltCheck_OK = false;
+                waferProbeAlign.m_bProbeCard_XYAlign_OK = false;
+
+                waferProbeAlign.m_bProbeCard_XYAlign_ErrorCheck_OK = false;         //  Probe Card XY Align Error Check OK
+                waferProbeAlign.m_bWafer_XYAlign_ErrorCheck_OK = false;             //  Wafer XY Align Error Check OK
+                waferProbeAlign.m_bWaferProbeAlign_ErrorCheck_Complete = false;
+                waferProbeAlign.m_bWaferProbeAlign_ErrorCheck_All_OK = false;
+
+                waferProbeAlign.m_dWafer_ProbeCard_PackingPos_Axis_U = -1;                  //  패킹할 때의 UVW Stage 좌표 (언패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_PackingPos_Axis_V = -1;                  //  패킹할 때의 UVW Stage 좌표 (언패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_PackingPos_Axis_W = -1;                  //  패킹할 때의 UVW Stage 좌표 (언패킹 시 사용한다.)
+
+                waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_U = -1;                    //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_V = -1;                    //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_W = -1;                    //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+
+                waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Count_Total = 3;              //  오차 확인 위치 총 개수
+                waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Count = 0;                    //  오차 확인 위치 카운트 (3개,   0: TOP, 1: MID, 2: BOT)
+
+                for (int nPos = 0; nPos < 3; nPos++)
+                {
+                    waferProbeAlign.AlignmentErrorCheck_Position[nPos].X = 0.0;
+                    waferProbeAlign.AlignmentErrorCheck_Position[nPos].Y = 0.0;
+
+                    waferProbeAlign.ManualPacking_OffsetPosition_UVW[nPos] = 0.0;
+
+                    for (int nSide = 0; nSide < 2; nSide++)
+                    {
+                        waferProbeAlign.AlignmentErrorCheck_Status[nPos, nSide] = false;
+
+                        waferProbeAlign.AlignmentErrorCheck_MarkPosition[nPos, nSide].X = 0.0;
+                        waferProbeAlign.AlignmentErrorCheck_MarkPosition[nPos, nSide].Y = 0.0;
+                    }
+                }
+            }
             else
+            {
                 waferProbeAlign.waferProbeAlignParameter.DO_ThinChuck_Vacuum(true);
+            }
         }
 
         private void baseButtonWaferVacuum_Click(object sender, EventArgs e)
@@ -777,9 +820,52 @@ namespace CWA150SA_Onsemi300
             }
 
             if (waferProbeAlign.waferProbeAlignParameter.IsDO_Wafer_Vacuum())
+            {
                 waferProbeAlign.waferProbeAlignParameter.DO_Wafer_Vacuum(false);
+
+
+                //  2024. 06. 03.  SCH : 씬-척 공압을 끄면 얼라인을 다시 해야 한다.
+                waferProbeAlign.m_bWafer_ThetaAlign_OK = false;
+                waferProbeAlign.m_bWafer_XYAlign_OK = false;
+                waferProbeAlign.m_bProbeCard_TiltCheck_OK = false;
+                waferProbeAlign.m_bProbeCard_XYAlign_OK = false;
+
+                waferProbeAlign.m_bProbeCard_XYAlign_ErrorCheck_OK = false;         //  Probe Card XY Align Error Check OK
+                waferProbeAlign.m_bWafer_XYAlign_ErrorCheck_OK = false;             //  Wafer XY Align Error Check OK
+                waferProbeAlign.m_bWaferProbeAlign_ErrorCheck_Complete = false;
+                waferProbeAlign.m_bWaferProbeAlign_ErrorCheck_All_OK = false;
+
+                waferProbeAlign.m_dWafer_ProbeCard_PackingPos_Axis_U = -1;                  //  패킹할 때의 UVW Stage 좌표 (언패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_PackingPos_Axis_V = -1;                  //  패킹할 때의 UVW Stage 좌표 (언패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_PackingPos_Axis_W = -1;                  //  패킹할 때의 UVW Stage 좌표 (언패킹 시 사용한다.)
+
+                waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_U = -1;                    //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_V = -1;                    //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+                waferProbeAlign.m_dWafer_ProbeCard_AlignPos_Axis_W = -1;                    //  얼라인 완료되었을때 UVW Stage 좌표 (패킹 시 사용한다.)
+
+                waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Count_Total = 3;              //  오차 확인 위치 총 개수
+                waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Count = 0;                    //  오차 확인 위치 카운트 (3개,   0: TOP, 1: MID, 2: BOT)
+
+                for (int nPos = 0; nPos < 3; nPos++)
+                {
+                    waferProbeAlign.AlignmentErrorCheck_Position[nPos].X = 0.0;
+                    waferProbeAlign.AlignmentErrorCheck_Position[nPos].Y = 0.0;
+
+                    waferProbeAlign.ManualPacking_OffsetPosition_UVW[nPos] = 0.0;
+
+                    for (int nSide = 0; nSide < 2; nSide++)
+                    {
+                        waferProbeAlign.AlignmentErrorCheck_Status[nPos, nSide] = false;
+
+                        waferProbeAlign.AlignmentErrorCheck_MarkPosition[nPos, nSide].X = 0.0;
+                        waferProbeAlign.AlignmentErrorCheck_MarkPosition[nPos, nSide].Y = 0.0;
+                    }
+                }
+            }
             else
+            {
                 waferProbeAlign.waferProbeAlignParameter.DO_Wafer_Vacuum(true);
+            }
         }
 
         private void baseButtonTopCoverUp_Click(object sender, EventArgs e)
@@ -896,6 +982,15 @@ namespace CWA150SA_Onsemi300
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
@@ -1114,6 +1209,14 @@ namespace CWA150SA_Onsemi300
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Wafer - ProbeCard 정렬을 시작하시겠습니까?"))
                     return;
 
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
+                //  Latch 확인은 얼라인 전에 한번만
+                var mb12 = new MessageBoxOk();
+                mb12.ShowDialog("Warning !!!", "==========================\r\n   Latch 가 정상 위치인지 확인 후\r\n                   [OK] 버튼을 누르십시오.   \r\n==========================");
+
                 waferProbeAlign.m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign.WaferProbeAlign_Step.Start;
                 waferProbeAlign.timer_MainWork.Enabled = true;
             }
@@ -1136,6 +1239,15 @@ namespace CWA150SA_Onsemi300
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 로그인 하십시오.");
+                return;
+            }
+
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
@@ -1328,16 +1440,25 @@ namespace CWA150SA_Onsemi300
             {
                 var mb = new MessageBoxYesNo();
 
-                if (waferProbeAlign.m_bWafer_ThetaAlign_OK && waferProbeAlign.m_bWafer_XYAlign_OK)
-                {
+                //if (waferProbeAlign.m_bWafer_ThetaAlign_OK && waferProbeAlign.m_bWafer_XYAlign_OK)
+                //{
                     if (DialogResult.Yes != mb.ShowDialog("Question ?", "Wafer - ProbeCard Packing 을 시작하시겠습니까?"))
                         return;
-                }
-                else
-                {
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "###  먼저 Wafer Align 을 진행해야 합니다.  ###\r\n\r\nWafer Align 을 하지 않고 Wafer - ProbeCard Packing 을 시작하시겠습니까?"))
-                        return;
-                }
+                //}
+                //else
+                //{
+                //    if (DialogResult.Yes != mb.ShowDialog("Question ?", "###  먼저 Wafer Align 을 진행해야 합니다.  ###\r\n\r\nWafer Align 을 하지 않고 Wafer - ProbeCard Packing 을 시작하시겠습니까?"))
+                //        return;
+                //}
+
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
+                //  Latch 확인은 얼라인 전에 한번만
+                //var mb12 = new MessageBoxOk();
+                ////mb12.ShowDialog("Warning !!!", "==========================\r\n   PAK 의 Latch 상태를 확인하십시오.   \r\n                 [ UNLOCKED ]\r\n==========================");
+                //mb12.ShowDialog("Warning !!!", "==========================\r\n   Latch 가 정상 위치인지 확인 후\r\n                   [OK] 버튼을 누르십시오.   \r\n==========================");
 
                 waferProbeAlign.m_nWafer_ProbeCard_Packing_Step = (int)WaferProbeAlign.WaferProbeCard_Packing_Step.Start;
                 waferProbeAlign.timer_MainWork.Enabled = true;
@@ -1480,6 +1601,10 @@ namespace CWA150SA_Onsemi300
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Wafer 로딩 대기 위치로 이동하시겠습니까?"))
                     return;
 
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                 waferProbeAlign.m_nWafer_Loading_Ready_Step = (int)WaferProbeAlign.WaferLoading_Ready_Step.Start;
                 waferProbeAlign.timer_SubWork.Enabled = true;
             }
@@ -1597,6 +1722,10 @@ namespace CWA150SA_Onsemi300
                 var mb = new MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Probe-Card 로딩 대기 위치로 이동하시겠습니까?"))
                     return;
+
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
 
                 waferProbeAlign.m_nProbeCard_Loading_Ready_Step = (int)WaferProbeAlign.ProbeCard_Loading_Ready_Step.Start;
                 waferProbeAlign.timer_SubWork.Enabled = true;
@@ -1716,6 +1845,10 @@ namespace CWA150SA_Onsemi300
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Probe-Card 고정 작업을 진행하시겠습니까?"))
                     return;
 
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                 waferProbeAlign.m_nProbeCard_Locking_Step = (int)WaferProbeAlign.ProbeCard_Locking_Step.Start;
                 waferProbeAlign.timer_SubWork.Enabled = true;
             }
@@ -1834,6 +1967,10 @@ namespace CWA150SA_Onsemi300
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "안전 위치로 이동하시겠습니까?"))
                     return;
 
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                 waferProbeAlign.m_nSafetyPos_Move_Step = (int)WaferProbeAlign.SafetyPos_Move_Step.Start;
                 waferProbeAlign.timer_SubWork.Enabled = true;
             }
@@ -1863,6 +2000,15 @@ namespace CWA150SA_Onsemi300
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
@@ -1952,6 +2098,10 @@ namespace CWA150SA_Onsemi300
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Reticle Glass 확인 위치로 이동하시겠습니까?\r\n\r\n[Upper Camera]\r\n\r\n##  프로브 카드는 반드시 제거해야 합니다. [충돌 경고]  ##"))
                     return;
 
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                 waferProbeAlign.m_nReticleCheck_UpperCam_Step = (int)WaferProbeAlign.ReticleCheck_UpperCam_Step.Start;
                 waferProbeAlign.timer_ReticleGlass_Check.Enabled = true;
             }
@@ -1981,6 +2131,15 @@ namespace CWA150SA_Onsemi300
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
@@ -2069,6 +2228,10 @@ namespace CWA150SA_Onsemi300
                 var mb = new MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Reticle Glass 확인 위치로 이동하시겠습니까?\r\n\r\n[Lower Camera]"))
                     return;
+
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
 
                 waferProbeAlign.m_nReticleCheck_LowerCam_Step = (int)WaferProbeAlign.ReticleCheck_LowerCam_Step.Start;
                 waferProbeAlign.timer_ReticleGlass_Check.Enabled = true;
@@ -2188,6 +2351,10 @@ namespace CWA150SA_Onsemi300
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Wafer, Probe-Card Unpacking 대기 위치로 이동하시겠습니까?"))
                     return;
 
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                 waferProbeAlign.m_nWaferProbeCard_Unpacking_Ready_Step = (int)WaferProbeAlign.WaferProbeCard_Unpacking_Ready_Step.Start;
                 waferProbeAlign.timer_SubWork.Enabled = true;
             }
@@ -2306,6 +2473,15 @@ namespace CWA150SA_Onsemi300
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Wafer, Probe-Card Unpacking 작업을 진행하시겠습니까?"))
                     return;
 
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
+                //  Latch 확인은 얼라인 전에 한번만
+                //var mb12 = new MessageBoxOk();
+                ////mb12.ShowDialog("Warning !!!", "==========================\r\n   PAK 의 Latch 상태를 확인하십시오.   \r\n                 [ UNLOCKED ]\r\n==========================");
+                //mb12.ShowDialog("Warning !!!", "==========================\r\n   Latch 가 정상 위치인지 확인 후\r\n                   [OK] 버튼을 누르십시오.   \r\n==========================");
+
                 waferProbeAlign.m_nWaferProbeCard_Unpacking_Step = (int)WaferProbeAlign.WaferProbeCard_Unpacking_Step.Start;
                 waferProbeAlign.timer_MainWork.Enabled = true;
             }
@@ -2342,6 +2518,15 @@ namespace CWA150SA_Onsemi300
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
@@ -2485,14 +2670,18 @@ namespace CWA150SA_Onsemi300
                     //  Vision XY 축 이동 시 Elev. Z 축과 충돌하는지 체크
                     if (MC_Func.MC_GetEncPos((int)nAxis.EZ) >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                     {
-                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!");
+                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                     else if (waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.EZ] >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                     {
-                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!");
+                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                     else
                     {
+                        //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                        waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                        waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                         MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)nAxis.X], lfVelocity, lfAccDec, lfAccDec);
                         MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.Y, lfTargetPos_Y, lfVelocity, lfAccDec, lfAccDec);
 
@@ -2545,6 +2734,15 @@ namespace CWA150SA_Onsemi300
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
@@ -2688,14 +2886,18 @@ namespace CWA150SA_Onsemi300
                     //  Vision XY 축 이동 시 Elev. Z 축과 충돌하는지 체크
                     if (MC_Func.MC_GetEncPos((int)nAxis.EZ) >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                     {
-                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!");
+                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                     else if (waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.EZ] >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                     {
-                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!");
+                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                     else
                     {
+                        //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                        waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                        waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                         MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)nAxis.X], lfVelocity, lfAccDec, lfAccDec);
                         MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.Y, lfTargetPos_Y, lfVelocity, lfAccDec, lfAccDec);
 
@@ -2748,6 +2950,15 @@ namespace CWA150SA_Onsemi300
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
@@ -2892,14 +3103,18 @@ namespace CWA150SA_Onsemi300
                     //  Vision XY 축 이동 시 Elev. Z 축과 충돌하는지 체크
                     if (MC_Func.MC_GetEncPos((int)nAxis.EZ) >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                     {
-                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!");
+                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                     else if (waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.EZ] >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                     {
-                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!");
+                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                     else
                     {
+                        //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                        waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                        waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                         MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam2.dTarget[(int)nAxis.X], lfVelocity, lfAccDec, lfAccDec);
                         MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.Y, lfTargetPos_Y, lfVelocity, lfAccDec, lfAccDec);
 
@@ -2952,6 +3167,15 @@ namespace CWA150SA_Onsemi300
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
@@ -3095,14 +3319,18 @@ namespace CWA150SA_Onsemi300
                     //  Vision XY 축 이동 시 Elev. Z 축과 충돌하는지 체크
                     if (MC_Func.MC_GetEncPos((int)nAxis.EZ) >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                     {
-                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!");
+                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                     else if (waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.EZ] >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                     {
-                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!");
+                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                     else
                     {
+                        //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                        waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                        waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                         MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, lfTargetPos_X, lfVelocity, lfAccDec, lfAccDec);
 
                         MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ,
@@ -3154,6 +3382,15 @@ namespace CWA150SA_Onsemi300
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
@@ -3297,14 +3534,18 @@ namespace CWA150SA_Onsemi300
                     //  Vision XY 축 이동 시 Elev. Z 축과 충돌하는지 체크
                     if (MC_Func.MC_GetEncPos((int)nAxis.EZ) >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                     {
-                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!");
+                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                     else if (waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.EZ] >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                     {
-                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!");
+                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                     else
                     {
+                        //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                        waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                        waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                         MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, lfTargetPos_X, lfVelocity, lfAccDec, lfAccDec);
 
                         MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ,
@@ -3356,6 +3597,15 @@ namespace CWA150SA_Onsemi300
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            //  카메라 연결 확인
+            if (!waferProbeAlign.Camera_Upper.Opened ||
+                !waferProbeAlign.Camera_Lower.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
@@ -3499,14 +3749,18 @@ namespace CWA150SA_Onsemi300
                     //  Vision XY 축 이동 시 Elev. Z 축과 충돌하는지 체크
                     if (MC_Func.MC_GetEncPos((int)nAxis.EZ) >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                     {
-                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!");
+                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌 위치에 있습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                     else if (waferProbeAlign.waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.EZ] >= waferProbeAlign.Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign)
                     {
-                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!");
+                        MessageBox.Show("Elev. Z 축이 Vision XY 축과 충돌하는 위치로 이동하려고 하였습니다.", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                     else
                     {
+                        //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                        waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                        waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                         MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, lfTargetPos_X, lfVelocity, lfAccDec, lfAccDec);
 
                         MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.EZ,
@@ -3681,6 +3935,10 @@ namespace CWA150SA_Onsemi300
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "ProbeCard 정렬 상태를 확인하시겠습니까?"))
                     return;
 
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                 waferProbeAlign.m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign.WaferProbeAlign_Step.Start;
                 waferProbeAlign.timer_MainWork.Enabled = true;
             }
@@ -3827,6 +4085,10 @@ namespace CWA150SA_Onsemi300
                 var mb = new MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Wafer 정렬을 시작하시겠습니까?"))
                     return;
+
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
 
                 waferProbeAlign.m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign.WaferProbeAlign_Step.Start;
                 waferProbeAlign.timer_MainWork.Enabled = true;
@@ -4013,6 +4275,10 @@ namespace CWA150SA_Onsemi300
                 var mb = new MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Wafer - ProbeCard 얼라인 에러 검사를 시작하시겠습니까?"))
                     return;
+
+                //  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
 
                 waferProbeAlign.m_nWaferProbeAlign_ErrorCheck_Step = (int)WaferProbeAlign.WaferProbeAlignErrorCheck_Step.Start;
                 waferProbeAlign.timer_SubWork.Enabled = true;

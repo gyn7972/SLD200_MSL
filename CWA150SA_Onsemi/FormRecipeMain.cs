@@ -309,6 +309,8 @@ namespace CWA150SA_Onsemi300
                         waferProbeAlign.AlignmentErrorCheck_MarkPosition[nPos, nSide].Y = 0.0;
                     }
                 }
+
+                waferProbeAlign.m_bCalibrationMode_PosData_Reload = true;
             }
             else
             {

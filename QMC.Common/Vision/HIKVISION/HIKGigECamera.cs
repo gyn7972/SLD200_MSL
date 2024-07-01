@@ -125,7 +125,7 @@ namespace QMC.Common.Vision.HIKVISION
             }
             else
             {
-                MessageBox.Show("카메라 연결 실패");
+                MessageBox.Show("카메라 연결 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 ret = -1;
             }
 
@@ -184,7 +184,7 @@ namespace QMC.Common.Vision.HIKVISION
                 }
                 else if (strSerialNumber == "")
                 {
-                    MessageBox.Show(String.Format("Check SerialNumber, Current = {0}", this.SerialNumber));
+                    MessageBox.Show(String.Format("Check SerialNumber, Current = {0}", this.SerialNumber), "Information!!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 devices.Add(deviceInformation);
             }

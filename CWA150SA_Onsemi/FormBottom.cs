@@ -64,7 +64,7 @@ namespace CWA150SA_Onsemi300
             Configuration = new FormBaseConfiguration();
             m_formLogIn = new FormLogIn();
             m_formTop = new FormTop();
-            m_Monitoring_CWA150SA = new Monitoring_CWA150SA(); 
+            //m_Monitoring_CWA150SA = new Monitoring_CWA150SA(); 
             InitializeComponent();
             FlowPanelBottom();
             FlowControPanelBottom();
@@ -329,6 +329,11 @@ namespace CWA150SA_Onsemi300
 
                     Equipment.MachineStop_byUser = true;                    //  테스트 : Stop 버튼을 누를 때, 얼라인 마크 검출하던 Thread 도 종료시키기 위해 "true" 로 만들어 줌.
 
+                    ////  안전센서로 인한 Stop 인지 확인하는 Flag 초기화
+                    Equipment.AreaSensorDetectFlag_Reset = true;
+                    //waferProbeAlign.m_bInManualMoving_SafetySensor_Detected = false;
+                    //waferProbeAlign.m_bInCycleMoving_SafetySensor_Detected = false;
+
                     //  Stop
                     Equipment.Stop();
                 }
@@ -464,6 +469,8 @@ namespace CWA150SA_Onsemi300
             Equipment.User_Mode = null;
             Equipment.User_Name = null;
             Equipment.User_LogOut_1time = true;
+            Equipment.User_AdminMode = false;
+            Equipment.User_QMC_Engineer = false;
 
             if (LogOutClick != null)
                 LogOutClick();

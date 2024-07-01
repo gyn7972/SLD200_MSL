@@ -91,7 +91,7 @@ namespace CWA150SA_Onsemi300
                     }
                     else
                     {
-                        MessageBox.Show("관리자 모드가 아닙니다.", "Information!!");
+                        MessageBox.Show("관리자 모드가 아닙니다.", "Information!!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     break;
 
