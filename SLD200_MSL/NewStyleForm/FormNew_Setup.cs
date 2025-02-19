@@ -90,7 +90,7 @@ namespace SLD200_MSL
 
             this.VisibleChanged += FormNew_Setup_VisibleChanged;
 
-            Axis_Parameter_Load();
+            Axis_Parameter_Apply();
 
             //  Status 타이머
             timer_Status = new System.Windows.Forms.Timer();
@@ -218,7 +218,7 @@ namespace SLD200_MSL
             return m_bRet;
         }
 
-        public bool Axis_Parameter_Load()
+        public bool Axis_Parameter_Apply()
         {
             string strTemp = "";
 
@@ -232,102 +232,6 @@ namespace SLD200_MSL
             {
                 MessageBox.Show("Axis Setting 파일이 없습니다.\r\n\r\n[Default 값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 //return false;
-            }
-
-            //  Axis Parameter 로드
-            for (int i = 0; i < Equipment.Max_Axis; i++)
-            {
-                strTemp = string.Format("Axis_{0}_Limit", i);
-                //  Limit Sensor 설치 여부 (Not Installed, Installed)
-                NativeMethods.GetPrivateProfileString(strTemp, "Install", "1", temp, 255, strFIle);
-                Equipment.stAxisParam[i].LimitSensor_Installed = Convert.ToInt16(temp.ToString());                
-                //  Limit Sensor 동작 레벨 (Low, High)
-                NativeMethods.GetPrivateProfileString(strTemp, "ActiveLevel", "1", temp, 255, strFIle);
-                Equipment.stAxisParam[i].LimitSensor_ActiveLevel = Convert.ToInt16(temp.ToString());
-
-                strTemp = string.Format("Axis_{0}_Home", i);
-                //  Home Sensor 형태 (Home, -Limit, +Limit)
-                NativeMethods.GetPrivateProfileString(strTemp, "SensingType", "1", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Sensing = Convert.ToInt16(temp.ToString());                
-                //  Home Sensor 설치 여부 (Not Installed, Installed)
-                NativeMethods.GetPrivateProfileString(strTemp, "Install", "0", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Installed = Convert.ToInt16(temp.ToString());                
-                //  Home Sensor 동작 레벨 (Low, High)
-                NativeMethods.GetPrivateProfileString(strTemp, "ActiveLevel", "1", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_ActiveLevel = Convert.ToInt16(temp.ToString());                
-                //  Home Sensor 동작 방향 (Negative, Positive)
-                NativeMethods.GetPrivateProfileString(strTemp, "Direction", "0", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Direction = Convert.ToInt16(temp.ToString());                
-                //  Home 1st Speed
-                NativeMethods.GetPrivateProfileString(strTemp, "1stSpeed", "30", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Speed_1st = Convert.ToDouble(temp.ToString());
-                //  Home 2nd Speed
-                NativeMethods.GetPrivateProfileString(strTemp, "2ndSpeed", "10", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Speed_2nd = Convert.ToDouble(temp.ToString());
-                //  Home 3rd Speed
-                NativeMethods.GetPrivateProfileString(strTemp, "3rdSpeed", "5", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Speed_3rd = Convert.ToDouble(temp.ToString());
-                //  Home Last Speed
-                NativeMethods.GetPrivateProfileString(strTemp, "LastSpeed", "1", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Speed_Last = Convert.ToDouble(temp.ToString());
-                //  Home Offset
-                NativeMethods.GetPrivateProfileString(strTemp, "Offset", "0", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Offset = Convert.ToDouble(temp.ToString());
-
-                strTemp = string.Format("Axis_{0}_Common", i);
-                //  Unit Per Pulse (Unit)
-                NativeMethods.GetPrivateProfileString(strTemp, "Unit", "1.0", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_UnitPerPulse_Unit = Convert.ToDouble(temp.ToString());
-                //  Unit Per Pulse (Pulse)
-                NativeMethods.GetPrivateProfileString(strTemp, "Pulse", "1000", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_UnitPerPulse_Pulse = Convert.ToDouble(temp.ToString());
-                //  Acceleration Min
-                NativeMethods.GetPrivateProfileString(strTemp, "MinAcc", "10", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Acceleration_Min = Convert.ToDouble(temp.ToString());
-                //  Acceleration Max
-                NativeMethods.GetPrivateProfileString(strTemp, "MaxAcc", "10000", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Acceleration_Max = Convert.ToDouble(temp.ToString());
-                //  Acceleration
-                NativeMethods.GetPrivateProfileString(strTemp, "Acceleration", "1000", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Acceleration = Convert.ToDouble(temp.ToString());
-                //  Speed Min
-                NativeMethods.GetPrivateProfileString(strTemp, "MinSpeed", "10", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Speed_Min = Convert.ToDouble(temp.ToString());
-                //  Speed Max
-                NativeMethods.GetPrivateProfileString(strTemp, "MaxSpeed", "1000", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Speed_Max = Convert.ToDouble(temp.ToString());
-                //  Move Speed
-                NativeMethods.GetPrivateProfileString(strTemp, "MoveSpeed", "100", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_MoveSpeed = Convert.ToDouble(temp.ToString());
-                //  Position Min
-                NativeMethods.GetPrivateProfileString(strTemp, "MinPos", "-1.0", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Position_Min = Convert.ToDouble(temp.ToString());
-                //  Position Max
-                NativeMethods.GetPrivateProfileString(strTemp, "MaxPos", "500.0", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Position_Max = Convert.ToDouble(temp.ToString());
-                //  Settle Delay Time
-                NativeMethods.GetPrivateProfileString(strTemp, "SettleDelay", "30", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Settle_Delay = Convert.ToDouble(temp.ToString());
-
-                strTemp = string.Format("Axis_{0}_Jog", i);
-                //  Jog Speed, Fine
-                NativeMethods.GetPrivateProfileString(strTemp, "FineSpeed", "10", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Jog_Speed_Fine = Convert.ToDouble(temp.ToString());
-                //  Jog Speed, Coarse
-                NativeMethods.GetPrivateProfileString(strTemp, "CoarseSpeed", "100", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Jog_Speed_Coarse = Convert.ToDouble(temp.ToString());
-                //  Jog StepSize, Min
-                NativeMethods.GetPrivateProfileString(strTemp, "MinStepSize", "0.0001", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Jog_StepSize_Min = Convert.ToDouble(temp.ToString());
-                //  Jog StepSize, Max
-                NativeMethods.GetPrivateProfileString(strTemp, "MaxStepSize", "500.0", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Jog_StepSize_Max = Convert.ToDouble(temp.ToString());
-                //  Jog StepSize, Fine
-                NativeMethods.GetPrivateProfileString(strTemp, "FineStepSize", "0.001", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Jog_StepSize_Fine = Convert.ToDouble(temp.ToString());
-                //  Jog StepSize, Coarse
-                NativeMethods.GetPrivateProfileString(strTemp, "CoarseStepSize", "0.1", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Jog_StepSize_Coarse = Convert.ToDouble(temp.ToString());
             }
 
             //  축 파라미터 파일을 로드 하면 맨 첫번째 축 데이터를 표시하도록 한다.

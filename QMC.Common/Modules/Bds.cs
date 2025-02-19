@@ -21,6 +21,7 @@ using SerialCommLaserPowerMeter2;
 using System.IO.Ports;
 using MessageBox = System.Windows.Forms.MessageBox;
 using static QMC.Common.Modules.Vision;
+using static QMC.Common.Modules.WorkStage;
 
 
 namespace QMC.Common.Modules
@@ -87,7 +88,7 @@ namespace QMC.Common.Modules
         #endregion
 
 
-        #region NewForm 을 위한 Teching Position List 변수
+        #region NewForm 을 위한 Teaching Position List 변수
 
         /// <summary>
         /// Config 에서 Teching Position List 가 추가되거나 삭제 되면 여기도 해줘야 함. (이 항목이 Position 배열의 Index 가 되기 때문에)
@@ -109,6 +110,14 @@ namespace QMC.Common.Modules
         }
         public static stBDSAxesPos[] stBDSTeachingPos = new stBDSAxesPos[System.Enum.GetValues(typeof(BDS_TeachingPosList)).Length];
 
+        public struct stBDSMoveProperties
+        {
+            public int Fine_Accel;                          //  Fine Acceleration
+            public int Fine_SettleDelay;                    //  Fine Settle Delay
+            public int Coarse_Accel;                        //  Coarse Acceleration
+            public int Coarse_SettleDelay;                  //  Coarse Settle Delay
+        }
+        public static stBDSMoveProperties[] stBDSPosMoveProperties = new stBDSMoveProperties[System.Enum.GetValues(typeof(BDS_TeachingPosList)).Length];
 
         #endregion
 
@@ -203,202 +212,18 @@ namespace QMC.Common.Modules
 
         #endregion
 
-        #region Single Action (Stacker, Module Pickup Waiting Pos)
+        #region Single Action (Mask Pos)
 
-        public int m_nStacker_ModulePickupWaitingPos_Step { set; get; }             //  Stacker, Module Pickup Waiting Position Step
-
-        public enum StackerModulePickupWaitingPos_Step
+        public int m_nLaserMask_Move_Step { set; get; }                         //  Laser Mask Move Step
+        public enum LaserMask_Move_Step
         {
             None = 0,
-
             Start,                                                          //  시작
 
+            LaserMask_Move_Condition_Check,                                 //  Laser Mask 이동 조건 체크 (Drilling Cycle : None, Laser Shutter Close, Laser Off [필수 아님]) 
 
-            Process_Condition_Check,                                        //  동작 조건 체크 (Module Exist Sensor On Check, Transfer Cycle : None)
-
-
-            //  Full Sensor 감지 상태일 경우 (Off 될 때 까지 내림 -> Off 되면 Stop -> 느리게 Up -> On 되면 Stop -> 느리게 Down -> Off 되면 Stop -> 더 느리게 Up -> On 되면 Stop -> 완료)
-            StackerZ_MoveType1_FastDown,                                    //  Stacker Z 축, 빠르게 내림 (최 하단까지)
-            StackerZ_MoveType1_FastDown_DoneCheck,                          //  Stacker Z 축, 빠르게 내림, 이동 완료 확인
-
-            StackerZ_MoveType1_SlowUp,                                      //  Stacker Z 축, 느리게 올림 (최 상단까지)
-            StackerZ_MoveType1_SlowUp_DoneCheck,                            //  Stacker Z 축, 느리게 올림, 이동 완료 확인
-
-            StackerZ_MoveType1_Slow2Down,                                   //  Stacker Z 축, 더 느리게 내림 (최 하단까지)
-            StackerZ_MoveType1_Slow2Down_DoneCheck,                         //  Stacker Z 축, 더 느리게 내림, 이동 완료 확인
-
-            StackerZ_MoveType1_Slow3Up,                                     //  Stacker Z 축, 더더 느리게 올림 (최 상단까지)
-            StackerZ_MoveType1_Slow3Up_DoneCheck,                           //  Stacker Z 축, 더더 느리게 올림, 이동 완료 확인
-
-
-            //  Full Sensor 감지되지 않는 상태일 경우 (Up -> On 되면 Stop -> 느리게 Down -> Off 되면 Stop -> 더 느리게 Up -> On 되면 Stop -> 완료)
-            StackerZ_MoveType2_FastUp,                                      //  Stacker Z 축, 빠르게 올림 (최 상단까지)
-            StackerZ_MoveType2_FastUp_DoneCheck,                            //  Stacker Z 축, 빠르게 올림, 이동 완료 확인
-
-            StackerZ_MoveType2_Slow2Down,                                   //  Stacker Z 축, 더 느리게 내림 (최 하단까지)
-            StackerZ_MoveType2_Slow2Down_DoneCheck,                         //  Stacker Z 축, 더 느리게 내림, 이동 완료 확인
-
-            StackerZ_MoveType2_Slow3Up,                                     //  Stacker Z 축, 더더 느리게 올림 (최 상단까지)
-            StackerZ_MoveType2_Slow3Up_DoneCheck,                           //  Stacker Z 축, 더더 느리게 올림, 이동 완료 확인
-
-
-            Complete                                                        //  완료
-        }
-        #endregion
-
-
-        #region Single Action (Loader Transfer)
-
-        public int m_nLoader_Transfer_Step { set; get; }                                   //  Transfer Step
-
-        public enum Loader_Transfer_Step
-        {
-            None = 0,
-
-            Start,                                                          //  시작
-
-
-            Process_Type_Check,                                             //  동작 타입 체크 (Stacker 에서 Module PickUp, M-Aligner 에서 Module PickUp, Work Stage 로 Module PutDown, M-Aligner 로 Module PutDown)
-
-
-            /// <summary>
-            /// Stacker 에서 Module Pick Up - 시작
-            /// </summary>
-            Stacker_ModulePickup_Condition_Check,                           //  Stacker 에서 Module Pick Up 조건 체크 (Stacker Module Exist Sensor On, Stacker Module Full Sensor On, Transfer Picker Vacuum Off Check, Stacker Cycle : None)
-
-            StackerPickUp_TransferZ_Move_ReadyPos,                          //  Transfer Z 축, 대기 위치로 이동
-            StackerPickUp_TransferZ_Move_ReadyPos_DoneCheck,                //  Transfer Z 축, 대기 위치로 이동 완료 확인
-
-            StackerPickUp_TransferX_Move_StackerPos,                        //  Transfer X 축, Stacker 위치로 이동
-            StackerPickUp_TransferX_Move_StackerPos_DoneCheck,              //  Transfer X 축, Stacker 위치로 이동 완료 확인
-
-            StackerPickUp_TransferZ_Move_PickUpPos_1stStep,                 //  Transfer Z 축, Module Pick Up 위치로 이동 (1단계, 최종 위치에서 위로 10 mm)
-            StackerPickUp_TransferZ_Move_PickUpPos_1stStep_DoneCheck,       //  Transfer Z 축, Module Pick Up 위치로 이동 완료 확인
-
-            StackerPickUp_TransferZ_Move_PickUpPos_2ndStep,                 //  Transfer Z 축, Module Pick Up 위치로 이동 (2단계, 최종 위치)
-            StackerPickUp_TransferZ_Move_PickUpPos_2ndStep_DoneCheck,       //  Transfer Z 축, Module Pick Up 위치로 이동 완료 확인
-            
-            StackerPickUp_Transfer_PickerVacuum_On,                         //  Transfer, Module Picker Vacuum On
-            StackerPickUp_Transfer_PickerVacuum_OnCheck,                    //  Transfer, Module Picker Vacuum On 확인
-
-            StackerPickUp_TransferZ_Move_ReadyPos2_1stStep,                 //  Transfer Z 축, 대기 위치로 이동 (1단계, 현재 위치에서 위로 10 mm)
-            StackerPickUp_TransferZ_Move_ReadyPos2_1stStep_DoneCheck,       //  Transfer Z 축, 대기 위치로 이동 완료 확인
-
-            StackerPickUp_TransferZ_Move_ReadyPos2_2ndStep,                 //  Transfer Z 축, 대기 위치로 이동 (2단계, 최종 위치)
-            StackerPickUp_TransferZ_Move_ReadyPos2_2ndStep_DoneCheck,       //  Transfer Z 축, 대기 위치로 이동 완료 확인
-            /// <summary>
-            /// Stacker 에서 Module Pick Up - 완료
-            /// </summary>
-            /// 
-
-
-            /// <summary>
-            /// M-Aligner 에서 Module Pick Up - 시작
-            /// </summary>
-            MAligner_ModulePickup_Condition_Check,                          //  M-Aligner 에서 Module Pick Up 조건 체크 (M-Align 완료, M-Aligner Vacuum On Check, Transfer Cycle : None, M-Align Cycle : None)
-
-            MAligner_MAlign_NotComplete,                                    //  M-Aligner 에서 Align 이 완료되지 않은 상태일 경우 (M-Align Cyc. Call)
-            MAligner_MAlign_Start,                                          //  M-Aligner 에서 Align 시작
-            MAligner_MAlign_CompleteCheck,                                  //  M-Aligner 에서 Align 완료 확인 (M-Aligner Vacuum 이 Off 이면 Pick Up 하지 않음 --> 자재가 없다고 판단)
-
-            MAlignerPickUp_TransferZ_Move_ReadyPos,                         //  Transfer Z 축, 대기 위치로 이동
-            MAlignerPickUp_TransferZ_Move_ReadyPos_DoneCheck,               //  Transfer Z 축, 대기 위치로 이동 완료 확인
-
-            MAlignerPickUp_TransferX_Move_MAlignerPos,                      //  Transfer X 축, M-Aligner 위치로 이동
-            MAlignerPickUp_TransferX_Move_MAlignerPos_DoneCheck,            //  Transfer X 축, M-Aligner 위치로 이동 완료 확인
-
-            MAlignerPickUp_TransferZ_Move_PickUpPos_1stStep,                //  Transfer Z 축, Module Pick Up 위치로 이동 (1단계, 최종 위치에서 위로 10 mm)
-            MAlignerPickUp_TransferZ_Move_PickUpPos_1stStep_DoneCheck,      //  Transfer Z 축, Module Pick Up 위치로 이동 완료 확인
-
-            MAlignerPickUp_TransferZ_Move_PickUpPos_2ndStep,                //  Transfer Z 축, Module Pick Up 위치로 이동 (2단계, 최종 위치)
-            MAlignerPickUp_TransferZ_Move_PickUpPos_2ndStep_DoneCheck,      //  Transfer Z 축, Module Pick Up 위치로 이동 완료 확인
-
-            MAlignerPickUp_Transfer_PickerVacuum_On,                        //  Transfer, Module Picker Vacuum On
-            MAlignerPickUp_Transfer_PickerVacuum_OnCheck,                   //  Transfer, Module Picker Vacuum On 확인
-            MAlignerPickUp_MAligner_Vacuum_Off,                             //  M-Aligner, Vacuum Off
-
-                MAlignerPickUp_MAlignerXY_MoveType1_Widely,                 //  M-Aligner XY 축, Module 을 들어올리기 위해 열어주는 위치로 이동 (1mm 정도) - Type #1 or #2 둘 중에 하나만 사용
-                MAlignerPickUp_MAlignerXY_MoveType1_Widely_DoneCheck,       //  M-Aligner XY 축, Module 을 들어올리기 위해 열어주는 위치로 이동 완료 확인
-
-            MAlignerPickUp_TransferZ_Move_ReadyPos2_1stStep,                //  Transfer Z 축, 대기 위치로 이동 (1단계, 현재 위치에서 Aligner Pusher 를 벗어나는 높이까지)
-            MAlignerPickUp_TransferZ_Move_ReadyPos2_1stStep_DoneCheck,      //  Transfer Z 축, 대기 위치로 이동 완료 확인 (여기서 Transfer Picker 의 Vacuum On 과 Aligner 의 Vacuum Off 를 동시에 확인)
-
-                MAlignerPickUp_MAlignerXY_MoveType2_Widely,                 //  M-Aligner XY 축, Module 을 들어올린 후 열어주는 위치로 이동 (1mm 정도) - Type #2 or #1 둘 중에 하나만 사용
-                MAlignerPickUp_MAlignerXY_MoveType2_Widely_DoneCheck,       //  M-Aligner XY 축, Module 을 들어올린 후 열어주는 위치로 이동 완료 확인
-
-            MAlignerPickUp_TransferZ_Move_ReadyPos2_2ndStep,                //  Transfer Z 축, 대기 위치로 이동 (2단계, 최종 위치)
-            MAlignerPickUp_TransferZ_Move_ReadyPos2_2ndStep_DoneCheck,      //  Transfer Z 축, 대기 위치로 이동 완료 확인
-            /// <summary>
-            /// M-Aligner 에서 Module Pick Up - 완료
-            /// </summary>
-
-
-            /// <summary>
-            /// Module 을 Work Stage 에 Put Down - 시작
-            /// </summary>
-            WorkStage_ModulePutdown_Condition_Check,                        //  Work Stage 에 Module Put Down 조건 체크 (Transfer Picker Vacuum On Check, Stage Vacuum Off Check, Drilling Cycle : None)
-
-            WorkStagePutDown_TransferZ_Move_ReadyPos,                       //  Transfer Z 축, 대기 위치로 이동
-            WorkStagePutDown_TransferZ_Move_ReadyPos_DoneCheck,             //  Transfer Z 축, 대기 위치로 이동 완료 확인
-
-            WorkStagePutDown_WorkStageCycle_LoadingPos_Start,               //  Work Stage, Loading 위치로 이동 Cycle 시작
-            WorkStagePutDown_TransferX_Move_LoadingPos,                     //  Transfer X 축, Work Stage Loading 위치로 이동
-            WorkStagePutDown_TransferX_Move_LoadingPos_DoneCheck,           //  Transfer X 축, Work Stage Loading 위치로 이동 완료 확인 (Work Stage Loading 위치로 이동 Cycle 완료 확인 후, Transfer X 이동 완료 확인)
-
-            WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep,             //  Transfer Z 축, Module Put Down 위치로 이동 (1단계, 최종 위치에서 위로 10 mm)
-            WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep_DoneCheck,   //  Transfer Z 축, Module Put Down 위치로 이동 완료 확인
-
-            WorkStagePutDown_TransferZ_Move_PutDownPos_2ndStep,             //  Transfer Z 축, Module Put Down 위치로 이동 (2단계, 최종 위치)
-            WorkStagePutDown_TransferZ_Move_PutDownPos_2ndStep_DoneCheck,   //  Transfer Z 축, Module Put Down 위치로 이동 완료 확인
-
-            WorkStagePutDown_WorkStage_Vacuum_On,                           //  Work Stage, Vacuum On
-            WorkStagePutDown_Transfer_PickerVacuum_Off,                     //  Transfer, Module Picker Vacuum Off (and Blow On)
-            WorkStagePutDown_Transfer_PickerVacuum_OffCheck,                //  Transfer, Module Picker Vacuum Off 확인 (and Work Stage Vacuum On 확인)
-
-            WorkStagePutDown_TransferZ_Move_ReadyPos2_1stStep,              //  Transfer Z 축, 대기 위치로 이동 (1단계, 현재 위치에서 위로 10 mm)
-            WorkStagePutDown_TransferZ_Move_ReadyPos2_1stStep_DoneCheck,    //  Transfer Z 축, 대기 위치로 이동 완료 확인 (then Picker Blow Off)
-
-            WorkStagePutDown_TransferZ_Move_ReadyPos2_2ndStep,              //  Transfer Z 축, 대기 위치로 이동 (2단계, 최종 위치)
-            WorkStagePutDown_TransferZ_Move_ReadyPos2_2ndStep_DoneCheck,    //  Transfer Z 축, 대기 위치로 이동 완료 확인
-            /// <summary>
-            /// Module 을 Work Stage 에 Put Down - 완료
-            /// </summary>
-
-
-            /// <summary>
-            /// Module 을 M-Aligner 에 Put Down - 시작
-            /// </summary>
-            MAligner_ModulePutdown_Condition_Check,                         //  M-Aligner 에 Module Put Down 조건 체크 (Transfer Picker Vacuum On Check, M-Aligner Vacuum Off Check, M-Align Cycle : None)
-
-            MAlignerPutDown_TransferZ_Move_ReadyPos,                        //  Transfer Z 축, 대기 위치로 이동
-            MAlignerPutDown_TransferZ_Move_ReadyPos_DoneCheck,              //  Transfer Z 축, 대기 위치로 이동 완료 확인
-
-            MAlignerPutDown_MAlignerXY_Move_Widely,                         //  M-Aligner XY 축, Module 을 내려놓을 수 있을만큼 넓히기
-            MAlignerPutDown_TransferX_Move_MAlignPos,                       //  Transfer X 축, M-Aligner Put Down 위치로 이동
-            MAlignerPutDown_TransferX_Move_MAlignPos_DoneCheck,             //  Transfer X 축, M-Aligner Put Down 위치로 이동 완료 확인 (M-Aligner XY 축이 넓어진 후 이동 완료 확인)
-
-            MAlignerPutDown_TransferZ_Move_PutDownPos_1stStep,              //  Transfer Z 축, Module Put Down 위치로 이동 (1단계, 최종 위치에서 위로 10 mm)
-            MAlignerPutDown_TransferZ_Move_PutDownPos_1stStep_DoneCheck,    //  Transfer Z 축, Module Put Down 위치로 이동 완료 확인
-
-            MAlignerPutDown_TransferZ_Move_PutDownPos_2ndStep,              //  Transfer Z 축, Module Put Down 위치로 이동 (2단계, 최종 위치)
-            MAlignerPutDown_TransferZ_Move_PutDownPos_2ndStep_DoneCheck,    //  Transfer Z 축, Module Put Down 위치로 이동 완료 확인
-
-            MAlignerPutDown_MAligner_Vacuum_On,                             //  M-Aligner, Vacuum On
-            MAlignerPutDown_Transfer_PickerVacuum_Off,                      //  Transfer, Module Picker Vacuum Off (and Blow On)
-            MAlignerPutDown_Transfer_PickerVacuum_OffCheck,                 //  Transfer, Module Picker Vacuum Off 확인 (and M-Aligner Vacuum On 확인)
-
-            MAlignerPutDown_TransferZ_Move_ReadyPos2_1stStep,               //  Transfer Z 축, 대기 위치로 이동 (1단계, 현재 위치에서 위로 10 mm)
-            MAlignerPutDown_TransferZ_Move_ReadyPos2_1stStep_DoneCheck,     //  Transfer Z 축, 대기 위치로 이동 완료 확인 (then Picker Blow Off)
-
-            MAlignerPutDown_TransferZ_Move_ReadyPos2_2ndStep,               //  Transfer Z 축, 대기 위치로 이동 (2단계, 최종 위치)
-            MAlignerPutDown_TransferZ_Move_ReadyPos2_2ndStep_DoneCheck,     //  Transfer Z 축, 대기 위치로 이동 완료 확인
-
-            MAlignerPutDown_MAlign_Start,                                   //  M-Aligner 에서 Align 시작
-            MAlignerPutDown_MAlign_CompleteCheck,                           //  M-Aligner 에서 Align 완료 확인 (M-Aligner Vacuum 이 Off 이면 Pick Up 하지 않음 --> 자재가 없다고 판단)
-            /// <summary>
-            /// Module 을 M-Aligner 에 Put Down - 완료
-            /// </summary>
-
+            MaskY_Move_MaskPos,                                             //  이동해야 하는 Mask 위치까지 이동
+            MaskY_Move_MaskPos_DoneCheck,                                   //  이동해야 하는 Mask 위치까지 이동 완료 체크
 
             Complete                                                        //  완료
         }
@@ -420,8 +245,7 @@ namespace QMC.Common.Modules
             //Cepheus_laser = new MyCepheusLaser();
 
             //m_nHomeStep = (int)Home_Step.None;
-            m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
-            m_nStacker_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
+            m_nLaserMask_Move_Step = (int)LaserMask_Move_Step.None;
 
             m_bInManualMoving_SafetySensor_Detected = false;
             m_bInCycleMoving_SafetySensor_Detected = false;
@@ -453,7 +277,14 @@ namespace QMC.Common.Modules
             for (int i = 0; i < System.Enum.GetValues(typeof(BDS_TeachingPosList)).Length; i++)
             {
                 stBDSTeachingPos[i].Mask_Y = 0;
+
+                stBDSPosMoveProperties[i].Fine_Accel = 0;
+                stBDSPosMoveProperties[i].Fine_SettleDelay = 0;
+                stBDSPosMoveProperties[i].Coarse_Accel = 0;
+                stBDSPosMoveProperties[i].Coarse_SettleDelay = 0;
             }
+
+            Teaching_Position_Load();
         }                                                   
         #endregion
 
@@ -589,6 +420,143 @@ namespace QMC.Common.Modules
             //    ACS_Motion.CloseComm();
             //}
         }
+        #endregion
+
+
+        #region Teaching Position List Save / Load
+
+        public bool Teaching_Position_Load()
+        {
+            string strTemp = "";
+
+            bool m_bRet = true;
+            string strFIle = "";
+            StringBuilder temp = new StringBuilder(255);
+
+            strFIle = ConfigManager.GetTeachingDataPath() + "\\BDS_TeachingPosition.ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                MessageBox.Show("BDS Teaching Position 파일이 없습니다.\r\n\r\n[Default 값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return false;
+            }
+
+            //  Position 데이터 로드
+            for (int i = 0; i < System.Enum.GetValues(typeof(BDS_TeachingPosList)).Length; i++)
+            {
+                strTemp = string.Format("PosIndex_{0}", i);
+
+                //  Mask Y
+                NativeMethods.GetPrivateProfileString(strTemp, "MaskY", "0", temp, 255, strFIle);
+                stBDSTeachingPos[i].Mask_Y = Convert.ToDouble(temp.ToString());
+            }
+
+            return m_bRet;
+        }
+
+        public void Teaching_Position_Save()
+        {
+            string strTemp = "";
+
+            string strFIle = "";
+            strFIle = ConfigManager.GetTeachingDataPath() + "\\BDS_TeachingPosition.ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                File.Create(strFIle);
+
+                MessageBox.Show("BDS Teaching Position 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //  Position Parameter 저장
+            for (int i = 0; i < System.Enum.GetValues(typeof(BDS_TeachingPosList)).Length; i++)
+            {
+                strTemp = string.Format("PosIndex_{0}", i);
+
+                //  Mask Y
+                NativeMethods.WritePrivateProfileString(strTemp, "MaskY", stBDSTeachingPos[i].Mask_Y.ToString(), strFIle);
+            }
+
+            MessageBox.Show("Teaching Position 을 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        #endregion
+
+
+        #region Teaching Position Move Properties Save / Load
+
+        public bool Move_Properties_Load()
+        {
+            string strTemp = "";
+
+            bool m_bRet = true;
+            string strFIle = "";
+            StringBuilder temp = new StringBuilder(255);
+
+            strFIle = ConfigManager.GetTeachingDataPath() + "\\BDS_MoveProperties.ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                MessageBox.Show("BDS Move Properties 파일이 없습니다.\r\n\r\n[Default 값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return false;
+            }
+
+            //  Position 데이터 로드
+            for (int i = 0; i < System.Enum.GetValues(typeof(BDS_TeachingPosList)).Length; i++)
+            {
+                strTemp = string.Format("PosIndex_{0}", i);
+
+                //  Fine Accel
+                NativeMethods.GetPrivateProfileString(strTemp, "Fine_Accel", "20", temp, 255, strFIle);
+                stBDSPosMoveProperties[i].Fine_Accel = Convert.ToInt16(temp.ToString());
+                //  Fine Settle Delay
+                NativeMethods.GetPrivateProfileString(strTemp, "Fine_SettleDelay", "200", temp, 255, strFIle);
+                stBDSPosMoveProperties[i].Fine_SettleDelay = Convert.ToInt16(temp.ToString());
+                //  Coarse Accel
+                NativeMethods.GetPrivateProfileString(strTemp, "Coarse_Accel", "200", temp, 255, strFIle);
+                stBDSPosMoveProperties[i].Coarse_Accel = Convert.ToInt16(temp.ToString());
+                //  Coarse Settle Delay
+                NativeMethods.GetPrivateProfileString(strTemp, "Coarse_SettleDelay", "20", temp, 255, strFIle);
+                stBDSPosMoveProperties[i].Coarse_SettleDelay = Convert.ToInt16(temp.ToString());
+            }
+
+            return m_bRet;
+        }
+
+        public void Move_Properties_Save()
+        {
+            string strTemp = "";
+
+            string strFIle = "";
+            strFIle = ConfigManager.GetTeachingDataPath() + "\\BDS_MoveProperties.ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                File.Create(strFIle);
+
+                MessageBox.Show("BDS Move Properties 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //  Position Parameter 저장
+            for (int i = 0; i < System.Enum.GetValues(typeof(BDS_TeachingPosList)).Length; i++)
+            {
+                strTemp = string.Format("PosIndex_{0}", i);
+
+                //  Fine Accel
+                NativeMethods.WritePrivateProfileString(strTemp, "Fine_Accel", stBDSPosMoveProperties[i].Fine_Accel.ToString(), strFIle);
+                //  Fine Settle Delay
+                NativeMethods.WritePrivateProfileString(strTemp, "Fine_SettleDelay", stBDSPosMoveProperties[i].Fine_SettleDelay.ToString(), strFIle);
+                //  Coarse Accel
+                NativeMethods.WritePrivateProfileString(strTemp, "Coarse_Accel", stBDSPosMoveProperties[i].Coarse_Accel.ToString(), strFIle);
+                //  Coarse Settle Delay
+                NativeMethods.WritePrivateProfileString(strTemp, "Coarse_SettleDelay", stBDSPosMoveProperties[i].Coarse_SettleDelay.ToString(), strFIle);
+            }
+
+            //MessageBox.Show("Move Properties 를 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
         #endregion
 
 

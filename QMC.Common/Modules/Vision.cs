@@ -285,7 +285,7 @@ namespace QMC.Common.Modules
 
 
 
-        #region NewForm 을 위한 Teching Position List 변수
+        #region NewForm 을 위한 Teaching Position List 변수
 
         /// <summary>
         /// Config 에서 Teching Position List 가 추가되거나 삭제 되면 여기도 해줘야 함. (이 항목이 Position 배열의 Index 가 되기 때문에)
@@ -305,6 +305,14 @@ namespace QMC.Common.Modules
         }
         public static stVisionAxesPos[] stVisionTeachingPos = new stVisionAxesPos[System.Enum.GetValues(typeof(Vision_TeachingPosList)).Length];
 
+        public struct stVisionMoveProperties
+        {
+            public int Fine_Accel;                          //  Fine Acceleration
+            public int Fine_SettleDelay;                    //  Fine Settle Delay
+            public int Coarse_Accel;                        //  Coarse Acceleration
+            public int Coarse_SettleDelay;                  //  Coarse Settle Delay
+        }
+        public static stVisionMoveProperties[] stVisionPosMoveProperties = new stVisionMoveProperties[System.Enum.GetValues(typeof(Vision_TeachingPosList)).Length];
 
         #endregion
 
@@ -606,7 +614,14 @@ namespace QMC.Common.Modules
             for (int i = 0; i < System.Enum.GetValues(typeof(Vision_TeachingPosList)).Length; i++)
             {
                 stVisionTeachingPos[i].Vision_Z = 0;
+
+                stVisionPosMoveProperties[i].Fine_Accel = 0;
+                stVisionPosMoveProperties[i].Fine_SettleDelay = 0;
+                stVisionPosMoveProperties[i].Coarse_Accel = 0;
+                stVisionPosMoveProperties[i].Coarse_SettleDelay = 0;
             }
+
+            Teaching_Position_Load();
         }                                                   
         #endregion
 
@@ -771,6 +786,145 @@ namespace QMC.Common.Modules
                 Camera_LowRes.Close();
             }
         }
+        #endregion
+
+
+        #region Teaching Position List Save / Load
+
+        public bool Teaching_Position_Load()
+        {
+            string strTemp = "";
+
+            bool m_bRet = true;
+            string strFIle = "";
+            StringBuilder temp = new StringBuilder(255);
+
+            strFIle = ConfigManager.GetTeachingDataPath() + "\\Vision_TeachingPosition.ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                MessageBox.Show("Vision Teaching Position 파일이 없습니다.\r\n\r\n[Default 값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return false;
+            }
+
+            //  Position 데이터 로드
+            for (int i = 0; i < System.Enum.GetValues(typeof(Vision_TeachingPosList)).Length; i++)
+            {
+                strTemp = string.Format("PosIndex_{0}", i);
+
+                //  Vision Z
+                NativeMethods.GetPrivateProfileString(strTemp, "VisionZ", "0", temp, 255, strFIle);
+                stVisionTeachingPos[i].Vision_Z = Convert.ToDouble(temp.ToString());
+            }
+
+            return m_bRet;
+        }
+
+        public void Teaching_Position_Save()
+        {
+            string strTemp = "";
+
+            string strFIle = "";
+            strFIle = ConfigManager.GetTeachingDataPath() + "\\Vision_TeachingPosition.ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                File.Create(strFIle);
+
+                MessageBox.Show("Vision Teaching Position 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //  Position Parameter 저장
+            for (int i = 0; i < System.Enum.GetValues(typeof(Vision_TeachingPosList)).Length; i++)
+            {
+                strTemp = string.Format("PosIndex_{0}", i);
+
+                //  Vision Z
+                NativeMethods.WritePrivateProfileString(strTemp, "VisionZ", stVisionTeachingPos[i].Vision_Z.ToString(), strFIle);
+            }
+
+            MessageBox.Show("Teaching Position 을 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        #endregion
+
+
+        #region Teaching Position Move Properties Save / Load
+
+        public bool Move_Properties_Load()
+        {
+            string strTemp = "";
+
+            bool m_bRet = true;
+            string strFIle = "";
+            StringBuilder temp = new StringBuilder(255);
+
+            strFIle = ConfigManager.GetTeachingDataPath() + "\\Vision_TeachingPosition.ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                MessageBox.Show("Vision Move Properties 파일이 없습니다.\r\n\r\n[Default 값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return false;
+            }
+
+            //  Position 데이터 로드
+            for (int i = 0; i < System.Enum.GetValues(typeof(Vision_TeachingPosList)).Length; i++)
+            {
+                strTemp = string.Format("PosIndex_{0}", i);
+
+                //  Fine Accel
+                NativeMethods.GetPrivateProfileString(strTemp, "Fine_Accel", "20", temp, 255, strFIle);
+                stVisionPosMoveProperties[i].Fine_Accel = Convert.ToInt16(temp.ToString());
+                //  Fine Settle Delay
+                NativeMethods.GetPrivateProfileString(strTemp, "Fine_SettleDelay", "200", temp, 255, strFIle);
+                stVisionPosMoveProperties[i].Fine_SettleDelay = Convert.ToInt16(temp.ToString());
+                //  Coarse Accel
+                NativeMethods.GetPrivateProfileString(strTemp, "Coarse_Accel", "200", temp, 255, strFIle);
+                stVisionPosMoveProperties[i].Coarse_Accel = Convert.ToInt16(temp.ToString());
+                //  Coarse Settle Delay
+                NativeMethods.GetPrivateProfileString(strTemp, "Coarse_SettleDelay", "20", temp, 255, strFIle);
+                stVisionPosMoveProperties[i].Coarse_SettleDelay = Convert.ToInt16(temp.ToString());
+            }
+
+            //  0
+
+            return m_bRet;
+        }
+
+        public void Move_Properties_Save()
+        {
+            string strTemp = "";
+
+            string strFIle = "";
+            strFIle = ConfigManager.GetTeachingDataPath() + "\\Vision_TeachingPosition.ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                File.Create(strFIle);
+
+                MessageBox.Show("Vision Move Properties 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //  Position Parameter 저장
+            for (int i = 0; i < System.Enum.GetValues(typeof(Vision_TeachingPosList)).Length; i++)
+            {
+                strTemp = string.Format("PosIndex_{0}", i);
+
+                //  Fine Accel
+                NativeMethods.WritePrivateProfileString(strTemp, "Fine_Accel", stVisionPosMoveProperties[i].Fine_Accel.ToString(), strFIle);
+                //  Fine Settle Delay
+                NativeMethods.WritePrivateProfileString(strTemp, "Fine_SettleDelay", stVisionPosMoveProperties[i].Fine_SettleDelay.ToString(), strFIle);
+                //  Coarse Accel
+                NativeMethods.WritePrivateProfileString(strTemp, "Coarse_Accel", stVisionPosMoveProperties[i].Coarse_Accel.ToString(), strFIle);
+                //  Coarse Settle Delay
+                NativeMethods.WritePrivateProfileString(strTemp, "Coarse_SettleDelay", stVisionPosMoveProperties[i].Coarse_SettleDelay.ToString(), strFIle);
+            }
+
+            //MessageBox.Show("Move Properties 를 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
         #endregion
 
 

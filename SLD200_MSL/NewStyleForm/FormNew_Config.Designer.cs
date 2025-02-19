@@ -131,6 +131,7 @@
             this.textBox_Config_LDUL_TeachingPos_FineMove_Acc = new System.Windows.Forms.TextBox();
             this.label125 = new System.Windows.Forms.Label();
             this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition = new System.Windows.Forms.GroupBox();
+            this.button_Config_LDUL_GetCurrentPos_ToTeachingPos = new System.Windows.Forms.Button();
             this.button_KeypadCall_Config_LDUL_TeachingPos_MAlignerY = new System.Windows.Forms.Button();
             this.button_KeypadCall_Config_LDUL_TeachingPos_MAlignerX = new System.Windows.Forms.Button();
             this.textBox_Config_LDUL_TeachingPos_MAlignerY = new System.Windows.Forms.TextBox();
@@ -226,6 +227,7 @@
             this.textBox_Config_WorkStage_TeachingPos_FineMove_Acc = new System.Windows.Forms.TextBox();
             this.label232 = new System.Windows.Forms.Label();
             this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition = new System.Windows.Forms.GroupBox();
+            this.button_Config_WorkStage_GetCurrentPos_ToTeachingPos = new System.Windows.Forms.Button();
             this.button_KeypadCall_Config_WorkStage_TeachingPos_StageY = new System.Windows.Forms.Button();
             this.button_KeypadCall_Config_WorkStage_TeachingPos_StageX = new System.Windows.Forms.Button();
             this.textBox_Config_WorkStage_TeachingPos_StageY = new System.Windows.Forms.TextBox();
@@ -341,6 +343,7 @@
             this.textBox_Config_Vision_TeachingPos_FineMove_Acc = new System.Windows.Forms.TextBox();
             this.label36 = new System.Windows.Forms.Label();
             this.groupBox40 = new System.Windows.Forms.GroupBox();
+            this.button_Config_Vision_GetCurrentPos_ToTeachingPos = new System.Windows.Forms.Button();
             this.label37 = new System.Windows.Forms.Label();
             this.button_KeypadCall_Config_Vision_TeachingPos_VisionZ = new System.Windows.Forms.Button();
             this.textBox_Config_Vision_TeachingPos_VisionZ = new System.Windows.Forms.TextBox();
@@ -474,6 +477,7 @@
             this.textBox_Config_BDS_TeachingPos_FineMove_Acc = new System.Windows.Forms.TextBox();
             this.label111 = new System.Windows.Forms.Label();
             this.groupBox83 = new System.Windows.Forms.GroupBox();
+            this.button_Config_BDS_GetCurrentPos_ToTeachingPos = new System.Windows.Forms.Button();
             this.button_KeypadCall_Config_BDS_TeachingPos_MaskY = new System.Windows.Forms.Button();
             this.textBox_Config_BDS_TeachingPos_MaskY = new System.Windows.Forms.TextBox();
             this.label123 = new System.Windows.Forms.Label();
@@ -1230,7 +1234,7 @@
             this.textBox_Config_LDUL_JogMove_StepSize.Name = "textBox_Config_LDUL_JogMove_StepSize";
             this.textBox_Config_LDUL_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
             this.textBox_Config_LDUL_JogMove_StepSize.TabIndex = 75;
-            this.textBox_Config_LDUL_JogMove_StepSize.Text = "000.000";
+            this.textBox_Config_LDUL_JogMove_StepSize.Text = "1.000";
             // 
             // label8
             // 
@@ -1716,7 +1720,7 @@
             // radioButton_Config_LDUL_Move_MoveMode_Coarse
             // 
             this.radioButton_Config_LDUL_Move_MoveMode_Coarse.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Config_LDUL_Move_MoveMode_Coarse.Location = new System.Drawing.Point(176, 25);
+            this.radioButton_Config_LDUL_Move_MoveMode_Coarse.Location = new System.Drawing.Point(196, 25);
             this.radioButton_Config_LDUL_Move_MoveMode_Coarse.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_LDUL_Move_MoveMode_Coarse.Name = "radioButton_Config_LDUL_Move_MoveMode_Coarse";
             this.radioButton_Config_LDUL_Move_MoveMode_Coarse.Size = new System.Drawing.Size(105, 24);
@@ -1758,7 +1762,7 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button1.Location = new System.Drawing.Point(511, 486);
+            this.button1.Location = new System.Drawing.Point(176, 486);
             this.button1.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(110, 52);
@@ -1769,7 +1773,7 @@
             // button_Config_LDUL_TeachingPositions_Save
             // 
             this.button_Config_LDUL_TeachingPositions_Save.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_LDUL_TeachingPositions_Save.Location = new System.Drawing.Point(386, 486);
+            this.button_Config_LDUL_TeachingPositions_Save.Location = new System.Drawing.Point(51, 486);
             this.button_Config_LDUL_TeachingPositions_Save.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config_LDUL_TeachingPositions_Save.Name = "button_Config_LDUL_TeachingPositions_Save";
             this.button_Config_LDUL_TeachingPositions_Save.Size = new System.Drawing.Size(110, 52);
@@ -1847,7 +1851,7 @@
             this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.Controls.Add(this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode);
             this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.Controls.Add(this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode);
             this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.Location = new System.Drawing.Point(320, 250);
+            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.Location = new System.Drawing.Point(320, 313);
             this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.Name = "groupBox_Config_LDUL_TeachingPositions_MoveProperty";
             this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -2026,6 +2030,7 @@
             // 
             // groupBox_Config_LDUL_TeachingPositions_TeachingPosition
             // 
+            this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition.Controls.Add(this.button_Config_LDUL_GetCurrentPos_ToTeachingPos);
             this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition.Controls.Add(this.button_KeypadCall_Config_LDUL_TeachingPos_MAlignerY);
             this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition.Controls.Add(this.button_KeypadCall_Config_LDUL_TeachingPos_MAlignerX);
             this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition.Controls.Add(this.textBox_Config_LDUL_TeachingPos_MAlignerY);
@@ -2049,10 +2054,22 @@
             this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition.Name = "groupBox_Config_LDUL_TeachingPositions_TeachingPosition";
             this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition.Size = new System.Drawing.Size(301, 211);
+            this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition.Size = new System.Drawing.Size(301, 269);
             this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition.TabIndex = 33;
             this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition.TabStop = false;
             this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition.Text = " Teaching Position  (Abs. , ㎜) ";
+            // 
+            // button_Config_LDUL_GetCurrentPos_ToTeachingPos
+            // 
+            this.button_Config_LDUL_GetCurrentPos_ToTeachingPos.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Config_LDUL_GetCurrentPos_ToTeachingPos.Location = new System.Drawing.Point(9, 218);
+            this.button_Config_LDUL_GetCurrentPos_ToTeachingPos.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Config_LDUL_GetCurrentPos_ToTeachingPos.Name = "button_Config_LDUL_GetCurrentPos_ToTeachingPos";
+            this.button_Config_LDUL_GetCurrentPos_ToTeachingPos.Size = new System.Drawing.Size(283, 41);
+            this.button_Config_LDUL_GetCurrentPos_ToTeachingPos.TabIndex = 42;
+            this.button_Config_LDUL_GetCurrentPos_ToTeachingPos.Text = "Current Position to Teaching Position";
+            this.button_Config_LDUL_GetCurrentPos_ToTeachingPos.UseVisualStyleBackColor = true;
+            this.button_Config_LDUL_GetCurrentPos_ToTeachingPos.Click += new System.EventHandler(this.button_Config_LDUL_GetCurrentPos_ToTeachingPos_Click);
             // 
             // button_KeypadCall_Config_LDUL_TeachingPos_MAlignerY
             // 
@@ -2698,7 +2715,7 @@
             this.textBox_Config_WorkStage_JogMove_StepSize.Name = "textBox_Config_WorkStage_JogMove_StepSize";
             this.textBox_Config_WorkStage_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
             this.textBox_Config_WorkStage_JogMove_StepSize.TabIndex = 75;
-            this.textBox_Config_WorkStage_JogMove_StepSize.Text = "000.000";
+            this.textBox_Config_WorkStage_JogMove_StepSize.Text = "1.000";
             // 
             // label9
             // 
@@ -2974,7 +2991,7 @@
             // radioButton_Config_WorkStage_Move_MoveMode_Coarse
             // 
             this.radioButton_Config_WorkStage_Move_MoveMode_Coarse.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Config_WorkStage_Move_MoveMode_Coarse.Location = new System.Drawing.Point(176, 25);
+            this.radioButton_Config_WorkStage_Move_MoveMode_Coarse.Location = new System.Drawing.Point(196, 25);
             this.radioButton_Config_WorkStage_Move_MoveMode_Coarse.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_WorkStage_Move_MoveMode_Coarse.Name = "radioButton_Config_WorkStage_Move_MoveMode_Coarse";
             this.radioButton_Config_WorkStage_Move_MoveMode_Coarse.Size = new System.Drawing.Size(105, 24);
@@ -3105,7 +3122,7 @@
             this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.Controls.Add(this.groupBox105);
             this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.Controls.Add(this.groupBox106);
             this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.Location = new System.Drawing.Point(320, 146);
+            this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.Location = new System.Drawing.Point(320, 193);
             this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.Name = "groupBox_Config_WorkStage_TeachingPositions_MoveProperty";
             this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -3284,6 +3301,7 @@
             // 
             // groupBox_Config_WorkStage_TeachingPositions_TeachingPosition
             // 
+            this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition.Controls.Add(this.button_Config_WorkStage_GetCurrentPos_ToTeachingPos);
             this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition.Controls.Add(this.button_KeypadCall_Config_WorkStage_TeachingPos_StageY);
             this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition.Controls.Add(this.button_KeypadCall_Config_WorkStage_TeachingPos_StageX);
             this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition.Controls.Add(this.textBox_Config_WorkStage_TeachingPos_StageY);
@@ -3295,10 +3313,22 @@
             this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition.Name = "groupBox_Config_WorkStage_TeachingPositions_TeachingPosition";
             this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition.Size = new System.Drawing.Size(301, 91);
+            this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition.Size = new System.Drawing.Size(301, 146);
             this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition.TabIndex = 33;
             this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition.TabStop = false;
             this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition.Text = " Teaching Position  (Abs. , ㎜) ";
+            // 
+            // button_Config_WorkStage_GetCurrentPos_ToTeachingPos
+            // 
+            this.button_Config_WorkStage_GetCurrentPos_ToTeachingPos.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Config_WorkStage_GetCurrentPos_ToTeachingPos.Location = new System.Drawing.Point(9, 95);
+            this.button_Config_WorkStage_GetCurrentPos_ToTeachingPos.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Config_WorkStage_GetCurrentPos_ToTeachingPos.Name = "button_Config_WorkStage_GetCurrentPos_ToTeachingPos";
+            this.button_Config_WorkStage_GetCurrentPos_ToTeachingPos.Size = new System.Drawing.Size(283, 41);
+            this.button_Config_WorkStage_GetCurrentPos_ToTeachingPos.TabIndex = 43;
+            this.button_Config_WorkStage_GetCurrentPos_ToTeachingPos.Text = "Current Position to Teaching Position";
+            this.button_Config_WorkStage_GetCurrentPos_ToTeachingPos.UseVisualStyleBackColor = true;
+            this.button_Config_WorkStage_GetCurrentPos_ToTeachingPos.Click += new System.EventHandler(this.button_Config_WorkStage_GetCurrentPos_ToTeachingPos_Click);
             // 
             // button_KeypadCall_Config_WorkStage_TeachingPos_StageY
             // 
@@ -3958,7 +3988,7 @@
             this.textBox_Config_Vision_JogMove_StepSize.Name = "textBox_Config_Vision_JogMove_StepSize";
             this.textBox_Config_Vision_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
             this.textBox_Config_Vision_JogMove_StepSize.TabIndex = 75;
-            this.textBox_Config_Vision_JogMove_StepSize.Text = "000.000";
+            this.textBox_Config_Vision_JogMove_StepSize.Text = "1.000";
             // 
             // label10
             // 
@@ -4453,7 +4483,7 @@
             // radioButton_Config_Vision_Move_MoveMode_Coarse
             // 
             this.radioButton_Config_Vision_Move_MoveMode_Coarse.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Config_Vision_Move_MoveMode_Coarse.Location = new System.Drawing.Point(176, 25);
+            this.radioButton_Config_Vision_Move_MoveMode_Coarse.Location = new System.Drawing.Point(196, 25);
             this.radioButton_Config_Vision_Move_MoveMode_Coarse.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_Vision_Move_MoveMode_Coarse.Name = "radioButton_Config_Vision_Move_MoveMode_Coarse";
             this.radioButton_Config_Vision_Move_MoveMode_Coarse.Size = new System.Drawing.Size(105, 24);
@@ -4525,6 +4555,7 @@
             this.button_Config_Vision_TeachingPositions_Save.TabIndex = 45;
             this.button_Config_Vision_TeachingPositions_Save.Text = "Save";
             this.button_Config_Vision_TeachingPositions_Save.UseVisualStyleBackColor = true;
+            this.button_Config_Vision_TeachingPositions_Save.Click += new System.EventHandler(this.button_Config_Vision_TeachingPositions_Save_Click);
             // 
             // groupBox34
             // 
@@ -4595,7 +4626,7 @@
             this.groupBox37.Controls.Add(this.groupBox38);
             this.groupBox37.Controls.Add(this.groupBox39);
             this.groupBox37.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox37.Location = new System.Drawing.Point(320, 156);
+            this.groupBox37.Location = new System.Drawing.Point(320, 181);
             this.groupBox37.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox37.Name = "groupBox37";
             this.groupBox37.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -4774,6 +4805,7 @@
             // 
             // groupBox40
             // 
+            this.groupBox40.Controls.Add(this.button_Config_Vision_GetCurrentPos_ToTeachingPos);
             this.groupBox40.Controls.Add(this.label37);
             this.groupBox40.Controls.Add(this.button_KeypadCall_Config_Vision_TeachingPos_VisionZ);
             this.groupBox40.Controls.Add(this.textBox_Config_Vision_TeachingPos_VisionZ);
@@ -4783,10 +4815,22 @@
             this.groupBox40.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox40.Name = "groupBox40";
             this.groupBox40.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox40.Size = new System.Drawing.Size(301, 77);
+            this.groupBox40.Size = new System.Drawing.Size(301, 135);
             this.groupBox40.TabIndex = 33;
             this.groupBox40.TabStop = false;
             this.groupBox40.Text = " Teaching Position  (Abs. , ㎜) ";
+            // 
+            // button_Config_Vision_GetCurrentPos_ToTeachingPos
+            // 
+            this.button_Config_Vision_GetCurrentPos_ToTeachingPos.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Config_Vision_GetCurrentPos_ToTeachingPos.Location = new System.Drawing.Point(9, 84);
+            this.button_Config_Vision_GetCurrentPos_ToTeachingPos.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Config_Vision_GetCurrentPos_ToTeachingPos.Name = "button_Config_Vision_GetCurrentPos_ToTeachingPos";
+            this.button_Config_Vision_GetCurrentPos_ToTeachingPos.Size = new System.Drawing.Size(283, 41);
+            this.button_Config_Vision_GetCurrentPos_ToTeachingPos.TabIndex = 44;
+            this.button_Config_Vision_GetCurrentPos_ToTeachingPos.Text = "Current Position to Teaching Position";
+            this.button_Config_Vision_GetCurrentPos_ToTeachingPos.UseVisualStyleBackColor = true;
+            this.button_Config_Vision_GetCurrentPos_ToTeachingPos.Click += new System.EventHandler(this.button_Config_Vision_GetCurrentPos_ToTeachingPos_Click);
             // 
             // label37
             // 
@@ -4846,6 +4890,7 @@
             this.listBox_Config_Vision_TeachingPositions.Name = "listBox_Config_Vision_TeachingPositions";
             this.listBox_Config_Vision_TeachingPositions.Size = new System.Drawing.Size(285, 220);
             this.listBox_Config_Vision_TeachingPositions.TabIndex = 0;
+            this.listBox_Config_Vision_TeachingPositions.SelectedIndexChanged += new System.EventHandler(this.listBox_Config_Vision_TeachingPositions_SelectedIndexChanged);
             // 
             // groupBox41
             // 
@@ -6090,7 +6135,7 @@
             this.textBox_Config_BDS_JogMove_StepSize.Name = "textBox_Config_BDS_JogMove_StepSize";
             this.textBox_Config_BDS_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
             this.textBox_Config_BDS_JogMove_StepSize.TabIndex = 75;
-            this.textBox_Config_BDS_JogMove_StepSize.Text = "000.000";
+            this.textBox_Config_BDS_JogMove_StepSize.Text = "1.000";
             // 
             // label11
             // 
@@ -6204,7 +6249,7 @@
             // radioButton_Config_BDS_Move_MoveMode_Coarse
             // 
             this.radioButton_Config_BDS_Move_MoveMode_Coarse.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Config_BDS_Move_MoveMode_Coarse.Location = new System.Drawing.Point(176, 25);
+            this.radioButton_Config_BDS_Move_MoveMode_Coarse.Location = new System.Drawing.Point(196, 25);
             this.radioButton_Config_BDS_Move_MoveMode_Coarse.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_BDS_Move_MoveMode_Coarse.Name = "radioButton_Config_BDS_Move_MoveMode_Coarse";
             this.radioButton_Config_BDS_Move_MoveMode_Coarse.Size = new System.Drawing.Size(105, 24);
@@ -6264,6 +6309,7 @@
             this.button_Config_BDS_TeachingPositions_Save.TabIndex = 45;
             this.button_Config_BDS_TeachingPositions_Save.Text = "Save";
             this.button_Config_BDS_TeachingPositions_Save.UseVisualStyleBackColor = true;
+            this.button_Config_BDS_TeachingPositions_Save.Click += new System.EventHandler(this.button_Config_BDS_TeachingPositions_Save_Click);
             // 
             // groupBox78
             // 
@@ -6334,7 +6380,7 @@
             this.groupBox80.Controls.Add(this.groupBox81);
             this.groupBox80.Controls.Add(this.groupBox82);
             this.groupBox80.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox80.Location = new System.Drawing.Point(320, 121);
+            this.groupBox80.Location = new System.Drawing.Point(320, 164);
             this.groupBox80.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox80.Name = "groupBox80";
             this.groupBox80.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -6513,6 +6559,7 @@
             // 
             // groupBox83
             // 
+            this.groupBox83.Controls.Add(this.button_Config_BDS_GetCurrentPos_ToTeachingPos);
             this.groupBox83.Controls.Add(this.button_KeypadCall_Config_BDS_TeachingPos_MaskY);
             this.groupBox83.Controls.Add(this.textBox_Config_BDS_TeachingPos_MaskY);
             this.groupBox83.Controls.Add(this.label123);
@@ -6521,10 +6568,22 @@
             this.groupBox83.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox83.Name = "groupBox83";
             this.groupBox83.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox83.Size = new System.Drawing.Size(301, 61);
+            this.groupBox83.Size = new System.Drawing.Size(301, 119);
             this.groupBox83.TabIndex = 33;
             this.groupBox83.TabStop = false;
             this.groupBox83.Text = " Teaching Position  (Abs. , ㎜) ";
+            // 
+            // button_Config_BDS_GetCurrentPos_ToTeachingPos
+            // 
+            this.button_Config_BDS_GetCurrentPos_ToTeachingPos.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Config_BDS_GetCurrentPos_ToTeachingPos.Location = new System.Drawing.Point(9, 68);
+            this.button_Config_BDS_GetCurrentPos_ToTeachingPos.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Config_BDS_GetCurrentPos_ToTeachingPos.Name = "button_Config_BDS_GetCurrentPos_ToTeachingPos";
+            this.button_Config_BDS_GetCurrentPos_ToTeachingPos.Size = new System.Drawing.Size(283, 41);
+            this.button_Config_BDS_GetCurrentPos_ToTeachingPos.TabIndex = 45;
+            this.button_Config_BDS_GetCurrentPos_ToTeachingPos.Text = "Current Position to Teaching Position";
+            this.button_Config_BDS_GetCurrentPos_ToTeachingPos.UseVisualStyleBackColor = true;
+            this.button_Config_BDS_GetCurrentPos_ToTeachingPos.Click += new System.EventHandler(this.button_Config_BDS_GetCurrentPos_ToTeachingPos_Click);
             // 
             // button_KeypadCall_Config_BDS_TeachingPos_MaskY
             // 
@@ -6575,6 +6634,7 @@
             this.listBox_Config_BDS_TeachingPositions.Name = "listBox_Config_BDS_TeachingPositions";
             this.listBox_Config_BDS_TeachingPositions.Size = new System.Drawing.Size(285, 346);
             this.listBox_Config_BDS_TeachingPositions.TabIndex = 0;
+            this.listBox_Config_BDS_TeachingPositions.SelectedIndexChanged += new System.EventHandler(this.listBox_Config_BDS_TeachingPositions_SelectedIndexChanged);
             // 
             // groupBox84
             // 
@@ -8222,5 +8282,9 @@
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button17;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button_Config_LDUL_GetCurrentPos_ToTeachingPos;
+        private System.Windows.Forms.Button button_Config_WorkStage_GetCurrentPos_ToTeachingPos;
+        private System.Windows.Forms.Button button_Config_Vision_GetCurrentPos_ToTeachingPos;
+        private System.Windows.Forms.Button button_Config_BDS_GetCurrentPos_ToTeachingPos;
     }
 }

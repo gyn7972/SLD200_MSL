@@ -71,6 +71,24 @@ namespace SLD200_MSL
                 }
             }
 
+            loader.Teaching_Position_Load();
+            loader.Move_Properties_Load();
+            workStage.Teaching_Position_Load();
+            workStage.Move_Properties_Load();
+            vision.Teaching_Position_Load();
+            vision.Move_Properties_Load();
+            bds.Teaching_Position_Load();
+            bds.Move_Properties_Load();
+
+            listBox_Config_LDUL_TeachingPositions.SelectedIndex = 0;                                                                            //  LDUL Teaching Position 첫번째 항목 선택
+            textBox_Config_LDUL_JogMove_StepSize.Text = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Jog_StepSize_Coarse.ToString();           //  LDUL Jog Move Step Size 초기화
+            listBox_Config_WorkStage_TeachingPositions.SelectedIndex = 0;                                                                       //  WorkStage Teaching Position 첫번째 항목 선택
+            textBox_Config_WorkStage_JogMove_StepSize.Text = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_StepSize_Coarse.ToString();      //  Work Stage Jog Move Step Size 초기화
+            listBox_Config_Vision_TeachingPositions.SelectedIndex = 0;                                                                       //  WorkStage Teaching Position 첫번째 항목 선택
+            textBox_Config_Vision_JogMove_StepSize.Text = Equipment.stAxisParam[(int)Vision.nAxis.Z].Jog_StepSize_Coarse.ToString();      //  Work Stage Jog Move Step Size 초기화
+            listBox_Config_BDS_TeachingPositions.SelectedIndex = 0;                                                                       //  WorkStage Teaching Position 첫번째 항목 선택
+            textBox_Config_BDS_JogMove_StepSize.Text = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Jog_StepSize_Coarse.ToString();      //  Work Stage Jog Move Step Size 초기화
+
             //  IO 모듈 개수로 동적 생성해야 하지만, 임시로 고정으로 생성
             m_nModuleAddrCount = new int[4];                //  Input : 0, 2        Output : 1, 3
             for (int i = 0; i < 4; i++)
@@ -2725,16 +2743,24 @@ namespace SLD200_MSL
                     Loader.stLDULTeachingPos[m_nIndex].UL_Stacker_Z0 = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_RPortZ.Text);
                     Loader.stLDULTeachingPos[m_nIndex].UL_Stacker_Z1 = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_LPortZ.Text);
                 }
+
+                //  Move Properties 데이터 넣기
+                Loader.stLDULPosMoveProperties[m_nIndex].Fine_Accel = Convert.ToInt16(textBox_Config_LDUL_TeachingPos_FineMove_Acc.Text);
+                Loader.stLDULPosMoveProperties[m_nIndex].Fine_SettleDelay = Convert.ToInt16(textBox_Config_LDUL_TeachingPos_FineMove_SettleDelay.Text);
+                Loader.stLDULPosMoveProperties[m_nIndex].Coarse_Accel = Convert.ToInt16(textBox_Config_LDUL_TeachingPos_CoarseMove_Acc.Text);
+                Loader.stLDULPosMoveProperties[m_nIndex].Coarse_SettleDelay = Convert.ToInt16(textBox_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.Text);
             }
 
             //  리스트 전체 저장
             loader.Teaching_Position_Save();
+            loader.Move_Properties_Save();
+
+            MessageBox.Show("저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void listBox_Config_LDUL_TeachingPositions_SelectedIndexChanged(object sender, EventArgs e)
         {
             //  Teaching 항목 선택에 따른 Position 활성/비활성
-
             int m_nIndex = listBox_Config_LDUL_TeachingPositions.SelectedIndex;
 
             if (m_nIndex >= 0)
@@ -2794,6 +2820,12 @@ namespace SLD200_MSL
                     textBox_Config_LDUL_TeachingPos_MAlignerX.Text = "---";
                     textBox_Config_LDUL_TeachingPos_MAlignerY.Text = "---";
                 }
+
+                //  Move Properties 표시
+                textBox_Config_LDUL_TeachingPos_FineMove_Acc.Text = Loader.stLDULPosMoveProperties[m_nIndex].Fine_Accel.ToString();
+                textBox_Config_LDUL_TeachingPos_FineMove_SettleDelay.Text = Loader.stLDULPosMoveProperties[m_nIndex].Fine_SettleDelay.ToString();
+                textBox_Config_LDUL_TeachingPos_CoarseMove_Acc.Text = Loader.stLDULPosMoveProperties[m_nIndex].Coarse_Accel.ToString();
+                textBox_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.Text = Loader.stLDULPosMoveProperties[m_nIndex].Coarse_SettleDelay.ToString();
             }
         }
 
@@ -2806,16 +2838,22 @@ namespace SLD200_MSL
             {
                 WorkStage.stWorkStageTeachingPos[m_nIndex].Stage_X = Convert.ToDouble(textBox_Config_WorkStage_TeachingPos_StageX.Text);
                 WorkStage.stWorkStageTeachingPos[m_nIndex].Stage_Y = Convert.ToDouble(textBox_Config_WorkStage_TeachingPos_StageY.Text);
+
+                //  Move Properties 데이터 넣기
+                WorkStage.stWorkStagePosMoveProperties[m_nIndex].Fine_Accel = Convert.ToInt16(textBox_Config_WorkStage_TeachingPos_FineMove_Acc.Text);
+                WorkStage.stWorkStagePosMoveProperties[m_nIndex].Fine_SettleDelay = Convert.ToInt16(textBox_Config_WorkStage_TeachingPos_FineMove_SettleDelay.Text);
+                WorkStage.stWorkStagePosMoveProperties[m_nIndex].Coarse_Accel = Convert.ToInt16(textBox_Config_WorkStage_TeachingPos_CoarseMove_Acc.Text);
+                WorkStage.stWorkStagePosMoveProperties[m_nIndex].Coarse_SettleDelay = Convert.ToInt16(textBox_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.Text);
             }
 
             //  리스트 전체 저장
             workStage.Teaching_Position_Save();
+            workStage.Move_Properties_Save();
         }
 
         private void listBox_Config_WorkStage_TeachingPositions_SelectedIndexChanged(object sender, EventArgs e)
         {
             //  Teaching 항목 선택에 따른 Position
-
             int m_nIndex = listBox_Config_WorkStage_TeachingPositions.SelectedIndex;
 
             if (m_nIndex >= 0)
@@ -2823,6 +2861,167 @@ namespace SLD200_MSL
                 //  데이터 표시
                 textBox_Config_WorkStage_TeachingPos_StageX.Text = WorkStage.stWorkStageTeachingPos[m_nIndex].Stage_X.ToString();
                 textBox_Config_WorkStage_TeachingPos_StageY.Text = WorkStage.stWorkStageTeachingPos[m_nIndex].Stage_Y.ToString();
+
+                //  Move Properties 표시
+                textBox_Config_WorkStage_TeachingPos_FineMove_Acc.Text = WorkStage.stWorkStagePosMoveProperties[m_nIndex].Fine_Accel.ToString();
+                textBox_Config_WorkStage_TeachingPos_FineMove_SettleDelay.Text = WorkStage.stWorkStagePosMoveProperties[m_nIndex].Fine_SettleDelay.ToString();
+                textBox_Config_WorkStage_TeachingPos_CoarseMove_Acc.Text = WorkStage.stWorkStagePosMoveProperties[m_nIndex].Coarse_Accel.ToString();
+                textBox_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.Text = WorkStage.stWorkStagePosMoveProperties[m_nIndex].Coarse_SettleDelay.ToString();
+            }
+        }
+
+        private void button_Config_Vision_TeachingPositions_Save_Click(object sender, EventArgs e)
+        {
+            //  선택된 축에 대한 데이터 갖다 넣기
+            int m_nIndex = listBox_Config_Vision_TeachingPositions.SelectedIndex;
+
+            if (m_nIndex >= 0)
+            {
+                Vision.stVisionTeachingPos[m_nIndex].Vision_Z = Convert.ToDouble(textBox_Config_Vision_TeachingPos_VisionZ.Text);
+
+                //  Move Properties 데이터 넣기
+                Vision.stVisionPosMoveProperties[m_nIndex].Fine_Accel = Convert.ToInt16(textBox_Config_Vision_TeachingPos_FineMove_Acc.Text);
+                Vision.stVisionPosMoveProperties[m_nIndex].Fine_SettleDelay = Convert.ToInt16(textBox_Config_Vision_TeachingPos_FineMove_SettleDelay.Text);
+                Vision.stVisionPosMoveProperties[m_nIndex].Coarse_Accel = Convert.ToInt16(textBox_Config_Vision_TeachingPos_CoarseMove_Acc.Text);
+                Vision.stVisionPosMoveProperties[m_nIndex].Coarse_SettleDelay = Convert.ToInt16(textBox_Config_Vision_TeachingPos_CoarseMove_SettleDelay.Text);
+            }
+
+            //  리스트 전체 저장
+            vision.Teaching_Position_Save();
+            vision.Move_Properties_Save();
+        }
+
+        private void listBox_Config_Vision_TeachingPositions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //  Teaching 항목 선택에 따른 Position
+            int m_nIndex = listBox_Config_Vision_TeachingPositions.SelectedIndex;
+
+            if (m_nIndex >= 0)
+            {
+                //  데이터 표시
+                textBox_Config_Vision_TeachingPos_VisionZ.Text = Vision.stVisionTeachingPos[m_nIndex].Vision_Z.ToString();
+
+                //  Move Properties 표시
+                textBox_Config_Vision_TeachingPos_FineMove_Acc.Text = Vision.stVisionPosMoveProperties[m_nIndex].Fine_Accel.ToString();
+                textBox_Config_Vision_TeachingPos_FineMove_SettleDelay.Text = Vision.stVisionPosMoveProperties[m_nIndex].Fine_SettleDelay.ToString();
+                textBox_Config_Vision_TeachingPos_CoarseMove_Acc.Text = Vision.stVisionPosMoveProperties[m_nIndex].Coarse_Accel.ToString();
+                textBox_Config_Vision_TeachingPos_CoarseMove_SettleDelay.Text = Vision.stVisionPosMoveProperties[m_nIndex].Coarse_SettleDelay.ToString();
+            }
+        }
+
+        private void button_Config_BDS_TeachingPositions_Save_Click(object sender, EventArgs e)
+        {
+            //  선택된 축에 대한 데이터 갖다 넣기
+            int m_nIndex = listBox_Config_BDS_TeachingPositions.SelectedIndex;
+
+            if (m_nIndex >= 0)
+            {
+                Bds.stBDSTeachingPos[m_nIndex].Mask_Y = Convert.ToDouble(textBox_Config_BDS_TeachingPos_MaskY.Text);
+
+                //  Move Properties 데이터 넣기
+                Bds.stBDSPosMoveProperties[m_nIndex].Fine_Accel = Convert.ToInt16(textBox_Config_BDS_TeachingPos_FineMove_Acc.Text);
+                Bds.stBDSPosMoveProperties[m_nIndex].Fine_SettleDelay = Convert.ToInt16(textBox_Config_BDS_TeachingPos_FineMove_SettleDelay.Text);
+                Bds.stBDSPosMoveProperties[m_nIndex].Coarse_Accel = Convert.ToInt16(textBox_Config_BDS_TeachingPos_CoarseMove_Acc.Text);
+                Bds.stBDSPosMoveProperties[m_nIndex].Coarse_SettleDelay = Convert.ToInt16(textBox_Config_BDS_TeachingPos_CoarseMove_SettleDelay.Text);
+            }
+
+            //  리스트 전체 저장
+            bds.Teaching_Position_Save();
+            bds.Move_Properties_Save();
+        }
+
+        private void listBox_Config_BDS_TeachingPositions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //  Teaching 항목 선택에 따른 Position
+            int m_nIndex = listBox_Config_BDS_TeachingPositions.SelectedIndex;
+
+            if (m_nIndex >= 0)
+            {
+                //  데이터 표시
+                textBox_Config_BDS_TeachingPos_MaskY.Text = Bds.stBDSTeachingPos[m_nIndex].Mask_Y.ToString();
+
+                //  Move Properties 표시
+                textBox_Config_BDS_TeachingPos_FineMove_Acc.Text = Bds.stBDSPosMoveProperties[m_nIndex].Fine_Accel.ToString();
+                textBox_Config_BDS_TeachingPos_FineMove_SettleDelay.Text = Bds.stBDSPosMoveProperties[m_nIndex].Fine_SettleDelay.ToString();
+                textBox_Config_BDS_TeachingPos_CoarseMove_Acc.Text = Bds.stBDSPosMoveProperties[m_nIndex].Coarse_Accel.ToString();
+                textBox_Config_BDS_TeachingPos_CoarseMove_SettleDelay.Text = Bds.stBDSPosMoveProperties[m_nIndex].Coarse_SettleDelay.ToString();
+            }
+        }
+
+        private void button_Config_LDUL_GetCurrentPos_ToTeachingPos_Click(object sender, EventArgs e)
+        {
+            //  현재 위치값을 티칭 위치값으로 설정 (저장은 아님)
+            //  선택 티칭 위치에 따라 세분화 할 필요가 있음. (임시로 로더, 언로더 단위로 값을 설정하도록 한다.)
+            int m_nIndex = listBox_Config_LDUL_TeachingPositions.SelectedIndex;
+
+            if (m_nIndex >= 0)
+            {
+                if (m_nIndex <= 10)                 //  Loader
+                {
+                    textBox_Config_LDUL_TeachingPos_TransferX.Text = string.Format("{0:0.000}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.TR_X).ToString());
+                    textBox_Config_LDUL_TeachingPos_TransferZ.Text = string.Format("{0:0.000}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.TR_Z).ToString());
+                    textBox_Config_LDUL_TeachingPos_RPortZ.Text = string.Format("{0:0.000}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.Z0).ToString());
+                    textBox_Config_LDUL_TeachingPos_LPortZ.Text = string.Format("{0:0.000}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.Z1).ToString());
+                    textBox_Config_LDUL_TeachingPos_MAlignerX.Text = string.Format("{0:0.000}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.ALN_X).ToString());
+                    textBox_Config_LDUL_TeachingPos_MAlignerY.Text = string.Format("{0:0.000}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.ALN_Y).ToString());
+                }
+                else                                //  Unloader
+                {
+                    textBox_Config_LDUL_TeachingPos_TransferX.Text = string.Format("{0:0.000}", unloader.MC_Func.MC_GetEncPos((int)Unloader.nAxis.TR_X).ToString());
+                    textBox_Config_LDUL_TeachingPos_TransferZ.Text = string.Format("{0:0.000}", unloader.MC_Func.MC_GetEncPos((int)Unloader.nAxis.TR_Z).ToString());
+                    textBox_Config_LDUL_TeachingPos_RPortZ.Text = string.Format("{0:0.000}", unloader.MC_Func.MC_GetEncPos((int)Unloader.nAxis.Z0).ToString());
+                    textBox_Config_LDUL_TeachingPos_LPortZ.Text = string.Format("{0:0.000}", unloader.MC_Func.MC_GetEncPos((int)Unloader.nAxis.Z1).ToString());
+                }
+            }
+            else
+            {
+                MessageBox.Show("먼저 티칭 위치를 선택해야 합니다.", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void button_Config_WorkStage_GetCurrentPos_ToTeachingPos_Click(object sender, EventArgs e)
+        {
+            //  현재 위치값을 티칭 위치값으로 설정 (저장은 아님)
+            int m_nIndex = listBox_Config_WorkStage_TeachingPositions.SelectedIndex;
+
+            if (m_nIndex >= 0)
+            {
+                textBox_Config_WorkStage_TeachingPos_StageX.Text = string.Format("{0:0.000}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X).ToString());
+                textBox_Config_WorkStage_TeachingPos_StageY.Text = string.Format("{0:0.000}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y).ToString());
+            }
+            else
+            {
+                MessageBox.Show("먼저 티칭 위치를 선택해야 합니다.", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void button_Config_Vision_GetCurrentPos_ToTeachingPos_Click(object sender, EventArgs e)
+        {
+            //  현재 위치값을 티칭 위치값으로 설정 (저장은 아님)
+            int m_nIndex = listBox_Config_Vision_TeachingPositions.SelectedIndex;
+
+            if (m_nIndex >= 0)
+            {
+                textBox_Config_Vision_TeachingPos_VisionZ.Text = string.Format("{0:0.000}", vision.MC_Func.MC_GetEncPos((int)Vision.nAxis.Z).ToString());
+            }
+            else
+            {
+                MessageBox.Show("먼저 티칭 위치를 선택해야 합니다.", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void button_Config_BDS_GetCurrentPos_ToTeachingPos_Click(object sender, EventArgs e)
+        {
+            //  현재 위치값을 티칭 위치값으로 설정 (저장은 아님)
+            int m_nIndex = listBox_Config_BDS_TeachingPositions.SelectedIndex;
+
+            if (m_nIndex >= 0)
+            {
+                textBox_Config_BDS_TeachingPos_MaskY.Text = string.Format("{0:0.000}", bds.MC_Func.MC_GetEncPos((int)Bds.nAxis.MASK_Y).ToString());
+            }
+            else
+            {
+                MessageBox.Show("먼저 티칭 위치를 선택해야 합니다.", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

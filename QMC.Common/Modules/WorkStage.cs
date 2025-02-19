@@ -678,7 +678,7 @@ namespace QMC.Common.Modules
 
 
 
-        #region NewForm 을 위한 Teching Position List 변수
+        #region NewForm 을 위한 Teaching Position List 변수
 
         /// <summary>
         /// Config 에서 Teching Position List 가 추가되거나 삭제 되면 여기도 해줘야 함. (이 항목이 Position 배열의 Index 가 되기 때문에)
@@ -705,6 +705,15 @@ namespace QMC.Common.Modules
             public double Stage_Y;                          //  Work Stage Y
         }
         public static stWorkStageAxesPos[] stWorkStageTeachingPos = new stWorkStageAxesPos[System.Enum.GetValues(typeof(WorkStage_TeachingPosList)).Length];
+
+        public struct stWorkStageMoveProperties
+        {
+            public int Fine_Accel;                          //  Fine Acceleration
+            public int Fine_SettleDelay;                    //  Fine Settle Delay
+            public int Coarse_Accel;                        //  Coarse Acceleration
+            public int Coarse_SettleDelay;                  //  Coarse Settle Delay
+        }
+        public static stWorkStageMoveProperties[] stWorkStagePosMoveProperties = new stWorkStageMoveProperties[System.Enum.GetValues(typeof(WorkStage_TeachingPosList)).Length];
 
         #endregion
 
@@ -869,31 +878,7 @@ namespace QMC.Common.Modules
 
             Complete                                                        //  완료
         }
-
-
-
-        public int m_nStackerZ_Step { set; get; }                           //  Stacker Z Step
-        public enum StackerZ_Step
-        {
-            None = 0,
-            Start,                                                          //  시작
-
-            StackerZ_MoveDown_FullSensorOff,                                //  Full 센서가 Off 되는 위치까지 이동 (고속)
-            StackerZ_MoveDown_FullSensorOffCheck,                           //  Full 센서가 Off 되는 위치까지 이동 완료 체크
-
-            StackerZ_MoveUp_FullSensorOn,                                   //  Full 센서가 On 되는 위치까지 이동 (고속)
-            StackerZ_MoveUp_FullSensorOnCheck,                              //  Full 센서가 On 되는 위치까지 이동 완료 체크
-
-            StackerZ_MoveSlowDown_FullSensorOff,                            //  Full 센서가 Off 되는 위치까지 이동 (저속)
-            StackerZ_MoveSlowDown_FullSensorOffCheck,                       //  Full 센서가 Off 되는 위치까지 이동 완료 체크
-
-            StackerZ_MoveSlowUp_FullSensorOn,                               //  Full 센서가 On 되는 위치까지 이동 (저속 / 2)
-            StackerZ_MoveSlowUp_FullSensorOnCheck,                          //  Full 센서가 On 되는 위치까지 이동 완료 체크
-
-            Complete                                                        //  완료
-        }
-
-
+                
 
         public int m_nWorkStage_Move_Step { set; get; }                     //  Work Stage Move Step
 
@@ -909,7 +894,7 @@ namespace QMC.Common.Modules
             MoveTo_CameraReticleGlassPos,                                   //  Camera and Reticle Glass Pos Move
             MoveTo_PowerCheckPos,                                           //  Laser Power Check Pos Move
             MoveTo_FrontPos,                                                //  Front Pos Move
-            MoveTo_BackwardPos,                                             //  Backward Pos Move
+            MoveTo_RearPos,                                                 //  Rear Pos Move
         }
 
         public enum WorkStage_Move_Step
@@ -1068,38 +1053,22 @@ namespace QMC.Common.Modules
 
 
             /// <summary>
-            /// To Back Pos Move - 시작
+            /// To Rear Pos Move - 시작
             /// </summary>
-            ToBackPos_Condition_Check,                                          //  Work Stage 가 장비 뒤쪽으로 이동할 수 있는 조건 체크 (Drilling Cycle : None)
+            ToRearPos_Condition_Check,                                          //  Work Stage 가 장비 뒤쪽으로 이동할 수 있는 조건 체크 (Drilling Cycle : None)
 
-            ToBackPos_ScannerZ_Move_ReadyPos,                                   //  Scanner Z 축, 대기 위치로 이동
-            ToBackPos_ScannerZ_Move_ReadyPos_DoneCheck,                         //  Scanner Z 축, 대기 위치로 이동 완료 확인
+            ToRearPos_ScannerZ_Move_ReadyPos,                                   //  Scanner Z 축, 대기 위치로 이동
+            ToRearPos_ScannerZ_Move_ReadyPos_DoneCheck,                         //  Scanner Z 축, 대기 위치로 이동 완료 확인
 
-            ToBackPos_StageXY_Move_FrontPos,                                    //  Stage XY 축, Back 위치로 이동
-            ToBackPos_StageXY_Move_FrontPos_DoneCheck,                          //  Stage XY 축, Back 위치로 이동 완료 확인
+            ToRearPos_StageXY_Move_FrontPos,                                    //  Stage XY 축, Back 위치로 이동
+            ToRearPos_StageXY_Move_FrontPos_DoneCheck,                          //  Stage XY 축, Back 위치로 이동 완료 확인
             /// <summary>
-            /// To Back Pos Move - 완료
+            /// To Rear Pos Move - 완료
             /// </summary>
             /// 
 
 
             Complete                                                            //  완료
-        }
-
-
-
-        public int m_nLaserMask_Move_Step { set; get; }                         //  Laser Mask Move Step
-        public enum LaserMask_Move_Step
-        {
-            None = 0,
-            Start,                                                          //  시작
-
-            LaserMask_Move_Condition_Check,                                 //  Laser Mask 이동 조건 체크 (Drilling Cycle : None, Laser Shutter Close, Laser Off [필수 아님]) 
-
-            MaskY_Move_MaskPos,                                             //  이동해야 하는 Mask 위치까지 이동
-            MaskY_Move_MaskPos_DoneCheck,                                   //  이동해야 하는 Mask 위치까지 이동 완료 체크
-
-            Complete                                                        //  완료
         }
 
         #endregion
@@ -1725,8 +1694,14 @@ namespace QMC.Common.Modules
             {
                 stWorkStageTeachingPos[i].Stage_X = 0;
                 stWorkStageTeachingPos[i].Stage_Y = 0;
+
+                stWorkStagePosMoveProperties[i].Fine_Accel = 0;
+                stWorkStagePosMoveProperties[i].Fine_SettleDelay = 0;
+                stWorkStagePosMoveProperties[i].Coarse_Accel = 0;
+                stWorkStagePosMoveProperties[i].Coarse_SettleDelay = 0;
             }
-            
+
+            Teaching_Position_Load();
 
 
             //  변수 초기화 (Laser 에서 사용)
@@ -2969,6 +2944,83 @@ namespace QMC.Common.Modules
             MessageBox.Show("Teaching Position 을 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        #endregion
+
+
+        #region Teaching Position Move Properties Save / Load
+
+        public bool Move_Properties_Load()
+        {
+            string strTemp = "";
+
+            bool m_bRet = true;
+            string strFIle = "";
+            StringBuilder temp = new StringBuilder(255);
+
+            strFIle = ConfigManager.GetTeachingDataPath() + "\\WorkStage_MoveProperties.ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                MessageBox.Show("WorkStage Move Properties 파일이 없습니다.\r\n\r\n[Default 값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return false;
+            }
+
+            //  Position 데이터 로드
+            for (int i = 0; i < System.Enum.GetValues(typeof(WorkStage_TeachingPosList)).Length; i++)
+            {
+                strTemp = string.Format("PosIndex_{0}", i);
+
+                //  Fine Accel
+                NativeMethods.GetPrivateProfileString(strTemp, "Fine_Accel", "20", temp, 255, strFIle);
+                stWorkStagePosMoveProperties[i].Fine_Accel = Convert.ToInt16(temp.ToString());
+                //  Fine Settle Delay
+                NativeMethods.GetPrivateProfileString(strTemp, "Fine_SettleDelay", "200", temp, 255, strFIle);
+                stWorkStagePosMoveProperties[i].Fine_SettleDelay = Convert.ToInt16(temp.ToString());
+                //  Coarse Accel
+                NativeMethods.GetPrivateProfileString(strTemp, "Coarse_Accel", "200", temp, 255, strFIle);
+                stWorkStagePosMoveProperties[i].Coarse_Accel = Convert.ToInt16(temp.ToString());
+                //  Coarse Settle Delay
+                NativeMethods.GetPrivateProfileString(strTemp, "Coarse_SettleDelay", "20", temp, 255, strFIle);
+                stWorkStagePosMoveProperties[i].Coarse_SettleDelay = Convert.ToInt16(temp.ToString());
+            }
+
+            //  0
+
+            return m_bRet;
+        }
+
+        public void Move_Properties_Save()
+        {
+            string strTemp = "";
+
+            string strFIle = "";
+            strFIle = ConfigManager.GetTeachingDataPath() + "\\WorkStage_MoveProperties.ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                File.Create(strFIle);
+
+                MessageBox.Show("WorkStage Move Properties 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //  Position Parameter 저장
+            for (int i = 0; i < System.Enum.GetValues(typeof(WorkStage_TeachingPosList)).Length; i++)
+            {
+                strTemp = string.Format("PosIndex_{0}", i);
+
+                //  Fine Accel
+                NativeMethods.WritePrivateProfileString(strTemp, "Fine_Accel", stWorkStagePosMoveProperties[i].Fine_Accel.ToString(), strFIle);
+                //  Fine Settle Delay
+                NativeMethods.WritePrivateProfileString(strTemp, "Fine_SettleDelay", stWorkStagePosMoveProperties[i].Fine_SettleDelay.ToString(), strFIle);
+                //  Coarse Accel
+                NativeMethods.WritePrivateProfileString(strTemp, "Coarse_Accel", stWorkStagePosMoveProperties[i].Coarse_Accel.ToString(), strFIle);
+                //  Coarse Settle Delay
+                NativeMethods.WritePrivateProfileString(strTemp, "Coarse_SettleDelay", stWorkStagePosMoveProperties[i].Coarse_SettleDelay.ToString(), strFIle);
+            }
+
+            //MessageBox.Show("Move Properties 를 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
 
         #endregion
 
@@ -3818,394 +3870,7 @@ namespace QMC.Common.Modules
             }
         }
         #endregion
-
-
-        #region Stacker Move Function (Module PickUp & PutDown 높이로 이동 -> 이건 Loader Unloader 에서 하도록 해야 할듯???)
-
-        void Run_Stacker_WorkPosSet_Func()
-        {
-            bool m_bRet = false;
-            string m_strTemp;
-
-            double m_dSpeed_Stacker_Fast = 0.0;
-            double m_dSpeed_Stacker_Slow = 0.0;
-            double m_dSpeed_Stacker_MoreSlow = 0.0;
-            double m_dSpeedMag_forAccDec = 0.0;
-
-
-            //  운전 중 Door 를 열면 장비 Stop
-            if (m_nStackerZ_Step >= (int)StackerZ_Step.Start)
-            {
-                //if (Config.ParamConfig.AreaSensor_Usage && (waferProbeAlignParameter.DI_AreaSensor_Detect() || waferProbeAlignParameter.DI_AlignJig_Detect()))
-                //{
-                //    Log.Write("CWA150SA", Equipment.User_Name, "Machine Initialize", "안전 센서 감지로 인한 장비 Stop");
-
-                //    m_bInCycleMoving_SafetySensor_Detected = true;
-
-                //    //  알람 정지 (LED Bar - Red Blink)
-                //    Equipment.MachineStop_byAlarm = true;
-
-                //    timer_Motion_Home.Enabled = false;
-                //    m_btimer_Motion_Home_Stop = true;
-
-                //    m_nHomeStep = (int)Home_Step.None;
-
-                //    //MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.U, 500);
-                //    //MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.V, 500);
-                //    //MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.W, 500);
-                //    //MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, 500);
-                //    //MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.X, 500);
-                //    //MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.Y, 500);
-                //    //MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.VZ, 500);
-
-                //    for (int i = 0; i < (int)AxisAjinEnum.Max; i++)
-                //    {
-                //        MC_Func.MC_MotorStop(i, 2000);
-                //        //MC_Func.MC_EStop(i);
-                //    }
-
-                //    if (!Equipment.User_QMC_Engineer)                   //  QMC 관리자가 아닐 경우에만 Home Flag 를 false 로
-                //    {
-                //        m_bHomeOK = false;                              //  안전센서 감지 시 무조건 장비 초기화 해야 함
-                //    }
-
-                //    if (!Equipment.User_QMC_Engineer && Config.ParamConfig.AreaSensor_ServoOff_Usage)           //  안전센서 감지 시 Servo Off 할 경우
-                //    {
-                //        for (int i = 0; i < (int)AxisAjinEnum.Max; i++)
-                //        {
-                //            MC_Func.MC_SetServoOnOff(i, false);
-                //        }
-                //    }
-                //}
-            }
-
-
-            switch (m_nStackerZ_Step)
-            {
-                case (int)StackerZ_Step.Start:
-                    Log.Write("SLD-200", Equipment.User_Name, "Stacker Work Pos. Set", "시작");
-
-                    Equipment.MachineStop_byAlarm = false;
-
-                    //  Laoder Stacker Z 축 모터 전체 Stop
-                    MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z0, 2000);
-                    //MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z1, 2000);
-
-                    //  Unlaoder Stacker Z 축 모터 전체 Stop
-                    //MC_Func.MC_MotorStop((int)UnloaderParameter.AxisAjinEnum.Z0, 2000);
-                    //MC_Func.MC_MotorStop((int)UnloaderParameter.AxisAjinEnum.Z1, 2000);
-
-                    m_nStackerZ_Step = (int)StackerZ_Step.StackerZ_MoveDown_FullSensorOff;
-                    break;
-
-
-                case (int)StackerZ_Step.StackerZ_MoveDown_FullSensorOff:                            //  Full 센서가 Off 되는 위치까지 이동 (고속)
-
-                    Log.Write("SLD-200", Equipment.User_Name, "Stacker Work Pos. Set", "Stacker Z 축, Full 센서가 Off 되는 위치까지 이동 시작 (고속)");
-
-                    loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Stacker0_Bottom");
-
-                    //  속도 (고속)
-                    m_dSpeed_Stacker_Fast = 100.0;
-
-                    //  가감속 배율
-                    m_dSpeedMag_forAccDec = 2.0;
-
-                    MC_Func.MC_MovePosition((int)LoaderParameter.AxisAjinEnum.Z0,
-                                        loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0],
-                                        m_dSpeed_Stacker_Fast,
-                                        m_dSpeed_Stacker_Fast * m_dSpeedMag_forAccDec,
-                                        m_dSpeed_Stacker_Fast * m_dSpeedMag_forAccDec);
-
-                    //MC_Func.MC_MovePosition((int)UnloaderParameter.AxisAjinEnum.Z0,
-                    //                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0],
-                    //                    unloaderParameter.stUnloaderPosParam.dVel[(int)UnloaderParameter.MotionKey.Z0],
-                    //                    unloaderParameter.stUnloaderPosParam.dAcc[(int)UnloaderParameter.MotionKey.Z0],
-                    //                    unloaderParameter.stUnloaderPosParam.dDec[(int)UnloaderParameter.MotionKey.Z0]);
-
-                    TickCount_Start((int)TickType.TICK_LDSZ0);
-
-                    m_nStackerZ_Step = (int)StackerZ_Step.StackerZ_MoveDown_FullSensorOffCheck;
-                    break;
-
-
-                case (int)StackerZ_Step.StackerZ_MoveDown_FullSensorOffCheck:                       //  Full 센서가 Off 되는 위치까지 이동 완료 체크
-
-                    if (!loaderParameter.DI_Loader_Stacker_FullCheck((int)LoaderParameter.StackerTable.Stacker_0))
-                    {
-                        MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z0, 2000);
-
-                        m_nStackerZ_Step = (int)StackerZ_Step.StackerZ_MoveUp_FullSensorOn;
-                    }
-                    else if (MC_Func.MC_GetDone((int)LoaderParameter.AxisAjinEnum.Z0) && MC_Func.MC_PosTolerance((int)LoaderParameter.AxisAjinEnum.Z0, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0]))
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Stacker Work Pos. Set", "Stacker Z 축, Bottom 위치까지 이동 완료");
-
-                        if (loaderParameter.DI_Loader_Stacker_FullCheck((int)LoaderParameter.StackerTable.Stacker_0))
-                        {
-                            Log.Write("SLD-200", Equipment.User_Name, "Stacker Work Pos. Set", "Stacker Z 축, Bottom 위치까지 이동했으나 Full 센서 On 상태");
-
-                            m_nStackerZ_Step = (int)StackerZ_Step.None;
-
-                            MessageBox.Show("Stacker Z 축, 자재가 너무 많거나 Full 수위 감지 센서 점검이 필요합니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        else
-                        {
-                            m_nStackerZ_Step = (int)StackerZ_Step.StackerZ_MoveUp_FullSensorOn;
-                        }
-                    }
-                    else if (TickCount_Elapsed((int)TickType.TICK_HOME) > 60000)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Stacker Work Pos. Set", "Stacker Z 축, Full 센서가 Off 되는 위치까지 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        timer_Motion_Home.Enabled = false;
-                        m_btimer_Motion_Home_Stop = true;
-
-                        m_nStackerZ_Step = (int)StackerZ_Step.None;
-
-                        MessageBox.Show("Stacker Z 축, Full 센서가 Off 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    break;
-
-
-                case (int)StackerZ_Step.StackerZ_MoveUp_FullSensorOn:                               //  Full 센서가 On 되는 위치까지 이동 (고속)
-
-                    Log.Write("SLD-200", Equipment.User_Name, "Stacker Work Pos. Set", "Stacker Z 축, Full 센서가 On 되는 위치까지 이동 시작 (중속)");
-
-                    loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Stacker0_Top");
-
-                    //  속도 (중속)
-                    m_dSpeed_Stacker_Fast = 50.0;
-
-                    //  가감속 배율
-                    m_dSpeedMag_forAccDec = 2.0;
-
-                    MC_Func.MC_MovePosition((int)LoaderParameter.AxisAjinEnum.Z0,
-                                        loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0],
-                                        m_dSpeed_Stacker_Fast,
-                                        m_dSpeed_Stacker_Fast * m_dSpeedMag_forAccDec,
-                                        m_dSpeed_Stacker_Fast * m_dSpeedMag_forAccDec);
-
-                    //MC_Func.MC_MovePosition((int)UnloaderParameter.AxisAjinEnum.Z0,
-                    //                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0],
-                    //                    unloaderParameter.stUnloaderPosParam.dVel[(int)UnloaderParameter.MotionKey.Z0],
-                    //                    unloaderParameter.stUnloaderPosParam.dAcc[(int)UnloaderParameter.MotionKey.Z0],
-                    //                    unloaderParameter.stUnloaderPosParam.dDec[(int)UnloaderParameter.MotionKey.Z0]);
-
-                    TickCount_Start((int)TickType.TICK_LDSZ0);
-
-                    m_nStackerZ_Step = (int)StackerZ_Step.StackerZ_MoveUp_FullSensorOnCheck;
-                    break;
-
-
-                case (int)StackerZ_Step.StackerZ_MoveUp_FullSensorOnCheck:                          //  Full 센서가 On 되는 위치까지 이동 완료 체크
-
-                    if (loaderParameter.DI_Loader_Stacker_FullCheck((int)LoaderParameter.StackerTable.Stacker_0))
-                    {
-                        MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z0, 2000);
-
-                        m_nStackerZ_Step = (int)StackerZ_Step.StackerZ_MoveSlowDown_FullSensorOff;
-                    }
-                    else if (MC_Func.MC_GetDone((int)LoaderParameter.AxisAjinEnum.Z0) && MC_Func.MC_PosTolerance((int)LoaderParameter.AxisAjinEnum.Z0, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0]))
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Stacker Work Pos. Set", "Stacker Z 축, Top 위치까지 이동 완료");
-
-                        if (!loaderParameter.DI_Loader_Stacker_FullCheck((int)LoaderParameter.StackerTable.Stacker_0))
-                        {
-                            Log.Write("SLD-200", Equipment.User_Name, "Stacker Work Pos. Set", "Stacker Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태");
-
-                            m_nStackerZ_Step = (int)StackerZ_Step.None;
-
-                            MessageBox.Show("Stacker Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        else
-                        {
-                            m_nStackerZ_Step = (int)StackerZ_Step.StackerZ_MoveSlowDown_FullSensorOff;
-                        }
-                    }
-                    else if (TickCount_Elapsed((int)TickType.TICK_HOME) > 60000)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Stacker Work Pos. Set", "Stacker Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        timer_Motion_Home.Enabled = false;
-                        m_btimer_Motion_Home_Stop = true;
-
-                        m_nStackerZ_Step = (int)StackerZ_Step.None;
-
-                        MessageBox.Show("Stacker Z 축, Full 센서가 On 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    break;
-
-
-                case (int)StackerZ_Step.StackerZ_MoveSlowDown_FullSensorOff:                            //  Full 센서가 Off 되는 위치까지 이동 (저속)
-
-                    Log.Write("SLD-200", Equipment.User_Name, "Stacker Work Pos. Set", "Stacker Z 축, Full 센서가 Off 되는 위치까지 이동 시작 (저속)");
-
-                    loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Stacker0_Bottom");
-
-                    //  속도 (고속)
-                    m_dSpeed_Stacker_Fast = 20.0;
-
-                    //  가감속 배율
-                    m_dSpeedMag_forAccDec = 2.0;
-
-                    MC_Func.MC_MovePosition((int)LoaderParameter.AxisAjinEnum.Z0,
-                                        loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0],
-                                        m_dSpeed_Stacker_Fast,
-                                        m_dSpeed_Stacker_Fast * m_dSpeedMag_forAccDec,
-                                        m_dSpeed_Stacker_Fast * m_dSpeedMag_forAccDec);
-
-                    //MC_Func.MC_MovePosition((int)UnloaderParameter.AxisAjinEnum.Z0,
-                    //                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0],
-                    //                    unloaderParameter.stUnloaderPosParam.dVel[(int)UnloaderParameter.MotionKey.Z0],
-                    //                    unloaderParameter.stUnloaderPosParam.dAcc[(int)UnloaderParameter.MotionKey.Z0],
-                    //                    unloaderParameter.stUnloaderPosParam.dDec[(int)UnloaderParameter.MotionKey.Z0]);
-
-                    TickCount_Start((int)TickType.TICK_LDSZ0);
-
-                    m_nStackerZ_Step = (int)StackerZ_Step.StackerZ_MoveSlowDown_FullSensorOffCheck;
-                    break;
-
-
-                case (int)StackerZ_Step.StackerZ_MoveSlowDown_FullSensorOffCheck:                       //  Full 센서가 Off 되는 위치까지 이동 완료 체크
-
-                    if (!loaderParameter.DI_Loader_Stacker_FullCheck((int)LoaderParameter.StackerTable.Stacker_0))
-                    {
-                        MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z0, 2000);
-
-                        m_nStackerZ_Step = (int)StackerZ_Step.StackerZ_MoveSlowUp_FullSensorOn;
-                    }
-                    else if (MC_Func.MC_GetDone((int)LoaderParameter.AxisAjinEnum.Z0) && MC_Func.MC_PosTolerance((int)LoaderParameter.AxisAjinEnum.Z0, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0]))
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Stacker Work Pos. Set", "Stacker Z 축, Bottom 위치까지 이동 완료");
-
-                        if (loaderParameter.DI_Loader_Stacker_FullCheck((int)LoaderParameter.StackerTable.Stacker_0))
-                        {
-                            Log.Write("SLD-200", Equipment.User_Name, "Stacker Work Pos. Set", "Stacker Z 축, Bottom 위치까지 이동했으나 Full 센서 On 상태");
-
-                            m_nStackerZ_Step = (int)StackerZ_Step.None;
-
-                            MessageBox.Show("Stacker Z 축, 자재가 너무 많거나 Full 수위 감지 센서 점검이 필요합니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        else
-                        {
-                            m_nStackerZ_Step = (int)StackerZ_Step.StackerZ_MoveSlowUp_FullSensorOn;
-                        }
-                    }
-                    else if (TickCount_Elapsed((int)TickType.TICK_HOME) > 60000)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Stacker Work Pos. Set", "Stacker Z 축, Full 센서가 Off 되는 위치까지 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        timer_Motion_Home.Enabled = false;
-                        m_btimer_Motion_Home_Stop = true;
-
-                        m_nStackerZ_Step = (int)StackerZ_Step.None;
-
-                        MessageBox.Show("Stacker Z 축, Full 센서가 Off 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    break;
-
-
-                case (int)StackerZ_Step.StackerZ_MoveSlowUp_FullSensorOn:                               //  Full 센서가 On 되는 위치까지 이동 (저속 / 2)
-
-                    Log.Write("SLD-200", Equipment.User_Name, "Stacker Work Pos. Set", "Stacker Z 축, Full 센서가 On 되는 위치까지 이동 시작 (저속 / 2)");
-
-                    loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Stacker0_Top");
-
-                    //  속도 (중속)
-                    m_dSpeed_Stacker_Fast = 10.0;
-
-                    //  가감속 배율
-                    m_dSpeedMag_forAccDec = 2.0;
-
-                    MC_Func.MC_MovePosition((int)LoaderParameter.AxisAjinEnum.Z0,
-                                        loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0],
-                                        m_dSpeed_Stacker_Fast,
-                                        m_dSpeed_Stacker_Fast * m_dSpeedMag_forAccDec,
-                                        m_dSpeed_Stacker_Fast * m_dSpeedMag_forAccDec);
-
-                    //MC_Func.MC_MovePosition((int)UnloaderParameter.AxisAjinEnum.Z0,
-                    //                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0],
-                    //                    unloaderParameter.stUnloaderPosParam.dVel[(int)UnloaderParameter.MotionKey.Z0],
-                    //                    unloaderParameter.stUnloaderPosParam.dAcc[(int)UnloaderParameter.MotionKey.Z0],
-                    //                    unloaderParameter.stUnloaderPosParam.dDec[(int)UnloaderParameter.MotionKey.Z0]);
-
-                    TickCount_Start((int)TickType.TICK_LDSZ0);
-
-                    m_nStackerZ_Step = (int)StackerZ_Step.StackerZ_MoveSlowUp_FullSensorOnCheck;
-                    break;
-
-
-                case (int)StackerZ_Step.StackerZ_MoveSlowUp_FullSensorOnCheck:                          //  Full 센서가 On 되는 위치까지 이동 완료 체크
-
-                    if (loaderParameter.DI_Loader_Stacker_FullCheck((int)LoaderParameter.StackerTable.Stacker_0))
-                    {
-                        MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z0, 2000);
-
-                        m_nStackerZ_Step = (int)StackerZ_Step.Complete;
-                    }
-                    else if (MC_Func.MC_GetDone((int)LoaderParameter.AxisAjinEnum.Z0) && MC_Func.MC_PosTolerance((int)LoaderParameter.AxisAjinEnum.Z0, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0]))
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Stacker Work Pos. Set", "Stacker Z 축, Top 위치까지 이동 완료");
-
-                        if (!loaderParameter.DI_Loader_Stacker_FullCheck((int)LoaderParameter.StackerTable.Stacker_0))
-                        {
-                            Log.Write("SLD-200", Equipment.User_Name, "Stacker Work Pos. Set", "Stacker Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태");
-
-                            m_nStackerZ_Step = (int)StackerZ_Step.None;
-
-                            MessageBox.Show("Stacker Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        else
-                        {
-                            m_nStackerZ_Step = (int)StackerZ_Step.Complete;
-                        }
-                    }
-                    else if (TickCount_Elapsed((int)TickType.TICK_HOME) > 60000)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Stacker Work Pos. Set", "Stacker Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        timer_Motion_Home.Enabled = false;
-                        m_btimer_Motion_Home_Stop = true;
-
-                        m_nStackerZ_Step = (int)StackerZ_Step.None;
-
-                        MessageBox.Show("Stacker Z 축, Full 센서가 On 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    break;
-
-
-                case (int)StackerZ_Step.Complete:
-
-                    Log.Write("SLD-200", Equipment.User_Name, "Stacker Work Pos. Set", "완료");
-
-                    //  m_bHomeOK = true;
-
-                    timer_Motion_Home.Enabled = false;
-                    m_btimer_Motion_Home_Stop = true;
-
-                    m_strTemp = "===  Stacker 작업위치 이동 완료  ===";
-
-                    m_nStackerZ_Step = (int)StackerZ_Step.None;
-
-                    MessageBox.Show(m_strTemp, "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    break;
-            }
-        }
-        #endregion
-
+        
 
         #region Work Stage Move Function
                 
