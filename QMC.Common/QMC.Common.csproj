@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\CWA-150SA\</OutputPath>
+    <OutputPath>..\..\..\..\SLD-200\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -144,21 +144,25 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="spirallab.core, Version=1.109.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTK, Version=3.3.3.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\MicroLedDieTransfers2\spirallab.core.dll</HintPath>
+      <HintPath>SpiralLab\Sirius2\OpenTK.dll</HintPath>
     </Reference>
-    <Reference Include="spirallab.sirius, Version=1.109.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="spirallab.core, Version=1.139.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\MicroLedDieTransfers2\spirallab.sirius.dll</HintPath>
+      <HintPath>SpiralLab\Sirius\spirallab.core.dll</HintPath>
     </Reference>
-    <Reference Include="spirallab.sirius.fieldcorrection, Version=1.109.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="spirallab.sirius, Version=1.140.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\MicroLedDieTransfers2\spirallab.sirius.fieldcorrection.dll</HintPath>
+      <HintPath>SpiralLab\Sirius\spirallab.sirius.dll</HintPath>
     </Reference>
-    <Reference Include="spirallab.sirius.rtc, Version=1.109.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="spirallab.sirius.fieldcorrection, Version=1.140.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\MicroLedDieTransfers2\spirallab.sirius.rtc.dll</HintPath>
+      <HintPath>SpiralLab\Sirius\spirallab.sirius.fieldcorrection.dll</HintPath>
+    </Reference>
+    <Reference Include="spirallab.sirius.rtc, Version=1.140.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>SpiralLab\Sirius\spirallab.sirius.rtc.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -177,12 +181,64 @@
   <ItemGroup>
     <Compile Include="AlarmManager.cs" />
     <Compile Include="AsyncSocket.cs" />
+    <Compile Include="BaseConfig.cs" />
+    <Compile Include="BaseRecipe.cs" />
     <Compile Include="bcd.cs" />
     <Compile Include="CalibrationPitch.cs" />
     <Compile Include="Carrier.cs" />
     <Compile Include="CircularButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ListParam.cs" />
+    <Compile Include="Modules\Laser.cs" />
+    <Compile Include="Modules\Bds.cs" />
+    <Compile Include="Modules\BdsConfig.cs" />
+    <Compile Include="Modules\BdsRecipe.cs" />
+    <Compile Include="Modules\Scanner.cs" />
+    <Compile Include="Modules\LaserConfig.cs" />
+    <Compile Include="Modules\LaserRecipe.cs" />
+    <Compile Include="Modules\Unloader.cs" />
+    <Compile Include="Modules\Loader.cs" />
+    <Compile Include="Modules\ScannerConfig.cs" />
+    <Compile Include="Modules\UnloaderConfig.cs" />
+    <Compile Include="Modules\LoaderConfig.cs" />
+    <Compile Include="Modules\ScannerRecipe.cs" />
+    <Compile Include="Modules\UnloaderRecipe.cs" />
+    <Compile Include="Modules\LoaderRecipe.cs" />
+    <Compile Include="Modules\Vision.cs" />
+    <Compile Include="Modules\VisionConfig.cs" />
+    <Compile Include="Modules\VisionRecipe.cs" />
+    <Compile Include="Param.cs" />
+    <Compile Include="ParamContainer.cs" />
+    <Compile Include="ParamGroup.cs" />
+    <Compile Include="Parts\LaserParameter.cs" />
+    <Compile Include="Parts\LaserParameterConfig.cs" />
+    <Compile Include="Parts\LaserParameterRecipe.cs" />
+    <Compile Include="Parts\BdsParameter.cs" />
+    <Compile Include="Parts\BdsParameterConfig.cs" />
+    <Compile Include="Parts\BdsParameterRecipe.cs" />
+    <Compile Include="Parts\BdsPart.cs" />
+    <Compile Include="Parts\UnloaderParameter.cs" />
+    <Compile Include="Parts\LoaderParameter.cs" />
+    <Compile Include="Parts\UnloaderParameterConfig.cs" />
+    <Compile Include="Parts\LoaderParameterConfig.cs" />
+    <Compile Include="Parts\UnloaderParameterRecipe.cs" />
+    <Compile Include="Parts\LoaderParameterRecipe.cs" />
+    <Compile Include="Parts\UnloaderPart.cs" />
+    <Compile Include="Parts\LoaderPart.cs" />
+    <Compile Include="Parts\VisionParameter.cs" />
+    <Compile Include="Parts\VisionParameterConfig.cs" />
+    <Compile Include="Parts\VisionParameterRecipe.cs" />
+    <Compile Include="Parts\XyzLDzzxzULzzxzStage.cs" />
+    <Compile Include="Parts\XyzLDzzxzULzzxzStageConfig.cs" />
+    <Compile Include="Parts\YStage.cs" />
+    <Compile Include="Parts\XyzyStage.cs" />
+    <Compile Include="Parts\YStageConfig.cs" />
+    <Compile Include="Parts\XyzyStageConfig.cs" />
+    <Compile Include="Parts\ZzxzStage.cs" />
+    <Compile Include="Parts\ZzxzxyStage.cs" />
+    <Compile Include="Parts\ZzxzStageConfig.cs" />
+    <Compile Include="Parts\ZzxzxyStageConfig.cs" />
     <Compile Include="ScreenCapture.cs" />
     <Compile Include="Collet.cs" />
     <Compile Include="ColletCountData.cs" />
@@ -212,21 +268,15 @@
     <Compile Include="MesInfo.cs" />
     <Compile Include="Modules\CommonConfig.cs" />
     <Compile Include="Modules\CommonModule.cs" />
-    <Compile Include="Modules\DieLoader.cs" />
-    <Compile Include="Modules\DieLoaderConfig.cs" />
-    <Compile Include="Modules\DieLoaderRecipe.cs" />
     <Compile Include="Modules\DieTransfer.cs" />
     <Compile Include="Modules\DieTransferConfig.cs" />
     <Compile Include="Modules\DieTransferRecipe.cs" />
-    <Compile Include="Modules\DieUnloader.cs" />
-    <Compile Include="Modules\DieUnloaderConfig.cs" />
-    <Compile Include="Modules\DieUnloaderRecipe.cs" />
-    <Compile Include="Modules\WaferProbeAlignProcessor.cs" />
-    <Compile Include="Modules\WaferProbeAlignProcessorConfig.cs" />
-    <Compile Include="Modules\WaferProbeAlignProcessorRecipe.cs" />
-    <Compile Include="Modules\WaferProbeAlign.cs" />
-    <Compile Include="Modules\WaferProbeAlignConfig.cs" />
-    <Compile Include="Modules\WaferProbeAlignRecipe.cs" />
+    <Compile Include="Modules\WorkStageProcessor.cs" />
+    <Compile Include="Modules\WorkStageProcessorConfig.cs" />
+    <Compile Include="Modules\WorkStageProcessorRecipe.cs" />
+    <Compile Include="Modules\WorkStage.cs" />
+    <Compile Include="Modules\WorkStageConfig.cs" />
+    <Compile Include="Modules\WorkStageRecipe.cs" />
     <Compile Include="Motion\ACS\Motions\AcsAxis.cs" />
     <Compile Include="Motion\ACS\Motions\AcsAxisConfiguration.cs" />
     <Compile Include="Motion\ACS\Motions\AcsMotionBoard.cs" />
@@ -260,10 +310,10 @@
     <Compile Include="Parts\JigAlignerConfig.cs" />
     <Compile Include="Parts\JigAlignerRecipe.cs" />
     <Compile Include="Parts\LaserConfig.cs" />
-    <Compile Include="Parts\WaferProbeAlignParameter.cs" />
-    <Compile Include="Parts\WaferProbeAlignParameterConfig.cs" />
-    <Compile Include="Parts\WaferProbeAlignParameterRecipe.cs" />
-    <Compile Include="Parts\WaferProbeAlignPart.cs" />
+    <Compile Include="Parts\WorkStageParameter.cs" />
+    <Compile Include="Parts\WorkStageParameterConfig.cs" />
+    <Compile Include="Parts\WorkStageParameterRecipe.cs" />
+    <Compile Include="Parts\WorkStagePart.cs" />
     <Compile Include="Parts\LaserPitchMoveShotter.cs" />
     <Compile Include="Parts\LaserPitchMoveShotterConfig.cs" />
     <Compile Include="Parts\LaserPowerCalibrator.cs" />
@@ -276,12 +326,12 @@
     <Compile Include="Parts\PickupAgentConfig.cs" />
     <Compile Include="Parts\PositionResetter.cs" />
     <Compile Include="Parts\RevisionZ.cs" />
-    <Compile Include="Parts\Scanner.cs" />
+    <Compile Include="Parts\ScannerParameter.cs" />
     <Compile Include="Parts\ScannerCompensator.cs" />
     <Compile Include="Parts\ScannerCompensatorConfig.cs" />
     <Compile Include="Parts\ScannerCompensatorRecipe.cs" />
-    <Compile Include="Parts\ScannerConfig.cs" />
-    <Compile Include="Parts\ScannerRecipe.cs" />
+    <Compile Include="Parts\ScannerParameterConfig.cs" />
+    <Compile Include="Parts\ScannerParameterRecipe.cs" />
     <Compile Include="Parts\TowerLamp.cs" />
     <Compile Include="Parts\Turret.cs" />
     <Compile Include="Parts\TurretConfig.cs" />
@@ -305,7 +355,22 @@
     <Compile Include="QMCFindLenzCenter.cs" />
     <Compile Include="QmcLowPassFilter.cs" />
     <Compile Include="ScoreSet.cs" />
+    <Compile Include="SerialCommElectroRegulator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SerialCommDustCollector2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SerialCommDustCollector1.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="SerialCommChiller.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SerialCommHoneywellBarcode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SerialCommBeamExpander.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="SerialCommSpectraPhysics.cs">
@@ -339,15 +404,14 @@
     </Compile>
     <Compile Include="UnitInfoManager.cs" />
     <Compile Include="UserInfo.cs" />
+    <Compile Include="YCoordinate.cs" />
+    <Compile Include="XyzLDzzxzULzzxzCoordinate.cs" />
     <Compile Include="VisionPart\Aligner.cs" />
     <Compile Include="VisionPart\AlignerParameter.cs" />
     <Compile Include="VisionPart\AlignerRecipe.cs" />
     <Compile Include="VisionPart\AlignerResult.cs" />
     <Compile Include="VisionPart\AutoFocuerConfig.cs" />
     <Compile Include="VisionPart\AutoFocuser.cs" />
-    <Compile Include="VisionPart\ColletXYPositionCalibrator.cs" />
-    <Compile Include="VisionPart\ColletXYPositionCalibratorConfig.cs" />
-    <Compile Include="VisionPart\ColletXYPositionCalibratorRecipe.cs" />
     <Compile Include="VisionPart\DieFinder.cs" />
     <Compile Include="VisionPart\DieFinderRecipe.cs" />
     <Compile Include="VisionPart\DieSearcher.cs" />
@@ -447,7 +511,6 @@
     <Compile Include="Vision\Matrox\Tools\MSystem.cs" />
     <Compile Include="Vision\Optics\Leesos\DigitalIlluminatorConfig.cs" />
     <Compile Include="Vision\VisionAlign\QMCMatrix.cs" />
-    <Compile Include="Vision\VisionScale.cs" />
     <Compile Include="XyOfUvwCoordinate.cs" />
     <Compile Include="XytPositionData.cs" />
     <Compile Include="qGeometry.cs" />
@@ -523,6 +586,9 @@
     <Compile Include="XyzCoordinate.cs" />
     <Compile Include="XryztCoordinate.cs" />
     <Compile Include="UvwzxyzCoordinate.cs" />
+    <Compile Include="XyzyCoordinate.cs" />
+    <Compile Include="ZzxzCoordinate.cs" />
+    <Compile Include="ZzxzxyCoordinate.cs" />
     <Compile Include="XyzztCoordinate.cs" />
     <Compile Include="XyztCoordinate.cs" />
     <Compile Include="Yamatake\MCW400A100Gauge.cs" />
@@ -567,28 +633,6 @@
     <Content Include="SpiralLab\Sirius\x64\SQLite.Interop.dll" />
     <Content Include="SpiralLab\Sirius\x64\syncAXIS.dll" />
     <Content Include="SpiralLab\Sirius\x64\xerces-c_3_2.dll" />
-    <Content Include="SpiralLab\Sirius\x86\ACS.SPiiPlusNET.dll" />
-    <Content Include="SpiralLab\Sirius\x86\ACS.SPiiPlusNET.StrongSigned.dll" />
-    <Content Include="SpiralLab\Sirius\x86\ACS.SPiiPlusNETStandard.dll" />
-    <Content Include="SpiralLab\Sirius\x86\ACS.SPiiPlusNETStandard.StrongSigned.dll" />
-    <Content Include="SpiralLab\Sirius\x86\ACSC.dll" />
-    <Content Include="SpiralLab\Sirius\x86\ACSCL_x86.dll" />
-    <Content Include="SpiralLab\Sirius\x86\AXL.dll" />
-    <Content Include="SpiralLab\Sirius\x86\EzBasicAxl.dll" />
-    <Content Include="SpiralLab\Sirius\x86\freetype6.dll" />
-    <Content Include="SpiralLab\Sirius\x86\mfc100.dll" />
-    <Content Include="SpiralLab\Sirius\x86\msvcr100.dll" />
-    <Content Include="SpiralLab\Sirius\x86\OpenCvSharpExtern.dll" />
-    <Content Include="SpiralLab\Sirius\x86\PCI-Dask.dll" />
-    <Content Include="SpiralLab\Sirius\x86\Rockey4ND.dll" />
-    <Content Include="SpiralLab\Sirius\x86\RTC4DLL.dll" />
-    <Content Include="SpiralLab\Sirius\x86\RTC5DLL.dll" />
-    <Content Include="SpiralLab\Sirius\x86\RTC6DLL.dll" />
-    <Content Include="SpiralLab\Sirius\x86\RtosLib32.dll" />
-    <Content Include="SpiralLab\Sirius\x86\SPiiPlusCOM660_x86.dll" />
-    <Content Include="SpiralLab\Sirius\x86\SQLite.Interop.dll" />
-    <Content Include="SpiralLab\Sirius\x86\syncAXIS.dll" />
-    <Content Include="SpiralLab\Sirius\x86\xerces-c_3_2.dll" />
     <Content Include="syncAXIS\bin64\dll\RTC6DLLx64.dll" />
     <Content Include="syncAXIS\bin64\dll\syncAXIS.dll" />
     <Content Include="syncAXIS\bin64\dll\xerces-c_3_2.dll" />
@@ -631,9 +675,10 @@
     <None Include="syncAXIS\bin64\lib\syncAXIS.lib" />
     <None Include="syncAXIS\bin\lib\syncAXIS.lib" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir "C:\Program Files\QMC\CWA150SA_Onsemi\"
-copy "$(TargetPath)" "C:\Program Files\QMC\CWA150SA_Onsemi\"</PostBuildEvent>
+    <PostBuildEvent>mkdir "C:\Program Files\QMC\SLD-200\"
+copy "$(TargetPath)" "C:\Program Files\QMC\SLD-200\"</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -8,7 +8,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading;
 
-namespace CWA150SA_Onsemi300     //  QMC.Vision
+namespace SLD200_MSL     //  QMC.Vision
 {
 
     /// <summary>

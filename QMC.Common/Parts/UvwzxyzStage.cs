@@ -1,13 +1,26 @@
 ﻿using ACS.SPiiPlusNET;
 using QMC.Common.Motion.ACS.Motions;
 using QMC.Common.Vision.Cameras;
-using SpiralLab.Sirius;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static QMC.Common.Parts.WaferProbeAlignParameter;
+using static QMC.Common.Parts.WorkStageParameter;
+
+using SpiralLab.Sirius;
+
+//using OpenTK;
+//using OpenTK.Graphics.OpenGL;
+//using SpiralLab.Sirius2;
+//using SpiralLab.Sirius2.Laser;
+//using SpiralLab.Sirius2.PowerMeter;
+//using SpiralLab.Sirius2.Scanner;
+//using SpiralLab.Sirius2.Scanner.Rtc;
+//using SpiralLab.Sirius2.Winforms;
+//using SpiralLab.Sirius2.Winforms.Entity;
+//using SpiralLab.Sirius2.Winforms.Marker;
+//using SpiralLab.Sirius2.Winforms.UI;
 
 namespace QMC.Common.Parts
 {

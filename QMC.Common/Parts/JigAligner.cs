@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using QMC.Common.Modules;
 using QMC.Common.PathGenerators;
 using QMC.Common.Vision.Tools;
 using QMC.Common.VisionPart;
-using static QMC.Common.Modules.WaferProbeAlign;
+using static QMC.Common.Modules.WorkStage;
 using static QMC.Common.PathGenerators.PathGenerator;
 
 namespace QMC.Common.Parts
@@ -17,7 +18,7 @@ namespace QMC.Common.Parts
     public class JigAligner : PatternMatchingVisionPart
     {
         #region Field
-        public WaferProbeAlign m_Owner;
+        public WorkStage m_Owner;
         public XyCoordinate[] m_AlignPositions;
 
         #endregion
@@ -55,10 +56,13 @@ namespace QMC.Common.Parts
         }
         //public XyztStage Stage { set; get; }
         //public XyzztStage Stage { set; get; }
-        public UvwzxyzStage Stage { set; get; }
+        //public UvwzxyzStage Stage { set; get; }
+        public XyzLDzzxzULzzxzStage Stage { set; get; }
+        public XyzyStage XyzyStage { set; get; }
         public JigAlignerConfig Config { set; get; }
         public JigAlignerRecipe Recipe { set; get; }
         public XyCoordinate FirstPosition { protected set; get; }
+        public XyCoordinate FirstPosition_ImageCoord { protected set; get; }             //  이미지 좌표
         public double Result { set; get; }
         public VisionPart.PathGeneratorCollection PathGenerators { set; get; }
         public PathParameterCollection PathParameters { set; get; }
@@ -94,6 +98,14 @@ namespace QMC.Common.Parts
         {
             int ret = 0;
 
+            //if (!Equipment.User_AdminMode && ((((WorkStage)this.Owner).m_nVisionAligner_Type == (int)WorkStage.Aligner_Type.Aligner_Reticle_Lower) || 
+            //                                (((WorkStage)this.Owner).m_nVisionAligner_Type == (int)WorkStage.Aligner_Type.Aligner_Reticle_Upper)))
+            //{
+            //    MessageBox.Show("관리자 모드가 아닙니다.", "Information!!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            //    return ret;
+            //}
+
             if ((ret = OnTrain(Recipe.TrainRoiStartLocation, Recipe.TrainRoiEndLocation, Recipe.PatternMatchingParameter, IlluminationData)) != 0)
             {
                 return ret;
@@ -126,40 +138,42 @@ namespace QMC.Common.Parts
         protected XyCoordinate GetCoordinate(double dX, double dY)
         {
             XyCoordinate coordinate = new XyCoordinate();
-
-            if (((WaferProbeAlign)this.Owner).Config.ParamConfig.ManualScale_Usage)
+            //m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PAK;
+            if (((WorkStage)this.Owner).Config.ParamConfig.ManualScale_Usage)
             {
-                if (((WaferProbeAlign)this.Owner).m_bLowerVision_Align)     //  하부 카메라
+                //if (((WorkStage)this.Owner).m_bLowerVision_Align)     //  하부 카메라
+                if ((((WorkStage)this.Owner).m_nVisionAligner_Type == (int)WorkStage.Aligner_Type.Aligner_Wafer) ||
+                    (((WorkStage)this.Owner).m_nVisionAligner_Type == (int)WorkStage.Aligner_Type.Aligner_Reticle_Lower))     //  하부 카메라
                 {
-                    coordinate.X = (dX - this.Camera.Resolution.Width / 2) * ((WaferProbeAlign)this.Owner).Config.ParamConfig.LowerVision_Scale_X * (((WaferProbeAlign)this.Owner).Config.ParamConfig.LowerVision_ScaleInvert_X ? 1 : -1);
+                    coordinate.X = (dX - this.Camera.Resolution.Width / 2) * ((WorkStage)this.Owner).Config.ParamConfig.LowerVision_Scale_X * (((WorkStage)this.Owner).Config.ParamConfig.LowerVision_ScaleInvert_X ? 1 : -1);
 
-                    if (((WaferProbeAlign)this.Owner).Config.ParamConfig.AlignConcept_MyWaferAligner)  //  JigAligner 와 반대로 움직이길래... Invert 를 바꿔줌
+                    if (((WorkStage)this.Owner).Config.ParamConfig.AlignConcept_MyWaferAligner)  //  JigAligner 와 반대로 움직이길래... Invert 를 바꿔줌
                     {
-                        coordinate.Y = (dY - this.Camera.Resolution.Height / 2) * ((WaferProbeAlign)this.Owner).Config.ParamConfig.LowerVision_Scale_Y * (((WaferProbeAlign)this.Owner).Config.ParamConfig.LowerVision_ScaleInvert_Y ? -1 : 1);
+                        coordinate.Y = (dY - this.Camera.Resolution.Height / 2) * ((WorkStage)this.Owner).Config.ParamConfig.LowerVision_Scale_Y * (((WorkStage)this.Owner).Config.ParamConfig.LowerVision_ScaleInvert_Y ? -1 : 1);
                     }
                     else
                     {
-                        coordinate.Y = (dY - this.Camera.Resolution.Height / 2) * ((WaferProbeAlign)this.Owner).Config.ParamConfig.LowerVision_Scale_Y * (((WaferProbeAlign)this.Owner).Config.ParamConfig.LowerVision_ScaleInvert_Y ? 1 : -1);
+                        coordinate.Y = (dY - this.Camera.Resolution.Height / 2) * ((WorkStage)this.Owner).Config.ParamConfig.LowerVision_Scale_Y * (((WorkStage)this.Owner).Config.ParamConfig.LowerVision_ScaleInvert_Y ? 1 : -1);
                     }
                 }
                 else                                                        //  상부 카메라
                 {
-                    coordinate.X = (dX - this.Camera.Resolution.Width / 2) * ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_Scale_X * (((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X ? 1 : -1);
+                    coordinate.X = (dX - this.Camera.Resolution.Width / 2) * ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_X * (((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X ? 1 : -1);
 
-                    if (((WaferProbeAlign)this.Owner).Config.ParamConfig.AlignConcept_MyWaferAligner)  //  JigAligner 와 반대로 움직이길래... Invert 를 바꿔줌
+                    if (((WorkStage)this.Owner).Config.ParamConfig.AlignConcept_MyWaferAligner)  //  JigAligner 와 반대로 움직이길래... Invert 를 바꿔줌
                     {
-                        coordinate.Y = (dY - this.Camera.Resolution.Height / 2) * ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_Scale_Y * (((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y ? -1 : 1);
+                        coordinate.Y = (dY - this.Camera.Resolution.Height / 2) * ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y * (((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y ? -1 : 1);
                     }
                     else
                     {
-                        coordinate.Y = (dY - this.Camera.Resolution.Height / 2) * ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_Scale_Y * (((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y ? 1 : -1);
+                        coordinate.Y = (dY - this.Camera.Resolution.Height / 2) * ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y * (((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y ? 1 : -1);
                     }
                 }
             }
             else
             {
-                coordinate.X = (dX - this.Camera.Resolution.Width / 2) * ((WaferProbeAlign)this.Owner).Scale.X * (((WaferProbeAlign)this.Owner).Scale.InvertedX ? 1 : -1);
-                coordinate.Y = (dY - this.Camera.Resolution.Height / 2) * ((WaferProbeAlign)this.Owner).Scale.Y * (((WaferProbeAlign)this.Owner).Scale.InvertedY ? 1 : -1);
+                coordinate.X = (dX - this.Camera.Resolution.Width / 2) * ((WorkStage)this.Owner).Scale.X * (((WorkStage)this.Owner).Scale.InvertedX ? 1 : -1);
+                coordinate.Y = (dY - this.Camera.Resolution.Height / 2) * ((WorkStage)this.Owner).Scale.Y * (((WorkStage)this.Owner).Scale.InvertedY ? 1 : -1);
             }
             return coordinate;
         }
@@ -180,7 +194,7 @@ namespace QMC.Common.Parts
             double Theta = 0.0;
             int invertAngle = 1;
 
-            if (((WaferProbeAlign)this.Owner).Config.ParamConfig.Align_AngleInvert)
+            if (((WorkStage)this.Owner).Config.ParamConfig.Align_AngleInvert)
             {
                 invertAngle *= -1;
             }
@@ -192,13 +206,13 @@ namespace QMC.Common.Parts
             //Theta = Math.Truncate(Theta * 10000) / 10000;
             //Theta *= 10;
 
-            //if ((m_Owner.m_nWaferAlign_MainStep >= (int)WaferProbeAlign.WaferAlign_Step.WaferAlign_LowVision_AlignStart) &&
-            //    (m_Owner.m_nWaferAlign_MainStep <= (int)WaferProbeAlign.WaferAlign_Step.__WaferAlign_LowVisionCycle_Complete))
+            //if ((m_Owner.m_nWaferAlign_MainStep >= (int)WorkStage.WaferAlign_Step.WaferAlign_LowVision_AlignStart) &&
+            //    (m_Owner.m_nWaferAlign_MainStep <= (int)WorkStage.WaferAlign_Step.__WaferAlign_LowVisionCycle_Complete))
             //{
             //    Theta = Math.Truncate(Theta * 100000) / 100000;
             //}
-            //else if ((m_Owner.m_nWaferAlign_MainStep >= (int)WaferProbeAlign.WaferAlign_Step.WaferAlign_HighVision_AlignStart) &&
-            //    (m_Owner.m_nWaferAlign_MainStep <= (int)WaferProbeAlign.WaferAlign_Step.__WaferAlign_HighVisionCycle_Complete))
+            //else if ((m_Owner.m_nWaferAlign_MainStep >= (int)WorkStage.WaferAlign_Step.WaferAlign_HighVision_AlignStart) &&
+            //    (m_Owner.m_nWaferAlign_MainStep <= (int)WorkStage.WaferAlign_Step.__WaferAlign_HighVisionCycle_Complete))
             //{
             //    Theta = Math.Truncate(Theta * 1000000) / 1000000;
             //    //Theta *= -1.0;
@@ -268,7 +282,7 @@ namespace QMC.Common.Parts
         {
             int ret = 0;
             double dAngle = 0.0;
-            m_Owner = this.Owner as WaferProbeAlign;
+            m_Owner = this.Owner as WorkStage;
             if (m_Status == RunStatus.Stop) return 1;
             if (this.Stage == null) return -1;
 
@@ -326,7 +340,7 @@ namespace QMC.Common.Parts
             XyCoordinate finalSecondPosition = new XyCoordinate();
 
             //첫번째 위치 Search
-            if (m_Owner.m_nFindAlignMarkType != (int)WaferProbeAlign.AlignMarkType.ALIGN_2NDMARK)                                                      //  2번 Align Mark 만 찾을 경우가 아닐 때만 1번 마크를 찾는다.
+            if (m_Owner.m_nFindAlignMarkType != (int)WorkStage.AlignMarkType.ALIGN_2NDMARK)                                                      //  2번 Align Mark 만 찾을 경우가 아닐 때만 1번 마크를 찾는다.
             {
                 //this.Stage.MovePosition(m_AlignPositions[0]);
                 this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[0];
@@ -335,13 +349,15 @@ namespace QMC.Common.Parts
 
             if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
 
-            if (m_Owner.m_nFindAlignMarkType == (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK )                                                      //  1번 Align Mark 만 찾을 경우, 여기서 Out
+            if (m_Owner.m_nFindAlignMarkType == (int)WorkStage.AlignMarkType.ALIGN_1STMARK )                                                      //  1번 Align Mark 만 찾을 경우, 여기서 Out
             {
-                //m_Owner.m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_2POINT;
+                //m_Owner.m_nFindAlignMarkType = (int)WorkStage.AlignMarkType.ALIGN_2POINT;
 
                 if (firstPointSearchResult != null)
                 {
-                    finalFirstPosition = firstPointCoordinate + GetCoordinate(firstPointSearchResult.Values[0].X, firstPointSearchResult.Values[0].Y);
+                    FirstPosition_ImageCoord = GetCoordinate(firstPointSearchResult.Values[0].X, firstPointSearchResult.Values[0].Y);                            //  이미지 좌표
+                    //finalFirstPosition = firstPointCoordinate + GetCoordinate(firstPointSearchResult.Values[0].X, firstPointSearchResult.Values[0].Y);          //  이미지 좌표 + 모션 좌표
+                    finalFirstPosition = firstPointCoordinate + FirstPosition_ImageCoord;                                                                        //  이미지 좌표 + 모션 좌표
 
                     FirstPosition = finalFirstPosition;
                     this.Result = 0.0;
@@ -350,6 +366,7 @@ namespace QMC.Common.Parts
                 else
                 {
                     FirstPosition = new XyCoordinate(0.0, 0.0);
+                    FirstPosition_ImageCoord = new XyCoordinate(0.0, 0.0);
                     this.Result = 0.0;
                 }
                 return ret;
@@ -362,13 +379,15 @@ namespace QMC.Common.Parts
             this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[1];
             this.FindFiducialMark(out secondPointSearchResult, out secondPointCoordinate);
 
-            if (m_Owner.m_nFindAlignMarkType == (int)WaferProbeAlign.AlignMarkType.ALIGN_2NDMARK)                                                      //  2번 Align Mark 만 찾을 경우, 여기서 Out
+            if (m_Owner.m_nFindAlignMarkType == (int)WorkStage.AlignMarkType.ALIGN_2NDMARK)                                                      //  2번 Align Mark 만 찾을 경우, 여기서 Out
             {
-                //m_Owner.m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_2POINT;
+                //m_Owner.m_nFindAlignMarkType = (int)WorkStage.AlignMarkType.ALIGN_2POINT;
 
                 if (secondPointSearchResult != null)
                 {
-                    finalSecondPosition = secondPointCoordinate + GetCoordinate(secondPointSearchResult.Values[0].X, secondPointSearchResult.Values[0].Y);
+                    FirstPosition_ImageCoord = GetCoordinate(secondPointSearchResult.Values[0].X, secondPointSearchResult.Values[0].Y);                              //  이미지 좌표
+                    //finalSecondPosition = secondPointCoordinate + GetCoordinate(secondPointSearchResult.Values[0].X, secondPointSearchResult.Values[0].Y);          //  이미지 좌표 + 모션 좌표
+                    finalSecondPosition = secondPointCoordinate + FirstPosition_ImageCoord;                                                                          //  이미지 좌표 + 모션 좌표
 
                     FirstPosition = finalSecondPosition;
                     this.Result = 0.0;
@@ -377,6 +396,7 @@ namespace QMC.Common.Parts
                 else
                 {
                     FirstPosition = new XyCoordinate(0.0, 0.0);
+                    FirstPosition_ImageCoord = new XyCoordinate(0.0, 0.0);
                     this.Result = 0.0;
                 }
                 return ret;
@@ -389,7 +409,7 @@ namespace QMC.Common.Parts
                 finalFirstPosition = firstPointCoordinate + GetCoordinate(firstPointSearchResult.Values[0].X, firstPointSearchResult.Values[0].Y);
                 finalSecondPosition = secondPointCoordinate + GetCoordinate(secondPointSearchResult.Values[0].X, secondPointSearchResult.Values[0].Y);
 
-                if(((WaferProbeAlign)this.Owner).Config.ParamConfig.Align_ThetaCalcFunction_Atan)
+                if(((WorkStage)this.Owner).Config.ParamConfig.Align_ThetaCalcFunction_Atan)
                 {
                     dAngle = GetAngle_byAtan(finalFirstPosition, finalSecondPosition);
                 }
@@ -442,7 +462,7 @@ namespace QMC.Common.Parts
                 this.PathParameters.Add(this.Recipe.pathGenerator.PathParameter);
             }
 
-            m_Owner = this.Owner as WaferProbeAlign;
+            m_Owner = this.Owner as WorkStage;
 
             if ((ret = this.Scan(this.PathGenerators[0], this.PathParameters[0], out searchResult, out currentCoordinate)) != 0)
             {
@@ -478,7 +498,7 @@ namespace QMC.Common.Parts
                     {
                         if ((this.Stage.MovePosition(generator.Paths[i]) != 0)) return -1;
 
-                        Thread.Sleep(m_Owner.Recipe.jigAlignerRecipe_Upper.MoveToDelay);
+                        Thread.Sleep(m_Owner.Recipe.jigAlignerRecipe_HighRes.MoveToDelay);
                         result = this.Search();
 
                         currenCoordinate = (XyCoordinate)generator.Paths[i];
@@ -507,9 +527,9 @@ namespace QMC.Common.Parts
 
                     if (parameter.PathType == TwoPointAlignerRecipe.PathType.StepByStep) //parameter.PathType == PathType.StepByStep)
                     {
-                        if ((this.Stage.MovePosition(generator.Paths[i]) != 0)) return -1;
+                        //if ((this.Stage.MovePosition(generator.Paths[i]) != 0)) return -1;                //  테스트용 주석 : 모션 없이 테스트
 
-                        Thread.Sleep(m_Owner.Recipe.jigAlignerRecipe_Upper.MoveToDelay);
+                        Thread.Sleep(m_Owner.Recipe.jigAlignerRecipe_HighRes.MoveToDelay);
                         result = this.Search();
 
                         currenCoordinate = (XyCoordinate)generator.Paths[i];
@@ -527,7 +547,7 @@ namespace QMC.Common.Parts
                 }
             }
 
-            if ((ret = this.Stage.MovePosition(currenCoordinate)) != 0) return ret;
+            //if ((ret = this.Stage.MovePosition(currenCoordinate)) != 0) return ret;               //  테스트용 주석 : 모션 없이 테스트
 
             if (result == null || result.Values.Count == 0)
                 return -1;
@@ -541,12 +561,12 @@ namespace QMC.Common.Parts
         public override void UpdateConfigData() //참고 : Override
         {
             //TO DO : 문제있음. Serialize문제 생김.
-            if (Owner is WaferProbeAlign)
+            if (Owner is WorkStage)
             {
-                WaferProbeAlign waferProbeAlign = Owner as WaferProbeAlign;
-                if (waferProbeAlign != null)
+                WorkStage workStage = Owner as WorkStage;
+                if (workStage != null)
                 {
-                    // this.Config = waferProbeAlign.Config.JigAlignerConfig;
+                    // this.Config = workStage.Config.JigAlignerConfig;
                 }
             }
 

@@ -50,7 +50,7 @@ namespace QMC.Common.UI
             // 
             // lblTitle
             // 
-            this.lblTitle.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTitle.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.Location = new System.Drawing.Point(3, 6);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(427, 19);
@@ -69,7 +69,7 @@ namespace QMC.Common.UI
             // 
             // lblMessage
             // 
-            this.lblMessage.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMessage.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblMessage.Location = new System.Drawing.Point(107, 52);
             this.lblMessage.Name = "lblMessage";
             this.lblMessage.Size = new System.Drawing.Size(338, 109);
@@ -79,7 +79,7 @@ namespace QMC.Common.UI
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Retry;
-            this.button1.Font = new System.Drawing.Font("Arial", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Font = new System.Drawing.Font("Tahoma", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.Location = new System.Drawing.Point(239, 164);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(100, 32);
@@ -90,7 +90,7 @@ namespace QMC.Common.UI
             // button2
             // 
             this.button2.DialogResult = System.Windows.Forms.DialogResult.Ignore;
-            this.button2.Font = new System.Drawing.Font("Arial", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.Font = new System.Drawing.Font("Tahoma", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button2.Location = new System.Drawing.Point(345, 164);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(100, 32);

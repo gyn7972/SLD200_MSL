@@ -113,7 +113,8 @@ namespace QMC.Common.VisionPart
         //public XytPositionDataCollection AlignPositions { set; get; }
         //public XyztPositionDataCollection AlignPositions { set; get; }
         //public XyzztPositionDataCollection AlignPositions { set; get; }
-        public UvwzxyzPositionDataCollection AlignPositions { set; get; }
+        //public UvwzxyzPositionDataCollection AlignPositions { set; get; }
+        public XyzLDzzxzULzzxzPositionDataCollection AlignPositions { set; get; }
 
         [TypeConverter(typeof(NormalExpandableObjectConverter))]
         public IlluminationDataSet IlluminationDataSet { set; get; }
@@ -169,15 +170,15 @@ namespace QMC.Common.VisionPart
 
             if (AlignPositions == null)
             {
-                AlignPositions = new UvwzxyzPositionDataCollection();
+                AlignPositions = new XyzLDzzxzULzzxzPositionDataCollection();
                 foreach (PositionAligns key in Enum.GetValues(typeof(PositionAligns)))
                 {
-                    UvwzxyzPositionData positionBase = new UvwzxyzPositionData();
+                    XyzLDzzxzULzzxzPositionData positionBase = new XyzLDzzxzULzzxzPositionData();
                     positionBase.Name = key.ToString();
                     //positionBase.Coordinate = 
                     AlignPositions.Add(positionBase);
 
-                    UvwzxyzPositionData positionTarget = new UvwzxyzPositionData();
+                    XyzLDzzxzULzzxzPositionData positionTarget = new XyzLDzzxzULzzxzPositionData();
                     positionTarget.Name = key.ToString();
                     positionTarget.Type = TargetType.Offset;
                     AlignPositions.Add(positionTarget);
@@ -188,7 +189,7 @@ namespace QMC.Common.VisionPart
         public List<string> GetAlignsPositionList()
         {
             List<string> ret = new List<string>();
-            foreach (UvwzxyzPositionData position in AlignPositions)
+            foreach (XyzLDzzxzULzzxzPositionData position in AlignPositions)
             {
                 if (position.Type == TargetType.Base)
                     ret.Add(position.Name);
@@ -198,13 +199,13 @@ namespace QMC.Common.VisionPart
 
         public void SetAlignPositionData(string strPosition, TargetType targetType, UvwCoordinate coordinate)
         {
-            foreach (UvwzxyzPositionData position in AlignPositions)
+            foreach (XyzLDzzxzULzzxzPositionData position in AlignPositions)
             {
                 if (position.Name == strPosition && position.Type == targetType)
                 {
-                    position.U = coordinate.U;
-                    position.V = coordinate.V;
-                    position.W = coordinate.W;
+                    position.X = coordinate.U;
+                    position.Y = coordinate.V;
+                    position.Z = coordinate.W;
                     break;
                 }
             }
@@ -262,12 +263,29 @@ namespace QMC.Common.VisionPart
         //    return coordinate;
         //}
 
-        //  2023. 11. 23.  SCH : 이거 쓰자
-        public UvwzxyzCoordinate GetAlignPositionData(string strPosition)
-        {
-            UvwzxyzCoordinate coordinate = new UvwzxyzCoordinate();
+        //  2023. 11. 23.  SCH : 이거 쓰자 --> 또 이거 대신
+        //public UvwzxyzCoordinate GetAlignPositionData(string strPosition)
+        //{
+        //    UvwzxyzCoordinate coordinate = new UvwzxyzCoordinate();
 
-            foreach (UvwzxyzPositionData position in AlignPositions)
+        //    foreach (UvwzxyzPositionData position in AlignPositions)
+        //    {
+        //        if (position.Name == strPosition)
+        //        {
+        //            coordinate += position.Coordinate;
+        //            break;
+        //        }
+        //    }
+
+        //    return coordinate;
+        //}
+
+        //  2025. 01. 09.  SCH : 이거 쓰자
+        public XyzLDzzxzULzzxzCoordinate GetAlignPositionData(string strPosition)
+        {
+            XyzLDzzxzULzzxzCoordinate coordinate = new XyzLDzzxzULzzxzCoordinate();
+
+            foreach (XyzLDzzxzULzzxzPositionData position in AlignPositions)
             {
                 if (position.Name == strPosition)
                 {
@@ -279,16 +297,33 @@ namespace QMC.Common.VisionPart
             return coordinate;
         }
 
-        public XyCoordinate GetAlignPositionData_UVW(string strPosition)
+        //public XyCoordinate GetAlignPositionData_UVW(string strPosition)
+        //{
+        //    XyCoordinate coordinate = new XyCoordinate();
+
+        //    foreach (UvwzxyzPositionData position in AlignPositions)
+        //    {
+        //        if (position.Name == strPosition)
+        //        {
+        //            coordinate.X += position.Coordinate.U;
+        //            coordinate.Y += position.Coordinate.V;
+        //            break;
+        //        }
+        //    }
+
+        //    return coordinate;
+        //}
+
+        public XyCoordinate GetAlignPositionData_XY(string strPosition)
         {
             XyCoordinate coordinate = new XyCoordinate();
 
-            foreach (UvwzxyzPositionData position in AlignPositions)
+            foreach (XyzLDzzxzULzzxzPositionData position in AlignPositions)
             {
                 if (position.Name == strPosition)
                 {
-                    coordinate.X += position.Coordinate.U;
-                    coordinate.Y += position.Coordinate.V;
+                    coordinate.X += position.Coordinate.X;
+                    coordinate.Y += position.Coordinate.Y;
                     break;
                 }
             }
@@ -300,10 +335,15 @@ namespace QMC.Common.VisionPart
         {
             if (AlignPositions != null && AlignPositions.Count != 0)
             {
-                this.FirstFiducialmark = (XyCoordinate)AlignPositions.GetPositionCoordinate_UVW(PositionAligns.First.ToString());
-                this.SecondFiducialmark = (XyCoordinate)AlignPositions.GetPositionCoordinate_UVW(PositionAligns.Second.ToString());
-                this.ThirdFiducialmark = (XyCoordinate)AlignPositions.GetPositionCoordinate_UVW(PositionAligns.Third.ToString());
-                this.FourthFiducialmark = (XyCoordinate)AlignPositions.GetPositionCoordinate_UVW(PositionAligns.Forth.ToString());
+                //this.FirstFiducialmark = (XyCoordinate)AlignPositions.GetPositionCoordinate_UVW(PositionAligns.First.ToString());
+                //this.SecondFiducialmark = (XyCoordinate)AlignPositions.GetPositionCoordinate_UVW(PositionAligns.Second.ToString());
+                //this.ThirdFiducialmark = (XyCoordinate)AlignPositions.GetPositionCoordinate_UVW(PositionAligns.Third.ToString());
+                //this.FourthFiducialmark = (XyCoordinate)AlignPositions.GetPositionCoordinate_UVW(PositionAligns.Forth.ToString());
+
+                this.FirstFiducialmark = (XyCoordinate)AlignPositions.GetPositionCoordinate_XY(PositionAligns.First.ToString());
+                this.SecondFiducialmark = (XyCoordinate)AlignPositions.GetPositionCoordinate_XY(PositionAligns.Second.ToString());
+                this.ThirdFiducialmark = (XyCoordinate)AlignPositions.GetPositionCoordinate_XY(PositionAligns.Third.ToString());
+                this.FourthFiducialmark = (XyCoordinate)AlignPositions.GetPositionCoordinate_XY(PositionAligns.Forth.ToString());
             }
         }
     }

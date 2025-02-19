@@ -39,7 +39,7 @@ namespace QMC.Common.Parts
         #endregion
 
         #region Field
-        private WaferProbeAlign m_Owner;
+        private WorkStage m_Owner;
         #endregion
 
         #region Constructor
@@ -63,7 +63,9 @@ namespace QMC.Common.Parts
         }
         //public XyztStage Stage { set; get; }
         //public XyzztStage Stage { set; get; }
-        public UvwzxyzStage Stage { set; get; }
+        //public UvwzxyzStage Stage { set; get; }
+        public XyzLDzzxzULzzxzStage Stage { set; get; }
+        public XyzyStage XyzyStage { set; get; }
         public ScannerCompensatorConfig Config { set; get; }
         public ScannerCompensatorRecipe Recipe { set; get; }
         public TwoDimensionPathGenerator GridPathGenerator { get; set; }
@@ -303,7 +305,7 @@ namespace QMC.Common.Parts
         public override int OnWork()
         {
             int ret = 0;
-            m_Owner = this.Owner as WaferProbeAlign;
+            m_Owner = this.Owner as WorkStage;
             if (m_Status == RunStatus.Stop) return 1;
             if (this.Stage == null) return -1;
 
@@ -314,12 +316,12 @@ namespace QMC.Common.Parts
 
         public override void UpdateConfigData() //참고 : Override
         {
-            if (Owner is WaferProbeAlign)
+            if (Owner is WorkStage)
             {
-                WaferProbeAlign waferProbeAlign = Owner as WaferProbeAlign;
-                if (waferProbeAlign != null)
+                WorkStage workStage = Owner as WorkStage;
+                if (workStage != null)
                 {
-                    // this.Config = waferProbeAlign.Config.ScannerCompensatorConfig;
+                    // this.Config = workStage.Config.ScannerCompensatorConfig;
                 }
             }
 
@@ -549,19 +551,19 @@ namespace QMC.Common.Parts
 
                         if (this.Stage.GetCommandPosition(ref currentPosition) != 0) continue;
 
-                        if (((WaferProbeAlign)this.Owner).Config.ParamConfig.ManualScale_Usage)
+                        if (((WorkStage)this.Owner).Config.ParamConfig.ManualScale_Usage)
                         {
                             VisionScale m_TempScale = new VisionScale();
-                            m_TempScale.X = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_Scale_X;
-                            m_TempScale.Y = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
-                            m_TempScale.InvertedX = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
-                            m_TempScale.InvertedY = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
+                            m_TempScale.X = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_X;
+                            m_TempScale.Y = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
+                            m_TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
+                            m_TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
 
-                            VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, m_Owner.Camera_Upper.Resolution, patternMatchingResult.Values[0], out resultPosition);
+                            VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, m_Owner.Camera_HighRes.Resolution, patternMatchingResult.Values[0], out resultPosition);
                         }
                         else
                         {
-                            VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_Upper.Resolution, patternMatchingResult.Values[0], out resultPosition);
+                            VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_HighRes.Resolution, patternMatchingResult.Values[0], out resultPosition);
                         }                        
                     }
                     else
@@ -572,38 +574,38 @@ namespace QMC.Common.Parts
                         {
                             if (this.Stage.GetCommandPosition(ref currentPosition) != 0) continue;
 
-                            if (((WaferProbeAlign)this.Owner).Config.ParamConfig.ManualScale_Usage)
+                            if (((WorkStage)this.Owner).Config.ParamConfig.ManualScale_Usage)
                             {
                                 VisionScale m_TempScale = new VisionScale();
-                                m_TempScale.X = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_Scale_X;
-                                m_TempScale.Y = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
-                                m_TempScale.InvertedX = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
-                                m_TempScale.InvertedY = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
+                                m_TempScale.X = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_X;
+                                m_TempScale.Y = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
+                                m_TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
+                                m_TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
 
-                                VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, m_Owner.Camera_Upper.Resolution, new PointD(this.Camera.Resolution.Width / 2, this.Camera.Resolution.Height / 2), out resultPosition);
+                                VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, m_Owner.Camera_HighRes.Resolution, new PointD(this.Camera.Resolution.Width / 2, this.Camera.Resolution.Height / 2), out resultPosition);
                             }
                             else
                             {
-                                VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_Upper.Resolution, new PointD(this.Camera.Resolution.Width / 2, this.Camera.Resolution.Height / 2), out resultPosition);
+                                VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_HighRes.Resolution, new PointD(this.Camera.Resolution.Width / 2, this.Camera.Resolution.Height / 2), out resultPosition);
                             }                            
                         }
                         else
                         {
                             if (this.Stage.GetCommandPosition(ref currentPosition) != 0) continue;
 
-                            if (((WaferProbeAlign)this.Owner).Config.ParamConfig.ManualScale_Usage)
+                            if (((WorkStage)this.Owner).Config.ParamConfig.ManualScale_Usage)
                             {
                                 VisionScale m_TempScale = new VisionScale();
-                                m_TempScale.X = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_Scale_X;
-                                m_TempScale.Y = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
-                                m_TempScale.InvertedX = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
-                                m_TempScale.InvertedY = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
+                                m_TempScale.X = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_X;
+                                m_TempScale.Y = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
+                                m_TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
+                                m_TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
 
-                                VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, m_Owner.Camera_Upper.Resolution, new PointD(blobResult.PixelValues[0][1].Value, blobResult.PixelValues[0][2].Value), out resultPosition);
+                                VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, m_Owner.Camera_HighRes.Resolution, new PointD(blobResult.PixelValues[0][1].Value, blobResult.PixelValues[0][2].Value), out resultPosition);
                             }
                             else
                             {
-                                VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_Upper.Resolution, new PointD(blobResult.PixelValues[0][1].Value, blobResult.PixelValues[0][2].Value), out resultPosition);
+                                VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_HighRes.Resolution, new PointD(blobResult.PixelValues[0][1].Value, blobResult.PixelValues[0][2].Value), out resultPosition);
                             }                            
                         }
                     }
@@ -696,19 +698,19 @@ namespace QMC.Common.Parts
 
                 this.Stage.GetCommandPosition(ref currentPos);
 
-                if (((WaferProbeAlign)this.Owner).Config.ParamConfig.ManualScale_Usage)
+                if (((WorkStage)this.Owner).Config.ParamConfig.ManualScale_Usage)
                 {
                     VisionScale m_TempScale = new VisionScale();
-                    m_TempScale.X = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_Scale_X;
-                    m_TempScale.Y = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
-                    m_TempScale.InvertedX = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
-                    m_TempScale.InvertedY = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
+                    m_TempScale.X = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_X;
+                    m_TempScale.Y = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
+                    m_TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
+                    m_TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
 
-                    VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, m_Owner.Camera_Upper.Resolution, patternMatchingResult.Values[0], out resultPosition);
+                    VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, m_Owner.Camera_HighRes.Resolution, patternMatchingResult.Values[0], out resultPosition);
                 }
                 else
                 {
-                    VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_Upper.Resolution, patternMatchingResult.Values[0], out resultPosition);
+                    VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_HighRes.Resolution, patternMatchingResult.Values[0], out resultPosition);
                 }                
             }
             else
@@ -723,19 +725,19 @@ namespace QMC.Common.Parts
 
                 this.Stage.GetCommandPosition(ref currentPos);
 
-                if (((WaferProbeAlign)this.Owner).Config.ParamConfig.ManualScale_Usage)
+                if (((WorkStage)this.Owner).Config.ParamConfig.ManualScale_Usage)
                 {
                     VisionScale m_TempScale = new VisionScale();
-                    m_TempScale.X = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_Scale_X;
-                    m_TempScale.Y = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
-                    m_TempScale.InvertedX = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
-                    m_TempScale.InvertedY = ((WaferProbeAlign)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
+                    m_TempScale.X = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_X;
+                    m_TempScale.Y = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
+                    m_TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
+                    m_TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
 
-                    VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, m_Owner.Camera_Upper.Resolution, new PointD(blobResult.PixelValues[0][1].Value, blobResult.PixelValues[0][2].Value), out resultPosition);
+                    VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, m_Owner.Camera_HighRes.Resolution, new PointD(blobResult.PixelValues[0][1].Value, blobResult.PixelValues[0][2].Value), out resultPosition);
                 }
                 else
                 {
-                    VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_Upper.Resolution, new PointD(blobResult.PixelValues[0][1].Value, blobResult.PixelValues[0][2].Value), out resultPosition);
+                    VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_HighRes.Resolution, new PointD(blobResult.PixelValues[0][1].Value, blobResult.PixelValues[0][2].Value), out resultPosition);
                 }                
             }
             movePosition.X = currentPos.X + resultPosition.X;

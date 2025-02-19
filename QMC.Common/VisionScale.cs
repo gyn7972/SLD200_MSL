@@ -6,6 +6,18 @@ using System.Drawing;
 namespace QMC.Common
 {
     [Serializable]
+    public enum ParamVisionScaleKey
+    {
+        X,
+        Y,
+        XAxisT,
+        YAxisT,
+        InvertedX,
+        InvertedY,
+        UsedScaleT,
+    }
+
+    [Serializable]
     public sealed class VisionScale
     {
         #region Field
@@ -17,6 +29,8 @@ namespace QMC.Common
         private bool m_InvertedX;
         private bool m_InvertedY;
         private bool m_UsedScaleT;
+
+        public string Name { get; set; }
         #endregion
 
         #region Constructor
@@ -40,7 +54,7 @@ namespace QMC.Common
             m_XAxisT = -0.129;
             m_YAxisT = 89.959;
 
-
+            Name = "VisionScale";
         }
         public VisionScale() : this(0.0, 0.0) { }
         #endregion
@@ -128,24 +142,17 @@ namespace QMC.Common
 
             if (scale.UsedScaleT == true)
             {
-                //convertedX = qGeometry.CalculateRotationTransformation(new PointD(cameraResolution.Width / 2, 0),
-                //    new PointD(position.X, 0), -scale.XAxisT);
+                convertedX = qGeometry.CalculateRotationTransformation(new PointD(cameraResolution.Width / 2, 0),
+                    new PointD(position.X, 0), -scale.XAxisT);
 
-                //if (scale.YAxisT <= 0)
-                //    convertedY = qGeometry.CalculateRotationTransformation(new PointD(0, cameraResolution.Height / 2),
-                //        new PointD(0, position.Y), -(scale.YAxisT + 90));
-                //else if ((0 < scale.YAxisT))
-                //    convertedY = qGeometry.CalculateRotationTransformation(new PointD(0, cameraResolution.Height / 2),
-                //        new PointD(0, position.Y), -(scale.YAxisT - 90));
+                if (scale.YAxisT <= 0)
+                    convertedY = qGeometry.CalculateRotationTransformation(new PointD(0, cameraResolution.Height / 2),
+                        new PointD(0, position.Y), -(scale.YAxisT + 90));
+                else if ((0 < scale.YAxisT))
+                    convertedY = qGeometry.CalculateRotationTransformation(new PointD(0, cameraResolution.Height / 2),
+                        new PointD(0, position.Y), -(scale.YAxisT - 90));
 
-                //converted = convertedX + convertedY;
-                
-                
-                
-                converted = qGeometry.CalculateRotationTransformation(new PointD(cameraResolution.Width / 2, cameraResolution.Height / 2),
-                    new PointD(position.X, position.Y), -scale.XAxisT);
-
-                
+                converted = convertedX + convertedY;
             }
             else
             {
@@ -373,7 +380,122 @@ namespace QMC.Common
             size = new SizeD(point.X, point.Y);
             return ret;
         }
-        #endregion
-        #endregion
+
+        public ParamGroup GetGroup()
+        {
+            ParamGroup paramGroup = new ParamGroup();
+            paramGroup.Name = this.GetType().Name;
+            {
+                Param param = new Param();
+                param.SetParam(nameof(X), Param.DisplayTypeKey.Text, X, Param.ValueTypeKey.Double, paramGroup.Name);
+                paramGroup.AddParam(param);
+            }
+            {
+                Param param = new Param();
+                param.SetParam(nameof(Y), Param.DisplayTypeKey.Text, Y, Param.ValueTypeKey.Double, paramGroup.Name);
+                paramGroup.AddParam(param);
+            }
+            {
+                Param param = new Param();
+                param.SetParam(nameof(XAxisT), Param.DisplayTypeKey.Text, XAxisT, Param.ValueTypeKey.Double, paramGroup.Name);
+                paramGroup.AddParam(param);
+            }
+            {
+                Param param = new Param();
+                param.SetParam(nameof(YAxisT), Param.DisplayTypeKey.Text, YAxisT, Param.ValueTypeKey.Double, paramGroup.Name);
+                paramGroup.AddParam(param);
+            }
+            {
+                Param param = new Param();
+                param.SetParam(nameof(InvertedX), Param.DisplayTypeKey.CheckBox, InvertedX, Param.ValueTypeKey.Bool, paramGroup.Name);
+                paramGroup.AddParam(param);
+            }
+            {
+                Param param = new Param();
+                param.SetParam(nameof(InvertedY), Param.DisplayTypeKey.CheckBox, InvertedY, Param.ValueTypeKey.Bool, paramGroup.Name);
+                paramGroup.AddParam(param);
+            }
+            {
+                Param param = new Param();
+                param.SetParam(nameof(UsedScaleT), Param.DisplayTypeKey.CheckBox, UsedScaleT, Param.ValueTypeKey.Bool, paramGroup.Name);
+                paramGroup.AddParam(param);
+            }
+
+            return paramGroup;
+        }
+
+        public void SetGroup(ParamGroup paramGroup)
+        {
+            if (paramGroup != null)
+            {
+                Param param = null;
+                param = paramGroup.GetParam((int)ParamVisionScaleKey.X);
+                if (param != null)
+                {
+                    double value = 0.0;
+                    if (param.GetDoubleValue(ref value))
+                    {
+                        X = value;
+                    }
+                }
+                param = paramGroup.GetParam((int)ParamVisionScaleKey.Y);
+                if (param != null)
+                {
+                    double value = 0.0;
+                    if (param.GetDoubleValue(ref value))
+                    {
+                        Y = value;
+                    }
+                }
+                param = paramGroup.GetParam((int)ParamVisionScaleKey.XAxisT);
+                if (param != null)
+                {
+                    double value = 0.0;
+                    if (param.GetDoubleValue(ref value))
+                    {
+                        XAxisT = value;
+                    }
+                }
+                param = paramGroup.GetParam((int)ParamVisionScaleKey.YAxisT);
+                if (param != null)
+                {
+                    double value = 0.0;
+                    if (param.GetDoubleValue(ref value))
+                    {
+                        YAxisT = value;
+                    }
+                }
+                param = paramGroup.GetParam((int)ParamVisionScaleKey.InvertedX);
+                if (param != null)
+                {
+                    bool value = false;
+                    if (param.GetBoolValue(ref value))
+                    {
+                        InvertedX = value;
+                    }
+                }
+                param = paramGroup.GetParam((int)ParamVisionScaleKey.InvertedY);
+                if (param != null)
+                {
+                    bool value = false;
+                    if (param.GetBoolValue(ref value))
+                    {
+                        InvertedY = value;
+                    }
+                }
+                param = paramGroup.GetParam((int)ParamVisionScaleKey.UsedScaleT);
+                if (param != null)
+                {
+                    bool value = false;
+                    if (param.GetBoolValue(ref value))
+                    {
+                        UsedScaleT = value;
+                    }
+                }
+            }
+        }
     }
+    #endregion
+    #endregion
 }
+

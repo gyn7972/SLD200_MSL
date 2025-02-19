@@ -72,7 +72,7 @@ namespace QMC.Common.Parts
         [Category("LaserParameter")]
         [TypeConverter(typeof(LaserParameterConverter))]
         [Browsable(true)]
-        public LaserParameter LaserParameter { get; set; }
+        public LaserParameterForPitchMoveShotter LaserParameter { get; set; }
         #endregion
 
         #region Method
@@ -95,7 +95,7 @@ namespace QMC.Common.Parts
             }
 
             if (this.LaserParameter == null)
-                this.LaserParameter = new LaserParameter();
+                this.LaserParameter = new LaserParameterForPitchMoveShotter();
 
             m_Direction = ZigzagTwoDimensionPathGenerator.Direction.Horizontal;
             m_PitchDistanceX = 0;
@@ -111,7 +111,7 @@ namespace QMC.Common.Parts
 
     #region LaserParameter
     [Serializable]
-    public class LaserParameter
+    public class LaserParameterForPitchMoveShotter
     {
         #region Field
         private Equipment.RtcMode m_RtcMode;
@@ -124,7 +124,7 @@ namespace QMC.Common.Parts
         #endregion
 
         #region Constructor
-        public LaserParameter()
+        public LaserParameterForPitchMoveShotter()
         {
             Init();
         }
@@ -214,7 +214,7 @@ namespace QMC.Common.Parts
                 string s = value as string;
                 string[] token;
                 token = s.Split(',');
-                LaserParameter specification = new LaserParameter();
+                LaserParameterForPitchMoveShotter specification = new LaserParameterForPitchMoveShotter();
                 specification.RtcMode = (Equipment.RtcMode)Enum.Parse(typeof(Equipment.RtcMode), token[0]);
                 specification.LaserOnTime = double.Parse(token[1]);
                 specification.LaserOffTime = double.Parse(token[2]);
@@ -230,9 +230,9 @@ namespace QMC.Common.Parts
 
         public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
         {
-            if (destinationType == typeof(String) && value is LaserParameter)
+            if (destinationType == typeof(String) && value is LaserParameterForPitchMoveShotter)
             {
-                LaserParameter specification = value as LaserParameter;
+                LaserParameterForPitchMoveShotter specification = value as LaserParameterForPitchMoveShotter;
                 //return string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}",
                 //    specification.Velocity, specification.Acceleration, specification.Deceleration,
                 //    specification.NegativePosition, specification.PositivePosition, specification.EscapeDistance,

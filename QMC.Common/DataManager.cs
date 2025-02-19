@@ -77,9 +77,7 @@ namespace QMC.Common
                 {
                     m_dicOffsetValues.Add(strKey, parameters);
                 }
-            }
-            
-            
+            }            
         }
 
         public void ApplyConfigData(Module module)

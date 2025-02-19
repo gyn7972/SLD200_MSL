@@ -60,8 +60,8 @@ namespace QMC.Common.VisionPart
             if (InspectRoiEndLocation == null)
                 InspectRoiEndLocation = new Point();
 
-            if (IlluminationDataSet == null)
-                IlluminationDataSet = new IlluminationDataSet(part.Name);
+            //if (IlluminationDataSet == null)
+            //    IlluminationDataSet = new IlluminationDataSet(part.Name);
         }
         #endregion
 

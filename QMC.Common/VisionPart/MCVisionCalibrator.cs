@@ -26,7 +26,7 @@ namespace QMC.Common.VisionPart
 
         private MotionFunction MC_Func;
 
-        public WaferProbeAlignParameter waferProbeAlignParameter { set; get; }                            //  Laser Drilling 에서 Vision 을 사용해야 하면 이걸 갖다 쓰자. 
+        public WorkStageParameter workStageParameter { set; get; }                            //  Laser Drilling 에서 Vision 을 사용해야 하면 이걸 갖다 쓰자. 
 
         public MCVisionCalibrator(string strName) : base(strName)
         {

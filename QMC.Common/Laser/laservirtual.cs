@@ -1,10 +1,23 @@
-﻿using SpiralLab.Sirius;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+
+using SpiralLab.Sirius;
+
+//using OpenTK;
+//using OpenTK.Graphics.OpenGL;
+//using SpiralLab.Sirius2;
+//using SpiralLab.Sirius2.Laser;
+//using SpiralLab.Sirius2.PowerMeter;
+//using SpiralLab.Sirius2.Scanner;
+//using SpiralLab.Sirius2.Scanner.Rtc;
+//using SpiralLab.Sirius2.Winforms;
+//using SpiralLab.Sirius2.Winforms.Entity;
+//using SpiralLab.Sirius2.Winforms.Marker;
+//using SpiralLab.Sirius2.Winforms.UI;
 
 //namespace QMC.Core.Laser
 namespace QMC.Common.Laser

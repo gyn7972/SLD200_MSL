@@ -54,7 +54,7 @@ namespace QMC.Common.VisionPart
             }
         }
 
-        public void SetPosition(string strPosition, TargetType type, UvwzxyzCoordinate coordinate)
+        public void SetPosition(string strPosition, TargetType type, XyzLDzzxzULzzxzCoordinate coordinate)
         {
             bool bFind = false;
             foreach (var position in Parameter.GridPositions)
@@ -69,7 +69,7 @@ namespace QMC.Common.VisionPart
 
             if (!bFind)
             {
-                UvwzxyzPositionData positionData = new UvwzxyzPositionData();
+                XyzLDzzxzULzzxzPositionData positionData = new XyzLDzzxzULzzxzPositionData();
                 positionData.Coordinate = coordinate;
                 positionData.Type = type;
                 positionData.Name = strPosition;
@@ -78,9 +78,9 @@ namespace QMC.Common.VisionPart
             }
         }
 
-        public UvwzxyzCoordinate GetPosition(string strPosition)
+        public XyzLDzzxzULzzxzCoordinate GetPosition(string strPosition)
         {
-            UvwzxyzCoordinate coordinate = new UvwzxyzCoordinate();
+            XyzLDzzxzULzzxzCoordinate coordinate = new XyzLDzzxzULzzxzCoordinate();
 
             foreach (var position in Parameter.GridPositions)
             {

@@ -147,7 +147,10 @@ namespace QMC.Common.Vision.Tools
 
             this.StartLocation = new Point(100, 100);
             this.EndLocation = new Point(200, 200);
-            this.CenterLocation = new Point((this.EndLocation.X - this.StartLocation.X) / 2, (this.EndLocation.Y - this.StartLocation.Y) / 2);
+
+            //this.CenterLocation = new Point((this.EndLocation.X - this.StartLocation.X) / 2, (this.EndLocation.Y - this.StartLocation.Y) / 2);
+            this.CenterLocation = new Point((this.EndLocation.X + this.StartLocation.X) / 2, (this.EndLocation.Y + this.StartLocation.Y) / 2);            //  더해서 나눠야 중간값이 나오지 않나.... -_-
+
             this.Size = new Size(this.EndLocation.X - this.StartLocation.X, this.EndLocation.Y - this.StartLocation.Y);
             this.IsFull = false;
         }
@@ -201,9 +204,16 @@ namespace QMC.Common.Vision.Tools
             set
             {
                 this.m_Size = new Size(this.m_EndLocation.X - value.X, this.m_EndLocation.Y - value.Y);
-                this.m_CenterLocation = new Point(this.m_EndLocation.X - Size.Width / 2, this.m_EndLocation.Y - Size.Height / 2);                
+
+                //  Center 위치 계산 방법 (기존)
+                this.m_CenterLocation = new Point(this.m_EndLocation.X - Size.Width / 2, this.m_EndLocation.Y - Size.Height / 2);
+
+                ////  Center 위치 계산 방법 변경
+                //this.m_CenterLocation = new Point((this.m_EndLocation.X + this.m_StartLocation.X) / 2, (this.m_EndLocation.Y + this.m_StartLocation.Y) / 2);
+
                 if (this.Overlay == null)
                     this.Overlay = new RectangleFrameVisionImageOverlay("");
+
                 this.m_StartLocation = this.Overlay.StartLocation = value;
                 this.HasChanged = true;
             }
@@ -219,6 +229,7 @@ namespace QMC.Common.Vision.Tools
             {
                 this.m_StartLocation = new Point(value.X - this.m_Size.Width / 2, value.Y - this.m_Size.Height / 2);
                 this.m_EndLocation = new Point(value.X + this.m_Size.Width / 2, value.Y + this.m_Size.Height / 2);
+
                 if (this.Overlay == null)
                     this.Overlay = new RectangleFrameVisionImageOverlay("");
                 this.m_CenterLocation = this.Overlay.CenterLocation = value;
@@ -235,7 +246,13 @@ namespace QMC.Common.Vision.Tools
             set
             {
                 this.m_Size = new Size(value.X - this.m_StartLocation.X, value.Y - this.m_StartLocation.Y);
+
+                //  Center 위치 계산 방법 (기존)
                 this.m_CenterLocation = new Point(this.m_EndLocation.X - Size.Width / 2, this.m_EndLocation.Y - Size.Height / 2);
+
+                ////  Center 위치 계산 방법 변경
+                //this.m_CenterLocation = new Point((this.m_EndLocation.X + this.m_StartLocation.X) / 2, (this.m_EndLocation.Y + this.m_StartLocation.Y) / 2);
+
                 if (this.Overlay == null)
                     this.Overlay = new RectangleFrameVisionImageOverlay("");
                 this.m_EndLocation = this.Overlay.EndLocation = value;
@@ -251,8 +268,18 @@ namespace QMC.Common.Vision.Tools
             get { return this.m_Size; }
             set
             {
+                //  End 위치 계산 방법 (기존)
                 this.m_EndLocation = new Point(this.m_StartLocation.X + value.Width, this.m_StartLocation.Y + value.Height);
+
+                //  Center 위치 계산 방법 (기존)
                 this.m_CenterLocation = new Point(this.m_StartLocation.X + value.Width / 2, this.m_StartLocation.Y + value.Height / 2);
+
+                ////  End 위치 계산 방법 변경
+                //this.m_EndLocation = new Point(this.m_CenterLocation.X + value.Width / 2, this.m_CenterLocation.Y + value.Height / 2);
+
+                ////  Center 위치 계산 방법 변경
+                //this.m_CenterLocation = new Point((this.m_EndLocation.X + this.m_StartLocation.X) / 2, (this.m_EndLocation.Y + this.m_StartLocation.Y) / 2);
+
                 if (this.Overlay == null)
                     this.Overlay = new RectangleFrameVisionImageOverlay("");
                 this.m_Size = this.Overlay.Size = value;

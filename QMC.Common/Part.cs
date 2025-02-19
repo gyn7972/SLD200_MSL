@@ -166,10 +166,13 @@ namespace QMC.Common
             {
                 m_dicAxes[key] = axis;
 
-                m_dicAxes[key].OnMoveInterpolation += OnMoveInterpolation;
-                m_dicAxes[key].OnStopJogVelocity += OnStopJogVelocity;
-                m_dicAxes[key].OnGetAcutualInterpolationPosition += OnGetAcutualInterpolationPosition;
-                m_dicAxes[key].OnGetCommandInterpolationPosition += OnGetCommandInterpolationPosition;
+                if (m_dicAxes[key] != null)
+                {
+                    m_dicAxes[key].OnMoveInterpolation += OnMoveInterpolation;
+                    m_dicAxes[key].OnStopJogVelocity += OnStopJogVelocity;
+                    m_dicAxes[key].OnGetAcutualInterpolationPosition += OnGetAcutualInterpolationPosition;
+                    m_dicAxes[key].OnGetCommandInterpolationPosition += OnGetCommandInterpolationPosition;
+                }
             }
         }
 

@@ -9,6 +9,7 @@ namespace QMC.Common
     public class ConfigManager
     {
         private static string g_strEquipmentName;
+        private static readonly string g_strTeachingDataPath = "TeachingData";
         private static readonly string g_strConfigPath = "Config";
         private static readonly string g_strRecipePath = "Recipe";
         private static readonly string g_strBackupPath = "Backup";
@@ -23,7 +24,7 @@ namespace QMC.Common
         private static readonly string g_strExtension = "dat";
         private static readonly string g_strProductDataFile = "ProductData";
 
-        private static readonly string g_strMotFile = "CWA-150SA.mot";    //   "Motor.mot";
+        private static readonly string g_strMotFile = "SLD-200.mot";    //   "Motor.mot";
 
         public static void SetEquipmentName(string strEquipmentName)
         {
@@ -50,6 +51,19 @@ namespace QMC.Common
             //builder.Append("D:\\Test");
             builder.AppendFormat("\\{0}", g_strEquipmentName);
             builder.AppendFormat("\\{0}", g_strConfigPath);
+
+            return builder.ToString();
+        }
+
+        public static string GetTeachingDataPath()
+        {
+            StringBuilder builder = new StringBuilder();
+
+            builder.AppendFormat("C:\\Program Files\\QMC");
+            //builder.Append("D:\\Test");
+            builder.AppendFormat("\\{0}", g_strEquipmentName);
+            builder.AppendFormat("\\{0}", g_strConfigPath);
+            builder.AppendFormat("\\{0}", g_strTeachingDataPath);
 
             return builder.ToString();
         }

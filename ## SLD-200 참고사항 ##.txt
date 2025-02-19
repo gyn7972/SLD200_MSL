@@ -1,0 +1,88 @@
+* 기존 프로젝트를 변경하여 만들 경우 (Module 이름을 변경하는 경우)
+   - Setup -> Equipment -> Configuration -> Equipment 항목 -> [모듈 이름] 항목 -> [모듈 이름] Parameter 항목 -> Motion 탭 의 모터 축을 재등록 해야 한다.
+
+
+
+1. SLD-200C (CO2), SLD-200U (UV) 겸용 프로그램으로 개발
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=============================================================================================================
+//	여기는 CWA-150SA 것.
+
+1. 카메라 Serial Number
+	- 상부 카메라 : L13274925
+	- 하부 카메라 : L13274907
+
+
+2. 조명 컨트롤러 COM Port
+	- COM3
+
+
+3. UVW Stage 회전량
+	- 1도 회전하려면 각 축이 1.221668451mm 이동해야 한다. (Stage Center ~ UVW 축 까지의 거리가 70mm 일 경우에 한함.)
+	- 그런데, 회전 중심으로 양쪽이 회전하기 때문에 1도 이동량이지만, 2도만큼 회전하는 셈이 된다.
+	- 그래서, 보정 회전 이동 시 1도 회전량의 절반값으로 계산한다.
+
+
+4. Font 변경
+	- 나눔바른고딕
+	- Font 파일은 Project 의 Package 폴더에 들어 있음.
+
+
+5. General Parameter
+	- [01] 공통 - 얼라인 각도 Invert : true
+	- [01] 공통 - 얼라인 각도 계산 시 Atan 함수 사용 : true (강제 적용)
+	- [01] 공통 - 얼라인 재시도 회수 : 10
+	- [01] 얼라인 - 비전 허용 오차 (Deg) : 0.005
+	- [01] 얼라인 - 비전 허용 오차 (XY) : 0.005
+
+	- [03] Lower(Upper) Vision Scale Invert X(Y) : false
+	- [03] Lower(Upper) Vision Scale X : 0.001726468
+	- [03] Lower(Upper) Vision Scale Y : 0.001726468
+	- [03] Manual Scale Usage : true
+
+
+6. Setup -> Motion -> Axis
+	- 기타 : PulsePerPosition : 1/1 로 해야 함. (MOT 파일에서 설정하기 때문에)
+
+
+7. Config 에 장비 공통으로 적용되는 파라미터 
+	- [99] 번 파라미터
+
+
+8. 2~6호기는 1호기와 설계가 조금 다름
+	- Top Cover 구성 변경 (Clamping 방법, Unpacking 실린더 추가)
+
+
+9. Packages \ PatternImage 폴더에 NoImage.jpg 파일 있음. (폴더 내 ReadMe.txt 파일 참조)
+
+
+10. Ajin E-CAT 보드 펌웨어 버전, EzSoftwareUC 버전
+	- 1호기 : Ajin (v3.1) / UC (5.0.7.3)
+	- 2 ~ 6호기 : Ajin (v3.1) / UC (5.0.7.3)
+
+        - 1 ~ 6호기 통일 : Ajin (v2.7) / UC (5.0.7.1)
+
+
+11. 1호기를 2~6호기처럼 개조함
+
+
+12. 카메라 SN 과 해상도 데이터를 파일로 관리함
+	- C:\Program Files\QMC\CWA150SA_Onsemi\Config\Camera Setting (Do not delete or modify).ini
+
+

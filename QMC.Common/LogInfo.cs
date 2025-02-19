@@ -48,7 +48,7 @@ namespace QMC.Common
         }
         public override string ToString()
         {
-            return string.Format("{0}:{1}> {2}", m_OccurredTime.ToString("yyyy-MM-dd hh:mm:ss.fff"), Source, Message);
+            return string.Format("{0}:{1}> {2}", m_OccurredTime.ToString("yyyy-MM-dd HH:mm:ss.fff"), Source, Message);
         }
 
     }

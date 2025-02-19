@@ -1344,13 +1344,13 @@ namespace QMC.Common.Vision.EureSys
             {
                 if (isLive == true)
                     this.StopLive();
-                this.AcquisitionFinished = false;
+
                 this.CheckConnect();
                 if ((ret = this.CheckReturnCode(MultiCam.SetParam(this.Channel, (int)MultiCam.SetParameter.AcquisitionTriggerEventForce, "TRIG"), Camera.AlarmKeys.GrabFailed)) != 0) return ret;
                 
 
                 #region ProcessingCallback Check 
-               
+                this.AcquisitionFinished = false;
 
                 timeout = new TimeoutChecker(TimeSpan.FromMilliseconds(this.SignalWatingTime), true);
 
@@ -1369,7 +1369,7 @@ namespace QMC.Common.Vision.EureSys
 
                 #region EndChannelActivity Check
                 timeout = new TimeoutChecker(TimeSpan.FromMilliseconds(this.SignalWatingTime), true);
-                image.Save("D:\\VisionImage", VisionImage.FileFilter.bmp);
+
                 while (timeout.IsCompleted == false)
                 {
                     Thread.Sleep(1);
@@ -1613,12 +1613,12 @@ namespace QMC.Common.Vision.EureSys
 
         #region IPartConfigurable Members
 
-        public override int Create(/*CultureInfo cultureInfo*/)
+        public override int Create()
         {
             int ret = 0;
             string boardTopology = "";
 
-            if ((ret = base.Create(/*cultureInfo*/)) != 0) return ret;
+            if ((ret = base.Create()) != 0) return ret;
 
             try
             {

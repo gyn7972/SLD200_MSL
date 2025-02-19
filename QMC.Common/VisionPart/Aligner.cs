@@ -26,7 +26,8 @@ namespace QMC.Common.VisionPart
         public double CommandAngle { set; get; }
         //public XyztCoordinateCollection Coordinates { set; get; }
         //public XyzztCoordinateCollection Coordinates { set; get; }
-        public UvwzxyzCoordinateCollection Coordinates { set; get; }
+        //public UvwzxyzCoordinateCollection Coordinates { set; get; }
+        public XyzLDzzxzULzzxzCoordinateCollection Coordinates { set; get; }
 
         public QMCMatrix CorrectionMatrix { set; get; }
 
@@ -36,7 +37,8 @@ namespace QMC.Common.VisionPart
             RealAngle = 0;
             CommandAngle = 0;
             //Coordinates = new XyztCoordinateCollection();
-            Coordinates = new UvwzxyzCoordinateCollection();
+            //Coordinates = new UvwzxyzCoordinateCollection();
+            Coordinates = new XyzLDzzxzULzzxzCoordinateCollection();
             CorrectionMatrix = null;
         }
         public override string ToString()
@@ -58,16 +60,6 @@ namespace QMC.Common.VisionPart
                 RealAngle = double.Parse(listData[0]);
                 CommandAngle = double.Parse(listData[1]);
 
-                //Coordinates.Add(new XytCoordinate(double.Parse(listData[2]), double.Parse(listData[3]), double.Parse(listData[4])));
-                //Coordinates.Add(new XytCoordinate(double.Parse(listData[5]), double.Parse(listData[6]), double.Parse(listData[7])));
-                //Coordinates.Add(new XytCoordinate(double.Parse(listData[8]), double.Parse(listData[9]), double.Parse(listData[10])));
-                //Coordinates.Add(new XytCoordinate(double.Parse(listData[11]), double.Parse(listData[12]), double.Parse(listData[13])));
-
-                //Coordinates.Add(new XyztCoordinate(double.Parse(listData[2]), double.Parse(listData[3]), double.Parse(listData[4]), double.Parse(listData[5])));
-                //Coordinates.Add(new XyztCoordinate(double.Parse(listData[6]), double.Parse(listData[7]), double.Parse(listData[8]), double.Parse(listData[9])));
-                //Coordinates.Add(new XyztCoordinate(double.Parse(listData[10]), double.Parse(listData[11]), double.Parse(listData[12]), double.Parse(listData[13])));
-                //Coordinates.Add(new XyztCoordinate(double.Parse(listData[14]), double.Parse(listData[15]), double.Parse(listData[16]), double.Parse(listData[17])));
-
                 //  확인 필요
                 //Coordinates.Add(new XyzztCoordinate(double.Parse(listData[2]), double.Parse(listData[3]), double.Parse(listData[4]), double.Parse(listData[5]), double.Parse(listData[6])));
                 //Coordinates.Add(new XyzztCoordinate(double.Parse(listData[7]), double.Parse(listData[8]), double.Parse(listData[9]), double.Parse(listData[10]), double.Parse(listData[11])));
@@ -75,10 +67,20 @@ namespace QMC.Common.VisionPart
                 //Coordinates.Add(new XyzztCoordinate(double.Parse(listData[17]), double.Parse(listData[18]), double.Parse(listData[19]), double.Parse(listData[20]), double.Parse(listData[21])));
 
                 //  뒤에 0, 0 은 변경해야 함.
-                Coordinates.Add(new UvwzxyzCoordinate(double.Parse(listData[2]), double.Parse(listData[3]), double.Parse(listData[4]), double.Parse(listData[5]), double.Parse(listData[6]), 0, 0));
-                Coordinates.Add(new UvwzxyzCoordinate(double.Parse(listData[7]), double.Parse(listData[8]), double.Parse(listData[9]), double.Parse(listData[10]), double.Parse(listData[11]), 0, 0));
-                Coordinates.Add(new UvwzxyzCoordinate(double.Parse(listData[12]), double.Parse(listData[13]), double.Parse(listData[14]), double.Parse(listData[15]), double.Parse(listData[16]), 0, 0));
-                Coordinates.Add(new UvwzxyzCoordinate(double.Parse(listData[17]), double.Parse(listData[18]), double.Parse(listData[19]), double.Parse(listData[20]), double.Parse(listData[21]), 0, 0));
+                //Coordinates.Add(new UvwzxyzCoordinate(double.Parse(listData[2]), double.Parse(listData[3]), double.Parse(listData[4]), double.Parse(listData[5]), double.Parse(listData[6]), 0, 0));
+                //Coordinates.Add(new UvwzxyzCoordinate(double.Parse(listData[7]), double.Parse(listData[8]), double.Parse(listData[9]), double.Parse(listData[10]), double.Parse(listData[11]), 0, 0));
+                //Coordinates.Add(new UvwzxyzCoordinate(double.Parse(listData[12]), double.Parse(listData[13]), double.Parse(listData[14]), double.Parse(listData[15]), double.Parse(listData[16]), 0, 0));
+                //Coordinates.Add(new UvwzxyzCoordinate(double.Parse(listData[17]), double.Parse(listData[18]), double.Parse(listData[19]), double.Parse(listData[20]), double.Parse(listData[21]), 0, 0));
+
+                //Coordinates.Add(new XyzLDzzxzULzzxzCoordinate(double.Parse(listData[2]), double.Parse(listData[3]), double.Parse(listData[4]), double.Parse(listData[5]), double.Parse(listData[6]), double.Parse(listData[7]), double.Parse(listData[8]), double.Parse(listData[9]), double.Parse(listData[10]), double.Parse(listData[11]), double.Parse(listData[12])));
+                //Coordinates.Add(new XyzLDzzxzULzzxzCoordinate(double.Parse(listData[13]), double.Parse(listData[14]), double.Parse(listData[15]), double.Parse(listData[16]), double.Parse(listData[17]), double.Parse(listData[18]), double.Parse(listData[19]), double.Parse(listData[20]), double.Parse(listData[21]), double.Parse(listData[22]), double.Parse(listData[23])));
+                //Coordinates.Add(new XyzLDzzxzULzzxzCoordinate(double.Parse(listData[24]), double.Parse(listData[25]), double.Parse(listData[26]), double.Parse(listData[27]), double.Parse(listData[28]), double.Parse(listData[29]), double.Parse(listData[30]), double.Parse(listData[31]), double.Parse(listData[32]), double.Parse(listData[33]), double.Parse(listData[34])));
+                //Coordinates.Add(new XyzLDzzxzULzzxzCoordinate(double.Parse(listData[35]), double.Parse(listData[36]), double.Parse(listData[37]), double.Parse(listData[38]), double.Parse(listData[39]), double.Parse(listData[40]), double.Parse(listData[41]), double.Parse(listData[42]), double.Parse(listData[43]), double.Parse(listData[44]), double.Parse(listData[45])));
+
+                Coordinates.Add(new XyzLDzzxzULzzxzCoordinate(double.Parse(listData[2]), double.Parse(listData[3]), double.Parse(listData[4]), double.Parse(listData[5]), double.Parse(listData[6]), double.Parse(listData[7]), double.Parse(listData[8]), double.Parse(listData[9]), double.Parse(listData[10]), double.Parse(listData[11]), double.Parse(listData[12]), double.Parse(listData[13]), double.Parse(listData[14]), double.Parse(listData[15])));
+                Coordinates.Add(new XyzLDzzxzULzzxzCoordinate(double.Parse(listData[16]), double.Parse(listData[17]), double.Parse(listData[18]), double.Parse(listData[19]), double.Parse(listData[20]), double.Parse(listData[21]), double.Parse(listData[22]), double.Parse(listData[23]), double.Parse(listData[24]), double.Parse(listData[25]), double.Parse(listData[26]), double.Parse(listData[27]), double.Parse(listData[28]), double.Parse(listData[29])));
+                Coordinates.Add(new XyzLDzzxzULzzxzCoordinate(double.Parse(listData[30]), double.Parse(listData[31]), double.Parse(listData[32]), double.Parse(listData[33]), double.Parse(listData[34]), double.Parse(listData[35]), double.Parse(listData[36]), double.Parse(listData[37]), double.Parse(listData[38]), double.Parse(listData[39]), double.Parse(listData[40]), double.Parse(listData[41]), double.Parse(listData[42]), double.Parse(listData[43])));
+                Coordinates.Add(new XyzLDzzxzULzzxzCoordinate(double.Parse(listData[44]), double.Parse(listData[45]), double.Parse(listData[46]), double.Parse(listData[47]), double.Parse(listData[48]), double.Parse(listData[49]), double.Parse(listData[50]), double.Parse(listData[51]), double.Parse(listData[52]), double.Parse(listData[53]), double.Parse(listData[54]), double.Parse(listData[55]), double.Parse(listData[56]), double.Parse(listData[57])));
             }
         }
 
@@ -100,7 +102,7 @@ namespace QMC.Common.VisionPart
         //    }
         //}
 
-        public void GenerateMatrix(UvwzxyzCoordinateCollection coordinatesSource)
+        public void GenerateMatrix(XyzLDzzxzULzzxzCoordinateCollection coordinatesSource)
         {
             if (Coordinates != null)
             {
@@ -261,7 +263,8 @@ namespace QMC.Common.VisionPart
         //  public VisionScale Scale { set; get; }
         //public XyztStage Stage { set; get; }
         //public XyzztStage Stage { set; get; }
-        public UvwzxyzStage Stage { set; get; }
+        //public UvwzxyzStage Stage { set; get; }
+        public XyzLDzzxzULzzxzStage Stage { set; get; }
 
         public AlignerRecipe Recipe { set; get; }
         public VisionAlignerResult Result { set; get; }
@@ -436,8 +439,8 @@ namespace QMC.Common.VisionPart
         private XyCoordinate[] GetFourPointPosition(/*out XyCoordinate[] coordinates*/)
         {
             XyCoordinate[] coordinates = null;
-            //XyCoordinate referencePos = (XyCoordinate)Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.Reference.ToString());
-            XyCoordinate referencePos = (XyCoordinate)Recipe.GetAlignPositionData_UVW(AlignerRecipe.PositionAligns.Reference.ToString());
+            XyCoordinate referencePos = (XyCoordinate)Recipe.GetAlignPositionData_XY(AlignerRecipe.PositionAligns.Reference.ToString());
+            //XyCoordinate referencePos = (XyCoordinate)Recipe.GetAlignPositionData_UVW(AlignerRecipe.PositionAligns.Reference.ToString());
             XyCoordinate firstPos = referencePos;
             XyCoordinate secondPos = new XyCoordinate(firstPos.X - this.Recipe.FiducialXDistance, firstPos.Y);
             XyCoordinate thirdPos = new XyCoordinate(firstPos.X - this.Recipe.FiducialXDistance, firstPos.Y + this.Recipe.FiducialYDistance);
@@ -451,7 +454,8 @@ namespace QMC.Common.VisionPart
             XyCoordinate[] coordinates = null;
 
             //XyCoordinate referencePos = (XyCoordinate)Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.Reference.ToString());
-            XyCoordinate referencePos = (XyCoordinate)Recipe.GetAlignPositionData_UVW(AlignerRecipe.PositionAligns.Reference.ToString());
+            //XyCoordinate referencePos = (XyCoordinate)Recipe.GetAlignPositionData_UVW(AlignerRecipe.PositionAligns.Reference.ToString());
+            XyCoordinate referencePos = (XyCoordinate)Recipe.GetAlignPositionData_XY(AlignerRecipe.PositionAligns.Reference.ToString());
             XyCoordinate firstPos = referencePos;
             XyCoordinate secondPos = new XyCoordinate(firstPos.X - this.Recipe.FiducialXDistance, firstPos.Y + this.Recipe.FiducialYDistance);
 
@@ -475,7 +479,8 @@ namespace QMC.Common.VisionPart
             //XytCoordinate referencePos = Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.Reference.ToString());
             //XyztCoordinate referencePos = Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.Reference.ToString());
             //XyzztCoordinate referencePos = Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.Reference.ToString());
-            UvwzxyzCoordinate referencePos = Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.Reference.ToString());
+            //UvwzxyzCoordinate referencePos = Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.Reference.ToString());
+            XyzLDzzxzULzzxzCoordinate referencePos = Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.Reference.ToString());
             if ((this.Stage.MovePosition(referencePos) != 0)) return -1;
             //Thread.Sleep(100);
 
@@ -851,26 +856,26 @@ namespace QMC.Common.VisionPart
         //}
 
 
-        private int Scan(XyCoordinate coordinate, double dAngle, out UvwzxyzCoordinate resultCoordinate)
+        private int Scan(XyCoordinate coordinate, double dAngle, out XyzLDzzxzULzzxzCoordinate resultCoordinate)
         {
             int ret = 0;
-            resultCoordinate = new UvwzxyzCoordinate();
+            resultCoordinate = new XyzLDzzxzULzzxzCoordinate();
             //MethodCallerAsyncResult ar = null;
             PatternMatchingResult result = null;
 
-            double m_dAxisEZPos = 0.0;
-            double m_dAxisVZPos = 0.0;
+            double m_dAxisZPos = 0.0;
             //m_dAxisZPos = this.Stage.GetCurrentActualPosition(XyztStage.MotionKey.Z.ToString());
             //m_dAxisIZPos = this.Stage.GetCurrentActualPosition(XyzztStage.MotionKey.IZ.ToString());
             //m_dAxisSZPos = this.Stage.GetCurrentActualPosition(XyzztStage.MotionKey.SZ.ToString());
-            m_dAxisEZPos = this.Stage.GetCurrentActualPosition(UvwzxyzStage.MotionKey.EZ.ToString());
-            m_dAxisVZPos = this.Stage.GetCurrentActualPosition(UvwzxyzStage.MotionKey.VZ.ToString());
+            m_dAxisZPos = this.Stage.GetCurrentActualPosition(UvwzxyzStage.MotionKey.EZ.ToString());
 
             //if()
             //if ((ret = this.MotionMover.Motion.MoveSync(coordinate, this.AssignedSubRecipeItem.VelocityPercent)) != 0) return ret;
             //if ((ret = this.Stage.MovePosition(new XyztCoordinate(coordinate.X, coordinate.Y, m_dAxisZPos, dAngle))) != 0) return ret;              //  2023. 05. 19.  SCH : Z 축이 문제가 될 경우, Z 축 이동시키지 않도록 코드 변경하기로...
             //if ((ret = this.Stage.MovePosition(new XyzztCoordinate(coordinate.X, coordinate.Y, m_dAxisIZPos, m_dAxisSZPos, dAngle))) != 0) return ret;              //  2023. 05. 19.  SCH : Z 축이 문제가 될 경우, Z 축 이동시키지 않도록 코드 변경하기로...
-            if ((ret = this.Stage.MovePosition(new UvwzxyzCoordinate(coordinate.X, coordinate.Y, coordinate.Y, m_dAxisEZPos, 0, 0, 0))) != 0) return ret;
+            //if ((ret = this.Stage.MovePosition(new UvwzxyzCoordinate(coordinate.X, coordinate.Y, coordinate.Y, m_dAxisEZPos, 0, 0, 0))) != 0) return ret;
+            //if ((ret = this.Stage.MovePosition(new XyzLDzzxzULzzxzCoordinate(coordinate.X, coordinate.Y, m_dAxisZPos, 0, 0, 0, 0, 0, 0, 0, 0))) != 0) return ret;
+            if ((ret = this.Stage.MovePosition(new XyzLDzzxzULzzxzCoordinate(coordinate.X, coordinate.Y, m_dAxisZPos, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))) != 0) return ret;
 
             // SafeThread.Delay(this.ConstructConfiguration.DelayAfterMove);
 
@@ -895,14 +900,15 @@ namespace QMC.Common.VisionPart
 
             //if ((ret = VisionScale.ConvertPosition<XyCoordinate, XyztCoordinate>(Scale, this.Camera.Resolution, (XyCoordinate)coordinate, new PointD(result.Values[0].X, result.Values[0].Y), out resultCoordinate)) != 0) return ret;
             //if ((ret = VisionScale.ConvertPosition<XyCoordinate, XyzztCoordinate>(Scale, this.Camera.Resolution, (XyCoordinate)coordinate, new PointD(result.Values[0].X, result.Values[0].Y), out resultCoordinate)) != 0) return ret;
-            if ((ret = VisionScale.ConvertPosition<XyCoordinate, UvwzxyzCoordinate>(Scale, this.Camera.Resolution, (XyCoordinate)coordinate, new PointD(result.Values[0].X, result.Values[0].Y), out resultCoordinate)) != 0) return ret;
+            //if ((ret = VisionScale.ConvertPosition<XyCoordinate, UvwzxyzCoordinate>(Scale, this.Camera.Resolution, (XyCoordinate)coordinate, new PointD(result.Values[0].X, result.Values[0].Y), out resultCoordinate)) != 0) return ret;
+            if ((ret = VisionScale.ConvertPosition<XyCoordinate, XyzLDzzxzULzzxzCoordinate>(Scale, this.Camera.Resolution, (XyCoordinate)coordinate, new PointD(result.Values[0].X, result.Values[0].Y), out resultCoordinate)) != 0) return ret;
             //}
 
             //resultCoordinate.T = dAngle;
-            //  UVW 로 계산해야 함
-            resultCoordinate.U = dAngle;
-            resultCoordinate.V = dAngle;
-            resultCoordinate.W = dAngle;
+            //  UVW 로 계산해야 함            --> Theta 보정 방법 없음
+            //resultCoordinate.X = dAngle;
+            //resultCoordinate.Y = dAngle;
+            //resultCoordinate.Z = dAngle;
             return ret;
         }
 
@@ -976,10 +982,10 @@ namespace QMC.Common.VisionPart
         //    return ret;
         //}
 
-        private int FourPointRotateAlign(XyCoordinate centerCoordinate, double dAngle, int nIndex, out UvwzxyzCoordinate resultCoordinate)
+        private int FourPointRotateAlign(XyCoordinate centerCoordinate, double dAngle, int nIndex, out XyzLDzzxzULzzxzCoordinate resultCoordinate)
         {
             int ret = 0;
-            resultCoordinate = new UvwzxyzCoordinate();
+            resultCoordinate = new XyzLDzzxzULzzxzCoordinate();
             int nRetry = Recipe.RetryCount;
             while (true)
             {
@@ -1256,16 +1262,15 @@ namespace QMC.Common.VisionPart
 
                 absoluteAngle = currenCoordinate.T + relativeAngle;
 
-                double m_dAxisIZPos = 0.0;
-                double m_dAxisSZPos = 0.0;
+                double m_dAxisZPos = 0.0;
                 //m_dAxisZPos = this.Stage.GetCurrentActualPosition(XyztStage.MotionKey.Z.ToString());
-                m_dAxisIZPos = this.Stage.GetCurrentActualPosition(XyzztStage.MotionKey.IZ.ToString());
-                m_dAxisSZPos = this.Stage.GetCurrentActualPosition(XyzztStage.MotionKey.SZ.ToString());
+                m_dAxisZPos = this.Stage.GetCurrentActualPosition(XyzLDzzxzULzzxzStage.MotionKey.Z.ToString());
 
                 //if ((ret = this.Stage.MovePosition(new XyztCoordinate(currenCoordinate.X, currenCoordinate.Y, m_dAxisZPos, absoluteAngle))) != 0) return ret;       //  2023. 05. 19.  SCH : Z 축이 문제가 될 경우, Z 축 이동시키지 않도록 코드 변경하기로...
                 //if ((ret = this.Stage.MovePosition(new XyzztCoordinate(currenCoordinate.X, currenCoordinate.Y, m_dAxisIZPos, m_dAxisSZPos, absoluteAngle))) != 0) return ret;       //  2023. 05. 19.  SCH : Z 축이 문제가 될 경우, Z 축 이동시키지 않도록 코드 변경하기로...
-
-                if ((ret = this.Stage.MovePosition(new UvwzxyzCoordinate(currenCoordinate.X, currenCoordinate.Y, currenCoordinate.Y, 0, 0, 0, 0))) != 0) return ret;       //  2023. 11. 23.  SCH : XYT 를 UVW 로 변환해야 한다... 계산식 체크 필요
+                //if ((ret = this.Stage.MovePosition(new UvwzxyzCoordinate(currenCoordinate.X, currenCoordinate.Y, currenCoordinate.Y, 0, 0, 0, 0))) != 0) return ret;       //  2023. 11. 23.  SCH : XYT 를 UVW 로 변환해야 한다... 계산식 체크 필요
+                //if ((ret = this.Stage.MovePosition(new XyzLDzzxzULzzxzCoordinate(currenCoordinate.X, currenCoordinate.Y, m_dAxisZPos, 0, 0, 0, 0, 0, 0, 0, 0))) != 0) return ret;
+                if ((ret = this.Stage.MovePosition(new XyzLDzzxzULzzxzCoordinate(currenCoordinate.X, currenCoordinate.Y, m_dAxisZPos, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))) != 0) return ret;
 
                 centerCoordinates[0] = (XyCoordinate)this.ConvertCoordinate(coordinates[0], -relativeAngle);
                 centerCoordinates[1] = (XyCoordinate)this.ConvertCoordinate(coordinates[1], -relativeAngle);
@@ -1650,38 +1655,40 @@ namespace QMC.Common.VisionPart
         public override void UpdateConfigData() //참고 : 오버라이드,, 파트 콜
         {
 
-            DieUnloader dieUnloader = Owner as DieUnloader;
-            if (dieUnloader != null)
-            {
-                if (Recipe.IlluminationDataSet == null)
-                    Recipe.IlluminationDataSet = new IlluminationDataSet(Name);
-                Recipe.IlluminationDataSet.SetIlluminationChannel(dieUnloader.Config.ListIlluminationChannel);
-            }
+            //DieUnloader dieUnloader = Owner as DieUnloader;
+            //if (dieUnloader != null)
+            //{
+            //    if (Recipe.IlluminationDataSet == null)
+            //        Recipe.IlluminationDataSet = new IlluminationDataSet(Name);
+            //    Recipe.IlluminationDataSet.SetIlluminationChannel(dieUnloader.Config.ListIlluminationChannel);
+            //}
 
-            DieLoader dieloader = Owner as DieLoader;
-            if (dieloader != null)
+            Loader loader = Owner as Loader;
+            if (loader != null)
             {
                 if (Recipe.IlluminationDataSet == null)
                     Recipe.IlluminationDataSet = new IlluminationDataSet(Name);
-                Recipe.IlluminationDataSet.SetIlluminationChannel(dieloader.Config.ListIlluminationChannel);
+                Recipe.IlluminationDataSet.SetIlluminationChannel(loader.Config.ListIlluminationChannel);
             }
         }
         public override void UpdateRecipeData()
         {
-            DieUnloader dieUnloader = Owner as DieUnloader;
-            if (dieUnloader != null)
-            {
-                this.Recipe = dieUnloader.Recipe.AlignerRecipe;
-                if (this.Recipe.IlluminationDataSet != null)
-                {
-                    IlluminationData = this.Recipe.IlluminationDataSet;
-                }
-                else
-                {
-                    this.Recipe.IlluminationDataSet = new IlluminationDataSet(Name);
-                }
-                Recipe.Init(this);
-            }
+            //  2025. 01. 15.  SCH : Unloader 임시 주석 
+
+            //DieUnloader dieUnloader = Owner as DieUnloader;
+            //if (dieUnloader != null)
+            //{
+            //    this.Recipe = dieUnloader.Recipe.AlignerRecipe;
+            //    if (this.Recipe.IlluminationDataSet != null)
+            //    {
+            //        IlluminationData = this.Recipe.IlluminationDataSet;
+            //    }
+            //    else
+            //    {
+            //        this.Recipe.IlluminationDataSet = new IlluminationDataSet(Name);
+            //    }
+            //    Recipe.Init(this);
+            //}
 
             base.UpdateRecipeData();
         }
@@ -1780,22 +1787,41 @@ namespace QMC.Common.VisionPart
         //    return xyzztCoordinates;
         //}
 
-        private UvwzxyzCoordinateCollection RotateAllFiducial(double dAngle)
+        //private UvwzxyzCoordinateCollection RotateAllFiducial(double dAngle)
+        //{
+
+        //    UvwzxyzCoordinateCollection uvwzxyzCoordinates = new UvwzxyzCoordinateCollection();
+
+        //    XyCoordinate firstFiducial = (XyCoordinate)Recipe.GetAlignPositionData_XY(AlignerRecipe.PositionAligns.First.ToString());
+        //    XyCoordinate secondFiducial = (XyCoordinate)Recipe.GetAlignPositionData_XY(AlignerRecipe.PositionAligns.Second.ToString());
+        //    XyCoordinate thirdFiducial = (XyCoordinate)Recipe.GetAlignPositionData_XY(AlignerRecipe.PositionAligns.Third.ToString());
+        //    XyCoordinate fourthFiducial = (XyCoordinate)Recipe.GetAlignPositionData_XY(AlignerRecipe.PositionAligns.Forth.ToString());
+
+        //    uvwzxyzCoordinates.Add(RotateTransformation(firstFiducial, dAngle));
+        //    uvwzxyzCoordinates.Add(RotateTransformation(secondFiducial, dAngle));
+        //    uvwzxyzCoordinates.Add(RotateTransformation(thirdFiducial, dAngle));
+        //    uvwzxyzCoordinates.Add(RotateTransformation(fourthFiducial, dAngle));
+
+        //    return uvwzxyzCoordinates;
+        //}
+
+        private XyzLDzzxzULzzxzCoordinateCollection RotateAllFiducial(double dAngle)
         {
 
-            UvwzxyzCoordinateCollection uvwzxyzCoordinates = new UvwzxyzCoordinateCollection();
+            XyzLDzzxzULzzxzCoordinateCollection xyzLDzzxzULzzxzCoordinates = new XyzLDzzxzULzzxzCoordinateCollection();
 
-            XyCoordinate firstFiducial = (XyCoordinate)Recipe.GetAlignPositionData_UVW(AlignerRecipe.PositionAligns.First.ToString());
-            XyCoordinate secondFiducial = (XyCoordinate)Recipe.GetAlignPositionData_UVW(AlignerRecipe.PositionAligns.Second.ToString());
-            XyCoordinate thirdFiducial = (XyCoordinate)Recipe.GetAlignPositionData_UVW(AlignerRecipe.PositionAligns.Third.ToString());
-            XyCoordinate fourthFiducial = (XyCoordinate)Recipe.GetAlignPositionData_UVW(AlignerRecipe.PositionAligns.Forth.ToString());
+            XyCoordinate firstFiducial = (XyCoordinate)Recipe.GetAlignPositionData_XY(AlignerRecipe.PositionAligns.First.ToString());
+            XyCoordinate secondFiducial = (XyCoordinate)Recipe.GetAlignPositionData_XY(AlignerRecipe.PositionAligns.Second.ToString());
+            XyCoordinate thirdFiducial = (XyCoordinate)Recipe.GetAlignPositionData_XY(AlignerRecipe.PositionAligns.Third.ToString());
+            XyCoordinate fourthFiducial = (XyCoordinate)Recipe.GetAlignPositionData_XY(AlignerRecipe.PositionAligns.Forth.ToString());
 
-            uvwzxyzCoordinates.Add(RotateTransformation(firstFiducial, dAngle));
-            uvwzxyzCoordinates.Add(RotateTransformation(secondFiducial, dAngle));
-            uvwzxyzCoordinates.Add(RotateTransformation(thirdFiducial, dAngle));
-            uvwzxyzCoordinates.Add(RotateTransformation(fourthFiducial, dAngle));
+            //  2025. 01. 09.  SCH : 임시 주석
+            //xyzLDzzxzULzzxzCoordinates.Add(RotateTransformation(firstFiducial, dAngle));
+            //xyzLDzzxzULzzxzCoordinates.Add(RotateTransformation(secondFiducial, dAngle));
+            //xyzLDzzxzULzzxzCoordinates.Add(RotateTransformation(thirdFiducial, dAngle));
+            //xyzLDzzxzULzzxzCoordinates.Add(RotateTransformation(fourthFiducial, dAngle));
 
-            return uvwzxyzCoordinates;
+            return xyzLDzzxzULzzxzCoordinates;
         }
 
         //private XytCoordinateCollection GetFiducialPosition(double dAngle)
@@ -1849,21 +1875,38 @@ namespace QMC.Common.VisionPart
         //    return xyzztCoordinates;
         //}
 
-        private UvwzxyzCoordinateCollection GetFiducialPosition(double dAngle)
+        //private UvwzxyzCoordinateCollection GetFiducialPosition(double dAngle)
+        //{
+        //    UvwzxyzCoordinateCollection uvwzxyzCoordinates = new UvwzxyzCoordinateCollection();
+
+        //    UvwzxyzCoordinate firstFiducial = Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.First.ToString());
+        //    UvwzxyzCoordinate secondFiducial = Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.Second.ToString());
+        //    UvwzxyzCoordinate thirdFiducial = Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.Third.ToString());
+        //    UvwzxyzCoordinate fourthFiducial = Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.Forth.ToString());
+
+        //    uvwzxyzCoordinates.Add(firstFiducial);
+        //    uvwzxyzCoordinates.Add(secondFiducial);
+        //    uvwzxyzCoordinates.Add(thirdFiducial);
+        //    uvwzxyzCoordinates.Add(fourthFiducial);
+
+        //    return uvwzxyzCoordinates;
+        //}
+
+        private XyzLDzzxzULzzxzCoordinateCollection GetFiducialPosition(double dAngle)
         {
-            UvwzxyzCoordinateCollection uvwzxyzCoordinates = new UvwzxyzCoordinateCollection();
+            XyzLDzzxzULzzxzCoordinateCollection xyzLDzzxzULzzxzCoordinates = new XyzLDzzxzULzzxzCoordinateCollection();
 
-            UvwzxyzCoordinate firstFiducial = Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.First.ToString());
-            UvwzxyzCoordinate secondFiducial = Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.Second.ToString());
-            UvwzxyzCoordinate thirdFiducial = Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.Third.ToString());
-            UvwzxyzCoordinate fourthFiducial = Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.Forth.ToString());
+            XyzLDzzxzULzzxzCoordinate firstFiducial = Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.First.ToString());
+            XyzLDzzxzULzzxzCoordinate secondFiducial = Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.Second.ToString());
+            XyzLDzzxzULzzxzCoordinate thirdFiducial = Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.Third.ToString());
+            XyzLDzzxzULzzxzCoordinate fourthFiducial = Recipe.GetAlignPositionData(AlignerRecipe.PositionAligns.Forth.ToString());
 
-            uvwzxyzCoordinates.Add(firstFiducial);
-            uvwzxyzCoordinates.Add(secondFiducial);
-            uvwzxyzCoordinates.Add(thirdFiducial);
-            uvwzxyzCoordinates.Add(fourthFiducial);
+            xyzLDzzxzULzzxzCoordinates.Add(firstFiducial);
+            xyzLDzzxzULzzxzCoordinates.Add(secondFiducial);
+            xyzLDzzxzULzzxzCoordinates.Add(thirdFiducial);
+            xyzLDzzxzULzzxzCoordinates.Add(fourthFiducial);
 
-            return uvwzxyzCoordinates;
+            return xyzLDzzxzULzzxzCoordinates;
         }
 
         #endregion
@@ -1881,8 +1924,11 @@ namespace QMC.Common.VisionPart
             //XyzztCoordinateCollection SourceCoordinates = new XyzztCoordinateCollection();
             //XyzztCoordinateCollection TargetCoordinates = new XyzztCoordinateCollection();
 
-            UvwzxyzCoordinateCollection SourceCoordinates = new UvwzxyzCoordinateCollection();
-            UvwzxyzCoordinateCollection TargetCoordinates = new UvwzxyzCoordinateCollection();
+            //UvwzxyzCoordinateCollection SourceCoordinates = new UvwzxyzCoordinateCollection();
+            //UvwzxyzCoordinateCollection TargetCoordinates = new UvwzxyzCoordinateCollection();
+
+            XyzLDzzxzULzzxzCoordinateCollection SourceCoordinates = new XyzLDzzxzULzzxzCoordinateCollection();
+            XyzLDzzxzULzzxzCoordinateCollection TargetCoordinates = new XyzLDzzxzULzzxzCoordinateCollection();
 
             TargetCoordinates = GetFiducialPosition(dAngle);
             thetaCorrection.Coordinates = TargetCoordinates;

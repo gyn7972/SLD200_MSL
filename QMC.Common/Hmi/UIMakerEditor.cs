@@ -65,7 +65,7 @@ namespace QMC.Common.Hmi
                 ModuleCollection moduels = Equipment.Modules;
                 if (moduels != null)
                 {
-                    InitTreeView(m_TreeView, "CWA-150SA_Onsemi", moduels);
+                    InitTreeView(m_TreeView, "SLD-200_MSL", moduels);
                 }
                 /////////////////////////////////////////////////////////
                 if(wfes.ShowDialog(m_form) == DialogResult.OK)

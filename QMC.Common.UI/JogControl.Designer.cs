@@ -1,4 +1,7 @@
 ﻿
+using System.Drawing;
+using System.Windows.Forms;
+
 namespace QMC.Common.UI
 {
     partial class JogControl
@@ -58,27 +61,29 @@ namespace QMC.Common.UI
             // radioButtonContinuous
             // 
             this.radioButtonContinuous.AutoSize = true;
-            this.radioButtonContinuous.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.radioButtonContinuous.BackColor = System.Drawing.Color.Gainsboro;
+            this.radioButtonContinuous.ForeColor = System.Drawing.Color.Black;
             this.radioButtonContinuous.Location = new System.Drawing.Point(6, 156);
             this.radioButtonContinuous.Name = "radioButtonContinuous";
             this.radioButtonContinuous.Size = new System.Drawing.Size(87, 16);
             this.radioButtonContinuous.TabIndex = 3;
             this.radioButtonContinuous.TabStop = true;
             this.radioButtonContinuous.Text = "Continuous";
-            this.radioButtonContinuous.UseVisualStyleBackColor = true;
+            this.radioButtonContinuous.UseVisualStyleBackColor = false;
             this.radioButtonContinuous.CheckedChanged += new System.EventHandler(this.radioButtonContinuous_CheckedChanged);
             // 
             // radioButtonStep
             // 
             this.radioButtonStep.AutoSize = true;
-            this.radioButtonStep.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.radioButtonStep.BackColor = System.Drawing.Color.Gainsboro;
+            this.radioButtonStep.ForeColor = System.Drawing.Color.Black;
             this.radioButtonStep.Location = new System.Drawing.Point(6, 134);
             this.radioButtonStep.Name = "radioButtonStep";
             this.radioButtonStep.Size = new System.Drawing.Size(48, 16);
             this.radioButtonStep.TabIndex = 4;
             this.radioButtonStep.TabStop = true;
             this.radioButtonStep.Text = "Step";
-            this.radioButtonStep.UseVisualStyleBackColor = true;
+            this.radioButtonStep.UseVisualStyleBackColor = false;
             this.radioButtonStep.CheckedChanged += new System.EventHandler(this.radioButtonStep_CheckedChanged);
             // 
             // flowLayoutPanelJogButtonComb
@@ -115,7 +120,7 @@ namespace QMC.Common.UI
             this.groupBoxJogControl.Controls.Add(this.dataGridViewJogControl);
             this.groupBoxJogControl.Controls.Add(this.radioButtonContinuous);
             this.groupBoxJogControl.Controls.Add(this.radioButtonStep);
-            this.groupBoxJogControl.ForeColor = System.Drawing.Color.White;
+            this.groupBoxJogControl.ForeColor = System.Drawing.Color.DarkBlue;
             this.groupBoxJogControl.Location = new System.Drawing.Point(0, 0);
             this.groupBoxJogControl.Name = "groupBoxJogControl";
             this.groupBoxJogControl.Size = new System.Drawing.Size(472, 380);

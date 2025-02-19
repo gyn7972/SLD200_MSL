@@ -131,7 +131,7 @@ namespace QMC.Common.VisionPart
 
             if (m_PatternMatchingTool.Result.Values.Count <= 0)
             {
-                Log.Write(this.Name, "VisionCalibrator Fail");
+                //Log.Write(this.Name, "VisionCalibrator Fail");
                 return ret;
             }
 
@@ -193,7 +193,7 @@ namespace QMC.Common.VisionPart
 
             if (m_PatternMatchingTool.Result.Values.Count <= 0)
             {
-                Log.Write(this.Name, "VisionCalibrator Fail");
+                //Log.Write(this.Name, "VisionCalibrator Fail");
                 return ret;
             }
 

@@ -15,11 +15,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 
-//public enum Polarity
-//{
-//    LightBlobs,
-//    DarkBlobs
-//}
+public enum Polarity
+{
+    LightBlobs,
+    DarkBlobs
+}
 
 
 namespace QMC.Common.Vision.Tools

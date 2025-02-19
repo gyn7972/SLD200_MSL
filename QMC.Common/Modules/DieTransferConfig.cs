@@ -33,7 +33,7 @@ namespace QMC.Common.Modules
         public GrabLinkMultiCamCameraConfig GrabLinkMultiCamCameraConfig { get; set; }
         [Browsable(false)]
         public List<IlluminationChannel> ListIlluminationChannel { set; get; }
-        public ColletXYPositionCalibratorConfig XYCalibratorConfig { set; get; }
+        //public ColletXYPositionCalibratorConfig XYCalibratorConfig { set; get; }
 
         //[Browsable(false)]
         //public HIKGigECameraConfig HIKGigECameraConfig { set; get; }
@@ -156,8 +156,8 @@ namespace QMC.Common.Modules
             if (ListIlluminationChannel == null)
                 ListIlluminationChannel = new List<IlluminationChannel>();
 
-            if (XYCalibratorConfig == null)
-                XYCalibratorConfig = new ColletXYPositionCalibratorConfig();
+            //if (XYCalibratorConfig == null)
+            //    XYCalibratorConfig = new ColletXYPositionCalibratorConfig();
 
             if (GrabLinkMultiCamCameraConfig == null)
                 GrabLinkMultiCamCameraConfig = new GrabLinkMultiCamCameraConfig();

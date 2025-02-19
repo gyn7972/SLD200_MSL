@@ -10,7 +10,7 @@ namespace QMC.Common.Modules
     [Serializable]
     public class DieTransferRecipe
     {
-        public ColletXYPositionCalibratorRecipe XYCalibratorRecipe { get; set; }
+        //public ColletXYPositionCalibratorRecipe XYCalibratorRecipe { get; set; }
         public DieSearcherRecipe DieSearcherRecipe { get; set; }
         public IlluminationDataList IlluminationDataSets { get; set; }
 
@@ -40,8 +40,8 @@ namespace QMC.Common.Modules
         {
             if(IlluminationDataSets == null)
                 IlluminationDataSets = new IlluminationDataList();
-            if (XYCalibratorRecipe == null)
-                XYCalibratorRecipe = new ColletXYPositionCalibratorRecipe(dieTransfer.PositionCalibrator);
+            //if (XYCalibratorRecipe == null)
+            //    XYCalibratorRecipe = new ColletXYPositionCalibratorRecipe(dieTransfer.PositionCalibrator);
             if (DieSearcherRecipe == null)
                 DieSearcherRecipe = new DieSearcherRecipe(dieTransfer.DieSearcher);
 

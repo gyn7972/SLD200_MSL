@@ -29,7 +29,7 @@ namespace QMC.Common.Parts
 
         public override void UpdateConfigData() //참고 : Override
         {
-            DieLoader dieLoader = Owner as DieLoader;
+            Loader loader = Owner as Loader;
             
         }
     }

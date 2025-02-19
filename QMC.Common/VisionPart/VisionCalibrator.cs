@@ -49,7 +49,10 @@ namespace QMC.Common.VisionPart
         }
         //public XyztStage XyztStage { set; get; }
         //public XyzztStage XyzztStage { set; get; }
-        public UvwzxyzStage UvwzxyzStage { set; get; }
+        //public UvwzxyzStage UvwzxyzStage { set; get; }
+        public XyzLDzzxzULzzxzStage XyzLDzzxzULzzxzStage { set; get; }
+        public XyzyStage XyzyStage { set; get; }
+
         public VisionCalibratorConfig Config { set; get; }
         public VisionCalibratorRecipe Recipe { set; get; }
         #endregion
@@ -116,12 +119,23 @@ namespace QMC.Common.VisionPart
         //    return current;
         //}
 
-        public UvwzxyzCoordinate GetCurrentPosition()
+        //public UvwzxyzCoordinate GetCurrentPosition()
+        //{
+        //    UvwzxyzCoordinate current = new UvwzxyzCoordinate();
+        //    if (UvwzxyzStage != null)
+        //    {
+        //        UvwzxyzStage.GetActualPosition(ref current);
+        //    }
+
+        //    return current;
+        //}
+
+        public XyzLDzzxzULzzxzCoordinate GetCurrentPosition()
         {
-            UvwzxyzCoordinate current = new UvwzxyzCoordinate();
-            if (UvwzxyzStage != null)
+            XyzLDzzxzULzzxzCoordinate current = new XyzLDzzxzULzzxzCoordinate();
+            if (XyzLDzzxzULzzxzStage != null)
             {
-                UvwzxyzStage.GetActualPosition(ref current);
+                XyzLDzzxzULzzxzStage.GetActualPosition(ref current);
             }
 
             return current;
@@ -133,9 +147,12 @@ namespace QMC.Common.VisionPart
             bool isCompensation = false;
 
             PatternMatchingResult patternMatchingResult = null;
+
             //XyztCoordinate targetCoordinate = new XyztCoordinate();
             //XyzztCoordinate targetCoordinate = new XyzztCoordinate();
-            UvwzxyzCoordinate targetCoordinate = new UvwzxyzCoordinate();
+            //UvwzxyzCoordinate targetCoordinate = new UvwzxyzCoordinate();
+            XyzLDzzxzULzzxzCoordinate targetCoordinate = new XyzLDzzxzULzzxzCoordinate();
+
             XyCoordinate coodinate = new XyCoordinate();
             DirectionResultKeyedCollection directionResult = new DirectionResultKeyedCollection();
             double temp = 0.0;
@@ -226,9 +243,38 @@ namespace QMC.Common.VisionPart
         //    return coordinate;
         //}
 
-        protected virtual UvwzxyzCoordinate GetTargetCoordinate(MoveDirection direction)
+        //protected virtual UvwzxyzCoordinate GetTargetCoordinate(MoveDirection direction)
+        //{
+        //    UvwzxyzCoordinate coordinate = new UvwzxyzCoordinate();
+
+        //    //if (direction == MoveDirection.Start)
+        //    //    coordinate = this.Config.VisionCalPositions[(int)VisionCalibratorConfig.PositionVisionCal.Start].Coordinate;
+        //    //else if (direction == MoveDirection.Top)
+        //    //    coordinate = this.Config.VisionCalPositions[(int)VisionCalibratorConfig.PositionVisionCal.Start].Coordinate + new XyztCoordinate(0, this.Config.MoveDistance, 0.0, 0.0);
+        //    //else if (direction == MoveDirection.Bottom)
+        //    //    coordinate = this.Config.VisionCalPositions[(int)VisionCalibratorConfig.PositionVisionCal.Start].Coordinate + new XyztCoordinate(0, this.Config.MoveDistance * -1, 0.0, 0.0);
+        //    //else if (direction == MoveDirection.Left)
+        //    //    coordinate = this.Config.VisionCalPositions[(int)VisionCalibratorConfig.PositionVisionCal.Start].Coordinate + new XyztCoordinate(this.Config.MoveDistance * -1, 0, 0.0, 0.0);
+        //    //else if (direction == MoveDirection.Right)
+        //    //    coordinate = this.Config.VisionCalPositions[(int)VisionCalibratorConfig.PositionVisionCal.Start].Coordinate + new XyztCoordinate(this.Config.MoveDistance, 0, 0.0, 0.0);
+
+        //    //if (direction == MoveDirection.Start)
+        //    //    coordinate = this.Config.VisionCalPositions[(int)VisionCalibratorConfig.PositionVisionCal.Start].Coordinate;
+        //    //else if (direction == MoveDirection.Top)
+        //    //    coordinate = this.Config.VisionCalPositions[(int)VisionCalibratorConfig.PositionVisionCal.Start].Coordinate + new XyzztCoordinate(0, this.Config.MoveDistance, 0.0, 0.0, 0.0);
+        //    //else if (direction == MoveDirection.Bottom)
+        //    //    coordinate = this.Config.VisionCalPositions[(int)VisionCalibratorConfig.PositionVisionCal.Start].Coordinate + new XyzztCoordinate(0, this.Config.MoveDistance * -1, 0.0, 0.0, 0.0);
+        //    //else if (direction == MoveDirection.Left)
+        //    //    coordinate = this.Config.VisionCalPositions[(int)VisionCalibratorConfig.PositionVisionCal.Start].Coordinate + new XyzztCoordinate(this.Config.MoveDistance * -1, 0, 0.0, 0.0, 0.0);
+        //    //else if (direction == MoveDirection.Right)
+        //    //    coordinate = this.Config.VisionCalPositions[(int)VisionCalibratorConfig.PositionVisionCal.Start].Coordinate + new XyzztCoordinate(this.Config.MoveDistance, 0, 0.0, 0.0, 0.0);
+
+        //    return coordinate;
+        //}
+
+        protected virtual XyzLDzzxzULzzxzCoordinate GetTargetCoordinate(MoveDirection direction)
         {
-            UvwzxyzCoordinate coordinate = new UvwzxyzCoordinate();
+            XyzLDzzxzULzzxzCoordinate coordinate = new XyzLDzzxzULzzxzCoordinate();
 
             //if (direction == MoveDirection.Start)
             //    coordinate = this.Config.VisionCalPositions[(int)VisionCalibratorConfig.PositionVisionCal.Start].Coordinate;
@@ -285,12 +331,12 @@ namespace QMC.Common.VisionPart
         //    return ret;
         //}
 
-        protected virtual int PatternMatchingAfterMove(UvwzxyzCoordinate coordinate, out PatternMatchingResult result)
+        protected virtual int PatternMatchingAfterMove(XyzLDzzxzULzzxzCoordinate coordinate, out PatternMatchingResult result)
         {
             int ret = 0;
             result = null;
 
-            if ((ret = this.UvwzxyzStage.MovePosition(coordinate)) != 0) return ret;
+            if ((ret = this.XyzLDzzxzULzzxzStage.MovePosition(coordinate)) != 0) return ret;
 
             Thread.Sleep(1000);
 
@@ -324,14 +370,14 @@ namespace QMC.Common.VisionPart
 
         public override void UpdateConfigData() //참고 : 오버라이드,, 파트 콜
         {
-            WaferProbeAlign waferProbeAlign = Owner as WaferProbeAlign;
-            if (waferProbeAlign != null)
+            WorkStage workStage = Owner as WorkStage;
+            if (workStage != null)
             {
-                Config = waferProbeAlign.Config.VisonCalibratorConfig_Upper;
+                Config = workStage.Config.VisonCalibratorConfig_HighRes;
                 Config.Init();
                 if (Recipe.IlluminationDataSet == null)
                     Recipe.IlluminationDataSet = new IlluminationDataSet(Name);
-                Recipe.IlluminationDataSet.SetIlluminationChannel(waferProbeAlign.Config.ListIlluminationChannel);
+                Recipe.IlluminationDataSet.SetIlluminationChannel(workStage.Config.ListIlluminationChannel);
             }
         }
 

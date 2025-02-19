@@ -25,7 +25,8 @@ namespace QMC.Common.VisionPart
 
         //public XyztStage Stage { set; get; }
         //public XyzztStage Stage { set; get; }
-        public UvwzxyzStage Stage { set; get; }
+        //public UvwzxyzStage Stage { set; get; }
+        public XyzLDzzxzULzzxzStage Stage { set; get; }
         public MaterialCompansatorRecipe Recipe { set; get; }
         public IlluminationDataSet IlluminationData { set; get; }
         public XyCoordinateCollection OffsetCoordinates { set; get; }
@@ -75,35 +76,37 @@ namespace QMC.Common.VisionPart
         }
         public override void UpdateConfigData() //참고 : 오버라이드,, 파트 콜
         {
-            DieUnloader dieUnloader = Owner as DieUnloader;
-            if (dieUnloader != null)
-            {
-                if (Recipe.IlluminationDataSet == null)
-                    Recipe.IlluminationDataSet = new IlluminationDataSet(Name);
-                Recipe.IlluminationDataSet.SetIlluminationChannel(dieUnloader.Config.ListIlluminationChannel);
-            }
+            //  2025. 01. 15.  SCH : Unloader 임시 주석 
+            //DieUnloader dieUnloader = Owner as DieUnloader;
+            //if (dieUnloader != null)
+            //{
+            //    if (Recipe.IlluminationDataSet == null)
+            //        Recipe.IlluminationDataSet = new IlluminationDataSet(Name);
+            //    Recipe.IlluminationDataSet.SetIlluminationChannel(dieUnloader.Config.ListIlluminationChannel);
+            //}
         }
         public override void UpdateRecipeData()
         {
-            DieUnloader dieUnloader = Owner as DieUnloader;
-            if (dieUnloader != null)
-            {
-                if (dieUnloader.Recipe.MaterialCompansatorRecipe != null)
-                {
-                    this.Recipe = dieUnloader.Recipe.MaterialCompansatorRecipe;
-                    if (this.Recipe.IlluminationDataSet != null)
-                    {
-                        this.Recipe = dieUnloader.Recipe.MaterialCompansatorRecipe;
-                        IlluminationData = this.Recipe.IlluminationDataSet;
-                    }
-                    else
-                    {
-                        dieUnloader.Recipe.MaterialCompansatorRecipe = this.Recipe;
-                        this.Recipe.IlluminationDataSet = new IlluminationDataSet(Name);
-                    }
-                    this.Recipe.Init();
-                }
-            }
+            //  2025. 01. 15.  SCH : Unloader 임시 주석 
+            //DieUnloader dieUnloader = Owner as DieUnloader;
+            //if (dieUnloader != null)
+            //{
+            //    if (dieUnloader.Recipe.MaterialCompansatorRecipe != null)
+            //    {
+            //        this.Recipe = dieUnloader.Recipe.MaterialCompansatorRecipe;
+            //        if (this.Recipe.IlluminationDataSet != null)
+            //        {
+            //            this.Recipe = dieUnloader.Recipe.MaterialCompansatorRecipe;
+            //            IlluminationData = this.Recipe.IlluminationDataSet;
+            //        }
+            //        else
+            //        {
+            //            dieUnloader.Recipe.MaterialCompansatorRecipe = this.Recipe;
+            //            this.Recipe.IlluminationDataSet = new IlluminationDataSet(Name);
+            //        }
+            //        this.Recipe.Init();
+            //    }
+            //}
         }
         public PatternMatchingResult Search()
         {
@@ -122,21 +125,25 @@ namespace QMC.Common.VisionPart
             int ret = 0;
 
             XyCoordinateCollection MaterialPos = Recipe.MatrialPos;
-            
-            DieUnloader dieUnLoader = Owner as DieUnloader;
+
+            //  2025. 01. 15.  SCH : Unloader 임시 주석 
+            //DieUnloader dieUnLoader = Owner as DieUnloader;
 
             //XyztCoordinate ReferencePos = dieUnLoader.GetReferenceCoordinate();
             //XyzztCoordinate ReferencePos = dieUnLoader.GetReferenceCoordinate();
-            UvwzxyzCoordinate ReferencePos = dieUnLoader.GetReferenceCoordinate();
+            //UvwzxyzCoordinate ReferencePos = dieUnLoader.GetReferenceCoordinate();
+
+            //  2025. 01. 15.  SCH : Unloader 임시 주석 
+            //XyzLDzzxzULzzxzCoordinate ReferencePos = dieUnLoader.GetReferenceCoordinate();
 
             XyCoordinateCollection offsetDatas = new XyCoordinateCollection();
 
             XyCoordinate movePosition = new XyCoordinate();
             for (int i = 0; i < MaterialPos.Count; i++)
             {
-                //movePosition = MaterialPos[i] + (XyCoordinate)ReferencePos;
-                movePosition.X = MaterialPos[i].X + ReferencePos.U;
-                movePosition.Y = MaterialPos[i].Y + ReferencePos.V;
+                //  2025. 01. 15.  SCH : Unloader 임시 주석 
+                //movePosition.X = MaterialPos[i].X + ReferencePos.X;
+                //movePosition.Y = MaterialPos[i].Y + ReferencePos.Y;
 
                 PatternMatchingResult result = null;
                 XyCoordinate coodinate = new XyCoordinate();
@@ -151,8 +158,9 @@ namespace QMC.Common.VisionPart
                 FireUpdateResult(result);
                 //result.Values mm 변환
 
-                coodinate.X = ((result.Values[0].X - this.Camera.Resolution.Width / 2) * dieUnLoader.Scale.X) - movePosition.X;
-                coodinate.Y = ((result.Values[0].Y - this.Camera.Resolution.Height / 2) * dieUnLoader.Scale.Y) - movePosition.Y;
+                //  2025. 01. 15.  SCH : Unloader 임시 주석 
+                //coodinate.X = ((result.Values[0].X - this.Camera.Resolution.Width / 2) * dieUnLoader.Scale.X) - movePosition.X;
+                //coodinate.Y = ((result.Values[0].Y - this.Camera.Resolution.Height / 2) * dieUnLoader.Scale.Y) - movePosition.Y;
 
                 offsetDatas.Add(coodinate);
             }

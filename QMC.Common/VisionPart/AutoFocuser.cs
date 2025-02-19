@@ -51,19 +51,19 @@ namespace QMC.Common.VisionPart
 
         public override void UpdateConfigData()
         {
-            WaferProbeAlign waferProbeAlign = Owner as WaferProbeAlign;
+            WorkStage workStage = Owner as WorkStage;
             if (Owner != null)
             {
                 //if (dieTransfer.Config.AutoFocuerConfig != null && dieTransfer.Config.AutoFocuerConfig.FocusPosition == null)
                 //{
                 //    dieTransfer.Config.AutoFocuerConfig.Init();
                 //}
-                Config = waferProbeAlign.Config.AutoFocuserConfig_Upper;
+                Config = workStage.Config.AutoFocuserConfig_HighRes;
 
                 if (Config == null)
                 {
                     Config = new AutoFocuserConfig();
-                    waferProbeAlign.Config.AutoFocuserConfig_Upper = Config;
+                    workStage.Config.AutoFocuserConfig_HighRes = Config;
                 }
             }
         }
@@ -98,7 +98,7 @@ namespace QMC.Common.VisionPart
             VisionImage image = null;
             double position = 0;
             DateTime StartTime = DateTime.Now;
-            WaferProbeAlign waferProbeAlign = this.Owner as WaferProbeAlign;
+            WorkStage workStage = this.Owner as WorkStage;
 
             position = Config.FocusStartPosition;
 
@@ -109,7 +109,7 @@ namespace QMC.Common.VisionPart
                 // Step 1 : 첫번째 시작 위치 및 Pitch 거리, Count를 설정.
                 count = Config.FocusCount;
 
-                if (waferProbeAlign.m_nProductAlign_CameraType == (int)WaferProbeAlign.CameraType.CAMERA_HIGH)
+                if (workStage.m_nProductAlign_CameraType == (int)WorkStage.CameraType.CAMERA_HIGH)
                 {
                     pitch = 0.01;               //  왜 FocusMargin 이 안먹는지 알 수가 없다...                    
                 }

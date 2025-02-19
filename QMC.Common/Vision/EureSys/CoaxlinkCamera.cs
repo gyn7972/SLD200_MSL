@@ -283,7 +283,7 @@ namespace QMC.Common.Vision.EureSys
                 #region ProcessingCallback Check
                 this.AcquisitionFinished = false;
 
-                timeout = new TimeoutChecker(TimeSpan.FromMilliseconds(this.Config.SignalWatingTime), true);
+                timeout = new TimeoutChecker(TimeSpan.FromMilliseconds(this.CoaxlinkCameraConfig.SignalWatingTime), true);
 
                 while (timeout.IsCompleted == false)
                 {
@@ -330,7 +330,7 @@ namespace QMC.Common.Vision.EureSys
             }
 
             #region ExposureFinished Check 
-            timeout = new TimeoutChecker(TimeSpan.FromMilliseconds(this.Config.SignalWatingTime), true);
+            timeout = new TimeoutChecker(TimeSpan.FromMilliseconds(this.CoaxlinkCameraConfig.SignalWatingTime), true);
 
             while (timeout.IsCompleted == false)
             {
@@ -363,7 +363,7 @@ namespace QMC.Common.Vision.EureSys
                 #region ProcessingCallback Check 
 
 
-                timeout = new TimeoutChecker(TimeSpan.FromMilliseconds(this.Config.SignalWatingTime), true);
+                timeout = new TimeoutChecker(TimeSpan.FromMilliseconds(this.CoaxlinkCameraConfig.SignalWatingTime), true);
 
                 while (timeout.IsCompleted == false)
                 {
@@ -425,8 +425,8 @@ namespace QMC.Common.Vision.EureSys
 
 
             GenICam.Execute(this.Grabber, GenICam.ExecuteRemoteCommand.AcquisitionStop);
-            GenICam.SetParameter(this.Grabber, GenICam.SetRemoteParameter.Width, Config.CameraResolution.Width);
-            GenICam.SetParameter(this.Grabber, GenICam.SetRemoteParameter.Height, Config.CameraResolution.Height);
+            GenICam.SetParameter(this.Grabber, GenICam.SetRemoteParameter.Width, CoaxlinkCameraConfig.CameraResolution.Width);
+            GenICam.SetParameter(this.Grabber, GenICam.SetRemoteParameter.Height, CoaxlinkCameraConfig.CameraResolution.Height);
 
             switch (CoaxlinkCameraConfig.TriggerMode)
             {

@@ -14,6 +14,7 @@ using QMC.Common.Vision.Cameras;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -480,8 +481,8 @@ namespace QMC.Common.Vision.EureSys
 
         #region Constructor
 
-        public GrabLinkMultiCamCameraConfig GrabLinkMultiCamCameraConfig
-        {
+        public GrabLinkMultiCamCameraConfig GrabLinkMultiCamCameraConfig 
+        { 
             set
             {
                 Config = value;
@@ -526,20 +527,32 @@ namespace QMC.Common.Vision.EureSys
         [Category("Board")]
         public eTapConfiguration TapConfiguration
         {
-            get { return GrabLinkMultiCamCameraConfig.TapConfiguration; }
+            get { return GrabLinkMultiCamCameraConfig.TapConfiguration;}
             set { GrabLinkMultiCamCameraConfig.TapConfiguration = value; }
         }
 
         [Category("Board")]
         public eTapGeometry TapGeometry
         {
-            get { return GrabLinkMultiCamCameraConfig.TapGeometry; }
+            get { return GrabLinkMultiCamCameraConfig.TapGeometry;}
             set { GrabLinkMultiCamCameraConfig.TapGeometry = value; }
         }
         #endregion
         #endregion
 
         #region Method
+        public override void Load(FileStream fs)
+        {
+            base.Load(fs);
+            GrabLinkMultiCamCameraConfig config = new GrabLinkMultiCamCameraConfig();
+            SaveManager.BinaryDeserialize<GrabLinkMultiCamCameraConfig>(fs, out config);
+            GrabLinkMultiCamCameraConfig = config;
+        }
+        public override void Save(FileStream fs)
+        {
+            base.Save(fs);
+            SaveManager.BinarySerialize(fs, GrabLinkMultiCamCameraConfig);
+        }
         #endregion
 
         #region EureSysFrameGrabberCamera Members
@@ -604,17 +617,13 @@ namespace QMC.Common.Vision.EureSys
         public override int Initialize()
         {
             int ret = base.Initialize();
-
-
-            if (Opened)
+            
+            if(Opened)
             {
                 Close();
-                if ((ret = Create(/*new System.Globalization.CultureInfo("en-US")*/)) != 0) return ret;
             }
 
-
-            if ((ret = Open()) != 0) return ret;
-
+            Open();
 
             return ret;
         }
@@ -689,5 +698,5 @@ namespace QMC.Common.Vision.EureSys
     //    #endregion
     //}
     #endregion
-
+    
 }

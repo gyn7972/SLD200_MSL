@@ -109,7 +109,8 @@ namespace QMC.Common.VisionPart
 
         //public XyztPositionDataCollection VisionCalPositions { set; get; }
         //public XyzztPositionDataCollection VisionCalPositions { set; get; }
-        public UvwzxyzPositionDataCollection VisionCalPositions { set; get; }
+        //public UvwzxyzPositionDataCollection VisionCalPositions { set; get; }
+        public XyzLDzzxzULzzxzPositionDataCollection VisionCalPositions { set; get; }
 
         public VisionScale Scale { get; set; }
         #endregion
@@ -140,21 +141,24 @@ namespace QMC.Common.VisionPart
             {
                 //VisionCalPositions = new XyztPositionDataCollection();
                 //VisionCalPositions = new XyzztPositionDataCollection();
-                VisionCalPositions = new UvwzxyzPositionDataCollection();
+                //VisionCalPositions = new UvwzxyzPositionDataCollection();
+                VisionCalPositions = new XyzLDzzxzULzzxzPositionDataCollection();
                 VisionCalPositions.Clear();
 
                 foreach (PositionVisionCal key in Enum.GetValues(typeof(PositionVisionCal)))
                 {
                     //XyztPositionData positionBase = new XyztPositionData();
                     //XyzztPositionData positionBase = new XyzztPositionData();
-                    UvwzxyzPositionData positionBase = new UvwzxyzPositionData();
+                    //UvwzxyzPositionData positionBase = new UvwzxyzPositionData();
+                    XyzLDzzxzULzzxzPositionData positionBase = new XyzLDzzxzULzzxzPositionData();
 
                     positionBase.Name = key.ToString();
                     VisionCalPositions.Add(positionBase);
 
                     //XyztPositionData positionTarget = new XyztPositionData();
                     //XyzztPositionData positionTarget = new XyzztPositionData();
-                    UvwzxyzPositionData positionTarget = new UvwzxyzPositionData();
+                    //UvwzxyzPositionData positionTarget = new UvwzxyzPositionData();
+                    XyzLDzzxzULzzxzPositionData positionTarget = new XyzLDzzxzULzzxzPositionData();
 
                     positionTarget.Name = key.ToString();
                     positionTarget.Type = TargetType.Offset;
@@ -195,19 +199,41 @@ namespace QMC.Common.VisionPart
         //    }
         //}
 
-        public void SetCalibratorPosition(string strPositionKey, TargetType targetType, UvwzxyzCoordinate coordinate)
+        //public void SetCalibratorPosition(string strPositionKey, TargetType targetType, UvwzxyzCoordinate coordinate)
+        //{
+        //    foreach (UvwzxyzPositionData position in VisionCalPositions)
+        //    {
+        //        if (position.Name == strPositionKey && position.Type == targetType)
+        //        {
+        //            position.U = coordinate.U;
+        //            position.V = coordinate.V;
+        //            position.W = coordinate.W;
+        //            position.EZ = coordinate.EZ;
+        //            position.X = coordinate.X;
+        //            position.Y = coordinate.Y;
+        //            position.VZ = coordinate.VZ;
+        //            break;
+        //        }
+        //    }
+        //}
+
+        public void SetCalibratorPosition(string strPositionKey, TargetType targetType, XyzLDzzxzULzzxzCoordinate coordinate)
         {
-            foreach (UvwzxyzPositionData position in VisionCalPositions)
+            foreach (XyzLDzzxzULzzxzPositionData position in VisionCalPositions)
             {
                 if (position.Name == strPositionKey && position.Type == targetType)
                 {
-                    position.U = coordinate.U;
-                    position.V = coordinate.V;
-                    position.W = coordinate.W;
-                    position.EZ = coordinate.EZ;
                     position.X = coordinate.X;
                     position.Y = coordinate.Y;
-                    position.VZ = coordinate.VZ;
+                    position.Z = coordinate.Z;
+                    position.LD_SZ0 = coordinate.LD_SZ0;
+                    position.LD_SZ1 = coordinate.LD_SZ1;
+                    position.LD_TRX = coordinate.LD_TRX;
+                    position.LD_TRZ = coordinate.LD_TRZ;
+                    position.UL_SZ0 = coordinate.UL_SZ0;
+                    position.UL_SZ1 = coordinate.UL_SZ1;
+                    position.UL_TRX = coordinate.UL_TRX;
+                    position.UL_TRZ = coordinate.UL_TRZ;
                     break;
                 }
             }
@@ -241,10 +267,24 @@ namespace QMC.Common.VisionPart
         //    return coordinate;
         //}
 
-        public UvwzxyzCoordinate GetCalibratorPosition(string strPositionKey, TargetType targetType)
+        //public UvwzxyzCoordinate GetCalibratorPosition(string strPositionKey, TargetType targetType)
+        //{
+        //    UvwzxyzCoordinate coordinate = new UvwzxyzCoordinate();
+        //    foreach (UvwzxyzPositionData position in VisionCalPositions)
+        //    {
+        //        if (position.Name == strPositionKey && position.Type == targetType)
+        //        {
+        //            coordinate = position.Coordinate;
+        //            break;
+        //        }
+        //    }
+        //    return coordinate;
+        //}
+
+        public XyzLDzzxzULzzxzCoordinate GetCalibratorPosition(string strPositionKey, TargetType targetType)
         {
-            UvwzxyzCoordinate coordinate = new UvwzxyzCoordinate();
-            foreach (UvwzxyzPositionData position in VisionCalPositions)
+            XyzLDzzxzULzzxzCoordinate coordinate = new XyzLDzzxzULzzxzCoordinate();
+            foreach (XyzLDzzxzULzzxzPositionData position in VisionCalPositions)
             {
                 if (position.Name == strPositionKey && position.Type == targetType)
                 {

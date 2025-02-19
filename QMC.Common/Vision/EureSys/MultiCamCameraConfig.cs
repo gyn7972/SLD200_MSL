@@ -162,275 +162,275 @@ namespace QMC.Common.Vision.EureSys
 
         }
 
-        //public override ListParam ToListParam()
-        //{
-        //    ListParam listParam = base.ToListParam();
-        //    ParamGroup group = new ParamGroup();
-        //    group.Name = "MultiCamCameraConfig";
-        //    {
-        //        Param param = new Param();
-        //        param.SetParam(nameof(Channel), Param.DisplayTypeKey.Text, Channel, Param.ValueTypeKey.Int, group.Name);
-        //        group.AddParam(param);
-        //    }
-        //    {
-        //        Param param = new Param();
-        //        param.SetParam(nameof(ChannelActive), Param.DisplayTypeKey.CheckBox, ChannelActive, Param.ValueTypeKey.Bool, group.Name);
-        //        group.AddParam(param);
-        //    }
-        //    {
-        //        Param param = new Param();
-        //        param.SetParam(nameof(AcquisitionFinished), Param.DisplayTypeKey.CheckBox, AcquisitionFinished, Param.ValueTypeKey.Bool, group.Name);
-        //        group.AddParam(param);
-        //    }
-        //    {
-        //        Param param = new Param();
-        //        param.SetParam(nameof(ExposureFinished), Param.DisplayTypeKey.CheckBox, ExposureFinished, Param.ValueTypeKey.Bool, group.Name);
-        //        group.AddParam(param);
-        //    }
-        //    {
-        //        Param param = new Param();
-        //        param.SetParam(nameof(GrabNewImageEventEnable), Param.DisplayTypeKey.CheckBox, GrabNewImageEventEnable, Param.ValueTypeKey.Bool, group.Name);
-        //        group.AddParam(param);
-        //    }
-        //    {
-        //        Param param = new Param();
-        //        param.SetParam(nameof(SettingFrameCount), Param.DisplayTypeKey.Combobox, SettingFrameCount, Param.ValueTypeKey.Int, group.Name);
-        //        param.SelectValues.Clear();
-        //        foreach (Enum e in Enum.GetValues(typeof(MultiCamCamera.FrameNoPerSequence)))
-        //        {
-        //            param.SelectValues.Add(e.ToString());
-        //        }
-        //        group.AddParam(param);
-        //    }
-        //    {
-        //        Param param = new Param();
-        //        param.SetParam(nameof(CamFilePath), Param.DisplayTypeKey.Text, CamFilePath, Param.ValueTypeKey.String, group.Name);
-        //        group.AddParam(param);
-        //    }
-        //    //{
-        //    //    Param param = new Param();
-        //    //    param.SetParam(nameof(Connector), Param.DisplayTypeKey.Combobox, Connector, Param.ValueTypeKey.Int, group.Name);
-        //    //    param.SelectValues.Clear();
-        //    //    foreach (Enum e in Enum.GetValues(typeof(Enum)))
-        //    //    {
-        //    //        param.SelectValues.Add(e.ToString());
-        //    //    }
-        //    //    group.AddParam(param);
-        //    //}
-        //    {
-        //        Param param = new Param();
-        //        param.SetParam(nameof(ColorFormat), Param.DisplayTypeKey.Combobox, ColorFormat, Param.ValueTypeKey.Int, group.Name);
-        //        param.SelectValues.Clear();
-        //        foreach (Enum e in Enum.GetValues(typeof(MultiCamCamera.ColorFormats)))
-        //        {
-        //            param.SelectValues.Add(e.ToString());
-        //        }
-        //        group.AddParam(param);
-        //    }
-        //    {
-        //        Param param = new Param();
-        //        param.SetParam(nameof(TrigLine), Param.DisplayTypeKey.Combobox, TrigLine, Param.ValueTypeKey.Int, group.Name);
-        //        param.SelectValues.Clear();
-        //        foreach (Enum e in Enum.GetValues(typeof(MultiCamCamera.TriggerLine)))
-        //        {
-        //            param.SelectValues.Add(e.ToString());
-        //        }
-        //        group.AddParam(param);
-        //    }
-        //    {
-        //        Param param = new Param();
-        //        param.SetParam(nameof(TrigMode), Param.DisplayTypeKey.Combobox, TrigMode, Param.ValueTypeKey.Int, group.Name);
-        //        param.SelectValues.Clear();
-        //        foreach (Enum e in Enum.GetValues(typeof(MultiCamCamera.TriggerMode)))
-        //        {
-        //            param.SelectValues.Add(e.ToString());
-        //        }
-        //        group.AddParam(param);
-        //    }
-        //    {
-        //        Param param = new Param();
-        //        param.SetParam(nameof(NextTrigMode), Param.DisplayTypeKey.Combobox, NextTrigMode, Param.ValueTypeKey.Int, group.Name);
-        //        param.SelectValues.Clear();
-        //        foreach (Enum e in Enum.GetValues(typeof(MultiCamCamera.NextTriggerMode)))
-        //        {
-        //            param.SelectValues.Add(e.ToString());
-        //        }
-        //        group.AddParam(param);
-        //    }
-        //    //{
-        //    //    Param param = new Param();
-        //    //    param.SetParam(nameof(BoardTopology), Param.DisplayTypeKey.Combobox, BoardTopology, Param.ValueTypeKey.Int, group.Name);
-        //    //    param.SelectValues.Clear();
-        //    //    foreach (Enum e in Enum.GetValues(typeof(Enum)))
-        //    //    {
-        //    //        param.SelectValues.Add(e.ToString());
-        //    //    }
-        //    //    group.AddParam(param);
-        //    //}
-        //    {
-        //        Param param = new Param();
-        //        param.SetParam(nameof(BoardIndex), Param.DisplayTypeKey.Text, BoardIndex, Param.ValueTypeKey.Uint, group.Name);
-        //        group.AddParam(param);
-        //    }
-        //    {
-        //        Param param = new Param();
-        //        param.SetParam(nameof(SurfaceCount), Param.DisplayTypeKey.Text, SurfaceCount, Param.ValueTypeKey.Int, group.Name);
-        //        group.AddParam(param);
-        //    }
+        public override ListParam ToListParam()
+        {
+            ListParam listParam = base.ToListParam();
+            ParamGroup group = new ParamGroup();
+            group.Name = "MultiCamCameraConfig";
+            {
+                Param param = new Param();
+                param.SetParam(nameof(Channel), Param.DisplayTypeKey.Text, Channel, Param.ValueTypeKey.Int, group.Name);
+                group.AddParam(param);
+            }
+            {
+                Param param = new Param();
+                param.SetParam(nameof(ChannelActive), Param.DisplayTypeKey.CheckBox, ChannelActive, Param.ValueTypeKey.Bool, group.Name);
+                group.AddParam(param);
+            }
+            {
+                Param param = new Param();
+                param.SetParam(nameof(AcquisitionFinished), Param.DisplayTypeKey.CheckBox, AcquisitionFinished, Param.ValueTypeKey.Bool, group.Name);
+                group.AddParam(param);
+            }
+            {
+                Param param = new Param();
+                param.SetParam(nameof(ExposureFinished), Param.DisplayTypeKey.CheckBox, ExposureFinished, Param.ValueTypeKey.Bool, group.Name);
+                group.AddParam(param);
+            }
+            {
+                Param param = new Param();
+                param.SetParam(nameof(GrabNewImageEventEnable), Param.DisplayTypeKey.CheckBox, GrabNewImageEventEnable, Param.ValueTypeKey.Bool, group.Name);
+                group.AddParam(param);
+            }
+            {
+                Param param = new Param();
+                param.SetParam(nameof(SettingFrameCount), Param.DisplayTypeKey.Combobox, SettingFrameCount, Param.ValueTypeKey.Int, group.Name);
+                param.SelectValues.Clear();
+                foreach (Enum e in Enum.GetValues(typeof(MultiCamCamera.FrameNoPerSequence)))
+                {
+                    param.SelectValues.Add(e.ToString());
+                }
+                group.AddParam(param);
+            }
+            {
+                Param param = new Param();
+                param.SetParam(nameof(CamFilePath), Param.DisplayTypeKey.Text, CamFilePath, Param.ValueTypeKey.String, group.Name);
+                group.AddParam(param);
+            }
+            //{
+            //    Param param = new Param();
+            //    param.SetParam(nameof(Connector), Param.DisplayTypeKey.Combobox, Connector, Param.ValueTypeKey.Int, group.Name);
+            //    param.SelectValues.Clear();
+            //    foreach (Enum e in Enum.GetValues(typeof(Enum)))
+            //    {
+            //        param.SelectValues.Add(e.ToString());
+            //    }
+            //    group.AddParam(param);
+            //}
+            {
+                Param param = new Param();
+                param.SetParam(nameof(ColorFormat), Param.DisplayTypeKey.Combobox, ColorFormat, Param.ValueTypeKey.Int, group.Name);
+                param.SelectValues.Clear();
+                foreach (Enum e in Enum.GetValues(typeof(MultiCamCamera.ColorFormats)))
+                {
+                    param.SelectValues.Add(e.ToString());
+                }
+                group.AddParam(param);
+            }
+            {
+                Param param = new Param();
+                param.SetParam(nameof(TrigLine), Param.DisplayTypeKey.Combobox, TrigLine, Param.ValueTypeKey.Int, group.Name);
+                param.SelectValues.Clear();
+                foreach (Enum e in Enum.GetValues(typeof(MultiCamCamera.TriggerLine)))
+                {
+                    param.SelectValues.Add(e.ToString());
+                }
+                group.AddParam(param);
+            }
+            {
+                Param param = new Param();
+                param.SetParam(nameof(TrigMode), Param.DisplayTypeKey.Combobox, TrigMode, Param.ValueTypeKey.Int, group.Name);
+                param.SelectValues.Clear();
+                foreach (Enum e in Enum.GetValues(typeof(MultiCamCamera.TriggerMode)))
+                {
+                    param.SelectValues.Add(e.ToString());
+                }
+                group.AddParam(param);
+            }
+            {
+                Param param = new Param();
+                param.SetParam(nameof(NextTrigMode), Param.DisplayTypeKey.Combobox, NextTrigMode, Param.ValueTypeKey.Int, group.Name);
+                param.SelectValues.Clear();
+                foreach (Enum e in Enum.GetValues(typeof(MultiCamCamera.NextTriggerMode)))
+                {
+                    param.SelectValues.Add(e.ToString());
+                }
+                group.AddParam(param);
+            }
+            //{
+            //    Param param = new Param();
+            //    param.SetParam(nameof(BoardTopology), Param.DisplayTypeKey.Combobox, BoardTopology, Param.ValueTypeKey.Int, group.Name);
+            //    param.SelectValues.Clear();
+            //    foreach (Enum e in Enum.GetValues(typeof(Enum)))
+            //    {
+            //        param.SelectValues.Add(e.ToString());
+            //    }
+            //    group.AddParam(param);
+            //}
+            {
+                Param param = new Param();
+                param.SetParam(nameof(BoardIndex), Param.DisplayTypeKey.Text, BoardIndex, Param.ValueTypeKey.Uint, group.Name);
+                group.AddParam(param);
+            }
+            {
+                Param param = new Param();
+                param.SetParam(nameof(SurfaceCount), Param.DisplayTypeKey.Text, SurfaceCount, Param.ValueTypeKey.Int, group.Name);
+                group.AddParam(param);
+            }
 
-        //    listParam.SetGroup(group);
-        //    return listParam;
-        //}
+            listParam.SetGroup(group);
+            return listParam;
+        }
 
-        //public override void SetParam(ListParam listParam)
-        //{
-        //    base.SetParam(listParam);
-        //    ParamGroup group = listParam.GetGroup("MultiCamCameraConfig");
+        public override void SetParam(ListParam listParam)
+        {
+            base.SetParam(listParam);
+            ParamGroup group = listParam.GetGroup("MultiCamCameraConfig");
 
-        //    if (group != null)
-        //    {
-        //        Param param = null;
-        //        param = group.GetParam((int)ParamMultiCamCameraConfigKey.Channel);
-        //        if (param != null)
-        //        {
-        //            int value = 0;
-        //            if (param.GetIntValue(ref value))
-        //            {
-        //                Channel = value;
-        //            }
-        //        }
+            if (group != null)
+            {
+                Param param = null;
+                param = group.GetParam((int)ParamMultiCamCameraConfigKey.Channel);
+                if (param != null)
+                {
+                    int value = 0;
+                    if (param.GetIntValue(ref value))
+                    {
+                        Channel = value;
+                    }
+                }
 
-        //        param = group.GetParam((int)ParamMultiCamCameraConfigKey.ChannelActive);
-        //        if (param != null)
-        //        {
-        //            bool value = false;
-        //            if (param.GetBoolValue(ref value))
-        //            {
-        //                ChannelActive = value;
-        //            }
-        //        }
+                param = group.GetParam((int)ParamMultiCamCameraConfigKey.ChannelActive);
+                if (param != null)
+                {
+                    bool value = false;
+                    if (param.GetBoolValue(ref value))
+                    {
+                        ChannelActive = value;
+                    }
+                }
 
-        //        param = group.GetParam((int)ParamMultiCamCameraConfigKey.AcquisitionFinished);
-        //        if (param != null)
-        //        {
-        //            bool value = false;
-        //            if (param.GetBoolValue(ref value))
-        //            {
-        //                AcquisitionFinished = value;
-        //            }
-        //        }
+                param = group.GetParam((int)ParamMultiCamCameraConfigKey.AcquisitionFinished);
+                if (param != null)
+                {
+                    bool value = false;
+                    if (param.GetBoolValue(ref value))
+                    {
+                        AcquisitionFinished = value;
+                    }
+                }
 
-        //        param = group.GetParam((int)ParamMultiCamCameraConfigKey.ExposureFinished);
-        //        if (param != null)
-        //        {
-        //            bool value = false;
-        //            if (param.GetBoolValue(ref value))
-        //            {
-        //                ExposureFinished = value;
-        //            }
-        //        }
+                param = group.GetParam((int)ParamMultiCamCameraConfigKey.ExposureFinished);
+                if (param != null)
+                {
+                    bool value = false;
+                    if (param.GetBoolValue(ref value))
+                    {
+                        ExposureFinished = value;
+                    }
+                }
 
-        //        param = group.GetParam((int)ParamMultiCamCameraConfigKey.GrabNewImageEventEnable);
-        //        if (param != null)
-        //        {
-        //            bool value = false;
-        //            if (param.GetBoolValue(ref value))
-        //            {
-        //                GrabNewImageEventEnable = value;
-        //            }
-        //        }
+                param = group.GetParam((int)ParamMultiCamCameraConfigKey.GrabNewImageEventEnable);
+                if (param != null)
+                {
+                    bool value = false;
+                    if (param.GetBoolValue(ref value))
+                    {
+                        GrabNewImageEventEnable = value;
+                    }
+                }
 
-        //        param = group.GetParam((int)ParamMultiCamCameraConfigKey.SettingFrameCount);
-        //        if (param != null)
-        //        {
-        //            int value = 0;
-        //            if (param.GetIntValue(ref value))
-        //            {
-        //                SettingFrameCount = (MultiCamCamera.FrameNoPerSequence)value;
-        //            }
-        //        }
+                param = group.GetParam((int)ParamMultiCamCameraConfigKey.SettingFrameCount);
+                if (param != null)
+                {
+                    int value = 0;
+                    if (param.GetIntValue(ref value))
+                    {
+                        SettingFrameCount = (MultiCamCamera.FrameNoPerSequence)value;
+                    }
+                }
 
-        //        param = group.GetParam((int)ParamMultiCamCameraConfigKey.CamFilePath);
-        //        if (param != null)
-        //        {
-        //            string value = string.Empty;
-        //            if (param.GetStringValue(ref value))
-        //            {
-        //                CamFilePath = value;
-        //            }
-        //        }
+                param = group.GetParam((int)ParamMultiCamCameraConfigKey.CamFilePath);
+                if (param != null)
+                {
+                    string value = string.Empty;
+                    if (param.GetStringValue(ref value))
+                    {
+                        CamFilePath = value;
+                    }
+                }
 
-        //        //param = group.GetParam((int)ParamMultiCamCameraConfigKey.Connector); 질문필요!! 
-        //        //if (param != null)
-        //        //{
-        //        //    int value = 0;
-        //        //    if (param.GetIntValue(ref value))
-        //        //    {
-        //        //        Connector = (Enum)value;
-        //        //    }
-        //        //}
+                //param = group.GetParam((int)ParamMultiCamCameraConfigKey.Connector); 질문필요!! 
+                //if (param != null)
+                //{
+                //    int value = 0;
+                //    if (param.GetIntValue(ref value))
+                //    {
+                //        Connector = (Enum)value;
+                //    }
+                //}
 
-        //        param = group.GetParam((int)ParamMultiCamCameraConfigKey.ColorFormat);
-        //        if (param != null)
-        //        {
-        //            int value = 0;
-        //            if (param.GetIntValue(ref value))
-        //            {
-        //                ColorFormat = (MultiCamCamera.ColorFormats)value;
-        //            }
-        //        }
+                param = group.GetParam((int)ParamMultiCamCameraConfigKey.ColorFormat);
+                if (param != null)
+                {
+                    int value = 0;
+                    if (param.GetIntValue(ref value))
+                    {
+                        ColorFormat = (MultiCamCamera.ColorFormats)value;
+                    }
+                }
 
-        //        param = group.GetParam((int)ParamMultiCamCameraConfigKey.TrigLine);
-        //        if (param != null)
-        //        {
-        //            int value = 0;
-        //            if (param.GetIntValue(ref value))
-        //            {
-        //                TrigLine = (MultiCamCamera.TriggerLine)value;
-        //            }
-        //        }
+                param = group.GetParam((int)ParamMultiCamCameraConfigKey.TrigLine);
+                if (param != null)
+                {
+                    int value = 0;
+                    if (param.GetIntValue(ref value))
+                    {
+                        TrigLine = (MultiCamCamera.TriggerLine)value;
+                    }
+                }
 
-        //        param = group.GetParam((int)ParamMultiCamCameraConfigKey.TrigMode);
-        //        if (param != null)
-        //        {
-        //            int value = 0;
-        //            if (param.GetIntValue(ref value))
-        //            {
-        //                TrigMode = (MultiCamCamera.TriggerMode)value;
-        //            }
-        //        }
+                param = group.GetParam((int)ParamMultiCamCameraConfigKey.TrigMode);
+                if (param != null)
+                {
+                    int value = 0;
+                    if (param.GetIntValue(ref value))
+                    {
+                        TrigMode = (MultiCamCamera.TriggerMode)value;
+                    }
+                }
 
-        //        param = group.GetParam((int)ParamMultiCamCameraConfigKey.NextTrigMode);
-        //        if (param != null)
-        //        {
-        //            int value = 0;
-        //            if (param.GetIntValue(ref value))
-        //            {
-        //                NextTrigMode = (MultiCamCamera.NextTriggerMode)value;
-        //            }
-        //        }
+                param = group.GetParam((int)ParamMultiCamCameraConfigKey.NextTrigMode);
+                if (param != null)
+                {
+                    int value = 0;
+                    if (param.GetIntValue(ref value))
+                    {
+                        NextTrigMode = (MultiCamCamera.NextTriggerMode)value;
+                    }
+                }
 
-        //        param = group.GetParam((int)ParamMultiCamCameraConfigKey.BoardIndex);
-        //        if (param != null)
-        //        {
-        //            uint value = 0;
-        //            if (param.GetUintValue(ref value))
-        //            {
-        //                BoardIndex = value;
-        //            }
-        //        }
+                param = group.GetParam((int)ParamMultiCamCameraConfigKey.BoardIndex);
+                if (param != null)
+                {
+                    uint value = 0;
+                    if (param.GetUintValue(ref value))
+                    {
+                        BoardIndex = value;
+                    }
+                }
 
-        //        param = group.GetParam((int)ParamMultiCamCameraConfigKey.SurfaceCount);
-        //        if (param != null)
-        //        {
-        //            int value = 0;
-        //            if (param.GetIntValue(ref value))
-        //            {
-        //                SurfaceCount = value;
-        //            }
-        //        }
+                param = group.GetParam((int)ParamMultiCamCameraConfigKey.SurfaceCount);
+                if (param != null)
+                {
+                    int value = 0;
+                    if (param.GetIntValue(ref value))
+                    {
+                        SurfaceCount = value;
+                    }
+                }
 
-        //    }
-        //}
+            }
+        }
     }
 }

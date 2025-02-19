@@ -291,7 +291,7 @@ namespace QMC.Common.UI
                     OnUpdateDisplay();
                 }
 
-                Thread.Sleep(100);
+                Thread.Sleep(100);      //  2024.11.12.  SCH : #1호기는 200으로 변경. 나머지 호기는 모두 100으로 되어 있음.
             }
         }
         protected virtual void OnLoadConfig()

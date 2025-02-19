@@ -583,6 +583,92 @@ namespace QMC.Common.Vision.VisionAlign
             return qMCMatrixProjection;
         }
 
+        public QMCMatrix projection_matrix(XyzLDzzxzULzzxzCoordinateCollection coordinateSourceOrg, XyzLDzzxzULzzxzCoordinateCollection coordinateTargetOrg)
+        {
+            XyzLDzzxzULzzxzCoordinateCollection coordinateSource = new XyzLDzzxzULzzxzCoordinateCollection();
+            XyzLDzzxzULzzxzCoordinateCollection coordinateTarget = new XyzLDzzxzULzzxzCoordinateCollection();
+            foreach (var v in coordinateSourceOrg)
+            {
+                //coordinateSource.Add(new UvwzxyzCoordinate(v.X + m_dOffsetX, v.Y + m_dOffsetY, v.IZ, v.SZ, v.T));
+                //coordinateSource.Add(new UvwzxyzCoordinate(v.U + m_dOffsetX, v.V + m_dOffsetY, v.W + m_dOffsetY, v.EZ, v.X, v.Y, v.VZ));
+                coordinateSource.Add(new XyzLDzzxzULzzxzCoordinate(v.X + m_dOffsetX, v.Y + m_dOffsetY, v.Z, v.MASK_Y, v.LD_SZ0, v.LD_SZ1, v.LD_TRX, v.LD_TRZ, v.ALN_X, v.ALN_Y, v.UL_SZ0, v.UL_SZ1, v.UL_TRX, v.UL_TRZ));
+            }
+
+            foreach (var v in coordinateTargetOrg)
+            {
+                //coordinateTarget.Add(new UvwzxyzCoordinate(v.X + m_dOffsetX, v.Y + m_dOffsetY, v.IZ, v.SZ, v.T));
+                //coordinateTarget.Add(new UvwzxyzCoordinate(v.U + m_dOffsetX, v.V + m_dOffsetY, v.W + m_dOffsetY, v.EZ, v.X, v.Y, v.VZ));
+                coordinateTarget.Add(new XyzLDzzxzULzzxzCoordinate(v.X + m_dOffsetX, v.Y + m_dOffsetY, v.Z, v.MASK_Y, v.LD_SZ0, v.LD_SZ1, v.LD_TRX, v.LD_TRZ, v.ALN_X, v.ALN_Y, v.UL_SZ0, v.UL_SZ1, v.UL_TRX, v.UL_TRZ));
+            }
+            QMCMatrix qMCMatrixA = new QMCMatrix(8, 8);
+            QMCMatrix qMCMatrixB = new QMCMatrix(8, 1);
+            QMCMatrix qMCMatrixC = new QMCMatrix(8, 8);
+            QMCMatrix qMCMatrixProjection = new QMCMatrix(3, 3);
+
+            if (coordinateSource != null && coordinateTarget != null)
+            {
+                if (coordinateSource.Count == coordinateTarget.Count)
+                {
+                    for (int iter = 0; iter < coordinateSource.Count; iter++)
+                    {
+                        qMCMatrixA.m_dMatrix[iter, 0] = coordinateSource[iter].X;//[0][0]  a->var[0][0] = x[0];
+                        qMCMatrixA.m_dMatrix[iter, 1] = coordinateSource[iter].Y;//[0][1]	a->var[0][1] = y[0];
+                        qMCMatrixA.m_dMatrix[iter, 2] = 1;//[0][2]  a->var[0][2] = 1.0;
+                        qMCMatrixA.m_dMatrix[iter, 3] = 0;//[0][3]
+                        qMCMatrixA.m_dMatrix[iter, 4] = 0;//[0][4]
+                        qMCMatrixA.m_dMatrix[iter, 5] = 0;//[0][5]
+                        qMCMatrixA.m_dMatrix[iter, 6] = -1 * coordinateTarget[iter].X * coordinateSource[iter].X;//[0][6]  a->var[0][6] = -1 * _x[0] * x[0];
+                        qMCMatrixA.m_dMatrix[iter, 7] = -1 * coordinateTarget[iter].X * coordinateSource[iter].Y;//[0][7]  a->var[0][7] = -1 * _x[0] * y[0];
+
+                    }
+
+                    for (int iter = 0; iter < coordinateSource.Count; iter++)
+                    {
+                        qMCMatrixA.m_dMatrix[iter + 4, 0] = 0;//[0][0]  a->var[0][0] = x[0];
+                        qMCMatrixA.m_dMatrix[iter + 4, 1] = 0;//[0][1]	a->var[0][1] = y[0];
+                        qMCMatrixA.m_dMatrix[iter + 4, 2] = 0;//[0][2]  a->var[0][2] = 1.0;
+                        qMCMatrixA.m_dMatrix[iter + 4, 3] = coordinateSource[iter].X;//[0][3]
+                        qMCMatrixA.m_dMatrix[iter + 4, 4] = coordinateSource[iter].Y;//[0][4]
+                        qMCMatrixA.m_dMatrix[iter + 4, 5] = 1;//[0][5]
+                        qMCMatrixA.m_dMatrix[iter + 4, 6] = -1 * coordinateSource[iter].X * coordinateTarget[iter].Y;//[0][6]  a->var[0][6] = -1 * _x[0] * x[0];
+                        qMCMatrixA.m_dMatrix[iter + 4, 7] = -1 * coordinateSource[iter].Y * coordinateTarget[iter].Y;//[0][7]  a->var[0][7] = -1 * _x[0] * y[0];
+
+                    }
+                    for (int iter = 0; iter < coordinateTarget.Count; iter++)
+                    {
+                        qMCMatrixB.m_dMatrix[iter, 0] = coordinateTarget[iter].X;
+
+                    }
+                    for (int iter = 0; iter < coordinateTarget.Count; iter++)
+                    {
+                        qMCMatrixB.m_dMatrix[iter + 4, 0] = coordinateTarget[iter].Y;
+
+                    }
+
+
+                    QMCMatrix qMCMatrix_inv;
+                    qMCMatrix_inv = qMCMatrixA.Matrix_inv();
+                    qMCMatrixC = qMCMatrix_inv.Matrix_Multi(qMCMatrixB);
+
+
+                    qMCMatrixProjection.m_dMatrix[0, 0] = qMCMatrixC.m_dMatrix[0, 0];//[0][0]
+                    qMCMatrixProjection.m_dMatrix[0, 1] = qMCMatrixC.m_dMatrix[1, 0];//[0][1]
+                    qMCMatrixProjection.m_dMatrix[0, 2] = qMCMatrixC.m_dMatrix[2, 0];//[0][2]
+
+                    qMCMatrixProjection.m_dMatrix[1, 0] = qMCMatrixC.m_dMatrix[3, 0];//[0][0]
+                    qMCMatrixProjection.m_dMatrix[1, 1] = qMCMatrixC.m_dMatrix[4, 0];//[0][1]
+                    qMCMatrixProjection.m_dMatrix[1, 2] = qMCMatrixC.m_dMatrix[5, 0];//[0][2]
+
+                    qMCMatrixProjection.m_dMatrix[2, 0] = qMCMatrixC.m_dMatrix[6, 0];//[0][0]
+                    qMCMatrixProjection.m_dMatrix[2, 1] = qMCMatrixC.m_dMatrix[7, 0];//[0][1]
+                    qMCMatrixProjection.m_dMatrix[2, 2] = 1;//[0][2]
+
+                }
+            }
+
+            return qMCMatrixProjection;
+        }
+
         public QMCMatrix projection_matrix(List<PointF> ptSource, List<PointF> ptTarget)
         {
 

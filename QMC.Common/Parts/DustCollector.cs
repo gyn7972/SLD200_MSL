@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QMC.Process.WaferProbeAlign.Parts
+namespace QMC.Process.WorkStage.Parts
 {
     public class DustCollector : Part
     {

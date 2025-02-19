@@ -115,12 +115,22 @@ namespace QMC.Common
     public enum DisplayAxisType
     {
         Horizontal,
+        Horizontal2,
+
         Vertical,
+        Vertical2,
+
         Theta,
+
         CombinationHorizontal,
         CombinationVertical,
 
+        CombinationStacker0,
+        CombinationStacker1,
+
+        CombinationPicker,
+
         UVW_Horizontal,
-        UVW_Vertical,
+        UVW_Vertical, 
     }
 }

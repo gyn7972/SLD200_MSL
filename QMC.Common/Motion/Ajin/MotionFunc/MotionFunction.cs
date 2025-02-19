@@ -14,7 +14,7 @@ namespace QMC.Common.Motion.Ajin.Motions
     //public class MotionFunction : MotionAxis
     public class MotionFunction
     {
-        static WaferProbeAlign waferProbeAlign;
+        static WorkStage workStage;
 
         public MotionFunction()
         {
@@ -23,9 +23,10 @@ namespace QMC.Common.Motion.Ajin.Motions
 
             foreach (Module module in m_collectionModules)
             {
-                if (module.Name == "WaferProbeAlign")
+                //if (module.Name == "WorkStage")
+                if (module.Name == "WorkStage")
                 {
-                    waferProbeAlign = module as WaferProbeAlign;
+                    workStage = module as WorkStage;
                 }
             }
         }
@@ -87,17 +88,17 @@ namespace QMC.Common.Motion.Ajin.Motions
             //XyCoordinate source = new XyCoordinate();
             //XyCoordinate dest = new XyCoordinate();
 
-            //if (nAxis == (int)WaferProbeAlign.nAxis.X)
+            //if (nAxis == (int)WorkStage.nAxis.X)
             //{
-            //    if (waferProbeAlign.Stage.Interpolator != null)
+            //    if (workStage.Stage.Interpolator != null)
             //    {
             //        //AXM.GetActualPosition(nAxis, ref dCurrent);
             //        AXM.GetCommandPosition(nAxis, ref dCurrent);
-            //        AXM.GetCommandPosition((int)WaferProbeAlign.nAxis.Y, ref dCurrent_Other);              //  2023. 05. 24.  SCH : Reverse Interpolate 에 축 데이터를 넣을 때는 X, Y 값 모두를 넣어야 한다.
+            //        AXM.GetCommandPosition((int)WorkStage.nAxis.Y, ref dCurrent_Other);              //  2023. 05. 24.  SCH : Reverse Interpolate 에 축 데이터를 넣을 때는 X, Y 값 모두를 넣어야 한다.
             //        dest.X = dCurrent;
             //        dest.Y = dCurrent_Other;
 
-            //        if ((ret = waferProbeAlign.Stage.Interpolator.ReverseInterpolate(dest, ref source)) != 0)
+            //        if ((ret = workStage.Stage.Interpolator.ReverseInterpolate(dest, ref source)) != 0)
             //        {
             //            return ret;
             //        }
@@ -110,17 +111,17 @@ namespace QMC.Common.Motion.Ajin.Motions
             //        //AXM.GetCommandPosition(nAxis, ref m_dPos);
             //    }
             //}
-            //else if (nAxis == (int)WaferProbeAlign.nAxis.Y)
+            //else if (nAxis == (int)WorkStage.nAxis.Y)
             //{
-            //    if (waferProbeAlign.Stage.Interpolator != null)
+            //    if (workStage.Stage.Interpolator != null)
             //    {
             //        //AXM.GetActualPosition(nAxis, ref dCurrent);
             //        AXM.GetCommandPosition(nAxis, ref dCurrent);
-            //        AXM.GetCommandPosition((int)WaferProbeAlign.nAxis.X, ref dCurrent_Other);              //  2023. 05. 24.  SCH : Reverse Interpolate 에 축 데이터를 넣을 때는 X, Y 값 모두를 넣어야 한다.
+            //        AXM.GetCommandPosition((int)WorkStage.nAxis.X, ref dCurrent_Other);              //  2023. 05. 24.  SCH : Reverse Interpolate 에 축 데이터를 넣을 때는 X, Y 값 모두를 넣어야 한다.
             //        dest.Y = dCurrent;
             //        dest.X = dCurrent_Other;
 
-            //        if ((ret = waferProbeAlign.Stage.Interpolator.ReverseInterpolate(dest, ref source)) != 0)
+            //        if ((ret = workStage.Stage.Interpolator.ReverseInterpolate(dest, ref source)) != 0)
             //        {
             //            return ret;
             //        }
@@ -194,14 +195,14 @@ namespace QMC.Common.Motion.Ajin.Motions
             //XyCoordinate source = new XyCoordinate();
             //XyCoordinate dest = new XyCoordinate();
 
-            //if (nAxis == (int)WaferProbeAlign.nAxis.X)
+            //if (nAxis == (int)WorkStage.nAxis.X)
             //{
-            //    if (waferProbeAlign.Stage.Interpolator != null)
+            //    if (workStage.Stage.Interpolator != null)
             //    {
             //        AXM.GetCommandPosition(nAxis, ref dCurrent);
             //        dest.X = dCurrent;
 
-            //        if ((ret = waferProbeAlign.Stage.Interpolator.ReverseInterpolate(dest, ref source)) != 0)
+            //        if ((ret = workStage.Stage.Interpolator.ReverseInterpolate(dest, ref source)) != 0)
             //        {
             //            return ret;
             //        }
@@ -213,14 +214,14 @@ namespace QMC.Common.Motion.Ajin.Motions
             //        AXM.GetCommandPosition(nAxis, ref m_dPos);
             //    }
             //}
-            //else if (nAxis == (int)WaferProbeAlign.nAxis.Y)
+            //else if (nAxis == (int)WorkStage.nAxis.Y)
             //{
-            //    if (waferProbeAlign.Stage.Interpolator != null)
+            //    if (workStage.Stage.Interpolator != null)
             //    {
             //        AXM.GetCommandPosition(nAxis, ref dCurrent);
             //        dest.Y = dCurrent;
 
-            //        if ((ret = waferProbeAlign.Stage.Interpolator.ReverseInterpolate(dest, ref source)) != 0)
+            //        if ((ret = workStage.Stage.Interpolator.ReverseInterpolate(dest, ref source)) != 0)
             //        {
             //            return ret;
             //        }
@@ -256,6 +257,15 @@ namespace QMC.Common.Motion.Ajin.Motions
             AXM.GetInPositionValue(nAxis, ref m_bRet);
 
             return m_bRet;
+        }
+
+        public double MC_GetTorque(int nAxis)
+        {
+            double m_dRet = 0.0;
+
+            AXM.ReadTorque(nAxis, ref m_dRet);
+
+            return m_dRet;
         }
 
         public bool MC_PosTolerance(int nAxis, double m_dTargetPos)
@@ -639,16 +649,16 @@ namespace QMC.Common.Motion.Ajin.Motions
             XyCoordinate OriginPosition = new XyCoordinate();
             XyCoordinate InterpolatedPosition = new XyCoordinate();
 
-            if (Axis == (int)WaferProbeAlign.nAxis.X)
+            if (Axis == (int)WorkStage.nAxis.X)
             {
-                //if (waferProbeAlign.Stage.Interpolator != null)
-                if (waferProbeAlign.Config.ParamConfig.MapFileApply_WhenPgmStart && 
-                    (waferProbeAlign.Stage.Interpolator != null))
+                //if (workStage.Stage.Interpolator != null)
+                if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart && 
+                    (workStage.Stage.Interpolator != null))
                 {
                     OriginPosition.X = position;
-                    OriginPosition.Y = MC_GetEncPos( (int)WaferProbeAlign.nAxis.Y);
+                    OriginPosition.Y = MC_GetEncPos( (int)WorkStage.nAxis.Y);
 
-                    waferProbeAlign.Stage.Interpolator.Interpolate(OriginPosition, ref InterpolatedPosition);
+                    workStage.Stage.Interpolator.Interpolate(OriginPosition, ref InterpolatedPosition);
                     m_dTarget = InterpolatedPosition.X;
                 }
                 else
@@ -656,16 +666,16 @@ namespace QMC.Common.Motion.Ajin.Motions
                     m_dTarget = position;
                 }
             }
-            else if (Axis == (int)WaferProbeAlign.nAxis.Y)
+            else if (Axis == (int)WorkStage.nAxis.Y)
             {
-                //if (waferProbeAlign.Stage.Interpolator != null)
-                if (waferProbeAlign.Config.ParamConfig.MapFileApply_WhenPgmStart &&
-                    (waferProbeAlign.Stage.Interpolator != null))
+                //if (workStage.Stage.Interpolator != null)
+                if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart &&
+                    (workStage.Stage.Interpolator != null))
                 {
-                    OriginPosition.X = MC_GetEncPos((int)WaferProbeAlign.nAxis.X);
+                    OriginPosition.X = MC_GetEncPos((int)WorkStage.nAxis.X);
                     OriginPosition.Y = position;
 
-                    waferProbeAlign.Stage.Interpolator.Interpolate(OriginPosition, ref InterpolatedPosition);
+                    workStage.Stage.Interpolator.Interpolate(OriginPosition, ref InterpolatedPosition);
                     m_dTarget = InterpolatedPosition.Y;
                 }
                 else
@@ -702,29 +712,29 @@ namespace QMC.Common.Motion.Ajin.Motions
             dCurPos = MC_GetEncPos(Axis);
             m_dTarget = dCurPos + position;
 
-            if (Axis == (int)WaferProbeAlign.nAxis.X)
+            if (Axis == (int)WorkStage.nAxis.X)
             {
-                //if (waferProbeAlign.Stage.Interpolator != null)
-                if (waferProbeAlign.Config.ParamConfig.MapFileApply_WhenPgmStart &&
-                    (waferProbeAlign.Stage.Interpolator != null))
+                //if (workStage.Stage.Interpolator != null)
+                if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart &&
+                    (workStage.Stage.Interpolator != null))
                 {
                     OriginPosition.X = m_dTarget;
-                    OriginPosition.Y = MC_GetEncPos((int)WaferProbeAlign.nAxis.Y);
+                    OriginPosition.Y = MC_GetEncPos((int)WorkStage.nAxis.Y);
 
-                    waferProbeAlign.Stage.Interpolator.Interpolate(OriginPosition, ref InterpolatedPosition);
+                    workStage.Stage.Interpolator.Interpolate(OriginPosition, ref InterpolatedPosition);
                     m_dTarget = InterpolatedPosition.X;
                 }
             }
-            else if (Axis == (int)WaferProbeAlign.nAxis.Y)
+            else if (Axis == (int)WorkStage.nAxis.Y)
             {
-                //if (waferProbeAlign.Stage.Interpolator != null)
-                if (waferProbeAlign.Config.ParamConfig.MapFileApply_WhenPgmStart &&
-                    (waferProbeAlign.Stage.Interpolator != null))
+                //if (workStage.Stage.Interpolator != null)
+                if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart &&
+                    (workStage.Stage.Interpolator != null))
                 {
-                    OriginPosition.X = MC_GetEncPos((int)WaferProbeAlign.nAxis.X);
+                    OriginPosition.X = MC_GetEncPos((int)WorkStage.nAxis.X);
                     OriginPosition.Y = m_dTarget;
 
-                    waferProbeAlign.Stage.Interpolator.Interpolate(OriginPosition, ref InterpolatedPosition);
+                    workStage.Stage.Interpolator.Interpolate(OriginPosition, ref InterpolatedPosition);
                     m_dTarget = InterpolatedPosition.Y;
                 }
             }

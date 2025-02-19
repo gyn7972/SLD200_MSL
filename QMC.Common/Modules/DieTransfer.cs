@@ -26,7 +26,7 @@ namespace QMC.Common.Modules
         public DieTransferRecipe Recipe { get; set; }
         public ColletCountDataList ColletCounts { get; set; }
 
-        public ColletXYPositionCalibrator PositionCalibrator { get; set; }
+        //public ColletXYPositionCalibrator PositionCalibrator { get; set; }
 
         //public HIKGigECamera Camera { set; get; }
         public GrabLinkMultiCamCamera Camera { get; set; }
@@ -35,8 +35,8 @@ namespace QMC.Common.Modules
         public VisionScale Scale { set; get; }
         public List<Collet> Collets { get; set; }
 
-        public DieLoader DieLoader { get; set; }
-        public DieUnloader DieUnloader { get; set; }
+        public Loader Loader { get; set; }
+        //public Unloader DieUnloader { get; set; }
 
         public DieTransfer(string strName) : base(strName)
         {
@@ -74,10 +74,10 @@ namespace QMC.Common.Modules
             RevisionZ.Owner = this;
             Parts.Add(RevisionZ);
 
-            PositionCalibrator = new ColletXYPositionCalibrator("ColletCalibrator");
-            PositionCalibrator.Create();
-            PositionCalibrator.Owner = this;
-            Parts.Add(PositionCalibrator);
+            //PositionCalibrator = new ColletXYPositionCalibrator("ColletCalibrator");
+            //PositionCalibrator.Create();
+            //PositionCalibrator.Owner = this;
+            //Parts.Add(PositionCalibrator);
 
             DieSearcher = new DieSearcher("DieSearcher");
             DieSearcher.Create();
@@ -100,18 +100,18 @@ namespace QMC.Common.Modules
             DieSearcher.Turret = Turret;
             Turret.Config = this.Config.TurretConfig;
             DieSearcher.Camera = Camera;
-            PositionCalibrator.Motion = Turret;
+            //PositionCalibrator.Motion = Turret;
             //Camera.Config = Config.HIKGigECameraConfig;
             Camera.Config = Config.GrabLinkMultiCamCameraConfig;            
             LoadZ.LoadZConfig = this.Config.LoadZConfig;
             UnloadZ.UnLoadZConfig = this.Config.UnloadZConfig;
             DieSearcher.Recipe = Recipe.DieSearcherRecipe;
-            PositionCalibrator.Camera = Camera;
-            PositionCalibrator.XyCalibratorRecipe = Recipe.XYCalibratorRecipe;
+            //PositionCalibrator.Camera = Camera;
+            //PositionCalibrator.XyCalibratorRecipe = Recipe.XYCalibratorRecipe;
             LoadZ.ColletZCalibrator = ColletZCalibrator;
             UnloadZ.ColletZCalibrator= ColletZCalibrator;
-            PositionCalibrator.Collets = Collets;
-            PositionCalibrator.Illuminator = CommonModule.Instance.Illuminator;
+            //PositionCalibrator.Collets = Collets;
+            //PositionCalibrator.Illuminator = CommonModule.Instance.Illuminator;
             DieSearcher.Illuminator = CommonModule.Instance.Illuminator;
 
             AutoFocuser.Camera = Camera;

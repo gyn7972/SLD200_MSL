@@ -31,7 +31,8 @@ namespace QMC.Common.VisionPart
         //public XytStage Stage { set; get; }
         //public XyztStage Stage { set; get; }
         //public XyzztStage Stage { set; get; }
-        public UvwzxyzStage Stage { set; get; }
+        //public UvwzxyzStage Stage { set; get; }
+        public XyzLDzzxzULzzxzStage Stage { set; get; }
         public IlluminationDataSet IlluminationData 
         { 
             set
@@ -46,7 +47,7 @@ namespace QMC.Common.VisionPart
         public LoadingQueue LoadingQueue { set; get; }
 
         public RealTimeScannerConfig Config { set; get; }
-        public DieLoaderRecipe.RecipeSubMaterial RecipeSubMaterial { set; get; }
+        public LoaderRecipe.RecipeSubMaterial RecipeSubMaterial { set; get; }
         public RectangleD LastestArea { set; get; }
         public bool FirstSearchCompleted { set; get; }
 
@@ -128,7 +129,7 @@ namespace QMC.Common.VisionPart
             bool bAngleChange = false;
             RectangleD area = new RectangleD();
             PatternMatchingResult searchResult = null;
-            DieLoader dieLoader = this.Owner as DieLoader;
+            Loader loader = this.Owner as Loader;
             result = new RealTimeScannerResult();
 
             if(LoadingQueue.Count() == 0 && FirstSearchCompleted == true)
@@ -147,9 +148,9 @@ namespace QMC.Common.VisionPart
             for (int i = 0; i < searchResult.Values.Count; i++)
             {
                 XyCoordinate position;
-                if ((ret = VisionScale.ConvertPosition<XyCoordinate, XyCoordinate>(dieLoader.Scale, this.Camera.Resolution, (XyCoordinate)parameter.CurrentPosition, searchResult.Values[i], out position)) != 0) return ret;
-                result.SearchPositions.Add(new XytCoordinate(position.X, position.Y, 0));
-                result.ResultOverlays = searchResult.ResultOverlays;
+                //if ((ret = VisionScale.ConvertPosition<XyCoordinate, XyCoordinate>(loader.Scale, this.Camera.Resolution, (XyCoordinate)parameter.CurrentPosition, searchResult.Values[i], out position)) != 0) return ret;
+                //result.SearchPositions.Add(new XytCoordinate(position.X, position.Y, 0));
+                //result.ResultOverlays = searchResult.ResultOverlays;
             }
             return ret;
         }
@@ -163,7 +164,7 @@ namespace QMC.Common.VisionPart
             //PatternMatchingResult result = null;
             XytCoordinate currentPosition = new XytCoordinate();
             XytCoordinateCollection rotatePositions = new XytCoordinateCollection();
-            DieLoader dieLoader = this.Owner as DieLoader;
+            Loader loader = this.Owner as Loader;
             result = null;
 
             isAngleChange = false;
@@ -297,23 +298,23 @@ namespace QMC.Common.VisionPart
 
  		public override void UpdateConfigData() //참고 : 오버라이드,, 파트 콜
         {
-            DieLoader dieLoader = Owner as DieLoader;
-            if(dieLoader != null)
+            Loader loader = Owner as Loader;
+            if(loader != null)
             {
-                Config = dieLoader.Config.RealTimeScannerConfig;
+                //Config = loader.Config.RealTimeScannerConfig;
 
                 if (Recipe.IlluminationDataSet == null)
                     Recipe.IlluminationDataSet = new IlluminationDataSet(Name);
-                Recipe.IlluminationDataSet.SetIlluminationChannel(dieLoader.Config.ListIlluminationChannel);
+                Recipe.IlluminationDataSet.SetIlluminationChannel(loader.Config.ListIlluminationChannel);
             }
         }
 
         public override void UpdateRecipeData()
         {
-            DieLoader dieLoader = Owner as DieLoader;
-            if (dieLoader != null)
+            Loader loader = Owner as Loader;
+            if (loader != null)
             {
-                this.Recipe = dieLoader.Recipe.ScannerRecipe;
+                this.Recipe = loader.Recipe.ScannerRecipe;
                 if(this.Recipe.IlluminationDataSet != null)
                 {
                     IlluminationData = this.Recipe.IlluminationDataSet;
@@ -404,11 +405,11 @@ namespace QMC.Common.VisionPart
         }
         private DieLoadSubstrate GetSubstrateInfomation()
         {
-            DieLoader dieLoader = this.Owner as DieLoader;
+            Loader loader = this.Owner as Loader;
             DieLoadSubstrate loadSubstrate = null;
-            if(dieLoader != null)
+            if(loader != null)
             {
-                loadSubstrate = dieLoader.GetMaterial() as DieLoadSubstrate;
+                //loadSubstrate = loader.GetMaterial() as DieLoadSubstrate;
             }
             
 

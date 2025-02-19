@@ -27,7 +27,7 @@ namespace QMC.Common.VisionPart
         private Task<int> task;
         //public XyStage Stage { set; get; }
 
-        public WaferProbeAlignParameter waferProbeAlignParameter { set; get; }                    //  Laser Drilling 에서 Vision 을 사용하려면 이걸 살려서 쓰자.
+        public WorkStageParameter workStageParameter { set; get; }                    //  Laser Drilling 에서 Vision 을 사용하려면 이걸 살려서 쓰자.
 
         public TwoPointAlignerRecipe Recipe { set; get; }
 

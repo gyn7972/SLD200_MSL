@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace SerialCommLaserPowerMeter2
 {
-    public class SerialPowerMeter2Port : Form
+    public class SerialCommPowerMeter2Port : Form
     {
         public delegate void DataReceivedHandlerFunc(byte[] receiveData);
         public DataReceivedHandlerFunc DataReceivedHandler;
@@ -32,7 +32,7 @@ namespace SerialCommLaserPowerMeter2
         private Thread threadCheckSerialOpen;
         private bool isThreadCheckSerialOpen = false;
 
-        public SerialPowerMeter2Port()
+        public SerialCommPowerMeter2Port()
         {
         }
 

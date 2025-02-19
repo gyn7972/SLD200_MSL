@@ -191,8 +191,8 @@ namespace QMC.Common.UI
 
             BasicButtonControlSize = new Size(TopButtonSize.Width*4, TopSize.Height);
 
-            BackColor = Color.FromArgb(78, 78, 78);
-
+            //BackColor = Color.FromArgb(78, 78, 78);
+            BackColor = Color.FromArgb(220, 220, 220);
         }
 
     }

@@ -30,10 +30,10 @@ namespace QMC.Common.Parts
 
         public override void UpdateConfigData()
         {
-            if(Owner is DieLoader)
+            if(Owner is Loader)
             {
-                DieLoader dieLoader = (DieLoader)Owner;
-                this.Config = dieLoader.Config.PickUpAgentConfig;
+                Loader loader = (Loader)Owner;
+                this.Config = loader.Config.PickUpAgentConfig;
             }
         }
         #endregion

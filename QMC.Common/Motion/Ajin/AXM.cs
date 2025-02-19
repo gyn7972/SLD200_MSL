@@ -526,6 +526,9 @@ namespace QMC.Common.Motion.Ajin
         // 지정 축의 Command 위치를 반환한다.
         [DllImport(LibraryFileName)]
         private static extern uint AxmStatusGetCmdPos(int nAxisNo, ref double dpPos);
+        // 지정 축의 Torque 를 반환한다.
+        [DllImport(LibraryFileName)]
+        private static extern uint AxmStatusReadTorque(int nAxisNo, ref double dpTorque);
 
         #endregion
 
@@ -1718,6 +1721,13 @@ namespace QMC.Common.Motion.Ajin
             uint value = 0;
             if ((ret = AXL.CheckErrorCode("AXM.AxmStatusReadMotion", AXM.AxmStatusReadMotion(axis, ref value))) != 0) return ret;
             status = (AXT_MOTION_QIDRIVE_STATUS)value;
+            return ret;
+        }
+
+        public static int ReadTorque(int axis, ref double torque)
+        {
+            int ret = 0;
+            if ((ret = AXL.CheckErrorCode("AXM.AxmStatusReadTorque", AXM.AxmStatusReadTorque(axis, ref torque))) != 0) return ret;
             return ret;
         }
         #endregion

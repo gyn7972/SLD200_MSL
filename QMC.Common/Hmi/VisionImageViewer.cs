@@ -597,7 +597,8 @@ namespace QMC.Common.Hmi
             this.m_FixedByWidth = false;
             ViewerSyncRoot = new object();
 
-            UpdateDelayTime = 160;
+            //UpdateDelayTime = 160;
+            UpdateDelayTime = 80;
             OnCreateControl();
         }
 

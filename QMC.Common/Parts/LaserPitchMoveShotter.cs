@@ -3,7 +3,6 @@ using QMC.Common.Modules;
 using QMC.Common.Parts;
 using QMC.Common.PathGenerators;
 using QMC.Common.Vision.Cameras;
-using SpiralLab.Sirius;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,6 +14,25 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static QMC.Common.PathGenerators.PathGenerator;
+
+using SpiralLab.Sirius;
+
+//using OpenTK;
+//using OpenTK.Graphics.OpenGL;
+//using SpiralLab.Sirius2;
+//using SpiralLab.Sirius2.Laser;
+//using SpiralLab.Sirius2.PowerMeter;
+//using SpiralLab.Sirius2.Scanner;
+//using SpiralLab.Sirius2.Scanner.Rtc;
+//using SpiralLab.Sirius2.Winforms;
+//using SpiralLab.Sirius2.Winforms.Entity;
+//using SpiralLab.Sirius2.Winforms.Marker;
+//using SpiralLab.Sirius2.Winforms.UI;
+//using SpiralLab.Sirius2.Scanner.Rtc.SyncAxis;
+
+using Vector2 = System.Numerics.Vector2;
+using MessageBox = System.Windows.Forms.MessageBox;
+using netDxf.Collections;
 
 namespace QMC.Common.Parts
 {
@@ -39,7 +57,7 @@ namespace QMC.Common.Parts
         #endregion
 
         #region Field
-        private WaferProbeAlign m_Owner;
+        private WorkStage m_Owner;
         #endregion
 
         #region Constructor
@@ -54,7 +72,9 @@ namespace QMC.Common.Parts
         public Camera Camera { set; get; }
         //public XyztStage Stage { set; get; }
         //public XyzztStage Stage { set; get; }
-        public UvwzxyzStage Stage { set; get; }
+        //public UvwzxyzStage Stage { set; get; }
+        public XyzLDzzxzULzzxzStage Stage { set; get; }
+        public XyzyStage XyzyStage { set; get; }
         public LaserPitchMoveShotterConfig Config { set; get; }
         public TwoDimensionPathGenerator GridPathGenerator { get; set; }
         public RectangleZigzagTwoDimensionPathGeneratorParameter PathGeneratorParameter { get; set; }
@@ -135,7 +155,7 @@ namespace QMC.Common.Parts
             return ret;
         }
 
-        bool DrawSquare(IRtc rtc, ILaser laser, MotionType motionType, float width = 40, float height = 40)
+        bool DrawSquare(IRtc rtc, ILaser laser, MotionType motionType, float width = 40, float height = 40)        
         {
             bool success = true;
 
@@ -163,18 +183,19 @@ namespace QMC.Common.Parts
             //Debug.Assert(rtcMode != null);
 
             success &= rtcMode.ListBegin(laser, ListType.Auto);
+            //success &= rtcMode.ListBegin(ListTypes.Auto);         //  Sirius2
 
             success &= rtc.ListDelay(m_fLaserOnDelay, m_fLaserOffDelay, m_fJumpSpeed, m_fMarkSpeed, m_fMarkSpeed);
 
-            success &= rtc.ListJump(new Vector2(-width / 2.0f, height / 2.0f));
-            success &= rtc.ListMark(new Vector2(width / 2.0f, height / 2.0f));
-            success &= rtc.ListMark(new Vector2(width / 2.0f, -height / 2.0f));
-            success &= rtc.ListMark(new Vector2(-width / 2.0f, -height / 2.0f));
-            success &= rtc.ListMark(new Vector2(-width / 2.0f, height / 2.0f));
+            success &= rtc.ListJump/*To*/(new Vector2(-width / 2.0f, height / 2.0f));
+            success &= rtc.ListMark/*To*/(new Vector2(width / 2.0f, height / 2.0f));
+            success &= rtc.ListMark/*To*/(new Vector2(width / 2.0f, -height / 2.0f));
+            success &= rtc.ListMark/*To*/(new Vector2(-width / 2.0f, -height / 2.0f));
+            success &= rtc.ListMark/*To*/(new Vector2(-width / 2.0f, height / 2.0f));
 
             if (success)
             {
-                success &= rtc.ListJump(Vector2.Zero);
+                success &= rtc.ListJump/*To*/(Vector2.Zero);
                 success &= rtc.ListEnd();
                 success &= rtc.ListExecute(true);       // false);
             }
@@ -211,18 +232,19 @@ namespace QMC.Common.Parts
             //Debug.Assert(rtcMode != null);
 
             success &= rtcMode.ListBegin(laser, ListType.Auto);
+            //success &= rtcMode.ListBegin(ListTypes.Auto);             //  Sirius2
 
             success &= rtc.ListDelay(m_fLaserOnDelay, m_fLaserOffDelay, m_fJumpSpeed, m_fMarkSpeed, m_fMarkSpeed);
             success &= rtc.ListSpeed(m_fJumpSpeed, m_fMarkSpeed);
 
-            success &= rtc.ListJump(new Vector2(-(float)(width / 2.0), (float)0.0));
-            success &= rtc.ListMark(new Vector2((float)(width / 2.0), (float)0.0));
-            success &= rtc.ListJump(new Vector2((float)0.0, -(float)(height / 2.0)));
-            success &= rtc.ListMark(new Vector2((float)0.0, (float)(height / 2.0)));
+            success &= rtc.ListJump/*To*/(new Vector2(-(float)(width / 2.0), (float)0.0));
+            success &= rtc.ListMark/*To*/(new Vector2((float)(width / 2.0), (float)0.0));
+            success &= rtc.ListJump/*To*/(new Vector2((float)0.0, -(float)(height / 2.0)));
+            success &= rtc.ListMark/*To*/(new Vector2((float)0.0, (float)(height / 2.0)));
 
             if (success)
             {
-                success &= rtc.ListJump(Vector2.Zero);
+                success &= rtc.ListJump/*To*/(Vector2.Zero);
                 success &= rtc.ListEnd();
                 success &= rtc.ListExecute(true);       // false);
             }
@@ -258,16 +280,17 @@ namespace QMC.Common.Parts
             //Debug.Assert(rtcMode != null);
 
             success &= rtcMode.ListBegin(laser, ListType.Auto);
+            //success &= rtcMode.ListBegin(ListTypes.Auto);               //  Sirius2
 
             success &= rtc.ListDelay(m_fLaserOnDelay, m_fLaserOffDelay, m_fJumpSpeed, m_fMarkSpeed, m_fMarkSpeed);
 
-            success &= rtc.ListJump(new Vector2(radius, 0));
-            success &= rtc.ListArc(Vector2.Zero, 360.0f);
-            success &= rtc.ListJump(Vector2.Zero);
+            success &= rtc.ListJump/*To*/(new Vector2(radius, 0));
+            success &= rtc.ListArc/*To*/(Vector2.Zero, 360.0f);
+            success &= rtc.ListJump/*To*/(Vector2.Zero);
 
             if (success)
             {
-                success &= rtc.ListJump(Vector2.Zero);
+                success &= rtc.ListJump/*To*/(Vector2.Zero);
                 success &= rtc.ListEnd();
                 success &= rtc.ListExecute(true);       // false);
             }
@@ -307,15 +330,16 @@ namespace QMC.Common.Parts
             //Debug.Assert(rtcMode != null);
 
             success &= rtcMode.ListBegin(laser, ListType.Auto);
+            //success &= rtcMode.ListBegin(ListTypes.Auto);                   //  Sirius2
 
             success &= rtc.ListDelay(m_fLaserOnDelay, m_fLaserOffDelay, m_fJumpSpeed, m_fMarkSpeed, m_fMarkSpeed);
 
-            success &= rtc.ListJump(new Vector2(x1, y1));
-            success &= rtc.ListMark(new Vector2(x2, y2));
+            success &= rtc.ListJump/*To*/(new Vector2(x1, y1));
+            success &= rtc.ListMark/*To*/(new Vector2(x2, y2));
 
             if (success)
             {
-                success &= rtc.ListJump(Vector2.Zero);
+                success &= rtc.ListJump/*To*/(Vector2.Zero);
                 success &= rtc.ListEnd();
                 success &= rtc.ListExecute(true);       // false);
             }
@@ -347,7 +371,7 @@ namespace QMC.Common.Parts
         public override int OnWork()
         {
             int ret = 0;
-            m_Owner = this.Owner as WaferProbeAlign;
+            m_Owner = this.Owner as WorkStage;
             if (m_Status == RunStatus.Stop) return 1;
             if (this.Stage == null) return -1;
 
@@ -358,12 +382,12 @@ namespace QMC.Common.Parts
 
         public override void UpdateConfigData() //참고 : Override
         {
-            if (Owner is WaferProbeAlign)
+            if (Owner is WorkStage)
             {
-                WaferProbeAlign waferProbeAlign = Owner as WaferProbeAlign;
-                if (waferProbeAlign != null)
+                WorkStage workStage = Owner as WorkStage;
+                if (workStage != null)
                 {
-                    this.Config = waferProbeAlign.Config.LaserPitchMoveShotterConfig;
+                    this.Config = workStage.Config.LaserPitchMoveShotterConfig;
                 }
             }
 

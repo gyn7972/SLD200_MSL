@@ -7,7 +7,7 @@ namespace QMC.Common
     public static class Def
     {
         #region << file path >>
-        public static string ParamPath => "D:\\CWA-150SA_Onsemi_Parameter";
+        public static string ParamPath => "D:\\SLD-200_MSL_Parameter";
         public static string RecipePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "recipes");
         public static string ConfigPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config");
         public static string LogPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");

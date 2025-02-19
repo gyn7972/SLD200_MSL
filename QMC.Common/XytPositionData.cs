@@ -17,6 +17,261 @@ namespace QMC.Common
 
 
     [Serializable]
+    public class XyzLDzzxzULzzxzPositionData
+    {
+        protected XyzLDzzxzULzzxzCoordinate m_coordinate;
+        public string Name { get; set; }
+        public TargetType Type { set; get; }
+        [Browsable(false)]
+        public XyzLDzzxzULzzxzCoordinate Coordinate
+        {
+            set
+            {
+                m_coordinate = value;
+            }
+            get
+            {
+                return m_coordinate;
+            }
+        }
+        public double X
+        {
+            set
+            {
+                m_coordinate.X = value;
+            }
+            get
+            {
+                return m_coordinate.X;
+            }
+        }
+        public double Y
+        {
+            set
+            {
+                m_coordinate.Y = value;
+            }
+            get
+            {
+                return m_coordinate.Y;
+            }
+        }
+        public double Z
+        {
+            set
+            {
+                m_coordinate.Z = value;
+            }
+            get
+            {
+                return m_coordinate.Z;
+            }
+        }
+        public double MASK_Y
+        {
+            set
+            {
+                m_coordinate.Z = value;
+            }
+            get
+            {
+                return m_coordinate.Z;
+            }
+        }
+        public double LD_SZ0
+        {
+            set
+            {
+                m_coordinate.LD_SZ0 = value;
+            }
+            get
+            {
+                return m_coordinate.LD_SZ0;
+            }
+        }
+        public double LD_SZ1
+        {
+            set
+            {
+                m_coordinate.LD_SZ1 = value;
+            }
+            get
+            {
+                return m_coordinate.LD_SZ1;
+            }
+        }
+        public double LD_TRX
+        {
+            set
+            {
+                m_coordinate.LD_TRX = value;
+            }
+            get
+            {
+                return m_coordinate.LD_TRX;
+            }
+        }
+        public double LD_TRZ
+        {
+            set
+            {
+                m_coordinate.LD_TRZ = value;
+            }
+            get
+            {
+                return m_coordinate.LD_TRZ;
+            }
+        }
+        public double UL_SZ0
+        {
+            set
+            {
+                m_coordinate.UL_SZ0 = value;
+            }
+            get
+            {
+                return m_coordinate.UL_SZ0;
+            }
+        }
+        public double UL_SZ1
+        {
+            set
+            {
+                m_coordinate.UL_SZ1 = value;
+            }
+            get
+            {
+                return m_coordinate.UL_SZ1;
+            }
+        }
+        public double UL_TRX
+        {
+            set
+            {
+                m_coordinate.UL_TRX = value;
+            }
+            get
+            {
+                return m_coordinate.UL_TRX;
+            }
+        }
+        public double UL_TRZ
+        {
+            set
+            {
+                m_coordinate.UL_TRZ = value;
+            }
+            get
+            {
+                return m_coordinate.UL_TRZ;
+            }
+        }
+
+
+        public XyzLDzzxzULzzxzPositionData()
+        {
+            Name = "";
+            Type = TargetType.Base;
+            Coordinate = new XyzLDzzxzULzzxzCoordinate();
+        }
+
+        public void SetData(SettingParameterCollection parameters)
+        {
+            if (m_coordinate == null)
+                m_coordinate = new XyzLDzzxzULzzxzCoordinate();
+            if (parameters != null && parameters.Count >= 7)
+            {
+                m_coordinate.X = parameters[0].DoubleValue;
+                m_coordinate.Y = parameters[1].DoubleValue;
+                m_coordinate.Z = parameters[2].DoubleValue;
+                m_coordinate.LD_SZ0 = parameters[3].DoubleValue;
+                m_coordinate.LD_SZ1 = parameters[4].DoubleValue;
+                m_coordinate.LD_TRX = parameters[5].DoubleValue;
+                m_coordinate.LD_TRZ = parameters[6].DoubleValue;
+                m_coordinate.UL_SZ0 = parameters[7].DoubleValue;
+                m_coordinate.UL_SZ1 = parameters[8].DoubleValue;
+                m_coordinate.UL_TRX = parameters[9].DoubleValue;
+                m_coordinate.UL_TRZ = parameters[10].DoubleValue;
+            }
+
+
+        }
+    }
+    [Serializable]
+    public class XyzLDzzxzULzzxzPositionDataCollection : Collection<XyzLDzzxzULzzxzPositionData>
+    {
+        public List<string> GetPositionList()
+        {
+            List<string> list = new List<string>();
+            foreach (XyzLDzzxzULzzxzPositionData data in this)
+            {
+                if (data.Type == TargetType.Base)
+                {
+                    list.Add(data.Name);
+                }
+            }
+            return list;
+        }
+
+        public List<XyzLDzzxzULzzxzPositionData> GetPositionDatas(string strName)
+        {
+            List<XyzLDzzxzULzzxzPositionData> list = new List<XyzLDzzxzULzzxzPositionData>();
+            foreach (XyzLDzzxzULzzxzPositionData data in this)
+            {
+                if (data.Name == strName)
+                {
+                    list.Add(data);
+                }
+            }
+            return list;
+        }
+
+        public XyzLDzzxzULzzxzCoordinate GetPositionCoordinate(string strName)
+        {
+            XyzLDzzxzULzzxzCoordinate coord = new XyzLDzzxzULzzxzCoordinate();
+            List<XyzLDzzxzULzzxzPositionData> list = GetPositionDatas(strName);
+            if (list != null && list.Count > 0)
+            {
+                foreach (XyzLDzzxzULzzxzPositionData data in list)
+                {
+                    coord += data.Coordinate;
+                }
+            }
+            return coord;
+        }
+
+        //public XyCoordinate GetPositionCoordinate_UVW(string strName)
+        //{
+        //    XyCoordinate coord = new XyCoordinate();
+        //    List<XyzLDzzxzULzzxzPositionData> list = GetPositionDatas(strName);
+        //    if (list != null && list.Count > 0)
+        //    {
+        //        foreach (XyzLDzzxzULzzxzPositionData data in list)
+        //        {
+        //            coord.X += data.Coordinate.U;
+        //            coord.Y += data.Coordinate.V;
+        //        }
+        //    }
+        //    return coord;
+        //}
+
+        public XyCoordinate GetPositionCoordinate_XY(string strName)
+        {
+            XyCoordinate coord = new XyCoordinate();
+            List<XyzLDzzxzULzzxzPositionData> list = GetPositionDatas(strName);
+            if (list != null && list.Count > 0)
+            {
+                foreach (XyzLDzzxzULzzxzPositionData data in list)
+                {
+                    coord.X += data.Coordinate.X;
+                    coord.Y += data.Coordinate.Y;
+                }
+            }
+            return coord;
+        }
+    }
+
+    [Serializable]
     public class UvwzxyzPositionData
     {
         protected UvwzxyzCoordinate m_coordinate;
@@ -338,6 +593,424 @@ namespace QMC.Common
             return coord;
         }
     }
+
+
+
+
+    [Serializable]
+    public class XyzyPositionData
+    {
+        protected XyzyCoordinate m_coordinate;
+        public string Name { get; set; }
+        public TargetType Type { set; get; }
+        [Browsable(false)]
+        public XyzyCoordinate Coordinate
+        {
+            set
+            {
+                m_coordinate = value;
+            }
+            get
+            {
+                return m_coordinate;
+            }
+        }
+        public double X
+        {
+            set
+            {
+                m_coordinate.X = value;
+            }
+            get
+            {
+                return m_coordinate.X;
+            }
+        }
+        public double Y
+        {
+            set
+            {
+                m_coordinate.Y = value;
+            }
+            get
+            {
+                return m_coordinate.Y;
+            }
+        }
+        public double Z
+        {
+            set
+            {
+                m_coordinate.Z = value;
+            }
+            get
+            {
+                return m_coordinate.Z;
+            }
+        }
+        public double MASK_Y
+        {
+            set
+            {
+                m_coordinate.MASK_Y = value;
+            }
+            get
+            {
+                return m_coordinate.MASK_Y;
+            }
+        }
+
+        public XyzyPositionData()
+        {
+            Name = "";
+            Type = TargetType.Base;
+            Coordinate = new XyzyCoordinate();
+        }
+
+        public void SetData(SettingParameterCollection parameters)
+        {
+            if (m_coordinate == null)
+                m_coordinate = new XyzyCoordinate();
+            if (parameters != null && parameters.Count >= 5)
+            {
+                m_coordinate.X = parameters[0].DoubleValue;
+                m_coordinate.Y = parameters[1].DoubleValue;
+                m_coordinate.Z = parameters[2].DoubleValue;
+                m_coordinate.MASK_Y = parameters[3].DoubleValue;
+            }
+
+
+        }
+    }
+    [Serializable]
+    public class XyzyPositionDataCollection : Collection<XyzyPositionData>
+    {
+        public List<string> GetPositionList()
+        {
+            List<string> list = new List<string>();
+            foreach (XyzyPositionData data in this)
+            {
+                if (data.Type == TargetType.Base)
+                {
+                    list.Add(data.Name);
+                }
+            }
+            return list;
+        }
+
+        public List<XyzyPositionData> GetPositionDatas(string strName)
+        {
+            List<XyzyPositionData> list = new List<XyzyPositionData>();
+            foreach (XyzyPositionData data in this)
+            {
+                if (data.Name == strName)
+                {
+                    list.Add(data);
+                }
+            }
+            return list;
+        }
+
+        public XyzyCoordinate GetPositionCoordinate(string strName)
+        {
+            XyzyCoordinate coord = new XyzyCoordinate();
+            List<XyzyPositionData> list = GetPositionDatas(strName);
+            if (list != null && list.Count > 0)
+            {
+                foreach (XyzyPositionData data in list)
+                {
+                    coord += data.Coordinate;
+                }
+            }
+            return coord;
+        }
+    }
+
+
+    [Serializable]
+    public class ZzxzxyPositionData
+    {
+        protected ZzxzxyCoordinate m_coordinate;
+        public string Name { get; set; }
+        public TargetType Type { set; get; }
+        [Browsable(false)]
+        public ZzxzxyCoordinate Coordinate
+        {
+            set
+            {
+                m_coordinate = value;
+            }
+            get
+            {
+                return m_coordinate;
+            }
+        }
+        public double Z0
+        {
+            set
+            {
+                m_coordinate.Z0 = value;
+            }
+            get
+            {
+                return m_coordinate.Z0;
+            }
+        }
+        public double Z1
+        {
+            set
+            {
+                m_coordinate.Z1 = value;
+            }
+            get
+            {
+                return m_coordinate.Z1;
+            }
+        }
+        public double TR_X
+        {
+            set
+            {
+                m_coordinate.TR_X = value;
+            }
+            get
+            {
+                return m_coordinate.TR_X;
+            }
+        }
+        public double TR_Z
+        {
+            set
+            {
+                m_coordinate.TR_Z = value;
+            }
+            get
+            {
+                return m_coordinate.TR_Z;
+            }
+        }
+        public double ALN_X
+        {
+            set
+            {
+                m_coordinate.ALN_X = value;
+            }
+            get
+            {
+                return m_coordinate.ALN_X;
+            }
+        }
+        public double ALN_Y
+        {
+            set
+            {
+                m_coordinate.ALN_Y = value;
+            }
+            get
+            {
+                return m_coordinate.ALN_Y;
+            }
+        }
+
+        public ZzxzxyPositionData()
+        {
+            Name = "";
+            Type = TargetType.Base;
+            Coordinate = new ZzxzxyCoordinate();
+        }
+
+        public void SetData(SettingParameterCollection parameters)
+        {
+            if (m_coordinate == null)
+                m_coordinate = new ZzxzxyCoordinate();
+            if (parameters != null && parameters.Count >= 5)
+            {
+                m_coordinate.Z0 = parameters[0].DoubleValue;
+                m_coordinate.Z1 = parameters[1].DoubleValue;
+                m_coordinate.TR_X = parameters[2].DoubleValue;
+                m_coordinate.TR_Z = parameters[3].DoubleValue;
+                m_coordinate.ALN_X = parameters[4].DoubleValue;
+                m_coordinate.ALN_Y = parameters[5].DoubleValue;
+            }
+
+
+        }
+    }
+    [Serializable]
+    public class ZzxzxyPositionDataCollection : Collection<ZzxzxyPositionData>
+    {
+        public List<string> GetPositionList()
+        {
+            List<string> list = new List<string>();
+            foreach (ZzxzxyPositionData data in this)
+            {
+                if (data.Type == TargetType.Base)
+                {
+                    list.Add(data.Name);
+                }
+            }
+            return list;
+        }
+
+        public List<ZzxzxyPositionData> GetPositionDatas(string strName)
+        {
+            List<ZzxzxyPositionData> list = new List<ZzxzxyPositionData>();
+            foreach (ZzxzxyPositionData data in this)
+            {
+                if (data.Name == strName)
+                {
+                    list.Add(data);
+                }
+            }
+            return list;
+        }
+
+        public ZzxzxyCoordinate GetPositionCoordinate(string strName)
+        {
+            ZzxzxyCoordinate coord = new ZzxzxyCoordinate();
+            List<ZzxzxyPositionData> list = GetPositionDatas(strName);
+            if (list != null && list.Count > 0)
+            {
+                foreach (ZzxzxyPositionData data in list)
+                {
+                    coord += data.Coordinate;
+                }
+            }
+            return coord;
+        }
+    }
+
+
+
+    [Serializable]
+    public class ZzxzPositionData
+    {
+        protected ZzxzCoordinate m_coordinate;
+        public string Name { get; set; }
+        public TargetType Type { set; get; }
+        [Browsable(false)]
+        public ZzxzCoordinate Coordinate
+        {
+            set
+            {
+                m_coordinate = value;
+            }
+            get
+            {
+                return m_coordinate;
+            }
+        }
+        public double Z0
+        {
+            set
+            {
+                m_coordinate.Z0 = value;
+            }
+            get
+            {
+                return m_coordinate.Z0;
+            }
+        }
+        public double Z1
+        {
+            set
+            {
+                m_coordinate.Z1 = value;
+            }
+            get
+            {
+                return m_coordinate.Z1;
+            }
+        }
+        public double TR_X
+        {
+            set
+            {
+                m_coordinate.TR_X = value;
+            }
+            get
+            {
+                return m_coordinate.TR_X;
+            }
+        }
+        public double TR_Z
+        {
+            set
+            {
+                m_coordinate.TR_Z = value;
+            }
+            get
+            {
+                return m_coordinate.TR_Z;
+            }
+        }
+
+        public ZzxzPositionData()
+        {
+            Name = "";
+            Type = TargetType.Base;
+            Coordinate = new ZzxzCoordinate();
+        }
+
+        public void SetData(SettingParameterCollection parameters)
+        {
+            if (m_coordinate == null)
+                m_coordinate = new ZzxzCoordinate();
+            if (parameters != null && parameters.Count >= 5)
+            {
+                m_coordinate.Z0 = parameters[0].DoubleValue;
+                m_coordinate.Z1 = parameters[1].DoubleValue;
+                m_coordinate.TR_X = parameters[2].DoubleValue;
+                m_coordinate.TR_Z = parameters[3].DoubleValue;
+            }
+
+
+        }
+    }
+    [Serializable]
+    public class ZzxzPositionDataCollection : Collection<ZzxzPositionData>
+    {
+        public List<string> GetPositionList()
+        {
+            List<string> list = new List<string>();
+            foreach (ZzxzPositionData data in this)
+            {
+                if (data.Type == TargetType.Base)
+                {
+                    list.Add(data.Name);
+                }
+            }
+            return list;
+        }
+
+        public List<ZzxzPositionData> GetPositionDatas(string strName)
+        {
+            List<ZzxzPositionData> list = new List<ZzxzPositionData>();
+            foreach (ZzxzPositionData data in this)
+            {
+                if (data.Name == strName)
+                {
+                    list.Add(data);
+                }
+            }
+            return list;
+        }
+
+        public ZzxzCoordinate GetPositionCoordinate(string strName)
+        {
+            ZzxzCoordinate coord = new ZzxzCoordinate();
+            List<ZzxzPositionData> list = GetPositionDatas(strName);
+            if (list != null && list.Count > 0)
+            {
+                foreach (ZzxzPositionData data in list)
+                {
+                    coord += data.Coordinate;
+                }
+            }
+            return coord;
+        }
+    }
+
 
 
     [Serializable]
@@ -935,6 +1608,8 @@ namespace QMC.Common
             return list;
         }
     }
+
+
     [Serializable]
     public class XyPositionData
     {
@@ -1025,6 +1700,88 @@ namespace QMC.Common
             return list;
         }
     }
+
+
+    [Serializable]
+    public class YPositionData
+    {
+        protected YCoordinate m_coordinate;
+        public string Name { get; set; }
+        public TargetType Type { set; get; }
+        [Browsable(false)]
+        public YCoordinate Coordinate
+        {
+            set
+            {
+                m_coordinate = value;
+            }
+            get
+            {
+                return m_coordinate;
+            }
+        }
+
+        public double Y
+        {
+            set
+            {
+                m_coordinate.Y = value;
+            }
+            get
+            {
+                return m_coordinate.Y;
+            }
+        }
+
+        public YPositionData()
+        {
+            Name = "";
+            Type = TargetType.Base;
+            Coordinate = new YCoordinate();
+        }
+
+        public void SetData(SettingParameterCollection parameters)
+        {
+            if (m_coordinate == null)
+                m_coordinate = new YCoordinate();
+            if (parameters != null && parameters.Count >= 2)
+            {
+                m_coordinate.Y = parameters[1].DoubleValue;
+            }
+        }
+    }
+    [Serializable]
+    public class YPositionDataCollection : Collection<YPositionData>
+    {
+        public List<string> GetPositionList()
+        {
+            List<string> list = new List<string>();
+            foreach (YPositionData data in this)
+            {
+                if (data.Type == TargetType.Base)
+                {
+                    list.Add(data.Name);
+                }
+            }
+            return list;
+        }
+
+        public List<YPositionData> GetPositionDatas(string strName)
+        {
+            List<YPositionData> list = new List<YPositionData>();
+            foreach (YPositionData data in this)
+            {
+                if (data.Name == strName)
+                {
+                    list.Add(data);
+                }
+            }
+            return list;
+        }
+    }
+
+
+
     [Serializable]
     public class ZPositionData
     {

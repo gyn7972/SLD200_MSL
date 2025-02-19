@@ -71,11 +71,11 @@ namespace QMC.Common.UI
 
             PatternMatchingParameter = new PatternMatchingParameters();
 
-            if(part is ColletXYPositionCalibrator)
-            {
-                this.baseLabelT.Visible = false;
-                this.baseTextBoxT.Visible = false;
-            }
+            //if(part is ColletXYPositionCalibrator)
+            //{
+            //    this.baseLabelT.Visible = false;
+            //    this.baseTextBoxT.Visible = false;
+            //}
 
             TabPageCreate();
             init();

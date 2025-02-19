@@ -1,23 +1,28 @@
 ﻿using QMC.Common.Hmi;
 using QMC.Common.Modules;
-using SpiralLab.Sirius;
+using QMC.Common.Parts;
+using QMC.Common.Vision.HIKVISION;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace QMC.Common.Vision.Cameras
 {
     [Serializable]
     public abstract class Camera : Part
     {
+
         [Serializable]
         public enum AlarmKeys
         {
@@ -36,13 +41,13 @@ namespace QMC.Common.Vision.Cameras
             SendCommandFailed,
             ReciveCommandFailed,
         }
-
         public enum ImageRotateInfo
         {
             None,
             RotateCW,
             RotateCCW,
         }
+
 
         [Serializable]
         public enum BitPerPixelInfo
@@ -65,47 +70,135 @@ namespace QMC.Common.Vision.Cameras
         [NonSerialized]
         protected SemaphoreSlim m_GrabSemaphoreSlim;
         protected VisionImage m_latestImage;
+
+        private VisionImage m_AvgImage = null;
+        private int[] m_SumBuffer = null;
+        private int m_nAvgCount = 0;
+        private bool m_IsAvgImage;
+        private Size m_nResolution;
+        private bool m_bSimulation;
         protected object m_ImageLock = new object();
         public bool Opened { get; protected set; }
         public bool IsLiveOn { set; get; }
+        public BaseConfig Config { set; get; }
+        public BaseRecipe Recipe { set; get; }
         public Size Resolution
         {
             set
             {
-                m_resolution = value;
+                CameraConfig.Resolution = value;
+                //if (this.ImageRotate == ImageRotateInfo.None)
+                //{
+                //    CameraConfig.Resolution = value;
+                //}
+                //else
+                //{
+                //    CameraConfig.Resolution = new Size(value.Height, value.Width);
+                //}
             }
             get
             {
-                if(this.ImageRotate == ImageRotateInfo.None)
+                if(CameraConfig == null)
                 {
-                    return m_resolution;
+                    return new Size();
+                }
+                if (CameraConfig.UseCutImage)
+                {
+                    if (this.ImageRotate == ImageRotateInfo.None)
+                    {
+                        return new Size((int)CameraConfig.CutImageWidth, (int)CameraConfig.CutImageHeight);
+                    }
+                    else
+                    {
+                        return new Size((int)CameraConfig.CutImageHeight, (int)CameraConfig.CutImageWidth);
+                    }
                 }
                 else
                 {
-                    return new Size(m_resolution.Height, m_resolution.Width);
+                    if (this.ImageRotate == ImageRotateInfo.None)
+                    {
+                        return CameraConfig.Resolution;
+                    }
+                    else
+                    {
+                        return CameraConfig.Resolution;
+                        //return new Size(CameraConfig.Resolution.Height, CameraConfig.Resolution.Width);
+                    }
                 }
+
             }
         }
-        Size m_resolution;
-        public VisionImage LatestImage 
-        { 
-            set
+
+        public virtual void Load(FileStream fs)
+        {
+
+        }
+
+        public virtual void Save(FileStream fs)
+        {
+
+        }
+
+        private void AvgImage(VisionImage image)
+        {
+            if (m_AvgImage is null)
             {
-                lock(m_ImageLock)
+                m_AvgImage = image;
+                Image img = image.GetImage();
+                int nSize = img.Width * img.Height;
+                m_SumBuffer = new int[nSize];
+                for (int iter = 0; iter < nSize; iter++)
                 {
-                    m_latestImage = value;
-                }                    
+                    m_SumBuffer[iter] = image.RawData[iter];
+                }
+                m_nAvgCount = 1;
             }
+            else
+            {
+                image.GetSumData(ref m_SumBuffer, m_SumBuffer.Length);
+                m_nAvgCount++;
+                m_AvgImage.SetSumData(m_SumBuffer, m_SumBuffer.Length, m_nAvgCount);
+            }
+        }
+
+
+        public VisionImage LatestImage
+        {
+
+
             get
             {
-                lock(m_ImageLock)
+                lock (m_ImageLock)
                 {
-                    return m_latestImage;
+                    if (m_IsAvgImage && m_AvgImage != null)
+                    {
+                        return this.m_AvgImage;
+                    }
+                    else
+                    {
+                        return this.m_latestImage;
+                    }
                 }
-                
             }
+            //internal protected -> public, SubVisionPart에서 LatestImage를 갱신시켜주기 위하여 변경함.
+            set
+            {
+                lock (m_ImageLock)
+                {
+                    if (m_IsAvgImage)
+                    {
+                        AvgImage(value);
+                    }
+                    else
+                    {
+                        this.m_latestImage = value;
+                    }
+                }
+            }
+
+
         }
-        
+
         #region Sleep
         /// <summary>
         /// Camera Live 시작된 시간을 가져온다.
@@ -115,17 +208,31 @@ namespace QMC.Common.Vision.Cameras
             get;
             private set;
         }
-        
 
-        
+
+        public bool IsAvgOn
+        {
+            get { return this.m_IsAvgImage; }
+            set
+            {
+                lock (m_ImageLock)
+                {
+                    this.m_IsAvgImage = value;
+                    if (this.m_IsAvgImage == false)
+                    {
+                        m_AvgImage = null;
+                    }
+                }
+            }
+        }
 
         public bool AutoSleepEnable
         {
-            get { return Config.AutoSleepEnable; }
-            set { Config.AutoSleepEnable = value; }
+            get { return CameraConfig.AutoSleepEnable; }
+            set { CameraConfig.AutoSleepEnable = value; }
         }
 
-        
+
 
         /// <summary>
         /// Camera의 Sleep 여부를 가져온다.
@@ -137,80 +244,82 @@ namespace QMC.Common.Vision.Cameras
         }
 
         public bool EnableExposure
-        { 
-            set { Config.EnableExposure = value; }
-            get { return Config.EnableExposure; }
+        {
+            set { CameraConfig.EnableExposure = value; }
+            get { return CameraConfig.EnableExposure; }
         }
 
-        
+
 
         public bool SuspendedImageDisplay
         {
-            get { return Config.SuspendedImageDisplay; }
-            set { Config.SuspendedImageDisplay = value; }
+            get { return CameraConfig.SuspendedImageDisplay; }
+            set { CameraConfig.SuspendedImageDisplay = value; }
         }
 
         #region ConstructConfiguration
         [Category("Camera")]
         public TimeSpanInfo AutoSleepLimitMin
         {
-            get { return Config.AutoSleepLimitMin; }
-            set { Config.AutoSleepLimitMin = value; }
+            get { return CameraConfig.AutoSleepLimitMin; }
+            set { CameraConfig.AutoSleepLimitMin = value; }
         }
         [Category("Delay")]
-        public int DelayBeforeGrab 
+        public int DelayBeforeGrab
         {
-            set { Config.DelayBeforeGrab = value;}
-            get { return Config.DelayBeforeGrab; } 
+            set { CameraConfig.DelayBeforeGrab = value; }
+            get { return CameraConfig.DelayBeforeGrab; }
         }
         [Category("Delay")]
-        public int DelayAfterGrab 
+        public int DelayAfterGrab
         {
-            set { Config.DelayAfterGrab = value; } 
-            get { return Config.DelayAfterGrab;} 
+            set { CameraConfig.DelayAfterGrab = value; }
+            get { return CameraConfig.DelayAfterGrab; }
         }
         [Category("Camera")]
         public int GrabRetryCount
         {
-            set { Config.GrabRetryCount = value;}
-            get { return Config.GrabRetryCount; } 
+            set { CameraConfig.GrabRetryCount = value; }
+            get { return CameraConfig.GrabRetryCount; }
         }
         [Category("Camera")]
         public Size CameraResolution
         {
-            get { return Config.CameraResolution;}
-            set { Config.CameraResolution = value; }
+            get { return CameraConfig.CameraResolution; }
+            set { CameraConfig.CameraResolution = value; }
         }
         [Category("Camera")]
         public int SignalWatingTime
         {
-            get { return Config.SignalWatingTime;}
-            set { Config.SignalWatingTime = value; }
+            get { return CameraConfig.SignalWatingTime; }
+            set { CameraConfig.SignalWatingTime = value; }
         }
         [Category("Camera")]
-        public SizeD PixelResolution 
+        public SizeD PixelResolution
         {
-            set { Config.PixelResolution = value;}
-            get { return Config.PixelResolution;}
+            set { CameraConfig.PixelResolution = value; }
+            get { return CameraConfig.PixelResolution; }
         }
         [Category("Camera")]
         public ImageFlip ImageFlipX
         {
-            get { return Config.ImageFlipX;}
-            set { Config.ImageFlipX = value;}
+            get { return CameraConfig.ImageFlipX; }
+            set { CameraConfig.ImageFlipX = value; }
         }
         [Category("Camera")]
         public ImageFlip ImageFlipY
         {
-            get { return Config.ImageFlipY;}
-            set { Config.ImageFlipY = value;}
+            get { return CameraConfig.ImageFlipY; }
+            set { CameraConfig.ImageFlipY = value; }
         }
+        [Category("Camera")]
         public ImageRotateInfo ImageRotate
         {
-            get { return Config.ImageRotate; }
-            set { Config.ImageRotate = value; }
+            get { return CameraConfig.ImageRotate; }
+            set { CameraConfig.ImageRotate = value; }
 
         }
+
         //[Category("Camera")]
         //public double MaxFrameRate
         //{
@@ -218,48 +327,50 @@ namespace QMC.Common.Vision.Cameras
         //    set;
         //}
         [Category("Camera")]
-        public TimeSpanInfo WaitToGrabTimeout 
+        public TimeSpanInfo WaitToGrabTimeout
         {
-            set { Config.WaitToGrabTimeout = value;}
-            get { return Config.WaitToGrabTimeout;} 
+            set { CameraConfig.WaitToGrabTimeout = value; }
+            get { return CameraConfig.WaitToGrabTimeout; }
         }
 
         #endregion
         #endregion
+        [Browsable(false)]
+        virtual public CameraConfig CameraConfig
+        {
+            set
+            {
+                Config = value;
+            }
+            get
+            {
+                return Config as CameraConfig;
+            }
+        }
 
-        public CameraConfig Config { set; get; }
+        public bool IsSimulation
+        {
+            set
+            {
+                m_bSimulation = value;
+                if (m_bSimulation)
+                {
+                    Opened = true;
+                }
+            }
+            get
+            {
+                return m_bSimulation;
+            }
+        }
         #region Constructor
-        public Camera() :this("Camera") { }
+        public Camera() : this("Camera") { }
         public Camera(string strName) : base(strName)
         {
-            Config = new CameraConfig();
 
-            this.LatestImage = new VisionImage();
-            this.LiveStartTime = new DateTime();
-            this.AutoSleepEnable = false;
-            this.Timer = new System.Timers.Timer(1000);
-            this.Timer.Elapsed += Timer_Elapsed;
-            this.Timer.Start();
-            this.Sleep = false;
-            //this.m_SyncRoot = new object();
 
-            m_CycleTimer = new CycleTimer(this);
-            m_GrabSemaphoreSlim = new SemaphoreSlim(1, 1);
 
-            this.AutoSleepLimitMin = TimeSpanInfo.FromMinutes(5);
 
-            this.DelayAfterGrab = 0;
-            this.DelayBeforeGrab = 0;
-
-            this.GrabRetryCount = 1;
-            this.SignalWatingTime = 300;
-
-            this.PixelResolution = new SizeD();
-
-            this.ImageFlipX = Camera.ImageFlip.Off;
-            this.ImageFlipY = Camera.ImageFlip.Off;
-
-            this.ImageRotate = Camera.ImageRotateInfo.None;
         }
 
         #endregion
@@ -329,7 +440,33 @@ namespace QMC.Common.Vision.Cameras
         }
         #endregion
 
-        
+        protected void InitValue()
+        {
+            this.LatestImage = new VisionImage();
+            this.LiveStartTime = new DateTime();
+            this.AutoSleepEnable = false;
+            this.Timer = new System.Timers.Timer(1000);
+            this.Timer.Elapsed += Timer_Elapsed;
+            this.Timer.Start();
+            this.Sleep = false;
+            //this.m_SyncRoot = new object();
+
+            m_CycleTimer = new CycleTimer(this);
+            m_GrabSemaphoreSlim = new SemaphoreSlim(1, 1);
+
+            this.AutoSleepLimitMin = TimeSpanInfo.FromMinutes(5);
+
+            this.DelayAfterGrab = 0;
+            this.DelayBeforeGrab = 0;
+
+            this.GrabRetryCount = 1;
+            this.SignalWatingTime = 300;
+
+            this.PixelResolution = new SizeD();
+
+            this.ImageFlipX = Camera.ImageFlip.Off;
+            this.ImageFlipY = Camera.ImageFlip.Off;
+        }
         protected int CheckReturnCode(int code, Enum alarmKey)
         {
             int ret = 0;
@@ -350,6 +487,10 @@ namespace QMC.Common.Vision.Cameras
             return ret;
         }
 
+        public virtual int SetGain(double dGain)
+        {
+            return 0;
+        }
         #region GetFrameRate
         public int GetFrameRate(ref double frameRate)
         {
@@ -402,7 +543,10 @@ namespace QMC.Common.Vision.Cameras
         {
             int ret = 0;
 
-            if ((ret = this.OnSetExposureTime(exposureTime)) != 0) return ret;
+            if(exposureTime > 0)
+            {
+                if ((ret = this.OnSetExposureTime(exposureTime)) != 0) return ret;
+            }
 
             return ret;
         }
@@ -536,30 +680,18 @@ namespace QMC.Common.Vision.Cameras
         #endregion
 
         #region CreateVisionImage
-
-
-        private void RotateImage90(byte[] image, int nWidth, int nHeight, byte[] result, int nResultWidth, int nResultHeight)
-        {
-            // 1. 회전된 영상의 크기를 구한다.
-            // 2. 회전된 영상의 데이터를 구한다.
-            // 3. 회전된 영상의 크기를 저장한다.
-            // 4. 회전된 영상의 데이터를 저장한다.
-            int nResultSize = nResultWidth * nResultHeight;
-            for (int i = 0; i < nResultSize; i++)
-            {
-                int nRow = i / nResultWidth;
-                int nCol = i % nResultWidth;
-                int nResultIndex = nRow + nCol * nResultHeight;
-                int nIndex = nCol + nRow * nWidth;
-                result[nResultIndex] = image[nIndex];
-            }
-        }
-
+        /// <summary>
+        /// 취득된 카메라 이미지데이터를 VisionImage 타입으로 생성한다.
+        /// </summary>
+        /// <param name="pointer"></param>
+        /// <param name="image"></param>
+        /// <returns></returns>
+        /// 
         private Task<int> ImageRotateCW(ImageRotateInfoClass imageRotateInfo)
         {
-            Task<int> t = Task<int>.Factory.StartNew((obj) =>
+            Task<int> t = Task<int>.Factory.StartNew(( obj) => 
             {
-                ImageRotateInfoClass IRI = (ImageRotateInfoClass)obj;
+                ImageRotateInfoClass IRI = (ImageRotateInfoClass)obj ;
 
                 int nWidth = IRI.nWidth;
                 int TargetIndex = IRI.nTargetIndex;
@@ -576,7 +708,7 @@ namespace QMC.Common.Vision.Cameras
                     //TargetIndex += nWidth;
                     IRI.dst[TargetIndex] = (byte)(IRI.src[SourceIndex]);
                     //IRI.dst[SourceIndex] = 128;
-
+                    
                     // bytes[SourceIndex] = 128;
                     TargetIndex += nWidth;
                     if (TargetIndex >= IRI.nSize)
@@ -590,40 +722,19 @@ namespace QMC.Common.Vision.Cameras
             }, imageRotateInfo);
             return t;
         }
-
-        /// <summary>
-        /// 취득된 카메라 이미지데이터를 VisionImage 타입으로 생성한다.
-        /// </summary>
-        /// <param name="pointer"></param>
-        /// <param name="image"></param>
-        /// <returns></returns>
-        protected int CreateVisionImage(IntPtr pointer, out VisionImage image)
+        protected virtual int CreateVisionImage(IntPtr pointer, out VisionImage image)
         {
             int ret = 0;
             byte[] bytes = null;
             image = null;
-
             int TargetIndex = 0;
             int ss = 0;
-            //Size sz = new Size(1536, 2048);
-            //this.Resolution = sz;
-
-            Size resolution = this.Resolution;
-
-
+            Size resolution = this.CameraConfig.Resolution;
             int nSize = resolution.Width * resolution.Height;
-
             try
             {
-                //bytes = new byte[this.Resolution.Width * this.Resolution.Height];
-                //Marshal.Copy(pointer, bytes, 0, bytes.Length);
-
-                //this.CreateVisionImage(bytes, out image);
-
-                //image.Header.Pointer = pointer;
 
                 bytes = new byte[resolution.Width * resolution.Height];
-
                 if (this.ImageRotate == ImageRotateInfo.None)
                 {
                     Marshal.Copy(pointer, bytes, 0, bytes.Length);
@@ -637,25 +748,79 @@ namespace QMC.Common.Vision.Cameras
 
                     if (this.ImageRotate == ImageRotateInfo.RotateCW)
                     {
-                        TargetIndex = resolution.Width - 1;
-                        int nWidth = resolution.Width;
-                        for (int SourceIndex = 0; SourceIndex < nSize; SourceIndex++)
+                        List<Task<int>> tasks = new List<Task<int>>();
+                        int nStartIndex = 0;
+                        int nEndIndex = 0;
+                        int nTargetIndex = resolution.Height - 1;
+                        int nDiv = 60;
+                        for(int iter = 0; iter < resolution.Height; iter += resolution.Height / nDiv)
                         {
-                            bytes[TargetIndex] = (byte)(bytesOrg[SourceIndex]);
-                            // bytes[SourceIndex] = 128;
-                            TargetIndex += nWidth;
-                            if (TargetIndex >= nSize)
+                            ImageRotateInfoClass IRI = new ImageRotateInfoClass();
+                            nStartIndex = iter * resolution.Width;
+                            nEndIndex = (iter+ resolution.Height / nDiv) * resolution.Width;
+                            
+
+                            if (nEndIndex > nSize)
                             {
-                                TargetIndex -= nSize;
-                                TargetIndex--;
+                                nEndIndex = nSize;
                             }
-                            ss = SourceIndex;
+                            IRI.dst = bytes;
+                            IRI.src = bytesOrg;
+                            IRI.nStartIndex = nStartIndex;
+                            IRI.nEndIndex = nEndIndex;
+                            IRI.nWidth = resolution.Height;
+                            IRI.nSize = nSize;
+                            IRI.nTargetIndex = nTargetIndex;
+
+                            tasks.Add(ImageRotateCW(IRI));
+                            
+                            for (int iter2 = nStartIndex; iter2 < nEndIndex; iter2++)
+                            {
+                                nTargetIndex += IRI.nWidth;
+                                if (nTargetIndex >= nSize)
+                                {
+                                    nTargetIndex -= nSize;
+                                    nTargetIndex--;
+                                }
+                            }
                         }
+                        foreach(var v in tasks)
+                        {
+                            v.Wait();
+                        }
+                        //TargetIndex = resolution.Height - 1;
+                        //int nWidth = resolution.Height;
+                        //for (int SourceIndex = 0; SourceIndex < nSize; SourceIndex++)
+                        //{
+                        //    bytes[TargetIndex] = (byte)(bytesOrg[SourceIndex]);
+                        //    // bytes[SourceIndex] = 128;
+                        //    TargetIndex += nWidth;
+                        //    if (TargetIndex >= nSize)
+                        //    {
+                        //        TargetIndex -= nSize;
+                        //        TargetIndex--;
+                        //    }
+                        //    ss = SourceIndex;
+                        //}
+
+
+                        //int nWidth = resolution.Width;
+                        //int nHeight = resolution.Height;
+                        //Parallel.For(0, nWidth, (x) =>
+                        //    {
+                        //        for (int y = 0; y < nHeight; y++)
+                        //        {
+                        //            bytes[(nHeight - 1 - y) + (x) * nHeight] = bytesOrg[x + y * nWidth];
+                        //        }
+
+                        //    });
+
+
                     }
                     else
                     {
-                        TargetIndex = nSize - resolution.Width;
-                        int nWidth = resolution.Width;
+                        TargetIndex = nSize - resolution.Height;
+                        int nWidth = resolution.Height;
                         for (int SourceIndex = 0; SourceIndex < nSize; SourceIndex++)
                         {
                             bytes[TargetIndex] = (byte)(bytesOrg[SourceIndex]);
@@ -668,10 +833,20 @@ namespace QMC.Common.Vision.Cameras
 
                             }
                         }
+
+                        //int nWidth = resolution.Width;
+                        //int nHeight = resolution.Height;
+                        //Parallel.For(0, nWidth, (x) =>
+                        //{
+                        //    for (int y = 0; y < nHeight; y++)
+                        //    {
+                        //        bytes[y + (nWidth - 1 - x) * nHeight] = bytesOrg[x + y * nWidth];
+                        //    }
+
+                        //});
                     }
 
                 }
-
                 this.CreateVisionImage(bytes, out image);
 
                 image.Header.Pointer = pointer;
@@ -679,6 +854,7 @@ namespace QMC.Common.Vision.Cameras
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+
             }
 
             return ret;
@@ -703,7 +879,7 @@ namespace QMC.Common.Vision.Cameras
                 image.RawData = buffer;
                 image.Header.Width = this.Resolution.Width;
                 image.Header.Height = this.Resolution.Height;
-                image.Header.BufferSize = this.Resolution.Width * this.Resolution.Height;
+                image.Header.BufferSize = this.CameraConfig.Resolution.Width * this.CameraConfig.Resolution.Height;
                 image.Header.BitsPerPixel = (int)Camera.BitPerPixelInfo.Gray8bpp;
                 image.Header.PixelFormat = PixelFormat.Format8bppIndexed;
                 image.Header.Stride = (int)((image.Header.Width * image.Header.BitsPerPixel + 7) / 8);
@@ -738,7 +914,7 @@ namespace QMC.Common.Vision.Cameras
             else
             {
                 Console.WriteLine(string.Format("GrabSemaphore Denied {0}", retryCount));
-                
+
                 if (retryCount < this.GrabRetryCount)
                 {
                     retryCount++;
@@ -809,6 +985,11 @@ namespace QMC.Common.Vision.Cameras
             //lock (this.m_SyncRoot)
             try
             {
+                if (IsSimulation)
+                {
+                    image = LatestImage;
+                    return 0;
+                }
                 if (purpose != Purpose.Display)
                     m_CycleTimer.Start();
 
@@ -828,7 +1009,7 @@ namespace QMC.Common.Vision.Cameras
 
                     if (purpose != Purpose.Display)
                         Console.WriteLine("Start OnGrab()");
-
+                    
                     if ((ret = this.WaitToGrab()) != 0) return ret;
 
                     if (0 < this.DelayBeforeGrab)
@@ -875,7 +1056,7 @@ namespace QMC.Common.Vision.Cameras
         #endregion
 
         #region Open()
-        
+
         public int Open()
         {
             return OpenProcedure();
@@ -988,6 +1169,7 @@ namespace QMC.Common.Vision.Cameras
 
         public override int Create()
         {
+            base.Create();
             if (m_CycleTimer == null)
                 m_CycleTimer = new CycleTimer(this);
             if (m_GrabSemaphoreSlim == null)
@@ -1045,7 +1227,6 @@ namespace QMC.Common.Vision.Cameras
         }
         #endregion
     }
-
     public class ImageRotateInfoClass
     {
         public int nWidth;
@@ -1061,6 +1242,5 @@ namespace QMC.Common.Vision.Cameras
 
         }
     }
-
     #endregion
 }

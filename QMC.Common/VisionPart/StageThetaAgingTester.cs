@@ -28,7 +28,8 @@ namespace QMC.Common.VisionPart
         public StageThetaAgingTesterRecipe Recipe { set; get; }
         //public XyztStage Stage { set; get; }
         //public XyzztStage Stage { set; get; }
-        public UvwzxyzStage Stage { set; get; }
+        //public UvwzxyzStage Stage { set; get; }
+        public XyzLDzzxzULzzxzStage Stage { set; get; }
 
         private StageThetaAgingTestResultCollection m_Results;
 

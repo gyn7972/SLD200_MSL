@@ -66,7 +66,7 @@ namespace QMC.Core.Mmi
         public CircularButton()
         {
             this.DoubleBuffered = true;
-            this.Font = new Font("Arial", 15, FontStyle.Bold);
+            this.Font = new Font("Tahoma", 15, FontStyle.Bold);
             this.BorderColor = Color.DimGray;
             this.BorderWidth = 2;
             this.BackColor = Color.Transparent;//Color.LimeGreen;

@@ -12,7 +12,23 @@ using QMC.Common.Vision.Optics.Leesos;
 using QMC.Common.VisionPart;
 using QMC.Common.Modules;
 using QMC.Common.Motion.ACS.Motions;
+using System.Windows.Forms;
+using System.Security.Policy;
+
 using SpiralLab.Sirius;
+
+//using OpenTK;
+//using OpenTK.Graphics.OpenGL;
+//using SpiralLab.Sirius2;
+//using SpiralLab.Sirius2.Laser;
+//using SpiralLab.Sirius2.PowerMeter;
+//using SpiralLab.Sirius2.Scanner;
+//using SpiralLab.Sirius2.Scanner.Rtc;
+//using SpiralLab.Sirius2.Winforms;
+//using SpiralLab.Sirius2.Winforms.Entity;
+//using SpiralLab.Sirius2.Winforms.Marker;
+//using SpiralLab.Sirius2.Winforms.UI;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace QMC.Common
 {
@@ -56,7 +72,12 @@ namespace QMC.Common
         public static bool Mode_DryRun { set; get; }
         private static bool Machine_Run;
         public static bool AjinBoard_Opened { set; get; }
-        public static bool m_bRedraw_FormWaferProbeAlignParameterConfig { set; get; }
+        public static bool m_bRedraw_FormWorkStageParameterConfig { set; get; }
+        public static bool m_bRedraw_FormLoaderParameterConfig { set; get; }
+        public static bool m_bRedraw_FormUnloaderParameterConfig { set; get; }
+        public static bool m_bRedraw_FormBdsParameterConfig { set; get; }
+        public static bool m_bRedraw_FormUpperCameraConfig { set; get; }
+        public static bool m_bRedraw_FormLowerCameraConfig { set; get; }
         public static bool GetMachineRunStatus()
         {
             return Machine_Run;
@@ -125,21 +146,59 @@ namespace QMC.Common
         public static bool AreaSensorDetectFlag_Reset { set; get; }
 
 
+        //  카메라 시리얼 넘버
+        public static bool CameraSerialNumberType { set; get; }
+        public static string PAKCamera_SerialNumber { set; get; }
+        public static int PAKCamera_Width { set; get; }
+        public static int PAKCamera_Height { set; get; }
+        public static string WaferCamera_SerialNumber { set; get; }
+        public static int WaferCamera_Width { set; get; }
+        public static int WaferCamera_Height { set; get; }
+
+
+        //  모터 축 파라미터
+        public static int Max_Axis = 14;
+        public struct stAxisParameter
+        {
+            public int LimitSensor_Installed;               //  Limit Sensor 설치 여부 (Not Installed, Installed)
+            public int LimitSensor_ActiveLevel;             //  Limit Sensor 동작 레벨 (Low, High)
+
+            public int Home_Sensing;                        //  Home Sensor 형태 (Home, -Limit, +Limit)
+            public int Home_Installed;                      //  Home Sensor 설치 여부 (Not Installed, Installed)
+            public int Home_ActiveLevel;                    //  Home Sensor 동작 레벨 (Low, High)
+            public int Home_Direction;                      //  Home Sensor 동작 방향 (Negative, Positive)
+            public double Home_Speed_1st;                   //  Home 1st Speed
+            public double Home_Speed_2nd;                   //  Home 2nd Speed
+            public double Home_Speed_3rd;                   //  Home 3rd Speed
+            public double Home_Speed_Last;                  //  Home Last Speed
+            public double Home_Offset;                      //  Home Offset
+
+            public double Common_UnitPerPulse_Unit;         //  Unit Per Pulse (Unit)
+            public double Common_UnitPerPulse_Pulse;        //  Unit Per Pulse (Pulse)
+            public double Common_Acceleration_Min;          //  Acceleration Min
+            public double Common_Acceleration_Max;          //  Acceleration Max
+            public double Common_Acceleration;              //  Acceleration
+            public double Common_Speed_Min;                 //  Speed Min
+            public double Common_Speed_Max;                 //  Speed Max
+            public double Common_MoveSpeed;                 //  Move Speed
+            public double Common_Position_Min;              //  Position Min
+            public double Common_Position_Max;              //  Position Max
+            public double Common_Settle_Delay;              //  Settle Delay Time
+
+            public double Jog_Speed_Fine;                   //  Jog Speed, Fine
+            public double Jog_Speed_Coarse;                 //  Jog Speed, Coarse
+            public double Jog_StepSize_Min;                 //  Jog StepSize, Min
+            public double Jog_StepSize_Max;                 //  Jog StepSize, Max
+            public double Jog_StepSize_Fine;                //  Jog StepSize, Fine
+            public double Jog_StepSize_Coarse;              //  Jog StepSize, Coarse
+        }
+        public static stAxisParameter[] stAxisParam = new stAxisParameter[Max_Axis];                  //  총 14개 축. 가변 가능하도록 변경해야 함. (시간 관계상 고정하자)
+
         //  Log In
         public static bool Machine_LogIn { set; get; }
 
-
-        //  웨이퍼 얼라인 후 패킹 자동 시작
-        public static bool Packing_AutoStart_Mode { get; set; }
-
-        //  웨이퍼 얼라인 후 얼라인 오차 검증
-        public static bool AlignErrorCheck_AutoStart_Mode { get; set; }
-
-        //  웨이퍼 패킹 시 웨이퍼 오프셋 사용
-        public static bool PackingOffset_Use { get; set; }
-
-        //  웨이퍼 얼라인 시작 전 PAK 관로 확인 사용
-        public static bool Pak_AirLineCheck_Use { get; set; }
+        //  버튼 Panel 활성화 여부
+        public static bool BottomButtonPanelStatus { set; get; }
 
 
         //  비전 검사 시, Spiral 이동 없이 한번만 검사하도록
@@ -149,30 +208,40 @@ namespace QMC.Common
         //  작업자 모드인지 관리자 모드인지?
         public static string User_Mode { set; get; }
         public static string User_Name { set; get; }
-        public static bool User_AdminMode { set; get; }
-        public static bool User_QMC_Engineer { set; get; }
+        //public static bool User_AdminMode { set; get; }
+        //public static bool User_QMC_Engineer { set; get; }
+        public static int User_LoginMode { set; get; }                      //  0 : Logout     1 : Admin     2 : Engineer     3 : Operator
 
+        public enum UserMode : int
+        {
+            USER_LOGOUT = 0,            //  0 : Logout
+            USER_ADMIN = 1,             //  1 : Administrator
+            USER_ENGINEER = 2,          //  2 : Engineer
+            USER_OPERATOR = 3,          //  3 : Operator
+        }
 
         //  얼라인 시작할 때 시간
-        public static string AlignStart_Time { set; get; }  
+        public static string AlignStart_Time { set; get; }
+        public static string AlignVerificationStart_Time { set; get; }
 
 
         //  로그아웃 할 때 메인화면을 보여주도록 하기 위한 Flag
         public static bool User_LogOut_1time {  set; get; }
 
 
-        //  프로브 카드 클램프 타입 (1호기 or 2~6호기)
-        public static int ProbeCard_ClampType { set; get; }
-
-        
         //  자동 로그아웃
         public static bool LogIn_Status {  set; get; }
         public static bool AutoLogOut_Execute {  set; get; }
         public static bool AutoLogOut_Executed { set; get; }
 
 
-        public static SiriusViewerForm EqpSiriusViewer { set; get; }
+        //  바코드 리더 Comm 1번만
+        public static bool m_bBarcodeReaderComm_1time { set; get; }
+
+
+        //public static SiriusViewerForm EqpSiriusViewer { set; get; }
         public static bool m_bAlignVisionThread_1time { set; get; }
+        public static bool m_bParamLoadThread_1time { set; get; }
 
 
         public static void CreateInstance(string strEquipmentName)
@@ -184,24 +253,30 @@ namespace QMC.Common
             MachineStop_byAlarm = false;
             AreaSensorDetectFlag_Reset = false;
 
+            BottomButtonPanelStatus = false;
+
             Machine_LogIn = false;
             AutoLogOut_Execute = false;
             AutoLogOut_Executed = false;
             LogIn_Status = false;
 
-            Packing_AutoStart_Mode = false;
-            AlignErrorCheck_AutoStart_Mode = false;
-            PackingOffset_Use = false;
-            Pak_AirLineCheck_Use = false;
+            m_bBarcodeReaderComm_1time = false;
 
-            ProbeCard_ClampType = 0;                    //  0: 1호기,     1: 2~6호기
+            CameraSerialNumberType = false;
+            PAKCamera_SerialNumber = "";
+            PAKCamera_Width = 0;
+            PAKCamera_Height = 0;
+            WaferCamera_SerialNumber = "";
+            WaferCamera_Width = 0;
+            WaferCamera_Height = 0;
 
             Vision_SpiralMove_Use = true;
 
             User_Mode = null;
             User_Name = null;
-            User_AdminMode = false;
-            User_QMC_Engineer = false;
+            User_LoginMode = (int)UserMode.USER_LOGOUT;
+            //User_AdminMode = false;
+            //User_QMC_Engineer = false;
 
             AlignStart_Time = null;
             User_LogOut_1time = false;
@@ -236,9 +311,48 @@ namespace QMC.Common
             WorkElapsedTick_Drilling_1time = 0;
             WorkElapsedTick_Marking_1time = 0;
 
-            m_bRedraw_FormWaferProbeAlignParameterConfig = false;
+            m_bRedraw_FormWorkStageParameterConfig = false;
+            m_bRedraw_FormLoaderParameterConfig = false;
+            m_bRedraw_FormUnloaderParameterConfig = false;
+            m_bRedraw_FormBdsParameterConfig = false;
+            m_bRedraw_FormUpperCameraConfig = false;
+            m_bRedraw_FormLowerCameraConfig = false;
 
             m_bAlignVisionThread_1time = false;
+            m_bParamLoadThread_1time = false;
+
+            //  모터 축 파라미터 초기화
+            for (int i = 0; i < Max_Axis; i++)
+            {
+                stAxisParam[i].LimitSensor_Installed = 0;
+                stAxisParam[i].LimitSensor_ActiveLevel = 0;
+                stAxisParam[i].Home_Sensing = 0;
+                stAxisParam[i].Home_Installed = 0;
+                stAxisParam[i].Home_ActiveLevel = 0;
+                stAxisParam[i].Home_Direction = 0;
+                stAxisParam[i].Home_Speed_1st = 0;
+                stAxisParam[i].Home_Speed_2nd = 0;
+                stAxisParam[i].Home_Speed_3rd = 0;
+                stAxisParam[i].Home_Speed_Last = 0;
+                stAxisParam[i].Home_Offset = 0;
+                stAxisParam[i].Common_UnitPerPulse_Unit = 0;
+                stAxisParam[i].Common_UnitPerPulse_Pulse = 0;
+                stAxisParam[i].Common_Acceleration_Min = 0;
+                stAxisParam[i].Common_Acceleration_Max = 0;
+                stAxisParam[i].Common_Acceleration = 0;
+                stAxisParam[i].Common_Speed_Min = 0;
+                stAxisParam[i].Common_Speed_Max = 0;
+                stAxisParam[i].Common_MoveSpeed = 0;
+                stAxisParam[i].Common_Position_Min = 0;
+                stAxisParam[i].Common_Position_Max = 0;
+                stAxisParam[i].Common_Settle_Delay = 0;
+                stAxisParam[i].Jog_Speed_Fine = 0;
+                stAxisParam[i].Jog_Speed_Coarse = 0;
+                stAxisParam[i].Jog_StepSize_Min = 0;
+                stAxisParam[i].Jog_StepSize_Max = 0;
+                stAxisParam[i].Jog_StepSize_Fine = 0;
+                stAxisParam[i].Jog_StepSize_Coarse = 0;
+            }
 
             m_nLastDioUID = 0;
             m_nLastAxisUID = 0;
@@ -270,10 +384,12 @@ namespace QMC.Common
                 }
             }
 
+            int m_nBoardOpened = -1;
+
             LoadConfig();
             foreach (var board in MotionBoards)
             {
-                board.Open();
+                m_nBoardOpened = board.Open();
             }
             foreach (var board in IOBoards)
             {
@@ -301,6 +417,12 @@ namespace QMC.Common
             //{
             //
             //}
+
+
+            if (m_nBoardOpened != 0)
+            {
+                MessageBox.Show("모터 파라미터 폴더가 없거나, 모터 파라미터 파일이 없습니다.\r\n\r\n[D:\\SLD-200_Parameter\\SLD-200.mot]", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
         
         private static void CreateModules()
@@ -314,9 +436,34 @@ namespace QMC.Common
             common.Create();
             Modules.Add(common);
 
-            WaferProbeAlign waferProbeAlign = new WaferProbeAlign("WaferProbeAlign");
-            waferProbeAlign.Create();
-            Modules.Add(waferProbeAlign);
+            //WorkStage workStage = new WorkStage("WorkStage");
+            WorkStage workStage = new WorkStage("WorkStage");
+            workStage.Create();
+            Modules.Add(workStage);
+
+            Loader Loader = new Loader("Loader");
+            Loader.Create();
+            Modules.Add(Loader);
+
+            Unloader unloader = new Unloader("Unloader");
+            unloader.Create();
+            Modules.Add(unloader);
+
+            Modules.Laser laser = new Modules.Laser("Laser");
+            laser.Create();
+            Modules.Add(laser);
+
+            Scanner scanner = new Scanner("Scanner");
+            scanner.Create();
+            Modules.Add(scanner);
+
+            Modules.Vision vision = new Modules.Vision("Vision");
+            vision.Create();
+            Modules.Add(vision);
+
+            Bds bds = new Bds("BDS");
+            bds.Create();
+            Modules.Add(bds);
         }
 
         public static void Start()

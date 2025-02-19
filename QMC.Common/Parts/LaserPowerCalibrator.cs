@@ -1,5 +1,6 @@
 ﻿using QMC.Common;
 using SpiralLab.Sirius;
+//using SpiralLab.Sirius2.Laser;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,11 +9,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace QMC.Process.WaferProbeAlign.Parts
+
+
+//namespace QMC.Process.WorkStage.Parts
+namespace QMC.Common.Parts
 {
     public class LaserPowerCalibrator : Part
     {
-        public Scanner Scanner { get; set; }
+        public ScannerParameter Scanner { get; set; }
 
         public LaserPowerCalibrator(string strName) : base(strName)
         {
@@ -22,7 +26,7 @@ namespace QMC.Process.WaferProbeAlign.Parts
         {
             int ret = 0;
 
-            if (Scanner.Laser == null || Scanner.Laser.Rtc == null)
+            if (Scanner.Laser == null || Scanner.RTC == null)
             {
                 //Error
                 return -1;
@@ -32,12 +36,12 @@ namespace QMC.Process.WaferProbeAlign.Parts
                 
             if(bOn)
             {
-                Scanner.Laser.Rtc.CtlLaserOn();
+                Scanner.RTC.CtlLaserOn();
                 
             }
             else
             {
-                Scanner.Laser.Rtc.CtlLaserOff();
+                Scanner.RTC.CtlLaserOff();
             }
 
             return ret;
@@ -48,6 +52,7 @@ namespace QMC.Process.WaferProbeAlign.Parts
             int ret = 0;
 
             IPowerControl powerControl = Scanner.Laser as IPowerControl;
+            //ILaserPowerControl powerControl = Scanner.Laser as ILaserPowerControl;            //  Sirius2
             if(powerControl == null)
             {
                 return -1;
@@ -61,13 +66,13 @@ namespace QMC.Process.WaferProbeAlign.Parts
         public int SetRepRate(double dFrequency, double dPulseWidth)
         {
             int ret = 0;
-            if (Scanner.Laser == null || Scanner.Laser.Rtc == null)
+            if (Scanner.Laser == null || Scanner.RTC == null)
             {
                 //Error
                 return -1;
             }
 
-            Scanner.Laser.Rtc.CtlFrequency((float)dFrequency, (float)dPulseWidth);
+            Scanner.RTC.CtlFrequency((float)dFrequency, (float)dPulseWidth);
 
             return ret;
         }
@@ -81,8 +86,9 @@ namespace QMC.Process.WaferProbeAlign.Parts
         public int VerifyPower(double dPower)
         {
             int ret = 0;
-            bool success = false;
+            bool success = false;            
             var powerControl = Scanner.Laser as IPowerControl;
+            //var powerControl = Scanner.Laser as ILaserPowerControl;                   //  Sirius2
             if (null == powerControl)
                 return -1;
 
@@ -101,7 +107,7 @@ namespace QMC.Process.WaferProbeAlign.Parts
 
             //laser on (WARNING !!!)
             //if (!Scanner.RTC.CtlLaserOn())
-            if (!Scanner.Laser.Rtc.CtlLaserOn())
+            if (!Scanner.RTC.CtlLaserOn())
                 return -11;
             Log.Write(this, "WARNING !!! LASER IS ON ...");
 
@@ -121,7 +127,7 @@ namespace QMC.Process.WaferProbeAlign.Parts
 
             //laser off
             //if (!Scanner.RTC.CtlLaserOff())
-            if (!Scanner.Laser.Rtc.CtlLaserOff())
+            if (!Scanner.RTC.CtlLaserOff())
                 return -14;
 
             // average power (watt)
@@ -159,6 +165,7 @@ namespace QMC.Process.WaferProbeAlign.Parts
             int ret = 0;
 
             var powerControl = Scanner.Laser as IPowerControl;
+            //var powerControl = Scanner.Laser as ILaserPowerControl;                   //  Sirius2
             if (null == powerControl)
                 return -1;
 
@@ -173,8 +180,10 @@ namespace QMC.Process.WaferProbeAlign.Parts
             float increaseWatt = (float)dStep;
             float currentWatt = (float)dStart;
 
-            Scanner.Map.XName = "Watt";
-            Scanner.Map.XGap = currentWatt;
+            //Scanner.Map.XName = "Watt";
+            //Scanner.Map.XGap = currentWatt;
+            //Scanner.Map.Name = "Watt";                                //  2025. 01. 02.  SCH : 왜 안될까?
+            //Scanner.Map.XGap = currentWatt;
             //IPGLaserYLPN laser = Scanner.Laser as IPGLaserYLPN;
 
             Scanner.EnableLaserEmission(true);
@@ -187,7 +196,7 @@ namespace QMC.Process.WaferProbeAlign.Parts
 
                 //laser on (WARNING !!!)
                 //success &= Scanner.RTC.CtlLaserOn();
-                success &= Scanner.Laser.Rtc.CtlLaserOn();
+                success &= Scanner.RTC.CtlLaserOn();
                 Log.Write(this, "WARNING !!! LASER IS ON ...");
 
                 //for preheating 
@@ -204,7 +213,7 @@ namespace QMC.Process.WaferProbeAlign.Parts
 
                 //laser off
                 //success &= Scanner.RTC.CtlLaserOff();
-                success &= Scanner.Laser.Rtc.CtlLaserOff();
+                success &= Scanner.RTC.CtlLaserOff();
 
                 // average power (watt)
                 /*var avgWatt = Scanner.PowerMeter.Data.Average();

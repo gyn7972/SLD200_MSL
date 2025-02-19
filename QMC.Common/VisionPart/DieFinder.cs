@@ -77,28 +77,29 @@ namespace QMC.Common.VisionPart
         }
         public override void UpdateRecipeData()
         {
-            DieUnloader dieUnloader = Owner as DieUnloader;
-            if (dieUnloader != null)
-            {
-                if (dieUnloader.Recipe.DieFinderRecipe != null)
-                {
-                    this.Recipe = dieUnloader.Recipe.DieFinderRecipe;
-                    if (this.Recipe.IlluminationDataSet != null)
-                    {
-                        this.Recipe = dieUnloader.Recipe.DieFinderRecipe;
-                        IlluminationData = this.Recipe.IlluminationDataSet;
-                    }
-                    else
-                    {
-                        dieUnloader.Recipe.DieFinderRecipe = this.Recipe;
-                        this.Recipe.IlluminationDataSet = new IlluminationDataSet(Name);
-                    }
-                }
-                else
-                {
-                    dieUnloader.Recipe.DieFinderRecipe = this.Recipe;
-                }
-            }
+            //  2025. 01. 15.  SCH : Unloader 임시 주석 
+            //DieUnloader dieUnloader = Owner as DieUnloader;
+            //if (dieUnloader != null)
+            //{
+            //    if (dieUnloader.Recipe.DieFinderRecipe != null)
+            //    {
+            //        this.Recipe = dieUnloader.Recipe.DieFinderRecipe;
+            //        if (this.Recipe.IlluminationDataSet != null)
+            //        {
+            //            this.Recipe = dieUnloader.Recipe.DieFinderRecipe;
+            //            IlluminationData = this.Recipe.IlluminationDataSet;
+            //        }
+            //        else
+            //        {
+            //            dieUnloader.Recipe.DieFinderRecipe = this.Recipe;
+            //            this.Recipe.IlluminationDataSet = new IlluminationDataSet(Name);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        dieUnloader.Recipe.DieFinderRecipe = this.Recipe;
+            //    }
+            //}
         }
     }
 }
