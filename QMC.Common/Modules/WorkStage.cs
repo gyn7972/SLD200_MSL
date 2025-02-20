@@ -22,6 +22,8 @@ using SerialCommBeamExpander;                               //  Motorized Beam E
 using SerialCommDustCollector1;                             //  Dust Collector 1 - COM5
 using SerialCommDustCollector2;                             //  Dust Collector 2 - COM6
 using SerialCommElectroPneumaticRegulator;                  //  Electro Pneumatic Regulator - COM7
+using SocketLaser;
+using SocketLaserHeightSensor;
 using System.IO.Ports;
 using MessageBox = System.Windows.Forms.MessageBox;
 
@@ -673,6 +675,17 @@ namespace QMC.Common.Modules
         public SerialCommElectroPneumaticRegulatorPort m_electroRegulator_Comm { set; get; }
         public string m_strElectroRegulator_Comm_ReceivedData;
         public bool m_bElectroRegulator_CommData_Received { set; get; }
+
+
+        //  2025. 02. 20.  SCH : Laser Socket
+        public LaserSocketClient m_SocketLaser { set; get; }
+        public string m_strLaserSocket_ReceivedData;
+        public bool m_bLaserSocket_Received { set; get; }
+
+        //  2025. 02. 20.  SCH : Laser Height Sensor Socket
+        public LaserSensorSocketClient m_SocketLaserHeightSensor { set; get; }
+        public string m_strLaserSensorSocket_ReceivedData;
+        public bool m_bLaserSensorSocket_Received { set; get; }
 
         #endregion
 
@@ -2876,6 +2889,17 @@ namespace QMC.Common.Modules
             }
 
             return m_bRet;
+        }
+
+        #endregion
+
+
+        #region Socket Comm. - Laser
+
+        public void Laser_Socket_Connect( string m_strRemoteIP, int m_nPort)
+        {
+            m_SocketLaser = new LaserSocketClient();
+            m_SocketLaser.Connect(m_strRemoteIP, m_nPort);
         }
 
         #endregion

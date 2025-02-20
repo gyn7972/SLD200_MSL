@@ -14,6 +14,7 @@ using OpenTK;
 using QMC.Common;
 using QMC.Common.Modules;
 using QMC.Core;
+using static QMC.Common.Equipment;
 
 namespace SLD200_MSL
 {
@@ -91,6 +92,7 @@ namespace SLD200_MSL
             this.VisibleChanged += FormNew_Setup_VisibleChanged;
 
             Axis_Parameter_Apply();
+            Comm_Parameter_Apply();
 
             //  Status 타이머
             timer_Status = new System.Windows.Forms.Timer();
@@ -254,10 +256,12 @@ namespace SLD200_MSL
             textBox_Setup_Motion_Common_Pulse.Text = Equipment.stAxisParam[0].Common_UnitPerPulse_Pulse.ToString();
             textBox_Setup_Motion_Common_MinAcc.Text = Equipment.stAxisParam[0].Common_Acceleration_Min.ToString();
             textBox_Setup_Motion_Common_MaxAcc.Text = Equipment.stAxisParam[0].Common_Acceleration_Max.ToString();
-            textBox_Setup_Motion_Common_Acc.Text = Equipment.stAxisParam[0].Common_Acceleration.ToString();
+            textBox_Setup_Motion_Common_FineAcc.Text = Equipment.stAxisParam[0].Common_Acceleration_Fine.ToString();
+            textBox_Setup_Motion_Common_CoarseAcc.Text = Equipment.stAxisParam[0].Common_Acceleration_Coarse.ToString();
             textBox_Setup_Motion_Common_MaxSpeed.Text = Equipment.stAxisParam[0].Common_Speed_Max.ToString();
             textBox_Setup_Motion_Common_MinSpeed.Text = Equipment.stAxisParam[0].Common_Speed_Min.ToString();
-            textBox_Setup_Motion_Common_MoveSpeed.Text = Equipment.stAxisParam[0].Common_MoveSpeed.ToString();
+            textBox_Setup_Motion_Common_FineSpeed.Text = Equipment.stAxisParam[0].Common_Speed_Fine.ToString();
+            textBox_Setup_Motion_Common_CoarseSpeed.Text = Equipment.stAxisParam[0].Common_Speed_Coarse.ToString();
             textBox_Setup_Motion_Common_MinPos.Text = Equipment.stAxisParam[0].Common_Position_Min.ToString();
             textBox_Setup_Motion_Common_MaxPos.Text = Equipment.stAxisParam[0].Common_Position_Max.ToString();
             textBox_Setup_Motion_Common_SettleDelay.Text = Equipment.stAxisParam[0].Common_Settle_Delay.ToString();
@@ -310,10 +314,12 @@ namespace SLD200_MSL
                 Equipment.stAxisParam[m_nIndex].Common_UnitPerPulse_Pulse = Convert.ToDouble(textBox_Setup_Motion_Common_Pulse.Text);
                 Equipment.stAxisParam[m_nIndex].Common_Acceleration_Min = Convert.ToDouble(textBox_Setup_Motion_Common_MinAcc.Text);
                 Equipment.stAxisParam[m_nIndex].Common_Acceleration_Max = Convert.ToDouble(textBox_Setup_Motion_Common_MaxAcc.Text);
-                Equipment.stAxisParam[m_nIndex].Common_Acceleration = Convert.ToDouble(textBox_Setup_Motion_Common_Acc.Text);
+                Equipment.stAxisParam[m_nIndex].Common_Acceleration_Fine = Convert.ToDouble(textBox_Setup_Motion_Common_FineAcc.Text);
+                Equipment.stAxisParam[m_nIndex].Common_Acceleration_Coarse = Convert.ToDouble(textBox_Setup_Motion_Common_CoarseAcc.Text);
                 Equipment.stAxisParam[m_nIndex].Common_Speed_Max = Convert.ToDouble(textBox_Setup_Motion_Common_MaxSpeed.Text);
                 Equipment.stAxisParam[m_nIndex].Common_Speed_Min = Convert.ToDouble(textBox_Setup_Motion_Common_MinSpeed.Text);
-                Equipment.stAxisParam[m_nIndex].Common_MoveSpeed = Convert.ToDouble(textBox_Setup_Motion_Common_MoveSpeed.Text);
+                Equipment.stAxisParam[m_nIndex].Common_Speed_Fine = Convert.ToDouble(textBox_Setup_Motion_Common_FineSpeed.Text);
+                Equipment.stAxisParam[m_nIndex].Common_Speed_Coarse = Convert.ToDouble(textBox_Setup_Motion_Common_CoarseSpeed.Text);
                 Equipment.stAxisParam[m_nIndex].Common_Position_Min = Convert.ToDouble(textBox_Setup_Motion_Common_MinPos.Text);
                 Equipment.stAxisParam[m_nIndex].Common_Position_Max = Convert.ToDouble(textBox_Setup_Motion_Common_MaxPos.Text);
                 Equipment.stAxisParam[m_nIndex].Common_Settle_Delay = Convert.ToDouble(textBox_Setup_Motion_Common_SettleDelay.Text);
@@ -365,14 +371,18 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "MinAcc", Equipment.stAxisParam[i].Common_Acceleration_Min.ToString(), strFIle);
                 //  Acceleration Max
                 NativeMethods.WritePrivateProfileString(strTemp, "MaxAcc", Equipment.stAxisParam[i].Common_Acceleration_Max.ToString(), strFIle);
-                //  Acceleration
-                NativeMethods.WritePrivateProfileString(strTemp, "Acceleration", Equipment.stAxisParam[i].Common_Acceleration.ToString(), strFIle);
+                //  Acceleration Fine
+                NativeMethods.WritePrivateProfileString(strTemp, "FineAcc", Equipment.stAxisParam[i].Common_Acceleration_Fine.ToString(), strFIle);
+                //  Acceleration Coarse
+                NativeMethods.WritePrivateProfileString(strTemp, "CoarseAcc", Equipment.stAxisParam[i].Common_Acceleration_Coarse.ToString(), strFIle);
                 //  Speed Min
                 NativeMethods.WritePrivateProfileString(strTemp, "MinSpeed", Equipment.stAxisParam[i].Common_Speed_Min.ToString(), strFIle);
                 //  Speed Max
                 NativeMethods.WritePrivateProfileString(strTemp, "MaxSpeed", Equipment.stAxisParam[i].Common_Speed_Max.ToString(), strFIle);
-                //  Move Speed
-                NativeMethods.WritePrivateProfileString(strTemp, "MoveSpeed", Equipment.stAxisParam[i].Common_MoveSpeed.ToString(), strFIle);
+                //  Move Speed FIne
+                NativeMethods.WritePrivateProfileString(strTemp, "FineSpeed", Equipment.stAxisParam[i].Common_Speed_Fine.ToString(), strFIle);
+                //  Move Speed Coarse
+                NativeMethods.WritePrivateProfileString(strTemp, "CoarseSpeed", Equipment.stAxisParam[i].Common_Speed_Coarse.ToString(), strFIle);
                 //  Position Min
                 NativeMethods.WritePrivateProfileString(strTemp, "MinPos", Equipment.stAxisParam[i].Common_Position_Min.ToString(), strFIle);
                 //  Position Max
@@ -431,10 +441,12 @@ namespace SLD200_MSL
             textBox_Setup_Motion_Common_Pulse.Text = Equipment.stAxisParam[m_nIndex].Common_UnitPerPulse_Pulse.ToString();
             textBox_Setup_Motion_Common_MinAcc.Text = Equipment.stAxisParam[m_nIndex].Common_Acceleration_Min.ToString();
             textBox_Setup_Motion_Common_MaxAcc.Text = Equipment.stAxisParam[m_nIndex].Common_Acceleration_Max.ToString();
-            textBox_Setup_Motion_Common_Acc.Text = Equipment.stAxisParam[m_nIndex].Common_Acceleration.ToString();
+            textBox_Setup_Motion_Common_FineAcc.Text = Equipment.stAxisParam[m_nIndex].Common_Acceleration_Fine.ToString();
+            textBox_Setup_Motion_Common_CoarseAcc.Text = Equipment.stAxisParam[m_nIndex].Common_Acceleration_Coarse.ToString();
             textBox_Setup_Motion_Common_MaxSpeed.Text = Equipment.stAxisParam[m_nIndex].Common_Speed_Max.ToString();
             textBox_Setup_Motion_Common_MinSpeed.Text = Equipment.stAxisParam[m_nIndex].Common_Speed_Min.ToString();
-            textBox_Setup_Motion_Common_MoveSpeed.Text = Equipment.stAxisParam[m_nIndex].Common_MoveSpeed.ToString();
+            textBox_Setup_Motion_Common_FineSpeed.Text = Equipment.stAxisParam[m_nIndex].Common_Speed_Fine.ToString();
+            textBox_Setup_Motion_Common_CoarseSpeed.Text = Equipment.stAxisParam[m_nIndex].Common_Speed_Coarse.ToString();
             textBox_Setup_Motion_Common_MinPos.Text = Equipment.stAxisParam[m_nIndex].Common_Position_Min.ToString();
             textBox_Setup_Motion_Common_MaxPos.Text = Equipment.stAxisParam[m_nIndex].Common_Position_Max.ToString();
             textBox_Setup_Motion_Common_SettleDelay.Text = Equipment.stAxisParam[m_nIndex].Common_Settle_Delay.ToString();
@@ -445,6 +457,204 @@ namespace SLD200_MSL
             textBox_Setup_Motion_Jog_MaxStepSize.Text = Equipment.stAxisParam[m_nIndex].Jog_StepSize_Max.ToString();
             textBox_Setup_Motion_Jog_FineStepSize.Text = Equipment.stAxisParam[m_nIndex].Jog_StepSize_Fine.ToString();
             textBox_Setup_Motion_Jog_CoarseStepSize.Text = Equipment.stAxisParam[m_nIndex].Jog_StepSize_Coarse.ToString();
+        }
+
+        private void comboBox_Setup_Communication_TCPIP_OpenType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int m_nIndex = comboBox_Setup_Communication_TCPIP_OpenType.SelectedIndex;
+
+            if (m_nIndex == 0)              //  Server
+            {
+                label_Setup_Communication_TCPIP_IP.Text = "Host IP :";
+            }
+            else if (m_nIndex == 1)         //  Client
+            {
+                label_Setup_Communication_TCPIP_IP.Text = "Remote IP :";
+            }
+        }
+
+        private void button_Setup_Comm_Save_Click(object sender, EventArgs e)
+        {
+            Comm_Parameter_Save();
+        }
+
+        public bool Comm_Parameter_Apply()
+        {
+            string strTemp = "";
+
+            bool m_bRet = true;
+            string strFIle = "";
+            StringBuilder temp = new StringBuilder(255);
+
+            strFIle = ConfigManager.GetConfigPath() + "\\Comm Setting (Do not delete or modify).ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                MessageBox.Show("Comm. Setting 파일이 없습니다.\r\n\r\n[Default 값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return false;
+            }
+
+            //  통신 모듈 파라미터 파일을 로드 하면 맨 첫번째 축 데이터를 표시하도록 한다.
+            listBox_Setup_Communication_SelectUnit.SelectedIndex = 0;
+
+            tabControl_Setup_Communication_Type.SelectedIndex = Equipment.stCommunicationSet[0].Comm_Type;
+
+            if (Equipment.stCommunicationSet[0].Comm_Type == 0)                      //  TCP/IP
+            {
+                radioButton_Setup_Communication_Comm_TCPIP.Checked = true;
+
+                comboBox_Setup_Communication_TCPIP_OpenType.SelectedIndex = Equipment.stCommunicationSet[0].TCPIP_PortType;
+                textBox_Setup_Communication_TCPIP_IP.Text = Equipment.stCommunicationSet[0].TCPIP_IPAddress;
+                textBox_Setup_Communication_TCPIP_Port.Text = Equipment.stCommunicationSet[0].TCPIP_PortNum.ToString();
+            }
+            else                                                                            //  RS232
+            {
+                radioButton_Setup_Communication_Comm_RS232.Checked = true;
+
+                textBox_Setup_Communication_RS232_Timeout.Text = Equipment.stCommunicationSet[0].Serial_CommTimeout.ToString();
+                textBox_Setup_Communication_RS232_SpacingDelay.Text = Equipment.stCommunicationSet[0].Serial_CommSpacingDelay.ToString();
+
+                comboBox_Setup_Communication_RS232_ComPort.SelectedIndex = Equipment.stCommunicationSet[0].Serial_CommPort;
+                comboBox_Setup_Communication_RS232_BaudRate.SelectedIndex = Equipment.stCommunicationSet[0].Serial_CommBaudRate;
+                comboBox_Setup_Communication_RS232_DataBit.SelectedIndex = Equipment.stCommunicationSet[0].Serial_CommDataBits;
+                comboBox_Setup_Communication_RS232_StopBit.SelectedIndex = Equipment.stCommunicationSet[0].Serial_CommStopBits;
+                comboBox_Setup_Communication_RS232_Parity.SelectedIndex = Equipment.stCommunicationSet[0].Serial_CommParity;
+                comboBox_Setup_Communication_RS232_FlowControl.SelectedIndex = Equipment.stCommunicationSet[0].Serial_CommFlowControl;
+            }
+
+            return m_bRet;
+        }
+
+        public void Comm_Parameter_Save()
+        {
+            string strTemp = "";
+
+            string strFIle = "";
+            strFIle = ConfigManager.GetConfigPath() + "\\Comm Setting (Do not delete or modify).ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                File.Create(strFIle);
+                //return;
+
+                MessageBox.Show("Comm. Setting 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //  선택된 Comm. Unit 에 대한 데이터 갖다 넣기
+            int m_nIndex = listBox_Setup_Communication_SelectUnit.SelectedIndex;
+
+            if (m_nIndex >= 0)
+            {
+                Equipment.stCommunicationSet[m_nIndex].Comm_Type = radioButton_Setup_Communication_Comm_TCPIP.Checked ? 0 : 1;
+
+                Equipment.stCommunicationSet[m_nIndex].TCPIP_PortType = comboBox_Setup_Communication_TCPIP_OpenType.SelectedIndex;
+                Equipment.stCommunicationSet[m_nIndex].TCPIP_IPAddress = textBox_Setup_Communication_TCPIP_IP.Text;
+                Equipment.stCommunicationSet[m_nIndex].TCPIP_PortNum = Convert.ToInt16(textBox_Setup_Communication_TCPIP_Port.Text);
+
+                Equipment.stCommunicationSet[m_nIndex].Serial_CommTimeout = Convert.ToInt16(textBox_Setup_Communication_RS232_Timeout.Text); 
+                Equipment.stCommunicationSet[m_nIndex].Serial_CommSpacingDelay = Convert.ToInt16(textBox_Setup_Communication_RS232_SpacingDelay.Text);
+                Equipment.stCommunicationSet[m_nIndex].Serial_CommPort = comboBox_Setup_Communication_RS232_ComPort.SelectedIndex;
+                Equipment.stCommunicationSet[m_nIndex].Serial_CommBaudRate = comboBox_Setup_Communication_RS232_BaudRate.SelectedIndex;
+                Equipment.stCommunicationSet[m_nIndex].Serial_CommDataBits = comboBox_Setup_Communication_RS232_DataBit.SelectedIndex;
+                Equipment.stCommunicationSet[m_nIndex].Serial_CommStopBits = comboBox_Setup_Communication_RS232_StopBit.SelectedIndex;
+                Equipment.stCommunicationSet[m_nIndex].Serial_CommParity = comboBox_Setup_Communication_RS232_Parity.SelectedIndex;
+                Equipment.stCommunicationSet[m_nIndex].Serial_CommFlowControl = comboBox_Setup_Communication_RS232_FlowControl.SelectedIndex;
+            }
+
+
+            //  Comm. Parameter 저장
+            for (int i = 0; i < System.Enum.GetValues(typeof(CommList)).Length; i++)
+            {
+                strTemp = string.Format("CommUnit_{0}", i);
+
+
+                //  TCP/IP, RS232                                                                                   //  0 : TCP/IP,     1 : RS232
+                NativeMethods.WritePrivateProfileString(strTemp, "CommType", Equipment.stCommunicationSet[i].Comm_Type.ToString(), strFIle);
+
+
+                //  TCP/IP 의 포트 형식 (Server, Client)                                                            //  0 : Server,     1 : Client
+                NativeMethods.WritePrivateProfileString(strTemp, "TCPIP_PortType", Equipment.stCommunicationSet[i].TCPIP_PortType.ToString(), strFIle);
+                //  TCP/IP 의 IP 주소
+                NativeMethods.WritePrivateProfileString(strTemp, "TCPIP_IPAddress", Equipment.stCommunicationSet[i].TCPIP_IPAddress.ToString(), strFIle);
+                //  TCP/IP 의 Port 번호
+                NativeMethods.WritePrivateProfileString(strTemp, "TCPIP_PortNum", Equipment.stCommunicationSet[i].TCPIP_PortNum.ToString(), strFIle);
+
+
+                //  Timeout (ms)
+                NativeMethods.WritePrivateProfileString(strTemp, "RS232_Timeout", Equipment.stCommunicationSet[i].Serial_CommTimeout.ToString(), strFIle);
+                //  Spacing Delay (ms)
+                NativeMethods.WritePrivateProfileString(strTemp, "RS232_SpacingDelay", Equipment.stCommunicationSet[i].Serial_CommSpacingDelay.ToString(), strFIle);
+                //  COM Port                                                                                        //  0 : COM1,       1 : COM2,       2 : COM3,       3 : COM4 ....
+                NativeMethods.WritePrivateProfileString(strTemp, "RS232_Port", Equipment.stCommunicationSet[i].Serial_CommPort.ToString(), strFIle);
+                //  Baud Rate                                                                                       //  0 : 9600,       1 : 19200,      2 : 38400,      3 : 57600,      4 : 115200
+                NativeMethods.WritePrivateProfileString(strTemp, "RS232_BaudRate", Equipment.stCommunicationSet[i].Serial_CommBaudRate.ToString(), strFIle);
+                //  Data Bits                                                                                       //  0 : 5,          1 : 6,          2 : 7,          3 : 8
+                NativeMethods.WritePrivateProfileString(strTemp, "RS232_DataBit", Equipment.stCommunicationSet[i].Serial_CommDataBits.ToString(), strFIle);
+                //  Stop Bits                                                                                       //  0 : 1,          1 : 1.5,        2 : 2
+                NativeMethods.WritePrivateProfileString(strTemp, "RS232_StopBit", Equipment.stCommunicationSet[i].Serial_CommStopBits.ToString(), strFIle);
+                //  Parity                                                                                          //  0 : None,       1 : Odd,        2 : Even
+                NativeMethods.WritePrivateProfileString(strTemp, "RS232_Parity", Equipment.stCommunicationSet[i].Serial_CommParity.ToString(), strFIle);
+                //  Flow Control                                                                                    //  0 : None,       1 : Xon/Xoff,   2 : RTS/CTS
+                NativeMethods.WritePrivateProfileString(strTemp, "RS232_FlowControl", Equipment.stCommunicationSet[i].Serial_CommFlowControl.ToString(), strFIle);
+            }
+
+            MessageBox.Show("Comm. Setting 파일을 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void radioButton_Setup_Communication_Comm_TCPIP_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton_Setup_Communication_Comm_TCPIP.Checked)
+            {
+                tabControl_Setup_Communication_Type.SelectedIndex = 0;              //  TCP/IP
+            }
+            else
+            {
+                tabControl_Setup_Communication_Type.SelectedIndex = 1;              //  RS232
+            }
+        }
+
+        private void listBox_Setup_Communication_SelectUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //  통신 모듈 선택에 따른 데이터 표시
+
+            int m_nIndex = listBox_Setup_Communication_SelectUnit.SelectedIndex;
+
+            if (m_nIndex < 0)
+            {
+                return;
+            }
+
+
+            tabControl_Setup_Communication_Type.SelectedIndex = Equipment.stCommunicationSet[m_nIndex].Comm_Type;
+
+            if (Equipment.stCommunicationSet[m_nIndex].Comm_Type == 0)                      //  TCP/IP
+            {
+                radioButton_Setup_Communication_Comm_TCPIP.Checked = true;
+
+                comboBox_Setup_Communication_TCPIP_OpenType.SelectedIndex = Equipment.stCommunicationSet[m_nIndex].TCPIP_PortType;
+                textBox_Setup_Communication_TCPIP_IP.Text = Equipment.stCommunicationSet[m_nIndex].TCPIP_IPAddress;
+                textBox_Setup_Communication_TCPIP_Port.Text = Equipment.stCommunicationSet[m_nIndex].TCPIP_PortNum.ToString();
+            }
+            else                                                                            //  RS232
+            {
+                radioButton_Setup_Communication_Comm_RS232.Checked = true;
+
+                textBox_Setup_Communication_RS232_Timeout.Text = Equipment.stCommunicationSet[m_nIndex].Serial_CommTimeout.ToString();
+                textBox_Setup_Communication_RS232_SpacingDelay.Text = Equipment.stCommunicationSet[m_nIndex].Serial_CommSpacingDelay.ToString();
+
+                comboBox_Setup_Communication_RS232_ComPort.SelectedIndex = Equipment.stCommunicationSet[m_nIndex].Serial_CommPort;
+                comboBox_Setup_Communication_RS232_BaudRate.SelectedIndex = Equipment.stCommunicationSet[m_nIndex].Serial_CommBaudRate;
+                comboBox_Setup_Communication_RS232_DataBit.SelectedIndex = Equipment.stCommunicationSet[m_nIndex].Serial_CommDataBits;
+                comboBox_Setup_Communication_RS232_StopBit.SelectedIndex = Equipment.stCommunicationSet[m_nIndex].Serial_CommStopBits;
+                comboBox_Setup_Communication_RS232_Parity.SelectedIndex = Equipment.stCommunicationSet[m_nIndex].Serial_CommParity;
+                comboBox_Setup_Communication_RS232_FlowControl.SelectedIndex = Equipment.stCommunicationSet[m_nIndex].Serial_CommFlowControl;
+            }
+        }
+
+        private void button_Test_SocketConnect_Click(object sender, EventArgs e)
+        {
+            workStage.Laser_Socket_Connect("127.0.0.1", 5000);
         }
     }
 }

@@ -453,7 +453,7 @@
             this.button10.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button10.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button10.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button10.Location = new System.Drawing.Point(1733, 778);
+            this.button10.Location = new System.Drawing.Point(1733, 742);
             this.button10.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(165, 78);
@@ -467,7 +467,7 @@
             this.button9.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button9.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button9.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button9.Location = new System.Drawing.Point(1733, 576);
+            this.button9.Location = new System.Drawing.Point(1733, 546);
             this.button9.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(165, 78);
@@ -481,7 +481,7 @@
             this.button8.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button8.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button8.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button8.Location = new System.Drawing.Point(1733, 374);
+            this.button8.Location = new System.Drawing.Point(1733, 350);
             this.button8.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(165, 78);
@@ -536,7 +536,7 @@
             // 
             this.checkBox5.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBox5.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.checkBox5.Location = new System.Drawing.Point(1733, 677);
+            this.checkBox5.Location = new System.Drawing.Point(1733, 644);
             this.checkBox5.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox5.Name = "checkBox5";
             this.checkBox5.Size = new System.Drawing.Size(165, 78);
@@ -551,7 +551,7 @@
             this.button101.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button101.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button101.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button101.Location = new System.Drawing.Point(1733, 475);
+            this.button101.Location = new System.Drawing.Point(1733, 448);
             this.button101.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button101.Name = "button101";
             this.button101.Size = new System.Drawing.Size(165, 78);

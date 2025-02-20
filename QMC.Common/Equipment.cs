@@ -30,6 +30,7 @@ using SpiralLab.Sirius;
 //using SpiralLab.Sirius2.Winforms.UI;
 using MessageBox = System.Windows.Forms.MessageBox;
 using QMC.Core;
+using static QMC.Common.Modules.Loader;
 
 namespace QMC.Common
 {
@@ -176,15 +177,17 @@ namespace QMC.Common
 
             public double Common_UnitPerPulse_Unit;         //  Unit Per Pulse (Unit)
             public double Common_UnitPerPulse_Pulse;        //  Unit Per Pulse (Pulse)
+            public double Common_Settle_Delay;              //  Settle Delay Time
             public double Common_Acceleration_Min;          //  Acceleration Min
             public double Common_Acceleration_Max;          //  Acceleration Max
-            public double Common_Acceleration;              //  Acceleration
+            public double Common_Acceleration_Fine;         //  Acceleration Fine
+            public double Common_Acceleration_Coarse;       //  Acceleration Coarse
             public double Common_Speed_Min;                 //  Speed Min
             public double Common_Speed_Max;                 //  Speed Max
-            public double Common_MoveSpeed;                 //  Move Speed
+            public double Common_Speed_Fine;                //  Move Speed Fine
+            public double Common_Speed_Coarse;              //  Move Speed Coarse
             public double Common_Position_Min;              //  Position Min
             public double Common_Position_Max;              //  Position Max
-            public double Common_Settle_Delay;              //  Settle Delay Time
 
             public double Jog_Speed_Fine;                   //  Jog Speed, Fine
             public double Jog_Speed_Coarse;                 //  Jog Speed, Coarse
@@ -194,6 +197,43 @@ namespace QMC.Common
             public double Jog_StepSize_Coarse;              //  Jog StepSize, Coarse
         }
         public static stAxisParameter[] stAxisParam = new stAxisParameter[Max_Axis];                  //  총 14개 축. 가변 가능하도록 변경해야 함. (시간 관계상 고정하자)
+
+
+        //  Communication 장치 파라미터
+        public enum CommList : int
+        {
+            Illuminator = 0,
+            PowerMeter_BDS,
+            PowerMeter_Stage,
+            MotorizedBeamExpander,
+            DustCollector_Upper,
+            DustCollector_Lower,
+            ElectroPneumaticRegulator,
+            Laser,
+            LaserHeightSensor,
+        }
+
+        public struct stCommParameter
+        {
+            public int Comm_Type;                           //  TCP/IP, RS232
+
+            //  for TCP/IP
+            public int TCPIP_PortType;                      //  TCP/IP 의 포트 형식 (Server, Client)
+            public string TCPIP_IPAddress;                  //  TCP/IP 의 IP 주소
+            public int TCPIP_PortNum;                       //  TCP/IP 의 Port 번호
+
+            //  for RS232
+            public int Serial_CommTimeout;                  //  Timeout (ms)
+            public int Serial_CommSpacingDelay;             //  Spacing Delay (ms)
+            public int Serial_CommPort;                     //  COM Port
+            public int Serial_CommBaudRate;                 //  Baud Rate
+            public int Serial_CommDataBits;                 //  Data Bits
+            public int Serial_CommStopBits;                 //  Stop Bits
+            public int Serial_CommParity;                   //  Parity
+            public int Serial_CommFlowControl;              //  Flow Control
+        }
+        public static stCommParameter[] stCommunicationSet = new stCommParameter[System.Enum.GetValues(typeof(CommList)).Length];
+        
 
         //  Log In
         public static bool Machine_LogIn { set; get; }
@@ -340,10 +380,12 @@ namespace QMC.Common
                 stAxisParam[i].Common_UnitPerPulse_Pulse = 0;
                 stAxisParam[i].Common_Acceleration_Min = 0;
                 stAxisParam[i].Common_Acceleration_Max = 0;
-                stAxisParam[i].Common_Acceleration = 0;
+                stAxisParam[i].Common_Acceleration_Fine = 0;
+                stAxisParam[i].Common_Acceleration_Coarse = 0;
                 stAxisParam[i].Common_Speed_Min = 0;
                 stAxisParam[i].Common_Speed_Max = 0;
-                stAxisParam[i].Common_MoveSpeed = 0;
+                stAxisParam[i].Common_Speed_Fine = 0;
+                stAxisParam[i].Common_Speed_Coarse = 0;
                 stAxisParam[i].Common_Position_Min = 0;
                 stAxisParam[i].Common_Position_Max = 0;
                 stAxisParam[i].Common_Settle_Delay = 0;
@@ -353,6 +395,23 @@ namespace QMC.Common
                 stAxisParam[i].Jog_StepSize_Max = 0;
                 stAxisParam[i].Jog_StepSize_Fine = 0;
                 stAxisParam[i].Jog_StepSize_Coarse = 0;
+            }
+
+            //  Communication 장치 파라미터 초기화
+            for (int i = 0; i < System.Enum.GetValues(typeof(CommList)).Length; i++)
+            {
+                stCommunicationSet[i].Comm_Type = 0;                        //  0 : TCP/IP,     1 : RS232
+                stCommunicationSet[i].TCPIP_PortType = 0;                   //  0 : Server,     1 : Client
+                stCommunicationSet[i].TCPIP_IPAddress = "127.0.0.1";
+                stCommunicationSet[i].TCPIP_PortNum = 5000;
+                stCommunicationSet[i].Serial_CommTimeout = 500;
+                stCommunicationSet[i].Serial_CommSpacingDelay = 20;
+                stCommunicationSet[i].Serial_CommPort = 0;                  //  0 : COM1,       1 : COM2,       2 : COM3,       3 : COM4 ....
+                stCommunicationSet[i].Serial_CommBaudRate = 0;              //  0 : 9600,       1 : 19200,      2 : 38400,      3 : 57600,      4 : 115200
+                stCommunicationSet[i].Serial_CommDataBits = 3;              //  0 : 5,          1 : 6,          2 : 7,          3 : 8
+                stCommunicationSet[i].Serial_CommStopBits = 0;              //  0 : 1,          1 : 1.5,        2 : 2
+                stCommunicationSet[i].Serial_CommParity = 0;                //  0 : None,       1 : Odd,        2 : Even
+                stCommunicationSet[i].Serial_CommFlowControl = 0;           //  0 : None,       1 : Xon/Xoff,   2 : RTS/CTS
             }
 
             m_nLastDioUID = 0;
@@ -421,6 +480,7 @@ namespace QMC.Common
 
 
             NewForm_AxisParameter_Load();
+            NewForm_CommParameter_Load();
 
 
             if (m_nBoardOpened != 0)
@@ -1683,18 +1743,24 @@ namespace QMC.Common
                 //  Acceleration Max
                 NativeMethods.GetPrivateProfileString(strTemp, "MaxAcc", "10000", temp, 255, strFIle);
                 Equipment.stAxisParam[i].Common_Acceleration_Max = Convert.ToDouble(temp.ToString());
-                //  Acceleration
-                NativeMethods.GetPrivateProfileString(strTemp, "Acceleration", "1000", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Acceleration = Convert.ToDouble(temp.ToString());
+                //  Acceleration Fine
+                NativeMethods.GetPrivateProfileString(strTemp, "FineAcc", "100", temp, 255, strFIle);
+                Equipment.stAxisParam[i].Common_Acceleration_Fine = Convert.ToDouble(temp.ToString());
+                //  Acceleration Coarse
+                NativeMethods.GetPrivateProfileString(strTemp, "CoarseAcc", "1000", temp, 255, strFIle);
+                Equipment.stAxisParam[i].Common_Acceleration_Coarse = Convert.ToDouble(temp.ToString());
                 //  Speed Min
                 NativeMethods.GetPrivateProfileString(strTemp, "MinSpeed", "10", temp, 255, strFIle);
                 Equipment.stAxisParam[i].Common_Speed_Min = Convert.ToDouble(temp.ToString());
                 //  Speed Max
                 NativeMethods.GetPrivateProfileString(strTemp, "MaxSpeed", "1000", temp, 255, strFIle);
                 Equipment.stAxisParam[i].Common_Speed_Max = Convert.ToDouble(temp.ToString());
-                //  Move Speed
-                NativeMethods.GetPrivateProfileString(strTemp, "MoveSpeed", "100", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_MoveSpeed = Convert.ToDouble(temp.ToString());
+                //  Move Speed Fine
+                NativeMethods.GetPrivateProfileString(strTemp, "FineSpeed", "10", temp, 255, strFIle);
+                Equipment.stAxisParam[i].Common_Speed_Fine = Convert.ToDouble(temp.ToString());
+                //  Move Speed Coarse
+                NativeMethods.GetPrivateProfileString(strTemp, "CoarseSpeed", "100", temp, 255, strFIle);
+                Equipment.stAxisParam[i].Common_Speed_Coarse = Convert.ToDouble(temp.ToString());
                 //  Position Min
                 NativeMethods.GetPrivateProfileString(strTemp, "MinPos", "-1.0", temp, 255, strFIle);
                 Equipment.stAxisParam[i].Common_Position_Min = Convert.ToDouble(temp.ToString());
@@ -1724,6 +1790,73 @@ namespace QMC.Common
                 //  Jog StepSize, Coarse
                 NativeMethods.GetPrivateProfileString(strTemp, "CoarseStepSize", "0.1", temp, 255, strFIle);
                 Equipment.stAxisParam[i].Jog_StepSize_Coarse = Convert.ToDouble(temp.ToString());
+            }
+
+            return m_bRet;
+        }
+
+        public static bool NewForm_CommParameter_Load()
+        {
+            string strTemp = "";
+
+            bool m_bRet = true;
+            string strFIle = "";
+            StringBuilder temp = new StringBuilder(255);
+
+            strFIle = ConfigManager.GetConfigPath() + "\\Comm Setting (Do not delete or modify).ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                MessageBox.Show("Comm. Setting 파일이 없습니다.\r\n\r\n[Default 값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return false;
+            }
+
+            //  Comm. Parameter 로드
+            for (int i = 0; i < System.Enum.GetValues(typeof(CommList)).Length; i++)
+            {
+                strTemp = string.Format("CommUnit_{0}", i);
+
+
+                //  TCP/IP, RS232                                                                                   //  0 : TCP/IP,     1 : RS232
+                NativeMethods.GetPrivateProfileString(strTemp, "CommType", "1", temp, 255, strFIle);
+                Equipment.stCommunicationSet[i].Comm_Type = Convert.ToInt16(temp.ToString());
+
+
+                //  TCP/IP 의 포트 형식 (Server, Client)                                                            //  0 : Server,     1 : Client
+                NativeMethods.GetPrivateProfileString(strTemp, "TCPIP_PortType", "1", temp, 255, strFIle);
+                Equipment.stCommunicationSet[i].TCPIP_PortType = Convert.ToInt16(temp.ToString());
+                //  TCP/IP 의 IP 주소
+                NativeMethods.GetPrivateProfileString(strTemp, "TCPIP_IPAddress", "127.0.0.1", temp, 255, strFIle);
+                Equipment.stCommunicationSet[i].TCPIP_IPAddress = temp.ToString();
+                //  TCP/IP 의 Port 번호
+                NativeMethods.GetPrivateProfileString(strTemp, "TCPIP_PortNum", "5000", temp, 255, strFIle);
+                Equipment.stCommunicationSet[i].TCPIP_PortNum = Convert.ToInt16(temp.ToString());
+
+
+                //  Timeout (ms)
+                NativeMethods.GetPrivateProfileString(strTemp, "RS232_Timeout", "500", temp, 255, strFIle);
+                Equipment.stCommunicationSet[i].Serial_CommTimeout = Convert.ToInt16(temp.ToString());
+                //  Spacing Delay (ms)
+                NativeMethods.GetPrivateProfileString(strTemp, "RS232_SpacingDelay", "20", temp, 255, strFIle);
+                Equipment.stCommunicationSet[i].Serial_CommSpacingDelay = Convert.ToInt16(temp.ToString());
+                //  COM Port                                                                                        //  0 : COM1,       1 : COM2,       2 : COM3,       3 : COM4 ....
+                NativeMethods.GetPrivateProfileString(strTemp, "RS232_Port", "0", temp, 255, strFIle);
+                Equipment.stCommunicationSet[i].Serial_CommPort = Convert.ToInt16(temp.ToString());
+                //  Baud Rate                                                                                       //  0 : 9600,       1 : 19200,      2 : 38400,      3 : 57600,      4 : 115200
+                NativeMethods.GetPrivateProfileString(strTemp, "RS232_BaudRate", "0", temp, 255, strFIle);
+                Equipment.stCommunicationSet[i].Serial_CommBaudRate = Convert.ToInt16(temp.ToString());
+                //  Data Bits                                                                                       //  0 : 5,          1 : 6,          2 : 7,          3 : 8
+                NativeMethods.GetPrivateProfileString(strTemp, "RS232_DataBit", "3", temp, 255, strFIle);
+                Equipment.stCommunicationSet[i].Serial_CommDataBits = Convert.ToInt16(temp.ToString());
+                //  Stop Bits                                                                                       //  0 : 1,          1 : 1.5,        2 : 2
+                NativeMethods.GetPrivateProfileString(strTemp, "RS232_StopBit", "0", temp, 255, strFIle);
+                Equipment.stCommunicationSet[i].Serial_CommStopBits = Convert.ToInt16(temp.ToString());
+                //  Parity                                                                                          //  0 : None,       1 : Odd,        2 : Even
+                NativeMethods.GetPrivateProfileString(strTemp, "RS232_Parity", "0", temp, 255, strFIle);
+                Equipment.stCommunicationSet[i].Serial_CommParity = Convert.ToInt16(temp.ToString());
+                //  Flow Control                                                                                    //  0 : None,       1 : Xon/Xoff,   2 : RTS/CTS
+                NativeMethods.GetPrivateProfileString(strTemp, "RS232_FlowControl", "0", temp, 255, strFIle);
+                Equipment.stCommunicationSet[i].Serial_CommFlowControl = Convert.ToInt16(temp.ToString());
             }
 
             return m_bRet;

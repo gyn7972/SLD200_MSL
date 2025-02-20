@@ -355,6 +355,8 @@
     <Compile Include="QMCFindLenzCenter.cs" />
     <Compile Include="QmcLowPassFilter.cs" />
     <Compile Include="ScoreSet.cs" />
+    <Compile Include="SocketLaserHeightSensor.cs" />
+    <Compile Include="SocketLaser.cs" />
     <Compile Include="SerialCommElectroRegulator.cs">
       <SubType>Form</SubType>
     </Compile>

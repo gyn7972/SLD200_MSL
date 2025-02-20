@@ -52,7 +52,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1860, 1039);
+            this.ClientSize = new System.Drawing.Size(1797, 1034);
             this.Location = new System.Drawing.Point(0, 0);
             this.Name = "FormSelectIO";
             this.Text = "FormSelectIO";

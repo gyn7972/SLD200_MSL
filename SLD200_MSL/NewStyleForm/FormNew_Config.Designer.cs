@@ -115,21 +115,6 @@
             this.groupBox_Config_LDUL_TeachingPositions_MovePosition_MoveMode = new System.Windows.Forms.GroupBox();
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Coarse = new System.Windows.Forms.RadioButton();
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine = new System.Windows.Forms.RadioButton();
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty = new System.Windows.Forms.GroupBox();
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode = new System.Windows.Forms.GroupBox();
-            this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_SettleDelay = new System.Windows.Forms.Button();
-            this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_Acc = new System.Windows.Forms.Button();
-            this.textBox_Config_LDUL_TeachingPos_CoarseMove_SettleDelay = new System.Windows.Forms.TextBox();
-            this.label120 = new System.Windows.Forms.Label();
-            this.textBox_Config_LDUL_TeachingPos_CoarseMove_Acc = new System.Windows.Forms.TextBox();
-            this.label121 = new System.Windows.Forms.Label();
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode = new System.Windows.Forms.GroupBox();
-            this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_SettleDelay = new System.Windows.Forms.Button();
-            this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_Acc = new System.Windows.Forms.Button();
-            this.textBox_Config_LDUL_TeachingPos_FineMove_SettleDelay = new System.Windows.Forms.TextBox();
-            this.label124 = new System.Windows.Forms.Label();
-            this.textBox_Config_LDUL_TeachingPos_FineMove_Acc = new System.Windows.Forms.TextBox();
-            this.label125 = new System.Windows.Forms.Label();
             this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition = new System.Windows.Forms.GroupBox();
             this.button_Config_LDUL_GetCurrentPos_ToTeachingPos = new System.Windows.Forms.Button();
             this.button_KeypadCall_Config_LDUL_TeachingPos_MAlignerY = new System.Windows.Forms.Button();
@@ -211,21 +196,6 @@
             this.groupBox103 = new System.Windows.Forms.GroupBox();
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Coarse = new System.Windows.Forms.RadioButton();
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine = new System.Windows.Forms.RadioButton();
-            this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty = new System.Windows.Forms.GroupBox();
-            this.groupBox105 = new System.Windows.Forms.GroupBox();
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay = new System.Windows.Forms.Button();
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_Acc = new System.Windows.Forms.Button();
-            this.textBox_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay = new System.Windows.Forms.TextBox();
-            this.label229 = new System.Windows.Forms.Label();
-            this.textBox_Config_WorkStage_TeachingPos_CoarseMove_Acc = new System.Windows.Forms.TextBox();
-            this.label230 = new System.Windows.Forms.Label();
-            this.groupBox106 = new System.Windows.Forms.GroupBox();
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_SettleDelay = new System.Windows.Forms.Button();
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_Acc = new System.Windows.Forms.Button();
-            this.textBox_Config_WorkStage_TeachingPos_FineMove_SettleDelay = new System.Windows.Forms.TextBox();
-            this.label231 = new System.Windows.Forms.Label();
-            this.textBox_Config_WorkStage_TeachingPos_FineMove_Acc = new System.Windows.Forms.TextBox();
-            this.label232 = new System.Windows.Forms.Label();
             this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition = new System.Windows.Forms.GroupBox();
             this.button_Config_WorkStage_GetCurrentPos_ToTeachingPos = new System.Windows.Forms.Button();
             this.button_KeypadCall_Config_WorkStage_TeachingPos_StageY = new System.Windows.Forms.Button();
@@ -327,21 +297,6 @@
             this.groupBox36 = new System.Windows.Forms.GroupBox();
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Coarse = new System.Windows.Forms.RadioButton();
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Fine = new System.Windows.Forms.RadioButton();
-            this.groupBox37 = new System.Windows.Forms.GroupBox();
-            this.groupBox38 = new System.Windows.Forms.GroupBox();
-            this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_SettleDelay = new System.Windows.Forms.Button();
-            this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_Acc = new System.Windows.Forms.Button();
-            this.textBox_Config_Vision_TeachingPos_CoarseMove_SettleDelay = new System.Windows.Forms.TextBox();
-            this.label33 = new System.Windows.Forms.Label();
-            this.textBox_Config_Vision_TeachingPos_CoarseMove_Acc = new System.Windows.Forms.TextBox();
-            this.label34 = new System.Windows.Forms.Label();
-            this.groupBox39 = new System.Windows.Forms.GroupBox();
-            this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_SettleDelay = new System.Windows.Forms.Button();
-            this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_Acc = new System.Windows.Forms.Button();
-            this.textBox_Config_Vision_TeachingPos_FineMove_SettleDelay = new System.Windows.Forms.TextBox();
-            this.label35 = new System.Windows.Forms.Label();
-            this.textBox_Config_Vision_TeachingPos_FineMove_Acc = new System.Windows.Forms.TextBox();
-            this.label36 = new System.Windows.Forms.Label();
             this.groupBox40 = new System.Windows.Forms.GroupBox();
             this.button_Config_Vision_GetCurrentPos_ToTeachingPos = new System.Windows.Forms.Button();
             this.label37 = new System.Windows.Forms.Label();
@@ -461,21 +416,6 @@
             this.groupBox79 = new System.Windows.Forms.GroupBox();
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Coarse = new System.Windows.Forms.RadioButton();
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Fine = new System.Windows.Forms.RadioButton();
-            this.groupBox80 = new System.Windows.Forms.GroupBox();
-            this.groupBox81 = new System.Windows.Forms.GroupBox();
-            this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_SettleDelay = new System.Windows.Forms.Button();
-            this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_Acc = new System.Windows.Forms.Button();
-            this.textBox_Config_BDS_TeachingPos_CoarseMove_SettleDelay = new System.Windows.Forms.TextBox();
-            this.label108 = new System.Windows.Forms.Label();
-            this.textBox_Config_BDS_TeachingPos_CoarseMove_Acc = new System.Windows.Forms.TextBox();
-            this.label109 = new System.Windows.Forms.Label();
-            this.groupBox82 = new System.Windows.Forms.GroupBox();
-            this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_SettleDelay = new System.Windows.Forms.Button();
-            this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_Acc = new System.Windows.Forms.Button();
-            this.textBox_Config_BDS_TeachingPos_FineMove_SettleDelay = new System.Windows.Forms.TextBox();
-            this.label110 = new System.Windows.Forms.Label();
-            this.textBox_Config_BDS_TeachingPos_FineMove_Acc = new System.Windows.Forms.TextBox();
-            this.label111 = new System.Windows.Forms.Label();
             this.groupBox83 = new System.Windows.Forms.GroupBox();
             this.button_Config_BDS_GetCurrentPos_ToTeachingPos = new System.Windows.Forms.Button();
             this.button_KeypadCall_Config_BDS_TeachingPos_MaskY = new System.Windows.Forms.Button();
@@ -573,9 +513,6 @@
             this.groupBox_Config_LDUL_TeachingPositions.SuspendLayout();
             this.groupBox_Config_LDUL_TeachingPositions_MovePosition.SuspendLayout();
             this.groupBox_Config_LDUL_TeachingPositions_MovePosition_MoveMode.SuspendLayout();
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.SuspendLayout();
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode.SuspendLayout();
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode.SuspendLayout();
             this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition.SuspendLayout();
             this.tabPage_Config_WorkStage.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -593,9 +530,6 @@
             this.groupBox_Config_WorkStage_TeachingPositions.SuspendLayout();
             this.groupBox102.SuspendLayout();
             this.groupBox103.SuspendLayout();
-            this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.SuspendLayout();
-            this.groupBox105.SuspendLayout();
-            this.groupBox106.SuspendLayout();
             this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition.SuspendLayout();
             this.groupBox23.SuspendLayout();
             this.groupBox24.SuspendLayout();
@@ -618,9 +552,6 @@
             this.groupBox32.SuspendLayout();
             this.groupBox34.SuspendLayout();
             this.groupBox36.SuspendLayout();
-            this.groupBox37.SuspendLayout();
-            this.groupBox38.SuspendLayout();
-            this.groupBox39.SuspendLayout();
             this.groupBox40.SuspendLayout();
             this.groupBox41.SuspendLayout();
             this.groupBox42.SuspendLayout();
@@ -654,9 +585,6 @@
             this.groupBox77.SuspendLayout();
             this.groupBox78.SuspendLayout();
             this.groupBox79.SuspendLayout();
-            this.groupBox80.SuspendLayout();
-            this.groupBox81.SuspendLayout();
-            this.groupBox82.SuspendLayout();
             this.groupBox83.SuspendLayout();
             this.groupBox84.SuspendLayout();
             this.groupBox85.SuspendLayout();
@@ -711,11 +639,11 @@
             this.groupBox_Config_LDUL_DIO.Controls.Add(this.groupBox_Config_LDUL_DIO_Output);
             this.groupBox_Config_LDUL_DIO.Controls.Add(this.groupBox_Config_LDUL_DIO_Input);
             this.groupBox_Config_LDUL_DIO.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox_Config_LDUL_DIO.Location = new System.Drawing.Point(10, 574);
+            this.groupBox_Config_LDUL_DIO.Location = new System.Drawing.Point(10, 536);
             this.groupBox_Config_LDUL_DIO.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox_Config_LDUL_DIO.Name = "groupBox_Config_LDUL_DIO";
             this.groupBox_Config_LDUL_DIO.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_Config_LDUL_DIO.Size = new System.Drawing.Size(631, 223);
+            this.groupBox_Config_LDUL_DIO.Size = new System.Drawing.Size(631, 261);
             this.groupBox_Config_LDUL_DIO.TabIndex = 73;
             this.groupBox_Config_LDUL_DIO.TabStop = false;
             this.groupBox_Config_LDUL_DIO.Text = "DI/O";
@@ -728,7 +656,7 @@
             this.groupBox_Config_LDUL_DIO_Output.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox_Config_LDUL_DIO_Output.Name = "groupBox_Config_LDUL_DIO_Output";
             this.groupBox_Config_LDUL_DIO_Output.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_Config_LDUL_DIO_Output.Size = new System.Drawing.Size(299, 192);
+            this.groupBox_Config_LDUL_DIO_Output.Size = new System.Drawing.Size(299, 230);
             this.groupBox_Config_LDUL_DIO_Output.TabIndex = 71;
             this.groupBox_Config_LDUL_DIO_Output.TabStop = false;
             this.groupBox_Config_LDUL_DIO_Output.Text = "Output";
@@ -754,7 +682,7 @@
             this.checkedListBox_Config_LDUL_DIO_Output.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_LDUL_DIO_Output.Name = "checkedListBox_Config_LDUL_DIO_Output";
             this.checkedListBox_Config_LDUL_DIO_Output.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_LDUL_DIO_Output.Size = new System.Drawing.Size(279, 156);
+            this.checkedListBox_Config_LDUL_DIO_Output.Size = new System.Drawing.Size(279, 194);
             this.checkedListBox_Config_LDUL_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_LDUL_DIO_Output.ThreeDCheckBoxes = true;
             this.checkedListBox_Config_LDUL_DIO_Output.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_LDUL_DIO_Output_MouseDoubleClick);
@@ -767,7 +695,7 @@
             this.groupBox_Config_LDUL_DIO_Input.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox_Config_LDUL_DIO_Input.Name = "groupBox_Config_LDUL_DIO_Input";
             this.groupBox_Config_LDUL_DIO_Input.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_Config_LDUL_DIO_Input.Size = new System.Drawing.Size(299, 192);
+            this.groupBox_Config_LDUL_DIO_Input.Size = new System.Drawing.Size(299, 230);
             this.groupBox_Config_LDUL_DIO_Input.TabIndex = 70;
             this.groupBox_Config_LDUL_DIO_Input.TabStop = false;
             this.groupBox_Config_LDUL_DIO_Input.Text = "Input";
@@ -802,7 +730,7 @@
             this.checkedListBox_Config_LDUL_DIO_Input.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_LDUL_DIO_Input.Name = "checkedListBox_Config_LDUL_DIO_Input";
             this.checkedListBox_Config_LDUL_DIO_Input.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_LDUL_DIO_Input.Size = new System.Drawing.Size(279, 156);
+            this.checkedListBox_Config_LDUL_DIO_Input.Size = new System.Drawing.Size(279, 194);
             this.checkedListBox_Config_LDUL_DIO_Input.TabIndex = 50;
             this.checkedListBox_Config_LDUL_DIO_Input.ThreeDCheckBoxes = true;
             // 
@@ -1746,7 +1674,6 @@
             this.groupBox_Config_LDUL_TeachingPositions.Controls.Add(this.button1);
             this.groupBox_Config_LDUL_TeachingPositions.Controls.Add(this.button_Config_LDUL_TeachingPositions_Save);
             this.groupBox_Config_LDUL_TeachingPositions.Controls.Add(this.groupBox_Config_LDUL_TeachingPositions_MovePosition);
-            this.groupBox_Config_LDUL_TeachingPositions.Controls.Add(this.groupBox_Config_LDUL_TeachingPositions_MoveProperty);
             this.groupBox_Config_LDUL_TeachingPositions.Controls.Add(this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition);
             this.groupBox_Config_LDUL_TeachingPositions.Controls.Add(this.listBox_Config_LDUL_TeachingPositions);
             this.groupBox_Config_LDUL_TeachingPositions.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -1754,7 +1681,7 @@
             this.groupBox_Config_LDUL_TeachingPositions.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_Config_LDUL_TeachingPositions.Name = "groupBox_Config_LDUL_TeachingPositions";
             this.groupBox_Config_LDUL_TeachingPositions.Padding = new System.Windows.Forms.Padding(5);
-            this.groupBox_Config_LDUL_TeachingPositions.Size = new System.Drawing.Size(631, 548);
+            this.groupBox_Config_LDUL_TeachingPositions.Size = new System.Drawing.Size(631, 493);
             this.groupBox_Config_LDUL_TeachingPositions.TabIndex = 51;
             this.groupBox_Config_LDUL_TeachingPositions.TabStop = false;
             this.groupBox_Config_LDUL_TeachingPositions.Text = " Teaching Positions ";
@@ -1762,7 +1689,7 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button1.Location = new System.Drawing.Point(176, 486);
+            this.button1.Location = new System.Drawing.Point(502, 429);
             this.button1.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(110, 52);
@@ -1773,7 +1700,7 @@
             // button_Config_LDUL_TeachingPositions_Save
             // 
             this.button_Config_LDUL_TeachingPositions_Save.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_LDUL_TeachingPositions_Save.Location = new System.Drawing.Point(51, 486);
+            this.button_Config_LDUL_TeachingPositions_Save.Location = new System.Drawing.Point(376, 429);
             this.button_Config_LDUL_TeachingPositions_Save.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config_LDUL_TeachingPositions_Save.Name = "button_Config_LDUL_TeachingPositions_Save";
             this.button_Config_LDUL_TeachingPositions_Save.Size = new System.Drawing.Size(110, 52);
@@ -1787,19 +1714,19 @@
             this.groupBox_Config_LDUL_TeachingPositions_MovePosition.Controls.Add(this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_LDUL_TeachingPositions_Move);
             this.groupBox_Config_LDUL_TeachingPositions_MovePosition.Controls.Add(this.groupBox_Config_LDUL_TeachingPositions_MovePosition_MoveMode);
             this.groupBox_Config_LDUL_TeachingPositions_MovePosition.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox_Config_LDUL_TeachingPositions_MovePosition.Location = new System.Drawing.Point(10, 376);
+            this.groupBox_Config_LDUL_TeachingPositions_MovePosition.Location = new System.Drawing.Point(320, 309);
             this.groupBox_Config_LDUL_TeachingPositions_MovePosition.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_Config_LDUL_TeachingPositions_MovePosition.Name = "groupBox_Config_LDUL_TeachingPositions_MovePosition";
             this.groupBox_Config_LDUL_TeachingPositions_MovePosition.Padding = new System.Windows.Forms.Padding(5);
-            this.groupBox_Config_LDUL_TeachingPositions_MovePosition.Size = new System.Drawing.Size(285, 99);
+            this.groupBox_Config_LDUL_TeachingPositions_MovePosition.Size = new System.Drawing.Size(301, 99);
             this.groupBox_Config_LDUL_TeachingPositions_MovePosition.TabIndex = 38;
             this.groupBox_Config_LDUL_TeachingPositions_MovePosition.TabStop = false;
-            this.groupBox_Config_LDUL_TeachingPositions_MovePosition.Text = " Move Position ";
+            this.groupBox_Config_LDUL_TeachingPositions_MovePosition.Text = " Teaching Position Move ";
             // 
             // button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_LDUL_TeachingPositions_Move
             // 
             this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_LDUL_TeachingPositions_Move.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_LDUL_TeachingPositions_Move.Location = new System.Drawing.Point(166, 37);
+            this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_LDUL_TeachingPositions_Move.Location = new System.Drawing.Point(182, 37);
             this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_LDUL_TeachingPositions_Move.Margin = new System.Windows.Forms.Padding(5);
             this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_LDUL_TeachingPositions_Move.Name = "button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config" +
     "_LDUL_TeachingPositions_Move";
@@ -1845,188 +1772,6 @@
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.TabStop = true;
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.Text = "Fine";
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.UseVisualStyleBackColor = true;
-            // 
-            // groupBox_Config_LDUL_TeachingPositions_MoveProperty
-            // 
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.Controls.Add(this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.Controls.Add(this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.Location = new System.Drawing.Point(320, 313);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.Name = "groupBox_Config_LDUL_TeachingPositions_MoveProperty";
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.Size = new System.Drawing.Size(301, 225);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.TabIndex = 36;
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.TabStop = false;
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.Text = " Move Properties ";
-            // 
-            // groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode
-            // 
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode.Controls.Add(this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_SettleDelay);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode.Controls.Add(this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_Acc);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode.Controls.Add(this.textBox_Config_LDUL_TeachingPos_CoarseMove_SettleDelay);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode.Controls.Add(this.label120);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode.Controls.Add(this.textBox_Config_LDUL_TeachingPos_CoarseMove_Acc);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode.Controls.Add(this.label121);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode.Location = new System.Drawing.Point(10, 125);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode.Name = "groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode";
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode.Size = new System.Drawing.Size(280, 90);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode.TabIndex = 36;
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode.TabStop = false;
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode.Text = " Coarse Mode ";
-            // 
-            // button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_SettleDelay
-            // 
-            this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.Location = new System.Drawing.Point(228, 56);
-            this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.Margin = new System.Windows.Forms.Padding(5);
-            this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.Name = "button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_SettleDelay";
-            this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.Size = new System.Drawing.Size(43, 25);
-            this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.TabIndex = 26;
-            this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.Text = "#";
-            this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.UseVisualStyleBackColor = true;
-            // 
-            // button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_Acc
-            // 
-            this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_Acc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_Acc.Location = new System.Drawing.Point(228, 26);
-            this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_Acc.Margin = new System.Windows.Forms.Padding(5);
-            this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_Acc.Name = "button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_Acc";
-            this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_Acc.Size = new System.Drawing.Size(43, 25);
-            this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_Acc.TabIndex = 25;
-            this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_Acc.Text = "#";
-            this.button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_Acc.UseVisualStyleBackColor = true;
-            // 
-            // textBox_Config_LDUL_TeachingPos_CoarseMove_SettleDelay
-            // 
-            this.textBox_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.Location = new System.Drawing.Point(126, 56);
-            this.textBox_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.Name = "textBox_Config_LDUL_TeachingPos_CoarseMove_SettleDelay";
-            this.textBox_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.Size = new System.Drawing.Size(97, 24);
-            this.textBox_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.TabIndex = 24;
-            this.textBox_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.Text = "000.000";
-            this.textBox_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label120
-            // 
-            this.label120.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label120.Location = new System.Drawing.Point(5, 55);
-            this.label120.Margin = new System.Windows.Forms.Padding(5);
-            this.label120.Name = "label120";
-            this.label120.Size = new System.Drawing.Size(121, 24);
-            this.label120.TabIndex = 23;
-            this.label120.Text = "Settle Delay (㎳) :";
-            this.label120.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Config_LDUL_TeachingPos_CoarseMove_Acc
-            // 
-            this.textBox_Config_LDUL_TeachingPos_CoarseMove_Acc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_LDUL_TeachingPos_CoarseMove_Acc.Location = new System.Drawing.Point(126, 26);
-            this.textBox_Config_LDUL_TeachingPos_CoarseMove_Acc.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_LDUL_TeachingPos_CoarseMove_Acc.Name = "textBox_Config_LDUL_TeachingPos_CoarseMove_Acc";
-            this.textBox_Config_LDUL_TeachingPos_CoarseMove_Acc.Size = new System.Drawing.Size(97, 24);
-            this.textBox_Config_LDUL_TeachingPos_CoarseMove_Acc.TabIndex = 22;
-            this.textBox_Config_LDUL_TeachingPos_CoarseMove_Acc.Text = "000.000";
-            this.textBox_Config_LDUL_TeachingPos_CoarseMove_Acc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label121
-            // 
-            this.label121.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label121.Location = new System.Drawing.Point(5, 25);
-            this.label121.Margin = new System.Windows.Forms.Padding(5);
-            this.label121.Name = "label121";
-            this.label121.Size = new System.Drawing.Size(121, 24);
-            this.label121.TabIndex = 21;
-            this.label121.Text = "Accel. (㎜/s²) :";
-            this.label121.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode
-            // 
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode.Controls.Add(this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_SettleDelay);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode.Controls.Add(this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_Acc);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode.Controls.Add(this.textBox_Config_LDUL_TeachingPos_FineMove_SettleDelay);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode.Controls.Add(this.label124);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode.Controls.Add(this.textBox_Config_LDUL_TeachingPos_FineMove_Acc);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode.Controls.Add(this.label125);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode.Location = new System.Drawing.Point(10, 25);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode.Name = "groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode";
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode.Size = new System.Drawing.Size(280, 90);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode.TabIndex = 35;
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode.TabStop = false;
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode.Text = " Fine Mode ";
-            // 
-            // button_KeypadCall_Config_LDUL_TeachingPos_FineMove_SettleDelay
-            // 
-            this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_SettleDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_SettleDelay.Location = new System.Drawing.Point(228, 56);
-            this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_SettleDelay.Margin = new System.Windows.Forms.Padding(5);
-            this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_SettleDelay.Name = "button_KeypadCall_Config_LDUL_TeachingPos_FineMove_SettleDelay";
-            this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_SettleDelay.Size = new System.Drawing.Size(43, 25);
-            this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_SettleDelay.TabIndex = 26;
-            this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_SettleDelay.Text = "#";
-            this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_SettleDelay.UseVisualStyleBackColor = true;
-            // 
-            // button_KeypadCall_Config_LDUL_TeachingPos_FineMove_Acc
-            // 
-            this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_Acc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_Acc.Location = new System.Drawing.Point(228, 26);
-            this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_Acc.Margin = new System.Windows.Forms.Padding(5);
-            this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_Acc.Name = "button_KeypadCall_Config_LDUL_TeachingPos_FineMove_Acc";
-            this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_Acc.Size = new System.Drawing.Size(43, 25);
-            this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_Acc.TabIndex = 25;
-            this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_Acc.Text = "#";
-            this.button_KeypadCall_Config_LDUL_TeachingPos_FineMove_Acc.UseVisualStyleBackColor = true;
-            // 
-            // textBox_Config_LDUL_TeachingPos_FineMove_SettleDelay
-            // 
-            this.textBox_Config_LDUL_TeachingPos_FineMove_SettleDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_LDUL_TeachingPos_FineMove_SettleDelay.Location = new System.Drawing.Point(126, 56);
-            this.textBox_Config_LDUL_TeachingPos_FineMove_SettleDelay.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_LDUL_TeachingPos_FineMove_SettleDelay.Name = "textBox_Config_LDUL_TeachingPos_FineMove_SettleDelay";
-            this.textBox_Config_LDUL_TeachingPos_FineMove_SettleDelay.Size = new System.Drawing.Size(97, 24);
-            this.textBox_Config_LDUL_TeachingPos_FineMove_SettleDelay.TabIndex = 24;
-            this.textBox_Config_LDUL_TeachingPos_FineMove_SettleDelay.Text = "000.000";
-            this.textBox_Config_LDUL_TeachingPos_FineMove_SettleDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label124
-            // 
-            this.label124.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label124.Location = new System.Drawing.Point(5, 55);
-            this.label124.Margin = new System.Windows.Forms.Padding(5);
-            this.label124.Name = "label124";
-            this.label124.Size = new System.Drawing.Size(121, 24);
-            this.label124.TabIndex = 23;
-            this.label124.Text = "Settle Delay (㎳) :";
-            this.label124.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Config_LDUL_TeachingPos_FineMove_Acc
-            // 
-            this.textBox_Config_LDUL_TeachingPos_FineMove_Acc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_LDUL_TeachingPos_FineMove_Acc.Location = new System.Drawing.Point(126, 26);
-            this.textBox_Config_LDUL_TeachingPos_FineMove_Acc.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_LDUL_TeachingPos_FineMove_Acc.Name = "textBox_Config_LDUL_TeachingPos_FineMove_Acc";
-            this.textBox_Config_LDUL_TeachingPos_FineMove_Acc.Size = new System.Drawing.Size(97, 24);
-            this.textBox_Config_LDUL_TeachingPos_FineMove_Acc.TabIndex = 22;
-            this.textBox_Config_LDUL_TeachingPos_FineMove_Acc.Text = "000.000";
-            this.textBox_Config_LDUL_TeachingPos_FineMove_Acc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label125
-            // 
-            this.label125.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label125.Location = new System.Drawing.Point(5, 25);
-            this.label125.Margin = new System.Windows.Forms.Padding(5);
-            this.label125.Name = "label125";
-            this.label125.Size = new System.Drawing.Size(121, 24);
-            this.label125.TabIndex = 21;
-            this.label125.Text = "Accel. (㎜/s²) :";
-            this.label125.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // groupBox_Config_LDUL_TeachingPositions_TeachingPosition
             // 
@@ -2298,7 +2043,7 @@
             this.listBox_Config_LDUL_TeachingPositions.Location = new System.Drawing.Point(10, 25);
             this.listBox_Config_LDUL_TeachingPositions.Margin = new System.Windows.Forms.Padding(5);
             this.listBox_Config_LDUL_TeachingPositions.Name = "listBox_Config_LDUL_TeachingPositions";
-            this.listBox_Config_LDUL_TeachingPositions.Size = new System.Drawing.Size(285, 328);
+            this.listBox_Config_LDUL_TeachingPositions.Size = new System.Drawing.Size(285, 382);
             this.listBox_Config_LDUL_TeachingPositions.TabIndex = 0;
             this.listBox_Config_LDUL_TeachingPositions.SelectedIndexChanged += new System.EventHandler(this.listBox_Config_LDUL_TeachingPositions_SelectedIndexChanged);
             // 
@@ -2321,11 +2066,11 @@
             this.groupBox4.Controls.Add(this.groupBox52);
             this.groupBox4.Controls.Add(this.groupBox53);
             this.groupBox4.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox4.Location = new System.Drawing.Point(10, 525);
+            this.groupBox4.Location = new System.Drawing.Point(10, 437);
             this.groupBox4.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox4.Size = new System.Drawing.Size(631, 241);
+            this.groupBox4.Size = new System.Drawing.Size(631, 357);
             this.groupBox4.TabIndex = 74;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "DI/O";
@@ -2338,7 +2083,7 @@
             this.groupBox52.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox52.Name = "groupBox52";
             this.groupBox52.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox52.Size = new System.Drawing.Size(299, 210);
+            this.groupBox52.Size = new System.Drawing.Size(299, 326);
             this.groupBox52.TabIndex = 71;
             this.groupBox52.TabStop = false;
             this.groupBox52.Text = "Output";
@@ -2364,7 +2109,7 @@
             this.checkedListBox_Config_WorkStage_DIO_Output.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_WorkStage_DIO_Output.Name = "checkedListBox_Config_WorkStage_DIO_Output";
             this.checkedListBox_Config_WorkStage_DIO_Output.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_WorkStage_DIO_Output.Size = new System.Drawing.Size(279, 175);
+            this.checkedListBox_Config_WorkStage_DIO_Output.Size = new System.Drawing.Size(279, 289);
             this.checkedListBox_Config_WorkStage_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_WorkStage_DIO_Output.ThreeDCheckBoxes = true;
             this.checkedListBox_Config_WorkStage_DIO_Output.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_WorkStage_DIO_Output_MouseDoubleClick);
@@ -2377,7 +2122,7 @@
             this.groupBox53.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox53.Name = "groupBox53";
             this.groupBox53.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox53.Size = new System.Drawing.Size(299, 210);
+            this.groupBox53.Size = new System.Drawing.Size(299, 326);
             this.groupBox53.TabIndex = 70;
             this.groupBox53.TabStop = false;
             this.groupBox53.Text = "Input";
@@ -2416,7 +2161,7 @@
             this.checkedListBox_Config_WorkStage_DIO_Input.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_WorkStage_DIO_Input.Name = "checkedListBox_Config_WorkStage_DIO_Input";
             this.checkedListBox_Config_WorkStage_DIO_Input.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_WorkStage_DIO_Input.Size = new System.Drawing.Size(279, 175);
+            this.checkedListBox_Config_WorkStage_DIO_Input.Size = new System.Drawing.Size(279, 289);
             this.checkedListBox_Config_WorkStage_DIO_Input.TabIndex = 50;
             this.checkedListBox_Config_WorkStage_DIO_Input.ThreeDCheckBoxes = true;
             // 
@@ -3017,7 +2762,6 @@
             this.groupBox_Config_WorkStage_TeachingPositions.Controls.Add(this.button2);
             this.groupBox_Config_WorkStage_TeachingPositions.Controls.Add(this.button_Config_WorkStage_TeachingPositions_Save);
             this.groupBox_Config_WorkStage_TeachingPositions.Controls.Add(this.groupBox102);
-            this.groupBox_Config_WorkStage_TeachingPositions.Controls.Add(this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty);
             this.groupBox_Config_WorkStage_TeachingPositions.Controls.Add(this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition);
             this.groupBox_Config_WorkStage_TeachingPositions.Controls.Add(this.listBox_Config_WorkStage_TeachingPositions);
             this.groupBox_Config_WorkStage_TeachingPositions.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -3025,7 +2769,7 @@
             this.groupBox_Config_WorkStage_TeachingPositions.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_Config_WorkStage_TeachingPositions.Name = "groupBox_Config_WorkStage_TeachingPositions";
             this.groupBox_Config_WorkStage_TeachingPositions.Padding = new System.Windows.Forms.Padding(5);
-            this.groupBox_Config_WorkStage_TeachingPositions.Size = new System.Drawing.Size(631, 496);
+            this.groupBox_Config_WorkStage_TeachingPositions.Size = new System.Drawing.Size(631, 401);
             this.groupBox_Config_WorkStage_TeachingPositions.TabIndex = 60;
             this.groupBox_Config_WorkStage_TeachingPositions.TabStop = false;
             this.groupBox_Config_WorkStage_TeachingPositions.Text = " Teaching Positions ";
@@ -3033,7 +2777,7 @@
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button2.Location = new System.Drawing.Point(511, 433);
+            this.button2.Location = new System.Drawing.Point(502, 339);
             this.button2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(110, 52);
@@ -3044,7 +2788,7 @@
             // button_Config_WorkStage_TeachingPositions_Save
             // 
             this.button_Config_WorkStage_TeachingPositions_Save.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_WorkStage_TeachingPositions_Save.Location = new System.Drawing.Point(386, 433);
+            this.button_Config_WorkStage_TeachingPositions_Save.Location = new System.Drawing.Point(376, 339);
             this.button_Config_WorkStage_TeachingPositions_Save.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config_WorkStage_TeachingPositions_Save.Name = "button_Config_WorkStage_TeachingPositions_Save";
             this.button_Config_WorkStage_TeachingPositions_Save.Size = new System.Drawing.Size(110, 52);
@@ -3058,19 +2802,19 @@
             this.groupBox102.Controls.Add(this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_WorkStage_TeachingPositions_Move);
             this.groupBox102.Controls.Add(this.groupBox103);
             this.groupBox102.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox102.Location = new System.Drawing.Point(10, 386);
+            this.groupBox102.Location = new System.Drawing.Point(320, 192);
             this.groupBox102.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox102.Name = "groupBox102";
             this.groupBox102.Padding = new System.Windows.Forms.Padding(5);
-            this.groupBox102.Size = new System.Drawing.Size(285, 99);
+            this.groupBox102.Size = new System.Drawing.Size(301, 99);
             this.groupBox102.TabIndex = 38;
             this.groupBox102.TabStop = false;
-            this.groupBox102.Text = " Move Position ";
+            this.groupBox102.Text = " Teaching Position Move ";
             // 
             // button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_WorkStage_TeachingPositions_Move
             // 
             this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_WorkStage_TeachingPositions_Move.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_WorkStage_TeachingPositions_Move.Location = new System.Drawing.Point(166, 37);
+            this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_WorkStage_TeachingPositions_Move.Location = new System.Drawing.Point(182, 37);
             this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_WorkStage_TeachingPositions_Move.Margin = new System.Windows.Forms.Padding(5);
             this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_WorkStage_TeachingPositions_Move.Name = "button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config" +
     "_WorkStage_TeachingPositions_Move";
@@ -3116,188 +2860,6 @@
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine.TabStop = true;
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine.Text = "Fine";
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine.UseVisualStyleBackColor = true;
-            // 
-            // groupBox_Config_WorkStage_TeachingPositions_MoveProperty
-            // 
-            this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.Controls.Add(this.groupBox105);
-            this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.Controls.Add(this.groupBox106);
-            this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.Location = new System.Drawing.Point(320, 193);
-            this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.Name = "groupBox_Config_WorkStage_TeachingPositions_MoveProperty";
-            this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.Size = new System.Drawing.Size(301, 225);
-            this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.TabIndex = 36;
-            this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.TabStop = false;
-            this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.Text = " Move Properties ";
-            // 
-            // groupBox105
-            // 
-            this.groupBox105.Controls.Add(this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay);
-            this.groupBox105.Controls.Add(this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_Acc);
-            this.groupBox105.Controls.Add(this.textBox_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay);
-            this.groupBox105.Controls.Add(this.label229);
-            this.groupBox105.Controls.Add(this.textBox_Config_WorkStage_TeachingPos_CoarseMove_Acc);
-            this.groupBox105.Controls.Add(this.label230);
-            this.groupBox105.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox105.Location = new System.Drawing.Point(10, 125);
-            this.groupBox105.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox105.Name = "groupBox105";
-            this.groupBox105.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox105.Size = new System.Drawing.Size(280, 90);
-            this.groupBox105.TabIndex = 36;
-            this.groupBox105.TabStop = false;
-            this.groupBox105.Text = " Coarse Mode ";
-            // 
-            // button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay
-            // 
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.Location = new System.Drawing.Point(228, 56);
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.Margin = new System.Windows.Forms.Padding(5);
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.Name = "button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay";
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.Size = new System.Drawing.Size(43, 25);
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.TabIndex = 26;
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.Text = "#";
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.UseVisualStyleBackColor = true;
-            // 
-            // button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_Acc
-            // 
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_Acc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_Acc.Location = new System.Drawing.Point(228, 26);
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_Acc.Margin = new System.Windows.Forms.Padding(5);
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_Acc.Name = "button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_Acc";
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_Acc.Size = new System.Drawing.Size(43, 25);
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_Acc.TabIndex = 25;
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_Acc.Text = "#";
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_Acc.UseVisualStyleBackColor = true;
-            // 
-            // textBox_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay
-            // 
-            this.textBox_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.Location = new System.Drawing.Point(126, 56);
-            this.textBox_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.Name = "textBox_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay";
-            this.textBox_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.Size = new System.Drawing.Size(97, 24);
-            this.textBox_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.TabIndex = 24;
-            this.textBox_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.Text = "000.000";
-            this.textBox_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label229
-            // 
-            this.label229.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label229.Location = new System.Drawing.Point(5, 55);
-            this.label229.Margin = new System.Windows.Forms.Padding(5);
-            this.label229.Name = "label229";
-            this.label229.Size = new System.Drawing.Size(121, 24);
-            this.label229.TabIndex = 23;
-            this.label229.Text = "Settle Delay (㎳) :";
-            this.label229.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Config_WorkStage_TeachingPos_CoarseMove_Acc
-            // 
-            this.textBox_Config_WorkStage_TeachingPos_CoarseMove_Acc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_WorkStage_TeachingPos_CoarseMove_Acc.Location = new System.Drawing.Point(126, 26);
-            this.textBox_Config_WorkStage_TeachingPos_CoarseMove_Acc.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_WorkStage_TeachingPos_CoarseMove_Acc.Name = "textBox_Config_WorkStage_TeachingPos_CoarseMove_Acc";
-            this.textBox_Config_WorkStage_TeachingPos_CoarseMove_Acc.Size = new System.Drawing.Size(97, 24);
-            this.textBox_Config_WorkStage_TeachingPos_CoarseMove_Acc.TabIndex = 22;
-            this.textBox_Config_WorkStage_TeachingPos_CoarseMove_Acc.Text = "000.000";
-            this.textBox_Config_WorkStage_TeachingPos_CoarseMove_Acc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label230
-            // 
-            this.label230.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label230.Location = new System.Drawing.Point(5, 25);
-            this.label230.Margin = new System.Windows.Forms.Padding(5);
-            this.label230.Name = "label230";
-            this.label230.Size = new System.Drawing.Size(121, 24);
-            this.label230.TabIndex = 21;
-            this.label230.Text = "Accel. (㎜/s²) :";
-            this.label230.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // groupBox106
-            // 
-            this.groupBox106.Controls.Add(this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_SettleDelay);
-            this.groupBox106.Controls.Add(this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_Acc);
-            this.groupBox106.Controls.Add(this.textBox_Config_WorkStage_TeachingPos_FineMove_SettleDelay);
-            this.groupBox106.Controls.Add(this.label231);
-            this.groupBox106.Controls.Add(this.textBox_Config_WorkStage_TeachingPos_FineMove_Acc);
-            this.groupBox106.Controls.Add(this.label232);
-            this.groupBox106.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox106.Location = new System.Drawing.Point(10, 25);
-            this.groupBox106.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox106.Name = "groupBox106";
-            this.groupBox106.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox106.Size = new System.Drawing.Size(280, 90);
-            this.groupBox106.TabIndex = 35;
-            this.groupBox106.TabStop = false;
-            this.groupBox106.Text = " Fine Mode ";
-            // 
-            // button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_SettleDelay
-            // 
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_SettleDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_SettleDelay.Location = new System.Drawing.Point(228, 56);
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_SettleDelay.Margin = new System.Windows.Forms.Padding(5);
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_SettleDelay.Name = "button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_SettleDelay";
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_SettleDelay.Size = new System.Drawing.Size(43, 25);
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_SettleDelay.TabIndex = 26;
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_SettleDelay.Text = "#";
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_SettleDelay.UseVisualStyleBackColor = true;
-            // 
-            // button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_Acc
-            // 
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_Acc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_Acc.Location = new System.Drawing.Point(228, 26);
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_Acc.Margin = new System.Windows.Forms.Padding(5);
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_Acc.Name = "button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_Acc";
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_Acc.Size = new System.Drawing.Size(43, 25);
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_Acc.TabIndex = 25;
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_Acc.Text = "#";
-            this.button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_Acc.UseVisualStyleBackColor = true;
-            // 
-            // textBox_Config_WorkStage_TeachingPos_FineMove_SettleDelay
-            // 
-            this.textBox_Config_WorkStage_TeachingPos_FineMove_SettleDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_WorkStage_TeachingPos_FineMove_SettleDelay.Location = new System.Drawing.Point(126, 56);
-            this.textBox_Config_WorkStage_TeachingPos_FineMove_SettleDelay.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_WorkStage_TeachingPos_FineMove_SettleDelay.Name = "textBox_Config_WorkStage_TeachingPos_FineMove_SettleDelay";
-            this.textBox_Config_WorkStage_TeachingPos_FineMove_SettleDelay.Size = new System.Drawing.Size(97, 24);
-            this.textBox_Config_WorkStage_TeachingPos_FineMove_SettleDelay.TabIndex = 24;
-            this.textBox_Config_WorkStage_TeachingPos_FineMove_SettleDelay.Text = "000.000";
-            this.textBox_Config_WorkStage_TeachingPos_FineMove_SettleDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label231
-            // 
-            this.label231.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label231.Location = new System.Drawing.Point(5, 55);
-            this.label231.Margin = new System.Windows.Forms.Padding(5);
-            this.label231.Name = "label231";
-            this.label231.Size = new System.Drawing.Size(121, 24);
-            this.label231.TabIndex = 23;
-            this.label231.Text = "Settle Delay (㎳) :";
-            this.label231.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Config_WorkStage_TeachingPos_FineMove_Acc
-            // 
-            this.textBox_Config_WorkStage_TeachingPos_FineMove_Acc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_WorkStage_TeachingPos_FineMove_Acc.Location = new System.Drawing.Point(126, 26);
-            this.textBox_Config_WorkStage_TeachingPos_FineMove_Acc.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_WorkStage_TeachingPos_FineMove_Acc.Name = "textBox_Config_WorkStage_TeachingPos_FineMove_Acc";
-            this.textBox_Config_WorkStage_TeachingPos_FineMove_Acc.Size = new System.Drawing.Size(97, 24);
-            this.textBox_Config_WorkStage_TeachingPos_FineMove_Acc.TabIndex = 22;
-            this.textBox_Config_WorkStage_TeachingPos_FineMove_Acc.Text = "000.000";
-            this.textBox_Config_WorkStage_TeachingPos_FineMove_Acc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label232
-            // 
-            this.label232.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label232.Location = new System.Drawing.Point(5, 25);
-            this.label232.Margin = new System.Windows.Forms.Padding(5);
-            this.label232.Name = "label232";
-            this.label232.Size = new System.Drawing.Size(121, 24);
-            this.label232.TabIndex = 21;
-            this.label232.Text = "Accel. (㎜/s²) :";
-            this.label232.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // groupBox_Config_WorkStage_TeachingPositions_TeachingPosition
             // 
@@ -3415,7 +2977,7 @@
             this.listBox_Config_WorkStage_TeachingPositions.Location = new System.Drawing.Point(10, 25);
             this.listBox_Config_WorkStage_TeachingPositions.Margin = new System.Windows.Forms.Padding(5);
             this.listBox_Config_WorkStage_TeachingPositions.Name = "listBox_Config_WorkStage_TeachingPositions";
-            this.listBox_Config_WorkStage_TeachingPositions.Size = new System.Drawing.Size(285, 346);
+            this.listBox_Config_WorkStage_TeachingPositions.Size = new System.Drawing.Size(285, 310);
             this.listBox_Config_WorkStage_TeachingPositions.TabIndex = 0;
             this.listBox_Config_WorkStage_TeachingPositions.SelectedIndexChanged += new System.EventHandler(this.listBox_Config_WorkStage_TeachingPositions_SelectedIndexChanged);
             // 
@@ -4510,7 +4072,6 @@
             this.groupBox32.Controls.Add(this.button6);
             this.groupBox32.Controls.Add(this.button_Config_Vision_TeachingPositions_Save);
             this.groupBox32.Controls.Add(this.groupBox34);
-            this.groupBox32.Controls.Add(this.groupBox37);
             this.groupBox32.Controls.Add(this.groupBox40);
             this.groupBox32.Controls.Add(this.listBox_Config_Vision_TeachingPositions);
             this.groupBox32.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -4518,7 +4079,7 @@
             this.groupBox32.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox32.Name = "groupBox32";
             this.groupBox32.Padding = new System.Windows.Forms.Padding(5);
-            this.groupBox32.Size = new System.Drawing.Size(631, 496);
+            this.groupBox32.Size = new System.Drawing.Size(631, 385);
             this.groupBox32.TabIndex = 63;
             this.groupBox32.TabStop = false;
             this.groupBox32.Text = " Teaching Positions ";
@@ -4526,7 +4087,7 @@
             // button32
             // 
             this.button32.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button32.Location = new System.Drawing.Point(10, 410);
+            this.button32.Location = new System.Drawing.Point(1, 298);
             this.button32.Margin = new System.Windows.Forms.Padding(5);
             this.button32.Name = "button32";
             this.button32.Size = new System.Drawing.Size(164, 75);
@@ -4537,7 +4098,7 @@
             // button6
             // 
             this.button6.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button6.Location = new System.Drawing.Point(511, 433);
+            this.button6.Location = new System.Drawing.Point(502, 321);
             this.button6.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(110, 52);
@@ -4548,7 +4109,7 @@
             // button_Config_Vision_TeachingPositions_Save
             // 
             this.button_Config_Vision_TeachingPositions_Save.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_Vision_TeachingPositions_Save.Location = new System.Drawing.Point(386, 433);
+            this.button_Config_Vision_TeachingPositions_Save.Location = new System.Drawing.Point(377, 321);
             this.button_Config_Vision_TeachingPositions_Save.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config_Vision_TeachingPositions_Save.Name = "button_Config_Vision_TeachingPositions_Save";
             this.button_Config_Vision_TeachingPositions_Save.Size = new System.Drawing.Size(110, 52);
@@ -4562,19 +4123,19 @@
             this.groupBox34.Controls.Add(this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_Vision_TeachingPositions_Move);
             this.groupBox34.Controls.Add(this.groupBox36);
             this.groupBox34.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox34.Location = new System.Drawing.Point(10, 282);
+            this.groupBox34.Location = new System.Drawing.Point(320, 182);
             this.groupBox34.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox34.Name = "groupBox34";
             this.groupBox34.Padding = new System.Windows.Forms.Padding(5);
-            this.groupBox34.Size = new System.Drawing.Size(285, 99);
+            this.groupBox34.Size = new System.Drawing.Size(301, 99);
             this.groupBox34.TabIndex = 38;
             this.groupBox34.TabStop = false;
-            this.groupBox34.Text = " Move Position ";
+            this.groupBox34.Text = " Teaching Position Move ";
             // 
             // button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_Vision_TeachingPositions_Move
             // 
             this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_Vision_TeachingPositions_Move.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_Vision_TeachingPositions_Move.Location = new System.Drawing.Point(166, 37);
+            this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_Vision_TeachingPositions_Move.Location = new System.Drawing.Point(182, 37);
             this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_Vision_TeachingPositions_Move.Margin = new System.Windows.Forms.Padding(5);
             this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_Vision_TeachingPositions_Move.Name = "button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config" +
     "_Vision_TeachingPositions_Move";
@@ -4620,188 +4181,6 @@
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Fine.TabStop = true;
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Fine.Text = "Fine";
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Fine.UseVisualStyleBackColor = true;
-            // 
-            // groupBox37
-            // 
-            this.groupBox37.Controls.Add(this.groupBox38);
-            this.groupBox37.Controls.Add(this.groupBox39);
-            this.groupBox37.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox37.Location = new System.Drawing.Point(320, 181);
-            this.groupBox37.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox37.Name = "groupBox37";
-            this.groupBox37.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox37.Size = new System.Drawing.Size(301, 225);
-            this.groupBox37.TabIndex = 36;
-            this.groupBox37.TabStop = false;
-            this.groupBox37.Text = " Move Properties ";
-            // 
-            // groupBox38
-            // 
-            this.groupBox38.Controls.Add(this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_SettleDelay);
-            this.groupBox38.Controls.Add(this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_Acc);
-            this.groupBox38.Controls.Add(this.textBox_Config_Vision_TeachingPos_CoarseMove_SettleDelay);
-            this.groupBox38.Controls.Add(this.label33);
-            this.groupBox38.Controls.Add(this.textBox_Config_Vision_TeachingPos_CoarseMove_Acc);
-            this.groupBox38.Controls.Add(this.label34);
-            this.groupBox38.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox38.Location = new System.Drawing.Point(10, 125);
-            this.groupBox38.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox38.Name = "groupBox38";
-            this.groupBox38.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox38.Size = new System.Drawing.Size(280, 90);
-            this.groupBox38.TabIndex = 36;
-            this.groupBox38.TabStop = false;
-            this.groupBox38.Text = " Coarse Mode ";
-            // 
-            // button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_SettleDelay
-            // 
-            this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_SettleDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_SettleDelay.Location = new System.Drawing.Point(228, 56);
-            this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_SettleDelay.Margin = new System.Windows.Forms.Padding(5);
-            this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_SettleDelay.Name = "button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_SettleDelay";
-            this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_SettleDelay.Size = new System.Drawing.Size(43, 25);
-            this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_SettleDelay.TabIndex = 26;
-            this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_SettleDelay.Text = "#";
-            this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_SettleDelay.UseVisualStyleBackColor = true;
-            // 
-            // button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_Acc
-            // 
-            this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_Acc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_Acc.Location = new System.Drawing.Point(228, 26);
-            this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_Acc.Margin = new System.Windows.Forms.Padding(5);
-            this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_Acc.Name = "button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_Acc";
-            this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_Acc.Size = new System.Drawing.Size(43, 25);
-            this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_Acc.TabIndex = 25;
-            this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_Acc.Text = "#";
-            this.button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_Acc.UseVisualStyleBackColor = true;
-            // 
-            // textBox_Config_Vision_TeachingPos_CoarseMove_SettleDelay
-            // 
-            this.textBox_Config_Vision_TeachingPos_CoarseMove_SettleDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_Vision_TeachingPos_CoarseMove_SettleDelay.Location = new System.Drawing.Point(126, 56);
-            this.textBox_Config_Vision_TeachingPos_CoarseMove_SettleDelay.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_Vision_TeachingPos_CoarseMove_SettleDelay.Name = "textBox_Config_Vision_TeachingPos_CoarseMove_SettleDelay";
-            this.textBox_Config_Vision_TeachingPos_CoarseMove_SettleDelay.Size = new System.Drawing.Size(97, 24);
-            this.textBox_Config_Vision_TeachingPos_CoarseMove_SettleDelay.TabIndex = 24;
-            this.textBox_Config_Vision_TeachingPos_CoarseMove_SettleDelay.Text = "000.000";
-            this.textBox_Config_Vision_TeachingPos_CoarseMove_SettleDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label33
-            // 
-            this.label33.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label33.Location = new System.Drawing.Point(5, 55);
-            this.label33.Margin = new System.Windows.Forms.Padding(5);
-            this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(121, 24);
-            this.label33.TabIndex = 23;
-            this.label33.Text = "Settle Delay (㎳) :";
-            this.label33.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Config_Vision_TeachingPos_CoarseMove_Acc
-            // 
-            this.textBox_Config_Vision_TeachingPos_CoarseMove_Acc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_Vision_TeachingPos_CoarseMove_Acc.Location = new System.Drawing.Point(126, 26);
-            this.textBox_Config_Vision_TeachingPos_CoarseMove_Acc.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_Vision_TeachingPos_CoarseMove_Acc.Name = "textBox_Config_Vision_TeachingPos_CoarseMove_Acc";
-            this.textBox_Config_Vision_TeachingPos_CoarseMove_Acc.Size = new System.Drawing.Size(97, 24);
-            this.textBox_Config_Vision_TeachingPos_CoarseMove_Acc.TabIndex = 22;
-            this.textBox_Config_Vision_TeachingPos_CoarseMove_Acc.Text = "000.000";
-            this.textBox_Config_Vision_TeachingPos_CoarseMove_Acc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label34
-            // 
-            this.label34.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label34.Location = new System.Drawing.Point(5, 25);
-            this.label34.Margin = new System.Windows.Forms.Padding(5);
-            this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(121, 24);
-            this.label34.TabIndex = 21;
-            this.label34.Text = "Accel. (㎜/s²) :";
-            this.label34.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // groupBox39
-            // 
-            this.groupBox39.Controls.Add(this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_SettleDelay);
-            this.groupBox39.Controls.Add(this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_Acc);
-            this.groupBox39.Controls.Add(this.textBox_Config_Vision_TeachingPos_FineMove_SettleDelay);
-            this.groupBox39.Controls.Add(this.label35);
-            this.groupBox39.Controls.Add(this.textBox_Config_Vision_TeachingPos_FineMove_Acc);
-            this.groupBox39.Controls.Add(this.label36);
-            this.groupBox39.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox39.Location = new System.Drawing.Point(10, 25);
-            this.groupBox39.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox39.Name = "groupBox39";
-            this.groupBox39.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox39.Size = new System.Drawing.Size(280, 90);
-            this.groupBox39.TabIndex = 35;
-            this.groupBox39.TabStop = false;
-            this.groupBox39.Text = " Fine Mode ";
-            // 
-            // button_KeypadCall_Config_Vision_TeachingPos_FineMove_SettleDelay
-            // 
-            this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_SettleDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_SettleDelay.Location = new System.Drawing.Point(228, 56);
-            this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_SettleDelay.Margin = new System.Windows.Forms.Padding(5);
-            this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_SettleDelay.Name = "button_KeypadCall_Config_Vision_TeachingPos_FineMove_SettleDelay";
-            this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_SettleDelay.Size = new System.Drawing.Size(43, 25);
-            this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_SettleDelay.TabIndex = 26;
-            this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_SettleDelay.Text = "#";
-            this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_SettleDelay.UseVisualStyleBackColor = true;
-            // 
-            // button_KeypadCall_Config_Vision_TeachingPos_FineMove_Acc
-            // 
-            this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_Acc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_Acc.Location = new System.Drawing.Point(228, 26);
-            this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_Acc.Margin = new System.Windows.Forms.Padding(5);
-            this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_Acc.Name = "button_KeypadCall_Config_Vision_TeachingPos_FineMove_Acc";
-            this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_Acc.Size = new System.Drawing.Size(43, 25);
-            this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_Acc.TabIndex = 25;
-            this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_Acc.Text = "#";
-            this.button_KeypadCall_Config_Vision_TeachingPos_FineMove_Acc.UseVisualStyleBackColor = true;
-            // 
-            // textBox_Config_Vision_TeachingPos_FineMove_SettleDelay
-            // 
-            this.textBox_Config_Vision_TeachingPos_FineMove_SettleDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_Vision_TeachingPos_FineMove_SettleDelay.Location = new System.Drawing.Point(126, 56);
-            this.textBox_Config_Vision_TeachingPos_FineMove_SettleDelay.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_Vision_TeachingPos_FineMove_SettleDelay.Name = "textBox_Config_Vision_TeachingPos_FineMove_SettleDelay";
-            this.textBox_Config_Vision_TeachingPos_FineMove_SettleDelay.Size = new System.Drawing.Size(97, 24);
-            this.textBox_Config_Vision_TeachingPos_FineMove_SettleDelay.TabIndex = 24;
-            this.textBox_Config_Vision_TeachingPos_FineMove_SettleDelay.Text = "000.000";
-            this.textBox_Config_Vision_TeachingPos_FineMove_SettleDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label35
-            // 
-            this.label35.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label35.Location = new System.Drawing.Point(5, 55);
-            this.label35.Margin = new System.Windows.Forms.Padding(5);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(121, 24);
-            this.label35.TabIndex = 23;
-            this.label35.Text = "Settle Delay (㎳) :";
-            this.label35.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Config_Vision_TeachingPos_FineMove_Acc
-            // 
-            this.textBox_Config_Vision_TeachingPos_FineMove_Acc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_Vision_TeachingPos_FineMove_Acc.Location = new System.Drawing.Point(126, 26);
-            this.textBox_Config_Vision_TeachingPos_FineMove_Acc.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_Vision_TeachingPos_FineMove_Acc.Name = "textBox_Config_Vision_TeachingPos_FineMove_Acc";
-            this.textBox_Config_Vision_TeachingPos_FineMove_Acc.Size = new System.Drawing.Size(97, 24);
-            this.textBox_Config_Vision_TeachingPos_FineMove_Acc.TabIndex = 22;
-            this.textBox_Config_Vision_TeachingPos_FineMove_Acc.Text = "000.000";
-            this.textBox_Config_Vision_TeachingPos_FineMove_Acc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label36
-            // 
-            this.label36.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label36.Location = new System.Drawing.Point(5, 25);
-            this.label36.Margin = new System.Windows.Forms.Padding(5);
-            this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(121, 24);
-            this.label36.TabIndex = 21;
-            this.label36.Text = "Accel. (㎜/s²) :";
-            this.label36.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // groupBox40
             // 
@@ -5870,7 +5249,7 @@
             this.groupBox59.Controls.Add(this.groupBox60);
             this.groupBox59.Controls.Add(this.groupBox61);
             this.groupBox59.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox59.Location = new System.Drawing.Point(10, 525);
+            this.groupBox59.Location = new System.Drawing.Point(10, 471);
             this.groupBox59.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox59.Name = "groupBox59";
             this.groupBox59.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -6275,7 +5654,6 @@
             this.groupBox77.Controls.Add(this.button37);
             this.groupBox77.Controls.Add(this.button_Config_BDS_TeachingPositions_Save);
             this.groupBox77.Controls.Add(this.groupBox78);
-            this.groupBox77.Controls.Add(this.groupBox80);
             this.groupBox77.Controls.Add(this.groupBox83);
             this.groupBox77.Controls.Add(this.listBox_Config_BDS_TeachingPositions);
             this.groupBox77.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -6283,7 +5661,7 @@
             this.groupBox77.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox77.Name = "groupBox77";
             this.groupBox77.Padding = new System.Windows.Forms.Padding(5);
-            this.groupBox77.Size = new System.Drawing.Size(631, 496);
+            this.groupBox77.Size = new System.Drawing.Size(631, 385);
             this.groupBox77.TabIndex = 67;
             this.groupBox77.TabStop = false;
             this.groupBox77.Text = " Teaching Positions ";
@@ -6291,7 +5669,7 @@
             // button37
             // 
             this.button37.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button37.Location = new System.Drawing.Point(511, 433);
+            this.button37.Location = new System.Drawing.Point(502, 319);
             this.button37.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button37.Name = "button37";
             this.button37.Size = new System.Drawing.Size(110, 52);
@@ -6302,7 +5680,7 @@
             // button_Config_BDS_TeachingPositions_Save
             // 
             this.button_Config_BDS_TeachingPositions_Save.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_BDS_TeachingPositions_Save.Location = new System.Drawing.Point(386, 433);
+            this.button_Config_BDS_TeachingPositions_Save.Location = new System.Drawing.Point(377, 319);
             this.button_Config_BDS_TeachingPositions_Save.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Config_BDS_TeachingPositions_Save.Name = "button_Config_BDS_TeachingPositions_Save";
             this.button_Config_BDS_TeachingPositions_Save.Size = new System.Drawing.Size(110, 52);
@@ -6316,11 +5694,11 @@
             this.groupBox78.Controls.Add(this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_BDS_TeachingPositions_Move);
             this.groupBox78.Controls.Add(this.groupBox79);
             this.groupBox78.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox78.Location = new System.Drawing.Point(10, 386);
+            this.groupBox78.Location = new System.Drawing.Point(320, 163);
             this.groupBox78.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox78.Name = "groupBox78";
             this.groupBox78.Padding = new System.Windows.Forms.Padding(5);
-            this.groupBox78.Size = new System.Drawing.Size(285, 99);
+            this.groupBox78.Size = new System.Drawing.Size(301, 99);
             this.groupBox78.TabIndex = 38;
             this.groupBox78.TabStop = false;
             this.groupBox78.Text = " Move Position ";
@@ -6328,7 +5706,7 @@
             // button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_BDS_TeachingPositions_Move
             // 
             this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_BDS_TeachingPositions_Move.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_BDS_TeachingPositions_Move.Location = new System.Drawing.Point(166, 37);
+            this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_BDS_TeachingPositions_Move.Location = new System.Drawing.Point(182, 37);
             this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_BDS_TeachingPositions_Move.Margin = new System.Windows.Forms.Padding(5);
             this.button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config_BDS_TeachingPositions_Move.Name = "button_Config_LDUL_TeachingPositions_MovePosition_MoveMode_FineradioButton_Config" +
     "_BDS_TeachingPositions_Move";
@@ -6374,188 +5752,6 @@
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Fine.TabStop = true;
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Fine.Text = "Fine";
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Fine.UseVisualStyleBackColor = true;
-            // 
-            // groupBox80
-            // 
-            this.groupBox80.Controls.Add(this.groupBox81);
-            this.groupBox80.Controls.Add(this.groupBox82);
-            this.groupBox80.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox80.Location = new System.Drawing.Point(320, 164);
-            this.groupBox80.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox80.Name = "groupBox80";
-            this.groupBox80.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox80.Size = new System.Drawing.Size(301, 225);
-            this.groupBox80.TabIndex = 36;
-            this.groupBox80.TabStop = false;
-            this.groupBox80.Text = " Move Properties ";
-            // 
-            // groupBox81
-            // 
-            this.groupBox81.Controls.Add(this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_SettleDelay);
-            this.groupBox81.Controls.Add(this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_Acc);
-            this.groupBox81.Controls.Add(this.textBox_Config_BDS_TeachingPos_CoarseMove_SettleDelay);
-            this.groupBox81.Controls.Add(this.label108);
-            this.groupBox81.Controls.Add(this.textBox_Config_BDS_TeachingPos_CoarseMove_Acc);
-            this.groupBox81.Controls.Add(this.label109);
-            this.groupBox81.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox81.Location = new System.Drawing.Point(10, 125);
-            this.groupBox81.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox81.Name = "groupBox81";
-            this.groupBox81.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox81.Size = new System.Drawing.Size(280, 90);
-            this.groupBox81.TabIndex = 36;
-            this.groupBox81.TabStop = false;
-            this.groupBox81.Text = " Coarse Mode ";
-            // 
-            // button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_SettleDelay
-            // 
-            this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_SettleDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_SettleDelay.Location = new System.Drawing.Point(228, 56);
-            this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_SettleDelay.Margin = new System.Windows.Forms.Padding(5);
-            this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_SettleDelay.Name = "button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_SettleDelay";
-            this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_SettleDelay.Size = new System.Drawing.Size(43, 25);
-            this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_SettleDelay.TabIndex = 26;
-            this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_SettleDelay.Text = "#";
-            this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_SettleDelay.UseVisualStyleBackColor = true;
-            // 
-            // button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_Acc
-            // 
-            this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_Acc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_Acc.Location = new System.Drawing.Point(228, 26);
-            this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_Acc.Margin = new System.Windows.Forms.Padding(5);
-            this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_Acc.Name = "button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_Acc";
-            this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_Acc.Size = new System.Drawing.Size(43, 25);
-            this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_Acc.TabIndex = 25;
-            this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_Acc.Text = "#";
-            this.button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_Acc.UseVisualStyleBackColor = true;
-            // 
-            // textBox_Config_BDS_TeachingPos_CoarseMove_SettleDelay
-            // 
-            this.textBox_Config_BDS_TeachingPos_CoarseMove_SettleDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_BDS_TeachingPos_CoarseMove_SettleDelay.Location = new System.Drawing.Point(126, 56);
-            this.textBox_Config_BDS_TeachingPos_CoarseMove_SettleDelay.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_BDS_TeachingPos_CoarseMove_SettleDelay.Name = "textBox_Config_BDS_TeachingPos_CoarseMove_SettleDelay";
-            this.textBox_Config_BDS_TeachingPos_CoarseMove_SettleDelay.Size = new System.Drawing.Size(97, 24);
-            this.textBox_Config_BDS_TeachingPos_CoarseMove_SettleDelay.TabIndex = 24;
-            this.textBox_Config_BDS_TeachingPos_CoarseMove_SettleDelay.Text = "000.000";
-            this.textBox_Config_BDS_TeachingPos_CoarseMove_SettleDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label108
-            // 
-            this.label108.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label108.Location = new System.Drawing.Point(5, 55);
-            this.label108.Margin = new System.Windows.Forms.Padding(5);
-            this.label108.Name = "label108";
-            this.label108.Size = new System.Drawing.Size(121, 24);
-            this.label108.TabIndex = 23;
-            this.label108.Text = "Settle Delay (㎳) :";
-            this.label108.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Config_BDS_TeachingPos_CoarseMove_Acc
-            // 
-            this.textBox_Config_BDS_TeachingPos_CoarseMove_Acc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_BDS_TeachingPos_CoarseMove_Acc.Location = new System.Drawing.Point(126, 26);
-            this.textBox_Config_BDS_TeachingPos_CoarseMove_Acc.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_BDS_TeachingPos_CoarseMove_Acc.Name = "textBox_Config_BDS_TeachingPos_CoarseMove_Acc";
-            this.textBox_Config_BDS_TeachingPos_CoarseMove_Acc.Size = new System.Drawing.Size(97, 24);
-            this.textBox_Config_BDS_TeachingPos_CoarseMove_Acc.TabIndex = 22;
-            this.textBox_Config_BDS_TeachingPos_CoarseMove_Acc.Text = "000.000";
-            this.textBox_Config_BDS_TeachingPos_CoarseMove_Acc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label109
-            // 
-            this.label109.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label109.Location = new System.Drawing.Point(5, 25);
-            this.label109.Margin = new System.Windows.Forms.Padding(5);
-            this.label109.Name = "label109";
-            this.label109.Size = new System.Drawing.Size(121, 24);
-            this.label109.TabIndex = 21;
-            this.label109.Text = "Accel. (㎜/s²) :";
-            this.label109.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // groupBox82
-            // 
-            this.groupBox82.Controls.Add(this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_SettleDelay);
-            this.groupBox82.Controls.Add(this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_Acc);
-            this.groupBox82.Controls.Add(this.textBox_Config_BDS_TeachingPos_FineMove_SettleDelay);
-            this.groupBox82.Controls.Add(this.label110);
-            this.groupBox82.Controls.Add(this.textBox_Config_BDS_TeachingPos_FineMove_Acc);
-            this.groupBox82.Controls.Add(this.label111);
-            this.groupBox82.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox82.Location = new System.Drawing.Point(10, 25);
-            this.groupBox82.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox82.Name = "groupBox82";
-            this.groupBox82.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox82.Size = new System.Drawing.Size(280, 90);
-            this.groupBox82.TabIndex = 35;
-            this.groupBox82.TabStop = false;
-            this.groupBox82.Text = " Fine Mode ";
-            // 
-            // button_KeypadCall_Config_BDS_TeachingPos_FineMove_SettleDelay
-            // 
-            this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_SettleDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_SettleDelay.Location = new System.Drawing.Point(228, 56);
-            this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_SettleDelay.Margin = new System.Windows.Forms.Padding(5);
-            this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_SettleDelay.Name = "button_KeypadCall_Config_BDS_TeachingPos_FineMove_SettleDelay";
-            this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_SettleDelay.Size = new System.Drawing.Size(43, 25);
-            this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_SettleDelay.TabIndex = 26;
-            this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_SettleDelay.Text = "#";
-            this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_SettleDelay.UseVisualStyleBackColor = true;
-            // 
-            // button_KeypadCall_Config_BDS_TeachingPos_FineMove_Acc
-            // 
-            this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_Acc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_Acc.Location = new System.Drawing.Point(228, 26);
-            this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_Acc.Margin = new System.Windows.Forms.Padding(5);
-            this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_Acc.Name = "button_KeypadCall_Config_BDS_TeachingPos_FineMove_Acc";
-            this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_Acc.Size = new System.Drawing.Size(43, 25);
-            this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_Acc.TabIndex = 25;
-            this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_Acc.Text = "#";
-            this.button_KeypadCall_Config_BDS_TeachingPos_FineMove_Acc.UseVisualStyleBackColor = true;
-            // 
-            // textBox_Config_BDS_TeachingPos_FineMove_SettleDelay
-            // 
-            this.textBox_Config_BDS_TeachingPos_FineMove_SettleDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_BDS_TeachingPos_FineMove_SettleDelay.Location = new System.Drawing.Point(126, 56);
-            this.textBox_Config_BDS_TeachingPos_FineMove_SettleDelay.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_BDS_TeachingPos_FineMove_SettleDelay.Name = "textBox_Config_BDS_TeachingPos_FineMove_SettleDelay";
-            this.textBox_Config_BDS_TeachingPos_FineMove_SettleDelay.Size = new System.Drawing.Size(97, 24);
-            this.textBox_Config_BDS_TeachingPos_FineMove_SettleDelay.TabIndex = 24;
-            this.textBox_Config_BDS_TeachingPos_FineMove_SettleDelay.Text = "000.000";
-            this.textBox_Config_BDS_TeachingPos_FineMove_SettleDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label110
-            // 
-            this.label110.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label110.Location = new System.Drawing.Point(5, 55);
-            this.label110.Margin = new System.Windows.Forms.Padding(5);
-            this.label110.Name = "label110";
-            this.label110.Size = new System.Drawing.Size(121, 24);
-            this.label110.TabIndex = 23;
-            this.label110.Text = "Settle Delay (㎳) :";
-            this.label110.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Config_BDS_TeachingPos_FineMove_Acc
-            // 
-            this.textBox_Config_BDS_TeachingPos_FineMove_Acc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Config_BDS_TeachingPos_FineMove_Acc.Location = new System.Drawing.Point(126, 26);
-            this.textBox_Config_BDS_TeachingPos_FineMove_Acc.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox_Config_BDS_TeachingPos_FineMove_Acc.Name = "textBox_Config_BDS_TeachingPos_FineMove_Acc";
-            this.textBox_Config_BDS_TeachingPos_FineMove_Acc.Size = new System.Drawing.Size(97, 24);
-            this.textBox_Config_BDS_TeachingPos_FineMove_Acc.TabIndex = 22;
-            this.textBox_Config_BDS_TeachingPos_FineMove_Acc.Text = "000.000";
-            this.textBox_Config_BDS_TeachingPos_FineMove_Acc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label111
-            // 
-            this.label111.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label111.Location = new System.Drawing.Point(5, 25);
-            this.label111.Margin = new System.Windows.Forms.Padding(5);
-            this.label111.Name = "label111";
-            this.label111.Size = new System.Drawing.Size(121, 24);
-            this.label111.TabIndex = 21;
-            this.label111.Text = "Accel. (㎜/s²) :";
-            this.label111.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // groupBox83
             // 
@@ -6632,7 +5828,7 @@
             this.listBox_Config_BDS_TeachingPositions.Location = new System.Drawing.Point(10, 25);
             this.listBox_Config_BDS_TeachingPositions.Margin = new System.Windows.Forms.Padding(5);
             this.listBox_Config_BDS_TeachingPositions.Name = "listBox_Config_BDS_TeachingPositions";
-            this.listBox_Config_BDS_TeachingPositions.Size = new System.Drawing.Size(285, 346);
+            this.listBox_Config_BDS_TeachingPositions.Size = new System.Drawing.Size(285, 292);
             this.listBox_Config_BDS_TeachingPositions.TabIndex = 0;
             this.listBox_Config_BDS_TeachingPositions.SelectedIndexChanged += new System.EventHandler(this.listBox_Config_BDS_TeachingPositions_SelectedIndexChanged);
             // 
@@ -7634,11 +6830,6 @@
             this.groupBox_Config_LDUL_TeachingPositions.ResumeLayout(false);
             this.groupBox_Config_LDUL_TeachingPositions_MovePosition.ResumeLayout(false);
             this.groupBox_Config_LDUL_TeachingPositions_MovePosition_MoveMode.ResumeLayout(false);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty.ResumeLayout(false);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode.ResumeLayout(false);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode.PerformLayout();
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode.ResumeLayout(false);
-            this.groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode.PerformLayout();
             this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition.ResumeLayout(false);
             this.groupBox_Config_LDUL_TeachingPositions_TeachingPosition.PerformLayout();
             this.tabPage_Config_WorkStage.ResumeLayout(false);
@@ -7659,11 +6850,6 @@
             this.groupBox_Config_WorkStage_TeachingPositions.ResumeLayout(false);
             this.groupBox102.ResumeLayout(false);
             this.groupBox103.ResumeLayout(false);
-            this.groupBox_Config_WorkStage_TeachingPositions_MoveProperty.ResumeLayout(false);
-            this.groupBox105.ResumeLayout(false);
-            this.groupBox105.PerformLayout();
-            this.groupBox106.ResumeLayout(false);
-            this.groupBox106.PerformLayout();
             this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition.ResumeLayout(false);
             this.groupBox_Config_WorkStage_TeachingPositions_TeachingPosition.PerformLayout();
             this.groupBox23.ResumeLayout(false);
@@ -7689,11 +6875,6 @@
             this.groupBox32.ResumeLayout(false);
             this.groupBox34.ResumeLayout(false);
             this.groupBox36.ResumeLayout(false);
-            this.groupBox37.ResumeLayout(false);
-            this.groupBox38.ResumeLayout(false);
-            this.groupBox38.PerformLayout();
-            this.groupBox39.ResumeLayout(false);
-            this.groupBox39.PerformLayout();
             this.groupBox40.ResumeLayout(false);
             this.groupBox40.PerformLayout();
             this.groupBox41.ResumeLayout(false);
@@ -7731,11 +6912,6 @@
             this.groupBox77.ResumeLayout(false);
             this.groupBox78.ResumeLayout(false);
             this.groupBox79.ResumeLayout(false);
-            this.groupBox80.ResumeLayout(false);
-            this.groupBox81.ResumeLayout(false);
-            this.groupBox81.PerformLayout();
-            this.groupBox82.ResumeLayout(false);
-            this.groupBox82.PerformLayout();
             this.groupBox83.ResumeLayout(false);
             this.groupBox83.PerformLayout();
             this.groupBox84.ResumeLayout(false);
@@ -7794,21 +6970,6 @@
         private System.Windows.Forms.GroupBox groupBox_Config_LDUL_TeachingPositions_MovePosition_MoveMode;
         private System.Windows.Forms.RadioButton radioButton_Config_LDUL_TeachingPositions_MoveMode_Coarse;
         private System.Windows.Forms.RadioButton radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine;
-        private System.Windows.Forms.GroupBox groupBox_Config_LDUL_TeachingPositions_MoveProperty;
-        private System.Windows.Forms.GroupBox groupBox_Config_LDUL_TeachingPositions_MoveProperty_CoarseMode;
-        private System.Windows.Forms.Button button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_SettleDelay;
-        private System.Windows.Forms.Button button_KeypadCall_Config_LDUL_TeachingPos_CoarseMove_Acc;
-        private System.Windows.Forms.TextBox textBox_Config_LDUL_TeachingPos_CoarseMove_SettleDelay;
-        private System.Windows.Forms.Label label120;
-        private System.Windows.Forms.TextBox textBox_Config_LDUL_TeachingPos_CoarseMove_Acc;
-        private System.Windows.Forms.Label label121;
-        private System.Windows.Forms.GroupBox groupBox_Config_LDUL_TeachingPositions_MoveProperty_FineMode;
-        private System.Windows.Forms.Button button_KeypadCall_Config_LDUL_TeachingPos_FineMove_SettleDelay;
-        private System.Windows.Forms.Button button_KeypadCall_Config_LDUL_TeachingPos_FineMove_Acc;
-        private System.Windows.Forms.TextBox textBox_Config_LDUL_TeachingPos_FineMove_SettleDelay;
-        private System.Windows.Forms.Label label124;
-        private System.Windows.Forms.TextBox textBox_Config_LDUL_TeachingPos_FineMove_Acc;
-        private System.Windows.Forms.Label label125;
         private System.Windows.Forms.GroupBox groupBox_Config_LDUL_TeachingPositions_TeachingPosition;
         private System.Windows.Forms.Button button_KeypadCall_Config_LDUL_TeachingPos_MAlignerY;
         private System.Windows.Forms.Button button_KeypadCall_Config_LDUL_TeachingPos_MAlignerX;
@@ -7835,21 +6996,6 @@
         private System.Windows.Forms.GroupBox groupBox103;
         private System.Windows.Forms.RadioButton radioButton_Config_WorkStage_TeachingPositions_MoveMode_Coarse;
         private System.Windows.Forms.RadioButton radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine;
-        private System.Windows.Forms.GroupBox groupBox_Config_WorkStage_TeachingPositions_MoveProperty;
-        private System.Windows.Forms.GroupBox groupBox105;
-        private System.Windows.Forms.Button button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay;
-        private System.Windows.Forms.Button button_KeypadCall_Config_WorkStage_TeachingPos_CoarseMove_Acc;
-        private System.Windows.Forms.TextBox textBox_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay;
-        private System.Windows.Forms.Label label229;
-        private System.Windows.Forms.TextBox textBox_Config_WorkStage_TeachingPos_CoarseMove_Acc;
-        private System.Windows.Forms.Label label230;
-        private System.Windows.Forms.GroupBox groupBox106;
-        private System.Windows.Forms.Button button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_SettleDelay;
-        private System.Windows.Forms.Button button_KeypadCall_Config_WorkStage_TeachingPos_FineMove_Acc;
-        private System.Windows.Forms.TextBox textBox_Config_WorkStage_TeachingPos_FineMove_SettleDelay;
-        private System.Windows.Forms.Label label231;
-        private System.Windows.Forms.TextBox textBox_Config_WorkStage_TeachingPos_FineMove_Acc;
-        private System.Windows.Forms.Label label232;
         private System.Windows.Forms.GroupBox groupBox_Config_WorkStage_TeachingPositions_TeachingPosition;
         private System.Windows.Forms.Button button_KeypadCall_Config_WorkStage_TeachingPos_StageY;
         private System.Windows.Forms.Button button_KeypadCall_Config_WorkStage_TeachingPos_StageX;
@@ -8003,21 +7149,6 @@
         private System.Windows.Forms.GroupBox groupBox36;
         private System.Windows.Forms.RadioButton radioButton_Config_Vision_TeachingPositions_MoveMode_Coarse;
         private System.Windows.Forms.RadioButton radioButton_Config_Vision_TeachingPositions_MoveMode_Fine;
-        private System.Windows.Forms.GroupBox groupBox37;
-        private System.Windows.Forms.GroupBox groupBox38;
-        private System.Windows.Forms.Button button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_SettleDelay;
-        private System.Windows.Forms.Button button_KeypadCall_Config_Vision_TeachingPos_CoarseMove_Acc;
-        private System.Windows.Forms.TextBox textBox_Config_Vision_TeachingPos_CoarseMove_SettleDelay;
-        private System.Windows.Forms.Label label33;
-        private System.Windows.Forms.TextBox textBox_Config_Vision_TeachingPos_CoarseMove_Acc;
-        private System.Windows.Forms.Label label34;
-        private System.Windows.Forms.GroupBox groupBox39;
-        private System.Windows.Forms.Button button_KeypadCall_Config_Vision_TeachingPos_FineMove_SettleDelay;
-        private System.Windows.Forms.Button button_KeypadCall_Config_Vision_TeachingPos_FineMove_Acc;
-        private System.Windows.Forms.TextBox textBox_Config_Vision_TeachingPos_FineMove_SettleDelay;
-        private System.Windows.Forms.Label label35;
-        private System.Windows.Forms.TextBox textBox_Config_Vision_TeachingPos_FineMove_Acc;
-        private System.Windows.Forms.Label label36;
         private System.Windows.Forms.GroupBox groupBox40;
         private System.Windows.Forms.Button button_KeypadCall_Config_Vision_TeachingPos_VisionZ;
         private System.Windows.Forms.TextBox textBox_Config_Vision_TeachingPos_VisionZ;
@@ -8117,21 +7248,6 @@
         private System.Windows.Forms.GroupBox groupBox79;
         private System.Windows.Forms.RadioButton radioButton_Config_BDS_TeachingPositions_MoveMode_Coarse;
         private System.Windows.Forms.RadioButton radioButton_Config_BDS_TeachingPositions_MoveMode_Fine;
-        private System.Windows.Forms.GroupBox groupBox80;
-        private System.Windows.Forms.GroupBox groupBox81;
-        private System.Windows.Forms.Button button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_SettleDelay;
-        private System.Windows.Forms.Button button_KeypadCall_Config_BDS_TeachingPos_CoarseMove_Acc;
-        private System.Windows.Forms.TextBox textBox_Config_BDS_TeachingPos_CoarseMove_SettleDelay;
-        private System.Windows.Forms.Label label108;
-        private System.Windows.Forms.TextBox textBox_Config_BDS_TeachingPos_CoarseMove_Acc;
-        private System.Windows.Forms.Label label109;
-        private System.Windows.Forms.GroupBox groupBox82;
-        private System.Windows.Forms.Button button_KeypadCall_Config_BDS_TeachingPos_FineMove_SettleDelay;
-        private System.Windows.Forms.Button button_KeypadCall_Config_BDS_TeachingPos_FineMove_Acc;
-        private System.Windows.Forms.TextBox textBox_Config_BDS_TeachingPos_FineMove_SettleDelay;
-        private System.Windows.Forms.Label label110;
-        private System.Windows.Forms.TextBox textBox_Config_BDS_TeachingPos_FineMove_Acc;
-        private System.Windows.Forms.Label label111;
         private System.Windows.Forms.GroupBox groupBox83;
         private System.Windows.Forms.Button button_KeypadCall_Config_BDS_TeachingPos_MaskY;
         private System.Windows.Forms.TextBox textBox_Config_BDS_TeachingPos_MaskY;

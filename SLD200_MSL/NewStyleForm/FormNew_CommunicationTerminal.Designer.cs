@@ -75,7 +75,7 @@ namespace QMC_System_UI
             // label127
             // 
             this.label127.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.label127.Location = new System.Drawing.Point(15, 15);
+            this.label127.Location = new System.Drawing.Point(15, 14);
             this.label127.Margin = new System.Windows.Forms.Padding(6);
             this.label127.Name = "label127";
             this.label127.Size = new System.Drawing.Size(145, 24);

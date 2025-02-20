@@ -2743,12 +2743,6 @@ namespace SLD200_MSL
                     Loader.stLDULTeachingPos[m_nIndex].UL_Stacker_Z0 = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_RPortZ.Text);
                     Loader.stLDULTeachingPos[m_nIndex].UL_Stacker_Z1 = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_LPortZ.Text);
                 }
-
-                //  Move Properties 데이터 넣기
-                Loader.stLDULPosMoveProperties[m_nIndex].Fine_Accel = Convert.ToInt16(textBox_Config_LDUL_TeachingPos_FineMove_Acc.Text);
-                Loader.stLDULPosMoveProperties[m_nIndex].Fine_SettleDelay = Convert.ToInt16(textBox_Config_LDUL_TeachingPos_FineMove_SettleDelay.Text);
-                Loader.stLDULPosMoveProperties[m_nIndex].Coarse_Accel = Convert.ToInt16(textBox_Config_LDUL_TeachingPos_CoarseMove_Acc.Text);
-                Loader.stLDULPosMoveProperties[m_nIndex].Coarse_SettleDelay = Convert.ToInt16(textBox_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.Text);
             }
 
             //  리스트 전체 저장
@@ -2820,12 +2814,6 @@ namespace SLD200_MSL
                     textBox_Config_LDUL_TeachingPos_MAlignerX.Text = "---";
                     textBox_Config_LDUL_TeachingPos_MAlignerY.Text = "---";
                 }
-
-                //  Move Properties 표시
-                textBox_Config_LDUL_TeachingPos_FineMove_Acc.Text = Loader.stLDULPosMoveProperties[m_nIndex].Fine_Accel.ToString();
-                textBox_Config_LDUL_TeachingPos_FineMove_SettleDelay.Text = Loader.stLDULPosMoveProperties[m_nIndex].Fine_SettleDelay.ToString();
-                textBox_Config_LDUL_TeachingPos_CoarseMove_Acc.Text = Loader.stLDULPosMoveProperties[m_nIndex].Coarse_Accel.ToString();
-                textBox_Config_LDUL_TeachingPos_CoarseMove_SettleDelay.Text = Loader.stLDULPosMoveProperties[m_nIndex].Coarse_SettleDelay.ToString();
             }
         }
 
@@ -2838,12 +2826,6 @@ namespace SLD200_MSL
             {
                 WorkStage.stWorkStageTeachingPos[m_nIndex].Stage_X = Convert.ToDouble(textBox_Config_WorkStage_TeachingPos_StageX.Text);
                 WorkStage.stWorkStageTeachingPos[m_nIndex].Stage_Y = Convert.ToDouble(textBox_Config_WorkStage_TeachingPos_StageY.Text);
-
-                //  Move Properties 데이터 넣기
-                WorkStage.stWorkStagePosMoveProperties[m_nIndex].Fine_Accel = Convert.ToInt16(textBox_Config_WorkStage_TeachingPos_FineMove_Acc.Text);
-                WorkStage.stWorkStagePosMoveProperties[m_nIndex].Fine_SettleDelay = Convert.ToInt16(textBox_Config_WorkStage_TeachingPos_FineMove_SettleDelay.Text);
-                WorkStage.stWorkStagePosMoveProperties[m_nIndex].Coarse_Accel = Convert.ToInt16(textBox_Config_WorkStage_TeachingPos_CoarseMove_Acc.Text);
-                WorkStage.stWorkStagePosMoveProperties[m_nIndex].Coarse_SettleDelay = Convert.ToInt16(textBox_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.Text);
             }
 
             //  리스트 전체 저장
@@ -2861,12 +2843,6 @@ namespace SLD200_MSL
                 //  데이터 표시
                 textBox_Config_WorkStage_TeachingPos_StageX.Text = WorkStage.stWorkStageTeachingPos[m_nIndex].Stage_X.ToString();
                 textBox_Config_WorkStage_TeachingPos_StageY.Text = WorkStage.stWorkStageTeachingPos[m_nIndex].Stage_Y.ToString();
-
-                //  Move Properties 표시
-                textBox_Config_WorkStage_TeachingPos_FineMove_Acc.Text = WorkStage.stWorkStagePosMoveProperties[m_nIndex].Fine_Accel.ToString();
-                textBox_Config_WorkStage_TeachingPos_FineMove_SettleDelay.Text = WorkStage.stWorkStagePosMoveProperties[m_nIndex].Fine_SettleDelay.ToString();
-                textBox_Config_WorkStage_TeachingPos_CoarseMove_Acc.Text = WorkStage.stWorkStagePosMoveProperties[m_nIndex].Coarse_Accel.ToString();
-                textBox_Config_WorkStage_TeachingPos_CoarseMove_SettleDelay.Text = WorkStage.stWorkStagePosMoveProperties[m_nIndex].Coarse_SettleDelay.ToString();
             }
         }
 
@@ -2878,12 +2854,6 @@ namespace SLD200_MSL
             if (m_nIndex >= 0)
             {
                 Vision.stVisionTeachingPos[m_nIndex].Vision_Z = Convert.ToDouble(textBox_Config_Vision_TeachingPos_VisionZ.Text);
-
-                //  Move Properties 데이터 넣기
-                Vision.stVisionPosMoveProperties[m_nIndex].Fine_Accel = Convert.ToInt16(textBox_Config_Vision_TeachingPos_FineMove_Acc.Text);
-                Vision.stVisionPosMoveProperties[m_nIndex].Fine_SettleDelay = Convert.ToInt16(textBox_Config_Vision_TeachingPos_FineMove_SettleDelay.Text);
-                Vision.stVisionPosMoveProperties[m_nIndex].Coarse_Accel = Convert.ToInt16(textBox_Config_Vision_TeachingPos_CoarseMove_Acc.Text);
-                Vision.stVisionPosMoveProperties[m_nIndex].Coarse_SettleDelay = Convert.ToInt16(textBox_Config_Vision_TeachingPos_CoarseMove_SettleDelay.Text);
             }
 
             //  리스트 전체 저장
@@ -2900,12 +2870,6 @@ namespace SLD200_MSL
             {
                 //  데이터 표시
                 textBox_Config_Vision_TeachingPos_VisionZ.Text = Vision.stVisionTeachingPos[m_nIndex].Vision_Z.ToString();
-
-                //  Move Properties 표시
-                textBox_Config_Vision_TeachingPos_FineMove_Acc.Text = Vision.stVisionPosMoveProperties[m_nIndex].Fine_Accel.ToString();
-                textBox_Config_Vision_TeachingPos_FineMove_SettleDelay.Text = Vision.stVisionPosMoveProperties[m_nIndex].Fine_SettleDelay.ToString();
-                textBox_Config_Vision_TeachingPos_CoarseMove_Acc.Text = Vision.stVisionPosMoveProperties[m_nIndex].Coarse_Accel.ToString();
-                textBox_Config_Vision_TeachingPos_CoarseMove_SettleDelay.Text = Vision.stVisionPosMoveProperties[m_nIndex].Coarse_SettleDelay.ToString();
             }
         }
 
@@ -2917,12 +2881,6 @@ namespace SLD200_MSL
             if (m_nIndex >= 0)
             {
                 Bds.stBDSTeachingPos[m_nIndex].Mask_Y = Convert.ToDouble(textBox_Config_BDS_TeachingPos_MaskY.Text);
-
-                //  Move Properties 데이터 넣기
-                Bds.stBDSPosMoveProperties[m_nIndex].Fine_Accel = Convert.ToInt16(textBox_Config_BDS_TeachingPos_FineMove_Acc.Text);
-                Bds.stBDSPosMoveProperties[m_nIndex].Fine_SettleDelay = Convert.ToInt16(textBox_Config_BDS_TeachingPos_FineMove_SettleDelay.Text);
-                Bds.stBDSPosMoveProperties[m_nIndex].Coarse_Accel = Convert.ToInt16(textBox_Config_BDS_TeachingPos_CoarseMove_Acc.Text);
-                Bds.stBDSPosMoveProperties[m_nIndex].Coarse_SettleDelay = Convert.ToInt16(textBox_Config_BDS_TeachingPos_CoarseMove_SettleDelay.Text);
             }
 
             //  리스트 전체 저장
@@ -2939,12 +2897,6 @@ namespace SLD200_MSL
             {
                 //  데이터 표시
                 textBox_Config_BDS_TeachingPos_MaskY.Text = Bds.stBDSTeachingPos[m_nIndex].Mask_Y.ToString();
-
-                //  Move Properties 표시
-                textBox_Config_BDS_TeachingPos_FineMove_Acc.Text = Bds.stBDSPosMoveProperties[m_nIndex].Fine_Accel.ToString();
-                textBox_Config_BDS_TeachingPos_FineMove_SettleDelay.Text = Bds.stBDSPosMoveProperties[m_nIndex].Fine_SettleDelay.ToString();
-                textBox_Config_BDS_TeachingPos_CoarseMove_Acc.Text = Bds.stBDSPosMoveProperties[m_nIndex].Coarse_Accel.ToString();
-                textBox_Config_BDS_TeachingPos_CoarseMove_SettleDelay.Text = Bds.stBDSPosMoveProperties[m_nIndex].Coarse_SettleDelay.ToString();
             }
         }
 

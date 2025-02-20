@@ -28,53 +28,49 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPage_Setup_Communication = new System.Windows.Forms.TabPage();
-            this.groupBox91 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button81 = new System.Windows.Forms.Button();
-            this.button79 = new System.Windows.Forms.Button();
-            this.groupBox92 = new System.Windows.Forms.GroupBox();
-            this.radioButton29 = new System.Windows.Forms.RadioButton();
-            this.radioButton34 = new System.Windows.Forms.RadioButton();
-            this.button80 = new System.Windows.Forms.Button();
-            this.listBox7 = new System.Windows.Forms.ListBox();
-            this.textBox34 = new System.Windows.Forms.TextBox();
-            this.label123 = new System.Windows.Forms.Label();
-            this.label108 = new System.Windows.Forms.Label();
-            this.textBox35 = new System.Windows.Forms.TextBox();
             this.groupBox86 = new System.Windows.Forms.GroupBox();
+            this.tabControl_Setup_Communication_Type = new System.Windows.Forms.TabControl();
+            this.tabPage_TCPIP = new System.Windows.Forms.TabPage();
+            this.label20 = new System.Windows.Forms.Label();
+            this.comboBox_Setup_Communication_TCPIP_OpenType = new System.Windows.Forms.ComboBox();
+            this.button_KeypadCall_Setup_Communication_TCPIP_IP = new System.Windows.Forms.Button();
+            this.label_Setup_Communication_TCPIP_IP = new System.Windows.Forms.Label();
+            this.textBox_Setup_Communication_TCPIP_IP = new System.Windows.Forms.TextBox();
+            this.button_KeypadCall_Setup_Communication_TCPIP_Port = new System.Windows.Forms.Button();
+            this.textBox_Setup_Communication_TCPIP_Port = new System.Windows.Forms.TextBox();
+            this.label108 = new System.Windows.Forms.Label();
+            this.tabPage_RS232 = new System.Windows.Forms.TabPage();
+            this.label4 = new System.Windows.Forms.Label();
+            this.comboBox_Setup_Communication_RS232_FlowControl = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.comboBox_Setup_Communication_RS232_StopBit = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.comboBox_Setup_Communication_RS232_Parity = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.comboBox_Setup_Communication_RS232_DataBit = new System.Windows.Forms.ComboBox();
+            this.button_KeypadCall_Setup_Communication_RS232_SpacingDelay = new System.Windows.Forms.Button();
+            this.button_KeypadCall_Setup_Communication_RS232_Timeout = new System.Windows.Forms.Button();
+            this.label185 = new System.Windows.Forms.Label();
+            this.label182 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Communication_RS232_Timeout = new System.Windows.Forms.TextBox();
+            this.label183 = new System.Windows.Forms.Label();
+            this.label184 = new System.Windows.Forms.Label();
+            this.comboBox_Setup_Communication_RS232_BaudRate = new System.Windows.Forms.ComboBox();
+            this.textBox_Setup_Communication_RS232_SpacingDelay = new System.Windows.Forms.TextBox();
+            this.comboBox_Setup_Communication_RS232_ComPort = new System.Windows.Forms.ComboBox();
             this.button96 = new System.Windows.Forms.Button();
-            this.button97 = new System.Windows.Forms.Button();
+            this.button_Setup_Comm_Save = new System.Windows.Forms.Button();
             this.groupBox127 = new System.Windows.Forms.GroupBox();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.radioButton4 = new System.Windows.Forms.RadioButton();
-            this.label4 = new System.Windows.Forms.Label();
-            this.comboBox6 = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.comboBox5 = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.button64 = new System.Windows.Forms.Button();
             this.groupBox89 = new System.Windows.Forms.GroupBox();
-            this.radioButton35 = new System.Windows.Forms.RadioButton();
-            this.radioButton39 = new System.Windows.Forms.RadioButton();
-            this.button74 = new System.Windows.Forms.Button();
-            this.listBox6 = new System.Windows.Forms.ListBox();
-            this.button75 = new System.Windows.Forms.Button();
-            this.label185 = new System.Windows.Forms.Label();
-            this.label182 = new System.Windows.Forms.Label();
-            this.textBox24 = new System.Windows.Forms.TextBox();
-            this.label183 = new System.Windows.Forms.Label();
-            this.label184 = new System.Windows.Forms.Label();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
-            this.textBox19 = new System.Windows.Forms.TextBox();
-            this.comboBox4 = new System.Windows.Forms.ComboBox();
+            this.radioButton_Setup_Communication_Comm_RS232 = new System.Windows.Forms.RadioButton();
+            this.radioButton_Setup_Communication_Comm_TCPIP = new System.Windows.Forms.RadioButton();
+            this.listBox_Setup_Communication_SelectUnit = new System.Windows.Forms.ListBox();
             this.tabPage_Setup_IO = new System.Windows.Forms.TabPage();
             this.groupBox90 = new System.Windows.Forms.GroupBox();
             this.dataGridView3 = new System.Windows.Forms.DataGridView();
@@ -129,49 +125,62 @@
             this.button_Setup_Motion_Save = new System.Windows.Forms.Button();
             this.groupBox115 = new System.Windows.Forms.GroupBox();
             this.groupBox98 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.textBox_Setup_Motion_Jog_MaxStepSize = new System.Windows.Forms.TextBox();
             this.textBox_Setup_Motion_Jog_CoarseStepSize = new System.Windows.Forms.TextBox();
             this.textBox_Setup_Motion_Jog_FineStepSize = new System.Windows.Forms.TextBox();
+            this.textBox_Setup_Motion_Jog_MinStepSize = new System.Windows.Forms.TextBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
+            this.label23 = new System.Windows.Forms.Label();
+            this.label24 = new System.Windows.Forms.Label();
+            this.label25 = new System.Windows.Forms.Label();
+            this.label26 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.textBox_Setup_Motion_Jog_CoarseSpeed = new System.Windows.Forms.TextBox();
             this.textBox_Setup_Motion_Jog_FineSpeed = new System.Windows.Forms.TextBox();
-            this.textBox_Setup_Motion_Jog_MinStepSize = new System.Windows.Forms.TextBox();
-            this.label156 = new System.Windows.Forms.Label();
-            this.label157 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
             this.label240 = new System.Windows.Forms.Label();
             this.label241 = new System.Windows.Forms.Label();
-            this.label238 = new System.Windows.Forms.Label();
-            this.label237 = new System.Windows.Forms.Label();
-            this.label244 = new System.Windows.Forms.Label();
-            this.label236 = new System.Windows.Forms.Label();
             this.groupBox118 = new System.Windows.Forms.GroupBox();
             this.comboBox_Setup_Motion_Limit_Active = new System.Windows.Forms.ComboBox();
             this.comboBox_Setup_Motion_Limit_Install = new System.Windows.Forms.ComboBox();
             this.label232 = new System.Windows.Forms.Label();
             this.label227 = new System.Windows.Forms.Label();
             this.groupBox93 = new System.Windows.Forms.GroupBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.textBox_Setup_Motion_Common_MinPos = new System.Windows.Forms.TextBox();
+            this.textBox_Setup_Motion_Common_MaxPos = new System.Windows.Forms.TextBox();
+            this.label27 = new System.Windows.Forms.Label();
+            this.label29 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Motion_Common_SettleDelay = new System.Windows.Forms.TextBox();
+            this.label229 = new System.Windows.Forms.Label();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.textBox_Setup_Motion_Common_CoarseSpeed = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Motion_Common_MinSpeed = new System.Windows.Forms.TextBox();
+            this.textBox_Setup_Motion_Common_FineSpeed = new System.Windows.Forms.TextBox();
+            this.textBox_Setup_Motion_Common_MaxSpeed = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.textBox_Setup_Motion_Common_CoarseAcc = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Motion_Common_MinAcc = new System.Windows.Forms.TextBox();
+            this.textBox_Setup_Motion_Common_FineAcc = new System.Windows.Forms.TextBox();
+            this.textBox_Setup_Motion_Common_MaxAcc = new System.Windows.Forms.TextBox();
+            this.label30 = new System.Windows.Forms.Label();
+            this.label31 = new System.Windows.Forms.Label();
+            this.label32 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.textBox_Setup_Motion_Common_Pulse = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.textBox_Setup_Motion_Common_MinAcc = new System.Windows.Forms.TextBox();
-            this.textBox_Setup_Motion_Common_SettleDelay = new System.Windows.Forms.TextBox();
-            this.textBox_Setup_Motion_Common_MaxPos = new System.Windows.Forms.TextBox();
-            this.textBox_Setup_Motion_Common_MinPos = new System.Windows.Forms.TextBox();
-            this.textBox_Setup_Motion_Common_MoveSpeed = new System.Windows.Forms.TextBox();
-            this.textBox_Setup_Motion_Common_MinSpeed = new System.Windows.Forms.TextBox();
-            this.textBox_Setup_Motion_Common_MaxSpeed = new System.Windows.Forms.TextBox();
-            this.textBox_Setup_Motion_Common_Acc = new System.Windows.Forms.TextBox();
-            this.textBox_Setup_Motion_Common_MaxAcc = new System.Windows.Forms.TextBox();
             this.textBox_Setup_Motion_Common_Unit = new System.Windows.Forms.TextBox();
-            this.label239 = new System.Windows.Forms.Label();
             this.label221 = new System.Windows.Forms.Label();
-            this.label230 = new System.Windows.Forms.Label();
-            this.label242 = new System.Windows.Forms.Label();
-            this.label231 = new System.Windows.Forms.Label();
-            this.label229 = new System.Windows.Forms.Label();
-            this.label243 = new System.Windows.Forms.Label();
-            this.label235 = new System.Windows.Forms.Label();
-            this.label233 = new System.Windows.Forms.Label();
-            this.label234 = new System.Windows.Forms.Label();
             this.groupBox116 = new System.Windows.Forms.GroupBox();
             this.textBox_Setup_Motion_Home_Speed_Last = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -194,10 +203,12 @@
             this.groupBox114 = new System.Windows.Forms.GroupBox();
             this.listBox_Setup_Motion_SelectAxis = new System.Windows.Forms.ListBox();
             this.tabControl_Setup = new System.Windows.Forms.TabControl();
+            this.button_Test_SocketConnect = new System.Windows.Forms.Button();
             this.tabPage_Setup_Communication.SuspendLayout();
-            this.groupBox91.SuspendLayout();
-            this.groupBox92.SuspendLayout();
             this.groupBox86.SuspendLayout();
+            this.tabControl_Setup_Communication_Type.SuspendLayout();
+            this.tabPage_TCPIP.SuspendLayout();
+            this.tabPage_RS232.SuspendLayout();
             this.groupBox127.SuspendLayout();
             this.groupBox89.SuspendLayout();
             this.tabPage_Setup_IO.SuspendLayout();
@@ -216,8 +227,13 @@
             this.groupBox_Config_AxisPositions_Loader.SuspendLayout();
             this.groupBox115.SuspendLayout();
             this.groupBox98.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.groupBox118.SuspendLayout();
             this.groupBox93.SuspendLayout();
+            this.groupBox5.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.groupBox116.SuspendLayout();
             this.groupBox114.SuspendLayout();
             this.tabControl_Setup.SuspendLayout();
@@ -225,7 +241,6 @@
             // 
             // tabPage_Setup_Communication
             // 
-            this.tabPage_Setup_Communication.Controls.Add(this.groupBox91);
             this.tabPage_Setup_Communication.Controls.Add(this.groupBox86);
             this.tabPage_Setup_Communication.ForeColor = System.Drawing.SystemColors.ControlText;
             this.tabPage_Setup_Communication.Location = new System.Drawing.Point(4, 54);
@@ -237,233 +252,410 @@
             this.tabPage_Setup_Communication.Text = "Communication";
             this.tabPage_Setup_Communication.UseVisualStyleBackColor = true;
             // 
-            // groupBox91
-            // 
-            this.groupBox91.Controls.Add(this.button1);
-            this.groupBox91.Controls.Add(this.label5);
-            this.groupBox91.Controls.Add(this.textBox1);
-            this.groupBox91.Controls.Add(this.button81);
-            this.groupBox91.Controls.Add(this.button79);
-            this.groupBox91.Controls.Add(this.groupBox92);
-            this.groupBox91.Controls.Add(this.button80);
-            this.groupBox91.Controls.Add(this.listBox7);
-            this.groupBox91.Controls.Add(this.textBox34);
-            this.groupBox91.Controls.Add(this.label123);
-            this.groupBox91.Controls.Add(this.label108);
-            this.groupBox91.Controls.Add(this.textBox35);
-            this.groupBox91.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox91.Location = new System.Drawing.Point(10, 450);
-            this.groupBox91.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox91.Name = "groupBox91";
-            this.groupBox91.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox91.Size = new System.Drawing.Size(604, 187);
-            this.groupBox91.TabIndex = 52;
-            this.groupBox91.TabStop = false;
-            this.groupBox91.Text = "Communication Set";
-            // 
-            // button1
-            // 
-            this.button1.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button1.Location = new System.Drawing.Point(560, 50);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(35, 25);
-            this.button1.TabIndex = 42;
-            this.button1.Text = "#";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // label5
-            // 
-            this.label5.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label5.Location = new System.Drawing.Point(245, 49);
-            this.label5.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(193, 24);
-            this.label5.TabIndex = 40;
-            this.label5.Text = "Remote IP (In case of Client) :";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox1
-            // 
-            this.textBox1.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox1.Location = new System.Drawing.Point(442, 50);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(114, 24);
-            this.textBox1.TabIndex = 41;
-            this.textBox1.Text = "192.168.000.002";
-            // 
-            // button81
-            // 
-            this.button81.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button81.Location = new System.Drawing.Point(268, 134);
-            this.button81.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button81.Name = "button81";
-            this.button81.Size = new System.Drawing.Size(250, 44);
-            this.button81.TabIndex = 15;
-            this.button81.Text = "Show Comm Terminal";
-            this.button81.UseVisualStyleBackColor = true;
-            // 
-            // button79
-            // 
-            this.button79.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button79.Location = new System.Drawing.Point(560, 75);
-            this.button79.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button79.Name = "button79";
-            this.button79.Size = new System.Drawing.Size(35, 25);
-            this.button79.TabIndex = 14;
-            this.button79.Text = "#";
-            this.button79.UseVisualStyleBackColor = true;
-            // 
-            // groupBox92
-            // 
-            this.groupBox92.Controls.Add(this.radioButton29);
-            this.groupBox92.Controls.Add(this.radioButton34);
-            this.groupBox92.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox92.Location = new System.Drawing.Point(10, 131);
-            this.groupBox92.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox92.Name = "groupBox92";
-            this.groupBox92.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox92.Size = new System.Drawing.Size(232, 47);
-            this.groupBox92.TabIndex = 39;
-            this.groupBox92.TabStop = false;
-            this.groupBox92.Text = "Type";
-            // 
-            // radioButton29
-            // 
-            this.radioButton29.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton29.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.radioButton29.Location = new System.Drawing.Point(150, 18);
-            this.radioButton29.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.radioButton29.Name = "radioButton29";
-            this.radioButton29.Size = new System.Drawing.Size(61, 19);
-            this.radioButton29.TabIndex = 6;
-            this.radioButton29.Text = "Serial";
-            this.radioButton29.UseVisualStyleBackColor = true;
-            // 
-            // radioButton34
-            // 
-            this.radioButton34.Checked = true;
-            this.radioButton34.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton34.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.radioButton34.Location = new System.Drawing.Point(33, 18);
-            this.radioButton34.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.radioButton34.Name = "radioButton34";
-            this.radioButton34.Size = new System.Drawing.Size(61, 19);
-            this.radioButton34.TabIndex = 5;
-            this.radioButton34.TabStop = true;
-            this.radioButton34.Text = "TCP/IP";
-            this.radioButton34.UseVisualStyleBackColor = true;
-            // 
-            // button80
-            // 
-            this.button80.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button80.Location = new System.Drawing.Point(560, 25);
-            this.button80.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button80.Name = "button80";
-            this.button80.Size = new System.Drawing.Size(35, 25);
-            this.button80.TabIndex = 13;
-            this.button80.Text = "#";
-            this.button80.UseVisualStyleBackColor = true;
-            // 
-            // listBox7
-            // 
-            this.listBox7.Font = new System.Drawing.Font("Tahoma", 11F);
-            this.listBox7.FormattingEnabled = true;
-            this.listBox7.HorizontalScrollbar = true;
-            this.listBox7.ItemHeight = 18;
-            this.listBox7.Items.AddRange(new object[] {
-            "Laser",
-            "Power Meter",
-            "Illuminator"});
-            this.listBox7.Location = new System.Drawing.Point(10, 18);
-            this.listBox7.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.listBox7.Name = "listBox7";
-            this.listBox7.Size = new System.Drawing.Size(232, 94);
-            this.listBox7.TabIndex = 0;
-            // 
-            // textBox34
-            // 
-            this.textBox34.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox34.Location = new System.Drawing.Point(442, 75);
-            this.textBox34.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox34.Name = "textBox34";
-            this.textBox34.Size = new System.Drawing.Size(114, 24);
-            this.textBox34.TabIndex = 8;
-            this.textBox34.Text = "23";
-            // 
-            // label123
-            // 
-            this.label123.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label123.Location = new System.Drawing.Point(254, 24);
-            this.label123.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label123.Name = "label123";
-            this.label123.Size = new System.Drawing.Size(184, 24);
-            this.label123.TabIndex = 5;
-            this.label123.Text = "Host IP (In case of Server) :";
-            this.label123.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label108
-            // 
-            this.label108.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label108.Location = new System.Drawing.Point(254, 74);
-            this.label108.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label108.Name = "label108";
-            this.label108.Size = new System.Drawing.Size(184, 24);
-            this.label108.TabIndex = 7;
-            this.label108.Text = "Port :";
-            this.label108.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox35
-            // 
-            this.textBox35.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox35.Location = new System.Drawing.Point(442, 25);
-            this.textBox35.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox35.Name = "textBox35";
-            this.textBox35.Size = new System.Drawing.Size(114, 24);
-            this.textBox35.TabIndex = 6;
-            this.textBox35.Text = "192.168.000.002";
-            // 
             // groupBox86
             // 
+            this.groupBox86.Controls.Add(this.button_Test_SocketConnect);
+            this.groupBox86.Controls.Add(this.tabControl_Setup_Communication_Type);
             this.groupBox86.Controls.Add(this.button96);
-            this.groupBox86.Controls.Add(this.button97);
+            this.groupBox86.Controls.Add(this.button_Setup_Comm_Save);
             this.groupBox86.Controls.Add(this.groupBox127);
-            this.groupBox86.Controls.Add(this.label4);
-            this.groupBox86.Controls.Add(this.comboBox6);
-            this.groupBox86.Controls.Add(this.label3);
-            this.groupBox86.Controls.Add(this.comboBox5);
-            this.groupBox86.Controls.Add(this.label2);
-            this.groupBox86.Controls.Add(this.comboBox2);
-            this.groupBox86.Controls.Add(this.label1);
-            this.groupBox86.Controls.Add(this.comboBox1);
             this.groupBox86.Controls.Add(this.button64);
             this.groupBox86.Controls.Add(this.groupBox89);
-            this.groupBox86.Controls.Add(this.button74);
-            this.groupBox86.Controls.Add(this.listBox6);
-            this.groupBox86.Controls.Add(this.button75);
-            this.groupBox86.Controls.Add(this.label185);
-            this.groupBox86.Controls.Add(this.label182);
-            this.groupBox86.Controls.Add(this.textBox24);
-            this.groupBox86.Controls.Add(this.label183);
-            this.groupBox86.Controls.Add(this.label184);
-            this.groupBox86.Controls.Add(this.comboBox3);
-            this.groupBox86.Controls.Add(this.textBox19);
-            this.groupBox86.Controls.Add(this.comboBox4);
+            this.groupBox86.Controls.Add(this.listBox_Setup_Communication_SelectUnit);
             this.groupBox86.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.groupBox86.Location = new System.Drawing.Point(10, 10);
             this.groupBox86.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox86.Name = "groupBox86";
             this.groupBox86.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox86.Size = new System.Drawing.Size(604, 380);
+            this.groupBox86.Size = new System.Drawing.Size(1168, 434);
             this.groupBox86.TabIndex = 51;
             this.groupBox86.TabStop = false;
             this.groupBox86.Text = " Communication Set ";
             // 
+            // tabControl_Setup_Communication_Type
+            // 
+            this.tabControl_Setup_Communication_Type.Controls.Add(this.tabPage_TCPIP);
+            this.tabControl_Setup_Communication_Type.Controls.Add(this.tabPage_RS232);
+            this.tabControl_Setup_Communication_Type.ItemSize = new System.Drawing.Size(84, 30);
+            this.tabControl_Setup_Communication_Type.Location = new System.Drawing.Point(268, 25);
+            this.tabControl_Setup_Communication_Type.Name = "tabControl_Setup_Communication_Type";
+            this.tabControl_Setup_Communication_Type.SelectedIndex = 0;
+            this.tabControl_Setup_Communication_Type.Size = new System.Drawing.Size(365, 254);
+            this.tabControl_Setup_Communication_Type.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+            this.tabControl_Setup_Communication_Type.TabIndex = 59;
+            // 
+            // tabPage_TCPIP
+            // 
+            this.tabPage_TCPIP.Controls.Add(this.label20);
+            this.tabPage_TCPIP.Controls.Add(this.comboBox_Setup_Communication_TCPIP_OpenType);
+            this.tabPage_TCPIP.Controls.Add(this.button_KeypadCall_Setup_Communication_TCPIP_IP);
+            this.tabPage_TCPIP.Controls.Add(this.label_Setup_Communication_TCPIP_IP);
+            this.tabPage_TCPIP.Controls.Add(this.textBox_Setup_Communication_TCPIP_IP);
+            this.tabPage_TCPIP.Controls.Add(this.button_KeypadCall_Setup_Communication_TCPIP_Port);
+            this.tabPage_TCPIP.Controls.Add(this.textBox_Setup_Communication_TCPIP_Port);
+            this.tabPage_TCPIP.Controls.Add(this.label108);
+            this.tabPage_TCPIP.Location = new System.Drawing.Point(4, 34);
+            this.tabPage_TCPIP.Name = "tabPage_TCPIP";
+            this.tabPage_TCPIP.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_TCPIP.Size = new System.Drawing.Size(357, 216);
+            this.tabPage_TCPIP.TabIndex = 0;
+            this.tabPage_TCPIP.Text = "TCP / IP";
+            this.tabPage_TCPIP.UseVisualStyleBackColor = true;
+            // 
+            // label20
+            // 
+            this.label20.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label20.Location = new System.Drawing.Point(84, 7);
+            this.label20.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(108, 24);
+            this.label20.TabIndex = 53;
+            this.label20.Text = "Server / Client :";
+            this.label20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // comboBox_Setup_Communication_TCPIP_OpenType
+            // 
+            this.comboBox_Setup_Communication_TCPIP_OpenType.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.comboBox_Setup_Communication_TCPIP_OpenType.FormattingEnabled = true;
+            this.comboBox_Setup_Communication_TCPIP_OpenType.Items.AddRange(new object[] {
+            "Server",
+            "Client"});
+            this.comboBox_Setup_Communication_TCPIP_OpenType.Location = new System.Drawing.Point(195, 9);
+            this.comboBox_Setup_Communication_TCPIP_OpenType.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBox_Setup_Communication_TCPIP_OpenType.Name = "comboBox_Setup_Communication_TCPIP_OpenType";
+            this.comboBox_Setup_Communication_TCPIP_OpenType.Size = new System.Drawing.Size(114, 24);
+            this.comboBox_Setup_Communication_TCPIP_OpenType.TabIndex = 52;
+            this.comboBox_Setup_Communication_TCPIP_OpenType.Text = "Client";
+            this.comboBox_Setup_Communication_TCPIP_OpenType.SelectedIndexChanged += new System.EventHandler(this.comboBox_Setup_Communication_TCPIP_OpenType_SelectedIndexChanged);
+            // 
+            // button_KeypadCall_Setup_Communication_TCPIP_IP
+            // 
+            this.button_KeypadCall_Setup_Communication_TCPIP_IP.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_KeypadCall_Setup_Communication_TCPIP_IP.Location = new System.Drawing.Point(313, 47);
+            this.button_KeypadCall_Setup_Communication_TCPIP_IP.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_KeypadCall_Setup_Communication_TCPIP_IP.Name = "button_KeypadCall_Setup_Communication_TCPIP_IP";
+            this.button_KeypadCall_Setup_Communication_TCPIP_IP.Size = new System.Drawing.Size(35, 25);
+            this.button_KeypadCall_Setup_Communication_TCPIP_IP.TabIndex = 51;
+            this.button_KeypadCall_Setup_Communication_TCPIP_IP.Text = "#";
+            this.button_KeypadCall_Setup_Communication_TCPIP_IP.UseVisualStyleBackColor = true;
+            // 
+            // label_Setup_Communication_TCPIP_IP
+            // 
+            this.label_Setup_Communication_TCPIP_IP.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Setup_Communication_TCPIP_IP.Location = new System.Drawing.Point(84, 47);
+            this.label_Setup_Communication_TCPIP_IP.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label_Setup_Communication_TCPIP_IP.Name = "label_Setup_Communication_TCPIP_IP";
+            this.label_Setup_Communication_TCPIP_IP.Size = new System.Drawing.Size(108, 24);
+            this.label_Setup_Communication_TCPIP_IP.TabIndex = 49;
+            this.label_Setup_Communication_TCPIP_IP.Text = "Remote IP :";
+            this.label_Setup_Communication_TCPIP_IP.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Communication_TCPIP_IP
+            // 
+            this.textBox_Setup_Communication_TCPIP_IP.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Communication_TCPIP_IP.Location = new System.Drawing.Point(195, 47);
+            this.textBox_Setup_Communication_TCPIP_IP.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Communication_TCPIP_IP.Name = "textBox_Setup_Communication_TCPIP_IP";
+            this.textBox_Setup_Communication_TCPIP_IP.Size = new System.Drawing.Size(114, 24);
+            this.textBox_Setup_Communication_TCPIP_IP.TabIndex = 50;
+            this.textBox_Setup_Communication_TCPIP_IP.Text = "127.0.0.1";
+            // 
+            // button_KeypadCall_Setup_Communication_TCPIP_Port
+            // 
+            this.button_KeypadCall_Setup_Communication_TCPIP_Port.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_KeypadCall_Setup_Communication_TCPIP_Port.Location = new System.Drawing.Point(313, 73);
+            this.button_KeypadCall_Setup_Communication_TCPIP_Port.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_KeypadCall_Setup_Communication_TCPIP_Port.Name = "button_KeypadCall_Setup_Communication_TCPIP_Port";
+            this.button_KeypadCall_Setup_Communication_TCPIP_Port.Size = new System.Drawing.Size(35, 25);
+            this.button_KeypadCall_Setup_Communication_TCPIP_Port.TabIndex = 48;
+            this.button_KeypadCall_Setup_Communication_TCPIP_Port.Text = "#";
+            this.button_KeypadCall_Setup_Communication_TCPIP_Port.UseVisualStyleBackColor = true;
+            // 
+            // textBox_Setup_Communication_TCPIP_Port
+            // 
+            this.textBox_Setup_Communication_TCPIP_Port.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Communication_TCPIP_Port.Location = new System.Drawing.Point(195, 73);
+            this.textBox_Setup_Communication_TCPIP_Port.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Communication_TCPIP_Port.Name = "textBox_Setup_Communication_TCPIP_Port";
+            this.textBox_Setup_Communication_TCPIP_Port.Size = new System.Drawing.Size(114, 24);
+            this.textBox_Setup_Communication_TCPIP_Port.TabIndex = 46;
+            this.textBox_Setup_Communication_TCPIP_Port.Text = "5000";
+            // 
+            // label108
+            // 
+            this.label108.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label108.Location = new System.Drawing.Point(84, 72);
+            this.label108.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label108.Name = "label108";
+            this.label108.Size = new System.Drawing.Size(108, 24);
+            this.label108.TabIndex = 45;
+            this.label108.Text = "Port :";
+            this.label108.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // tabPage_RS232
+            // 
+            this.tabPage_RS232.Controls.Add(this.label4);
+            this.tabPage_RS232.Controls.Add(this.comboBox_Setup_Communication_RS232_FlowControl);
+            this.tabPage_RS232.Controls.Add(this.label3);
+            this.tabPage_RS232.Controls.Add(this.comboBox_Setup_Communication_RS232_StopBit);
+            this.tabPage_RS232.Controls.Add(this.label2);
+            this.tabPage_RS232.Controls.Add(this.comboBox_Setup_Communication_RS232_Parity);
+            this.tabPage_RS232.Controls.Add(this.label1);
+            this.tabPage_RS232.Controls.Add(this.comboBox_Setup_Communication_RS232_DataBit);
+            this.tabPage_RS232.Controls.Add(this.button_KeypadCall_Setup_Communication_RS232_SpacingDelay);
+            this.tabPage_RS232.Controls.Add(this.button_KeypadCall_Setup_Communication_RS232_Timeout);
+            this.tabPage_RS232.Controls.Add(this.label185);
+            this.tabPage_RS232.Controls.Add(this.label182);
+            this.tabPage_RS232.Controls.Add(this.textBox_Setup_Communication_RS232_Timeout);
+            this.tabPage_RS232.Controls.Add(this.label183);
+            this.tabPage_RS232.Controls.Add(this.label184);
+            this.tabPage_RS232.Controls.Add(this.comboBox_Setup_Communication_RS232_BaudRate);
+            this.tabPage_RS232.Controls.Add(this.textBox_Setup_Communication_RS232_SpacingDelay);
+            this.tabPage_RS232.Controls.Add(this.comboBox_Setup_Communication_RS232_ComPort);
+            this.tabPage_RS232.Location = new System.Drawing.Point(4, 34);
+            this.tabPage_RS232.Name = "tabPage_RS232";
+            this.tabPage_RS232.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_RS232.Size = new System.Drawing.Size(357, 216);
+            this.tabPage_RS232.TabIndex = 1;
+            this.tabPage_RS232.Text = "RS232";
+            this.tabPage_RS232.UseVisualStyleBackColor = true;
+            // 
+            // label4
+            // 
+            this.label4.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label4.Location = new System.Drawing.Point(7, 182);
+            this.label4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(184, 24);
+            this.label4.TabIndex = 65;
+            this.label4.Text = "Flow Control :";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // comboBox_Setup_Communication_RS232_FlowControl
+            // 
+            this.comboBox_Setup_Communication_RS232_FlowControl.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.comboBox_Setup_Communication_RS232_FlowControl.FormattingEnabled = true;
+            this.comboBox_Setup_Communication_RS232_FlowControl.Items.AddRange(new object[] {
+            "None",
+            "Xon/Xoff",
+            "RTS/CTS"});
+            this.comboBox_Setup_Communication_RS232_FlowControl.Location = new System.Drawing.Point(195, 184);
+            this.comboBox_Setup_Communication_RS232_FlowControl.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBox_Setup_Communication_RS232_FlowControl.Name = "comboBox_Setup_Communication_RS232_FlowControl";
+            this.comboBox_Setup_Communication_RS232_FlowControl.Size = new System.Drawing.Size(114, 24);
+            this.comboBox_Setup_Communication_RS232_FlowControl.TabIndex = 64;
+            this.comboBox_Setup_Communication_RS232_FlowControl.Text = "None";
+            // 
+            // label3
+            // 
+            this.label3.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label3.Location = new System.Drawing.Point(7, 157);
+            this.label3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(184, 24);
+            this.label3.TabIndex = 63;
+            this.label3.Text = "Stop Bit :";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // comboBox_Setup_Communication_RS232_StopBit
+            // 
+            this.comboBox_Setup_Communication_RS232_StopBit.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.comboBox_Setup_Communication_RS232_StopBit.FormattingEnabled = true;
+            this.comboBox_Setup_Communication_RS232_StopBit.Items.AddRange(new object[] {
+            "1",
+            "1.5",
+            "2"});
+            this.comboBox_Setup_Communication_RS232_StopBit.Location = new System.Drawing.Point(195, 159);
+            this.comboBox_Setup_Communication_RS232_StopBit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBox_Setup_Communication_RS232_StopBit.Name = "comboBox_Setup_Communication_RS232_StopBit";
+            this.comboBox_Setup_Communication_RS232_StopBit.Size = new System.Drawing.Size(114, 24);
+            this.comboBox_Setup_Communication_RS232_StopBit.TabIndex = 62;
+            this.comboBox_Setup_Communication_RS232_StopBit.Text = "1";
+            // 
+            // label2
+            // 
+            this.label2.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label2.Location = new System.Drawing.Point(7, 132);
+            this.label2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(184, 24);
+            this.label2.TabIndex = 61;
+            this.label2.Text = "Parity :";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // comboBox_Setup_Communication_RS232_Parity
+            // 
+            this.comboBox_Setup_Communication_RS232_Parity.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.comboBox_Setup_Communication_RS232_Parity.FormattingEnabled = true;
+            this.comboBox_Setup_Communication_RS232_Parity.Items.AddRange(new object[] {
+            "None",
+            "Odd",
+            "Even"});
+            this.comboBox_Setup_Communication_RS232_Parity.Location = new System.Drawing.Point(195, 134);
+            this.comboBox_Setup_Communication_RS232_Parity.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBox_Setup_Communication_RS232_Parity.Name = "comboBox_Setup_Communication_RS232_Parity";
+            this.comboBox_Setup_Communication_RS232_Parity.Size = new System.Drawing.Size(114, 24);
+            this.comboBox_Setup_Communication_RS232_Parity.TabIndex = 60;
+            this.comboBox_Setup_Communication_RS232_Parity.Text = "None";
+            // 
+            // label1
+            // 
+            this.label1.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label1.Location = new System.Drawing.Point(7, 107);
+            this.label1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(184, 24);
+            this.label1.TabIndex = 59;
+            this.label1.Text = "Data Bit :";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // comboBox_Setup_Communication_RS232_DataBit
+            // 
+            this.comboBox_Setup_Communication_RS232_DataBit.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.comboBox_Setup_Communication_RS232_DataBit.FormattingEnabled = true;
+            this.comboBox_Setup_Communication_RS232_DataBit.Items.AddRange(new object[] {
+            "5",
+            "6",
+            "7",
+            "8"});
+            this.comboBox_Setup_Communication_RS232_DataBit.Location = new System.Drawing.Point(195, 109);
+            this.comboBox_Setup_Communication_RS232_DataBit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBox_Setup_Communication_RS232_DataBit.Name = "comboBox_Setup_Communication_RS232_DataBit";
+            this.comboBox_Setup_Communication_RS232_DataBit.Size = new System.Drawing.Size(114, 24);
+            this.comboBox_Setup_Communication_RS232_DataBit.TabIndex = 58;
+            this.comboBox_Setup_Communication_RS232_DataBit.Text = "8";
+            // 
+            // button_KeypadCall_Setup_Communication_RS232_SpacingDelay
+            // 
+            this.button_KeypadCall_Setup_Communication_RS232_SpacingDelay.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_KeypadCall_Setup_Communication_RS232_SpacingDelay.Location = new System.Drawing.Point(313, 34);
+            this.button_KeypadCall_Setup_Communication_RS232_SpacingDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_KeypadCall_Setup_Communication_RS232_SpacingDelay.Name = "button_KeypadCall_Setup_Communication_RS232_SpacingDelay";
+            this.button_KeypadCall_Setup_Communication_RS232_SpacingDelay.Size = new System.Drawing.Size(35, 25);
+            this.button_KeypadCall_Setup_Communication_RS232_SpacingDelay.TabIndex = 57;
+            this.button_KeypadCall_Setup_Communication_RS232_SpacingDelay.Text = "#";
+            this.button_KeypadCall_Setup_Communication_RS232_SpacingDelay.UseVisualStyleBackColor = true;
+            // 
+            // button_KeypadCall_Setup_Communication_RS232_Timeout
+            // 
+            this.button_KeypadCall_Setup_Communication_RS232_Timeout.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_KeypadCall_Setup_Communication_RS232_Timeout.Location = new System.Drawing.Point(313, 9);
+            this.button_KeypadCall_Setup_Communication_RS232_Timeout.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_KeypadCall_Setup_Communication_RS232_Timeout.Name = "button_KeypadCall_Setup_Communication_RS232_Timeout";
+            this.button_KeypadCall_Setup_Communication_RS232_Timeout.Size = new System.Drawing.Size(35, 25);
+            this.button_KeypadCall_Setup_Communication_RS232_Timeout.TabIndex = 56;
+            this.button_KeypadCall_Setup_Communication_RS232_Timeout.Text = "#";
+            this.button_KeypadCall_Setup_Communication_RS232_Timeout.UseVisualStyleBackColor = true;
+            // 
+            // label185
+            // 
+            this.label185.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label185.Location = new System.Drawing.Point(7, 7);
+            this.label185.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label185.Name = "label185";
+            this.label185.Size = new System.Drawing.Size(184, 24);
+            this.label185.TabIndex = 48;
+            this.label185.Text = "Comm. Timeout(ms) :";
+            this.label185.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label182
+            // 
+            this.label182.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label182.Location = new System.Drawing.Point(7, 82);
+            this.label182.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label182.Name = "label182";
+            this.label182.Size = new System.Drawing.Size(184, 24);
+            this.label182.TabIndex = 55;
+            this.label182.Text = "Baud Rate :";
+            this.label182.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Communication_RS232_Timeout
+            // 
+            this.textBox_Setup_Communication_RS232_Timeout.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Communication_RS232_Timeout.Location = new System.Drawing.Point(195, 9);
+            this.textBox_Setup_Communication_RS232_Timeout.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Communication_RS232_Timeout.Name = "textBox_Setup_Communication_RS232_Timeout";
+            this.textBox_Setup_Communication_RS232_Timeout.Size = new System.Drawing.Size(114, 24);
+            this.textBox_Setup_Communication_RS232_Timeout.TabIndex = 49;
+            this.textBox_Setup_Communication_RS232_Timeout.Text = "500";
+            // 
+            // label183
+            // 
+            this.label183.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label183.Location = new System.Drawing.Point(7, 57);
+            this.label183.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label183.Name = "label183";
+            this.label183.Size = new System.Drawing.Size(184, 24);
+            this.label183.TabIndex = 54;
+            this.label183.Text = "COM Port :";
+            this.label183.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label184
+            // 
+            this.label184.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label184.Location = new System.Drawing.Point(7, 32);
+            this.label184.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label184.Name = "label184";
+            this.label184.Size = new System.Drawing.Size(184, 24);
+            this.label184.TabIndex = 50;
+            this.label184.Text = "Comm. Spacing Delay(ms) :";
+            this.label184.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // comboBox_Setup_Communication_RS232_BaudRate
+            // 
+            this.comboBox_Setup_Communication_RS232_BaudRate.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.comboBox_Setup_Communication_RS232_BaudRate.FormattingEnabled = true;
+            this.comboBox_Setup_Communication_RS232_BaudRate.Items.AddRange(new object[] {
+            "1200",
+            "2400",
+            "4800",
+            "9600",
+            "19200",
+            "38400",
+            "57600",
+            "115200"});
+            this.comboBox_Setup_Communication_RS232_BaudRate.Location = new System.Drawing.Point(195, 84);
+            this.comboBox_Setup_Communication_RS232_BaudRate.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBox_Setup_Communication_RS232_BaudRate.Name = "comboBox_Setup_Communication_RS232_BaudRate";
+            this.comboBox_Setup_Communication_RS232_BaudRate.Size = new System.Drawing.Size(114, 24);
+            this.comboBox_Setup_Communication_RS232_BaudRate.TabIndex = 53;
+            this.comboBox_Setup_Communication_RS232_BaudRate.Text = "115200";
+            // 
+            // textBox_Setup_Communication_RS232_SpacingDelay
+            // 
+            this.textBox_Setup_Communication_RS232_SpacingDelay.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Communication_RS232_SpacingDelay.Location = new System.Drawing.Point(195, 34);
+            this.textBox_Setup_Communication_RS232_SpacingDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Communication_RS232_SpacingDelay.Name = "textBox_Setup_Communication_RS232_SpacingDelay";
+            this.textBox_Setup_Communication_RS232_SpacingDelay.Size = new System.Drawing.Size(114, 24);
+            this.textBox_Setup_Communication_RS232_SpacingDelay.TabIndex = 51;
+            this.textBox_Setup_Communication_RS232_SpacingDelay.Text = "20";
+            // 
+            // comboBox_Setup_Communication_RS232_ComPort
+            // 
+            this.comboBox_Setup_Communication_RS232_ComPort.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.comboBox_Setup_Communication_RS232_ComPort.FormattingEnabled = true;
+            this.comboBox_Setup_Communication_RS232_ComPort.Items.AddRange(new object[] {
+            "COM1",
+            "COM2",
+            "COM3",
+            "COM4",
+            "COM5",
+            "COM6",
+            "COM7",
+            "COM8",
+            "COM9"});
+            this.comboBox_Setup_Communication_RS232_ComPort.Location = new System.Drawing.Point(195, 59);
+            this.comboBox_Setup_Communication_RS232_ComPort.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBox_Setup_Communication_RS232_ComPort.Name = "comboBox_Setup_Communication_RS232_ComPort";
+            this.comboBox_Setup_Communication_RS232_ComPort.Size = new System.Drawing.Size(114, 24);
+            this.comboBox_Setup_Communication_RS232_ComPort.TabIndex = 52;
+            this.comboBox_Setup_Communication_RS232_ComPort.Text = "COM1";
+            // 
             // button96
             // 
             this.button96.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button96.Location = new System.Drawing.Point(493, 327);
+            this.button96.Location = new System.Drawing.Point(531, 381);
             this.button96.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button96.Name = "button96";
             this.button96.Size = new System.Drawing.Size(102, 43);
@@ -471,30 +663,31 @@
             this.button96.Text = "Cancel";
             this.button96.UseVisualStyleBackColor = true;
             // 
-            // button97
+            // button_Setup_Comm_Save
             // 
-            this.button97.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button97.Location = new System.Drawing.Point(356, 327);
-            this.button97.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button97.Name = "button97";
-            this.button97.Size = new System.Drawing.Size(102, 43);
-            this.button97.TabIndex = 57;
-            this.button97.Text = "Save";
-            this.button97.UseVisualStyleBackColor = true;
+            this.button_Setup_Comm_Save.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Comm_Save.Location = new System.Drawing.Point(398, 381);
+            this.button_Setup_Comm_Save.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Comm_Save.Name = "button_Setup_Comm_Save";
+            this.button_Setup_Comm_Save.Size = new System.Drawing.Size(102, 43);
+            this.button_Setup_Comm_Save.TabIndex = 57;
+            this.button_Setup_Comm_Save.Text = "Save";
+            this.button_Setup_Comm_Save.UseVisualStyleBackColor = true;
+            this.button_Setup_Comm_Save.Click += new System.EventHandler(this.button_Setup_Comm_Save_Click);
             // 
             // groupBox127
             // 
             this.groupBox127.Controls.Add(this.radioButton3);
             this.groupBox127.Controls.Add(this.radioButton4);
             this.groupBox127.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox127.Location = new System.Drawing.Point(324, 240);
+            this.groupBox127.Location = new System.Drawing.Point(268, 295);
             this.groupBox127.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox127.Name = "groupBox127";
             this.groupBox127.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox127.Size = new System.Drawing.Size(232, 55);
             this.groupBox127.TabIndex = 56;
             this.groupBox127.TabStop = false;
-            this.groupBox127.Text = "Connection";
+            this.groupBox127.Text = " Connection ";
             // 
             // radioButton3
             // 
@@ -522,128 +715,23 @@
             this.radioButton4.Text = "Connect";
             this.radioButton4.UseVisualStyleBackColor = true;
             // 
-            // label4
-            // 
-            this.label4.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label4.Location = new System.Drawing.Point(254, 198);
-            this.label4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(184, 24);
-            this.label4.TabIndex = 47;
-            this.label4.Text = "Flow Control :";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // comboBox6
-            // 
-            this.comboBox6.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.comboBox6.FormattingEnabled = true;
-            this.comboBox6.Items.AddRange(new object[] {
-            "None",
-            "Xon/Xoff",
-            "RTS/CTS"});
-            this.comboBox6.Location = new System.Drawing.Point(442, 200);
-            this.comboBox6.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.comboBox6.Name = "comboBox6";
-            this.comboBox6.Size = new System.Drawing.Size(114, 24);
-            this.comboBox6.TabIndex = 46;
-            this.comboBox6.Text = "None";
-            // 
-            // label3
-            // 
-            this.label3.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label3.Location = new System.Drawing.Point(254, 173);
-            this.label3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(184, 24);
-            this.label3.TabIndex = 45;
-            this.label3.Text = "Stop Bit :";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // comboBox5
-            // 
-            this.comboBox5.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.comboBox5.FormattingEnabled = true;
-            this.comboBox5.Items.AddRange(new object[] {
-            "1",
-            "1.5",
-            "2"});
-            this.comboBox5.Location = new System.Drawing.Point(442, 175);
-            this.comboBox5.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.comboBox5.Name = "comboBox5";
-            this.comboBox5.Size = new System.Drawing.Size(114, 24);
-            this.comboBox5.TabIndex = 44;
-            this.comboBox5.Text = "1";
-            // 
-            // label2
-            // 
-            this.label2.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label2.Location = new System.Drawing.Point(254, 148);
-            this.label2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(184, 24);
-            this.label2.TabIndex = 43;
-            this.label2.Text = "Parity :";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // comboBox2
-            // 
-            this.comboBox2.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Items.AddRange(new object[] {
-            "None",
-            "Odd",
-            "Even"});
-            this.comboBox2.Location = new System.Drawing.Point(442, 150);
-            this.comboBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(114, 24);
-            this.comboBox2.TabIndex = 42;
-            this.comboBox2.Text = "None";
-            // 
-            // label1
-            // 
-            this.label1.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label1.Location = new System.Drawing.Point(254, 123);
-            this.label1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(184, 24);
-            this.label1.TabIndex = 41;
-            this.label1.Text = "Data Bit :";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "5",
-            "6",
-            "7",
-            "8"});
-            this.comboBox1.Location = new System.Drawing.Point(442, 125);
-            this.comboBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(114, 24);
-            this.comboBox1.TabIndex = 40;
-            this.comboBox1.Text = "8";
-            // 
             // button64
             // 
             this.button64.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button64.Location = new System.Drawing.Point(10, 314);
+            this.button64.Location = new System.Drawing.Point(10, 368);
             this.button64.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button64.Name = "button64";
             this.button64.Size = new System.Drawing.Size(232, 56);
             this.button64.TabIndex = 15;
-            this.button64.Text = "Show Comm. Terminal";
+            this.button64.Text = "Show   Comm. Terminal";
             this.button64.UseVisualStyleBackColor = true;
             // 
             // groupBox89
             // 
-            this.groupBox89.Controls.Add(this.radioButton35);
-            this.groupBox89.Controls.Add(this.radioButton39);
+            this.groupBox89.Controls.Add(this.radioButton_Setup_Communication_Comm_RS232);
+            this.groupBox89.Controls.Add(this.radioButton_Setup_Communication_Comm_TCPIP);
             this.groupBox89.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox89.Location = new System.Drawing.Point(10, 240);
+            this.groupBox89.Location = new System.Drawing.Point(10, 295);
             this.groupBox89.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox89.Name = "groupBox89";
             this.groupBox89.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
@@ -652,169 +740,55 @@
             this.groupBox89.TabStop = false;
             this.groupBox89.Text = "Type";
             // 
-            // radioButton35
+            // radioButton_Setup_Communication_Comm_RS232
             // 
-            this.radioButton35.Checked = true;
-            this.radioButton35.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton35.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.radioButton35.Location = new System.Drawing.Point(142, 23);
-            this.radioButton35.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.radioButton35.Name = "radioButton35";
-            this.radioButton35.Size = new System.Drawing.Size(61, 24);
-            this.radioButton35.TabIndex = 6;
-            this.radioButton35.TabStop = true;
-            this.radioButton35.Text = "Serial";
-            this.radioButton35.UseVisualStyleBackColor = true;
+            this.radioButton_Setup_Communication_Comm_RS232.Checked = true;
+            this.radioButton_Setup_Communication_Comm_RS232.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.radioButton_Setup_Communication_Comm_RS232.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.radioButton_Setup_Communication_Comm_RS232.Location = new System.Drawing.Point(142, 23);
+            this.radioButton_Setup_Communication_Comm_RS232.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.radioButton_Setup_Communication_Comm_RS232.Name = "radioButton_Setup_Communication_Comm_RS232";
+            this.radioButton_Setup_Communication_Comm_RS232.Size = new System.Drawing.Size(80, 24);
+            this.radioButton_Setup_Communication_Comm_RS232.TabIndex = 6;
+            this.radioButton_Setup_Communication_Comm_RS232.TabStop = true;
+            this.radioButton_Setup_Communication_Comm_RS232.Text = "RS232";
+            this.radioButton_Setup_Communication_Comm_RS232.UseVisualStyleBackColor = true;
             // 
-            // radioButton39
+            // radioButton_Setup_Communication_Comm_TCPIP
             // 
-            this.radioButton39.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton39.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.radioButton39.Location = new System.Drawing.Point(24, 23);
-            this.radioButton39.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.radioButton39.Name = "radioButton39";
-            this.radioButton39.Size = new System.Drawing.Size(77, 24);
-            this.radioButton39.TabIndex = 5;
-            this.radioButton39.Text = "TCP / IP";
-            this.radioButton39.UseVisualStyleBackColor = true;
+            this.radioButton_Setup_Communication_Comm_TCPIP.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.radioButton_Setup_Communication_Comm_TCPIP.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.radioButton_Setup_Communication_Comm_TCPIP.Location = new System.Drawing.Point(24, 23);
+            this.radioButton_Setup_Communication_Comm_TCPIP.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.radioButton_Setup_Communication_Comm_TCPIP.Name = "radioButton_Setup_Communication_Comm_TCPIP";
+            this.radioButton_Setup_Communication_Comm_TCPIP.Size = new System.Drawing.Size(77, 24);
+            this.radioButton_Setup_Communication_Comm_TCPIP.TabIndex = 5;
+            this.radioButton_Setup_Communication_Comm_TCPIP.Text = "TCP / IP";
+            this.radioButton_Setup_Communication_Comm_TCPIP.UseVisualStyleBackColor = true;
+            this.radioButton_Setup_Communication_Comm_TCPIP.CheckedChanged += new System.EventHandler(this.radioButton_Setup_Communication_Comm_TCPIP_CheckedChanged);
             // 
-            // button74
+            // listBox_Setup_Communication_SelectUnit
             // 
-            this.button74.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button74.Location = new System.Drawing.Point(560, 50);
-            this.button74.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button74.Name = "button74";
-            this.button74.Size = new System.Drawing.Size(35, 25);
-            this.button74.TabIndex = 14;
-            this.button74.Text = "#";
-            this.button74.UseVisualStyleBackColor = true;
-            // 
-            // listBox6
-            // 
-            this.listBox6.Font = new System.Drawing.Font("Tahoma", 11F);
-            this.listBox6.FormattingEnabled = true;
-            this.listBox6.HorizontalScrollbar = true;
-            this.listBox6.ItemHeight = 18;
-            this.listBox6.Items.AddRange(new object[] {
+            this.listBox_Setup_Communication_SelectUnit.Font = new System.Drawing.Font("Tahoma", 11F);
+            this.listBox_Setup_Communication_SelectUnit.FormattingEnabled = true;
+            this.listBox_Setup_Communication_SelectUnit.HorizontalScrollbar = true;
+            this.listBox_Setup_Communication_SelectUnit.ItemHeight = 18;
+            this.listBox_Setup_Communication_SelectUnit.Items.AddRange(new object[] {
             "Illuminator",
-            "PowerMeter (Exit)",
-            "PowerMeter (Target)",
+            "PowerMeter (BDS)",
+            "PowerMeter (Stage)",
             "Motorized Beam Expander",
-            "Dust Collector 1",
-            "Dust Collector 2",
+            "Dust Collector (Upper)",
+            "Dust Collector (Lower)",
             "Electro Pneumatic Regulator",
-            "Laser"});
-            this.listBox6.Location = new System.Drawing.Point(10, 25);
-            this.listBox6.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.listBox6.Name = "listBox6";
-            this.listBox6.Size = new System.Drawing.Size(232, 166);
-            this.listBox6.TabIndex = 0;
-            // 
-            // button75
-            // 
-            this.button75.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button75.Location = new System.Drawing.Point(560, 25);
-            this.button75.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button75.Name = "button75";
-            this.button75.Size = new System.Drawing.Size(35, 25);
-            this.button75.TabIndex = 13;
-            this.button75.Text = "#";
-            this.button75.UseVisualStyleBackColor = true;
-            // 
-            // label185
-            // 
-            this.label185.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label185.Location = new System.Drawing.Point(254, 23);
-            this.label185.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label185.Name = "label185";
-            this.label185.Size = new System.Drawing.Size(184, 24);
-            this.label185.TabIndex = 5;
-            this.label185.Text = "Comm. Timeout(ms) :";
-            this.label185.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label182
-            // 
-            this.label182.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label182.Location = new System.Drawing.Point(254, 98);
-            this.label182.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label182.Name = "label182";
-            this.label182.Size = new System.Drawing.Size(184, 24);
-            this.label182.TabIndex = 12;
-            this.label182.Text = "Baud Rate :";
-            this.label182.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox24
-            // 
-            this.textBox24.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox24.Location = new System.Drawing.Point(442, 25);
-            this.textBox24.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox24.Name = "textBox24";
-            this.textBox24.Size = new System.Drawing.Size(114, 24);
-            this.textBox24.TabIndex = 6;
-            this.textBox24.Text = "500";
-            // 
-            // label183
-            // 
-            this.label183.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label183.Location = new System.Drawing.Point(254, 73);
-            this.label183.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label183.Name = "label183";
-            this.label183.Size = new System.Drawing.Size(184, 24);
-            this.label183.TabIndex = 11;
-            this.label183.Text = "COM Port :";
-            this.label183.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label184
-            // 
-            this.label184.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label184.Location = new System.Drawing.Point(254, 48);
-            this.label184.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label184.Name = "label184";
-            this.label184.Size = new System.Drawing.Size(184, 24);
-            this.label184.TabIndex = 7;
-            this.label184.Text = "Comm. Spacing Delay(ms) :";
-            this.label184.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // comboBox3
-            // 
-            this.comboBox3.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Items.AddRange(new object[] {
-            "1200",
-            "2400",
-            "4800",
-            "9600",
-            "19200",
-            "38400",
-            "57600",
-            "115200"});
-            this.comboBox3.Location = new System.Drawing.Point(442, 100);
-            this.comboBox3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(114, 24);
-            this.comboBox3.TabIndex = 10;
-            this.comboBox3.Text = "115200";
-            // 
-            // textBox19
-            // 
-            this.textBox19.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox19.Location = new System.Drawing.Point(442, 50);
-            this.textBox19.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox19.Name = "textBox19";
-            this.textBox19.Size = new System.Drawing.Size(114, 24);
-            this.textBox19.TabIndex = 8;
-            this.textBox19.Text = "20";
-            // 
-            // comboBox4
-            // 
-            this.comboBox4.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Location = new System.Drawing.Point(442, 75);
-            this.comboBox4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(114, 24);
-            this.comboBox4.TabIndex = 9;
-            this.comboBox4.Text = "COM1";
+            "Laser",
+            "Laser Height Sensor (Keyence)"});
+            this.listBox_Setup_Communication_SelectUnit.Location = new System.Drawing.Point(10, 25);
+            this.listBox_Setup_Communication_SelectUnit.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.listBox_Setup_Communication_SelectUnit.Name = "listBox_Setup_Communication_SelectUnit";
+            this.listBox_Setup_Communication_SelectUnit.Size = new System.Drawing.Size(232, 238);
+            this.listBox_Setup_Communication_SelectUnit.TabIndex = 0;
+            this.listBox_Setup_Communication_SelectUnit.SelectedIndexChanged += new System.EventHandler(this.listBox_Setup_Communication_SelectUnit_SelectedIndexChanged);
             // 
             // tabPage_Setup_IO
             // 
@@ -853,14 +827,14 @@
             this.Output_Active,
             this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn2});
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView3.Location = new System.Drawing.Point(10, 28);
             this.dataGridView3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView3.Name = "dataGridView3";
@@ -913,14 +887,14 @@
             this.Active,
             this.Column4,
             this.Column5});
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView2.Location = new System.Drawing.Point(10, 28);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView2.Name = "dataGridView2";
@@ -978,7 +952,7 @@
             this.groupBox_Config_AxisPositions.Controls.Add(this.groupBox_Config_AxisPositions_LoadTransfer);
             this.groupBox_Config_AxisPositions.Controls.Add(this.groupBox_Config_AxisPositions_Loader);
             this.groupBox_Config_AxisPositions.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox_Config_AxisPositions.Location = new System.Drawing.Point(882, 10);
+            this.groupBox_Config_AxisPositions.Location = new System.Drawing.Point(915, 10);
             this.groupBox_Config_AxisPositions.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_Config_AxisPositions.Name = "groupBox_Config_AxisPositions";
             this.groupBox_Config_AxisPositions.Padding = new System.Windows.Forms.Padding(5);
@@ -1452,10 +1426,10 @@
             // button98
             // 
             this.button98.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button98.Location = new System.Drawing.Point(742, 544);
+            this.button98.Location = new System.Drawing.Point(147, 640);
             this.button98.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button98.Name = "button98";
-            this.button98.Size = new System.Drawing.Size(105, 32);
+            this.button98.Size = new System.Drawing.Size(105, 46);
             this.button98.TabIndex = 54;
             this.button98.Text = "Cancel";
             this.button98.UseVisualStyleBackColor = true;
@@ -1463,10 +1437,10 @@
             // button_Setup_Motion_Save
             // 
             this.button_Setup_Motion_Save.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Motion_Save.Location = new System.Drawing.Point(622, 544);
+            this.button_Setup_Motion_Save.Location = new System.Drawing.Point(20, 640);
             this.button_Setup_Motion_Save.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Motion_Save.Name = "button_Setup_Motion_Save";
-            this.button_Setup_Motion_Save.Size = new System.Drawing.Size(105, 32);
+            this.button_Setup_Motion_Save.Size = new System.Drawing.Size(105, 46);
             this.button_Setup_Motion_Save.TabIndex = 53;
             this.button_Setup_Motion_Save.Text = "Save";
             this.button_Setup_Motion_Save.UseVisualStyleBackColor = true;
@@ -1479,122 +1453,240 @@
             this.groupBox115.Controls.Add(this.groupBox93);
             this.groupBox115.Controls.Add(this.groupBox116);
             this.groupBox115.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox115.Location = new System.Drawing.Point(273, 10);
+            this.groupBox115.Location = new System.Drawing.Point(285, 10);
             this.groupBox115.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox115.Name = "groupBox115";
             this.groupBox115.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox115.Size = new System.Drawing.Size(574, 526);
+            this.groupBox115.Size = new System.Drawing.Size(607, 676);
             this.groupBox115.TabIndex = 50;
             this.groupBox115.TabStop = false;
             this.groupBox115.Text = " Axis Properties ";
             // 
             // groupBox98
             // 
-            this.groupBox98.Controls.Add(this.textBox_Setup_Motion_Jog_MaxStepSize);
-            this.groupBox98.Controls.Add(this.textBox_Setup_Motion_Jog_CoarseStepSize);
-            this.groupBox98.Controls.Add(this.textBox_Setup_Motion_Jog_FineStepSize);
-            this.groupBox98.Controls.Add(this.textBox_Setup_Motion_Jog_CoarseSpeed);
-            this.groupBox98.Controls.Add(this.textBox_Setup_Motion_Jog_FineSpeed);
-            this.groupBox98.Controls.Add(this.textBox_Setup_Motion_Jog_MinStepSize);
-            this.groupBox98.Controls.Add(this.label156);
-            this.groupBox98.Controls.Add(this.label157);
+            this.groupBox98.Controls.Add(this.groupBox2);
+            this.groupBox98.Controls.Add(this.groupBox1);
             this.groupBox98.Controls.Add(this.label240);
             this.groupBox98.Controls.Add(this.label241);
-            this.groupBox98.Controls.Add(this.label238);
-            this.groupBox98.Controls.Add(this.label237);
-            this.groupBox98.Controls.Add(this.label244);
-            this.groupBox98.Controls.Add(this.label236);
             this.groupBox98.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox98.Location = new System.Drawing.Point(274, 333);
+            this.groupBox98.Location = new System.Drawing.Point(10, 402);
             this.groupBox98.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox98.Name = "groupBox98";
             this.groupBox98.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox98.Size = new System.Drawing.Size(290, 182);
+            this.groupBox98.Size = new System.Drawing.Size(265, 264);
             this.groupBox98.TabIndex = 52;
             this.groupBox98.TabStop = false;
             this.groupBox98.Text = " Jog ";
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.textBox_Setup_Motion_Jog_MaxStepSize);
+            this.groupBox2.Controls.Add(this.textBox_Setup_Motion_Jog_CoarseStepSize);
+            this.groupBox2.Controls.Add(this.textBox_Setup_Motion_Jog_FineStepSize);
+            this.groupBox2.Controls.Add(this.textBox_Setup_Motion_Jog_MinStepSize);
+            this.groupBox2.Controls.Add(this.label21);
+            this.groupBox2.Controls.Add(this.label22);
+            this.groupBox2.Controls.Add(this.label23);
+            this.groupBox2.Controls.Add(this.label24);
+            this.groupBox2.Controls.Add(this.label25);
+            this.groupBox2.Controls.Add(this.label26);
+            this.groupBox2.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.groupBox2.Location = new System.Drawing.Point(10, 120);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox2.Size = new System.Drawing.Size(245, 134);
+            this.groupBox2.TabIndex = 62;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = " Step Size (㎜) ";
+            // 
             // textBox_Setup_Motion_Jog_MaxStepSize
             // 
             this.textBox_Setup_Motion_Jog_MaxStepSize.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Motion_Jog_MaxStepSize.Location = new System.Drawing.Point(176, 98);
+            this.textBox_Setup_Motion_Jog_MaxStepSize.Location = new System.Drawing.Point(119, 48);
             this.textBox_Setup_Motion_Jog_MaxStepSize.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Motion_Jog_MaxStepSize.Name = "textBox_Setup_Motion_Jog_MaxStepSize";
-            this.textBox_Setup_Motion_Jog_MaxStepSize.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Jog_MaxStepSize.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Jog_MaxStepSize.TabIndex = 60;
             this.textBox_Setup_Motion_Jog_MaxStepSize.Text = "0.00000";
             // 
             // textBox_Setup_Motion_Jog_CoarseStepSize
             // 
             this.textBox_Setup_Motion_Jog_CoarseStepSize.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Motion_Jog_CoarseStepSize.Location = new System.Drawing.Point(176, 148);
+            this.textBox_Setup_Motion_Jog_CoarseStepSize.Location = new System.Drawing.Point(119, 98);
             this.textBox_Setup_Motion_Jog_CoarseStepSize.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Motion_Jog_CoarseStepSize.Name = "textBox_Setup_Motion_Jog_CoarseStepSize";
-            this.textBox_Setup_Motion_Jog_CoarseStepSize.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Jog_CoarseStepSize.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Jog_CoarseStepSize.TabIndex = 59;
             this.textBox_Setup_Motion_Jog_CoarseStepSize.Text = "0.00000";
             // 
             // textBox_Setup_Motion_Jog_FineStepSize
             // 
             this.textBox_Setup_Motion_Jog_FineStepSize.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Motion_Jog_FineStepSize.Location = new System.Drawing.Point(176, 123);
+            this.textBox_Setup_Motion_Jog_FineStepSize.Location = new System.Drawing.Point(119, 73);
             this.textBox_Setup_Motion_Jog_FineStepSize.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Motion_Jog_FineStepSize.Name = "textBox_Setup_Motion_Jog_FineStepSize";
-            this.textBox_Setup_Motion_Jog_FineStepSize.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Jog_FineStepSize.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Jog_FineStepSize.TabIndex = 58;
             this.textBox_Setup_Motion_Jog_FineStepSize.Text = "0.00000";
+            // 
+            // textBox_Setup_Motion_Jog_MinStepSize
+            // 
+            this.textBox_Setup_Motion_Jog_MinStepSize.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Motion_Jog_MinStepSize.Location = new System.Drawing.Point(119, 23);
+            this.textBox_Setup_Motion_Jog_MinStepSize.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Motion_Jog_MinStepSize.Name = "textBox_Setup_Motion_Jog_MinStepSize";
+            this.textBox_Setup_Motion_Jog_MinStepSize.Size = new System.Drawing.Size(116, 24);
+            this.textBox_Setup_Motion_Jog_MinStepSize.TabIndex = 55;
+            this.textBox_Setup_Motion_Jog_MinStepSize.Text = "0.00000";
+            // 
+            // label21
+            // 
+            this.label21.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label21.Location = new System.Drawing.Point(1104, 23);
+            this.label21.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(165, 11);
+            this.label21.TabIndex = 43;
+            this.label21.Text = "Coarse Jog Speed (mm/s) :";
+            this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label22
+            // 
+            this.label22.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label22.Location = new System.Drawing.Point(1104, 5);
+            this.label22.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(165, 11);
+            this.label22.TabIndex = 42;
+            this.label22.Text = "Fine Jog Speed (mm/s) :";
+            this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label23
+            // 
+            this.label23.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label23.Location = new System.Drawing.Point(6, 21);
+            this.label23.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(110, 24);
+            this.label23.TabIndex = 36;
+            this.label23.Text = "Min Step :";
+            this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label24
+            // 
+            this.label24.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label24.Location = new System.Drawing.Point(6, 46);
+            this.label24.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(110, 24);
+            this.label24.TabIndex = 37;
+            this.label24.Text = "Max Step :";
+            this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label25
+            // 
+            this.label25.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label25.Location = new System.Drawing.Point(6, 96);
+            this.label25.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(110, 24);
+            this.label25.TabIndex = 39;
+            this.label25.Text = "Coarse Step :";
+            this.label25.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label26
+            // 
+            this.label26.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label26.Location = new System.Drawing.Point(6, 71);
+            this.label26.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(110, 24);
+            this.label26.TabIndex = 38;
+            this.label26.Text = "Fine Step :";
+            this.label26.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.textBox_Setup_Motion_Jog_CoarseSpeed);
+            this.groupBox1.Controls.Add(this.textBox_Setup_Motion_Jog_FineSpeed);
+            this.groupBox1.Controls.Add(this.label11);
+            this.groupBox1.Controls.Add(this.label12);
+            this.groupBox1.Controls.Add(this.label13);
+            this.groupBox1.Controls.Add(this.label14);
+            this.groupBox1.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.groupBox1.Location = new System.Drawing.Point(10, 25);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox1.Size = new System.Drawing.Size(245, 84);
+            this.groupBox1.TabIndex = 61;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = " Speed (㎜/s) ";
             // 
             // textBox_Setup_Motion_Jog_CoarseSpeed
             // 
             this.textBox_Setup_Motion_Jog_CoarseSpeed.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Motion_Jog_CoarseSpeed.Location = new System.Drawing.Point(176, 48);
+            this.textBox_Setup_Motion_Jog_CoarseSpeed.Location = new System.Drawing.Point(119, 48);
             this.textBox_Setup_Motion_Jog_CoarseSpeed.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Motion_Jog_CoarseSpeed.Name = "textBox_Setup_Motion_Jog_CoarseSpeed";
-            this.textBox_Setup_Motion_Jog_CoarseSpeed.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Jog_CoarseSpeed.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Jog_CoarseSpeed.TabIndex = 57;
             this.textBox_Setup_Motion_Jog_CoarseSpeed.Text = "0.00000";
             // 
             // textBox_Setup_Motion_Jog_FineSpeed
             // 
             this.textBox_Setup_Motion_Jog_FineSpeed.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Motion_Jog_FineSpeed.Location = new System.Drawing.Point(176, 23);
+            this.textBox_Setup_Motion_Jog_FineSpeed.Location = new System.Drawing.Point(119, 23);
             this.textBox_Setup_Motion_Jog_FineSpeed.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Motion_Jog_FineSpeed.Name = "textBox_Setup_Motion_Jog_FineSpeed";
-            this.textBox_Setup_Motion_Jog_FineSpeed.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Jog_FineSpeed.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Jog_FineSpeed.TabIndex = 56;
             this.textBox_Setup_Motion_Jog_FineSpeed.Text = "0.00000";
             // 
-            // textBox_Setup_Motion_Jog_MinStepSize
+            // label11
             // 
-            this.textBox_Setup_Motion_Jog_MinStepSize.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Motion_Jog_MinStepSize.Location = new System.Drawing.Point(176, 73);
-            this.textBox_Setup_Motion_Jog_MinStepSize.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_Motion_Jog_MinStepSize.Name = "textBox_Setup_Motion_Jog_MinStepSize";
-            this.textBox_Setup_Motion_Jog_MinStepSize.Size = new System.Drawing.Size(106, 24);
-            this.textBox_Setup_Motion_Jog_MinStepSize.TabIndex = 55;
-            this.textBox_Setup_Motion_Jog_MinStepSize.Text = "0.00000";
+            this.label11.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label11.Location = new System.Drawing.Point(6, 46);
+            this.label11.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(110, 24);
+            this.label11.TabIndex = 45;
+            this.label11.Text = "Coarse Speed :";
+            this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label156
+            // label12
             // 
-            this.label156.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label156.Location = new System.Drawing.Point(7, 46);
-            this.label156.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label156.Name = "label156";
-            this.label156.Size = new System.Drawing.Size(166, 24);
-            this.label156.TabIndex = 45;
-            this.label156.Text = "Coarse Speed (㎜/s) :";
-            this.label156.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label12.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label12.Location = new System.Drawing.Point(6, 21);
+            this.label12.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(110, 24);
+            this.label12.TabIndex = 44;
+            this.label12.Text = "Fine Speed :";
+            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label157
+            // label13
             // 
-            this.label157.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label157.Location = new System.Drawing.Point(7, 21);
-            this.label157.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label157.Name = "label157";
-            this.label157.Size = new System.Drawing.Size(166, 24);
-            this.label157.TabIndex = 44;
-            this.label157.Text = "Fine Speed (㎜/s) :";
-            this.label157.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label13.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label13.Location = new System.Drawing.Point(1104, 23);
+            this.label13.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(165, 11);
+            this.label13.TabIndex = 43;
+            this.label13.Text = "Coarse Jog Speed (mm/s) :";
+            this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label14
+            // 
+            this.label14.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label14.Location = new System.Drawing.Point(1104, 5);
+            this.label14.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(165, 11);
+            this.label14.TabIndex = 42;
+            this.label14.Text = "Fine Jog Speed (mm/s) :";
+            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label240
             // 
@@ -1618,50 +1710,6 @@
             this.label241.Text = "Fine Jog Speed (mm/s) :";
             this.label241.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label238
-            // 
-            this.label238.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label238.Location = new System.Drawing.Point(7, 71);
-            this.label238.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label238.Name = "label238";
-            this.label238.Size = new System.Drawing.Size(166, 24);
-            this.label238.TabIndex = 36;
-            this.label238.Text = "Min Stepsize (㎜) :";
-            this.label238.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label237
-            // 
-            this.label237.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label237.Location = new System.Drawing.Point(7, 96);
-            this.label237.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label237.Name = "label237";
-            this.label237.Size = new System.Drawing.Size(166, 24);
-            this.label237.TabIndex = 37;
-            this.label237.Text = "Max Stepsize (㎜) :";
-            this.label237.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label244
-            // 
-            this.label244.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label244.Location = new System.Drawing.Point(7, 146);
-            this.label244.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label244.Name = "label244";
-            this.label244.Size = new System.Drawing.Size(166, 24);
-            this.label244.TabIndex = 39;
-            this.label244.Text = "Coarse Stepsize (㎜) :";
-            this.label244.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label236
-            // 
-            this.label236.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label236.Location = new System.Drawing.Point(7, 121);
-            this.label236.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label236.Name = "label236";
-            this.label236.Size = new System.Drawing.Size(166, 24);
-            this.label236.TabIndex = 38;
-            this.label236.Text = "Fine Stepsize (㎜) :";
-            this.label236.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // groupBox118
             // 
             this.groupBox118.Controls.Add(this.comboBox_Setup_Motion_Limit_Active);
@@ -1673,7 +1721,7 @@
             this.groupBox118.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox118.Name = "groupBox118";
             this.groupBox118.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox118.Size = new System.Drawing.Size(253, 82);
+            this.groupBox118.Size = new System.Drawing.Size(265, 82);
             this.groupBox118.TabIndex = 29;
             this.groupBox118.TabStop = false;
             this.groupBox118.Text = " Limit ";
@@ -1688,7 +1736,7 @@
             this.comboBox_Setup_Motion_Limit_Active.Location = new System.Drawing.Point(139, 47);
             this.comboBox_Setup_Motion_Limit_Active.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Setup_Motion_Limit_Active.Name = "comboBox_Setup_Motion_Limit_Active";
-            this.comboBox_Setup_Motion_Limit_Active.Size = new System.Drawing.Size(106, 24);
+            this.comboBox_Setup_Motion_Limit_Active.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Limit_Active.TabIndex = 44;
             this.comboBox_Setup_Motion_Limit_Active.Text = "Low";
             // 
@@ -1702,7 +1750,7 @@
             this.comboBox_Setup_Motion_Limit_Install.Location = new System.Drawing.Point(139, 22);
             this.comboBox_Setup_Motion_Limit_Install.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Setup_Motion_Limit_Install.Name = "comboBox_Setup_Motion_Limit_Install";
-            this.comboBox_Setup_Motion_Limit_Install.Size = new System.Drawing.Size(106, 24);
+            this.comboBox_Setup_Motion_Limit_Install.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Limit_Install.TabIndex = 43;
             this.comboBox_Setup_Motion_Limit_Install.Text = "Installed";
             // 
@@ -1730,38 +1778,312 @@
             // 
             // groupBox93
             // 
+            this.groupBox93.Controls.Add(this.groupBox5);
+            this.groupBox93.Controls.Add(this.textBox_Setup_Motion_Common_SettleDelay);
+            this.groupBox93.Controls.Add(this.label229);
+            this.groupBox93.Controls.Add(this.groupBox4);
+            this.groupBox93.Controls.Add(this.groupBox3);
             this.groupBox93.Controls.Add(this.label7);
             this.groupBox93.Controls.Add(this.textBox_Setup_Motion_Common_Pulse);
             this.groupBox93.Controls.Add(this.label6);
-            this.groupBox93.Controls.Add(this.textBox_Setup_Motion_Common_MinAcc);
-            this.groupBox93.Controls.Add(this.textBox_Setup_Motion_Common_SettleDelay);
-            this.groupBox93.Controls.Add(this.textBox_Setup_Motion_Common_MaxPos);
-            this.groupBox93.Controls.Add(this.textBox_Setup_Motion_Common_MinPos);
-            this.groupBox93.Controls.Add(this.textBox_Setup_Motion_Common_MoveSpeed);
-            this.groupBox93.Controls.Add(this.textBox_Setup_Motion_Common_MinSpeed);
-            this.groupBox93.Controls.Add(this.textBox_Setup_Motion_Common_MaxSpeed);
-            this.groupBox93.Controls.Add(this.textBox_Setup_Motion_Common_Acc);
-            this.groupBox93.Controls.Add(this.textBox_Setup_Motion_Common_MaxAcc);
             this.groupBox93.Controls.Add(this.textBox_Setup_Motion_Common_Unit);
-            this.groupBox93.Controls.Add(this.label239);
             this.groupBox93.Controls.Add(this.label221);
-            this.groupBox93.Controls.Add(this.label230);
-            this.groupBox93.Controls.Add(this.label242);
-            this.groupBox93.Controls.Add(this.label231);
-            this.groupBox93.Controls.Add(this.label229);
-            this.groupBox93.Controls.Add(this.label243);
-            this.groupBox93.Controls.Add(this.label235);
-            this.groupBox93.Controls.Add(this.label233);
-            this.groupBox93.Controls.Add(this.label234);
             this.groupBox93.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox93.Location = new System.Drawing.Point(274, 25);
+            this.groupBox93.Location = new System.Drawing.Point(303, 25);
             this.groupBox93.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox93.Name = "groupBox93";
             this.groupBox93.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox93.Size = new System.Drawing.Size(290, 289);
+            this.groupBox93.Size = new System.Drawing.Size(294, 485);
             this.groupBox93.TabIndex = 51;
             this.groupBox93.TabStop = false;
             this.groupBox93.Text = " Common ";
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.textBox_Setup_Motion_Common_MinPos);
+            this.groupBox5.Controls.Add(this.textBox_Setup_Motion_Common_MaxPos);
+            this.groupBox5.Controls.Add(this.label27);
+            this.groupBox5.Controls.Add(this.label29);
+            this.groupBox5.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.groupBox5.Location = new System.Drawing.Point(11, 388);
+            this.groupBox5.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox5.Size = new System.Drawing.Size(272, 84);
+            this.groupBox5.TabIndex = 62;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = " Position (㎜) ";
+            // 
+            // textBox_Setup_Motion_Common_MinPos
+            // 
+            this.textBox_Setup_Motion_Common_MinPos.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Motion_Common_MinPos.Location = new System.Drawing.Point(157, 23);
+            this.textBox_Setup_Motion_Common_MinPos.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Motion_Common_MinPos.Name = "textBox_Setup_Motion_Common_MinPos";
+            this.textBox_Setup_Motion_Common_MinPos.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Common_MinPos.TabIndex = 54;
+            this.textBox_Setup_Motion_Common_MinPos.Text = "0.00000";
+            // 
+            // textBox_Setup_Motion_Common_MaxPos
+            // 
+            this.textBox_Setup_Motion_Common_MaxPos.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Motion_Common_MaxPos.Location = new System.Drawing.Point(157, 48);
+            this.textBox_Setup_Motion_Common_MaxPos.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Motion_Common_MaxPos.Name = "textBox_Setup_Motion_Common_MaxPos";
+            this.textBox_Setup_Motion_Common_MaxPos.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Common_MaxPos.TabIndex = 46;
+            this.textBox_Setup_Motion_Common_MaxPos.Text = "0.00000";
+            // 
+            // label27
+            // 
+            this.label27.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label27.Location = new System.Drawing.Point(6, 22);
+            this.label27.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(148, 24);
+            this.label27.TabIndex = 33;
+            this.label27.Text = "Min Position :";
+            this.label27.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label29
+            // 
+            this.label29.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label29.Location = new System.Drawing.Point(6, 47);
+            this.label29.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(148, 24);
+            this.label29.TabIndex = 34;
+            this.label29.Text = "Max Position:";
+            this.label29.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Motion_Common_SettleDelay
+            // 
+            this.textBox_Setup_Motion_Common_SettleDelay.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Motion_Common_SettleDelay.Location = new System.Drawing.Point(176, 51);
+            this.textBox_Setup_Motion_Common_SettleDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Motion_Common_SettleDelay.Name = "textBox_Setup_Motion_Common_SettleDelay";
+            this.textBox_Setup_Motion_Common_SettleDelay.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Common_SettleDelay.TabIndex = 61;
+            this.textBox_Setup_Motion_Common_SettleDelay.Text = "0.00000";
+            // 
+            // label229
+            // 
+            this.label229.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label229.Location = new System.Drawing.Point(7, 50);
+            this.label229.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label229.Name = "label229";
+            this.label229.Size = new System.Drawing.Size(166, 24);
+            this.label229.TabIndex = 60;
+            this.label229.Text = "Settle Delay (msec) :";
+            this.label229.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.textBox_Setup_Motion_Common_CoarseSpeed);
+            this.groupBox4.Controls.Add(this.label16);
+            this.groupBox4.Controls.Add(this.textBox_Setup_Motion_Common_MinSpeed);
+            this.groupBox4.Controls.Add(this.textBox_Setup_Motion_Common_FineSpeed);
+            this.groupBox4.Controls.Add(this.textBox_Setup_Motion_Common_MaxSpeed);
+            this.groupBox4.Controls.Add(this.label17);
+            this.groupBox4.Controls.Add(this.label18);
+            this.groupBox4.Controls.Add(this.label19);
+            this.groupBox4.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.groupBox4.Location = new System.Drawing.Point(10, 237);
+            this.groupBox4.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox4.Size = new System.Drawing.Size(272, 134);
+            this.groupBox4.TabIndex = 59;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = " Speed (㎜/s) ";
+            // 
+            // textBox_Setup_Motion_Common_CoarseSpeed
+            // 
+            this.textBox_Setup_Motion_Common_CoarseSpeed.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Motion_Common_CoarseSpeed.Location = new System.Drawing.Point(157, 98);
+            this.textBox_Setup_Motion_Common_CoarseSpeed.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Motion_Common_CoarseSpeed.Name = "textBox_Setup_Motion_Common_CoarseSpeed";
+            this.textBox_Setup_Motion_Common_CoarseSpeed.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Common_CoarseSpeed.TabIndex = 56;
+            this.textBox_Setup_Motion_Common_CoarseSpeed.Text = "0.00000";
+            // 
+            // label16
+            // 
+            this.label16.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label16.Location = new System.Drawing.Point(6, 97);
+            this.label16.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(148, 24);
+            this.label16.TabIndex = 55;
+            this.label16.Text = "Coarse Speed :";
+            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Motion_Common_MinSpeed
+            // 
+            this.textBox_Setup_Motion_Common_MinSpeed.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Motion_Common_MinSpeed.Location = new System.Drawing.Point(157, 23);
+            this.textBox_Setup_Motion_Common_MinSpeed.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Motion_Common_MinSpeed.Name = "textBox_Setup_Motion_Common_MinSpeed";
+            this.textBox_Setup_Motion_Common_MinSpeed.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Common_MinSpeed.TabIndex = 54;
+            this.textBox_Setup_Motion_Common_MinSpeed.Text = "0.00000";
+            // 
+            // textBox_Setup_Motion_Common_FineSpeed
+            // 
+            this.textBox_Setup_Motion_Common_FineSpeed.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Motion_Common_FineSpeed.Location = new System.Drawing.Point(157, 73);
+            this.textBox_Setup_Motion_Common_FineSpeed.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Motion_Common_FineSpeed.Name = "textBox_Setup_Motion_Common_FineSpeed";
+            this.textBox_Setup_Motion_Common_FineSpeed.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Common_FineSpeed.TabIndex = 47;
+            this.textBox_Setup_Motion_Common_FineSpeed.Text = "0.00000";
+            // 
+            // textBox_Setup_Motion_Common_MaxSpeed
+            // 
+            this.textBox_Setup_Motion_Common_MaxSpeed.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Motion_Common_MaxSpeed.Location = new System.Drawing.Point(157, 48);
+            this.textBox_Setup_Motion_Common_MaxSpeed.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Motion_Common_MaxSpeed.Name = "textBox_Setup_Motion_Common_MaxSpeed";
+            this.textBox_Setup_Motion_Common_MaxSpeed.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Common_MaxSpeed.TabIndex = 46;
+            this.textBox_Setup_Motion_Common_MaxSpeed.Text = "0.00000";
+            // 
+            // label17
+            // 
+            this.label17.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label17.Location = new System.Drawing.Point(6, 22);
+            this.label17.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(148, 24);
+            this.label17.TabIndex = 33;
+            this.label17.Text = "Min Speed :";
+            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label18
+            // 
+            this.label18.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label18.Location = new System.Drawing.Point(6, 72);
+            this.label18.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(148, 24);
+            this.label18.TabIndex = 35;
+            this.label18.Text = "Fine Speed :";
+            this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label19
+            // 
+            this.label19.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label19.Location = new System.Drawing.Point(6, 47);
+            this.label19.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(148, 24);
+            this.label19.TabIndex = 34;
+            this.label19.Text = "Max Speed :";
+            this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.textBox_Setup_Motion_Common_CoarseAcc);
+            this.groupBox3.Controls.Add(this.label15);
+            this.groupBox3.Controls.Add(this.textBox_Setup_Motion_Common_MinAcc);
+            this.groupBox3.Controls.Add(this.textBox_Setup_Motion_Common_FineAcc);
+            this.groupBox3.Controls.Add(this.textBox_Setup_Motion_Common_MaxAcc);
+            this.groupBox3.Controls.Add(this.label30);
+            this.groupBox3.Controls.Add(this.label31);
+            this.groupBox3.Controls.Add(this.label32);
+            this.groupBox3.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.groupBox3.Location = new System.Drawing.Point(10, 94);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox3.Size = new System.Drawing.Size(272, 134);
+            this.groupBox3.TabIndex = 58;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = " Acceleration (㎜/s²) ";
+            // 
+            // textBox_Setup_Motion_Common_CoarseAcc
+            // 
+            this.textBox_Setup_Motion_Common_CoarseAcc.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Motion_Common_CoarseAcc.Location = new System.Drawing.Point(157, 98);
+            this.textBox_Setup_Motion_Common_CoarseAcc.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Motion_Common_CoarseAcc.Name = "textBox_Setup_Motion_Common_CoarseAcc";
+            this.textBox_Setup_Motion_Common_CoarseAcc.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Common_CoarseAcc.TabIndex = 56;
+            this.textBox_Setup_Motion_Common_CoarseAcc.Text = "0.00000";
+            // 
+            // label15
+            // 
+            this.label15.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label15.Location = new System.Drawing.Point(6, 97);
+            this.label15.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(148, 24);
+            this.label15.TabIndex = 55;
+            this.label15.Text = "Coarse Acceleration :";
+            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Motion_Common_MinAcc
+            // 
+            this.textBox_Setup_Motion_Common_MinAcc.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Motion_Common_MinAcc.Location = new System.Drawing.Point(157, 23);
+            this.textBox_Setup_Motion_Common_MinAcc.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Motion_Common_MinAcc.Name = "textBox_Setup_Motion_Common_MinAcc";
+            this.textBox_Setup_Motion_Common_MinAcc.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Common_MinAcc.TabIndex = 54;
+            this.textBox_Setup_Motion_Common_MinAcc.Text = "0.00000";
+            // 
+            // textBox_Setup_Motion_Common_FineAcc
+            // 
+            this.textBox_Setup_Motion_Common_FineAcc.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Motion_Common_FineAcc.Location = new System.Drawing.Point(157, 73);
+            this.textBox_Setup_Motion_Common_FineAcc.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Motion_Common_FineAcc.Name = "textBox_Setup_Motion_Common_FineAcc";
+            this.textBox_Setup_Motion_Common_FineAcc.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Common_FineAcc.TabIndex = 47;
+            this.textBox_Setup_Motion_Common_FineAcc.Text = "0.00000";
+            // 
+            // textBox_Setup_Motion_Common_MaxAcc
+            // 
+            this.textBox_Setup_Motion_Common_MaxAcc.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Motion_Common_MaxAcc.Location = new System.Drawing.Point(157, 48);
+            this.textBox_Setup_Motion_Common_MaxAcc.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Motion_Common_MaxAcc.Name = "textBox_Setup_Motion_Common_MaxAcc";
+            this.textBox_Setup_Motion_Common_MaxAcc.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Common_MaxAcc.TabIndex = 46;
+            this.textBox_Setup_Motion_Common_MaxAcc.Text = "0.00000";
+            // 
+            // label30
+            // 
+            this.label30.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label30.Location = new System.Drawing.Point(6, 22);
+            this.label30.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(148, 24);
+            this.label30.TabIndex = 33;
+            this.label30.Text = "Min Acceleration :";
+            this.label30.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label31
+            // 
+            this.label31.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label31.Location = new System.Drawing.Point(6, 72);
+            this.label31.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(148, 24);
+            this.label31.TabIndex = 35;
+            this.label31.Text = "Fine Acceleration :";
+            this.label31.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label32
+            // 
+            this.label32.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label32.Location = new System.Drawing.Point(6, 47);
+            this.label32.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(148, 24);
+            this.label32.TabIndex = 34;
+            this.label32.Text = "Max Acceleration :";
+            this.label32.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label7
             // 
@@ -1795,96 +2117,6 @@
             this.label6.Text = "Pulse :";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // textBox_Setup_Motion_Common_MinAcc
-            // 
-            this.textBox_Setup_Motion_Common_MinAcc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Motion_Common_MinAcc.Location = new System.Drawing.Point(177, 54);
-            this.textBox_Setup_Motion_Common_MinAcc.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_Motion_Common_MinAcc.Name = "textBox_Setup_Motion_Common_MinAcc";
-            this.textBox_Setup_Motion_Common_MinAcc.Size = new System.Drawing.Size(106, 24);
-            this.textBox_Setup_Motion_Common_MinAcc.TabIndex = 54;
-            this.textBox_Setup_Motion_Common_MinAcc.Text = "0.00000";
-            // 
-            // textBox_Setup_Motion_Common_SettleDelay
-            // 
-            this.textBox_Setup_Motion_Common_SettleDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Motion_Common_SettleDelay.Location = new System.Drawing.Point(176, 254);
-            this.textBox_Setup_Motion_Common_SettleDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_Motion_Common_SettleDelay.Name = "textBox_Setup_Motion_Common_SettleDelay";
-            this.textBox_Setup_Motion_Common_SettleDelay.Size = new System.Drawing.Size(106, 24);
-            this.textBox_Setup_Motion_Common_SettleDelay.TabIndex = 53;
-            this.textBox_Setup_Motion_Common_SettleDelay.Text = "0.00000";
-            // 
-            // textBox_Setup_Motion_Common_MaxPos
-            // 
-            this.textBox_Setup_Motion_Common_MaxPos.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Motion_Common_MaxPos.Location = new System.Drawing.Point(177, 229);
-            this.textBox_Setup_Motion_Common_MaxPos.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_Motion_Common_MaxPos.Name = "textBox_Setup_Motion_Common_MaxPos";
-            this.textBox_Setup_Motion_Common_MaxPos.Size = new System.Drawing.Size(106, 24);
-            this.textBox_Setup_Motion_Common_MaxPos.TabIndex = 52;
-            this.textBox_Setup_Motion_Common_MaxPos.Text = "0.00000";
-            // 
-            // textBox_Setup_Motion_Common_MinPos
-            // 
-            this.textBox_Setup_Motion_Common_MinPos.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Motion_Common_MinPos.Location = new System.Drawing.Point(177, 204);
-            this.textBox_Setup_Motion_Common_MinPos.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_Motion_Common_MinPos.Name = "textBox_Setup_Motion_Common_MinPos";
-            this.textBox_Setup_Motion_Common_MinPos.Size = new System.Drawing.Size(106, 24);
-            this.textBox_Setup_Motion_Common_MinPos.TabIndex = 51;
-            this.textBox_Setup_Motion_Common_MinPos.Text = "0.00000";
-            // 
-            // textBox_Setup_Motion_Common_MoveSpeed
-            // 
-            this.textBox_Setup_Motion_Common_MoveSpeed.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Motion_Common_MoveSpeed.Location = new System.Drawing.Point(177, 179);
-            this.textBox_Setup_Motion_Common_MoveSpeed.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_Motion_Common_MoveSpeed.Name = "textBox_Setup_Motion_Common_MoveSpeed";
-            this.textBox_Setup_Motion_Common_MoveSpeed.Size = new System.Drawing.Size(106, 24);
-            this.textBox_Setup_Motion_Common_MoveSpeed.TabIndex = 50;
-            this.textBox_Setup_Motion_Common_MoveSpeed.Text = "0.00000";
-            // 
-            // textBox_Setup_Motion_Common_MinSpeed
-            // 
-            this.textBox_Setup_Motion_Common_MinSpeed.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Motion_Common_MinSpeed.Location = new System.Drawing.Point(177, 154);
-            this.textBox_Setup_Motion_Common_MinSpeed.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_Motion_Common_MinSpeed.Name = "textBox_Setup_Motion_Common_MinSpeed";
-            this.textBox_Setup_Motion_Common_MinSpeed.Size = new System.Drawing.Size(106, 24);
-            this.textBox_Setup_Motion_Common_MinSpeed.TabIndex = 49;
-            this.textBox_Setup_Motion_Common_MinSpeed.Text = "0.00000";
-            // 
-            // textBox_Setup_Motion_Common_MaxSpeed
-            // 
-            this.textBox_Setup_Motion_Common_MaxSpeed.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Motion_Common_MaxSpeed.Location = new System.Drawing.Point(177, 129);
-            this.textBox_Setup_Motion_Common_MaxSpeed.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_Motion_Common_MaxSpeed.Name = "textBox_Setup_Motion_Common_MaxSpeed";
-            this.textBox_Setup_Motion_Common_MaxSpeed.Size = new System.Drawing.Size(106, 24);
-            this.textBox_Setup_Motion_Common_MaxSpeed.TabIndex = 48;
-            this.textBox_Setup_Motion_Common_MaxSpeed.Text = "0.00000";
-            // 
-            // textBox_Setup_Motion_Common_Acc
-            // 
-            this.textBox_Setup_Motion_Common_Acc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Motion_Common_Acc.Location = new System.Drawing.Point(177, 104);
-            this.textBox_Setup_Motion_Common_Acc.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_Motion_Common_Acc.Name = "textBox_Setup_Motion_Common_Acc";
-            this.textBox_Setup_Motion_Common_Acc.Size = new System.Drawing.Size(106, 24);
-            this.textBox_Setup_Motion_Common_Acc.TabIndex = 47;
-            this.textBox_Setup_Motion_Common_Acc.Text = "0.00000";
-            // 
-            // textBox_Setup_Motion_Common_MaxAcc
-            // 
-            this.textBox_Setup_Motion_Common_MaxAcc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Motion_Common_MaxAcc.Location = new System.Drawing.Point(177, 79);
-            this.textBox_Setup_Motion_Common_MaxAcc.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_Motion_Common_MaxAcc.Name = "textBox_Setup_Motion_Common_MaxAcc";
-            this.textBox_Setup_Motion_Common_MaxAcc.Size = new System.Drawing.Size(106, 24);
-            this.textBox_Setup_Motion_Common_MaxAcc.TabIndex = 46;
-            this.textBox_Setup_Motion_Common_MaxAcc.Text = "0.00000";
-            // 
             // textBox_Setup_Motion_Common_Unit
             // 
             this.textBox_Setup_Motion_Common_Unit.Font = new System.Drawing.Font("Tahoma", 10F);
@@ -1894,17 +2126,6 @@
             this.textBox_Setup_Motion_Common_Unit.Size = new System.Drawing.Size(70, 24);
             this.textBox_Setup_Motion_Common_Unit.TabIndex = 45;
             this.textBox_Setup_Motion_Common_Unit.Text = "0.00000";
-            // 
-            // label239
-            // 
-            this.label239.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label239.Location = new System.Drawing.Point(7, 178);
-            this.label239.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label239.Name = "label239";
-            this.label239.Size = new System.Drawing.Size(166, 24);
-            this.label239.TabIndex = 44;
-            this.label239.Text = "Move Speed (㎜/s) :";
-            this.label239.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label221
             // 
@@ -1916,94 +2137,6 @@
             this.label221.TabIndex = 23;
             this.label221.Text = "Unit (㎜) :";
             this.label221.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label230
-            // 
-            this.label230.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label230.Location = new System.Drawing.Point(7, 203);
-            this.label230.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label230.Name = "label230";
-            this.label230.Size = new System.Drawing.Size(166, 24);
-            this.label230.TabIndex = 31;
-            this.label230.Text = "Min Position (㎜) :";
-            this.label230.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label242
-            // 
-            this.label242.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label242.Location = new System.Drawing.Point(7, 128);
-            this.label242.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label242.Name = "label242";
-            this.label242.Size = new System.Drawing.Size(166, 24);
-            this.label242.TabIndex = 41;
-            this.label242.Text = "Max Speed (㎜/s) :";
-            this.label242.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label231
-            // 
-            this.label231.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label231.Location = new System.Drawing.Point(7, 228);
-            this.label231.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label231.Name = "label231";
-            this.label231.Size = new System.Drawing.Size(166, 24);
-            this.label231.TabIndex = 32;
-            this.label231.Text = "Max Position (㎜) :";
-            this.label231.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label229
-            // 
-            this.label229.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label229.Location = new System.Drawing.Point(7, 253);
-            this.label229.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label229.Name = "label229";
-            this.label229.Size = new System.Drawing.Size(166, 24);
-            this.label229.TabIndex = 30;
-            this.label229.Text = "Settle Delay (msec) :";
-            this.label229.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label243
-            // 
-            this.label243.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label243.Location = new System.Drawing.Point(7, 153);
-            this.label243.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label243.Name = "label243";
-            this.label243.Size = new System.Drawing.Size(166, 24);
-            this.label243.TabIndex = 40;
-            this.label243.Text = "Min Speed (㎜/s) :";
-            this.label243.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label235
-            // 
-            this.label235.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label235.Location = new System.Drawing.Point(7, 53);
-            this.label235.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label235.Name = "label235";
-            this.label235.Size = new System.Drawing.Size(166, 24);
-            this.label235.TabIndex = 33;
-            this.label235.Text = "Min Acceleration (㎜/s²) :";
-            this.label235.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label233
-            // 
-            this.label233.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label233.Location = new System.Drawing.Point(7, 103);
-            this.label233.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label233.Name = "label233";
-            this.label233.Size = new System.Drawing.Size(166, 24);
-            this.label233.TabIndex = 35;
-            this.label233.Text = "Acceleration (㎜/s²) :";
-            this.label233.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label234
-            // 
-            this.label234.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label234.Location = new System.Drawing.Point(7, 78);
-            this.label234.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label234.Name = "label234";
-            this.label234.Size = new System.Drawing.Size(166, 24);
-            this.label234.TabIndex = 34;
-            this.label234.Text = "Max Acceleration (㎜/s²) :";
-            this.label234.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // groupBox116
             // 
@@ -2026,11 +2159,11 @@
             this.groupBox116.Controls.Add(this.label217);
             this.groupBox116.Controls.Add(this.label216);
             this.groupBox116.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox116.Location = new System.Drawing.Point(10, 124);
+            this.groupBox116.Location = new System.Drawing.Point(10, 123);
             this.groupBox116.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox116.Name = "groupBox116";
             this.groupBox116.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox116.Size = new System.Drawing.Size(253, 263);
+            this.groupBox116.Size = new System.Drawing.Size(265, 263);
             this.groupBox116.TabIndex = 28;
             this.groupBox116.TabStop = false;
             this.groupBox116.Text = " Home ";
@@ -2041,7 +2174,7 @@
             this.textBox_Setup_Motion_Home_Speed_Last.Location = new System.Drawing.Point(139, 201);
             this.textBox_Setup_Motion_Home_Speed_Last.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
             this.textBox_Setup_Motion_Home_Speed_Last.Name = "textBox_Setup_Motion_Home_Speed_Last";
-            this.textBox_Setup_Motion_Home_Speed_Last.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Home_Speed_Last.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Home_Speed_Last.TabIndex = 54;
             this.textBox_Setup_Motion_Home_Speed_Last.Text = "0.00000";
             // 
@@ -2062,7 +2195,7 @@
             this.textBox_Setup_Motion_Home_Speed_3rd.Location = new System.Drawing.Point(139, 175);
             this.textBox_Setup_Motion_Home_Speed_3rd.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
             this.textBox_Setup_Motion_Home_Speed_3rd.Name = "textBox_Setup_Motion_Home_Speed_3rd";
-            this.textBox_Setup_Motion_Home_Speed_3rd.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Home_Speed_3rd.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Home_Speed_3rd.TabIndex = 52;
             this.textBox_Setup_Motion_Home_Speed_3rd.Text = "0.00000";
             // 
@@ -2083,7 +2216,7 @@
             this.textBox_Setup_Motion_Home_Speed_2nd.Location = new System.Drawing.Point(139, 149);
             this.textBox_Setup_Motion_Home_Speed_2nd.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
             this.textBox_Setup_Motion_Home_Speed_2nd.Name = "textBox_Setup_Motion_Home_Speed_2nd";
-            this.textBox_Setup_Motion_Home_Speed_2nd.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Home_Speed_2nd.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Home_Speed_2nd.TabIndex = 50;
             this.textBox_Setup_Motion_Home_Speed_2nd.Text = "0.00000";
             // 
@@ -2108,7 +2241,7 @@
             this.comboBox_Setup_Motion_Home_Direction.Location = new System.Drawing.Point(139, 97);
             this.comboBox_Setup_Motion_Home_Direction.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Setup_Motion_Home_Direction.Name = "comboBox_Setup_Motion_Home_Direction";
-            this.comboBox_Setup_Motion_Home_Direction.Size = new System.Drawing.Size(106, 24);
+            this.comboBox_Setup_Motion_Home_Direction.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Home_Direction.TabIndex = 48;
             this.comboBox_Setup_Motion_Home_Direction.Text = "Negative";
             // 
@@ -2122,7 +2255,7 @@
             this.comboBox_Setup_Motion_Home_Active.Location = new System.Drawing.Point(139, 72);
             this.comboBox_Setup_Motion_Home_Active.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Setup_Motion_Home_Active.Name = "comboBox_Setup_Motion_Home_Active";
-            this.comboBox_Setup_Motion_Home_Active.Size = new System.Drawing.Size(106, 24);
+            this.comboBox_Setup_Motion_Home_Active.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Home_Active.TabIndex = 47;
             this.comboBox_Setup_Motion_Home_Active.Text = "Low";
             // 
@@ -2136,7 +2269,7 @@
             this.comboBox_Setup_Motion_Home_Install.Location = new System.Drawing.Point(139, 47);
             this.comboBox_Setup_Motion_Home_Install.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Setup_Motion_Home_Install.Name = "comboBox_Setup_Motion_Home_Install";
-            this.comboBox_Setup_Motion_Home_Install.Size = new System.Drawing.Size(106, 24);
+            this.comboBox_Setup_Motion_Home_Install.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Home_Install.TabIndex = 46;
             this.comboBox_Setup_Motion_Home_Install.Text = "Installed";
             // 
@@ -2151,7 +2284,7 @@
             this.comboBox_Setup_Motion_Home_Sensing.Location = new System.Drawing.Point(139, 22);
             this.comboBox_Setup_Motion_Home_Sensing.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Setup_Motion_Home_Sensing.Name = "comboBox_Setup_Motion_Home_Sensing";
-            this.comboBox_Setup_Motion_Home_Sensing.Size = new System.Drawing.Size(106, 24);
+            this.comboBox_Setup_Motion_Home_Sensing.Size = new System.Drawing.Size(116, 24);
             this.comboBox_Setup_Motion_Home_Sensing.TabIndex = 45;
             this.comboBox_Setup_Motion_Home_Sensing.Text = "Home Sensor";
             // 
@@ -2161,7 +2294,7 @@
             this.textBox_Setup_Motion_Home_Offset.Location = new System.Drawing.Point(139, 227);
             this.textBox_Setup_Motion_Home_Offset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
             this.textBox_Setup_Motion_Home_Offset.Name = "textBox_Setup_Motion_Home_Offset";
-            this.textBox_Setup_Motion_Home_Offset.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Home_Offset.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Home_Offset.TabIndex = 35;
             this.textBox_Setup_Motion_Home_Offset.Text = "0.00000";
             // 
@@ -2182,7 +2315,7 @@
             this.textBox_Setup_Motion_Home_Speed_1st.Location = new System.Drawing.Point(139, 123);
             this.textBox_Setup_Motion_Home_Speed_1st.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
             this.textBox_Setup_Motion_Home_Speed_1st.Name = "textBox_Setup_Motion_Home_Speed_1st";
-            this.textBox_Setup_Motion_Home_Speed_1st.Size = new System.Drawing.Size(106, 24);
+            this.textBox_Setup_Motion_Home_Speed_1st.Size = new System.Drawing.Size(116, 24);
             this.textBox_Setup_Motion_Home_Speed_1st.TabIndex = 30;
             this.textBox_Setup_Motion_Home_Speed_1st.Text = "0.00000";
             // 
@@ -2249,7 +2382,7 @@
             this.groupBox114.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox114.Name = "groupBox114";
             this.groupBox114.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox114.Size = new System.Drawing.Size(252, 328);
+            this.groupBox114.Size = new System.Drawing.Size(252, 617);
             this.groupBox114.TabIndex = 49;
             this.groupBox114.TabStop = false;
             this.groupBox114.Text = " Select Axis ";
@@ -2278,7 +2411,7 @@
             this.listBox_Setup_Motion_SelectAxis.Location = new System.Drawing.Point(10, 25);
             this.listBox_Setup_Motion_SelectAxis.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.listBox_Setup_Motion_SelectAxis.Name = "listBox_Setup_Motion_SelectAxis";
-            this.listBox_Setup_Motion_SelectAxis.Size = new System.Drawing.Size(232, 292);
+            this.listBox_Setup_Motion_SelectAxis.Size = new System.Drawing.Size(232, 580);
             this.listBox_Setup_Motion_SelectAxis.TabIndex = 0;
             this.listBox_Setup_Motion_SelectAxis.SelectedIndexChanged += new System.EventHandler(this.listBox_Setup_Motion_SelectAxis_SelectedIndexChanged);
             // 
@@ -2299,6 +2432,18 @@
             this.tabControl_Setup.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabControl_Setup.TabIndex = 1;
             // 
+            // button_Test_SocketConnect
+            // 
+            this.button_Test_SocketConnect.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Test_SocketConnect.Location = new System.Drawing.Point(912, 283);
+            this.button_Test_SocketConnect.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Test_SocketConnect.Name = "button_Test_SocketConnect";
+            this.button_Test_SocketConnect.Size = new System.Drawing.Size(191, 43);
+            this.button_Test_SocketConnect.TabIndex = 60;
+            this.button_Test_SocketConnect.Text = "Laser Socket Connect";
+            this.button_Test_SocketConnect.UseVisualStyleBackColor = true;
+            this.button_Test_SocketConnect.Click += new System.EventHandler(this.button_Test_SocketConnect_Click);
+            // 
             // FormNew_Setup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -2314,11 +2459,12 @@
             this.Name = "FormNew_Setup";
             this.Text = "FormNew_Main";
             this.tabPage_Setup_Communication.ResumeLayout(false);
-            this.groupBox91.ResumeLayout(false);
-            this.groupBox91.PerformLayout();
-            this.groupBox92.ResumeLayout(false);
             this.groupBox86.ResumeLayout(false);
-            this.groupBox86.PerformLayout();
+            this.tabControl_Setup_Communication_Type.ResumeLayout(false);
+            this.tabPage_TCPIP.ResumeLayout(false);
+            this.tabPage_TCPIP.PerformLayout();
+            this.tabPage_RS232.ResumeLayout(false);
+            this.tabPage_RS232.PerformLayout();
             this.groupBox127.ResumeLayout(false);
             this.groupBox89.ResumeLayout(false);
             this.tabPage_Setup_IO.ResumeLayout(false);
@@ -2337,10 +2483,19 @@
             this.groupBox_Config_AxisPositions_Loader.ResumeLayout(false);
             this.groupBox115.ResumeLayout(false);
             this.groupBox98.ResumeLayout(false);
-            this.groupBox98.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.groupBox118.ResumeLayout(false);
             this.groupBox93.ResumeLayout(false);
             this.groupBox93.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.groupBox116.ResumeLayout(false);
             this.groupBox116.PerformLayout();
             this.groupBox114.ResumeLayout(false);
@@ -2352,33 +2507,12 @@
         #endregion
 
         private System.Windows.Forms.TabPage tabPage_Setup_Communication;
-        private System.Windows.Forms.GroupBox groupBox91;
-        private System.Windows.Forms.Button button81;
-        private System.Windows.Forms.Button button79;
-        private System.Windows.Forms.GroupBox groupBox92;
-        private System.Windows.Forms.RadioButton radioButton29;
-        private System.Windows.Forms.RadioButton radioButton34;
-        private System.Windows.Forms.Button button80;
-        private System.Windows.Forms.ListBox listBox7;
-        private System.Windows.Forms.TextBox textBox34;
-        private System.Windows.Forms.Label label108;
-        private System.Windows.Forms.TextBox textBox35;
         private System.Windows.Forms.GroupBox groupBox86;
         private System.Windows.Forms.Button button64;
         private System.Windows.Forms.GroupBox groupBox89;
-        private System.Windows.Forms.RadioButton radioButton35;
-        private System.Windows.Forms.RadioButton radioButton39;
-        private System.Windows.Forms.Button button74;
-        private System.Windows.Forms.ListBox listBox6;
-        private System.Windows.Forms.Button button75;
-        private System.Windows.Forms.Label label185;
-        private System.Windows.Forms.Label label182;
-        private System.Windows.Forms.TextBox textBox24;
-        private System.Windows.Forms.Label label183;
-        private System.Windows.Forms.Label label184;
-        private System.Windows.Forms.ComboBox comboBox3;
-        private System.Windows.Forms.TextBox textBox19;
-        private System.Windows.Forms.ComboBox comboBox4;
+        private System.Windows.Forms.RadioButton radioButton_Setup_Communication_Comm_RS232;
+        private System.Windows.Forms.RadioButton radioButton_Setup_Communication_Comm_TCPIP;
+        private System.Windows.Forms.ListBox listBox_Setup_Communication_SelectUnit;
         private System.Windows.Forms.TabPage tabPage_Setup_IO;
         private System.Windows.Forms.GroupBox groupBox90;
         private System.Windows.Forms.DataGridView dataGridView3;
@@ -2387,44 +2521,14 @@
         private System.Windows.Forms.TabPage tabPage_Setup_Motion;
         private System.Windows.Forms.GroupBox groupBox115;
         private System.Windows.Forms.GroupBox groupBox98;
-        private System.Windows.Forms.TextBox textBox_Setup_Motion_Jog_MaxStepSize;
-        private System.Windows.Forms.TextBox textBox_Setup_Motion_Jog_CoarseStepSize;
-        private System.Windows.Forms.TextBox textBox_Setup_Motion_Jog_FineStepSize;
-        private System.Windows.Forms.TextBox textBox_Setup_Motion_Jog_CoarseSpeed;
-        private System.Windows.Forms.TextBox textBox_Setup_Motion_Jog_FineSpeed;
-        private System.Windows.Forms.TextBox textBox_Setup_Motion_Jog_MinStepSize;
-        private System.Windows.Forms.Label label156;
-        private System.Windows.Forms.Label label157;
         private System.Windows.Forms.Label label240;
         private System.Windows.Forms.Label label241;
-        private System.Windows.Forms.Label label238;
-        private System.Windows.Forms.Label label237;
-        private System.Windows.Forms.Label label244;
-        private System.Windows.Forms.Label label236;
         private System.Windows.Forms.GroupBox groupBox118;
         private System.Windows.Forms.Label label232;
         private System.Windows.Forms.Label label227;
         private System.Windows.Forms.GroupBox groupBox93;
-        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_MinAcc;
-        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_SettleDelay;
-        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_MaxPos;
-        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_MinPos;
-        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_MoveSpeed;
-        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_MinSpeed;
-        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_MaxSpeed;
-        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_Acc;
-        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_MaxAcc;
         private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_Unit;
-        private System.Windows.Forms.Label label239;
         private System.Windows.Forms.Label label221;
-        private System.Windows.Forms.Label label230;
-        private System.Windows.Forms.Label label242;
-        private System.Windows.Forms.Label label231;
-        private System.Windows.Forms.Label label229;
-        private System.Windows.Forms.Label label243;
-        private System.Windows.Forms.Label label235;
-        private System.Windows.Forms.Label label233;
-        private System.Windows.Forms.Label label234;
         private System.Windows.Forms.GroupBox groupBox116;
         private System.Windows.Forms.TextBox textBox_Setup_Motion_Home_Offset;
         private System.Windows.Forms.Label label222;
@@ -2437,14 +2541,6 @@
         private System.Windows.Forms.GroupBox groupBox114;
         private System.Windows.Forms.ListBox listBox_Setup_Motion_SelectAxis;
         private System.Windows.Forms.TabControl tabControl_Setup;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ComboBox comboBox6;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox comboBox5;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Button button98;
         private System.Windows.Forms.Button button_Setup_Motion_Save;
         private System.Windows.Forms.GroupBox groupBox_Config_AxisPositions;
@@ -2495,11 +2591,7 @@
         private System.Windows.Forms.RadioButton radioButton3;
         private System.Windows.Forms.RadioButton radioButton4;
         private System.Windows.Forms.Button button96;
-        private System.Windows.Forms.Button button97;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label123;
+        private System.Windows.Forms.Button button_Setup_Comm_Save;
         private System.Windows.Forms.ComboBox comboBox_Setup_Motion_Limit_Active;
         private System.Windows.Forms.ComboBox comboBox_Setup_Motion_Limit_Install;
         private System.Windows.Forms.ComboBox comboBox_Setup_Motion_Home_Direction;
@@ -2515,5 +2607,78 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox textBox_Setup_Motion_Home_Speed_2nd;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.TextBox textBox_Setup_Motion_Jog_CoarseSpeed;
+        private System.Windows.Forms.TextBox textBox_Setup_Motion_Jog_FineSpeed;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.TextBox textBox_Setup_Motion_Jog_MaxStepSize;
+        private System.Windows.Forms.TextBox textBox_Setup_Motion_Jog_CoarseStepSize;
+        private System.Windows.Forms.TextBox textBox_Setup_Motion_Jog_FineStepSize;
+        private System.Windows.Forms.TextBox textBox_Setup_Motion_Jog_MinStepSize;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_CoarseAcc;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_MinAcc;
+        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_FineAcc;
+        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_MaxAcc;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.Label label32;
+        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_SettleDelay;
+        private System.Windows.Forms.Label label229;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_CoarseSpeed;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_MinSpeed;
+        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_FineSpeed;
+        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_MaxSpeed;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_MinPos;
+        private System.Windows.Forms.TextBox textBox_Setup_Motion_Common_MaxPos;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.TabControl tabControl_Setup_Communication_Type;
+        private System.Windows.Forms.TabPage tabPage_TCPIP;
+        private System.Windows.Forms.TabPage tabPage_RS232;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.ComboBox comboBox_Setup_Communication_TCPIP_OpenType;
+        private System.Windows.Forms.Button button_KeypadCall_Setup_Communication_TCPIP_IP;
+        private System.Windows.Forms.Label label_Setup_Communication_TCPIP_IP;
+        private System.Windows.Forms.TextBox textBox_Setup_Communication_TCPIP_IP;
+        private System.Windows.Forms.Button button_KeypadCall_Setup_Communication_TCPIP_Port;
+        private System.Windows.Forms.TextBox textBox_Setup_Communication_TCPIP_Port;
+        private System.Windows.Forms.Label label108;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox comboBox_Setup_Communication_RS232_FlowControl;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox comboBox_Setup_Communication_RS232_StopBit;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox comboBox_Setup_Communication_RS232_Parity;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox comboBox_Setup_Communication_RS232_DataBit;
+        private System.Windows.Forms.Button button_KeypadCall_Setup_Communication_RS232_SpacingDelay;
+        private System.Windows.Forms.Button button_KeypadCall_Setup_Communication_RS232_Timeout;
+        private System.Windows.Forms.Label label185;
+        private System.Windows.Forms.Label label182;
+        private System.Windows.Forms.TextBox textBox_Setup_Communication_RS232_Timeout;
+        private System.Windows.Forms.Label label183;
+        private System.Windows.Forms.Label label184;
+        private System.Windows.Forms.ComboBox comboBox_Setup_Communication_RS232_BaudRate;
+        private System.Windows.Forms.TextBox textBox_Setup_Communication_RS232_SpacingDelay;
+        private System.Windows.Forms.ComboBox comboBox_Setup_Communication_RS232_ComPort;
+        private System.Windows.Forms.Button button_Test_SocketConnect;
     }
 }

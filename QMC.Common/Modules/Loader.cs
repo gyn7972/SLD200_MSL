@@ -785,7 +785,7 @@ namespace QMC.Common.Modules
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_RPort_ReadyPos].LD_Stacker_Z0;
 
                     //  속도 (기본 속도)
-                    m_dSpeed_Stacker_Fast = Equipment.stAxisParam[(int)nAxis.Z0].Common_MoveSpeed;
+                    m_dSpeed_Stacker_Fast = Equipment.stAxisParam[(int)nAxis.Z0].Common_Speed_Coarse;
 
                     //  가감속 배율
                     m_dSpeedMag_forAccDec = 2.0;
@@ -860,7 +860,7 @@ namespace QMC.Common.Modules
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_RPort_TopPos].LD_Stacker_Z0;
 
                     //  속도 (기본 속도 / 2)
-                    m_dSpeed_Stacker_Slow = Equipment.stAxisParam[(int)nAxis.Z0].Common_MoveSpeed / 2.0;
+                    m_dSpeed_Stacker_Slow = Equipment.stAxisParam[(int)nAxis.Z0].Common_Speed_Coarse / 2.0;
 
                     //  가감속 배율
                     m_dSpeedMag_forAccDec = 2.0;
@@ -935,7 +935,8 @@ namespace QMC.Common.Modules
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_RPort_ReadyPos].LD_Stacker_Z0;
 
                     //  속도 (기본 속도 / 3)
-                    m_dSpeed_Stacker_MoreSlow = Equipment.stAxisParam[(int)nAxis.Z0].Common_MoveSpeed / 3.0;
+                    //m_dSpeed_Stacker_MoreSlow = Equipment.stAxisParam[(int)nAxis.Z0].Common_MoveSpeed / 3.0;
+                    m_dSpeed_Stacker_MoreSlow = Equipment.stAxisParam[(int)nAxis.Z0].Common_Speed_Fine;
 
                     //  가감속 배율
                     m_dSpeedMag_forAccDec = 2.0;
@@ -1010,9 +1011,10 @@ namespace QMC.Common.Modules
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_RPort_TopPos].LD_Stacker_Z0;
 
                     //  속도 (기본 속도 / 4)
-                    m_dSpeed_Stacker_MoreSlow = Equipment.stAxisParam[(int)nAxis.Z0].Common_MoveSpeed / 4.0;
+                    //m_dSpeed_Stacker_MoreSlow = Equipment.stAxisParam[(int)nAxis.Z0].Common_MoveSpeed / 4.0;
+                    m_dSpeed_Stacker_MoreSlow = Equipment.stAxisParam[(int)nAxis.Z0].Common_Speed_Fine / 2.0;
 
-                     //  가감속 배율
+                    //  가감속 배율
                     m_dSpeedMag_forAccDec = 2.0;
 
                     MC_Func.MC_MovePosition((int)nAxis.Z0,
@@ -1092,7 +1094,7 @@ namespace QMC.Common.Modules
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_RPort_TopPos].LD_Stacker_Z0;
 
                     //  속도 (기본 속도)
-                    m_dSpeed_Stacker_Fast = Equipment.stAxisParam[(int)nAxis.Z0].Common_MoveSpeed;
+                    m_dSpeed_Stacker_Fast = Equipment.stAxisParam[(int)nAxis.Z0].Common_Speed_Coarse;
 
                     //  가감속 배율
                     m_dSpeedMag_forAccDec = 2.0;
@@ -1167,7 +1169,8 @@ namespace QMC.Common.Modules
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_RPort_ReadyPos].LD_Stacker_Z0;
 
                     //  속도 (기본 속도 / 3)
-                    m_dSpeed_Stacker_MoreSlow = Equipment.stAxisParam[(int)nAxis.Z0].Common_MoveSpeed / 3.0;
+                    //m_dSpeed_Stacker_MoreSlow = Equipment.stAxisParam[(int)nAxis.Z0].Common_MoveSpeed / 3.0;
+                    m_dSpeed_Stacker_MoreSlow = Equipment.stAxisParam[(int)nAxis.Z0].Common_Speed_Fine;
 
                     //  가감속 배율
                     m_dSpeedMag_forAccDec = 2.0;
@@ -1242,7 +1245,8 @@ namespace QMC.Common.Modules
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_RPort_TopPos].LD_Stacker_Z0;
 
                     //  속도 (기본 속도 / 4)
-                    m_dSpeed_Stacker_MoreSlow = Equipment.stAxisParam[(int)nAxis.Z0].Common_MoveSpeed / 4.0;
+                    //m_dSpeed_Stacker_MoreSlow = Equipment.stAxisParam[(int)nAxis.Z0].Common_MoveSpeed / 4.0;
+                    m_dSpeed_Stacker_MoreSlow = Equipment.stAxisParam[(int)nAxis.Z0].Common_Speed_Fine / 2.0;
 
                     //  가감속 배율
                     m_dSpeedMag_forAccDec = 2.0;
