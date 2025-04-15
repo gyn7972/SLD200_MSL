@@ -214,7 +214,7 @@ namespace SLD200_MSL
 
             DIO_Status();
             Motor_Position();
-
+            AIO_Status();
 
             ///////////////////////////////////////////////////////////////////////////////////////
             //  비상 정지 시
@@ -456,6 +456,15 @@ namespace SLD200_MSL
             //}
 
             timer_Status.Enabled = true;
+        }
+
+        private void AIO_Status()
+        {
+            double dValue = workStage.StagePressureSensor.PressureValue;
+            double dScale = workStage.StagePressureSensor.PressureScale;
+            dScale = 25;
+            double dPressure = (dValue -1) * dScale * -1;
+            this.labelStagePressure.Text = workStage.StagePressureSensor.PressureValue.ToString("0.0000");
         }
 
         private void DIO_Status()

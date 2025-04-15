@@ -66,6 +66,13 @@ namespace QMC.Common.Modules
         public WorkStageParameterConfig ParamConfig { set; get; }
         public LaserPitchMoveShotterConfig LaserPitchMoveShotterConfig { set; get; }
 
+        [Browsable(true)]
+        [Category("AIO"),
+        Description("Stage 압력센서 AIO 넘버"),
+        DisplayName("StagePresureSensorId")]
+
+        public int StagePresureSensorId { set; get; } = 0; //Stage 압력센서 ID
+
         public XyzyStageConfig StageConfig { set; get; }
         #endregion
 

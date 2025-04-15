@@ -27,6 +27,7 @@ namespace QMC.Common.Parts
     {
         protected List<XyzyPositionData> m_WorkStagePosition;
 
+        
         //  Laser Drilling 장비에서 사용되는 위치
         public enum PositionLaser
         {
