@@ -460,11 +460,12 @@ namespace SLD200_MSL
 
         private void AIO_Status()
         {
-            double dValue = workStage.StagePressureSensor.PressureValue;
+            double dValue = PressureSensor.PressureValue;
             double dScale = workStage.StagePressureSensor.PressureScale;
             dScale = 25;
-            double dPressure = (dValue -1) * dScale * -1;
-            this.labelStagePressure.Text = workStage.StagePressureSensor.PressureValue.ToString("0.0000");
+            //dValue = 5;
+            double dPressure = (dValue -0.976) * dScale * -1;
+            this.labelStagePressure.Text = dPressure.ToString("0.00");
         }
 
         private void DIO_Status()
