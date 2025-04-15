@@ -29,13 +29,32 @@ namespace QMC.Common.Modules
     {
         #region Define
 
-        public enum nAxis
+
+//#if true                                                                //  SLD-200C
+#if false                                                               //  SLD-200U
+        public enum nAxis                                                       //  SLD-200C 에서 사용하는 축 번호    
         {
-            X = 0,
-            Y,
-            Z,
-            MASK_Y,
+            //  축 번호 변경 전 (X:0,     Y:1,    Z:2,    MASK_Y:3)
+            //  축 번호 변경 후 (X:3,     Y:4,    Z:5,    MASK_Y:0)
+
+            X = 3,
+            Y = 4,
+            Z = 5,
+            MASK_Y = 0,
         }
+#else
+        public enum nAxis                                                       //  SLD-200U 에서 사용하는 축 번호   
+        {
+            //  축 번호 변경 전 (X:0,     Y:1,    Z:2,    MASK_Y:3)
+            //  축 번호 변경 후 (X:3,     Y:4,    Z:5,    MASK_Y:0)
+
+            X = 2,
+            Y = 3,
+            Z = 4,
+            MASK_Y = 0,                     //  UV 에서는 없는 축이지만, CO2 와 프로그램을 통일하기 위해서 남겨둠. 실제로 사용하지는 않음.
+        }
+#endif
+
 
         public enum nCameraType
         {
@@ -167,7 +186,7 @@ namespace QMC.Common.Modules
         SettingParameterCollection PosParam_Dispenser;          //  2022. 04. 25.  SCH : 모터 위치 파라미터를 갖다쓰기 위해 선언해봄.
                                                                 //static Conveyor conveyor = new Conveyor("");            //  요거 다시해야 함. Conveyor.cs 에 정의된 변수에 접근할 수 있게... 어케 함? -_-
                                                                 //  static 으로 선언하면 되긴 헌디.... 맞는건가 -_-
-        public MotionFunction MC_Func = new MotionFunction();
+        public InterpolatorMotionFunction MC_Func = new InterpolatorMotionFunction();
         public ACSSPiiPlusAxis ACS_Func = new ACSSPiiPlusAxis();
 
         public JigAligner m_JigAligner;
@@ -204,12 +223,12 @@ namespace QMC.Common.Modules
 
         //  저해상도 카메라
         public HIKGigECamera Camera_LowRes { set; get; }
-        //public JigAligner jigAligner_LowRes { set; get; }                    //  PAK 검사
+        //public JigAligner jigAligner_LowRes { set; get; }                    //  Coarse Vision
         //public JigAligner reticleAligner_LowRes { set; get; }                //  Reticle 검사
 
         //  고해상도 카메라
         public HIKGigECamera Camera_HighRes { set; get; }
-        //public JigAligner jigAligner_HighRes { set; get; }                    //  Wafer 검사
+        //public JigAligner jigAligner_HighRes { set; get; }                    //  Fine Vision
         //public JigAligner reticleAligner_HighRes { set; get; }                //  Reticle 검사
 
         public int MAX_IMAGE_WIDTH = 2448;
@@ -263,6 +282,7 @@ namespace QMC.Common.Modules
 
         public bool m_btimer_MainWork_Stop;
         public bool m_btimer_SubWork_Stop;
+        public bool m_btimer_Comm_Stop;
         public bool m_btimer_Motion_Home_Stop;
         //public bool m_btimer_Calibration_Stop;
         public bool m_btimer_VisionAlign_Stop;
@@ -296,6 +316,7 @@ namespace QMC.Common.Modules
         {
             Vision_FocusPos,
             Laser_FocusPos,          
+            Laser_Sensor_HeightCheckPos,
             Vision_SafetyPos,
         }
 
@@ -303,7 +324,7 @@ namespace QMC.Common.Modules
         {
             public double Vision_Z;                         //  Vision Z
         }
-        public static stVisionAxesPos[] stVisionTeachingPos = new stVisionAxesPos[System.Enum.GetValues(typeof(Vision_TeachingPosList)).Length];
+        public stVisionAxesPos[] stVisionTeachingPos = new stVisionAxesPos[System.Enum.GetValues(typeof(Vision_TeachingPosList)).Length];
 
         public struct stVisionMoveProperties
         {
@@ -312,7 +333,7 @@ namespace QMC.Common.Modules
             public int Coarse_Accel;                        //  Coarse Acceleration
             public int Coarse_SettleDelay;                  //  Coarse Settle Delay
         }
-        public static stVisionMoveProperties[] stVisionPosMoveProperties = new stVisionMoveProperties[System.Enum.GetValues(typeof(Vision_TeachingPosList)).Length];
+        public stVisionMoveProperties[] stVisionPosMoveProperties = new stVisionMoveProperties[System.Enum.GetValues(typeof(Vision_TeachingPosList)).Length];
 
         #endregion
 
@@ -578,6 +599,7 @@ namespace QMC.Common.Modules
 
             m_btimer_MainWork_Stop = false;
             m_btimer_SubWork_Stop = false;
+            m_btimer_Comm_Stop = false;
             m_btimer_Motion_Home_Stop = false;
             m_btimer_VisionAlign_Stop = false;
             m_btimer_ReticleGlass_Check_Stop = false;
@@ -675,19 +697,19 @@ namespace QMC.Common.Modules
             //Camera_LowRes = new GrabLinkMultiCamCamera("LaserCamera Low-Res");                          //  하부 비전 카메라
             Camera_LowRes.Create();
             Camera_LowRes.Owner = this;
-            Parts.Add(Camera_LowRes);
+            //Parts.Add(Camera_LowRes);
 
             Camera_HighRes = new HIKGigECamera("Fine Vision");
             //Camera = new GrabLinkMultiCamCamera("LaserCamera");
             Camera_HighRes.Create();
             Camera_HighRes.Owner = this;
-            Parts.Add(Camera_HighRes);
+            //Parts.Add(Camera_HighRes);
 
             visionParameter = new VisionParameter("Vision Parameter");
             visionParameter.Create();
             visionParameter.Owner = this;
             visionParameter.Axes = Stage.Axes;
-            Parts.Add(visionParameter);
+            Parts.Add(visionParameter);            
 
             //PosParam_Dispenser = GetConfigData();     //  요건 나중에
 
@@ -968,6 +990,8 @@ namespace QMC.Common.Modules
         {
             m_btimer_Motion_Home_Stop = false;
             timer_Motion_Home.Enabled = false;
+
+            
 
             if (!m_btimer_Motion_Home_Stop)
             {

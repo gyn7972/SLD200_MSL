@@ -87,7 +87,7 @@ namespace QMC.Common.VisionPart
             Recipe = new TwoPointAlignerRecipe(this);
             //Result = new XytCoordinate();
             m_Results = new XytCoordinate[10];
-            MC_Func = new MotionFunction();
+            MC_Func = new InterpolatorMotionFunction();
         }
 
         protected override void InitAlarm()

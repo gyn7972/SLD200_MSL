@@ -32,7 +32,7 @@ using SpiralLab.Sirius;
 
 using Vector2 = System.Numerics.Vector2;
 using MessageBox = System.Windows.Forms.MessageBox;
-using netDxf.Collections;
+//using netDxf.Collections;
 
 namespace QMC.Common.Parts
 {
@@ -155,7 +155,8 @@ namespace QMC.Common.Parts
             return ret;
         }
 
-        bool DrawSquare(IRtc rtc, ILaser laser, MotionType motionType, float width = 40, float height = 40)        
+        bool DrawSquare(IRtc rtc, ILaser laser, MotionType motionType, float width = 40, float height = 40)               //  Sirius1
+        //bool DrawSquare(IRtc rtc, ILaser laser, MotionTypes motionType, float width = 40, float height = 40)                //  Sirius2
         {
             bool success = true;
 
@@ -187,15 +188,15 @@ namespace QMC.Common.Parts
 
             success &= rtc.ListDelay(m_fLaserOnDelay, m_fLaserOffDelay, m_fJumpSpeed, m_fMarkSpeed, m_fMarkSpeed);
 
-            success &= rtc.ListJump/*To*/(new Vector2(-width / 2.0f, height / 2.0f));
-            success &= rtc.ListMark/*To*/(new Vector2(width / 2.0f, height / 2.0f));
-            success &= rtc.ListMark/*To*/(new Vector2(width / 2.0f, -height / 2.0f));
-            success &= rtc.ListMark/*To*/(new Vector2(-width / 2.0f, -height / 2.0f));
-            success &= rtc.ListMark/*To*/(new Vector2(-width / 2.0f, height / 2.0f));
+            success &= rtc.ListJump(new Vector2(-width / 2.0f, height / 2.0f));
+            success &= rtc.ListMark(new Vector2(width / 2.0f, height / 2.0f));
+            success &= rtc.ListMark(new Vector2(width / 2.0f, -height / 2.0f));
+            success &= rtc.ListMark(new Vector2(-width / 2.0f, -height / 2.0f));
+            success &= rtc.ListMark(new Vector2(-width / 2.0f, height / 2.0f));
 
             if (success)
             {
-                success &= rtc.ListJump/*To*/(Vector2.Zero);
+                success &= rtc.ListJump(Vector2.Zero);
                 success &= rtc.ListEnd();
                 success &= rtc.ListExecute(true);       // false);
             }
@@ -203,7 +204,8 @@ namespace QMC.Common.Parts
             return success;
         }
 
-        bool DrawCross(IRtc rtc, ILaser laser, MotionType motionType, double width = 0.5, double height = 0.5)
+        bool DrawCross(IRtc rtc, ILaser laser, MotionType motionType, double width = 0.5, double height = 0.5)            //  Sirius1
+        //bool DrawCross(IRtc rtc, ILaser laser, MotionTypes motionType, double width = 0.5, double height = 0.5)              //  Sirius2
         {
             bool success = true;
 
@@ -237,14 +239,14 @@ namespace QMC.Common.Parts
             success &= rtc.ListDelay(m_fLaserOnDelay, m_fLaserOffDelay, m_fJumpSpeed, m_fMarkSpeed, m_fMarkSpeed);
             success &= rtc.ListSpeed(m_fJumpSpeed, m_fMarkSpeed);
 
-            success &= rtc.ListJump/*To*/(new Vector2(-(float)(width / 2.0), (float)0.0));
-            success &= rtc.ListMark/*To*/(new Vector2((float)(width / 2.0), (float)0.0));
-            success &= rtc.ListJump/*To*/(new Vector2((float)0.0, -(float)(height / 2.0)));
-            success &= rtc.ListMark/*To*/(new Vector2((float)0.0, (float)(height / 2.0)));
+            success &= rtc.ListJump(new Vector2(-(float)(width / 2.0), (float)0.0));
+            success &= rtc.ListMark(new Vector2((float)(width / 2.0), (float)0.0));
+            success &= rtc.ListJump(new Vector2((float)0.0, -(float)(height / 2.0)));
+            success &= rtc.ListMark(new Vector2((float)0.0, (float)(height / 2.0)));
 
             if (success)
             {
-                success &= rtc.ListJump/*To*/(Vector2.Zero);
+                success &= rtc.ListJump(Vector2.Zero);
                 success &= rtc.ListEnd();
                 success &= rtc.ListExecute(true);       // false);
             }
@@ -252,7 +254,8 @@ namespace QMC.Common.Parts
             return success;
         }
 
-        bool DrawCircle(IRtc rtc, ILaser laser, MotionType motionType, float radius = 20)
+        bool DrawCircle(IRtc rtc, ILaser laser, MotionType motionType, float radius = 20)                 //  Sirius1
+        //bool DrawCircle(IRtc rtc, ILaser laser, MotionTypes motionType, float radius = 20)                   //  Sirius2
         {
             bool success = true;
 
@@ -284,13 +287,13 @@ namespace QMC.Common.Parts
 
             success &= rtc.ListDelay(m_fLaserOnDelay, m_fLaserOffDelay, m_fJumpSpeed, m_fMarkSpeed, m_fMarkSpeed);
 
-            success &= rtc.ListJump/*To*/(new Vector2(radius, 0));
-            success &= rtc.ListArc/*To*/(Vector2.Zero, 360.0f);
-            success &= rtc.ListJump/*To*/(Vector2.Zero);
+            success &= rtc.ListJump(new Vector2(radius, 0));
+            success &= rtc.ListArc(Vector2.Zero, 360.0f);
+            success &= rtc.ListJump(Vector2.Zero);
 
             if (success)
             {
-                success &= rtc.ListJump/*To*/(Vector2.Zero);
+                success &= rtc.ListJump(Vector2.Zero);
                 success &= rtc.ListEnd();
                 success &= rtc.ListExecute(true);       // false);
             }
@@ -298,7 +301,8 @@ namespace QMC.Common.Parts
             return success;
         }
 
-        private bool DrawLine(IRtc rtc, ILaser laser, MotionType motionType, float x1, float y1, float x2, float y2)
+        private bool DrawLine(IRtc rtc, ILaser laser, MotionType motionType, float x1, float y1, float x2, float y2)              //  Sirius1
+        //private bool DrawLine(IRtc rtc, ILaser laser, MotionTypes motionType, float x1, float y1, float x2, float y2)                //  Sirius2
         {
             if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_NONE)
             {
@@ -334,12 +338,12 @@ namespace QMC.Common.Parts
 
             success &= rtc.ListDelay(m_fLaserOnDelay, m_fLaserOffDelay, m_fJumpSpeed, m_fMarkSpeed, m_fMarkSpeed);
 
-            success &= rtc.ListJump/*To*/(new Vector2(x1, y1));
-            success &= rtc.ListMark/*To*/(new Vector2(x2, y2));
+            success &= rtc.ListJump(new Vector2(x1, y1));
+            success &= rtc.ListMark(new Vector2(x2, y2));
 
             if (success)
             {
-                success &= rtc.ListJump/*To*/(Vector2.Zero);
+                success &= rtc.ListJump(Vector2.Zero);
                 success &= rtc.ListEnd();
                 success &= rtc.ListExecute(true);       // false);
             }

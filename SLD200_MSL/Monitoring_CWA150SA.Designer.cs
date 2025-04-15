@@ -125,7 +125,7 @@ namespace SLD200_MSL
             this.baseLabel_Status_Coolant_Supply = new SLD200_MSL.BaseLabel();
             this.pictureBox_Status_LaserCoolant_Supply = new System.Windows.Forms.PictureBox();
             this.baseGroupBox_Data = new SLD200_MSL.WATGroupBox();
-            this.SiriusViewer_Main = new SpiralLab.Sirius.SiriusViewerForm();
+            //this.SiriusViewer_Main = new SpiralLab.Sirius.SiriusViewerForm();
             this.baseGroupBox_Module_Information = new SLD200_MSL.WATGroupBox();
             this.baseTextBox_TotalSocketCount = new SLD200_MSL.BaseTextBox();
             this.baseTextBox_SocketCountPerModule = new SLD200_MSL.BaseTextBox();
@@ -920,7 +920,7 @@ namespace SLD200_MSL
             // baseGroupBox_Data
             // 
             this.baseGroupBox_Data.BorderColor = System.Drawing.Color.DarkGray;
-            this.baseGroupBox_Data.Controls.Add(this.SiriusViewer_Main);
+            //this.baseGroupBox_Data.Controls.Add(this.SiriusViewer_Main);
             this.baseGroupBox_Data.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseGroupBox_Data.ForeColor = System.Drawing.Color.Black;
             this.baseGroupBox_Data.Location = new System.Drawing.Point(449, 233);
@@ -934,18 +934,18 @@ namespace SLD200_MSL
             // 
             // SiriusViewer_Main
             // 
-            this.SiriusViewer_Main.AliasName = "NoName";
-            this.SiriusViewer_Main.BackColor = System.Drawing.SystemColors.Control;
-            this.SiriusViewer_Main.Document = null;
-            this.SiriusViewer_Main.FileName = "NoName";
-            this.SiriusViewer_Main.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SiriusViewer_Main.Index = ((uint)(0u));
-            this.SiriusViewer_Main.Location = new System.Drawing.Point(7, 32);
-            this.SiriusViewer_Main.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.SiriusViewer_Main.Name = "SiriusViewer_Main";
-            this.SiriusViewer_Main.Progress = 0;
-            this.SiriusViewer_Main.Size = new System.Drawing.Size(586, 489);
-            this.SiriusViewer_Main.TabIndex = 36;
+            //this.SiriusViewer_Main.AliasName = "NoName";
+            //this.SiriusViewer_Main.BackColor = System.Drawing.SystemColors.Control;
+            //this.SiriusViewer_Main.Document = null;
+            //this.SiriusViewer_Main.FileName = "NoName";
+            //this.SiriusViewer_Main.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            //this.SiriusViewer_Main.Index = ((uint)(0u));
+            //this.SiriusViewer_Main.Location = new System.Drawing.Point(7, 32);
+            //this.SiriusViewer_Main.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            //this.SiriusViewer_Main.Name = "SiriusViewer_Main";
+            //this.SiriusViewer_Main.Progress = 0;
+            //this.SiriusViewer_Main.Size = new System.Drawing.Size(586, 489);
+            //this.SiriusViewer_Main.TabIndex = 36;
             // 
             // baseGroupBox_Module_Information
             // 
@@ -1523,7 +1523,7 @@ namespace SLD200_MSL
         private BaseTextBox baseTextBox_SocketCountPerModule;
         private BaseLabel baseLabel_SocketPerModule;
         private BaseTextBox baseTextBox_TotalSocketCount;
-        public SpiralLab.Sirius.SiriusViewerForm SiriusViewer_Main;
+        //public SpiralLab.Sirius.SiriusViewerForm SiriusViewer_Main;
         private Button button_CycleRun_Stacker0_ModuleLoadingReady;
         private Button button_CycleRun_Stacker1_ModuleUnloadingReady;
         private Button button_CycleRun_Stacker0_ModuleUnloadingReady;

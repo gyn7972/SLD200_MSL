@@ -13,15 +13,32 @@ namespace QMC.Common.Parts
 
         #region => Axis Define 
 
-        public enum AxisAjinEnum
-        {
-            X = 0,
-            Y,
-            Z,
-            MASK_Y,
 
-            Max,
+//#if true                                                                //  SLD-200C
+#if false                                                               //  SLD-200U
+        public enum AxisAjinEnum                                                       //  SLD-200C 에서 사용하는 축 번호    
+        {
+            //  축 번호 변경 전 (X:0,     Y:1,    Z:2,    MASK_Y:3)
+            //  축 번호 변경 후 (X:3,     Y:4,    Z:5,    MASK_Y:0)
+
+            X = 3,
+            Y = 4,
+            Z = 5,
+            MASK_Y = 0,
         }
+#else
+        public enum AxisAjinEnum                                                       //  SLD-200U 에서 사용하는 축 번호   
+        {
+            //  축 번호 변경 전 (X:0,     Y:1,    Z:2,    MASK_Y:3)
+            //  축 번호 변경 후 (X:3,     Y:4,    Z:5,    MASK_Y:0)
+
+            X = 2,
+            Y = 3,
+            Z = 4,
+            MASK_Y = 0,                     //  UV 에서는 없는 축이지만, CO2 와 프로그램을 통일하기 위해서 남겨둠. 실제로 사용하지는 않음.
+        }
+#endif
+
 
         #endregion
 
@@ -31,6 +48,8 @@ namespace QMC.Common.Parts
             Y,
             Z,
             MASK_Y,
+
+            Max,
         }
 
         public enum WorkTable
@@ -108,9 +127,9 @@ namespace QMC.Common.Parts
             Input_Laser_CalSheet_Vacuum_Check,  //  X025
 
             //  DUST Collector
-            Input_DustCollector0_AirPulse_Run,  //  X026
+            Input_DustCollector0_Fan_Run,       //  X026
             Input_DustCollector0_Fan_Fault,     //  X027
-            Input_DustCollector1_AirPulse_Run,  //  X028
+            Input_DustCollector1_Fan_Run,       //  X028
             Input_DustCollector1_Fan_Fault,     //  X029
 
             //  LASER Base
@@ -134,8 +153,8 @@ namespace QMC.Common.Parts
             //Output_TowerLamp_Buzzer,            //  Y006
 
             //  Water Sol. Box
-            Output_Laser_Coolant_Supply,        //  Y007
-            Output_Laser_Coolant_Return,        //  Y008
+            Output_BeamDump_Coolant_Supply,     //  Y007
+            Output_BeamDump_Coolant_Return,     //  Y008
             Output_Mask_Coolant_Supply,         //  Y009
             Output_Mask_Coolant_Return,         //  Y010
             Output_Scanner_Coolant_Supply,      //  Y011
@@ -159,6 +178,13 @@ namespace QMC.Common.Parts
 
             //  LASER
             Output_Laser_Shutter_Command,       //  Y025
+
+            //  Dust Collector
+            Output_DustCollector0_AirPulse_Run, //  Y026
+            Output_DustCollector1_AirPulse_Run, //  Y027
+
+            //  LASER
+            Output_Laser_Enable,                //  Y028
         }
 
 
@@ -1141,7 +1167,7 @@ namespace QMC.Common.Parts
             return bRet;
         }
 
-        public bool DI_DustCollector_AirPulse_Run(int m_nDustCollector)
+        public bool DI_DustCollector_Fan_Run(int m_nDustCollector)
         {
             bool bRet = false;
 
@@ -1150,8 +1176,8 @@ namespace QMC.Common.Parts
             //  해당 채널 상태 리턴
             switch( m_nDustCollector)
             {
-                case 0: dioString = m_dicDioPoints[DioPointKey.Input_DustCollector0_AirPulse_Run.ToString()]; break;
-                case 1: dioString = m_dicDioPoints[DioPointKey.Input_DustCollector1_AirPulse_Run.ToString()]; break;
+                case 0: dioString = m_dicDioPoints[DioPointKey.Input_DustCollector0_Fan_Run.ToString()]; break;
+                case 1: dioString = m_dicDioPoints[DioPointKey.Input_DustCollector1_Fan_Run.ToString()]; break;
             }
             
             if (dioString == null)
@@ -1270,14 +1296,14 @@ namespace QMC.Common.Parts
         //    return nRet;
         //}
 
-        public int DO_Laser_Coolant_Supply(bool m_bOnOff)
+        public int DO_BeamDump_Coolant_Supply(bool m_bOnOff)
         {
             int nRet = 0;
 
             DioPoint dioString = null;
 
             //  해당 채널 출력 성공 여부 리턴
-            dioString = m_dicDioPoints[DioPointKey.Output_Laser_Coolant_Supply.ToString()];
+            dioString = m_dicDioPoints[DioPointKey.Output_BeamDump_Coolant_Supply.ToString()];
 
             if (dioString == null) return -1;
 
@@ -1289,14 +1315,14 @@ namespace QMC.Common.Parts
             return nRet;
         }
 
-        public int DO_Laser_Coolant_Return(bool m_bOnOff)
+        public int DO_BeamDump_Coolant_Return(bool m_bOnOff)
         {
             int nRet = 0;
 
             DioPoint dioString = null;
 
             //  해당 채널 출력 성공 여부 리턴
-            dioString = m_dicDioPoints[DioPointKey.Output_Laser_Coolant_Return.ToString()];
+            dioString = m_dicDioPoints[DioPointKey.Output_BeamDump_Coolant_Return.ToString()];
 
             if (dioString == null) return -1;
 
@@ -1630,6 +1656,54 @@ namespace QMC.Common.Parts
 
             return nRet;
         }
+
+        public int DO_DustCollector_AirPulse_Run(int m_nPos, bool m_bOnOff)
+        {
+            int nRet = 0;
+
+            DioPoint dioString = null;
+
+            //  해당 채널 출력 성공 여부 리턴
+            switch (m_nPos)
+            {
+                case 0:
+                    dioString = m_dicDioPoints[DioPointKey.Output_DustCollector0_AirPulse_Run.ToString()];
+                    break;
+
+
+                case 1:
+                    dioString = m_dicDioPoints[DioPointKey.Output_DustCollector1_AirPulse_Run.ToString()];
+                    break;
+            }
+
+            if (dioString == null) return -1;
+
+            if (m_bOnOff) nRet = dioString.Write(DioValue.On);
+            else nRet = dioString.Write(DioValue.Off);
+
+            if (nRet != 0) return nRet;
+
+            return nRet;
+        }
+
+        public int DO_Laser_Enable(bool m_bOnOff)
+        {
+            int nRet = 0;
+
+            DioPoint dioString = null;
+
+            //  해당 채널 출력 성공 여부 리턴
+            dioString = m_dicDioPoints[DioPointKey.Output_Laser_Enable.ToString()];
+
+            if (dioString == null) return -1;
+
+            if (m_bOnOff) nRet = dioString.Write(DioValue.On);
+            else nRet = dioString.Write(DioValue.Off);
+
+            if (nRet != 0) return nRet;
+
+            return nRet;
+        }
         #endregion
 
 
@@ -1695,14 +1769,14 @@ namespace QMC.Common.Parts
         //    return bRet;
         //}
 
-        public bool IsDO_Laser_Coolant_Supply()
+        public bool IsDO_BeamDump_Coolant_Supply()
         {
             bool bRet = false;
 
             DioPoint dioString = null;
 
             //  해당 출력 채널 상태 리턴
-            dioString = m_dicDioPoints[DioPointKey.Output_Laser_Coolant_Supply.ToString()];
+            dioString = m_dicDioPoints[DioPointKey.Output_BeamDump_Coolant_Supply.ToString()];
 
             if (dioString == null)
                 return bRet;
@@ -1715,14 +1789,14 @@ namespace QMC.Common.Parts
             return bRet;
         }
 
-        public bool IsDO_Laser_Coolant_Return()
+        public bool IsDO_BeamDump_Coolant_Return()
         {
             bool bRet = false;
 
             DioPoint dioString = null;
 
             //  해당 출력 채널 상태 리턴
-            dioString = m_dicDioPoints[DioPointKey.Output_Laser_Coolant_Return.ToString()];
+            dioString = m_dicDioPoints[DioPointKey.Output_BeamDump_Coolant_Return.ToString()];
 
             if (dioString == null)
                 return bRet;
@@ -2063,6 +2137,56 @@ namespace QMC.Common.Parts
 
             //  해당 출력 채널 상태 리턴
             dioString = m_dicDioPoints[DioPointKey.Output_Laser_Shutter_Command.ToString()];
+
+            if (dioString == null)
+                return bRet;
+
+            DioValue ioValue = dioString.GetValue();
+
+            if (ioValue == DioValue.On)
+                bRet = true;
+
+            return bRet;
+        }
+
+        public bool IsDO_DustCollector_AirPulse_Run(int m_nPos)
+        {
+            bool bRet = false;
+
+            DioPoint dioString = null;
+
+            //  해당 출력 채널 상태 리턴
+            switch (m_nPos)
+            {
+                case 0:
+                    dioString = m_dicDioPoints[DioPointKey.Output_DustCollector0_AirPulse_Run.ToString()];
+                    break;
+
+
+                case 1:
+                    dioString = m_dicDioPoints[DioPointKey.Output_DustCollector1_AirPulse_Run.ToString()];
+                    break;
+            }
+
+            if (dioString == null)
+                return bRet;
+
+            DioValue ioValue = dioString.GetValue();
+
+            if (ioValue == DioValue.On)
+                bRet = true;
+
+            return bRet;
+        }
+
+        public bool IsDO_Laser_Enable()
+        {
+            bool bRet = false;
+
+            DioPoint dioString = null;
+
+            //  해당 출력 채널 상태 리턴
+            dioString = m_dicDioPoints[DioPointKey.Output_Laser_Enable.ToString()];
 
             if (dioString == null)
                 return bRet;

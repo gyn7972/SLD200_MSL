@@ -12,7 +12,8 @@ namespace QMC.Common.Vision.Optics.Leesos
     [Serializable]
     public class DigitalIlluminator : Illuminator
     {
-        
+        public bool m_bIsOpen { get { return m_Communicator != null ? m_Communicator.IsOpen : false; } }
+
         public class VolumnData
         {
             public int Channel { set; get; }

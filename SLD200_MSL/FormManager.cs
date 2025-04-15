@@ -65,10 +65,10 @@ namespace SLD200_MSL
                 {
                     form = new FormVisionCompensatorMaint(part);
                 }
-                //else if (part is ScannerCompensator)
-                //{
-                //    form = new FormScannerCompensatorMaint(part);
-                //}
+                else if (part is ScannerCompensator)
+                {
+                    form = new FormScannerCompensatorMaint(part);
+                }
                 else if(part is JigAligner)
                 {
                     form = new FormJigAlignerMaint(part);
@@ -141,10 +141,10 @@ namespace SLD200_MSL
                 {
                     form = new FormVisionCompensatorConfig(part);
                 }
-                //else if (part is ScannerCompensator)
-                //{
-                //    form = new FormScannerCompensatorConfig(part);
-                //}
+                else if (part is ScannerCompensator)
+                {
+                    form = new FormScannerCompensatorConfig(part);
+                }
                 else if (part is JigAligner)
                 {
                     //form = new 
@@ -186,10 +186,10 @@ namespace SLD200_MSL
                 {
                     form = new FormUnloaderParameterRecipe((Unloader)part);
                 }
-                //else if(part is ScannerCompensator)
-                //{
-                //    form = new FormScannerCompensatorRecipe((ScannerCompensator)part);
-                //}
+                else if (part is ScannerCompensator)
+                {
+                    form = new FormScannerCompensatorRecipe((ScannerCompensator)part);
+                }
                 else
                 {
                     return form;

@@ -30,7 +30,7 @@ namespace QMC.Common.VisionPart
 
         public MCVisionCalibrator(string strName) : base(strName)
         {
-            MC_Func = new MotionFunction();
+            MC_Func = new InterpolatorMotionFunction();
         }
 
 //        protected override int PatternMatchingAfterMove(XyCoordinate coordinate, out PatternMatchingResult result)

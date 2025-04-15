@@ -78,6 +78,66 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\ACS Motion Control\CommonFiles\ACS.SPiiPlusNET.dll</HintPath>
     </Reference>
+    <Reference Include="Cognex.DataMan.CogNamer.PC, Version=5.6.3.122, Culture=neutral, PublicKeyToken=9f98866f2a3a2e78, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\QMC.Common\Vision\Cognex\Library\Cognex.DataMan.CogNamer.PC.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.DataMan.SDK.Discovery.PC, Version=5.6.3.122, Culture=neutral, PublicKeyToken=9f98866f2a3a2e78, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\QMC.Common\Vision\Cognex\Library\Cognex.DataMan.SDK.Discovery.PC.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.DataMan.SDK.PC, Version=5.6.3.122, Culture=neutral, PublicKeyToken=9f98866f2a3a2e78, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\QMC.Common\Vision\Cognex\Library\Cognex.DataMan.SDK.PC.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.DataMan.SDK.Utils.PC, Version=5.6.3.122, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\QMC.Common\Vision\Cognex\Library\Cognex.DataMan.SDK.Utils.PC.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\QMC.Common\Vision\Cognex\Library\Cognex.VisionPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.Blob, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\QMC.Common\Vision\Cognex\Library\Cognex.VisionPro.Blob.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.Caliper, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\QMC.Common\Vision\Cognex\Library\Cognex.VisionPro.Caliper.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.Core, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\QMC.Common\Vision\Cognex\Library\Cognex.VisionPro.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.Display.Controls, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\QMC.Common\Vision\Cognex\Library\Cognex.VisionPro.Display.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.ID, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\QMC.Common\Vision\Cognex\Library\Cognex.VisionPro.ID.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.ImageFile, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\QMC.Common\Vision\Cognex\Library\Cognex.VisionPro.ImageFile.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.ImageProcessing, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\QMC.Common\Vision\Cognex\Library\Cognex.VisionPro.ImageProcessing.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.LineMax, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\QMC.Common\Vision\Cognex\Library\Cognex.VisionPro.LineMax.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.PixelMap, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\QMC.Common\Vision\Cognex\Library\Cognex.VisionPro.PixelMap.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.VisionPro.PMAlign, Version=61.1.3.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\QMC.Common\Vision\Cognex\Library\Cognex.VisionPro.PMAlign.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -85,25 +145,21 @@
     <Reference Include="OpenCvSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenCvSharp4.4.5.5.20211231\lib\net48\OpenCvSharp.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK, Version=3.3.3.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\QMC.Common\SpiralLab\Sirius2\OpenTK.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="spirallab.core, Version=1.123.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="spirallab.core, Version=1.145.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\QMC.Common\SpiralLab\Sirius\spirallab.core.dll</HintPath>
     </Reference>
-    <Reference Include="spirallab.sirius, Version=1.123.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="spirallab.sirius, Version=1.145.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\QMC.Common\SpiralLab\Sirius\spirallab.sirius.dll</HintPath>
     </Reference>
-    <Reference Include="spirallab.sirius.fieldcorrection, Version=1.123.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="spirallab.sirius.fieldcorrection, Version=1.140.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\QMC.Common\SpiralLab\Sirius\spirallab.sirius.fieldcorrection.dll</HintPath>
     </Reference>
-    <Reference Include="spirallab.sirius.rtc, Version=1.123.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="spirallab.sirius.rtc, Version=1.145.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\QMC.Common\SpiralLab\Sirius\spirallab.sirius.rtc.dll</HintPath>
     </Reference>
@@ -239,6 +295,12 @@
     </Compile>
     <Compile Include="FormLoaderParameterRecipe.designer.cs">
       <DependentUpon>FormLoaderParameterRecipe.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewStyleForm\FormNew_SiriusEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\FormNew_SiriusEditor.Designer.cs">
+      <DependentUpon>FormNew_SiriusEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="NewStyleForm\FormNew_CommunicationTerminal.cs">
       <SubType>Form</SubType>
@@ -1247,6 +1309,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormLoaderParameterRecipe.resx">
       <DependentUpon>FormLoaderParameterRecipe.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\FormNew_SiriusEditor.resx">
+      <DependentUpon>FormNew_SiriusEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\FormNew_CommunicationTerminal.resx">
       <DependentUpon>FormNew_CommunicationTerminal.cs</DependentUpon>

@@ -16,6 +16,7 @@ namespace SocketLaser
     {
         Socket mainSock;
         List<Socket> connectedClients = new List<Socket>();
+        bool m_bConnected = false;
         int m_port = 5000;
 
         public void Start()
@@ -27,7 +28,7 @@ namespace SocketLaser
                 mainSock.Bind(serverEP);
                 mainSock.Listen(10);
                 mainSock.BeginAccept(AcceptCallback, null);
-            }
+            } 
             catch (Exception e)
             {
             }
@@ -49,6 +50,11 @@ namespace SocketLaser
             connectedClients.Clear();
 
             //mainSock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
+        }
+
+        public bool IsConnected()
+        {
+            return m_bConnected;
         }
 
         public class AsyncObject
@@ -79,6 +85,8 @@ namespace SocketLaser
                 client.BeginReceive(obj.Buffer, 0, 1920 * 1080 * 3, 0, DataReceived, obj);
 
                 mainSock.BeginAccept(AcceptCallback, null);
+
+                m_bConnected = mainSock.Connected;
             }
             catch (Exception e)
             { }
@@ -105,6 +113,7 @@ namespace SocketLaser
     public class LaserSocketClient
     {
         Socket mainSock;
+        bool m_bConnected = false;
         int m_port = 5000;
 
         public void Connect(string strIP, int nPort)
@@ -122,8 +131,14 @@ namespace SocketLaser
             if (mainSock != null)
             {
                 mainSock.Close();
+                Thread.Sleep(200);
                 mainSock.Dispose();
             }
+        }
+
+        public bool IsConnected()
+        {
+            return m_bConnected;
         }
 
         public class AsyncObject
@@ -152,6 +167,8 @@ namespace SocketLaser
                 AsyncObject obj = new AsyncObject(4096);
                 obj.WorkingSocket = mainSock;
                 mainSock.BeginReceive(obj.Buffer, 0, obj.BufferSize, 0, DataReceived, obj);
+
+                m_bConnected = mainSock.Connected;
             }
             catch (Exception e)
             {
@@ -162,11 +179,18 @@ namespace SocketLaser
         {
             AsyncObject obj = (AsyncObject)ar.AsyncState;
 
-            int received = obj.WorkingSocket.EndReceive(ar);
+            try
+            {
+                int received = obj.WorkingSocket.EndReceive(ar);
 
-            byte[] buffer = new byte[received];
+                byte[] buffer = new byte[received];
 
-            Array.Copy(obj.Buffer, 0, buffer, 0, received);
+                Array.Copy(obj.Buffer, 0, buffer, 0, received);
+            }
+            catch (Exception e)
+            {
+                m_bConnected = mainSock.Connected;
+            }
         }
 
         public void Send(byte[] msg)

@@ -9,18 +9,34 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using QMC.Common;
 using QMC.Common.Modules;
+using QMC.Common.Parts;
 using QMC.Common.UI;
+using QMC.Common.VisionPart;
 
 namespace SLD200_MSL
 {
     public partial class FormNew_Logout : Form
     {
+        static WorkStage workStage;
+
         //private Monitoring_CWA150SA m_Monitoring_CWA150SA;
         private FormLogIn m_formLogIn;
         
         public FormNew_Logout()
         {
             InitializeComponent();
+
+            ModuleCollection m_collectionModules;
+            m_collectionModules = Equipment.Modules;
+
+            foreach (Module module in m_collectionModules)
+            {
+                //if (module.Name == "WorkStage")
+                if (module.Name == "WorkStage")
+                {
+                    workStage = module as WorkStage;
+                }
+            }
 
             m_formLogIn = new FormLogIn();
             m_formLogIn.bLogin = false;
@@ -38,7 +54,8 @@ namespace SLD200_MSL
             CommonModule.Instance.TowerLamp.AllLamp_Off();
 
             //m_Monitoring_CWA150SA.ThreadStop();
-            //m_Monitoring_CWA150SA.Device_Close();                       //  2024. 07. 11.  SCH : Close 함수가 호출되지 않아서, 프로그램 종료할 때 카메라가 닫히지 않는 문제가 있었음.
+
+            workStage.Device_Close();                           //  2024. 07. 11.  SCH : Close 함수가 호출되지 않아서, 프로그램 종료할 때 카메라가 닫히지 않는 문제가 있었음.
 
             //this.Close();
             Application.Exit();

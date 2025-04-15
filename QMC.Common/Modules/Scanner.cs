@@ -48,7 +48,7 @@ namespace QMC.Common.Modules
         SettingParameterCollection PosParam_Unloader;          //  2022. 04. 25.  SCH : 모터 위치 파라미터를 갖다쓰기 위해 선언해봄.
         //static Conveyor conveyor = new Conveyor("");            //  요거 다시해야 함. Conveyor.cs 에 정의된 변수에 접근할 수 있게... 어케 함? -_-
                                                                 //  static 으로 선언하면 되긴 헌디.... 맞는건가 -_-
-        public MotionFunction MC_Func = new MotionFunction();
+        public InterpolatorMotionFunction MC_Func = new InterpolatorMotionFunction();
         public ACSSPiiPlusAxis ACS_Func = new ACSSPiiPlusAxis();
         #endregion
 

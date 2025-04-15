@@ -155,6 +155,8 @@ namespace SLD200_MSL
 
         void Timer_ParamLoadFunc(object sender, EventArgs e)
         {
+            timer_ParamLoad.Enabled = false;
+
             if (Equipment.m_bRedraw_FormBdsParameterConfig)
             {
                 Equipment.m_bRedraw_FormBdsParameterConfig = false;
@@ -179,6 +181,8 @@ namespace SLD200_MSL
                     buttonCommonParam_Save.Visible = false;
                 }
             }
+
+            timer_ParamLoad.Enabled = true;
         }
 
         private void UpdateDataGridViewBdsPosition()

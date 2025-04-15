@@ -60,7 +60,7 @@ namespace SLD200_MSL
 
         static WorkStage workStage;
 
-        MotionFunction MC_Func = new MotionFunction();
+        MotionFunction MC_Func = new InterpolatorMotionFunction();
 
         public System.Windows.Forms.Timer timer_IOStatus;
 
@@ -132,7 +132,7 @@ namespace SLD200_MSL
             //timer_IOStatus.Interval = 50;
             timer_IOStatus.Interval = 1;
             timer_IOStatus.Tick += new System.EventHandler(Timer_IOStatus);
-            timer_IOStatus.Enabled = true;
+            //timer_IOStatus.Enabled = true;
         }
 
         private void ManualMode_CWA150SA_VisibleChanged(object sender, EventArgs e)

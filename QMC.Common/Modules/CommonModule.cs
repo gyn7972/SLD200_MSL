@@ -122,7 +122,10 @@ namespace QMC.Common.Modules
 
             foreach (Part part in Parts)
             {
-                if ((ret = part.Initialize()) != 0) return ret;
+                if (part.Name != "Illuminator")                                 //  조명을 여기서 초기화 하지 않도록 한다.
+                {
+                    if ((ret = part.Initialize()) != 0) return ret;
+                }
             }
 
             return ret;

@@ -147,7 +147,7 @@ namespace SLD200_MSL
                 File.Create(strFIle);
             }
 
-            loader.Machine_Parameter_Save();
+            //loader.Machine_Parameter_Save();
 
             m_bCommonParam_Save = true;
             m_nCommonParam_Save_Count = 0;
@@ -155,6 +155,8 @@ namespace SLD200_MSL
 
         void Timer_ParamLoadFunc(object sender, EventArgs e)
         {
+            timer_ParamLoad.Enabled = false;
+
             if (Equipment.m_bRedraw_FormLoaderParameterConfig)
             {
                 Equipment.m_bRedraw_FormLoaderParameterConfig = false;
@@ -169,7 +171,7 @@ namespace SLD200_MSL
                 {
                     Loader loader = m_Module as Loader;
 
-                    loader.Machine_Parameter_Save();
+                    //loader.Machine_Parameter_Save();
                 }
                 else
                 {
@@ -179,6 +181,8 @@ namespace SLD200_MSL
                     buttonCommonParam_Save.Visible = false;
                 }
             }
+
+            timer_ParamLoad.Enabled = true;
         }
 
         private void UpdateDataGridViewVisionPosition()
@@ -355,7 +359,7 @@ namespace SLD200_MSL
             m_Module.Initialize();
 
             Loader loader = m_Module as Loader;
-            loader.Machine_Parameter_Save();
+            //loader.Machine_Parameter_Save();
 
             Equipment.m_bRedraw_FormLoaderParameterConfig = true;
             loader.m_bParameterSetting_PosData_Reload = true;

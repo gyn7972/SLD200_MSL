@@ -143,7 +143,8 @@ namespace QMC.Common.Parts
             {
                 //if (((WorkStage)this.Owner).m_bLowerVision_Align)     //  하부 카메라
                 if ((((WorkStage)this.Owner).m_nVisionAligner_Type == (int)WorkStage.Aligner_Type.Aligner_Wafer) ||
-                    (((WorkStage)this.Owner).m_nVisionAligner_Type == (int)WorkStage.Aligner_Type.Aligner_Reticle_Lower))     //  하부 카메라
+                    (((WorkStage)this.Owner).m_nVisionAligner_Type == (int)WorkStage.Aligner_Type.Aligner_Reticle_Lower) ||
+                    (((WorkStage)this.Owner).m_nVisionAligner_Type == (int)WorkStage.Aligner_Type.Aligner_CoarseCam))     //  하부 카메라
                 {
                     coordinate.X = (dX - this.Camera.Resolution.Width / 2) * ((WorkStage)this.Owner).Config.ParamConfig.LowerVision_Scale_X * (((WorkStage)this.Owner).Config.ParamConfig.LowerVision_ScaleInvert_X ? 1 : -1);
 

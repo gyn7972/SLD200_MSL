@@ -144,15 +144,11 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK, Version=3.3.3.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>SpiralLab\Sirius2\OpenTK.dll</HintPath>
-    </Reference>
-    <Reference Include="spirallab.core, Version=1.139.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="spirallab.core, Version=1.145.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>SpiralLab\Sirius\spirallab.core.dll</HintPath>
     </Reference>
-    <Reference Include="spirallab.sirius, Version=1.140.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="spirallab.sirius, Version=1.145.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>SpiralLab\Sirius\spirallab.sirius.dll</HintPath>
     </Reference>
@@ -160,7 +156,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>SpiralLab\Sirius\spirallab.sirius.fieldcorrection.dll</HintPath>
     </Reference>
-    <Reference Include="spirallab.sirius.rtc, Version=1.140.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="spirallab.sirius.rtc, Version=1.145.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>SpiralLab\Sirius\spirallab.sirius.rtc.dll</HintPath>
     </Reference>
@@ -208,6 +204,7 @@
     <Compile Include="Modules\Vision.cs" />
     <Compile Include="Modules\VisionConfig.cs" />
     <Compile Include="Modules\VisionRecipe.cs" />
+    <Compile Include="Motion\Ajin\Library\InterpolatorMotionFunction.cs" />
     <Compile Include="Param.cs" />
     <Compile Include="ParamContainer.cs" />
     <Compile Include="ParamGroup.cs" />
@@ -355,6 +352,9 @@
     <Compile Include="QMCFindLenzCenter.cs" />
     <Compile Include="QmcLowPassFilter.cs" />
     <Compile Include="ScoreSet.cs" />
+    <Compile Include="SerialCommRapidLxLaser.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="SocketLaserHeightSensor.cs" />
     <Compile Include="SocketLaser.cs" />
     <Compile Include="SerialCommElectroRegulator.cs">
@@ -406,6 +406,10 @@
     </Compile>
     <Compile Include="UnitInfoManager.cs" />
     <Compile Include="UserInfo.cs" />
+    <Compile Include="VisionPart\CirclePoints.cs" />
+    <Compile Include="VisionPart\QMC_ImageProcessFindAlign.cs" />
+    <Compile Include="VisionPart\QMC_ImageProcessFindAlignRecipe.cs" />
+    <Compile Include="VisionPart\RansacCircle.cs" />
     <Compile Include="YCoordinate.cs" />
     <Compile Include="XyzLDzzxzULzzxzCoordinate.cs" />
     <Compile Include="VisionPart\Aligner.cs" />
@@ -680,7 +684,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir "C:\Program Files\QMC\SLD-200\"
-copy "$(TargetPath)" "C:\Program Files\QMC\SLD-200\"</PostBuildEvent>
+    <PostBuildEvent>mkdir "C:\Program Files\QMC\SLD200_MSL\"
+copy "$(TargetPath)" "C:\Program Files\QMC\SLD200_MSL\"</PostBuildEvent>
   </PropertyGroup>
 </Project>

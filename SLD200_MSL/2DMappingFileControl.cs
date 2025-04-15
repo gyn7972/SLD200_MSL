@@ -1,6 +1,7 @@
 ﻿using QMC.Common;
 using QMC.Common.Interpolator;
 using QMC.Common.Modules;
+using QMC.Common.Motion.Ajin;
 using QMC.Common.Parts;
 using System;
 using System.Collections.Generic;
@@ -20,21 +21,20 @@ namespace QMC.Vision
     public partial class _2DMappingFileControl : UserControl
     {
         static WorkStage workStage;
-        private UvwzxyzStage m_Owner;
+        private XyzyStage m_Owner;
         private PerspectiveProjectionInterpolator m_interpolator;
         public event LoadButtonClickEventHandler LoadButtonClick;
-        public _2DMappingFileControl(UvwzxyzStage uvwzxyzStage)
+        public _2DMappingFileControl(XyzyStage xyzyStage)
         {
             string strFileName = "";
 
-            m_Owner = uvwzxyzStage as UvwzxyzStage;
+            m_Owner = xyzyStage as XyzyStage;
 
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
 
             foreach (Module module in m_collectionModules)
             {
-                //if (module.Name == "WorkStage")
                 if (module.Name == "WorkStage")
                 {
                     workStage = module as WorkStage;
@@ -69,7 +69,8 @@ namespace QMC.Vision
                         m_interpolator.SetAxis(m_Owner.Axes[XytStage.MotionKey.X.ToString()], m_Owner.Axes[XytStage.MotionKey.Y.ToString()]);
                     }
 
-                    m_Owner.Config.Use2DMap = workStage.Config.ParamConfig.MapFileApply_WhenPgmStart;
+                    //m_Owner.Config.Use2DMap = workStage.Config.ParamConfig.MapFileApply_WhenPgmStart;
+                    m_Owner.Config.Use2DMap = Equipment.MapDataStatus_Activate;
 
                     if (m_Owner.Config.Use2DMap)
                     {
@@ -108,7 +109,7 @@ namespace QMC.Vision
         }
         #region Method
 
-        public void Update(UvwzxyzStageConfig config)
+        public void Update(XyzyStageConfig config)
         {
             m_Owner.Config = config;
             if (m_Owner.Config != null)
@@ -130,8 +131,6 @@ namespace QMC.Vision
                 this.m_Owner.Config.FileName = strFileName;
 
                 workStage.Config.ParamConfig.MapFile_Path = strFileName;
-
-
 
 
                 string m_strRecipe = "";
@@ -156,8 +155,6 @@ namespace QMC.Vision
 
                 //  Config 창 데이터 갱신을 위해서
                 Equipment.m_bRedraw_FormWorkStageParameterConfig = true;
-
-
 
 
                 if (m_interpolator == null)
@@ -191,8 +188,11 @@ namespace QMC.Vision
                 baseToggleBtn_Use.UpdateToggleStatus(false);
             }
         }
+
         private void baseToggleBtn_Use_Click(object sender, EventArgs e)
         {
+            uint nRet = 0;
+
             if (m_Owner.Config != null)
             {
                 bool bOn = m_Owner.Config.Use2DMap;
@@ -204,6 +204,7 @@ namespace QMC.Vision
                     workStage.Stage.Interpolator = m_interpolator;
 
                     workStage.Config.ParamConfig.MapFileApply_WhenPgmStart = true;
+                    //Equipment.MapDataStatus_Activate = true;
                 }
                 else
                 {
@@ -211,11 +212,16 @@ namespace QMC.Vision
                     workStage.Stage.Interpolator = null;
 
                     workStage.Config.ParamConfig.MapFileApply_WhenPgmStart = false;
+                    //Equipment.MapDataStatus_Activate = false;
                 }
                 
                 UpdateToggleButton(m_Owner.Config.Use2DMap);
 
-
+                //  Ajin 2D Mapping Compensation Disable (All)
+                for ( int iter = 0; iter < 16; iter++)
+                {
+                    nRet = AXM.AxmCompensationTwoDimEnable(iter, 0);
+                }
 
                 string m_strRecipe = "";
                 RecipeInfo m_recipeInfo = new RecipeInfo();

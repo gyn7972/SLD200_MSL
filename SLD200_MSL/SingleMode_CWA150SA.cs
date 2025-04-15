@@ -77,7 +77,7 @@ namespace SLD200_MSL
         public System.Windows.Forms.Timer timer_ACS_Status;
         public System.Windows.Forms.Timer timer_SingleMode_DIO_Status;
 
-        MotionFunction MC_Func = new MotionFunction();
+        MotionFunction MC_Func = new InterpolatorMotionFunction();
 
         //protected XyztStage m_Stage;
         //protected XyzztStage m_Stage;

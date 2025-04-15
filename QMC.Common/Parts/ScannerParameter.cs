@@ -100,7 +100,7 @@ namespace QMC.Common.Parts
             }
         }*/
 
-        public PowerMapDefault Map
+        public PowerMapDefault Map                          //  Sirius1
         //public PowerMapBase Map                           //  Sirius2
         {
             set
@@ -128,7 +128,7 @@ namespace QMC.Common.Parts
         public override int Create()
         {
             //m_rtc = new Rtc6SyncAxis();                             //  ScanLab XLSCAN 솔루션 (SyncAxis 를 사용하려면 이걸로 해야 함.)
-            m_rtc = new Rtc6();                                     //  ScanLab RTC6 솔루션
+            //m_rtc = new Rtc6();                                     //  ScanLab RTC6 솔루션
 
             if (m_dicDioPoints == null)
                 m_dicDioPoints = new Dictionary<string, DioPoint>();
@@ -144,14 +144,14 @@ namespace QMC.Common.Parts
 
             //m_powerMeter = new PowerMeterOphir(0, "Ophir", "", 100000);
 
-            m_drillingMarker = new MarkerDefault(0);
-            m_drillingMarker.Name = "DrillingMarker";
-            m_drillingMarker.OnFinished += DrillingMaker_OnFinished;
-
-            ////m_drillingMarker = new MarkerBase();       // MarkerDefault(0);   //  2025. 01. 02.  SCH : 왜 안될까?
+            //m_drillingMarker = new MarkerDefault(0);
             //m_drillingMarker.Name = "DrillingMarker";
             //m_drillingMarker.OnFinished += DrillingMaker_OnFinished;
-            ////m_drillingMarker.OnEnded += DrillingMarker_OnEnded;               //  Sirius2
+
+            //m_drillingMarker = new MarkerBase();       // MarkerDefault(0);   //  2025. 01. 02.  SCH : 왜 안될까?
+            //m_drillingMarker.Name = "DrillingMarker";
+            //m_drillingMarker.OnFinished += DrillingMaker_OnFinished;
+            //m_drillingMarker.OnEnded += DrillingMarker_OnEnded;               //  Sirius2
 
             //Map = new PowerMapBase(0, m_drillingMarker.Name);                 //  2025. 01. 02.  SCH : 왜 안될까?
 
@@ -159,19 +159,19 @@ namespace QMC.Common.Parts
             return base.Create();
         }
 
-        //private void DrillingMarker_OnEnded(IMarker arg1, bool arg2, TimeSpan arg3)
-        //{
-        //    var span = arg3;        // markerArg.EndTime - markerArg.StartTime;
-        //    Log.Write(this, $"{arg1.Name} finished : {span.ToString()} sec");
-        //    m_bDrillingDone = true;
-        //}
-
-        private void DrillingMaker_OnFinished(IMarker sender, IMarkerArg markerArg)
+        private void DrillingMarker_OnEnded(IMarker arg1, bool arg2, TimeSpan arg3)                 //  Sirius2
         {
-            var span = markerArg.EndTime - markerArg.StartTime;
-            Log.Write(this, $"{sender.Name} finished : {span.ToString()} sec");
+            var span = arg3;        // markerArg.EndTime - markerArg.StartTime;
+            Log.Write(this, $"{arg1.Name} finished : {span.ToString()} sec");
             m_bDrillingDone = true;
         }
+
+        //private void DrillingMaker_OnFinished(IMarker sender, IMarkerArg markerArg)               //  Sirius1
+        //{
+        //    var span = markerArg.EndTime - markerArg.StartTime;
+        //    Log.Write(this, $"{sender.Name} finished : {span.ToString()} sec");
+        //    m_bDrillingDone = true;
+        //}
 
         public override int Initialize()
         {
@@ -510,7 +510,7 @@ namespace QMC.Common.Parts
             int ret = 0;
             var mapFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "map", "powermap.map");
 
-            if (!PowerMapSerializer.Save(Map, mapFile))
+            if (!PowerMapSerializer.Save(Map, mapFile))                             //  Sirius1
             //if (!PowerMapSerializer.Save(mapFile, Map))                           //  Sirius2
             {
                 ret = -1;

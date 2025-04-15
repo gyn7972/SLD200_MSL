@@ -1,4 +1,5 @@
 ﻿using QMC.Common.Modules;
+using QMC.Common.Motion.Ajin.Motions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,11 @@ namespace QMC.Common.Parts
     public class MotionPart : Part
     {
         public BaseInterpolator Interpolator { set; get; }
+        public InterpolatorMotionFunction MC_Func = null;
         public MotionPart(string strName) : base(strName)
         {
             Interpolator = null;
+            MC_Func = new InterpolatorMotionFunction();
         }
 
         public override int Initialize()
@@ -224,7 +227,7 @@ namespace QMC.Common.Parts
         public int Move(Dictionary<string, MovingProjection> dicMovingProjection)
         {
             int ret = 0;
-            if (m_Status == RunStatus.Stop) return 1;
+            //if (m_Status == RunStatus.Stop) return 1;
             foreach (string axisKey in dicMovingProjection.Keys)
             {
                 if(Axes.ContainsKey(axisKey))
@@ -263,7 +266,8 @@ namespace QMC.Common.Parts
         protected virtual int OnMove(Dictionary<string, MovingProjection> dicMovingProjection)
         {
             int ret = 0;
-            if (m_Status == RunStatus.Stop) return 1;
+            
+            //if (m_Status == RunStatus.Stop) return 1;
             foreach (string axisKey in dicMovingProjection.Keys)
             {
                 if (Axes.ContainsKey(axisKey))
@@ -272,7 +276,16 @@ namespace QMC.Common.Parts
                     MotionAxis axis = Axes[axisKey];
                     if (axis != null)
                     {
-                        if((ret = axis.MovePosition(movingProjection.Position, movingProjection.Velocity, movingProjection.Acceleration, movingProjection.Deceleration)) != 0) return ret;
+                        if(axis.No == (int)WorkStage.nAxis.X ||(axis.No == (int)WorkStage.nAxis.Y)  )
+                        {
+                            MC_Func.MC_MovePosition(axis.No, movingProjection.Position, movingProjection.Velocity, movingProjection.Acceleration, movingProjection.Deceleration);
+
+                        }
+                        else
+                        {
+
+                            if ((ret = axis.MovePosition(movingProjection.Position, movingProjection.Velocity, movingProjection.Acceleration, movingProjection.Deceleration)) != 0) return ret;
+                        }
                     }
                 }
             }
@@ -391,7 +404,22 @@ namespace QMC.Common.Parts
 
             if (m_dicAxes.ContainsKey(strAxis)/* && m_dicAxes[strAxis] != null*/)
             {
-                movingProjection = m_dicAxes[strAxis].GetDefaultMovingProjection();
+                if (m_dicAxes[strAxis] == null)
+                {
+                    MovingProjection projection = new MovingProjection();
+                    double dPosition = 0;
+                    projection.Position = dPosition;
+                    projection.Velocity = 10;
+                    projection.Acceleration = 100;
+                    projection.Deceleration = 100;
+                    projection.Timeout = 1000;
+
+                    movingProjection = projection;
+                }
+                else
+                {
+                    movingProjection = m_dicAxes[strAxis].GetDefaultMovingProjection();
+                }
             }
             return movingProjection;
         }

@@ -16,6 +16,7 @@ namespace SocketLaserHeightSensor
     {
         Socket mainSock;
         List<Socket> connectedClients = new List<Socket>();
+        bool m_bConnected = false;
         int m_port = 5000;
 
         public void Start()
@@ -49,6 +50,11 @@ namespace SocketLaserHeightSensor
             connectedClients.Clear();
 
             //mainSock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
+        }
+
+        public bool IsConnected()
+        {
+            return m_bConnected;
         }
 
         public class AsyncObject
@@ -88,11 +94,18 @@ namespace SocketLaserHeightSensor
         {
             AsyncObject obj = (AsyncObject)ar.AsyncState;
 
-            int received = obj.WorkingSocket.EndReceive(ar);
+            try
+            {
+                int received = obj.WorkingSocket.EndReceive(ar);
 
-            byte[] buffer = new byte[received];
+                byte[] buffer = new byte[received];
 
-            Array.Copy(obj.Buffer, 0, buffer, 0, received);
+                Array.Copy(obj.Buffer, 0, buffer, 0, received);
+            }
+            catch (Exception e)
+            {
+                m_bConnected = mainSock.Connected;
+            }
         }
 
         public void Send(byte[] msg)
@@ -105,13 +118,17 @@ namespace SocketLaserHeightSensor
     public class LaserSensorSocketClient
     {
         Socket mainSock;
+        bool m_bConnected = false;
         int m_port = 5000;
 
-        public void Connect()
+        public void Connect(string strIP, int nPort)
         {
+            //mainSock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             mainSock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            IPAddress serverAddr = IPAddress.Parse("10.0.0.10");
-            IPEndPoint clientEP = new IPEndPoint(serverAddr, m_port);
+            //IPAddress serverAddr = IPAddress.Parse("10.0.0.10");
+            IPAddress serverAddr = IPAddress.Parse(strIP);
+            //IPEndPoint clientEP = new IPEndPoint(serverAddr, m_port);
+            IPEndPoint clientEP = new IPEndPoint(serverAddr, nPort);
             mainSock.BeginConnect(clientEP, new AsyncCallback(ConnectCallback), mainSock);
         }
 
@@ -122,6 +139,11 @@ namespace SocketLaserHeightSensor
                 mainSock.Close();
                 mainSock.Dispose();
             }
+        }
+
+        public bool IsConnected()
+        {
+            return m_bConnected;
         }
 
         public class AsyncObject

@@ -13,17 +13,36 @@ namespace QMC.Common.Parts
 
         #region => Axis Define 
 
-        public enum AxisAjinEnum
-        {
-            Z0 = 4,
-            Z1,
-            TR_X,
-            TR_Z,
-            ALN_X, 
-            ALN_Y,
 
-            Max,
+//#if true                                                                //  SLD-200C
+#if false                                                               //  SLD-200U
+        public enum AxisAjinEnum                                                       //  SLD-200C 에서 사용하는 축 번호    
+        {
+            //  축 번호 변경 전 (Z0:4,    Z1:5,   TR_X:6,     TR_Z:7,     ALN_X:8,    ALN_Y:9)
+            //  축 번호 변경 후 (Z0:6,    Z1:7,   TR_X:8,     TR_Z:9,     ALN_X:1,    ALN_Y:2)
+
+            Z0 = 6,
+            Z1 = 7,
+            TR_X = 8,
+            TR_Z = 9,
+            ALN_X = 1,
+            ALN_Y = 2,
         }
+#else
+        public enum AxisAjinEnum                                                       //  SLD-200U 에서 사용하는 축 번호   
+        {
+            //  축 번호 변경 전 (Z0:4,    Z1:5,   TR_X:6,     TR_Z:7,     ALN_X:8,    ALN_Y:9)
+            //  축 번호 변경 후 (Z0:6,    Z1:7,   TR_X:8,     TR_Z:9,     ALN_X:1,    ALN_Y:2)
+
+            Z0 = 5,
+            Z1 = 6,
+            TR_X = 7,
+            TR_Z = 8,
+            ALN_X = 0,
+            ALN_Y = 1,
+        }
+#endif
+
         
         #endregion
 
@@ -35,12 +54,27 @@ namespace QMC.Common.Parts
             TR_Z,
             ALN_X,
             ALN_Y,
+
+            Max,
         }
 
         public enum StackerTable
         {
-            Stacker_0,
+            Stacker_0 = 0,
             Stacker_1
+        }
+
+        public enum PickerVacuumPos
+        {
+            Inner = 0,
+            Outer
+        }
+
+        public enum MAlignerVacuumPos
+        {
+            Center = 0,
+            Inner,
+            Outer
         }
 
         public enum LED_Light
@@ -71,28 +105,32 @@ namespace QMC.Common.Parts
             Input_Loader_Stacker0_FullCheck,            //  X033
             Input_Loader_Stacker1_MaterialCheck,        //  X034
             Input_Loader_Stacker1_FullCheck,            //  X035
-            Input_Loader_Picker0_VacuumCheck,           //  X036
-            Input_Loader_Picker1_VacuumCheck,           //  X037
-            Input_Loader_Aligner_VacuumCheck,           //  X038
+            Input_Loader_Picker_InnerVacuumCheck,       //  X036
+            Input_Loader_Picker_OuterVacuumCheck,       //  X037
+            Input_Loader_Aligner_Center_VacuumCheck,    //  X038                    //  변경 (1개만 있던 것 -> 3개로 변경)
             Input_Loader_Ionizer0_AlarmCheck,           //  X039
             Input_Loader_Ionizer1_AlarmCheck,           //  X040
             Input_Loader_Front_DoorCheck,               //  X041
-            Input_Loader_Left_DoorCheck,                //  X042
+            Input_Loader_Right_DoorCheck,               //  X042
+            Input_Loader_Aligner_Inner_VacuumCheck,     //  X043                    //  추가
+            Input_Loader_Aligner_Outer_VacuumCheck,     //  X044                    //  추가
 
 
-            
+
             /// <summary>
             /// Output
             /// </summary>
             /// 
-            Output_Loader_Picker_Vacuum0,               //  Y032
-            Output_Loader_Picker_Vacuum1,               //  Y033
+            Output_Loader_Picker_InnerVacuum,           //  Y032
+            Output_Loader_Picker_OuterVacuum,           //  Y033
             Output_Loader_Picker_Blow,                  //  Y034
-            Output_Loader_Aligner_Vacuum0,              //  Y035
-            Output_Loader_Aligner_Vacuum1,              //  Y036
-            Output_Loader_Aligner_Vacuum2,              //  Y037
-            Output_Loader_Aligner_Blow,                 //  Y038
+            Output_Loader_Aligner_CenterVacuum,         //  Y035
+            Output_Loader_Aligner_InnerVacuum,          //  Y036
+            Output_Loader_Aligner_OuterVacuum,          //  Y037
+            Output_Loader_Aligner_Center_Blow,          //  Y038                    //  변경 (1개만 있던 것 -> 3개로 변경)
             Output_Loader_Ionizer_On,                   //  Y039
+            Output_Loader_Aligner_Inner_Blow,           //  Y040                    //  추가
+            Output_Loader_Aligner_Outer_Blow,           //  Y041                    //  추가
         }
 
 
@@ -715,12 +753,12 @@ namespace QMC.Common.Parts
             switch (m_nPos)
             {
                 case 0:
-                    dioString = m_dicDioPoints[DioPointKey.Input_Loader_Picker0_VacuumCheck.ToString()];
+                    dioString = m_dicDioPoints[DioPointKey.Input_Loader_Picker_InnerVacuumCheck.ToString()];
                     break;
 
 
                 case 1:
-                    dioString = m_dicDioPoints[DioPointKey.Input_Loader_Picker1_VacuumCheck.ToString()];
+                    dioString = m_dicDioPoints[DioPointKey.Input_Loader_Picker_OuterVacuumCheck.ToString()];
                     break;
             }
 
@@ -735,14 +773,29 @@ namespace QMC.Common.Parts
             return bRet;
         }
 
-        public bool DI_Loader_Aligner_VacuumCheck()
+        public bool DI_Loader_Aligner_VacuumCheck(int m_nPos)
         {
             bool bRet = false;
 
             DioPoint dioString = null;
 
             //  해당 채널 상태 리턴
-            dioString = m_dicDioPoints[DioPointKey.Input_Loader_Aligner_VacuumCheck.ToString()];
+            switch (m_nPos)
+            {
+                case 0:
+                    dioString = m_dicDioPoints[DioPointKey.Input_Loader_Aligner_Center_VacuumCheck.ToString()];
+                    break;
+
+
+                case 1:
+                    dioString = m_dicDioPoints[DioPointKey.Input_Loader_Aligner_Inner_VacuumCheck.ToString()];
+                    break;
+
+
+                case 2:
+                    dioString = m_dicDioPoints[DioPointKey.Input_Loader_Aligner_Outer_VacuumCheck.ToString()];
+                    break;
+            }
 
             if (dioString == null)
                 return bRet;
@@ -800,12 +853,12 @@ namespace QMC.Common.Parts
             switch (m_nPos)
             {
                 case 0:
-                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Picker_Vacuum0.ToString()];
+                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Picker_InnerVacuum.ToString()];
                     break;
 
 
                 case 1:
-                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Picker_Vacuum1.ToString()];
+                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Picker_OuterVacuum.ToString()];
                     break;
             }
 
@@ -848,17 +901,17 @@ namespace QMC.Common.Parts
             switch (m_nPos)
             {
                 case 0:
-                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_Vacuum0.ToString()];
+                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_CenterVacuum.ToString()];
                     break;
 
 
                 case 1:
-                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_Vacuum1.ToString()];
+                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_InnerVacuum.ToString()];
                     break;
 
 
                 case 2:
-                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_Vacuum2.ToString()];
+                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_OuterVacuum.ToString()];
                     break;
             }
 
@@ -872,14 +925,29 @@ namespace QMC.Common.Parts
             return nRet;
         }
 
-        public int DO_Loader_Aligner_Blow(bool m_bOnOff)
+        public int DO_Loader_Aligner_Blow(int m_nPos, bool m_bOnOff)
         {
             int nRet = 0;
 
             DioPoint dioString = null;
 
             //  해당 채널 출력 성공 여부 리턴
-            dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_Blow.ToString()];
+            switch (m_nPos)
+            {
+                case 0:
+                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_Center_Blow.ToString()];
+                    break;
+
+
+                case 1:
+                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_Inner_Blow.ToString()];
+                    break;
+
+
+                case 2:
+                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_Outer_Blow.ToString()];
+                    break;
+            }
 
             if (dioString == null) return -1;
 
@@ -925,12 +993,12 @@ namespace QMC.Common.Parts
             switch (m_nPos)
             {
                 case 0:
-                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Picker_Vacuum0.ToString()];
+                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Picker_InnerVacuum.ToString()];
                     break;
 
 
                 case 1:
-                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Picker_Vacuum1.ToString()];
+                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Picker_OuterVacuum.ToString()];
                     break;
             }
 
@@ -975,17 +1043,17 @@ namespace QMC.Common.Parts
             switch (m_nPos)
             {
                 case 0:
-                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_Vacuum0.ToString()];
+                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_CenterVacuum.ToString()];
                     break;
 
 
                 case 1:
-                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_Vacuum1.ToString()];
+                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_InnerVacuum.ToString()];
                     break;
 
 
                 case 2:
-                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_Vacuum2.ToString()];
+                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_OuterVacuum.ToString()];
                     break;
             }
 
@@ -1000,14 +1068,29 @@ namespace QMC.Common.Parts
             return bRet;
         }
 
-        public bool IsDO_Loader_Aligner_Blow()
+        public bool IsDO_Loader_Aligner_Blow(int m_nPos)
         {
             bool bRet = false;
 
             DioPoint dioString = null;
 
             //  해당 출력 채널 상태 리턴
-            dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_Blow.ToString()];
+            switch (m_nPos)
+            {
+                case 0:
+                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_Center_Blow.ToString()];
+                    break;
+
+
+                case 1:
+                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_Inner_Blow.ToString()];
+                    break;
+
+
+                case 2:
+                    dioString = m_dicDioPoints[DioPointKey.Output_Loader_Aligner_Outer_Blow.ToString()];
+                    break;
+            }
 
             if (dioString == null)
                 return bRet;

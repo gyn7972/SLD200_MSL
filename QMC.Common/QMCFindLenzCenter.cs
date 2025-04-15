@@ -107,13 +107,20 @@ namespace QMC.Common
         }
         public void MoveToCenter()
         {
-            double dXOffset = m_sldData.Where(t => t.m_dX == 0 && t.m_dY == 0).Average(t => t.m_dMeasureX);
-            double dYOffset = m_sldData.Where(t => t.m_dX == 0 && t.m_dY == 0).Average(t => t.m_dMeasureY);
-            foreach (var v in m_sldData)
+            try
             {
-                v.m_dMeasureX -= dXOffset;
-                v.m_dMeasureY -= dYOffset;
+                double dXOffset = m_sldData.Where(t => t.m_dX == 0 && t.m_dY == 0).Average(t => t.m_dMeasureX);
+                double dYOffset = m_sldData.Where(t => t.m_dX == 0 && t.m_dY == 0).Average(t => t.m_dMeasureY);
+                foreach (var v in m_sldData)
+                {
+                    v.m_dMeasureX -= dXOffset;
+                    v.m_dMeasureY -= dYOffset;
+                }
+            }catch(Exception ex)
+            {
+
             }
+            
         }
         public void FindLenzCenter()
         {

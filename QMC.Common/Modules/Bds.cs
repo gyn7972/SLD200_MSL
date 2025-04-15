@@ -31,10 +31,27 @@ namespace QMC.Common.Modules
     {
         #region Define
 
-        public enum nAxis
+
+//#if true                                                                //  SLD-200C
+#if false                                                               //  SLD-200U
+        public enum nAxis                                                       //  SLD-200C 에서 사용하는 축 번호    
         {
-            MASK_Y = 3,
+            //  축 번호 변경 전 (MASK_Y:3)
+            //  축 번호 변경 후 (MASK_Y:0)
+
+            MASK_Y = 0,
         }
+#else
+        public enum nAxis                                                       //  SLD-200U 에서 사용하는 축 번호   
+        {
+            //  축 번호 변경 전 (MASK_Y:3)
+            //  축 번호 변경 후 (MASK_Y:0)
+
+            MASK_Y = 0,                                                         //  있긴 하지만 사용하지 않는 축. (SLD-200U 에서는 Mask Y 축이 없음)
+        }
+#endif
+
+
         #endregion
 
 
@@ -47,7 +64,7 @@ namespace QMC.Common.Modules
         SettingParameterCollection PosParam_Bds;          //  2022. 04. 25.  SCH : 모터 위치 파라미터를 갖다쓰기 위해 선언해봄.
         //static Conveyor conveyor = new Conveyor("");            //  요거 다시해야 함. Conveyor.cs 에 정의된 변수에 접근할 수 있게... 어케 함? -_-
                                                                 //  static 으로 선언하면 되긴 헌디.... 맞는건가 -_-
-        public MotionFunction MC_Func = new MotionFunction();
+        public InterpolatorMotionFunction MC_Func = new InterpolatorMotionFunction();
         //public ACSSPiiPlusAxis ACS_Func = new ACSSPiiPlusAxis();
         #endregion
 
@@ -108,7 +125,7 @@ namespace QMC.Common.Modules
         {
             public double Mask_Y;                           //  Mask Y
         }
-        public static stBDSAxesPos[] stBDSTeachingPos = new stBDSAxesPos[System.Enum.GetValues(typeof(BDS_TeachingPosList)).Length];
+        public stBDSAxesPos[] stBDSTeachingPos = new stBDSAxesPos[System.Enum.GetValues(typeof(BDS_TeachingPosList)).Length];
 
         public struct stBDSMoveProperties
         {
@@ -117,7 +134,7 @@ namespace QMC.Common.Modules
             public int Coarse_Accel;                        //  Coarse Acceleration
             public int Coarse_SettleDelay;                  //  Coarse Settle Delay
         }
-        public static stBDSMoveProperties[] stBDSPosMoveProperties = new stBDSMoveProperties[System.Enum.GetValues(typeof(BDS_TeachingPosList)).Length];
+        public stBDSMoveProperties[] stBDSPosMoveProperties = new stBDSMoveProperties[System.Enum.GetValues(typeof(BDS_TeachingPosList)).Length];
 
         #endregion
 
@@ -254,7 +271,7 @@ namespace QMC.Common.Modules
 
             //  Main Work 타이머
             timer_MainWork = new System.Windows.Forms.Timer();
-            timer_MainWork.Interval = 1;                                               //  50 이었는데 10으로 변경. (50은 너무 느린 감이 없지 않아 있음. 근데 10에서 잘 될란가...?)
+            timer_MainWork.Interval = 10;                                               //  50 이었는데 10으로 변경. (50은 너무 느린 감이 없지 않아 있음. 근데 10에서 잘 될란가...?)
             timer_MainWork.Tick += new System.EventHandler(Timer_MainWork_Func);
 
             m_btimer_MainWork_Stop = false;

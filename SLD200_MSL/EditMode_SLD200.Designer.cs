@@ -39,7 +39,6 @@
             this.tb_ScannerOffset_Y = new System.Windows.Forms.TextBox();
             this.tb_ScannerOffset_Angle = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.SiriusEditor = new SpiralLab.Sirius.SiriusEditorForm();
             this.SuspendLayout();
             // 
             // contextMenuStrip1
@@ -87,7 +86,7 @@
             this.tb_ScannerOffset_X.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.tb_ScannerOffset_X.Location = new System.Drawing.Point(1659, 88);
             this.tb_ScannerOffset_X.Name = "tb_ScannerOffset_X";
-            this.tb_ScannerOffset_X.Size = new System.Drawing.Size(64, 26);
+            this.tb_ScannerOffset_X.Size = new System.Drawing.Size(64, 27);
             this.tb_ScannerOffset_X.TabIndex = 65;
             this.tb_ScannerOffset_X.Text = "0";
             // 
@@ -116,7 +115,7 @@
             this.tb_ScannerOffset_Y.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.tb_ScannerOffset_Y.Location = new System.Drawing.Point(1659, 115);
             this.tb_ScannerOffset_Y.Name = "tb_ScannerOffset_Y";
-            this.tb_ScannerOffset_Y.Size = new System.Drawing.Size(64, 26);
+            this.tb_ScannerOffset_Y.Size = new System.Drawing.Size(64, 27);
             this.tb_ScannerOffset_Y.TabIndex = 68;
             this.tb_ScannerOffset_Y.Text = "0";
             // 
@@ -125,7 +124,7 @@
             this.tb_ScannerOffset_Angle.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.tb_ScannerOffset_Angle.Location = new System.Drawing.Point(1814, 88);
             this.tb_ScannerOffset_Angle.Name = "tb_ScannerOffset_Angle";
-            this.tb_ScannerOffset_Angle.Size = new System.Drawing.Size(82, 26);
+            this.tb_ScannerOffset_Angle.Size = new System.Drawing.Size(82, 27);
             this.tb_ScannerOffset_Angle.TabIndex = 87;
             this.tb_ScannerOffset_Angle.Text = "0";
             // 
@@ -139,42 +138,11 @@
             this.label1.TabIndex = 86;
             this.label1.Text = "Angle Offset";
             // 
-            // SiriusEditor
-            // 
-            this.SiriusEditor.AliasName = "NoName";
-            this.SiriusEditor.AllowDrop = true;
-            this.SiriusEditor.BackColor = System.Drawing.SystemColors.Control;
-            this.SiriusEditor.Document = null;
-            this.SiriusEditor.EnablePens = true;
-            this.SiriusEditor.FileName = "NoName";
-            this.SiriusEditor.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SiriusEditor.HidePropertyGrid = false;
-            this.SiriusEditor.Index = ((uint)(0u));
-            this.SiriusEditor.Laser = null;
-            this.SiriusEditor.Location = new System.Drawing.Point(3, 3);
-            this.SiriusEditor.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.SiriusEditor.Marker = null;
-            this.SiriusEditor.Motors = null;
-            this.SiriusEditor.MotorZ = null;
-            this.SiriusEditor.Name = "SiriusEditor";
-            this.SiriusEditor.PowerMap = null;
-            this.SiriusEditor.PowerMeter = null;
-            this.SiriusEditor.Progress = 0;
-            this.SiriusEditor.Rtc = null;
-            this.SiriusEditor.RtcExtension1Input = null;
-            this.SiriusEditor.RtcExtension1Output = null;
-            this.SiriusEditor.RtcExtension2Output = null;
-            this.SiriusEditor.RtcPin2Input = null;
-            this.SiriusEditor.RtcPin2Output = null;
-            this.SiriusEditor.Size = new System.Drawing.Size(1506, 764);
-            this.SiriusEditor.TabIndex = 88;
-            // 
             // EditMode_SLD200
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gainsboro;
-            this.Controls.Add(this.SiriusEditor);
             this.Controls.Add(this.tb_ScannerOffset_Angle);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tb_ScannerOffset_Y);
@@ -206,6 +174,5 @@
         private BaseLabel baseLabel_RepRate;
         private System.Windows.Forms.TextBox tb_ScannerOffset_Angle;
         private System.Windows.Forms.Label label1;
-        private SpiralLab.Sirius.SiriusEditorForm SiriusEditor;
     }
 }

@@ -67,7 +67,7 @@ namespace SLD200_MSL
         string strRegistryTmp = "SOFTWARE\\";       //  레지스트리 최상위 폴더 지정
         string strAppName = "SLD200_MSL";
 
-        MotionFunction MC_Func = new MotionFunction();
+        MotionFunction MC_Func = new InterpolatorMotionFunction();
 
         public System.Windows.Forms.Timer timer_Laser1Shot;
         //public System.Windows.Forms.Timer timer_ACS_Status;
@@ -350,8 +350,8 @@ namespace SLD200_MSL
 
 
             // 문서 생성후 뷰어에 지정
-            var doc = new DocumentDefault();
-            SiriusViewer_Parameter.Document = doc;
+            //var doc = new DocumentDefault();                          //  Sirius1
+            //SiriusViewer_Parameter.Document = doc;
 
 
             this.userRegistration = new FormUserRegistration();
@@ -432,19 +432,19 @@ namespace SLD200_MSL
             //{
             //    workStage.workStageParameter.stWorkStagePosParam = workStage.workStageParameter.GetPositionInformation("AlignPosition_Ver_Top");
 
-            //    tb_Axis_Y_TOP.Text = workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.Y].ToString();
+            //    tb_Axis_Y_TOP.Text = workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y].ToString();
             //}
             //if (m_nIndex_Ver_Mid != -1)
             //{
             //    workStage.workStageParameter.stWorkStagePosParam = workStage.workStageParameter.GetPositionInformation("AlignPosition_Ver_Middle");
 
-            //    tb_Axis_Y_MID.Text = workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.Y].ToString();
+            //    tb_Axis_Y_MID.Text = workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y].ToString();
             //}
             //if (m_nIndex_Ver_Bot != -1)
             //{
             //    workStage.workStageParameter.stWorkStagePosParam = workStage.workStageParameter.GetPositionInformation("AlignPosition_Ver_Bottom");
 
-            //    tb_Axis_Y_BOT.Text = workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.Y].ToString();
+            //    tb_Axis_Y_BOT.Text = workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y].ToString();
             //}
 
             ////  좌표 가져오기 (가로 방향 얼라인)
@@ -452,19 +452,19 @@ namespace SLD200_MSL
             //{
             //    workStage.workStageParameter.stWorkStagePosParam = workStage.workStageParameter.GetPositionInformation("AlignPosition_Hor_Left");
 
-            //    tb_Axis_X_LEFT.Text = workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.X].ToString();
+            //    tb_Axis_X_LEFT.Text = workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X].ToString();
             //}
             //if (m_nIndex_Hor_C != -1)
             //{
             //    workStage.workStageParameter.stWorkStagePosParam = workStage.workStageParameter.GetPositionInformation("AlignPosition_Ver_Middle");
 
-            //    tb_Axis_X_MID.Text = workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.X].ToString();
+            //    tb_Axis_X_MID.Text = workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X].ToString();
             //}
             //if (m_nIndex_Hor_R != -1)
             //{
             //    workStage.workStageParameter.stWorkStagePosParam = workStage.workStageParameter.GetPositionInformation("AlignPosition_Hor_Right");
 
-            //    tb_Axis_X_RIGHT.Text = workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.X].ToString();
+            //    tb_Axis_X_RIGHT.Text = workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X].ToString();
             //}
 
             //if (m_nIndex_Reticle_Upper != -1)
@@ -911,16 +911,16 @@ namespace SLD200_MSL
             //m_dCurPos_X = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)WorkStageParameter.AxisAcsEnum.StageX);            //  현재 X 위치
             //m_dCurPos_Y = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)WorkStageParameter.AxisAcsEnum.StageY);            //  현재 Y 위치
 
-            //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.X] = m_dCurPos_X + workStage.Config.ParamConfig.OffsetX_fromHighResCamera_toScanner;
-            //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.Y] = m_dCurPos_Y + workStage.Config.ParamConfig.OffsetY_fromHighResCamera_toScanner;
+            //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = m_dCurPos_X + workStage.Config.ParamConfig.OffsetX_fromHighResCamera_toScanner;
+            //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = m_dCurPos_Y + workStage.Config.ParamConfig.OffsetY_fromHighResCamera_toScanner;
 
             //ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                      //  '0' - Absolute position
             //                                    (Axis)WorkStageParameter.AxisAcsEnum.StageY,
-            //                                    workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.Y]);                           //  Target position
+            //                                    workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]);                           //  Target position
 
             //ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                      //  '0' - Absolute position
             //                                    (Axis)WorkStageParameter.AxisAcsEnum.StageX,
-            //                                    workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.X]);                           //  Target position
+            //                                    workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]);                           //  Target position
         }
 
         private void btnMoveUnloadingPos_Click(object sender, EventArgs e)
@@ -981,16 +981,16 @@ namespace SLD200_MSL
             //m_dCurPos_X = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)WorkStageParameter.AxisAcsEnum.StageX);            //  현재 X 위치
             //m_dCurPos_Y = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)WorkStageParameter.AxisAcsEnum.StageY);            //  현재 Y 위치
 
-            //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.X] = m_dCurPos_X - workStage.Config.ParamConfig.OffsetX_fromHighResCamera_toScanner;
-            //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.Y] = m_dCurPos_Y - workStage.Config.ParamConfig.OffsetY_fromHighResCamera_toScanner;
+            //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = m_dCurPos_X - workStage.Config.ParamConfig.OffsetX_fromHighResCamera_toScanner;
+            //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = m_dCurPos_Y - workStage.Config.ParamConfig.OffsetY_fromHighResCamera_toScanner;
 
             //ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                      //  '0' - Absolute position
             //                                    (Axis)WorkStageParameter.AxisAcsEnum.StageY,
-            //                                    workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.Y]);                           //  Target position
+            //                                    workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]);                           //  Target position
 
             //ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                      //  '0' - Absolute position
             //                                    (Axis)WorkStageParameter.AxisAcsEnum.StageX,
-            //                                    workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.X]);                           //  Target position
+            //                                    workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]);                           //  Target position
         }
 
         private void btnCamMoveToScannerPos_Click(object sender, EventArgs e)
@@ -1042,16 +1042,16 @@ namespace SLD200_MSL
             //m_dCurPos_X = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)WorkStageParameter.AxisAcsEnum.StageX);            //  현재 X 위치
             //m_dCurPos_Y = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)WorkStageParameter.AxisAcsEnum.StageY);            //  현재 Y 위치
 
-            //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.X] = m_dCurPos_X + workStage.Config.ParamConfig.OffsetX_fromHighResCamera_toScanner;
-            //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.Y] = m_dCurPos_Y + workStage.Config.ParamConfig.OffsetY_fromHighResCamera_toScanner;
+            //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = m_dCurPos_X + workStage.Config.ParamConfig.OffsetX_fromHighResCamera_toScanner;
+            //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = m_dCurPos_Y + workStage.Config.ParamConfig.OffsetY_fromHighResCamera_toScanner;
 
             //ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                      //  '0' - Absolute position
             //                                    (Axis)WorkStageParameter.AxisAcsEnum.StageY,
-            //                                    workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.Y]);                           //  Target position
+            //                                    workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]);                           //  Target position
 
             //ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                      //  '0' - Absolute position
             //                                    (Axis)WorkStageParameter.AxisAcsEnum.StageX,
-            //                                    workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.X]);                           //  Target position
+            //                                    workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]);                           //  Target position
         }
 
         private void btnScannerMoveToCamPos_Click(object sender, EventArgs e)
@@ -1103,16 +1103,16 @@ namespace SLD200_MSL
             //m_dCurPos_X = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)WorkStageParameter.AxisAcsEnum.StageX);            //  현재 X 위치
             //m_dCurPos_Y = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)WorkStageParameter.AxisAcsEnum.StageY);            //  현재 Y 위치
 
-            //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.X] = m_dCurPos_X - workStage.Config.ParamConfig.OffsetX_fromHighResCamera_toScanner;
-            //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.Y] = m_dCurPos_Y - workStage.Config.ParamConfig.OffsetY_fromHighResCamera_toScanner;
+            //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = m_dCurPos_X - workStage.Config.ParamConfig.OffsetX_fromHighResCamera_toScanner;
+            //workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = m_dCurPos_Y - workStage.Config.ParamConfig.OffsetY_fromHighResCamera_toScanner;
 
             //ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                      //  '0' - Absolute position
             //                                    (Axis)WorkStageParameter.AxisAcsEnum.StageY,
-            //                                    workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.Y]);                           //  Target position
+            //                                    workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]);                           //  Target position
 
             //ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                      //  '0' - Absolute position
             //                                    (Axis)WorkStageParameter.AxisAcsEnum.StageX,
-            //                                    workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)nAxis.X]);                           //  Target position
+            //                                    workStage.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]);                           //  Target position
         }
 
 

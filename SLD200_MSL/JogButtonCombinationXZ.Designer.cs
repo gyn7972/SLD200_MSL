@@ -32,10 +32,10 @@
             this.buttonAxisXUp = new System.Windows.Forms.Button();
             this.buttonAxisYUp = new System.Windows.Forms.Button();
             this.buttonAxisXDown = new System.Windows.Forms.Button();
-            this.buttonAxisXUpYDown = new System.Windows.Forms.Button();
-            this.buttonAxisXUpYUp = new System.Windows.Forms.Button();
-            this.buttonAxisXDownYDown = new System.Windows.Forms.Button();
-            this.buttonAxisXDownYUp = new System.Windows.Forms.Button();
+            this.buttonAxisZ0Down = new System.Windows.Forms.Button();
+            this.buttonAxisZ0Up = new System.Windows.Forms.Button();
+            this.buttonAxisZ1Down = new System.Windows.Forms.Button();
+            this.buttonAxisZ1Up = new System.Windows.Forms.Button();
             this.baseLabel_Stacker0 = new SLD200_MSL.BaseLabel();
             this.baseLabel_Stacker1 = new SLD200_MSL.BaseLabel();
             this.baseLabelJogButtonComb_XZ = new SLD200_MSL.BaseLabel();
@@ -99,49 +99,61 @@
             this.buttonAxisXDown.MouseDown += new System.Windows.Forms.MouseEventHandler(this.buttonAxisXDown_MouseDown);
             this.buttonAxisXDown.MouseUp += new System.Windows.Forms.MouseEventHandler(this.buttonAxisXDown_MouseUp);
             // 
-            // buttonAxisXUpYDown
+            // buttonAxisZ0Down
             // 
-            this.buttonAxisXUpYDown.BackColor = System.Drawing.Color.Lavender;
-            this.buttonAxisXUpYDown.Image = global::SLD200.Properties.Resources.UVW_VW_DOWN_Edited;
-            this.buttonAxisXUpYDown.Location = new System.Drawing.Point(138, 162);
-            this.buttonAxisXUpYDown.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.buttonAxisXUpYDown.Name = "buttonAxisXUpYDown";
-            this.buttonAxisXUpYDown.Size = new System.Drawing.Size(60, 54);
-            this.buttonAxisXUpYDown.TabIndex = 15;
-            this.buttonAxisXUpYDown.UseVisualStyleBackColor = false;
+            this.buttonAxisZ0Down.BackColor = System.Drawing.Color.Lavender;
+            this.buttonAxisZ0Down.Image = global::SLD200.Properties.Resources.UVW_VW_DOWN_Edited;
+            this.buttonAxisZ0Down.Location = new System.Drawing.Point(138, 162);
+            this.buttonAxisZ0Down.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonAxisZ0Down.Name = "buttonAxisZ0Down";
+            this.buttonAxisZ0Down.Size = new System.Drawing.Size(60, 54);
+            this.buttonAxisZ0Down.TabIndex = 15;
+            this.buttonAxisZ0Down.UseVisualStyleBackColor = false;
+            this.buttonAxisZ0Down.Click += new System.EventHandler(this.buttonAxisZ0Down_Click);
+            this.buttonAxisZ0Down.MouseDown += new System.Windows.Forms.MouseEventHandler(this.buttonAxisZ0Down_MouseDown);
+            this.buttonAxisZ0Down.MouseUp += new System.Windows.Forms.MouseEventHandler(this.buttonAxisZ0Down_MouseUp);
             // 
-            // buttonAxisXUpYUp
+            // buttonAxisZ0Up
             // 
-            this.buttonAxisXUpYUp.BackColor = System.Drawing.Color.Lavender;
-            this.buttonAxisXUpYUp.Image = global::SLD200.Properties.Resources.UVW_VW_UP_Edited;
-            this.buttonAxisXUpYUp.Location = new System.Drawing.Point(138, 109);
-            this.buttonAxisXUpYUp.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.buttonAxisXUpYUp.Name = "buttonAxisXUpYUp";
-            this.buttonAxisXUpYUp.Size = new System.Drawing.Size(60, 54);
-            this.buttonAxisXUpYUp.TabIndex = 16;
-            this.buttonAxisXUpYUp.UseVisualStyleBackColor = false;
+            this.buttonAxisZ0Up.BackColor = System.Drawing.Color.Lavender;
+            this.buttonAxisZ0Up.Image = global::SLD200.Properties.Resources.UVW_VW_UP_Edited;
+            this.buttonAxisZ0Up.Location = new System.Drawing.Point(138, 109);
+            this.buttonAxisZ0Up.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonAxisZ0Up.Name = "buttonAxisZ0Up";
+            this.buttonAxisZ0Up.Size = new System.Drawing.Size(60, 54);
+            this.buttonAxisZ0Up.TabIndex = 16;
+            this.buttonAxisZ0Up.UseVisualStyleBackColor = false;
+            this.buttonAxisZ0Up.Click += new System.EventHandler(this.buttonAxisZ0Up_Click);
+            this.buttonAxisZ0Up.MouseDown += new System.Windows.Forms.MouseEventHandler(this.buttonAxisZ0Up_MouseDown);
+            this.buttonAxisZ0Up.MouseUp += new System.Windows.Forms.MouseEventHandler(this.buttonAxisZ0Up_MouseUp);
             // 
-            // buttonAxisXDownYDown
+            // buttonAxisZ1Down
             // 
-            this.buttonAxisXDownYDown.BackColor = System.Drawing.Color.Lavender;
-            this.buttonAxisXDownYDown.Image = global::SLD200.Properties.Resources.UVW_VW_DOWN_Edited;
-            this.buttonAxisXDownYDown.Location = new System.Drawing.Point(26, 162);
-            this.buttonAxisXDownYDown.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.buttonAxisXDownYDown.Name = "buttonAxisXDownYDown";
-            this.buttonAxisXDownYDown.Size = new System.Drawing.Size(60, 54);
-            this.buttonAxisXDownYDown.TabIndex = 17;
-            this.buttonAxisXDownYDown.UseVisualStyleBackColor = false;
+            this.buttonAxisZ1Down.BackColor = System.Drawing.Color.Lavender;
+            this.buttonAxisZ1Down.Image = global::SLD200.Properties.Resources.UVW_VW_DOWN_Edited;
+            this.buttonAxisZ1Down.Location = new System.Drawing.Point(26, 162);
+            this.buttonAxisZ1Down.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonAxisZ1Down.Name = "buttonAxisZ1Down";
+            this.buttonAxisZ1Down.Size = new System.Drawing.Size(60, 54);
+            this.buttonAxisZ1Down.TabIndex = 17;
+            this.buttonAxisZ1Down.UseVisualStyleBackColor = false;
+            this.buttonAxisZ1Down.Click += new System.EventHandler(this.buttonAxisZ1Down_Click);
+            this.buttonAxisZ1Down.MouseDown += new System.Windows.Forms.MouseEventHandler(this.buttonAxisZ1Down_MouseDown);
+            this.buttonAxisZ1Down.MouseUp += new System.Windows.Forms.MouseEventHandler(this.buttonAxisZ1Down_MouseUp);
             // 
-            // buttonAxisXDownYUp
+            // buttonAxisZ1Up
             // 
-            this.buttonAxisXDownYUp.BackColor = System.Drawing.Color.Lavender;
-            this.buttonAxisXDownYUp.Image = global::SLD200.Properties.Resources.UVW_VW_UP_Edited;
-            this.buttonAxisXDownYUp.Location = new System.Drawing.Point(26, 109);
-            this.buttonAxisXDownYUp.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.buttonAxisXDownYUp.Name = "buttonAxisXDownYUp";
-            this.buttonAxisXDownYUp.Size = new System.Drawing.Size(60, 54);
-            this.buttonAxisXDownYUp.TabIndex = 18;
-            this.buttonAxisXDownYUp.UseVisualStyleBackColor = false;
+            this.buttonAxisZ1Up.BackColor = System.Drawing.Color.Lavender;
+            this.buttonAxisZ1Up.Image = global::SLD200.Properties.Resources.UVW_VW_UP_Edited;
+            this.buttonAxisZ1Up.Location = new System.Drawing.Point(26, 109);
+            this.buttonAxisZ1Up.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonAxisZ1Up.Name = "buttonAxisZ1Up";
+            this.buttonAxisZ1Up.Size = new System.Drawing.Size(60, 54);
+            this.buttonAxisZ1Up.TabIndex = 18;
+            this.buttonAxisZ1Up.UseVisualStyleBackColor = false;
+            this.buttonAxisZ1Up.Click += new System.EventHandler(this.buttonAxisZ1Up_Click);
+            this.buttonAxisZ1Up.MouseDown += new System.Windows.Forms.MouseEventHandler(this.buttonAxisZ1Up_MouseDown);
+            this.buttonAxisZ1Up.MouseUp += new System.Windows.Forms.MouseEventHandler(this.buttonAxisZ1Up_MouseUp);
             // 
             // baseLabel_Stacker0
             // 
@@ -208,10 +220,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.baseLabel_Stacker0);
             this.Controls.Add(this.baseLabel_Stacker1);
-            this.Controls.Add(this.buttonAxisXUpYDown);
-            this.Controls.Add(this.buttonAxisXUpYUp);
-            this.Controls.Add(this.buttonAxisXDownYDown);
-            this.Controls.Add(this.buttonAxisXDownYUp);
+            this.Controls.Add(this.buttonAxisZ0Down);
+            this.Controls.Add(this.buttonAxisZ0Up);
+            this.Controls.Add(this.buttonAxisZ1Down);
+            this.Controls.Add(this.buttonAxisZ1Up);
             this.Controls.Add(this.baseLabelJogButtonComb_XZ);
             this.Controls.Add(this.baseLabelJogButtonComb_Title);
             this.Controls.Add(this.baseLabelJogButtonComb);
@@ -235,10 +247,10 @@
         private BaseLabel baseLabelJogButtonComb;
         private BaseLabel baseLabelJogButtonComb_Title;
         private BaseLabel baseLabelJogButtonComb_XZ;
-        private System.Windows.Forms.Button buttonAxisXUpYDown;
-        private System.Windows.Forms.Button buttonAxisXUpYUp;
-        private System.Windows.Forms.Button buttonAxisXDownYDown;
-        private System.Windows.Forms.Button buttonAxisXDownYUp;
+        private System.Windows.Forms.Button buttonAxisZ0Down;
+        private System.Windows.Forms.Button buttonAxisZ0Up;
+        private System.Windows.Forms.Button buttonAxisZ1Down;
+        private System.Windows.Forms.Button buttonAxisZ1Up;
         private BaseLabel baseLabel_Stacker1;
         private BaseLabel baseLabel_Stacker0;
     }

@@ -26,27 +26,26 @@ namespace QMC.Vision
     public delegate PositionOffset InspectClickEventHandler();
     public partial class _2DMappingDataControl : UserControl
     {
-        private UvwzxyzStage m_Stage;
+        private XyzyStage m_Stage;
         protected List<PositionOffset> m_Positions;
 
         static WorkStage workStage;
 
         public event InspectClickEventHandler ClickInspect;
-        public _2DMappingDataControl(UvwzxyzStage stage)
+        public _2DMappingDataControl(XyzyStage stage)
         {
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
 
             foreach (Module module in m_collectionModules)
             {
-                //if (module.Name == "WorkStage")
                 if (module.Name == "WorkStage")
                 {
                     workStage = module as WorkStage;
                 }
             }
 
-            m_Stage = stage as UvwzxyzStage;
+            m_Stage = stage as XyzyStage;
             m_Positions = new List<PositionOffset>();
             InitializeComponent();
 
@@ -161,7 +160,7 @@ namespace QMC.Vision
                         m_dTarget_X = positionoffset.Position.X;
                         m_dTarget_Y = positionoffset.Position.Y;
 
-                        //this.m_Stage.MovePosition(new XyCoordinate(positionoffset.Position.X, positionoffset.Position.Y));
+                        this.m_Stage.MovePosition(new XyCoordinate(m_dTarget_X, m_dTarget_Y));
 
                         //ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                      //  '0' - Absolute position
                         //                        (Axis)WorkStageParameter.AxisAcsEnum.StageY,
@@ -197,7 +196,7 @@ namespace QMC.Vision
                     messageBox.ShowDialog("Error", "Event(ClickInspect)에 연결된 함수가 없습니다.");
                 }
             }
-            else if(button.Text == "Offset Move")
+            else if(button.Text == "Offset  Move")
             {
                 if (this.baseDataGridView2DMapData.SelectedCells.Count > 0)
                 {
@@ -209,6 +208,8 @@ namespace QMC.Vision
 
                         m_dTarget_X = positionoffset.Position.X + positionoffset.Offset.X;
                         m_dTarget_Y = positionoffset.Position.Y + positionoffset.Offset.Y;
+
+                        this.m_Stage.MovePosition(new XyCoordinate(m_dTarget_X, m_dTarget_Y));
 
                         //ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                      //  '0' - Absolute position
                         //                        (Axis)WorkStageParameter.AxisAcsEnum.StageY,

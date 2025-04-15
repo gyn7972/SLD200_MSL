@@ -127,7 +127,7 @@ namespace SLD200_MSL
         public ProgressForm m_FormProgress;                             //  장비 초기화 시 진행창 표시
         public bool m_bHomeProgress_Show;
 
-        MotionFunction MC_Func = new MotionFunction();
+        InterpolatorMotionFunction MC_Func = new InterpolatorMotionFunction();
 
 
         private Thread m_MainWorkCycleThread;                           //  Main-Work Cycle. (Wafer Align, Packing, Unpacking, Safely Unpacking)
@@ -302,7 +302,7 @@ namespace SLD200_MSL
 
             m_nMachineStatus = (int)MachineStatus.STATUS_NONE;
 
-            timer_DIO_Status.Enabled = true;        //  메인 화면 IO 갱신 타이머
+            //timer_DIO_Status.Enabled = true;        //  메인 화면 IO 갱신 타이머
 
             if (workStage.m_bAlignVisionThread_Use && !Equipment.m_bAlignVisionThread_1time)              //  Thread 한번만 실행
             {
@@ -1017,7 +1017,7 @@ namespace SLD200_MSL
             {
                 //btnMainWork_Start.Enabled = true;
 
-                if (workStage.m_nWorkStage_MainStep == (int)WorkStage.WorkStage_Step.None)
+                if (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None)
                 {
                     if (!btnHomeAll.Enabled)        btnHomeAll.Enabled = true;
                 }
@@ -1048,21 +1048,21 @@ namespace SLD200_MSL
             //  서보 알람 상태 표시
             bool m_bAxisServoAlarm = false;
             
-            for ( int i = (int)WorkStageParameter.AxisAjinEnum.X ; i < (int)WorkStageParameter.AxisAjinEnum.Max ; i++ )         //  Laser Drilling 모듈의 Ajin 모션 축 수 가져오기 (Enum Count 확인)
-            {
-                if (workStage.MC_Func.MC_IsAlarm(i))
-                {
-                    m_bAxisServoAlarm = true;
-                }
-            }
+            //for ( int i = (int)WorkStageParameter.AxisAjinEnum.X ; i < (int)WorkStageParameter.AxisAjinEnum.Max ; i++ )         //  Laser Drilling 모듈의 Ajin 모션 축 수 가져오기 (Enum Count 확인)
+            //{
+            //    if (workStage.MC_Func.MC_IsAlarm(i))
+            //    {
+            //        m_bAxisServoAlarm = true;
+            //    }
+            //}
 
-            for (int i = (int)LoaderParameter.AxisAjinEnum.Z0 ; i < (int)LoaderParameter.AxisAjinEnum.Max ; i++)                        //  Loader 모듈의 Ajin 모션 축 수 가져오기 (Enum Count 확인)
-            {
-                if (loader.MC_Func.MC_IsAlarm(i))
-                {
-                    m_bAxisServoAlarm = true;
-                }
-            }
+            //for (int i = (int)LoaderParameter.AxisAjinEnum.Z0 ; i < (int)LoaderParameter.AxisAjinEnum.Max ; i++)                        //  Loader 모듈의 Ajin 모션 축 수 가져오기 (Enum Count 확인)
+            //{
+            //    if (loader.MC_Func.MC_IsAlarm(i))
+            //    {
+            //        m_bAxisServoAlarm = true;
+            //    }
+            //}
 
             //  카메라 라이브 상태인지 표시
             if ((workStage.jigAligner_HighRes != null) && (workStage.jigAligner_LowRes != null))
@@ -1272,8 +1272,8 @@ namespace SLD200_MSL
             else
             {
                 //  작업 중인지?
-                if ((workStage.m_nWorkStage_MainStep > (int)WorkStage.WorkStage_Step.None) &&
-                    (workStage.m_nWorkStage_MainStep < (int)WorkStage.WorkStage_Step.Complete))
+                if ((workStage.m_nLaserDrilling_MainStep > (int)WorkStage.LaserDrilling_Step.None) &&
+                    (workStage.m_nLaserDrilling_MainStep < (int)WorkStage.LaserDrilling_Step.Complete))
                 {
                     Equipment.Start();
 
@@ -2390,7 +2390,7 @@ namespace SLD200_MSL
 
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 //  이것저것 다 리셋 - 시작
-                workStage.m_nWorkStage_MainStep = (int)WorkStage.WorkStage_Step.None;
+                workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
                 workStage.m_nFindAlignMark_Step = (int)WorkStage.FindAlignMark_Step.None;
                 workStage.m_nReticleCheck_HighResCam_Step = (int)WorkStage.ReticleCheck_HighResCam_Step.None;
                 workStage.m_nReticleCheck_LowResCam_Step = (int)WorkStage.ReticleCheck_LowResCam_Step.None;
@@ -2424,7 +2424,12 @@ namespace SLD200_MSL
                 MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.X, 2000);
                 MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.Y, 2000);
                 MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.Z, 2000);
-                MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.MASK_Y, 2000);
+
+                if (Equipment.Machine_LaserType_CO2)
+                {
+                    MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.MASK_Y, 2000);
+                }
+
                 MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z0, 2000);
                 MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z1, 2000);
                 MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.TR_X, 2000);
@@ -2478,15 +2483,15 @@ namespace SLD200_MSL
 
                     if (Equipment.AjinBoard_Opened)
                     {
-                        for (int i = (int)WorkStageParameter.AxisAjinEnum.X; i < (int)WorkStageParameter.AxisAjinEnum.Max; i++)         //  Laser Drilling 모듈의 Ajin 모션 축 수 가져오기 (Enum Count 확인)
-                        {
-                            MC_Func.MC_MotorStop(i, 2000);
-                        }
+                        //for (int i = (int)WorkStageParameter.AxisAjinEnum.X; i < (int)WorkStageParameter.AxisAjinEnum.Max; i++)         //  Laser Drilling 모듈의 Ajin 모션 축 수 가져오기 (Enum Count 확인)
+                        //{
+                        //    MC_Func.MC_MotorStop(i, 2000);
+                        //}
 
-                        for (int i = (int)LoaderParameter.AxisAjinEnum.Z0; i < (int)LoaderParameter.AxisAjinEnum.Max; i++)                      //  Loader 모듈의 Ajin 모션 축 수 가져오기 (Enum Count 확인)
-                        {
-                            MC_Func.MC_MotorStop(i, 2000);
-                        }
+                        //for (int i = (int)LoaderParameter.AxisAjinEnum.Z0; i < (int)LoaderParameter.AxisAjinEnum.Max; i++)                      //  Loader 모듈의 Ajin 모션 축 수 가져오기 (Enum Count 확인)
+                        //{
+                        //    MC_Func.MC_MotorStop(i, 2000);
+                        //}
                     }
                 }
                 catch (Exception ex)
@@ -2776,7 +2781,7 @@ namespace SLD200_MSL
             //    mb1.ShowDialog("Information !", "마크를 찾는 중입니다.");
             //    return;
             //}
-            if (workStage.m_nWorkStage_MainStep == (int)WorkStage.WorkStage_Step.None)
+            if (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None)
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "Wafer - ProbeCard 정렬 상태 확인중입니다.");
@@ -2805,7 +2810,7 @@ namespace SLD200_MSL
             //  TIp Contact 위치 표시용 이미지 삭제
             //workStage.TipContactImage_Delete();
 
-            if (workStage.m_nWorkStage_MainStep == (int)WorkStage.WorkStage_Step.None)
+            if (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None)
             {
                 var mb = new MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "Wafer - ProbeCard 정렬을 시작하시겠습니까?"))
@@ -2815,7 +2820,7 @@ namespace SLD200_MSL
                 workStage.m_bInManualMoving_SafetySensor_Detected = false;
                 workStage.m_bInCycleMoving_SafetySensor_Detected = false;
 
-                workStage.m_nWorkStage_MainStep = (int)WorkStage.WorkStage_Step.Start;
+                workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
                 workStage.timer_MainWork.Enabled = true;
 
                 Log.Write("CWA150SA", Equipment.User_Name, "Button Click", "프로브 카드 & 웨이퍼 얼라인 시작");
@@ -2833,7 +2838,7 @@ namespace SLD200_MSL
                 workStage.m_btimer_SubWork_Stop = true;
                 workStage.timer_SubWork.Enabled = false;
 
-                workStage.m_nWorkStage_MainStep = (int)WorkStage.WorkStage_Step.None;
+                workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
 
                 workStage.m_bFindUpperAlignMark_OK = false;
                 workStage.m_bFindLowerAlignMark_OK = false;

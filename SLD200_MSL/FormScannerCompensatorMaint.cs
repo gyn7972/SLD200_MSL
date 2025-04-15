@@ -44,10 +44,23 @@ namespace SLD200_MSL
             this.m_Owner = part as ScannerCompensator;
             this.RoiTrain = m_Owner.GetTrainRoi();
             this.RoiInspect = m_Owner.GetInspectRoi();
-
+            
             this.panelContent.Visible = false;
             this.panelContent.Size = new Size();
             InitializeComponent();
+
+            ModuleCollection m_collectionModules;
+            m_collectionModules = Equipment.Modules;
+
+            foreach (Module module in m_collectionModules)
+            {
+                //if (module.Name == "WorkStage")
+                if (module.Name == "WorkStage")
+                {
+                    WorkStage workStage = module as WorkStage;
+                    m_Owner.Stage.Interpolator = workStage.Stage.Interpolator;
+                }
+            }
 
             this.m_visionImageViewer_Upper = new VisionImageViewer();
             this.m_visionImageViewer_Upper.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -79,7 +92,7 @@ namespace SLD200_MSL
 
             this.m_SearchResultControl = new SearchResultControl(m_Owner);
             //this.m_SearchResultControl.Location = new Point(this.m_TrainImageControl.Location.X + m_TrainImageControl.Width + Configuration.ControlGap, this.m_TrainImageControl.Location.Y);
-            this.m_SearchResultControl.Location = new Point(this.m_JogControl.Location.X, this.m_JogControl.Location.Y + this.m_JogControl.Height);
+            this.m_SearchResultControl.Location = new Point(this.m_JogControl.Location.X, this.m_JogControl.Location.Y + this.m_JogControl.Height + 20);
             this.m_SearchResultControl.SearchClick += SearchResultClick;
             this.m_SearchResultControl.SetPatternMatchingData(m_Owner.Recipe.PatternMatchingParameter);
             this.Controls.Add(this.m_SearchResultControl);
@@ -87,13 +100,6 @@ namespace SLD200_MSL
             this.m_AutoFocusControl = new AutoFocusControl(((WorkStage)m_Owner.Owner).autoFocuser_HighRes, ((WorkStage)m_Owner.Owner));
             this.m_AutoFocusControl.Location = new Point(this.m_SearchResultControl.Location.X + this.m_SearchResultControl.Width + Configuration.ControlGap, this.m_SearchResultControl.Location.Y);
             this.Controls.Add(this.m_AutoFocusControl);
-
-            this.m_GridPositionControl = new ModulePositionControl();
-            this.m_GridPositionControl.Location = new Point(this.m_SearchResultControl.Location.X, this.m_SearchResultControl.Location.Y + this.m_SearchResultControl.Height + Configuration.ControlGap);
-            this.m_GridPositionControl.SetGroupboxName(" Start Position ");
-            this.m_GridPositionControl.SetPositionList(m_Owner.Config.GridPositions);
-            this.m_GridPositionControl.ButtonClick += PositionControlButtonClick;
-            this.Controls.Add(this.m_GridPositionControl);
 
             this.m_ScannerCompensatorGeneralControl = new ScannerCompensatorGeneralControl(m_Owner);
             this.m_ScannerCompensatorGeneralControl.Location = new Point(this.m_JogControl.Location.X + this.m_JogControl.Width + Configuration.ControlGap, this.m_JogControl.Location.Y);
@@ -109,6 +115,13 @@ namespace SLD200_MSL
             this.m_BlobSearchResultControl.Location = new Point(this.m_ScannerCompensatorGeneralControl.Location.X, this.m_ScannerCompensatorGeneralControl.Location.Y + this.m_ScannerCompensatorGeneralControl.Height + Configuration.ControlGap);
             this.m_BlobSearchResultControl.SearchClick += M_BlobSearchResultControl_SearchClick;
             this.Controls.Add(this.m_BlobSearchResultControl);
+
+            this.m_GridPositionControl = new ModulePositionControl();
+            this.m_GridPositionControl.Location = new Point(this.m_AutoFocusControl.Location.X + this.m_AutoFocusControl.Size.Width + 20, this.m_BlobSearchResultControl.Location.Y + this.m_BlobSearchResultControl.Height + Configuration.ControlGap);
+            this.m_GridPositionControl.SetGroupboxName(" Start Position ");
+            this.m_GridPositionControl.SetPositionList(m_Owner.Config.GridPositions);
+            this.m_GridPositionControl.ButtonClick += PositionControlButtonClick;
+            this.Controls.Add(this.m_GridPositionControl);
         }
 
         private void M_BlobSearchResultControl_SearchClick(Control control)
@@ -303,8 +316,36 @@ namespace SLD200_MSL
 
         private void TrainButtonClick(TrainImageControl.ButtonType type)
         {
+            string m_strFile = "";
+            string m_strRecipe = "";
+            RecipeInfo m_recipeInfo = new RecipeInfo();
+            m_recipeInfo = Equipment.GetCurrentRecipe();
+
             m_Owner.Train();
             m_TrainImageControl.SetTrainImage(m_Owner.TrainImage);
+
+
+            //  train 할 때 레시피를 저장해줘야 정상적으로 패턴 이미지가 변경된다.
+            if (m_recipeInfo != null)
+            {
+                Equipment.UpdateRecipeData();
+            }
+            Equipment.SetCurrentRecipe(m_recipeInfo);
+            Equipment.SaveRecipe();
+            FormManager.FireUpdateRecipeEvent();
+
+            Equipment.ApplyRecipeData();
+
+
+            if (m_Owner.Name == "Scanner Compensator")
+            {
+                m_strFile = string.Format("{0}\\ScannerCal.jpg", ConfigManager.GetPatternImagePath());
+                m_Owner.TrainImage.Save(m_strFile, QMC.Common.Vision.VisionImage.FileFilter.jpg);
+
+                //workStage.PatternMatchingImage_Reticle_Loaded_HighRes = true;
+
+                //workStage.m_bLowerCam_AlignPattern_Reset = true;
+            }
         }
 
         private void SearchResultClick(Control control)

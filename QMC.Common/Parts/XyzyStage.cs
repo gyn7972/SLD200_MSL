@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using static QMC.Common.Parts.WorkStageParameter;
 
 using SpiralLab.Sirius;
+using QMC.Common.Modules;
 
 //using OpenTK;
 //using OpenTK.Graphics.OpenGL;
@@ -298,10 +299,15 @@ namespace QMC.Common.Parts
                 currentPosition = new XyzCoordinate();
 
             double dPos = 0;
-            m_dicAxes[MotionKey.X.ToString()].GetCommandPosition(ref dPos);
-            currentPosition.X = dPos;
-            m_dicAxes[MotionKey.Y.ToString()].GetCommandPosition(ref dPos);
-            currentPosition.Y = dPos;
+            //m_dicAxes[MotionKey.X.ToString()].GetCommandPosition(ref dPos);
+            //currentPosition.X = dPos;
+            //m_dicAxes[MotionKey.Y.ToString()].GetCommandPosition(ref dPos);
+            //currentPosition.Y = dPos;
+
+            currentPosition.X = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X);
+            currentPosition.Y = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y);
+
+
             m_dicAxes[MotionKey.Z.ToString()].GetCommandPosition(ref dPos);
             currentPosition.Z = dPos;
 
@@ -381,7 +387,14 @@ namespace QMC.Common.Parts
 
             if (m_dicAxes[MotionKey.X.ToString()] != null)
             {
-                m_dicAxes[MotionKey.X.ToString()].Direction = MotionDirection.Backward;
+                //m_dicAxes[MotionKey.X.ToString()].Direction = MotionDirection.Backward;
+                m_dicAxes[MotionKey.X.ToString()].Direction = MotionDirection.Forward;
+            }
+
+            if (m_dicAxes[MotionKey.MASK_Y.ToString()] != null)
+            {
+                m_dicAxes[MotionKey.MASK_Y.ToString()].Direction = MotionDirection.Backward;
+                //m_dicAxes[MotionKey.X.ToString()].Direction = MotionDirection.Forward;
             }
         }
         #endregion

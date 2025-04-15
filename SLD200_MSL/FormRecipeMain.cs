@@ -184,7 +184,10 @@ namespace SLD200_MSL
                 }
             }
 
-            m_strBeforeRecipe = CurrentRecipe.Name;                                                            //  현재 레시피
+            if (CurrentRecipe != null)
+            {
+                m_strBeforeRecipe = CurrentRecipe.Name;                                                            //  현재 레시피
+            }
 
             RecipeInfoCollection recipes = DataManager.Instance.Recipe;
             FormRecipeList formRecipeList = new FormRecipeList(recipes);

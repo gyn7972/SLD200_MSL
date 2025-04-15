@@ -51,7 +51,7 @@ namespace QMC.Common.Parts
         {
             int ret = 0;
 
-            IPowerControl powerControl = Scanner.Laser as IPowerControl;
+            IPowerControl powerControl = Scanner.Laser as IPowerControl;                        //  Sirius1
             //ILaserPowerControl powerControl = Scanner.Laser as ILaserPowerControl;            //  Sirius2
             if(powerControl == null)
             {
@@ -87,7 +87,7 @@ namespace QMC.Common.Parts
         {
             int ret = 0;
             bool success = false;            
-            var powerControl = Scanner.Laser as IPowerControl;
+            var powerControl = Scanner.Laser as IPowerControl;                          //  Sirius1
             //var powerControl = Scanner.Laser as ILaserPowerControl;                   //  Sirius2
             if (null == powerControl)
                 return -1;
@@ -164,7 +164,7 @@ namespace QMC.Common.Parts
         {
             int ret = 0;
 
-            var powerControl = Scanner.Laser as IPowerControl;
+            var powerControl = Scanner.Laser as IPowerControl;                          //  Sirius1
             //var powerControl = Scanner.Laser as ILaserPowerControl;                   //  Sirius2
             if (null == powerControl)
                 return -1;

@@ -499,37 +499,44 @@ namespace SLD200_MSL
 
                     if (axis.Board.Configuration.BoardType == MotionBoardType.Ajin)
                     {
-                        axis.GetAmpFault(ref bAmp);
-                        if (bAmp)
+                        try
                         {
-                            Image img = SLD200.Properties.Resources.AlarmError;
-                            Bitmap imgbitmap = new Bitmap(img);
-                            img = resizeImage(imgbitmap, m_imagesize);
-                            dataGridView1.Rows[(int)axisConfig.No].Cells[6].Value = img;
-                        }
-                        else
-                        {
-                            Image img = SLD200.Properties.Resources.AlarmEmpty;
-                            Bitmap imgbitmap = new Bitmap(img);
-                            img = resizeImage(imgbitmap, m_imagesize);
-                            dataGridView1.Rows[(int)axisConfig.No].Cells[6].Value = img;
-                        }
+                            axis.GetAmpFault(ref bAmp);
+                            if (bAmp)
+                            {
+                                Image img = SLD200.Properties.Resources.AlarmError;
+                                Bitmap imgbitmap = new Bitmap(img);
+                                img = resizeImage(imgbitmap, m_imagesize);
+                                dataGridView1.Rows[(int)axisConfig.No].Cells[6].Value = img;
+                            }
+                            else
+                            {
+                                Image img = SLD200.Properties.Resources.AlarmEmpty;
+                                Bitmap imgbitmap = new Bitmap(img);
+                                img = resizeImage(imgbitmap, m_imagesize);
+                                dataGridView1.Rows[(int)axisConfig.No].Cells[6].Value = img;
+                            }
 
-                        axis.GetEnable(ref bEnable);
-                        if (bEnable == false)
+                            axis.GetEnable(ref bEnable);
+                            if (bEnable == false)
+                            {
+
+                                Image img = SLD200.Properties.Resources.AlarmEmpty;
+                                Bitmap imgbitmap = new Bitmap(img);
+                                img = resizeImage(imgbitmap, m_imagesize);
+                                dataGridView1.Rows[(int)axisConfig.No].Cells[5].Value = img;
+                            }
+                            else
+                            {
+                                Image img = SLD200.Properties.Resources.AlarmInform;
+                                Bitmap imgbitmap = new Bitmap(img);
+                                img = resizeImage(imgbitmap, m_imagesize);
+                                dataGridView1.Rows[(int)axisConfig.No].Cells[5].Value = img;
+                            }
+                        }
+                        catch (Exception)
                         {
 
-                            Image img = SLD200.Properties.Resources.AlarmEmpty;
-                            Bitmap imgbitmap = new Bitmap(img);
-                            img = resizeImage(imgbitmap, m_imagesize);
-                            dataGridView1.Rows[(int)axisConfig.No].Cells[5].Value = img;
-                        }
-                        else
-                        {
-                            Image img = SLD200.Properties.Resources.AlarmInform;
-                            Bitmap imgbitmap = new Bitmap(img);
-                            img = resizeImage(imgbitmap, m_imagesize);
-                            dataGridView1.Rows[(int)axisConfig.No].Cells[5].Value = img;
                         }
                     }
                     //else if (ACSSPiiPlusMotionBoard.Api.IsConnected && (axis.Board.Configuration.BoardType == MotionBoardType.ACS))

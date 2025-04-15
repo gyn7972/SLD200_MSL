@@ -1,4 +1,4 @@
-﻿using ADLINKImport;
+﻿//using ADLINKImport;
 using QMC.Common.Modules;
 using System;
 using System.Collections.Generic;
@@ -14,16 +14,34 @@ namespace QMC.Common.Parts
 
         #region => Axis Define 
 
-        public enum AxisAjinEnum
+
+//#if true                                                                //  SLD-200C
+#if false                                                               //  SLD-200U
+        public enum AxisAjinEnum                                                       //  SLD-200C 에서 사용하는 축 번호    
         {
-            MASK_Y = 3,
+            //  축 번호 변경 전 (MASK_Y:3)
+            //  축 번호 변경 후 (MASK_Y:0)
+
+            MASK_Y = 0,
         }
+#else
+        public enum AxisAjinEnum                                                       //  SLD-200U 에서 사용하는 축 번호   
+        {
+            //  축 번호 변경 전 (MASK_Y:3)
+            //  축 번호 변경 후 (MASK_Y:0)
+
+            MASK_Y = 0,                                                                 //  SLD-200U 에서는 없는 축. 
+        }
+#endif
+
         
         #endregion
 
         public enum MotionKey
         {
-            Y,
+            MASK_Y,
+
+            Max,
         }
 
         public enum StackerTable
@@ -103,7 +121,7 @@ namespace QMC.Common.Parts
 
             m_dicAxisDisplayType.Clear();
 
-            m_dicAxisDisplayType.Add(MotionKey.Y.ToString(), DisplayAxisType.Vertical2);
+            m_dicAxisDisplayType.Add(MotionKey.MASK_Y.ToString(), DisplayAxisType.Vertical2);
 
             //  IO 선언
             if (m_dicDioPoints == null)
@@ -153,7 +171,7 @@ namespace QMC.Common.Parts
             Dictionary<string, MovingProjection> dicMovingProjection = new Dictionary<string, MovingProjection>();
                         
             {
-                string strKey = MotionKey.Y.ToString();
+                string strKey = MotionKey.MASK_Y.ToString();
                 MovingProjection movingProjection = GetDefaultMovingProjection(strKey);
                 if (movingProjection != null)
                 {

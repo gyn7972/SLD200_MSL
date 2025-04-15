@@ -155,8 +155,11 @@ namespace SLD200_MSL
                 {
                     if ((control[i].Name == "WorkStage") ||
                         (control[i].Name == "IO") ||
+                        (control[i].Name == "Coarse Vision") ||
+                        (control[i].Name == "Fine Vision") ||
                         (control[i].Name == "JigAligner (Fine)") ||
-                        (control[i].Name == "JigAligner (Coarse)"))
+                        (control[i].Name == "JigAligner (Coarse)") ||
+                        (control[i].Name == "ScannerCompen. (Fine)"))
                     {
                         this.flowLayoutPanelButton.Controls.Add(control[i]);
                     }
@@ -179,9 +182,9 @@ namespace SLD200_MSL
                 }
                 else if (m_Module.Name == "Vision")
                 {
-                    if ((control[i].Name == "Vision") ||
-                        (control[i].Name == "Coarse Vision") ||
-                        (control[i].Name == "Fine Vision") )
+                    if ((control[i].Name == "Vision") ) // ||
+                        //(control[i].Name == "Coarse Vision") ||
+                        //(control[i].Name == "Fine Vision") )
                     {
                         this.flowLayoutPanelButton.Controls.Add(control[i]);
                     }

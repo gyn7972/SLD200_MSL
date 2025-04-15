@@ -64,8 +64,8 @@ namespace QMC.Common.Parts
         //public XyztStage Stage { set; get; }
         //public XyzztStage Stage { set; get; }
         //public UvwzxyzStage Stage { set; get; }
-        public XyzLDzzxzULzzxzStage Stage { set; get; }
-        public XyzyStage XyzyStage { set; get; }
+        //public XyzLDzzxzULzzxzStage Stage { set; get; }
+        public XyzyStage Stage { set; get; }
         public ScannerCompensatorConfig Config { set; get; }
         public ScannerCompensatorRecipe Recipe { set; get; }
         public TwoDimensionPathGenerator GridPathGenerator { get; set; }
@@ -414,8 +414,10 @@ namespace QMC.Common.Parts
 
             movePosition = currentPosition;
 
-            centerPosition.X = this.Config.GridPositions[(int)GridXyMotionPositionKeys.StartPosition].X - (this.Config.PitchDistanceX * (this.Config.Count.X / 2));
-            centerPosition.Y = this.Config.GridPositions[(int)GridXyMotionPositionKeys.StartPosition].Y - (this.Config.PitchDistanceY * (this.Config.Count.Y / 2));
+            //centerPosition.X = this.Config.GridPositions[(int)GridXyMotionPositionKeys.StartPosition].X - (this.Config.PitchDistanceX * (this.Config.Count.X / 2));
+            //centerPosition.Y = this.Config.GridPositions[(int)GridXyMotionPositionKeys.StartPosition].Y - (this.Config.PitchDistanceY * (this.Config.Count.Y / 2));
+            centerPosition.X = this.Config.GridPositions[(int)GridXyMotionPositionKeys.StartPosition].X + (this.Config.PitchDistanceX * (this.Config.Count.X / 2));
+            centerPosition.Y = this.Config.GridPositions[(int)GridXyMotionPositionKeys.StartPosition].Y + (this.Config.PitchDistanceY * (this.Config.Count.Y / 2));
 
             #region 이중 For문 사용 - 주석
             //for (int y = 0; y < this.Config.Count.Y; y++)
@@ -522,7 +524,8 @@ namespace QMC.Common.Parts
                     //}
                     #endregion
 
-                    position = new XyzCoordinate(movePosition.X - this.Config.PitchDistanceX * x, movePosition.Y - this.Config.PitchDistanceY * y, movePosition.Z);
+                    //position = new XyzCoordinate(movePosition.X - this.Config.PitchDistanceX * x, movePosition.Y - this.Config.PitchDistanceY * y, movePosition.Z);
+                    position = new XyzCoordinate(movePosition.X + this.Config.PitchDistanceX * x, movePosition.Y + this.Config.PitchDistanceY * y, movePosition.Z);
                     //position = new XyzCoordinate(this.Config.PitchDistanceX * x, this.Config.PitchDistanceY * y, movePosition.Z);
                     //Dictionary<string, MovingProjection> dicMovingProjection = Stage.GetDefaultMovingProjections();
 
@@ -613,6 +616,7 @@ namespace QMC.Common.Parts
                     result = new PositionOffset((XyCoordinate)currentPosition, resultPosition);
                     results.Add(result);
 
+                    //double xIndex = defaultXIndex - this.Config.PitchDistanceX * x;
                     double xIndex = defaultXIndex - this.Config.PitchDistanceX * x;
                     double yIndex = defaultYIndex + this.Config.PitchDistanceY * y;
 
@@ -675,8 +679,10 @@ namespace QMC.Common.Parts
             //2. CenterPoint로 이동. (Count와 Pitch 이용)
             this.Stage.GetCommandPosition(ref currentPos);
 
-            movePosition.X = currentPos.X - (this.Config.PitchDistanceX * (this.Config.Count.X / 2));
-            movePosition.Y = currentPos.Y - (this.Config.PitchDistanceY * (this.Config.Count.Y / 2));
+            //movePosition.X = currentPos.X - (this.Config.PitchDistanceX * (this.Config.Count.X / 2));
+            //movePosition.Y = currentPos.Y - (this.Config.PitchDistanceY * (this.Config.Count.Y / 2));
+            movePosition.X = currentPos.X + (this.Config.PitchDistanceX * (this.Config.Count.X / 2));
+            movePosition.Y = currentPos.Y + (this.Config.PitchDistanceY * (this.Config.Count.Y / 2));
 
             dicMovingProjection[XyzStage.MotionKey.X.ToString()].Position = movePosition.X;
             dicMovingProjection[XyzStage.MotionKey.Y.ToString()].Position = movePosition.Y;
@@ -753,8 +759,10 @@ namespace QMC.Common.Parts
             //4. StartPoint로 이동. (Count와 Pitch 이동)
             this.Stage.GetCommandPosition(ref currentPos);
 
-            movePosition.X = currentPos.X + (this.Config.PitchDistanceX * (this.Config.Count.X / 2));
-            movePosition.Y = currentPos.Y + (this.Config.PitchDistanceY * (this.Config.Count.Y / 2));
+            //movePosition.X = currentPos.X + (this.Config.PitchDistanceX * (this.Config.Count.X / 2));
+            //movePosition.Y = currentPos.Y + (this.Config.PitchDistanceY * (this.Config.Count.Y / 2));
+            movePosition.X = currentPos.X - (this.Config.PitchDistanceX * (this.Config.Count.X / 2));
+            movePosition.Y = currentPos.Y - (this.Config.PitchDistanceY * (this.Config.Count.Y / 2));
 
             dicMovingProjection[XyzStage.MotionKey.X.ToString()].Position = movePosition.X;
             dicMovingProjection[XyzStage.MotionKey.Y.ToString()].Position = movePosition.Y;

@@ -34,9 +34,9 @@
             this.label_TitleBar_MESMsg = new System.Windows.Forms.Label();
             this.label_TitleBar_System = new System.Windows.Forms.Label();
             this.label_TitleBar_OPRecipe = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this.label_Title_MESMessage = new System.Windows.Forms.Label();
+            this.label_Title_SystemMessage = new System.Windows.Forms.Label();
+            this.label_Title_Recipe = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label_LoginMode = new System.Windows.Forms.Label();
@@ -102,47 +102,47 @@
             this.label_TitleBar_OPRecipe.Text = "OP Recipe";
             this.label_TitleBar_OPRecipe.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label1
+            // label_Title_MESMessage
             // 
-            this.label1.BackColor = System.Drawing.Color.Black;
-            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label1.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.Lime;
-            this.label1.Location = new System.Drawing.Point(352, 5);
-            this.label1.Name = "label1";
-            this.label1.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.label1.Size = new System.Drawing.Size(960, 25);
-            this.label1.TabIndex = 204;
-            this.label1.Text = "OP Recipe";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label_Title_MESMessage.BackColor = System.Drawing.Color.Black;
+            this.label_Title_MESMessage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Title_MESMessage.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Title_MESMessage.ForeColor = System.Drawing.Color.Lime;
+            this.label_Title_MESMessage.Location = new System.Drawing.Point(352, 5);
+            this.label_Title_MESMessage.Name = "label_Title_MESMessage";
+            this.label_Title_MESMessage.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.label_Title_MESMessage.Size = new System.Drawing.Size(960, 25);
+            this.label_Title_MESMessage.TabIndex = 204;
+            this.label_Title_MESMessage.Text = "OP Recipe";
+            this.label_Title_MESMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // label2
+            // label_Title_SystemMessage
             // 
-            this.label2.BackColor = System.Drawing.Color.Black;
-            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label2.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.Lime;
-            this.label2.Location = new System.Drawing.Point(352, 34);
-            this.label2.Name = "label2";
-            this.label2.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.label2.Size = new System.Drawing.Size(960, 25);
-            this.label2.TabIndex = 204;
-            this.label2.Text = "OP Recipe";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label_Title_SystemMessage.BackColor = System.Drawing.Color.Black;
+            this.label_Title_SystemMessage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Title_SystemMessage.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Title_SystemMessage.ForeColor = System.Drawing.Color.Lime;
+            this.label_Title_SystemMessage.Location = new System.Drawing.Point(352, 34);
+            this.label_Title_SystemMessage.Name = "label_Title_SystemMessage";
+            this.label_Title_SystemMessage.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.label_Title_SystemMessage.Size = new System.Drawing.Size(960, 25);
+            this.label_Title_SystemMessage.TabIndex = 204;
+            this.label_Title_SystemMessage.Text = "OP Recipe";
+            this.label_Title_SystemMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // label3
+            // label_Title_Recipe
             // 
-            this.label3.BackColor = System.Drawing.Color.Black;
-            this.label3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label3.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.Lime;
-            this.label3.Location = new System.Drawing.Point(352, 63);
-            this.label3.Name = "label3";
-            this.label3.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.label3.Size = new System.Drawing.Size(960, 25);
-            this.label3.TabIndex = 204;
-            this.label3.Text = "OP Recipe";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label_Title_Recipe.BackColor = System.Drawing.Color.Black;
+            this.label_Title_Recipe.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Title_Recipe.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Title_Recipe.ForeColor = System.Drawing.Color.Lime;
+            this.label_Title_Recipe.Location = new System.Drawing.Point(352, 63);
+            this.label_Title_Recipe.Name = "label_Title_Recipe";
+            this.label_Title_Recipe.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.label_Title_Recipe.Size = new System.Drawing.Size(960, 25);
+            this.label_Title_Recipe.TabIndex = 204;
+            this.label_Title_Recipe.Text = "OP Recipe";
+            this.label_Title_Recipe.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // button1
             // 
@@ -245,9 +245,9 @@
             this.Controls.Add(this.label_DateTime);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.label_Title_Recipe);
+            this.Controls.Add(this.label_Title_SystemMessage);
+            this.Controls.Add(this.label_Title_MESMessage);
             this.Controls.Add(this.label_TitleBar_OPRecipe);
             this.Controls.Add(this.label_TitleBar_System);
             this.Controls.Add(this.label_TitleBar_MESMsg);
@@ -275,9 +275,9 @@
         private System.Windows.Forms.Label label_TitleBar_MESMsg;
         private System.Windows.Forms.Label label_TitleBar_System;
         private System.Windows.Forms.Label label_TitleBar_OPRecipe;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label_Title_MESMessage;
+        private System.Windows.Forms.Label label_Title_SystemMessage;
+        private System.Windows.Forms.Label label_Title_Recipe;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label_LoginMode;

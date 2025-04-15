@@ -10,6 +10,7 @@ namespace QMC.Common
     {
         private static string g_strEquipmentName;
         private static readonly string g_strTeachingDataPath = "TeachingData";
+        private static readonly string g_strRecipeDataPath = "RecipeData";
         private static readonly string g_strConfigPath = "Config";
         private static readonly string g_strRecipePath = "Recipe";
         private static readonly string g_strBackupPath = "Backup";
@@ -64,6 +65,18 @@ namespace QMC.Common
             builder.AppendFormat("\\{0}", g_strEquipmentName);
             builder.AppendFormat("\\{0}", g_strConfigPath);
             builder.AppendFormat("\\{0}", g_strTeachingDataPath);
+
+            return builder.ToString();
+        }
+
+        public static string GetRecipeDataPath()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.AppendFormat("C:\\Program Files\\QMC");
+            //builder.Append("D:\\Test");
+            builder.AppendFormat("\\{0}", g_strEquipmentName);
+            builder.AppendFormat("\\{0}", g_strRecipePath);
+            builder.AppendFormat("\\{0}", g_strRecipeDataPath);
 
             return builder.ToString();
         }

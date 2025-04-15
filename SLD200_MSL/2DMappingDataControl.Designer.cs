@@ -49,7 +49,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.baseGroupBox1);
             this.Name = "_2DMappingDataControl";
-            this.Size = new System.Drawing.Size(560, 680);
+            this.Size = new System.Drawing.Size(660, 680);
             this.baseGroupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.baseDataGridView2DMapData)).EndInit();
             this.ResumeLayout(false);
@@ -65,7 +65,8 @@
             this.baseGroupBox1.ForeColor = System.Drawing.Color.Black;
             this.baseGroupBox1.Location = new System.Drawing.Point(0, 0);
             this.baseGroupBox1.Name = "baseGroupBox1";
-            this.baseGroupBox1.Size = new System.Drawing.Size(550, 484);
+            this.baseGroupBox1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseGroupBox1.Size = new System.Drawing.Size(658, 584);
             this.baseGroupBox1.TabIndex = 0;
             this.baseGroupBox1.TabStop = false;
             this.baseGroupBox1.Text = " 2D Mapping Data ";
@@ -77,9 +78,11 @@
             this.baseDataGridView2DMapData.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
             this.baseDataGridView2DMapData.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            //dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            //dataGridViewCellStyle4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
@@ -87,20 +90,20 @@
             this.baseDataGridView2DMapData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             dataGridViewCellStyle5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(3)))), ((int)(((byte)(3)))));
             dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.baseDataGridView2DMapData.DefaultCellStyle = dataGridViewCellStyle5;
             this.baseDataGridView2DMapData.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(3)))), ((int)(((byte)(3)))));
-            this.baseDataGridView2DMapData.Location = new System.Drawing.Point(6, 17);
+            this.baseDataGridView2DMapData.Location = new System.Drawing.Point(10, 25);
             this.baseDataGridView2DMapData.MultiSelect = false;
             this.baseDataGridView2DMapData.Name = "baseDataGridView2DMapData";
             this.baseDataGridView2DMapData.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
             dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -109,14 +112,16 @@
             this.baseDataGridView2DMapData.RowHeadersVisible = false;
             this.baseDataGridView2DMapData.RowTemplate.Height = 23;
             this.baseDataGridView2DMapData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.baseDataGridView2DMapData.Size = new System.Drawing.Size(311, 460);
+            this.baseDataGridView2DMapData.Size = new System.Drawing.Size(411, 550);
             this.baseDataGridView2DMapData.TabIndex = 0;
             // 
             // baseButtonLoad
             // 
-            this.baseButtonLoad.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            //this.baseButtonLoad.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            this.baseButtonLoad.BackColor = System.Drawing.Color.White;
             this.baseButtonLoad.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.baseButtonLoad.ForeColor = System.Drawing.Color.WhiteSmoke;
+            //this.baseButtonLoad.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.baseButtonLoad.ForeColor = System.Drawing.Color.Black;
             //this.baseButtonLoad.Location = new System.Drawing.Point(6, 552);
             //this.baseButtonLoad.Location = new System.Drawing.Point(baseDataGridView2DMapData.Location.X, baseDataGridView2DMapData.Location.Y + baseDataGridView2DMapData.Size.Height + 10);
             this.baseButtonLoad.Location = new System.Drawing.Point(baseDataGridView2DMapData.Location.X + baseDataGridView2DMapData.Size.Width + 20, baseDataGridView2DMapData.Location.Y);
@@ -129,9 +134,11 @@
             // 
             // baseButtonSave
             // 
-            this.baseButtonSave.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            //this.baseButtonSave.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            this.baseButtonSave.BackColor = System.Drawing.Color.White;
             this.baseButtonSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.baseButtonSave.ForeColor = System.Drawing.Color.WhiteSmoke;
+            //this.baseButtonSave.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.baseButtonSave.ForeColor = System.Drawing.Color.Black;
             //this.baseButtonSave.Location = new System.Drawing.Point(174, 552);
             this.baseButtonSave.Location = new System.Drawing.Point(baseButtonLoad.Location.X + baseButtonLoad.Size.Width + 5, baseButtonLoad.Location.Y);
             this.baseButtonSave.Name = "baseButtonSave";
@@ -143,9 +150,11 @@
             // 
             // baseButtonMove
             // 
-            this.baseButtonMove.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            //this.baseButtonMove.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            this.baseButtonMove.BackColor = System.Drawing.Color.White;
             this.baseButtonMove.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.baseButtonMove.ForeColor = System.Drawing.Color.WhiteSmoke;
+            //this.baseButtonMove.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.baseButtonMove.ForeColor = System.Drawing.Color.Black;
             //this.baseButtonMove.Location = new System.Drawing.Point(6, 590);
             this.baseButtonMove.Location = new System.Drawing.Point(baseButtonLoad.Location.X, baseButtonLoad.Location.Y + baseButtonLoad.Size.Height + 5);
             this.baseButtonMove.Name = "baseButtonMove";
@@ -157,9 +166,11 @@
             // 
             // baseButtonStop
             // 
-            this.baseButtonStop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            //this.baseButtonStop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            this.baseButtonStop.BackColor = System.Drawing.Color.White;
             this.baseButtonStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.baseButtonStop.ForeColor = System.Drawing.Color.WhiteSmoke;
+            //this.baseButtonStop.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.baseButtonStop.ForeColor = System.Drawing.Color.Black;
             //this.baseButtonStop.Location = new System.Drawing.Point(174, 590);
             this.baseButtonStop.Location = new System.Drawing.Point(baseButtonMove.Location.X + baseButtonMove.Size.Width + 5, baseButtonMove.Location.Y);
             this.baseButtonStop.Name = "baseButtonStop";
@@ -171,15 +182,17 @@
             // 
             // baseButtonOffsetMove
             // 
-            this.baseButtonOffsetMove.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            //this.baseButtonOffsetMove.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            this.baseButtonOffsetMove.BackColor = System.Drawing.Color.White;
             this.baseButtonOffsetMove.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.baseButtonOffsetMove.ForeColor = System.Drawing.Color.WhiteSmoke;
+            //this.baseButtonOffsetMove.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.baseButtonOffsetMove.ForeColor = System.Drawing.Color.Black;
             //this.baseButtonOffsetMove.Location = new System.Drawing.Point(6, 629);
             this.baseButtonOffsetMove.Location = new System.Drawing.Point(baseButtonMove.Location.X, baseButtonMove.Location.Y + baseButtonMove.Size.Height + 5);
             this.baseButtonOffsetMove.Name = "baseButtonOffsetMove";
-            this.baseButtonOffsetMove.Size = new System.Drawing.Size(100, 30);
+            this.baseButtonOffsetMove.Size = new System.Drawing.Size(205, 30);
             this.baseButtonOffsetMove.TabIndex = 5;
-            this.baseButtonOffsetMove.Text = "Offset Move";
+            this.baseButtonOffsetMove.Text = "Offset  Move";
             this.baseButtonOffsetMove.UseVisualStyleBackColor = false;
             this.baseButtonOffsetMove.Click += new System.EventHandler(this.baseButton_Click);
         }

@@ -12,11 +12,11 @@ using System.Windows;
 namespace QMC.Common.Motion.Ajin.Motions
 {
     //public class MotionFunction : MotionAxis
-    public class MotionFunction
+    public  class MotionFunction
     {
-        static WorkStage workStage;
+        protected static WorkStage workStage;
 
-        public MotionFunction()
+        protected MotionFunction()
         {
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
@@ -73,83 +73,72 @@ namespace QMC.Common.Motion.Ajin.Motions
             return !m_bRet;
         }
 
-        public double MC_GetEncPos(int nAxis)
+        public virtual double MC_GetEncPos(int nAxis)
         {
             int ret = 0;
-            double m_dPos = 0.0;
-            double dCurrent = 0;
+            double dPos = 0.0;
+            double dCurrentX = 0;
+
+            double dCurrentY = 0;
+            AXM.GetActualPosition(nAxis, ref dPos);
+            string str = this.GetType().ToString();
+            XyCoordinate source = new XyCoordinate();
+            XyCoordinate dest = new XyCoordinate();
+
+            if (nAxis == (int)WorkStage.nAxis.X)
+            {
+                if (workStage.Stage.Interpolator != null)
+                {
+
+                    //originPosition.X = MC_GetEncPos((int)WorkStage.nAxis.X);
+                    //originPosition.Y = MC_GetEncPos((int)WorkStage.nAxis.Y);
+                    AXM.GetActualPosition((int)WorkStage.nAxis.X, ref dCurrentX);
+                    AXM.GetActualPosition((int)WorkStage.nAxis.Y, ref dCurrentY);
+
+                    dest.X = dCurrentX;
+                    dest.Y = dCurrentY;
+                    if ((ret = workStage.Stage.Interpolator.ReverseInterpolate(dest, ref source)) != 0)
+                    {
+                        return ret;
+                    }
+
+                    dPos = source.X;
+                }
+                else
+                {
+                    AXM.GetActualPosition(nAxis, ref dPos);
+                }
+            }
+            else if (nAxis == (int)WorkStage.nAxis.Y)
+            {
+                if (workStage.Stage.Interpolator != null)
+                {
+                    AXM.GetActualPosition((int)WorkStage.nAxis.X, ref dCurrentX);
+                    AXM.GetActualPosition((int)WorkStage.nAxis.Y, ref dCurrentY);
+
+                    dest.X = dCurrentX;
+                    dest.Y = dCurrentY;
+                    if ((ret = workStage.Stage.Interpolator.ReverseInterpolate(dest, ref source)) != 0)
+                    {
+                        return ret;
+                    }
+
+                    dPos = source.Y;
+                }
+                else
+                {
+                    AXM.GetActualPosition(nAxis, ref dPos);
+                }
+            }
+            else
+            {
+                AXM.GetActualPosition(nAxis, ref dPos);
+            }
 
 
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //  2D 맵핑을 사용할 경우
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            ///
-            //double dCurrent_Other = 0;                          //  현재 축이 X 이면 Y, 현재 축이 Y 이면 X
-            //XyCoordinate source = new XyCoordinate();
-            //XyCoordinate dest = new XyCoordinate();
 
-            //if (nAxis == (int)WorkStage.nAxis.X)
-            //{
-            //    if (workStage.Stage.Interpolator != null)
-            //    {
-            //        //AXM.GetActualPosition(nAxis, ref dCurrent);
-            //        AXM.GetCommandPosition(nAxis, ref dCurrent);
-            //        AXM.GetCommandPosition((int)WorkStage.nAxis.Y, ref dCurrent_Other);              //  2023. 05. 24.  SCH : Reverse Interpolate 에 축 데이터를 넣을 때는 X, Y 값 모두를 넣어야 한다.
-            //        dest.X = dCurrent;
-            //        dest.Y = dCurrent_Other;
 
-            //        if ((ret = workStage.Stage.Interpolator.ReverseInterpolate(dest, ref source)) != 0)
-            //        {
-            //            return ret;
-            //        }
-
-            //        m_dPos = source.X;
-            //    }
-            //    else
-            //    {
-            //        AXM.GetActualPosition(nAxis, ref m_dPos);
-            //        //AXM.GetCommandPosition(nAxis, ref m_dPos);
-            //    }
-            //}
-            //else if (nAxis == (int)WorkStage.nAxis.Y)
-            //{
-            //    if (workStage.Stage.Interpolator != null)
-            //    {
-            //        //AXM.GetActualPosition(nAxis, ref dCurrent);
-            //        AXM.GetCommandPosition(nAxis, ref dCurrent);
-            //        AXM.GetCommandPosition((int)WorkStage.nAxis.X, ref dCurrent_Other);              //  2023. 05. 24.  SCH : Reverse Interpolate 에 축 데이터를 넣을 때는 X, Y 값 모두를 넣어야 한다.
-            //        dest.Y = dCurrent;
-            //        dest.X = dCurrent_Other;
-
-            //        if ((ret = workStage.Stage.Interpolator.ReverseInterpolate(dest, ref source)) != 0)
-            //        {
-            //            return ret;
-            //        }
-
-            //        m_dPos = source.Y;
-            //    }
-            //    else
-            //    {
-            //        AXM.GetActualPosition(nAxis, ref m_dPos);
-            //        //AXM.GetCommandPosition(nAxis, ref m_dPos);
-            //    }
-            //}
-            //else
-            //{
-            //    AXM.GetActualPosition(nAxis, ref m_dPos);
-            //    //AXM.GetCommandPosition(nAxis, ref m_dPos);
-            //}
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //  2D 맵핑을 사용하지 않을 경우
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            ///
-            AXM.GetActualPosition(nAxis, ref m_dPos);                 //  원래 것 (2D Mapping 사용하기 전
-
-            //if (id >= m_lAxisCounts) return 0;
-            //return SignalState[(id * 8) + point];
-
-            return m_dPos;
+            return dPos;
         }
 
         public bool MC_SetEncPos(int nAxis, double dPos)
@@ -182,7 +171,7 @@ namespace QMC.Common.Motion.Ajin.Motions
             return true;
         }
 
-        public double MC_GetCmdPos(int nAxis)
+        public virtual double MC_GetCmdPos(int nAxis)
         {
             int ret = 0;
             double m_dPos = 0.0;
@@ -192,57 +181,57 @@ namespace QMC.Common.Motion.Ajin.Motions
             //  2D 맵핑을 사용할 경우
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///
-            //XyCoordinate source = new XyCoordinate();
-            //XyCoordinate dest = new XyCoordinate();
+            XyCoordinate source = new XyCoordinate();
+            XyCoordinate dest = new XyCoordinate();
 
-            //if (nAxis == (int)WorkStage.nAxis.X)
-            //{
-            //    if (workStage.Stage.Interpolator != null)
-            //    {
-            //        AXM.GetCommandPosition(nAxis, ref dCurrent);
-            //        dest.X = dCurrent;
+            if (nAxis == (int)WorkStage.nAxis.X)
+            {
+                if (workStage.Stage.Interpolator != null)
+                {
+                    AXM.GetCommandPosition(nAxis, ref dCurrent);
+                    dest.X = dCurrent;
 
-            //        if ((ret = workStage.Stage.Interpolator.ReverseInterpolate(dest, ref source)) != 0)
-            //        {
-            //            return ret;
-            //        }
+                    if ((ret = workStage.Stage.Interpolator.ReverseInterpolate(dest, ref source)) != 0)
+                    {
+                        return ret;
+                    }
 
-            //        m_dPos = source.X;
-            //    }
-            //    else
-            //    {
-            //        AXM.GetCommandPosition(nAxis, ref m_dPos);
-            //    }
-            //}
-            //else if (nAxis == (int)WorkStage.nAxis.Y)
-            //{
-            //    if (workStage.Stage.Interpolator != null)
-            //    {
-            //        AXM.GetCommandPosition(nAxis, ref dCurrent);
-            //        dest.Y = dCurrent;
+                    m_dPos = source.X;
+                }
+                else
+                {
+                    AXM.GetCommandPosition(nAxis, ref m_dPos);
+                }
+            }
+            else if (nAxis == (int)WorkStage.nAxis.Y)
+            {
+                if (workStage.Stage.Interpolator != null)
+                {
+                    AXM.GetCommandPosition(nAxis, ref dCurrent);
+                    dest.Y = dCurrent;
 
-            //        if ((ret = workStage.Stage.Interpolator.ReverseInterpolate(dest, ref source)) != 0)
-            //        {
-            //            return ret;
-            //        }
+                    if ((ret = workStage.Stage.Interpolator.ReverseInterpolate(dest, ref source)) != 0)
+                    {
+                        return ret;
+                    }
 
-            //        m_dPos = source.Y;
-            //    }
-            //    else
-            //    {
-            //        AXM.GetCommandPosition(nAxis, ref m_dPos);
-            //    }
-            //}
-            //else
-            //{
-            //    AXM.GetCommandPosition(nAxis, ref m_dPos);
-            //}
+                    m_dPos = source.Y;
+                }
+                else
+                {
+                    AXM.GetCommandPosition(nAxis, ref m_dPos);
+                }
+            }
+            else
+            {
+                AXM.GetCommandPosition(nAxis, ref m_dPos);
+            }
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //  2D 맵핑을 사용하지 않을 경우
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///
-            AXM.GetCommandPosition(nAxis, ref m_dPos);            //  원래 것 (2D Mapping 사용하기 전
+           // AXM.GetCommandPosition(nAxis, ref m_dPos);            //  원래 것 (2D Mapping 사용하기 전
 
             //if (id >= m_lAxisCounts) return 0;
             //return SignalState[(id * 8) + point];
@@ -641,110 +630,33 @@ namespace QMC.Common.Motion.Ajin.Motions
         */
 
         //public bool AxisMoveStartPos(int Axis, double position, double vel, double accel, double decel)
-        public bool MC_MovePosition(int Axis, double position, double vel, double accel, double decel)
+        public virtual bool MC_MovePosition(int Axis, double position, double vel, double accel, double decel)
         {
             int nRetCode = 0;
-            double m_dTarget = 0.0;
-            double m_dCurrent_Others = 0.0;                             //  2023. 05. 24.  SCH : XY 축 모션 이동 시 2D Mapping 데이터를 가져오기 위해 구동 축 외 다른 축의 현재 위치값이 있어야 한다.
-            XyCoordinate OriginPosition = new XyCoordinate();
-            XyCoordinate InterpolatedPosition = new XyCoordinate();
-
-            if (Axis == (int)WorkStage.nAxis.X)
-            {
-                //if (workStage.Stage.Interpolator != null)
-                if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart && 
-                    (workStage.Stage.Interpolator != null))
-                {
-                    OriginPosition.X = position;
-                    OriginPosition.Y = MC_GetEncPos( (int)WorkStage.nAxis.Y);
-
-                    workStage.Stage.Interpolator.Interpolate(OriginPosition, ref InterpolatedPosition);
-                    m_dTarget = InterpolatedPosition.X;
-                }
-                else
-                {
-                    m_dTarget = position;
-                }
-            }
-            else if (Axis == (int)WorkStage.nAxis.Y)
-            {
-                //if (workStage.Stage.Interpolator != null)
-                if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart &&
-                    (workStage.Stage.Interpolator != null))
-                {
-                    OriginPosition.X = MC_GetEncPos((int)WorkStage.nAxis.X);
-                    OriginPosition.Y = position;
-
-                    workStage.Stage.Interpolator.Interpolate(OriginPosition, ref InterpolatedPosition);
-                    m_dTarget = InterpolatedPosition.Y;
-                }
-                else
-                {
-                    m_dTarget = position;
-                }
-            }
-            else
-            {
-                m_dTarget = position;
-            }
-
-            //nRetCode = AXM.MovePosition(Axis, position, vel, accel, decel);
-            nRetCode = AXM.MovePosition(Axis, m_dTarget, vel, accel, decel);
+            
+            nRetCode = AXM.MovePosition(Axis, position, vel, accel, decel);
 
             if (nRetCode != (uint)AXT_FUNC_RESULT.AXT_RT_SUCCESS)
             {
-            //    Debug.WriteLine(String.Format("AxmMoveStartPos return error[Code:{0:d}]", duRetCode));
                 return false;
             }
 
             return true;
         }
 
-        public bool MC_MoveRelPosition(int Axis, double position, double vel, double accel, double decel)
+        public virtual bool MC_MoveRelPosition(int Axis, double position, double vel, double accel, double decel)
         {
             int nRetCode = 0;
             double dCurPos = 0.0;
             double m_dTarget = 0.0;
-            double m_dCurrent_Others = 0.0;                             //  2023. 05. 24.  SCH : XY 축 모션 이동 시 2D Mapping 데이터를 가져오기 위해 구동 축 외 다른 축의 현재 위치값이 있어야 한다.
-            XyCoordinate OriginPosition = new XyCoordinate();
-            XyCoordinate InterpolatedPosition = new XyCoordinate();
-
+            
             dCurPos = MC_GetEncPos(Axis);
             m_dTarget = dCurPos + position;
 
-            if (Axis == (int)WorkStage.nAxis.X)
-            {
-                //if (workStage.Stage.Interpolator != null)
-                if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart &&
-                    (workStage.Stage.Interpolator != null))
-                {
-                    OriginPosition.X = m_dTarget;
-                    OriginPosition.Y = MC_GetEncPos((int)WorkStage.nAxis.Y);
-
-                    workStage.Stage.Interpolator.Interpolate(OriginPosition, ref InterpolatedPosition);
-                    m_dTarget = InterpolatedPosition.X;
-                }
-            }
-            else if (Axis == (int)WorkStage.nAxis.Y)
-            {
-                //if (workStage.Stage.Interpolator != null)
-                if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart &&
-                    (workStage.Stage.Interpolator != null))
-                {
-                    OriginPosition.X = MC_GetEncPos((int)WorkStage.nAxis.X);
-                    OriginPosition.Y = m_dTarget;
-
-                    workStage.Stage.Interpolator.Interpolate(OriginPosition, ref InterpolatedPosition);
-                    m_dTarget = InterpolatedPosition.Y;
-                }
-            }
-
-            //nRetCode = AXM.MovePosition(Axis, dCurPos + position, vel, accel, decel);
             nRetCode = AXM.MovePosition(Axis, m_dTarget, vel, accel, decel);
 
             if (nRetCode != (uint)AXT_FUNC_RESULT.AXT_RT_SUCCESS)
-            {
-                //    Debug.WriteLine(String.Format("AxmMoveStartPos return error[Code:{0:d}]", duRetCode));
+            {   
                 return false;
             }
 

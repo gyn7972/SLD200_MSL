@@ -32,7 +32,7 @@
             // 
             // FormSelectSetUp
             // 
-            this.ClientSize = new System.Drawing.Size(1965, 1050);
+            this.ClientSize = new System.Drawing.Size(1861, 987);
             this.Location = new System.Drawing.Point(0, 0);
             this.Name = "FormSelectSetUp";
             this.Text = "FormSelectSetup";

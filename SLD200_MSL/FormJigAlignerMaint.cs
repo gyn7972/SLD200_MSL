@@ -138,11 +138,11 @@ namespace SLD200_MSL
             this.m_StagePositionControl.ButtonClick += PositionControlButtonClick;
 
             //  조명
-            //this.m_IlluminatorControl = new IlluminatorControl(workStage.visionCalibrator_HighRes.Recipe.IlluminationDataSet.ToList());
-            this.m_IlluminatorControl = new IlluminatorControl(workStage.jigAligner_HighRes.Recipe.IlluminationDataSet.ToList());
+            this.m_IlluminatorControl = new IlluminatorControl(workStage.visionCalibrator_HighRes.Recipe.IlluminationDataSet.ToList());
+            //this.m_IlluminatorControl = new IlluminatorControl(workStage.jigAligner_HighRes.Recipe.IlluminationDataSet.ToList());
             this.m_IlluminatorControl.Location = new Point(this.m_StagePositionControl.Location.X, m_StagePositionControl.Location.Y + m_StagePositionControl.Size.Height + Configuration.ControlGap);
-            //this.m_IlluminatorControl.Illuminator = workStage.visionCalibrator_HighRes.Illuminator;
-            this.m_IlluminatorControl.Illuminator = workStage.jigAligner_HighRes.Illuminator;
+            this.m_IlluminatorControl.Illuminator = workStage.visionCalibrator_HighRes.Illuminator;
+            //this.m_IlluminatorControl.Illuminator = workStage.jigAligner_HighRes.Illuminator;
             this.m_IlluminatorControl.IlluminatorControlButton_Click += M_IlluminatorControl_IlluminatorControlButton_Click;
             this.Controls.Add(m_IlluminatorControl);
 

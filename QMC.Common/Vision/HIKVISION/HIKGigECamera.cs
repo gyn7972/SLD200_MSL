@@ -107,7 +107,6 @@ namespace QMC.Common.Vision.HIKVISION
         }
         public string SerialNumber { get; set; }
         public HIKGigECameraConfig MyConfig
-
         {
             get { return CameraConfig as HIKGigECameraConfig; }
         }

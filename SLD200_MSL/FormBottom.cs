@@ -13,7 +13,7 @@ using QMC.Common.Parts;
 using static SLD200_MSL.Monitoring_CWA150SA;
 using System.Linq.Expressions;
 using static QMC.Common.Equipment;
-using SpiralLab.Sirius;
+//using SpiralLab.Sirius;
 using Timer = System.Windows.Forms.Timer;
 using Point = System.Drawing.Point;
 

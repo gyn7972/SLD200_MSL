@@ -1,0 +1,194 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>spirallab.sirius.fieldcorrection</name>
+    </assembly>
+    <members>
+        <member name="T:SpiralLab.Sirius.FormGridChecker">
+            <summary>
+            스캐너 필드 보정용 이미지를 분석하여 오차 데이타를 추출
+            <para>Image analyzer for scanner field correction winforms</para>
+            <para>x64: copy bin\x64\OpenCvSharpExtern.dll to bin</para>
+            <para>x32: copy bin\x32\OpenCvSharpExtern.dll to bin</para>
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.FormGridChecker.AliasName">
+            <summary>
+            이름
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.FormGridChecker.Dpi">
+            <summary>
+            인치당 픽셀 수 
+            <para>Dots/Inches</para>
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.FormGridChecker.ResultMeasure">
+            <summary>
+            측정 검사 결과 X, Y 값 (mm) 배열. 좌상단부터 시작
+            <para>Array of measured x, y location</para>
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.FormGridChecker.ResultReference">
+            <summary>
+            절대 위치  X, Y 값 (mm) 배열
+            <para>Array of reference x, y location</para>
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.FormGridChecker.IsSuccess">
+            <summary>
+            성공 여부 
+            <para>Success or not</para>
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.FormGridChecker.Rows">
+            <summary>
+            행 개수
+            <para>Rows</para>
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.FormGridChecker.RowPitch">
+            <summary>
+            행 간격
+            <para>Row Pitch (mm)</para>
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.FormGridChecker.Cols">
+            <summary>
+            열 개수
+            <para>Cols</para>
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.FormGridChecker.ColPitch">
+            <summary>
+            열 간격
+            <para>Col Pitch (mm)</para>
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.FormGridChecker.CrosshairWidth">
+            <summary>
+            십자선 폭 크기(mm)
+            <para>Width of Cross '+' Pattern (mm)</para>
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.FormGridChecker.CrosshairHeight">
+            <summary>
+            십자선 높이 크기 (mm)
+            <para>Height of Cross '+' Pattern (mm)</para>
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.FormGridChecker.RectTracker">
+            <summary>
+            이미지  잘라내기 사각 트랙커
+            <para>ROI tracker</para>
+            </summary>
+        </member>
+        <member name="M:SpiralLab.Sirius.FormGridChecker.#ctor">
+            <summary>
+            생성자
+            </summary>
+        </member>
+        <member name="M:SpiralLab.Sirius.FormGridChecker.getImageHue(OpenCvSharp.Mat)">
+            <summary>
+            2022.02.16 배경 색상 따라서 RGB 중에서 취하는 데이터 선택하도록 수정
+            Color -> Gray 변경할 경우 배경 색상에 따라 Gray 영상 변경 시, 십자선과 배경의 밝기 차가 줄어드는 단점 있음
+            </summary>
+            <param name="img"></param>
+            <returns></returns>
+        </member>
+        <member name="F:SpiralLab.Sirius.FormGridChecker.components">
+            <summary>
+            필수 디자이너 변수입니다.
+            </summary>
+        </member>
+        <member name="M:SpiralLab.Sirius.FormGridChecker.Dispose(System.Boolean)">
+            <summary>
+            사용 중인 모든 리소스를 정리합니다.
+            </summary>
+            <param name="disposing">관리되는 리소스를 삭제해야 하면 true이고, 그렇지 않으면 false입니다.</param>
+        </member>
+        <member name="M:SpiralLab.Sirius.FormGridChecker.InitializeComponent">
+            <summary>
+            디자이너 지원에 필요한 메서드입니다. 
+            이 메서드의 내용을 코드 편집기로 수정하지 마세요.
+            </summary>
+        </member>
+        <member name="M:SpiralLab.Sirius.Inspection.GridInfo.Reset">
+            <summary>
+            검사 결과 데이터 초기화
+            </summary>
+        </member>
+        <member name="M:SpiralLab.Sirius.Inspection.MapMaker.#ctor(System.Collections.Generic.List{System.Numerics.Vector2},System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="data"> 중심 데이터</param>
+            <param name="size">데이터 사이즈</param>
+            <param name="pitchRow">포인터 Y 방향 픽셀 거리</param>
+            <param name="pitchCol">포인터 X 방향 픽셀 거리</param>
+            <param name="row">포인터 Y 방향 Data 갯수</param>
+            <param name="col">포인터 X 방향 Data 갯수</param>
+        </member>
+        <member name="M:SpiralLab.Sirius.InspCrosshair.filterWithPixel(OpenCvSharp.Mat@,System.Int32)">
+            <summary>
+            noise 성분은 제거한다. 
+            삭제 사이즈는 최대 20픽셀로 제한한다.
+            </summary>
+            <param name="binary"></param>
+            <param name="limit"></param>
+        </member>
+        <member name="M:SpiralLab.Sirius.InspCrosshair.filterWithSize(OpenCvSharp.Mat@,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            설정된 십자마크 크기 보다 작은 사이즈는 이미지에서 삭제한다.
+            </summary>
+            <param name="binary"></param>
+            <param name="minSizeX"></param>
+            <param name="minSizeY"></param>
+            <param name="maxSizeX"></param>
+            <param name="maxSizeY"></param>
+        </member>
+        <member name="M:SpiralLab.Sirius.Program.Main">
+            <summary>
+            해당 애플리케이션의 주 진입점입니다.
+            </summary>
+        </member>
+        <member name="T:SpiralLab.Sirius.Properties.Resources">
+            <summary>
+              지역화된 문자열 등을 찾기 위한 강력한 형식의 리소스 클래스입니다.
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.Properties.Resources.ResourceManager">
+            <summary>
+              이 클래스에서 사용하는 캐시된 ResourceManager 인스턴스를 반환합니다.
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.Properties.Resources.Culture">
+            <summary>
+              이 강력한 형식의 리소스 클래스를 사용하여 모든 리소스 조회에 대해 현재 스레드의 CurrentUICulture 속성을
+              재정의합니다.
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.Properties.Resources.rectangular">
+            <summary>
+              (아이콘)과(와) 유사한 System.Drawing.Icon 형식의 지역화된 리소스를 찾습니다.
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.Properties.Resources.thic_cross">
+            <summary>
+              System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.Properties.Resources.thin_cross">
+            <summary>
+              System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+            </summary>
+        </member>
+        <member name="M:ImageView.RectTracker.GetCursor(ImageView.RectTracker.PosSizableRect)">
+            <summary>
+            Get cursor for the handle
+            </summary>
+            <param name="p"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

@@ -13,8 +13,14 @@ namespace QMC.Common.Parts
 
         #region => Axis Define 
 
-        public enum AxisAjinEnum
+
+//#if true                                                                //  SLD-200C
+#if false                                                               //  SLD-200U
+        public enum AxisAjinEnum                                                       //  SLD-200C 에서 사용하는 축 번호    
         {
+            //  축 번호 변경 전 (Z0:10,   Z1:11,  TR_X:12,    TR_Z:13)
+            //  축 번호 변경 후 (Z0:10,   Z1:11,  TR_X:12,    TR_Z:13) - 변동 없음
+
             Z0 = 10,
             Z1,
             TR_X,
@@ -22,6 +28,21 @@ namespace QMC.Common.Parts
 
             Max,
         }
+#else
+        public enum AxisAjinEnum                                                       //  SLD-200U 에서 사용하는 축 번호   
+        {
+            //  축 번호 변경 전 (Z0:10,   Z1:11,  TR_X:12,    TR_Z:13)
+            //  축 번호 변경 후 (Z0:10,   Z1:11,  TR_X:12,    TR_Z:13) - 변동 없음
+
+            Z0 = 9,
+            Z1,
+            TR_X,
+            TR_Z,
+
+            Max,
+        }
+#endif
+
         
         #endregion
 
@@ -31,6 +52,20 @@ namespace QMC.Common.Parts
             Z1,
             TR_X,
             TR_Z,
+
+            Max,
+        }
+
+        public enum StackerTable
+        {
+            Stacker_0,
+            Stacker_1
+        }
+
+        public enum PickerVacuumPos
+        {
+            Inner = 0,
+            Outer
         }
 
         public enum WorkTable
@@ -68,8 +103,8 @@ namespace QMC.Common.Parts
             Input_Unloader_Stacker0_FullCheck,            //  X050
             Input_Unloader_Stacker1_MaterialCheck,        //  X051
             Input_Unloader_Stacker1_FullCheck,            //  X052
-            Input_Unloader_Picker0_VacuumCheck,           //  X053
-            Input_Unloader_Picker1_VacuumCheck,           //  X054
+            Input_Unloader_Picker_InnerVacuumCheck,       //  X053
+            Input_Unloader_Picker_OuterVacuumCheck,       //  X054
             Input_Unloader_Front_DoorCheck,               //  X055
             Input_Unloader_Left_DoorCheck,                //  X056
 
@@ -79,8 +114,8 @@ namespace QMC.Common.Parts
             /// Output
             /// </summary>
             /// 
-            Output_Unloader_Picker_Vacuum0,               //  Y048
-            Output_Unloader_Picker_Vacuum1,               //  Y049
+            Output_Unloader_Picker_InnerVacuum,           //  Y048
+            Output_Unloader_Picker_OuterVacuum,           //  Y049
             Output_Unloader_Picker_Blow,                  //  Y050
         }
 
@@ -702,12 +737,12 @@ namespace QMC.Common.Parts
             switch (m_nPos)
             {
                 case 0:
-                    dioString = m_dicDioPoints[DioPointKey.Input_Unloader_Picker0_VacuumCheck.ToString()];
+                    dioString = m_dicDioPoints[DioPointKey.Input_Unloader_Picker_InnerVacuumCheck.ToString()];
                     break;
 
 
                 case 1:
-                    dioString = m_dicDioPoints[DioPointKey.Input_Unloader_Picker1_VacuumCheck.ToString()];
+                    dioString = m_dicDioPoints[DioPointKey.Input_Unloader_Picker_OuterVacuumCheck.ToString()];
                     break;
             }
 
@@ -736,12 +771,12 @@ namespace QMC.Common.Parts
             switch (m_nPos)
             {
                 case 0:
-                    dioString = m_dicDioPoints[DioPointKey.Output_Unloader_Picker_Vacuum0.ToString()];
+                    dioString = m_dicDioPoints[DioPointKey.Output_Unloader_Picker_InnerVacuum.ToString()];
                     break;
 
 
                 case 1:
-                    dioString = m_dicDioPoints[DioPointKey.Output_Unloader_Picker_Vacuum1.ToString()];
+                    dioString = m_dicDioPoints[DioPointKey.Output_Unloader_Picker_OuterVacuum.ToString()];
                     break;
             }
 
@@ -788,12 +823,12 @@ namespace QMC.Common.Parts
             switch (m_nPos)
             {
                 case 0:
-                    dioString = m_dicDioPoints[DioPointKey.Output_Unloader_Picker_Vacuum0.ToString()];
+                    dioString = m_dicDioPoints[DioPointKey.Output_Unloader_Picker_InnerVacuum.ToString()];
                     break;
 
 
                 case 1:
-                    dioString = m_dicDioPoints[DioPointKey.Output_Unloader_Picker_Vacuum1.ToString()];
+                    dioString = m_dicDioPoints[DioPointKey.Output_Unloader_Picker_OuterVacuum.ToString()];
                     break;
             }
 

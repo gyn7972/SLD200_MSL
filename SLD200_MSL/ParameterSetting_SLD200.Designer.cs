@@ -39,7 +39,7 @@ namespace SLD200_MSL
             this.btnUpperCamera_StartLive = new System.Windows.Forms.Button();
             this.tabControl_ParameterSet = new System.Windows.Forms.TabControl();
             this.tabPage_Data = new System.Windows.Forms.TabPage();
-            this.SiriusViewer_Parameter = new SpiralLab.Sirius.SiriusViewerForm();
+            //this.SiriusViewer_Parameter = new SpiralLab.Sirius.SiriusViewerForm();
             this.tabPage_Layout = new System.Windows.Forms.TabPage();
             this.baseGroupBox_ScanAreaSet = new SLD200_MSL.BaseGroupBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
@@ -523,7 +523,7 @@ namespace SLD200_MSL
             // tabPage_Data
             // 
             this.tabPage_Data.BackColor = System.Drawing.Color.Transparent;
-            this.tabPage_Data.Controls.Add(this.SiriusViewer_Parameter);
+            //this.tabPage_Data.Controls.Add(this.SiriusViewer_Parameter);
             this.tabPage_Data.Font = new System.Drawing.Font("Tahoma", 9.75F);
             this.tabPage_Data.Location = new System.Drawing.Point(4, 36);
             this.tabPage_Data.Name = "tabPage_Data";
@@ -534,18 +534,18 @@ namespace SLD200_MSL
             // 
             // SiriusViewer_Parameter
             // 
-            this.SiriusViewer_Parameter.AliasName = "NoName";
-            this.SiriusViewer_Parameter.BackColor = System.Drawing.SystemColors.Control;
-            this.SiriusViewer_Parameter.Document = null;
-            this.SiriusViewer_Parameter.FileName = "NoName";
-            this.SiriusViewer_Parameter.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SiriusViewer_Parameter.Index = ((uint)(0u));
-            this.SiriusViewer_Parameter.Location = new System.Drawing.Point(4, 4);
-            this.SiriusViewer_Parameter.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.SiriusViewer_Parameter.Name = "SiriusViewer_Parameter";
-            this.SiriusViewer_Parameter.Progress = 0;
-            this.SiriusViewer_Parameter.Size = new System.Drawing.Size(799, 716);
-            this.SiriusViewer_Parameter.TabIndex = 35;
+            //this.SiriusViewer_Parameter.AliasName = "NoName";
+            //this.SiriusViewer_Parameter.BackColor = System.Drawing.SystemColors.Control;
+            //this.SiriusViewer_Parameter.Document = null;
+            //this.SiriusViewer_Parameter.FileName = "NoName";
+            //this.SiriusViewer_Parameter.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            //this.SiriusViewer_Parameter.Index = ((uint)(0u));
+            //this.SiriusViewer_Parameter.Location = new System.Drawing.Point(4, 4);
+            //this.SiriusViewer_Parameter.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            //this.SiriusViewer_Parameter.Name = "SiriusViewer_Parameter";
+            //this.SiriusViewer_Parameter.Progress = 0;
+            //this.SiriusViewer_Parameter.Size = new System.Drawing.Size(799, 716);
+            //this.SiriusViewer_Parameter.TabIndex = 35;
             // 
             // tabPage_Layout
             // 
@@ -5571,7 +5571,7 @@ namespace SLD200_MSL
         private System.Windows.Forms.Button button_MainUnitPos_Mask1_Get;
         private System.Windows.Forms.TextBox textBox_MainUnitPos_Mask1_FwBw_Y;
         private BaseLabel baseLabel_MainUnitPos_Mask1;
-        public SpiralLab.Sirius.SiriusViewerForm SiriusViewer_Parameter;
+        //public SpiralLab.Sirius.SiriusViewerForm SiriusViewer_Parameter;
         private System.Windows.Forms.TextBox textBox_LDPickerSetting_PickerVibrationTimes;
         private BaseLabel baseLabel_LDPickerSetting_Vibration;
     }

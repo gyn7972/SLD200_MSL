@@ -28,6 +28,7 @@ using SpiralLab.Sirius;
 //using SpiralLab.Sirius2.Winforms.Entity;
 //using SpiralLab.Sirius2.Winforms.Marker;
 //using SpiralLab.Sirius2.Winforms.UI;
+
 using MessageBox = System.Windows.Forms.MessageBox;
 using QMC.Core;
 using static QMC.Common.Modules.Loader;
@@ -90,7 +91,7 @@ namespace QMC.Common
         {
             return Water_Leak;
         }
-        public static void SetWaterLeakStatus( bool m_bLeak )
+        public static void SetWaterLeakStatus(bool m_bLeak)
         {
             Water_Leak = m_bLeak;
         }
@@ -173,10 +174,14 @@ namespace QMC.Common
             public double Home_Speed_2nd;                   //  Home 2nd Speed
             public double Home_Speed_3rd;                   //  Home 3rd Speed
             public double Home_Speed_Last;                  //  Home Last Speed
+            public double Home_Clear_Time;                  //  Home Clear Time 
+            public int Home_ZPhase_Use;                     //  Home Z Phase 사용 여부
             public double Home_Offset;                      //  Home Offset
+            public double Home_Acceleration_1st;            //  Home 1st Acceleration
+            public double Home_Acceleration_2nd;            //  Home 2nd Acceleration
 
             public double Common_UnitPerPulse_Unit;         //  Unit Per Pulse (Unit)
-            public double Common_UnitPerPulse_Pulse;        //  Unit Per Pulse (Pulse)
+            public int Common_UnitPerPulse_Pulse;           //  Unit Per Pulse (Pulse)
             public double Common_Settle_Delay;              //  Settle Delay Time
             public double Common_Acceleration_Min;          //  Acceleration Min
             public double Common_Acceleration_Max;          //  Acceleration Max
@@ -217,6 +222,9 @@ namespace QMC.Common
         {
             public int Comm_Type;                           //  TCP/IP, RS232
 
+            //  프로그램 시작 시 자동으로 연결할 것인지
+            public bool Connect;                            //  Connect or Not
+
             //  for TCP/IP
             public int TCPIP_PortType;                      //  TCP/IP 의 포트 형식 (Server, Client)
             public string TCPIP_IPAddress;                  //  TCP/IP 의 IP 주소
@@ -233,7 +241,195 @@ namespace QMC.Common
             public int Serial_CommFlowControl;              //  Flow Control
         }
         public static stCommParameter[] stCommunicationSet = new stCommParameter[System.Enum.GetValues(typeof(CommList)).Length];
-        
+
+
+        //  Recipe 파라미터
+        public enum LayerList : int
+        {
+            Hole1 = 0,
+            Hole2,
+            Hole3,
+            Hole4,
+            Rect,
+            Outline,
+            Marking,
+            Fiducial,
+        }
+
+        public struct stLayerRecipeParameter
+        {
+            public string DrawingFile;                                  //  Drawing File Path and Name
+
+            public int LaserParam_PulseWidth;                           //  Laser Pulse Width (us)
+            public int LaserParam_PulsePeriod;                          //  Laser Pulse Period (us)
+            public int LaserParam_Frequency;                            //  Laser Frequency (Hz)
+            public double LaserParam_DutyCycle;                         //  Laser Duty Cycle (%)
+            public bool LaserParam_TriggerMode_External;                //  Laser Trigger Mode (true: External, false: Internal)
+
+            public bool ProcessPriority_P2P;                            //  Process Priority (true: Space of P2P, false: Pulse Period)
+
+            public string Miscellaneous_ReferenceLayer;                 //  Reference Layer
+            public double Miscellaneous_DefocusingDistance;             //  Defocusing Distance (mm)
+            public double Miscellaneous_Resizing;                       //  Resizing (mm)
+            public int Miscellaneous_HoleDrilling_StartPosDivision;     //  Hole Drilling Start Position Division(등분)
+            public double Miscellaneous_GroupSplitSize;                 //  Group Split Size (mm)
+            public double Miscellaneous_ScannerDrillingSpeed;           //  Scanner Drilling Speed (mm/s)
+            public double Miscellaneous_ScannerJumpSpeed;               //  Scanner Jump Speed (mm/s)
+            public double Miscellaneous_LaserOnDelay;                   //  Laser On Delay (us)
+            public double Miscellaneous_LaserOffDelay;                  //  Laser Off Delay (us)
+            public double Miscellaneous_MarkDelay;                      //  Mark Delay (us)
+            public double Miscellaneous_JumpDelay;                      //  Jump Delay (us)
+            public double Miscellaneous_PolygonDelay;                   //  Polygon Delay (us)
+            public double Miscellaneous_Drilling_Power;                 //  Drilling Power
+            public int Miscellaneous_DrillingRepetition;                //  Drilling Repetition
+            public int Miscellaneous_DrillingRepetitionBundle;          //  Drilling Repetition Bundle
+            public double Miscellaneous_RotationAngleArc;               //  Rotation Angle Arc (degree)
+            public double Miscellaneous_P2PDistance;                    //  P2P Distance (mm)
+            public int Miscellaneous_MaskIndex;                         //  Mask Index (0:None, 1:Mask1, 2:Mask2, 3:Mask3, 4:Mask4)
+            public int Miscellaneous_BETPositionIndex;                  //  BET Position Index (0:0.1X, 1:0.5X, 2:1.0X, 3:1.5X, 4:2.0X)
+
+            public bool ProcessOption_SocketAlign_Use;                  //  Socket Align Use (true: Use, false: Not Use)
+            public bool ProcessOption_SocketHeightCheck_Use;            //  Socket Height Check Use Offset (true: Use, false: Not Use)
+
+            public double ModuleInformation_Module_Width;               //  Module Width (mm)
+            public double ModuleInformation_Module_Height;              //  Module Height (mm)
+            public double ModuleInformation_Silicon_Thickness;          //  Silicon Thickness (mm)
+
+            public int IlluminatorValue_FineCamRed;                     //  Illuminator Value (Fine Camera, Red)                            //  조명은 0번 index 만 사용
+            public int IlluminatorValue_FineCamIR;                      //  Illuminator Value (Fine Camera, IR)                             //  조명은 0번 index 만 사용
+            public int IlluminatorValue_CoarseCamIR;                    //  Illuminator Value (Coarse Camera, IR)                           //  조명은 0번 index 만 사용
+        }
+        public static stLayerRecipeParameter[] stLayerRecipeSet = new stLayerRecipeParameter[System.Enum.GetValues(typeof(LayerList)).Length];
+
+
+        //  Machine Name
+        public static string Machine_Name { set; get; } = "SLD-200";
+
+
+        //  Laser Type
+        public static bool Machine_LaserType_CO2 { set; get; }
+
+
+        //  Options
+        public static bool Machine_Door_Enable { set; get; } = true;                            //  Door Enable (true: Enable, false: Disable)
+        public static bool Machine_VacuumSensor_Enable { set; get; } = true;                    //  Vacuum Sensor Enable (true: Enable, false: Disable)
+        public static int Machine_SignalHoldTime { set; get; } = 500;                           //  Signal Hold Time (ms)
+        public static bool Machine_MAligner_ReleaseType { set; get; } = true;                   //  M-Aligner Release Timing (true: Release -> Up, false: Up -> Release)
+        public static double Machine_MAligner_NarrowingDistance { set; get; } = 0.5;            //  M-Aligner Narrowing Distance (mm)
+        public static double Machine_MAligner_WidenDistance { set; get; } = 2.0;                //  M-Aligner Widen Distance (mm)
+        public static bool Machine_VacuumStableTime_Enable { set; get; } = true;                //  Vacuum Stabilization Time Enable
+        public static int Machine_VacuumStableTime { set; get; } = 500;                         //  Vacuum Signal Stabilization Time (ms)
+        public static bool Machine_LaserHeightCheckStableTime_Enable { set; get; } = true;      //  Laser Height Check Stabilization Time Enable
+        public static int Machine_LaserHeightCheckStableTime { set; get; } = 500;               //  Laser Height Check Stabilization Time (ms)
+        public static double Machine_Stacker_TopCheck_OverDistance { set; get; } = 0.2;         //  Full Sensor 감지 후 추가로 이동하는 거리 (mm)
+
+
+        //  Offset Distance
+        public struct stOffsetDistanceParameter
+        {
+            public PointD FromScannerToFineCam;             //  Scanner to Fine Camera
+            public PointD FromFineCamToCoarseCam;           //  Fine Camera to Coarse Camera
+            public PointD FromFineCamToLaserHeightSensor;   //  Fine Camera to Laser Height Sensor (Keyence)
+        }
+        public static stOffsetDistanceParameter stOffsetDistance = new stOffsetDistanceParameter();
+
+
+        //  소켓 얼라인 테스트 확인용
+        public static double m_dTest_SocketAlign_OffsetX { set; get; } = 0.0;           //  Socket Align Offset X
+        public static double m_dTest_SocketAlign_OffsetY { set; get; } = 0.0;           //  Socket Align Offset Y
+        public static double m_dTest_SocketAlign_Theta { set; get; } = 0.0;             //  Socket Align Theta (degree)
+
+
+        //  Scanner Head Offset
+        public static double Scanner_HeadOffset_X { set; get; }
+        public static double Scanner_HeadOffset_Y { set; get; }
+        public static double Scanner_HeadOffset_Angle { set; get; }
+
+
+        //  Coordinate System Matching Offset (Stage Origin Pos. to Scanner Center Pos.)
+        public static double CoordinateMatchingOffset_X { set; get; }
+        public static double CoordinateMatchingOffset_Y { set; get; }
+
+
+        //  Offset distance from the stage to the scanner position (스테이지와 스캐너 좌표계를 일치시키지 않는다면, 이 값만큼 이동해서 가공해야 함) - 스테이지 스캐너 좌표계를 일치시키면 이 값은 반드시 0 으로 설정해야 함.
+        public static double StageOffset_forDrilling_X { set; get; }
+        public static double StageOffset_forDrilling_Y { set; get; }
+
+
+        //  Keyence Laser Height Sensor 기준값 설정
+        public static double LaserHeightSensor_ReferenceValue_atVisionFocusPosition { set; get; } = 0.0;         //  Vision Focus 위치에서의 Keyence Laser Height Sensor 기준값
+        public static double LaserHeightSensor_ReferenceValue_atScannerFocusPosition { set; get; } = 0.0;        //  Scanner Focus 위치에서의 Keyence Laser Height Sensor 기준값
+
+
+        //  Scanner Calibration Parameter
+        public static double Scanner_Calibration_LaserFrequency { set; get; } = 0.0;            //  Scanner Calibration Laser Frequency
+        public static double Scanner_Calibration_LaserEnergy { set; get; } = 0.0;               //  Scanner Calibration Laser Energy
+        public static double Scanner_Calibration_CrossMarkLength { set; get; } = 0.0;           //  Scanner Calibration Cross Mark Length
+        public static double Scanner_Calibration_LaserMarkSpeed { set; get; } = 0.0;            //  Scanner Calibration Laser Mark Speed (mm/s)
+        public static double Scanner_Calibration_LaserJumpSpeed { set; get; } = 0.0;            //  Scanner Calibration Laser Jump Speed (mm/s)
+
+
+
+        //  Mapping Data 파일 경로
+        public static string MappingData_FilePath_Stage_Scanner { set; get; }
+        public static string MappingData_FilePath_Stage_FineCam { set; get; }
+        public static string MappingData_FilePath_StageCal_Scanner { set; get; }
+        public static string MappingData_FilePath_StageCal_FineCam { set; get; }
+
+
+
+        //  현재 Recipe (저장했거나 불러왔거나)
+        public static string Current_Recipe { set; get; }
+
+
+        //  메인 화면에서 Open 하려는 Recipe 이름
+        public static bool RecipeOpen_fromMainForm { set; get; }
+        public static string RecipeName_fromMainForm { set; get; }
+
+
+        //  자동운전 상태 확인
+        public static bool AutoRunStatus { set; get; }
+
+
+        //  Sequence Test 일 경우
+        public static bool SeqTestMode { set; get; } = false;
+
+
+        ////  Recipe Data
+        //public struct stRecipeParameter
+        //{
+        //    public string DrawingFile;                                  //  Drawing File Path and Name
+
+        //    public int LaserParam_PulseWidth;                           //  Laser Pulse Width (us)
+        //    public int LaserParam_PulsePeriod;                          //  Laser Pulse Period (us)
+        //    public int LaserParam_Frequency;                            //  Laser Frequency (Hz)
+        //    public bool LaserParam_TriggerMode_External;                //  Laser Trigger Mode (true: External, false: Internal)
+
+        //    public bool ProcessPriority_P2P;                            //  Process Priority (true: Space of P2P, false: Pulse Period)
+
+        //    public string Miscellaneous_ReferenceLayer;                 //  Reference Layer
+        //    public double Miscellaneous_DefocusingDistance;             //  Defocusing Distance (mm)
+        //    public double Miscellaneous_Resizing;                       //  Resizing (mm)
+        //    public int Miscellaneous_HoleDrilling_StartPosDivision;     //  Hole Drilling Start Position Division (등분)
+        //    public double Miscellaneous_GroupSplitSize;                 //  Group Split Size (mm)
+        //    public double Miscellaneous_ScannerDrillingSpeed;           //  Scanner Drilling Speed (mm/s)
+        //    public double Miscellaneous_ScannerJumpSpeed;               //  Scanner Jump Speed (mm/s)
+        //    public double Miscellaneous_LaserOnDelay;                   //  Laser On Delay (us)
+        //    public double Miscellaneous_LaserOffDelay;                  //  Laser Off Delay (us)
+        //    public double Miscellaneous_MarkDelay;                      //  Mark Delay (us)
+        //    public double Miscellaneous_JumpDelay;                      //  Jump Delay (us)
+        //    public double Miscellaneous_PolygonDelay;                   //  Polygon Delay (us)
+        //    public int Miscellaneous_DrillingRepetation;                //  Drilling Repetation
+        //    public double Miscellaneous_P2PDistance;                    //  P2P Distance (mm)
+        //    public int Miscellaneous_MaskIndex;                         //  Mask Index (0:None, 1:Mask1, 2:Mask2, 3:Mask3, 4:Mask4)
+        //    public double Miscellaneous_BETPositionIndex;               //  BET Position Index (0:0.1X, 1:0.5X, 2:1.0X, 3:1.5X, 4:2.0X)
+        //}
+        //public static stRecipeParameter stRecipeSet = new stRecipeParameter();
+
+
+        //  Vision Popup 창 Open 모드 (true: Scanner FineCam Offset Change)
+        public static bool m_bVisionFormOpenMode_ScannerFineCamOffsetChange { set; get; }
+
 
         //  Log In
         public static bool Machine_LogIn { set; get; }
@@ -253,6 +449,8 @@ namespace QMC.Common
         //public static bool User_QMC_Engineer { set; get; }
         public static int User_LoginMode { set; get; }                      //  0 : Logout     1 : Admin     2 : Engineer     3 : Operator
 
+        public static bool MapDataStatus_Activate { set; get; }                   //  맵 데이터 활성화 / 비활성화
+
         public enum UserMode : int
         {
             USER_LOGOUT = 0,            //  0 : Logout
@@ -267,12 +465,12 @@ namespace QMC.Common
 
 
         //  로그아웃 할 때 메인화면을 보여주도록 하기 위한 Flag
-        public static bool User_LogOut_1time {  set; get; }
+        public static bool User_LogOut_1time { set; get; }
 
 
         //  자동 로그아웃
-        public static bool LogIn_Status {  set; get; }
-        public static bool AutoLogOut_Execute {  set; get; }
+        public static bool LogIn_Status { set; get; }
+        public static bool AutoLogOut_Execute { set; get; }
         public static bool AutoLogOut_Executed { set; get; }
 
 
@@ -280,7 +478,7 @@ namespace QMC.Common
         public static bool m_bBarcodeReaderComm_1time { set; get; }
 
 
-        //public static SiriusViewerForm EqpSiriusViewer { set; get; }
+        public static SiriusViewerForm EqpSiriusViewer { set; get; }
         public static bool m_bAlignVisionThread_1time { set; get; }
         public static bool m_bParamLoadThread_1time { set; get; }
 
@@ -376,6 +574,8 @@ namespace QMC.Common
                 stAxisParam[i].Home_Speed_3rd = 0;
                 stAxisParam[i].Home_Speed_Last = 0;
                 stAxisParam[i].Home_Offset = 0;
+                stAxisParam[i].Home_Acceleration_1st = 0;
+                stAxisParam[i].Home_Acceleration_2nd = 0;
                 stAxisParam[i].Common_UnitPerPulse_Unit = 0;
                 stAxisParam[i].Common_UnitPerPulse_Pulse = 0;
                 stAxisParam[i].Common_Acceleration_Min = 0;
@@ -400,19 +600,122 @@ namespace QMC.Common
             //  Communication 장치 파라미터 초기화
             for (int i = 0; i < System.Enum.GetValues(typeof(CommList)).Length; i++)
             {
-                stCommunicationSet[i].Comm_Type = 0;                        //  0 : TCP/IP,     1 : RS232
-                stCommunicationSet[i].TCPIP_PortType = 0;                   //  0 : Server,     1 : Client
+                stCommunicationSet[i].Comm_Type = 0;                        //  0 : TCP/IP,         1 : RS232
+                stCommunicationSet[i].Connect = false;                      //  0 : Not Connect,    1 : Connect
+                stCommunicationSet[i].TCPIP_PortType = 0;                   //  0 : Server,         1 : Client
                 stCommunicationSet[i].TCPIP_IPAddress = "127.0.0.1";
                 stCommunicationSet[i].TCPIP_PortNum = 5000;
                 stCommunicationSet[i].Serial_CommTimeout = 500;
                 stCommunicationSet[i].Serial_CommSpacingDelay = 20;
-                stCommunicationSet[i].Serial_CommPort = 0;                  //  0 : COM1,       1 : COM2,       2 : COM3,       3 : COM4 ....
-                stCommunicationSet[i].Serial_CommBaudRate = 0;              //  0 : 9600,       1 : 19200,      2 : 38400,      3 : 57600,      4 : 115200
-                stCommunicationSet[i].Serial_CommDataBits = 3;              //  0 : 5,          1 : 6,          2 : 7,          3 : 8
-                stCommunicationSet[i].Serial_CommStopBits = 0;              //  0 : 1,          1 : 1.5,        2 : 2
-                stCommunicationSet[i].Serial_CommParity = 0;                //  0 : None,       1 : Odd,        2 : Even
-                stCommunicationSet[i].Serial_CommFlowControl = 0;           //  0 : None,       1 : Xon/Xoff,   2 : RTS/CTS
+                stCommunicationSet[i].Serial_CommPort = 0;                  //  0 : COM1,           1 : COM2,       2 : COM3,       3 : COM4 ....
+                stCommunicationSet[i].Serial_CommBaudRate = 3;              //  0 : 1200,           1 : 2400,       2 : 4800,       3 : 9600,           4 : 19200,      5 : 38400,      6 : 57600,      7 : 115200
+                stCommunicationSet[i].Serial_CommDataBits = 3;              //  0 : 5,              1 : 6,          2 : 7,          3 : 8
+                stCommunicationSet[i].Serial_CommStopBits = 0;              //  0 : 1,              1 : 1.5,        2 : 2
+                stCommunicationSet[i].Serial_CommParity = 0;                //  0 : None,           1 : Odd,        2 : Even
+                stCommunicationSet[i].Serial_CommFlowControl = 0;           //  0 : None,           1 : Xon/Xoff,   2 : RTS/CTS
             }
+
+            //  장비 Laser Type
+            Machine_LaserType_CO2 = true;
+
+            //  Offset Distance 
+            stOffsetDistance.FromScannerToFineCam.X = 0;
+            stOffsetDistance.FromScannerToFineCam.Y = 0;
+            stOffsetDistance.FromFineCamToCoarseCam.X = 0;
+            stOffsetDistance.FromFineCamToCoarseCam.Y = 0;
+            stOffsetDistance.FromFineCamToLaserHeightSensor.X = 0;
+            stOffsetDistance.FromFineCamToLaserHeightSensor.Y = 0;
+
+
+            //  Layer Recipe 파라미터 초기화
+            for (int i = 0; i < System.Enum.GetValues(typeof(LayerList)).Length; i++)
+            {
+                //  Drawing File
+                stLayerRecipeSet[i].DrawingFile = "";                                //  Drawing File Path and Name
+
+                //  Laser Parameter
+                stLayerRecipeSet[i].LaserParam_PulseWidth = 0;                      //  Laser Pulse Width (us)
+                stLayerRecipeSet[i].LaserParam_PulsePeriod = 0;                     //  Laser Pulse Period (us)
+                stLayerRecipeSet[i].LaserParam_Frequency = 0;                       //  Laser Frequency (Hz)
+                stLayerRecipeSet[i].LaserParam_DutyCycle = 0;                       //  Laser Duty Cycle (%)
+                stLayerRecipeSet[i].LaserParam_TriggerMode_External = false;        //  Laser Trigger Mode (true: External, false: Internal)
+
+                //  Process Priority
+                stLayerRecipeSet[i].ProcessPriority_P2P = true;                     //  Process Priority (true: Space of P2P, false: Pulse Period)
+
+                //  Miscellaneous
+                stLayerRecipeSet[i].Miscellaneous_ReferenceLayer = "";                              //  어떤 Layer 의 데이터를 사용할 것인지
+                stLayerRecipeSet[i].Miscellaneous_DefocusingDistance = 0.0;                         //  가공 시 초점 위치에서 얼마나 이동해서 가공할 것인지
+                stLayerRecipeSet[i].Miscellaneous_Resizing = 0.0;                                   //  가공 시 데이터를 얼마나 확대/축소할 것인지 (전체 길이를 입력하면 2등분 하여 양방향으로 크기 조정)
+                stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision = 1;                //  Hole Drilling 가공 시 시작 위치를 몇개로 나눌 것인지 (Only 1, 2, 3, 4, 5, 6, 8, 9, 10, 12)
+                stLayerRecipeSet[i].Miscellaneous_GroupSplitSize = 4.0;                             //  Group 분할 크기 (mm, default : 4mm)
+                stLayerRecipeSet[i].Miscellaneous_ScannerDrillingSpeed = 10;                        //  Hole Drilling 속도 (mm/s)
+                stLayerRecipeSet[i].Miscellaneous_ScannerJumpSpeed = 100;                           //  Jump 속도 (mm/s)  
+                stLayerRecipeSet[i].Miscellaneous_LaserOnDelay = 0;                                 //  Laser On Delay (us)
+                stLayerRecipeSet[i].Miscellaneous_LaserOffDelay = 0;                                //  Laser Off Delay (us)
+                stLayerRecipeSet[i].Miscellaneous_MarkDelay = 0;                                    //  Mark Delay (us)
+                stLayerRecipeSet[i].Miscellaneous_JumpDelay = 0;                                    //  Jump Delay (us)
+                stLayerRecipeSet[i].Miscellaneous_PolygonDelay = 0;                                 //  Polygon Delay (us)
+                stLayerRecipeSet[i].Miscellaneous_Drilling_Power = 1;                               //  Drilling Power (w)
+                stLayerRecipeSet[i].Miscellaneous_P2PDistance = 0.1;                                //  P2P Distance (mm)
+                stLayerRecipeSet[i].Miscellaneous_DrillingRepetition = 1;                           //  Drilling 반복 횟수
+                stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle = 50;                    //  Drilling 반복 묶음 횟수
+                stLayerRecipeSet[i].Miscellaneous_RotationAngleArc = 360.0;                         //  Rotation Angle Arc (degree)
+                stLayerRecipeSet[i].Miscellaneous_MaskIndex = 0;                                    //  Mask Index  
+                stLayerRecipeSet[i].Miscellaneous_BETPositionIndex = 0;                             //  BET Index  
+                stLayerRecipeSet[i].Miscellaneous_Drilling_Power = 10;                              //  Drilling Power              
+
+                //  Process Options
+                stLayerRecipeSet[i].ProcessOption_SocketAlign_Use = false;                          //  Socket Align Use (true: Use, false: Not Use)
+                stLayerRecipeSet[i].ProcessOption_SocketHeightCheck_Use = false;                    //  Socket Height Check Use Offset (true: Use, false: Not Use)
+
+                //  Module Information
+                stLayerRecipeSet[i].ModuleInformation_Module_Width = 0.0;                           //  Module Width (mm)
+                stLayerRecipeSet[i].ModuleInformation_Module_Height = 0.0;                          //  Module Height (mm)
+                stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness = 0.0;                      //  Silicon Thickness (mm)
+            }
+
+
+            //  Scanner Head Offset
+            Scanner_HeadOffset_X = 0;
+            Scanner_HeadOffset_Y = 0;
+            Scanner_HeadOffset_Angle = 0;
+
+
+            //  Coordinate System Matching Offset (Stage Origin Pos. to Scanner Center Pos.)
+            CoordinateMatchingOffset_X = 0.0;
+            CoordinateMatchingOffset_Y = 0.0;
+
+
+            //  Offset distance from the stage to the scanner position (스테이지와 스캐너 좌표계를 일치시키지 않는다면, 이 값만큼 이동해서 가공해야 함) - 스테이지 스캐너 좌표계를 일치시키면 이 값은 반드시 0 으로 설정해야 함.
+            StageOffset_forDrilling_X = 0.0;
+            StageOffset_forDrilling_Y = 0.0;
+
+
+            //  Keyence Laser Height Sensor 기준값 설정
+            LaserHeightSensor_ReferenceValue_atVisionFocusPosition = 0.0;         //  Vision Focus 위치에서의 Keyence Laser Height Sensor 기준값
+            LaserHeightSensor_ReferenceValue_atScannerFocusPosition = 0.0;        //  Scanner Focus 위치에서의 Keyence Laser Height Sensor 기준값
+
+            Scanner_Calibration_LaserFrequency = 0.0;            //  Scanner Calibration Laser Frequency
+            Scanner_Calibration_LaserEnergy = 0.0;               //  Scanner Calibration Laser Energy
+            Scanner_Calibration_CrossMarkLength = 0.0;           //  Scanner Calibration Cross Mark Length
+            Scanner_Calibration_LaserMarkSpeed = 0.0;            //  Scanner Calibration Laser Mark Speed (mm/s)
+            Scanner_Calibration_LaserJumpSpeed = 0.0;            //  Scanner Calibration Laser Jump Speed (mm/s)
+
+
+            //  자동운전 상태 확인
+            AutoRunStatus = false;
+
+
+            m_bVisionFormOpenMode_ScannerFineCamOffsetChange = false;
+
+            Current_Recipe = "";
+
+            RecipeOpen_fromMainForm = false;
+            RecipeName_fromMainForm = "";
+
+            MapDataStatus_Activate = false;
+
 
             m_nLastDioUID = 0;
             m_nLastAxisUID = 0;
@@ -481,6 +784,9 @@ namespace QMC.Common
 
             NewForm_AxisParameter_Load();
             NewForm_CommParameter_Load();
+            NewForm_MachineOption_Load();
+            NewForm_MapDataList_Load();
+            NewForm_MapDataActivate_Load();
 
 
             if (m_nBoardOpened != 0)
@@ -488,7 +794,7 @@ namespace QMC.Common
                 MessageBox.Show("모터 파라미터 폴더가 없거나, 모터 파라미터 파일이 없습니다.\r\n\r\n[D:\\SLD-200_Parameter\\SLD-200.mot]", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
-        
+
         private static void CreateModules()
         {
             //  2022. 03. 21.  SCH : 여기에 Module 추가. (Button 생성)
@@ -578,10 +884,10 @@ namespace QMC.Common
                     while (fs.Position < fs.Length)
                     {
                         MotionBoardConfiguration configuration;
-                        MotionBoardConfiguration.Load(fs,out configuration);
+                        MotionBoardConfiguration.Load(fs, out configuration);
                         MotionBoard board = null;
 
-                        switch(configuration.BoardType)
+                        switch (configuration.BoardType)
                         {
                             case MotionBoardType.ACS:
                                 board = new ACSSPiiPlusMotionBoard();
@@ -688,7 +994,7 @@ namespace QMC.Common
             {
                 MotionBoard board = null;
 
-                switch(config.BoardType)
+                switch (config.BoardType)
                 {
                     case MotionBoardType.Ajin:
                         board = new AjinAxlMotionBoard();
@@ -888,7 +1194,7 @@ namespace QMC.Common
 
         public static MotionAxis GetAxis(int nAxisNo)
         {
-             MotionAxis axis = null;
+            MotionAxis axis = null;
             foreach (MotionBoard board in MotionBoards)
             {
                 axis = board.GetAxis((uint)nAxisNo);
@@ -1726,9 +2032,21 @@ namespace QMC.Common
                 //  Home Last Speed
                 NativeMethods.GetPrivateProfileString(strTemp, "LastSpeed", "1", temp, 255, strFIle);
                 Equipment.stAxisParam[i].Home_Speed_Last = Convert.ToDouble(temp.ToString());
+                //  Home Clear Time
+                NativeMethods.GetPrivateProfileString(strTemp, "ClearTime", "0", temp, 255, strFIle);
+                Equipment.stAxisParam[i].Home_Clear_Time = Convert.ToDouble(temp.ToString());
+                //  Home ZPhase Use (Disable, Dir CW, Dir CCW)
+                NativeMethods.GetPrivateProfileString(strTemp, "ZPhase", "0", temp, 255, strFIle);
+                Equipment.stAxisParam[i].Home_ZPhase_Use = Convert.ToInt16(temp.ToString());
                 //  Home Offset
                 NativeMethods.GetPrivateProfileString(strTemp, "Offset", "0", temp, 255, strFIle);
                 Equipment.stAxisParam[i].Home_Offset = Convert.ToDouble(temp.ToString());
+                //  Home 1st Acceleration
+                NativeMethods.GetPrivateProfileString(strTemp, "1stAccel", "300", temp, 255, strFIle);
+                Equipment.stAxisParam[i].Home_Acceleration_1st = Convert.ToDouble(temp.ToString());
+                //  Home 2nd Acceleration
+                NativeMethods.GetPrivateProfileString(strTemp, "2ndAccel", "100", temp, 255, strFIle);
+                Equipment.stAxisParam[i].Home_Acceleration_2nd = Convert.ToDouble(temp.ToString());
 
                 strTemp = string.Format("Axis_{0}_Common", i);
                 //  Unit Per Pulse (Unit)
@@ -1736,7 +2054,7 @@ namespace QMC.Common
                 Equipment.stAxisParam[i].Common_UnitPerPulse_Unit = Convert.ToDouble(temp.ToString());
                 //  Unit Per Pulse (Pulse)
                 NativeMethods.GetPrivateProfileString(strTemp, "Pulse", "1000", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_UnitPerPulse_Pulse = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Common_UnitPerPulse_Pulse = Convert.ToInt16(temp.ToString());
                 //  Acceleration Min
                 NativeMethods.GetPrivateProfileString(strTemp, "MinAcc", "10", temp, 255, strFIle);
                 Equipment.stAxisParam[i].Common_Acceleration_Min = Convert.ToDouble(temp.ToString());
@@ -1817,12 +2135,17 @@ namespace QMC.Common
                 strTemp = string.Format("CommUnit_{0}", i);
 
 
-                //  TCP/IP, RS232                                                                                   //  0 : TCP/IP,     1 : RS232
+                //  TCP/IP, RS232                                                                                   //  0 : TCP/IP,         1 : RS232
                 NativeMethods.GetPrivateProfileString(strTemp, "CommType", "1", temp, 255, strFIle);
                 Equipment.stCommunicationSet[i].Comm_Type = Convert.ToInt16(temp.ToString());
 
 
-                //  TCP/IP 의 포트 형식 (Server, Client)                                                            //  0 : Server,     1 : Client
+                //  Not Connect, Connect                                                                            //  0 : Not Connect,    1 : Connect
+                NativeMethods.GetPrivateProfileString(strTemp, "ConnectType", "False", temp, 255, strFIle);
+                Equipment.stCommunicationSet[i].Connect = temp.ToString() == "False" ? false : true;
+
+
+                //  TCP/IP 의 포트 형식 (Server, Client)                                                            //  0 : Server,         1 : Client
                 NativeMethods.GetPrivateProfileString(strTemp, "TCPIP_PortType", "1", temp, 255, strFIle);
                 Equipment.stCommunicationSet[i].TCPIP_PortType = Convert.ToInt16(temp.ToString());
                 //  TCP/IP 의 IP 주소
@@ -1839,25 +2162,208 @@ namespace QMC.Common
                 //  Spacing Delay (ms)
                 NativeMethods.GetPrivateProfileString(strTemp, "RS232_SpacingDelay", "20", temp, 255, strFIle);
                 Equipment.stCommunicationSet[i].Serial_CommSpacingDelay = Convert.ToInt16(temp.ToString());
-                //  COM Port                                                                                        //  0 : COM1,       1 : COM2,       2 : COM3,       3 : COM4 ....
+                //  COM Port                                                                                        //  0 : COM1,           1 : COM2,       2 : COM3,       3 : COM4 ....
                 NativeMethods.GetPrivateProfileString(strTemp, "RS232_Port", "0", temp, 255, strFIle);
                 Equipment.stCommunicationSet[i].Serial_CommPort = Convert.ToInt16(temp.ToString());
-                //  Baud Rate                                                                                       //  0 : 9600,       1 : 19200,      2 : 38400,      3 : 57600,      4 : 115200
+                //  Baud Rate                                                                                       //  0 : 1200,           1 : 2400,       2 : 4800,       3 : 9600,           4 : 19200,      5 : 38400,      6 : 57600,      7 : 115200
                 NativeMethods.GetPrivateProfileString(strTemp, "RS232_BaudRate", "0", temp, 255, strFIle);
                 Equipment.stCommunicationSet[i].Serial_CommBaudRate = Convert.ToInt16(temp.ToString());
-                //  Data Bits                                                                                       //  0 : 5,          1 : 6,          2 : 7,          3 : 8
+                //  Data Bits                                                                                       //  0 : 5,              1 : 6,          2 : 7,          3 : 8
                 NativeMethods.GetPrivateProfileString(strTemp, "RS232_DataBit", "3", temp, 255, strFIle);
                 Equipment.stCommunicationSet[i].Serial_CommDataBits = Convert.ToInt16(temp.ToString());
-                //  Stop Bits                                                                                       //  0 : 1,          1 : 1.5,        2 : 2
+                //  Stop Bits                                                                                       //  0 : 1,              1 : 1.5,        2 : 2
                 NativeMethods.GetPrivateProfileString(strTemp, "RS232_StopBit", "0", temp, 255, strFIle);
                 Equipment.stCommunicationSet[i].Serial_CommStopBits = Convert.ToInt16(temp.ToString());
-                //  Parity                                                                                          //  0 : None,       1 : Odd,        2 : Even
+                //  Parity                                                                                          //  0 : None,           1 : Odd,        2 : Even
                 NativeMethods.GetPrivateProfileString(strTemp, "RS232_Parity", "0", temp, 255, strFIle);
                 Equipment.stCommunicationSet[i].Serial_CommParity = Convert.ToInt16(temp.ToString());
-                //  Flow Control                                                                                    //  0 : None,       1 : Xon/Xoff,   2 : RTS/CTS
+                //  Flow Control                                                                                    //  0 : None,           1 : Xon/Xoff,   2 : RTS/CTS
                 NativeMethods.GetPrivateProfileString(strTemp, "RS232_FlowControl", "0", temp, 255, strFIle);
                 Equipment.stCommunicationSet[i].Serial_CommFlowControl = Convert.ToInt16(temp.ToString());
             }
+
+            return m_bRet;
+        }
+
+
+        public static bool NewForm_MachineOption_Load()
+        {
+            string strTemp = "";
+
+            bool m_bRet = true;
+            string strFIle = "";
+            StringBuilder temp = new StringBuilder(255);
+
+            strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                MessageBox.Show("Machine Option 파일이 없습니다.\r\n\r\n[Default 값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return false;
+            }
+
+
+            //  Machine Option  로드
+
+
+            //  Machine Name
+            NativeMethods.GetPrivateProfileString("Machine_Option", "Machine_Name", "SLD-200", temp, 255, strFIle);
+            Equipment.Machine_Name = temp.ToString();
+
+
+            //  Laser Type                                                                            //  True : CO₂,    False : UV
+            NativeMethods.GetPrivateProfileString("Machine_Option", "Laser_Type", "True", temp, 255, strFIle);
+            Equipment.Machine_LaserType_CO2 = temp.ToString() == "False" ? false : true;
+
+
+            //  Options
+            NativeMethods.GetPrivateProfileString("Machine_Option", "Door_Enable", "True", temp, 255, strFIle);
+            Equipment.Machine_Door_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "VacuumSensor_Enable", "True", temp, 255, strFIle);
+            Equipment.Machine_VacuumSensor_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "VacuumSignalHoldTime", "500", temp, 255, strFIle);
+            Equipment.Machine_SignalHoldTime = Convert.ToInt16(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "MAligner_ReleaseType", "True", temp, 255, strFIle);
+            Equipment.Machine_MAligner_ReleaseType = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "MAligner_NarrowingDistance", "0.5", temp, 255, strFIle);
+            Equipment.Machine_MAligner_NarrowingDistance = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "MAligner_WidenDistance", "2.0", temp, 255, strFIle);
+            Equipment.Machine_MAligner_WidenDistance = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "VacuumStableTime_Enable", "True", temp, 255, strFIle);
+            Equipment.Machine_VacuumStableTime_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "VacuumStableTime", "500", temp, 255, strFIle);
+            Equipment.Machine_VacuumStableTime = Convert.ToInt16(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LaserHeightCheckStableTime_Enable", "True", temp, 255, strFIle);
+            Equipment.Machine_LaserHeightCheckStableTime_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LaserHeightCheckStableTime", "500", temp, 255, strFIle);
+            Equipment.Machine_LaserHeightCheckStableTime = Convert.ToInt16(temp.ToString());
+
+
+            //  Offset Distance
+            NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);
+            Equipment.stOffsetDistance.FromScannerToFineCam.X = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_Y", "0.0", temp, 255, strFIle);
+            Equipment.stOffsetDistance.FromScannerToFineCam.Y = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Offset_Distance", "From_FineCam_To_CoarseCam_X", "0.0", temp, 255, strFIle);
+            Equipment.stOffsetDistance.FromFineCamToCoarseCam.X = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Offset_Distance", "From_FineCam_To_CoarseCam_Y", "0.0", temp, 255, strFIle);
+            Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Offset_Distance", "From_FineCam_To_LaserHeightSensor_X", "0.0", temp, 255, strFIle);
+            Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Offset_Distance", "From_FineCam_To_LaserHeightSensor_Y", "0.0", temp, 255, strFIle);
+            Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y = Convert.ToDouble(temp.ToString());
+
+
+            //  Scanner Head Offset
+            NativeMethods.GetPrivateProfileString("ScannerHeadOffset", "Offset_X", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_HeadOffset_X = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("ScannerHeadOffset", "Offset_Y", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_HeadOffset_Y = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("ScannerHeadOffset", "Offset_Angle", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_HeadOffset_Angle = Convert.ToDouble(temp.ToString());
+
+
+            //  Coordinate System Matching Offset
+            NativeMethods.GetPrivateProfileString("MachineCoordinateOffset", "Offset_X", "0.0", temp, 255, strFIle);
+            Equipment.CoordinateMatchingOffset_X = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("MachineCoordinateOffset", "Offset_Y", "0.0", temp, 255, strFIle);
+            Equipment.CoordinateMatchingOffset_Y = Convert.ToDouble(temp.ToString());
+
+
+            //  Offset Distance from Stage to Scanner
+            NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_X", "0.0", temp, 255, strFIle);
+            Equipment.StageOffset_forDrilling_X = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_Y", "0.0", temp, 255, strFIle);
+            Equipment.StageOffset_forDrilling_Y = Convert.ToDouble(temp.ToString());
+
+
+            //  Keyence Laser Height Sensor 기준값 설정
+            NativeMethods.GetPrivateProfileString("LaserHeightSensor_ReferenceValue", "at_Vision_Focus_Position", "0.0", temp, 255, strFIle);
+            Equipment.LaserHeightSensor_ReferenceValue_atVisionFocusPosition = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("LaserHeightSensor_ReferenceValue", "at_Scanner_Focus_Position", "0.0", temp, 255, strFIle);
+            Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition = Convert.ToDouble(temp.ToString());
+
+
+            //  Scanner Calibration parameter
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Laser_Frequency", "50.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_LaserFrequency = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Laser_Energy", "2.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_LaserEnergy = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "CrossMark_Length", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_CrossMarkLength = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Marking_Speed", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_LaserMarkSpeed = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Jump_Speed", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_LaserJumpSpeed = Convert.ToDouble(temp.ToString());
+
+
+
+            //  체크 포인트
+            if (((Equipment.CoordinateMatchingOffset_X != 0.0) || (Equipment.CoordinateMatchingOffset_Y != 0.0)) &&
+                ((Equipment.StageOffset_forDrilling_X != 0.0) || (Equipment.StageOffset_forDrilling_Y != 0.0)))
+            {
+                MessageBox.Show("\"Offset Distance for Coordinate Matching\" 과\r\n\"Offset Distance to the Center of the Scanner\" 두 그룹 전체에 값이 들어가면 안됩니다.\n\r\n[두 그룹 중 한쪽에만 값이 들어가거나, 모두 0 이어야 합니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+
+            return m_bRet;
+        }
+
+        //  Mapping Data List Load
+        public static bool NewForm_MapDataList_Load()
+        {
+            string strTemp = "";
+            bool m_bRet = true;
+            string strFIle = "";
+            StringBuilder temp = new StringBuilder(255);
+            strFIle = ConfigManager.GetConfigPath() + "\\Mapping File List (Do not delete or modify).ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                MessageBox.Show("Mapping File List 파일이 없습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            //  Mapping Data 리스트 로드
+
+            //  Stage Center 가 Scanner 위치에 있을 경우
+            NativeMethods.GetPrivateProfileString("MappingFilePath", "StageCenter_ScannerCenter", "", temp, 255, strFIle);
+            Equipment.MappingData_FilePath_Stage_Scanner = temp.ToString();
+
+            //  Stage Center 가 Fine Camera 위치에 있을 경우
+            NativeMethods.GetPrivateProfileString("MappingFilePath", "StageCenter_FineCameraCenter", "", temp, 255, strFIle);
+            Equipment.MappingData_FilePath_Stage_FineCam = temp.ToString();
+
+            //  Stage Calibration 위치가 Scanner 위치에 있을 경우
+            NativeMethods.GetPrivateProfileString("MappingFilePath", "StageCalPos_ScannerCenter", "", temp, 255, strFIle);
+            Equipment.MappingData_FilePath_StageCal_Scanner = temp.ToString();
+
+            //  Stage Calibration 위치가 Fine Camera 위치에 있을 경우
+            NativeMethods.GetPrivateProfileString("MappingFilePath", "StageCalPos_FineCameraCenter", "", temp, 255, strFIle);
+            Equipment.MappingData_FilePath_StageCal_FineCam = temp.ToString();
+
+            return m_bRet;
+        }
+
+        public static bool NewForm_MapDataActivate_Load()
+        {
+            string strTemp = "";
+            bool m_bRet = true;
+            string strFIle = "";
+            StringBuilder temp = new StringBuilder(255);
+            strFIle = ConfigManager.GetConfigPath() + "\\Mapping File List (Do not delete or modify).ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                MessageBox.Show("Mapping File List 파일이 없습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+
+            //  활성화 여부
+            NativeMethods.GetPrivateProfileString("MapData", "Activate", "False", temp, 255, strFIle);
+            Equipment.MapDataStatus_Activate = temp.ToString() == "False" ? false : true;
 
             return m_bRet;
         }

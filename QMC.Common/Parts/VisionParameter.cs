@@ -13,15 +13,32 @@ namespace QMC.Common.Parts
 
         #region => Axis Define 
 
-        public enum AxisAjinEnum
-        {
-            X = 0,
-            Y,
-            Z,
-            MASK_Y,
 
-            Max,
+//#if true                                                                //  SLD-200C
+#if false                                                               //  SLD-200U
+        public enum AxisAjinEnum                                                       //  SLD-200C 에서 사용하는 축 번호    
+        {
+            //  축 번호 변경 전 (X:0,     Y:1,    Z:2,    MASK_Y:3)
+            //  축 번호 변경 후 (X:3,     Y:4,    Z:5,    MASK_Y:0)
+
+            X = 3,
+            Y = 4,
+            Z = 5,
+            MASK_Y = 0,
         }
+#else
+        public enum AxisAjinEnum                                                       //  SLD-200U 에서 사용하는 축 번호   
+        {
+            //  축 번호 변경 전 (X:0,     Y:1,    Z:2,    MASK_Y:3)
+            //  축 번호 변경 후 (X:3,     Y:4,    Z:5,    MASK_Y:0)
+
+            X = 2,
+            Y = 3,
+            Z = 4,
+            MASK_Y = 0,                     //  UV 에서는 없는 축이지만, CO2 와 프로그램을 통일하기 위해서 남겨둠. 실제로 사용하지는 않음.
+        }
+#endif
+
 
         #endregion
 
@@ -31,6 +48,8 @@ namespace QMC.Common.Parts
             Y,
             Z,
             MASK_Y,
+
+            Max,
         }
 
         public enum WorkTable

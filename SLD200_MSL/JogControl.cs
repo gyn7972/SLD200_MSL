@@ -15,6 +15,10 @@ using ACS.SPiiPlusNET;
 using QMC.Common.Motion.ACS.Motions;
 using System.Runtime.InteropServices.ComTypes;
 using QMC.Common.UI;
+using Cognex.VisionPro.ImageProcessing;
+using OpenCvSharp.Flann;
+using System.Reflection;
+using Module = QMC.Common.Module;
 
 #region Define
 public enum JogControlAxisInfo
@@ -24,7 +28,8 @@ public enum JogControlAxisInfo
 public enum JogControlButtonList
 {
     //buttonUp, buttonDown, buttonAxisXDownYDown, buttonAxisXUpYDown, buttonAxisXDownYUp, buttonAxisXUpYUp, buttonCW, buttonCCW, buttonLeft, buttonRight, combButtonUp, combButtonDown, combButtonLeft, combButtonRight, buttonFwd, buttonBwd
-    buttonUp, buttonDown, buttonAxisXDownYDown, buttonAxisXUpYDown, buttonAxisXDownYUp, buttonAxisXUpYUp, buttonCW, buttonCCW, buttonLeft, buttonRight, combButtonUp, combButtonDown, combButtonLeft, combButtonRight, buttonFwd, buttonBwd
+    //buttonUp, buttonDown, buttonAxisXDownYDown, buttonAxisXUpYDown, buttonAxisXDownYUp, buttonAxisXUpYUp, buttonCW, buttonCCW, buttonLeft, buttonRight, combButtonUp, combButtonDown, combButtonLeft, combButtonRight, buttonFwd, buttonBwd
+    buttonUp, buttonDown, buttonAxisXDownYDown, buttonAxisXUpYDown, buttonAxisXDownYUp, buttonAxisXUpYUp, buttonCW, buttonCCW, buttonLeft, buttonRight, combButtonUp, combButtonDown, combButtonLeft, combButtonRight, buttonFwd, buttonBwd, buttonZ0Down, buttonZ0Up, buttonZ1Down, buttonZ1Up
 }
 #endregion
 
@@ -98,7 +103,7 @@ namespace SLD200_MSL
             Step = new Dictionary<MotionAxis, double>();
             Velocity = new Dictionary<MotionAxis, double>();
 
-            MC_Func = new MotionFunction();
+            MC_Func = new InterpolatorMotionFunction();
 
             if (part != null)
             {
@@ -115,32 +120,39 @@ namespace SLD200_MSL
                     }
                 }
 
-                //  2025. 01. 17.  SCH : DisplayAxisType 에 따라서 버튼을 생성한다. 근데 Load 를 한번 해줘야 정상적으로 데이터가 올라온다. 그래서 임시로 AxisType 을 강제 변경 해준다. 나중에 고쳐야지 흠흠..
-                if (part == workStage.Stage)
+                try
                 {
-                    if (m_axis.Count > 0)
+                    //  2025. 01. 17.  SCH : DisplayAxisType 에 따라서 버튼을 생성한다. 근데 Load 를 한번 해줘야 정상적으로 데이터가 올라온다. 그래서 임시로 AxisType 을 강제 변경 해준다. 나중에 고쳐야지 흠흠..
+                    if (part == workStage.Stage)
                     {
-                        m_axis[0].Configuration.DisplayAxisType = DisplayAxisType.CombinationHorizontal;
-                        m_axis[1].Configuration.DisplayAxisType = DisplayAxisType.CombinationVertical;
-                        m_axis[2].Configuration.DisplayAxisType = DisplayAxisType.Vertical;
-                        m_axis[3].Configuration.DisplayAxisType = DisplayAxisType.Vertical2;
+                        if (m_axis.Count > 0)
+                        {
+                            m_axis[0].Configuration.DisplayAxisType = DisplayAxisType.CombinationHorizontal;
+                            m_axis[1].Configuration.DisplayAxisType = DisplayAxisType.CombinationVertical;
+                            m_axis[2].Configuration.DisplayAxisType = DisplayAxisType.Vertical;
+                            m_axis[3].Configuration.DisplayAxisType = DisplayAxisType.Vertical2;
+                        }
+                    }
+                    else if (part == loader.Stage)
+                    {
+                        m_axis[0].Configuration.DisplayAxisType = DisplayAxisType.CombinationPicker;
+                        m_axis[1].Configuration.DisplayAxisType = DisplayAxisType.CombinationPicker;
+                        m_axis[2].Configuration.DisplayAxisType = DisplayAxisType.CombinationPicker;
+                        m_axis[3].Configuration.DisplayAxisType = DisplayAxisType.CombinationPicker;
+                        m_axis[4].Configuration.DisplayAxisType = DisplayAxisType.CombinationHorizontal;
+                        m_axis[5].Configuration.DisplayAxisType = DisplayAxisType.CombinationVertical;
+                    }
+                    else if (part == unloader.Stage)
+                    {
+                        m_axis[0].Configuration.DisplayAxisType = DisplayAxisType.CombinationPicker;
+                        m_axis[1].Configuration.DisplayAxisType = DisplayAxisType.CombinationPicker;
+                        m_axis[2].Configuration.DisplayAxisType = DisplayAxisType.CombinationPicker;
+                        m_axis[3].Configuration.DisplayAxisType = DisplayAxisType.CombinationPicker;
                     }
                 }
-                else if (part == loader.Stage)
+                catch(Exception)
                 {
-                    m_axis[0].Configuration.DisplayAxisType = DisplayAxisType.CombinationPicker;
-                    m_axis[1].Configuration.DisplayAxisType = DisplayAxisType.CombinationPicker;
-                    m_axis[2].Configuration.DisplayAxisType = DisplayAxisType.CombinationPicker;
-                    m_axis[3].Configuration.DisplayAxisType = DisplayAxisType.CombinationPicker;
-                    m_axis[4].Configuration.DisplayAxisType = DisplayAxisType.CombinationHorizontal;
-                    m_axis[5].Configuration.DisplayAxisType = DisplayAxisType.CombinationVertical;
-                }
-                else if (part == unloader.Stage)
-                {
-                    m_axis[0].Configuration.DisplayAxisType = DisplayAxisType.CombinationPicker;
-                    m_axis[1].Configuration.DisplayAxisType = DisplayAxisType.CombinationPicker;
-                    m_axis[2].Configuration.DisplayAxisType = DisplayAxisType.CombinationPicker;
-                    m_axis[3].Configuration.DisplayAxisType = DisplayAxisType.CombinationPicker;
+
                 }
             }
 
@@ -404,8 +416,10 @@ namespace SLD200_MSL
                 {
                     double dPos = 0;
                     //m_axis[i].GetActualPosition(ref dPos);
+                    //m_axis[i].GetCurrentActualPosition(ref dPos);
+                    dPos = MC_Func.MC_GetCmdPos(m_axis[i].No);
                     //if (m_axis[i].Configuration.BoardType == MotionBoardType.Ajin)                                  //  2023. 07. 18.  SCH : SLD-100 에서는 주석
-                        dPos = MC_Func.MC_GetEncPos(m_axis[i].No);
+                        //dPos = MC_Func.MC_GetEncPos(m_axis[i].No);
                     //else if (m_axis[i].Configuration.BoardType == MotionBoardType.ACS)                              //  2023. 07. 18.  SCH : SLD-100 에서는 주석
                         //dPos = ACSSPiiPlusMotionBoard.Api.GetRPosition((Axis)m_axis[i].No);                         //  2023. 07. 18.  SCH : SLD-100 에서는 주석
                     this.dataGridViewJogControl[(int)JogControlAxisInfo.AbsolutePos, i].Value = dPos;
@@ -435,7 +449,8 @@ namespace SLD200_MSL
                         double dPos = 0;
                         //ax.GetActualPosition(ref dPos);
                         if (ax.Configuration.BoardType == MotionBoardType.Ajin)
-                            dPos = MC_Func.MC_GetEncPos(ax.No);
+                            //dPos = MC_Func.MC_GetEncPos(ax.No);
+                            dPos = (double)dataGridViewJogControl[(int)JogControlAxisInfo.AbsolutePos, m_nindex].Value;
                         else if (ax.Configuration.BoardType == MotionBoardType.ACS)
                             dPos = ACSSPiiPlusMotionBoard.Api.GetRPosition((Axis)ax.No);
                         if (m_relativeZeroPositions.ContainsKey(ax))
@@ -699,9 +714,9 @@ namespace SLD200_MSL
             {
                 m_JogButtonCombination_XZ_LD.Visible = true;
 
-                m_JogButtonCombination_XZ_LD.JogButtonXZClick += JogbuttonEvent;
-                m_JogButtonCombination_XZ_LD.JogButtonXZDown += JogbuttonDownEvent;
-                m_JogButtonCombination_XZ_LD.JogButtonXZUp += JogbuttonUpEvent;
+                m_JogButtonCombination_XZ_LD.JogButtonXZClick += LDJogbuttonEvent;
+                m_JogButtonCombination_XZ_LD.JogButtonXZDown += LDJogbuttonDownEvent;
+                m_JogButtonCombination_XZ_LD.JogButtonXZUp += LDJogbuttonUpEvent;
 
                 flowLayoutPanelJogButtonComb_XZ_LD.Controls.Add(m_JogButtonCombination_XZ_LD);
             }
@@ -710,9 +725,9 @@ namespace SLD200_MSL
             {
                 m_JogButtonCombination_XZ_UL.Visible = true;
 
-                m_JogButtonCombination_XZ_UL.JogButtonXZClick += JogbuttonEvent;
-                m_JogButtonCombination_XZ_UL.JogButtonXZDown += JogbuttonDownEvent;
-                m_JogButtonCombination_XZ_UL.JogButtonXZUp += JogbuttonUpEvent;
+                m_JogButtonCombination_XZ_UL.JogButtonXZClick += ULJogbuttonEvent;
+                m_JogButtonCombination_XZ_UL.JogButtonXZDown += ULJogbuttonDownEvent;
+                m_JogButtonCombination_XZ_UL.JogButtonXZUp += ULJogbuttonUpEvent;
 
                 flowLayoutPanelJogButtonComb_XZ_UL.Controls.Add(m_JogButtonCombination_XZ_UL);
             }
@@ -1203,6 +1218,1043 @@ namespace SLD200_MSL
         }
         /// <summary>
         /// 기존 것 - 끝
+        /// </summary>
+        /// 
+
+
+        /// <summary>
+        /// SLD-200 Loader - 시작
+        /// </summary>
+        public void LDJogbuttonEvent(JogControlButtonList type, List<MotionAxis> axisList)
+        {
+            switch (type)
+            {
+                case JogControlButtonList.buttonZ0Down:
+                case JogControlButtonList.buttonZ1Down:
+                    LDZbuttonDown_Click(axisList, type);
+                    break;
+                case JogControlButtonList.buttonZ0Up:
+                case JogControlButtonList.buttonZ1Up:
+                    LDZbuttonUp_Click(axisList, type);
+                    break;
+                case JogControlButtonList.buttonUp:
+                case JogControlButtonList.buttonCW:
+                case JogControlButtonList.buttonRight:
+                    LDbuttonUp_Click(axisList);
+                    break;
+                case JogControlButtonList.combButtonUp:
+                case JogControlButtonList.combButtonRight:
+                    LDcombButtonUp_Click(axisList, type);
+                    break;
+                case JogControlButtonList.buttonDown:
+                case JogControlButtonList.buttonCCW:
+                case JogControlButtonList.buttonLeft:
+                    LDbuttonDown_Click(axisList);
+                    break;
+                case JogControlButtonList.combButtonDown:
+                case JogControlButtonList.combButtonLeft:
+                    LDcombButtonDown_Click(axisList, type);
+                    break;
+                case JogControlButtonList.buttonAxisXUpYUp:
+                case JogControlButtonList.buttonAxisXUpYDown:
+                case JogControlButtonList.buttonAxisXDownYUp:
+                case JogControlButtonList.buttonAxisXDownYDown:
+                    LDcombbutton_Click(axisList, type);
+                    break;
+
+            }
+        }
+
+        private void LDcombButtonUp_Click(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            if (radioButtonStep.Checked == true)
+            {
+                int xIndex = 2; //  TR-X
+                int yIndex = 3; //  TR-Z
+
+                double x = Step[axisList[xIndex]];           //  StageX
+                double y = Step[axisList[yIndex]];           //  StageY
+                double lfTargetPos = 0.0;
+                int nDirection = 1;
+                double dVelocity = 0;
+                int axisNo = -1;
+
+                switch (type)
+                {
+                    //case JogControlButtonList.combButtonRight:
+                    case JogControlButtonList.combButtonUp:
+                        dVelocity = Velocity[axisList[yIndex]];
+                        if (axisList[yIndex].Direction == MotionDirection.Backward)
+                            //if (axisList[1].Direction == MotionDirection.Forward)
+                            nDirection = -1;
+                        //axisList[0].MoveDistance(x * nDirection, dVelocity, dVelocity * 5, dVelocity * 5);
+
+                        if (axisList[yIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            //axisNo = Int32.Parse(axisList[0].Description);
+                            //MC_Func.MC_MoveRelPosition(axisList[1].No, y * (double)nDirection, axisList[1].Configuration.Velocity, axisList[1].Configuration.Acceleration, axisList[1].Configuration.Deceleration);       //  SLO-300
+                            axisNo = Int32.Parse(axisList[yIndex].Description);
+                            //MC_Func.MC_MoveRelPosition(axisList[1].No, y * (double)nDirection, axisList[1].Configuration.Velocity, axisList[1].Configuration.Acceleration, axisList[1].Configuration.Deceleration);       //  SLO-300
+                            MC_Func.MC_MoveRelPosition(axisNo, y * (double)nDirection, axisList[yIndex].Configuration.Velocity, axisList[yIndex].Configuration.Acceleration, axisList[yIndex].Configuration.Deceleration);
+                        }
+                        else if (axisList[yIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axisList[yIndex].Description);
+                                //lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisList[0].No);
+                                lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo);
+                                lfTargetPos += y * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.ToPoint(0,                     //  '0' - Absolute position
+                                                    (Axis)axisNo,
+                                                    lfTargetPos);                       //  Target position
+                            }
+                        }
+                        break;
+
+                    //case JogControlButtonList.combButtonUp:
+                    case JogControlButtonList.combButtonRight:
+                        dVelocity = Velocity[axisList[xIndex]];
+                        if (axisList[xIndex].Direction == MotionDirection.Backward)
+                            //if (axisList[0].Direction == MotionDirection.Forward)
+                            nDirection = -1;
+                        //axisList[1].MoveDistance(y * nDirection, dVelocity, dVelocity * 5, dVelocity * 5);
+
+                        if (axisList[xIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            //axisNo = Int32.Parse(axisList[1].Description);
+                            axisNo = Int32.Parse(axisList[xIndex].Description);
+                            //MC_Func.MC_MoveRelPosition(axisList[0].No, x * (double)nDirection, axisList[0].Configuration.Velocity, axisList[0].Configuration.Acceleration, axisList[0].Configuration.Deceleration);
+                            MC_Func.MC_MoveRelPosition(axisNo, x * (double)nDirection, axisList[xIndex].Configuration.Velocity, axisList[xIndex].Configuration.Acceleration, axisList[xIndex].Configuration.Deceleration);
+                        }
+                        else if (axisList[xIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axisList[xIndex].Configuration.Description);
+                                //lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisList[1].No);
+                                lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo);
+                                lfTargetPos += x * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.ToPoint(MotionFlags.ACSC_NONE,                                   //  '0' - Absolute position
+                                                    (Axis)axisNo,
+                                                    lfTargetPos);                       //  Target position
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+
+        private void LDcombButtonDown_Click(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            if (radioButtonStep.Checked == true)
+            {
+                int xIndex = 2; //  TR-X
+                int yIndex = 3; //  TR-Z
+
+                double x = Step[axisList[xIndex]];
+                double y = Step[axisList[yIndex]];
+                double lfTargetPos = 0.0;
+                double dVelocity = 0;
+                int nDirection = -1;
+                int axisNo = -1;
+
+                switch (type)
+                {
+                    //case JogControlButtonList.combButtonLeft:
+                    case JogControlButtonList.combButtonDown:
+                        dVelocity = Velocity[axisList[yIndex]];
+                        if (axisList[yIndex].Direction == MotionDirection.Backward)
+                            //if (axisList[1].Direction == MotionDirection.Forward)
+                            nDirection = 1;
+                        //axisList[0].MoveDistance(x * nDirection, dVelocity, dVelocity * 5, dVelocity * 5);
+
+                        if (axisList[yIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            //axisNo = Int32.Parse(axisList[0].Description);
+                            axisNo = Int32.Parse(axisList[yIndex].Description);
+                            //MC_Func.MC_MoveRelPosition(axisList[1].No, y * (double)nDirection, axisList[1].Configuration.Velocity, axisList[1].Configuration.Acceleration, axisList[1].Configuration.Deceleration);
+                            MC_Func.MC_MoveRelPosition(axisNo, y * (double)nDirection, axisList[yIndex].Configuration.Velocity, axisList[yIndex].Configuration.Acceleration, axisList[yIndex].Configuration.Deceleration);
+                        }
+                        else if (axisList[yIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axisList[yIndex].Description);
+                                //lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisList[0].No);
+                                lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo);
+                                lfTargetPos += y * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                   //  '0' - Absolute position
+                                                    (Axis)axisNo,
+                                                    lfTargetPos);                       //  Target position
+                            }
+                        }
+                        break;
+
+                    //case JogControlButtonList.combButtonDown:
+                    case JogControlButtonList.combButtonLeft:
+                        dVelocity = Velocity[axisList[xIndex]];
+                        if (axisList[xIndex].Direction == MotionDirection.Backward)
+                            //if (axisList[0].Direction == MotionDirection.Forward)
+                            nDirection = 1;
+                        //axisList[1].MoveDistance(y * nDirection, dVelocity, dVelocity * 5, dVelocity * 5);
+
+                        if (axisList[xIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            //axisNo = Int32.Parse(axisList[1].Description);
+                            axisNo = Int32.Parse(axisList[xIndex].Description);
+                            //MC_Func.MC_MoveRelPosition(axisList[0].No, x * (double)nDirection, axisList[0].Configuration.Velocity, axisList[0].Configuration.Acceleration, axisList[0].Configuration.Deceleration);
+                            MC_Func.MC_MoveRelPosition(axisNo, x * (double)nDirection, axisList[xIndex].Configuration.Velocity, axisList[xIndex].Configuration.Acceleration, axisList[xIndex].Configuration.Deceleration);
+                        }
+                        else if (axisList[xIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axisList[xIndex].Description);
+                                //lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisList[1].No);
+                                lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo);
+                                lfTargetPos += x * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                   //  '0' - Absolute position
+                                                    (Axis)axisNo,
+                                                    lfTargetPos);                       //  Target position
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+
+        private void LDbuttonUp_Click(List<MotionAxis> axisList)
+        {
+            double lfTargetPos = 0.0;
+            int nDirection = 1;
+            int axisNo = -1;
+
+            if (radioButtonStep.Checked == true)
+            {
+                if (axisList != null)
+                {
+                    double dVelocity = 0;
+                    foreach (MotionAxis axis in axisList)
+                    {
+                        //if (axis.Direction == MotionDirection.Backward)
+                        if (axis.Direction == MotionDirection.Forward)
+                            nDirection = -1;
+
+                        dVelocity = Velocity[axis];
+                        //axis.MoveDistance(Step[axis] * nDirection, dVelocity, dVelocity * 5, dVelocity * 5); //참고 Step Move
+
+                        if (axis.Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            //axisNo = Int32.Parse(axis.Description);
+                            axisNo = Int32.Parse(axis.Description);
+
+                            if (axisNo == (int)WorkStageParameter.AxisAjinEnum.Z)
+                            {
+                                nDirection *= -1;
+                            }
+
+                            //MC_Func.MC_MoveRelPosition(axis.No, Step[axis] * (double)nDirection, axis.Configuration.Velocity, axis.Configuration.Acceleration, axis.Configuration.Deceleration);
+                            MC_Func.MC_MoveRelPosition(axisNo, Step[axis] * (double)nDirection, axis.Configuration.Velocity, axis.Configuration.Acceleration, axis.Configuration.Deceleration);
+                        }
+                        else if (axis.Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axis.Description);
+                                //lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axis.No);
+                                lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo);
+                                lfTargetPos += Step[axis] * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.ToPoint(0,                     //  '0' - Absolute position
+                                                    (Axis)axisNo,                      //  Axis number
+                                                    lfTargetPos);                       //  Target position
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void LDZbuttonUp_Click(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            if (radioButtonStep.Checked == true)
+            {
+                int nIndex = 0;
+                double lfTargetPos = 0.0;
+                double dVelocity = 0;
+                int nDirection = 1;
+                int axisNo = -1;
+
+                switch (type)
+                {
+                    case JogControlButtonList.buttonZ0Up:
+                        nIndex = 0;
+                        break;
+
+                    case JogControlButtonList.buttonZ1Up:
+                        nIndex = 1;
+                        break;
+                }
+
+                double x = Step[axisList[nIndex]];
+
+                dVelocity = Velocity[axisList[nIndex]];                
+                //axisList[0].MoveDistance(x * nDirection, dVelocity, dVelocity * 5, dVelocity * 5);
+
+                if (axisList[nIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                {
+                    //axisNo = Int32.Parse(axisList[0].Description);
+                    axisNo = Int32.Parse(axisList[nIndex].Description);
+                    //MC_Func.MC_MoveRelPosition(axisList[1].No, y * (double)nDirection, axisList[1].Configuration.Velocity, axisList[1].Configuration.Acceleration, axisList[1].Configuration.Deceleration);
+                    MC_Func.MC_MoveRelPosition(axisNo, x * (double)nDirection, axisList[nIndex].Configuration.Velocity, axisList[nIndex].Configuration.Acceleration, axisList[nIndex].Configuration.Deceleration);
+                }
+                else if (axisList[nIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                {
+                    if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                    {
+                        axisNo = Int32.Parse(axisList[nIndex].Description);
+                        //lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisList[0].No);
+                        lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo);
+                        lfTargetPos += x * (double)nDirection;
+
+                        ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                   //  '0' - Absolute position
+                                            (Axis)axisNo,
+                                            lfTargetPos);                       //  Target position
+                    }
+                }
+            }
+        }
+
+        private void LDbuttonDown_Click(List<MotionAxis> axisList)
+        {
+            double lfTargetPos = 0.0;
+            int nDirection = -1;
+            int axisNo = -1;
+
+            if (radioButtonStep.Checked == true)
+            {
+                if (axisList != null)
+                {
+                    double dVelocity = 0;
+                    foreach (MotionAxis axis in axisList)
+                    {
+                        //if (axis.Direction == MotionDirection.Backward)
+                        if (axis.Direction == MotionDirection.Forward)
+                            nDirection = 1;
+
+                        dVelocity = Velocity[axis];
+                        //axis.MoveDistance(Step[axis] * nDirection, dVelocity, dVelocity * 5, dVelocity * 5);
+
+                        if (axis.Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            //axisNo = Int32.Parse(axis.Description);
+                            axisNo = Int32.Parse(axis.Description);
+
+                            if (axisNo == (int)WorkStageParameter.AxisAjinEnum.Z)
+                            {
+                                nDirection *= -1;
+                            }
+
+                            //MC_Func.MC_MoveRelPosition(axis.No, Step[axis] * (double)nDirection, axis.Configuration.Velocity, axis.Configuration.Acceleration, axis.Configuration.Deceleration);
+                            MC_Func.MC_MoveRelPosition(axisNo, Step[axis] * (double)nDirection, axis.Configuration.Velocity, axis.Configuration.Acceleration, axis.Configuration.Deceleration);
+                        }
+                        else if (axis.Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axis.Description);
+                                //lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axis.No);
+                                lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo);
+                                lfTargetPos += Step[axis] * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.ToPoint(0,                     //  '0' - Absolute position
+                                                    (Axis)axisNo,                      //  Axis number
+                                                    lfTargetPos);                       //  Target position
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void LDZbuttonDown_Click(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            if (radioButtonStep.Checked == true)
+            {
+                int nIndex = 0;
+                double lfTargetPos = 0.0;
+                double dVelocity = 0;
+                int nDirection = -1;
+                int axisNo = -1;
+
+                switch (type)
+                {
+                    case JogControlButtonList.buttonZ0Down:
+                        nIndex = 0;
+                        break;
+
+                    case JogControlButtonList.buttonZ1Down:
+                        nIndex = 1;
+                        break;
+                }
+
+                double x = Step[axisList[nIndex]];
+
+                dVelocity = Velocity[axisList[nIndex]];
+                //axisList[0].MoveDistance(x * nDirection, dVelocity, dVelocity * 5, dVelocity * 5);
+
+                if (axisList[nIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                {
+                    //axisNo = Int32.Parse(axisList[0].Description);
+                    axisNo = Int32.Parse(axisList[nIndex].Description);
+                    //MC_Func.MC_MoveRelPosition(axisList[1].No, y * (double)nDirection, axisList[1].Configuration.Velocity, axisList[1].Configuration.Acceleration, axisList[1].Configuration.Deceleration);
+                    MC_Func.MC_MoveRelPosition(axisNo, x * (double)nDirection, axisList[nIndex].Configuration.Velocity, axisList[nIndex].Configuration.Acceleration, axisList[nIndex].Configuration.Deceleration);
+                }
+                else if (axisList[nIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                {
+                    if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                    {
+                        axisNo = Int32.Parse(axisList[nIndex].Description);
+                        //lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisList[0].No);
+                        lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo);
+                        lfTargetPos += x * (double)nDirection;
+
+                        ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                   //  '0' - Absolute position
+                                            (Axis)axisNo,
+                                            lfTargetPos);                       //  Target position
+                    }
+                }
+            }
+        }
+
+        private void LDcombbutton_Click(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            if (radioButtonStep.Checked == true)
+            {
+                double lfTargetPos1 = 0.0;
+                double lfTargetPos2 = 0.0;
+                double x = Step[axisList[0]];
+                double y = Step[axisList[1]];
+                int nFirstDirection = 1;
+                int nSecondDirection = 1;
+                double dVelocity1 = 0;
+                double dVelocity2 = 0;
+                int axisNo1 = -1;
+                int axisNo2 = -1;
+
+                if (axisList != null)
+                {
+                    if (type == JogControlButtonList.buttonAxisXUpYDown)
+                    {
+                        y = y * -1;
+                        x = x * -1;
+                    }
+                    else if (type == JogControlButtonList.buttonAxisXDownYUp)
+                    {
+                        //x = x * -1;
+                        //y = y * -1;
+                    }
+                    else if (type == JogControlButtonList.buttonAxisXDownYDown)
+                    {
+                        //x = x * -1;
+                        y = y * -1;
+                    }
+                    else
+                    {
+                        x = x * -1;
+                    }
+
+                    //if (axisList[0].Direction == MotionDirection.Backward)
+                    if (axisList[0].Direction == MotionDirection.Forward)
+                        nFirstDirection = -1;
+                    if (axisList[1].Direction == MotionDirection.Backward)
+                        //if (axisList[1].Direction == MotionDirection.Forward)
+                        nSecondDirection = -1;
+
+                    dVelocity1 = Velocity[axisList[0]];
+                    dVelocity2 = Velocity[axisList[1]];
+
+                    //axisList[0].MoveDistance(x * nFirstDirection, dVelocity, dVelocity * 5, dVelocity * 5);
+                    //axisList[1].MoveDistance(y * nSecondDirection, dVelocity, dVelocity * 5, dVelocity * 5);
+
+                    if (axisList[0].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                    {
+                        //axisNo1 = Int32.Parse(axisList[0].Description);
+                        axisNo1 = Int32.Parse(axisList[0].Description);
+                        //MC_Func.MC_MoveRelPosition(axisList[0].No, x * (double)nFirstDirection, axisList[0].Configuration.Velocity, axisList[0].Configuration.Acceleration, axisList[0].Configuration.Deceleration);
+                        MC_Func.MC_MoveRelPosition(axisNo1, x * (double)nFirstDirection, axisList[0].Configuration.Velocity, axisList[0].Configuration.Acceleration, axisList[0].Configuration.Deceleration);
+                    }
+                    else if (axisList[0].Board.Configuration.BoardType == MotionBoardType.ACS)
+                    {
+                        if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                        {
+                            axisNo1 = Int32.Parse(axisList[0].Description);
+                            //lfTargetPos2 = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisList[1].No);
+                            lfTargetPos1 = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo1);
+                            if (axisList[0].Name == "StageY")
+                                lfTargetPos1 += y * (double)nFirstDirection;
+                            else if (axisList[0].Name == "StageX")
+                                lfTargetPos1 += x * (double)nFirstDirection;
+
+                            ACSSPiiPlusMotionBoard.Api.ToPoint(0,                     //  '0' - Absolute position
+                                                (Axis)axisNo1,               //  Axis number
+                                                lfTargetPos1);                      //  Target position
+                        }
+                    }
+
+                    if (axisList[1].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                    {
+                        //axisNo2 = Int32.Parse(axisList[1].Description);
+                        axisNo2 = Int32.Parse(axisList[1].Description);
+                        //MC_Func.MC_MoveRelPosition(axisList[1].No, y * (double)nSecondDirection, axisList[1].Configuration.Velocity, axisList[1].Configuration.Acceleration, axisList[1].Configuration.Deceleration);
+                        MC_Func.MC_MoveRelPosition(axisNo2, y * (double)nSecondDirection, axisList[1].Configuration.Velocity, axisList[1].Configuration.Acceleration, axisList[1].Configuration.Deceleration);
+                    }
+                    else if (axisList[1].Board.Configuration.BoardType == MotionBoardType.ACS)
+                    {
+                        if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                        {
+                            axisNo2 = Int32.Parse(axisList[1].Description);
+                            //lfTargetPos2 = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisList[1].No);
+                            lfTargetPos2 = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo2);
+                            if (axisList[1].Name == "StageY")
+                                lfTargetPos2 += y * (double)nSecondDirection;
+                            else if (axisList[1].Name == "StageX")
+                                lfTargetPos1 += x * (double)nSecondDirection;
+
+                            ACSSPiiPlusMotionBoard.Api.ToPoint(0,                     //  '0' - Absolute position
+                                                (Axis)axisNo2,               //  Axis number
+                                                lfTargetPos2);                      //  Target position
+                        }
+                    }
+
+                }
+            }
+        }
+        /// <summary>
+        /// SLD-200 Loader - 끝
+        /// </summary>
+
+
+        /// <summary>
+        /// SLD-200 Unloader - 시작
+        /// </summary>
+        public void ULJogbuttonEvent(JogControlButtonList type, List<MotionAxis> axisList)
+        {
+            switch (type)
+            {
+                case JogControlButtonList.buttonZ0Down:
+                case JogControlButtonList.buttonZ1Down:
+                    ULZbuttonDown_Click(axisList, type);
+                    break;
+                case JogControlButtonList.buttonZ0Up:
+                case JogControlButtonList.buttonZ1Up:
+                    ULZbuttonUp_Click(axisList, type);
+                    break;
+                case JogControlButtonList.buttonUp:
+                case JogControlButtonList.buttonCW:
+                case JogControlButtonList.buttonRight:
+                    ULbuttonUp_Click(axisList);
+                    break;
+                case JogControlButtonList.combButtonUp:
+                case JogControlButtonList.combButtonRight:
+                    ULcombButtonUp_Click(axisList, type);
+                    break;
+                case JogControlButtonList.buttonDown:
+                case JogControlButtonList.buttonCCW:
+                case JogControlButtonList.buttonLeft:
+                    ULbuttonDown_Click(axisList);
+                    break;
+                case JogControlButtonList.combButtonDown:
+                case JogControlButtonList.combButtonLeft:
+                    ULcombButtonDown_Click(axisList, type);
+                    break;
+                case JogControlButtonList.buttonAxisXUpYUp:
+                case JogControlButtonList.buttonAxisXUpYDown:
+                case JogControlButtonList.buttonAxisXDownYUp:
+                case JogControlButtonList.buttonAxisXDownYDown:
+                    ULcombbutton_Click(axisList, type);
+                    break;
+
+            }
+        }
+
+        private void ULcombButtonUp_Click(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            if (radioButtonStep.Checked == true)
+            {
+                int xIndex = 2; //  TR-X
+                int yIndex = 3; //  TR-Z
+
+                double x = Step[axisList[xIndex]];           //  StageX
+                double y = Step[axisList[yIndex]];           //  StageY
+                double lfTargetPos = 0.0;
+                int nDirection = 1;
+                double dVelocity = 0;
+                int axisNo = -1;
+
+                switch (type)
+                {
+                    //case JogControlButtonList.combButtonRight:
+                    case JogControlButtonList.combButtonUp:
+                        dVelocity = Velocity[axisList[yIndex]];
+                        if (axisList[yIndex].Direction == MotionDirection.Backward)
+                            //if (axisList[1].Direction == MotionDirection.Forward)
+                            nDirection = -1;
+                        //axisList[0].MoveDistance(x * nDirection, dVelocity, dVelocity * 5, dVelocity * 5);
+
+                        if (axisList[yIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            //axisNo = Int32.Parse(axisList[0].Description);
+                            //MC_Func.MC_MoveRelPosition(axisList[1].No, y * (double)nDirection, axisList[1].Configuration.Velocity, axisList[1].Configuration.Acceleration, axisList[1].Configuration.Deceleration);       //  SLO-300
+                            axisNo = Int32.Parse(axisList[yIndex].Description);
+                            //MC_Func.MC_MoveRelPosition(axisList[1].No, y * (double)nDirection, axisList[1].Configuration.Velocity, axisList[1].Configuration.Acceleration, axisList[1].Configuration.Deceleration);       //  SLO-300
+                            MC_Func.MC_MoveRelPosition(axisNo, y * (double)nDirection, axisList[yIndex].Configuration.Velocity, axisList[yIndex].Configuration.Acceleration, axisList[yIndex].Configuration.Deceleration);
+                        }
+                        else if (axisList[yIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axisList[yIndex].Description);
+                                //lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisList[0].No);
+                                lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo);
+                                lfTargetPos += y * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.ToPoint(0,                     //  '0' - Absolute position
+                                                    (Axis)axisNo,
+                                                    lfTargetPos);                       //  Target position
+                            }
+                        }
+                        break;
+
+                    //case JogControlButtonList.combButtonUp:
+                    case JogControlButtonList.combButtonRight:
+                        dVelocity = Velocity[axisList[xIndex]];
+                        if (axisList[xIndex].Direction == MotionDirection.Backward)
+                            //if (axisList[0].Direction == MotionDirection.Forward)
+                            nDirection = -1;
+                        //axisList[1].MoveDistance(y * nDirection, dVelocity, dVelocity * 5, dVelocity * 5);
+
+                        if (axisList[xIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            //axisNo = Int32.Parse(axisList[1].Description);
+                            axisNo = Int32.Parse(axisList[xIndex].Description);
+                            //MC_Func.MC_MoveRelPosition(axisList[0].No, x * (double)nDirection, axisList[0].Configuration.Velocity, axisList[0].Configuration.Acceleration, axisList[0].Configuration.Deceleration);
+                            MC_Func.MC_MoveRelPosition(axisNo, x * (double)nDirection, axisList[xIndex].Configuration.Velocity, axisList[xIndex].Configuration.Acceleration, axisList[xIndex].Configuration.Deceleration);
+                        }
+                        else if (axisList[xIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axisList[xIndex].Configuration.Description);
+                                //lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisList[1].No);
+                                lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo);
+                                lfTargetPos += x * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.ToPoint(MotionFlags.ACSC_NONE,                                   //  '0' - Absolute position
+                                                    (Axis)axisNo,
+                                                    lfTargetPos);                       //  Target position
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+
+        private void ULcombButtonDown_Click(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            if (radioButtonStep.Checked == true)
+            {
+                int xIndex = 2; //  TR-X
+                int yIndex = 3; //  TR-Z
+
+                double x = Step[axisList[xIndex]];
+                double y = Step[axisList[yIndex]];
+                double lfTargetPos = 0.0;
+                double dVelocity = 0;
+                int nDirection = -1;
+                int axisNo = -1;
+
+                switch (type)
+                {
+                    //case JogControlButtonList.combButtonLeft:
+                    case JogControlButtonList.combButtonDown:
+                        dVelocity = Velocity[axisList[yIndex]];
+                        if (axisList[yIndex].Direction == MotionDirection.Backward)
+                            //if (axisList[1].Direction == MotionDirection.Forward)
+                            nDirection = 1;
+                        //axisList[0].MoveDistance(x * nDirection, dVelocity, dVelocity * 5, dVelocity * 5);
+
+                        if (axisList[yIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            //axisNo = Int32.Parse(axisList[0].Description);
+                            axisNo = Int32.Parse(axisList[yIndex].Description);
+                            //MC_Func.MC_MoveRelPosition(axisList[1].No, y * (double)nDirection, axisList[1].Configuration.Velocity, axisList[1].Configuration.Acceleration, axisList[1].Configuration.Deceleration);
+                            MC_Func.MC_MoveRelPosition(axisNo, y * (double)nDirection, axisList[yIndex].Configuration.Velocity, axisList[yIndex].Configuration.Acceleration, axisList[yIndex].Configuration.Deceleration);
+                        }
+                        else if (axisList[yIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axisList[yIndex].Description);
+                                //lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisList[0].No);
+                                lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo);
+                                lfTargetPos += y * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                   //  '0' - Absolute position
+                                                    (Axis)axisNo,
+                                                    lfTargetPos);                       //  Target position
+                            }
+                        }
+                        break;
+
+                    //case JogControlButtonList.combButtonDown:
+                    case JogControlButtonList.combButtonLeft:
+                        dVelocity = Velocity[axisList[xIndex]];
+                        if (axisList[xIndex].Direction == MotionDirection.Backward)
+                            //if (axisList[0].Direction == MotionDirection.Forward)
+                            nDirection = 1;
+                        //axisList[1].MoveDistance(y * nDirection, dVelocity, dVelocity * 5, dVelocity * 5);
+
+                        if (axisList[xIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            //axisNo = Int32.Parse(axisList[1].Description);
+                            axisNo = Int32.Parse(axisList[xIndex].Description);
+                            //MC_Func.MC_MoveRelPosition(axisList[0].No, x * (double)nDirection, axisList[0].Configuration.Velocity, axisList[0].Configuration.Acceleration, axisList[0].Configuration.Deceleration);
+                            MC_Func.MC_MoveRelPosition(axisNo, x * (double)nDirection, axisList[xIndex].Configuration.Velocity, axisList[xIndex].Configuration.Acceleration, axisList[xIndex].Configuration.Deceleration);
+                        }
+                        else if (axisList[xIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axisList[xIndex].Description);
+                                //lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisList[1].No);
+                                lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo);
+                                lfTargetPos += x * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                   //  '0' - Absolute position
+                                                    (Axis)axisNo,
+                                                    lfTargetPos);                       //  Target position
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+
+        private void ULbuttonUp_Click(List<MotionAxis> axisList)
+        {
+            double lfTargetPos = 0.0;
+            int nDirection = 1;
+            int axisNo = -1;
+
+            if (radioButtonStep.Checked == true)
+            {
+                if (axisList != null)
+                {
+                    double dVelocity = 0;
+                    foreach (MotionAxis axis in axisList)
+                    {
+                        //if (axis.Direction == MotionDirection.Backward)
+                        if (axis.Direction == MotionDirection.Forward)
+                            nDirection = -1;
+
+                        dVelocity = Velocity[axis];
+                        //axis.MoveDistance(Step[axis] * nDirection, dVelocity, dVelocity * 5, dVelocity * 5); //참고 Step Move
+
+                        if (axis.Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            //axisNo = Int32.Parse(axis.Description);
+                            axisNo = Int32.Parse(axis.Description);
+
+                            if (axisNo == (int)WorkStageParameter.AxisAjinEnum.Z)
+                            {
+                                nDirection *= -1;
+                            }
+
+                            //MC_Func.MC_MoveRelPosition(axis.No, Step[axis] * (double)nDirection, axis.Configuration.Velocity, axis.Configuration.Acceleration, axis.Configuration.Deceleration);
+                            MC_Func.MC_MoveRelPosition(axisNo, Step[axis] * (double)nDirection, axis.Configuration.Velocity, axis.Configuration.Acceleration, axis.Configuration.Deceleration);
+                        }
+                        else if (axis.Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axis.Description);
+                                //lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axis.No);
+                                lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo);
+                                lfTargetPos += Step[axis] * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.ToPoint(0,                     //  '0' - Absolute position
+                                                    (Axis)axisNo,                      //  Axis number
+                                                    lfTargetPos);                       //  Target position
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ULZbuttonUp_Click(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            if (radioButtonStep.Checked == true)
+            {
+                int nIndex = 0;
+                double lfTargetPos = 0.0;
+                double dVelocity = 0;
+                int nDirection = 1;
+                int axisNo = -1;
+
+                switch (type)
+                {
+                    case JogControlButtonList.buttonZ0Up:
+                        nIndex = 0;
+                        break;
+
+                    case JogControlButtonList.buttonZ1Up:
+                        nIndex = 1;
+                        break;
+                }
+
+                double x = Step[axisList[nIndex]];
+
+                dVelocity = Velocity[axisList[nIndex]];
+                //axisList[0].MoveDistance(x * nDirection, dVelocity, dVelocity * 5, dVelocity * 5);
+
+                if (axisList[nIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                {
+                    //axisNo = Int32.Parse(axisList[0].Description);
+                    axisNo = Int32.Parse(axisList[nIndex].Description);
+                    //MC_Func.MC_MoveRelPosition(axisList[1].No, y * (double)nDirection, axisList[1].Configuration.Velocity, axisList[1].Configuration.Acceleration, axisList[1].Configuration.Deceleration);
+                    MC_Func.MC_MoveRelPosition(axisNo, x * (double)nDirection, axisList[nIndex].Configuration.Velocity, axisList[nIndex].Configuration.Acceleration, axisList[nIndex].Configuration.Deceleration);
+                }
+                else if (axisList[nIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                {
+                    if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                    {
+                        axisNo = Int32.Parse(axisList[nIndex].Description);
+                        //lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisList[0].No);
+                        lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo);
+                        lfTargetPos += x * (double)nDirection;
+
+                        ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                   //  '0' - Absolute position
+                                            (Axis)axisNo,
+                                            lfTargetPos);                       //  Target position
+                    }
+                }
+            }
+        }
+
+        private void ULbuttonDown_Click(List<MotionAxis> axisList)
+        {
+            double lfTargetPos = 0.0;
+            int nDirection = -1;
+            int axisNo = -1;
+
+            if (radioButtonStep.Checked == true)
+            {
+                if (axisList != null)
+                {
+                    double dVelocity = 0;
+                    foreach (MotionAxis axis in axisList)
+                    {
+                        //if (axis.Direction == MotionDirection.Backward)
+                        if (axis.Direction == MotionDirection.Forward)
+                            nDirection = 1;
+
+                        dVelocity = Velocity[axis];
+                        //axis.MoveDistance(Step[axis] * nDirection, dVelocity, dVelocity * 5, dVelocity * 5);
+
+                        if (axis.Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            //axisNo = Int32.Parse(axis.Description);
+                            axisNo = Int32.Parse(axis.Description);
+
+                            if (axisNo == (int)WorkStageParameter.AxisAjinEnum.Z)
+                            {
+                                nDirection *= -1;
+                            }
+
+                            //MC_Func.MC_MoveRelPosition(axis.No, Step[axis] * (double)nDirection, axis.Configuration.Velocity, axis.Configuration.Acceleration, axis.Configuration.Deceleration);
+                            MC_Func.MC_MoveRelPosition(axisNo, Step[axis] * (double)nDirection, axis.Configuration.Velocity, axis.Configuration.Acceleration, axis.Configuration.Deceleration);
+                        }
+                        else if (axis.Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axis.Description);
+                                //lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axis.No);
+                                lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo);
+                                lfTargetPos += Step[axis] * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.ToPoint(0,                     //  '0' - Absolute position
+                                                    (Axis)axisNo,                      //  Axis number
+                                                    lfTargetPos);                       //  Target position
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ULZbuttonDown_Click(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            if (radioButtonStep.Checked == true)
+            {
+                int nIndex = 0;
+                double lfTargetPos = 0.0;
+                double dVelocity = 0;
+                int nDirection = -1;
+                int axisNo = -1;
+
+                switch (type)
+                {
+                    case JogControlButtonList.buttonZ0Down:
+                        nIndex = 0;
+                        break;
+
+                    case JogControlButtonList.buttonZ1Down:
+                        nIndex = 1;
+                        break;
+                }
+
+                double x = Step[axisList[nIndex]];
+
+                dVelocity = Velocity[axisList[nIndex]];
+                //axisList[0].MoveDistance(x * nDirection, dVelocity, dVelocity * 5, dVelocity * 5);
+
+                if (axisList[nIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                {
+                    //axisNo = Int32.Parse(axisList[0].Description);
+                    axisNo = Int32.Parse(axisList[nIndex].Description);
+                    //MC_Func.MC_MoveRelPosition(axisList[1].No, y * (double)nDirection, axisList[1].Configuration.Velocity, axisList[1].Configuration.Acceleration, axisList[1].Configuration.Deceleration);
+                    MC_Func.MC_MoveRelPosition(axisNo, x * (double)nDirection, axisList[nIndex].Configuration.Velocity, axisList[nIndex].Configuration.Acceleration, axisList[nIndex].Configuration.Deceleration);
+                }
+                else if (axisList[nIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                {
+                    if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                    {
+                        axisNo = Int32.Parse(axisList[nIndex].Description);
+                        //lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisList[0].No);
+                        lfTargetPos = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo);
+                        lfTargetPos += x * (double)nDirection;
+
+                        ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                   //  '0' - Absolute position
+                                            (Axis)axisNo,
+                                            lfTargetPos);                       //  Target position
+                    }
+                }
+            }
+        }
+
+        private void ULcombbutton_Click(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            if (radioButtonStep.Checked == true)
+            {
+                double lfTargetPos1 = 0.0;
+                double lfTargetPos2 = 0.0;
+                double x = Step[axisList[0]];
+                double y = Step[axisList[1]];
+                int nFirstDirection = 1;
+                int nSecondDirection = 1;
+                double dVelocity1 = 0;
+                double dVelocity2 = 0;
+                int axisNo1 = -1;
+                int axisNo2 = -1;
+
+                if (axisList != null)
+                {
+                    if (type == JogControlButtonList.buttonAxisXUpYDown)
+                    {
+                        y = y * -1;
+                        x = x * -1;
+                    }
+                    else if (type == JogControlButtonList.buttonAxisXDownYUp)
+                    {
+                        //x = x * -1;
+                        //y = y * -1;
+                    }
+                    else if (type == JogControlButtonList.buttonAxisXDownYDown)
+                    {
+                        //x = x * -1;
+                        y = y * -1;
+                    }
+                    else
+                    {
+                        x = x * -1;
+                    }
+
+                    //if (axisList[0].Direction == MotionDirection.Backward)
+                    if (axisList[0].Direction == MotionDirection.Forward)
+                        nFirstDirection = -1;
+                    if (axisList[1].Direction == MotionDirection.Backward)
+                        //if (axisList[1].Direction == MotionDirection.Forward)
+                        nSecondDirection = -1;
+
+                    dVelocity1 = Velocity[axisList[0]];
+                    dVelocity2 = Velocity[axisList[1]];
+
+                    //axisList[0].MoveDistance(x * nFirstDirection, dVelocity, dVelocity * 5, dVelocity * 5);
+                    //axisList[1].MoveDistance(y * nSecondDirection, dVelocity, dVelocity * 5, dVelocity * 5);
+
+                    if (axisList[0].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                    {
+                        //axisNo1 = Int32.Parse(axisList[0].Description);
+                        axisNo1 = Int32.Parse(axisList[0].Description);
+                        //MC_Func.MC_MoveRelPosition(axisList[0].No, x * (double)nFirstDirection, axisList[0].Configuration.Velocity, axisList[0].Configuration.Acceleration, axisList[0].Configuration.Deceleration);
+                        MC_Func.MC_MoveRelPosition(axisNo1, x * (double)nFirstDirection, axisList[0].Configuration.Velocity, axisList[0].Configuration.Acceleration, axisList[0].Configuration.Deceleration);
+                    }
+                    else if (axisList[0].Board.Configuration.BoardType == MotionBoardType.ACS)
+                    {
+                        if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                        {
+                            axisNo1 = Int32.Parse(axisList[0].Description);
+                            //lfTargetPos2 = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisList[1].No);
+                            lfTargetPos1 = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo1);
+                            if (axisList[0].Name == "StageY")
+                                lfTargetPos1 += y * (double)nFirstDirection;
+                            else if (axisList[0].Name == "StageX")
+                                lfTargetPos1 += x * (double)nFirstDirection;
+
+                            ACSSPiiPlusMotionBoard.Api.ToPoint(0,                     //  '0' - Absolute position
+                                                (Axis)axisNo1,               //  Axis number
+                                                lfTargetPos1);                      //  Target position
+                        }
+                    }
+
+                    if (axisList[1].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                    {
+                        //axisNo2 = Int32.Parse(axisList[1].Description);
+                        axisNo2 = Int32.Parse(axisList[1].Description);
+                        //MC_Func.MC_MoveRelPosition(axisList[1].No, y * (double)nSecondDirection, axisList[1].Configuration.Velocity, axisList[1].Configuration.Acceleration, axisList[1].Configuration.Deceleration);
+                        MC_Func.MC_MoveRelPosition(axisNo2, y * (double)nSecondDirection, axisList[1].Configuration.Velocity, axisList[1].Configuration.Acceleration, axisList[1].Configuration.Deceleration);
+                    }
+                    else if (axisList[1].Board.Configuration.BoardType == MotionBoardType.ACS)
+                    {
+                        if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                        {
+                            axisNo2 = Int32.Parse(axisList[1].Description);
+                            //lfTargetPos2 = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisList[1].No);
+                            lfTargetPos2 = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)axisNo2);
+                            if (axisList[1].Name == "StageY")
+                                lfTargetPos2 += y * (double)nSecondDirection;
+                            else if (axisList[1].Name == "StageX")
+                                lfTargetPos1 += x * (double)nSecondDirection;
+
+                            ACSSPiiPlusMotionBoard.Api.ToPoint(0,                     //  '0' - Absolute position
+                                                (Axis)axisNo2,               //  Axis number
+                                                lfTargetPos2);                      //  Target position
+                        }
+                    }
+
+                }
+            }
+        }
+        /// <summary>
+        /// SLD-200 Unloader - 끝
         /// </summary>
 
 
@@ -2033,6 +3085,883 @@ namespace SLD200_MSL
 
 
         /// <summary>
+        /// SLD-200 Loader - 시작
+        /// </summary>
+        public void LDJogbuttonDownEvent(JogControlButtonList type, List<MotionAxis> axisList)
+        {
+            switch (type)
+            {
+                case JogControlButtonList.buttonZ0Down:
+                case JogControlButtonList.buttonZ1Down:
+                    LDZbuttonDown_Down(axisList, type);
+                    break;
+                case JogControlButtonList.buttonZ0Up:
+                case JogControlButtonList.buttonZ1Up:
+                    LDZbuttonUp_Down(axisList, type);
+                    break;
+                case JogControlButtonList.buttonUp:
+                case JogControlButtonList.buttonRight:
+                case JogControlButtonList.buttonCW:
+                    LDbuttonUp_Down(axisList);
+                    break;
+                case JogControlButtonList.combButtonUp:
+                case JogControlButtonList.combButtonRight:
+                    LDcombButtonUp_Down(axisList, type);
+                    break;
+                case JogControlButtonList.buttonDown:
+                case JogControlButtonList.buttonLeft:
+                case JogControlButtonList.buttonCCW:
+                    LDbuttonDown_Down(axisList);
+                    break;
+                case JogControlButtonList.combButtonDown:
+                case JogControlButtonList.combButtonLeft:
+                    LDcombButtonDown_Down(axisList, type);
+                    break;
+                case JogControlButtonList.buttonAxisXUpYUp:
+                case JogControlButtonList.buttonAxisXUpYDown:
+                case JogControlButtonList.buttonAxisXDownYUp:
+                case JogControlButtonList.buttonAxisXDownYDown:
+                    LDCombbutton_Down(axisList, type);
+                    break;
+            }
+        }
+        private void LDcombButtonUp_Down(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            double lfVelocity = 0.0f;
+            int nDirection = 1;
+            int axisNo = -1;
+
+            if (radioButtonContinuous.Checked == true)
+            {
+                int xIndex = 2; //  TR-X
+                int yIndex = 3; //  TR-Z
+
+                double x = Velocity[axisList[xIndex]];
+                double y = Velocity[axisList[yIndex]];
+                switch (type)
+                {
+                    case JogControlButtonList.combButtonUp:
+                        //if (axisList[1].Direction == MotionDirection.Forward)
+                        //if (axisList[yIndex].Direction == MotionDirection.Backward)
+                        //    nDirection = -1;
+
+                        if (axisList[yIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            axisNo = Int32.Parse(axisList[yIndex].Description);
+                            MC_Func.MC_JogMove(axisNo, y * (double)nDirection, axisList[yIndex].Configuration.Acceleration, axisList[yIndex].Configuration.Deceleration);
+                        }
+                        else if (ACSSPiiPlusMotionBoard.Api.IsConnected && (axisList[yIndex].Board.Configuration.BoardType == MotionBoardType.ACS))
+                        {
+                            axisNo = Int32.Parse(axisList[yIndex].Description);
+
+                            lfVelocity = y * (double)nDirection;
+
+                            ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,             //  Velocity flag
+                                            (Axis)axisNo,                                   //  Axis number
+                                            lfVelocity);                                            //  Velocity
+                        }
+                        break;
+
+                    case JogControlButtonList.combButtonRight:
+                        //if (axisList[0].Direction == MotionDirection.Forward)
+                        //if (axisList[xIndex].Direction == MotionDirection.Backward)
+                        //    nDirection = -1;
+
+                        if (axisList[xIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            axisNo = Int32.Parse(axisList[xIndex].Description);
+                            MC_Func.MC_JogMove(axisNo, x * (double)nDirection, axisList[xIndex].Configuration.Acceleration, axisList[xIndex].Configuration.Deceleration);
+                        }
+                        else if (axisList[xIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axisList[xIndex].Description);
+
+                                lfVelocity = x * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,             //  Velocity flag
+                                                (Axis)axisNo,                                   //  Axis number
+                                                lfVelocity);                                            //  Velocity
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+        private void LDcombButtonDown_Down(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            double lfVelocity = 0.0f;
+            int nDirection = -1;
+            int axisNo = -1;
+
+            if (radioButtonContinuous.Checked == true)
+            {
+                int xIndex = 2; //  TR-X
+                int yIndex = 3; //  TR-Z
+
+                double x = Velocity[axisList[xIndex]];
+                double y = Velocity[axisList[yIndex]];
+                switch (type)
+                {
+                    case JogControlButtonList.combButtonDown:
+                        //if (axisList[1].Direction == MotionDirection.Forward)
+                        //if (axisList[yIndex].Direction == MotionDirection.Backward)
+                        //    nDirection = 1;
+
+                        if (axisList[yIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            axisNo = Int32.Parse(axisList[yIndex].Description);
+                            MC_Func.MC_JogMove(axisNo, y * (double)nDirection, axisList[yIndex].Configuration.Acceleration, axisList[yIndex].Configuration.Deceleration);
+                        }
+                        else if (axisList[yIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axisList[yIndex].Description);
+
+                                lfVelocity = y * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,             //  Velocity flag
+                                                (Axis)axisNo,                                   //  Axis number
+                                                lfVelocity);                                            //  Velocity
+                            }
+                        }
+                        break;
+
+                    case JogControlButtonList.combButtonLeft:
+                        //if (axisList[0].Direction == MotionDirection.Forward)
+                        //if (axisList[xIndex].Direction == MotionDirection.Backward)
+                        //    nDirection = 1;
+
+                        if (axisList[xIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            axisNo = Int32.Parse(axisList[xIndex].Description);
+                            MC_Func.MC_JogMove(axisNo, x * (double)nDirection, axisList[xIndex].Configuration.Acceleration, axisList[xIndex].Configuration.Deceleration);
+                        }
+                        else if (axisList[xIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axisList[xIndex].Description);
+
+                                lfVelocity = x * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,             //  Velocity flag
+                                                (Axis)axisNo,                                   //  Axis number
+                                                lfVelocity);                                            //  Velocity
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+        private void LDbuttonUp_Down(List<MotionAxis> axisList)
+        {
+            double lfVelocity = 0.0f;
+            int nDirection = 1;
+            int axisNo = -1;
+
+            if (radioButtonContinuous.Checked == true)
+            {
+                if (axisList != null)
+                {
+                    foreach (MotionAxis axis in axisList)
+                    {
+                        if (axis.Direction == MotionDirection.Forward)
+                            //if (axis.Direction == MotionDirection.Backward)
+                            nDirection = -1;
+
+                        if (axis.Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            axisNo = Int32.Parse(axis.Description);
+
+                            if (axisNo == (int)WorkStageParameter.AxisAjinEnum.Z)
+                            {
+                                nDirection *= -1;
+                            }
+
+                            MC_Func.MC_JogMove(axisNo, Velocity[axis] * (double)nDirection, axis.Configuration.Acceleration, axis.Configuration.Deceleration);
+                        }
+                        else if (axis.Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axis.Description);
+
+                                lfVelocity = Velocity[axis] * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,         //  Velocity flag
+                                            (Axis)axisNo,                                          //  Axis number
+                                            lfVelocity);                                            //  Velocity
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void LDZbuttonUp_Down(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            double lfVelocity = 0.0f;
+            int nDirection = 1;
+            int axisNo = -1;
+            int nIndex = 0;
+
+            if (radioButtonContinuous.Checked == true)
+            {
+                switch (type)
+                {
+                    case JogControlButtonList.buttonZ0Up:
+                        nIndex = 0;
+                        break;
+
+                    case JogControlButtonList.buttonZ1Up:
+                        nIndex = 1;
+                        break;
+                }
+
+                if (axisList != null)
+                {
+                    if (axisList[nIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                    {
+                        axisNo = Int32.Parse(axisList[nIndex].Description);
+
+                        lfVelocity = Velocity[axisList[nIndex]];
+
+                        MC_Func.MC_JogMove(axisNo, lfVelocity * (double)nDirection, axisList[nIndex].Configuration.Acceleration, axisList[nIndex].Configuration.Deceleration);
+                    }
+                    else if (axisList[nIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                    {
+                        if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                        {
+                            axisNo = Int32.Parse(axisList[nIndex].Description);
+
+                            lfVelocity = Velocity[axisList[nIndex]];
+
+                            ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,         //  Velocity flag
+                                        (Axis)axisNo,                                          //  Axis number
+                                        lfVelocity * (double)nDirection);                                            //  Velocity
+                        }
+                    }
+                }
+            }
+        }
+
+        private void LDbuttonDown_Down(List<MotionAxis> axisList)
+        {
+            double lfVelocity = 0.0f;
+            int nDirection = -1;
+            int axisNo = -1;
+
+            if (radioButtonContinuous.Checked == true)
+            {
+                if (axisList != null)
+                {
+                    foreach (MotionAxis axis in axisList)
+                    {
+                        if (axis.Direction == MotionDirection.Forward)
+                            //if (axis.Direction == MotionDirection.Backward)
+                            nDirection = 1;
+
+                        if (axis.Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            axisNo = Int32.Parse(axis.Description);
+
+                            if (axisNo == (int)WorkStageParameter.AxisAjinEnum.Z)
+                            {
+                                nDirection *= -1;
+                            }
+
+                            MC_Func.MC_JogMove(axisNo, Velocity[axis] * (double)nDirection, axis.Configuration.Acceleration, axis.Configuration.Deceleration);
+                        }
+                        else if (axis.Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axis.Description);
+
+                                lfVelocity = Velocity[axis] * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,         //  Velocity flag
+                                            (Axis)axisNo,                                          //  Axis number
+                                            lfVelocity);                                            //  Velocity
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void LDZbuttonDown_Down(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            double lfVelocity = 0.0f;
+            int nDirection = -1;
+            int axisNo = -1;
+            int nIndex = 0;
+
+            if (radioButtonContinuous.Checked == true)
+            {
+                switch (type)
+                {
+                    case JogControlButtonList.buttonZ0Down:
+                        nIndex = 0;
+                        break;
+
+                    case JogControlButtonList.buttonZ1Down:
+                        nIndex = 1;
+                        break;
+                }
+
+                if (axisList != null)
+                {
+                    if (axisList[nIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                    {
+                        axisNo = Int32.Parse(axisList[nIndex].Description);
+
+                        lfVelocity = Velocity[axisList[nIndex]];
+
+                        MC_Func.MC_JogMove(axisNo, lfVelocity * (double)nDirection, axisList[nIndex].Configuration.Acceleration, axisList[nIndex].Configuration.Deceleration);
+                    }
+                    else if (axisList[nIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                    {
+                        if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                        {
+                            axisNo = Int32.Parse(axisList[nIndex].Description);
+
+                            lfVelocity = Velocity[axisList[nIndex]];
+
+                            ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,         //  Velocity flag
+                                        (Axis)axisNo,                                          //  Axis number
+                                        lfVelocity * (double)nDirection);                                            //  Velocity
+                        }
+                    }
+                }
+            }
+        }
+
+        private void LDCombbutton_Down(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            if (radioButtonContinuous.Checked == true)
+            {
+                double x = Velocity[axisList[0]];
+                double y = Velocity[axisList[1]];
+                int nFirstDirection = 1;
+                int nSecondDirection = 1;
+                int axisNo1 = -1;
+                int axisNo2 = -1;
+
+                if (axisList != null)
+                {
+                    if (type == JogControlButtonList.buttonAxisXUpYDown)
+                    {
+                        y = y * -1;
+                        x = x * -1;
+                    }
+                    else if (type == JogControlButtonList.buttonAxisXDownYUp)
+                    {
+                        //x = x * -1;
+                        //y = y * -1;
+                    }
+                    else if (type == JogControlButtonList.buttonAxisXDownYDown)
+                    {
+                        //x = x * -1;
+                        y = y * -1;
+                    }
+                    else
+                    {
+                        x = x * -1;
+                    }
+
+                    //if (axisList[0].Direction == MotionDirection.Backward)
+                    if (axisList[0].Direction == MotionDirection.Forward)
+                        nFirstDirection = -1;
+
+                    //if (axisList[1].Direction == MotionDirection.Forward)
+                    if (axisList[1].Direction == MotionDirection.Backward)
+                        nSecondDirection = -1;
+
+                    if (axisList[0].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                    {
+                        axisNo1 = Int32.Parse(axisList[0].Description);
+                        MC_Func.MC_JogMove(axisNo1, x * (double)nFirstDirection, axisList[0].Configuration.Acceleration, axisList[0].Configuration.Deceleration);
+                    }
+                    else if (axisList[0].Board.Configuration.BoardType == MotionBoardType.ACS)
+                    {
+                        if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                        {
+                            axisNo1 = Int32.Parse(axisList[0].Description);
+
+                            ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,         //  Velocity flag
+                                        (Axis)axisNo1,                                   //  Axis number
+                                        x * (double)nFirstDirection);                           //  Velocity
+                        }
+                    }
+
+                    if (axisList[1].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                    {
+                        axisNo2 = Int32.Parse(axisList[1].Description);
+                        MC_Func.MC_JogMove(axisNo2, y * (double)nSecondDirection, axisList[1].Configuration.Acceleration, axisList[1].Configuration.Deceleration);
+                    }
+                    else if (axisList[1].Board.Configuration.BoardType == MotionBoardType.ACS)
+                    {
+                        if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                        {
+                            axisNo2 = Int32.Parse(axisList[1].Description);
+
+                            ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,         //  Velocity flag
+                                        (Axis)axisNo2,                                   //  Axis number
+                                        y * (double)nSecondDirection);                           //  Velocity
+                        }
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// SLD-200 Loader - 끝
+        /// </summary>
+        /// 
+
+
+        /// <summary>
+        /// SLD-200 Unloader - 시작
+        /// </summary>
+        public void ULJogbuttonDownEvent(JogControlButtonList type, List<MotionAxis> axisList)
+        {
+            switch (type)
+            {
+                case JogControlButtonList.buttonZ0Down:
+                case JogControlButtonList.buttonZ1Down:
+                    ULZbuttonDown_Down(axisList, type);
+                    break;
+                case JogControlButtonList.buttonZ0Up:
+                case JogControlButtonList.buttonZ1Up:
+                    ULZbuttonUp_Down(axisList, type);
+                    break;
+                case JogControlButtonList.buttonUp:
+                case JogControlButtonList.buttonRight:
+                case JogControlButtonList.buttonCW:
+                    ULbuttonUp_Down(axisList);
+                    break;
+                case JogControlButtonList.combButtonUp:
+                case JogControlButtonList.combButtonRight:
+                    ULcombButtonUp_Down(axisList, type);
+                    break;
+                case JogControlButtonList.buttonDown:
+                case JogControlButtonList.buttonLeft:
+                case JogControlButtonList.buttonCCW:
+                    ULbuttonDown_Down(axisList);
+                    break;
+                case JogControlButtonList.combButtonDown:
+                case JogControlButtonList.combButtonLeft:
+                    ULcombButtonDown_Down(axisList, type);
+                    break;
+                case JogControlButtonList.buttonAxisXUpYUp:
+                case JogControlButtonList.buttonAxisXUpYDown:
+                case JogControlButtonList.buttonAxisXDownYUp:
+                case JogControlButtonList.buttonAxisXDownYDown:
+                    ULCombbutton_Down(axisList, type);
+                    break;
+            }
+        }
+        private void ULcombButtonUp_Down(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            double lfVelocity = 0.0f;
+            int nDirection = 1;
+            int axisNo = -1;
+
+            if (radioButtonContinuous.Checked == true)
+            {
+                int xIndex = 2; //  TR-X
+                int yIndex = 3; //  TR-Z
+
+                double x = Velocity[axisList[xIndex]];
+                double y = Velocity[axisList[yIndex]];
+                switch (type)
+                {
+                    case JogControlButtonList.combButtonUp:
+                        //if (axisList[1].Direction == MotionDirection.Forward)
+                        //if (axisList[yIndex].Direction == MotionDirection.Backward)
+                        //    nDirection = -1;
+
+                        if (axisList[yIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            axisNo = Int32.Parse(axisList[yIndex].Description);
+                            MC_Func.MC_JogMove(axisNo, y * (double)nDirection, axisList[yIndex].Configuration.Acceleration, axisList[yIndex].Configuration.Deceleration);
+                        }
+                        else if (ACSSPiiPlusMotionBoard.Api.IsConnected && (axisList[yIndex].Board.Configuration.BoardType == MotionBoardType.ACS))
+                        {
+                            axisNo = Int32.Parse(axisList[yIndex].Description);
+
+                            lfVelocity = y * (double)nDirection;
+
+                            ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,             //  Velocity flag
+                                            (Axis)axisNo,                                   //  Axis number
+                                            lfVelocity);                                            //  Velocity
+                        }
+                        break;
+
+                    case JogControlButtonList.combButtonRight:
+                        //if (axisList[0].Direction == MotionDirection.Forward)
+                        //if (axisList[xIndex].Direction == MotionDirection.Backward)
+                        //    nDirection = -1;
+
+                        if (axisList[xIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            axisNo = Int32.Parse(axisList[xIndex].Description);
+                            MC_Func.MC_JogMove(axisNo, x * (double)nDirection, axisList[xIndex].Configuration.Acceleration, axisList[xIndex].Configuration.Deceleration);
+                        }
+                        else if (axisList[xIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axisList[xIndex].Description);
+
+                                lfVelocity = x * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,             //  Velocity flag
+                                                (Axis)axisNo,                                   //  Axis number
+                                                lfVelocity);                                            //  Velocity
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+        private void ULcombButtonDown_Down(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            double lfVelocity = 0.0f;
+            int nDirection = -1;
+            int axisNo = -1;
+
+            if (radioButtonContinuous.Checked == true)
+            {
+                int xIndex = 2; //  TR-X
+                int yIndex = 3; //  TR-Z
+
+                double x = Velocity[axisList[xIndex]];
+                double y = Velocity[axisList[yIndex]];
+                switch (type)
+                {
+                    case JogControlButtonList.combButtonDown:
+                        //if (axisList[1].Direction == MotionDirection.Forward)
+                        //if (axisList[yIndex].Direction == MotionDirection.Backward)
+                        //    nDirection = 1;
+
+                        if (axisList[yIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            axisNo = Int32.Parse(axisList[yIndex].Description);
+                            MC_Func.MC_JogMove(axisNo, y * (double)nDirection, axisList[yIndex].Configuration.Acceleration, axisList[yIndex].Configuration.Deceleration);
+                        }
+                        else if (axisList[yIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axisList[yIndex].Description);
+
+                                lfVelocity = y * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,             //  Velocity flag
+                                                (Axis)axisNo,                                   //  Axis number
+                                                lfVelocity);                                            //  Velocity
+                            }
+                        }
+                        break;
+
+                    case JogControlButtonList.combButtonLeft:
+                        //if (axisList[0].Direction == MotionDirection.Forward)
+                        //if (axisList[xIndex].Direction == MotionDirection.Backward)
+                        //    nDirection = 1;
+
+                        if (axisList[xIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            axisNo = Int32.Parse(axisList[xIndex].Description);
+                            MC_Func.MC_JogMove(axisNo, x * (double)nDirection, axisList[xIndex].Configuration.Acceleration, axisList[xIndex].Configuration.Deceleration);
+                        }
+                        else if (axisList[xIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axisList[xIndex].Description);
+
+                                lfVelocity = x * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,             //  Velocity flag
+                                                (Axis)axisNo,                                   //  Axis number
+                                                lfVelocity);                                            //  Velocity
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+        private void ULbuttonUp_Down(List<MotionAxis> axisList)
+        {
+            double lfVelocity = 0.0f;
+            int nDirection = 1;
+            int axisNo = -1;
+
+            if (radioButtonContinuous.Checked == true)
+            {
+                if (axisList != null)
+                {
+                    foreach (MotionAxis axis in axisList)
+                    {
+                        if (axis.Direction == MotionDirection.Forward)
+                            //if (axis.Direction == MotionDirection.Backward)
+                            nDirection = -1;
+
+                        if (axis.Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            axisNo = Int32.Parse(axis.Description);
+
+                            if (axisNo == (int)WorkStageParameter.AxisAjinEnum.Z)
+                            {
+                                nDirection *= -1;
+                            }
+
+                            MC_Func.MC_JogMove(axisNo, Velocity[axis] * (double)nDirection, axis.Configuration.Acceleration, axis.Configuration.Deceleration);
+                        }
+                        else if (axis.Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axis.Description);
+
+                                lfVelocity = Velocity[axis] * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,         //  Velocity flag
+                                            (Axis)axisNo,                                          //  Axis number
+                                            lfVelocity);                                            //  Velocity
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ULZbuttonUp_Down(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            double lfVelocity = 0.0f;
+            int nDirection = 1;
+            int axisNo = -1;
+            int nIndex = 0;
+
+            if (radioButtonContinuous.Checked == true)
+            {
+                switch (type)
+                {
+                    case JogControlButtonList.buttonZ0Up:
+                        nIndex = 0;
+                        break;
+
+                    case JogControlButtonList.buttonZ1Up:
+                        nIndex = 1;
+                        break;
+                }
+
+                if (axisList != null)
+                {
+                    if (axisList[nIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                    {
+                        axisNo = Int32.Parse(axisList[nIndex].Description);
+
+                        lfVelocity = Velocity[axisList[nIndex]];
+
+                        MC_Func.MC_JogMove(axisNo, lfVelocity * (double)nDirection, axisList[nIndex].Configuration.Acceleration, axisList[nIndex].Configuration.Deceleration);
+                    }
+                    else if (axisList[nIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                    {
+                        if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                        {
+                            axisNo = Int32.Parse(axisList[nIndex].Description);
+
+                            lfVelocity = Velocity[axisList[nIndex]];
+
+                            ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,         //  Velocity flag
+                                        (Axis)axisNo,                                          //  Axis number
+                                        lfVelocity * (double)nDirection);                                            //  Velocity
+                        }
+                    }
+                }
+            }
+        }
+        private void ULbuttonDown_Down(List<MotionAxis> axisList)
+        {
+            double lfVelocity = 0.0f;
+            int nDirection = -1;
+            int axisNo = -1;
+
+            if (radioButtonContinuous.Checked == true)
+            {
+                if (axisList != null)
+                {
+                    foreach (MotionAxis axis in axisList)
+                    {
+                        if (axis.Direction == MotionDirection.Forward)
+                            //if (axis.Direction == MotionDirection.Backward)
+                            nDirection = 1;
+
+                        if (axis.Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            axisNo = Int32.Parse(axis.Description);
+
+                            if (axisNo == (int)WorkStageParameter.AxisAjinEnum.Z)
+                            {
+                                nDirection *= -1;
+                            }
+
+                            MC_Func.MC_JogMove(axisNo, Velocity[axis] * (double)nDirection, axis.Configuration.Acceleration, axis.Configuration.Deceleration);
+                        }
+                        else if (axis.Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axis.Description);
+
+                                lfVelocity = Velocity[axis] * (double)nDirection;
+
+                                ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,         //  Velocity flag
+                                            (Axis)axisNo,                                          //  Axis number
+                                            lfVelocity);                                            //  Velocity
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ULZbuttonDown_Down(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            double lfVelocity = 0.0f;
+            int nDirection = -1;
+            int axisNo = -1;
+            int nIndex = 0;
+
+            if (radioButtonContinuous.Checked == true)
+            {
+                switch (type)
+                {
+                    case JogControlButtonList.buttonZ0Down:
+                        nIndex = 0;
+                        break;
+
+                    case JogControlButtonList.buttonZ1Down:
+                        nIndex = 1;
+                        break;
+                }
+
+                if (axisList != null)
+                {
+                    if (axisList[nIndex].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                    {
+                        axisNo = Int32.Parse(axisList[nIndex].Description);
+
+                        lfVelocity = Velocity[axisList[nIndex]];
+
+                        MC_Func.MC_JogMove(axisNo, lfVelocity * (double)nDirection, axisList[nIndex].Configuration.Acceleration, axisList[nIndex].Configuration.Deceleration);
+                    }
+                    else if (axisList[nIndex].Board.Configuration.BoardType == MotionBoardType.ACS)
+                    {
+                        if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                        {
+                            axisNo = Int32.Parse(axisList[nIndex].Description);
+
+                            lfVelocity = Velocity[axisList[nIndex]];
+
+                            ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,         //  Velocity flag
+                                        (Axis)axisNo,                                          //  Axis number
+                                        lfVelocity * (double)nDirection);                                            //  Velocity
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ULCombbutton_Down(List<MotionAxis> axisList, JogControlButtonList type)
+        {
+            if (radioButtonContinuous.Checked == true)
+            {
+                double x = Velocity[axisList[0]];
+                double y = Velocity[axisList[1]];
+                int nFirstDirection = 1;
+                int nSecondDirection = 1;
+                int axisNo1 = -1;
+                int axisNo2 = -1;
+
+                if (axisList != null)
+                {
+                    if (type == JogControlButtonList.buttonAxisXUpYDown)
+                    {
+                        y = y * -1;
+                        x = x * -1;
+                    }
+                    else if (type == JogControlButtonList.buttonAxisXDownYUp)
+                    {
+                        //x = x * -1;
+                        //y = y * -1;
+                    }
+                    else if (type == JogControlButtonList.buttonAxisXDownYDown)
+                    {
+                        //x = x * -1;
+                        y = y * -1;
+                    }
+                    else
+                    {
+                        x = x * -1;
+                    }
+
+                    //if (axisList[0].Direction == MotionDirection.Backward)
+                    if (axisList[0].Direction == MotionDirection.Forward)
+                        nFirstDirection = -1;
+
+                    //if (axisList[1].Direction == MotionDirection.Forward)
+                    if (axisList[1].Direction == MotionDirection.Backward)
+                        nSecondDirection = -1;
+
+                    if (axisList[0].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                    {
+                        axisNo1 = Int32.Parse(axisList[0].Description);
+                        MC_Func.MC_JogMove(axisNo1, x * (double)nFirstDirection, axisList[0].Configuration.Acceleration, axisList[0].Configuration.Deceleration);
+                    }
+                    else if (axisList[0].Board.Configuration.BoardType == MotionBoardType.ACS)
+                    {
+                        if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                        {
+                            axisNo1 = Int32.Parse(axisList[0].Description);
+
+                            ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,         //  Velocity flag
+                                        (Axis)axisNo1,                                   //  Axis number
+                                        x * (double)nFirstDirection);                           //  Velocity
+                        }
+                    }
+
+                    if (axisList[1].Board.Configuration.BoardType == MotionBoardType.Ajin)
+                    {
+                        axisNo2 = Int32.Parse(axisList[1].Description);
+                        MC_Func.MC_JogMove(axisNo2, y * (double)nSecondDirection, axisList[1].Configuration.Acceleration, axisList[1].Configuration.Deceleration);
+                    }
+                    else if (axisList[1].Board.Configuration.BoardType == MotionBoardType.ACS)
+                    {
+                        if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                        {
+                            axisNo2 = Int32.Parse(axisList[1].Description);
+
+                            ACSSPiiPlusMotionBoard.Api.Jog(MotionFlags.ACSC_AMF_VELOCITY,         //  Velocity flag
+                                        (Axis)axisNo2,                                   //  Axis number
+                                        y * (double)nSecondDirection);                           //  Velocity
+                        }
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// SLD-200 Unloader - 끝
+        /// </summary>
+        /// 
+
+
+        /// <summary>
         /// UVW 관련 - 시작
         /// </summary>
         public void JogbuttonDownEvent_UVW(JogControlButtonList type, List<MotionAxis> axisList)
@@ -2483,6 +4412,140 @@ namespace SLD200_MSL
         }
         /// <summary>
         /// 기존 것 - 끝
+        /// </summary>
+        /// 
+
+
+        /// <summary>
+        /// SLD-200 Loader - 시작
+        /// </summary>
+        public void LDJogbuttonUpEvent(JogControlButtonList type, List<MotionAxis> axisList)
+        {
+            switch (type)
+            {
+                case JogControlButtonList.buttonUp:
+                case JogControlButtonList.buttonDown:
+                case JogControlButtonList.buttonLeft:
+                case JogControlButtonList.buttonRight:
+                case JogControlButtonList.buttonCW:
+                case JogControlButtonList.buttonCCW:
+                case JogControlButtonList.combButtonUp:
+                case JogControlButtonList.combButtonDown:
+                case JogControlButtonList.combButtonLeft:
+                case JogControlButtonList.combButtonRight:
+                case JogControlButtonList.buttonAxisXUpYUp:
+                case JogControlButtonList.buttonAxisXUpYDown:
+                case JogControlButtonList.buttonAxisXDownYUp:
+                case JogControlButtonList.buttonAxisXDownYDown:
+                case JogControlButtonList.buttonZ0Up:
+                case JogControlButtonList.buttonZ0Down:
+                case JogControlButtonList.buttonZ1Up:
+                case JogControlButtonList.buttonZ1Down:
+                    LDbutton_Up(axisList);
+                    break;
+            }
+        }
+
+        private void LDbutton_Up(List<MotionAxis> axisList)
+        {
+            int axisNo = -1;
+
+            if (radioButtonContinuous.Checked == true)
+            {
+                if (axisList != null)
+                {
+                    foreach (MotionAxis axis in axisList)
+                    {
+                        //axis.Stop();                        
+                        if (axis.Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            //axisNo = Int32.Parse(axis.Description);
+                            axisNo = Int32.Parse(axis.Description);
+                            //MC_Func.MC_JogStop(axis.No);
+                            MC_Func.MC_JogStop(axisNo);
+                        }
+                        else if (axis.Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axis.Description);
+                                //ACSSPiiPlusMotionBoard.Api.Halt((Axis)axis.No);
+                                ACSSPiiPlusMotionBoard.Api.Halt((Axis)axisNo);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// SLD-200 Loader - 끝
+        /// </summary>
+        /// 
+
+
+        /// <summary>
+        /// SLD-200 Unloader - 시작
+        /// </summary>
+        public void ULJogbuttonUpEvent(JogControlButtonList type, List<MotionAxis> axisList)
+        {
+            switch (type)
+            {
+                case JogControlButtonList.buttonUp:
+                case JogControlButtonList.buttonDown:
+                case JogControlButtonList.buttonLeft:
+                case JogControlButtonList.buttonRight:
+                case JogControlButtonList.buttonCW:
+                case JogControlButtonList.buttonCCW:
+                case JogControlButtonList.combButtonUp:
+                case JogControlButtonList.combButtonDown:
+                case JogControlButtonList.combButtonLeft:
+                case JogControlButtonList.combButtonRight:
+                case JogControlButtonList.buttonAxisXUpYUp:
+                case JogControlButtonList.buttonAxisXUpYDown:
+                case JogControlButtonList.buttonAxisXDownYUp:
+                case JogControlButtonList.buttonAxisXDownYDown:
+                case JogControlButtonList.buttonZ0Up:
+                case JogControlButtonList.buttonZ0Down:
+                case JogControlButtonList.buttonZ1Up:
+                case JogControlButtonList.buttonZ1Down:
+                    ULbutton_Up(axisList);
+                    break;
+            }
+        }
+
+        private void ULbutton_Up(List<MotionAxis> axisList)
+        {
+            int axisNo = -1;
+
+            if (radioButtonContinuous.Checked == true)
+            {
+                if (axisList != null)
+                {
+                    foreach (MotionAxis axis in axisList)
+                    {
+                        //axis.Stop();                        
+                        if (axis.Board.Configuration.BoardType == MotionBoardType.Ajin)
+                        {
+                            //axisNo = Int32.Parse(axis.Description);
+                            axisNo = Int32.Parse(axis.Description);
+                            //MC_Func.MC_JogStop(axis.No);
+                            MC_Func.MC_JogStop(axisNo);
+                        }
+                        else if (axis.Board.Configuration.BoardType == MotionBoardType.ACS)
+                        {
+                            if (ACSSPiiPlusMotionBoard.Api.IsConnected)
+                            {
+                                axisNo = Int32.Parse(axis.Description);
+                                //ACSSPiiPlusMotionBoard.Api.Halt((Axis)axis.No);
+                                ACSSPiiPlusMotionBoard.Api.Halt((Axis)axisNo);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// SLD-200 Unloader - 끝
         /// </summary>
         /// 
 

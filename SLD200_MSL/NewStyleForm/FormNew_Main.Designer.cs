@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.SiriusViewer_Main = new SpiralLab.Sirius.SiriusViewerForm();
             this.groupBoxMain_VisionImage = new System.Windows.Forms.GroupBox();
             this.groupBoxMain_ProcessingStatus = new System.Windows.Forms.GroupBox();
             this.baseGroupBox_Progress = new SLD200_MSL.WATGroupBox();
@@ -54,30 +55,60 @@
             this.baseLabel_CurrentOneCycle_ElapsedTime = new SLD200_MSL.BaseLabel();
             this.baseLabel_CurrentOneCycle_Time = new SLD200_MSL.BaseLabel();
             this.groupBoxMain_MaterialInformation = new System.Windows.Forms.GroupBox();
+            this.baseTextBox_Socket_Index = new SLD200_MSL.BaseTextBox();
             this.baseTextBox_SocketCountPerModule = new SLD200_MSL.BaseTextBox();
             this.baseLabel_SocketPerModule = new SLD200_MSL.BaseLabel();
-            this.button10 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.SiriusViewer_Main = new SpiralLab.Sirius.SiriusViewerForm();
-            this.button11 = new System.Windows.Forms.Button();
-            this.checkBox5 = new System.Windows.Forms.CheckBox();
-            this.button101 = new System.Windows.Forms.Button();
+            this.baseLabel1 = new SLD200_MSL.BaseLabel();
+            this.button_Main_Stop = new System.Windows.Forms.Button();
+            this.button_Main_Pause = new System.Windows.Forms.Button();
+            this.button_Main_Start = new System.Windows.Forms.Button();
+            this.groupBox_ProcessingData = new System.Windows.Forms.GroupBox();
+            this.button_TEST_RTCInit = new System.Windows.Forms.Button();
+            this.button_TEST_RotOffset = new System.Windows.Forms.Button();
+            this.button_Main_RecipeOpen = new System.Windows.Forms.Button();
+            this.checkBox_Main_CycleStop = new System.Windows.Forms.CheckBox();
+            this.button_Main_Reset = new System.Windows.Forms.Button();
+            this.button_Main_Home = new System.Windows.Forms.Button();
+            this.button_Main_RtcInit = new System.Windows.Forms.Button();
+            this.button_Main_AutoRun = new System.Windows.Forms.Button();
+            this.checkBox_Test_DryRun = new System.Windows.Forms.CheckBox();
+            this.checkBox_Test_SocketAlign_UserOffset = new System.Windows.Forms.CheckBox();
+            this.baseTextBox_Test_SocketAlign_OffsetX = new SLD200_MSL.BaseTextBox();
+            this.baseLabel2 = new SLD200_MSL.BaseLabel();
+            this.baseTextBox_Test_SocketAlign_OffsetY = new SLD200_MSL.BaseTextBox();
+            this.baseLabel3 = new SLD200_MSL.BaseLabel();
+            this.baseTextBox_Test_SocketAlign_Theta = new SLD200_MSL.BaseTextBox();
+            this.baseLabel4 = new SLD200_MSL.BaseLabel();
             this.groupBoxMain_ProcessingStatus.SuspendLayout();
             this.baseGroupBox_Progress.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Module_TargetCount)).BeginInit();
             this.baseGroupBox_WorkingTime.SuspendLayout();
             this.groupBoxMain_MaterialInformation.SuspendLayout();
-            this.groupBox5.SuspendLayout();
+            this.groupBox_ProcessingData.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // SiriusViewer_Main
+            // 
+            this.SiriusViewer_Main.AliasName = "NoName";
+            this.SiriusViewer_Main.BackColor = System.Drawing.SystemColors.Control;
+            this.SiriusViewer_Main.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.SiriusViewer_Main.Document = null;
+            this.SiriusViewer_Main.FileName = "NoName";
+            this.SiriusViewer_Main.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SiriusViewer_Main.Index = ((uint)(0u));
+            this.SiriusViewer_Main.Location = new System.Drawing.Point(11, 32);
+            this.SiriusViewer_Main.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.SiriusViewer_Main.Name = "SiriusViewer_Main";
+            this.SiriusViewer_Main.Progress = 0;
+            this.SiriusViewer_Main.Size = new System.Drawing.Size(827, 538);
+            this.SiriusViewer_Main.TabIndex = 34;
             // 
             // groupBoxMain_VisionImage
             // 
             this.groupBoxMain_VisionImage.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxMain_VisionImage.Location = new System.Drawing.Point(30, 15);
+            this.groupBoxMain_VisionImage.Location = new System.Drawing.Point(12, 9);
             this.groupBoxMain_VisionImage.Name = "groupBoxMain_VisionImage";
-            this.groupBoxMain_VisionImage.Size = new System.Drawing.Size(388, 305);
+            this.groupBoxMain_VisionImage.Size = new System.Drawing.Size(388, 250);
             this.groupBoxMain_VisionImage.TabIndex = 0;
             this.groupBoxMain_VisionImage.TabStop = false;
             this.groupBoxMain_VisionImage.Text = " Vision Image ";
@@ -87,9 +118,9 @@
             this.groupBoxMain_ProcessingStatus.Controls.Add(this.baseGroupBox_Progress);
             this.groupBoxMain_ProcessingStatus.Controls.Add(this.baseGroupBox_WorkingTime);
             this.groupBoxMain_ProcessingStatus.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxMain_ProcessingStatus.Location = new System.Drawing.Point(468, 15);
+            this.groupBoxMain_ProcessingStatus.Location = new System.Drawing.Point(424, 9);
             this.groupBoxMain_ProcessingStatus.Name = "groupBoxMain_ProcessingStatus";
-            this.groupBoxMain_ProcessingStatus.Size = new System.Drawing.Size(1029, 305);
+            this.groupBoxMain_ProcessingStatus.Size = new System.Drawing.Size(900, 250);
             this.groupBoxMain_ProcessingStatus.TabIndex = 1;
             this.groupBoxMain_ProcessingStatus.TabStop = false;
             this.groupBoxMain_ProcessingStatus.Text = " Processing Status ";
@@ -110,7 +141,7 @@
             this.baseGroupBox_Progress.Controls.Add(this.baseLabel_PNLCount_Total);
             this.baseGroupBox_Progress.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseGroupBox_Progress.ForeColor = System.Drawing.Color.Black;
-            this.baseGroupBox_Progress.Location = new System.Drawing.Point(479, 38);
+            this.baseGroupBox_Progress.Location = new System.Drawing.Point(459, 33);
             this.baseGroupBox_Progress.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseGroupBox_Progress.Name = "baseGroupBox_Progress";
             this.baseGroupBox_Progress.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -282,11 +313,11 @@
             this.baseGroupBox_WorkingTime.Controls.Add(this.baseLabel_CurrentOneCycle_Time);
             this.baseGroupBox_WorkingTime.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseGroupBox_WorkingTime.ForeColor = System.Drawing.Color.Black;
-            this.baseGroupBox_WorkingTime.Location = new System.Drawing.Point(17, 38);
+            this.baseGroupBox_WorkingTime.Location = new System.Drawing.Point(14, 33);
             this.baseGroupBox_WorkingTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseGroupBox_WorkingTime.Name = "baseGroupBox_WorkingTime";
             this.baseGroupBox_WorkingTime.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.baseGroupBox_WorkingTime.Size = new System.Drawing.Size(426, 251);
+            this.baseGroupBox_WorkingTime.Size = new System.Drawing.Size(427, 202);
             this.baseGroupBox_WorkingTime.TabIndex = 192;
             this.baseGroupBox_WorkingTime.TabStop = false;
             this.baseGroupBox_WorkingTime.Text = " [ Working Time ] ";
@@ -300,7 +331,7 @@
             this.button_AverageOneCycleTime_Clear.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.button_AverageOneCycleTime_Clear.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button_AverageOneCycleTime_Clear.ForeColor = System.Drawing.Color.Black;
-            this.button_AverageOneCycleTime_Clear.Location = new System.Drawing.Point(348, 207);
+            this.button_AverageOneCycleTime_Clear.Location = new System.Drawing.Point(348, 159);
             this.button_AverageOneCycleTime_Clear.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.button_AverageOneCycleTime_Clear.Name = "button_AverageOneCycleTime_Clear";
             this.button_AverageOneCycleTime_Clear.Size = new System.Drawing.Size(67, 33);
@@ -313,7 +344,7 @@
             this.baseLabel_Average_OneCycleTime.AutoSize = true;
             this.baseLabel_Average_OneCycleTime.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Average_OneCycleTime.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Average_OneCycleTime.Location = new System.Drawing.Point(228, 214);
+            this.baseLabel_Average_OneCycleTime.Location = new System.Drawing.Point(228, 166);
             this.baseLabel_Average_OneCycleTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Average_OneCycleTime.Name = "baseLabel_Average_OneCycleTime";
             this.baseLabel_Average_OneCycleTime.Size = new System.Drawing.Size(66, 18);
@@ -325,7 +356,7 @@
             this.baseLabel_AverageOneCycle_Time.AutoSize = true;
             this.baseLabel_AverageOneCycle_Time.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_AverageOneCycle_Time.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_AverageOneCycle_Time.Location = new System.Drawing.Point(12, 214);
+            this.baseLabel_AverageOneCycle_Time.Location = new System.Drawing.Point(12, 166);
             this.baseLabel_AverageOneCycle_Time.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_AverageOneCycle_Time.Name = "baseLabel_AverageOneCycle_Time";
             this.baseLabel_AverageOneCycle_Time.Size = new System.Drawing.Size(171, 18);
@@ -334,9 +365,9 @@
             // 
             // progressBar_TotalRemained_Time
             // 
-            this.progressBar_TotalRemained_Time.Location = new System.Drawing.Point(12, 145);
+            this.progressBar_TotalRemained_Time.Location = new System.Drawing.Point(12, 121);
             this.progressBar_TotalRemained_Time.Name = "progressBar_TotalRemained_Time";
-            this.progressBar_TotalRemained_Time.Size = new System.Drawing.Size(403, 36);
+            this.progressBar_TotalRemained_Time.Size = new System.Drawing.Size(403, 21);
             this.progressBar_TotalRemained_Time.TabIndex = 115;
             this.progressBar_TotalRemained_Time.Value = 50;
             // 
@@ -345,7 +376,7 @@
             this.baseLabel_Total_RemainedTime.AutoSize = true;
             this.baseLabel_Total_RemainedTime.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Total_RemainedTime.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Total_RemainedTime.Location = new System.Drawing.Point(228, 121);
+            this.baseLabel_Total_RemainedTime.Location = new System.Drawing.Point(228, 97);
             this.baseLabel_Total_RemainedTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Total_RemainedTime.Name = "baseLabel_Total_RemainedTime";
             this.baseLabel_Total_RemainedTime.Size = new System.Drawing.Size(66, 18);
@@ -357,7 +388,7 @@
             this.baseLabel_TotalRunning_Time.AutoSize = true;
             this.baseLabel_TotalRunning_Time.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_TotalRunning_Time.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_TotalRunning_Time.Location = new System.Drawing.Point(12, 121);
+            this.baseLabel_TotalRunning_Time.Location = new System.Drawing.Point(12, 97);
             this.baseLabel_TotalRunning_Time.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_TotalRunning_Time.Name = "baseLabel_TotalRunning_Time";
             this.baseLabel_TotalRunning_Time.Size = new System.Drawing.Size(135, 18);
@@ -368,7 +399,7 @@
             // 
             this.progressBar_OneCycle_Time.Location = new System.Drawing.Point(12, 58);
             this.progressBar_OneCycle_Time.Name = "progressBar_OneCycle_Time";
-            this.progressBar_OneCycle_Time.Size = new System.Drawing.Size(403, 36);
+            this.progressBar_OneCycle_Time.Size = new System.Drawing.Size(403, 21);
             this.progressBar_OneCycle_Time.TabIndex = 112;
             this.progressBar_OneCycle_Time.Value = 50;
             // 
@@ -410,15 +441,32 @@
             // 
             // groupBoxMain_MaterialInformation
             // 
+            this.groupBoxMain_MaterialInformation.Controls.Add(this.baseTextBox_Socket_Index);
             this.groupBoxMain_MaterialInformation.Controls.Add(this.baseTextBox_SocketCountPerModule);
             this.groupBoxMain_MaterialInformation.Controls.Add(this.baseLabel_SocketPerModule);
+            this.groupBoxMain_MaterialInformation.Controls.Add(this.baseLabel1);
             this.groupBoxMain_MaterialInformation.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxMain_MaterialInformation.Location = new System.Drawing.Point(1547, 15);
+            this.groupBoxMain_MaterialInformation.Location = new System.Drawing.Point(1348, 9);
             this.groupBoxMain_MaterialInformation.Name = "groupBoxMain_MaterialInformation";
-            this.groupBoxMain_MaterialInformation.Size = new System.Drawing.Size(350, 305);
+            this.groupBoxMain_MaterialInformation.Size = new System.Drawing.Size(323, 186);
             this.groupBoxMain_MaterialInformation.TabIndex = 2;
             this.groupBoxMain_MaterialInformation.TabStop = false;
             this.groupBoxMain_MaterialInformation.Text = " Material Information ";
+            // 
+            // baseTextBox_Socket_Index
+            // 
+            this.baseTextBox_Socket_Index.BackColor = System.Drawing.Color.White;
+            this.baseTextBox_Socket_Index.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.baseTextBox_Socket_Index.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.baseTextBox_Socket_Index.ForeColor = System.Drawing.Color.Black;
+            this.baseTextBox_Socket_Index.Location = new System.Drawing.Point(208, 86);
+            this.baseTextBox_Socket_Index.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.baseTextBox_Socket_Index.Name = "baseTextBox_Socket_Index";
+            this.baseTextBox_Socket_Index.ReadOnly = true;
+            this.baseTextBox_Socket_Index.Size = new System.Drawing.Size(98, 26);
+            this.baseTextBox_Socket_Index.TabIndex = 140;
+            this.baseTextBox_Socket_Index.Text = "0";
+            this.baseTextBox_Socket_Index.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // baseTextBox_SocketCountPerModule
             // 
@@ -426,138 +474,318 @@
             this.baseTextBox_SocketCountPerModule.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.baseTextBox_SocketCountPerModule.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseTextBox_SocketCountPerModule.ForeColor = System.Drawing.Color.Black;
-            this.baseTextBox_SocketCountPerModule.Location = new System.Drawing.Point(207, 38);
+            this.baseTextBox_SocketCountPerModule.Location = new System.Drawing.Point(208, 38);
             this.baseTextBox_SocketCountPerModule.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseTextBox_SocketCountPerModule.Name = "baseTextBox_SocketCountPerModule";
             this.baseTextBox_SocketCountPerModule.ReadOnly = true;
-            this.baseTextBox_SocketCountPerModule.Size = new System.Drawing.Size(127, 26);
+            this.baseTextBox_SocketCountPerModule.Size = new System.Drawing.Size(98, 26);
             this.baseTextBox_SocketCountPerModule.TabIndex = 124;
             this.baseTextBox_SocketCountPerModule.Text = "0";
             this.baseTextBox_SocketCountPerModule.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // baseLabel_SocketPerModule
             // 
-            this.baseLabel_SocketPerModule.AutoSize = true;
             this.baseLabel_SocketPerModule.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_SocketPerModule.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_SocketPerModule.Location = new System.Drawing.Point(15, 42);
+            this.baseLabel_SocketPerModule.Location = new System.Drawing.Point(15, 37);
             this.baseLabel_SocketPerModule.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_SocketPerModule.Name = "baseLabel_SocketPerModule";
-            this.baseLabel_SocketPerModule.Size = new System.Drawing.Size(169, 18);
+            this.baseLabel_SocketPerModule.Size = new System.Drawing.Size(185, 26);
             this.baseLabel_SocketPerModule.TabIndex = 123;
             this.baseLabel_SocketPerModule.Text = "Socket count per Module";
+            this.baseLabel_SocketPerModule.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button10
+            // baseLabel1
             // 
-            this.button10.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button10.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.button10.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button10.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button10.Location = new System.Drawing.Point(1733, 742);
-            this.button10.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(165, 78);
-            this.button10.TabIndex = 22;
-            this.button10.Text = "Stop";
-            this.button10.UseVisualStyleBackColor = false;
+            this.baseLabel1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.baseLabel1.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel1.Location = new System.Drawing.Point(15, 85);
+            this.baseLabel1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.baseLabel1.Name = "baseLabel1";
+            this.baseLabel1.Size = new System.Drawing.Size(185, 26);
+            this.baseLabel1.TabIndex = 139;
+            this.baseLabel1.Text = "Selected Socket Index :";
+            this.baseLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button9
+            // button_Main_Stop
             // 
-            this.button9.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button9.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.button9.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button9.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button9.Location = new System.Drawing.Point(1733, 546);
-            this.button9.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(165, 78);
-            this.button9.TabIndex = 21;
-            this.button9.Text = "Pause";
-            this.button9.UseVisualStyleBackColor = false;
+            this.button_Main_Stop.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_Main_Stop.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.button_Main_Stop.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button_Main_Stop.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.button_Main_Stop.Location = new System.Drawing.Point(1733, 740);
+            this.button_Main_Stop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_Main_Stop.Name = "button_Main_Stop";
+            this.button_Main_Stop.Size = new System.Drawing.Size(165, 78);
+            this.button_Main_Stop.TabIndex = 22;
+            this.button_Main_Stop.Text = "Stop";
+            this.button_Main_Stop.UseVisualStyleBackColor = false;
+            this.button_Main_Stop.Click += new System.EventHandler(this.button_Main_Stop_Click);
             // 
-            // button8
+            // button_Main_Pause
             // 
-            this.button8.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button8.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.button8.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button8.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button8.Location = new System.Drawing.Point(1733, 350);
-            this.button8.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(165, 78);
-            this.button8.TabIndex = 20;
-            this.button8.Text = "Start";
-            this.button8.UseVisualStyleBackColor = false;
+            this.button_Main_Pause.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_Main_Pause.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.button_Main_Pause.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button_Main_Pause.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.button_Main_Pause.Location = new System.Drawing.Point(1733, 554);
+            this.button_Main_Pause.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_Main_Pause.Name = "button_Main_Pause";
+            this.button_Main_Pause.Size = new System.Drawing.Size(165, 78);
+            this.button_Main_Pause.TabIndex = 21;
+            this.button_Main_Pause.Text = "Pause";
+            this.button_Main_Pause.UseVisualStyleBackColor = false;
             // 
-            // groupBox5
+            // button_Main_Start
             // 
-            this.groupBox5.Controls.Add(this.SiriusViewer_Main);
-            this.groupBox5.Controls.Add(this.button11);
-            this.groupBox5.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox5.Location = new System.Drawing.Point(30, 340);
-            this.groupBox5.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox5.Size = new System.Drawing.Size(942, 519);
-            this.groupBox5.TabIndex = 19;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Processing Data";
+            this.button_Main_Start.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_Main_Start.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.button_Main_Start.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button_Main_Start.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.button_Main_Start.Location = new System.Drawing.Point(1733, 368);
+            this.button_Main_Start.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_Main_Start.Name = "button_Main_Start";
+            this.button_Main_Start.Size = new System.Drawing.Size(165, 78);
+            this.button_Main_Start.TabIndex = 20;
+            this.button_Main_Start.Text = "Start";
+            this.button_Main_Start.UseVisualStyleBackColor = false;
+            this.button_Main_Start.Click += new System.EventHandler(this.button_Main_Start_Click);
             // 
-            // SiriusViewer_Main
+            // groupBox_ProcessingData
             // 
-            this.SiriusViewer_Main.AliasName = "NoName";
-            this.SiriusViewer_Main.BackColor = System.Drawing.SystemColors.Control;
-            this.SiriusViewer_Main.Document = null;
-            this.SiriusViewer_Main.FileName = "NoName";
-            this.SiriusViewer_Main.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SiriusViewer_Main.Index = ((uint)(0u));
-            this.SiriusViewer_Main.Location = new System.Drawing.Point(16, 34);
-            this.SiriusViewer_Main.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.SiriusViewer_Main.Name = "SiriusViewer_Main";
-            this.SiriusViewer_Main.Progress = 0;
-            this.SiriusViewer_Main.Size = new System.Drawing.Size(771, 471);
-            this.SiriusViewer_Main.TabIndex = 37;
+            this.groupBox_ProcessingData.Controls.Add(this.button_TEST_RTCInit);
+            this.groupBox_ProcessingData.Controls.Add(this.button_TEST_RotOffset);
+            this.groupBox_ProcessingData.Controls.Add(this.button_Main_RecipeOpen);
+            this.groupBox_ProcessingData.Controls.Add(this.SiriusViewer_Main);
+            this.groupBox_ProcessingData.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox_ProcessingData.Location = new System.Drawing.Point(12, 285);
+            this.groupBox_ProcessingData.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox_ProcessingData.Name = "groupBox_ProcessingData";
+            this.groupBox_ProcessingData.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox_ProcessingData.Size = new System.Drawing.Size(1041, 581);
+            this.groupBox_ProcessingData.TabIndex = 19;
+            this.groupBox_ProcessingData.TabStop = false;
+            this.groupBox_ProcessingData.Text = "Processing Data";
             // 
-            // button11
+            // button_TEST_RTCInit
             // 
-            this.button11.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button11.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.button11.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button11.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button11.Location = new System.Drawing.Point(796, 32);
-            this.button11.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(131, 63);
-            this.button11.TabIndex = 5;
-            this.button11.Text = "Open";
-            this.button11.UseVisualStyleBackColor = false;
+            this.button_TEST_RTCInit.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_TEST_RTCInit.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.button_TEST_RTCInit.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button_TEST_RTCInit.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.button_TEST_RTCInit.Location = new System.Drawing.Point(860, 492);
+            this.button_TEST_RTCInit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_TEST_RTCInit.Name = "button_TEST_RTCInit";
+            this.button_TEST_RTCInit.Size = new System.Drawing.Size(167, 78);
+            this.button_TEST_RTCInit.TabIndex = 59;
+            this.button_TEST_RTCInit.Text = "테스트 : RTC Init";
+            this.button_TEST_RTCInit.UseVisualStyleBackColor = false;
+            this.button_TEST_RTCInit.Click += new System.EventHandler(this.button_TEST_RTCInit_Click);
             // 
-            // checkBox5
+            // button_TEST_RotOffset
             // 
-            this.checkBox5.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBox5.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.checkBox5.Location = new System.Drawing.Point(1733, 644);
-            this.checkBox5.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(165, 78);
-            this.checkBox5.TabIndex = 55;
-            this.checkBox5.Text = "Cycle Stop";
-            this.checkBox5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox5.UseVisualStyleBackColor = false;
+            this.button_TEST_RotOffset.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_TEST_RotOffset.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.button_TEST_RotOffset.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button_TEST_RotOffset.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.button_TEST_RotOffset.Location = new System.Drawing.Point(860, 379);
+            this.button_TEST_RotOffset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_TEST_RotOffset.Name = "button_TEST_RotOffset";
+            this.button_TEST_RotOffset.Size = new System.Drawing.Size(167, 78);
+            this.button_TEST_RotOffset.TabIndex = 58;
+            this.button_TEST_RotOffset.Text = "테스트 : Rot, Offset 이동";
+            this.button_TEST_RotOffset.UseVisualStyleBackColor = false;
+            this.button_TEST_RotOffset.Click += new System.EventHandler(this.button_TEST_RotOffset_Click);
             // 
-            // button101
+            // button_Main_RecipeOpen
             // 
-            this.button101.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button101.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.button101.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button101.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button101.Location = new System.Drawing.Point(1733, 448);
-            this.button101.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button101.Name = "button101";
-            this.button101.Size = new System.Drawing.Size(165, 78);
-            this.button101.TabIndex = 54;
-            this.button101.Text = "Reset";
-            this.button101.UseVisualStyleBackColor = false;
+            this.button_Main_RecipeOpen.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_Main_RecipeOpen.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.button_Main_RecipeOpen.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button_Main_RecipeOpen.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.button_Main_RecipeOpen.Location = new System.Drawing.Point(860, 30);
+            this.button_Main_RecipeOpen.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_Main_RecipeOpen.Name = "button_Main_RecipeOpen";
+            this.button_Main_RecipeOpen.Size = new System.Drawing.Size(167, 78);
+            this.button_Main_RecipeOpen.TabIndex = 5;
+            this.button_Main_RecipeOpen.Text = "Recipe Open";
+            this.button_Main_RecipeOpen.UseVisualStyleBackColor = false;
+            this.button_Main_RecipeOpen.Click += new System.EventHandler(this.button_Main_RecipeOpen_Click);
+            // 
+            // checkBox_Main_CycleStop
+            // 
+            this.checkBox_Main_CycleStop.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.checkBox_Main_CycleStop.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.checkBox_Main_CycleStop.Location = new System.Drawing.Point(1733, 647);
+            this.checkBox_Main_CycleStop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.checkBox_Main_CycleStop.Name = "checkBox_Main_CycleStop";
+            this.checkBox_Main_CycleStop.Size = new System.Drawing.Size(165, 78);
+            this.checkBox_Main_CycleStop.TabIndex = 55;
+            this.checkBox_Main_CycleStop.Text = "Cycle Stop";
+            this.checkBox_Main_CycleStop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_Main_CycleStop.UseVisualStyleBackColor = false;
+            // 
+            // button_Main_Reset
+            // 
+            this.button_Main_Reset.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_Main_Reset.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.button_Main_Reset.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button_Main_Reset.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.button_Main_Reset.Location = new System.Drawing.Point(1733, 461);
+            this.button_Main_Reset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_Main_Reset.Name = "button_Main_Reset";
+            this.button_Main_Reset.Size = new System.Drawing.Size(165, 78);
+            this.button_Main_Reset.TabIndex = 54;
+            this.button_Main_Reset.Text = "Reset";
+            this.button_Main_Reset.UseVisualStyleBackColor = false;
+            // 
+            // button_Main_Home
+            // 
+            this.button_Main_Home.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_Main_Home.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.button_Main_Home.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button_Main_Home.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.button_Main_Home.Location = new System.Drawing.Point(1709, 15);
+            this.button_Main_Home.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_Main_Home.Name = "button_Main_Home";
+            this.button_Main_Home.Size = new System.Drawing.Size(189, 78);
+            this.button_Main_Home.TabIndex = 56;
+            this.button_Main_Home.Text = "Machine\r\nInitialize";
+            this.button_Main_Home.UseVisualStyleBackColor = false;
+            this.button_Main_Home.Click += new System.EventHandler(this.button_Main_Home_Click);
+            // 
+            // button_Main_RtcInit
+            // 
+            this.button_Main_RtcInit.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_Main_RtcInit.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.button_Main_RtcInit.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button_Main_RtcInit.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.button_Main_RtcInit.Location = new System.Drawing.Point(1709, 113);
+            this.button_Main_RtcInit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_Main_RtcInit.Name = "button_Main_RtcInit";
+            this.button_Main_RtcInit.Size = new System.Drawing.Size(189, 78);
+            this.button_Main_RtcInit.TabIndex = 57;
+            this.button_Main_RtcInit.Text = "Scanner Board\r\nInitialize";
+            this.button_Main_RtcInit.UseVisualStyleBackColor = false;
+            this.button_Main_RtcInit.Click += new System.EventHandler(this.button_Main_RtcInit_Click);
+            // 
+            // button_Main_AutoRun
+            // 
+            this.button_Main_AutoRun.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_Main_AutoRun.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.button_Main_AutoRun.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button_Main_AutoRun.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.button_Main_AutoRun.Location = new System.Drawing.Point(1733, 254);
+            this.button_Main_AutoRun.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_Main_AutoRun.Name = "button_Main_AutoRun";
+            this.button_Main_AutoRun.Size = new System.Drawing.Size(165, 78);
+            this.button_Main_AutoRun.TabIndex = 58;
+            this.button_Main_AutoRun.Text = "Auto Run";
+            this.button_Main_AutoRun.UseVisualStyleBackColor = false;
+            this.button_Main_AutoRun.Click += new System.EventHandler(this.button_Main_AutoRun_Click);
+            // 
+            // checkBox_Test_DryRun
+            // 
+            this.checkBox_Test_DryRun.AutoSize = true;
+            this.checkBox_Test_DryRun.Checked = true;
+            this.checkBox_Test_DryRun.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_Test_DryRun.Location = new System.Drawing.Point(1733, 226);
+            this.checkBox_Test_DryRun.Name = "checkBox_Test_DryRun";
+            this.checkBox_Test_DryRun.Size = new System.Drawing.Size(69, 18);
+            this.checkBox_Test_DryRun.TabIndex = 59;
+            this.checkBox_Test_DryRun.Text = "Dry Run";
+            this.checkBox_Test_DryRun.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_Test_SocketAlign_UserOffset
+            // 
+            this.checkBox_Test_SocketAlign_UserOffset.AutoSize = true;
+            this.checkBox_Test_SocketAlign_UserOffset.Checked = true;
+            this.checkBox_Test_SocketAlign_UserOffset.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_Test_SocketAlign_UserOffset.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.checkBox_Test_SocketAlign_UserOffset.Location = new System.Drawing.Point(1441, 368);
+            this.checkBox_Test_SocketAlign_UserOffset.Name = "checkBox_Test_SocketAlign_UserOffset";
+            this.checkBox_Test_SocketAlign_UserOffset.Size = new System.Drawing.Size(262, 21);
+            this.checkBox_Test_SocketAlign_UserOffset.TabIndex = 136;
+            this.checkBox_Test_SocketAlign_UserOffset.Text = "Test : 얼라인 결과에 Offset 이동하여 가공";
+            this.checkBox_Test_SocketAlign_UserOffset.UseVisualStyleBackColor = true;
+            // 
+            // baseTextBox_Test_SocketAlign_OffsetX
+            // 
+            this.baseTextBox_Test_SocketAlign_OffsetX.BackColor = System.Drawing.Color.White;
+            this.baseTextBox_Test_SocketAlign_OffsetX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.baseTextBox_Test_SocketAlign_OffsetX.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.baseTextBox_Test_SocketAlign_OffsetX.ForeColor = System.Drawing.Color.Black;
+            this.baseTextBox_Test_SocketAlign_OffsetX.Location = new System.Drawing.Point(1606, 395);
+            this.baseTextBox_Test_SocketAlign_OffsetX.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.baseTextBox_Test_SocketAlign_OffsetX.Name = "baseTextBox_Test_SocketAlign_OffsetX";
+            this.baseTextBox_Test_SocketAlign_OffsetX.Size = new System.Drawing.Size(88, 26);
+            this.baseTextBox_Test_SocketAlign_OffsetX.TabIndex = 142;
+            this.baseTextBox_Test_SocketAlign_OffsetX.Text = "0";
+            this.baseTextBox_Test_SocketAlign_OffsetX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // baseLabel2
+            // 
+            this.baseLabel2.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel2.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel2.Location = new System.Drawing.Point(1524, 394);
+            this.baseLabel2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.baseLabel2.Name = "baseLabel2";
+            this.baseLabel2.Size = new System.Drawing.Size(78, 26);
+            this.baseLabel2.TabIndex = 141;
+            this.baseLabel2.Text = "Offset X :";
+            this.baseLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // baseTextBox_Test_SocketAlign_OffsetY
+            // 
+            this.baseTextBox_Test_SocketAlign_OffsetY.BackColor = System.Drawing.Color.White;
+            this.baseTextBox_Test_SocketAlign_OffsetY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.baseTextBox_Test_SocketAlign_OffsetY.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.baseTextBox_Test_SocketAlign_OffsetY.ForeColor = System.Drawing.Color.Black;
+            this.baseTextBox_Test_SocketAlign_OffsetY.Location = new System.Drawing.Point(1606, 423);
+            this.baseTextBox_Test_SocketAlign_OffsetY.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.baseTextBox_Test_SocketAlign_OffsetY.Name = "baseTextBox_Test_SocketAlign_OffsetY";
+            this.baseTextBox_Test_SocketAlign_OffsetY.Size = new System.Drawing.Size(88, 26);
+            this.baseTextBox_Test_SocketAlign_OffsetY.TabIndex = 144;
+            this.baseTextBox_Test_SocketAlign_OffsetY.Text = "0";
+            this.baseTextBox_Test_SocketAlign_OffsetY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // baseLabel3
+            // 
+            this.baseLabel3.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel3.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel3.Location = new System.Drawing.Point(1524, 422);
+            this.baseLabel3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.baseLabel3.Name = "baseLabel3";
+            this.baseLabel3.Size = new System.Drawing.Size(78, 26);
+            this.baseLabel3.TabIndex = 143;
+            this.baseLabel3.Text = "Offset Y :";
+            this.baseLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // baseTextBox_Test_SocketAlign_Theta
+            // 
+            this.baseTextBox_Test_SocketAlign_Theta.BackColor = System.Drawing.Color.White;
+            this.baseTextBox_Test_SocketAlign_Theta.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.baseTextBox_Test_SocketAlign_Theta.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.baseTextBox_Test_SocketAlign_Theta.ForeColor = System.Drawing.Color.Black;
+            this.baseTextBox_Test_SocketAlign_Theta.Location = new System.Drawing.Point(1606, 451);
+            this.baseTextBox_Test_SocketAlign_Theta.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.baseTextBox_Test_SocketAlign_Theta.Name = "baseTextBox_Test_SocketAlign_Theta";
+            this.baseTextBox_Test_SocketAlign_Theta.Size = new System.Drawing.Size(88, 26);
+            this.baseTextBox_Test_SocketAlign_Theta.TabIndex = 146;
+            this.baseTextBox_Test_SocketAlign_Theta.Text = "0";
+            this.baseTextBox_Test_SocketAlign_Theta.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // baseLabel4
+            // 
+            this.baseLabel4.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel4.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel4.Location = new System.Drawing.Point(1524, 450);
+            this.baseLabel4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.baseLabel4.Name = "baseLabel4";
+            this.baseLabel4.Size = new System.Drawing.Size(78, 26);
+            this.baseLabel4.TabIndex = 145;
+            this.baseLabel4.Text = "Theta :";
+            this.baseLabel4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FormNew_Main
             // 
@@ -565,12 +793,23 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 877);
             this.ControlBox = false;
-            this.Controls.Add(this.checkBox5);
-            this.Controls.Add(this.button101);
-            this.Controls.Add(this.button10);
-            this.Controls.Add(this.button9);
-            this.Controls.Add(this.button8);
-            this.Controls.Add(this.groupBox5);
+            this.Controls.Add(this.baseTextBox_Test_SocketAlign_Theta);
+            this.Controls.Add(this.baseLabel4);
+            this.Controls.Add(this.baseTextBox_Test_SocketAlign_OffsetY);
+            this.Controls.Add(this.baseLabel3);
+            this.Controls.Add(this.baseTextBox_Test_SocketAlign_OffsetX);
+            this.Controls.Add(this.baseLabel2);
+            this.Controls.Add(this.checkBox_Test_SocketAlign_UserOffset);
+            this.Controls.Add(this.checkBox_Test_DryRun);
+            this.Controls.Add(this.button_Main_AutoRun);
+            this.Controls.Add(this.button_Main_RtcInit);
+            this.Controls.Add(this.button_Main_Home);
+            this.Controls.Add(this.checkBox_Main_CycleStop);
+            this.Controls.Add(this.button_Main_Reset);
+            this.Controls.Add(this.button_Main_Stop);
+            this.Controls.Add(this.button_Main_Pause);
+            this.Controls.Add(this.button_Main_Start);
+            this.Controls.Add(this.groupBox_ProcessingData);
             this.Controls.Add(this.groupBoxMain_MaterialInformation);
             this.Controls.Add(this.groupBoxMain_ProcessingStatus);
             this.Controls.Add(this.groupBoxMain_VisionImage);
@@ -581,6 +820,7 @@
             this.MinimizeBox = false;
             this.Name = "FormNew_Main";
             this.Text = "FormNew_Main";
+            this.Shown += new System.EventHandler(this.FormNew_Main_Shown);
             this.groupBoxMain_ProcessingStatus.ResumeLayout(false);
             this.baseGroupBox_Progress.ResumeLayout(false);
             this.baseGroupBox_Progress.PerformLayout();
@@ -589,8 +829,9 @@
             this.baseGroupBox_WorkingTime.PerformLayout();
             this.groupBoxMain_MaterialInformation.ResumeLayout(false);
             this.groupBoxMain_MaterialInformation.PerformLayout();
-            this.groupBox5.ResumeLayout(false);
+            this.groupBox_ProcessingData.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -599,11 +840,11 @@
         private System.Windows.Forms.GroupBox groupBoxMain_VisionImage;
         private System.Windows.Forms.GroupBox groupBoxMain_ProcessingStatus;
         private System.Windows.Forms.GroupBox groupBoxMain_MaterialInformation;
-        private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.Button button9;
-        private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.Button button11;
+        private System.Windows.Forms.Button button_Main_Stop;
+        private System.Windows.Forms.Button button_Main_Pause;
+        private System.Windows.Forms.Button button_Main_Start;
+        private System.Windows.Forms.GroupBox groupBox_ProcessingData;
+        private System.Windows.Forms.Button button_Main_RecipeOpen;
         private WATGroupBox baseGroupBox_Progress;
         private System.Windows.Forms.NumericUpDown numericUpDown_Module_TargetCount;
         private BaseLabel baseLabel_ModuleCount_Target;
@@ -630,7 +871,22 @@
         private BaseTextBox baseTextBox_TotalSocketCount;
         private BaseLabel baseLabel_SocketCount;
         public SpiralLab.Sirius.SiriusViewerForm SiriusViewer_Main;
-        private System.Windows.Forms.CheckBox checkBox5;
-        private System.Windows.Forms.Button button101;
+        private System.Windows.Forms.CheckBox checkBox_Main_CycleStop;
+        private System.Windows.Forms.Button button_Main_Reset;
+        private System.Windows.Forms.Button button_Main_Home;
+        private System.Windows.Forms.Button button_Main_RtcInit;
+        private BaseTextBox baseTextBox_Socket_Index;
+        private BaseLabel baseLabel1;
+        private System.Windows.Forms.Button button_TEST_RotOffset;
+        private System.Windows.Forms.Button button_Main_AutoRun;
+        private System.Windows.Forms.Button button_TEST_RTCInit;
+        private System.Windows.Forms.CheckBox checkBox_Test_DryRun;
+        private System.Windows.Forms.CheckBox checkBox_Test_SocketAlign_UserOffset;
+        private BaseTextBox baseTextBox_Test_SocketAlign_OffsetX;
+        private BaseLabel baseLabel2;
+        private BaseTextBox baseTextBox_Test_SocketAlign_OffsetY;
+        private BaseLabel baseLabel3;
+        private BaseTextBox baseTextBox_Test_SocketAlign_Theta;
+        private BaseLabel baseLabel4;
     }
 }

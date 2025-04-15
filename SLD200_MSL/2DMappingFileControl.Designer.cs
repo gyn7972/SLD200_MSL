@@ -46,20 +46,23 @@
             this.baseGroupBox1.ForeColor = System.Drawing.Color.Black;
             this.baseGroupBox1.Location = new System.Drawing.Point(0, 0);
             this.baseGroupBox1.Name = "baseGroupBox1";
-            this.baseGroupBox1.Size = new System.Drawing.Size(440, 102);
+            this.baseGroupBox1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseGroupBox1.Size = new System.Drawing.Size(500, 102+28);
             this.baseGroupBox1.TabIndex = 0;
             this.baseGroupBox1.TabStop = false;
             this.baseGroupBox1.Text = " 2D Mapping ";
             // 
             // baseToggleBtn_Use
             // 
-            this.baseToggleBtn_Use.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            //this.baseToggleBtn_Use.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            this.baseToggleBtn_Use.BackColor = System.Drawing.Color.White;
             this.baseToggleBtn_Use.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.baseToggleBtn_Use.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.baseToggleBtn_Use.Font = new System.Drawing.Font("Tahoma", 12.0F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.baseToggleBtn_Use.Location = new System.Drawing.Point(9, 65);
+            //this.baseToggleBtn_Use.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.baseToggleBtn_Use.ForeColor = System.Drawing.Color.Black;
+            this.baseToggleBtn_Use.Font = new System.Drawing.Font("Tahoma", 10.0F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseToggleBtn_Use.Location = new System.Drawing.Point(9, 65+28);
             this.baseToggleBtn_Use.Name = "baseToggleBtn_Use";
-            this.baseToggleBtn_Use.Size = new System.Drawing.Size(422, 30);
+            this.baseToggleBtn_Use.Size = new System.Drawing.Size(482, 30);
             this.baseToggleBtn_Use.TabIndex = 3;
             this.baseToggleBtn_Use.Text = " Use / Not Used ";
             this.baseToggleBtn_Use.UseVisualStyleBackColor = false;
@@ -67,11 +70,13 @@
             // 
             // baseBtn_Load
             // 
-            this.baseBtn_Load.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            //this.baseBtn_Load.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            this.baseBtn_Load.BackColor = System.Drawing.Color.White;
             this.baseBtn_Load.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.baseBtn_Load.Font = new System.Drawing.Font("Tahoma", 11.0F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.baseBtn_Load.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.baseBtn_Load.Location = new System.Drawing.Point(338, 20);
+            this.baseBtn_Load.Font = new System.Drawing.Font("Tahoma", 10.0F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            //this.baseBtn_Load.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.baseBtn_Load.ForeColor = System.Drawing.Color.Black;
+            this.baseBtn_Load.Location = new System.Drawing.Point(400, 20);
             this.baseBtn_Load.Name = "baseBtn_Load";
             this.baseBtn_Load.Size = new System.Drawing.Size(90, 30);
             this.baseBtn_Load.TabIndex = 2;
@@ -82,24 +87,26 @@
             // baseLabel1
             // 
             this.baseLabel1.AutoSize = true;
-            this.baseLabel1.Font = new System.Drawing.Font("돋움", 11F, System.Drawing.FontStyle.Bold);
+            this.baseLabel1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.baseLabel1.ForeColor = System.Drawing.Color.Black;
             this.baseLabel1.Location = new System.Drawing.Point(6, 29);
             this.baseLabel1.Name = "baseLabel1";
-            this.baseLabel1.Size = new System.Drawing.Size(85, 16);
+            this.baseLabel1.Size = new System.Drawing.Size(70, 16);
             this.baseLabel1.TabIndex = 1;
-            this.baseLabel1.Text = " 2D Map : ";
+            this.baseLabel1.Text = " 2D Map File : ";
             // 
             // baseTextFilePath
             // 
-            this.baseTextFilePath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            //this.baseTextFilePath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            this.baseTextFilePath.BackColor = System.Drawing.Color.White;
             this.baseTextFilePath.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.baseTextFilePath.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.baseTextFilePath.Font = new System.Drawing.Font("Tahoma", 9.0F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.baseTextFilePath.Location = new System.Drawing.Point(97, 21);
+            //this.baseTextFilePath.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.baseTextFilePath.ForeColor = System.Drawing.Color.Black;
+            this.baseTextFilePath.Font = new System.Drawing.Font("Tahoma", 10.0F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.baseTextFilePath.Location = new System.Drawing.Point(110, 21);
             this.baseTextFilePath.Name = "baseTextFilePath";
             this.baseTextFilePath.Multiline = true;
-            this.baseTextFilePath.Size = new System.Drawing.Size(230, 28);
+            this.baseTextFilePath.Size = new System.Drawing.Size(280, 56);
             this.baseTextFilePath.TabIndex = 0;
             // 
             // openFileDialog
@@ -112,7 +119,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.baseGroupBox1);
             this.Name = "_2DMappingFileControl";
-            this.Size = new System.Drawing.Size(442, 112);
+            this.Size = new System.Drawing.Size(502, 112 + 28);
             this.baseGroupBox1.ResumeLayout(false);
             this.baseGroupBox1.PerformLayout();
             this.ResumeLayout(false);

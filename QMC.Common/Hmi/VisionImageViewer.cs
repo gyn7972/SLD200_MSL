@@ -1266,6 +1266,7 @@ namespace QMC.Common.Hmi
                 {
                     this.SuspendLayout();
                     VisionImage visionImage = null;
+                    
                     int time = DateTime.Now.Subtract(this.m_LatestDisplayTime).Milliseconds + DateTime.Now.Subtract(this.m_LatestDisplayTime).Seconds * 1000;
 
                     if (time <= 1000 / this.FrameRate) return;

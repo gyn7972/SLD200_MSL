@@ -82,37 +82,7 @@ namespace SLD200_MSL
                 JogButtonXZClick(JogControlButtonList.combButtonDown, AxisList);
             }
         }
-        private void buttonAxisXDownYDown_Click(object sender, EventArgs e)
-        {
-            if (JogButtonXZClick != null)
-            {
-                JogButtonXZClick(JogControlButtonList.buttonAxisXDownYDown, AxisList);
-            }
-        }
 
-        private void buttonAxisXUpYDown_Click(object sender, EventArgs e)
-        {
-            if (JogButtonXZClick != null)
-            {
-                JogButtonXZClick(JogControlButtonList.buttonAxisXUpYDown, AxisList);
-            }
-        }
-
-        private void buttonAxisXDownYUp_Click(object sender, EventArgs e)
-        {
-            if (JogButtonXZClick != null)
-            {
-                JogButtonXZClick(JogControlButtonList.buttonAxisXDownYUp, AxisList);
-            }
-        }
-
-        private void buttonAxisXUpYUp_Click(object sender, EventArgs e)
-        {
-            if (JogButtonXZClick != null)
-            {
-                JogButtonXZClick(JogControlButtonList.buttonAxisXUpYUp, AxisList);
-            }
-        }
         #endregion
 
         #region buttonDownEvent
@@ -145,34 +115,6 @@ namespace SLD200_MSL
             if (e.Button == MouseButtons.Left)
             {
                 JogButtonXZDown(JogControlButtonList.combButtonDown, AxisList);
-            }
-        }
-        private void buttonAxisXDownYDown_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                JogButtonXZDown(JogControlButtonList.buttonAxisXDownYDown, AxisList);
-            }
-        }
-        private void buttonAxisXUpYDown_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                JogButtonXZDown(JogControlButtonList.buttonAxisXUpYDown, AxisList);
-            }
-        }
-        private void buttonAxisXDownYUp_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                JogButtonXZDown(JogControlButtonList.buttonAxisXDownYUp, AxisList);
-            }
-        }
-        private void buttonAxisXUpYUp_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                JogButtonXZDown(JogControlButtonList.buttonAxisXUpYUp, AxisList);
             }
         }
         #endregion
@@ -209,34 +151,103 @@ namespace SLD200_MSL
                 JogButtonXZUp(JogControlButtonList.combButtonDown, AxisList);
             }
         }
-        private void buttonAxisXDownYDown_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                JogButtonXZUp(JogControlButtonList.buttonAxisXDownYDown, AxisList);
-            }
-        }
-        private void buttonAxisXUpYDown_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                JogButtonXZUp(JogControlButtonList.buttonAxisXUpYDown, AxisList);
-            }
-        }
-        private void buttonAxisXDownYUp_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                JogButtonXZUp(JogControlButtonList.buttonAxisXDownYUp, AxisList);
-            }
-        }
-        private void buttonAxisXUpYUp_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                JogButtonXZUp(JogControlButtonList.buttonAxisXUpYUp, AxisList);
-            }
-        }
+
         #endregion
+
+        private void buttonAxisZ0Down_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                JogButtonXZDown(JogControlButtonList.buttonZ0Down, AxisList);
+            }
+        }
+
+        private void buttonAxisZ0Down_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                JogButtonXZUp(JogControlButtonList.buttonZ0Down, AxisList);
+            }
+        }
+
+        private void buttonAxisZ0Down_Click(object sender, EventArgs e)
+        {
+            if (JogButtonXZClick != null)
+            {
+                JogButtonXZClick(JogControlButtonList.buttonZ0Down, AxisList);
+            }
+        }
+
+        private void buttonAxisZ1Down_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                JogButtonXZDown(JogControlButtonList.buttonZ1Down, AxisList);
+            }
+        }
+
+        private void buttonAxisZ1Down_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                JogButtonXZUp(JogControlButtonList.buttonZ1Down, AxisList);
+            }
+        }
+
+        private void buttonAxisZ1Down_Click(object sender, EventArgs e)
+        {
+            if (JogButtonXZClick != null)
+            {
+                JogButtonXZClick(JogControlButtonList.buttonZ1Down, AxisList);
+            }
+        }
+
+        private void buttonAxisZ0Up_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                JogButtonXZDown(JogControlButtonList.buttonZ0Up, AxisList);
+            }
+        }
+
+        private void buttonAxisZ0Up_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                JogButtonXZUp(JogControlButtonList.buttonZ0Up, AxisList);
+            }
+        }
+
+        private void buttonAxisZ0Up_Click(object sender, EventArgs e)
+        {
+            if (JogButtonXZClick != null)
+            {
+                JogButtonXZClick(JogControlButtonList.buttonZ0Up, AxisList);
+            }
+        }
+
+        private void buttonAxisZ1Up_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                JogButtonXZDown(JogControlButtonList.buttonZ1Up, AxisList);
+            }
+        }
+
+        private void buttonAxisZ1Up_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                JogButtonXZUp(JogControlButtonList.buttonZ1Up, AxisList);
+            }
+        }
+
+        private void buttonAxisZ1Up_Click(object sender, EventArgs e)
+        {
+            if (JogButtonXZClick != null)
+            {
+                JogButtonXZClick(JogControlButtonList.buttonZ1Up, AxisList);
+            }
+        }
     }
 }

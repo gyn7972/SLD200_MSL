@@ -38,13 +38,13 @@ using SpiralLab.Sirius;
 //using SpiralLab.Sirius2.PowerMap;
 //using SpiralLab.Sirius2.Scanner;
 //using SpiralLab.Sirius2.Scanner.Rtc;
-//using SpiralLab.Sirius2.Winforms ;
+//using SpiralLab.Sirius2.Winforms;
 //using SpiralLab.Sirius2.Winforms.Entity;
 //using SpiralLab.Sirius2.Winforms.Marker;
 //using SpiralLab.Sirius2.Winforms.UI;
 //using SpiralLab.Sirius2.Mathematics;
 
-//using Vector3 = System.Numerics.Vector3;
+using Vector3 = System.Numerics.Vector3;
 
 
 namespace SLD200_MSL
@@ -59,7 +59,7 @@ namespace SLD200_MSL
 
         static WorkStage workStage;
 
-        MotionFunction MC_Func = new MotionFunction();
+        MotionFunction MC_Func = new InterpolatorMotionFunction();
 
         public System.Windows.Forms.Timer timer_ScannerMode_Change;
 
@@ -133,7 +133,7 @@ namespace SLD200_MSL
             timer_ScannerMode_Change = new System.Windows.Forms.Timer();
             timer_ScannerMode_Change.Interval = 50;
             timer_ScannerMode_Change.Tick += new System.EventHandler(Timer_ScannerModeChange);
-            timer_ScannerMode_Change.Enabled = true;
+            //timer_ScannerMode_Change.Enabled = true;
 
             m_nGroupCount = 0;
         }
@@ -160,7 +160,7 @@ namespace SLD200_MSL
 
             //    Equipment.RtcMode_syncAxis = (int)Equipment.RtcMode.RTC_RTC6;
 
-            //    Log.Write("SLD100", "ScannerModeChange", "RTC6 모드로 변경");
+            //    Log.Write("SLD-200", "ScannerModeChange", "RTC6 모드로 변경");
 
             //    RtcOpenMode_syncAxis(false);
             //}
@@ -185,7 +185,7 @@ namespace SLD200_MSL
 
             //    Equipment.RtcMode_syncAxis = (int)Equipment.RtcMode.RTC_SYNCAXIS;
 
-            //    Log.Write("SLD100", "ScannerModeChange", "syncAxis 모드로 변경");
+            //    Log.Write("SLD-200", "ScannerModeChange", "syncAxis 모드로 변경");
 
             //    RtcOpenMode_syncAxis(true);
             //}
@@ -468,7 +468,7 @@ namespace SLD200_MSL
                 // create document
                 // 신규 문서 생성
                 var doc = new DocumentDefault();                        //  Sirius1
-                //var doc = new DocumentBase();                         //  Sirius2
+                //var doc = new DocumentBase();                         //  Sirius2             --> 나중에 수정해야함. 필요하면..
                 // assign document into editor
 
                 // 문서 지정
@@ -484,7 +484,7 @@ namespace SLD200_MSL
                 //create Rtc5 controller
                 //var rtc = new Rtc5(0);
                 //create Rtc6 controller
-                workStage.rtc6 = new Rtc6(0);
+                workStage.rtc = new Rtc6(0);
                 //Rtc6 Ethernet
                 //var rtc = new Rtc6Ethernet(0, "192.168.0.100", "255.255.255.0"); 
 
@@ -501,17 +501,17 @@ namespace SLD200_MSL
                 string correctionFile = "D:\\SLD-200_Parameter\\Cor_1to1.ct5";
 
                 // initialize rtc controller
-                workStage.rtc6.Initialize(kfactor, LaserMode.Yag1, correctionFile);                                                                         //  Sirius1
+                workStage.rtc.Initialize(kfactor, LaserMode.Yag1, correctionFile);                                                                         //  Sirius1
                 //var rtc = ScannerFactory.CreateRtc6(0, kfactor, LaserModes.Yag1, RtcSignalLevels.ActiveHigh, RtcSignalLevels.ActiveHigh, correctionFile);     //  Sirius2
                 // basic frequency and pulse width
                 // laser frequency : 50KHz, pulse width : 2usec (주파수 50KHz, 펄스폭 2usec)
-                workStage.rtc6.CtlFrequency(50 * 1000, 2);
+                workStage.rtc.CtlFrequency(50 * 1000, 2);
                 // basic sped
                 // jump and mark speed : 500mm/s (점프, 마크 속도 500mm/s)
-                workStage.rtc6.CtlSpeed(500, 500);
+                workStage.rtc.CtlSpeed(500, 500);
                 // basic delays
                 // scanner and laser delays (스캐너/레이저 지연값 설정)
-                workStage.rtc6.CtlDelay(10, 100, 200, 200, 0);
+                workStage.rtc.CtlDelay(10, 100, 200, 200, 0);
                 #endregion
 
                 //this.SiriusEditor.Rtc = workStage.rtc6;
@@ -536,21 +536,21 @@ namespace SLD200_MSL
                 //var laser = new SpectraPhysicsTalon(0, "Talon", 1, 20);
 
                 // assign RTC instance at laser 
-                workStage.laser.Rtc = workStage.rtc6;                   //  Sirius1
+                workStage.laser.Rtc = workStage.rtc;                   //  Sirius1
                 //workStage.laser.Scanner = workStage.rtc6;               //  Sirius2
 
                 // initialize laser source
                 workStage.laser.Initialize();
 
                 // set basic power output to 2W
-                workStage.laser.CtlPower(2);
+                workStage.laser.CtlPower(2);                
                 #endregion
 
                 //this.SiriusEditor.Laser = workStage.laser;                  //  Sirius1
 
                 #region 마커 지정
                 // create default marker 
-                //var marker = new MarkerDefault(0);
+                var marker = new MarkerDefault(0);
 
                 workStage.marker = new MarkerDefault(0, " RTC6 Marker ");           //  Sirius1
                 //workStage.marker = new MarkerRtc(0, " RTC6 Marker ");             //  Sirius2
@@ -807,14 +807,13 @@ namespace SLD200_MSL
             //}
 
 
-            workStage.rtc6.PrimaryHeadBaseOffset = ScannerOffset;
+            workStage.rtc.PrimaryHeadBaseOffset = ScannerOffset;             //  Sirius1
 
-            //Offset offset = new Offset();
+            //Offset offset = new Offset();                                       //  Sirius2
             //offset.Dx = ScannerOffset.X;
             //offset.Dy = ScannerOffset.Y;
             //offset.Dz = 0;
             //offset.AngleZ = ScannerOffset.Z;
-
             //workStage.rtc6.PrimaryHeadBaseOffset = offset;
         }
         

@@ -368,8 +368,8 @@ namespace QMC.Common
             if (OnMoveInterpolation != null)
             {
                 double dPos = 0;
-                //GetCurrentActualPosition(ref dPos);
-                GetCurrentCommandPosition(ref dPos);			//	2023. 05. 24.  SCH : Actual 을 EncPos 가 아니라 CmdPos 로 해야 한다고 함.
+                GetCurrentActualPosition(ref dPos);
+                //GetCurrentCommandPosition(ref dPos);			//	2023. 05. 24.  SCH : Actual 을 EncPos 가 아니라 CmdPos 로 해야 한다고 함. -> ACS 는 그런 듯. 아진은 걍 Actual 로 해도 될 듯
                 ret = OnMoveInterpolation(this, dPos + dDistance, nVelPercent);
             }
             return ret;
@@ -485,6 +485,7 @@ namespace QMC.Common
             projection.Timeout = Configuration.Timeout;
             return projection;
         }
+
         //public Function GetFunction(uint nID)
         //      {
         //	Function func = new Function();

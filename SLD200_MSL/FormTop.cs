@@ -44,6 +44,10 @@ namespace SLD200_MSL
         bool m_bBlink;
         int m_nBlink;
 
+        private string m_strRecipeName_Now;
+        private string m_strRecipeName_Before;
+
+
         public FormTop()
         {
             InitializeComponent();
@@ -58,7 +62,16 @@ namespace SLD200_MSL
             //  C 드라이브 이름 가져오기 (Title 에 쓰기 위함)
             DriveInfo[] drive = DriveInfo.GetDrives();
             string m_strDriveName = drive[0].VolumeLabel;
-            this.label_Title.Text = string.Format("{0}  (CO₂ )", m_strDriveName);
+            //this.label_Title.Text = string.Format("{0}  (CO₂ )", m_strDriveName);
+
+            if (Equipment.Machine_LaserType_CO2)
+            {
+                this.label_Title.Text = string.Format("{0}  (CO₂ )", Equipment.Machine_Name);
+            }
+            else
+            {
+                this.label_Title.Text = string.Format("{0}  (UV)", Equipment.Machine_Name);
+            }
 
             //  파일 수정 날짜 표시하기
             string file = Path.GetFileName(Assembly.GetEntryAssembly().Location);
@@ -74,6 +87,8 @@ namespace SLD200_MSL
             m_Timer.Interval = 100;
             m_Timer.Tick += UpdateUI_Tick;
             m_Timer.Start();
+
+            m_strRecipeName_Before = "";
         }
 
 
@@ -236,6 +251,23 @@ namespace SLD200_MSL
                     label_LoginMode.Text = "Logout";
                     break;
             }
+
+            //  Recipe
+            if (Equipment.Current_Recipe.Length > 0)
+            {
+                m_strRecipeName_Now = System.IO.Path.GetFileName(Equipment.Current_Recipe);
+
+                if (m_strRecipeName_Before != m_strRecipeName_Now)
+                {
+                    label_Title_Recipe.Text = m_strRecipeName_Now;
+                }
+
+                m_strRecipeName_Before = m_strRecipeName_Now;
+            }
+            else
+            {
+                label_Title_Recipe.Text = "Recipe not loaded.";
+            }            
         }
 
         public void LogInInfo()

@@ -28,7 +28,7 @@ namespace SLD200_MSL
             InitializeComponent();
             m_AxisX = new AjinAxlAxis();
             m_AxisY = new AjinAxlAxis();
-            MC_Func = new MotionFunction();
+            MC_Func = new InterpolatorMotionFunction();
             InitRadioButton();
 
             ModuleCollection m_collectionModules;

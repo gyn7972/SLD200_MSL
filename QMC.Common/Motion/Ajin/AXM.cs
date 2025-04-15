@@ -1124,6 +1124,21 @@ namespace QMC.Common.Motion.Ajin
         private static extern uint AxmSplineWrite(int lCoord, int lPosSize, ref double dPosX, ref double dPosY, double dVel, double dAccel, double dDecel, double dPosZ, int lPointFactor);
         #endregion
 
+        #region 스테이지 보정
+
+        [DllImport("AXL.dll")] public static extern uint AxmCompensationTwoDimSet(int lTableNo, int lSourceAxis1, int lSourceAxis2, int lTargetAxis1, int lTargetAxis2, int lSize1, int lSize2, double[] dpMotorPosition1, double[] dpMotorPosition2, double[] dpLoadPosition1, double[] dpLoadPosition2);
+        [DllImport("AXL.dll")] public static extern uint AxmCompensationTwoDimGet(int lTableNo, ref int lpSourceAxis1, ref int lpSourceAxis2, ref int lpTargetAxis1, ref int lpTargetAxis2, ref int lpSize1, ref int lpSize2, double[] dpMotorPosition1, double[] dpMotorPosition2, double[] dpLoadPosition1, double[] dpLoadPosition2);
+        [DllImport("AXL.dll")] public static extern uint AxmCompensationTwoDimReset(int lTableNo);
+        [DllImport("AXL.dll")] public static extern uint AxmCompensationTwoDimIsSet(int lTableNo, ref uint dwpSet);
+        [DllImport("AXL.dll")] public static extern uint AxmCompensationTwoDimEnable(int lTableNo, uint dwEnable);
+        [DllImport("AXL.dll")] public static extern uint AxmCompensationTwoDimIsEnable(int lTableNo, ref uint dwpEnable);
+
+        #endregion
+        //public static int CompensationTwoDimSet(int lTableNo, int lSourceAxis1, int lSourceAxis2, int lTargetAxis1, int lTargetAxis2, int lSize1, int lSize2, double[] dpMotorPosition1, double[] dpMotorPosition2, double[] dpLoadPosition1, double[] dpLoadPosition2)
+        //{
+
+        //}
+
         #endregion
 
         #region Field
@@ -1218,6 +1233,7 @@ namespace QMC.Common.Motion.Ajin
 
             return ret;
         }
+
         #endregion
 
         #region 입출력 신호 관련 설정함수

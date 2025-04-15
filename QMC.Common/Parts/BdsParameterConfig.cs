@@ -182,7 +182,7 @@ namespace QMC.Common.Parts
                 {
                     SettingParameter param = new SettingParameter(pos.Name, DataType.Double);
                     param.DoubleValue = pos.Y;
-                    param.Tag = BdsParameter.MotionKey.Y.ToString();
+                    param.Tag = BdsParameter.MotionKey.MASK_Y.ToString();
                     param.Spare = pos.Type.ToString();
                     parameters.Add(param);
                 }

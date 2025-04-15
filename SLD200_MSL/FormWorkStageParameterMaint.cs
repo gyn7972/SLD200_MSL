@@ -157,8 +157,17 @@ namespace SLD200_MSL
                 double yPosition = m_Owner.MC_Func.MC_GetEncPos((int)WorkStageParameter.AxisAjinEnum.Y);
                 //  현재 Z 의 위치를 가져옴.
                 double zPosition = m_Owner.MC_Func.MC_GetEncPos((int)WorkStageParameter.AxisAjinEnum.Z);
-                //  현재 MASK Y 의 위치를 가져옴.
-                double maskYPosition = m_Owner.MC_Func.MC_GetEncPos((int)WorkStageParameter.AxisAjinEnum.MASK_Y);
+
+                double maskYPosition = 0.0;
+                if (Equipment.Machine_LaserType_CO2)
+                {
+                    //  현재 MASK Y 의 위치를 가져옴.
+                    maskYPosition = m_Owner.MC_Func.MC_GetEncPos((int)WorkStageParameter.AxisAjinEnum.MASK_Y);
+                }
+                else
+                {
+                    maskYPosition = 0.0;
+                }
 
                 xPosition = Math.Round(xPosition, 4);
                 yPosition = Math.Round(yPosition, 4);

@@ -339,6 +339,292 @@ namespace QMC.Common.Parts
 
 
         /// <summary>
+        /// Layer Parameter - Drilling
+        /// </summary>
+        /// 
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Drilling Hole Cutting Priority. \r\n[true:영역 내 모든 미세홀의 한 면씩 가공,  false:미세홀 단위로 가공하여 영역 완성]"),
+            DisplayName("미세홀 가공 - 단위 (true:각 면, false:사각형 완성)")]
+        public bool Drilling_ProcessingPriority_EachSideFirst { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("[true : 왼쪽 면 -> 아랫 면 -> 우측 면 -> 윗 면]\r\n[false : 좌측 면 -> 우측 면 -> 아래 면 -> 윗 면]"),
+            DisplayName("미세홀 가공 - 단위가 \"각 면\"일 경우, 면 가공 순서 (true: 인접한 면 순차적으로 가공,  false: 마주보는 면 우선 가공)")]
+        public bool Drilling_ProcessingPriority_EachSideFirst_isTrue_MarkingOrder { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("[true : Jump -> Mark -> Jump -> Mark -> Jump -> Mark -> Jump -> Mark]\r\n[false : Jump -> Mark -> Mark -> Mark]"),
+            DisplayName("미세홀 가공 - 단위가 \"사각형 완성\"일 경우, 각 면 가공 형태 (true: Line 처럼 가공,  false: Polyline 처럼 가공)")]
+        public bool Drilling_ProcessingPriority_EachSideFirst_isFalse_MarkingType { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Data Sorting - Drilling Data Sorting"),
+            DisplayName("Data Sorting - Enable")]
+        public bool Drilling_DataSort_Use { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Data Sorting - Sorting Direction\r\n[true: Horizontal, false: Vertical]"),
+            DisplayName("Data Sorting - Sorting Direction [Horizontal]")]
+        public bool Drilling_DataSortDir_HorVer { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Data Sorting - Sorting Step Size (mm)"),
+            DisplayName("Data Sorting - Sorting Step Size (mm)")]
+        public double Drilling_DataSortStep_Size { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Drilling - Mark Speed"),
+            DisplayName("미세홀 가공 - 속도 - 가공 속도")]
+        public double Drilling_Mark_Speed { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Drilling - Jump Speed"),
+            DisplayName("미세홀 가공 - 속도 - 점프 이동 속도")]
+        public double Drilling_Jump_Speed { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Inside-Drilling - Mark Speed"),
+            DisplayName("미세홀 내부 가공 - 속도 - 가공 속도")]
+        public double PreDrilling_Mark_Speed { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Inside-Drilling - Jump Speed"),
+            DisplayName("미세홀 내부 가공 - 속도 - 점프 이동 속도")]
+        public double PreDrilling_Jump_Speed { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Delay - Jump"),
+            DisplayName("Delay - Jump")]
+        public double Drilling_Jump_Delay { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Delay - Mark"),
+            DisplayName("Delay - Mark")]
+        public double Drilling_Mark_Delay { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Delay - Polygon"),
+            DisplayName("Delay - Polygon")]
+        public double Drilling_Polygon_Delay { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("LaserParam1 - Q-Switch (Hz)"),
+            DisplayName("레이저 파라미터1 - Q-Switch (Hz)")]
+        public double Drilling_RepRate_QSwitch { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("LaserParam2 - E-Pulse (Hz)"),
+            DisplayName("레이저 파라미터2 - E-Pulse (Hz)")]
+        public double Drilling_RepRate_EPulse { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Drilling - Repeat Count"),
+            DisplayName("미세홀 가공 - 반복 회수 - (1차)")]
+        public double Drilling_Repeat_Count { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Drilling - Repeat Count"),
+            DisplayName("미세홀 가공 - 반복 회수 - (2차)")]
+        public double Drilling_Repeat_Count_2nd { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Drilling - Repeat Direction (Zigzag Enable)"),
+            DisplayName("미세홀 가공 - 반복 시 지그재그 모드 - 사용")]
+        public bool Drilling_ReverseUse_When_Repeating { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Drilling - Start Corner Rotation (LT -> LB -> RB -> RT -> LT)"),
+            DisplayName("미세홀 가공 - 반복 시 시작 모서리 위치 Rotation 모드 - 사용")]
+        public bool Drilling_StartCornerRotationUse_When_Repeating { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Laser target power for Drilling processing.\r\n(If \"Laser Power Change Mode\" is True.)"),
+            DisplayName("미세홀 가공 - 출력 (W)")]
+        public double Drilling_Laser_Power { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Laser target power for Drilling processing.\r\n(If \"Laser Power Change Mode\" is False.)"),
+            DisplayName("미세홀 가공 - 출력 (%) - (1차)")]
+        public double Drilling_Laser_Power_Percent { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Laser target power for Drilling processing.\r\n(If \"Laser Power Change Mode\" is False.)"),
+            DisplayName("미세홀 가공 - 출력 (%) - (2차)")]
+        public double Drilling_Laser_Power_Percent_2nd { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Inside-Drilling - Repeat Count"),
+            DisplayName("미세홀 내부 가공 - 반복 회수 - (1차)")]
+        public double PreDrilling_Repeat_Count { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Inside-Drilling - Repeat Count"),
+            DisplayName("미세홀 내부 가공 - 반복 회수 - (2차)")]
+        public double PreDrilling_Repeat_Count_2nd { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Laser target power for Pre-Drilling processing.\r\n(If \"Laser Power Change Mode\" is False.)"),
+            DisplayName("미세홀 내부 가공 - 출력 (%) - (1차)")]
+        public double PreDrilling_Laser_Power_Percent { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Laser target power for Pre-Drilling processing.\r\n(If \"Laser Power Change Mode\" is False.)"),
+            DisplayName("미세홀 내부 가공 - 출력 (%) - (2차)")]
+        public double PreDrilling_Laser_Power_Percent_2nd { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Stabilization time when calibrating laser power"),
+            DisplayName("미세홀 가공 출력 보정 시 안정화 시간 (㎳)")]
+        public double Drilling_LaserStableTime { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Inside-Drilling - Enable"),
+            DisplayName("미세홀 내부 가공 - 사용")]
+        public bool bPreDrilling_Use { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Inside-Drilling - Inside Drilling Unit [Full or Rect(Circle)]\r\n[true : 1 Hole 전체 완료 후 다음 Hole 가공]\r\n[false : Hole 한번씩 가공하여 전체 완성]"),
+            DisplayName("미세홀 내부 가공 - 가공 단위 [true: Full Rect, false: Once Rect]")]
+        public bool bPreDrilling_WorkUnit_Hole { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Inside-Drilling - How many \"㎜\" smaller than the Original Size. (One Side)\r\n[n>0: Reduction,  n<0: Enlargement]"),
+            DisplayName("미세홀 내부 가공 - 크기 축소 (한 면 기준 길이, ㎜)")]
+        public double PreDrilling_ReduceSize { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Drilling - Drilling Unit [Full or Once Rect(Circle)]\r\n[true : 1 Hole 전체 완료 후 다음 Hole 가공]\r\n[false : Hole 한번씩 가공하여 전체 완성]"),
+            DisplayName("미세홀 가공 - 가공 단위 [true: Full Rect, false: Once Rect]")]
+        public bool bDrilling_WorkUnit_Hole { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Drilling - Stage 이동 단위 [Object or Group]\r\n[true : Object 단위로 이동 후 Stage Center 에서 1개 가공]\r\n[false : Group Center 로 이동해서 다수의 Object 가공]"),
+            DisplayName("미세홀 가공 - Stage 이동 단위 [true: Object, false: Group]")]
+        public bool bDrilling_StageMoveUnit_Object { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Drilling - Size to Reduce - Enable"),
+            DisplayName("미세홀 가공 - 크기 조정(축소) - 사용")]
+        public bool bDrillingSizeReduce_Enable { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Drilling - How many \"㎜\" smaller than the Original Size. (Width Side)\r\n[n>0: Reduction,  n<0: Enlargement]"),
+            DisplayName("미세홀 가공 - 크기 축소 (가로면 기준 길이, 원의 반지름, ㎜)")]
+        public double Drilling_ReduceSize { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Drilling - How many \"㎜\" smaller than the Original Size. (Height Side)\r\n[n>0: Reduction,  n<0: Enlargement]"),
+            DisplayName("미세홀 가공 - 크기 축소 (세로면 기준 길이, ㎜)")]
+        public double Drilling_ReduceSize_Height { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Drilling - Stage 진행 방향 선택\r\n\r\n[true: 지그재그 이동 가공,  false: 단방향 이동 가공 (좌->우)]"),
+            DisplayName("미세홀 분할 가공 시 Stage 진행 방향 선택 [true: Zig-Zag, false: 좌->우]")]
+        public bool bDrilling_StageMoveDirection_ZigZag { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("얼라인 - 사용 [\"쓰루홀\" Layer 에 Circle 사용]\r\n[기준 (왼쪽 or 위) 마크 : Circle Description 을 \"Align1\" 로 설정]\r\n[타겟 (오른쪽 or 아래) 마크 : Circle Description 을 \"Align2\" 로 설정]"),
+            DisplayName("얼라인 - 사용")]
+        public bool bProductAlign_Enable { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("얼라인 검증 - 얼라인 Key 위치 이동 후 안정화 시간 (ms)"),
+            DisplayName("얼라인 검증 - 얼라인 Key 위치 이동 후 안정화 시간 (ms)")]
+        public double dProductAlign_KeyPosMove_StableTime { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("얼라인 검증 - 얼라인 Key 위치 허용오차\r\n[얼라인 허용 오차 (XY 방향 공통, mm)]\r\n[default(0) : 0.001 mm]"),
+            DisplayName("얼라인 검증 - 얼라인 Key 위치 허용오차 (mm)")]
+        public double dProductAlign_Tolerance { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("얼라인 검증 - 얼라인 Key 위치 검출 회수\r\n[검출 회수가 2 회 이상일 경우 평균값 계산]\r\n[최대 10회]"),
+            DisplayName("얼라인 검증 - 얼라인 Key 위치 검출 회수 (평균 계산)")]
+        public int nProductAlign_KeyMarkFindTotal { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("얼라인 검증 - 얼라인 Key 위치 계산.\r\n[ALIGN2 ~ 4 위치를 이동할 때, 계산한 위치값으로 이동할 것인지 여부 결정]\r\n[false: 도면 위치 사용]"),
+            DisplayName("얼라인 검증 - 얼라인 Key 위치 계산 사용 (from ALIGN1, false: 도면위치 사용)")]
+        public bool bProductAlign_KeyPosCalc_fromALIGN1 { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("얼라인 시 Spot 조명 밝기값"),
+            DisplayName("얼라인 - 얼라인 조명 밝기값 (Spot, \"Illuminator Save\" 로 저장)")]
+        public int nProductAlign_LightValue_Spot { set; get; }                                                  //  Channel 번호 : 4
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("얼라인 시 Ring 조명 밝기값"),
+            DisplayName("얼라인 - 얼라인 조명 밝기값 (Ring, \"Illuminator Save\" 로 저장)")]
+        public int nProductAlign_LightValue_Ring { set; get; }                                                  //  Channel 번호 : 2
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("얼라인 - 첫 번째 마크만 사용하여 Align\r\n(첫 번째 얼라인 마크의 좌표를 이용하여 그룹 중심 이동 위치 계산)"),
+            DisplayName("얼라인 - 첫 번째 마크만 사용하여 Align 진행")]
+        public bool bProductAlign_FirstAlignMarkOnly { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("얼라인 - 첫 번째 얼라인 마크 위치 평균 계산을 위한 검출 회수\r\n[\"얼라인 - 첫 번째 마크만 사용하여 Align 진행\" 모드가 true 일 경우에 적용"),
+            DisplayName("얼라인 - 첫 번째 얼라인 마크 위치 평균 계산을 위한 검출 회수")]
+        public int nProductAlign_FirstAlignMarkCountforAveraging { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Using Autofocus at the Center Position of the Drilling Group"),
+            DisplayName("Auto Focus - Enable")]
+        public bool bDrillingGroup_AutoFocus_Enable { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Number of Retries"),
+            DisplayName("Auto Focus - Retry Number")]
+        public int AutoFocus_RetryNum { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Allowable height deviation between groups"),
+            DisplayName("Auto Focus - Group Height Deviation")]
+        public double AutoFocus_GroupHeightDeviation { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Dividing the starting position when Drilling a circle\r\n(Only 2, 3, 4, 5, 6, 8, 9, 10, 12)"),
+            DisplayName("원 가공 - 시작 위치 분할 개수")]
+        public int CircleStartPosDiv { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("D:\\SLD-100_Parameter\\syncAXISConfig.SLD100.xml\r\n[Spot Distance 값 변경]\r\n[동작 조건 : Q-Switch 값 0 설정]"),
+            DisplayName("XML - 미세홀 가공 시 Spot 거리 (㎜)")]
+        public double Drilling_SpotDistance { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("Hole entire processing unit\r\n[true: Internal processing and main processing at once]\r\n[false: Main processing starts after all internal processing is completed]"),
+            DisplayName("미세홀 전체 가공 단위 [true: 내부가공과 본가공을 한번에, false: 전체 내부가공 완료 후 본가공 시작")]
+        public bool bDrilling_WorkUnit_InAndOutAtOnce { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("미세홀 가공 시 포커스 높이를 임의로 변경하여 가공\r\n[초점 거리에서 벗어나게 하여 가공 효과를 다르게 함]"),
+            DisplayName("미세홀 가공 - 디포커싱 사용 여부")]
+        public bool Drilling_Defocusing_Use { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("미세홀 가공 시 포커스 높이를 변경하는 거리\r\n[초점 거리에서 얼마나 벗어나게 할 것인지.]\r\n[-: 초점 거리보다 멀어짐,  +: 초점 거리보다 가까워짐]"),
+            DisplayName("미세홀 가공 - 디포커싱 거리 (mm)")]
+        public double Drilling_Defocusing_Distance { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("미세홀 내부 가공 시 포커스 높이를 임의로 변경하여 가공\r\n[초점 거리에서 벗어나게 하여 가공 효과를 다르게 함]"),
+            DisplayName("미세홀 내부 가공 - 디포커싱 사용 여부")]
+        public bool PreDrilling_Defocusing_Use { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("미세홀 내부 가공 시 포커스 높이를 변경하는 거리\r\n[초점 거리에서 얼마나 벗어나게 할 것인지.]\r\n[-: 초점 거리보다 멀어짐,  +: 초점 거리보다 가까워짐]"),
+            DisplayName("미세홀 내부 가공 - 디포커싱 거리 (mm)")]
+        public double PreDrilling_Defocusing_Distance { set; get; }
+
+        [Category("[05] Work Param. - Drilling Layer"),
+            Description("미세홀 내부 가공 시 사각형 모양을 원으로 변경하여 가공할 것인지 설정\r\n[true : 원 모양으로 변경하여 가공 (지름의 길이는 사각형 단축 거리)]\r\n[false : 사각형 모양 그대로 가공]"),
+            DisplayName("미세홀 내부 가공 - 사각형을 원 모양으로 가공할 것인지 여부")]
+        public bool bPreDrilling_Rect_To_Circle { set; get; }
+
+
+
+        /// <summary>
         /// Operation Speed
         /// </summary>
         /// 
@@ -366,6 +652,66 @@ namespace QMC.Common.Parts
             Description("자동운전 시 구동 속도 대비 가감속 배율 (mm/s * n -> mm/s² 으로 사용)\r\n\r\n[default : 5 배]"),
             DisplayName("자동운전 시 구동 속도 대비 가감속 배율 (n)")]
         public double Speed_Operation_Mag_forAccDec { set; get; }
+
+
+
+        /// <summary>
+        /// Laser Parameter
+        /// </summary>
+        [Category("[08] Laser"),
+            Description("Drilling, Outline, Thruhole Frequency (Hz)"),
+            DisplayName("Drilling, Outline, Thruhole Frequency (Hz)")]
+        public double Drilling_Frequency { set; get; }
+
+        [Category("[08] Laser"),
+            Description("Drilling, Outline, Thruhole Pulse Width (usec)"),
+            DisplayName("Drilling, Outline, Thruhole Pulse Width (usec)")]
+        public double Drilling_PulseWidth { set; get; }
+
+        [Category("[08] Laser"),
+            Description("Drilling Power"),
+            DisplayName("Drilling Power")]
+        public double Drilling_Power { set; get; }
+
+        [Category("[08] Laser"),
+            Description("Text Marking Frequency (Hz)"),
+            DisplayName("Text Marking Frequency (Hz)")]
+        public double TextMarking_Frequency { set; get; }
+
+        [Category("[08] Laser"),
+            Description("Text Marking Pulse Width (usec)"),
+            DisplayName("Text Marking Pulse Width (usec)")]
+        public double TextMarking_PulseWidth { set; get; }
+
+        [Category("[08] Laser"),
+            Description("Text Marking Power"),
+            DisplayName("Text Marking Power")]
+        public double TextMarking_Power { set; get; }
+
+        [Category("[08] Laser"),
+            Description("Delay - Laser On"),
+            DisplayName("Delay - Laser On")]
+        public double LaserOn_Delay { set; get; }
+
+        [Category("[08] Laser"),
+            Description("Delay - Laser Off"),
+            DisplayName("Delay - Laser Off")]
+        public double LaserOff_Delay { set; get; }
+
+        [Category("[08] Laser"),
+            Description("레이저 신호 - PreTrigger, ShiftOffset Time 사용 여부"),
+            DisplayName("레이저 신호 - PreTrigger ShiftOffset Time 사용 여부")]
+        public bool LaserPreTriggerShiftOffsetTime_Use { set; get; }
+
+        [Category("[08] Laser"),
+            Description("레이저 신호를 미리 트리거 할 시간(usec)\r\n(>0 일 경우 앞으로 당겨짐. On Delay 와 유사)\r\n(자동운전 시 즉시 적용됨)"),
+            DisplayName("레이저 신호 - PreTrigger Time (usec)")]
+        public double LaserPreTriggerTime { set; get; }
+
+        [Category("[08] Laser"),
+            Description("레이저 신호의 시간 이동(usec)\r\n(<0 일 경우 앞으로 당겨짐. Off Delay 와 유사)\r\n(자동운전 시 즉시 적용됨)"),
+            DisplayName("레이저 신호 - Switch Offset Time (usec)")]
+        public double LaserSwitchOffsetTime { set; get; }
 
 
 
@@ -498,6 +844,11 @@ namespace QMC.Common.Parts
         /// 장비 공통 파라미터
         /// </summary>
         /// 
+        [Category("[99] 장비 공통 파라미터"),
+            Description("Wait until marking is complete"),
+            DisplayName("Marker - Marker Busy Wait")]
+        public bool BusyWait_MarkingComplete { set; get; }
+
         [Category("[99] 장비 공통 파라미터"),
             Description("웨이퍼 얼라인 시, 이 높이 이상으로는 Elev. Z 축을 올리지 못하도록 한다."),
             DisplayName("구동 제한 - Wafer Align 시, Elevator Z 축이 올라갈 수 있는 최대 높이 위치")]
