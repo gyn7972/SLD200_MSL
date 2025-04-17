@@ -230,24 +230,24 @@
             this.label51 = new System.Windows.Forms.Label();
             this.label53 = new System.Windows.Forms.Label();
             this.tabPage_Setup_ScannerCalibration = new System.Windows.Forms.TabPage();
-            this.button17 = new System.Windows.Forms.Button();
-            this.button_Setup_ScannerCal_Save = new System.Windows.Forms.Button();
-            this.groupBox15 = new System.Windows.Forms.GroupBox();
-            this.textBox_Setup_ScannerCal_JumpSpeed = new System.Windows.Forms.TextBox();
-            this.textBox_Setup_ScannerCal_MarkingSpeed = new System.Windows.Forms.TextBox();
-            this.button16 = new System.Windows.Forms.Button();
-            this.button27 = new System.Windows.Forms.Button();
-            this.label69 = new System.Windows.Forms.Label();
-            this.button26 = new System.Windows.Forms.Button();
-            this.label68 = new System.Windows.Forms.Label();
-            this.label61 = new System.Windows.Forms.Label();
-            this.textBox_Setup_ScannerCal_CrossMarkLength = new System.Windows.Forms.TextBox();
-            this.button18 = new System.Windows.Forms.Button();
-            this.label62 = new System.Windows.Forms.Label();
-            this.textBox_Setup_ScannerCal_LaserEnergy = new System.Windows.Forms.TextBox();
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             this.button19 = new System.Windows.Forms.Button();
-            this.label66 = new System.Windows.Forms.Label();
-            this.textBox_Setup_ScannerCal_LaserFrequency = new System.Windows.Forms.TextBox();
+            
+            
             this.btnCalStart_Vision = new System.Windows.Forms.Button();
             this.btnCalStop = new System.Windows.Forms.Button();
             this.btnCalStart = new System.Windows.Forms.Button();
@@ -266,7 +266,7 @@
             this.button18 = new System.Windows.Forms.Button();
             this.label62 = new System.Windows.Forms.Label();
             this.textBox_Setup_ScannerCal_LaserEnergy = new System.Windows.Forms.TextBox();
-            this.button19 = new System.Windows.Forms.Button();
+            
             this.label66 = new System.Windows.Forms.Label();
             this.textBox_Setup_ScannerCal_LaserFrequency = new System.Windows.Forms.TextBox();
             this.textBox_ScannerCal_LaserFrequency = new System.Windows.Forms.Panel();
