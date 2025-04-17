@@ -24523,12 +24523,12 @@ namespace QMC.Common.Modules
                         int nCol = Equipment.Scanner_Calibration_colCount;
                         float fRowInterval = Equipment.Scanner_Calibration_rowInterval;
                         float fIntervalCol = Equipment.Scanner_Calibration_colInterval;
+                        double dMarkLength = Equipment.Scanner_Calibration_CrossMarkLength;
 
                         //이거 실행하면 레이저 바로 나감. 큭.
                         //Laser & Scanner 준비 상태 확인 필요. (발진 가능 여부 및 셋팅 값)
 
-                        //_spiralLabScanner.DrawCalibrationCrosses(nRow, nCol, fRowInterval, fIntervalCol);
-                        DrawCalibrationCrosses(nRow, nCol, fRowInterval, fIntervalCol);
+                        DrawCalibrationCrosses(nRow, nCol, fRowInterval, fIntervalCol, dMarkLength);
 
                         TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
                         m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMark_MarkingComplete;
@@ -25342,20 +25342,26 @@ namespace QMC.Common.Modules
             }
         }
 
-        public void DrawCalibrationCrosses(int rows, int cols, float pitchX, float pitchY)
+        public void DrawCalibrationCrosses(int rows, int cols, float pitchX, float pitchY, double markLength)
         {
             if (rows <= 0 || cols <= 0)
                 throw new ArgumentException("Rows and columns must be greater than zero.");
 
-            float crossSize = 1.0f; // 1mm 십자가
+            float crossSize = 1.0f; //(float)markLength; 
 
+            //Laser에 적용.
             //float fFrequency = 50_000.0f;
             //float fPulseWidth = 2.0f;
             //workStage.rtc.CtlFrequency(fFrequency, fPulseWidth);
+            //float fLaserPower = 2.0f;
+            //workStage.laser.CtlPower(fLaserPower);
 
-            float fJumpSpeed = 1000.0f;
-            float fMarkSpeed = 200.0f;
+            double dJumpspeed = Equipment.Scanner_Calibration_LaserJumpSpeed;
+            double dMarkspeed = Equipment.Scanner_Calibration_LaserMarkSpeed;
+            float fJumpSpeed = 1000.0f; 
+            float fMarkSpeed = 200.0f;  
             rtc.CtlSpeed(fJumpSpeed, fMarkSpeed);
+
 
             float fLaserOnDelay = 10.0f;
             float fLaserOffDelay = 100.0f;
@@ -25364,8 +25370,6 @@ namespace QMC.Common.Modules
             float fPolygonDelay = 0.0f;
             rtc.CtlDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay);
 
-            //float fLaserPower = 2.0f;
-            //workStage.laser.CtlPower(fLaserPower);
 
             rtc.ListBegin(laser, ListType.Single);
 
