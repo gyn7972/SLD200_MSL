@@ -165,7 +165,7 @@ namespace SLD200_MSL
             m_targetFile = Equipment.Scanner_Calibration_targetFilePath;
             m_rowInterval = Equipment.Scanner_Calibration_rowInterval;
             m_colInterval = Equipment.Scanner_Calibration_colInterval;
-            m_row = Equipment.Scanner_Calibration_rowCount;
+            m_row = Equipment.Scanner_Calibration_rowCount; 
             m_col = Equipment.Scanner_Calibration_colCount;
 
             //m_kfactor = (float)Math.Pow(2, 20) / m_fieldSize;
