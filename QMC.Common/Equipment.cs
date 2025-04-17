@@ -254,6 +254,13 @@ namespace QMC.Common
             Outline,
             Marking,
             Fiducial,
+            Thruhole,
+        }
+
+        public enum HoleProcessingType : int
+        {
+            Circle = 0,
+            Spiral,
         }
 
         public struct stLayerRecipeParameter
@@ -287,6 +294,7 @@ namespace QMC.Common
             public double Miscellaneous_P2PDistance;                    //  P2P Distance (mm)
             public int Miscellaneous_MaskIndex;                         //  Mask Index (0:None, 1:Mask1, 2:Mask2, 3:Mask3, 4:Mask4)
             public int Miscellaneous_BETPositionIndex;                  //  BET Position Index (0:0.1X, 1:0.5X, 2:1.0X, 3:1.5X, 4:2.0X)
+            public int Miscellaneous_HoleProcessingType;                //  Hole Processing Type (0:Circle, 1:Spiral)
 
             public bool ProcessOption_SocketAlign_Use;                  //  Socket Align Use (true: Use, false: Not Use)
             public bool ProcessOption_SocketHeightCheck_Use;            //  Socket Height Check Use Offset (true: Use, false: Not Use)
@@ -294,6 +302,15 @@ namespace QMC.Common
             public double ModuleInformation_Module_Width;               //  Module Width (mm)
             public double ModuleInformation_Module_Height;              //  Module Height (mm)
             public double ModuleInformation_Silicon_Thickness;          //  Silicon Thickness (mm)
+
+            public double SpiralParam_OuterDiameter;                    //  Spiral Outer Diameter (mm)
+            public double SpiralParam_InnerDiameter;                    //  Spiral Inner Diameter (mm)
+            public double SpiralParam_Revolutions;                      //  Spiral Revolutions
+            public double SpiralParam_AngleFactor;                      //  Spiral Angle Factor
+
+            public bool MAligner_VacuumPos_Center;                      //  M-Aligner Vacuum Position Center (true: Using, false: Not Using)
+            public bool MAligner_VacuumPos_Inner;                       //  M-Aligner Vacuum Position Inner (true: Using, false: Not Using)
+            public bool MAligner_VacuumPos_Outer;                       //  M-Aligner Vacuum Position Outer (true: Using, false: Not Using)
 
             public int IlluminatorValue_FineCamRed;                     //  Illuminator Value (Fine Camera, Red)                            //  조명은 0번 index 만 사용
             public int IlluminatorValue_FineCamIR;                      //  Illuminator Value (Fine Camera, IR)                             //  조명은 0번 index 만 사용
@@ -322,6 +339,10 @@ namespace QMC.Common
         public static bool Machine_LaserHeightCheckStableTime_Enable { set; get; } = true;      //  Laser Height Check Stabilization Time Enable
         public static int Machine_LaserHeightCheckStableTime { set; get; } = 500;               //  Laser Height Check Stabilization Time (ms)
         public static double Machine_Stacker_TopCheck_OverDistance { set; get; } = 0.2;         //  Full Sensor 감지 후 추가로 이동하는 거리 (mm)
+        public static bool Machine_FiducialLaserHeightCheckStableTime_Enable { set; get; } = true;      //  Laser Height Check Stabilization Time Enable
+        public static bool Machine_FiducialMarkJudgementRange_Enable { set; get; } = true;      //  FIducial Mark Judgement Enable
+        public static double Machine_FiducialMarkJudgementRange { set; get; } = 0.1;            //  Fiducial Mark Judgement Range (mm)
+        public static bool Machine_FiducialImageSave_Always { set; get; } = false;              //  Fiducial Image Save Always
 
 
         //  Offset Distance
@@ -389,10 +410,21 @@ namespace QMC.Common
 
         //  자동운전 상태 확인
         public static bool AutoRunStatus { set; get; }
+        public static int DryRun_ProcessingTime { set; get; } = 5;
 
 
         //  Sequence Test 일 경우
         public static bool SeqTestMode { set; get; } = false;
+
+
+        //  Loader Port 투입 일시정지
+        public static bool Loader_LPort_Pause { set; get; } = false;
+        public static bool Loader_RPort_Pause { set; get; } = false;
+
+
+        //  Recipe Open 시 열린 도면 파일 경로
+        public static string RecipeOpen_DrawingFilePath { set; get; } = "";
+
 
 
         ////  Recipe Data
@@ -479,8 +511,25 @@ namespace QMC.Common
 
 
         public static SiriusViewerForm EqpSiriusViewer { set; get; }
+        public static SiriusViewerForm EqpSiriusViewer_Origin { set; get; }                     //  모듈 생산 완료 후, 다음 모듈이 투입될 때 이 데이터로 재설정
         public static bool m_bAlignVisionThread_1time { set; get; }
         public static bool m_bParamLoadThread_1time { set; get; }
+
+        public static bool m_bDrawingFileOpen_1time { set; get; } = false;                      //  도면 파일 Open 시 1회만 실행하기 위한 Flag
+
+
+        //  메인화면에 Process 상태를 표시하기 위한 변수
+        public static bool m_bMainProcessStatus_LD_LPort_Complete { set; get; } = false;         //  Loader LPort 투입 완료
+        public static bool m_bMainProcessStatus_LD_RPort_Complete { set; get; } = false;         //  Loader RPort 투입 완료
+        public static bool m_bMainProcessStatus_LD_Module_PortPickUp_Complete { set; get; } = false;        //  Loader Port 에서 Module Pick Up 완료
+        public static bool m_bMainProcessStatus_LD_Module_MAlignerPutDown_Complete { set; get; } = false;   //  Loader M-Aligner 에 Module Put Down 완료
+        public static bool m_bMainProcessStatus_LD_M_Aligner_Align_Complete { set; get; } = false;          //  Loader M-Align 완료
+        public static bool m_bMainProcessStatus_LD_Module_MAlignerPickUp_Complete { set; get; } = false;    //  Loader M-Aligner 에서 Module Pick Up 완료
+        public static bool m_bMainProcessStatus_LD_Module_WorkStagePutDown_Complete { set; get; } = false;  //  Loader Work Stage 에 Module Put Down 완료
+        public static bool m_bMainProcessStatus_WorkStage_Module_Process_Complete { set; get; } = false;    //  Work Stage Process 완료
+        public static bool m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete { set; get; } = false;   //  Unloader Work Stage 에서 Module Pick Up 완료
+        public static bool m_bMainProcessStatus_UL_Module_PortPutDown_Complete { set; get; } = false;       //  Unloader Port 에 Module Put Down 완료
+
 
 
         public static void CreateInstance(string strEquipmentName)
@@ -664,6 +713,7 @@ namespace QMC.Common
                 stLayerRecipeSet[i].Miscellaneous_MaskIndex = 0;                                    //  Mask Index  
                 stLayerRecipeSet[i].Miscellaneous_BETPositionIndex = 0;                             //  BET Index  
                 stLayerRecipeSet[i].Miscellaneous_Drilling_Power = 10;                              //  Drilling Power              
+                stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = 0;                           //  Hole Processing Type (0:Circle, 1:Spiral)
 
                 //  Process Options
                 stLayerRecipeSet[i].ProcessOption_SocketAlign_Use = false;                          //  Socket Align Use (true: Use, false: Not Use)
@@ -673,6 +723,17 @@ namespace QMC.Common
                 stLayerRecipeSet[i].ModuleInformation_Module_Width = 0.0;                           //  Module Width (mm)
                 stLayerRecipeSet[i].ModuleInformation_Module_Height = 0.0;                          //  Module Height (mm)
                 stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness = 0.0;                      //  Silicon Thickness (mm)
+
+                //  Spiral Parameter
+                stLayerRecipeSet[i].SpiralParam_OuterDiameter = 0.0;                                //  Spiral Outer Diameter Resizing (mm)
+                stLayerRecipeSet[i].SpiralParam_InnerDiameter = 0.0;                                //  Spiral Inner Diameter Resizing (mm)
+                stLayerRecipeSet[i].SpiralParam_Revolutions = 10.0;                                 //  Spiral Revolutions
+                stLayerRecipeSet[i].SpiralParam_AngleFactor = 10.0;                                 //  Spiral Angle Factor
+
+                //  Mechanical-Alignment Vacuum
+                stLayerRecipeSet[i].MAligner_VacuumPos_Center = true;                               //  Mechanical-Alignment Center Vacuum Use (true: Use, false: Not Use)
+                stLayerRecipeSet[i].MAligner_VacuumPos_Outer = false;                               //  Mechanical-Alignment Outer Vacuum Use (true: Use, false: Not Use)
+                stLayerRecipeSet[i].MAligner_VacuumPos_Inner = false;                               //  Mechanical-Alignment Inner Vacuum Use (true: Use, false: Not Use)
             }
 
 
@@ -2237,6 +2298,12 @@ namespace QMC.Common
             Equipment.Machine_LaserHeightCheckStableTime_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "LaserHeightCheckStableTime", "500", temp, 255, strFIle);
             Equipment.Machine_LaserHeightCheckStableTime = Convert.ToInt16(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "FiducialMarkJudgementRange_Enable", "True", temp, 255, strFIle);
+            Equipment.Machine_FiducialMarkJudgementRange_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "FiducialMarkJudgementRange", "0.1", temp, 255, strFIle);
+            Equipment.Machine_FiducialMarkJudgementRange = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "FiducialImageSave_Always", "True", temp, 255, strFIle);
+            Equipment.Machine_FiducialImageSave_Always = temp.ToString() == "False" ? false : true;
 
 
             //  Offset Distance

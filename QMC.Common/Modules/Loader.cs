@@ -21,6 +21,7 @@ using SerialCommLaserPowerMeter2;
 using System.IO.Ports;
 using MessageBox = System.Windows.Forms.MessageBox;
 using static QMC.Common.Modules.Unloader;
+using System.ServiceModel.Syndication;
 
 
 namespace QMC.Common.Modules
@@ -31,8 +32,8 @@ namespace QMC.Common.Modules
         #region Define
 
 
-//#if true                                                                //  SLD-200C
-#if false                                                               //  SLD-200U
+#if true                                                                //  SLD-200C
+//#if false                                                               //  SLD-200U
         public enum nAxis                                                       //  SLD-200C 에서 사용하는 축 번호    
         {
             //  축 번호 변경 전 (Z0:4,    Z1:5,   TR_X:6,     TR_Z:7,     ALN_X:8,    ALN_Y:9)
@@ -421,6 +422,17 @@ namespace QMC.Common.Modules
             Cycle_WorkStage_PutDown,                                        //  Module Put Down Cycle (Work Stage)
         }
 
+        public int m_nLoaderTransfer_ProcessStep { set; get; }              //  Transfer Process Step
+        public enum LoaderTransferProcessStep : int
+        {
+            LoaderStep_None = -1,
+
+            LoaderStep_ModulePickup_fromStacker,                            //  Module Pick Up Cycle (from Stacker 0 or 1)
+            LoaderStep_ModulePutDown_MAligner,                              //  Module Put Down Cycle (to M-Aligner)
+            LoaderStep_ModulePickUp_MAligner,                               //  Module Pick Up Cycle (from M-Aligner)
+            LoaderStep_ModulePutDown_Stage,                                 //  Module Put Down Cycle (to Work Stage)
+        }
+
         public enum Loader_Transfer_Step
         {
             None = 0,
@@ -745,6 +757,8 @@ namespace QMC.Common.Modules
             m_bLD_MAlign_Complete = false;                              //  M-Aligner 동작 완료 여부
             m_bLD_TR_ModulePickUp_MAligner_Complete = false;            //  M-Aligner Module Pick Up 동작 완료 여부
             m_bLD_WorkStage_LoadingComplete = false;                    //  Work Stage 로 Module Loading 완료 여부
+
+            m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_None;
         }
         #endregion
 
@@ -978,6 +992,8 @@ namespace QMC.Common.Modules
             //  자동운전 시, Stacker0 동작 조건 : TR Cycle (None), Stacker0 Cycle (None), TR 이 Module 을 집어갔을 때
             if (Equipment.AutoRunStatus &&
 
+                !Equipment.Loader_RPort_Pause &&
+
                 m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
                 m_nStacker0_ModulePickupWaitingPos_Step == (int)StackerModulePickupWaitingPos_Step.None &&
 
@@ -985,9 +1001,44 @@ namespace QMC.Common.Modules
 
                 !m_bStacker0_Complete)                                                //  Stacker0 동작 완료되지 않은 상태 (TR 이 Module 을 집어간 후 false 로 변경됨)
             {
+                Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "시작 Flag");
+
                 m_bStacker0_Run_byUser = false;
 
                 m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.Start;
+            }
+
+
+            //  자동 운전 Flag 를 On 시키는 조건 : m_bStacker0_Run_byUser 요거가 true 일 때만 Stacker0 동작
+            if (Equipment.AutoRunStatus && !Equipment.Loader_RPort_Pause)
+            {
+                if (workStage.m_bMainWorkCycle_DryRun)          //  Dry Run
+                {
+                    if (!m_bStacker0_Run_byUser &&
+                        !m_bStacker0_Complete &&
+
+                        (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker))
+                        //m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete)               //  Work Stage 에 모듈을 내려놓은 후에 Stacker 진행
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "Dry Run 시작 Flag On");
+
+                        m_bStacker0_Run_byUser = true;
+                    }
+                }
+                else                                            //  자동 운전
+                {
+                    if (!m_bStacker0_Run_byUser &&
+                        !m_bStacker0_Complete &&
+
+                        (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker) &&
+
+                        loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))               //  Stacker0 에 Module 이 감지되어 있을 때만 진행
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "Auto Run 시작 Flag On");
+
+                        m_bStacker0_Run_byUser = true;
+                    }
+                }
             }
 
 
@@ -1020,9 +1071,39 @@ namespace QMC.Common.Modules
                         //  일단 Out. (Transfer 동작이 완료되면 진행하도록 대기할 것인지는 테스트 하면서 결정하기로 함)
                         m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
                     }
-                    else if (loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))               //  우측 Port 에 Module 이 감지되어 있을 때만 진행
+                    else if (!workStage.m_bMainWorkCycle_DryRun && loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))               //  우측 Port 에 Module 이 감지되어 있을 때만 진행
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "Stacker_0 Module Exist 센서 감지됨");
+
+                        if (!loaderParameter.DI_Loader_Stacker_FullCheck((int)LoaderParameter.StackerTable.Stacker_0))           //  감지 시 Off
+                        {
+                            //  Full Sensor 감지 상태일 경우 (Off 될 때 까지 내림 -> Off 되면 Stop -> 느리게 Up -> On 되면 Stop -> 느리게 Down -> Off 되면 Stop -> 더 느리게 Up -> On 되면 Stop -> 완료)
+                            m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.StackerZ_MoveType1_FastDown;
+                        }
+                        else
+                        {
+                            //  Full Sensor 감지되지 않는 상태일 경우 (Up -> On 되면 Stop -> 느리게 Down -> Off 되면 Stop -> 더 느리게 Up -> On 되면 Stop -> 완료)
+                            m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.StackerZ_MoveType2_FastUp;
+                        }
+                    }
+                    else if (workStage.m_bMainWorkCycle_DryRun)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "Dry Run 모드이므로 Cycle 진행");
+
+                        if (!loaderParameter.DI_Loader_Stacker_FullCheck((int)LoaderParameter.StackerTable.Stacker_0))           //  감지 시 Off
+                        {
+                            //  Full Sensor 감지 상태일 경우 (Off 될 때 까지 내림 -> Off 되면 Stop -> 느리게 Up -> On 되면 Stop -> 느리게 Down -> Off 되면 Stop -> 더 느리게 Up -> On 되면 Stop -> 완료)
+                            m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.StackerZ_MoveType1_FastDown;
+                        }
+                        else
+                        {
+                            //  Full Sensor 감지되지 않는 상태일 경우 (Up -> On 되면 Stop -> 느리게 Down -> Off 되면 Stop -> 더 느리게 Up -> On 되면 Stop -> 완료)
+                            m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.StackerZ_MoveType2_FastUp;
+                        }
+                    }
+                    else if (Equipment.SeqTestMode)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "Seq. Test 모드이므로 Cycle 진행");
 
                         if (!loaderParameter.DI_Loader_Stacker_FullCheck((int)LoaderParameter.StackerTable.Stacker_0))           //  감지 시 Off
                         {
@@ -1646,7 +1727,8 @@ namespace QMC.Common.Modules
 
                 case (int)StackerModulePickupWaitingPos_Step.StackerZ_Move_OverDistance_DoneCheck:                          //  Stacker Z 축, 최종 감지 위치에서 추가로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_PosTolerance((int)nAxis.Z0, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0]))
+                    //if (MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_PosTolerance((int)nAxis.Z0, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0]))
+                    if (MC_Func.MC_GetDone((int)nAxis.Z0))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "Stacker0 Z 축, Top 위치 Over 까지 이동 완료");
 
@@ -1755,6 +1837,8 @@ namespace QMC.Common.Modules
             //  자동운전 시, Stacker1 동작 조건 : TR Cycle (None), Stacker1 Cycle (None), TR 이 Module 을 집어갔을 때
             if (Equipment.AutoRunStatus &&
 
+                !Equipment.Loader_RPort_Pause &&
+
                 m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
                 m_nStacker1_ModulePickupWaitingPos_Step == (int)StackerModulePickupWaitingPos_Step.None &&
 
@@ -1762,9 +1846,43 @@ namespace QMC.Common.Modules
 
                 !m_bStacker1_Complete)                                                //  Stacker1 동작 완료되지 않은 상태 (TR 이 Module 을 집어간 후 false 로 변경됨)
             {
+                Log.Write("SLD-200", Equipment.User_Name, "LD Stacker1 Work Pos. Set", "시작 Flag");
+
                 m_bStacker1_Run_byUser = false;
 
                 m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.Start;
+            }
+
+
+            //  자동 운전 Flag 를 On 시키는 조건 : m_bStacker1_Run_byUser 요거가 true 일 때만 Stacker1 동작
+            if (Equipment.AutoRunStatus && !Equipment.Loader_LPort_Pause)
+            {
+                if (workStage.m_bMainWorkCycle_DryRun)          //  Dry Run
+                {
+                    if (!m_bStacker1_Run_byUser &&
+                        !m_bStacker1_Complete &&
+
+                        (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Stacker1 Work Pos. Set", "Dry Run 시작 Flag On");
+
+                        m_bStacker1_Run_byUser = true;
+                    }
+                }
+                else                                            //  자동 운전
+                {
+                    if (!m_bStacker1_Run_byUser &&
+                        !m_bStacker1_Complete &&
+
+                        (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker) &&
+
+                        loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))               //  Stacker1 에 Module 이 감지되어 있을 때만 진행
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Stacker1 Work Pos. Set", "Auto Run 시작 Flag On");
+
+                        m_bStacker1_Run_byUser = true;
+                    }
+                }
             }
 
 
@@ -1797,9 +1915,39 @@ namespace QMC.Common.Modules
                         //  일단 Out. (Transfer 동작이 완료되면 진행하도록 대기할 것인지는 테스트 하면서 결정하기로 함)
                         m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
                     }
-                    else if (loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))               //  좌측 Port 에 Module 이 감지되어 있을 때만 진행
+                    else if (!workStage.m_bMainWorkCycle_DryRun && loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))               //  좌측 Port 에 Module 이 감지되어 있을 때만 진행
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Stacker1 Work Pos. Set", "Stacker_1 Module Exist 센서 감지됨");
+
+                        if (!loaderParameter.DI_Loader_Stacker_FullCheck((int)LoaderParameter.StackerTable.Stacker_1))           //  감지 시 Off
+                        {
+                            //  Full Sensor 감지 상태일 경우 (Off 될 때 까지 내림 -> Off 되면 Stop -> 느리게 Up -> On 되면 Stop -> 느리게 Down -> Off 되면 Stop -> 더 느리게 Up -> On 되면 Stop -> 완료)
+                            m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.StackerZ_MoveType1_FastDown;
+                        }
+                        else
+                        {
+                            //  Full Sensor 감지되지 않는 상태일 경우 (Up -> On 되면 Stop -> 느리게 Down -> Off 되면 Stop -> 더 느리게 Up -> On 되면 Stop -> 완료)
+                            m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.StackerZ_MoveType2_FastUp;
+                        }
+                    }
+                    else if (workStage.m_bMainWorkCycle_DryRun)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Stacker1 Work Pos. Set", "Dry Run 모드이므로 Cycle 진행");
+
+                        if (!loaderParameter.DI_Loader_Stacker_FullCheck((int)LoaderParameter.StackerTable.Stacker_1))           //  감지 시 Off
+                        {
+                            //  Full Sensor 감지 상태일 경우 (Off 될 때 까지 내림 -> Off 되면 Stop -> 느리게 Up -> On 되면 Stop -> 느리게 Down -> Off 되면 Stop -> 더 느리게 Up -> On 되면 Stop -> 완료)
+                            m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.StackerZ_MoveType1_FastDown;
+                        }
+                        else
+                        {
+                            //  Full Sensor 감지되지 않는 상태일 경우 (Up -> On 되면 Stop -> 느리게 Down -> Off 되면 Stop -> 더 느리게 Up -> On 되면 Stop -> 완료)
+                            m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.StackerZ_MoveType2_FastUp;
+                        }
+                    }
+                    else if (Equipment.SeqTestMode)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Stacker1 Work Pos. Set", "Seq. Test 모드이므로 Cycle 진행");
 
                         if (!loaderParameter.DI_Loader_Stacker_FullCheck((int)LoaderParameter.StackerTable.Stacker_1))           //  감지 시 Off
                         {
@@ -2423,7 +2571,8 @@ namespace QMC.Common.Modules
 
                 case (int)StackerModulePickupWaitingPos_Step.StackerZ_Move_OverDistance_DoneCheck:                          //  Stacker Z 축, 최종 감지 위치에서 추가로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)nAxis.Z1) && MC_Func.MC_PosTolerance((int)nAxis.Z1, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z1]))
+                    //if (MC_Func.MC_GetDone((int)nAxis.Z1) && MC_Func.MC_PosTolerance((int)nAxis.Z1, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z1]))
+                    if (MC_Func.MC_GetDone((int)nAxis.Z1))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Stacker1 Work Pos. Set", "Stacker1 Z 축, Top 위치 Over 까지 이동 완료");
 
@@ -2542,7 +2691,9 @@ namespace QMC.Common.Modules
                     (m_nStacker0_ModulePickupWaitingPos_Step == (int)StackerModulePickupWaitingPos_Step.None) &&
 
                     m_bStacker0_Complete &&
-                    
+
+                    (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker) &&
+
                     !m_bMAlignZone_ModuleExist)
                 {
                     m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_Stacker0_PickUp;            //  Stacker0 에서 Module Pick Up Cycle
@@ -2554,7 +2705,9 @@ namespace QMC.Common.Modules
                     (m_nStacker1_ModulePickupWaitingPos_Step == (int)StackerModulePickupWaitingPos_Step.None) &&
 
                     m_bStacker1_Complete &&
-                    
+
+                    (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker) &&
+
                     !m_bMAlignZone_ModuleExist)
                 {
                     m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_Stacker1_PickUp;            //  Stacker1 에서 Module Pick Up Cycle
@@ -2565,6 +2718,8 @@ namespace QMC.Common.Modules
                     !m_bLoader_Transfer_ModulePutDowntoMAligner_Complete && 
 
                     (m_nMAlign_Step == (int)MAlign_Step.None) &&
+
+                    (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_MAligner) &&
 
                     !m_bMAlignZone_ModuleExist)
                 {
@@ -2578,6 +2733,18 @@ namespace QMC.Common.Modules
                     (m_nMAlign_Step == (int)MAlign_Step.None) &&
                     m_bMAlign_Complete &&
 
+                    !workStage.m_bMainWorkCycle_Complete &&                                                   //  Work Stage 의 완료 상태가 False 일 때 얼라인 완료된 모듈을 픽업 한다. 
+                    //!m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete &&                                //  Unloader 가 Work Stage 의 모듈을 가져가면, M-Aligner 에서 얼라인 완료된 모듈을 픽업 한다. 
+
+                    //  Laser Drilling Cycle 이 완료되면 그때 Pick Up 하도록 한다.
+                    //((workStage.m_bMainWorkCycle_DryRun && workStage.m_bDryRun_Complete) ||                 //  Dry Run 이면?? Dry Run 완료 확인
+                    //(!workStage.m_bMainWorkCycle_DryRun && workStage.m_bLaserDrilling_Complete)) &&         //  Drilling Run 이면?? Drilling 완료 확인
+
+                    ((workStage.m_bMainWorkCycle_DryRun && (workStage.m_nDryRun_Step == (int)WorkStage.DryRun_Step.None)) ||                        //  Dry Run 이면?? Dry Run Step None 확인
+                    (!workStage.m_bMainWorkCycle_DryRun && (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))) &&     //  Drilling Run 이면?? Drilling Step None 확인
+
+                    (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickUp_MAligner) &&
+
                     m_bMAlignZone_ModuleExist)
                 {
                     m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_MAligner_PickUp;           //  M-Aligner 에서 Module Pick Up Cycle
@@ -2588,6 +2755,8 @@ namespace QMC.Common.Modules
                     !m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete &&
 
                     (unloader.m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None) &&
+
+                    (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_Stage) &&
 
                     (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) &&      //  Work Stage 에서 아무것도 하지 않을 때
                     (workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None))
@@ -2823,7 +2992,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "TR 축, Stacker0 에서 Module Pickup 조건 체크");
 
-                    if (!loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))
+                    if (!workStage.m_bMainWorkCycle_DryRun && !loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Stacker0 에 Module 이 감지되지 않음.");
 
@@ -2974,6 +3143,17 @@ namespace QMC.Common.Modules
                     //  Target Position 변경 : Module Pickup 대기 위치
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_RPortPos].LD_Transfer_Z + 10.0;
 
+                    //  Dry Run 모드이면 10mm 더 위로
+                    if (workStage.m_bMainWorkCycle_DryRun)
+                    {
+                        loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] += 10.0;
+
+                        if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] > 0)
+                        {
+                            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = 0;
+                        }
+                    }
+
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse;
 
@@ -3025,6 +3205,17 @@ namespace QMC.Common.Modules
 
                     //  Target Position 변경 : Module Pickup 위치
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_RPortPos].LD_Transfer_Z;
+
+                    //  Dry Run 모드이면 10mm 더 위로
+                    if (workStage.m_bMainWorkCycle_DryRun)
+                    {
+                        loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] += 10.0;
+
+                        if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] > 0)
+                        {
+                            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = 0;
+                        }
+                    }
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Fine;
@@ -3121,6 +3312,17 @@ namespace QMC.Common.Modules
 
                     //  Target Position 변경 : 대기 위치 1단계
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_RPortPos].LD_Transfer_Z + 10.0;
+
+                    //  Dry Run 모드이면 10mm 더 위로
+                    if (workStage.m_bMainWorkCycle_DryRun)
+                    {
+                        loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] += 10.0;
+
+                        if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] > 0)
+                        {
+                            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = 0;
+                        }
+                    }
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Fine;
@@ -3228,7 +3430,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "TR 축, Stacker1 에서 Module Pickup 조건 체크");
 
-                    if (!loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
+                    if (!workStage.m_bMainWorkCycle_DryRun && !loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Stacker1 에 Module 이 감지되지 않음.");
 
@@ -3379,6 +3581,17 @@ namespace QMC.Common.Modules
                     //  Target Position 변경 : Module Pickup 대기 위치
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_LPortPos].LD_Transfer_Z + 10.0;
 
+                    //  Dry Run 모드이면 10mm 더 위로
+                    if (workStage.m_bMainWorkCycle_DryRun)
+                    {
+                        loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] += 10.0;
+
+                        if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] > 0)
+                        {
+                            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = 0;
+                        }
+                    }
+
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse;
 
@@ -3430,6 +3643,17 @@ namespace QMC.Common.Modules
 
                     //  Target Position 변경 : Module Pickup 위치
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_LPortPos].LD_Transfer_Z;
+
+                    //  Dry Run 모드이면 10mm 더 위로
+                    if (workStage.m_bMainWorkCycle_DryRun)
+                    {
+                        loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] += 10.0;
+
+                        if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] > 0)
+                        {
+                            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = 0;
+                        }
+                    }
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Fine;
@@ -3526,6 +3750,17 @@ namespace QMC.Common.Modules
 
                     //  Target Position 변경 : 대기 위치 1단계
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_LPortPos].LD_Transfer_Z + 10.0;
+
+                    //  Dry Run 모드이면 10mm 더 위로
+                    if (workStage.m_bMainWorkCycle_DryRun)
+                    {
+                        loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] += 10.0;
+
+                        if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] > 0)
+                        {
+                            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = 0;
+                        }
+                    }
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Fine;
@@ -3810,6 +4045,17 @@ namespace QMC.Common.Modules
                     //  Target Position 변경 : Module Pickup 대기 위치
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_MAlignPos].LD_Transfer_Z + 10.0;
 
+                    //  Dry Run 모드이면 10mm 더 위로
+                    if (workStage.m_bMainWorkCycle_DryRun)
+                    {
+                        loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] += 10.0;
+
+                        if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] > 0)
+                        {
+                            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = 0;
+                        }
+                    }
+
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse;
 
@@ -3861,6 +4107,17 @@ namespace QMC.Common.Modules
 
                     //  Target Position 변경 : Module Pickup 위치
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_MAlignPos].LD_Transfer_Z;
+
+                    //  Dry Run 모드이면 10mm 더 위로
+                    if (workStage.m_bMainWorkCycle_DryRun)
+                    {
+                        loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] += 10.0;
+
+                        if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] > 0)
+                        {
+                            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = 0;
+                        }
+                    }
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Fine;
@@ -4258,7 +4515,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "TR 축, Work Stage 에 Module Put Down 조건 체크");
 
-                    if (!loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) && !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+                    if (!workStage.m_bMainWorkCycle_DryRun && Equipment.Machine_VacuumSensor_Enable && !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) && !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Picker 에 Module 이 감지되지 않음.");
 
@@ -4350,7 +4607,11 @@ namespace QMC.Common.Modules
                 case (int)Loader_Transfer_Step.WorkStagePutDown_WorkStageCycle_LoadingPos_Start:                            //  Work Stage, Loading 위치로 이동 Cycle 시작
 
                     //if (!workStage.m_bWorkStageMove_Complete)
-                    if (workStage.m_nWorkStagePosition == (int)WorkStage.WorkStagePosition.WorkStage_LoadingZone)
+                    if ((workStage.m_nWorkStagePosition == (int)WorkStage.WorkStagePosition.WorkStage_LoadingZone) &&
+                            (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X - 0.1)) &&
+                            (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X + 0.1)) &&
+                            (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y - 0.1)) &&
+                            (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y + 0.1)))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage, Module Loading 위치로 이동이 완료된 상태이므로 PutDown 진행");
 
@@ -4469,6 +4730,17 @@ namespace QMC.Common.Modules
                     //  Target Position 변경 : Module PutDown 대기 위치
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_WorkTablePos].LD_Transfer_Z + 10.0;
 
+                    //  Dry Run 모드이면 10mm 더 위로
+                    if (workStage.m_bMainWorkCycle_DryRun)
+                    {
+                        loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] += 10.0;
+
+                        if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] > 0)
+                        {
+                            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = 0;
+                        }
+                    }
+
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse;
 
@@ -4520,6 +4792,17 @@ namespace QMC.Common.Modules
 
                     //  Target Position 변경 : Module Pickup 위치
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_WorkTablePos].LD_Transfer_Z;
+
+                    //  Dry Run 모드이면 10mm 더 위로
+                    if (workStage.m_bMainWorkCycle_DryRun)
+                    {
+                        loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] += 10.0;
+
+                        if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] > 0)
+                        {
+                            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = 0;
+                        }
+                    }
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Fine;
@@ -4634,6 +4917,17 @@ namespace QMC.Common.Modules
                     //  Target Position 변경 : 현재 위치 에서 10 mm 위, 1단계
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = MC_Func.MC_GetEncPos((int)nAxis.TR_Z) + 10.0;
 
+                    //  Dry Run 모드이면 10mm 더 위로
+                    if (workStage.m_bMainWorkCycle_DryRun)
+                    {
+                        loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] += 10.0;
+
+                        if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] > 0)
+                        {
+                            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = 0;
+                        }
+                    }
+
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Fine;
 
@@ -4740,7 +5034,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "TR 축, M-Aligner 에 Module Put Down 조건 체크");
 
-                    if (!loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) && !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+                    if (!workStage.m_bMainWorkCycle_DryRun && Equipment.Machine_VacuumSensor_Enable && !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) && !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Picker 에 Module 이 감지되지 않음.");
 
@@ -4846,10 +5140,10 @@ namespace QMC.Common.Modules
                     }
 
                     //  속도
-                    m_dSpeed = Equipment.stAxisParam[(int)nAxis.ALN_X].Common_Speed_Fine;
+                    m_dSpeed = Equipment.stAxisParam[(int)nAxis.ALN_X].Common_Speed_Coarse;
 
                     //  가감속
-                    m_dAccDec = Equipment.stAxisParam[(int)nAxis.ALN_X].Common_Acceleration_Fine;
+                    m_dAccDec = Equipment.stAxisParam[(int)nAxis.ALN_X].Common_Acceleration_Coarse;
 
                     MC_Func.MC_MovePosition((int)nAxis.ALN_X,
                                         loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X],
@@ -4956,6 +5250,17 @@ namespace QMC.Common.Modules
                     //  Target Position 변경 : Module PutDown 대기 위치
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_MAlignPos].LD_Transfer_Z + 10.0;
 
+                    //  Dry Run 모드이면 10mm 더 위로
+                    if (workStage.m_bMainWorkCycle_DryRun)
+                    {
+                        loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] += 10.0;
+
+                        if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] > 0)
+                        {
+                            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = 0;
+                        }
+                    }
+
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse;
 
@@ -5008,6 +5313,17 @@ namespace QMC.Common.Modules
                     //  Target Position 변경 : Module Pickup 위치
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_MAlignPos].LD_Transfer_Z;
 
+                    //  Dry Run 모드이면 10mm 더 위로
+                    if (workStage.m_bMainWorkCycle_DryRun)
+                    {
+                        loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] += 10.0;
+
+                        if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] > 0)
+                        {
+                            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = 0;
+                        }
+                    }
+
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Fine;
 
@@ -5055,9 +5371,20 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M_Aligner, Module Vacuum On");
 
-                    loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, true);
-                    loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, true);
-                    loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, true);
+                    if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center)
+                    {
+                        loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, true);
+                    }
+
+                    if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner)
+                    {
+                        loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, true);
+                    }
+
+                    if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer)
+                    {
+                        loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, true);
+                    }
 
                     //TickCount_Start((int)TickType.TICK_LDTR);
 
@@ -5083,12 +5410,19 @@ namespace QMC.Common.Modules
                     if ((!loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) &&
                         !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer)) &&
                         
-                        ((Equipment.Machine_VacuumSensor_Enable && (loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center) ||
-                                                                    loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner) ||
-                                                                    loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer)) &&
+                        ((Equipment.Machine_VacuumSensor_Enable && 
 
-                        (!Equipment.Machine_VacuumStableTime_Enable ||
-                        (Equipment.Machine_VacuumStableTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_VacuumStableTime)))) ||
+                            ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center)) ||
+                            !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center) &&
+
+                            ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner)) ||
+                            !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner) &&
+
+                            ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer)) ||
+                            !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer) &&
+
+                            (!Equipment.Machine_VacuumStableTime_Enable ||
+                            (Equipment.Machine_VacuumStableTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_VacuumStableTime)))) ||
 
                         (!Equipment.Machine_VacuumSensor_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_SignalHoldTime))))
                     {
@@ -5105,7 +5439,7 @@ namespace QMC.Common.Modules
 
                         //timer_Motion_Home.Enabled = false;
                         //m_btimer_Motion_Home_Stop = true;
-
+                         
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
 
                         MessageBox.Show("Transfer 축, Module Picker Vacuum Off 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -5121,6 +5455,17 @@ namespace QMC.Common.Modules
 
                     //  Target Position 변경 : 현재 위치 에서 10 mm 위, 1단계
                     loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = MC_Func.MC_GetEncPos((int)nAxis.TR_Z) + 10.0;
+
+                    //  Dry Run 모드이면 10mm 더 위로
+                    if (workStage.m_bMainWorkCycle_DryRun)
+                    {
+                        loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] += 10.0;
+
+                        if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] > 0)
+                        {
+                            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = 0;
+                        }
+                    }
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Fine;
@@ -5200,14 +5545,14 @@ namespace QMC.Common.Modules
 
                         m_bMAlign_Complete = false;
 
-                        if (!Equipment.AutoRunStatus)
+                        //if (!Equipment.AutoRunStatus)
                         {
                             m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.MAlignerPutDown_MAlign_Start;
                         }
-                        else
-                        {
-                            m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
-                        }
+                        //else
+                        //{
+                        //    m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
+                        //}
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
                     {
@@ -5231,6 +5576,8 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner, Align 시작");
 
                     TickCount_Start((int)TickType.TICK_LDTR);
+
+                    m_bMAlignZone_ModuleExist = true;                       //  M-Aligner 에 모듈을 내려놨으므로
 
                     //  M-Align 시작
                     m_nMAlign_Step = (int)MAlign_Step.Start;
@@ -5290,6 +5637,8 @@ namespace QMC.Common.Modules
 
                             m_bLoader_Transfer_ModulePickUpfromStacker_Complete = true;
                             m_bStacker0_Complete = false;
+
+                            m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_MAligner;
                             break;
 
                         case (int)LoaderTransferMoveType.Cycle_Stacker1_PickUp:
@@ -5298,6 +5647,20 @@ namespace QMC.Common.Modules
 
                             m_bLoader_Transfer_ModulePickUpfromStacker_Complete = true;
                             m_bStacker1_Complete = false;
+
+                            m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_MAligner;
+                            break;
+
+                        case (int)LoaderTransferMoveType.Cycle_MAligner_PutDown:
+                            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner 에 Module Put Down 완료");
+                            m_strTemp = "LD Transfer, M-Aligner 에 Module Put Down 완료";
+
+                            m_bLoader_Transfer_ModulePutDowntoMAligner_Complete = true;
+                            //m_bLoader_Transfer_ModulePickUpfromStacker_Complete = false;
+                            m_bMAlignZone_ModuleExist = true;
+                            //m_bMAlign_Complete = false;
+
+                            m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickUp_MAligner;
                             break;
 
                         case (int)LoaderTransferMoveType.Cycle_MAligner_PickUp:
@@ -5307,24 +5670,26 @@ namespace QMC.Common.Modules
                             m_bLoader_Transfer_ModulePickUpfromMAligner_Complete = true;
                             m_bLoader_Transfer_ModulePutDowntoMAligner_Complete = false;
                             m_bMAlignZone_ModuleExist = false;
-                            break;
-
-                        case (int)LoaderTransferMoveType.Cycle_MAligner_PutDown:
-                            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner 에 Module Put Down 완료");
-                            m_strTemp = "LD Transfer, M-Aligner 에 Module Put Down 완료";
-
-                            m_bLoader_Transfer_ModulePutDowntoMAligner_Complete = true;
-                            m_bLoader_Transfer_ModulePickUpfromStacker_Complete = false;
-                            m_bMAlignZone_ModuleExist = true;
                             m_bMAlign_Complete = false;
+
+                            m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_Stage;
                             break;
 
                         case (int)LoaderTransferMoveType.Cycle_WorkStage_PutDown:
                             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage 에 Module Put Down 완료");
                             m_strTemp = "LD Transfer, Work Stage 에 Module Put Down 완료";
 
+                            //  Work Stage 에 모듈을 내려놨으니 도면을 다시 로드해야 한다. (DryRun 이면 안함)
+                            if (!workStage.m_bMainWorkCycle_DryRun)
+                            {
+                                workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
+                            }
+
                             m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete = true;
                             m_bLoader_Transfer_ModulePickUpfromMAligner_Complete = false;
+                            m_bLoader_Transfer_ModulePickUpfromStacker_Complete = false;
+
+                            m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
 
                             workStage.m_bDryRun_Complete = false;
                             workStage.m_bLaserDrilling_Complete = false;
@@ -5407,18 +5772,22 @@ namespace QMC.Common.Modules
             }
 
 
+            //  Loader 에서 Module 내려놓고 얼라인을 시작하니, 자동으로 얼라인 하는 Flag 는 없어도 될듯
+
             //  자동운전 시, M-Align 동작 조건 : TR Cycle (None), M-Aligner Module Exist, M-Aligner Cycle (None)
-            if (Equipment.AutoRunStatus &&
+            //if (Equipment.AutoRunStatus &&
 
-                m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
-                m_nMAlign_Step == (int)MAlign_Step.None &&
+            //    m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
+            //    m_nMAlign_Step == (int)MAlign_Step.None &&
 
-                !m_bMAlign_Complete &&                                                  //  M-Align 이 완료되지 않은 상태
+            //    !m_bMAlign_Complete &&                                                  //  M-Align 이 완료되지 않은 상태
 
-                m_bMAlignZone_ModuleExist)                                              //  Transfer 가 L(R) Port 에서 Module 을 가져와서 M-Aligner 에 Put Down 한 후 true 로 변경. (Work Stage 로 가져가면 false 로 변경)
-            {
-                m_nMAlign_Step = (int)MAlign_Step.Start;
-            }
+            //    m_bMAlignZone_ModuleExist)                                              //  Transfer 가 L(R) Port 에서 Module 을 가져와서 M-Aligner 에 Put Down 한 후 true 로 변경. (Work Stage 로 가져가면 false 로 변경)
+            //{
+            //    Log.Write("SLD-200", Equipment.User_Name, "M-Align Cycle", "시작 Flag");
+
+            //    m_nMAlign_Step = (int)MAlign_Step.Start;
+            //}
 
 
             switch (m_nMAlign_Step)
@@ -5565,9 +5934,24 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "M-Align Cycle", "Module Vacuum On");
 
-                    loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, true);
-                    loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, true);
-                    loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, true);
+                    if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center)
+                    {
+                        loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, true);
+                    }
+
+                    if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner)
+                    {
+                        loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, true);
+                    }
+
+                    if (Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer)
+                    {
+                        loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, true);
+                    }
+
+                    //loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, true);
+                    //loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, true);
+                    //loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, true);
 
                     TickCount_Start((int)TickType.TICK_ALIGN);
 
@@ -5580,6 +5964,15 @@ namespace QMC.Common.Modules
                     if ((Equipment.Machine_VacuumSensor_Enable && (loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center) ||
                                                                     loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner) ||
                                                                     loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer)) &&
+
+                            ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center)) ||
+                            !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center) &&
+
+                            ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner)) ||
+                            !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner) &&
+
+                            ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer)) ||
+                            !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer) &&
 
                         (!Equipment.Machine_VacuumStableTime_Enable ||
                         (Equipment.Machine_VacuumStableTime_Enable && (TickCount_Elapsed((int)TickType.TICK_ALIGN) > Equipment.Machine_VacuumStableTime)))) ||
@@ -5951,6 +6344,30 @@ namespace QMC.Common.Modules
 
             //m_btimer_LoaderWork_Stop = false;
             timer_LoaderWork.Enabled = false;
+
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //  메인 화면 갱신용 변수
+            Equipment.m_bMainProcessStatus_LD_LPort_Complete = m_bStacker1_Complete;
+            Equipment.m_bMainProcessStatus_LD_RPort_Complete = m_bStacker0_Complete;
+
+            //  M-Aligner 에 Module 을 내려놓는 단계를 진행해야 하므로, Port 에서 Pick Up 이 완료된 것으로 본다.
+            Equipment.m_bMainProcessStatus_LD_Module_PortPickUp_Complete = m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_MAligner ? true : false;
+
+            //  M-Aligner 에서 Module 을 집어올리는 단계를 진행해야 하므로, M-Aligner 에 Put Down 이 완료된 것으로 본다.
+            Equipment.m_bMainProcessStatus_LD_Module_MAlignerPutDown_Complete = m_bMAlignZone_ModuleExist || (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickUp_MAligner) ? true : false;
+
+            //  M-Align 완료
+            Equipment.m_bMainProcessStatus_LD_M_Aligner_Align_Complete = m_bMAlign_Complete;
+
+            //  Work Stage 에 Module 을 내려놓는 단계를 진행해야 하므로, M-Aligner 에서 Pick Up 이 완료된 것으로 본다.
+            Equipment.m_bMainProcessStatus_LD_Module_MAlignerPickUp_Complete = m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_Stage ? true : false;
+
+            //  Work Stage 에 Module 을 내려놓는  단계 완료
+            Equipment.m_bMainProcessStatus_LD_Module_WorkStagePutDown_Complete = m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete && (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker) ? true : false;
+            //  메인 화면 갱신용 변수
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
             //m_bLD_LPort_Complete = false;                               //  Left Port 동작 완료 여부
             //m_bLD_RPort_Complete = false;                               //  Right Port 동작 완료 여부

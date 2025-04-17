@@ -78,8 +78,10 @@ namespace QMC.Common.Interpolator
                 {
                     coordinatesSource.Add(new XyCoordinate(v.Position.X, v.Position.Y));
                     coordinatesTarget.Add(new XyCoordinate(v.Position.X + v.Offset.X, v.Position.Y - v.Offset.Y));
-                    Log.Write("PerspectiveProjectionInterpolator", String.Format("{0}, {1}, {2},{3},{4}",
-                        nIndex++, v.Position.X, v.Position.Y, v.Position.X + v.Offset.X, v.Position.Y - v.Offset.Y));
+
+                    //  2025. 04. 17.  SCH : 로그파일 용량이 너무 커서..
+                    //Log.Write("PerspectiveProjectionInterpolator", String.Format("{0}, {1}, {2},{3},{4}",
+                    //    nIndex++, v.Position.X, v.Position.Y, v.Position.X + v.Offset.X, v.Position.Y - v.Offset.Y));
                 }
                 CorrectionMatrix = perspectiveProjection.projection_matrix(coordinatesSource, coordinatesTarget);
                 XyCoordinate t = perspectiveProjection.GetPerspectiveProjectionPoint(source, CorrectionMatrix);
@@ -91,8 +93,9 @@ namespace QMC.Common.Interpolator
                 dest = source;
             }
 
-            Log.Write("PerspectiveProjectionInterpolator", String.Format("list.Count = {0} : {1}, {2}, {3}, {4}"
-                        , list.Count, source.X, source.Y, dest.X, dest.Y));
+            //  2025. 04. 17.  SCH : 로그파일 용량이 너무 커서..
+            //Log.Write("PerspectiveProjectionInterpolator", String.Format("list.Count = {0} : {1}, {2}, {3}, {4}"
+            //            , list.Count, source.X, source.Y, dest.X, dest.Y));
 
             return ret;
         }
@@ -112,8 +115,10 @@ namespace QMC.Common.Interpolator
                 {
                     coordinatesSource.Add(new XyCoordinate(v.Position.X, v.Position.Y));
                     coordinatesTarget.Add(new XyCoordinate(v.Position.X + v.Offset.X, v.Position.Y - v.Offset.Y));
-                    Log.Write("PerspectiveProjectionInterpolator", String.Format("{0}, {1}, {2},{3},{4}",
-                        nIndex++, v.Position.X, v.Position.Y, v.Position.X + v.Offset.X, v.Position.Y + v.Offset.Y));
+
+                    //  2025. 04. 17.  SCH : 로그파일 용량이 너무 커서..
+                    //Log.Write("PerspectiveProjectionInterpolator", String.Format("{0}, {1}, {2},{3},{4}",
+                    //    nIndex++, v.Position.X, v.Position.Y, v.Position.X + v.Offset.X, v.Position.Y + v.Offset.Y));
                 }
                 CorrectionMatrix = perspectiveProjection.projection_matrix(coordinatesTarget, coordinatesSource);
                 XyCoordinate t = perspectiveProjection.GetPerspectiveProjectionPoint(dest, CorrectionMatrix);

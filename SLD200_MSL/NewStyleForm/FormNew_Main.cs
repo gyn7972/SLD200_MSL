@@ -104,6 +104,7 @@ namespace SLD200_MSL
             //  Sirius Viewer
             //workStage.SiriusEditor = new SpiralLab.Sirius.SiriusEditorForm();
             Equipment.EqpSiriusViewer = new SpiralLab.Sirius.SiriusViewerForm();
+            Equipment.EqpSiriusViewer_Origin = new SpiralLab.Sirius.SiriusViewerForm();
 
 
             //  마크 이미지
@@ -163,28 +164,41 @@ namespace SLD200_MSL
         {
             int ret = 0;
 
-            if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
-            {
-                workStage.m_bHomeProgressForm_Close = false;
-                m_bHomeProgress_Show = false;
+            //  자동 운전 중에 도면 로드하는 쓰레드
 
-                m_FormProgress.Hide();
-            }
-
-            //  메인 화면 도면 갱신 (요상스럽도다... 메인 화면에 도면을 불러온 후 다른 화면으로 넘어갔다가 돌아오면, 메인 화면의 Viewer 에 도면이 사라진다. 보이기만 안보이는 게 아니라 데이터도 사라진다. 
-            //                      그래서 Equipment 에 SiriusView 를 하나 임시로 두고, 서로 데이터가 다를 경우(로드된 파일명) 임시 Viewer 의 데이터를 메인 화면의 Viewer 로 가져온다.
-            if ((SiriusViewer_Main.Document != null) && (Equipment.EqpSiriusViewer.Document != null))
+            if (Equipment.m_bDrawingFileOpen_1time)
             {
-                //if ((SiriusViewer_Main.Document.FileName != Equipment.EqpSiriusViewer.Document.FileName) &&
-                //    (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))            //  자동운전이 아닐 때만 데이터를 Copy 하도록
-                if ((SiriusViewer_Main.Document != Equipment.EqpSiriusViewer.Document) &&
-                    (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))            //  자동운전이 아닐 때만 데이터를 Copy 하도록
-                {
-                    SiriusViewer_Main.Document = Equipment.EqpSiriusViewer.Document;
-                    //workStage.SiriusEditor.Document = Equipment.EqpSiriusViewer.Document;
-                    //workStage.MainSiriusEditor.Document = Equipment.EqpSiriusViewer.Document;
-                }
+                Equipment.m_bDrawingFileOpen_1time = false;
+
+                workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
+
+                MessageBox.Show("도면 로드 완료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+            
+
+
+            //if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
+            //{
+            //    workStage.m_bHomeProgressForm_Close = false;
+            //    m_bHomeProgress_Show = false;
+
+            //    m_FormProgress.Hide();
+            //}
+
+            ////  메인 화면 도면 갱신 (요상스럽도다... 메인 화면에 도면을 불러온 후 다른 화면으로 넘어갔다가 돌아오면, 메인 화면의 Viewer 에 도면이 사라진다. 보이기만 안보이는 게 아니라 데이터도 사라진다. 
+            ////                      그래서 Equipment 에 SiriusView 를 하나 임시로 두고, 서로 데이터가 다를 경우(로드된 파일명) 임시 Viewer 의 데이터를 메인 화면의 Viewer 로 가져온다.
+            //if ((SiriusViewer_Main.Document != null) && (Equipment.EqpSiriusViewer.Document != null))
+            //{
+            //    //if ((SiriusViewer_Main.Document.FileName != Equipment.EqpSiriusViewer.Document.FileName) &&
+            //    //    (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))            //  자동운전이 아닐 때만 데이터를 Copy 하도록
+            //    if ((SiriusViewer_Main.Document != Equipment.EqpSiriusViewer.Document) &&
+            //        (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))            //  자동운전이 아닐 때만 데이터를 Copy 하도록
+            //    {
+            //        SiriusViewer_Main.Document = Equipment.EqpSiriusViewer.Document;
+            //        //workStage.SiriusEditor.Document = Equipment.EqpSiriusViewer.Document;
+            //        //workStage.MainSiriusEditor.Document = Equipment.EqpSiriusViewer.Document;
+            //    }
+            //}
 
             return ret;
         }
@@ -324,9 +338,22 @@ namespace SLD200_MSL
             }
 
 
+            //  Main Processing Status 표시
+            checkBox_Main_ProcessStatus_LD_LPort_Complete.Checked = Equipment.m_bMainProcessStatus_LD_LPort_Complete;
+            checkBox_Main_ProcessStatus_LD_RPort_Complete.Checked = Equipment.m_bMainProcessStatus_LD_RPort_Complete;
+            checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_PortPickUp_Complete;
+            checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_MAlignerPutDown_Complete;
+            checkBox_Main_ProcessStatus_LD_MAlign_Complete.Checked = Equipment.m_bMainProcessStatus_LD_M_Aligner_Align_Complete;
+            checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_MAlignerPickUp_Complete;
+            checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_WorkStagePutDown_Complete;
+            checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Checked = Equipment.m_bMainProcessStatus_WorkStage_Module_Process_Complete;
+            checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete;
+            checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete;
+
+
             //if (!m_btimer_MainWork_Stop)
             //{
-            timer_Main_Status.Enabled = true;
+                timer_Main_Status.Enabled = true;
             //}
         }
 
@@ -509,6 +536,13 @@ namespace SLD200_MSL
             if (workStage.rtc == null)
             {
                 MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                return;
+            }
+
+            if (Equipment.RecipeOpen_DrawingFilePath.Length == 0)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "도면(레시피)을 로드 하십시오.");
                 return;
             }
 
@@ -868,9 +902,19 @@ namespace SLD200_MSL
 
         private void button_TEST_RotOffset_Click(object sender, EventArgs e)
         {
-            string m_strRet = ConvertDecimalToHex(2000);
+            //LwPolyline lwPolyLineVertices = new LwPolyline();
 
-            return;
+            //lwPolyLineVertices = workStage.SpiralData_Create(20, 10, 10, 10, 0, 0);
+            //SiriusViewer_Main.Document.Action.ActEntityAdd(lwPolyLineVertices);
+
+            //return;
+
+
+
+
+            //string m_strRet = ConvertDecimalToHex(2000);
+
+            //return;
 
 
 
@@ -909,26 +953,45 @@ namespace SLD200_MSL
         {
             //  자동 운전 시작
 
+
+            //  테스트 : 강제로 Dry Run
+            //workStage.m_bMainWorkCycle_DryRun = true;
+            Equipment.DryRun_ProcessingTime = Convert.ToInt16(baseTextBox_DryRun_ProcessingTime.Text);
+
+
+            if (!workStage.m_bMainWorkCycle_DryRun && (Equipment.RecipeOpen_DrawingFilePath.Length <= 0))
+            {
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "도면(레시피)을 로드 하십시오.");
+                return;
+            }
+
             if (checkBox_Test_DryRun.Checked)
             {
+                workStage.m_bMainWorkCycle_DryRun = true;
+
                 var mb = new MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 시작하시겠습니까?\r\n\r\n[Dry Run]"))
                     return;
             }
             else
             {
+                workStage.m_bMainWorkCycle_DryRun = false;
+
                 var mb = new MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 시작하시겠습니까?"))
                     return;
             }
-
-            workStage.m_bMainWorkCycle_DryRun = true;
 
             Equipment.AutoRunStatus = true;
 
             //  Main Work Timer Start
             workStage.m_btimer_MainWork_Stop = false;
             workStage.timer_MainWork.Enabled = true;
+
+            //  Laser Drilling Timer Stop
+            workStage.m_btimer_LaserDrillingWork_Stop = false;
+            workStage.timer_LaserDrillingWork.Enabled = true;
 
             //  Loader Work Timer Start
             loader.m_btimer_LoaderWork_Stop = false;
@@ -953,6 +1016,10 @@ namespace SLD200_MSL
             workStage.m_btimer_MainWork_Stop = true;
             workStage.timer_MainWork.Enabled = false;
 
+            //  Laser Drilling Timer Stop
+            workStage.m_btimer_LaserDrillingWork_Stop = true;
+            workStage.timer_LaserDrillingWork.Enabled = false;
+
             //  Loader Work Timer Stop
             loader.m_btimer_LoaderWork_Stop = true;
             loader.timer_LoaderWork.Enabled = false;
@@ -960,10 +1027,21 @@ namespace SLD200_MSL
             //  Unloader Work Timer Stop
             unloader.m_btimer_UnloaderWork_Stop = true;
             unloader.timer_UnloaderWork.Enabled = false;
-        }
+        }        
 
         private void button_TEST_RTCInit_Click(object sender, EventArgs e)
         {
+            //SiriusViewer_Main.Document = Equipment.EqpSiriusViewer_Origin.Document;
+            workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
+            //m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
+
+            //Equipment.m_bDrawingFileOpen_1time = true;
+
+            return;
+
+
+
+
             //  RTC 초기화 테스트
 
             bool m_bRet = true;
@@ -1039,6 +1117,31 @@ namespace SLD200_MSL
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Error !", "RTC 초기화 실패");
             }
+        }
+
+        private void checkBox_Main_Loader_LPort_Pause_CheckedChanged(object sender, EventArgs e)
+        {
+            //  Loader L-Port Pause 체크박스
+
+            Equipment.Loader_LPort_Pause = checkBox_Main_Loader_LPort_Pause.Checked;
+        }
+
+        private void checkBox_Main_Loader_RPort_Pause_CheckedChanged(object sender, EventArgs e)
+        {
+            //  Loader R-Port Pause 체크박스
+
+            Equipment.Loader_RPort_Pause = checkBox_Main_Loader_RPort_Pause.Checked;
+        }
+
+        private void checkBox_Main_CycleStop_CheckedChanged(object sender, EventArgs e)
+        {
+            //  Cycle Stop 일 경우, 투입 중지
+
+            checkBox_Main_Loader_LPort_Pause.Checked = checkBox_Main_CycleStop.Checked;
+            checkBox_Main_Loader_RPort_Pause.Checked = checkBox_Main_CycleStop.Checked;
+
+            Equipment.Loader_LPort_Pause = checkBox_Main_Loader_LPort_Pause.Checked;
+            Equipment.Loader_RPort_Pause = checkBox_Main_Loader_RPort_Pause.Checked;
         }
     }
 }

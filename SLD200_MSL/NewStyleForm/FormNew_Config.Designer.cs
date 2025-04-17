@@ -539,6 +539,8 @@
             this.label_Config_EncPosition_LD_Z1 = new System.Windows.Forms.Label();
             this.label154 = new System.Windows.Forms.Label();
             this.label_Config_EncPosition_LD_Z0 = new System.Windows.Forms.Label();
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc = new System.Windows.Forms.Button();
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc = new System.Windows.Forms.Button();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -6644,6 +6646,8 @@
             // 
             // groupBox28
             // 
+            this.groupBox28.Controls.Add(this.button_Test_LDStacker0_ModulesLoadingPos_Cyc);
+            this.groupBox28.Controls.Add(this.button_Test_LDStacker1_ModulesLoadingPos_Cyc);
             this.groupBox28.Controls.Add(this.button_TestbyUser_LPort_Start);
             this.groupBox28.Controls.Add(this.button_TestbyUser_RPort_Start);
             this.groupBox28.Controls.Add(this.label47);
@@ -6664,7 +6668,7 @@
             this.groupBox28.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox28.Name = "groupBox28";
             this.groupBox28.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox28.Size = new System.Drawing.Size(831, 337);
+            this.groupBox28.Size = new System.Drawing.Size(831, 424);
             this.groupBox28.TabIndex = 51;
             this.groupBox28.TabStop = false;
             this.groupBox28.Text = " Loader ";
@@ -6673,7 +6677,7 @@
             // 
             this.button_TestbyUser_LPort_Start.BackColor = System.Drawing.Color.DarkGray;
             this.button_TestbyUser_LPort_Start.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_TestbyUser_LPort_Start.Location = new System.Drawing.Point(493, 272);
+            this.button_TestbyUser_LPort_Start.Location = new System.Drawing.Point(490, 358);
             this.button_TestbyUser_LPort_Start.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_TestbyUser_LPort_Start.Name = "button_TestbyUser_LPort_Start";
             this.button_TestbyUser_LPort_Start.Size = new System.Drawing.Size(137, 54);
@@ -6686,7 +6690,7 @@
             // 
             this.button_TestbyUser_RPort_Start.BackColor = System.Drawing.Color.DarkGray;
             this.button_TestbyUser_RPort_Start.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_TestbyUser_RPort_Start.Location = new System.Drawing.Point(684, 272);
+            this.button_TestbyUser_RPort_Start.Location = new System.Drawing.Point(684, 358);
             this.button_TestbyUser_RPort_Start.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_TestbyUser_RPort_Start.Name = "button_TestbyUser_RPort_Start";
             this.button_TestbyUser_RPort_Start.Size = new System.Drawing.Size(137, 54);
@@ -6799,7 +6803,7 @@
             // button_Test_LDTransfer_PickupLPortPos_Cyc
             // 
             this.button_Test_LDTransfer_PickupLPortPos_Cyc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Test_LDTransfer_PickupLPortPos_Cyc.Location = new System.Drawing.Point(446, 134);
+            this.button_Test_LDTransfer_PickupLPortPos_Cyc.Location = new System.Drawing.Point(443, 238);
             this.button_Test_LDTransfer_PickupLPortPos_Cyc.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Test_LDTransfer_PickupLPortPos_Cyc.Name = "button_Test_LDTransfer_PickupLPortPos_Cyc";
             this.button_Test_LDTransfer_PickupLPortPos_Cyc.Size = new System.Drawing.Size(184, 88);
@@ -6811,7 +6815,7 @@
             // button_Test_LDTransfer_PickupRPortPos_Cyc
             // 
             this.button_Test_LDTransfer_PickupRPortPos_Cyc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Test_LDTransfer_PickupRPortPos_Cyc.Location = new System.Drawing.Point(637, 134);
+            this.button_Test_LDTransfer_PickupRPortPos_Cyc.Location = new System.Drawing.Point(637, 238);
             this.button_Test_LDTransfer_PickupRPortPos_Cyc.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Test_LDTransfer_PickupRPortPos_Cyc.Name = "button_Test_LDTransfer_PickupRPortPos_Cyc";
             this.button_Test_LDTransfer_PickupRPortPos_Cyc.Size = new System.Drawing.Size(184, 88);
@@ -6823,24 +6827,24 @@
             // button_Test_LDStacker0_PickupWaitPos_Cyc
             // 
             this.button_Test_LDStacker0_PickupWaitPos_Cyc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Test_LDStacker0_PickupWaitPos_Cyc.Location = new System.Drawing.Point(637, 30);
+            this.button_Test_LDStacker0_PickupWaitPos_Cyc.Location = new System.Drawing.Point(637, 134);
             this.button_Test_LDStacker0_PickupWaitPos_Cyc.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Test_LDStacker0_PickupWaitPos_Cyc.Name = "button_Test_LDStacker0_PickupWaitPos_Cyc";
             this.button_Test_LDStacker0_PickupWaitPos_Cyc.Size = new System.Drawing.Size(184, 88);
             this.button_Test_LDStacker0_PickupWaitPos_Cyc.TabIndex = 49;
-            this.button_Test_LDStacker0_PickupWaitPos_Cyc.Text = "LD R-Port Position\r\n\r\n[Module to Pick Up]\r\n";
+            this.button_Test_LDStacker0_PickupWaitPos_Cyc.Text = "LD R-Port Position  ▲\r\n\r\n[Module to Pick Up]\r\n";
             this.button_Test_LDStacker0_PickupWaitPos_Cyc.UseVisualStyleBackColor = true;
             this.button_Test_LDStacker0_PickupWaitPos_Cyc.Click += new System.EventHandler(this.button_Test_LDStacker0_PickupWaitPos_Cyc_Click);
             // 
             // button_Test_LDStacker1_PickupWaitPos_Cyc
             // 
             this.button_Test_LDStacker1_PickupWaitPos_Cyc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Test_LDStacker1_PickupWaitPos_Cyc.Location = new System.Drawing.Point(446, 30);
+            this.button_Test_LDStacker1_PickupWaitPos_Cyc.Location = new System.Drawing.Point(443, 134);
             this.button_Test_LDStacker1_PickupWaitPos_Cyc.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Test_LDStacker1_PickupWaitPos_Cyc.Name = "button_Test_LDStacker1_PickupWaitPos_Cyc";
             this.button_Test_LDStacker1_PickupWaitPos_Cyc.Size = new System.Drawing.Size(184, 88);
             this.button_Test_LDStacker1_PickupWaitPos_Cyc.TabIndex = 48;
-            this.button_Test_LDStacker1_PickupWaitPos_Cyc.Text = "LD L-Port Position\r\n\r\n[Module to Pick Up]\r\n";
+            this.button_Test_LDStacker1_PickupWaitPos_Cyc.Text = "LD L-Port Position  ▲\r\n\r\n[Module to Pick Up]\r\n";
             this.button_Test_LDStacker1_PickupWaitPos_Cyc.UseVisualStyleBackColor = true;
             this.button_Test_LDStacker1_PickupWaitPos_Cyc.Click += new System.EventHandler(this.button_Test_LDStacker1_PickupWaitPos_Cyc_Click);
             // 
@@ -7414,6 +7418,30 @@
             this.label_Config_EncPosition_LD_Z0.TabIndex = 35;
             this.label_Config_EncPosition_LD_Z0.Text = "000.000";
             this.label_Config_EncPosition_LD_Z0.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // button_Test_LDStacker0_ModulesLoadingPos_Cyc
+            // 
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Location = new System.Drawing.Point(637, 30);
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Name = "button_Test_LDStacker0_ModulesLoadingPos_Cyc";
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Size = new System.Drawing.Size(184, 88);
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.TabIndex = 84;
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Text = "LD R-Port Position  ▼\r\n\r\n[To Loading Modules]\r\n";
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.UseVisualStyleBackColor = true;
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Click += new System.EventHandler(this.button_Test_LDStacker0_ModulesLoadingPos_Cyc_Click);
+            // 
+            // button_Test_LDStacker1_ModulesLoadingPos_Cyc
+            // 
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Location = new System.Drawing.Point(443, 30);
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Name = "button_Test_LDStacker1_ModulesLoadingPos_Cyc";
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Size = new System.Drawing.Size(184, 88);
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.TabIndex = 83;
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Text = "LD L-Port Position  ▼\r\n\r\n[To Loading Modules]\r\n";
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.UseVisualStyleBackColor = true;
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Click += new System.EventHandler(this.button_Test_LDStacker1_ModulesLoadingPos_Cyc_Click);
             // 
             // FormNew_Config
             // 
@@ -8073,5 +8101,7 @@
         private System.Windows.Forms.Button button_TestbyUser_LaserDrilling_toRPort_OK;
         private System.Windows.Forms.Button button_TestbyUser_LaserDrilling_NG;
         private System.Windows.Forms.Button button_TestbyUser_LaserDrilling_toLPort_OK;
+        private System.Windows.Forms.Button button_Test_LDStacker0_ModulesLoadingPos_Cyc;
+        private System.Windows.Forms.Button button_Test_LDStacker1_ModulesLoadingPos_Cyc;
     }
 }
