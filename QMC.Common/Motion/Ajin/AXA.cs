@@ -16,7 +16,7 @@ using System.Text;
 
 namespace QMC.Common.Motion.Ajin
 {
-    internal static class AXA
+    public static class AXA
     {
         #region Define
         public const string LibraryFileName = "AXL.dll";
@@ -284,7 +284,7 @@ namespace QMC.Common.Motion.Ajin
         //==Software Trigger Mode 함수
         //사용자가 지정한 입력 채널에 아날로그 입력 값을 A/D변환한 후 전압 값으로 반환한다.이 함수를 사용하기 전에 AxaSetTriggerModeAdc 함수를 사용하여 Normal Trigger Mode로 설정되어 있어야 한다.
         [DllImport(LibraryFileName)]
-        private static extern uint AxaiSwReadVoltage(int lChannelNo, ref double dpVolt);
+        public static extern uint AxaiSwReadVoltage(int lChannelNo, ref double dpVolt);
 
         //지정한 입력 채널에 아날로그 입력 값을 Digit 값으로 반환한다. Normal Trigger Mode로 설정되어 있어야 한다.
         [DllImport(LibraryFileName)]

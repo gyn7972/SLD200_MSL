@@ -215,6 +215,7 @@
     <Compile Include="Parts\BdsParameterConfig.cs" />
     <Compile Include="Parts\BdsParameterRecipe.cs" />
     <Compile Include="Parts\BdsPart.cs" />
+    <Compile Include="Parts\PressureSensor.cs" />
     <Compile Include="Parts\UnloaderParameter.cs" />
     <Compile Include="Parts\LoaderParameter.cs" />
     <Compile Include="Parts\UnloaderParameterConfig.cs" />

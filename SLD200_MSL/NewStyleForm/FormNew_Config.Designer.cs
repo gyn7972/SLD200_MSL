@@ -541,6 +541,9 @@
             this.label_Config_EncPosition_LD_Z0 = new System.Windows.Forms.Label();
             this.button_Test_LDStacker0_ModulesLoadingPos_Cyc = new System.Windows.Forms.Button();
             this.button_Test_LDStacker1_ModulesLoadingPos_Cyc = new System.Windows.Forms.Button();
+            this.groupBox30 = new System.Windows.Forms.GroupBox();
+            this.labelStagePressure = new System.Windows.Forms.Label();
+            this.label51 = new System.Windows.Forms.Label();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -646,6 +649,7 @@
             this.groupBox_Config_AxisPositions_WorkStage.SuspendLayout();
             this.groupBox_Config_AxisPositions_LoadTransfer.SuspendLayout();
             this.groupBox_Config_AxisPositions_Loader.SuspendLayout();
+            this.groupBox30.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl_Config
@@ -7419,6 +7423,45 @@
             this.label_Config_EncPosition_LD_Z0.Text = "000.000";
             this.label_Config_EncPosition_LD_Z0.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // groupBox30
+            // 
+            this.groupBox30.Controls.Add(this.labelStagePressure);
+            this.groupBox30.Controls.Add(this.label51);
+            this.groupBox30.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox30.Location = new System.Drawing.Point(1674, 732);
+            this.groupBox30.Margin = new System.Windows.Forms.Padding(5);
+            this.groupBox30.Name = "groupBox30";
+            this.groupBox30.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox30.Size = new System.Drawing.Size(232, 70);
+            this.groupBox30.TabIndex = 84;
+            this.groupBox30.TabStop = false;
+            this.groupBox30.Text = " Dust Collector (Lower) ";
+            // 
+            // labelStagePressure
+            // 
+            this.labelStagePressure.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.labelStagePressure.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.labelStagePressure.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.labelStagePressure.ForeColor = System.Drawing.Color.Lime;
+            this.labelStagePressure.Location = new System.Drawing.Point(119, 26);
+            this.labelStagePressure.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.labelStagePressure.Name = "labelStagePressure";
+            this.labelStagePressure.Size = new System.Drawing.Size(105, 27);
+            this.labelStagePressure.TabIndex = 50;
+            this.labelStagePressure.Text = "0";
+            this.labelStagePressure.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label51
+            // 
+            this.label51.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label51.Location = new System.Drawing.Point(7, 24);
+            this.label51.Margin = new System.Windows.Forms.Padding(6);
+            this.label51.Name = "label51";
+            this.label51.Size = new System.Drawing.Size(111, 27);
+            this.label51.TabIndex = 49;
+            this.label51.Text = "Pressure(kPa) : ";
+            this.label51.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // button_Test_LDStacker0_ModulesLoadingPos_Cyc
             // 
             this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -7449,6 +7492,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 877);
             this.ControlBox = false;
+            this.Controls.Add(this.groupBox30);
             this.Controls.Add(this.groupBox_Config_AxisPositions);
             this.Controls.Add(this.tabControl_Config);
             this.Font = new System.Drawing.Font("Tahoma", 9F);
@@ -7584,6 +7628,7 @@
             this.groupBox_Config_AxisPositions_WorkStage.ResumeLayout(false);
             this.groupBox_Config_AxisPositions_LoadTransfer.ResumeLayout(false);
             this.groupBox_Config_AxisPositions_Loader.ResumeLayout(false);
+            this.groupBox30.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -8101,6 +8146,9 @@
         private System.Windows.Forms.Button button_TestbyUser_LaserDrilling_toRPort_OK;
         private System.Windows.Forms.Button button_TestbyUser_LaserDrilling_NG;
         private System.Windows.Forms.Button button_TestbyUser_LaserDrilling_toLPort_OK;
+        private System.Windows.Forms.GroupBox groupBox30;
+        private System.Windows.Forms.Label labelStagePressure;
+        private System.Windows.Forms.Label label51;
         private System.Windows.Forms.Button button_Test_LDStacker0_ModulesLoadingPos_Cyc;
         private System.Windows.Forms.Button button_Test_LDStacker1_ModulesLoadingPos_Cyc;
     }

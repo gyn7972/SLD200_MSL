@@ -1277,6 +1277,7 @@ namespace QMC.Common.Modules
         public bool PatternMatchingImage_Reticle_Loaded_HighRes = false;
         public bool PatternMatchingImage_Reticle_Loaded_LowRes = false;
 
+        public PressureSensor StagePressureSensor { get; set; } 
 
         //  레시피 변경 시 Calibration Mode 창의 위치값을 변경하기 위해
         public bool m_bParameterSetting_PosData_Reload { set; get; }            //  위치 데이터 다시 로드
@@ -2943,6 +2944,8 @@ namespace QMC.Common.Modules
 
             ParamConfig = new WorkStageParameterConfig();
             Config = new WorkStageConfig();
+
+            StagePressureSensor = new PressureSensor(0, "StagePressureSensor");
             //SetDispenserWork((int)DispenserWorkStatus.WORK_NONE);
 
             //WorkStageIndex = -1;
@@ -3439,6 +3442,11 @@ namespace QMC.Common.Modules
             reticleAligner_HighRes.Illuminator = CommonModule.Instance.Illuminator;
             Parts.Add(reticleAligner_HighRes);
 
+            StagePressureSensor= new PressureSensor(Config.StagePresureSensorId, "StagePressureSensor");
+            StagePressureSensor.Create(); 
+            StagePressureSensor.Owner = this;
+
+            Parts.Add(StagePressureSensor);
             //PosParam_Dispenser = GetConfigData();     //  요건 나중에
 
             //ACS_Motion_isSimulationMode = false;
@@ -3484,7 +3492,7 @@ namespace QMC.Common.Modules
             }
 
             Stage.Config = this.Config.StageConfig;
-
+            StagePressureSensor.SensorId = this.Config.StagePresureSensorId;
             Camera_HighRes.Config = Config.CameraConfig_HighRes;                        //  상부 카메라
             Camera_LowRes.Config = Config.CameraConfig_LowRes;                        //  하부 카메라
             visionCalibrator_HighRes.Config = Config.VisonCalibratorConfig_HighRes;
