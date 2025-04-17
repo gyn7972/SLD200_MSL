@@ -156,6 +156,10 @@ namespace SLD200_MSL
             textBox_Setup_ScannerCal_MarkingSpeed.Text = Equipment.Scanner_Calibration_LaserMarkSpeed.ToString();
             textBox_Setup_ScannerCal_JumpSpeed.Text = Equipment.Scanner_Calibration_LaserJumpSpeed.ToString();
 
+
+
+
+
             //m_fieldSize = Equipment.Scanner_Calibration_FieldSize;
             m_srcFile = Equipment.Scanner_Calibration_srcFilePath;
             m_targetFile = Equipment.Scanner_Calibration_targetFilePath;
