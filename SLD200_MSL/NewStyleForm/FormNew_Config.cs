@@ -214,7 +214,7 @@ namespace SLD200_MSL
 
             DIO_Status();
             Motor_Position();
-
+            AIO_Status();
 
             ///////////////////////////////////////////////////////////////////////////////////////
             //  비상 정지 시
@@ -456,6 +456,16 @@ namespace SLD200_MSL
             //}
 
             timer_Status.Enabled = true;
+        }
+
+        private void AIO_Status()
+        {
+            double dValue = PressureSensor.PressureValue;
+            double dScale = workStage.StagePressureSensor.PressureScale;
+            dScale = 25;
+            //dValue = 5;
+            double dPressure = (dValue -0.976) * dScale * -1;
+            this.labelStagePressure.Text = dPressure.ToString("0.00");
         }
 
         private void DIO_Status()
@@ -5146,6 +5156,13 @@ namespace SLD200_MSL
             workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
 
 
+            //  X, Y 축 모션이 정지했을 때 맵 데이터를 바꿔준다.
+            do
+            {
+                //  모션 정지할때 까지 대기
+
+            } while (workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) == false || workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == false);
+
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //  맵 데이터 변경 (기준위치 : Scanner)
             //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
@@ -7210,6 +7227,8 @@ namespace SLD200_MSL
             if (Equipment.AutoRunStatus)
             {
                 loader.m_bStacker0_Run_byUser = true;
+
+                loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
             }
             else
             {
@@ -7224,6 +7243,8 @@ namespace SLD200_MSL
             if (Equipment.AutoRunStatus)
             {
                 loader.m_bStacker1_Run_byUser = true;
+
+                loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
             }
             else
             {
@@ -7276,6 +7297,80 @@ namespace SLD200_MSL
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "Auto Run 상태가 아닙니다.");
+                return;
+            }
+        }
+
+        private void button_Test_LDStacker0_ModulesLoadingPos_Cyc_Click(object sender, EventArgs e)
+        {
+            //  Loading Modules Position
+            
+            if (!Equipment.AjinBoard_Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
+                return;
+            }
+
+            if (loader.m_nStacker0_ModulePickupWaitingPos_Step == (int)Loader.StackerModulePickupWaitingPos_Step.None)
+            {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader R-Port, Module Loading 위치로 이동하시겠습니까?"))
+                    return;
+
+                //  속도
+                double m_dSpeed = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Common_Speed_Coarse;
+
+                //  가감속 배율
+                double m_dSpeedMag = 2.0;
+
+                workStage.MC_Func.MC_MovePosition((int)Loader.nAxis.Z0,
+                                    loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_RPort_ReadyPos].LD_Stacker_Z0,
+                                    m_dSpeed,
+                                    m_dSpeed * m_dSpeedMag,
+                                    m_dSpeed * m_dSpeedMag);
+            }
+            else
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "Loader R-Port 가 동작중입니다.");
+                return;
+            }
+        }
+
+        private void button_Test_LDStacker1_ModulesLoadingPos_Cyc_Click(object sender, EventArgs e)
+        {
+            //  Loading Modules Position
+
+            if (!Equipment.AjinBoard_Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
+                return;
+            }
+
+            if (loader.m_nStacker1_ModulePickupWaitingPos_Step == (int)Loader.StackerModulePickupWaitingPos_Step.None)
+            {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader L-Port, Module Loading 위치로 이동하시겠습니까?"))
+                    return;
+
+                //  속도
+                double m_dSpeed = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Speed_Coarse;
+
+                //  가감속 배율
+                double m_dSpeedMag = 2.0;
+
+                workStage.MC_Func.MC_MovePosition((int)Loader.nAxis.Z1,
+                                    loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_RPort_ReadyPos].LD_Stacker_Z1,
+                                    m_dSpeed,
+                                    m_dSpeed * m_dSpeedMag,
+                                    m_dSpeed * m_dSpeedMag);
+            }
+            else
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "Loader L-Port 가 동작중입니다.");
                 return;
             }
         }

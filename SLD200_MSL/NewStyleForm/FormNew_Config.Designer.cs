@@ -539,6 +539,11 @@
             this.label_Config_EncPosition_LD_Z1 = new System.Windows.Forms.Label();
             this.label154 = new System.Windows.Forms.Label();
             this.label_Config_EncPosition_LD_Z0 = new System.Windows.Forms.Label();
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc = new System.Windows.Forms.Button();
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc = new System.Windows.Forms.Button();
+            this.groupBox30 = new System.Windows.Forms.GroupBox();
+            this.labelStagePressure = new System.Windows.Forms.Label();
+            this.label51 = new System.Windows.Forms.Label();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -644,6 +649,7 @@
             this.groupBox_Config_AxisPositions_WorkStage.SuspendLayout();
             this.groupBox_Config_AxisPositions_LoadTransfer.SuspendLayout();
             this.groupBox_Config_AxisPositions_Loader.SuspendLayout();
+            this.groupBox30.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl_Config
@@ -6644,6 +6650,8 @@
             // 
             // groupBox28
             // 
+            this.groupBox28.Controls.Add(this.button_Test_LDStacker0_ModulesLoadingPos_Cyc);
+            this.groupBox28.Controls.Add(this.button_Test_LDStacker1_ModulesLoadingPos_Cyc);
             this.groupBox28.Controls.Add(this.button_TestbyUser_LPort_Start);
             this.groupBox28.Controls.Add(this.button_TestbyUser_RPort_Start);
             this.groupBox28.Controls.Add(this.label47);
@@ -6664,7 +6672,7 @@
             this.groupBox28.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox28.Name = "groupBox28";
             this.groupBox28.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox28.Size = new System.Drawing.Size(831, 337);
+            this.groupBox28.Size = new System.Drawing.Size(831, 424);
             this.groupBox28.TabIndex = 51;
             this.groupBox28.TabStop = false;
             this.groupBox28.Text = " Loader ";
@@ -6673,7 +6681,7 @@
             // 
             this.button_TestbyUser_LPort_Start.BackColor = System.Drawing.Color.DarkGray;
             this.button_TestbyUser_LPort_Start.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_TestbyUser_LPort_Start.Location = new System.Drawing.Point(493, 272);
+            this.button_TestbyUser_LPort_Start.Location = new System.Drawing.Point(490, 358);
             this.button_TestbyUser_LPort_Start.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_TestbyUser_LPort_Start.Name = "button_TestbyUser_LPort_Start";
             this.button_TestbyUser_LPort_Start.Size = new System.Drawing.Size(137, 54);
@@ -6686,7 +6694,7 @@
             // 
             this.button_TestbyUser_RPort_Start.BackColor = System.Drawing.Color.DarkGray;
             this.button_TestbyUser_RPort_Start.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_TestbyUser_RPort_Start.Location = new System.Drawing.Point(684, 272);
+            this.button_TestbyUser_RPort_Start.Location = new System.Drawing.Point(684, 358);
             this.button_TestbyUser_RPort_Start.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_TestbyUser_RPort_Start.Name = "button_TestbyUser_RPort_Start";
             this.button_TestbyUser_RPort_Start.Size = new System.Drawing.Size(137, 54);
@@ -6799,7 +6807,7 @@
             // button_Test_LDTransfer_PickupLPortPos_Cyc
             // 
             this.button_Test_LDTransfer_PickupLPortPos_Cyc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Test_LDTransfer_PickupLPortPos_Cyc.Location = new System.Drawing.Point(446, 134);
+            this.button_Test_LDTransfer_PickupLPortPos_Cyc.Location = new System.Drawing.Point(443, 238);
             this.button_Test_LDTransfer_PickupLPortPos_Cyc.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Test_LDTransfer_PickupLPortPos_Cyc.Name = "button_Test_LDTransfer_PickupLPortPos_Cyc";
             this.button_Test_LDTransfer_PickupLPortPos_Cyc.Size = new System.Drawing.Size(184, 88);
@@ -6811,7 +6819,7 @@
             // button_Test_LDTransfer_PickupRPortPos_Cyc
             // 
             this.button_Test_LDTransfer_PickupRPortPos_Cyc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Test_LDTransfer_PickupRPortPos_Cyc.Location = new System.Drawing.Point(637, 134);
+            this.button_Test_LDTransfer_PickupRPortPos_Cyc.Location = new System.Drawing.Point(637, 238);
             this.button_Test_LDTransfer_PickupRPortPos_Cyc.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Test_LDTransfer_PickupRPortPos_Cyc.Name = "button_Test_LDTransfer_PickupRPortPos_Cyc";
             this.button_Test_LDTransfer_PickupRPortPos_Cyc.Size = new System.Drawing.Size(184, 88);
@@ -6823,24 +6831,24 @@
             // button_Test_LDStacker0_PickupWaitPos_Cyc
             // 
             this.button_Test_LDStacker0_PickupWaitPos_Cyc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Test_LDStacker0_PickupWaitPos_Cyc.Location = new System.Drawing.Point(637, 30);
+            this.button_Test_LDStacker0_PickupWaitPos_Cyc.Location = new System.Drawing.Point(637, 134);
             this.button_Test_LDStacker0_PickupWaitPos_Cyc.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Test_LDStacker0_PickupWaitPos_Cyc.Name = "button_Test_LDStacker0_PickupWaitPos_Cyc";
             this.button_Test_LDStacker0_PickupWaitPos_Cyc.Size = new System.Drawing.Size(184, 88);
             this.button_Test_LDStacker0_PickupWaitPos_Cyc.TabIndex = 49;
-            this.button_Test_LDStacker0_PickupWaitPos_Cyc.Text = "LD R-Port Position\r\n\r\n[Module to Pick Up]\r\n";
+            this.button_Test_LDStacker0_PickupWaitPos_Cyc.Text = "LD R-Port Position  ▲\r\n\r\n[Module to Pick Up]\r\n";
             this.button_Test_LDStacker0_PickupWaitPos_Cyc.UseVisualStyleBackColor = true;
             this.button_Test_LDStacker0_PickupWaitPos_Cyc.Click += new System.EventHandler(this.button_Test_LDStacker0_PickupWaitPos_Cyc_Click);
             // 
             // button_Test_LDStacker1_PickupWaitPos_Cyc
             // 
             this.button_Test_LDStacker1_PickupWaitPos_Cyc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Test_LDStacker1_PickupWaitPos_Cyc.Location = new System.Drawing.Point(446, 30);
+            this.button_Test_LDStacker1_PickupWaitPos_Cyc.Location = new System.Drawing.Point(443, 134);
             this.button_Test_LDStacker1_PickupWaitPos_Cyc.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Test_LDStacker1_PickupWaitPos_Cyc.Name = "button_Test_LDStacker1_PickupWaitPos_Cyc";
             this.button_Test_LDStacker1_PickupWaitPos_Cyc.Size = new System.Drawing.Size(184, 88);
             this.button_Test_LDStacker1_PickupWaitPos_Cyc.TabIndex = 48;
-            this.button_Test_LDStacker1_PickupWaitPos_Cyc.Text = "LD L-Port Position\r\n\r\n[Module to Pick Up]\r\n";
+            this.button_Test_LDStacker1_PickupWaitPos_Cyc.Text = "LD L-Port Position  ▲\r\n\r\n[Module to Pick Up]\r\n";
             this.button_Test_LDStacker1_PickupWaitPos_Cyc.UseVisualStyleBackColor = true;
             this.button_Test_LDStacker1_PickupWaitPos_Cyc.Click += new System.EventHandler(this.button_Test_LDStacker1_PickupWaitPos_Cyc_Click);
             // 
@@ -7415,12 +7423,76 @@
             this.label_Config_EncPosition_LD_Z0.Text = "000.000";
             this.label_Config_EncPosition_LD_Z0.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // groupBox30
+            // 
+            this.groupBox30.Controls.Add(this.labelStagePressure);
+            this.groupBox30.Controls.Add(this.label51);
+            this.groupBox30.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox30.Location = new System.Drawing.Point(1674, 732);
+            this.groupBox30.Margin = new System.Windows.Forms.Padding(5);
+            this.groupBox30.Name = "groupBox30";
+            this.groupBox30.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox30.Size = new System.Drawing.Size(232, 70);
+            this.groupBox30.TabIndex = 84;
+            this.groupBox30.TabStop = false;
+            this.groupBox30.Text = " Dust Collector (Lower) ";
+            // 
+            // labelStagePressure
+            // 
+            this.labelStagePressure.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.labelStagePressure.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.labelStagePressure.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.labelStagePressure.ForeColor = System.Drawing.Color.Lime;
+            this.labelStagePressure.Location = new System.Drawing.Point(119, 26);
+            this.labelStagePressure.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.labelStagePressure.Name = "labelStagePressure";
+            this.labelStagePressure.Size = new System.Drawing.Size(105, 27);
+            this.labelStagePressure.TabIndex = 50;
+            this.labelStagePressure.Text = "0";
+            this.labelStagePressure.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label51
+            // 
+            this.label51.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label51.Location = new System.Drawing.Point(7, 24);
+            this.label51.Margin = new System.Windows.Forms.Padding(6);
+            this.label51.Name = "label51";
+            this.label51.Size = new System.Drawing.Size(111, 27);
+            this.label51.TabIndex = 49;
+            this.label51.Text = "Pressure(kPa) : ";
+            this.label51.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button_Test_LDStacker0_ModulesLoadingPos_Cyc
+            // 
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Location = new System.Drawing.Point(637, 30);
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Name = "button_Test_LDStacker0_ModulesLoadingPos_Cyc";
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Size = new System.Drawing.Size(184, 88);
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.TabIndex = 84;
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Text = "LD R-Port Position  ▼\r\n\r\n[To Loading Modules]\r\n";
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.UseVisualStyleBackColor = true;
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Click += new System.EventHandler(this.button_Test_LDStacker0_ModulesLoadingPos_Cyc_Click);
+            // 
+            // button_Test_LDStacker1_ModulesLoadingPos_Cyc
+            // 
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Location = new System.Drawing.Point(443, 30);
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Name = "button_Test_LDStacker1_ModulesLoadingPos_Cyc";
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Size = new System.Drawing.Size(184, 88);
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.TabIndex = 83;
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Text = "LD L-Port Position  ▼\r\n\r\n[To Loading Modules]\r\n";
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.UseVisualStyleBackColor = true;
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Click += new System.EventHandler(this.button_Test_LDStacker1_ModulesLoadingPos_Cyc_Click);
+            // 
             // FormNew_Config
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 877);
             this.ControlBox = false;
+            this.Controls.Add(this.groupBox30);
             this.Controls.Add(this.groupBox_Config_AxisPositions);
             this.Controls.Add(this.tabControl_Config);
             this.Font = new System.Drawing.Font("Tahoma", 9F);
@@ -7556,6 +7628,7 @@
             this.groupBox_Config_AxisPositions_WorkStage.ResumeLayout(false);
             this.groupBox_Config_AxisPositions_LoadTransfer.ResumeLayout(false);
             this.groupBox_Config_AxisPositions_Loader.ResumeLayout(false);
+            this.groupBox30.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -8073,5 +8146,10 @@
         private System.Windows.Forms.Button button_TestbyUser_LaserDrilling_toRPort_OK;
         private System.Windows.Forms.Button button_TestbyUser_LaserDrilling_NG;
         private System.Windows.Forms.Button button_TestbyUser_LaserDrilling_toLPort_OK;
+        private System.Windows.Forms.GroupBox groupBox30;
+        private System.Windows.Forms.Label labelStagePressure;
+        private System.Windows.Forms.Label label51;
+        private System.Windows.Forms.Button button_Test_LDStacker0_ModulesLoadingPos_Cyc;
+        private System.Windows.Forms.Button button_Test_LDStacker1_ModulesLoadingPos_Cyc;
     }
 }

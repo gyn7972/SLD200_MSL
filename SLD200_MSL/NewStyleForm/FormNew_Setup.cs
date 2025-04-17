@@ -1026,7 +1026,29 @@ namespace SLD200_MSL
             //  Keyence Laser Height Sensor 기준값 설정
             textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Text = Equipment.LaserHeightSensor_ReferenceValue_atVisionFocusPosition.ToString();
             textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Text = Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition.ToString();
-            
+
+
+            //  Options
+            checkBox_Setup_Option_DoorEnable.Checked = Equipment.Machine_Door_Enable;
+            checkBox_Setup_Option_VacuumSensorEnable.Checked = Equipment.Machine_VacuumSensor_Enable;
+            textBox_Setup_Option_SignalHoldTime.Text = Equipment.Machine_SignalHoldTime.ToString();
+            checkBox_Setup_Option_MAligner_ReleaseType.Checked = Equipment.Machine_MAligner_ReleaseType;
+            textBox_Setup_Option_MAligner_WidenDistance.Text = Equipment.Machine_MAligner_WidenDistance.ToString();
+            textBox_Setup_Option_MAligner_NarrowingDistance.Text = Equipment.Machine_MAligner_NarrowingDistance.ToString();
+            checkBox_Setup_Option_VacuumStableTime_Enable.Checked = Equipment.Machine_VacuumStableTime_Enable;
+            textBox_Setup_Option_VacuumStableTime.Text = Equipment.Machine_VacuumStableTime.ToString();
+            checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.Checked = Equipment.Machine_LaserHeightCheckStableTime_Enable;
+            textBox_Setup_Option_LaserHeightCheckStableTime.Text = Equipment.Machine_LaserHeightCheckStableTime.ToString();
+            checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.Checked = Equipment.Machine_FiducialMarkJudgementRange_Enable;
+            textBox_Setup_Option_FiducialMarkJudgementRange.Text = Equipment.Machine_FiducialMarkJudgementRange.ToString();
+            if (Equipment.Machine_FiducialImageSave_Always)
+            {
+                radioButton_Setup_Option_FiducialImageSave_Always.Checked = true;
+            }
+            else
+            {
+                radioButton_Setup_Option_FiducialImageSave_FailedToFind.Checked = true;
+            }
 
             return m_bRet;
         }
@@ -1367,6 +1389,13 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Machine_Option", "LaserHeightCheckStableTime_Enable", checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.Checked.ToString(), strFIle);
             Equipment.Machine_LaserHeightCheckStableTime = Convert.ToInt16(textBox_Setup_Option_LaserHeightCheckStableTime.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "LaserHeightCheckStableTime", textBox_Setup_Option_LaserHeightCheckStableTime.Text, strFIle);
+            Equipment.Machine_FiducialMarkJudgementRange_Enable = checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "FiducialMarkJudgementRange_Enable", checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.Checked.ToString(), strFIle);
+            Equipment.Machine_FiducialMarkJudgementRange = Convert.ToDouble(textBox_Setup_Option_FiducialMarkJudgementRange.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "FiducialMarkJudgementRange", textBox_Setup_Option_FiducialMarkJudgementRange.Text, strFIle);
+            Equipment.Machine_FiducialImageSave_Always = radioButton_Setup_Option_FiducialImageSave_Always.Checked ? true : false;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "FiducialImageSave_Always", radioButton_Setup_Option_FiducialImageSave_Always.Checked.ToString(), strFIle);
+
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Convert.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);
@@ -1469,7 +1498,7 @@ namespace SLD200_MSL
                 fd.Filter = "2D Mapping files (*.csv)|*.csv"; //필터 설정
                 fd.FilterIndex = 1; //1번 선택시 txt , 2번 선택시 *.*
 
-                Log.Write("SLD200", "Button Click", "스테이지 맵핑 파일 불러오기");
+                Log.Write("SLD-200", "Button Click", "스테이지 맵핑 파일 불러오기");
 
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
@@ -1492,7 +1521,7 @@ namespace SLD200_MSL
                 fd.Filter = "2D Mapping files (*.csv)|*.csv"; //필터 설정
                 fd.FilterIndex = 1; //1번 선택시 txt , 2번 선택시 *.*
 
-                Log.Write("SLD200", "Button Click", "스테이지 맵핑 파일 불러오기");
+                Log.Write("SLD-200", "Button Click", "스테이지 맵핑 파일 불러오기");
 
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
@@ -1515,7 +1544,7 @@ namespace SLD200_MSL
                 fd.Filter = "2D Mapping files (*.csv)|*.csv"; //필터 설정
                 fd.FilterIndex = 1; //1번 선택시 txt , 2번 선택시 *.*
 
-                Log.Write("SLD200", "Button Click", "스테이지 맵핑 파일 불러오기");
+                Log.Write("SLD-200", "Button Click", "스테이지 맵핑 파일 불러오기");
 
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
@@ -1538,7 +1567,7 @@ namespace SLD200_MSL
                 fd.Filter = "2D Mapping files (*.csv)|*.csv"; //필터 설정
                 fd.FilterIndex = 1; //1번 선택시 txt , 2번 선택시 *.*
 
-                Log.Write("SLD200", "Button Click", "스테이지 맵핑 파일 불러오기");
+                Log.Write("SLD-200", "Button Click", "스테이지 맵핑 파일 불러오기");
 
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
@@ -1724,6 +1753,26 @@ namespace SLD200_MSL
             {
                 checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.Checked = false;
                 textBox_Setup_Option_LaserHeightCheckStableTime.Enabled = false;
+            }
+
+            if (Equipment.Machine_FiducialMarkJudgementRange_Enable)
+            {
+                checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.Checked = true;
+                textBox_Setup_Option_FiducialMarkJudgementRange.Enabled = true;
+            }
+            else
+            {
+                checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.Checked = false;
+                textBox_Setup_Option_FiducialMarkJudgementRange.Enabled = false;
+            }
+
+            if (Equipment.Machine_FiducialImageSave_Always)
+            {
+                radioButton_Setup_Option_FiducialImageSave_Always.Checked = true;
+            }
+            else
+            {
+                radioButton_Setup_Option_FiducialImageSave_FailedToFind.Checked = true;
             }
         }
 
@@ -1983,6 +2032,20 @@ namespace SLD200_MSL
             //    ProcessCorrectionData(m_correctionDataList);
             //}
 
+        }
+
+        private void checkBox_Setup_Option_FiducialMarkJudgementRange_Enable_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.Checked)
+            {
+                Equipment.Machine_FiducialMarkJudgementRange_Enable = true;
+                textBox_Setup_Option_FiducialMarkJudgementRange.Enabled = true;
+            }
+            else
+            {
+                Equipment.Machine_FiducialMarkJudgementRange_Enable = false;
+                textBox_Setup_Option_FiducialMarkJudgementRange.Enabled = false;
+            }
         }
     }
 }

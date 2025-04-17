@@ -166,7 +166,7 @@ namespace SLD200_MSL
                 fd.Filter = "sirius files (*.sirius)|*.sirius|All files (*.*)|*.*"; //필터 설정
                 fd.FilterIndex = 1; //1번 선택시 txt , 2번 선택시 *.*
 
-                Log.Write("SLD200", "Button Click", "도면 파일 불러오기");
+                Log.Write("SLD-200", "Button Click", "도면 파일 불러오기");
                 
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
@@ -531,6 +531,9 @@ namespace SLD200_MSL
                 //  BET Position Index (0:0.1X, 1:0.5X, 2:1.0X, 3:1.5X, 4:2.0X)
                 NativeMethods.GetPrivateProfileString(strTemp, "BETPositionIndex", "0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_BETPositionIndex = Convert.ToInt32(temp.ToString());
+                //  Hole Processing Type (0:Circle, 1:Spiral)
+                NativeMethods.GetPrivateProfileString(strTemp, "HoleProcessingType", "0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = Convert.ToInt32(temp.ToString());
 
                 //  Process Options
                 NativeMethods.GetPrivateProfileString(strTemp, "Socket_Align_Use", "false", temp, 255, strFIle);
@@ -545,6 +548,24 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height = Convert.ToDouble(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "Module_SiliconThickness", "0.0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness = Convert.ToDouble(temp.ToString());
+
+                //  Spiral Parameter
+                NativeMethods.GetPrivateProfileString(strTemp, "Spiral_OuterDiameter", "0.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[0].SpiralParam_OuterDiameter = Convert.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "Spiral_InnerDiameter", "0.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[0].SpiralParam_InnerDiameter = Convert.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "Spiral_Revolutions", "10", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[0].SpiralParam_Revolutions = Convert.ToInt32(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "Spiral_AngleFactor", "10.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[0].SpiralParam_AngleFactor = Convert.ToDouble(temp.ToString());
+
+                //  M-Aligner Vacuum Use
+                NativeMethods.GetPrivateProfileString(strTemp, "MAlignerVacuumUse_Center", "true", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center = Convert.ToBoolean(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "MAlignerVacuumUse_Inner", "false", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner = Convert.ToBoolean(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "MAlignerVacuumUse_Outer", "false", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer = Convert.ToBoolean(temp.ToString());
 
                 //  Fine Cam. Red
                 NativeMethods.GetPrivateProfileString(strTemp, "FineCam_Red", "0", temp, 255, strFIle);
@@ -639,6 +660,8 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "MaskIndex", Equipment.stLayerRecipeSet[i].Miscellaneous_MaskIndex.ToString(), strFIle);
                 //  BET Position Index (0:0.1X, 1:0.5X, 2:1.0X, 3:1.5X, 4:2.0X)
                 NativeMethods.WritePrivateProfileString(strTemp, "BETPositionIndex", Equipment.stLayerRecipeSet[i].Miscellaneous_BETPositionIndex.ToString(), strFIle);
+                //  Hole Processing Type (0:Circle, 1:Spiral)
+                NativeMethods.WritePrivateProfileString(strTemp, "HoleProcessingType", Equipment.stLayerRecipeSet[i].Miscellaneous_HoleProcessingType.ToString(), strFIle);
 
                 //  Process Options
                 NativeMethods.WritePrivateProfileString(strTemp, "Socket_Align_Use", Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use.ToString(), strFIle);
@@ -648,6 +671,17 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "Module_Width", Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "Module_Height", Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "Module_SiliconThickness", Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness.ToString(), strFIle);
+
+                //  Spiral Parameter
+                NativeMethods.WritePrivateProfileString(strTemp, "Spiral_OuterDiameter", Equipment.stLayerRecipeSet[0].SpiralParam_OuterDiameter.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "Spiral_InnerDiameter", Equipment.stLayerRecipeSet[0].SpiralParam_InnerDiameter.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "Spiral_Revolutions", Equipment.stLayerRecipeSet[0].SpiralParam_Revolutions.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "Spiral_AngleFactor", Equipment.stLayerRecipeSet[0].SpiralParam_AngleFactor.ToString(), strFIle);
+
+                //  M-Aligner Vacuum Use
+                NativeMethods.WritePrivateProfileString(strTemp, "MAlignerVacuumUse_Center", Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MAlignerVacuumUse_Inner", Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MAlignerVacuumUse_Outer", Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer.ToString(), strFIle);
 
                 //  Fine Cam. Red
                 NativeMethods.WritePrivateProfileString(strTemp, "FineCam_Red", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed.ToString(), strFIle);
@@ -779,6 +813,7 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_P2PDistance = textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text) : 0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_MaskIndex = comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_BETPositionIndex = comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_HoleProcessingType = comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex;
 
             //  Process Options
             Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use = checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked;                         //  Socket Align 기능 사용 여부
@@ -788,6 +823,17 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width = textBox_Recipe_TabRecipe_ModuleInformation_Width.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_Width.Text) : 125.0;
             Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height = textBox_Recipe_TabRecipe_ModuleInformation_Height.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_Height.Text) : 120.0;
             Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness = textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text) : 0.0;
+
+            //  Spiral Parameter
+            Equipment.stLayerRecipeSet[m_nLayerIndex].SpiralParam_OuterDiameter = textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text) : 0.0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].SpiralParam_InnerDiameter = textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text) : 0.0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].SpiralParam_Revolutions = textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text.Length > 0 ? Convert.ToInt32(textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text) : 10;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].SpiralParam_AngleFactor = textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text) : 10.0;
+
+            //  M-Aligner Vacuum Use
+            Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center = checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked;     //  Center
+            Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner = checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked;       //  Inner
+            Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer = checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked;       //  Outer
 
             //  조명값 (Fiducial Layer 의 것만 사용한다)
             Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed = textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text.Length > 0 ? Convert.ToInt32(textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text) : 0;
@@ -874,6 +920,7 @@ namespace SLD200_MSL
                 //comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString();
                 comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString());
                 comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString());
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_HoleProcessingType.ToString());
 
                 //  process Options
                 checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부
@@ -884,6 +931,17 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_ModuleInformation_Height.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height.ToString();
                 textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness.ToString();
 
+                //  Spiral Parameter
+                textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text = Equipment.stLayerRecipeSet[0].SpiralParam_OuterDiameter.ToString();
+                textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text = Equipment.stLayerRecipeSet[0].SpiralParam_InnerDiameter.ToString();
+                textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text = Equipment.stLayerRecipeSet[0].SpiralParam_Revolutions.ToString();
+                textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text = Equipment.stLayerRecipeSet[0].SpiralParam_AngleFactor.ToString();
+
+                //  M-Aligner Vacuum Use
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center;     //  Center
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner;       //  Inner
+                checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer;       //  Outer
+
                 //  Illuminator
                 textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed.ToString();
                 textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR.ToString();
@@ -893,6 +951,10 @@ namespace SLD200_MSL
                 m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
 
                 Equipment.EqpSiriusViewer.Document = m_formSiriusEditor.SiriusEditor.Document;
+                //Equipment.EqpSiriusViewer_Origin.Document = m_formSiriusEditor.SiriusEditor.Document;
+
+                //  자동운전 중 모듈 가공 시 이 위치의 도면파일을 로드한다.
+                RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
 
                 workStage.DrillingData_Parsing();
 
@@ -1009,6 +1071,27 @@ namespace SLD200_MSL
             //comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_BETPositionIndex.ToString();
             comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_MaskIndex.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_BETPositionIndex.ToString());
+            comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_HoleProcessingType.ToString());
+
+            //  process Options
+            checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부
+            checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use;             //  Socket Height Check 기능 사용 여부
+
+            //  Module Information
+            textBox_Recipe_TabRecipe_ModuleInformation_Width.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width.ToString();
+            textBox_Recipe_TabRecipe_ModuleInformation_Height.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height.ToString();
+            textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness.ToString();
+
+            //  Spiral Parameter
+            textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text = Equipment.stLayerRecipeSet[m_nIndex].SpiralParam_OuterDiameter.ToString();
+            textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text = Equipment.stLayerRecipeSet[m_nIndex].SpiralParam_InnerDiameter.ToString();
+            textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text = Equipment.stLayerRecipeSet[m_nIndex].SpiralParam_Revolutions.ToString();
+            textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text = Equipment.stLayerRecipeSet[m_nIndex].SpiralParam_AngleFactor.ToString();
+
+            //  M-Aligner Vacuum Use
+            checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center;     //  Center
+            checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner;       //  Inner
+            checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer;       //  Outer
 
             //  Illuminator
             textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed.ToString();
@@ -1083,6 +1166,7 @@ namespace SLD200_MSL
             //comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString();
             comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString());
+            comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_HoleProcessingType.ToString());
 
             //  process Options
             checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부
@@ -1092,6 +1176,17 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_ModuleInformation_Width.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width.ToString();
             textBox_Recipe_TabRecipe_ModuleInformation_Height.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height.ToString();
             textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness.ToString();
+
+            //  Spiral Parameter
+            textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text = Equipment.stLayerRecipeSet[0].SpiralParam_OuterDiameter.ToString();
+            textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text = Equipment.stLayerRecipeSet[0].SpiralParam_InnerDiameter.ToString();
+            textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text = Equipment.stLayerRecipeSet[0].SpiralParam_Revolutions.ToString();
+            textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text = Equipment.stLayerRecipeSet[0].SpiralParam_AngleFactor.ToString();
+
+            //  M-Aligner Vacuum Use
+            checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center;     //  Center
+            checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner;       //  Inner
+            checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer;       //  Outer
 
             //  Illuminator
             textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed.ToString();

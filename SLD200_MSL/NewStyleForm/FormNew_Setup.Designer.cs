@@ -230,6 +230,24 @@
             this.label51 = new System.Windows.Forms.Label();
             this.label53 = new System.Windows.Forms.Label();
             this.tabPage_Setup_ScannerCalibration = new System.Windows.Forms.TabPage();
+            this.button17 = new System.Windows.Forms.Button();
+            this.button_Setup_ScannerCal_Save = new System.Windows.Forms.Button();
+            this.groupBox15 = new System.Windows.Forms.GroupBox();
+            this.textBox_Setup_ScannerCal_JumpSpeed = new System.Windows.Forms.TextBox();
+            this.textBox_Setup_ScannerCal_MarkingSpeed = new System.Windows.Forms.TextBox();
+            this.button16 = new System.Windows.Forms.Button();
+            this.button27 = new System.Windows.Forms.Button();
+            this.label69 = new System.Windows.Forms.Label();
+            this.button26 = new System.Windows.Forms.Button();
+            this.label68 = new System.Windows.Forms.Label();
+            this.label61 = new System.Windows.Forms.Label();
+            this.textBox_Setup_ScannerCal_CrossMarkLength = new System.Windows.Forms.TextBox();
+            this.button18 = new System.Windows.Forms.Button();
+            this.label62 = new System.Windows.Forms.Label();
+            this.textBox_Setup_ScannerCal_LaserEnergy = new System.Windows.Forms.TextBox();
+            this.button19 = new System.Windows.Forms.Button();
+            this.label66 = new System.Windows.Forms.Label();
+            this.textBox_Setup_ScannerCal_LaserFrequency = new System.Windows.Forms.TextBox();
             this.btnCalStart_Vision = new System.Windows.Forms.Button();
             this.btnCalStop = new System.Windows.Forms.Button();
             this.btnCalStart = new System.Windows.Forms.Button();
@@ -260,6 +278,11 @@
             this.label64 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition = new System.Windows.Forms.TextBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.label67 = new System.Windows.Forms.Label();
+            this.radioButton_Setup_Option_FiducialImageSave_FailedToFind = new System.Windows.Forms.RadioButton();
+            this.radioButton_Setup_Option_FiducialImageSave_Always = new System.Windows.Forms.RadioButton();
+            this.checkBox_Setup_Option_FiducialMarkJudgementRange_Enable = new System.Windows.Forms.CheckBox();
+            this.textBox_Setup_Option_FiducialMarkJudgementRange = new System.Windows.Forms.TextBox();
             this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable = new System.Windows.Forms.CheckBox();
             this.textBox_Setup_Option_LaserHeightCheckStableTime = new System.Windows.Forms.TextBox();
             this.checkBox_Setup_Option_VacuumStableTime_Enable = new System.Windows.Forms.CheckBox();
@@ -332,6 +355,7 @@
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
+            this.tabPage_Setup_FlatnessMeasurement = new System.Windows.Forms.TabPage();
             this.button20 = new System.Windows.Forms.Button();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
@@ -2681,6 +2705,7 @@
             this.tabControl_Setup.Controls.Add(this.tabPage_Setup_Communication);
             this.tabControl_Setup.Controls.Add(this.tabPage_Setup_2DMapping);
             this.tabControl_Setup.Controls.Add(this.tabPage_Setup_ScannerCalibration);
+            this.tabControl_Setup.Controls.Add(this.tabPage_Setup_FlatnessMeasurement);
             this.tabControl_Setup.Controls.Add(this.tabPage_Setup_Option);
             this.tabControl_Setup.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
             this.tabControl_Setup.ImeMode = System.Windows.Forms.ImeMode.NoControl;
@@ -3253,6 +3278,11 @@
             // 
             // groupBox13
             // 
+            this.groupBox13.Controls.Add(this.label67);
+            this.groupBox13.Controls.Add(this.radioButton_Setup_Option_FiducialImageSave_FailedToFind);
+            this.groupBox13.Controls.Add(this.radioButton_Setup_Option_FiducialImageSave_Always);
+            this.groupBox13.Controls.Add(this.checkBox_Setup_Option_FiducialMarkJudgementRange_Enable);
+            this.groupBox13.Controls.Add(this.textBox_Setup_Option_FiducialMarkJudgementRange);
             this.groupBox13.Controls.Add(this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable);
             this.groupBox13.Controls.Add(this.textBox_Setup_Option_LaserHeightCheckStableTime);
             this.groupBox13.Controls.Add(this.checkBox_Setup_Option_VacuumStableTime_Enable);
@@ -3274,26 +3304,84 @@
             this.groupBox13.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox13.Name = "groupBox13";
             this.groupBox13.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox13.Size = new System.Drawing.Size(270, 344);
+            this.groupBox13.Size = new System.Drawing.Size(270, 484);
             this.groupBox13.TabIndex = 63;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " Options ";
+            // 
+            // label67
+            // 
+            this.label67.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label67.Location = new System.Drawing.Point(7, 400);
+            this.label67.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label67.Name = "label67";
+            this.label67.Size = new System.Drawing.Size(134, 37);
+            this.label67.TabIndex = 76;
+            this.label67.Text = "Fiducial Align Image\r\nSave";
+            this.label67.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // radioButton_Setup_Option_FiducialImageSave_FailedToFind
+            // 
+            this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Checked = true;
+            this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Location = new System.Drawing.Point(152, 422);
+            this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Name = "radioButton_Setup_Option_FiducialImageSave_FailedToFind";
+            this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Size = new System.Drawing.Size(112, 21);
+            this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.TabIndex = 75;
+            this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.TabStop = true;
+            this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Text = " Failed to find";
+            this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.UseVisualStyleBackColor = true;
+            // 
+            // radioButton_Setup_Option_FiducialImageSave_Always
+            // 
+            this.radioButton_Setup_Option_FiducialImageSave_Always.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.radioButton_Setup_Option_FiducialImageSave_Always.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.radioButton_Setup_Option_FiducialImageSave_Always.Location = new System.Drawing.Point(152, 400);
+            this.radioButton_Setup_Option_FiducialImageSave_Always.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.radioButton_Setup_Option_FiducialImageSave_Always.Name = "radioButton_Setup_Option_FiducialImageSave_Always";
+            this.radioButton_Setup_Option_FiducialImageSave_Always.Size = new System.Drawing.Size(112, 21);
+            this.radioButton_Setup_Option_FiducialImageSave_Always.TabIndex = 74;
+            this.radioButton_Setup_Option_FiducialImageSave_Always.Text = " Always";
+            this.radioButton_Setup_Option_FiducialImageSave_Always.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_Setup_Option_FiducialMarkJudgementRange_Enable
+            // 
+            this.checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.AutoSize = true;
+            this.checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.Location = new System.Drawing.Point(8, 348);
+            this.checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.Name = "checkBox_Setup_Option_FiducialMarkJudgementRange_Enable";
+            this.checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.Size = new System.Drawing.Size(200, 36);
+            this.checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.TabIndex = 73;
+            this.checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.Text = " Fiducial Mark Size\r\n Judgment Range (±,mm) :";
+            this.checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.UseVisualStyleBackColor = true;
+            this.checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.CheckedChanged += new System.EventHandler(this.checkBox_Setup_Option_FiducialMarkJudgementRange_Enable_CheckedChanged);
+            // 
+            // textBox_Setup_Option_FiducialMarkJudgementRange
+            // 
+            this.textBox_Setup_Option_FiducialMarkJudgementRange.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_FiducialMarkJudgementRange.Location = new System.Drawing.Point(210, 354);
+            this.textBox_Setup_Option_FiducialMarkJudgementRange.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_FiducialMarkJudgementRange.Name = "textBox_Setup_Option_FiducialMarkJudgementRange";
+            this.textBox_Setup_Option_FiducialMarkJudgementRange.Size = new System.Drawing.Size(50, 24);
+            this.textBox_Setup_Option_FiducialMarkJudgementRange.TabIndex = 72;
+            this.textBox_Setup_Option_FiducialMarkJudgementRange.Text = "0.1";
             // 
             // checkBox_Setup_Option_LaserHeightCheckStableTime_Enable
             // 
             this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.AutoSize = true;
             this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.Location = new System.Drawing.Point(8, 299);
             this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.Name = "checkBox_Setup_Option_LaserHeightCheckStableTime_Enable";
-            this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.Size = new System.Drawing.Size(163, 36);
+            this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.Size = new System.Drawing.Size(161, 36);
             this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.TabIndex = 71;
-            this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.Text = " Laser Height Sensor\r\n     Stable Time (ms) :";
+            this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.Text = " Laser Height Sensor\r\n    Stable Time (ms) :";
             this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.UseVisualStyleBackColor = true;
             this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.CheckedChanged += new System.EventHandler(this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable_CheckedChanged);
             // 
             // textBox_Setup_Option_LaserHeightCheckStableTime
             // 
             this.textBox_Setup_Option_LaserHeightCheckStableTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_LaserHeightCheckStableTime.Location = new System.Drawing.Point(210, 297);
+            this.textBox_Setup_Option_LaserHeightCheckStableTime.Location = new System.Drawing.Point(210, 305);
             this.textBox_Setup_Option_LaserHeightCheckStableTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_LaserHeightCheckStableTime.Name = "textBox_Setup_Option_LaserHeightCheckStableTime";
             this.textBox_Setup_Option_LaserHeightCheckStableTime.Size = new System.Drawing.Size(50, 24);
@@ -4115,7 +4203,15 @@
             this.radioButton_Setup_Option_LaserType_CO2.Text = "CO₂";
             this.radioButton_Setup_Option_LaserType_CO2.UseVisualStyleBackColor = true;
             // 
+            // tabPage_Setup_FlatnessMeasurement
             // button20
+            // 
+            this.tabPage_Setup_FlatnessMeasurement.Location = new System.Drawing.Point(4, 54);
+            this.tabPage_Setup_FlatnessMeasurement.Name = "tabPage_Setup_FlatnessMeasurement";
+            this.tabPage_Setup_FlatnessMeasurement.Size = new System.Drawing.Size(1881, 801);
+            this.tabPage_Setup_FlatnessMeasurement.TabIndex = 6;
+            this.tabPage_Setup_FlatnessMeasurement.Text = "Flatness Measurement";
+            this.tabPage_Setup_FlatnessMeasurement.UseVisualStyleBackColor = true;
             // 
             this.button20.Location = new System.Drawing.Point(1725, 86);
             this.button20.Name = "button20";
@@ -4509,6 +4605,12 @@
         private System.Windows.Forms.TextBox textBox_Setup_ScannerCal_MarkingSpeed;
         private System.Windows.Forms.Button button17;
         private System.Windows.Forms.Button button_Setup_ScannerCal_Save;
+        private System.Windows.Forms.CheckBox checkBox_Setup_Option_FiducialMarkJudgementRange_Enable;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_FiducialMarkJudgementRange;
+        private System.Windows.Forms.Label label67;
+        private System.Windows.Forms.RadioButton radioButton_Setup_Option_FiducialImageSave_FailedToFind;
+        private System.Windows.Forms.RadioButton radioButton_Setup_Option_FiducialImageSave_Always;
+        private System.Windows.Forms.TabPage tabPage_Setup_FlatnessMeasurement;
         private System.Windows.Forms.Button btnCalStop;
         private System.Windows.Forms.Button btnCalStart;
         private System.Windows.Forms.Button btnCalStart_Vision;

@@ -15,8 +15,8 @@ namespace QMC.Common.Parts
         #region => Axis Define 
 
 
-//#if true                                                                //  SLD-200C
-#if false                                                               //  SLD-200U
+#if true                                                                //  SLD-200C
+//#if false                                                               //  SLD-200U
         public enum AxisAjinEnum                                                       //  SLD-200C 에서 사용하는 축 번호    
         {
             //  축 번호 변경 전 (MASK_Y:3)
