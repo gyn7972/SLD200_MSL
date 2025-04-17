@@ -116,16 +116,22 @@ namespace QMC.Common
         public static int BinarySerialize(Stream stream, object t)
         {
             int ret = 0;
+            try
+            {
+                if (stream != null)
+                {
+                    BinaryFormatter bf = new BinaryFormatter();
+                    bf.Serialize(stream, t);
+                }
+                else
+                {
+                    ret = -1;
+                }
+            }catch(Exception ex)
+            {
 
-            if(stream != null)
-            {
-                BinaryFormatter bf = new BinaryFormatter();
-                bf.Serialize(stream, t);
             }
-            else
-            {
-                ret = -1;
-            }
+            
             
             return ret;
         }

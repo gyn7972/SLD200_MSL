@@ -38,7 +38,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1922, 1016);
+            this.ClientSize = new System.Drawing.Size(1509, 607);
             this.Location = new System.Drawing.Point(0, 0);
             this.Name = "FormMaintMain";
             this.Text = "FormMaint";

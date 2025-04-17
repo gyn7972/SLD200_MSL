@@ -193,6 +193,7 @@
     <Compile Include="Modules\Scanner.cs" />
     <Compile Include="Modules\LaserConfig.cs" />
     <Compile Include="Modules\LaserRecipe.cs" />
+    <Compile Include="Modules\SpiralLabScanner.cs" />
     <Compile Include="Modules\Unloader.cs" />
     <Compile Include="Modules\Loader.cs" />
     <Compile Include="Modules\ScannerConfig.cs" />

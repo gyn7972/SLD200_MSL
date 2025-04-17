@@ -14,6 +14,12 @@ namespace QMC.Common
         List<SLDMeasureData> m_sldResultX = new List<SLDMeasureData>();
         List<SLDMeasureData> m_sldResultY = new List<SLDMeasureData>();
 
+        public List<SLDMeasureData> SldData { 
+            get 
+            {
+                return m_sldData; 
+            } 
+        }
         public QMCFindLenzCenter()
         {
 
@@ -45,7 +51,7 @@ namespace QMC.Common
         {
             m_sldData.Clear();
         }
-        public void SaveData(string strPath = "")
+        public string SaveData(string strPath = "")
         {
 
             MoveToCenter();
@@ -67,6 +73,8 @@ namespace QMC.Common
             }
             File.AppendAllText(filePath + ".txt", strData);
 
+            string returnfile = filePath;
+
             filePath = strPath + "./CenterPoint" + timeString;
             strData = "";
             File.WriteAllText(filePath + ".csv", strData);
@@ -78,6 +86,8 @@ namespace QMC.Common
                 strData += "\n";
             }
             File.AppendAllText(filePath + ".csv", strData);
+
+            return returnfile;
 
         }
         public List<PointF> GetResult()
@@ -298,6 +308,145 @@ namespace QMC.Common
             m_dOffsetX = m_dMeasureX - m_dX;
             m_dOffsetY = m_dMeasureY - m_dY;
 
+        }
+    }
+
+
+    public class CorrectionData
+    {
+        public int Row { get; set; }
+        public int Col { get; set; }
+        public double ReferenceX { get; set; }
+        public double ReferenceY { get; set; }
+        public double MeasuredX { get; set; }
+        public double MeasuredY { get; set; }
+
+        public CorrectionData() { }
+
+        public CorrectionData(int row, int col, double referenceX, double referenceY, double measuredX, double measuredY)
+        {
+            Row = row;
+            Col = col;
+            ReferenceX = referenceX;
+            ReferenceY = referenceY;
+            MeasuredX = measuredX;
+            MeasuredY = measuredY;
+        }
+    }
+
+    public class CorrectionDataSaver
+    {
+        private List<CorrectionData> m_correctionData = new List<CorrectionData>();
+
+        public void AddCorrectionData(CorrectionData data)
+        {
+            m_correctionData.Add(data);
+        }
+
+        public void Clear()
+        {
+            m_correctionData.Clear();
+        }
+
+        public void SaveData(string strPath = "")
+        {
+            //MoveToCenter();
+            //FindLenzCenter();
+            DateTime now = DateTime.Now;
+            string timeString = now.ToString("yyyy-MM-dd HH_mm_ss");
+            string filePath = strPath + "./QMC_ScanerCalData" + timeString;
+            string strData = "";
+            //File.WriteAllText(filePath + ".txt", strData);
+            foreach (var v in m_correctionData)
+            {
+                strData += v.Row.ToString();
+                strData += "," + v.Col.ToString();
+                strData += ":" + v.ReferenceX.ToString();
+                strData += "," + v.ReferenceY.ToString();
+                strData += "," + v.MeasuredX.ToString();
+                strData += "," + v.MeasuredY.ToString();
+                strData += "\n";
+            }
+            File.AppendAllText(filePath + ".txt", strData);
+
+            filePath = strPath + "./CenterPoint" + timeString;
+            strData = "";
+            File.WriteAllText(filePath + ".csv", strData);
+            List<PointF> pt = GetResult();
+            foreach (var v in pt)
+            {
+                strData += v.X.ToString();
+                strData += "," + v.Y.ToString();
+                strData += "\n";
+            }
+            File.AppendAllText(filePath + ".csv", strData);
+        }
+
+        public List<PointF> GetResult()
+        {
+            List<PointF> list = new List<PointF>();
+            var groupedData = m_correctionData.GroupBy(d => Math.Abs(d.ReferenceX)).OrderBy(g => g.Key);
+
+            foreach (var group in groupedData)
+            {
+                var xData = m_correctionData.Where(d => Math.Abs(d.ReferenceX) == group.Key).ToList();
+                var yData = m_correctionData.Where(d => Math.Abs(d.ReferenceY) == group.Key).ToList();
+
+                if (xData.Count == yData.Count && xData.Count == 2)
+                {
+                    double a1 = 0, b1 = 0, c1 = 0;
+                    double a2 = 0, b2 = 0, c2 = 0;
+
+                    GetLineABC(xData[0].MeasuredX, xData[0].MeasuredY, xData[1].MeasuredX, xData[1].MeasuredY, ref a1, ref b1, ref c1);
+                    GetLineABC(yData[0].MeasuredX, yData[0].MeasuredY, yData[1].MeasuredX, yData[1].MeasuredY, ref a2, ref b2, ref c2);
+
+                    list.Add(GetCrossPoint(a1, b1, c1, a2, b2, c2));
+                }
+            }
+
+            return list;
+        }
+
+        public void MoveToCenter()
+        {
+            try
+            {
+                double xOffset = m_correctionData.Where(d => d.ReferenceX == 0 && d.ReferenceY == 0).Average(d => d.MeasuredX);
+                double yOffset = m_correctionData.Where(d => d.ReferenceX == 0 && d.ReferenceY == 0).Average(d => d.MeasuredY);
+
+                foreach (var data in m_correctionData)
+                {
+                    data.MeasuredX -= xOffset;
+                    data.MeasuredY -= yOffset;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in MoveToCenter: {ex.Message}");
+            }
+        }
+
+        public void FindCorrectionCenter()
+        {
+            // Implement logic similar to FindLenzCenter
+        }
+
+        private void GetLineABC(double x1, double y1, double x2, double y2, ref double a, ref double b, ref double c)
+        {
+            a = y2 - y1;
+            b = x1 - x2;
+            c = a * x1 + b * y1;
+        }
+
+        private PointF GetCrossPoint(double a1, double b1, double c1, double a2, double b2, double c2)
+        {
+            PointF pt = new PointF();
+            double determinant = a1 * b2 - a2 * b1;
+
+            pt.X = (float)((b2 * c1 - b1 * c2) / determinant);
+            pt.Y = (float)((a1 * c2 - a2 * c1) / determinant);
+
+            return pt;
         }
     }
 }

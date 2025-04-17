@@ -4,6 +4,7 @@ using QMC.Common.Modules;
 using QMC.Common.Motion.ACS.Motions;
 using QMC.Common.Parts;
 using QMC.Common.Vision.Optics;
+using QMC.Common.Vision.Tools;
 using QMC.Common.VisionPart;
 using QMC.Core;
 using SLD200_MSL;
@@ -2703,6 +2704,26 @@ namespace SLD200_MSL
                 workStage.MC_Func.MC_MotorStop((int)WorkStage.nAxis.Y, 2000);
                 workStage.MC_Func.MC_MotorStop((int)WorkStage.nAxis.Z, 2000);
             }
+        }
+
+        private void btnTest_Click(object sender, EventArgs e)
+        {
+            int result = workStage.scannerCompensator.RunSearchMark();
+
+            PatternMatchingResult result1 = workStage.scannerCompensator.GetResult();
+
+            if (result1.Values.Count > 0)
+            {
+                double markPixelX = result1.Values[0].X;
+                double markPixelY = result1.Values[0].Y;
+            }
+
+            double markPositionX = workStage.scannerCompensator.ResultPosition.X;
+            double markPositionY = workStage.scannerCompensator.ResultPosition.Y;
+
+
+            MessageBox.Show("Search Center Mark - OK");
+
         }
     }
 }

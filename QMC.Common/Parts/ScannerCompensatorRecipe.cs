@@ -14,10 +14,11 @@ namespace QMC.Common.Parts
     public class ScannerCompensatorRecipe
     {
         #region Field
-        private ScannerCompensator m_Owner;
+        //private ScannerCompensator m_Owner;
         #endregion
 
         #region Property
+
         public PatternMatchingParameters PatternMatchingParameter { get; set; }
 
         [Browsable(false)]
@@ -39,7 +40,7 @@ namespace QMC.Common.Parts
         {
             if(part != null && part is ScannerCompensator)
             {
-                m_Owner = part as ScannerCompensator;
+                
             }
 
             Init(part);
