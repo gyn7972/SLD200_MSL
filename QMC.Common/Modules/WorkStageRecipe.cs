@@ -65,6 +65,7 @@ namespace QMC.Common.Modules
         public JigAlignerRecipe reticleAlignerRecipe_HighRes { set; get; }
         public JigAlignerRecipe reticleAlignerRecipe_LowRes { set; get; }
 
+        public ScannerCompensatorRecipe scannerCompensatorRecipe { set; get; }
         public WorkStageRecipe(WorkStage workStage)
         {
             //  요거 두개는 없어도 될 듯
@@ -88,12 +89,11 @@ namespace QMC.Common.Modules
             }
             VisionCalibratorRecipe_LowRes.Init(workStage.visionCalibrator_LowRes);
 
-            //if (scannerCompensatorRecipe == null)
-            //{
-            //    scannerCompensatorRecipe = new ScannerCompensatorRecipe(workStage.scannerCompensator);
-            //}
-
-            //scannerCompensatorRecipe.Init(workStage.scannerCompensator);
+            if (scannerCompensatorRecipe == null)
+            {
+                scannerCompensatorRecipe = new ScannerCompensatorRecipe(workStage.scannerCompensator);
+            }
+            scannerCompensatorRecipe.Init(workStage.scannerCompensator);
 
             if (jigAlignerRecipe_HighRes == null)
             {

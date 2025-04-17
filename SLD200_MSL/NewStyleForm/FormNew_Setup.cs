@@ -52,6 +52,22 @@ namespace SLD200_MSL
         private _2DMappingDataControl m_2DMappingDataControl;
         private _2DMappingFileControl m_2DMappingFileControl;
 
+        // 현재 스캐너 보정 파일
+        private string m_srcFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "correction", "cor_1to1.ct5");
+        // 신규로 생성할 스캐너 보정 파일
+        private string m_targetFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "correction", $"newfile.ct5");
+
+        // 3x3 (9개) 위치에 대한 보정 테이블 입력용
+        private float m_fieldSize = 105;
+        private float m_rowInterval = 2; //20;
+        private float m_colInterval = 2; //20;
+        private int m_row = 5; //3
+        private int m_col = 5; //3
+        private float m_kfactor = 0; // = (float)Math.Pow(2, 20) / m_fieldSize;
+        private Correction2DRtc m_correction2DRtc = null;
+        private Correction2DRtcForm m_correction2DRtcForm = null;
+        
+
         public FormNew_Setup()
         {
             InitializeComponent();
@@ -134,28 +150,79 @@ namespace SLD200_MSL
 
 
             //  Scanner Calibration
+            textBox_Setup_ScannerCal_LaserFrequency.Text = Equipment.Scanner_Calibration_LaserFrequency.ToString();
+            textBox_Setup_ScannerCal_LaserEnergy.Text = Equipment.Scanner_Calibration_LaserEnergy.ToString();
+            textBox_Setup_ScannerCal_CrossMarkLength.Text = Equipment.Scanner_Calibration_CrossMarkLength.ToString();
+            textBox_Setup_ScannerCal_MarkingSpeed.Text = Equipment.Scanner_Calibration_LaserMarkSpeed.ToString();
+            textBox_Setup_ScannerCal_JumpSpeed.Text = Equipment.Scanner_Calibration_LaserJumpSpeed.ToString();
 
-            // 현재 스캐너 보정 파일
-            var srcFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "correction", "cor_1to1.ct5");
-            // 신규로 생성할 스캐너 보정 파일
-            var targetFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "correction", $"newfile.ct5");
+            //m_fieldSize = Equipment.Scanner_Calibration_FieldSize;
+            m_srcFile = Equipment.Scanner_Calibration_srcFilePath;
+            m_targetFile = Equipment.Scanner_Calibration_targetFilePath;
+            m_rowInterval = Equipment.Scanner_Calibration_rowInterval;
+            m_colInterval = Equipment.Scanner_Calibration_colInterval;
+            m_row = Equipment.Scanner_Calibration_rowCount;
+            m_col = Equipment.Scanner_Calibration_colCount;
 
-            // 3x3 (9개) 위치에 대한 보정 테이블 입력용
-            float fieldSize = 60;
-            float rowInterval = 20;
-            float colInterval = 20;
-            int row = 3;
-            int col = 3;
-            float kfactor = (float)Math.Pow(2, 20) / fieldSize;
-            var correction = new Correction2DRtc(kfactor, row, col, rowInterval, colInterval, srcFile, targetFile);
-            var form = new Correction2DRtcForm(correction);
+            //m_kfactor = (float)Math.Pow(2, 20) / m_fieldSize;
+            m_kfactor = (float)18830.1889;
 
-            form.TopLevel = false; // 폼을 최상위 폼이 아니도록 설정
-            form.FormBorderStyle = FormBorderStyle.None; // 폼의 테두리를 제거
-            form.Dock = DockStyle.Fill; // 폼을 패널에 맞게 채움
+            //m_correction2DRtc.KFactor = m_kfactor;
+            //m_correction2DRtc.Rows = m_row;
+            //m_correction2DRtc.Cols = m_col;
+            //m_correction2DRtc.RowInterval = m_rowInterval;
+            //m_correction2DRtc.ColInterval = m_colInterval;
+            //m_correction2DRtc.SourceCorrectionFile = m_srcFile;
+            //m_correction2DRtc.TargetCorrectionFile = m_targetFile;
+            //m_correction2DRtcForm.RefreshData();
 
-            this.textBox_ScannerCal_LaserFrequency.Controls.Add(form);
-            form.Show();
+            m_correction2DRtc = new Correction2DRtc(m_kfactor, m_row, m_col, m_rowInterval, m_colInterval, m_srcFile, m_targetFile);
+            m_correction2DRtcForm = new Correction2DRtcForm(m_correction2DRtc);
+            m_correction2DRtcForm.TopLevel = false; // 폼을 최상위 폼이 아니도록 설정
+            m_correction2DRtcForm.FormBorderStyle = FormBorderStyle.None; // 폼의 테두리를 제거
+            m_correction2DRtcForm.Dock = DockStyle.Fill; // 폼을 패널에 맞게 채움
+            this.textBox_ScannerCal_LaserFrequency.Controls.Add(m_correction2DRtcForm);
+            m_correction2DRtcForm.Show();
+            workStage.scannerCompensator.ActionSaveDone += OnSaveDone;
+            workStage.scannerCompensator.ActionSaveDoneAllData += OnSaveDataDone;
+
+
+        }
+
+        // ActionSaveDone 이벤트 핸들러
+        private void OnSaveDone(string message)
+        {
+            //m_correction2DRtc.ConvertFromDatFile(message);
+
+            //m_correction2DRtcForm.RefreshData();
+
+            //m_correction2DRtc.Convert();
+
+            
+        }
+        private void OnSaveDataDone(QMCFindLenzCenter list)
+        {
+            //CorrectionData correctionData;
+
+            //correctionData.
+            //List<CorrectionData> listCorrection = new List<CorrectionData>();
+            //foreach(var s in list)
+            //{
+            //    var v = new CorrectionData();
+            //    v.Col = s.m_nindexY;
+            //    v.Row = s.m_nIndexX;
+            //    //v.ReferenceX = s.m_dMeasureX;
+            //    //v.ReferenceY = s.m_dMeasureY;
+            //    //v.MeasuredX = s.m_dOffsetX;
+            //    //v.MeasuredY = s.m_dOffsetY;
+            //    v.ReferenceX = s.m_dOffsetX;
+            //    v.ReferenceY = s.m_dOffsetY;
+            //    v.MeasuredX = s.m_dMeasureX;
+            //    v.MeasuredY = s.m_dMeasureY;
+            //    listCorrection.Add(v);
+            //}
+
+            this.ProcessCorrectionData(list);
         }
 
         private void FormNew_Setup_VisibleChanged(object sender, EventArgs e)
@@ -1353,6 +1420,28 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Marking_Speed", textBox_Setup_ScannerCal_MarkingSpeed.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Jump_Speed", textBox_Setup_ScannerCal_JumpSpeed.Text, strFIle);
 
+            Equipment.Scanner_Calibration_srcFilePath = m_correction2DRtc.SourceCorrectionFile; // m_srcFile;
+            Equipment.Scanner_Calibration_targetFilePath = m_correction2DRtc.TargetCorrectionFile;  // m_targetFile;
+            Equipment.Scanner_Calibration_FieldSize = m_fieldSize;
+            Equipment.Scanner_Calibration_rowInterval = m_correction2DRtc.RowInterval;  // m_rowInterval;
+            Equipment.Scanner_Calibration_colInterval = m_correction2DRtc.ColInterval; //m_colInterval;
+            Equipment.Scanner_Calibration_rowCount = m_correction2DRtc.Rows;   //m_row;
+            Equipment.Scanner_Calibration_colCount = m_correction2DRtc.Cols;   //m_col;
+
+            m_srcFile = Equipment.Scanner_Calibration_srcFilePath;
+            m_targetFile = Equipment.Scanner_Calibration_targetFilePath;
+            m_rowInterval = Equipment.Scanner_Calibration_rowInterval;
+            m_colInterval = Equipment.Scanner_Calibration_colInterval;
+            m_row = Equipment.Scanner_Calibration_rowCount;
+            m_col = Equipment.Scanner_Calibration_colCount;
+
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "srcFilePath", m_srcFile, strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "targetFilePath", m_targetFile, strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "FieldSize", m_fieldSize.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "rowInterval", m_rowInterval.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "colInterval", m_colInterval.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "rowCount", m_row.ToString(), strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "colCount", m_col.ToString(), strFIle);
 
             MessageBox.Show("Machine Option 파일을 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -1682,23 +1771,50 @@ namespace SLD200_MSL
 
         private void button15_Click(object sender, EventArgs e)
         {
-            //  Scanner Calibration
 
-            // 현재 스캐너 보정 파일
-            var srcFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "correction", "cor_1to1.ct5");
-            // 신규로 생성할 스캐너 보정 파일
-            var targetFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "correction", $"newfile.ct5");
+            String message = "D:\\SLD-200\\Log\\ScannerCalData\\ScanerCalData2025-04-17 23_46_09.dat";
 
-            // 3x3 (9개) 위치에 대한 보정 테이블 입력용
-            float fieldSize = 60;
-            float rowInterval = 2;
-            float colInterval = 2;
-            int row = 15;
-            int col = 15;
-            float kfactor = (float)Math.Pow(2, 20) / fieldSize;
-            var correction = new Correction2DRtc(kfactor, row, col, rowInterval, colInterval, srcFile, targetFile);
+            m_correction2DRtc.ConvertFromDatFile(message);
             
-            var form = new Correction2DRtcForm(correction);
+
+
+
+            m_correction2DRtcForm.RefreshData();
+
+            m_correction2DRtc.Convert();
+
+
+            //  Scanner Calibration Test
+
+            //m_kfactor = m_correction2DRtc.KFactor;
+            //m_row = m_correction2DRtc.Rows;
+            //m_col = m_correction2DRtc.Cols;
+            //m_rowInterval = m_correction2DRtc.RowInterval;
+            //m_colInterval = m_correction2DRtc.ColInterval;
+            //m_srcFile = m_correction2DRtc.SourceCorrectionFile;
+            //m_targetFile = m_correction2DRtc.TargetCorrectionFile;
+
+            //Vector2 position = new Vector2(0, 0);   //현재 장비 위치값 넣고..
+            //Vector2 offset = new Vector2(0, 0);     //마크 찾은 위치값 넣어보자.
+
+            //for (int x = 0; x < m_row; x++)
+            //{
+            //    for (int y = 0; y < m_col; y++)
+            //    {
+            //        position.X = 200.0f + (x * m_rowInterval);
+            //        position.Y = 400.0f + (y * m_colInterval);
+            //        offset.X = 0.12f + x;
+            //        offset.Y = 0.23f + y;
+            //        m_correction2DRtc.AddAbsolute(x, y, position, offset);
+            //        //m_correction2DRtc.AddRelative(x, y, position, offset);
+            //        //m_correction2DRtcForm.RefreshData();
+            //    }
+            //}
+
+            //m_correction2DRtcForm.RefreshData();
+            //m_correction2DRtc.Convert();
+
+
         }
 
         private void button_Setup_ScannerCal_Save_Click(object sender, EventArgs e)
@@ -1720,7 +1836,6 @@ namespace SLD200_MSL
                 return;
             }
 
-
             strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
 
             if (File.Exists(strFIle) == false)
@@ -1729,9 +1844,145 @@ namespace SLD200_MSL
                 //return false;
             }
 
+            // Scanner Form Update :: 장비에서 TEST 필요.
+            //m_correction2DRtc.Rows = m_row;
+            //m_correction2DRtc.Cols = m_col;
+
+
+
+            //m_kfactor = (float)Math.Pow(2, 20) / m_fieldSize;
+            //m_correction2DRtc = new Correction2DRtc(m_kfactor, m_correction2DRtc.Rows, m_correction2DRtc.Cols,
+            //                                        m_correction2DRtc.RowInterval, m_correction2DRtc.ColInterval, 
+            //                                        m_correction2DRtc.SourceCorrectionFile, m_correction2DRtc.TargetCorrectionFile);
+            //m_correction2DRtcForm = new Correction2DRtcForm(m_correction2DRtc);
+
+            //m_correction2DRtcForm.TopLevel = false; // 폼을 최상위 폼이 아니도록 설정
+            //m_correction2DRtcForm.FormBorderStyle = FormBorderStyle.None; // 폼의 테두리를 제거
+            //m_correction2DRtcForm.Dock = DockStyle.Fill; // 폼을 패널에 맞게 채움
+
+            //this.textBox_ScannerCal_LaserFrequency.Controls.Add(m_correction2DRtcForm);
+            //m_correction2DRtcForm.Show();
 
             //  Scanner Calibration 관련 파라미터 저장
             Machine_Option_Save();
+
+        }
+
+        private void btnCalStart_Click(object sender, EventArgs e)
+        {
+            string m_strTemp = "";
+
+            //TEST
+            //if (!workStage.m_bHomeOK)
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+            //    return;
+            //}
+
+            if (Equipment.EqpSiriusViewer == null)
+            {
+                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                return;
+            }
+
+            if (workStage.rtc == null)
+            {
+                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                return;
+            }
+
+            if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)
+            {
+                workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.Start;
+                workStage.timer_ScannerCalibration.Enabled = true;
+                
+                WorkStartTick = Environment.TickCount;
+            }
+        }
+
+        private void btnCalStop_Click(object sender, EventArgs e)
+        {
+            Equipment.AutoRunStatus = false;
+            workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.None;
+            workStage.timer_ScannerCalibration.Enabled = false;
+
+        }
+
+        private void btnCalStart_Vision_Click(object sender, EventArgs e)
+        {
+            string m_strTemp = "";
+
+            //TEST
+            //if (!workStage.m_bHomeOK)
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+            //    return;
+            //}
+
+            if (Equipment.EqpSiriusViewer == null)
+            {
+                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                return;
+            }
+
+            if (workStage.rtc == null)
+            {
+                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                return;
+            }
+
+            if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)
+            {
+                workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.ScannerCompensation_StartPosition_Set;
+                workStage.timer_ScannerCalibration.Enabled = true;
+
+                WorkStartTick = Environment.TickCount;
+            }
+        }
+
+        private QMCFindLenzCenter m_correctionDataList;
+        // CorrectionData를 처리하는 메서드
+        public void ProcessCorrectionData(QMCFindLenzCenter correctionDataList)
+        {
+            int indexX = 0, indexY = 0;
+           
+            foreach (var data in correctionDataList.SldData)
+            {
+                // CorrectionData에서 필요한 값을 추출하여 AddAbsolute 호출
+                indexX = data.m_nIndexX;
+                indexY = data.m_nindexY;
+                //indexX = (int)data.m_dX;
+                //indexY = (int)data.m_dY;
+
+
+                //Vector2 position = new Vector2((float)data.m_dMeasureX, (float)data.m_dMeasureY);   //현재 장비 위치값 넣고..
+                //Vector2 offset = new Vector2((float)data.m_dOffsetX, (float)data.m_dOffsetY);   //현재 장비 위치값 넣고..
+
+
+                Vector2 position = new Vector2((float)data.m_dX, (float)data.m_dY);   //현재 장비 위치값 넣고..
+                Vector2 offset = new Vector2((float)data.m_dMeasureX, (float)data.m_dMeasureY);   //현재 장비 위치값 넣고..
+
+                m_correction2DRtc.AddAbsolute(indexX, indexY, position, offset);
+                //m_correction2DRtc.AddRelative(indexY, indexX, position, offset);
+            }
+
+
+            m_correction2DRtcForm.RefreshData();
+            m_correction2DRtc.Convert();
+            m_correctionDataList = correctionDataList;
+        }
+
+        private void button20_Click(object sender, EventArgs e)
+        {
+            m_correction2DRtc.Clear();
+            
+            //if(m_correctionDataList != null)
+            //{
+            //    ProcessCorrectionData(m_correctionDataList);
+            //}
+
         }
     }
 }

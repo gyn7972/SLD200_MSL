@@ -36,6 +36,9 @@ namespace SLD200_MSL
             this.button41 = new System.Windows.Forms.Button();
             this.button42 = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.textBox_VisionPopup_LaserHeightValue = new System.Windows.Forms.Label();
+            this.button_VisionPopup_LaserHeightCheck_Start = new System.Windows.Forms.Button();
             this.button_CurrentLightValue_toAlignLightValue = new System.Windows.Forms.Button();
             this.button_CurrentZPos_toLaserFocus = new System.Windows.Forms.Button();
             this.button_CurrentZPos_toFineCamFocus = new System.Windows.Forms.Button();
@@ -117,6 +120,8 @@ namespace SLD200_MSL
             this.groupBox87 = new System.Windows.Forms.GroupBox();
             this.radioButton_Light_Red = new System.Windows.Forms.RadioButton();
             this.radioButton_Light_IR = new System.Windows.Forms.RadioButton();
+            this.baseLabelMax = new SLD200_MSL.BaseLabel();
+            this.baseLabelMin = new SLD200_MSL.BaseLabel();
             this.hScrollBarIlluminator = new System.Windows.Forms.HScrollBar();
             this.button76 = new System.Windows.Forms.Button();
             this.textBox_IlluminationValue = new System.Windows.Forms.TextBox();
@@ -136,19 +141,16 @@ namespace SLD200_MSL
             this.label70 = new System.Windows.Forms.Label();
             this.textBox17 = new System.Windows.Forms.TextBox();
             this.label71 = new System.Windows.Forms.Label();
+            this.m_visionImageViewer_LowRes = new QMC.Common.Hmi.VisionImageViewer();
+            this.m_visionImageViewer_HighRes = new QMC.Common.Hmi.VisionImageViewer();
             this.button44 = new System.Windows.Forms.Button();
             this.button43 = new System.Windows.Forms.Button();
             this.button47 = new System.Windows.Forms.Button();
             this.button48 = new System.Windows.Forms.Button();
-            this.baseLabelMax = new SLD200_MSL.BaseLabel();
-            this.baseLabelMin = new SLD200_MSL.BaseLabel();
-            this.m_visionImageViewer_LowRes = new QMC.Common.Hmi.VisionImageViewer();
-            this.m_visionImageViewer_HighRes = new QMC.Common.Hmi.VisionImageViewer();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.button_VisionPopup_LaserHeightCheck_Start = new System.Windows.Forms.Button();
-            this.textBox_VisionPopup_LaserHeightValue = new System.Windows.Forms.Label();
+            this.btnTest = new System.Windows.Forms.Button();
             this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.tabControl_MarkFindType.SuspendLayout();
             this.tabPage_MarkFind_PatternMatching.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -170,7 +172,6 @@ namespace SLD200_MSL
             this.groupBox36.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_LowRes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_HighRes)).BeginInit();
-            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel4
@@ -216,6 +217,7 @@ namespace SLD200_MSL
             // panel3
             // 
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.Controls.Add(this.btnTest);
             this.panel3.Controls.Add(this.groupBox4);
             this.panel3.Controls.Add(this.button_CurrentLightValue_toAlignLightValue);
             this.panel3.Controls.Add(this.button_CurrentZPos_toLaserFocus);
@@ -239,6 +241,52 @@ namespace SLD200_MSL
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(1236, 699);
             this.panel3.TabIndex = 41;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.textBox_VisionPopup_LaserHeightValue);
+            this.groupBox4.Controls.Add(this.button_VisionPopup_LaserHeightCheck_Start);
+            this.groupBox4.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.groupBox4.Location = new System.Drawing.Point(784, 309);
+            this.groupBox4.Margin = new System.Windows.Forms.Padding(6);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Padding = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.groupBox4.Size = new System.Drawing.Size(123, 93);
+            this.groupBox4.TabIndex = 138;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = " Height Check ";
+            // 
+            // textBox_VisionPopup_LaserHeightValue
+            // 
+            this.textBox_VisionPopup_LaserHeightValue.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.textBox_VisionPopup_LaserHeightValue.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.textBox_VisionPopup_LaserHeightValue.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_VisionPopup_LaserHeightValue.ForeColor = System.Drawing.Color.Lime;
+            this.textBox_VisionPopup_LaserHeightValue.Location = new System.Drawing.Point(10, 57);
+            this.textBox_VisionPopup_LaserHeightValue.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_VisionPopup_LaserHeightValue.Name = "textBox_VisionPopup_LaserHeightValue";
+            this.textBox_VisionPopup_LaserHeightValue.Size = new System.Drawing.Size(103, 27);
+            this.textBox_VisionPopup_LaserHeightValue.TabIndex = 133;
+            this.textBox_VisionPopup_LaserHeightValue.Text = "000.000";
+            this.textBox_VisionPopup_LaserHeightValue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // button_VisionPopup_LaserHeightCheck_Start
+            // 
+            this.button_VisionPopup_LaserHeightCheck_Start.BackColor = System.Drawing.Color.White;
+            this.button_VisionPopup_LaserHeightCheck_Start.FlatAppearance.BorderColor = System.Drawing.Color.Aqua;
+            this.button_VisionPopup_LaserHeightCheck_Start.FlatAppearance.BorderSize = 2;
+            this.button_VisionPopup_LaserHeightCheck_Start.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.button_VisionPopup_LaserHeightCheck_Start.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.button_VisionPopup_LaserHeightCheck_Start.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_VisionPopup_LaserHeightCheck_Start.ForeColor = System.Drawing.Color.Black;
+            this.button_VisionPopup_LaserHeightCheck_Start.Location = new System.Drawing.Point(10, 25);
+            this.button_VisionPopup_LaserHeightCheck_Start.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.button_VisionPopup_LaserHeightCheck_Start.Name = "button_VisionPopup_LaserHeightCheck_Start";
+            this.button_VisionPopup_LaserHeightCheck_Start.Size = new System.Drawing.Size(103, 30);
+            this.button_VisionPopup_LaserHeightCheck_Start.TabIndex = 132;
+            this.button_VisionPopup_LaserHeightCheck_Start.Text = "Start";
+            this.button_VisionPopup_LaserHeightCheck_Start.UseVisualStyleBackColor = false;
+            this.button_VisionPopup_LaserHeightCheck_Start.Click += new System.EventHandler(this.button_VisionPopup_LaserHeightCheck_Start_Click);
             // 
             // button_CurrentLightValue_toAlignLightValue
             // 
@@ -1315,6 +1363,27 @@ namespace SLD200_MSL
             this.radioButton_Light_IR.UseVisualStyleBackColor = true;
             this.radioButton_Light_IR.CheckedChanged += new System.EventHandler(this.radioButton_Light_IR_CheckedChanged);
             // 
+            // baseLabelMax
+            // 
+            this.baseLabelMax.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabelMax.ForeColor = System.Drawing.Color.Black;
+            this.baseLabelMax.Location = new System.Drawing.Point(224, 67);
+            this.baseLabelMax.Name = "baseLabelMax";
+            this.baseLabelMax.Size = new System.Drawing.Size(55, 23);
+            this.baseLabelMax.TabIndex = 32;
+            this.baseLabelMax.Text = "255";
+            this.baseLabelMax.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // baseLabelMin
+            // 
+            this.baseLabelMin.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabelMin.ForeColor = System.Drawing.Color.Black;
+            this.baseLabelMin.Location = new System.Drawing.Point(16, 67);
+            this.baseLabelMin.Name = "baseLabelMin";
+            this.baseLabelMin.Size = new System.Drawing.Size(22, 23);
+            this.baseLabelMin.TabIndex = 31;
+            this.baseLabelMin.Text = "0";
+            // 
             // hScrollBarIlluminator
             // 
             this.hScrollBarIlluminator.Location = new System.Drawing.Point(47, 63);
@@ -1539,6 +1608,46 @@ namespace SLD200_MSL
             this.label71.Text = "X Axis :";
             this.label71.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // m_visionImageViewer_LowRes
+            // 
+            this.m_visionImageViewer_LowRes.BackColor = System.Drawing.Color.Black;
+            this.m_visionImageViewer_LowRes.Camera = null;
+            this.m_visionImageViewer_LowRes.CameraSwitch = null;
+            this.m_visionImageViewer_LowRes.FrameRate = 1D;
+            this.m_visionImageViewer_LowRes.InputImage = null;
+            this.m_visionImageViewer_LowRes.IsViewCustomizedImage = false;
+            this.m_visionImageViewer_LowRes.Location = new System.Drawing.Point(10, 10);
+            this.m_visionImageViewer_LowRes.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.m_visionImageViewer_LowRes.Name = "m_visionImageViewer_LowRes";
+            this.m_visionImageViewer_LowRes.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.m_visionImageViewer_LowRes.Simulated = false;
+            this.m_visionImageViewer_LowRes.Size = new System.Drawing.Size(479, 400);
+            this.m_visionImageViewer_LowRes.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.m_visionImageViewer_LowRes.TabIndex = 108;
+            this.m_visionImageViewer_LowRes.TabStop = false;
+            this.m_visionImageViewer_LowRes.UpdateDelayTime = 160;
+            this.m_visionImageViewer_LowRes.VisibleCrossLine = true;
+            // 
+            // m_visionImageViewer_HighRes
+            // 
+            this.m_visionImageViewer_HighRes.BackColor = System.Drawing.Color.Black;
+            this.m_visionImageViewer_HighRes.Camera = null;
+            this.m_visionImageViewer_HighRes.CameraSwitch = null;
+            this.m_visionImageViewer_HighRes.FrameRate = 1D;
+            this.m_visionImageViewer_HighRes.InputImage = null;
+            this.m_visionImageViewer_HighRes.IsViewCustomizedImage = false;
+            this.m_visionImageViewer_HighRes.Location = new System.Drawing.Point(10, 10);
+            this.m_visionImageViewer_HighRes.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.m_visionImageViewer_HighRes.Name = "m_visionImageViewer_HighRes";
+            this.m_visionImageViewer_HighRes.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.m_visionImageViewer_HighRes.Simulated = false;
+            this.m_visionImageViewer_HighRes.Size = new System.Drawing.Size(479, 400);
+            this.m_visionImageViewer_HighRes.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.m_visionImageViewer_HighRes.TabIndex = 107;
+            this.m_visionImageViewer_HighRes.TabStop = false;
+            this.m_visionImageViewer_HighRes.UpdateDelayTime = 160;
+            this.m_visionImageViewer_HighRes.VisibleCrossLine = true;
+            // 
             // button44
             // 
             this.button44.FlatStyle = System.Windows.Forms.FlatStyle.System;
@@ -1587,112 +1696,17 @@ namespace SLD200_MSL
             this.button48.Text = "Apply";
             this.button48.UseVisualStyleBackColor = true;
             // 
-            // baseLabelMax
+            // btnTest
             // 
-            this.baseLabelMax.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabelMax.ForeColor = System.Drawing.Color.Black;
-            this.baseLabelMax.Location = new System.Drawing.Point(224, 67);
-            this.baseLabelMax.Name = "baseLabelMax";
-            this.baseLabelMax.Size = new System.Drawing.Size(55, 23);
-            this.baseLabelMax.TabIndex = 32;
-            this.baseLabelMax.Text = "255";
-            this.baseLabelMax.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // baseLabelMin
-            // 
-            this.baseLabelMin.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabelMin.ForeColor = System.Drawing.Color.Black;
-            this.baseLabelMin.Location = new System.Drawing.Point(16, 67);
-            this.baseLabelMin.Name = "baseLabelMin";
-            this.baseLabelMin.Size = new System.Drawing.Size(22, 23);
-            this.baseLabelMin.TabIndex = 31;
-            this.baseLabelMin.Text = "0";
-            // 
-            // m_visionImageViewer_LowRes
-            // 
-            this.m_visionImageViewer_LowRes.BackColor = System.Drawing.Color.Black;
-            this.m_visionImageViewer_LowRes.Camera = null;
-            this.m_visionImageViewer_LowRes.CameraSwitch = null;
-            this.m_visionImageViewer_LowRes.FrameRate = 1D;
-            this.m_visionImageViewer_LowRes.InputImage = null;
-            this.m_visionImageViewer_LowRes.IsViewCustomizedImage = false;
-            this.m_visionImageViewer_LowRes.Location = new System.Drawing.Point(10, 10);
-            this.m_visionImageViewer_LowRes.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.m_visionImageViewer_LowRes.Name = "m_visionImageViewer_LowRes";
-            this.m_visionImageViewer_LowRes.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
-            this.m_visionImageViewer_LowRes.Simulated = false;
-            this.m_visionImageViewer_LowRes.Size = new System.Drawing.Size(479, 400);
-            this.m_visionImageViewer_LowRes.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.m_visionImageViewer_LowRes.TabIndex = 108;
-            this.m_visionImageViewer_LowRes.TabStop = false;
-            this.m_visionImageViewer_LowRes.UpdateDelayTime = 160;
-            this.m_visionImageViewer_LowRes.VisibleCrossLine = true;
-            // 
-            // m_visionImageViewer_HighRes
-            // 
-            this.m_visionImageViewer_HighRes.BackColor = System.Drawing.Color.Black;
-            this.m_visionImageViewer_HighRes.Camera = null;
-            this.m_visionImageViewer_HighRes.CameraSwitch = null;
-            this.m_visionImageViewer_HighRes.FrameRate = 1D;
-            this.m_visionImageViewer_HighRes.InputImage = null;
-            this.m_visionImageViewer_HighRes.IsViewCustomizedImage = false;
-            this.m_visionImageViewer_HighRes.Location = new System.Drawing.Point(10, 10);
-            this.m_visionImageViewer_HighRes.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.m_visionImageViewer_HighRes.Name = "m_visionImageViewer_HighRes";
-            this.m_visionImageViewer_HighRes.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
-            this.m_visionImageViewer_HighRes.Simulated = false;
-            this.m_visionImageViewer_HighRes.Size = new System.Drawing.Size(479, 400);
-            this.m_visionImageViewer_HighRes.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.m_visionImageViewer_HighRes.TabIndex = 107;
-            this.m_visionImageViewer_HighRes.TabStop = false;
-            this.m_visionImageViewer_HighRes.UpdateDelayTime = 160;
-            this.m_visionImageViewer_HighRes.VisibleCrossLine = true;
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.textBox_VisionPopup_LaserHeightValue);
-            this.groupBox4.Controls.Add(this.button_VisionPopup_LaserHeightCheck_Start);
-            this.groupBox4.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox4.Location = new System.Drawing.Point(784, 309);
-            this.groupBox4.Margin = new System.Windows.Forms.Padding(6);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Padding = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.groupBox4.Size = new System.Drawing.Size(123, 93);
-            this.groupBox4.TabIndex = 138;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = " Height Check ";
-            // 
-            // button_VisionPopup_LaserHeightCheck_Start
-            // 
-            this.button_VisionPopup_LaserHeightCheck_Start.BackColor = System.Drawing.Color.White;
-            this.button_VisionPopup_LaserHeightCheck_Start.FlatAppearance.BorderColor = System.Drawing.Color.Aqua;
-            this.button_VisionPopup_LaserHeightCheck_Start.FlatAppearance.BorderSize = 2;
-            this.button_VisionPopup_LaserHeightCheck_Start.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.button_VisionPopup_LaserHeightCheck_Start.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
-            this.button_VisionPopup_LaserHeightCheck_Start.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_VisionPopup_LaserHeightCheck_Start.ForeColor = System.Drawing.Color.Black;
-            this.button_VisionPopup_LaserHeightCheck_Start.Location = new System.Drawing.Point(10, 25);
-            this.button_VisionPopup_LaserHeightCheck_Start.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.button_VisionPopup_LaserHeightCheck_Start.Name = "button_VisionPopup_LaserHeightCheck_Start";
-            this.button_VisionPopup_LaserHeightCheck_Start.Size = new System.Drawing.Size(103, 30);
-            this.button_VisionPopup_LaserHeightCheck_Start.TabIndex = 132;
-            this.button_VisionPopup_LaserHeightCheck_Start.Text = "Start";
-            this.button_VisionPopup_LaserHeightCheck_Start.UseVisualStyleBackColor = false;
-            this.button_VisionPopup_LaserHeightCheck_Start.Click += new System.EventHandler(this.button_VisionPopup_LaserHeightCheck_Start_Click);
-            // 
-            // textBox_VisionPopup_LaserHeightValue
-            // 
-            this.textBox_VisionPopup_LaserHeightValue.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.textBox_VisionPopup_LaserHeightValue.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.textBox_VisionPopup_LaserHeightValue.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_VisionPopup_LaserHeightValue.ForeColor = System.Drawing.Color.Lime;
-            this.textBox_VisionPopup_LaserHeightValue.Location = new System.Drawing.Point(10, 57);
-            this.textBox_VisionPopup_LaserHeightValue.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_VisionPopup_LaserHeightValue.Name = "textBox_VisionPopup_LaserHeightValue";
-            this.textBox_VisionPopup_LaserHeightValue.Size = new System.Drawing.Size(103, 27);
-            this.textBox_VisionPopup_LaserHeightValue.TabIndex = 133;
-            this.textBox_VisionPopup_LaserHeightValue.Text = "000.000";
-            this.textBox_VisionPopup_LaserHeightValue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnTest.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.btnTest.Location = new System.Drawing.Point(975, 10);
+            this.btnTest.Margin = new System.Windows.Forms.Padding(6);
+            this.btnTest.Name = "btnTest";
+            this.btnTest.Size = new System.Drawing.Size(60, 64);
+            this.btnTest.TabIndex = 139;
+            this.btnTest.Text = "TEST";
+            this.btnTest.UseVisualStyleBackColor = true;
+            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
             // 
             // FormNew_VisionPopup
             // 
@@ -1712,6 +1726,7 @@ namespace SLD200_MSL
             this.VisibleChanged += new System.EventHandler(this.FormNew_VisionPopup_VisibleChanged);
             this.panel4.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
             this.tabControl_MarkFindType.ResumeLayout(false);
             this.tabPage_MarkFind_PatternMatching.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
@@ -1738,7 +1753,6 @@ namespace SLD200_MSL
             this.groupBox36.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_LowRes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_HighRes)).EndInit();
-            this.groupBox4.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1860,5 +1874,6 @@ namespace SLD200_MSL
         private GroupBox groupBox4;
         private Button button_VisionPopup_LaserHeightCheck_Start;
         private Label textBox_VisionPopup_LaserHeightValue;
+        private Button btnTest;
     }
 }

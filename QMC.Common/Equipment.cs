@@ -368,6 +368,14 @@ namespace QMC.Common
         public static double Scanner_Calibration_LaserMarkSpeed { set; get; } = 0.0;            //  Scanner Calibration Laser Mark Speed (mm/s)
         public static double Scanner_Calibration_LaserJumpSpeed { set; get; } = 0.0;            //  Scanner Calibration Laser Jump Speed (mm/s)
 
+        public static string Scanner_Calibration_srcFilePath { set; get; } = "";            //  Scanner Calibration Source File Path
+        public static string Scanner_Calibration_targetFilePath { set; get; } = "";            //  Scanner Calibration Destination File Path
+        public static float Scanner_Calibration_FieldSize { set; get; } = 0;            //  Scanner Calibration Field Size (mm)
+        public static float Scanner_Calibration_rowInterval { set; get; } = 0;
+        public static float Scanner_Calibration_colInterval { set; get; } = 0;
+        public static int Scanner_Calibration_rowCount { set; get; } = 0;
+        public static int Scanner_Calibration_colCount { set; get; } = 0;
+
 
 
         //  Mapping Data 파일 경로
@@ -809,6 +817,7 @@ namespace QMC.Common
             //WorkStage workStage = new WorkStage("WorkStage");
             WorkStage workStage = new WorkStage("WorkStage");
             workStage.Create();
+            
             Modules.Add(workStage);
 
             Loader Loader = new Loader("Loader");
@@ -834,6 +843,7 @@ namespace QMC.Common
             Bds bds = new Bds("BDS");
             bds.Create();
             Modules.Add(bds);
+
         }
 
         public static void Start()
@@ -2202,19 +2212,14 @@ namespace QMC.Common
                 //return false;
             }
 
-
             //  Machine Option  로드
-
-
             //  Machine Name
             NativeMethods.GetPrivateProfileString("Machine_Option", "Machine_Name", "SLD-200", temp, 255, strFIle);
             Equipment.Machine_Name = temp.ToString();
 
-
             //  Laser Type                                                                            //  True : CO₂,    False : UV
             NativeMethods.GetPrivateProfileString("Machine_Option", "Laser_Type", "True", temp, 255, strFIle);
             Equipment.Machine_LaserType_CO2 = temp.ToString() == "False" ? false : true;
-
 
             //  Options
             NativeMethods.GetPrivateProfileString("Machine_Option", "Door_Enable", "True", temp, 255, strFIle);
@@ -2238,7 +2243,6 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Machine_Option", "LaserHeightCheckStableTime", "500", temp, 255, strFIle);
             Equipment.Machine_LaserHeightCheckStableTime = Convert.ToInt16(temp.ToString());
 
-
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Convert.ToDouble(temp.ToString());
@@ -2253,7 +2257,6 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_FineCam_To_LaserHeightSensor_Y", "0.0", temp, 255, strFIle);
             Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y = Convert.ToDouble(temp.ToString());
 
-
             //  Scanner Head Offset
             NativeMethods.GetPrivateProfileString("ScannerHeadOffset", "Offset_X", "0.0", temp, 255, strFIle);
             Equipment.Scanner_HeadOffset_X = Convert.ToDouble(temp.ToString());
@@ -2262,13 +2265,11 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("ScannerHeadOffset", "Offset_Angle", "0.0", temp, 255, strFIle);
             Equipment.Scanner_HeadOffset_Angle = Convert.ToDouble(temp.ToString());
 
-
             //  Coordinate System Matching Offset
             NativeMethods.GetPrivateProfileString("MachineCoordinateOffset", "Offset_X", "0.0", temp, 255, strFIle);
             Equipment.CoordinateMatchingOffset_X = Convert.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("MachineCoordinateOffset", "Offset_Y", "0.0", temp, 255, strFIle);
             Equipment.CoordinateMatchingOffset_Y = Convert.ToDouble(temp.ToString());
-
 
             //  Offset Distance from Stage to Scanner
             NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_X", "0.0", temp, 255, strFIle);
@@ -2276,13 +2277,11 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_Y", "0.0", temp, 255, strFIle);
             Equipment.StageOffset_forDrilling_Y = Convert.ToDouble(temp.ToString());
 
-
             //  Keyence Laser Height Sensor 기준값 설정
             NativeMethods.GetPrivateProfileString("LaserHeightSensor_ReferenceValue", "at_Vision_Focus_Position", "0.0", temp, 255, strFIle);
             Equipment.LaserHeightSensor_ReferenceValue_atVisionFocusPosition = Convert.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("LaserHeightSensor_ReferenceValue", "at_Scanner_Focus_Position", "0.0", temp, 255, strFIle);
             Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition = Convert.ToDouble(temp.ToString());
-
 
             //  Scanner Calibration parameter
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Laser_Frequency", "50.0", temp, 255, strFIle);
@@ -2296,6 +2295,20 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Jump_Speed", "0.0", temp, 255, strFIle);
             Equipment.Scanner_Calibration_LaserJumpSpeed = Convert.ToDouble(temp.ToString());
 
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "srcFilePath", "", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_srcFilePath = temp.ToString();
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "targetFilePath", "", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_targetFilePath = temp.ToString();
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "FieldSize", "0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_FieldSize = Convert.ToInt32(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "rowInterval", "0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_rowInterval = Convert.ToInt32(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "colInterval", "0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_colInterval = Convert.ToInt32(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "rowCount", "0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_rowCount = Convert.ToInt32(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "colCount", "0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_colCount = Convert.ToInt32(temp.ToString());
 
 
             //  체크 포인트

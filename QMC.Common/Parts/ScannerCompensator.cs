@@ -17,6 +17,10 @@ using System.Windows.Forms;
 using static QMC.Common.Parts.ScannerCompensator;
 using static QMC.Common.PathGenerators.PathGenerator;
 
+using QMC.Common.Motion;
+using QMC.Common.Motion.Ajin.Motions;
+using static QMC.Common.Modules.WorkStage;
+
 namespace QMC.Common.Parts
 {
     #region ScannerCompensator
@@ -38,10 +42,26 @@ namespace QMC.Common.Parts
         }
         #endregion
 
+        public Action<string> ActionSaveDone;
+        public Action<QMCFindLenzCenter> ActionSaveDoneAllData;
         #region Field
         private WorkStage m_Owner;
+
+        // InterpolatorMotionFunction 인스턴스 추가
+        public InterpolatorMotionFunction MC_Func = new InterpolatorMotionFunction();
+
         #endregion
 
+        public override void UpdateRecipeData()
+        {
+            if(Owner is WorkStage ws)
+            {
+                this.Recipe = ws.Recipe.scannerCompensatorRecipe;
+            }
+            base.UpdateRecipeData();
+        }
+
+        
         #region Constructor
         public ScannerCompensator(string strName) : base(strName)
         {
@@ -50,6 +70,7 @@ namespace QMC.Common.Parts
         #endregion
 
         #region Property
+        
         public IlluminationDataSet IlluminationData
         {
             set
@@ -65,16 +86,56 @@ namespace QMC.Common.Parts
         //public XyzztStage Stage { set; get; }
         //public UvwzxyzStage Stage { set; get; }
         //public XyzLDzzxzULzzxzStage Stage { set; get; }
+
+        private ScannerCompensatorRecipe _recipe;
         public XyzyStage Stage { set; get; }
         public ScannerCompensatorConfig Config { set; get; }
-        public ScannerCompensatorRecipe Recipe { set; get; }
+        public ScannerCompensatorRecipe Recipe
+        {
+            set
+            {
+                _recipe = value;
+            }
+            get
+            {
+                if (_recipe == null)
+                {
+                    _recipe = new ScannerCompensatorRecipe(this);
+                }
+                return _recipe;
+
+
+
+            }
+        }
         public TwoDimensionPathGenerator GridPathGenerator { get; set; }
         public RectangleZigzagTwoDimensionPathGeneratorParameter PathGeneratorParameter { get; set; }
 
         public BlobVisionTool BlobVisionTool { get; set; }
+
+        private XyCoordinate _resultPosition;
+        public XyCoordinate ResultPosition
+        {
+            get
+            {
+                return _resultPosition;
+            }
+            set
+            {
+                _resultPosition = value;
+            }
+        }
+
+        private XyCoordinate xyInterpolatedCoordinate = new XyCoordinate();         //  Stage XY Map Data 로 변환된 위치 이동 좌표
+
+
+        CorrectionDataSaver correctionDataSaver = new CorrectionDataSaver();
+        // CorrectionData 전달을 위한 이벤트 정의
+        public event Action<List<CorrectionData>> CorrectionDataUpdated;
         #endregion
 
         #region Method
+
         protected int GetMotionLimit(MotionAxis axis, out RangeD range)
         {
             int ret = 0;
@@ -113,7 +174,6 @@ namespace QMC.Common.Parts
             this.PathGeneratorParameter.Direction = this.Config.Direction;
             this.PathGeneratorParameter.StartLocation = this.Config.StartLocation;
             this.PathGeneratorParameter.AreaCalculationParameterType = ZigzagTwoDimensionPathGenerator.AreaCalculationParameterTypes.PitchCount;
-
             this.PathGeneratorParameter.PitchDistance = new SizeD(Config.PitchDistanceX, Config.PitchDistanceY);
 
             return ret;
@@ -262,13 +322,14 @@ namespace QMC.Common.Parts
             int ret = 0;
 
             //Get Motion Setting
-            Dictionary<string, MovingProjection> dicMovingProjection = Stage.GetDefaultMovingProjections();
+            //Dictionary<string, MovingProjection> dicMovingProjection = Stage.GetDefaultMovingProjections();
+            Dictionary<string, MovingProjection> dicMovingProjection = Stage.GetDefaultMovingProjections(); ;
 
             if (dicMovingProjection != null)
             {
-                dicMovingProjection[XyzStage.MotionKey.X.ToString()].Position = x;
-                dicMovingProjection[XyzStage.MotionKey.Y.ToString()].Position = y;
-                dicMovingProjection[XyzStage.MotionKey.Z.ToString()].Position = z;
+                dicMovingProjection[XyStage.MotionKey.X.ToString()].Position = x;
+                dicMovingProjection[XyStage.MotionKey.Y.ToString()].Position = y;
+                //dicMovingProjection[XyStage.MotionKey.Z.ToString()].Position = z;
 
                 this.Stage.Move(dicMovingProjection);
                 Thread.Sleep(Config.MoveToDelay);
@@ -324,7 +385,46 @@ namespace QMC.Common.Parts
                     // this.Config = workStage.Config.ScannerCompensatorConfig;
                 }
             }
+        }
 
+        public int RunSearchMark()
+        {
+            int ret = 0;
+
+            PatternMatchingResult patternMatchingResult = null;
+            XyzCoordinate currentPos = new XyzCoordinate();
+            XyCoordinate resultPosition = new XyCoordinate();
+
+            patternMatchingResult = Search();
+
+            if (patternMatchingResult.Values.Count <= 0)
+            {
+                MessageBox.Show("Can not Search Center Mark");
+                return ret;
+            }
+
+            this.Stage.GetCommandPosition(ref currentPos);
+
+            if (((WorkStage)this.Owner).Config.ParamConfig.ManualScale_Usage)
+            {
+                VisionScale m_TempScale = new VisionScale();
+                m_TempScale.X = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_X;
+                m_TempScale.Y = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
+                m_TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
+                m_TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
+
+                VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, Camera.Resolution, patternMatchingResult.Values[0], out resultPosition);
+            }
+            else
+            {
+                VisionScale.ConvertPosition<XyCoordinate>(this.m_Owner.Scale, this.m_Owner.Camera_HighRes.Resolution, patternMatchingResult.Values[0], out resultPosition);
+            }
+
+            _resultPosition.X = currentPos.X + resultPosition.X;
+            _resultPosition.Y = currentPos.Y + resultPosition.Y;
+
+            ret = 1;
+            return ret;
         }
 
         private int SearchGridXy(out List<PositionOffset> results, out XyCoordinate CommandPosition)
@@ -345,6 +445,7 @@ namespace QMC.Common.Parts
             XyCoordinate centerPosition = new XyCoordinate();
             QMCFindLenzCenter findLenzCenter = new QMCFindLenzCenter();
 
+
             int defaultXIndex = (int)(((this.Config.Count.X - 1) * this.Config.PitchDistanceX) / 2);
             int defaultYIndex = -(int)(((this.Config.Count.Y - 1) * this.Config.PitchDistanceY) / 2);
 
@@ -362,9 +463,9 @@ namespace QMC.Common.Parts
             //    position = new XyzCoordinate(this.GridPathGenerator.Paths[i].X, this.GridPathGenerator.Paths[i].Y, this.Config.GridPositions[(int)GridXyMotionPositionKeys.StartPosition].Z);
             //    Dictionary<string, MovingProjection> dicMovingProjection = Stage.GetDefaultMovingProjections();
 
-            //    dicMovingProjection[XyzStage.MotionKey.X.ToString()].Position = position.X;
-            //    dicMovingProjection[XyzStage.MotionKey.Y.ToString()].Position = position.Y;
-            //    dicMovingProjection[XyzStage.MotionKey.Z.ToString()].Position = position.Z;
+            //    dicMovingProjection[XyzyStage.MotionKey.X.ToString()].Position = position.X;
+            //    dicMovingProjection[XyzyStage.MotionKey.Y.ToString()].Position = position.Y;
+            //    dicMovingProjection[XyzyStage.MotionKey.Z.ToString()].Position = position.Z;
 
             //    if ((ret = this.Stage.Move(dicMovingProjection)) != 0) return ret;
             //    Thread.Sleep(Config.MoveToDelay);
@@ -389,7 +490,7 @@ namespace QMC.Common.Parts
             //    if (this.Stage.GetCommandPosition(ref currentPosition) != 0) continue;
 
             //    VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera.Resolution, patternMatchingResult.Values[0], out resultPosition);
-            //    //resultPosition = new XyCoordinate((this.m_Owner.Camera.Resolution.Width / 2 - intersectPoint.X) * this.m_Owner.Scale.X * (this.Config.Parameter.InvertedX == true ? 1 : -1), (intersectPoint.Y - this.m_Owner.Camera.Resolution.Height / 2) * this.m_Owner.Scale.Y * (this.Config.Parameter.InvertedY == true ? 1 : -1));
+            //    resultPosition = new XyCoordinate((this.m_Owner.Camera.Resolution.Width / 2 - intersectPoint.X) * this.m_Owner.Scale.X * (this.Config.Parameter.InvertedX == true ? 1 : -1), (intersectPoint.Y - this.m_Owner.Camera.Resolution.Height / 2) * this.m_Owner.Scale.Y * (this.Config.Parameter.InvertedY == true ? 1 : -1));
 
             //    result = new PositionOffset(currentPosition, resultPosition);
             //    timer.End();
@@ -428,9 +529,9 @@ namespace QMC.Common.Parts
 
             //        Dictionary<string, MovingProjection> dicMovingProjection = Stage.GetDefaultMovingProjections();
 
-            //        dicMovingProjection[XyzStage.MotionKey.X.ToString()].Position = position.X;
-            //        dicMovingProjection[XyzStage.MotionKey.Y.ToString()].Position = position.Y;
-            //        dicMovingProjection[XyzStage.MotionKey.Z.ToString()].Position = position.Z;
+            //        dicMovingProjection[XyzyStage.MotionKey.X.ToString()].Position = position.X;
+            //        dicMovingProjection[XyzyStage.MotionKey.Y.ToString()].Position = position.Y;
+            //        dicMovingProjection[XyzyStage.MotionKey.Z.ToString()].Position = position.Z;
 
             //        if ((ret = this.Stage.Move(dicMovingProjection)) != 0) return ret;
             //        Thread.Sleep(Config.MoveToDelay);
@@ -523,13 +624,25 @@ namespace QMC.Common.Parts
                     //    movePosition.Y = movePosition.Y + resultPosition.Y;
                     //}
                     #endregion
-
-                    //position = new XyzCoordinate(movePosition.X - this.Config.PitchDistanceX * x, movePosition.Y - this.Config.PitchDistanceY * y, movePosition.Z);
+                    //position = new XyzCoordinate(movePosition.X + this.Config.PitchDistanceX * x, movePosition.Y + this.Config.PitchDistanceY * y, movePosition.Z);
                     position = new XyzCoordinate(movePosition.X + this.Config.PitchDistanceX * x, movePosition.Y + this.Config.PitchDistanceY * y, movePosition.Z);
                     //position = new XyzCoordinate(this.Config.PitchDistanceX * x, this.Config.PitchDistanceY * y, movePosition.Z);
                     //Dictionary<string, MovingProjection> dicMovingProjection = Stage.GetDefaultMovingProjections();
+                    
+                    //this.MoveStageXY(position.X, position.Y);
 
-                    this.MoveStageXY(position.X, position.Y);
+                    double lfVelocity;
+                    double lfAccDec;
+                    //  속도 설정
+                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+                    xyInterpolatedCoordinate.X = position.X; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
+                    xyInterpolatedCoordinate.Y = position.Y; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+                    
+                    MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                    //Thread.Sleep(Config.MoveToDelay);
+                    Thread.Sleep(200);
 
                     //if ((ret = this.Stage.Move(dicMovingProjection)) != 0) return ret;
                     //Thread.Sleep(Config.MoveToDelay);
@@ -562,11 +675,13 @@ namespace QMC.Common.Parts
                             m_TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
                             m_TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
 
-                            VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, m_Owner.Camera_HighRes.Resolution, patternMatchingResult.Values[0], out resultPosition);
+                            //VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, m_Owner.Camera_HighRes.Resolution, patternMatchingResult.Values[0], out resultPosition);
+                            VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, Camera.Resolution, patternMatchingResult.Values[0], out resultPosition);
                         }
                         else
                         {
-                            VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_HighRes.Resolution, patternMatchingResult.Values[0], out resultPosition);
+                            //VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_HighRes.Resolution, patternMatchingResult.Values[0], out resultPosition);
+                            VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, Camera.Resolution, patternMatchingResult.Values[0], out resultPosition);
                         }                        
                     }
                     else
@@ -628,7 +743,12 @@ namespace QMC.Common.Parts
                     // data format : row, col, reference, measured
                     LogManager.Instance.WriteTxt(fileName, string.Format($"{x}, {y} : {yIndex.ToString("0.000")}, {xIndex.ToString("0.000")}, {resultY.ToString("0.00000")}, {resultX.ToString("0.00000")}"));
                     //LogManager.Instance.WriteTxt(fileName, string.Format($"{x}, {y} : {xIndex.ToString("0.000")}, {yIndex.ToString("0.000")}, {resultX.ToString("0.000")}, {resultY.ToString("0.000")}"));
+
                     findLenzCenter.AddSLDMeasureData(new SLDMeasureData(x, y, yIndex, xIndex, resultY, resultX));
+                    //findLenzCenter.AddSLDMeasureData(new SLDMeasureData(x, y, yIndex, xIndex, offset.Y, offset.X));
+
+                    //SpiralLabScanner Compensator Data 사용 위함.
+                    correctionDataSaver.AddCorrectionData(new CorrectionData(x, y, currentPosition.Y, currentPosition.X, offset.Y, offset.X));       
                 }
             }
             #endregion
@@ -639,8 +759,13 @@ namespace QMC.Common.Parts
             {
                 Directory.CreateDirectory(m_strScannerCompensatorDataPath);
             }
+            string fileName1 = findLenzCenter.SaveData(LogManager.Instance.GetLogPath() + "\\ScannerCalData");
 
-            findLenzCenter.SaveData(LogManager.Instance.GetLogPath() + "\\ScannerCalData");
+            correctionDataSaver.SaveData(LogManager.Instance.GetLogPath() + "\\ScannerCalData");
+
+            //
+            ActionSaveDone?.Invoke(fileName1);
+            ActionSaveDoneAllData?.Invoke(findLenzCenter);
             timer.End();
             Log.Write("ScannerCompensator Time", string.Format($"{timer.Latest.Interval.TotalSeconds.ToString()}"));
             return ret;
@@ -665,119 +790,119 @@ namespace QMC.Common.Parts
             //1. StartPoint로 이동.
             Dictionary<string, MovingProjection> dicMovingProjection = this.Stage.GetDefaultMovingProjections();
 
-            movePosition.X = this.Config.GridPositions[(int)GridXyMotionPositionKeys.StartPosition].X;
-            movePosition.Y = this.Config.GridPositions[(int)GridXyMotionPositionKeys.StartPosition].Y;
-            movePosition.Z = this.Config.GridPositions[(int)GridXyMotionPositionKeys.StartPosition].Z;
+            #region 밖에서 우측상단으로 이동한 후에 들어오기 때문에 아래 구문 필요없음 - 주석
+            //밖에서 우측상단으로 이동한 후에 들어오기 때문에 아래 구문 필요없음.
+            //movePosition.X = this.Config.GridPositions[(int)GridXyMotionPositionKeys.StartPosition].X;
+            //movePosition.Y = this.Config.GridPositions[(int)GridXyMotionPositionKeys.StartPosition].Y;
+            //movePosition.Z = this.Config.GridPositions[(int)GridXyMotionPositionKeys.StartPosition].Z;
 
-            dicMovingProjection[XyzStage.MotionKey.X.ToString()].Position = movePosition.X;
-            dicMovingProjection[XyzStage.MotionKey.Y.ToString()].Position = movePosition.Y;
-            dicMovingProjection[XyzStage.MotionKey.Z.ToString()].Position = movePosition.Z;
+            //dicMovingProjection[XyzyStage.MotionKey.X.ToString()].Position = movePosition.X;
+            //dicMovingProjection[XyzyStage.MotionKey.Y.ToString()].Position = movePosition.Y;
+            //dicMovingProjection[XyzyStage.MotionKey.Z.ToString()].Position = movePosition.Z;
 
-            if ((ret = this.Stage.Move(dicMovingProjection)) != 0) return ret;
-            Thread.Sleep(Config.MoveToDelay);
+            //if ((ret = this.Stage.Move(dicMovingProjection)) != 0) return ret;
+            //Thread.Sleep(Config.MoveToDelay);
 
-            //2. CenterPoint로 이동. (Count와 Pitch 이용)
-            this.Stage.GetCommandPosition(ref currentPos);
+            ////2. CenterPoint로 이동. (Count와 Pitch 이용)
+            //this.Stage.GetCommandPosition(ref currentPos);
 
-            //movePosition.X = currentPos.X - (this.Config.PitchDistanceX * (this.Config.Count.X / 2));
-            //movePosition.Y = currentPos.Y - (this.Config.PitchDistanceY * (this.Config.Count.Y / 2));
-            movePosition.X = currentPos.X + (this.Config.PitchDistanceX * (this.Config.Count.X / 2));
-            movePosition.Y = currentPos.Y + (this.Config.PitchDistanceY * (this.Config.Count.Y / 2));
-
-            dicMovingProjection[XyzStage.MotionKey.X.ToString()].Position = movePosition.X;
-            dicMovingProjection[XyzStage.MotionKey.Y.ToString()].Position = movePosition.Y;
-            dicMovingProjection[XyzStage.MotionKey.Z.ToString()].Position = movePosition.Z;
-
-            if ((ret = this.Stage.Move(dicMovingProjection)) != 0) return ret;
-            Thread.Sleep(Config.MoveToDelay);
-
-            //3. Search후 Center로 Move.
-            if (this.Config.SearchMethod == SearchMethod.PatternMatching)
-            {
-                patternMatchingResult = this.Search();
-
-                if (patternMatchingResult.Values.Count <= 0)
-                {
-                    MessageBox.Show("Can not Search Center Mark");
-                    return ret;
-                }
-
-                this.Stage.GetCommandPosition(ref currentPos);
-
-                if (((WorkStage)this.Owner).Config.ParamConfig.ManualScale_Usage)
-                {
-                    VisionScale m_TempScale = new VisionScale();
-                    m_TempScale.X = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_X;
-                    m_TempScale.Y = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
-                    m_TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
-                    m_TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
-
-                    VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, m_Owner.Camera_HighRes.Resolution, patternMatchingResult.Values[0], out resultPosition);
-                }
-                else
-                {
-                    VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_HighRes.Resolution, patternMatchingResult.Values[0], out resultPosition);
-                }                
-            }
-            else
-            {
-                blobResult = this.Blob();
-
-                if (blobResult.PixelValues.Count <= 0)
-                {
-                    MessageBox.Show("Can not Blob Center Mark");
-                    return ret;
-                }
-
-                this.Stage.GetCommandPosition(ref currentPos);
-
-                if (((WorkStage)this.Owner).Config.ParamConfig.ManualScale_Usage)
-                {
-                    VisionScale m_TempScale = new VisionScale();
-                    m_TempScale.X = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_X;
-                    m_TempScale.Y = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
-                    m_TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
-                    m_TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
-
-                    VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, m_Owner.Camera_HighRes.Resolution, new PointD(blobResult.PixelValues[0][1].Value, blobResult.PixelValues[0][2].Value), out resultPosition);
-                }
-                else
-                {
-                    VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_HighRes.Resolution, new PointD(blobResult.PixelValues[0][1].Value, blobResult.PixelValues[0][2].Value), out resultPosition);
-                }                
-            }
-            movePosition.X = currentPos.X + resultPosition.X;
-            movePosition.Y = currentPos.Y + resultPosition.Y;
-
-            dicMovingProjection[XyzStage.MotionKey.X.ToString()].Position = movePosition.X;
-            dicMovingProjection[XyzStage.MotionKey.Y.ToString()].Position = movePosition.Y;
-            dicMovingProjection[XyzStage.MotionKey.Z.ToString()].Position = movePosition.Z;
-
-            if ((ret = this.Stage.Move(dicMovingProjection)) != 0) return ret;
-            Thread.Sleep(Config.MoveToDelay);
-
-            //4. StartPoint로 이동. (Count와 Pitch 이동)
-            this.Stage.GetCommandPosition(ref currentPos);
-
+            ////movePosition.X = currentPos.X - (this.Config.PitchDistanceX * (this.Config.Count.X / 2));
+            ////movePosition.Y = currentPos.Y - (this.Config.PitchDistanceY * (this.Config.Count.Y / 2));
             //movePosition.X = currentPos.X + (this.Config.PitchDistanceX * (this.Config.Count.X / 2));
             //movePosition.Y = currentPos.Y + (this.Config.PitchDistanceY * (this.Config.Count.Y / 2));
-            movePosition.X = currentPos.X - (this.Config.PitchDistanceX * (this.Config.Count.X / 2));
-            movePosition.Y = currentPos.Y - (this.Config.PitchDistanceY * (this.Config.Count.Y / 2));
 
-            dicMovingProjection[XyzStage.MotionKey.X.ToString()].Position = movePosition.X;
-            dicMovingProjection[XyzStage.MotionKey.Y.ToString()].Position = movePosition.Y;
-            dicMovingProjection[XyzStage.MotionKey.Z.ToString()].Position = movePosition.Z;
+            //dicMovingProjection[XyzyStage.MotionKey.X.ToString()].Position = movePosition.X;
+            //dicMovingProjection[XyzyStage.MotionKey.Y.ToString()].Position = movePosition.Y;
+            //dicMovingProjection[XyzyStage.MotionKey.Z.ToString()].Position = movePosition.Z;
 
-            if ((ret = this.Stage.Move(dicMovingProjection)) != 0) return ret;
-            Thread.Sleep(Config.MoveToDelay);
+            //if ((ret = this.Stage.Move(dicMovingProjection)) != 0) return ret;
+            //Thread.Sleep(Config.MoveToDelay);
 
+            ////3. Search후 Center로 Move.
+            //if (this.Config.SearchMethod == SearchMethod.PatternMatching)
+            //{
+            //    patternMatchingResult = this.Search();
+
+            //    if (patternMatchingResult.Values.Count <= 0)
+            //    {
+            //        MessageBox.Show("Can not Search Center Mark");
+            //        return ret;
+            //    }
+
+            //    this.Stage.GetCommandPosition(ref currentPos);
+
+            //    if (((WorkStage)this.Owner).Config.ParamConfig.ManualScale_Usage)
+            //    {
+            //        VisionScale m_TempScale = new VisionScale();
+            //        m_TempScale.X = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_X;
+            //        m_TempScale.Y = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
+            //        m_TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
+            //        m_TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
+
+            //        VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, m_Owner.Camera_HighRes.Resolution, patternMatchingResult.Values[0], out resultPosition);
+            //    }
+            //    else
+            //    {
+            //        VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_HighRes.Resolution, patternMatchingResult.Values[0], out resultPosition);
+            //    }                
+            //}
+            //else
+            //{
+            //    blobResult = this.Blob();
+
+            //    if (blobResult.PixelValues.Count <= 0)
+            //    {
+            //        MessageBox.Show("Can not Blob Center Mark");
+            //        return ret;
+            //    }
+
+            //    this.Stage.GetCommandPosition(ref currentPos);
+
+            //    if (((WorkStage)this.Owner).Config.ParamConfig.ManualScale_Usage)
+            //    {
+            //        VisionScale m_TempScale = new VisionScale();
+            //        m_TempScale.X = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_X;
+            //        m_TempScale.Y = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
+            //        m_TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
+            //        m_TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
+
+            //        VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, m_Owner.Camera_HighRes.Resolution, new PointD(blobResult.PixelValues[0][1].Value, blobResult.PixelValues[0][2].Value), out resultPosition);
+            //    }
+            //    else
+            //    {
+            //        VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_HighRes.Resolution, new PointD(blobResult.PixelValues[0][1].Value, blobResult.PixelValues[0][2].Value), out resultPosition);
+            //    }                
+            //}
+            //movePosition.X = currentPos.X + resultPosition.X;
+            //movePosition.Y = currentPos.Y + resultPosition.Y;
+
+            //dicMovingProjection[XyzyStage.MotionKey.X.ToString()].Position = movePosition.X;
+            //dicMovingProjection[XyzyStage.MotionKey.Y.ToString()].Position = movePosition.Y;
+            //dicMovingProjection[XyzyStage.MotionKey.Z.ToString()].Position = movePosition.Z;
+
+            //if ((ret = this.Stage.Move(dicMovingProjection)) != 0) return ret;
+            //Thread.Sleep(Config.MoveToDelay);
+
+            ////4. StartPoint로 이동. (Count와 Pitch 이동)
+            //this.Stage.GetCommandPosition(ref currentPos);
+
+            ////movePosition.X = currentPos.X + (this.Config.PitchDistanceX * (this.Config.Count.X / 2));
+            ////movePosition.Y = currentPos.Y + (this.Config.PitchDistanceY * (this.Config.Count.Y / 2));
+            //movePosition.X = currentPos.X - (this.Config.PitchDistanceX * (this.Config.Count.X / 2));
+            //movePosition.Y = currentPos.Y - (this.Config.PitchDistanceY * (this.Config.Count.Y / 2));
+
+            //dicMovingProjection[XyzyStage.MotionKey.X.ToString()].Position = movePosition.X;
+            //dicMovingProjection[XyzyStage.MotionKey.Y.ToString()].Position = movePosition.Y;
+            //dicMovingProjection[XyzyStage.MotionKey.Z.ToString()].Position = movePosition.Z;
+
+            //if ((ret = this.Stage.Move(dicMovingProjection)) != 0) return ret;
+            //Thread.Sleep(Config.MoveToDelay);
 
             //5. 현재 위치 StartPoint 저장
-
-            this.Stage.GetCommandPosition(ref currentPos);
-
-            this.Config.GridPositions[(int)GridXyMotionPositionKeys.StartPosition].Coordinate = currentPos;
-            m_Owner.SaveConfigData();
+            //this.Stage.GetCommandPosition(ref currentPos);
+            //this.Config.GridPositions[(int)GridXyMotionPositionKeys.StartPosition].Coordinate = currentPos;
+            //m_Owner.SaveConfigData();
+            #endregion
 
             //Path Generator 생성 주석
             //timer.Start();
@@ -801,6 +926,10 @@ namespace QMC.Common.Parts
 
             return ret;
         }
+
+
+
+
         #endregion
     }
     #endregion

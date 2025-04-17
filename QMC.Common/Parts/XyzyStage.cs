@@ -306,13 +306,14 @@ namespace QMC.Common.Parts
 
             currentPosition.X = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X);
             currentPosition.Y = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y);
+            currentPosition.Z = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z);
 
-
-            m_dicAxes[MotionKey.Z.ToString()].GetCommandPosition(ref dPos);
-            currentPosition.Z = dPos;
+            //m_dicAxes[MotionKey.Z.ToString()].GetCommandPosition(ref dPos);
+            //currentPosition.Z = dPos;
 
             return ret;
         }
+
         public int GetCommandPosition(ref XyCoordinate currentPosition)
         {
             int ret = 0;

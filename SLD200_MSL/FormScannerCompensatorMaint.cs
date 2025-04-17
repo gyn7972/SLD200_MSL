@@ -86,7 +86,11 @@ namespace SLD200_MSL
 
             this.m_TrainImageControl = new TrainImageControl();
             this.m_TrainImageControl.Location = new Point(this.m_RoiListControl.Location.X + this.m_RoiListControl.Width, this.m_RoiListControl.Location.Y);
-            this.m_TrainImageControl.SetTrainImage(m_Owner.Recipe.PatternMatchingParameter.TrainImage);
+            if(m_Owner.Recipe != null)
+            {
+
+                this.m_TrainImageControl.SetTrainImage(m_Owner.Recipe.PatternMatchingParameter.TrainImage);
+            }
             this.m_TrainImageControl.TrainButtonClick += TrainButtonClick;
             this.Controls.Add(this.m_TrainImageControl);
 
@@ -94,7 +98,10 @@ namespace SLD200_MSL
             //this.m_SearchResultControl.Location = new Point(this.m_TrainImageControl.Location.X + m_TrainImageControl.Width + Configuration.ControlGap, this.m_TrainImageControl.Location.Y);
             this.m_SearchResultControl.Location = new Point(this.m_JogControl.Location.X, this.m_JogControl.Location.Y + this.m_JogControl.Height + 20);
             this.m_SearchResultControl.SearchClick += SearchResultClick;
-            this.m_SearchResultControl.SetPatternMatchingData(m_Owner.Recipe.PatternMatchingParameter);
+            if (m_Owner.Recipe != null)
+            {
+                this.m_SearchResultControl.SetPatternMatchingData(m_Owner.Recipe.PatternMatchingParameter); 
+            }
             this.Controls.Add(this.m_SearchResultControl);
 
             this.m_AutoFocusControl = new AutoFocusControl(((WorkStage)m_Owner.Owner).autoFocuser_HighRes, ((WorkStage)m_Owner.Owner));

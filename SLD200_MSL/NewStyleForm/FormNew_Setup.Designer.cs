@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPage_Setup_Communication = new System.Windows.Forms.TabPage();
             this.groupBox86 = new System.Windows.Forms.GroupBox();
             this.button_Test_SocketConnect = new System.Windows.Forms.Button();
@@ -230,6 +230,27 @@
             this.label51 = new System.Windows.Forms.Label();
             this.label53 = new System.Windows.Forms.Label();
             this.tabPage_Setup_ScannerCalibration = new System.Windows.Forms.TabPage();
+            this.btnCalStart_Vision = new System.Windows.Forms.Button();
+            this.btnCalStop = new System.Windows.Forms.Button();
+            this.btnCalStart = new System.Windows.Forms.Button();
+            this.button17 = new System.Windows.Forms.Button();
+            this.button_Setup_ScannerCal_Save = new System.Windows.Forms.Button();
+            this.groupBox15 = new System.Windows.Forms.GroupBox();
+            this.textBox_Setup_ScannerCal_JumpSpeed = new System.Windows.Forms.TextBox();
+            this.textBox_Setup_ScannerCal_MarkingSpeed = new System.Windows.Forms.TextBox();
+            this.button16 = new System.Windows.Forms.Button();
+            this.button27 = new System.Windows.Forms.Button();
+            this.label69 = new System.Windows.Forms.Label();
+            this.button26 = new System.Windows.Forms.Button();
+            this.label68 = new System.Windows.Forms.Label();
+            this.label61 = new System.Windows.Forms.Label();
+            this.textBox_Setup_ScannerCal_CrossMarkLength = new System.Windows.Forms.TextBox();
+            this.button18 = new System.Windows.Forms.Button();
+            this.label62 = new System.Windows.Forms.Label();
+            this.textBox_Setup_ScannerCal_LaserEnergy = new System.Windows.Forms.TextBox();
+            this.button19 = new System.Windows.Forms.Button();
+            this.label66 = new System.Windows.Forms.Label();
+            this.textBox_Setup_ScannerCal_LaserFrequency = new System.Windows.Forms.TextBox();
             this.textBox_ScannerCal_LaserFrequency = new System.Windows.Forms.Panel();
             this.button15 = new System.Windows.Forms.Button();
             this.tabPage_Setup_Option = new System.Windows.Forms.TabPage();
@@ -311,24 +332,7 @@
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
-            this.groupBox15 = new System.Windows.Forms.GroupBox();
-            this.button18 = new System.Windows.Forms.Button();
-            this.label62 = new System.Windows.Forms.Label();
-            this.textBox_Setup_ScannerCal_LaserEnergy = new System.Windows.Forms.TextBox();
-            this.button19 = new System.Windows.Forms.Button();
-            this.label66 = new System.Windows.Forms.Label();
-            this.textBox_Setup_ScannerCal_LaserFrequency = new System.Windows.Forms.TextBox();
-            this.label61 = new System.Windows.Forms.Label();
-            this.textBox_Setup_ScannerCal_CrossMarkLength = new System.Windows.Forms.TextBox();
-            this.button27 = new System.Windows.Forms.Button();
-            this.label69 = new System.Windows.Forms.Label();
-            this.button26 = new System.Windows.Forms.Button();
-            this.label68 = new System.Windows.Forms.Label();
-            this.button16 = new System.Windows.Forms.Button();
-            this.textBox_Setup_ScannerCal_MarkingSpeed = new System.Windows.Forms.TextBox();
-            this.textBox_Setup_ScannerCal_JumpSpeed = new System.Windows.Forms.TextBox();
-            this.button17 = new System.Windows.Forms.Button();
-            this.button_Setup_ScannerCal_Save = new System.Windows.Forms.Button();
+            this.button20 = new System.Windows.Forms.Button();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -366,6 +370,7 @@
             this.groupBox11.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.tabPage_Setup_ScannerCalibration.SuspendLayout();
+            this.groupBox15.SuspendLayout();
             this.tabPage_Setup_Option.SuspendLayout();
             this.groupBox14.SuspendLayout();
             this.groupBox13.SuspendLayout();
@@ -375,7 +380,6 @@
             this.groupBox7.SuspendLayout();
             this.groupBox_Offset.SuspendLayout();
             this.groupBox6.SuspendLayout();
-            this.groupBox15.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabPage_Setup_Communication
@@ -984,14 +988,14 @@
             this.Output_Active,
             this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn2});
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView3.Location = new System.Drawing.Point(10, 28);
             this.dataGridView3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView3.Name = "dataGridView3";
@@ -1044,14 +1048,14 @@
             this.Active,
             this.Column4,
             this.Column5});
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView2.Location = new System.Drawing.Point(10, 28);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView2.Name = "dataGridView2";
@@ -2897,10 +2901,14 @@
             // 
             // tabPage_Setup_ScannerCalibration
             // 
+            this.tabPage_Setup_ScannerCalibration.Controls.Add(this.btnCalStart_Vision);
+            this.tabPage_Setup_ScannerCalibration.Controls.Add(this.btnCalStop);
+            this.tabPage_Setup_ScannerCalibration.Controls.Add(this.btnCalStart);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.button17);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.button_Setup_ScannerCal_Save);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.groupBox15);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.textBox_ScannerCal_LaserFrequency);
+            this.tabPage_Setup_ScannerCalibration.Controls.Add(this.button20);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.button15);
             this.tabPage_Setup_ScannerCalibration.Location = new System.Drawing.Point(4, 54);
             this.tabPage_Setup_ScannerCalibration.Name = "tabPage_Setup_ScannerCalibration";
@@ -2908,6 +2916,246 @@
             this.tabPage_Setup_ScannerCalibration.TabIndex = 5;
             this.tabPage_Setup_ScannerCalibration.Text = "Scanner Calibration";
             this.tabPage_Setup_ScannerCalibration.UseVisualStyleBackColor = true;
+            // 
+            // btnCalStart_Vision
+            // 
+            this.btnCalStart_Vision.Location = new System.Drawing.Point(1287, 287);
+            this.btnCalStart_Vision.Name = "btnCalStart_Vision";
+            this.btnCalStart_Vision.Size = new System.Drawing.Size(153, 51);
+            this.btnCalStart_Vision.TabIndex = 63;
+            this.btnCalStart_Vision.Text = "VISION START";
+            this.btnCalStart_Vision.UseVisualStyleBackColor = true;
+            this.btnCalStart_Vision.Click += new System.EventHandler(this.btnCalStart_Vision_Click);
+            // 
+            // btnCalStop
+            // 
+            this.btnCalStop.Location = new System.Drawing.Point(1459, 211);
+            this.btnCalStop.Name = "btnCalStop";
+            this.btnCalStop.Size = new System.Drawing.Size(153, 51);
+            this.btnCalStop.TabIndex = 62;
+            this.btnCalStop.Text = "STOP";
+            this.btnCalStop.UseVisualStyleBackColor = true;
+            this.btnCalStop.Click += new System.EventHandler(this.btnCalStop_Click);
+            // 
+            // btnCalStart
+            // 
+            this.btnCalStart.Location = new System.Drawing.Point(1287, 211);
+            this.btnCalStart.Name = "btnCalStart";
+            this.btnCalStart.Size = new System.Drawing.Size(153, 51);
+            this.btnCalStart.TabIndex = 61;
+            this.btnCalStart.Text = "START";
+            this.btnCalStart.UseVisualStyleBackColor = true;
+            this.btnCalStart.Click += new System.EventHandler(this.btnCalStart_Click);
+            // 
+            // button17
+            // 
+            this.button17.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button17.Location = new System.Drawing.Point(1747, 719);
+            this.button17.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button17.Name = "button17";
+            this.button17.Size = new System.Drawing.Size(109, 64);
+            this.button17.TabIndex = 60;
+            this.button17.Text = "Cancel";
+            this.button17.UseVisualStyleBackColor = true;
+            // 
+            // button_Setup_ScannerCal_Save
+            // 
+            this.button_Setup_ScannerCal_Save.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_ScannerCal_Save.Location = new System.Drawing.Point(1614, 719);
+            this.button_Setup_ScannerCal_Save.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_ScannerCal_Save.Name = "button_Setup_ScannerCal_Save";
+            this.button_Setup_ScannerCal_Save.Size = new System.Drawing.Size(109, 64);
+            this.button_Setup_ScannerCal_Save.TabIndex = 59;
+            this.button_Setup_ScannerCal_Save.Text = "Save";
+            this.button_Setup_ScannerCal_Save.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_Save.Click += new System.EventHandler(this.button_Setup_ScannerCal_Save_Click);
+            // 
+            // groupBox15
+            // 
+            this.groupBox15.Controls.Add(this.textBox_Setup_ScannerCal_JumpSpeed);
+            this.groupBox15.Controls.Add(this.textBox_Setup_ScannerCal_MarkingSpeed);
+            this.groupBox15.Controls.Add(this.button16);
+            this.groupBox15.Controls.Add(this.button27);
+            this.groupBox15.Controls.Add(this.label69);
+            this.groupBox15.Controls.Add(this.button26);
+            this.groupBox15.Controls.Add(this.label68);
+            this.groupBox15.Controls.Add(this.label61);
+            this.groupBox15.Controls.Add(this.textBox_Setup_ScannerCal_CrossMarkLength);
+            this.groupBox15.Controls.Add(this.button18);
+            this.groupBox15.Controls.Add(this.label62);
+            this.groupBox15.Controls.Add(this.textBox_Setup_ScannerCal_LaserEnergy);
+            this.groupBox15.Controls.Add(this.button19);
+            this.groupBox15.Controls.Add(this.label66);
+            this.groupBox15.Controls.Add(this.textBox_Setup_ScannerCal_LaserFrequency);
+            this.groupBox15.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox15.Location = new System.Drawing.Point(1287, 4);
+            this.groupBox15.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.groupBox15.Name = "groupBox15";
+            this.groupBox15.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.groupBox15.Size = new System.Drawing.Size(325, 177);
+            this.groupBox15.TabIndex = 58;
+            this.groupBox15.TabStop = false;
+            this.groupBox15.Text = " Laser Param. for Scanner Cal. ";
+            // 
+            // textBox_Setup_ScannerCal_JumpSpeed
+            // 
+            this.textBox_Setup_ScannerCal_JumpSpeed.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_ScannerCal_JumpSpeed.Location = new System.Drawing.Point(184, 139);
+            this.textBox_Setup_ScannerCal_JumpSpeed.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_ScannerCal_JumpSpeed.Name = "textBox_Setup_ScannerCal_JumpSpeed";
+            this.textBox_Setup_ScannerCal_JumpSpeed.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_ScannerCal_JumpSpeed.TabIndex = 120;
+            this.textBox_Setup_ScannerCal_JumpSpeed.Text = "0.0";
+            // 
+            // textBox_Setup_ScannerCal_MarkingSpeed
+            // 
+            this.textBox_Setup_ScannerCal_MarkingSpeed.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_ScannerCal_MarkingSpeed.Location = new System.Drawing.Point(184, 111);
+            this.textBox_Setup_ScannerCal_MarkingSpeed.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_ScannerCal_MarkingSpeed.Name = "textBox_Setup_ScannerCal_MarkingSpeed";
+            this.textBox_Setup_ScannerCal_MarkingSpeed.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_ScannerCal_MarkingSpeed.TabIndex = 119;
+            this.textBox_Setup_ScannerCal_MarkingSpeed.Text = "0.0";
+            // 
+            // button16
+            // 
+            this.button16.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button16.Location = new System.Drawing.Point(280, 83);
+            this.button16.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button16.Name = "button16";
+            this.button16.Size = new System.Drawing.Size(35, 25);
+            this.button16.TabIndex = 118;
+            this.button16.Text = "#";
+            this.button16.UseVisualStyleBackColor = true;
+            // 
+            // button27
+            // 
+            this.button27.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button27.Location = new System.Drawing.Point(280, 140);
+            this.button27.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button27.Name = "button27";
+            this.button27.Size = new System.Drawing.Size(35, 25);
+            this.button27.TabIndex = 116;
+            this.button27.Text = "#";
+            this.button27.UseVisualStyleBackColor = true;
+            // 
+            // label69
+            // 
+            this.label69.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label69.Location = new System.Drawing.Point(8, 138);
+            this.label69.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label69.Name = "label69";
+            this.label69.Size = new System.Drawing.Size(175, 25);
+            this.label69.TabIndex = 115;
+            this.label69.Text = "Jump Speed (mm/s) :";
+            this.label69.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button26
+            // 
+            this.button26.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button26.Location = new System.Drawing.Point(280, 113);
+            this.button26.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button26.Name = "button26";
+            this.button26.Size = new System.Drawing.Size(35, 25);
+            this.button26.TabIndex = 113;
+            this.button26.Text = "#";
+            this.button26.UseVisualStyleBackColor = true;
+            // 
+            // label68
+            // 
+            this.label68.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label68.Location = new System.Drawing.Point(8, 111);
+            this.label68.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label68.Name = "label68";
+            this.label68.Size = new System.Drawing.Size(175, 25);
+            this.label68.TabIndex = 112;
+            this.label68.Text = "Marking Speed (mm/s) :";
+            this.label68.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label61
+            // 
+            this.label61.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label61.Location = new System.Drawing.Point(8, 82);
+            this.label61.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label61.Name = "label61";
+            this.label61.Size = new System.Drawing.Size(175, 24);
+            this.label61.TabIndex = 64;
+            this.label61.Text = "Cross Mark Length (mm) :";
+            this.label61.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_ScannerCal_CrossMarkLength
+            // 
+            this.textBox_Setup_ScannerCal_CrossMarkLength.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_ScannerCal_CrossMarkLength.Location = new System.Drawing.Point(184, 83);
+            this.textBox_Setup_ScannerCal_CrossMarkLength.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_ScannerCal_CrossMarkLength.Name = "textBox_Setup_ScannerCal_CrossMarkLength";
+            this.textBox_Setup_ScannerCal_CrossMarkLength.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_ScannerCal_CrossMarkLength.TabIndex = 65;
+            this.textBox_Setup_ScannerCal_CrossMarkLength.Text = "0.0";
+            // 
+            // button18
+            // 
+            this.button18.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button18.Location = new System.Drawing.Point(280, 55);
+            this.button18.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button18.Name = "button18";
+            this.button18.Size = new System.Drawing.Size(35, 25);
+            this.button18.TabIndex = 63;
+            this.button18.Text = "#";
+            this.button18.UseVisualStyleBackColor = true;
+            // 
+            // label62
+            // 
+            this.label62.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label62.Location = new System.Drawing.Point(8, 54);
+            this.label62.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label62.Name = "label62";
+            this.label62.Size = new System.Drawing.Size(175, 24);
+            this.label62.TabIndex = 61;
+            this.label62.Text = "Energy (%) :";
+            this.label62.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_ScannerCal_LaserEnergy
+            // 
+            this.textBox_Setup_ScannerCal_LaserEnergy.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_ScannerCal_LaserEnergy.Location = new System.Drawing.Point(184, 55);
+            this.textBox_Setup_ScannerCal_LaserEnergy.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_ScannerCal_LaserEnergy.Name = "textBox_Setup_ScannerCal_LaserEnergy";
+            this.textBox_Setup_ScannerCal_LaserEnergy.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_ScannerCal_LaserEnergy.TabIndex = 62;
+            this.textBox_Setup_ScannerCal_LaserEnergy.Text = "0.0";
+            // 
+            // button19
+            // 
+            this.button19.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button19.Location = new System.Drawing.Point(280, 27);
+            this.button19.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button19.Name = "button19";
+            this.button19.Size = new System.Drawing.Size(35, 25);
+            this.button19.TabIndex = 54;
+            this.button19.Text = "#";
+            this.button19.UseVisualStyleBackColor = true;
+            // 
+            // label66
+            // 
+            this.label66.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label66.Location = new System.Drawing.Point(8, 26);
+            this.label66.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label66.Name = "label66";
+            this.label66.Size = new System.Drawing.Size(175, 24);
+            this.label66.TabIndex = 52;
+            this.label66.Text = "Frequency (kHz) :";
+            this.label66.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_ScannerCal_LaserFrequency
+            // 
+            this.textBox_Setup_ScannerCal_LaserFrequency.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_ScannerCal_LaserFrequency.Location = new System.Drawing.Point(184, 27);
+            this.textBox_Setup_ScannerCal_LaserFrequency.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_ScannerCal_LaserFrequency.Name = "textBox_Setup_ScannerCal_LaserFrequency";
+            this.textBox_Setup_ScannerCal_LaserFrequency.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_ScannerCal_LaserFrequency.TabIndex = 53;
+            this.textBox_Setup_ScannerCal_LaserFrequency.Text = "0.0";
             // 
             // textBox_ScannerCal_LaserFrequency
             // 
@@ -3867,215 +4115,15 @@
             this.radioButton_Setup_Option_LaserType_CO2.Text = "CO₂";
             this.radioButton_Setup_Option_LaserType_CO2.UseVisualStyleBackColor = true;
             // 
-            // groupBox15
+            // button20
             // 
-            this.groupBox15.Controls.Add(this.textBox_Setup_ScannerCal_JumpSpeed);
-            this.groupBox15.Controls.Add(this.textBox_Setup_ScannerCal_MarkingSpeed);
-            this.groupBox15.Controls.Add(this.button16);
-            this.groupBox15.Controls.Add(this.button27);
-            this.groupBox15.Controls.Add(this.label69);
-            this.groupBox15.Controls.Add(this.button26);
-            this.groupBox15.Controls.Add(this.label68);
-            this.groupBox15.Controls.Add(this.label61);
-            this.groupBox15.Controls.Add(this.textBox_Setup_ScannerCal_CrossMarkLength);
-            this.groupBox15.Controls.Add(this.button18);
-            this.groupBox15.Controls.Add(this.label62);
-            this.groupBox15.Controls.Add(this.textBox_Setup_ScannerCal_LaserEnergy);
-            this.groupBox15.Controls.Add(this.button19);
-            this.groupBox15.Controls.Add(this.label66);
-            this.groupBox15.Controls.Add(this.textBox_Setup_ScannerCal_LaserFrequency);
-            this.groupBox15.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox15.Location = new System.Drawing.Point(1287, 4);
-            this.groupBox15.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox15.Name = "groupBox15";
-            this.groupBox15.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox15.Size = new System.Drawing.Size(325, 177);
-            this.groupBox15.TabIndex = 58;
-            this.groupBox15.TabStop = false;
-            this.groupBox15.Text = " Laser Param. for Scanner Cal. ";
-            // 
-            // button18
-            // 
-            this.button18.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button18.Location = new System.Drawing.Point(280, 55);
-            this.button18.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button18.Name = "button18";
-            this.button18.Size = new System.Drawing.Size(35, 25);
-            this.button18.TabIndex = 63;
-            this.button18.Text = "#";
-            this.button18.UseVisualStyleBackColor = true;
-            // 
-            // label62
-            // 
-            this.label62.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label62.Location = new System.Drawing.Point(8, 54);
-            this.label62.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label62.Name = "label62";
-            this.label62.Size = new System.Drawing.Size(175, 24);
-            this.label62.TabIndex = 61;
-            this.label62.Text = "Energy (%) :";
-            this.label62.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Setup_ScannerCal_LaserEnergy
-            // 
-            this.textBox_Setup_ScannerCal_LaserEnergy.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_ScannerCal_LaserEnergy.Location = new System.Drawing.Point(184, 55);
-            this.textBox_Setup_ScannerCal_LaserEnergy.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_ScannerCal_LaserEnergy.Name = "textBox_Setup_ScannerCal_LaserEnergy";
-            this.textBox_Setup_ScannerCal_LaserEnergy.Size = new System.Drawing.Size(90, 24);
-            this.textBox_Setup_ScannerCal_LaserEnergy.TabIndex = 62;
-            this.textBox_Setup_ScannerCal_LaserEnergy.Text = "0.0";
-            // 
-            // button19
-            // 
-            this.button19.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button19.Location = new System.Drawing.Point(280, 27);
-            this.button19.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button19.Name = "button19";
-            this.button19.Size = new System.Drawing.Size(35, 25);
-            this.button19.TabIndex = 54;
-            this.button19.Text = "#";
-            this.button19.UseVisualStyleBackColor = true;
-            // 
-            // label66
-            // 
-            this.label66.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label66.Location = new System.Drawing.Point(8, 26);
-            this.label66.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label66.Name = "label66";
-            this.label66.Size = new System.Drawing.Size(175, 24);
-            this.label66.TabIndex = 52;
-            this.label66.Text = "Frequency (kHz) :";
-            this.label66.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Setup_ScannerCal_LaserFrequency
-            // 
-            this.textBox_Setup_ScannerCal_LaserFrequency.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_ScannerCal_LaserFrequency.Location = new System.Drawing.Point(184, 27);
-            this.textBox_Setup_ScannerCal_LaserFrequency.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_ScannerCal_LaserFrequency.Name = "textBox_Setup_ScannerCal_LaserFrequency";
-            this.textBox_Setup_ScannerCal_LaserFrequency.Size = new System.Drawing.Size(90, 24);
-            this.textBox_Setup_ScannerCal_LaserFrequency.TabIndex = 53;
-            this.textBox_Setup_ScannerCal_LaserFrequency.Text = "0.0";
-            // 
-            // label61
-            // 
-            this.label61.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label61.Location = new System.Drawing.Point(8, 82);
-            this.label61.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label61.Name = "label61";
-            this.label61.Size = new System.Drawing.Size(175, 24);
-            this.label61.TabIndex = 64;
-            this.label61.Text = "Cross Mark Length (mm) :";
-            this.label61.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Setup_ScannerCal_CrossMarkLength
-            // 
-            this.textBox_Setup_ScannerCal_CrossMarkLength.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_ScannerCal_CrossMarkLength.Location = new System.Drawing.Point(184, 83);
-            this.textBox_Setup_ScannerCal_CrossMarkLength.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_ScannerCal_CrossMarkLength.Name = "textBox_Setup_ScannerCal_CrossMarkLength";
-            this.textBox_Setup_ScannerCal_CrossMarkLength.Size = new System.Drawing.Size(90, 24);
-            this.textBox_Setup_ScannerCal_CrossMarkLength.TabIndex = 65;
-            this.textBox_Setup_ScannerCal_CrossMarkLength.Text = "0.0";
-            // 
-            // button27
-            // 
-            this.button27.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button27.Location = new System.Drawing.Point(280, 140);
-            this.button27.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button27.Name = "button27";
-            this.button27.Size = new System.Drawing.Size(35, 25);
-            this.button27.TabIndex = 116;
-            this.button27.Text = "#";
-            this.button27.UseVisualStyleBackColor = true;
-            // 
-            // label69
-            // 
-            this.label69.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label69.Location = new System.Drawing.Point(8, 138);
-            this.label69.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.label69.Name = "label69";
-            this.label69.Size = new System.Drawing.Size(175, 25);
-            this.label69.TabIndex = 115;
-            this.label69.Text = "Jump Speed (mm/s) :";
-            this.label69.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // button26
-            // 
-            this.button26.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button26.Location = new System.Drawing.Point(280, 113);
-            this.button26.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button26.Name = "button26";
-            this.button26.Size = new System.Drawing.Size(35, 25);
-            this.button26.TabIndex = 113;
-            this.button26.Text = "#";
-            this.button26.UseVisualStyleBackColor = true;
-            // 
-            // label68
-            // 
-            this.label68.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label68.Location = new System.Drawing.Point(8, 111);
-            this.label68.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.label68.Name = "label68";
-            this.label68.Size = new System.Drawing.Size(175, 25);
-            this.label68.TabIndex = 112;
-            this.label68.Text = "Marking Speed (mm/s) :";
-            this.label68.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // button16
-            // 
-            this.button16.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button16.Location = new System.Drawing.Point(280, 83);
-            this.button16.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button16.Name = "button16";
-            this.button16.Size = new System.Drawing.Size(35, 25);
-            this.button16.TabIndex = 118;
-            this.button16.Text = "#";
-            this.button16.UseVisualStyleBackColor = true;
-            // 
-            // textBox_Setup_ScannerCal_MarkingSpeed
-            // 
-            this.textBox_Setup_ScannerCal_MarkingSpeed.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_ScannerCal_MarkingSpeed.Location = new System.Drawing.Point(184, 111);
-            this.textBox_Setup_ScannerCal_MarkingSpeed.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_ScannerCal_MarkingSpeed.Name = "textBox_Setup_ScannerCal_MarkingSpeed";
-            this.textBox_Setup_ScannerCal_MarkingSpeed.Size = new System.Drawing.Size(90, 24);
-            this.textBox_Setup_ScannerCal_MarkingSpeed.TabIndex = 119;
-            this.textBox_Setup_ScannerCal_MarkingSpeed.Text = "0.0";
-            // 
-            // textBox_Setup_ScannerCal_JumpSpeed
-            // 
-            this.textBox_Setup_ScannerCal_JumpSpeed.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_ScannerCal_JumpSpeed.Location = new System.Drawing.Point(184, 139);
-            this.textBox_Setup_ScannerCal_JumpSpeed.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_ScannerCal_JumpSpeed.Name = "textBox_Setup_ScannerCal_JumpSpeed";
-            this.textBox_Setup_ScannerCal_JumpSpeed.Size = new System.Drawing.Size(90, 24);
-            this.textBox_Setup_ScannerCal_JumpSpeed.TabIndex = 120;
-            this.textBox_Setup_ScannerCal_JumpSpeed.Text = "0.0";
-            // 
-            // button17
-            // 
-            this.button17.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button17.Location = new System.Drawing.Point(1747, 719);
-            this.button17.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button17.Name = "button17";
-            this.button17.Size = new System.Drawing.Size(109, 64);
-            this.button17.TabIndex = 60;
-            this.button17.Text = "Cancel";
-            this.button17.UseVisualStyleBackColor = true;
-            // 
-            // button_Setup_ScannerCal_Save
-            // 
-            this.button_Setup_ScannerCal_Save.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_ScannerCal_Save.Location = new System.Drawing.Point(1614, 719);
-            this.button_Setup_ScannerCal_Save.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button_Setup_ScannerCal_Save.Name = "button_Setup_ScannerCal_Save";
-            this.button_Setup_ScannerCal_Save.Size = new System.Drawing.Size(109, 64);
-            this.button_Setup_ScannerCal_Save.TabIndex = 59;
-            this.button_Setup_ScannerCal_Save.Text = "Save";
-            this.button_Setup_ScannerCal_Save.UseVisualStyleBackColor = true;
-            this.button_Setup_ScannerCal_Save.Click += new System.EventHandler(this.button_Setup_ScannerCal_Save_Click);
+            this.button20.Location = new System.Drawing.Point(1725, 86);
+            this.button20.Name = "button20";
+            this.button20.Size = new System.Drawing.Size(153, 51);
+            this.button20.TabIndex = 0;
+            this.button20.Text = "다시";
+            this.button20.UseVisualStyleBackColor = true;
+            this.button20.Click += new System.EventHandler(this.button20_Click);
             // 
             // FormNew_Setup
             // 
@@ -4138,6 +4186,8 @@
             this.groupBox11.ResumeLayout(false);
             this.groupBox10.ResumeLayout(false);
             this.tabPage_Setup_ScannerCalibration.ResumeLayout(false);
+            this.groupBox15.ResumeLayout(false);
+            this.groupBox15.PerformLayout();
             this.tabPage_Setup_Option.ResumeLayout(false);
             this.groupBox14.ResumeLayout(false);
             this.groupBox14.PerformLayout();
@@ -4154,8 +4204,6 @@
             this.groupBox_Offset.ResumeLayout(false);
             this.groupBox_Offset.PerformLayout();
             this.groupBox6.ResumeLayout(false);
-            this.groupBox15.ResumeLayout(false);
-            this.groupBox15.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -4461,5 +4509,9 @@
         private System.Windows.Forms.TextBox textBox_Setup_ScannerCal_MarkingSpeed;
         private System.Windows.Forms.Button button17;
         private System.Windows.Forms.Button button_Setup_ScannerCal_Save;
+        private System.Windows.Forms.Button btnCalStop;
+        private System.Windows.Forms.Button btnCalStart;
+        private System.Windows.Forms.Button btnCalStart_Vision;
+        private System.Windows.Forms.Button button20;
     }
 }

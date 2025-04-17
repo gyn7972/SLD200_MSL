@@ -30,7 +30,6 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 //  Sirius1
 using SpiralLab.Sirius;
-
 using LaserVirtual = SpiralLab.Sirius.LaserVirtual;
 using static QMC.Common.Modules.Loader;
 using System.Security.Policy;
@@ -65,7 +64,8 @@ using System.Drawing;
 using Bitmap = System.Drawing.Bitmap;
 using static QMC.Common.Modules.Unloader;
 using Cognex.VisionPro.Implementation.Internal;
-
+using PositionOffset = QMC.Common.Parts.PositionOffset;
+using QMC.Common.Vision.Tools;
 
 namespace QMC.Common.Modules
 {
@@ -253,7 +253,7 @@ namespace QMC.Common.Modules
 
         #endregion
 
-
+        SpiralLabScanner _spiralLabScanner;
 
         #region Sirius Data Variable
 
@@ -1291,6 +1291,7 @@ namespace QMC.Common.Modules
         public System.Windows.Forms.Timer timer_VisionAlign;
         public System.Windows.Forms.Timer timer_ReticleGlass_Check;
         public System.Windows.Forms.Timer timer_VerifyScannerCamOffset;
+        public System.Windows.Forms.Timer timer_ScannerCalibration;
 
         public bool m_btimer_MainWork_Stop;
         public bool m_btimer_LaserDrillingWork_Stop;
@@ -1300,6 +1301,7 @@ namespace QMC.Common.Modules
         //public bool m_btimer_Calibration_Stop;
         public bool m_btimer_VisionAlign_Stop;
         public bool m_btimer_ReticleGlass_Check_Stop;
+        public bool m_btimer_ScannerCalibratio_Stop;
 
         public bool m_bBlink;
 
@@ -1395,9 +1397,9 @@ namespace QMC.Common.Modules
             STAGE_LowMagCamPos,
             STAGE_HighMagCamPos,
             STAGE_ProcessingPos,
-            Scanner_PMPos,
-            Scanner_CalPos,
-            HighMagCam_ReticlePos,
+            STAGE_Scanner_PMPos,
+            STAGE_Scanner_CalPos,
+            STAGE_HighMagCam_ReticlePos,
             STAGE_LaserHeightSensorPos,
             STAGE_UnloadingPos,
             STAGE_SafetyPos,
@@ -1455,7 +1457,7 @@ namespace QMC.Common.Modules
             //TICK_ULSZ0,                 //  9 : Unloader Stacker Z0
             //TICK_ULSZ1,                 //  10 : Unloader Stacker Z1
 
-            TICK_LASER_FOCUS,           //  11 : Laser Focus
+            TICK_LASER_FOCUS,           //  11 : Laser Focus 
             TICK_LASER_COMM,            //  12 : Laser Comm 
             TICK_EPRO_COMM,             //  13 : Electro Pneumatic Regulator Comm
             TICK_LASER_HEIGHT_SENSOR,   //  14 : Laser Height Sensor
@@ -1464,6 +1466,9 @@ namespace QMC.Common.Modules
 
             TICK_DUSTCOLLECTOR0,        //  16 : Dust Collector (Upper Position)
             TICK_DUSTCOLLECTOR1,        //  17 : Dust Collector (Lower Position)
+
+            //Laser & Scanner Auto Calibration을 위한 Tick 선언
+            TICK_LASER_SCANNER_CAL, //  18
         }
         
         public int[,] TickCount_Cycle = new int[System.Enum.GetValues(typeof(TickType)).Length, 2];
@@ -2601,8 +2606,6 @@ namespace QMC.Common.Modules
             Complete                                                                        //  완료
         }
 
-
-
         public double m_dMy1stMarkVisionPos_X { set; get; }
         public double m_dMy1stMarkVisionPos_Y { set; get; }
         public double m_dMy2ndMarkVisionPos_X { set; get; }
@@ -2694,10 +2697,10 @@ namespace QMC.Common.Modules
             LaserShutter_Close2,                        //  레이저 Shutter Close
             LaserShutter_Close2_Check,                  //  레이저 Shutter Close 확인
 
-            MapDataFlag_Clear2,                     //  Map Data Flag 초기화 (0)
-            MapDataFlag_Clear2Check,                //  Map Data Flag 초기화 확인
-            MapDataChange_CameraMap,                //  Camera 위치 Map Data 로 변경
-            MapDataFlagCheck_CameraMap,             //  Camera 위치 Map Data 로 변경되었는지 확인
+            MapDataFlag_Clear2,                         //  Map Data Flag 초기화 (0)
+            MapDataFlag_Clear2Check,                    //  Map Data Flag 초기화 확인
+            MapDataChange_CameraMap,                    //  Camera 위치 Map Data 로 변경
+            MapDataFlagCheck_CameraMap,                 //  Camera 위치 Map Data 로 변경되었는지 확인
 
             StageXY_MoveCameraPos,                      //  Stage XY 축, 카메라 Center 위치로 이동
             StageXY_MoveCameraPos_DoneCheck,            //  Stage XY 축, 카메라 Center 위치로 이동 완료 확인
@@ -2766,6 +2769,9 @@ namespace QMC.Common.Modules
             StageXY_Move_CrossMarkCenterPos,                            //  가공된 영역의 Center 위치로 이동
             StageXY_Move_CrossMarkCenterPos_DoneCheck,                  //  가공된 영역의 Center 위치로 이동 완료 확인
 
+            ScannerCompensation_StartPosition_Set,                      //  Scanner 보정 시작 위치 설정
+
+
             CrossMarkCenter_MarkFind_Ready,                             //  Fine Camera 얼라인 마크 찾기 준비
             CrossMarkCenter_Find,                                       //  Cross Mark Center 찾기
             CrossMarkCenter_FindResultCheck,                            //  Cross Mark Center 찾기 결과 확인
@@ -2773,11 +2779,9 @@ namespace QMC.Common.Modules
             CrossMarkCenter_XYAlign_CorrectionMove,                     //  XY 보정 이동 (카메라 Center 로)
             CrossMarkCenter_XYAlign_CorrectionMove_DoneCheck,           //  XY 보정 이동 완료 확인
             CrossMarkCenter_XYAlign_Retry,                              //  Mark 찾기부터 다시 시작
-
             StageXY_Move_ScannerCalibration_RightTopPos,                //  가공된 영역의 우측 상단 모서리 위치로 이동 (이동 거리, X: Pitch * (Row - 1) / 2, Y: Pitch * (Col - 1) / 2)
             StageXY_Move_ScannerCalibration_RightTopPos_DoneCheck,      //  가공된 영역의 우측 상단 모서리 위치로 이동 완료 확인
 
-            ScannerCompensation_StartPosition_Set,                      //  Scanner 보정 시작 위치 설정
 
             ScannerCompensator_Start,                                   //  Scanner Compensator 시작
             ScannerCompensator_Complete,                                //  Scanner Compensator 완료 확인
@@ -2966,6 +2970,11 @@ namespace QMC.Common.Modules
             timer_VerifyScannerCamOffset.Tick += new System.EventHandler(Timer_VerifyScannerCamOffset_Func);
             //timer_VerifyScannerCamOffset.Enabled = true;
 
+            timer_ScannerCalibration = new System.Windows.Forms.Timer();
+            timer_ScannerCalibration.Interval = 20;
+            timer_ScannerCalibration.Tick += new System.EventHandler(Timer_ScannerCalibration_Func);
+
+
             m_btimer_MainWork_Stop = false;
             m_btimer_LaserDrillingWork_Stop = false;
             m_btimer_SubWork_Stop = false;
@@ -3085,7 +3094,9 @@ namespace QMC.Common.Modules
             m_pCrossMark_AlignMarkPosition_Sum = new PointD(0, 0);          //  얼라인 마크 위치 누적. (평균 계산용)
             m_pCrossMark_AlignMarkPosition_Average = new PointD(0, 0);      //  얼라인 마크 위치 누적. (평균 계산용)
 
-            Teaching_Position_Load();           
+            Teaching_Position_Load();
+
+            _spiralLabScanner = new SpiralLabScanner();
 
 
             ////  가공 도면 Align
@@ -5916,10 +5927,20 @@ namespace QMC.Common.Modules
             timer_VerifyScannerCamOffset.Enabled = false;
 
             Run_Verify_ScannerCameraOffset_Func();
-            Run_Scanner_Calibration_Func();
+            //Run_Scanner_Calibration_Func();
             Run_LaserHeightCheck_Func();
 
             timer_VerifyScannerCamOffset.Enabled = true;
+        }
+
+        private void Timer_ScannerCalibration_Func(object sender, EventArgs e)
+        {
+            m_btimer_ScannerCalibratio_Stop = false;
+            timer_ScannerCalibration.Enabled = false;
+
+            Run_Scanner_Calibration_Func();
+
+            timer_ScannerCalibration.Enabled = true;
         }
 
         public void forThread_MainWorkCycle()
@@ -11935,9 +11956,9 @@ namespace QMC.Common.Modules
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get;
                         }
                     }
-                    else
+                    else //Enable ; false 시에 z축 보정 안함.
                     {
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Complete;
                     }
                     break;
 
@@ -21640,1615 +21661,1262 @@ namespace QMC.Common.Modules
             double lfVelocity = 0.0;
             double lfAccDec = 0.0;
 
-            //switch (m_nScanner_Calibration_Step)
-            //{
-            //    case (int)ScannerCalibration_Step.Start:
-            //        //On_LogFile_Add(LOG_OPERATION, "Lens Focus Check 루틴, 시작.");
-            //        //Display_Event("Lens Focus Check 루틴 : 시작.");
+            double m_dHeightOffset = 0.0; //Height Offset
+
+            switch (m_nScanner_Calibration_Step)
+            {
+                case (int)ScannerCalibration_Step.Start:
+                    {
+                        //On_LogFile_Add(LOG_OPERATION, "Lens Focus Check 루틴, 시작.");
+                        //Display_Event("Lens Focus Check 루틴 : 시작.");
+                        m_bScannerCalibration_Complete = false;
+                        m_pStageXY_Pos_BeforeVerify.X = 0.0;
+                        m_pStageXY_Pos_BeforeVerify.Y = 0.0;
+                        m_pStageXY_Pos_AfterVerify.X = 0.0;
+                        m_pStageXY_Pos_AfterVerify.Y = 0.0;
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Laser_Off;
+                        CommonModule.Instance.Illuminator.SetVolume(2000, 1);
+                        CommonModule.Instance.Illuminator.SetVolume(0, 2);
+                        CommonModule.Instance.Illuminator.TurnOnOff(true,1);
+                        CommonModule.Instance.Illuminator.TurnOnOff(true, 2);
+
+
+                        Log.Write("SLD-200", "Scanner Calibration", "Laser&Scanner Calibration Start");
+                    }
+                    break;
+
+                    case (int)ScannerCalibration_Step.Laser_Off:                                              //  레이저 Off
+                    {
+                        if(rtc != null)
+                        {
+                            rtc.CtlLaserOff();
+                        }
+                        
+                        TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Laser_Off_Check;
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.Laser_Off_Check:                                                  //  레이저 Off 확인
+                    {
+                        if (rtc != null)
+                        {
+                            if (rtc.CtlGetStatus(RtcStatus.NotBusy))
+                            {
+                                Log.Write("SLD-200", "Scanner Calibration", "Laser Off Check");
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserShutter_Close;
+                            }
+                            else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 5000)
+                            {
+                                MessageBox.Show("Error", "Laser Off 실패");
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            }
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", "Scanner Calibration", "Laser Off Check 실패. (Laser Comm 열리지 않음)");
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                        }
+                            
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.LaserShutter_Close:                                                //  Shutter Close
+                    {
+                        //상부 파워메타로 Shutter 사용 중?
+                        workStageParameter.DO_BDS_PowerMeter_FW(true);
+                        workStageParameter.DO_BDS_PowerMeter_BW(false);
+                        TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserShutter_Close_Check;
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.LaserShutter_Close_Check:                                          //  Shutter Close 확인
+                    {
+                        if (!workStageParameter.DI_BDS_PowerMeter_BW_Check() && workStageParameter.DI_BDS_PowerMeter_FW_Check())
+                        {
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserFrequency_Change;
+                        }
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 5000)
+                        {
+                            MessageBox.Show("Power Meter (Shutter) Close 실패", "Error");
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                        }
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.LaserFrequency_Change:                        //  레이저 Frequency 변경
+                    {
+                        //  레이저 Frequency 변경을 꼭 해야 하는건가? Power만 변경해도 될텐데..흠..
+                        if ((m_rapidLxLaser_Comm != null) && (Equipment.Scanner_Calibration_LaserFrequency > 0.0))
+                        {
+                            if (m_rapidLxLaser_Comm.IsOpen)
+                            {
+                                RapidLxLaserComm_Laser_AmplifierRR_Set(Equipment.Scanner_Calibration_LaserFrequency);
+                                TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+
+                                m_strTemp = string.Format("Scanner Calibration 중 Laser Frequency 변경 시작, Laser Frequency ({0:0.000})", Equipment.Scanner_Calibration_LaserFrequency);
+                                Log.Write("SLD-200", "Scanner Calibration", m_strTemp);
+                                TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserFrequency_ChangeCheck;
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", "Scanner Calibration", "Scanner Calibration 중 Laser Frequency 변경 실패. (Laser Comm 열리지 않음)");
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            }
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", "Scanner Calibration", "Scanner Calibration 중 Laser Frequency 변경 실패. (Laser Comm 준비되지 않았거나, 변경 출력이 0)");
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                        }
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.LaserFrequency_ChangeCheck:
+                    {
+                        const double epsilon = 0.1;// 0.001;// 1e-6;
+                        if (Math.Abs(Equipment.Scanner_Calibration_LaserFrequency - m_dLaserComm_ReadSetValue_Amplifier) < epsilon)
+                        {
+                            m_strTemp = string.Format("Scanner Calibration 중 Laser Frequency 변경 완료 확인 성공, Laser Frequency ({0:0.000})", Equipment.Scanner_Calibration_LaserFrequency);
+                            Log.Write("SLD-200", "Scanner Calibration", m_strTemp);
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserPower_Change;
+                        }
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 5000)
+                        {
+                            MessageBox.Show("Laser Frequency 변경 완료 확인 실패");
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                        }
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.LaserPower_Change:                        //  레이저 Power 변경
+                    {
+                        if ((m_rapidLxLaser_Comm != null) && (Equipment.Scanner_Calibration_LaserEnergy > 0.0))
+                        {
+                            if (m_rapidLxLaser_Comm.IsOpen)
+                            {
+                                RapidLxLaserComm_Laser_OutputEnergy_Set(Equipment.Scanner_Calibration_LaserEnergy);
+                                TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+
+                                m_strTemp = string.Format("Scanner Calibration 중 Laser Power 변경 시작, Laser Power ({0:0.000})", Equipment.Scanner_Calibration_LaserEnergy);
+                                Log.Write("SLD-200", "Scanner Calibration", m_strTemp);
+                                
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserPower_ChangeCheck;
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200","Scanner Calibration", "Scanner Calibration 중 Laser Power 변경 실패. (Laser Comm 열리지 않음)");
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            }
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", "Scanner Calibration", "Scanner Calibration 중 Laser Power 변경 실패. (Laser Comm 준비되지 않았거나, 변경 출력이 0)");
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                        }
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.LaserPower_ChangeCheck:
+                    {
+                        const double epsilon = 0.001;// 1e-6;
+                        if (Math.Abs(Equipment.Scanner_Calibration_LaserEnergy - m_dLaserComm_ReadSetValue_EnergyPercent) < epsilon)
+                        {
+                            m_strTemp = string.Format("Scanner Calibration 중 Laser Energy 변경 완료 확인 성공, Laser Energy ({0:0.000})", Equipment.Scanner_Calibration_LaserFrequency);
+                            Log.Write("SLD-200", "Scanner Calibration", m_strTemp);
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.DustCollector_On;
+                        }
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 5000)
+                        {
+                            MessageBox.Show("Laser Energy 변경 완료 확인 실패");
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                        }
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.DustCollector_On:                                                //  Dust Collector On
+                    {
+                        //laserDrillingParameter.DO_DustCollector_OnOff(true);                          //  집진기 동작은 On/Off 스위치로 동작
+                        TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.DustCollector_On_Check;
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.DustCollector_On_Check:
+                    {
+                        //if (workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) && 
+                        //    !workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Upper) &&
+                        //    workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower) && 
+                        //    !workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Lower))
+                        //{
+                        //    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserShutter_Open;
+                        //}
+                        //else if (workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Upper) || 
+                        //         workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Lower))
+                        //{
+                        //    //timer_Motion_Home.Enabled = false;
+
+                        //    MessageBox.Show("Alarm", "Dust Collector 점검 요망\r\n\r\n[Fault Signal 확인]");
+                        //    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                        //}
+                        //else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 5000)
+                        //{
+                        //    Log.Write("SLD-200", "Auto Run", "집진기 On 실패");
+                        //    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+
+                        //    MessageBox.Show("Dust Collector On 실패", "Error");
+                        //}
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserShutter_Open;
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.LaserShutter_Open:    //  Shutter Open
+                    {
+                        //상부 파워메타로 Shutter 사용 중?
+                        workStageParameter.DO_BDS_PowerMeter_BW(true);
+                        workStageParameter.DO_BDS_PowerMeter_FW(false);
+
+                        TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserShutter_Open_Check;
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.LaserShutter_Open_Check:                                         //  Shutter Open 확인
+                    {
+                        if (workStageParameter.DI_BDS_PowerMeter_BW_Check() && !workStageParameter.DI_BDS_PowerMeter_FW_Check())
+                        {
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.WaterLine_Open;
+                        }
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 5000)
+                        {
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            MessageBox.Show("Power Meter (Shutter) Open 실패", "Error");
+                        }
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.WaterLine_Open:                                                //  Water Line Open
+                    {
+                        workStageParameter.DO_BeamDump_Coolant_Supply(true);                    //  Laser Cooling Valve Open
+                        workStageParameter.DO_Scanner_Coolant_Supply(true);                     //  Scanner Cooling Valve Open
+
+                        if (Equipment.Machine_LaserType_CO2)
+                        {
+                            workStageParameter.DO_Mask_Coolant_Supply(true);                    //  Beam Mask 
+                            workStageParameter.DO_VarioScan_Coolant_Supply(true);
+                        }
+
+                        TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.WaterLine_Open_Check;
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.WaterLine_Open_Check:                                         //  Water Line Open 확인
+                    {
+                        if (workStageParameter.IsDO_BeamDump_Coolant_Supply() && 
+                            workStageParameter.IsDO_Scanner_Coolant_Supply() &&
+                            (!Equipment.Machine_LaserType_CO2 ||
+                            Equipment.Machine_LaserType_CO2 && 
+                            workStageParameter.IsDO_Mask_Coolant_Supply() && 
+                            workStageParameter.IsDO_VarioScan_Coolant_Supply()))
+                        {
+                            TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.MapDataChange_ScannerCalMap;
+                        }
+                        else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000)
+                        {
+                            Log.Write("SLD-200", "Scanner Calibration", "Water Supply Line Open 실패");
+
+                            //timer_LaserDrillingWork.Enabled = false; 
+                            //m_bExit = true;                        
+
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            MessageBox.Show("Water Supply Line Open 실패", "Error");
+                        }
+
+                        
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.MapDataChange_ScannerCalMap:
+                    {
+                        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        //  맵 데이터 변경 (기준위치 : Scanner)
+                        //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
+                        //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
+                        MapData_Apply((int)nMapData_Type.MapData_Stage_Scanner);            //그냥 이거 사용하면 되지 않나?
+                        //MapData_Apply((int)nMapData_Type.MapData_Stage_CalPos_Scanner);
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.MapDataFlagCheck_ScannerCalMap;
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.MapDataFlagCheck_ScannerCalMap:                                   //  Scanner Calibration 위치 Map Data 로 변경되었는지 확인
+                    {
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageZ_Move_LaserHeightSensorPos;
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.StageZ_Move_LaserHeightSensorPos:
+                    {
+                        // Z-Axis Offset Init.
+                        m_dZOffset_SocketHeightCheck = 0.0;
+
+                        workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Safety");
+
+                        //  속도 설정 (스트로크 짧은 Z축은 느리게)
+                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
+                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+
+                        //  Target 위치 변경 : Laser Height Check
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = 
+                            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos].Vision_Z;
+                        
+                        //MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z,
+                        //   workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z], lfVelocity, lfAccDec, lfAccDec);
+                        MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, 
+                            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos].Vision_Z, lfVelocity, lfAccDec, lfAccDec);
+
+                        TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageZ_Move_LaserHeightSensorPos_DoneCheck;
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.StageZ_Move_LaserHeightSensorPos_DoneCheck:
+                    {
+                        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && 
+                            MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, 
+                            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos].Vision_Z))
+                        {
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_LaserHeightSensorPos;
+                        }
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) >= 6000)
+                        {
+                            //  알람 정지 (LED Bar - Red Blink)
+                            Equipment.MachineStop_byAlarm = true;
+
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            MessageBox.Show("Stage Z 축, Laser Height Check 높이로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.StageXY_Move_LaserHeightSensorPos:
+                    {
+                        workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
+
+                        //기존 data 첫번째로 진행. 
+                        m_nDrillingWork_Group_Count = 0;
+
+                        //  좌표계 (기존)
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = 0.0;
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0.0;
+
+                        //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = -m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.X;
+                        //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = -m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.Y;
+
+                        //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
+
+                        //  좌표계 변환 (Scanner 위치 --> Fine Camera 위치)
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+
+                        //  좌표계 변환 (Fine Camera 위치 --> Laser Height Sensor 위치)
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y;
+
+                        //  속도 설정
+                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+
+                        //아래 구문 해보고 stage Center 위치를 기준으로 하여, Laser Height Sensor 위치로 이동으로 변경 해보자. 
+                        xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
+                        xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
+                        MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+
+                        //xyInterpolatedCoordinate.X = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_LaserHeightSensorPos].Stage_X;
+                        //xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_LaserHeightSensorPos].Stage_Y;
+                        //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+
+                        TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_LaserHeightSensorPos_DoneCheck;
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.StageXY_Move_LaserHeightSensorPos_DoneCheck:
+                    {
+                        ////if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
+                        //    MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_LaserHeightSensorPos].Stage_X) &&
+                        //    MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
+                        //    MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_LaserHeightSensorPos].Stage_Y))
+                        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
+                            MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
+                            MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
+                            MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                        {
+                            TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Move_LaserHeightSensorPos_StableTime;
+                        }
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 60000)
+                        {
+                            //  알람 정지 (LED Bar - Red Blink)
+                            Equipment.MachineStop_byAlarm = true;
+
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            MessageBox.Show("Stage XY 축, Laser Height Check 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.Move_LaserHeightSensorPos_StableTime:
+                    {
+                        if (Equipment.Machine_LaserHeightCheckStableTime_Enable)
+                        {
+                            if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > Equipment.Machine_LaserHeightCheckStableTime)
+                            {
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCalHeightValue_Get;
+                            }
+                        }
+                        else
+                        {
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCalHeightValue_Get;
+                        }
+
+                        //if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) &&
+                        //    MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_LaserHeightSensorPos].Stage_X) &&
+                        //    MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) &&
+                        //    MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_LaserHeightSensorPos].Stage_Y))
+                        //{
+                        //    Thread.Sleep(1000); //1sec면 충분?
+
+                        //    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCalHeightValue_Get;
+                        //}
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.ScannerCalHeightValue_Get:
+                    {
+                        //  Laser Focus 위치에서 Laser Height 값과, 현재 Laser Height Sensor 값의 차이만큼 가공 높이 보정
+                        //m_dZOffset_SocketHeightCheck = Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition - m_dLaserHeightSensorSocket_Value;
+                        if ((m_dLaserHeightSensorSocket_Value < -4.5) || (m_dLaserHeightSensorSocket_Value > 5.5) || (m_dLaserHeightSensorSocket_Value < -99.9))
+                        {
+                            m_dZOffset_SocketHeightCheck = 0.0;
+                        }
+                        else
+                        {
+                            m_dZOffset_SocketHeightCheck = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
+                        }
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCalHeight_ZOffset_Move;
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.ScannerCalHeight_ZOffset_Move:
+                    {
+                        //m_dHoleLayer_Defocusing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance;
+
+                        //0번째꺼로 우선 사용해보자.
+                        m_dHoleLayer_Defocusing = 0.0;// Equipment.stLayerRecipeSet[0].Miscellaneous_DefocusingDistance;
+
+                        m_strTemp = string.Format("Stage Z 축, Stage 높이 측정 후, Laser Focus 편차 ({0:0.000}), Dofocusing Distance ({1:0.000})",
+                                                        m_dZOffset_SocketHeightCheck, m_dHoleLayer_Defocusing); //m_dHoleLayer_Defocusing ??
+
+                        Log.Write("SLD-200", "Scanner Calibration", m_strTemp);
+
+                        workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
+
+                        //  속도 설정
+                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
+                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+
+                        //  가공 할 Layer 의 Z Offset 값으로 이동
+                        //  임시로 0 설정 --> Recipe 에서 값 가져오도록 --> Layer 별로 Defocusing 거리 다르게 설정하도록 해야 함
+                        m_dHeightOffset = m_dHoleLayer_Defocusing;
+
+                        //  좌표계 (기존)
+                        //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z) - m_dOffset;
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = 
+                            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dZOffset_SocketHeightCheck + m_dHeightOffset;
+
+                        MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
+                                              lfVelocity, lfAccDec, lfAccDec);
+
+                        TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCalHeight_ZOffset_Move_DoneCheck;
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.ScannerCalHeight_ZOffset_Move_DoneCheck:
+                    {
+                        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, 
+                            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Stage Z 축, Socket 가공 Focus 조정 완료.");
+
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos;
+                        }
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 60000)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Stage Z 축, Socket 가공 Focus 조정 실패. (Timeout)");
+
+                            //  알람 정지 (LED Bar - Red Blink)
+                            Equipment.MachineStop_byAlarm = true;
+
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            MessageBox.Show("Stage Z 축, Socket 가공 Focus 조정 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos:
+                    {
+                        //디버깅 필요.
+                        //좌표 맵을 바꿔줘야 하나?
+                        //MapData_Apply((int)nMapData_Type.MapData_Stage_Scanner);            //그냥 이거 사용하면 되지 않나?
+                        //MapData_Apply((int)nMapData_Type.MapData_Stage_CalPos_Scanner);
+
+                        //  속도 설정
+                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+                        //디버깅 필요.
+                        if(true)
+                        {
+                            xyInterpolatedCoordinate.X = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
+                            xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+                        }
+                        else
+                        {
+                            xyInterpolatedCoordinate.X = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_Scanner_CalPos].Stage_X;
+                            xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_Scanner_CalPos].Stage_Y;
+                        }
+
+                        MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+
+                        TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos_DoneCheck;
+                    }
+                    break;
+
+                    case (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos_DoneCheck:
+                    {
+                        //디버깅 필요.
+                        if (true)
+                        {
+                            if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) &&
+                                MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X) &&
+                                MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) &&
+                                MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y))
+                            {
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMark_MarkingStart;
+                            }
+                            else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 60000)
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Stage Center 위치로 이동 실패. (Timeout)");
+
+                                //  알람 정지 (LED Bar - Red Blink)
+                                Equipment.MachineStop_byAlarm = true;
+
+                                //timer_LaserDrillingWork.Enabled = false;
+                                //m_btimer_Motion_Home_Stop = true;
+
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                                MessageBox.Show("Stage XY 축, Stage 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                        else
+                        {
+                            if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) &&
+                            MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_Scanner_CalPos].Stage_X) &&
+                            MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) &&
+                            MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_Scanner_CalPos].Stage_Y))
+                            {
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMark_MarkingStart;
+                            }
+                            else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 60000)
+                            {
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                                MessageBox.Show("Stage XY 축, Stage 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.CrossMark_MarkingStart:
+                    {
+                        // 디버깅 필요
+                        //  Cross Mark Marking 시작. //  Cross Mark Marking 함수 넣자.
+                        //float fieldsize = Equipment.Scanner_Calibration_FieldSize; //정사각형 Cal. X,Y Size 동일.
+                        int nRow = Equipment.Scanner_Calibration_rowCount;
+                        int nCol = Equipment.Scanner_Calibration_colCount;
+                        float fRowInterval = Equipment.Scanner_Calibration_rowInterval;
+                        float fIntervalCol = Equipment.Scanner_Calibration_colInterval;
+
+                        //이거 실행하면 레이저 바로 나감. 큭.
+                        //Laser & Scanner 준비 상태 확인 필요. (발진 가능 여부 및 셋팅 값)
+
+                        //_spiralLabScanner.DrawCalibrationCrosses(nRow, nCol, fRowInterval, fIntervalCol);
+                        DrawCalibrationCrosses(nRow, nCol, fRowInterval, fIntervalCol);
+
+                        TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMark_MarkingComplete;
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.CrossMark_MarkingComplete:
+                    {
+                        if (rtc.CtlGetStatus(RtcStatus.NotBusy))
+                        {
+                            Log.Write("SLD-200", "Scanner Calibration", "Scanner Calibration, Cross Mark 가공 완료");
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.MapDataChange_FineCamMap;
+                        }
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 60000)
+                        {
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            MessageBox.Show("Cross Mark Marking 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    break;
+
+
+                // 여기부터는 Fine Camera Seq.
+                case (int)ScannerCalibration_Step.MapDataChange_FineCamMap:
+                    {
+                        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        //  맵 데이터 변경 (기준위치 : Scanner)
+                        //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
+                        //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
+                        MapData_Apply((int)nMapData_Type.MapData_Stage_CalPos_FineCam);
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.MapDataFlagCheck_FineCamMap;
+                    }
+                    break;
+
+                    case (int)ScannerCalibration_Step.MapDataFlagCheck_FineCamMap: //  Fine Camera 위치 Map Data 로 변경되었는지 확인
+                    {
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_CrossMarkCenterPos;
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.StageXY_Move_CrossMarkCenterPos:
+                    {
+                        workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
+
+                        //  좌표계 (기존)
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = 
+                            MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 
+                            MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+
+                        //  속도 설정
+                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+                        xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
+                        xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
+                        MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+
+                        TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_CrossMarkCenterPos_DoneCheck;
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.StageXY_Move_CrossMarkCenterPos_DoneCheck:
+                    {
+                        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) &&
+                            MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
+                            MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) &&
+                            MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                        {
+                            Log.Write("SLD-200", "Scanner Calibration", "Stage XY축, 가공 Center 위치로 이동 완료.");
+
+                            TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensation_StartPosition_Set;
+                        }
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 60000)
+                        {
+                            Log.Write("SLD-200", "Scanner Calibration", "Stage XY축, 가공 Center 위치로 이동 실패. (Timeout)");
+
+                            //  알람 정지 (LED Bar - Red Blink)
+                            Equipment.MachineStop_byAlarm = true;
+
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            MessageBox.Show("Stage XY 축, 가공 Center 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    break;
+
+                //여기부터 카메라로 + Mark 찾아야함.
+                //  Scanner 보정 시작 위치 설정
+                case (int)ScannerCalibration_Step.ScannerCompensation_StartPosition_Set:
+                    {
+                        CommonModule.Instance.Illuminator.SetVolume(2000, 1);
+                        CommonModule.Instance.Illuminator.SetVolume(0, 2);
+                        CommonModule.Instance.Illuminator.TurnOnOff(true, 1);
+                        CommonModule.Instance.Illuminator.TurnOnOff(true, 2);
+
+                        XyzCoordinate currentPos = new XyzCoordinate();
+
+                        if (scannerCompensator == null || scannerCompensator.Stage == null)
+                        {
+                            Log.Write("ScannerCalibration", "ScannerCompensator or Stage is null");
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            break;
+                        }
+
+                        // 1. 현재 위치 획득
+                        if (scannerCompensator.Stage.GetCommandPosition(ref currentPos) != 0)
+                        {
+                            Log.Write("ScannerCalibration", "Stage 위치 읽기 실패");
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            MessageBox.Show("Stage 현재 위치를 가져올 수 없습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            break;
+                        }
+
+                        // 2. Config에 현재 위치 저장
+                        scannerCompensator.Config.GridPositions[(int)ScannerCompensator.GridXyMotionPositionKeys.StartPosition].Coordinate = currentPos;
+
+                        // 3. 로그 출력 및 다음 단계
+                        Log.Write("SLD-200", "Scanner Calibration", $"Scanner 보정 시작 위치 저장 완료: X={currentPos.X:0.000}, Y={currentPos.Y:0.000}, Z={currentPos.Z:0.000}");
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_MarkFind_Ready;
+                    }
+                    break;
+
+                
+                case (int)ScannerCalibration_Step.CrossMarkCenter_MarkFind_Ready:
+                    {
+                        //  얼라인 마크 위치를 찾기 위한 데이터 세팅
+                        //  마크 1개만 찾기 위한 설정
+                        //  이거 안해도 될꺼 같지만..흠...
+                        m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_1STMARK;                                //  요걸로 하면 마크 1개만 찾고 끝.
+
+                        //  얼라인 마크 위치 평균 계산
+                        m_nCrossMark_AlignMarkCount_Max = 3;                            //  얼라인 마크 검사 최대 회수. (평균 계산용)
+                        m_nCrossMark_AlignMark_Count = 0;                               //  얼라인 마크 개수. (평균 계산용)
+                        m_pCrossMark_AlignMarkPosition_Sum = new PointD(0, 0);          //  얼라인 마크 위치 누적. (평균 계산용)
+                        m_pCrossMark_AlignMarkPosition_Average = new PointD(0, 0);      //  얼라인 마크 위치 누적. (평균 계산용)
+
+                        //  마크 찾을 위치 (Cross Center 로 이동했으므로, 여기서 마크를 찾는다.)  
+                        //jigAligner_HighRes.m_AlignPositions[0].X = MC_Func.MC_GetEncPos((int)nAxis.X);          //  m_dMy1stMarkVisionPos_X;
+                        //jigAligner_HighRes.m_AlignPositions[0].Y = MC_Func.MC_GetEncPos((int)nAxis.Y);          //  m_dMy1stMarkVisionPos_Y;
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_Find;
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.CrossMarkCenter_Find:
+                    {                                             //  true : Lower Vision     false : Upper Vision
+                        m_nVisionAligner_Type = (int)Aligner_Type.Aligner_FineCam;
+
+                        Equipment.Vision_SpiralMove_Use = false;                                        //  돌면서 찾지 않음.
+                        Equipment.MachineStop_byUser = false;
+
+                        // scannerCompensator가 null이거나 Stage가 없는 경우 예외 처리
+                        if (scannerCompensator == null || scannerCompensator.Stage == null)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "scannerCompensator 또는 Stage가 null입니다.");
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            break;
+                        }
+
+                        // 비전 정렬 스레드 사용 여부에 따라 처리
+                        m_bAlignVisionThread_Use = false;
+                        // scannerCompensator <- Thread 없음.
+                        if (m_bAlignVisionThread_Use)
+                        {
+                            // 스레드 기반 처리
+                            //m_bFindAlignMark_OK = false;
+                            //m_nFindAlignMark_Step = (int)FindAlignMark_Step.Start;
+                            // 타이머 시작
+                            TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                        }
+                        else
+                        {
+                            // scannerCompensator를 사용하여 마크 검색
+                            PatternMatchingResult result = scannerCompensator.Search();
+
+                            if (result != null && result.Values.Count > 0)
+                            {
+                                double markPositionX = scannerCompensator.ResultPosition.X;
+                                double markPositionY = scannerCompensator.ResultPosition.Y;
+
+                                // 마크 검색 성공
+                                Log.Write("SLD-200", "Scanner Calibration",
+                                          $"마크 위치: X={markPositionX}, Y={markPositionY}, R={result.Values[0].R}");
+                            }
+                            else
+                            {
+                                // 마크 검색 실패 -> 밑에서 결과 확인 및 Retry 여부 검토 
+                                Log.Write("SLD-200", "Scanner Calibration", "마크를 찾을 수 없습니다.");
+                                //m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                                //break;
+                            }
+                        }
+
+                        // 사용자 중지 요청 확인
+                        if (Equipment.MachineStop_byUser)
+                        {
+                            Log.Write("SLD-200", "Scanner Calibration", "작업 중지됨 (사용자 요청)");
+
+                            // 스캐너 보정 단계 초기화
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+
+                            // 모터 정지
+                            MC_Func.MC_MotorStop((int)nAxis.X, 2000);
+                            MC_Func.MC_MotorStop((int)nAxis.Y, 2000);
+                            MC_Func.MC_MotorStop((int)nAxis.Z, 2000);
+                        }
+                        else
+                        {
+                            // 다음 단계로 진행
+                            TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_FindResultCheck;
+                        }
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.CrossMarkCenter_FindResultCheck:
+                    {
+                        // 비전 정렬 스레드 사용 여부에 따라 처리
+                        m_bAlignVisionThread_Use = false;
+                        // scannerCompensator <- Thread 없음.
+                        if (m_bAlignVisionThread_Use)
+                        {
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", "Scanner Calibration", "상부 카메라 XY 위치 보정, Scanner Calibration Center Cross 검출 완료");
+
+                            // scannerCompensator에서 이전 검색 결과 가져오기
+                            PatternMatchingResult result = scannerCompensator.GetResult();
+
+                            if (result == null || result.Values.Count == 0)
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Center Cross 마크 검출 결과 NG (마크를 찾을 수 없음)");
+
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_Find;
+                            }
+                            else
+                            {
+                                // 첫 번째 마크 위치 가져오기
+                                //double markX = result.Values[0].X;
+                                //double markY = result.Values[0].Y;
+                                double markX = scannerCompensator.ResultPosition.X;
+                                double markY = scannerCompensator.ResultPosition.Y;
+
+                                if (markX == 0 || markY == 0)
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Center Cross 마크 검출 결과 NG (위치값 0)");
+
+                                    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_Find;
+                                }
+                                else
+                                {
+                                    m_pCrossMark_AlignMarkPosition_Sum.X += markX;
+                                    m_pCrossMark_AlignMarkPosition_Sum.Y += markY;
+
+                                    // 평균 계산을 위해 반복
+                                    m_nCrossMark_AlignMark_Count++;
+                                    if (m_nCrossMark_AlignMark_Count < m_nCrossMark_AlignMarkCount_Max)
+                                    {
+                                        m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_1STMARK;
+                                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_Find;
+                                    }
+                                    else
+                                    {
+                                        m_pCrossMark_AlignMarkPosition_Average.X = m_pCrossMark_AlignMarkPosition_Sum.X / m_nCrossMark_AlignMark_Count;
+                                        m_pCrossMark_AlignMarkPosition_Average.Y = m_pCrossMark_AlignMarkPosition_Sum.Y / m_nCrossMark_AlignMark_Count;
+
+                                        if ((m_pCrossMark_AlignMarkPosition_Average.X >= (markX - 0.05)) &&
+                                            (m_pCrossMark_AlignMarkPosition_Average.X <= (markX + 0.05)) &&
+                                            (m_pCrossMark_AlignMarkPosition_Average.Y >= (markY - 0.05)) &&
+                                            (m_pCrossMark_AlignMarkPosition_Average.Y <= (markY + 0.05)))
+                                        {
+                                            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Cross Mark 평균값 OK");
+
+                                            m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].X = m_pCrossMark_AlignMarkPosition_Average.X;
+                                            m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].Y = m_pCrossMark_AlignMarkPosition_Average.Y;
+                                        }
+                                        else
+                                        {
+                                            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Cross Mark 평균값 NG");
+
+                                            m_strTemp = string.Format("AvgX : {0:0.000}, Avg Y: {1:0.000}, LastX : {2:0.000}, LastY: {3:0.000}",
+                                                m_pCrossMark_AlignMarkPosition_Average.X,
+                                                m_pCrossMark_AlignMarkPosition_Average.Y,
+                                                markX,
+                                                markY);
+
+                                            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", m_strTemp);
+
+                                            m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].X = markX;
+                                            m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].Y = markY;
+                                        }
+
+                                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_XYAlignData_Calc;
+                                    }
+                                }
+                            }
+                        }
+
+                        // 1분 동안 마크를 찾지 못할 경우
+                        if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) >= 60000) 
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "작업 중지. (Cross Mark 검출 시간 초과)");
+
+                            // 알람 정지
+                            Equipment.MachineStop_byAlarm = true;
+                            Equipment.AlignStart_Time = null;
+                            Equipment.MachineStop_byUser = true;
+
+                            MC_Func.MC_MotorStop((int)nAxis.X, 2000);
+                            MC_Func.MC_MotorStop((int)nAxis.Y, 2000);
+                            MC_Func.MC_MotorStop((int)nAxis.Z, 2000);
+
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+
+                            if (m_bAlignVisionThread_Use)
+                            {
+                                m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                            }
+
+                            MessageBox.Show("Cross Mark 찾기 실패\r\n\r\n[Time Out]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.CrossMarkCenter_XYAlignData_Calc:
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Cross Mark XY 보정량 계산");
+
+                        PatternMatchingResult result = scannerCompensator.GetResult();
+                        if (result == null || result.Values.Count == 0)
+                        {
+                            Log.Write("SLD-200", "Scanner Calibration", "Cross Mark 데이터를 가져오지 못했습니다.");
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                        }
+                        else
+                        {
+                            double markX = scannerCompensator.ResultPosition.X;
+                            double markY = scannerCompensator.ResultPosition.Y;
+                            // Delta 계산
+                            //deltaX = result.Values[0].X - m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].X;
+                            //deltaY = result.Values[0].Y - m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].Y;
+                            deltaX = markX - m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].X;
+                            deltaY = markY - m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].Y;
+
+
+                            // 허용 오차 값 가져오기
+                            double allowableXY = 3.0; //Config.ParamConfig.ReticleAutoCal_UpperVision_Allowable_XY;
+
+                            // 판정: 허용 오차 범위 내인지 확인
+                            if (Math.Abs(deltaX) <= allowableXY && 
+                                Math.Abs(deltaY) <= allowableXY)
+                            {
+                                Log.Write("SLD-200", "Scanner Calibration",
+                                          $"Cross Mark XY 위치가 카메라 센터에서 오차범위 이내에 있음 (DeltaX: {deltaX}, DeltaY: {deltaY})");
+
+                                // Fine Camera와 Scanner Offset 확인 모드일 경우 Offset 값 재설정
+                                // Scanner Calibration 모드일 경우, 15x15 가공 위치의 마크 검사를 진행
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_XYAlign_CorrectionMove;
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration",
+                                          $"Cross Mark XY 위치가 허용 오차를 벗어남 (DeltaX: {deltaX}, DeltaY: {deltaY}, Allowable: {allowableXY})");
+
+                                // 보정 실패 처리
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+
+                                if (m_bAlignVisionThread_Use)
+                                {
+                                    // Thread를 사용하는 경우 단계 초기화
+                                    m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                                }
+
+                                // 사용자 알림
+                                MessageBox.Show($"Cross Mark XY 위치가 허용 오차를 초과했습니다.\nDeltaX: {deltaX}, DeltaY: {deltaY}\n허용 오차: {allowableXY}",
+                                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                    break;
+
+                //  XY 보정 이동 (카메라 Center 로)
+                case (int)ScannerCalibration_Step.CrossMarkCenter_XYAlign_CorrectionMove:
+                    {
+                        workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
+
+                        // Delta 계산
+                        PatternMatchingResult result = scannerCompensator.GetResult();
+                        if (result == null || result.Values.Count == 0)
+                        {
+                            Log.Write("SLD-200", "Scanner Calibration", "Cross Mark 데이터를 가져오지 못했습니다.");
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            MessageBox.Show("Cross Mark 데이터를 가져오지 못했습니다. 작업을 중단합니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            break;
+                        }
+                        double markX = scannerCompensator.ResultPosition.X;
+                        double markY = scannerCompensator.ResultPosition.Y;
+
+                        //deltaX = m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].X - result.Values[0].X;
+                        //deltaY = m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].Y - result.Values[0].Y;
+                        deltaX = m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].X - markX;
+                        deltaY = m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].Y - markY;
+
+                        // 좌표계 설정
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] =
+                            MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + deltaX;
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] =
+                            MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) + deltaY;
+
+                        // 속도 설정
+                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+                        xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
+                        xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
+                        MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+
+                        TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_XYAlign_CorrectionMove_DoneCheck;
+
+                    }
+                    break;
+
+                //  XY 보정 이동 완료 확인
+                case (int)ScannerCalibration_Step.CrossMarkCenter_XYAlign_CorrectionMove_DoneCheck:
+                    {
+                        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) &&
+                            MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
+                            MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) &&
+                            MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                        {
+                            Log.Write("SLD-200", "Scanner Calibration", "Stage XY축, 보정 Center 위치로 이동 완료.");
+
+                            TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_XYAlign_Retry;
+                        }
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 60000)
+                        {
+                            Log.Write("SLD-200", "Scanner Calibration", "Stage XY축, 보정 Center 위치로 이동 실패. (Timeout)");
+
+                            //  알람 정지 (LED Bar - Red Blink)
+                            //Equipment.MachineStop_byAlarm = true;
+
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            MessageBox.Show("Stage XY 축, 가공 Center 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    break;
+
+                //  Mark 찾기부터 다시 시작
+                case (int)ScannerCalibration_Step.CrossMarkCenter_XYAlign_Retry:
+                    {
+                        //우선 패스.
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibration_RightTopPos;
+                    }
+                    break;
+
+                //  가공된 영역의 우측 상단 모서리 위치로 이동 (이동 거리, X: Pitch * (Row - 1) / 2, Y: Pitch * (Col - 1) / 2)
+                case (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibration_RightTopPos:
+                    {
+                        int ret = 0;
+                        if (scannerCompensator == null || scannerCompensator.Stage == null)
+                        {
+                            Log.Write("ScannerCalibration", "ScannerCompensator or Stage is null");
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            break;
+                        }
+
+                        //Data 불러와서 넣어야함.
+                        Point point = new Point(0,0);
+                        point.X = Equipment.Scanner_Calibration_colCount;
+                        point.Y = Equipment.Scanner_Calibration_rowCount;
+                        scannerCompensator.Config.Count = point;
+                        scannerCompensator.Config.PitchDistanceX = Equipment.Scanner_Calibration_colInterval;
+                        scannerCompensator.Config.PitchDistanceY = Equipment.Scanner_Calibration_rowInterval;
+
+                        double dCurrentPosX = MC_Func.MC_GetEncPos((int)nAxis.X);
+                        double dCurrentPosY = MC_Func.MC_GetEncPos((int)nAxis.Y);
+
+                        // 우측 상단 기준으로 StartPosition 계산
+                        //double startX = dCurrentPosX + ((scannerCompensator.Config.Count.X - 1) * scannerCompensator.Config.PitchDistanceX) / 2.0;
+                        //double startY = dCurrentPosY - ((scannerCompensator.Config.Count.Y - 1) * scannerCompensator.Config.PitchDistanceY) / 2.0;
+                        double startX = dCurrentPosX - ((scannerCompensator.Config.Count.X - 1) * scannerCompensator.Config.PitchDistanceX) / 2.0;
+                        double startY = dCurrentPosY - ((scannerCompensator.Config.Count.Y - 1) * scannerCompensator.Config.PitchDistanceY) / 2.0;
+                        double startZ = 0.0;
+
+                        scannerCompensator.Config.GridPositions[(int)ScannerCompensator.GridXyMotionPositionKeys.StartPosition].X = startX;
+                        scannerCompensator.Config.GridPositions[(int)ScannerCompensator.GridXyMotionPositionKeys.StartPosition].Y = startY;
+                        scannerCompensator.Config.GridPositions[(int)ScannerCompensator.GridXyMotionPositionKeys.StartPosition].Z = startZ;
+
+                        // 1. 기준 좌표 획득
+                        XyzCoordinate startPos = scannerCompensator.Config.GridPositions[(int)ScannerCompensator.GridXyMotionPositionKeys.StartPosition].Coordinate;
+
+                        // 2. 이동 대상 좌표 계산 (우측 상단 기준)
+                        double moveX = startPos.X;// + ((scannerCompensator.Config.Count.X - 1) * scannerCompensator.Config.PitchDistanceX) / 2.0;
+                        double moveY = startPos.Y;// - ((scannerCompensator.Config.Count.Y - 1) * scannerCompensator.Config.PitchDistanceY) / 2.0;
+
+                        // 3. Offset 적용 (스캐너 ↔ 파인캠) //파인캠 센터와서 수행하니깐 필요없다
+                        deltaX = moveX;// - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                        deltaY = moveY;// - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+
+                        // 4. 현재 위치 기준 보정 
+                        workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
+
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = deltaX;
+                        //MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + deltaX;
+
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = deltaY;
+                        //MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) + deltaY;
+
+                        // 5. 이동 속도 설정
+                        double velocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                        double accdec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+                        // 6. 이동 실행
+                        xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
+                        xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
+
+                        MC_Func.MovePosition(xyInterpolatedCoordinate, velocity, accdec, accdec);
+
+                        // 7. 타이머 시작 (옵션)
+                        TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibration_RightTopPos_DoneCheck;
+                    }
+                    break;
+
+                //  가공된 영역의 우측 상단 모서리 위치로 이동 완료 확인
+                case (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibration_RightTopPos_DoneCheck:
+                    {
+                        // Stage XY축 도착 여부 확인
+                        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) &&
+                            MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
+                            MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) &&
+                            MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                        {
+                            Log.Write("SLD-200", "Scanner Calibration", "Stage XY축, 우측 상단 위치로 이동 완료.");
+
+                            TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensator_Start;
+                            //m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                        }
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 60000) // 60초 초과시 실패 처리
+                        {
+                            Log.Write("SLD-200", "Scanner Calibration", "Stage XY축, 우측 상단 위치로 이동 실패. (Timeout)");
+
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            MessageBox.Show("Stage XY 축, 우측 상단 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    break;
+
+                //  Scanner 보정 시작       
+                case (int)ScannerCalibration_Step.ScannerCompensator_Start:
+                    {
+                        int ret = 0;
+
+                        if (scannerCompensator == null)
+                        {
+                            Log.Write("ScannerCalibration", "ScannerCompensator is null");
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            break;
+                        }
+
+                        Log.Write("SLD-200", "Scanner Calibration", "ScannerCompensator 보정 시작 (OnWork)");
+
+                        // 내부적으로 RunSearchGridXy → SearchGridXy 자동 수행
+                        ret = scannerCompensator.OnWork();
+
+                        if (ret != 0)
+                        {
+                            Log.Write("ScannerCalibration", "ScannerCompensator.OnWork() 실패");
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                            MessageBox.Show("Scanner 보정 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            break;
+                        }
+
+                        Log.Write("SLD-200", "Scanner Calibration", "ScannerCompensator 보정 완료");
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensator_Complete;
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.ScannerCompensator_Complete:
+                    {
+                        Log.Write("SLD-200", "Scanner Calibration", "Scanner 보정 데이터 수집 완료");
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensatedData_Check;
+                    }
+                    break;
+
+                //  Scanner 보정 데이터 확인 (오차 체크하여, 오차범위 이내이면 OK, 아니면 다시 보정)
+                case (int)ScannerCalibration_Step.ScannerCompensatedData_Check:
+                    {
+
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensatedData_Correction;
+                    }
+                    break;
+
+                //  Scanner 보정 데이터 보정 
+                case (int)ScannerCalibration_Step.ScannerCompensatedData_Correction:
+                    {
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensatedData_CorrectionFile_Convert;
+                    }
+                    break;
+
+                //  Scanner 보정 데이터 Convert (보정 데이터로 ct5 파일 생성)
+                case (int)ScannerCalibration_Step.ScannerCompensatedData_CorrectionFile_Convert:
+                    {
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensatedData_CorrectionFile_Reset;
+                    }
+                    break;
+
+                //  Scanner 보정 데이터 Reset (보정 데이터 초기화)
+                case (int)ScannerCalibration_Step.ScannerCompensatedData_CorrectionFile_Reset:
+                    {
+                        int nScannerCalRetry = 0;
+                        int nScannerCalRetryMax = 0;
+
+                        if(nScannerCalRetry < nScannerCalRetryMax)
+                        {
+                            nScannerCalRetry++;
+                            //m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.MapDataChange_FineCamMap;
+
+                            Log.Write("SLD-200", "Scanner Calibration", "ScannerCalibration_Step 완료");
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", "Scanner Calibration", "ScannerCalibration_Step 완료");
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                        }
+                    }
+                    break;
+            }
 
-            //        m_bScannerCalibration_Complete = false;
 
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Laser_Off;
-            //        break;
 
-
-            //    case (int)ScannerCalibration_Step.Laser_Off:                                              //  레이저 Off
-
-            //        rtc.CtlLaserOff();
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Laser_Off_Check;
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.Laser_Off_Check:                                                  //  레이저 Off 확인
-            //        if (rtc.CtlGetStatus(RtcStatus.NotBusy))
-            //        {
-            //            Log.Write("SLD-200", "Scanner Calibration", "Laser Idle Check");
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserShutter_Close;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //        {
-            //            //timer_LaserDrillingWork.Enabled = false;
-
-            //            MessageBox.Show("Error", "Laser Off 실패");
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-            //        }
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.LaserShutter_Close:                                                //  Shutter Close
-            //        bdsParameter.DO_BDS_PowerMeter_FW(true);
-            //        bdsParameter.DO_BDS_PowerMeter_BW(false);
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserShutter_Close_Check;
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.LaserShutter_Close_Check:                                          //  Shutter Close 확인
-            //        if (!bdsParameter.DI_BDS_PowerMeter_BW() && bdsParameter.DI_BDS_PowerMeter_FW())
-            //        {
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserFrequency_Change;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //        {
-            //            //timer_VerifyScannerCamOffset.Enabled = false;
-
-            //            MessageBox.Show("Power Meter (Shutter) Close 실패", "Error");
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-            //        }
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.LaserFrequency_Change:                        //  레이저 Frequency 변경
-
-            //        if ((m_rapidLxLaser_Comm != null) && (Equipment.Scanner_Calibration_LaserFrequency > 0.0))
-            //        {
-            //            if (m_rapidLxLaser_Comm.IsOpen)
-            //            {
-            //                m_strTemp = string.Format("Scanner Calibration 중 Laser Frequency 변경 시작, Laser Frequency ({0:0.000})", Equipment.Scanner_Calibration_LaserFrequency);
-            //                Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", m_strTemp);
-
-            //                TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //                RapidLxLaserComm_Laser_AmplifierRR_Set(Equipment.Scanner_Calibration_LaserFrequency);
-
-            //                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserFrequency_ChangeCheck;
-            //            }
-            //            else
-            //            {
-            //                Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Scanner Calibration 중 Laser Frequency 변경 실패. (Laser Comm 열리지 않음)");
-
-            //                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-            //            }
-            //        }
-            //        else
-            //        {
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Scanner Calibration 중 Laser Frequency 변경 실패. (Laser Comm 준비되지 않았거나, 변경 출력이 0)");
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-            //        }
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.LaserFrequency_ChangeCheck:                     //  레이저 Frequency 변경 확인
-
-            //        if ((m_dLaser_AmplifierRR > (Equipment.Scanner_Calibration_LaserFrequency - 0.5)) &&
-            //            (m_dLaser_AmplifierRR < (Equipment.Scanner_Calibration_LaserFrequency + 0.5)))
-            //        {
-            //            m_strTemp = string.Format("Scanner Calibration 중 Laser Frequency 변경 성공, Laser Frequency ({0:0.000})", m_dLaser_AmplifierRR);
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", m_strTemp);
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserPower_Change;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 10000)
-            //        {
-            //            m_strTemp = string.Format("Scanner Calibration 중 Laser Frequency 변경 실패, 현재 Laser Frequency ({0:0.000})", m_dLaser_AmplifierRR);
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", m_strTemp);
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-            //        }
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.LaserPower_Change:                        //  레이저 출력 변경
-
-            //        if ((m_rapidLxLaser_Comm != null) && (Equipment.Scanner_Calibration_LaserEnergy > 0.0))
-            //        {
-            //            if (m_rapidLxLaser_Comm.IsOpen)
-            //            {
-            //                m_strTemp = string.Format("Scanner Calibration 중 Laser Power 변경 시작, Laser Power ({0:0.000})", Equipment.Scanner_Calibration_LaserEnergy);
-            //                Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", m_strTemp);
-
-            //                TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //                RapidLxLaserComm_Laser_OutputEnergy_Set(Equipment.Scanner_Calibration_LaserEnergy);
-
-            //                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserPower_ChangeCheck;
-            //            }
-            //            else
-            //            {
-            //                Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Scanner Calibration 중 Laser Power 변경 실패. (Laser Comm 열리지 않음)");
-
-            //                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-            //            }
-            //        }
-            //        else
-            //        {
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Scanner Calibration 중 Laser Power 변경 실패. (Laser Comm 준비되지 않았거나, 변경 출력이 0)");
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-            //        }
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.LaserPower_ChangeCheck:                     //  레이저 출력 변경 확인
-
-            //        if ((m_dLaser_OutputEnergy > (Equipment.Scanner_Calibration_LaserEnergy - 0.5)) &&
-            //            (m_dLaser_OutputEnergy < (Equipment.Scanner_Calibration_LaserEnergy + 0.5)))
-            //        {
-            //            m_strTemp = string.Format("Scanner Calibration 중 Laser Power 변경 성공, Laser Power ({0:0.000})", m_dLaser_OutputEnergy);
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", m_strTemp);
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.DustCollector_On;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 10000)
-            //        {
-            //            m_strTemp = string.Format("Scanner Calibration 중 Laser Power 변경 실패, 현재 Laser Power ({0:0.000})", m_dLaser_OutputEnergy);
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", m_strTemp);
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-            //        }
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.DustCollector_On:                                      //  집진기 On
-            //        //laserDrillingParameter.DO_DustCollector_OnOff(true);                          //  집진기 동작은 On/Off 스위치로 동작
-
-            //        Log.Write("SLD-200", "Scanner Calibration", "집진기 On");
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DustCollector_On_Check;           //  임시 주석
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserShutter_Open;
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.DustCollector_On_Check:                                //  집진기 On 확인
-            //        if (workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) && !workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Upper) &&
-            //            workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower) && !workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Lower))
-            //        {
-            //            Log.Write("SLD-200", "Scanner Calibration", "집진기 On 확인");
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserShutter_Open;
-            //        }
-            //        else if (workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Upper) || workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Lower))
-            //        {
-            //            timer_Motion_Home.Enabled = false;
-
-            //            MessageBox.Show("Alarm", "Dust Collector 점검 요망\r\n\r\n[Fault Signal 확인]");
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //        {
-            //            Log.Write("SLD-200", "Scanner Calibration", "집진기 On 실패");
-
-            //            //timer_LaserDrillingWork.Enabled = false;
-            //            //m_bExit = true;
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-
-            //            MessageBox.Show("Dust Collector On 실패", "Error");
-            //        }
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.LaserShutter_Open:                                     //  레이저 Shutter Open
-            //        workStageParameter.DO_BDS_PowerMeter_BW(true);
-            //        workStageParameter.DO_BDS_PowerMeter_FW(false);
-
-            //        Log.Write("SLD-200", "Scanner Calibration", "출사구 셔터 Open");
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserShutter_Open_Check;
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.LaserShutter_Open_Check:                               //  레이저 Shutter Open 확인
-            //        if (workStageParameter.DI_BDS_PowerMeter_BW_Check() && !workStageParameter.DI_BDS_PowerMeter_FW_Check())
-            //        {
-            //            Log.Write("SLD-200", "Scanner Calibration", "출사구 셔터 Open 확인");
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.WaterLine_Open;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //        {
-            //            Log.Write("SLD-200", "Scanner Calibration", "출사구 셔터 Open 실패");
-
-            //            //timer_LaserDrillingWork.Enabled = false;
-            //            //m_bExit = true;
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-
-            //            MessageBox.Show("Laser Shutter Open 실패", "Error");
-            //        }
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.WaterLine_Open:                                        //  Water Line Open (이건 상시 Open)                                        
-            //        workStageParameter.DO_BeamDump_Coolant_Supply(true);                    //  Laser Cooling Valve Open
-            //        workStageParameter.DO_Scanner_Coolant_Supply(true);                     //  Scanner Cooling Valve Open
-
-            //        if (Equipment.Machine_LaserType_CO2)
-            //        {
-            //            workStageParameter.DO_Mask_Coolant_Supply(true);                    //  Beam Mask 
-            //            workStageParameter.DO_VarioScan_Coolant_Supply(true);
-            //        }
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.WaterLine_Open_Check;
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.WaterLine_Open_Check:                                  //  Water Line Open 확인
-            //        if (workStageParameter.IsDO_BeamDump_Coolant_Supply() && workStageParameter.IsDO_Scanner_Coolant_Supply() &&
-            //            (!Equipment.Machine_LaserType_CO2 ||
-            //            Equipment.Machine_LaserType_CO2 && workStageParameter.IsDO_Mask_Coolant_Supply() && workStageParameter.IsDO_VarioScan_Coolant_Supply()))
-            //        {
-            //            TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.MapDataChange_ScannerCalMap;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //        {
-            //            Log.Write("SLD-200", "Scanner Calibration", "Water Supply Line Open 실패");
-
-            //            //timer_LaserDrillingWork.Enabled = false; 
-            //            //m_bExit = true;                        
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-
-            //            MessageBox.Show("Water Supply Line Open 실패", "Error");
-            //        }
-            //        break;
-
-
-            //    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //    //  Map Data 변경 (Scanner Cal.) - 시작
-            //    case (int)ScannerCalibration_Step.MapDataChange_ScannerCalMap:                                      //  Scanner Calibration 위치 Map Data 로 변경
-
-            //        MapData_Apply((int)nMapData_Type.MapData_Stage_CalPos_Scanner);
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.MapDataFlagCheck_ScannerCalMap;
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.MapDataFlagCheck_ScannerCalMap:                                   //  Scanner Calibration 위치 Map Data 로 변경되었는지 확인
-
-            //        //if (MapDataFlag_Read() == (int)MapDataType.MAPDATASTATUS_SCANNER)
-            //        //{
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageZ_Move_LaserHeightSensorPos;
-            //        //}
-            //        //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000)
-            //        //{
-            //        //    m_bScannerCamVerify_Complete = false;
-
-            //        //    timer_LaserDrillingWork.Enabled = false;
-
-            //        //    MessageBox.Show("Map Data 변경 실패 [Scanner]", "Error");
-
-            //        //    m_nLaserDrilling_MainStep = (int)ScannerCalibration_Step.None;
-            //        //}
-            //        break;
-            //    //  Map Data 변경 (Scanner  Cal.) - 끝
-            //    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-            //    case (int)ScannerCalibration_Step.StageZ_Move_LaserHeightSensorPos:                     //  Scanner Calibration 을 진행할 위치를 Laser Height Sensor 위치로 이동
-
-            //        Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Stage Z축, Laser Height Check 높이로 이동 시작.");
-
-            //        workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Safety");
-
-            //        //  속도 설정
-            //        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
-            //        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-
-            //        //  Target 위치 변경 : Laser Height Check
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos].Vision_Z;
-
-            //        MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
-            //                              lfVelocity, lfAccDec, lfAccDec);
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageZ_Move_LaserHeightSensorPos_DoneCheck;
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.StageZ_Move_LaserHeightSensorPos_DoneCheck:           //  Scanner Calibration 을 진행할 위치를 Laser Height Sensor 위치로 이동 완료 확인
-
-            //        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
-            //        {
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Stage Z축, Laser Height Check 높이로 이동 완료.");
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_LaserHeightSensorPos;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 60000)
-            //        {
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Stage Z축, Laser Height Check 높이로 이동 실패. (Timeout)");
-
-            //            //  알람 정지 (LED Bar - Red Blink)
-            //            Equipment.MachineStop_byAlarm = true;
-
-            //            //timer_LaserDrillingWork.Enabled = false;
-            //            //m_btimer_Motion_Home_Stop = true;
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-
-            //            MessageBox.Show("Stage Z 축, Laser Height Check 높이로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        }
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.StageXY_Move_LaserHeightSensorPos:                 //  Scanner Calibration 을 진행할 위치를 Laser Height Sensor 위치로 이동
-
-            //        Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Stage XY축, Laser Height Check 위치로 이동 시작.");
-
-            //        workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
-
-            //        //  좌표계 (기존)
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = 0.0;
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0.0;
-
-            //        //  도면상 좌표계 (Stage Center 를 0, 0 으로 봤을 때) --> 임시로 Center 위치에서 진행
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = 0;        // -m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.X;
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0;        // -m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.Y;
-
-            //        //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
-
-            //        //  좌표계 변환 (Scanner 위치 --> Fine Camera 위치)
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
-
-            //        //  좌표계 변환 (Fine Camera 위치 --> Laser Height Sensor 위치)
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y;
-
-            //        //  속도 설정
-            //        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-            //        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-
-            //        //MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X],
-            //        //                      lfVelocity, lfAccDec, lfAccDec);
-            //        //MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y],
-            //        //                      lfVelocity, lfAccDec, lfAccDec);
-
-            //        xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
-            //        xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
-            //        MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_LaserHeightSensorPos_DoneCheck;
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.StageXY_Move_LaserHeightSensorPos_DoneCheck:                            //  Scanner Calibration 을 진행할 위치를 Laser Height Sensor 위치로 이동 완료 확인
-
-            //        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
-            //            MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
-            //        {
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Stage XY축, Laser Height Check 위치로 이동 완료.");
-
-            //            TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Move_LaserHeightSensorPos_StableTime;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 60000)
-            //        {
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Stage XY축, Laser Height Check 위치로 이동 실패. (Timeout)");
-
-            //            //  알람 정지 (LED Bar - Red Blink)
-            //            Equipment.MachineStop_byAlarm = true;
-
-            //            //timer_LaserDrillingWork.Enabled = false;
-            //            //m_btimer_Motion_Home_Stop = true;
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-
-            //            MessageBox.Show("Stage XY 축, Laser Height Check 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        }
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.Move_LaserHeightSensorPos_StableTime:                                     //  Scanner Calibration 을 진행할 위치를 Laser Height Sensor 위치로 이동 후 안정화 시간 대기
-
-            //        if (Equipment.Machine_LaserHeightCheckStableTime_Enable)
-            //        {
-            //            if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > Equipment.Machine_LaserHeightCheckStableTime)
-            //            {
-            //                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCalHeightValue_Get;
-            //            }
-            //        }
-            //        else
-            //        {
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCalHeightValue_Get;
-            //        }
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.ScannerCalHeightValue_Get:                                                    //  Scanner Calibration Height 측정
-
-            //        //  Laser Focus 위치에서 Laser Height 값과, 현재 Laser Height Sensor 값의 차이만큼 가공 높이 보정
-            //        m_dZOffset_SocketHeightCheck = Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition - m_dLaserHeightSensorSocket_Value;
-
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCalHeight_ZOffset_Move;
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.ScannerCalHeight_ZOffset_Move:                                 //  Scanner Calibration 가공 높이 보정 이동
-
-            //        Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Stage Z 축, Scanner Calibration 가공 Focus 조정 시작.");
-
-            //        m_strTemp = string.Format("Stage Z 축, Scanner Calibration 위치 높이 측정 후 Laser Focus 편차 ({0:0.000})", m_dZOffset_SocketHeightCheck);
-
-            //        Log.Write("SLD-200", "Scanner Calibration", m_strTemp);
-
-            //        workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
-
-            //        //  속도 설정
-            //        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
-            //        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-
-            //        //  좌표계 (기존)
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dZOffset_SocketHeightCheck;
-
-            //        MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
-            //                              lfVelocity, lfAccDec, lfAccDec);
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCalHeight_ZOffset_Move_DoneCheck;
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.ScannerCalHeight_ZOffset_Move_DoneCheck:           //  Scanner Calibration 가공 높이 보정 이동 완료 확인
-
-            //        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
-            //        {
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Stage Z 축, Scanner Calibration 가공 Focus 조정 완료.");
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 60000)
-            //        {
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Stage Z 축, Scanner Calibration 가공 Focus 조정 실패. (Timeout)");
-
-            //            //  알람 정지 (LED Bar - Red Blink)
-            //            Equipment.MachineStop_byAlarm = true;
-
-            //            //timer_LaserDrillingWork.Enabled = false;
-            //            //m_btimer_Motion_Home_Stop = true;
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-
-            //            MessageBox.Show("Stage Z 축, Scanner Calibration 가공 Focus 조정 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        }
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos:                 //  Scanner Calibration 가공을 진행할 위치로 이동
-
-            //        Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Stage XY축, Scanner Calibration 가공 진행 위치로 이동 시작.");
-
-            //        workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
-
-            //        //  현재 위치 : Laser Height Sensor 가 공정 위치에 있음
-
-            //        //  좌표계 (현재 위치)
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X);
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y);
-
-            //        //  좌표계 변환 (Laser Height Sensor 위치 --> Fine Camera 위치)
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y;
-
-            //        //  좌표계 변환 (Fine Camera 위치 --> Scanner 위치)
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.stOffsetDistance.FromScannerToFineCam.Y;
-
-            //        //  속도 설정
-            //        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-            //        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-
-            //        //MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X],
-            //        //                      lfVelocity, lfAccDec, lfAccDec);
-            //        //MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y],
-            //        //                      lfVelocity, lfAccDec, lfAccDec);
-
-            //        xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
-            //        xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
-            //        MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos_DoneCheck;
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos_DoneCheck:                            //  Scanner Calibration 가공을 진행할 위치로 이동 완료 확인
-
-            //        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
-            //            MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
-            //        {
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Stage XY축, Scanner Calibration 가공 진행 위치로 이동 완료.");
-
-            //            TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMark_MarkingStart;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 60000)
-            //        {
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Stage XY축, Scanner Calibration 가공 진행 위치로 이동 실패. (Timeout)");
-
-            //            //  알람 정지 (LED Bar - Red Blink)
-            //            Equipment.MachineStop_byAlarm = true;
-
-            //            //timer_LaserDrillingWork.Enabled = false;
-            //            //m_btimer_Motion_Home_Stop = true;
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-
-            //            MessageBox.Show("Stage XY 축, Scanner Calibration 가공 진행 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        }
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.CrossMark_MarkingStart:                              //  Cross Mark 마킹 시작
-
-            //        Log.Write("SLD-200", "Scanner Calibration", "Scanner Calibration, Cross Mark 가공 시작");
-
-
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMark_MarkingComplete;     //   EntireDrilling_ScannerOnly_GroupListData_ExecuteCheck;
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.CrossMark_MarkingComplete:                                //  가공 완료되었는지 확인
-
-            //        if ((TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) >= 500) &&
-
-            //            MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) &&
-            //            MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) &&
-
-            //            !rtc.CtlGetStatus(RtcStatus.Busy))
-            //        {
-            //            Log.Write("SLD-200", "Scanner Calibration", "Scanner Calibration, Cross Mark 가공 완료");
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.MapDataChange_FineCamMap;
-            //        }
-            //        break;
-
-
-            //    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //    //  Map Data 변경 (Fine Camera) - 시작
-            //    case (int)ScannerCalibration_Step.MapDataChange_FineCamMap:                                      //  Fine Camera 위치 Map Data 로 변경
-
-            //        MapData_Apply((int)nMapData_Type.MapData_Stage_FineCam);
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.MapDataFlagCheck_FineCamMap;
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.MapDataFlagCheck_FineCamMap:                                   //  Fine Camera 위치 Map Data 로 변경되었는지 확인
-
-            //        //if (MapDataFlag_Read() == (int)MapDataType.MAPDATASTATUS_SCANNER)
-            //        //{
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_CrossMarkCenterPos;
-            //        //}
-            //        //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000)
-            //        //{
-            //        //    m_bScannerCamVerify_Complete = false;
-
-            //        //    timer_LaserDrillingWork.Enabled = false;
-
-            //        //    MessageBox.Show("Map Data 변경 실패 [Scanner]", "Error");
-
-            //        //    m_nLaserDrilling_MainStep = (int)ScannerCalibration_Step.None;
-            //        //}
-            //        break;
-            //    //  Map Data 변경 (Fine Camera) - 끝
-            //    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-            //    case (int)ScannerCalibration_Step.StageXY_Move_CrossMarkCenterPos:                 //  가공된 영역의 Center 위치로 이동
-
-            //        Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Stage XY축, 가공 Center 위치로 이동 시작.");
-
-            //        workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
-
-            //        //  좌표계 (기존)
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
-
-            //        //  속도 설정
-            //        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-            //        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-
-            //        //MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X],
-            //        //                      lfVelocity, lfAccDec, lfAccDec);
-            //        //MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y],
-            //        //                      lfVelocity, lfAccDec, lfAccDec);
-
-            //        xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
-            //        xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
-            //        MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-
-            //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_CrossMarkCenterPos_DoneCheck;
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.StageXY_Move_CrossMarkCenterPos_DoneCheck:                            //  가공된 영역의 Center 위치로 이동 완료 확인
-
-            //        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
-            //            MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
-            //        {
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Stage XY축, 가공 Center 위치로 이동 완료.");
-
-            //            TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Move_LaserHeightSensorPos_StableTime;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 60000)
-            //        {
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Stage XY축, 가공 Center 위치로 이동 실패. (Timeout)");
-
-            //            //  알람 정지 (LED Bar - Red Blink)
-            //            Equipment.MachineStop_byAlarm = true;
-
-            //            //timer_LaserDrillingWork.Enabled = false;
-            //            //m_btimer_Motion_Home_Stop = true;
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-
-            //            MessageBox.Show("Stage XY 축, 가공 Center 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        }
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.CrossMarkCenter_MarkFind_Ready:                                 //  Fine Camera 얼라인 마크 찾기 준비
-            //        //  얼라인 마크 위치를 찾기 위한 데이터 세팅
-
-            //        //  마크 1개만 찾기 위한 설정
-            //        m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_1STMARK;                                //  요걸로 하면 마크 1개만 찾고 끝.
-
-            //        //  얼라인 마크 위치 평균 계산
-            //        m_nCrossMark_AlignMarkCount_Max = 3;                            //  얼라인 마크 검사 최대 회수. (평균 계산용)
-            //        m_nCrossMark_AlignMark_Count = 0;                               //  얼라인 마크 개수. (평균 계산용)
-            //        m_pCrossMark_AlignMarkPosition_Sum = new PointD(0, 0);          //  얼라인 마크 위치 누적. (평균 계산용)
-            //        m_pCrossMark_AlignMarkPosition_Average = new PointD(0, 0);      //  얼라인 마크 위치 누적. (평균 계산용)
-
-            //        //  마크 찾을 위치 (Cross Center 로 이동했으므로, 여기서 마크를 찾는다.)  
-            //        jigAligner_HighRes.m_AlignPositions[0].X = MC_Func.MC_GetEncPos((int)nAxis.X);          //  m_dMy1stMarkVisionPos_X;
-            //        jigAligner_HighRes.m_AlignPositions[0].Y = MC_Func.MC_GetEncPos((int)nAxis.Y);          //  m_dMy1stMarkVisionPos_Y;
-
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_Find;
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.CrossMarkCenter_Find:                                   //  Cross Mark Center 찾기
-
-            //        Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Center Cross 마크 검출 시작");
-
-            //        //m_bLowerVision_Align = false;                                                 //  true : Lower Vision     false : Upper Vision
-            //        m_nVisionAligner_Type = (int)Aligner_Type.Aligner_FineCam;
-
-            //        Equipment.Vision_SpiralMove_Use = false;                                        //  돌면서 찾지 않음.
-            //        Equipment.MachineStop_byUser = false;
-
-            //        //  라이브 상태가 아니면 라이브로 변경
-            //        if (jigAligner_HighRes.Camera.IsLiveOn == false)
-            //        {
-            //            jigAligner_HighRes.Camera.StartLive();
-            //        }
-
-            //        if (m_bAlignVisionThread_Use)
-            //        {
-            //            //  Thread 를 사용할 경우
-            //            m_bFindAlignMark_OK = false;
-            //            m_nFindAlignMark_Step = (int)FindAlignMark_Step.Start;
-
-            //            TickCount_Start((int)TickType.TICK_SUB);
-            //        }
-            //        else
-            //        {
-            //            //  그냥 타이머를 사용할 경우
-            //            jigAligner_HighRes.Work();
-            //        }
-
-            //        if (Equipment.MachineStop_byUser == true)
-            //        {
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "작업 중지. (사용자에 의해 작업이 중지됨)");
-
-            //            //if (!m_bAlignVisionThread_Use)
-            //            {
-            //                //timer_ReticleGlass_Check.Enabled = false;
-            //                //m_btimer_ReticleGlass_Check_Stop = true;
-            //            }
-
-            //            Equipment.AlignStart_Time = null;
-
-            //            m_bMyWaferAlign_fromManualMode = false;
-            //            //m_nMyWaferAlign_ManualMode_VisionType = (int)VisionType.NONE;
-
-            //            if (m_bAlignVisionThread_Use)
-            //            {
-            //                //  Thread 를 사용할 경우
-            //                m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
-            //            }
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-
-            //            //timer_MainWork.Enabled = false;
-            //            //m_btimer_MainWork_Stop = true;
-
-            //            MC_Func.MC_MotorStop((int)nAxis.X, 2000);
-            //            MC_Func.MC_MotorStop((int)nAxis.Y, 2000);
-            //            MC_Func.MC_MotorStop((int)nAxis.Z, 2000);
-            //        }
-            //        else
-            //        {
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_FindResultCheck;
-            //        }
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.CrossMarkCenter_FindResultCheck:                            //  Cross Mark Center 찾기 결과 확인
-
-            //        if (m_bAlignVisionThread_Use)
-            //        {
-            //            if (m_nFindAlignMark_Step == (int)FindAlignMark_Step.None)
-            //            {
-            //                Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Center Cross 마크 검출 완료");
-
-            //                //  여기서 마크 위치값을 가져오던 것을... 저~ 아래에서 평균으로 계산
-            //                //m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = ReticleAligner_Upper.FirstPosition.X;
-            //                //m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = ReticleAligner_Upper.FirstPosition.Y;
-
-            //                //  마크를 찾긴 했는데, Position 값이 0인 경우가 있다. 
-            //                if ((jigAligner_HighRes.FirstPosition.X == 0) || (jigAligner_HighRes.FirstPosition.Y == 0))
-            //                {
-            //                    Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Center Cross 마크 검출 결과 NG (위치값 0)");
-
-            //                    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_Find;
-            //                }
-            //                else
-            //                {
-            //                    m_pCrossMark_AlignMarkPosition_Sum.X += jigAligner_HighRes.FirstPosition.X;
-            //                    m_pCrossMark_AlignMarkPosition_Sum.Y += jigAligner_HighRes.FirstPosition.Y;
-
-            //                    //  평균 계산을 위해 반복
-            //                    m_nCrossMark_AlignMark_Count++;
-            //                    if (m_nCrossMark_AlignMark_Count < m_nCrossMark_AlignMarkCount_Max)
-            //                    {
-            //                        //  마크 1개만 찾기 위한 설정
-            //                        m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
-
-            //                        //  0번 인덱스 위치 (마크 찾을 위치)
-            //                        jigAligner_HighRes.m_AlignPositions[0].X = MC_Func.MC_GetEncPos((int)nAxis.X);        //  m_dMy1stMarkVisionPos_X;
-            //                        jigAligner_HighRes.m_AlignPositions[0].Y = MC_Func.MC_GetEncPos((int)nAxis.Y);        //  m_dMy1stMarkVisionPos_Y;
-
-            //                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_Find;
-            //                    }
-            //                    else
-            //                    {
-            //                        //  여기서 평균 계산
-            //                        m_pCrossMark_AlignMarkPosition_Average.X = m_pCrossMark_AlignMarkPosition_Sum.X / m_nCrossMark_AlignMark_Count;
-            //                        m_pCrossMark_AlignMarkPosition_Average.Y = m_pCrossMark_AlignMarkPosition_Sum.Y / m_nCrossMark_AlignMark_Count;
-
-            //                        //  평균값 범위 체크 (마지막에 찾은 위치에서 50um 이내의 범위에 있는지 확인
-            //                        if ((m_pCrossMark_AlignMarkPosition_Average.X >= (jigAligner_HighRes.FirstPosition.X - 0.05 /*m_dReticleAlignPosition_AverageCheck_Range*/)) &&
-            //                            (m_pCrossMark_AlignMarkPosition_Average.X <= (jigAligner_HighRes.FirstPosition.X + 0.05 /*m_dReticleAlignPosition_AverageCheck_Range*/)) &&
-            //                            (m_pCrossMark_AlignMarkPosition_Average.Y >= (jigAligner_HighRes.FirstPosition.Y - 0.05 /*m_dReticleAlignPosition_AverageCheck_Range*/)) &&
-            //                            (m_pCrossMark_AlignMarkPosition_Average.Y <= (jigAligner_HighRes.FirstPosition.Y + 0.05 /*m_dReticleAlignPosition_AverageCheck_Range*/)))
-            //                        {
-            //                            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Cross Mark 평균값 OK");
-
-            //                            m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].X = m_pCrossMark_AlignMarkPosition_Average.X;
-            //                            m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].Y = m_pCrossMark_AlignMarkPosition_Average.Y;
-            //                        }
-            //                        else
-            //                        {
-            //                            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Cross Mark 평균값 NG");
-
-            //                            m_strTemp = string.Format("AvgX : {0:0.000}, Avg Y: {1:0.000}, LastX : {2:0.000}, LastY: {3:0.000}",
-            //                                m_pCrossMark_AlignMarkPosition_Average.X,
-            //                                m_pCrossMark_AlignMarkPosition_Average.Y,
-            //                                jigAligner_HighRes.FirstPosition.X,
-            //                                jigAligner_HighRes.FirstPosition.Y);
-
-            //                            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", m_strTemp);
-
-            //                            m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].X = jigAligner_HighRes.FirstPosition.X;
-            //                            m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].Y = jigAligner_HighRes.FirstPosition.Y;
-            //                        }
-
-            //                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_XYAlignData_Calc;
-            //                    }
-            //                }
-            //            }
-            //            else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 60000)               //  1분 동안 마크를 찾지 못할 경우
-            //            {
-            //                Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "작업 중지. (Cross Mark 검출 시간 초과)");
-
-            //                //  알람 정지 (LED Bar - Red Blink)
-            //                Equipment.MachineStop_byAlarm = true;
-
-            //                Equipment.AlignStart_Time = null;
-
-            //                Equipment.MachineStop_byUser = true;
-
-            //                MC_Func.MC_MotorStop((int)nAxis.X, 2000);
-            //                MC_Func.MC_MotorStop((int)nAxis.Y, 2000);
-            //                MC_Func.MC_MotorStop((int)nAxis.Z, 2000);
-
-            //                //timer_ReticleGlass_Check.Enabled = false;
-            //                //m_btimer_ReticleGlass_Check_Stop = true;
-            //                //timer_MainWork.Enabled = false;
-            //                //m_btimer_MainWork_Stop = true;
-
-            //                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-
-            //                if (m_bAlignVisionThread_Use)
-            //                {
-            //                    //  Thread 를 사용할 경우
-            //                    m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
-            //                }
-
-            //                MessageBox.Show("Cross Mark 찾기 실패\r\n\r\n[Time Out]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //            }
-            //        }
-            //        else
-            //        {
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "상부 카메라 XY 위치 보정, Reticle Glass 얼라인 마크 검출 완료");
-
-            //            //  여기서 마크 위치값을 가져오던 것을... 저~ 아래에서 평균으로 계산
-            //            //m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X = ReticleAligner_Upper.FirstPosition.X;
-            //            //m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y = ReticleAligner_Upper.FirstPosition.Y;
-
-            //            //  마크를 찾긴 했는데, Position 값이 0인 경우가 있다. 
-            //            if ((jigAligner_HighRes.FirstPosition.X == 0) || (jigAligner_HighRes.FirstPosition.Y == 0))
-            //            {
-            //                Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Center Cross 마크 검출 결과 NG (위치값 0)");
-
-            //                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_Find;
-            //            }
-            //            else
-            //            {
-            //                m_pCrossMark_AlignMarkPosition_Sum.X += jigAligner_HighRes.FirstPosition.X;
-            //                m_pCrossMark_AlignMarkPosition_Sum.Y += jigAligner_HighRes.FirstPosition.Y;
-
-            //                //  평균 계산을 위해 반복
-            //                m_nCrossMark_AlignMark_Count++;
-            //                if (m_nCrossMark_AlignMark_Count < m_nCrossMark_AlignMarkCount_Max)
-            //                {
-            //                    //  마크 1개만 찾기 위한 설정
-            //                    m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
-
-            //                    //  0번 인덱스 위치 (마크 찾을 위치)
-            //                    jigAligner_HighRes.m_AlignPositions[0].X = MC_Func.MC_GetEncPos((int)nAxis.X);        //  m_dMy1stMarkVisionPos_X;
-            //                    jigAligner_HighRes.m_AlignPositions[0].Y = MC_Func.MC_GetEncPos((int)nAxis.Y);        //  m_dMy1stMarkVisionPos_Y;
-
-            //                    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_Find;
-            //                }
-            //                else
-            //                {
-            //                    //  여기서 평균 계산
-            //                    m_pCrossMark_AlignMarkPosition_Average.X = m_pCrossMark_AlignMarkPosition_Sum.X / m_nCrossMark_AlignMark_Count;
-            //                    m_pCrossMark_AlignMarkPosition_Average.Y = m_pCrossMark_AlignMarkPosition_Sum.Y / m_nCrossMark_AlignMark_Count;
-
-            //                    //  평균값 범위 체크 (마지막에 찾은 위치에서 50um 이내의 범위에 있는지 확인
-            //                    if ((m_pCrossMark_AlignMarkPosition_Average.X >= (jigAligner_HighRes.FirstPosition.X - 0.05 /*m_dReticleAlignPosition_AverageCheck_Range*/)) &&
-            //                        (m_pCrossMark_AlignMarkPosition_Average.X <= (jigAligner_HighRes.FirstPosition.X + 0.05 /*m_dReticleAlignPosition_AverageCheck_Range*/)) &&
-            //                        (m_pCrossMark_AlignMarkPosition_Average.Y >= (jigAligner_HighRes.FirstPosition.Y - 0.05 /*m_dReticleAlignPosition_AverageCheck_Range*/)) &&
-            //                        (m_pCrossMark_AlignMarkPosition_Average.Y <= (jigAligner_HighRes.FirstPosition.Y + 0.05 /*m_dReticleAlignPosition_AverageCheck_Range*/)))
-            //                    {
-            //                        Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Cross Mark 평균값 OK");
-
-            //                        m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].X = m_pCrossMark_AlignMarkPosition_Average.X;
-            //                        m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].Y = m_pCrossMark_AlignMarkPosition_Average.Y;
-            //                    }
-            //                    else
-            //                    {
-            //                        Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Cross Mark 평균값 NG");
-
-            //                        m_strTemp = string.Format("AvgX : {0:0.000}, Avg Y: {1:0.000}, LastX : {2:0.000}, LastY: {3:0.000}",
-            //                            m_pCrossMark_AlignMarkPosition_Average.X,
-            //                            m_pCrossMark_AlignMarkPosition_Average.Y,
-            //                            jigAligner_HighRes.FirstPosition.X,
-            //                            jigAligner_HighRes.FirstPosition.Y);
-
-            //                        Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", m_strTemp);
-
-            //                        m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].X = jigAligner_HighRes.FirstPosition.X;
-            //                        m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].Y = jigAligner_HighRes.FirstPosition.Y;
-            //                    }
-
-            //                    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_XYAlignData_Calc;
-            //                }
-            //            }
-            //        }
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.CrossMarkCenter_XYAlignData_Calc:                                            //  XY 얼라인 데이터 계산 --> 판정 결과 OK 일 경우, 현재 위치를 Upper 카메라 Reticle 위치로 저장
-
-            //        Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Cross Mark XY 보정량 계산");
-
-            //        deltaX = m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].X - jigAligner_HighRes.m_AlignPositions[0].X;
-            //        deltaY = m_forAlign_Data[(int)AlignParam.RESULTPOS_FIRSTMARK].Y - jigAligner_HighRes.m_AlignPositions[0].Y;
-
-            //        //  판정. (OK 범위 이내가 아니면 Retry)
-            //        if ((Math.Abs(deltaX) <= Config.ParamConfig.ReticleAutoCal_UpperVision_Allowable_XY) &&
-            //            (Math.Abs(deltaY) <= Config.ParamConfig.ReticleAutoCal_UpperVision_Allowable_XY))
-            //        {
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Cross Mark XY 위치가 카메라 센터에서 오차범위 이내에 있음");
-
-            //            //  Fine Camera 와 Scanner Offset 확인모드일 경우, 여기에서 Offset 값을 재설정 한다.
-            //            //  Scanner Cal. 모드일 경우, 15 X 15 가공 위치의 마크 검사를  진행한다.
-
-            //            //  전체 마크 검사 진행
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.__Upper_Camera_Center_Cal_Complete;
-            //        }
-            //        else
-            //        {
-            //            m_nReticleAlign_Count++;
-
-            //            if (m_nReticleAlign_Count < Config.ParamConfig.ReticleAutoCal_Align_Retries)
-            //            {
-            //                Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "상부 카메라 XY 위치 보정, Reticle Glass XY 위치가 카메라 센터에서 오차범위 초과");
-
-            //                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Upper_Camera_XYAlign_CorrectionMove;
-            //            }
-            //            else
-            //            {
-            //                Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "작업 중지. (상부 카메라 XY 위치 보정, 상부 카메라 XY 위치 보정 회수 초과)");
-
-            //                m_bReticle_Upper_XYAlign_ErrorCheck_OK = false;
-
-            //                //  알람 정지 (LED Bar - Red Blink)
-            //                Equipment.MachineStop_byAlarm = true;
-
-            //                Equipment.AlignStart_Time = null;
-
-            //                Equipment.MachineStop_byUser = true;
-
-            //                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.U, 500);
-            //                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.V, 500);
-            //                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.W, 500);
-
-            //                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.X, 500);
-            //                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.Y, 500);
-            //                MC_Func.MC_MotorStop((int)WaferProbeAlignParameter.AxisAjinEnum.EZ, 500);
-
-            //                timer_ReticleGlass_Check.Enabled = false;
-            //                m_btimer_ReticleGlass_Check_Stop = true;
-            //                timer_MainWork.Enabled = false;
-            //                m_btimer_MainWork_Stop = true;
-
-            //                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-
-            //                if (m_bAlignVisionThread_Use)
-            //                {
-            //                    //  Thread 를 사용할 경우
-            //                    m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
-            //                }
-
-            //                MessageBox.Show("상부 카메라, 레티클 글래스 Center 위치 보정 회수 초과", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //            }
-            //        }
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.Upper_Camera_XYAlign_CorrectionMove:                                      //  XY 보정 이동 (카메라 Center 로)
-
-            //        Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "상부 카메라 XY 위치 보정, 상부 카메라 XY 위치 보정 이동 시작");
-
-            //        waferProbeAlignParameter.stWaferProbeAlignPosParam = waferProbeAlignParameter.GetPositionInformation("ReticleGlass_UpperCamera");
-
-            //        //  Vision XY 방향 이동량 계산
-            //        deltaX = m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].X - reticleAligner_Upper.m_AlignPositions[0].X;
-            //        deltaY = m_forAlign_Data[(int)AlignParam.RESULT_UpperVISION_FIRSTMARKPOS].Y - reticleAligner_Upper.m_AlignPositions[0].Y;
-
-            //        waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.X] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.X) - deltaX;
-            //        waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.Y] = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.Y) - deltaY;
-
-            //        //  속도
-            //        m_dSpeed_ElvXY = Config.ParamConfig.Speed_Operation <= 0.0 ? 50 : Config.ParamConfig.Speed_Operation;
-
-            //        //  가감속 배율
-            //        m_dSpeedMag_forAccDec = Config.ParamConfig.Speed_Operation_Mag_forAccDec <= 0.0 ? 5 : Config.ParamConfig.Speed_Operation_Mag_forAccDec;
-
-            //        //  절대 위치 이동
-            //        MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.X, waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.X],
-            //                                                                            m_dSpeed_ElvXY,
-            //                                                                            m_dSpeed_ElvXY * m_dSpeedMag_forAccDec,
-            //                                                                            m_dSpeed_ElvXY * m_dSpeedMag_forAccDec);
-
-            //        MC_Func.MC_MovePosition((int)WaferProbeAlignParameter.AxisAjinEnum.Y, waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)WaferProbeAlign.nAxis.Y],
-            //                                                                            m_dSpeed_ElvXY,
-            //                                                                            m_dSpeed_ElvXY * m_dSpeedMag_forAccDec,
-            //                                                                            m_dSpeed_ElvXY * m_dSpeedMag_forAccDec);
-
-            //        TickCount_Start((int)TickType.TICK_SUB);
-
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Upper_Camera_XYAlign_CorrectionMove_DoneCheck;
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.Upper_Camera_XYAlign_CorrectionMove_DoneCheck:                             //  Top 위치 XY 보정 이동 완료 확인
-            //        if ((TickCount_Elapsed((int)TickType.TICK_SUB) >= Config.ParamConfig.WaferAlign_Move_StableTime) &&
-
-            //            MC_Func.MC_GetDone((int)WaferProbeAlignParameter.AxisAjinEnum.X) &&
-            //            MC_Func.MC_PosTolerance((int)WaferProbeAlignParameter.AxisAjinEnum.X,
-            //                                waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)nAxis.X]) &&
-
-            //            MC_Func.MC_GetDone((int)WaferProbeAlignParameter.AxisAjinEnum.Y) &&
-            //            MC_Func.MC_PosTolerance((int)WaferProbeAlignParameter.AxisAjinEnum.Y,
-            //                                waferProbeAlignParameter.stWaferProbeAlignPosParam.dTarget[(int)nAxis.Y]))
-            //        {
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "상부 카메라 XY 위치 보정, 상부 카메라 XY 위치 보정 이동 완료");
-
-            //            m_pReticle_Upper_AlignMarkPosition_Sum.X = 0.0;               //  Reticle Glass 얼라인 마크 위치 누적. (평균 계산용)
-            //            m_pReticle_Upper_AlignMarkPosition_Sum.Y = 0.0;               //  Reticle Glass 얼라인 마크 위치 누적. (평균 계산용)
-            //            m_pReticle_Upper_AlignMarkPosition_Average.X = 0.0;           //  Reticle Glass 얼라인 마크 위치 누적. (평균 계산용)
-            //            m_pReticle_Upper_AlignMarkPosition_Average.Y = 0.0;           //  Reticle Glass 얼라인 마크 위치 누적. (평균 계산용)
-
-            //            m_nReticle_Upper_AlignMark_Count = 0;
-
-
-            //            //  마크 1개만 찾기 위한 설정
-            //            m_nFindAlignMarkType = (int)WaferProbeAlign.AlignMarkType.ALIGN_1STMARK;                           //  요걸로 하면 마크 1개만 찾고 끝.
-
-            //            //  0번 인덱스 위치 (마크 찾을 위치)
-            //            m_dMy1stMarkVisionPos_X = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.X);
-            //            m_dMy1stMarkVisionPos_Y = MC_Func.MC_GetEncPos((int)WaferProbeAlignParameter.AxisAjinEnum.Y);
-
-            //            reticleAligner_Upper.m_AlignPositions[0].X = m_dMy1stMarkVisionPos_X;
-            //            reticleAligner_Upper.m_AlignPositions[0].Y = m_dMy1stMarkVisionPos_Y;
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.VisionXY_Move_ReticlePos;
-            //        }
-            //        else if (TickCount_Elapsed((int)TickType.TICK_SUB) >= 10000)
-            //        {
-            //            Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "작업 중지. (상부 카메라 XY 위치 보정, 상부 카메라 XY 위치 보정 이동 시간 초과)");
-
-            //            //  알람 정지 (LED Bar - Red Blink)
-            //            Equipment.MachineStop_byAlarm = true;
-
-            //            Equipment.AlignStart_Time = null;
-
-            //            //if (!m_bAlignVisionThread_Use)
-            //            {
-            //                timer_ReticleGlass_Check.Enabled = false;
-            //                m_btimer_ReticleGlass_Check_Stop = true;
-            //            }
-
-            //            m_bMyWaferAlign_fromManualMode = false;
-            //            m_nMyWaferAlign_ManualMode_VisionType = (int)VisionType.NONE;
-
-            //            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-
-            //            if (m_nWaferProbeAlign_MainStep != (int)WaferProbeAlign_Step.None)
-            //            {
-            //                timer_MainWork.Enabled = false;
-            //                m_btimer_MainWork_Stop = true;
-
-            //                m_nWaferProbeAlign_MainStep = (int)WaferProbeAlign_Step.None;
-            //            }
-
-            //            if (m_bAlignVisionThread_Use)
-            //            {
-            //                //  Thread 를 사용할 경우
-            //                m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
-            //            }
-            //        }
-            //        break;
-
-
-            //    case (int)ScannerCalibration_Step.__Upper_Camera_Center_Cal_Complete:                                    //  상부 카메라 Center Calibration 완료
-
-            //        Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "상부 카메라 XY Cneter 위치 보정 완료");
-
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.__Lower_Camera_Center_Cal_Start;
-            //        break;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.LaserPower_Change:                                                 //  레이저 출력 변경
-
-
-
-            //    //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //    //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.LaserPower_ChangeCheck;
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.LaserPower_ChangeCheck:                                            //  레이저 출력 변경 확인
-            //    //        //if (MC_Func.MC_GetDone(1) &&
-            //    //        //    MC_Func.MC_PosTolerance(1, m_dCorrectedAttenuatorPos))
-            //    //        //{
-            //    //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.DustCollector_On;
-            //    //        //}
-            //    //        //else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) >= 10000)
-            //    //        //{
-            //    //        //    timer_VerifyScannerCamOffset.Enabled = false;
-            //    //        //    MessageBox.Show("Attenuator 축, 십자마크 가공 출력 위치로 이동 실패.", "Error");
-
-            //    //        //    m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-            //    //        //}
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.DustCollector_On:                                      //  집진기 On
-            //    //        //workStageParameter.DO_DustCollector_OnOff(true);
-
-            //    //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //    //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.DustCollector_On_Check;
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.DustCollector_On_Check:                                //  집진기 On 확인
-            //    //        //if (laserDrillingParameter.DI_DustCollector_On() && !laserDrillingParameter.DI_DustCollector_Off())
-            //    //        if (true)
-            //    //        {
-            //    //            m_dCurPos_X = MC_Func.MC_GetEncPos((int)nAxis.X);
-            //    //            m_dCurPos_Y = MC_Func.MC_GetEncPos((int)nAxis.Y);
-
-            //    //            //  검증 전 위치 저장
-            //    //            m_pStageXY_Pos_BeforeVerify.X = MC_Func.MC_GetEncPos((int)nAxis.X);
-            //    //            m_pStageXY_Pos_BeforeVerify.Y = MC_Func.MC_GetEncPos((int)nAxis.Y);
-
-            //    //            //if (Config.ParamConfig.ScannerCamera_MapData_Div)
-            //    //            //{
-            //    //                m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.MapDataFlag_Clear;
-            //    //            //}
-            //    //            //else
-            //    //            //{
-            //    //            //    m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.StageXY_MoveScannerPos;
-            //    //            //}
-            //    //        }
-            //    //        //else if (laserDrillingParameter.DI_DustCollector_Alarm())
-            //    //        //{
-            //    //        //    timer_Motion_Home.Enabled = false;
-
-            //    //        //    MessageBox.Show("Alarm", "Dust Collector 점검 요망");
-
-            //    //        //    m_nHomeStep = (int)Home_Step.None;
-            //    //        //}
-            //    //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //    //        {
-            //    //            m_bScannerCamVerify_Complete = false;
-
-            //    //            timer_VerifyScannerCamOffset.Enabled = false;
-
-            //    //            MessageBox.Show("Dust Collector On 실패", "Error");
-
-            //    //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-            //    //        }
-            //    //        break;
-
-
-            //    //    ///////////////////////////////////
-            //    //    //  Map Data 이원화 - 시작
-            //    //    case (int)VerifyScannerCameraCenter_Step.MapDataFlag_Clear:                                      //  Map Data Flag 초기화 (0)
-
-            //    //        //MapDataFlag_Clear();
-
-            //    //        //TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //    //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.MapDataFlag_ClearCheck;
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.MapDataFlag_ClearCheck:                                //  Map Data Flag 초기화 확인
-
-            //    //        //if (MapDataFlag_Read() == (int)MapDataType.MAPDATASTATUS_INIT)
-            //    //        //{
-            //    //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.MapDataChange_ScannerMap;
-            //    //        //}
-            //    //        //else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //    //        //{
-            //    //        //    m_bScannerCamVerify_Complete = false;
-
-            //    //        //    timer_VerifyScannerCamOffset.Enabled = false;
-
-            //    //        //    MessageBox.Show("Map Data Flag 초기화 실패", "Error");
-
-            //    //        //    m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-            //    //        //}
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.MapDataChange_ScannerMap:                                      //  Scanner 위치 Map Data 로 변경
-
-            //    //        //MapData_Change((int)MapDataType.MAPDATASTATUS_SCANNER);
-
-            //    //        //TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //    //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.MapDataFlagCheck_ScannerMap;
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.MapDataFlagCheck_ScannerMap:                                   //  Scanner 위치 Map Data 로 변경되었는지 확인
-
-            //    //        //if (MapDataFlag_Read() == (int)MapDataType.MAPDATASTATUS_SCANNER)
-            //    //        //{
-            //    //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.StageXY_MoveScannerPos;
-            //    //        //}
-            //    //        //else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //    //        //{
-            //    //        //    m_bScannerCamVerify_Complete = false;
-
-            //    //        //    timer_VerifyScannerCamOffset.Enabled = false;
-
-            //    //        //    MessageBox.Show("Map Data 변경 실패 [Scanner]", "Error");
-
-            //    //        //    m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-            //    //        //}
-            //    //        break;
-            //    //    //  Map Data 이원화 - 끝
-            //    //    ///////////////////////////////////
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.StageXY_MoveScannerPos:                                            //  Stage XY 축, Scanner Center 위치로 이동 (현재 카메라가 보고 있는 위치에서 Scanner Center Offset 만큼 이동)
-            //    //        workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
-
-            //    //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = m_pStageXY_Pos_BeforeVerify.Y - Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            //    //        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = m_pStageXY_Pos_BeforeVerify.X - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
-
-            //    //        //  속도 설정
-            //    //        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-            //    //        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-
-            //    //        //MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X], lfVelocity, lfAccDec, lfAccDec);
-            //    //        //MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y], lfVelocity, lfAccDec, lfAccDec);
-
-            //    //        xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
-            //    //        xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
-            //    //        MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-
-            //    //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //    //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.StageXY_MoveScannerPos_DoneCheck;
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.StageXY_MoveScannerPos_DoneCheck:                                  //  Stage XY 축, Scanner Center 위치로 이동 완료 확인
-            //    //        m_nMotorState0 = ACSSPiiPlusMotionBoard.Api.GetMotorState((Axis)0);
-            //    //        m_nMotorState1 = ACSSPiiPlusMotionBoard.Api.GetMotorState((Axis)1);
-
-            //    //        if (((m_nMotorState0 & MotorStates.ACSC_MST_MOVE) == 0) && ((m_nMotorState0 & MotorStates.ACSC_MST_INPOS) != 0) &&
-            //    //            ((m_nMotorState1 & MotorStates.ACSC_MST_MOVE) == 0) && ((m_nMotorState1 & MotorStates.ACSC_MST_INPOS) != 0))
-            //    //        {
-            //    //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.StageXY_StableTime;
-            //    //        }
-            //    //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) >= 10000)
-            //    //        {
-            //    //            m_bScannerCamVerify_Complete = false;
-
-            //    //            timer_VerifyScannerCamOffset.Enabled = false;
-
-            //    //            MessageBox.Show("Stage XY 축, 가공 위치 이동 실패.", "Error");
-
-            //    //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-
-            //    //        }
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.StageXY_StableTime:                                     //  Stage 이동 후 안정화 시간
-            //    //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //    //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.StageXY_StableTimeCheck;
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.StageXY_StableTimeCheck:                               //  Stage 이동 후 안정화 시간 완료 확인
-
-            //    //        if (Config.ParamConfig.ScannerCameraOffsetVerify_StableTime <= 0)
-            //    //        {
-            //    //            m_nStableTime = 500;
-            //    //        }
-            //    //        else
-            //    //        {
-            //    //            m_nStableTime = Config.ParamConfig.ScannerCameraOffsetVerify_StableTime;
-            //    //        }
-
-            //    //        if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > m_nStableTime)
-            //    //        {
-            //    //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.LaserShutter_Open;
-            //    //        }
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.LaserShutter_Open:                                               //  Shutter Open
-            //    //        laserDrillingParameter.DO_PowerMeter_OpenClose(true);
-
-            //    //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //    //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.LaserShutter_Open_Check;
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.LaserShutter_Open_Check:                                         //  Shutter Open 확인
-            //    //        if (!laserDrillingParameter.DI_PowerMeter_Close() && laserDrillingParameter.DI_PowerMeter_Open())
-            //    //        {
-            //    //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.Pattern_MarkingStart;
-            //    //        }
-            //    //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //    //        {
-            //    //            m_bScannerCamVerify_Complete = false;
-
-            //    //            timer_VerifyScannerCamOffset.Enabled = false;
-
-            //    //            MessageBox.Show("Power Meter (Shutter) Open 실패", "Error");
-
-            //    //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-            //    //        }
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.Pattern_MarkingStart:                                           //  마킹 시작
-
-            //    //        if (Config.ParamConfig.ScannerCameraOffsetVerify_MarkSpeed <= 0)
-            //    //        {
-            //    //            m_dMarkSpeed = 10;
-            //    //        }
-            //    //        else
-            //    //        {
-            //    //            m_dMarkSpeed = Config.ParamConfig.ScannerCameraOffsetVerify_MarkSpeed;
-            //    //        }
-
-            //    //        if (Config.ParamConfig.ScannerCameraOffsetVerify_MarkLength <= 0)
-            //    //        {
-            //    //            m_dMarkLength = 0.1;
-            //    //        }
-            //    //        else
-            //    //        {
-            //    //            m_dMarkLength = Config.ParamConfig.ScannerCameraOffsetVerify_MarkLength;
-            //    //        }
-
-            //    //        if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
-            //    //        {
-            //    //            DrawCross(rtcSyncAxis, laser, MotionType.ScannerOnly, (float)m_dMarkSpeed, m_dMarkLength, m_dMarkLength);
-            //    //        }
-            //    //        else
-            //    //        {
-            //    //            DrawCross(rtc6, laser, MotionType.ScannerOnly, (float)m_dMarkSpeed, m_dMarkLength, m_dMarkLength);
-            //    //        }
-
-            //    //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //    //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.Pattern_MarkingComplete;
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.Pattern_MarkingComplete:                                           //  마킹 완료 확인 (--> LaserFocusStep_RemainedCheck)
-            //    //        if ((TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 500) &&
-            //    //            (((Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS) && !rtcSyncAxis.CtlGetStatus(RtcStatus.Busy)) ||
-            //    //            ((Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6) && !rtc6.CtlGetStatus(RtcStatus.Busy))))                             //  Marker 가 Busy 가 아니면 Marking 작업이 끝났다고 본다.
-            //    //        {
-            //    //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.LaserShutter_Close2;
-            //    //        }
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.LaserShutter_Close2:                                                //  Shutter Close
-            //    //        laserDrillingParameter.DO_PowerMeter_OpenClose(false);
-
-            //    //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //    //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.LaserShutter_Close2_Check;
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.LaserShutter_Close2_Check:                                          //  Shutter Close 확인
-            //    //        if (laserDrillingParameter.DI_PowerMeter_Close() && !laserDrillingParameter.DI_PowerMeter_Open())
-            //    //        {
-            //    //            if (Config.ParamConfig.ScannerCamera_MapData_Div)
-            //    //            {
-            //    //                m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.MapDataFlag_Clear2;
-            //    //            }
-            //    //            else
-            //    //            {
-            //    //                m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.StageXY_MoveCameraPos;
-            //    //            }
-            //    //        }
-            //    //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //    //        {
-            //    //            m_bScannerCamVerify_Complete = false;
-
-            //    //            timer_VerifyScannerCamOffset.Enabled = false;
-
-            //    //            MessageBox.Show("Power Meter (Shutter) Close 실패", "Error");
-
-            //    //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-            //    //        }
-            //    //        break;
-
-
-            //    //    ///////////////////////////////////
-            //    //    //  Map Data 이원화 - 시작
-            //    //    case (int)VerifyScannerCameraCenter_Step.MapDataFlag_Clear2:                                     //  Map Data Flag 초기화 (0)
-
-            //    //        MapDataFlag_Clear();
-
-            //    //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //    //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.MapDataFlag_Clear2Check;
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.MapDataFlag_Clear2Check:                                //  Map Data Flag 초기화 확인
-
-            //    //        if (MapDataFlag_Read() == (int)MapDataType.MAPDATASTATUS_INIT)
-            //    //        {
-            //    //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.MapDataChange_CameraMap;
-            //    //        }
-            //    //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //    //        {
-            //    //            m_bScannerCamVerify_Complete = false;
-
-            //    //            timer_VerifyScannerCamOffset.Enabled = false;
-
-            //    //            MessageBox.Show("Map Data Flag 초기화 실패", "Error");
-
-            //    //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-            //    //        }
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.MapDataChange_CameraMap:                                      //  Camera 위치 Map Data 로 변경
-
-            //    //        MapData_Change((int)MapDataType.MAPDATASTATUS_CAMERA);
-
-            //    //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //    //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.MapDataFlagCheck_CameraMap;
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.MapDataFlagCheck_CameraMap:                                   //  Camera 위치 Map Data 로 변경되었는지 확인
-
-            //    //        if (MapDataFlag_Read() == (int)MapDataType.MAPDATASTATUS_CAMERA)
-            //    //        {
-            //    //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.StageXY_MoveCameraPos;
-            //    //        }
-            //    //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) > 5000)
-            //    //        {
-            //    //            m_bScannerCamVerify_Complete = false;
-
-            //    //            timer_VerifyScannerCamOffset.Enabled = false;
-
-            //    //            MessageBox.Show("Map Data 변경 실패 [Camera]", "Error");
-
-            //    //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-            //    //        }
-            //    //        break;
-            //    //    //  Map Data 이원화 - 끝
-            //    //    ///////////////////////////////////
-            //    //    ///
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.StageXY_MoveCameraPos:                                             //  Stage XY 축, 카메라 Center 위치로 이동
-            //    //        laserDrillingParameter.stLaserDrillingPosParam = laserDrillingParameter.GetPositionInformation("WorkStage_WorkHeight");
-
-            //    //        jigAligner.Camera.StartLive();
-
-            //    //        if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
-            //    //        {
-            //    //            //  Un-Follow
-            //    //            if (rtcSyncAxis.MotionMode != MotionMode.Unfollow)
-            //    //            {
-            //    //                rtcSyncAxis.CtlMotionMode(MotionMode.Unfollow);
-            //    //            }
-            //    //        }
-
-            //    //        //m_dCurPos_Y = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)laserDrillingParameter.Axes[LaserDrillingParameter.MotionKey.Y.ToString()].No);
-            //    //        //m_dCurPos_X = ACSSPiiPlusMotionBoard.Api.GetFPosition((Axis)laserDrillingParameter.Axes[LaserDrillingParameter.MotionKey.X.ToString()].No);
-
-            //    //        //laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = m_dCurPos_Y + Config.ParamConfig.OffsetY_fromCamera_toLaser;
-            //    //        //laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = m_dCurPos_X + Config.ParamConfig.OffsetX_fromCamera_toLaser;
-            //    //        laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = m_pStageXY_Pos_BeforeVerify.Y;   // + Config.ParamConfig.OffsetY_fromCamera_toLaser;
-            //    //        laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = m_pStageXY_Pos_BeforeVerify.X;   // + Config.ParamConfig.OffsetX_fromCamera_toLaser;
-
-            //    //        ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                      //  '0' - Absolute position
-            //    //                            (Axis)laserDrillingParameter.Axes[LaserDrillingParameter.MotionKey.Y.ToString()].No,          //  Axis number
-            //    //                            laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey]);        //  Target position
-
-            //    //        ACSSPiiPlusMotionBoard.Api.ToPoint(0,                                      //  '0' - Absolute position
-            //    //                            (Axis)laserDrillingParameter.Axes[LaserDrillingParameter.MotionKey.X.ToString()].No,          //  Axis number
-            //    //                            laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.X]);
-
-            //    //        TickCount_Start((int)TickType.TICK_LASER_FOCUS);
-
-            //    //        m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.StageXY_MoveCameraPos_DoneCheck;
-            //    //        break;
-
-
-            //    //    case (int)VerifyScannerCameraCenter_Step.StageXY_MoveCameraPos_DoneCheck:                                   //  Stage XY 축, 카메라 Center 위치로 이동 완료 확인
-            //    //        m_nMotorState0 = ACSSPiiPlusMotionBoard.Api.GetMotorState((Axis)0);
-            //    //        m_nMotorState1 = ACSSPiiPlusMotionBoard.Api.GetMotorState((Axis)1);
-
-            //    //        if (((m_nMotorState0 & MotorStates.ACSC_MST_MOVE) == 0) && ((m_nMotorState0 & MotorStates.ACSC_MST_INPOS) != 0) &&
-            //    //            ((m_nMotorState1 & MotorStates.ACSC_MST_MOVE) == 0) && ((m_nMotorState1 & MotorStates.ACSC_MST_INPOS) != 0))
-            //    //        {
-            //    //            jigAligner.Camera.StartLive();
-
-            //    //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.Complete;
-            //    //        }
-            //    //        else if (TickCount_Elapsed((int)TickType.TICK_LASER_FOCUS) >= 10000)
-            //    //        {
-            //    //            m_bScannerCamVerify_Complete = false;
-
-            //    //            timer_VerifyScannerCamOffset.Enabled = false;
-
-            //    //            MessageBox.Show("Stage XY 축, 가공 위치 이동 실패.", "Error");
-
-            //    //            m_nVerify_ScannerCenter_CamCenter_Step = (int)VerifyScannerCameraCenter_Step.None;
-
-            //    //        }
-            //    //        break;
-
-
-            //    case (int)ScannerCalibration_Step.Complete:
-            //        m_bScannerCalibration_Complete = true;
-
-            //        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-
-            //        break;
-            //}
         }
 
 
@@ -23414,6 +23082,72 @@ namespace QMC.Common.Modules
                     m_nLaserHeightCheck_Step = (int)LaserHeightCheck_Step.None;
                     break;
             }
+        }
+
+        public void DrawCalibrationCrosses(int rows, int cols, float pitchX, float pitchY)
+        {
+            if (rows <= 0 || cols <= 0)
+                throw new ArgumentException("Rows and columns must be greater than zero.");
+
+            float crossSize = 1.0f; // 1mm 십자가
+
+            //float fFrequency = 50_000.0f;
+            //float fPulseWidth = 2.0f;
+            //workStage.rtc.CtlFrequency(fFrequency, fPulseWidth);
+
+            float fJumpSpeed = 1000.0f;
+            float fMarkSpeed = 200.0f;
+            rtc.CtlSpeed(fJumpSpeed, fMarkSpeed);
+
+            float fLaserOnDelay = 10.0f;
+            float fLaserOffDelay = 100.0f;
+            float fMarkDelay = 200.0f;
+            float fJumpDelay = 200.0f;
+            float fPolygonDelay = 0.0f;
+            rtc.CtlDelay(fLaserOnDelay, fLaserOffDelay, fMarkDelay, fJumpDelay, fPolygonDelay);
+
+            //float fLaserPower = 2.0f;
+            //workStage.laser.CtlPower(fLaserPower);
+
+            rtc.ListBegin(laser, ListType.Single);
+
+            // 중심 기준 좌표로 시작점 계산
+            float startX = -((cols - 1) * pitchX) / 2.0f;
+            float startY = -((rows - 1) * pitchY) / 2.0f;
+
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < cols; col++)
+                {
+                    float centerX = startX + col * pitchX;
+                    float centerY = startY + row * pitchY;
+
+                    DrawCross(centerX, centerY, crossSize);
+                }
+            }
+
+            rtc.ListEnd();
+            rtc.ListExecute();
+        }
+
+
+        /// <summary>
+        /// 주어진 중심 좌표에 1mm 크기의 십자가를 그리는 함수
+        /// </summary>
+        /// <param name="centerX">십자가 중심의 X 좌표</param>
+        /// <param name="centerY">십자가 중심의 Y 좌표</param>
+        /// <param name="size">십자가의 크기 (mm)</param>
+        private void DrawCross(float centerX, float centerY, float size)
+        {
+            float halfSize = size / 2;
+
+            // 가로선 그리기
+            rtc.ListJump(centerX - halfSize, centerY);
+            rtc.ListMark(centerX + halfSize, centerY);
+
+            // 세로선 그리기
+            rtc.ListJump(centerX, centerY - halfSize);
+            rtc.ListMark(centerX, centerY + halfSize);
         }
     }
 }
