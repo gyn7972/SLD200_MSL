@@ -156,8 +156,11 @@ namespace SLD200_MSL
             textBox_Setup_ScannerCal_MarkingSpeed.Text = Equipment.Scanner_Calibration_LaserMarkSpeed.ToString();
             textBox_Setup_ScannerCal_JumpSpeed.Text = Equipment.Scanner_Calibration_LaserJumpSpeed.ToString();
 
-
-
+            textBox_Setup_ScannerCal_LaserOnDelay.Text = Equipment.Scanner_Calibration_LaserOnDelay.ToString();
+            textBox_Setup_ScannerCal_LaserOffDelay.Text = Equipment.Scanner_Calibration_LaserOffDelay.ToString();
+            textBox_Setup_ScannerCal_MarkDelay.Text = Equipment.Scanner_Calibration_MarkDelay.ToString();
+            textBox_Setup_ScannerCal_JumpDelay.Text = Equipment.Scanner_Calibration_JumpDelay.ToString();
+            textBox_Setup_ScannerCal_PolygonDelay.Text = Equipment.Scanner_Calibration_PolygonDelay.ToString();
 
 
             //m_fieldSize = Equipment.Scanner_Calibration_FieldSize;
@@ -539,7 +542,7 @@ namespace SLD200_MSL
                 //textBox_Setup_Motion_Jog_MaxStepSize.Text = Equipment.stAxisParam[i].Jog_StepSize_Max.ToString();
                 //textBox_Setup_Motion_Jog_FineStepSize.Text = Equipment.stAxisParam[i].Jog_StepSize_Fine.ToString();
                 //textBox_Setup_Motion_Jog_CoarseStepSize.Text = Equipment.stAxisParam[i].Jog_StepSize_Coarse.ToString();
-            }            
+            }
 
             //// Pulse/Encoder Method && Move Parameter Setting
             //duMethodPulse = ConvertComboToAxm(ref cboPulse);
@@ -547,10 +550,10 @@ namespace SLD200_MSL
             //duUseAlarm = ConvertComboToAxm(ref cboAlarm);
             //duModeAbsRel = ConvertComboToAxm(ref cboAbsRel);
             //duModeProfile = ConvertComboToAxm(ref cboProfile);
-            //dVelocityMin = Convert.ToDouble(edtMinVel.Text);
-            //dVelocityMax = Convert.ToDouble(edtMaxVel.Text);
-            //lMovePulse = Convert.ToInt32(edtMovePulse.Text);
-            //dMoveUnit = Convert.ToDouble(edtMoveUnit.Text);
+            //dVelocityMin = Equipment.ToDouble(edtMinVel.Text);
+            //dVelocityMax = Equipment.ToDouble(edtMaxVel.Text);
+            //lMovePulse = Equipment.ToInt(edtMovePulse.Text);
+            //dMoveUnit = Equipment.ToDouble(edtMoveUnit.Text);
 
             //// Input/Output Signal Setting
             //duUseInp = ConvertComboToAxm(ref cboInp);
@@ -568,18 +571,18 @@ namespace SLD200_MSL
             //duHomeSignal = ConvertComboToAxm(ref cboHomeSignal);
             //lHomeDir = (int)ConvertComboToAxm(ref cboHomeDir);
             //duZphas = ConvertComboToAxm(ref cboZPhaseUse);
-            //dHomeClrTime = Convert.ToDouble(edtHomeClrTime.Text);
-            //dHomeOffset = Convert.ToDouble(edtHomeOffset.Text);
+            //dHomeClrTime = Equipment.ToDouble(edtHomeClrTime.Text);
+            //dHomeOffset = Equipment.ToDouble(edtHomeOffset.Text);
 
             //// Software Limit Setting
-            //dNegativePos = Convert.ToDouble(edtSwPosN.Text);
-            //dPositivePos = Convert.ToDouble(edtSwPosP.Text);
+            //dNegativePos = Equipment.ToDouble(edtSwPosN.Text);
+            //dPositivePos = Equipment.ToDouble(edtSwPosP.Text);
 
             //// User Move Parameter Setting
-            //dInitPos = Convert.ToDouble(edtPosition.Text);
-            //dInitVel = Convert.ToDouble(edtVelocity.Text);
-            //dInitAccel = Convert.ToDouble(edtAccel.Text);
-            //dInitDecel = Convert.ToDouble(edtDecel.Text);
+            //dInitPos = Equipment.ToDouble(edtPosition.Text);
+            //dInitVel = Equipment.ToDouble(edtVelocity.Text);
+            //dInitAccel = Equipment.ToDouble(edtAccel.Text);
+            //dInitDecel = Equipment.ToDouble(edtDecel.Text);
 
             //for (lAxisNo = 0; lAxisNo < m_lAxisCounts; lAxisNo++)
             //{
@@ -657,7 +660,7 @@ namespace SLD200_MSL
             //    //++ 지정 축의 Alarm Reset 신호 Active Level을 설정합니다.
             //    CAXM.AxmSignalSetServoAlarmResetLevel(lAxisNo, duLevelAlmRst);
 
-                
+
 
             //    //++ 지정 축의 Z상 Active Level을 설정합니다.
             //    CAXM.AxmSignalSetZphaseLevel(lAxisNo, duLevelZPhase);
@@ -728,36 +731,36 @@ namespace SLD200_MSL
                 Equipment.stAxisParam[m_nIndex].Home_Installed = comboBox_Setup_Motion_Home_Install.SelectedIndex;
                 Equipment.stAxisParam[m_nIndex].Home_ActiveLevel = comboBox_Setup_Motion_Home_Active.SelectedIndex;
                 Equipment.stAxisParam[m_nIndex].Home_Direction = comboBox_Setup_Motion_Home_Direction.SelectedIndex;
-                Equipment.stAxisParam[m_nIndex].Home_Speed_1st = Convert.ToDouble(textBox_Setup_Motion_Home_Speed_1st.Text);
-                Equipment.stAxisParam[m_nIndex].Home_Speed_2nd = Convert.ToDouble(textBox_Setup_Motion_Home_Speed_2nd.Text);
-                Equipment.stAxisParam[m_nIndex].Home_Speed_3rd = Convert.ToDouble(textBox_Setup_Motion_Home_Speed_3rd.Text);
-                Equipment.stAxisParam[m_nIndex].Home_Speed_Last = Convert.ToDouble(textBox_Setup_Motion_Home_Speed_Last.Text);
-                Equipment.stAxisParam[m_nIndex].Home_Clear_Time = Convert.ToDouble(textBox_Setup_Motion_Home_ClearTime.Text);
+                Equipment.stAxisParam[m_nIndex].Home_Speed_1st = Equipment.ToDouble(textBox_Setup_Motion_Home_Speed_1st.Text);
+                Equipment.stAxisParam[m_nIndex].Home_Speed_2nd = Equipment.ToDouble(textBox_Setup_Motion_Home_Speed_2nd.Text);
+                Equipment.stAxisParam[m_nIndex].Home_Speed_3rd = Equipment.ToDouble(textBox_Setup_Motion_Home_Speed_3rd.Text);
+                Equipment.stAxisParam[m_nIndex].Home_Speed_Last = Equipment.ToDouble(textBox_Setup_Motion_Home_Speed_Last.Text);
+                Equipment.stAxisParam[m_nIndex].Home_Clear_Time = Equipment.ToDouble(textBox_Setup_Motion_Home_ClearTime.Text);
                 Equipment.stAxisParam[m_nIndex].Home_ZPhase_Use = comboBox_Setup_Motion_Home_ZPhaseUse.SelectedIndex;
-                Equipment.stAxisParam[m_nIndex].Home_Offset = Convert.ToDouble(textBox_Setup_Motion_Home_Offset.Text);
-                Equipment.stAxisParam[m_nIndex].Home_Acceleration_1st = Convert.ToDouble(textBox_Setup_Motion_Home_Acceleration_1st.Text);
-                Equipment.stAxisParam[m_nIndex].Home_Acceleration_2nd = Convert.ToDouble(textBox_Setup_Motion_Home_Acceleration_2nd.Text);
+                Equipment.stAxisParam[m_nIndex].Home_Offset = Equipment.ToDouble(textBox_Setup_Motion_Home_Offset.Text);
+                Equipment.stAxisParam[m_nIndex].Home_Acceleration_1st = Equipment.ToDouble(textBox_Setup_Motion_Home_Acceleration_1st.Text);
+                Equipment.stAxisParam[m_nIndex].Home_Acceleration_2nd = Equipment.ToDouble(textBox_Setup_Motion_Home_Acceleration_2nd.Text);
 
-                Equipment.stAxisParam[m_nIndex].Common_UnitPerPulse_Unit = Convert.ToDouble(textBox_Setup_Motion_Common_Unit.Text);
-                Equipment.stAxisParam[m_nIndex].Common_UnitPerPulse_Pulse = Convert.ToInt16(textBox_Setup_Motion_Common_Pulse.Text);
-                Equipment.stAxisParam[m_nIndex].Common_Acceleration_Min = Convert.ToDouble(textBox_Setup_Motion_Common_MinAcc.Text);
-                Equipment.stAxisParam[m_nIndex].Common_Acceleration_Max = Convert.ToDouble(textBox_Setup_Motion_Common_MaxAcc.Text);
-                Equipment.stAxisParam[m_nIndex].Common_Acceleration_Fine = Convert.ToDouble(textBox_Setup_Motion_Common_FineAcc.Text);
-                Equipment.stAxisParam[m_nIndex].Common_Acceleration_Coarse = Convert.ToDouble(textBox_Setup_Motion_Common_CoarseAcc.Text);
-                Equipment.stAxisParam[m_nIndex].Common_Speed_Max = Convert.ToDouble(textBox_Setup_Motion_Common_MaxSpeed.Text);
-                Equipment.stAxisParam[m_nIndex].Common_Speed_Min = Convert.ToDouble(textBox_Setup_Motion_Common_MinSpeed.Text);
-                Equipment.stAxisParam[m_nIndex].Common_Speed_Fine = Convert.ToDouble(textBox_Setup_Motion_Common_FineSpeed.Text);
-                Equipment.stAxisParam[m_nIndex].Common_Speed_Coarse = Convert.ToDouble(textBox_Setup_Motion_Common_CoarseSpeed.Text);
-                Equipment.stAxisParam[m_nIndex].Common_Position_Min = Convert.ToDouble(textBox_Setup_Motion_Common_MinPos.Text);
-                Equipment.stAxisParam[m_nIndex].Common_Position_Max = Convert.ToDouble(textBox_Setup_Motion_Common_MaxPos.Text);
-                Equipment.stAxisParam[m_nIndex].Common_Settle_Delay = Convert.ToDouble(textBox_Setup_Motion_Common_SettleDelay.Text);
+                Equipment.stAxisParam[m_nIndex].Common_UnitPerPulse_Unit = Equipment.ToDouble(textBox_Setup_Motion_Common_Unit.Text);
+                Equipment.stAxisParam[m_nIndex].Common_UnitPerPulse_Pulse = Equipment.ToInt(textBox_Setup_Motion_Common_Pulse.Text);
+                Equipment.stAxisParam[m_nIndex].Common_Acceleration_Min = Equipment.ToDouble(textBox_Setup_Motion_Common_MinAcc.Text);
+                Equipment.stAxisParam[m_nIndex].Common_Acceleration_Max = Equipment.ToDouble(textBox_Setup_Motion_Common_MaxAcc.Text);
+                Equipment.stAxisParam[m_nIndex].Common_Acceleration_Fine = Equipment.ToDouble(textBox_Setup_Motion_Common_FineAcc.Text);
+                Equipment.stAxisParam[m_nIndex].Common_Acceleration_Coarse = Equipment.ToDouble(textBox_Setup_Motion_Common_CoarseAcc.Text);
+                Equipment.stAxisParam[m_nIndex].Common_Speed_Max = Equipment.ToDouble(textBox_Setup_Motion_Common_MaxSpeed.Text);
+                Equipment.stAxisParam[m_nIndex].Common_Speed_Min = Equipment.ToDouble(textBox_Setup_Motion_Common_MinSpeed.Text);
+                Equipment.stAxisParam[m_nIndex].Common_Speed_Fine = Equipment.ToDouble(textBox_Setup_Motion_Common_FineSpeed.Text);
+                Equipment.stAxisParam[m_nIndex].Common_Speed_Coarse = Equipment.ToDouble(textBox_Setup_Motion_Common_CoarseSpeed.Text);
+                Equipment.stAxisParam[m_nIndex].Common_Position_Min = Equipment.ToDouble(textBox_Setup_Motion_Common_MinPos.Text);
+                Equipment.stAxisParam[m_nIndex].Common_Position_Max = Equipment.ToDouble(textBox_Setup_Motion_Common_MaxPos.Text);
+                Equipment.stAxisParam[m_nIndex].Common_Settle_Delay = Equipment.ToDouble(textBox_Setup_Motion_Common_SettleDelay.Text);
 
-                Equipment.stAxisParam[m_nIndex].Jog_Speed_Fine = Convert.ToDouble(textBox_Setup_Motion_Jog_FineSpeed.Text);
-                Equipment.stAxisParam[m_nIndex].Jog_Speed_Coarse = Convert.ToDouble(textBox_Setup_Motion_Jog_CoarseSpeed.Text);
-                Equipment.stAxisParam[m_nIndex].Jog_StepSize_Min = Convert.ToDouble(textBox_Setup_Motion_Jog_MinStepSize.Text);
-                Equipment.stAxisParam[m_nIndex].Jog_StepSize_Max = Convert.ToDouble(textBox_Setup_Motion_Jog_MaxStepSize.Text);
-                Equipment.stAxisParam[m_nIndex].Jog_StepSize_Fine = Convert.ToDouble(textBox_Setup_Motion_Jog_FineStepSize.Text);
-                Equipment.stAxisParam[m_nIndex].Jog_StepSize_Coarse = Convert.ToDouble(textBox_Setup_Motion_Jog_CoarseStepSize.Text);
+                Equipment.stAxisParam[m_nIndex].Jog_Speed_Fine = Equipment.ToDouble(textBox_Setup_Motion_Jog_FineSpeed.Text);
+                Equipment.stAxisParam[m_nIndex].Jog_Speed_Coarse = Equipment.ToDouble(textBox_Setup_Motion_Jog_CoarseSpeed.Text);
+                Equipment.stAxisParam[m_nIndex].Jog_StepSize_Min = Equipment.ToDouble(textBox_Setup_Motion_Jog_MinStepSize.Text);
+                Equipment.stAxisParam[m_nIndex].Jog_StepSize_Max = Equipment.ToDouble(textBox_Setup_Motion_Jog_MaxStepSize.Text);
+                Equipment.stAxisParam[m_nIndex].Jog_StepSize_Fine = Equipment.ToDouble(textBox_Setup_Motion_Jog_FineStepSize.Text);
+                Equipment.stAxisParam[m_nIndex].Jog_StepSize_Coarse = Equipment.ToDouble(textBox_Setup_Motion_Jog_CoarseStepSize.Text);
             }
 
 
@@ -1128,10 +1131,10 @@ namespace SLD200_MSL
 
                 Equipment.stCommunicationSet[m_nIndex].TCPIP_PortType = comboBox_Setup_Communication_TCPIP_OpenType.SelectedIndex;
                 Equipment.stCommunicationSet[m_nIndex].TCPIP_IPAddress = textBox_Setup_Communication_TCPIP_IP.Text;
-                Equipment.stCommunicationSet[m_nIndex].TCPIP_PortNum = Convert.ToInt16(textBox_Setup_Communication_TCPIP_Port.Text);
+                Equipment.stCommunicationSet[m_nIndex].TCPIP_PortNum = Equipment.ToInt(textBox_Setup_Communication_TCPIP_Port.Text);
 
-                Equipment.stCommunicationSet[m_nIndex].Serial_CommTimeout = Convert.ToInt16(textBox_Setup_Communication_RS232_Timeout.Text); 
-                Equipment.stCommunicationSet[m_nIndex].Serial_CommSpacingDelay = Convert.ToInt16(textBox_Setup_Communication_RS232_SpacingDelay.Text);
+                Equipment.stCommunicationSet[m_nIndex].Serial_CommTimeout = Equipment.ToInt(textBox_Setup_Communication_RS232_Timeout.Text); 
+                Equipment.stCommunicationSet[m_nIndex].Serial_CommSpacingDelay = Equipment.ToInt(textBox_Setup_Communication_RS232_SpacingDelay.Text);
                 Equipment.stCommunicationSet[m_nIndex].Serial_CommPort = comboBox_Setup_Communication_RS232_ComPort.SelectedIndex;
                 Equipment.stCommunicationSet[m_nIndex].Serial_CommBaudRate = comboBox_Setup_Communication_RS232_BaudRate.SelectedIndex;
                 Equipment.stCommunicationSet[m_nIndex].Serial_CommDataBits = comboBox_Setup_Communication_RS232_DataBit.SelectedIndex;
@@ -1314,8 +1317,8 @@ namespace SLD200_MSL
 
 
             //  체크 포인트
-            if (((Convert.ToDouble(textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Text) != 0.0) || (Convert.ToDouble(textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Text) != 0.0)) &&
-                ((Convert.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Text) != 0.0) || (Convert.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Text) != 0.0)))
+            if (((Equipment.ToDouble(textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Text) != 0.0) || (Equipment.ToDouble(textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Text) != 0.0)) &&
+                ((Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Text) != 0.0) || (Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Text) != 0.0)))
             {
                 MessageBox.Show("\"Offset Distance for Coordinate Matching\" 과\r\n\"Offset Distance to the Center of the Scanner\" 두 그룹 전체에 값이 들어가면 안됩니다.\n\r\n[두 그룹 중 한쪽에만 값이 들어가거나, 모두 0 이어야 합니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -1377,37 +1380,37 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Machine_Option", "Door_Enable", checkBox_Setup_Option_DoorEnable.Checked.ToString(), strFIle);
             Equipment.Machine_VacuumSensor_Enable = checkBox_Setup_Option_VacuumSensorEnable.Checked;
             NativeMethods.WritePrivateProfileString("Machine_Option", "VacuumSensor_Enable", checkBox_Setup_Option_VacuumSensorEnable.Checked.ToString(), strFIle);
-            Equipment.Machine_SignalHoldTime = Convert.ToInt16(textBox_Setup_Option_SignalHoldTime.Text);
+            Equipment.Machine_SignalHoldTime = Equipment.ToInt(textBox_Setup_Option_SignalHoldTime.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "VacuumSignalHoldTime", textBox_Setup_Option_SignalHoldTime.Text, strFIle);
             Equipment.Machine_MAligner_ReleaseType = checkBox_Setup_Option_MAligner_ReleaseType.Checked;
             NativeMethods.WritePrivateProfileString("Machine_Option", "MAligner_ReleaseType", checkBox_Setup_Option_MAligner_ReleaseType.Checked.ToString(), strFIle);
-            Equipment.Machine_MAligner_NarrowingDistance = Convert.ToDouble(textBox_Setup_Option_MAligner_NarrowingDistance.Text);
+            Equipment.Machine_MAligner_NarrowingDistance = Equipment.ToDouble(textBox_Setup_Option_MAligner_NarrowingDistance.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "MAligner_NarrowingDistance", textBox_Setup_Option_MAligner_NarrowingDistance.Text, strFIle);
-            Equipment.Machine_MAligner_WidenDistance = Convert.ToDouble(textBox_Setup_Option_MAligner_WidenDistance.Text);
+            Equipment.Machine_MAligner_WidenDistance = Equipment.ToDouble(textBox_Setup_Option_MAligner_WidenDistance.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "MAligner_WidenDistance", textBox_Setup_Option_MAligner_WidenDistance.Text, strFIle);
             Equipment.Machine_VacuumStableTime_Enable = checkBox_Setup_Option_VacuumStableTime_Enable.Checked;
             NativeMethods.WritePrivateProfileString("Machine_Option", "VacuumStableTime_Enable", checkBox_Setup_Option_VacuumStableTime_Enable.Checked.ToString(), strFIle);
-            Equipment.Machine_VacuumStableTime = Convert.ToInt16(textBox_Setup_Option_VacuumStableTime.Text);
+            Equipment.Machine_VacuumStableTime = Equipment.ToInt(textBox_Setup_Option_VacuumStableTime.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "VacuumStableTime", textBox_Setup_Option_VacuumStableTime.Text, strFIle);
             Equipment.Machine_LaserHeightCheckStableTime_Enable = checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.Checked;
             NativeMethods.WritePrivateProfileString("Machine_Option", "LaserHeightCheckStableTime_Enable", checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.Checked.ToString(), strFIle);
-            Equipment.Machine_LaserHeightCheckStableTime = Convert.ToInt16(textBox_Setup_Option_LaserHeightCheckStableTime.Text);
+            Equipment.Machine_LaserHeightCheckStableTime = Equipment.ToInt(textBox_Setup_Option_LaserHeightCheckStableTime.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "LaserHeightCheckStableTime", textBox_Setup_Option_LaserHeightCheckStableTime.Text, strFIle);
             Equipment.Machine_FiducialMarkJudgementRange_Enable = checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.Checked;
             NativeMethods.WritePrivateProfileString("Machine_Option", "FiducialMarkJudgementRange_Enable", checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.Checked.ToString(), strFIle);
-            Equipment.Machine_FiducialMarkJudgementRange = Convert.ToDouble(textBox_Setup_Option_FiducialMarkJudgementRange.Text);
+            Equipment.Machine_FiducialMarkJudgementRange = Equipment.ToDouble(textBox_Setup_Option_FiducialMarkJudgementRange.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "FiducialMarkJudgementRange", textBox_Setup_Option_FiducialMarkJudgementRange.Text, strFIle);
             Equipment.Machine_FiducialImageSave_Always = radioButton_Setup_Option_FiducialImageSave_Always.Checked ? true : false;
             NativeMethods.WritePrivateProfileString("Machine_Option", "FiducialImageSave_Always", radioButton_Setup_Option_FiducialImageSave_Always.Checked.ToString(), strFIle);
 
 
             //  Offset Distance
-            Equipment.stOffsetDistance.FromScannerToFineCam.X = Convert.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);
-            Equipment.stOffsetDistance.FromScannerToFineCam.Y = Convert.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_Y.Text);
-            Equipment.stOffsetDistance.FromFineCamToCoarseCam.X = Convert.ToDouble(textBox_Setup_Option_Offset_FineCamCoarseCam_X.Text);
-            Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y = Convert.ToDouble(textBox_Setup_Option_Offset_FineCamCoarseCam_Y.Text);
-            Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X = Convert.ToDouble(textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X.Text);
-            Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y = Convert.ToDouble(textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y.Text);
+            Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);
+            Equipment.stOffsetDistance.FromScannerToFineCam.Y = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_Y.Text);
+            Equipment.stOffsetDistance.FromFineCamToCoarseCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_FineCamCoarseCam_X.Text);
+            Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y = Equipment.ToDouble(textBox_Setup_Option_Offset_FineCamCoarseCam_Y.Text);
+            Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X = Equipment.ToDouble(textBox_Setup_Option_Offset_FineCamLaserHeightSensor_X.Text);
+            Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y = Equipment.ToDouble(textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y.Text);
             NativeMethods.WritePrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", textBox_Setup_Option_Offset_ScannerFineCam_X.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_Y", textBox_Setup_Option_Offset_ScannerFineCam_Y.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Offset_Distance", "From_FineCam_To_CoarseCam_X", textBox_Setup_Option_Offset_FineCamCoarseCam_X.Text, strFIle);
@@ -1416,42 +1419,55 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Offset_Distance", "From_FineCam_To_LaserHeightSensor_Y", textBox_Setup_Option_Offset_FineCamLaserHeightSensor_Y.Text, strFIle);
 
             //  Scanner Head Offset
-            Equipment.Scanner_HeadOffset_X = Convert.ToDouble(textBox_ScannerOffset_X.Text);
-            Equipment.Scanner_HeadOffset_Y = Convert.ToDouble(textBox_ScannerOffset_Y.Text);
-            Equipment.Scanner_HeadOffset_Angle = Convert.ToDouble(textBox_ScannerOffset_Angle.Text);
+            Equipment.Scanner_HeadOffset_X = Equipment.ToDouble(textBox_ScannerOffset_X.Text);
+            Equipment.Scanner_HeadOffset_Y = Equipment.ToDouble(textBox_ScannerOffset_Y.Text);
+            Equipment.Scanner_HeadOffset_Angle = Equipment.ToDouble(textBox_ScannerOffset_Angle.Text);
             NativeMethods.WritePrivateProfileString("ScannerHeadOffset", "Offset_X", textBox_ScannerOffset_X.Text, strFIle);
             NativeMethods.WritePrivateProfileString("ScannerHeadOffset", "Offset_Y", textBox_ScannerOffset_Y.Text, strFIle);
             NativeMethods.WritePrivateProfileString("ScannerHeadOffset", "Offset_Angle", textBox_ScannerOffset_Angle.Text, strFIle);
 
             //  Coordinate System Matching Offset
-            Equipment.CoordinateMatchingOffset_X = Convert.ToDouble(textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Text);
-            Equipment.CoordinateMatchingOffset_Y = Convert.ToDouble(textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Text);
+            Equipment.CoordinateMatchingOffset_X = Equipment.ToDouble(textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Text);
+            Equipment.CoordinateMatchingOffset_Y = Equipment.ToDouble(textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Text);
             NativeMethods.WritePrivateProfileString("MachineCoordinateOffset", "Offset_X", textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Text, strFIle);
             NativeMethods.WritePrivateProfileString("MachineCoordinateOffset", "Offset_Y", textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Text, strFIle);
 
             //  Offset Distance from Stage to Scanner
-            Equipment.StageOffset_forDrilling_X = Convert.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Text);
-            Equipment.StageOffset_forDrilling_Y = Convert.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Text);
+            Equipment.StageOffset_forDrilling_X = Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Text);
+            Equipment.StageOffset_forDrilling_Y = Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Text);
             NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_X", textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_Y", textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Text, strFIle);
 
             //  Keyence Laser Height Sensor 기준값 설정
-            Equipment.LaserHeightSensor_ReferenceValue_atVisionFocusPosition = Convert.ToDouble(textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Text);
-            Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition = Convert.ToDouble(textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Text);
+            Equipment.LaserHeightSensor_ReferenceValue_atVisionFocusPosition = Equipment.ToDouble(textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Text);
+            Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition = Equipment.ToDouble(textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Text);
             NativeMethods.WritePrivateProfileString("LaserHeightSensor_ReferenceValue", "at_Vision_Focus_Position", textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Text, strFIle);
             NativeMethods.WritePrivateProfileString("LaserHeightSensor_ReferenceValue", "at_Scanner_Focus_Position", textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Text, strFIle);
 
             //  Scanner Calibration parameter
-            Equipment.Scanner_Calibration_LaserFrequency = Convert.ToDouble(textBox_Setup_ScannerCal_LaserFrequency.Text);
-            Equipment.Scanner_Calibration_LaserEnergy = Convert.ToDouble(textBox_Setup_ScannerCal_LaserEnergy.Text);
-            Equipment.Scanner_Calibration_CrossMarkLength = Convert.ToDouble(textBox_Setup_ScannerCal_CrossMarkLength.Text);
-            Equipment.Scanner_Calibration_LaserMarkSpeed = Convert.ToDouble(textBox_Setup_ScannerCal_MarkingSpeed.Text);
-            Equipment.Scanner_Calibration_LaserJumpSpeed = Convert.ToDouble(textBox_Setup_ScannerCal_JumpSpeed.Text);
+            Equipment.Scanner_Calibration_LaserFrequency = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserFrequency.Text);
+            
+
+            Equipment.Scanner_Calibration_LaserEnergy = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserEnergy.Text);
+            Equipment.Scanner_Calibration_CrossMarkLength = Equipment.ToDouble(textBox_Setup_ScannerCal_CrossMarkLength.Text);
+            Equipment.Scanner_Calibration_LaserMarkSpeed = Equipment.ToDouble(textBox_Setup_ScannerCal_MarkingSpeed.Text);
+            Equipment.Scanner_Calibration_LaserJumpSpeed = Equipment.ToDouble(textBox_Setup_ScannerCal_JumpSpeed.Text);
+            Equipment.Scanner_Calibration_LaserOnDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserOnDelay.Text);
+            Equipment.Scanner_Calibration_LaserOffDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserOffDelay.Text);
+            Equipment.Scanner_Calibration_MarkDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_MarkDelay.Text);
+            Equipment.Scanner_Calibration_JumpDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_JumpDelay.Text);
+            Equipment.Scanner_Calibration_PolygonDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_PolygonDelay.Text);
+
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Frequency", textBox_Setup_ScannerCal_LaserFrequency.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Energy", textBox_Setup_ScannerCal_LaserEnergy.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "CrossMark_Length", textBox_Setup_ScannerCal_CrossMarkLength.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Marking_Speed", textBox_Setup_ScannerCal_MarkingSpeed.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Jump_Speed", textBox_Setup_ScannerCal_JumpSpeed.Text, strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_On_Delay", textBox_Setup_ScannerCal_LaserOnDelay.Text, strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Off_Delay", textBox_Setup_ScannerCal_LaserOffDelay.Text, strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Mark_Delay", textBox_Setup_ScannerCal_MarkDelay.Text, strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Jump_Delay", textBox_Setup_ScannerCal_JumpDelay.Text, strFIle);
+            NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Polygon_Delay", textBox_Setup_ScannerCal_PolygonDelay.Text, strFIle);
 
             Equipment.Scanner_Calibration_srcFilePath = m_correction2DRtc.SourceCorrectionFile; // m_srcFile;
             Equipment.Scanner_Calibration_targetFilePath = m_correction2DRtc.TargetCorrectionFile;  // m_targetFile;
@@ -1483,9 +1499,9 @@ namespace SLD200_MSL
         {
             Vector3 ScannerOffset = new Vector3(0, 0, 0);
 
-            ScannerOffset.X = (float)Convert.ToDouble(textBox_ScannerOffset_X.Text);
-            ScannerOffset.Y = (float)Convert.ToDouble(textBox_ScannerOffset_Y.Text);
-            ScannerOffset.Z = (float)Convert.ToDouble(textBox_ScannerOffset_Angle.Text);
+            ScannerOffset.X = (float)Equipment.ToDouble(textBox_ScannerOffset_X.Text);
+            ScannerOffset.Y = (float)Equipment.ToDouble(textBox_ScannerOffset_Y.Text);
+            ScannerOffset.Z = (float)Equipment.ToDouble(textBox_ScannerOffset_Angle.Text);
 
             workStage.rtc.PrimaryHeadBaseOffset = ScannerOffset;
         }
@@ -1882,8 +1898,8 @@ namespace SLD200_MSL
 
 
             //  체크 포인트
-            if (((Convert.ToDouble(textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Text) != 0.0) || (Convert.ToDouble(textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Text) != 0.0)) &&
-                ((Convert.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Text) != 0.0) || (Convert.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Text) != 0.0)))
+            if (((Equipment.ToDouble(textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_X.Text) != 0.0) || (Equipment.ToDouble(textBox_Setup_Option_MachineOffset_StageOriginPosToScannerCenter_Y.Text) != 0.0)) &&
+                ((Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_X.Text) != 0.0) || (Equipment.ToDouble(textBox_Setup_Option_OffsetDistance_StageCenterToScannerCenter_Y.Text) != 0.0)))
             {
                 MessageBox.Show("\"Offset Distance for Coordinate Matching\" 과\r\n\"Offset Distance to the Center of the Scanner\" 두 그룹 전체에 값이 들어가면 안됩니다.\n\r\n[두 그룹 중 한쪽에만 값이 들어가거나, 모두 0 이어야 합니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;

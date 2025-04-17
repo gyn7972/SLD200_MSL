@@ -37,6 +37,34 @@ namespace QMC.Common
 {
     public static class Equipment
     {
+        public static double ToDouble(string str)
+        {
+            double dValue = 0.0;            
+            try
+            {
+                double.TryParse(str, out dValue);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return dValue;
+        }
+
+        public static int ToInt(string str)
+        {
+            int nValue = 0;
+            try
+            {
+                int.TryParse(str, out nValue);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return nValue;
+        }
+
         private static uint m_nLastDioUID;
         private static uint m_nLastAxisUID;
         private static int m_nLastModuleNo;
