@@ -2483,6 +2483,8 @@ namespace QMC.Common.Modules
             ThruHole_LayerParameter_forCO2_Set,                             //  Thruhole 가공 Layer 파라미터, CO2 용 세팅값 설정
             ThruHole_LayerParameter_forCO2_Check,                           //  Thruhole 가공 Layer 파라미터, CO2 용 세팅값 확인
             ThruHole_LayerParameter_forUV_Set,                              //  Thruhole 가공 Layer 파라미터, UV 용 세팅값 설정
+            ThruHole_LayerParameter_LaserPower_Change,                      //  Thruhole 가공 Laser Power 변경
+            ThruHole_LayerParameter_LaserPower_Change_DoneCheck,            //  Thruhole 가공 Laser Power 변경 완료 확인
             ThruHole_LayerParameter_forUV_Check,                            //  Thruhole 가공 Layer 파라미터, UV 용 세팅값 확인
             ThruHole_LayerParameter_Change_Complete,                        //  Thruhole 가공 Layer 파라미터로 변경 완료
             /// 
@@ -2548,6 +2550,10 @@ namespace QMC.Common.Modules
             Drilling_LayerParameter_forCO2_Set,                                             //  Drilling 가공 Layer 파라미터, CO2 용 세팅값 설정
             Drilling_LayerParameter_forCO2_Check,                                           //  Drilling 가공 Layer 파라미터, CO2 용 세팅값 확인
             Drilling_LayerParameter_forUV_Set,                                              //  Drilling 가공 Layer 파라미터, UV 용 세팅값 설정
+
+            Drilling_LayerParameter_LaserPower_Change,                                      //  Drilling 가공 Laser Power 변경 (Hole1) 
+            Drilling_LayerParameter_LaserPower_Change_DoneCheck,                            //  Drilling 가공 Laser Power 변경 완료 확인
+
             Drilling_LayerParameter_forUV_Check,                                            //  Drilling 가공 Layer 파라미터, UV 용 세팅값 확인
             Drilling_LayerParameter_Change_Complete,                                        //  Drilling 가공 Layer 파라미터로 변경 완료
             /// 
@@ -11842,7 +11848,59 @@ namespace QMC.Common.Modules
                     //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forCO2_Check;
                     //}
 
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_forUV_Check;
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_LaserPower_Change;
+                    break;
+
+
+                case (int)LaserDrilling_Step.ThruHole_LayerParameter_LaserPower_Change:                        //  Thruhole 가공 Laser Power 변경
+
+                    double m_dLaserPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
+
+                    if ((m_rapidLxLaser_Comm != null) && (m_dLaserPower > 0.0))
+                    {
+                        if (m_rapidLxLaser_Comm.IsOpen)
+                        {
+                            m_strTemp = string.Format("Thruhole Layer Laser Power 변경 시작, Laser Power ({1:0.000})", m_dLaserPower);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                            TickCount_Start((int)TickType.TICK_MAIN);
+
+                            RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_LaserPower_Change_DoneCheck;
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole Layer Laser Power 변경 실패. (Laser Comm 열리지 않음)");
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_forUV_Check;
+                        }
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole Layer Laser Power 변경 실패. (Laser Comm 준비되지 않았거나, 변경 출력이 0)");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_forUV_Check;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.ThruHole_LayerParameter_LaserPower_Change_DoneCheck:                     //  Thruhole 가공 Laser Power 변경 완료 확인
+
+                    if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power - 0.5)) &&
+                        (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power + 0.5)))
+                    {
+                        m_strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 성공, Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_forUV_Check;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
+                    {
+                        m_strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 실패, 현재 Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_forUV_Check;
+                    }
                     break;
 
 
@@ -11927,7 +11985,7 @@ namespace QMC.Common.Modules
                     //MapData_Change((int)MapDataType.MAPDATASTATUS_SCANNER);
                     MapData_Apply((int)nMapData_Type.MapData_Stage_Scanner);
 
-                    TickCount_Start((int)TickType.TICK_MAIN);
+                    //TickCount_Start((int)TickType.TICK_MAIN);
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataFlagCheck_ScannerMap3;
                     break;
@@ -12054,7 +12112,6 @@ namespace QMC.Common.Modules
 
 
 //  여기부터 해야 한다.
-
 
 
                 //case (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime:       //  다음 가공 영역 Group Center 위치로 이동 후 안정화 시간
@@ -12909,7 +12966,60 @@ namespace QMC.Common.Modules
                     //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forCO2_Check;
                     //}
 
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
+                    //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change;
+                    break;
+
+
+                case (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change:                        //  Drilling 가공 Laser Power 변경 (Hole1) 
+
+                    m_dLaserPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
+
+                    if ((m_rapidLxLaser_Comm != null) && (m_dLaserPower > 0.0))
+                    {
+                        if (m_rapidLxLaser_Comm.IsOpen)
+                        {
+                            m_strTemp = string.Format("Hole{0} Layer Laser Power 변경 시작, Laser Power ({1:0.000})", m_nHoleLayer_ProcessIndex + 1, m_dLaserPower);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                            TickCount_Start((int)TickType.TICK_MAIN);
+
+                            RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck;
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Hole1 Layer Laser Power 변경 실패. (Laser Comm 열리지 않음)");
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
+                        }
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Hole1 Layer Laser Power 변경 실패. (Laser Comm 준비되지 않았거나, 변경 출력이 0)");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck:                     //  Drilling 가공 Laser Power 변경 완료 확인
+
+                    if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power - 0.5)) &&
+                        (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power + 0.5)))
+                    {
+                        m_strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 성공, Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
+                    {
+                        m_strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 실패, 현재 Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
+                    }
                     break;
 
 
@@ -14078,7 +14188,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_LaserPower_Change:                        //  Socket 가공 중 Laser Power 변경 (Hole2 ~ Hole4의 경우) 
 
-                    double m_dLaserPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
+                    m_dLaserPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
 
                     if ((m_rapidLxLaser_Comm != null) && (m_dLaserPower > 0.0))
                     {
