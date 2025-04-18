@@ -10188,24 +10188,10 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 시작");
 
                     Equipment.MachineStop_byUser = false;
+
                     this.jigAligner_HighRes.UsePatternMatchingTool = true;
-                    this.jigAligner_HighRes.Work();
-
-                    ////  이미지 Grab
-                    //Camera_HighRes.Grab();
-                    ////Camera_HighRes.LatestImage.Save("D:\\TempImage_HighRes_Align.bmp", QMC.Common.Vision.VisionImage.FileFilter.bmp);
-                    ////bm_AlignImage = new Bitmap("D:\\TempImage_HighRes_Align.bmp");
-
-                    //bm_AlignRawData = new byte[Camera_HighRes.Resolution.Width * Camera_HighRes.Resolution.Height];
-                    //bm_AlignRawData = Camera_HighRes.LatestImage.RawData;
-
-                    ////  Circle Find 함수 call
-                    //Fiducial_aligner = new QMC_ImageProcessFindAlign();
-                    //Fiducial_circlesResult = new List<RectangleF>();
-
-                    //// Bitmap을 byte 배열로 변환
-                    ////byte[] pixelData = Fiducial_aligner.ConvertBitmapToByteArray(bm_AlignImage);
-                    //Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, bm_AlignRawData, Camera_HighRes.Resolution.Width, Camera_HighRes.Resolution.Height, ref Fiducial_circleFound);
+                    //this.jigAligner_HighRes.Work();
+                    int ret = SpiralSearch();
 
                     timer_VisionAlign.Enabled = true;
 
@@ -10619,6 +10605,91 @@ namespace QMC.Common.Modules
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
                     break;
             }
+        }
+
+        private int SpiralSearch()
+        {
+            int ret = -1;
+            try
+            {
+                // 중심 좌표 설정
+                XyCoordinate xyCenter = new XyCoordinate();
+                xyCenter.X = MC_Func.MC_GetCmdPos((int)WorkStage.nAxis.X);
+                xyCenter.Y = MC_Func.MC_GetCmdPos((int)WorkStage.nAxis.Y);
+
+                // 이동 거리 및 검색 횟수 설정
+                double stepSize = 1.0; // 1mm 이동
+                int maxSteps = 50; // 최대 50번 검색
+                List<XyCoordinate> xyCoordinates = new List<XyCoordinate>();
+
+                // 스파이럴 이동 구현
+                int direction = 0; // 0: 오른쪽, 1: 위, 2: 왼쪽, 3: 아래
+                int stepsInCurrentDirection = 1;
+                int stepsTaken = 0;
+                int directionChangeCount = 0;
+
+                XyCoordinate currentPosition = new XyCoordinate
+                {
+                    X = xyCenter.X,
+                    Y = xyCenter.Y
+                };
+
+                for (int i = 0; i < maxSteps; i++)
+                {
+
+                    // 현재 위치를 리스트에 추가
+                    xyCoordinates.Add(new XyCoordinate { X = currentPosition.X, Y = currentPosition.Y });
+
+                    // 이동 명령 실행
+                    MC_Func.MovePosition(currentPosition, 10.0, 5.0, 5.0); // 속도 및 가속도는 예시 값
+
+                    // 이미지 Grab 및 원 검색
+                    Camera_HighRes.Grab();
+                    bm_AlignRawData = Camera_HighRes.LatestImage.RawData;
+                    Fiducial_aligner = new QMC_ImageProcessFindAlign();
+                    Fiducial_circlesResult = new List<RectangleF>();
+                    Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, bm_AlignRawData, Camera_HighRes.Resolution.Width, Camera_HighRes.Resolution.Height, ref Fiducial_circleFound);
+                    if(Fiducial_circleFound)
+                    {
+                        return 0;
+                    }
+                    // 스파이럴 이동 계산
+                    switch (direction)
+                    {
+                        case 0: // 오른쪽
+                            currentPosition.X += stepSize;
+                            break;
+                        case 1: // 위
+                            currentPosition.Y += stepSize;
+                            break;
+                        case 2: // 왼쪽
+                            currentPosition.X -= stepSize;
+                            break;
+                        case 3: // 아래
+                            currentPosition.Y -= stepSize;
+                            break;
+                    }
+
+                    stepsTaken++;
+                    if (stepsTaken == stepsInCurrentDirection)
+                    {
+                        stepsTaken = 0;
+                        direction = (direction + 1) % 4; // 방향 전환
+                        directionChangeCount++;
+
+                        if (directionChangeCount % 2 == 0)
+                        {
+                            stepsInCurrentDirection++; // 두 번 방향 전환 후 이동 거리 증가
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                //Log.Write(ex);
+            }
+            return ret;
         }
         #endregion
 
