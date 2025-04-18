@@ -7374,5 +7374,10 @@ namespace SLD200_MSL
                 return;
             }
         }
+
+        private void button_Test_WorkStage_ModuleLoadingFlag_OK_Click(object sender, EventArgs e)
+        {
+            loader.m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete = false;
+        }
     }
 }
