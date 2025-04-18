@@ -5129,8 +5129,6 @@ namespace SLD200_MSL
 
 
 
-
-
             //  Target 위치 계산
             lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromScannerToFineCam.X;
             lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
@@ -5786,6 +5784,15 @@ namespace SLD200_MSL
             lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + Equipment.stOffsetDistance.FromFineCamToCoarseCam.X;
             lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) + Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y;
 
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //  맵 데이터 변경 (기준위치 : Scanner)
+            //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
+            //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
+            workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///
+
             //  속도 설정
             if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
             {
@@ -5803,15 +5810,7 @@ namespace SLD200_MSL
 
             xyInterpolatedCoordinate.X = lfTargetX;
             xyInterpolatedCoordinate.Y = lfTargetY;
-            workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-
-
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //  맵 데이터 변경 (기준위치 : Scanner)
-            //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
-            //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
-            workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);                        
         }
 
         private void Button_Config_WorkStage_TeachingPositions_Move_Click(object sender, EventArgs e)
@@ -6790,6 +6789,14 @@ namespace SLD200_MSL
             lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
             lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y;
 
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //  맵 데이터 변경 (기준위치 : Scanner)
+            //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
+            //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
+            workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///
+
             //  속도 설정
             if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
             {
@@ -6807,15 +6814,7 @@ namespace SLD200_MSL
 
             xyInterpolatedCoordinate.X = lfTargetX;
             xyInterpolatedCoordinate.Y = lfTargetY;
-            workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-
-
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //  맵 데이터 변경 (기준위치 : Scanner)
-            //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
-            //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
-            workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);                        
         }
 
         private void button_Config_WorkStage_CurrentFineCamPos_To_LaserSensorPos_Click(object sender, EventArgs e)
