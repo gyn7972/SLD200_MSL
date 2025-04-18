@@ -236,6 +236,21 @@
             this.button17 = new System.Windows.Forms.Button();
             this.button_Setup_ScannerCal_Save = new System.Windows.Forms.Button();
             this.groupBox15 = new System.Windows.Forms.GroupBox();
+            this.textBox_Setup_ScannerCal_PolygonDelay = new System.Windows.Forms.TextBox();
+            this.button25 = new System.Windows.Forms.Button();
+            this.label74 = new System.Windows.Forms.Label();
+            this.textBox_Setup_ScannerCal_JumpDelay = new System.Windows.Forms.TextBox();
+            this.button24 = new System.Windows.Forms.Button();
+            this.label73 = new System.Windows.Forms.Label();
+            this.textBox_Setup_ScannerCal_MarkDelay = new System.Windows.Forms.TextBox();
+            this.button23 = new System.Windows.Forms.Button();
+            this.label72 = new System.Windows.Forms.Label();
+            this.textBox_Setup_ScannerCal_LaserOffDelay = new System.Windows.Forms.TextBox();
+            this.button22 = new System.Windows.Forms.Button();
+            this.label71 = new System.Windows.Forms.Label();
+            this.textBox_Setup_ScannerCal_LaserOnDelay = new System.Windows.Forms.TextBox();
+            this.button21 = new System.Windows.Forms.Button();
+            this.label70 = new System.Windows.Forms.Label();
             this.textBox_Setup_ScannerCal_JumpSpeed = new System.Windows.Forms.TextBox();
             this.textBox_Setup_ScannerCal_MarkingSpeed = new System.Windows.Forms.TextBox();
             this.button16 = new System.Windows.Forms.Button();
@@ -339,21 +354,6 @@
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
-            this.textBox_Setup_ScannerCal_LaserOnDelay = new System.Windows.Forms.TextBox();
-            this.button21 = new System.Windows.Forms.Button();
-            this.label70 = new System.Windows.Forms.Label();
-            this.textBox_Setup_ScannerCal_LaserOffDelay = new System.Windows.Forms.TextBox();
-            this.button22 = new System.Windows.Forms.Button();
-            this.label71 = new System.Windows.Forms.Label();
-            this.textBox_Setup_ScannerCal_MarkDelay = new System.Windows.Forms.TextBox();
-            this.button23 = new System.Windows.Forms.Button();
-            this.label72 = new System.Windows.Forms.Label();
-            this.textBox_Setup_ScannerCal_JumpDelay = new System.Windows.Forms.TextBox();
-            this.button24 = new System.Windows.Forms.Button();
-            this.label73 = new System.Windows.Forms.Label();
-            this.textBox_Setup_ScannerCal_PolygonDelay = new System.Windows.Forms.TextBox();
-            this.button25 = new System.Windows.Forms.Button();
-            this.label74 = new System.Windows.Forms.Label();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -2673,7 +2673,6 @@
             this.listBox_Setup_Motion_SelectAxis.HorizontalScrollbar = true;
             this.listBox_Setup_Motion_SelectAxis.ItemHeight = 18;
             this.listBox_Setup_Motion_SelectAxis.Items.AddRange(new object[] {
-            "Mask Y",
             "Mechanic Aligner X",
             "Mechanic Aligner Y",
             "Work Stage X",
@@ -3033,6 +3032,166 @@
             this.groupBox15.TabIndex = 58;
             this.groupBox15.TabStop = false;
             this.groupBox15.Text = " Laser Param. for Scanner Cal. ";
+            // 
+            // textBox_Setup_ScannerCal_PolygonDelay
+            // 
+            this.textBox_Setup_ScannerCal_PolygonDelay.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_ScannerCal_PolygonDelay.Location = new System.Drawing.Point(184, 316);
+            this.textBox_Setup_ScannerCal_PolygonDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_ScannerCal_PolygonDelay.Name = "textBox_Setup_ScannerCal_PolygonDelay";
+            this.textBox_Setup_ScannerCal_PolygonDelay.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_ScannerCal_PolygonDelay.TabIndex = 135;
+            this.textBox_Setup_ScannerCal_PolygonDelay.Text = "0.0";
+            // 
+            // button25
+            // 
+            this.button25.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button25.Location = new System.Drawing.Point(280, 317);
+            this.button25.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button25.Name = "button25";
+            this.button25.Size = new System.Drawing.Size(35, 25);
+            this.button25.TabIndex = 134;
+            this.button25.Text = "#";
+            this.button25.UseVisualStyleBackColor = true;
+            // 
+            // label74
+            // 
+            this.label74.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label74.Location = new System.Drawing.Point(8, 315);
+            this.label74.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label74.Name = "label74";
+            this.label74.Size = new System.Drawing.Size(175, 25);
+            this.label74.TabIndex = 133;
+            this.label74.Text = "Polygon Delay :";
+            this.label74.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_ScannerCal_JumpDelay
+            // 
+            this.textBox_Setup_ScannerCal_JumpDelay.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_ScannerCal_JumpDelay.Location = new System.Drawing.Point(184, 283);
+            this.textBox_Setup_ScannerCal_JumpDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_ScannerCal_JumpDelay.Name = "textBox_Setup_ScannerCal_JumpDelay";
+            this.textBox_Setup_ScannerCal_JumpDelay.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_ScannerCal_JumpDelay.TabIndex = 132;
+            this.textBox_Setup_ScannerCal_JumpDelay.Text = "0.0";
+            // 
+            // button24
+            // 
+            this.button24.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button24.Location = new System.Drawing.Point(280, 284);
+            this.button24.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button24.Name = "button24";
+            this.button24.Size = new System.Drawing.Size(35, 25);
+            this.button24.TabIndex = 131;
+            this.button24.Text = "#";
+            this.button24.UseVisualStyleBackColor = true;
+            // 
+            // label73
+            // 
+            this.label73.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label73.Location = new System.Drawing.Point(8, 282);
+            this.label73.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label73.Name = "label73";
+            this.label73.Size = new System.Drawing.Size(175, 25);
+            this.label73.TabIndex = 130;
+            this.label73.Text = "Jump Delay :";
+            this.label73.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_ScannerCal_MarkDelay
+            // 
+            this.textBox_Setup_ScannerCal_MarkDelay.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_ScannerCal_MarkDelay.Location = new System.Drawing.Point(184, 250);
+            this.textBox_Setup_ScannerCal_MarkDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_ScannerCal_MarkDelay.Name = "textBox_Setup_ScannerCal_MarkDelay";
+            this.textBox_Setup_ScannerCal_MarkDelay.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_ScannerCal_MarkDelay.TabIndex = 129;
+            this.textBox_Setup_ScannerCal_MarkDelay.Text = "0.0";
+            // 
+            // button23
+            // 
+            this.button23.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button23.Location = new System.Drawing.Point(280, 251);
+            this.button23.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button23.Name = "button23";
+            this.button23.Size = new System.Drawing.Size(35, 25);
+            this.button23.TabIndex = 128;
+            this.button23.Text = "#";
+            this.button23.UseVisualStyleBackColor = true;
+            // 
+            // label72
+            // 
+            this.label72.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label72.Location = new System.Drawing.Point(8, 249);
+            this.label72.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label72.Name = "label72";
+            this.label72.Size = new System.Drawing.Size(175, 25);
+            this.label72.TabIndex = 127;
+            this.label72.Text = "Mark Delay :";
+            this.label72.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_ScannerCal_LaserOffDelay
+            // 
+            this.textBox_Setup_ScannerCal_LaserOffDelay.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_ScannerCal_LaserOffDelay.Location = new System.Drawing.Point(185, 217);
+            this.textBox_Setup_ScannerCal_LaserOffDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_ScannerCal_LaserOffDelay.Name = "textBox_Setup_ScannerCal_LaserOffDelay";
+            this.textBox_Setup_ScannerCal_LaserOffDelay.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_ScannerCal_LaserOffDelay.TabIndex = 126;
+            this.textBox_Setup_ScannerCal_LaserOffDelay.Text = "0.0";
+            // 
+            // button22
+            // 
+            this.button22.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button22.Location = new System.Drawing.Point(281, 218);
+            this.button22.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button22.Name = "button22";
+            this.button22.Size = new System.Drawing.Size(35, 25);
+            this.button22.TabIndex = 125;
+            this.button22.Text = "#";
+            this.button22.UseVisualStyleBackColor = true;
+            // 
+            // label71
+            // 
+            this.label71.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label71.Location = new System.Drawing.Point(9, 216);
+            this.label71.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label71.Name = "label71";
+            this.label71.Size = new System.Drawing.Size(175, 25);
+            this.label71.TabIndex = 124;
+            this.label71.Text = "LaserOff Delay :";
+            this.label71.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_ScannerCal_LaserOnDelay
+            // 
+            this.textBox_Setup_ScannerCal_LaserOnDelay.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_ScannerCal_LaserOnDelay.Location = new System.Drawing.Point(185, 184);
+            this.textBox_Setup_ScannerCal_LaserOnDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_ScannerCal_LaserOnDelay.Name = "textBox_Setup_ScannerCal_LaserOnDelay";
+            this.textBox_Setup_ScannerCal_LaserOnDelay.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_ScannerCal_LaserOnDelay.TabIndex = 123;
+            this.textBox_Setup_ScannerCal_LaserOnDelay.Text = "0.0";
+            // 
+            // button21
+            // 
+            this.button21.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button21.Location = new System.Drawing.Point(281, 185);
+            this.button21.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button21.Name = "button21";
+            this.button21.Size = new System.Drawing.Size(35, 25);
+            this.button21.TabIndex = 122;
+            this.button21.Text = "#";
+            this.button21.UseVisualStyleBackColor = true;
+            // 
+            // label70
+            // 
+            this.label70.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label70.Location = new System.Drawing.Point(9, 183);
+            this.label70.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label70.Name = "label70";
+            this.label70.Size = new System.Drawing.Size(175, 25);
+            this.label70.TabIndex = 121;
+            this.label70.Text = "LaserOn Delay :";
+            this.label70.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // textBox_Setup_ScannerCal_JumpSpeed
             // 
@@ -4233,166 +4392,6 @@
             this.radioButton_Setup_Option_LaserType_CO2.TabIndex = 5;
             this.radioButton_Setup_Option_LaserType_CO2.Text = "CO₂";
             this.radioButton_Setup_Option_LaserType_CO2.UseVisualStyleBackColor = true;
-            // 
-            // textBox_Setup_ScannerCal_LaserOnDelay
-            // 
-            this.textBox_Setup_ScannerCal_LaserOnDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_ScannerCal_LaserOnDelay.Location = new System.Drawing.Point(185, 184);
-            this.textBox_Setup_ScannerCal_LaserOnDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_ScannerCal_LaserOnDelay.Name = "textBox_Setup_ScannerCal_LaserOnDelay";
-            this.textBox_Setup_ScannerCal_LaserOnDelay.Size = new System.Drawing.Size(90, 24);
-            this.textBox_Setup_ScannerCal_LaserOnDelay.TabIndex = 123;
-            this.textBox_Setup_ScannerCal_LaserOnDelay.Text = "0.0";
-            // 
-            // button21
-            // 
-            this.button21.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button21.Location = new System.Drawing.Point(281, 185);
-            this.button21.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button21.Name = "button21";
-            this.button21.Size = new System.Drawing.Size(35, 25);
-            this.button21.TabIndex = 122;
-            this.button21.Text = "#";
-            this.button21.UseVisualStyleBackColor = true;
-            // 
-            // label70
-            // 
-            this.label70.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label70.Location = new System.Drawing.Point(9, 183);
-            this.label70.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.label70.Name = "label70";
-            this.label70.Size = new System.Drawing.Size(175, 25);
-            this.label70.TabIndex = 121;
-            this.label70.Text = "LaserOn Delay :";
-            this.label70.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Setup_ScannerCal_LaserOffDelay
-            // 
-            this.textBox_Setup_ScannerCal_LaserOffDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_ScannerCal_LaserOffDelay.Location = new System.Drawing.Point(185, 217);
-            this.textBox_Setup_ScannerCal_LaserOffDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_ScannerCal_LaserOffDelay.Name = "textBox_Setup_ScannerCal_LaserOffDelay";
-            this.textBox_Setup_ScannerCal_LaserOffDelay.Size = new System.Drawing.Size(90, 24);
-            this.textBox_Setup_ScannerCal_LaserOffDelay.TabIndex = 126;
-            this.textBox_Setup_ScannerCal_LaserOffDelay.Text = "0.0";
-            // 
-            // button22
-            // 
-            this.button22.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button22.Location = new System.Drawing.Point(281, 218);
-            this.button22.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button22.Name = "button22";
-            this.button22.Size = new System.Drawing.Size(35, 25);
-            this.button22.TabIndex = 125;
-            this.button22.Text = "#";
-            this.button22.UseVisualStyleBackColor = true;
-            // 
-            // label71
-            // 
-            this.label71.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label71.Location = new System.Drawing.Point(9, 216);
-            this.label71.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.label71.Name = "label71";
-            this.label71.Size = new System.Drawing.Size(175, 25);
-            this.label71.TabIndex = 124;
-            this.label71.Text = "LaserOff Delay :";
-            this.label71.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Setup_ScannerCal_MarkDelay
-            // 
-            this.textBox_Setup_ScannerCal_MarkDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_ScannerCal_MarkDelay.Location = new System.Drawing.Point(184, 250);
-            this.textBox_Setup_ScannerCal_MarkDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_ScannerCal_MarkDelay.Name = "textBox_Setup_ScannerCal_MarkDelay";
-            this.textBox_Setup_ScannerCal_MarkDelay.Size = new System.Drawing.Size(90, 24);
-            this.textBox_Setup_ScannerCal_MarkDelay.TabIndex = 129;
-            this.textBox_Setup_ScannerCal_MarkDelay.Text = "0.0";
-            // 
-            // button23
-            // 
-            this.button23.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button23.Location = new System.Drawing.Point(280, 251);
-            this.button23.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button23.Name = "button23";
-            this.button23.Size = new System.Drawing.Size(35, 25);
-            this.button23.TabIndex = 128;
-            this.button23.Text = "#";
-            this.button23.UseVisualStyleBackColor = true;
-            // 
-            // label72
-            // 
-            this.label72.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label72.Location = new System.Drawing.Point(8, 249);
-            this.label72.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.label72.Name = "label72";
-            this.label72.Size = new System.Drawing.Size(175, 25);
-            this.label72.TabIndex = 127;
-            this.label72.Text = "Mark Delay :";
-            this.label72.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Setup_ScannerCal_JumpDelay
-            // 
-            this.textBox_Setup_ScannerCal_JumpDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_ScannerCal_JumpDelay.Location = new System.Drawing.Point(184, 283);
-            this.textBox_Setup_ScannerCal_JumpDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_ScannerCal_JumpDelay.Name = "textBox_Setup_ScannerCal_JumpDelay";
-            this.textBox_Setup_ScannerCal_JumpDelay.Size = new System.Drawing.Size(90, 24);
-            this.textBox_Setup_ScannerCal_JumpDelay.TabIndex = 132;
-            this.textBox_Setup_ScannerCal_JumpDelay.Text = "0.0";
-            // 
-            // button24
-            // 
-            this.button24.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button24.Location = new System.Drawing.Point(280, 284);
-            this.button24.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button24.Name = "button24";
-            this.button24.Size = new System.Drawing.Size(35, 25);
-            this.button24.TabIndex = 131;
-            this.button24.Text = "#";
-            this.button24.UseVisualStyleBackColor = true;
-            // 
-            // label73
-            // 
-            this.label73.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label73.Location = new System.Drawing.Point(8, 282);
-            this.label73.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.label73.Name = "label73";
-            this.label73.Size = new System.Drawing.Size(175, 25);
-            this.label73.TabIndex = 130;
-            this.label73.Text = "Jump Delay :";
-            this.label73.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Setup_ScannerCal_PolygonDelay
-            // 
-            this.textBox_Setup_ScannerCal_PolygonDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_ScannerCal_PolygonDelay.Location = new System.Drawing.Point(184, 316);
-            this.textBox_Setup_ScannerCal_PolygonDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_ScannerCal_PolygonDelay.Name = "textBox_Setup_ScannerCal_PolygonDelay";
-            this.textBox_Setup_ScannerCal_PolygonDelay.Size = new System.Drawing.Size(90, 24);
-            this.textBox_Setup_ScannerCal_PolygonDelay.TabIndex = 135;
-            this.textBox_Setup_ScannerCal_PolygonDelay.Text = "0.0";
-            // 
-            // button25
-            // 
-            this.button25.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button25.Location = new System.Drawing.Point(280, 317);
-            this.button25.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button25.Name = "button25";
-            this.button25.Size = new System.Drawing.Size(35, 25);
-            this.button25.TabIndex = 134;
-            this.button25.Text = "#";
-            this.button25.UseVisualStyleBackColor = true;
-            // 
-            // label74
-            // 
-            this.label74.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label74.Location = new System.Drawing.Point(8, 315);
-            this.label74.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.label74.Name = "label74";
-            this.label74.Size = new System.Drawing.Size(175, 25);
-            this.label74.TabIndex = 133;
-            this.label74.Text = "Polygon Delay :";
-            this.label74.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FormNew_Setup
             // 
