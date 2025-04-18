@@ -251,7 +251,7 @@
             this.button29 = new System.Windows.Forms.Button();
             this.label76 = new System.Windows.Forms.Label();
             this.textBox_Setup_ScannerCal_CalAreaWidth = new System.Windows.Forms.TextBox();
-            this.button28 = new System.Windows.Forms.Button();
+           // this.button28 = new System.Windows.Forms.Button();
             this.label75 = new System.Windows.Forms.Label();
             this.textBox_Setup_ScannerCal_PolygonDelay = new System.Windows.Forms.TextBox();
             this.button25 = new System.Windows.Forms.Button();
@@ -6473,7 +6473,7 @@
         private System.Windows.Forms.Button button29;
         //private System.Windows.Forms.Label label76;
         private System.Windows.Forms.TextBox textBox_Setup_ScannerCal_CalAreaWidth;
-        //private System.Windows.Forms.Button button28;
+        private System.Windows.Forms.Button button28;
         //private System.Windows.Forms.Label label75;
         private System.Windows.Forms.Label label_Setup_ScannerCal_LastPosY;
         //private System.Windows.Forms.Label label81;
