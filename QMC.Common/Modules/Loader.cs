@@ -1262,6 +1262,8 @@ namespace QMC.Common.Modules
 
                             m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
 
+                            Equipment.Loader_RPort_Pause = true;            //  자재는 감지되지만 Full 센서가 인식되지 않음. 
+
                             MessageBox.Show("LD Stacker0 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
@@ -1415,6 +1417,8 @@ namespace QMC.Common.Modules
 
                             m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
 
+                            Equipment.Loader_RPort_Pause = true;            //  자재는 감지되지만 Full 센서가 인식되지 않음. 
+
                             MessageBox.Show("LD Stacker0 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
@@ -1497,6 +1501,8 @@ namespace QMC.Common.Modules
                             Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "Stacker0 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태");
 
                             m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
+
+                            Equipment.Loader_RPort_Pause = true;            //  자재는 감지되지만 Full 센서가 인식되지 않음. 
 
                             MessageBox.Show("LD Stacker0 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
@@ -1650,6 +1656,8 @@ namespace QMC.Common.Modules
                             Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "Stacker0 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태");
 
                             m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
+
+                            Equipment.Loader_RPort_Pause = true;            //  자재는 감지되지만 Full 센서가 인식되지 않음. 
 
                             MessageBox.Show("LD Stacker0 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
@@ -2106,6 +2114,8 @@ namespace QMC.Common.Modules
 
                             m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
 
+                            Equipment.Loader_LPort_Pause = true;            //  자재는 감지되지만 Full 센서가 인식되지 않음. 
+
                             MessageBox.Show("LD Stacker1 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
@@ -2260,6 +2270,8 @@ namespace QMC.Common.Modules
 
                             m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
 
+                            Equipment.Loader_LPort_Pause = true;            //  자재는 감지되지만 Full 센서가 인식되지 않음. 
+
                             MessageBox.Show("LD Stacker1 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
@@ -2342,6 +2354,8 @@ namespace QMC.Common.Modules
                             Log.Write("SLD-200", Equipment.User_Name, "LD Stacker1 Work Pos. Set", "Stacker1 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태");
 
                             m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
+
+                            Equipment.Loader_LPort_Pause = true;            //  자재는 감지되지만 Full 센서가 인식되지 않음. 
 
                             MessageBox.Show("LD Stacker1 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
@@ -2495,6 +2509,8 @@ namespace QMC.Common.Modules
                             Log.Write("SLD-200", Equipment.User_Name, "LD Stacker1 Work Pos. Set", "Stacker1 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태");
 
                             m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
+
+                            Equipment.Loader_LPort_Pause = true;            //  자재는 감지되지만 Full 센서가 인식되지 않음. 
 
                             MessageBox.Show("LD Stacker1 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
@@ -2681,6 +2697,10 @@ namespace QMC.Common.Modules
 
             //  자동운전 시, Transfer 동작 조건
             if (Equipment.AutoRunStatus &&
+
+                !Equipment.Loader_Transfer_Pause &&
+
+                !Equipment.CycleStopped_LoaderTransfer &&
 
                 m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
                 m_nMAlign_Step == (int)MAlign_Step.None) 
@@ -4270,13 +4290,13 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.MAlignerPickUp_MAlignerXY_MoveType1_Widely:                            //  M-Aligner XY 축, Module 을 들어올리기 위해 열어주는 위치로 이동 (1mm 정도) - Type #1 or #2 둘 중에 하나만 사용
 
-                    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner XY 축, 1mm 넓히기 시작.");
+                    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner XY 축, 5mm 넓히기 시작.");
 
                     loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("M_Aligner_Open");
-
+                    
                     //  Target Position 변경 : 현재 위치에서 2mm 넓히기 (Equipment.Machine_MAligner_WidenDistance 이만큼 했었는데, 2mm 면 충분하다고 판단)
-                    loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = MC_Func.MC_GetEncPos((int)nAxis.ALN_X) + 2.0;
-                    loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = MC_Func.MC_GetEncPos((int)nAxis.ALN_Y) + 2.0;
+                    loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = MC_Func.MC_GetEncPos((int)nAxis.ALN_X) + 5.0;
+                    loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = MC_Func.MC_GetEncPos((int)nAxis.ALN_Y) + 5.0;
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.ALN_X].Common_Speed_Fine;
@@ -4307,13 +4327,13 @@ namespace QMC.Common.Modules
                     if (MC_Func.MC_GetDone((int)nAxis.ALN_X) && MC_Func.MC_PosTolerance((int)nAxis.ALN_X, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X]) &&
                         MC_Func.MC_GetDone((int)nAxis.ALN_Y) && MC_Func.MC_PosTolerance((int)nAxis.ALN_Y, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y]))
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner XY 축, 1mm 넓히기 이동 완료");
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner XY 축, 5mm 넓히기 이동 완료");
 
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.MAlignerPickUp_TransferZ_Move_ReadyPos2_1stStep;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner XY 축, 1mm 넓히기 이동 실패. (Timeout)");
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner XY 축, 5mm 넓히기 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
@@ -4392,13 +4412,13 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.MAlignerPickUp_MAlignerXY_MoveType2_Widely:                            //  M-Aligner XY 축, Module 을 들어올린 후 열어주는 위치로 이동 (1mm 정도) - Type #2 or #1 둘 중에 하나만 사용
 
-                    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner XY 축, 1mm 넓히기 시작.");
+                    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner XY 축, 5mm 넓히기 시작.");
 
                     loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("M_Aligner_Open");
 
                     //  Target Position 변경 : 현재 위치에서 2mm 넓히기 (원래 Equipment.Machine_MAligner_WidenDistance 였는데 2mm 면 충분하다고 판단)
-                    loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = MC_Func.MC_GetEncPos((int)nAxis.ALN_X) + 2.0;
-                    loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = MC_Func.MC_GetEncPos((int)nAxis.ALN_Y) + 2.0;
+                    loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = MC_Func.MC_GetEncPos((int)nAxis.ALN_X) + 5.0;
+                    loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = MC_Func.MC_GetEncPos((int)nAxis.ALN_Y) + 5.0;
 
                     //  속도
                     m_dSpeed = Equipment.stAxisParam[(int)nAxis.ALN_X].Common_Speed_Fine;
@@ -4429,7 +4449,7 @@ namespace QMC.Common.Modules
                     if (MC_Func.MC_GetDone((int)nAxis.ALN_X) && MC_Func.MC_PosTolerance((int)nAxis.ALN_X, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X]) &&
                         MC_Func.MC_GetDone((int)nAxis.ALN_Y) && MC_Func.MC_PosTolerance((int)nAxis.ALN_Y, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y]))
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner XY 축, 1mm 넓히기 이동 완료");
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner XY 축, 5mm 넓히기 이동 완료");
 
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.MAlignerPickUp_TransferZ_Move_ReadyPos2_2ndStep;
                     }
@@ -5698,6 +5718,15 @@ namespace QMC.Common.Modules
                     }
 
                     m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
+
+
+                    //  Cycle Stop 이면?
+                    if (Equipment.CycleStop)
+                    {
+                        //  Loader Transfer 돌아가지 않게
+                        Equipment.CycleStopped_LoaderTransfer = true;
+                    }
+
 
                     //  Seq. Test 일 경우
                     if (!Equipment.AutoRunStatus && Equipment.SeqTestMode)

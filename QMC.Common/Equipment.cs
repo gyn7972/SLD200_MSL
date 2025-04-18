@@ -483,8 +483,16 @@ namespace QMC.Common
 
 
         //  Loader Port 투입 일시정지
+        public static bool Loader_Transfer_Pause { set; get; } = false;
         public static bool Loader_LPort_Pause { set; get; } = false;
         public static bool Loader_RPort_Pause { set; get; } = false;
+        
+
+        //  Cycle Stop
+        public static bool CycleStop { set; get; } = false;
+        public static bool CycleStopped_LoaderTransfer { set; get; } = false;
+        public static bool CycleStopped_UnloaderTransfer { set; get; } = false;
+        public static bool CycleStopped_MainWork { set; get; } = false;
 
 
         //  Recipe Open 시 열린 도면 파일 경로
@@ -951,6 +959,7 @@ namespace QMC.Common
             NewForm_MachineOption_Load();
             NewForm_MapDataList_Load();
             NewForm_MapDataActivate_Load();
+            NewForm_FlatMeasurePos_Data_Load();
 
 
             if (m_nBoardOpened != 0)
@@ -2505,6 +2514,47 @@ namespace QMC.Common
                 return false;
             }
 
+
+            return m_bRet;
+        }
+
+
+        public static bool NewForm_FlatMeasurePos_Data_Load()
+        {
+            string strTemp = "";
+            string strTemp2 = "";
+
+            bool m_bRet = true;
+            string strFIle = "";
+            StringBuilder temp = new StringBuilder(255);
+
+            strFIle = ConfigManager.GetTeachingDataPath() + "\\FlatMeasure_TeachingPosition.ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                MessageBox.Show("Flatness Measurement Position Teaching 파일이 없습니다.\r\n\r\n[Default 값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return false;
+            }
+
+
+            //  Flat Measurement Position 로드
+            for (int i = 0; i < (int)System.Enum.GetValues(typeof(FlatMeasureList)).Length; i++)
+            {
+                strTemp = string.Format("MeasureListType_{0}", i);
+
+                for (int j = 0; j < 9; j++)
+                {
+                    //  Position X
+                    strTemp2 = string.Format("Position_{0}_X", j + 1);
+                    NativeMethods.GetPrivateProfileString(strTemp, strTemp2, "0.0", temp, 255, strFIle);
+                    Equipment.stFlatMeasurePos[i].StagePos[j].X = Convert.ToDouble(temp.ToString());
+
+                    //  Position Y
+                    strTemp2 = string.Format("Position_{0}_Y", j + 1);
+                    NativeMethods.GetPrivateProfileString(strTemp, strTemp2, "0.0", temp, 255, strFIle);
+                    Equipment.stFlatMeasurePos[i].StagePos[j].Y = Convert.ToDouble(temp.ToString());
+                }
+            }
 
             return m_bRet;
         }

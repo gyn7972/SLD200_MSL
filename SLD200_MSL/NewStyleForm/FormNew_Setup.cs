@@ -141,6 +141,7 @@ namespace SLD200_MSL
             Comm_Parameter_Apply();
             Machine_Option_Apply();
             MappingData_List_Apply();
+            Flatness_Measurement_Position_Apply();
 
             workStage.MapData_Load();
 
@@ -1066,6 +1067,48 @@ namespace SLD200_MSL
             {
                 radioButton_Setup_Option_FiducialImageSave_FailedToFind.Checked = true;
             }
+
+            return m_bRet;
+        }
+
+        public bool Flatness_Measurement_Position_Apply()
+        {
+            string strTemp = "";
+
+            bool m_bRet = true;
+            string strFIle = "";
+            StringBuilder temp = new StringBuilder(255);
+
+            strFIle = ConfigManager.GetTeachingDataPath() + "\\FlatMeasure_TeachingPosition.ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                MessageBox.Show("FlatMeasure Teaching Position 파일이 없습니다.\r\n\r\n[Default 값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return false;
+            }
+
+            //  첫번째 Index 로 표시
+            comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex = 0;
+
+            //  Flatness 측정 위치 데이터 적용 (0번 Index)
+            textBox_Setup_Flatness_TeachingPos1_StageX.Text = Equipment.stFlatMeasurePos[0].StagePos[0].X.ToString();
+            textBox_Setup_Flatness_TeachingPos1_StageY.Text = Equipment.stFlatMeasurePos[0].StagePos[0].Y.ToString();
+            textBox_Setup_Flatness_TeachingPos2_StageX.Text = Equipment.stFlatMeasurePos[0].StagePos[1].X.ToString();
+            textBox_Setup_Flatness_TeachingPos2_StageY.Text = Equipment.stFlatMeasurePos[0].StagePos[1].Y.ToString();
+            textBox_Setup_Flatness_TeachingPos3_StageX.Text = Equipment.stFlatMeasurePos[0].StagePos[2].X.ToString();
+            textBox_Setup_Flatness_TeachingPos3_StageY.Text = Equipment.stFlatMeasurePos[0].StagePos[2].Y.ToString();
+            textBox_Setup_Flatness_TeachingPos4_StageX.Text = Equipment.stFlatMeasurePos[0].StagePos[3].X.ToString();
+            textBox_Setup_Flatness_TeachingPos4_StageY.Text = Equipment.stFlatMeasurePos[0].StagePos[3].Y.ToString();
+            textBox_Setup_Flatness_TeachingPos5_StageX.Text = Equipment.stFlatMeasurePos[0].StagePos[4].X.ToString();
+            textBox_Setup_Flatness_TeachingPos5_StageY.Text = Equipment.stFlatMeasurePos[0].StagePos[4].Y.ToString();
+            textBox_Setup_Flatness_TeachingPos6_StageX.Text = Equipment.stFlatMeasurePos[0].StagePos[5].X.ToString();
+            textBox_Setup_Flatness_TeachingPos6_StageY.Text = Equipment.stFlatMeasurePos[0].StagePos[5].Y.ToString();
+            textBox_Setup_Flatness_TeachingPos7_StageX.Text = Equipment.stFlatMeasurePos[0].StagePos[6].X.ToString();
+            textBox_Setup_Flatness_TeachingPos7_StageY.Text = Equipment.stFlatMeasurePos[0].StagePos[6].Y.ToString();
+            textBox_Setup_Flatness_TeachingPos8_StageX.Text = Equipment.stFlatMeasurePos[0].StagePos[7].X.ToString();
+            textBox_Setup_Flatness_TeachingPos8_StageY.Text = Equipment.stFlatMeasurePos[0].StagePos[7].Y.ToString();
+            textBox_Setup_Flatness_TeachingPos9_StageX.Text = Equipment.stFlatMeasurePos[0].StagePos[8].X.ToString();
+            textBox_Setup_Flatness_TeachingPos9_StageY.Text = Equipment.stFlatMeasurePos[0].StagePos[8].Y.ToString();
 
             return m_bRet;
         }
@@ -2144,9 +2187,18 @@ namespace SLD200_MSL
 
         private void button_Setup_Flatness_MeasurementPosition1_Clear_Click(object sender, EventArgs e)
         {
-            //  1. Flatness 측정 위치 초기화
+            //  1번 위치 Clear
 
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
 
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            textBox_Setup_Flatness_TeachingPos1_StageX.Text = "0.0";
+            textBox_Setup_Flatness_TeachingPos1_StageY.Text = "0.0";
         }
 
         private void comboBox_Setup_FlatnessMeasurementPos_List_SelectedIndexChanged(object sender, EventArgs e)
@@ -2157,6 +2209,7 @@ namespace SLD200_MSL
 
             if (nIndex < 0)
             {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -2180,6 +2233,439 @@ namespace SLD200_MSL
             textBox_Setup_Flatness_TeachingPos8_StageY.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[7].Y.ToString();
             textBox_Setup_Flatness_TeachingPos9_StageX.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[8].X.ToString();
             textBox_Setup_Flatness_TeachingPos9_StageY.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[8].Y.ToString();
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition_Save_Click(object sender, EventArgs e)
+        {
+            //  Flatness 측정 위치 저장
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //  Flatness 측정 위치 데이터 저장
+            Equipment.stFlatMeasurePos[nIndex].StagePos[0].X = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos1_StageX.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[0].Y = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos1_StageY.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[1].X = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos2_StageX.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[1].Y = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos2_StageY.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[2].X = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos3_StageX.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[2].Y = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos3_StageY.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[3].X = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos4_StageX.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[3].Y = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos4_StageY.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[4].X = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos5_StageX.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[4].Y = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos5_StageY.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[5].X = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos6_StageX.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[5].Y = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos6_StageY.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[6].X = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos7_StageX.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[6].Y = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos7_StageY.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[7].X = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos8_StageX.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[7].Y = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos8_StageY.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[8].X = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos9_StageX.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[8].Y = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos9_StageY.Text);
+
+
+            FlatMeasurePos_Data_Save();
+        }
+
+
+        #region Flatness Measurement Position Save / Load
+
+        //  Load 는 Equipment 에서
+
+        public void FlatMeasurePos_Data_Save()
+        {
+            string strTemp = "";
+            string strTemp2 = "";
+
+            string strFIle = "";
+            strFIle = ConfigManager.GetTeachingDataPath() + "\\FlatMeasure_TeachingPosition.ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                File.Create(strFIle);
+
+                strTemp = string.Format("{0} 파일을 생성하였습니다. 다시 시도하십시오.", System.IO.Path.GetFileName(strFIle));
+                MessageBox.Show(strTemp, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //  Flat Measurement Position 저장
+            for (int i = 0; i < (int)System.Enum.GetValues(typeof(FlatMeasureList)).Length; i++)
+            {
+                strTemp = string.Format("MeasureListType_{0}", i);
+
+                for ( int j = 0; j < 9; j++ )
+                {
+                    //  Position X
+                    strTemp2 = string.Format("Position_{0}_X", j + 1);
+                    NativeMethods.WritePrivateProfileString(strTemp, strTemp2, Equipment.stFlatMeasurePos[i].StagePos[j].X.ToString(), strFIle);
+
+                    //  Position Y
+                    strTemp2 = string.Format("Position_{0}_Y", j + 1);
+                    NativeMethods.WritePrivateProfileString(strTemp, strTemp2, Equipment.stFlatMeasurePos[i].StagePos[j].Y.ToString(), strFIle);
+                }
+            }
+
+            MessageBox.Show("Flatness Measure Teaching 파일을 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        #endregion
+
+        private void button_Setup_Flatness_MeasurementPosition_Start_Click(object sender, EventArgs e)
+        {
+            //  Flatness 측정 시작
+
+            Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Flatness Measurement 시작 버튼");
+
+            string m_strTemp = "";
+
+            if (!workStage.m_bHomeOK)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            if (workStage.m_nFlatnessMeasure_Step == (int)WorkStage.FlatnessMeasure_Step.None)
+            {
+                var mb = new MessageBoxYesNo();
+
+                switch(workStage.m_nFlatnessMeasure_Type)
+                {
+                    case (int)FlatMeasureList.Stage:
+                        m_strTemp = "[Stage] Flatness 측정을 시작하시겠습니까?";
+                        break;
+
+                    case (int)FlatMeasureList.CalPos:
+                        m_strTemp = "[Cal. Plate] Flatness 측정을 시작하시겠습니까?";
+                        break;
+
+                    case (int)FlatMeasureList.User1:
+                        m_strTemp = "[User1] Flatness 측정을 시작하시겠습니까?";
+                        break;
+
+                    case (int)FlatMeasureList.User2:
+                        m_strTemp = "[User2] Flatness 측정을 시작하시겠습니까?";
+                        break;
+
+                    case (int)FlatMeasureList.User3:
+                        m_strTemp = "[User3] Flatness 측정을 시작하시겠습니까?";
+                        break;
+                }
+
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", m_strTemp))
+                    return;
+
+                workStage.m_nFlatnessMeasure_Step = (int)WorkStage.FlatnessMeasure_Step.Start;
+                workStage.timer_Comm.Enabled = true;
+            }
+            else
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "측정중입니다.");
+                return;
+            }
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition_Stop_Click(object sender, EventArgs e)
+        {
+            //  Flatness 측정 중지
+
+            Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Flatness Measurement 중지 버튼");
+
+            string m_strTemp = "";
+
+            if (!workStage.m_bHomeOK)
+            {
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            workStage.m_nFlatnessMeasure_Step = (int)WorkStage.FlatnessMeasure_Step.None;
+
+            workStage.MC_Func.MC_MotorStop((int)WorkStage.nAxis.X, 2000);
+            workStage.MC_Func.MC_MotorStop((int)WorkStage.nAxis.Y, 2000);
+
+            var mb1 = new MessageBoxOk();
+            mb1.ShowDialog("Information !", "측정이 중지되었습니다.");
+            return;
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition1_Get_Click(object sender, EventArgs e)
+        {
+            //  1번 위치 가져오기
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+
+            textBox_Setup_Flatness_TeachingPos1_StageX.Text = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X).ToString();
+            textBox_Setup_Flatness_TeachingPos1_StageY.Text = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y).ToString();
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition2_Get_Click(object sender, EventArgs e)
+        {
+            //  2번 위치 가져오기
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            textBox_Setup_Flatness_TeachingPos2_StageX.Text = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X).ToString();
+            textBox_Setup_Flatness_TeachingPos2_StageY.Text = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y).ToString();
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition3_Get_Click(object sender, EventArgs e)
+        {
+            //  3번 위치 가져오기
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            textBox_Setup_Flatness_TeachingPos3_StageX.Text = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X).ToString();
+            textBox_Setup_Flatness_TeachingPos3_StageY.Text = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y).ToString();
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition4_Get_Click(object sender, EventArgs e)
+        {
+            //  4번 위치 가져오기
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            textBox_Setup_Flatness_TeachingPos4_StageX.Text = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X).ToString();
+            textBox_Setup_Flatness_TeachingPos4_StageY.Text = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y).ToString();
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition5_Get_Click(object sender, EventArgs e)
+        {
+            //  5번 위치 가져오기
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            textBox_Setup_Flatness_TeachingPos5_StageX.Text = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X).ToString();
+            textBox_Setup_Flatness_TeachingPos5_StageY.Text = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y).ToString();
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition6_Get_Click(object sender, EventArgs e)
+        {
+            //  6번 위치 가져오기
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            textBox_Setup_Flatness_TeachingPos6_StageX.Text = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X).ToString();
+            textBox_Setup_Flatness_TeachingPos6_StageY.Text = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y).ToString();
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition7_Get_Click(object sender, EventArgs e)
+        {
+            //  7번 위치 가져오기
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            textBox_Setup_Flatness_TeachingPos7_StageX.Text = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X).ToString();
+            textBox_Setup_Flatness_TeachingPos7_StageY.Text = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y).ToString();
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition8_Get_Click(object sender, EventArgs e)
+        {
+            //  8번 위치 가져오기
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            textBox_Setup_Flatness_TeachingPos8_StageX.Text = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X).ToString();
+            textBox_Setup_Flatness_TeachingPos8_StageY.Text = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y).ToString();
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition9_Get_Click(object sender, EventArgs e)
+        {
+            //  9번 위치 가져오기
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            textBox_Setup_Flatness_TeachingPos9_StageX.Text = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X).ToString();
+            textBox_Setup_Flatness_TeachingPos9_StageY.Text = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y).ToString();
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition2_Clear_Click(object sender, EventArgs e)
+        {
+            //  2번 위치 Clear
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            textBox_Setup_Flatness_TeachingPos2_StageX.Text = "0.0";
+            textBox_Setup_Flatness_TeachingPos2_StageY.Text = "0.0";
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition3_Clear_Click(object sender, EventArgs e)
+        {
+            //  3번 위치 Clear
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            textBox_Setup_Flatness_TeachingPos3_StageX.Text = "0.0";
+            textBox_Setup_Flatness_TeachingPos3_StageY.Text = "0.0";
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition4_Clear_Click(object sender, EventArgs e)
+        {
+            //  4번 위치 Clear
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            textBox_Setup_Flatness_TeachingPos4_StageX.Text = "0.0";
+            textBox_Setup_Flatness_TeachingPos4_StageY.Text = "0.0";
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition5_Clear_Click(object sender, EventArgs e)
+        {
+            //  5번 위치 Clear
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            textBox_Setup_Flatness_TeachingPos5_StageX.Text = "0.0";
+            textBox_Setup_Flatness_TeachingPos5_StageY.Text = "0.0";
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition6_Clear_Click(object sender, EventArgs e)
+        {
+            //  6번 위치 Clear
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            textBox_Setup_Flatness_TeachingPos6_StageX.Text = "0.0";
+            textBox_Setup_Flatness_TeachingPos6_StageY.Text = "0.0";
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition7_Clear_Click(object sender, EventArgs e)
+        {
+            //  7번 위치 Clear
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            textBox_Setup_Flatness_TeachingPos7_StageX.Text = "0.0";
+            textBox_Setup_Flatness_TeachingPos7_StageY.Text = "0.0";
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition8_Clear_Click(object sender, EventArgs e)
+        {
+            //  8번 위치 Clear
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            textBox_Setup_Flatness_TeachingPos8_StageX.Text = "0.0";
+            textBox_Setup_Flatness_TeachingPos8_StageY.Text = "0.0";
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition9_Clear_Click(object sender, EventArgs e)
+        {
+            //  9번 위치 Clear
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            textBox_Setup_Flatness_TeachingPos9_StageX.Text = "0.0";
+            textBox_Setup_Flatness_TeachingPos9_StageY.Text = "0.0";
         }
 
         private void btnOffsetStart_Vision_Click(object sender, EventArgs e)

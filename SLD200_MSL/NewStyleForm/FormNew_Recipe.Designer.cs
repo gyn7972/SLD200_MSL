@@ -684,11 +684,11 @@
             this.groupBox14.Controls.Add(this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower);
             this.groupBox14.Controls.Add(this.label48);
             this.groupBox14.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox14.Location = new System.Drawing.Point(401, 641);
+            this.groupBox14.Location = new System.Drawing.Point(401, 645);
             this.groupBox14.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox14.Name = "groupBox14";
             this.groupBox14.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox14.Size = new System.Drawing.Size(272, 85);
+            this.groupBox14.Size = new System.Drawing.Size(272, 89);
             this.groupBox14.TabIndex = 86;
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = " Dust Collector (Hz) ";

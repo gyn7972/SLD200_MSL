@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -286,6 +288,65 @@
             this.button15 = new System.Windows.Forms.Button();
             this.tabPage_Setup_FlatnessMeasurement = new System.Windows.Forms.TabPage();
             this.groupBox18 = new System.Windows.Forms.GroupBox();
+            this.button_Setup_Flatness_MeasurementPosition_Stop = new System.Windows.Forms.Button();
+            this.label92 = new System.Windows.Forms.Label();
+            this.comboBox_Setup_FlatnessMeasurementPos_List = new System.Windows.Forms.ComboBox();
+            this.label91 = new System.Windows.Forms.Label();
+            this.button_Setup_Flatness_MeasurementPosition_Start = new System.Windows.Forms.Button();
+            this.button_Setup_Flatness_MeasurementPosition_Save = new System.Windows.Forms.Button();
+            this.button_Setup_Flatness_MeasurementPosition9_Clear = new System.Windows.Forms.Button();
+            this.button_Setup_Flatness_MeasurementPosition8_Clear = new System.Windows.Forms.Button();
+            this.button_Setup_Flatness_MeasurementPosition7_Clear = new System.Windows.Forms.Button();
+            this.button_Setup_Flatness_MeasurementPosition6_Clear = new System.Windows.Forms.Button();
+            this.button_Setup_Flatness_MeasurementPosition5_Clear = new System.Windows.Forms.Button();
+            this.button_Setup_Flatness_MeasurementPosition4_Clear = new System.Windows.Forms.Button();
+            this.button_Setup_Flatness_MeasurementPosition3_Clear = new System.Windows.Forms.Button();
+            this.button_Setup_Flatness_MeasurementPosition2_Clear = new System.Windows.Forms.Button();
+            this.button_Setup_Flatness_MeasurementPosition1_Clear = new System.Windows.Forms.Button();
+            this.textBox_Setup_Flatness_TeachingPos9_StageY = new System.Windows.Forms.TextBox();
+            this.label85 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Flatness_TeachingPos9_StageX = new System.Windows.Forms.TextBox();
+            this.label86 = new System.Windows.Forms.Label();
+            this.button_Setup_Flatness_MeasurementPosition9_Get = new System.Windows.Forms.Button();
+            this.textBox_Setup_Flatness_TeachingPos8_StageY = new System.Windows.Forms.TextBox();
+            this.label87 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Flatness_TeachingPos8_StageX = new System.Windows.Forms.TextBox();
+            this.label88 = new System.Windows.Forms.Label();
+            this.button_Setup_Flatness_MeasurementPosition8_Get = new System.Windows.Forms.Button();
+            this.textBox_Setup_Flatness_TeachingPos7_StageY = new System.Windows.Forms.TextBox();
+            this.label89 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Flatness_TeachingPos7_StageX = new System.Windows.Forms.TextBox();
+            this.label90 = new System.Windows.Forms.Label();
+            this.button_Setup_Flatness_MeasurementPosition7_Get = new System.Windows.Forms.Button();
+            this.textBox_Setup_Flatness_TeachingPos6_StageY = new System.Windows.Forms.TextBox();
+            this.label79 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Flatness_TeachingPos6_StageX = new System.Windows.Forms.TextBox();
+            this.label80 = new System.Windows.Forms.Label();
+            this.button_Setup_Flatness_MeasurementPosition6_Get = new System.Windows.Forms.Button();
+            this.textBox_Setup_Flatness_TeachingPos5_StageY = new System.Windows.Forms.TextBox();
+            this.label81 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Flatness_TeachingPos5_StageX = new System.Windows.Forms.TextBox();
+            this.label82 = new System.Windows.Forms.Label();
+            this.button_Setup_Flatness_MeasurementPosition5_Get = new System.Windows.Forms.Button();
+            this.textBox_Setup_Flatness_TeachingPos4_StageY = new System.Windows.Forms.TextBox();
+            this.label83 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Flatness_TeachingPos4_StageX = new System.Windows.Forms.TextBox();
+            this.label84 = new System.Windows.Forms.Label();
+            this.button_Setup_Flatness_MeasurementPosition4_Get = new System.Windows.Forms.Button();
+            this.textBox_Setup_Flatness_TeachingPos3_StageY = new System.Windows.Forms.TextBox();
+            this.label77 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Flatness_TeachingPos3_StageX = new System.Windows.Forms.TextBox();
+            this.label78 = new System.Windows.Forms.Label();
+            this.button_Setup_Flatness_MeasurementPosition3_Get = new System.Windows.Forms.Button();
+            this.textBox_Setup_Flatness_TeachingPos2_StageY = new System.Windows.Forms.TextBox();
+            this.label75 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Flatness_TeachingPos2_StageX = new System.Windows.Forms.TextBox();
+            this.label76 = new System.Windows.Forms.Label();
+            this.button_Setup_Flatness_MeasurementPosition2_Get = new System.Windows.Forms.Button();
+            this.textBox_Setup_Flatness_TeachingPos1_StageY = new System.Windows.Forms.TextBox();
+            this.label235 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Flatness_TeachingPos1_StageX = new System.Windows.Forms.TextBox();
+            this.label236 = new System.Windows.Forms.Label();
             this.button_Setup_Flatness_MeasurementPosition1_Get = new System.Windows.Forms.Button();
             this.tabPage_Setup_Option = new System.Windows.Forms.TabPage();
             this.groupBox14 = new System.Windows.Forms.GroupBox();
@@ -1095,6 +1156,14 @@
             this.Output_Active,
             this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn2});
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle1;
             dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -1163,6 +1232,14 @@
             this.Active,
             this.Column4,
             this.Column5});
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle2;
             dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -3660,9 +3737,12 @@
             // 
             // groupBox18
             // 
+            this.groupBox18.Controls.Add(this.button_Setup_Flatness_MeasurementPosition_Stop);
+            this.groupBox18.Controls.Add(this.label92);
             this.groupBox18.Controls.Add(this.comboBox_Setup_FlatnessMeasurementPos_List);
             this.groupBox18.Controls.Add(this.label91);
-            this.groupBox18.Controls.Add(this.button28);
+            this.groupBox18.Controls.Add(this.button_Setup_Flatness_MeasurementPosition_Start);
+            this.groupBox18.Controls.Add(this.button_Setup_Flatness_MeasurementPosition_Save);
             this.groupBox18.Controls.Add(this.button_Setup_Flatness_MeasurementPosition9_Clear);
             this.groupBox18.Controls.Add(this.button_Setup_Flatness_MeasurementPosition8_Clear);
             this.groupBox18.Controls.Add(this.button_Setup_Flatness_MeasurementPosition7_Clear);
@@ -3722,21 +3802,698 @@
             this.groupBox18.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox18.Name = "groupBox18";
             this.groupBox18.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox18.Size = new System.Drawing.Size(878, 386);
+            this.groupBox18.Size = new System.Drawing.Size(849, 379);
             this.groupBox18.TabIndex = 89;
             this.groupBox18.TabStop = false;
             this.groupBox18.Text = " Flatness Measurement Position ";
             // 
+            // button_Setup_Flatness_MeasurementPosition_Stop
+            // 
+            this.button_Setup_Flatness_MeasurementPosition_Stop.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition_Stop.Location = new System.Drawing.Point(635, 302);
+            this.button_Setup_Flatness_MeasurementPosition_Stop.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition_Stop.Name = "button_Setup_Flatness_MeasurementPosition_Stop";
+            this.button_Setup_Flatness_MeasurementPosition_Stop.Size = new System.Drawing.Size(203, 62);
+            this.button_Setup_Flatness_MeasurementPosition_Stop.TabIndex = 149;
+            this.button_Setup_Flatness_MeasurementPosition_Stop.Text = "Flatness Measurement\r\nStop";
+            this.button_Setup_Flatness_MeasurementPosition_Stop.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition_Stop.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition_Stop_Click);
+            // 
+            // label92
+            // 
+            this.label92.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label92.Location = new System.Drawing.Point(18, 80);
+            this.label92.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label92.Name = "label92";
+            this.label92.Size = new System.Drawing.Size(162, 43);
+            this.label92.TabIndex = 148;
+            this.label92.Text = "(The location pointed by the laser height sensor)";
+            this.label92.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // comboBox_Setup_FlatnessMeasurementPos_List
+            // 
+            this.comboBox_Setup_FlatnessMeasurementPos_List.Font = new System.Drawing.Font("Tahoma", 11F);
+            this.comboBox_Setup_FlatnessMeasurementPos_List.FormattingEnabled = true;
+            this.comboBox_Setup_FlatnessMeasurementPos_List.Items.AddRange(new object[] {
+            "Work Stage",
+            "Cal. Plate",
+            "User1",
+            "User2",
+            "User3"});
+            this.comboBox_Setup_FlatnessMeasurementPos_List.Location = new System.Drawing.Point(109, 36);
+            this.comboBox_Setup_FlatnessMeasurementPos_List.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBox_Setup_FlatnessMeasurementPos_List.Name = "comboBox_Setup_FlatnessMeasurementPos_List";
+            this.comboBox_Setup_FlatnessMeasurementPos_List.Size = new System.Drawing.Size(118, 26);
+            this.comboBox_Setup_FlatnessMeasurementPos_List.TabIndex = 147;
+            this.comboBox_Setup_FlatnessMeasurementPos_List.Text = "Work Stage";
+            this.comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndexChanged += new System.EventHandler(this.comboBox_Setup_FlatnessMeasurementPos_List_SelectedIndexChanged);
+            // 
+            // label91
+            // 
+            this.label91.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label91.Location = new System.Drawing.Point(8, 36);
+            this.label91.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label91.Name = "label91";
+            this.label91.Size = new System.Drawing.Size(97, 25);
+            this.label91.TabIndex = 146;
+            this.label91.Text = "Position List :";
+            this.label91.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button_Setup_Flatness_MeasurementPosition_Start
+            // 
+            this.button_Setup_Flatness_MeasurementPosition_Start.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition_Start.Location = new System.Drawing.Point(422, 302);
+            this.button_Setup_Flatness_MeasurementPosition_Start.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition_Start.Name = "button_Setup_Flatness_MeasurementPosition_Start";
+            this.button_Setup_Flatness_MeasurementPosition_Start.Size = new System.Drawing.Size(203, 62);
+            this.button_Setup_Flatness_MeasurementPosition_Start.TabIndex = 145;
+            this.button_Setup_Flatness_MeasurementPosition_Start.Text = "Flatness Measurement\r\nStart";
+            this.button_Setup_Flatness_MeasurementPosition_Start.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition_Start.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition_Start_Click);
+            // 
+            // button_Setup_Flatness_MeasurementPosition_Save
+            // 
+            this.button_Setup_Flatness_MeasurementPosition_Save.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition_Save.Location = new System.Drawing.Point(11, 224);
+            this.button_Setup_Flatness_MeasurementPosition_Save.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition_Save.Name = "button_Setup_Flatness_MeasurementPosition_Save";
+            this.button_Setup_Flatness_MeasurementPosition_Save.Size = new System.Drawing.Size(131, 51);
+            this.button_Setup_Flatness_MeasurementPosition_Save.TabIndex = 145;
+            this.button_Setup_Flatness_MeasurementPosition_Save.Text = "Save Position";
+            this.button_Setup_Flatness_MeasurementPosition_Save.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition_Save.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition_Save_Click);
+            // 
+            // button_Setup_Flatness_MeasurementPosition9_Clear
+            // 
+            this.button_Setup_Flatness_MeasurementPosition9_Clear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition9_Clear.Location = new System.Drawing.Point(785, 249);
+            this.button_Setup_Flatness_MeasurementPosition9_Clear.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition9_Clear.Name = "button_Setup_Flatness_MeasurementPosition9_Clear";
+            this.button_Setup_Flatness_MeasurementPosition9_Clear.Size = new System.Drawing.Size(53, 26);
+            this.button_Setup_Flatness_MeasurementPosition9_Clear.TabIndex = 144;
+            this.button_Setup_Flatness_MeasurementPosition9_Clear.Text = "Clear";
+            this.button_Setup_Flatness_MeasurementPosition9_Clear.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition9_Clear.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition9_Clear_Click);
+            // 
+            // button_Setup_Flatness_MeasurementPosition8_Clear
+            // 
+            this.button_Setup_Flatness_MeasurementPosition8_Clear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition8_Clear.Location = new System.Drawing.Point(785, 221);
+            this.button_Setup_Flatness_MeasurementPosition8_Clear.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition8_Clear.Name = "button_Setup_Flatness_MeasurementPosition8_Clear";
+            this.button_Setup_Flatness_MeasurementPosition8_Clear.Size = new System.Drawing.Size(53, 26);
+            this.button_Setup_Flatness_MeasurementPosition8_Clear.TabIndex = 143;
+            this.button_Setup_Flatness_MeasurementPosition8_Clear.Text = "Clear";
+            this.button_Setup_Flatness_MeasurementPosition8_Clear.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition8_Clear.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition8_Clear_Click);
+            // 
+            // button_Setup_Flatness_MeasurementPosition7_Clear
+            // 
+            this.button_Setup_Flatness_MeasurementPosition7_Clear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition7_Clear.Location = new System.Drawing.Point(785, 193);
+            this.button_Setup_Flatness_MeasurementPosition7_Clear.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition7_Clear.Name = "button_Setup_Flatness_MeasurementPosition7_Clear";
+            this.button_Setup_Flatness_MeasurementPosition7_Clear.Size = new System.Drawing.Size(53, 26);
+            this.button_Setup_Flatness_MeasurementPosition7_Clear.TabIndex = 142;
+            this.button_Setup_Flatness_MeasurementPosition7_Clear.Text = "Clear";
+            this.button_Setup_Flatness_MeasurementPosition7_Clear.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition7_Clear.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition7_Clear_Click);
+            // 
+            // button_Setup_Flatness_MeasurementPosition6_Clear
+            // 
+            this.button_Setup_Flatness_MeasurementPosition6_Clear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition6_Clear.Location = new System.Drawing.Point(785, 165);
+            this.button_Setup_Flatness_MeasurementPosition6_Clear.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition6_Clear.Name = "button_Setup_Flatness_MeasurementPosition6_Clear";
+            this.button_Setup_Flatness_MeasurementPosition6_Clear.Size = new System.Drawing.Size(53, 26);
+            this.button_Setup_Flatness_MeasurementPosition6_Clear.TabIndex = 141;
+            this.button_Setup_Flatness_MeasurementPosition6_Clear.Text = "Clear";
+            this.button_Setup_Flatness_MeasurementPosition6_Clear.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition6_Clear.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition6_Clear_Click);
+            // 
+            // button_Setup_Flatness_MeasurementPosition5_Clear
+            // 
+            this.button_Setup_Flatness_MeasurementPosition5_Clear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition5_Clear.Location = new System.Drawing.Point(785, 137);
+            this.button_Setup_Flatness_MeasurementPosition5_Clear.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition5_Clear.Name = "button_Setup_Flatness_MeasurementPosition5_Clear";
+            this.button_Setup_Flatness_MeasurementPosition5_Clear.Size = new System.Drawing.Size(53, 26);
+            this.button_Setup_Flatness_MeasurementPosition5_Clear.TabIndex = 140;
+            this.button_Setup_Flatness_MeasurementPosition5_Clear.Text = "Clear";
+            this.button_Setup_Flatness_MeasurementPosition5_Clear.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition5_Clear.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition5_Clear_Click);
+            // 
+            // button_Setup_Flatness_MeasurementPosition4_Clear
+            // 
+            this.button_Setup_Flatness_MeasurementPosition4_Clear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition4_Clear.Location = new System.Drawing.Point(785, 109);
+            this.button_Setup_Flatness_MeasurementPosition4_Clear.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition4_Clear.Name = "button_Setup_Flatness_MeasurementPosition4_Clear";
+            this.button_Setup_Flatness_MeasurementPosition4_Clear.Size = new System.Drawing.Size(53, 26);
+            this.button_Setup_Flatness_MeasurementPosition4_Clear.TabIndex = 139;
+            this.button_Setup_Flatness_MeasurementPosition4_Clear.Text = "Clear";
+            this.button_Setup_Flatness_MeasurementPosition4_Clear.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition4_Clear.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition4_Clear_Click);
+            // 
+            // button_Setup_Flatness_MeasurementPosition3_Clear
+            // 
+            this.button_Setup_Flatness_MeasurementPosition3_Clear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition3_Clear.Location = new System.Drawing.Point(785, 81);
+            this.button_Setup_Flatness_MeasurementPosition3_Clear.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition3_Clear.Name = "button_Setup_Flatness_MeasurementPosition3_Clear";
+            this.button_Setup_Flatness_MeasurementPosition3_Clear.Size = new System.Drawing.Size(53, 26);
+            this.button_Setup_Flatness_MeasurementPosition3_Clear.TabIndex = 138;
+            this.button_Setup_Flatness_MeasurementPosition3_Clear.Text = "Clear";
+            this.button_Setup_Flatness_MeasurementPosition3_Clear.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition3_Clear.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition3_Clear_Click);
+            // 
+            // button_Setup_Flatness_MeasurementPosition2_Clear
+            // 
+            this.button_Setup_Flatness_MeasurementPosition2_Clear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition2_Clear.Location = new System.Drawing.Point(785, 53);
+            this.button_Setup_Flatness_MeasurementPosition2_Clear.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition2_Clear.Name = "button_Setup_Flatness_MeasurementPosition2_Clear";
+            this.button_Setup_Flatness_MeasurementPosition2_Clear.Size = new System.Drawing.Size(53, 26);
+            this.button_Setup_Flatness_MeasurementPosition2_Clear.TabIndex = 137;
+            this.button_Setup_Flatness_MeasurementPosition2_Clear.Text = "Clear";
+            this.button_Setup_Flatness_MeasurementPosition2_Clear.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition2_Clear.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition2_Clear_Click);
+            // 
+            // button_Setup_Flatness_MeasurementPosition1_Clear
+            // 
+            this.button_Setup_Flatness_MeasurementPosition1_Clear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition1_Clear.Location = new System.Drawing.Point(785, 25);
+            this.button_Setup_Flatness_MeasurementPosition1_Clear.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition1_Clear.Name = "button_Setup_Flatness_MeasurementPosition1_Clear";
+            this.button_Setup_Flatness_MeasurementPosition1_Clear.Size = new System.Drawing.Size(53, 26);
+            this.button_Setup_Flatness_MeasurementPosition1_Clear.TabIndex = 136;
+            this.button_Setup_Flatness_MeasurementPosition1_Clear.Text = "Clear";
+            this.button_Setup_Flatness_MeasurementPosition1_Clear.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition1_Clear.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition1_Clear_Click);
+            // 
+            // textBox_Setup_Flatness_TeachingPos9_StageY
+            // 
+            this.textBox_Setup_Flatness_TeachingPos9_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Flatness_TeachingPos9_StageY.Location = new System.Drawing.Point(564, 249);
+            this.textBox_Setup_Flatness_TeachingPos9_StageY.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Setup_Flatness_TeachingPos9_StageY.Name = "textBox_Setup_Flatness_TeachingPos9_StageY";
+            this.textBox_Setup_Flatness_TeachingPos9_StageY.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Setup_Flatness_TeachingPos9_StageY.TabIndex = 135;
+            this.textBox_Setup_Flatness_TeachingPos9_StageY.Text = "000.000";
+            this.textBox_Setup_Flatness_TeachingPos9_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label85
+            // 
+            this.label85.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label85.Location = new System.Drawing.Point(490, 248);
+            this.label85.Margin = new System.Windows.Forms.Padding(5);
+            this.label85.Name = "label85";
+            this.label85.Size = new System.Drawing.Size(73, 24);
+            this.label85.TabIndex = 134;
+            this.label85.Text = "Stage Y :";
+            this.label85.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Flatness_TeachingPos9_StageX
+            // 
+            this.textBox_Setup_Flatness_TeachingPos9_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Flatness_TeachingPos9_StageX.Location = new System.Drawing.Point(391, 249);
+            this.textBox_Setup_Flatness_TeachingPos9_StageX.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Setup_Flatness_TeachingPos9_StageX.Name = "textBox_Setup_Flatness_TeachingPos9_StageX";
+            this.textBox_Setup_Flatness_TeachingPos9_StageX.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Setup_Flatness_TeachingPos9_StageX.TabIndex = 133;
+            this.textBox_Setup_Flatness_TeachingPos9_StageX.Text = "000.000";
+            this.textBox_Setup_Flatness_TeachingPos9_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label86
+            // 
+            this.label86.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label86.Location = new System.Drawing.Point(297, 248);
+            this.label86.Margin = new System.Windows.Forms.Padding(5);
+            this.label86.Name = "label86";
+            this.label86.Size = new System.Drawing.Size(93, 24);
+            this.label86.TabIndex = 132;
+            this.label86.Text = "9.    Stage X :";
+            this.label86.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button_Setup_Flatness_MeasurementPosition9_Get
+            // 
+            this.button_Setup_Flatness_MeasurementPosition9_Get.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition9_Get.Location = new System.Drawing.Point(674, 249);
+            this.button_Setup_Flatness_MeasurementPosition9_Get.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition9_Get.Name = "button_Setup_Flatness_MeasurementPosition9_Get";
+            this.button_Setup_Flatness_MeasurementPosition9_Get.Size = new System.Drawing.Size(109, 26);
+            this.button_Setup_Flatness_MeasurementPosition9_Get.TabIndex = 131;
+            this.button_Setup_Flatness_MeasurementPosition9_Get.Text = "Get Position";
+            this.button_Setup_Flatness_MeasurementPosition9_Get.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition9_Get.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition9_Get_Click);
+            // 
+            // textBox_Setup_Flatness_TeachingPos8_StageY
+            // 
+            this.textBox_Setup_Flatness_TeachingPos8_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Flatness_TeachingPos8_StageY.Location = new System.Drawing.Point(564, 221);
+            this.textBox_Setup_Flatness_TeachingPos8_StageY.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Setup_Flatness_TeachingPos8_StageY.Name = "textBox_Setup_Flatness_TeachingPos8_StageY";
+            this.textBox_Setup_Flatness_TeachingPos8_StageY.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Setup_Flatness_TeachingPos8_StageY.TabIndex = 130;
+            this.textBox_Setup_Flatness_TeachingPos8_StageY.Text = "000.000";
+            this.textBox_Setup_Flatness_TeachingPos8_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label87
+            // 
+            this.label87.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label87.Location = new System.Drawing.Point(490, 220);
+            this.label87.Margin = new System.Windows.Forms.Padding(5);
+            this.label87.Name = "label87";
+            this.label87.Size = new System.Drawing.Size(73, 24);
+            this.label87.TabIndex = 129;
+            this.label87.Text = "Stage Y :";
+            this.label87.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Flatness_TeachingPos8_StageX
+            // 
+            this.textBox_Setup_Flatness_TeachingPos8_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Flatness_TeachingPos8_StageX.Location = new System.Drawing.Point(391, 221);
+            this.textBox_Setup_Flatness_TeachingPos8_StageX.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Setup_Flatness_TeachingPos8_StageX.Name = "textBox_Setup_Flatness_TeachingPos8_StageX";
+            this.textBox_Setup_Flatness_TeachingPos8_StageX.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Setup_Flatness_TeachingPos8_StageX.TabIndex = 128;
+            this.textBox_Setup_Flatness_TeachingPos8_StageX.Text = "000.000";
+            this.textBox_Setup_Flatness_TeachingPos8_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label88
+            // 
+            this.label88.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label88.Location = new System.Drawing.Point(297, 220);
+            this.label88.Margin = new System.Windows.Forms.Padding(5);
+            this.label88.Name = "label88";
+            this.label88.Size = new System.Drawing.Size(93, 24);
+            this.label88.TabIndex = 127;
+            this.label88.Text = "8.    Stage X :";
+            this.label88.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button_Setup_Flatness_MeasurementPosition8_Get
+            // 
+            this.button_Setup_Flatness_MeasurementPosition8_Get.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition8_Get.Location = new System.Drawing.Point(674, 221);
+            this.button_Setup_Flatness_MeasurementPosition8_Get.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition8_Get.Name = "button_Setup_Flatness_MeasurementPosition8_Get";
+            this.button_Setup_Flatness_MeasurementPosition8_Get.Size = new System.Drawing.Size(109, 26);
+            this.button_Setup_Flatness_MeasurementPosition8_Get.TabIndex = 126;
+            this.button_Setup_Flatness_MeasurementPosition8_Get.Text = "Get Position";
+            this.button_Setup_Flatness_MeasurementPosition8_Get.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition8_Get.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition8_Get_Click);
+            // 
+            // textBox_Setup_Flatness_TeachingPos7_StageY
+            // 
+            this.textBox_Setup_Flatness_TeachingPos7_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Flatness_TeachingPos7_StageY.Location = new System.Drawing.Point(564, 193);
+            this.textBox_Setup_Flatness_TeachingPos7_StageY.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Setup_Flatness_TeachingPos7_StageY.Name = "textBox_Setup_Flatness_TeachingPos7_StageY";
+            this.textBox_Setup_Flatness_TeachingPos7_StageY.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Setup_Flatness_TeachingPos7_StageY.TabIndex = 125;
+            this.textBox_Setup_Flatness_TeachingPos7_StageY.Text = "000.000";
+            this.textBox_Setup_Flatness_TeachingPos7_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label89
+            // 
+            this.label89.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label89.Location = new System.Drawing.Point(490, 192);
+            this.label89.Margin = new System.Windows.Forms.Padding(5);
+            this.label89.Name = "label89";
+            this.label89.Size = new System.Drawing.Size(73, 24);
+            this.label89.TabIndex = 124;
+            this.label89.Text = "Stage Y :";
+            this.label89.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Flatness_TeachingPos7_StageX
+            // 
+            this.textBox_Setup_Flatness_TeachingPos7_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Flatness_TeachingPos7_StageX.Location = new System.Drawing.Point(391, 193);
+            this.textBox_Setup_Flatness_TeachingPos7_StageX.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Setup_Flatness_TeachingPos7_StageX.Name = "textBox_Setup_Flatness_TeachingPos7_StageX";
+            this.textBox_Setup_Flatness_TeachingPos7_StageX.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Setup_Flatness_TeachingPos7_StageX.TabIndex = 123;
+            this.textBox_Setup_Flatness_TeachingPos7_StageX.Text = "000.000";
+            this.textBox_Setup_Flatness_TeachingPos7_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label90
+            // 
+            this.label90.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label90.Location = new System.Drawing.Point(297, 192);
+            this.label90.Margin = new System.Windows.Forms.Padding(5);
+            this.label90.Name = "label90";
+            this.label90.Size = new System.Drawing.Size(93, 24);
+            this.label90.TabIndex = 122;
+            this.label90.Text = "7.    Stage X :";
+            this.label90.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button_Setup_Flatness_MeasurementPosition7_Get
+            // 
+            this.button_Setup_Flatness_MeasurementPosition7_Get.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition7_Get.Location = new System.Drawing.Point(674, 193);
+            this.button_Setup_Flatness_MeasurementPosition7_Get.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition7_Get.Name = "button_Setup_Flatness_MeasurementPosition7_Get";
+            this.button_Setup_Flatness_MeasurementPosition7_Get.Size = new System.Drawing.Size(109, 26);
+            this.button_Setup_Flatness_MeasurementPosition7_Get.TabIndex = 121;
+            this.button_Setup_Flatness_MeasurementPosition7_Get.Text = "Get Position";
+            this.button_Setup_Flatness_MeasurementPosition7_Get.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition7_Get.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition7_Get_Click);
+            // 
+            // textBox_Setup_Flatness_TeachingPos6_StageY
+            // 
+            this.textBox_Setup_Flatness_TeachingPos6_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Flatness_TeachingPos6_StageY.Location = new System.Drawing.Point(564, 165);
+            this.textBox_Setup_Flatness_TeachingPos6_StageY.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Setup_Flatness_TeachingPos6_StageY.Name = "textBox_Setup_Flatness_TeachingPos6_StageY";
+            this.textBox_Setup_Flatness_TeachingPos6_StageY.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Setup_Flatness_TeachingPos6_StageY.TabIndex = 120;
+            this.textBox_Setup_Flatness_TeachingPos6_StageY.Text = "000.000";
+            this.textBox_Setup_Flatness_TeachingPos6_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label79
+            // 
+            this.label79.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label79.Location = new System.Drawing.Point(490, 164);
+            this.label79.Margin = new System.Windows.Forms.Padding(5);
+            this.label79.Name = "label79";
+            this.label79.Size = new System.Drawing.Size(73, 24);
+            this.label79.TabIndex = 119;
+            this.label79.Text = "Stage Y :";
+            this.label79.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Flatness_TeachingPos6_StageX
+            // 
+            this.textBox_Setup_Flatness_TeachingPos6_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Flatness_TeachingPos6_StageX.Location = new System.Drawing.Point(391, 165);
+            this.textBox_Setup_Flatness_TeachingPos6_StageX.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Setup_Flatness_TeachingPos6_StageX.Name = "textBox_Setup_Flatness_TeachingPos6_StageX";
+            this.textBox_Setup_Flatness_TeachingPos6_StageX.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Setup_Flatness_TeachingPos6_StageX.TabIndex = 118;
+            this.textBox_Setup_Flatness_TeachingPos6_StageX.Text = "000.000";
+            this.textBox_Setup_Flatness_TeachingPos6_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label80
+            // 
+            this.label80.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label80.Location = new System.Drawing.Point(297, 164);
+            this.label80.Margin = new System.Windows.Forms.Padding(5);
+            this.label80.Name = "label80";
+            this.label80.Size = new System.Drawing.Size(93, 24);
+            this.label80.TabIndex = 117;
+            this.label80.Text = "6.    Stage X :";
+            this.label80.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button_Setup_Flatness_MeasurementPosition6_Get
+            // 
+            this.button_Setup_Flatness_MeasurementPosition6_Get.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition6_Get.Location = new System.Drawing.Point(674, 165);
+            this.button_Setup_Flatness_MeasurementPosition6_Get.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition6_Get.Name = "button_Setup_Flatness_MeasurementPosition6_Get";
+            this.button_Setup_Flatness_MeasurementPosition6_Get.Size = new System.Drawing.Size(109, 26);
+            this.button_Setup_Flatness_MeasurementPosition6_Get.TabIndex = 116;
+            this.button_Setup_Flatness_MeasurementPosition6_Get.Text = "Get Position";
+            this.button_Setup_Flatness_MeasurementPosition6_Get.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition6_Get.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition6_Get_Click);
+            // 
+            // textBox_Setup_Flatness_TeachingPos5_StageY
+            // 
+            this.textBox_Setup_Flatness_TeachingPos5_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Flatness_TeachingPos5_StageY.Location = new System.Drawing.Point(564, 137);
+            this.textBox_Setup_Flatness_TeachingPos5_StageY.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Setup_Flatness_TeachingPos5_StageY.Name = "textBox_Setup_Flatness_TeachingPos5_StageY";
+            this.textBox_Setup_Flatness_TeachingPos5_StageY.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Setup_Flatness_TeachingPos5_StageY.TabIndex = 115;
+            this.textBox_Setup_Flatness_TeachingPos5_StageY.Text = "000.000";
+            this.textBox_Setup_Flatness_TeachingPos5_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label81
+            // 
+            this.label81.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label81.Location = new System.Drawing.Point(490, 136);
+            this.label81.Margin = new System.Windows.Forms.Padding(5);
+            this.label81.Name = "label81";
+            this.label81.Size = new System.Drawing.Size(73, 24);
+            this.label81.TabIndex = 114;
+            this.label81.Text = "Stage Y :";
+            this.label81.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Flatness_TeachingPos5_StageX
+            // 
+            this.textBox_Setup_Flatness_TeachingPos5_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Flatness_TeachingPos5_StageX.Location = new System.Drawing.Point(391, 137);
+            this.textBox_Setup_Flatness_TeachingPos5_StageX.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Setup_Flatness_TeachingPos5_StageX.Name = "textBox_Setup_Flatness_TeachingPos5_StageX";
+            this.textBox_Setup_Flatness_TeachingPos5_StageX.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Setup_Flatness_TeachingPos5_StageX.TabIndex = 113;
+            this.textBox_Setup_Flatness_TeachingPos5_StageX.Text = "000.000";
+            this.textBox_Setup_Flatness_TeachingPos5_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label82
+            // 
+            this.label82.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label82.Location = new System.Drawing.Point(297, 136);
+            this.label82.Margin = new System.Windows.Forms.Padding(5);
+            this.label82.Name = "label82";
+            this.label82.Size = new System.Drawing.Size(93, 24);
+            this.label82.TabIndex = 112;
+            this.label82.Text = "5.    Stage X :";
+            this.label82.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button_Setup_Flatness_MeasurementPosition5_Get
+            // 
+            this.button_Setup_Flatness_MeasurementPosition5_Get.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition5_Get.Location = new System.Drawing.Point(674, 137);
+            this.button_Setup_Flatness_MeasurementPosition5_Get.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition5_Get.Name = "button_Setup_Flatness_MeasurementPosition5_Get";
+            this.button_Setup_Flatness_MeasurementPosition5_Get.Size = new System.Drawing.Size(109, 26);
+            this.button_Setup_Flatness_MeasurementPosition5_Get.TabIndex = 111;
+            this.button_Setup_Flatness_MeasurementPosition5_Get.Text = "Get Position";
+            this.button_Setup_Flatness_MeasurementPosition5_Get.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition5_Get.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition5_Get_Click);
+            // 
+            // textBox_Setup_Flatness_TeachingPos4_StageY
+            // 
+            this.textBox_Setup_Flatness_TeachingPos4_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Flatness_TeachingPos4_StageY.Location = new System.Drawing.Point(564, 109);
+            this.textBox_Setup_Flatness_TeachingPos4_StageY.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Setup_Flatness_TeachingPos4_StageY.Name = "textBox_Setup_Flatness_TeachingPos4_StageY";
+            this.textBox_Setup_Flatness_TeachingPos4_StageY.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Setup_Flatness_TeachingPos4_StageY.TabIndex = 110;
+            this.textBox_Setup_Flatness_TeachingPos4_StageY.Text = "000.000";
+            this.textBox_Setup_Flatness_TeachingPos4_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label83
+            // 
+            this.label83.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label83.Location = new System.Drawing.Point(490, 108);
+            this.label83.Margin = new System.Windows.Forms.Padding(5);
+            this.label83.Name = "label83";
+            this.label83.Size = new System.Drawing.Size(73, 24);
+            this.label83.TabIndex = 109;
+            this.label83.Text = "Stage Y :";
+            this.label83.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Flatness_TeachingPos4_StageX
+            // 
+            this.textBox_Setup_Flatness_TeachingPos4_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Flatness_TeachingPos4_StageX.Location = new System.Drawing.Point(391, 109);
+            this.textBox_Setup_Flatness_TeachingPos4_StageX.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Setup_Flatness_TeachingPos4_StageX.Name = "textBox_Setup_Flatness_TeachingPos4_StageX";
+            this.textBox_Setup_Flatness_TeachingPos4_StageX.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Setup_Flatness_TeachingPos4_StageX.TabIndex = 108;
+            this.textBox_Setup_Flatness_TeachingPos4_StageX.Text = "000.000";
+            this.textBox_Setup_Flatness_TeachingPos4_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label84
+            // 
+            this.label84.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label84.Location = new System.Drawing.Point(297, 108);
+            this.label84.Margin = new System.Windows.Forms.Padding(5);
+            this.label84.Name = "label84";
+            this.label84.Size = new System.Drawing.Size(93, 24);
+            this.label84.TabIndex = 107;
+            this.label84.Text = "4.    Stage X :";
+            this.label84.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button_Setup_Flatness_MeasurementPosition4_Get
+            // 
+            this.button_Setup_Flatness_MeasurementPosition4_Get.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition4_Get.Location = new System.Drawing.Point(674, 109);
+            this.button_Setup_Flatness_MeasurementPosition4_Get.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition4_Get.Name = "button_Setup_Flatness_MeasurementPosition4_Get";
+            this.button_Setup_Flatness_MeasurementPosition4_Get.Size = new System.Drawing.Size(109, 26);
+            this.button_Setup_Flatness_MeasurementPosition4_Get.TabIndex = 106;
+            this.button_Setup_Flatness_MeasurementPosition4_Get.Text = "Get Position";
+            this.button_Setup_Flatness_MeasurementPosition4_Get.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition4_Get.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition4_Get_Click);
+            // 
+            // textBox_Setup_Flatness_TeachingPos3_StageY
+            // 
+            this.textBox_Setup_Flatness_TeachingPos3_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Flatness_TeachingPos3_StageY.Location = new System.Drawing.Point(564, 81);
+            this.textBox_Setup_Flatness_TeachingPos3_StageY.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Setup_Flatness_TeachingPos3_StageY.Name = "textBox_Setup_Flatness_TeachingPos3_StageY";
+            this.textBox_Setup_Flatness_TeachingPos3_StageY.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Setup_Flatness_TeachingPos3_StageY.TabIndex = 105;
+            this.textBox_Setup_Flatness_TeachingPos3_StageY.Text = "000.000";
+            this.textBox_Setup_Flatness_TeachingPos3_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label77
+            // 
+            this.label77.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label77.Location = new System.Drawing.Point(490, 80);
+            this.label77.Margin = new System.Windows.Forms.Padding(5);
+            this.label77.Name = "label77";
+            this.label77.Size = new System.Drawing.Size(73, 24);
+            this.label77.TabIndex = 104;
+            this.label77.Text = "Stage Y :";
+            this.label77.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Flatness_TeachingPos3_StageX
+            // 
+            this.textBox_Setup_Flatness_TeachingPos3_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Flatness_TeachingPos3_StageX.Location = new System.Drawing.Point(391, 81);
+            this.textBox_Setup_Flatness_TeachingPos3_StageX.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Setup_Flatness_TeachingPos3_StageX.Name = "textBox_Setup_Flatness_TeachingPos3_StageX";
+            this.textBox_Setup_Flatness_TeachingPos3_StageX.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Setup_Flatness_TeachingPos3_StageX.TabIndex = 103;
+            this.textBox_Setup_Flatness_TeachingPos3_StageX.Text = "000.000";
+            this.textBox_Setup_Flatness_TeachingPos3_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label78
+            // 
+            this.label78.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label78.Location = new System.Drawing.Point(297, 80);
+            this.label78.Margin = new System.Windows.Forms.Padding(5);
+            this.label78.Name = "label78";
+            this.label78.Size = new System.Drawing.Size(93, 24);
+            this.label78.TabIndex = 102;
+            this.label78.Text = "3.    Stage X :";
+            this.label78.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button_Setup_Flatness_MeasurementPosition3_Get
+            // 
+            this.button_Setup_Flatness_MeasurementPosition3_Get.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition3_Get.Location = new System.Drawing.Point(674, 81);
+            this.button_Setup_Flatness_MeasurementPosition3_Get.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition3_Get.Name = "button_Setup_Flatness_MeasurementPosition3_Get";
+            this.button_Setup_Flatness_MeasurementPosition3_Get.Size = new System.Drawing.Size(109, 26);
+            this.button_Setup_Flatness_MeasurementPosition3_Get.TabIndex = 101;
+            this.button_Setup_Flatness_MeasurementPosition3_Get.Text = "Get Position";
+            this.button_Setup_Flatness_MeasurementPosition3_Get.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition3_Get.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition3_Get_Click);
+            // 
+            // textBox_Setup_Flatness_TeachingPos2_StageY
+            // 
+            this.textBox_Setup_Flatness_TeachingPos2_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Flatness_TeachingPos2_StageY.Location = new System.Drawing.Point(564, 53);
+            this.textBox_Setup_Flatness_TeachingPos2_StageY.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Setup_Flatness_TeachingPos2_StageY.Name = "textBox_Setup_Flatness_TeachingPos2_StageY";
+            this.textBox_Setup_Flatness_TeachingPos2_StageY.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Setup_Flatness_TeachingPos2_StageY.TabIndex = 100;
+            this.textBox_Setup_Flatness_TeachingPos2_StageY.Text = "000.000";
+            this.textBox_Setup_Flatness_TeachingPos2_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label75
+            // 
+            this.label75.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label75.Location = new System.Drawing.Point(490, 52);
+            this.label75.Margin = new System.Windows.Forms.Padding(5);
+            this.label75.Name = "label75";
+            this.label75.Size = new System.Drawing.Size(73, 24);
+            this.label75.TabIndex = 99;
+            this.label75.Text = "Stage Y :";
+            this.label75.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Flatness_TeachingPos2_StageX
+            // 
+            this.textBox_Setup_Flatness_TeachingPos2_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Flatness_TeachingPos2_StageX.Location = new System.Drawing.Point(391, 53);
+            this.textBox_Setup_Flatness_TeachingPos2_StageX.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Setup_Flatness_TeachingPos2_StageX.Name = "textBox_Setup_Flatness_TeachingPos2_StageX";
+            this.textBox_Setup_Flatness_TeachingPos2_StageX.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Setup_Flatness_TeachingPos2_StageX.TabIndex = 98;
+            this.textBox_Setup_Flatness_TeachingPos2_StageX.Text = "000.000";
+            this.textBox_Setup_Flatness_TeachingPos2_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label76
+            // 
+            this.label76.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label76.Location = new System.Drawing.Point(297, 52);
+            this.label76.Margin = new System.Windows.Forms.Padding(5);
+            this.label76.Name = "label76";
+            this.label76.Size = new System.Drawing.Size(93, 24);
+            this.label76.TabIndex = 97;
+            this.label76.Text = "2.    Stage X :";
+            this.label76.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button_Setup_Flatness_MeasurementPosition2_Get
+            // 
+            this.button_Setup_Flatness_MeasurementPosition2_Get.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Setup_Flatness_MeasurementPosition2_Get.Location = new System.Drawing.Point(674, 53);
+            this.button_Setup_Flatness_MeasurementPosition2_Get.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Setup_Flatness_MeasurementPosition2_Get.Name = "button_Setup_Flatness_MeasurementPosition2_Get";
+            this.button_Setup_Flatness_MeasurementPosition2_Get.Size = new System.Drawing.Size(109, 26);
+            this.button_Setup_Flatness_MeasurementPosition2_Get.TabIndex = 96;
+            this.button_Setup_Flatness_MeasurementPosition2_Get.Text = "Get Position";
+            this.button_Setup_Flatness_MeasurementPosition2_Get.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition2_Get.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition2_Get_Click);
+            // 
+            // textBox_Setup_Flatness_TeachingPos1_StageY
+            // 
+            this.textBox_Setup_Flatness_TeachingPos1_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Flatness_TeachingPos1_StageY.Location = new System.Drawing.Point(564, 25);
+            this.textBox_Setup_Flatness_TeachingPos1_StageY.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Setup_Flatness_TeachingPos1_StageY.Name = "textBox_Setup_Flatness_TeachingPos1_StageY";
+            this.textBox_Setup_Flatness_TeachingPos1_StageY.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Setup_Flatness_TeachingPos1_StageY.TabIndex = 95;
+            this.textBox_Setup_Flatness_TeachingPos1_StageY.Text = "000.000";
+            this.textBox_Setup_Flatness_TeachingPos1_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label235
+            // 
+            this.label235.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label235.Location = new System.Drawing.Point(490, 24);
+            this.label235.Margin = new System.Windows.Forms.Padding(5);
+            this.label235.Name = "label235";
+            this.label235.Size = new System.Drawing.Size(73, 24);
+            this.label235.TabIndex = 94;
+            this.label235.Text = "Stage Y :";
+            this.label235.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Flatness_TeachingPos1_StageX
+            // 
+            this.textBox_Setup_Flatness_TeachingPos1_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Flatness_TeachingPos1_StageX.Location = new System.Drawing.Point(391, 25);
+            this.textBox_Setup_Flatness_TeachingPos1_StageX.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox_Setup_Flatness_TeachingPos1_StageX.Name = "textBox_Setup_Flatness_TeachingPos1_StageX";
+            this.textBox_Setup_Flatness_TeachingPos1_StageX.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Setup_Flatness_TeachingPos1_StageX.TabIndex = 93;
+            this.textBox_Setup_Flatness_TeachingPos1_StageX.Text = "000.000";
+            this.textBox_Setup_Flatness_TeachingPos1_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label236
+            // 
+            this.label236.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label236.Location = new System.Drawing.Point(297, 24);
+            this.label236.Margin = new System.Windows.Forms.Padding(5);
+            this.label236.Name = "label236";
+            this.label236.Size = new System.Drawing.Size(93, 24);
+            this.label236.TabIndex = 92;
+            this.label236.Text = "1.    Stage X :";
+            this.label236.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // button_Setup_Flatness_MeasurementPosition1_Get
             // 
             this.button_Setup_Flatness_MeasurementPosition1_Get.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Flatness_MeasurementPosition1_Get.Location = new System.Drawing.Point(698, 25);
+            this.button_Setup_Flatness_MeasurementPosition1_Get.Location = new System.Drawing.Point(674, 25);
             this.button_Setup_Flatness_MeasurementPosition1_Get.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Flatness_MeasurementPosition1_Get.Name = "button_Setup_Flatness_MeasurementPosition1_Get";
             this.button_Setup_Flatness_MeasurementPosition1_Get.Size = new System.Drawing.Size(109, 26);
             this.button_Setup_Flatness_MeasurementPosition1_Get.TabIndex = 91;
             this.button_Setup_Flatness_MeasurementPosition1_Get.Text = "Get Position";
             this.button_Setup_Flatness_MeasurementPosition1_Get.UseVisualStyleBackColor = true;
+            this.button_Setup_Flatness_MeasurementPosition1_Get.Click += new System.EventHandler(this.button_Setup_Flatness_MeasurementPosition1_Get_Click);
             // 
             // tabPage_Setup_Option
             // 
@@ -5697,7 +6454,7 @@
         private System.Windows.Forms.TextBox textBox_Setup_Flatness_TeachingPos2_StageX;
         private System.Windows.Forms.Label label76;
         private System.Windows.Forms.Button button_Setup_Flatness_MeasurementPosition2_Get;
-        private System.Windows.Forms.Button button28;
+        private System.Windows.Forms.Button button_Setup_Flatness_MeasurementPosition_Save;
         private System.Windows.Forms.Button button_Setup_Flatness_MeasurementPosition9_Clear;
         private System.Windows.Forms.Button button_Setup_Flatness_MeasurementPosition8_Clear;
         private System.Windows.Forms.Button button_Setup_Flatness_MeasurementPosition7_Clear;
@@ -5733,5 +6490,8 @@
         private System.Windows.Forms.Label label_Setup_S_V_OffsetX;
         //private System.Windows.Forms.Label label85;
         private System.Windows.Forms.Button btnOffsetApply;
+        private System.Windows.Forms.Label label92;
+        private System.Windows.Forms.Button button_Setup_Flatness_MeasurementPosition_Start;
+        private System.Windows.Forms.Button button_Setup_Flatness_MeasurementPosition_Stop;
     }
 }

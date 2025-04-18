@@ -353,6 +353,38 @@ namespace SLD200_MSL
             checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete;
 
 
+
+            //  Cycle Stop 으로 Loader, Unloader, Main Work 가 Stop 되면 자동운전을 종료한다.
+            if (Equipment.AutoRunStatus &&
+
+                Equipment.CycleStop &&
+                Equipment.CycleStopped_LoaderTransfer &&
+                Equipment.CycleStopped_UnloaderTransfer &&
+                Equipment.CycleStopped_MainWork)
+            {
+                Equipment.AutoRunStatus = false;
+
+                //  Main Work Timer Stop
+                workStage.m_btimer_MainWork_Stop = true;
+                workStage.timer_MainWork.Enabled = false;
+
+                //  Laser Drilling Timer Stop
+                workStage.m_btimer_LaserDrillingWork_Stop = true;
+                workStage.timer_LaserDrillingWork.Enabled = false;
+
+                //  Loader Work Timer Stop
+                loader.m_btimer_LoaderWork_Stop = true;
+                loader.timer_LoaderWork.Enabled = false;
+
+                //  Unloader Work Timer Stop
+                unloader.m_btimer_UnloaderWork_Stop = true;
+                unloader.timer_UnloaderWork.Enabled = false;
+
+                MessageBox.Show("자동 운전 종료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
+
+
             //if (!m_btimer_MainWork_Stop)
             //{
                 timer_Main_Status.Enabled = true;
@@ -987,6 +1019,12 @@ namespace SLD200_MSL
 
             Equipment.AutoRunStatus = true;
 
+            Equipment.CycleStop = false;
+            Equipment.CycleStopped_LoaderTransfer = false;
+            Equipment.CycleStopped_UnloaderTransfer = false;
+            Equipment.CycleStopped_MainWork = false;
+
+
             //  선택 가공 인덱스를 전체 가공으로 변경
             workStage.m_nSelectedSocket_Index = -1;
 
@@ -1140,13 +1178,17 @@ namespace SLD200_MSL
 
         private void checkBox_Main_CycleStop_CheckedChanged(object sender, EventArgs e)
         {
-            //  Cycle Stop 일 경우, 투입 중지
+            //  Cycle Stop 일 경우, 현재 동작중인 Cycle 완료 후 정지
 
-            checkBox_Main_Loader_LPort_Pause.Checked = checkBox_Main_CycleStop.Checked;
-            checkBox_Main_Loader_RPort_Pause.Checked = checkBox_Main_CycleStop.Checked;
+            //  대상
+            //  Loader : Transfer, L-Port, R-Port
+            //  Unloader : Transfer
+            //  Work Stage : Main Work
 
-            Equipment.Loader_LPort_Pause = checkBox_Main_Loader_LPort_Pause.Checked;
-            Equipment.Loader_RPort_Pause = checkBox_Main_Loader_RPort_Pause.Checked;
+            Equipment.CycleStop = checkBox_Main_CycleStop.Checked;
+
+            //Equipment.Loader_LPort_Pause = checkBox_Main_Loader_LPort_Pause.Checked;
+            //Equipment.Loader_RPort_Pause = checkBox_Main_Loader_RPort_Pause.Checked;
         }
 
         private void button_Main_Reset_Click(object sender, EventArgs e)
@@ -1154,6 +1196,18 @@ namespace SLD200_MSL
             //  임시
 
             //  가공 Sequence Index 초기화 (Loading 부터 시작)
+
+            Equipment.m_bMainProcessStatus_LD_LPort_Complete = false;                       //  Loader LPort 투입 완료
+            Equipment.m_bMainProcessStatus_LD_RPort_Complete = false;                       //  Loader RPort 투입 완료
+            Equipment.m_bMainProcessStatus_LD_Module_PortPickUp_Complete = false;           //  Loader Port 에서 Module Pick Up 완료
+            Equipment.m_bMainProcessStatus_LD_Module_MAlignerPutDown_Complete = false;      //  Loader M-Aligner 에 Module Put Down 완료
+            Equipment.m_bMainProcessStatus_LD_M_Aligner_Align_Complete = false;             //  Loader M-Align 완료
+            Equipment.m_bMainProcessStatus_LD_Module_MAlignerPickUp_Complete = false;       //  Loader M-Aligner 에서 Module Pick Up 완료
+            Equipment.m_bMainProcessStatus_LD_Module_WorkStagePutDown_Complete = false;     //  Loader Work Stage 에 Module Put Down 완료
+            Equipment.m_bMainProcessStatus_WorkStage_Module_Process_Complete = false;       //  Work Stage Process 완료
+            Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete = false;      //  Unloader Work Stage 에서 Module Pick Up 완료
+            Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete = false;          //  Unloader Port 에 Module Put Down 완료
+
 
             //  Loader 파츠 사용 변수 초기화
             loader.m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_None; //  Transfer Move Type
@@ -1207,6 +1261,21 @@ namespace SLD200_MSL
             workStage.m_nMainWork_Step = (int)MainWork_Step.None;                                 //  Main Work Step
             workStage.m_nMainWorkCycleType = (int)MainWorkCycleType.Cycle_None;                   //  자동 운전 시 사용하는 변수
             workStage.m_bMainWorkCycle_DryRun = false;
+
+
+            //  Laser Drilling 파츠 사용 변수 초기화
+            workStage.m_bLaserDrilling_Complete = false;
+            workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+        }
+
+        private void checkBox_Main_Loader_Transfer_Pause_CheckedChanged(object sender, EventArgs e)
+        {
+            Equipment.Loader_Transfer_Pause = checkBox_Main_Loader_Transfer_Pause.Checked;
+        }
+
+        private void button_Main_Pause_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

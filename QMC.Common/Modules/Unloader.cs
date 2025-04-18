@@ -2104,6 +2104,8 @@ namespace QMC.Common.Modules
             //  자동운전 시, Transfer 동작 조건
             if (Equipment.AutoRunStatus &&
 
+                !Equipment.CycleStopped_UnloaderTransfer &&
+
                 m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None)
             {
                 //  Work Stage 에서 Module 을 Pick Up 하기 위한 조건
@@ -4034,6 +4036,13 @@ namespace QMC.Common.Modules
                     }
 
                     m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
+
+                    //  Cycle Stop 이면?
+                    if (Equipment.CycleStop)
+                    {
+                        //  Unloader Transfer 돌아가지 않게
+                        Equipment.CycleStopped_UnloaderTransfer = true;
+                    }
 
                     //MessageBox.Show(m_strTemp, "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
