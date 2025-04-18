@@ -10104,7 +10104,7 @@ namespace QMC.Common.Modules
                     xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
                     xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
                     
-                    if(m_bSocketAlign_OK)
+                    //if(m_bSocketAlign_OK)
                     {
                         if(m_st4PointPosition_DwgPos.Count() == 4 && m_st4PointPosition_InspectedPos.Count() == 4 
                             && m_st4PointAlign_Result.dRotationCenterX != 0 
