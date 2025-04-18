@@ -10102,6 +10102,13 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align Part 시작");
 
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    //  맵 데이터 변경 (기준위치 : Scanner)
+                    //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
+                    //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
+                    MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_RemainedCheck;
                     break;
 
@@ -10208,14 +10215,15 @@ namespace QMC.Common.Modules
                     { 
                         Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Fiducial 마크 위치로 이동 완료");
 
-                        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                        //  맵 데이터 변경 (기준위치 : Scanner)
-                        //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
-                        //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
-                        MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
-                        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        ////  맵 데이터 변경 (기준위치 : Scanner)
+                        ////  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
+                        ////  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
+                        //MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
+                        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                        m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveInspPos;
+                        //m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveInspPos;
+                        m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_toVision_AlignStart;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ALIGN) > 60000)
                     {
@@ -10305,10 +10313,31 @@ namespace QMC.Common.Modules
                         //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height = Fiducial_circlesResult[0].Height;
 
                         //  Stage Center 가 0, 0 인 좌표계로 변환
-                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = MC_Func.MC_GetEncPos((int)nAxis.X) +
-                                                                                                            ((((double)Fiducial_circlesResult[0].X + ((double)Fiducial_circlesResult[0].Width / 2.0)) - (double)(Camera_HighRes.Resolution.Width / 2)) * Config.ParamConfig.UpperVision_Scale_X);
-                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = MC_Func.MC_GetEncPos((int)nAxis.Y) +
+                        double xOffset =((((double)Fiducial_circlesResult[0].X
+                            + ((double)Fiducial_circlesResult[0].Width / 2.0)) - (double)(Camera_HighRes.Resolution.Width / 2)) * Config.ParamConfig.UpperVision_Scale_X);
+
+                        double yOffset =
                                                                                                             (((double)(Camera_HighRes.Resolution.Height / 2) - ((double)Fiducial_circlesResult[0].Y + ((double)Fiducial_circlesResult[0].Height / 2.0))) * Config.ParamConfig.UpperVision_Scale_Y);
+
+                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = MC_Func.MC_GetEncPos((int)nAxis.X) + xOffset;
+
+
+                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = MC_Func.MC_GetEncPos((int)nAxis.Y) - yOffset;
+
+
+                        //double nCenterX = (double)(Fiducial_circlesResult[0].X + Fiducial_circlesResult[0].Width / 2);
+                        //double nOffsetX = nCenterX - Camera_HighRes.Resolution.Width / 2;
+
+
+                        //double nCenterY = (double)(Fiducial_circlesResult[0].Y + Fiducial_circlesResult[0].Height / 2);
+                        //double nOffsetY = nCenterY - Camera_HighRes.Resolution.Height / 2;
+
+                        //double dXoffset = nOffsetX * this.Config.ParamConfig.UpperVision_Scale_X;
+                        //double dYoffset = nOffsetY * this.Config.ParamConfig.UpperVision_Scale_Y;
+
+                        //currentPosition.X -= dXoffset;
+
+                        //currentPosition.Y += dYoffset;
 
                         xyCoordinateAlignPositionLast = new XyCoordinate(m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X,
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y);
@@ -10552,12 +10581,22 @@ namespace QMC.Common.Modules
 
 
                 case (int)SocketAlign_Step.SocketAlign_RotAndOffsetMove:                                        //  가공 데이터 회전 및 Offset 이동
-                                        
+
                     m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX;                                 //  전체 가공 도면 회전 중심 X
                     m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  전체 가공 도면 회전 중심 Y
                     m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  전체 가공 도면 이동 Offset X
                     m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  전체 가공 도면 이동 Offset Y
-                    m_dALIGN_FACTOR_Theta = -m_st4PointAlign_Result.dRotationAngle;                                             //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
+                    m_dALIGN_FACTOR_Theta = -m_st4PointAlign_Result.dRotationAngle / Math.PI * 180;                                             //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
+
+
+                    //m_dALIGN_FACTOR_RotationCenter_X = 0;                                 //  전체 가공 도면 회전 중심 X
+                    //m_dALIGN_FACTOR_RotationCenter_Y = 0;                                 //  전체 가공 도면 회전 중심 Y
+                    //m_dALIGN_FACTOR_Offset_X = 1;                                           //  전체 가공 도면 이동 Offset X
+                    //m_dALIGN_FACTOR_Offset_Y = 1;                                           //  전체 가공 도면 이동 Offset Y
+                    //m_dALIGN_FACTOR_Theta = 90;                                             //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
+
+
+
 
                     //  테스트용
                     //m_dALIGN_FACTOR_Offset_Y += 30.0;
@@ -13811,6 +13850,32 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.DrillingData_SocketData_RotAndOffset_Move:                                  //  가공 데이터 회전 및 Offset 이동
 
                     //DrillingData_RotationOffset_Move(m_dALIGN_FACTOR_RotationCenter_X, m_dALIGN_FACTOR_RotationCenter_Y, m_dALIGN_FACTOR_Theta, m_dALIGN_FACTOR_Offset_X, m_dALIGN_FACTOR_Offset_Y);
+
+
+
+
+                    m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX;                                 //  전체 가공 도면 회전 중심 X
+                    m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  전체 가공 도면 회전 중심 Y
+                    m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  전체 가공 도면 이동 Offset X
+                    m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  전체 가공 도면 이동 Offset Y
+                    m_dALIGN_FACTOR_Theta = - m_st4PointAlign_Result.dRotationAngle / Math.PI * 180;                                             //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
+
+                    // Todo : 회전의 중심 수정중
+
+
+                    //m_dALIGN_FACTOR_RotationCenter_X = 0;                                 //  전체 가공 도면 회전 중심 X
+                    //m_dALIGN_FACTOR_RotationCenter_Y = 0;                                 //  전체 가공 도면 회전 중심 Y
+                    //m_dALIGN_FACTOR_Offset_X = 3;                                           //  전체 가공 도면 이동 Offset X
+                    //m_dALIGN_FACTOR_Offset_Y = 0;                                           //  전체 가공 도면 이동 Offset Y
+                    //m_dALIGN_FACTOR_Theta = 90;                                             //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
+
+
+
+
+
+
+
+
                     AlignedDrillingData_Select_and_OffsetMove(m_nSocketNum_forAlign, m_dALIGN_FACTOR_RotationCenter_X, m_dALIGN_FACTOR_RotationCenter_Y, m_dALIGN_FACTOR_Offset_X, m_dALIGN_FACTOR_Offset_Y, m_dALIGN_FACTOR_Theta);
 
                     //  메인 화면의 뷰어 갱신
@@ -23826,10 +23891,15 @@ namespace QMC.Common.Modules
             dAngle = dDwgAngle - dInspectedAngle;
 
             //  결과값 저장  
-            m_st4PointAlign_Result.dRotationCenterX = dDwgCrossX;
-            m_st4PointAlign_Result.dRotationCenterY = dDwgCrossY;
-            m_st4PointAlign_Result.dCenterOffsetX = dOffsetX;
-            m_st4PointAlign_Result.dCenterOffsetY = dOffsetY;
+            //m_st4PointAlign_Result.dRotationCenterX = dDwgCrossX;
+            //m_st4PointAlign_Result.dRotationCenterY = dDwgCrossY;
+
+            m_st4PointAlign_Result.dRotationCenterX = ptDwgPos[0].ptFiducial_Center.X;
+            m_st4PointAlign_Result.dRotationCenterY = ptDwgPos[0].ptFiducial_Center.Y;
+
+            
+            m_st4PointAlign_Result.dCenterOffsetX = ptInspectedPos[0].ptFiducial_Center.X - ptDwgPos[0].ptFiducial_Center.X;
+            m_st4PointAlign_Result.dCenterOffsetY = ptInspectedPos[0].ptFiducial_Center.Y - ptDwgPos[0].ptFiducial_Center.Y; ;
             m_st4PointAlign_Result.dRotationAngle = dAngle;
 
             return m_st4PointAlign_Result;

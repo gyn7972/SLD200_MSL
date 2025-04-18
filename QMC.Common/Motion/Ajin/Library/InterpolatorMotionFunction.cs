@@ -98,6 +98,83 @@ namespace QMC.Common.Motion.Ajin.Motions
             return false;
             
         }
+        public override double MC_GetEncPos(int nAxis)
+        {
+
+            int ret = 0;
+            double dPos = 0.0;
+            double dCurrentX = 0;
+
+            double dCurrentY = 0;
+            if (Equipment.MapDataStatus_Activate && (workStage.Stage.Interpolator != null))
+
+            {
+                AXM.GetActualPosition(nAxis, ref dPos);
+                string str = this.GetType().ToString();
+                XyCoordinate source = new XyCoordinate();
+                XyCoordinate dest = new XyCoordinate();
+
+                if (nAxis == (int)WorkStage.nAxis.X)
+                {
+                    if (workStage.Stage.Interpolator != null)
+                    {
+
+                        //originPosition.X = MC_GetEncPos((int)WorkStage.nAxis.X);
+                        //originPosition.Y = MC_GetEncPos((int)WorkStage.nAxis.Y);
+                        AXM.GetActualPosition((int)WorkStage.nAxis.X, ref dCurrentX);
+                        AXM.GetActualPosition((int)WorkStage.nAxis.Y, ref dCurrentY);
+
+                        dest.X = dCurrentX;
+                        dest.Y = dCurrentY;
+                        if ((ret = workStage.Stage.Interpolator.ReverseInterpolate(dest, ref source)) != 0)
+                        {
+                            return ret;
+                        }
+
+                        dPos = source.X;
+                    }
+                    else
+                    {
+                        AXM.GetActualPosition(nAxis, ref dPos);
+                    }
+                }
+                else if (nAxis == (int)WorkStage.nAxis.Y)
+                {
+                    if (workStage.Stage.Interpolator != null)
+                    {
+                        AXM.GetActualPosition((int)WorkStage.nAxis.X, ref dCurrentX);
+                        AXM.GetActualPosition((int)WorkStage.nAxis.Y, ref dCurrentY);
+
+                        dest.X = dCurrentX;
+                        dest.Y = dCurrentY;
+                        if ((ret = workStage.Stage.Interpolator.ReverseInterpolate(dest, ref source)) != 0)
+                        {
+                            return ret;
+                        }
+
+                        dPos = source.Y;
+                    }
+                    else
+                    {
+                        AXM.GetActualPosition(nAxis, ref dPos);
+                    }
+                }
+                else
+                {
+                    AXM.GetActualPosition(nAxis, ref dPos);
+                }
+            }
+            else
+            {
+                return base.MC_GetEncPos(nAxis);
+            }
+
+
+
+            return dPos;
+        }
+
+
 
         public override bool MC_MoveRelPosition(int Axis, double position, double vel, double accel, double decel)
         {
