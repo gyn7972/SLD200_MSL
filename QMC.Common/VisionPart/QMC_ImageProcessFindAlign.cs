@@ -325,9 +325,12 @@ namespace QMC.Common.VisionPart
                     circlesResult.Clear();
                     FindCircleFitter(circlesResult, points, out dRadius, 5);
 
+                    int nMaxCircle = 1000;
+                    int nMinCircle = 400;
+
                     cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
                     cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
-                    if (dRadius < 550 && dRadius > 300 && cx > 0 && cx < w
+                    if (dRadius < nMaxCircle && dRadius > nMinCircle && cx > 0 && cx < w
                         && cy < h && cy > 0)
                     {
 
