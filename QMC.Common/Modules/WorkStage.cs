@@ -10156,7 +10156,7 @@ namespace QMC.Common.Modules
                             //    , m_st4PointPosition_DwgPos_LastSuccess[0].ptFiducial_Center.Y, -m_st4PointAlign_Result.dRotationAngle);
                             XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
                             xyCoordinateAlign = xyInterpolatedCoordinate + offset;
-                            xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionLast.X, xyCoordinateAlignPositionLast.Y, m_st4PointAlign_Result_LastSuccess.dRotationAngle);
+                            xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionLast.X, xyCoordinateAlignPositionLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
                             
                             //xyCoordinateAlign.X += m_st4PointAlign_Result_LastSuccess.dCenterOffsetX;
                             //xyCoordinateAlign.Y += m_st4PointAlign_Result_LastSuccess.dCenterOffsetY;
@@ -10735,7 +10735,7 @@ namespace QMC.Common.Modules
 
                 XyCoordinate xyFirst = new XyCoordinate(xyCenter.X, xyCenter.Y);
                 // 이동 거리 및 검색 횟수 설정
-                double stepSize = 0.5; // 1mm 이동
+                double stepSize = 1.1; // 1mm 이동
                 int maxSteps = 20; // 최대 50번 검색
                 List<XyCoordinate> xyCoordinates = new List<XyCoordinate>();
 
