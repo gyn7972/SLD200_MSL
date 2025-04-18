@@ -1972,13 +1972,13 @@ namespace SLD200_MSL
             //}
 
 
-            ////  맵 데이터 변경
-            //workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
-
 
             //  Target 위치 계산
             lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromScannerToFineCam.X;
             lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+
+            ////  맵 데이터 변경
+            workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
 
             //  속도 설정
             if (radioButton_VisionPopup_Move_MoveMode_Fine.Checked)
