@@ -338,6 +338,10 @@ namespace QMC.Common.Modules
         public st4PointPosition_Data[] m_st4PointPosition_InspectedPos;         //  4-Point 의 측정된 위치 데이터
         public st4PointAlign_Result m_st4PointAlign_Result;                     //  Align 데이터
 
+        public st4PointPosition_Data[] m_st4PointPosition_DwgPos_LastSuccess;     //  4-Point 의 도면상 위치 데이터 (마지막 성공한 데이터)
+        public st4PointPosition_Data[] m_st4PointPosition_InspectedPos_LastSuccess; //  4-Point 의 측정된 위치 데이터 (마지막 성공한 데이터)
+        public st4PointAlign_Result m_st4PointAlign_Result_LastSuccess;
+        public bool m_bIsFirstAlign = true; // 첫번째 얼라인
         public bool m_bAlignCompleted;                                          //  얼라인 완료 되었는지?
 
         #endregion
@@ -3166,7 +3170,12 @@ namespace QMC.Common.Modules
             m_st4PointPosition_DwgPos = new st4PointPosition_Data[4];            //  4-Point 의 도면상 위치 데이터
             m_st4PointPosition_InspectedPos = new st4PointPosition_Data[4];      //  4-Point 의 측정된 위치 데이터
             m_st4PointAlign_Result = new st4PointAlign_Result();                //  Align 데이터
-            m_bAlignCompleted = false;
+
+            m_st4PointPosition_DwgPos_LastSuccess = new st4PointPosition_Data[4];     //  4-Point 의 도면상 위치 데이터 (마지막 성공한 데이터)
+            m_st4PointPosition_InspectedPos_LastSuccess = new st4PointPosition_Data[4]; //  4-Point 의 측정된 위치 데이터 (마지막 성공한 데이터)
+            m_bIsFirstAlign = true; // 첫번째 얼라인
+
+        m_bAlignCompleted = false;
 
             m_nSocketNum_forAlign = 0;                                          //  Align 할 Socket 번호
 
@@ -9925,7 +9934,7 @@ namespace QMC.Common.Modules
                     m_bAlignCompleted = false;
 
                     m_bSocketAlign_OK = false;
-
+                    m_bIsFirstAlign = true;
                     for (int i = 0; i < 4; i++)
                     {
                         //  4-Point 의 도면상 위치 데이터
@@ -9934,11 +9943,24 @@ namespace QMC.Common.Modules
                         m_st4PointPosition_DwgPos[i].dFiducial_Width = 0.0;
                         m_st4PointPosition_DwgPos[i].dFiducial_Height = 0.0;
 
-                        //  4-Point 의 측정된 위치 데이터
+                        m_st4PointPosition_DwgPos_LastSuccess[i] .ptFiducial_Center.X = 0.0; //  4-Point 의 도면상 위치 데이터 (마지막 성공한 데이터)
+                        m_st4PointPosition_DwgPos_LastSuccess[i].ptFiducial_Center.Y = 0.0;
+                        m_st4PointPosition_DwgPos_LastSuccess[i].dFiducial_Width = 0.0;
+                        m_st4PointPosition_DwgPos_LastSuccess[i].dFiducial_Height = 0.0;
+
+
+
+
                         m_st4PointPosition_InspectedPos[i].ptFiducial_Center.X = 0.0;
                         m_st4PointPosition_InspectedPos[i].ptFiducial_Center.Y = 0.0;
                         m_st4PointPosition_InspectedPos[i].dFiducial_Width = 0.0;
                         m_st4PointPosition_InspectedPos[i].dFiducial_Height = 0.0;
+
+                        m_st4PointPosition_InspectedPos_LastSuccess[i].ptFiducial_Center.X = 0.0; //  4-Point 의 도면상 위치 데이터 (마지막 성공한 데이터)
+                        m_st4PointPosition_InspectedPos_LastSuccess[i].ptFiducial_Center.Y = 0.0;
+                        m_st4PointPosition_InspectedPos_LastSuccess[i].dFiducial_Width = 0.0;
+                        m_st4PointPosition_InspectedPos_LastSuccess[i].dFiducial_Height = 0.0;
+
                     }
 
                     m_st4PointAlign_Result.dRotationCenterX = 0.0;
@@ -10104,20 +10126,23 @@ namespace QMC.Common.Modules
                     xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
                     xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
                     
-                    //if(m_bSocketAlign_OK)
+                    if(m_bIsFirstAlign == false)
                     {
-                        if(m_st4PointPosition_DwgPos.Count() == 4 && m_st4PointPosition_InspectedPos.Count() == 4 
-                            && m_st4PointAlign_Result.dRotationCenterX != 0 
-                            && m_st4PointAlign_Result.dRotationCenterX != 0 
-                            && m_st4PointAlign_Result.dRotationAngle != 0)
+                        if(m_st4PointPosition_DwgPos_LastSuccess.Count() == 4 && m_st4PointPosition_DwgPos_LastSuccess.Count() == 4 
+                            && m_st4PointAlign_Result_LastSuccess.dRotationCenterX != 0 
+                            && m_st4PointAlign_Result_LastSuccess.dRotationCenterX != 0 
+                            && m_st4PointAlign_Result_LastSuccess.dRotationAngle != 0)
                         {
                             XyCoordinate xyCoordinate = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
-                            xyCoordinate = CoordinateTransform(xyCoordinate, m_st4PointAlign_Result.dRotationCenterX, m_st4PointAlign_Result.dRotationCenterY, -m_st4PointAlign_Result.dRotationAngle);
+                            xyCoordinate = CoordinateTransform(xyCoordinate, m_st4PointPosition_InspectedPos_LastSuccess[0].ptFiducial_Center.X
+                                , m_st4PointPosition_InspectedPos_LastSuccess[0].ptFiducial_Center.Y, -m_st4PointAlign_Result.dRotationAngle);
                         }
                     }
 
                     MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
                     // Todo :김영남  얼라인 위치 이동 계산. 해야되는 부분..
+
+
 
 
                     //m_st4PointAlign_Result = Calc_4Point_AlignData(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
@@ -10302,6 +10327,21 @@ namespace QMC.Common.Modules
                     else
                     {
                         m_bSocketAlign_OK = true;
+                        m_bIsFirstAlign = false;
+
+                        m_st4PointPosition_DwgPos_LastSuccess = m_st4PointPosition_DwgPos.ToArray();
+                        m_st4PointPosition_InspectedPos_LastSuccess = m_st4PointPosition_InspectedPos.ToArray();
+
+                        m_st4PointAlign_Result_LastSuccess = new st4PointAlign_Result();
+                        m_st4PointAlign_Result_LastSuccess.dCenterOffsetX = m_st4PointAlign_Result.dCenterOffsetX;
+                        m_st4PointAlign_Result_LastSuccess.dCenterOffsetY = m_st4PointAlign_Result.dCenterOffsetY;
+                        m_st4PointAlign_Result_LastSuccess.dRotationAngle = m_st4PointAlign_Result.dRotationAngle;
+                        m_st4PointAlign_Result_LastSuccess.dRotationCenterX = m_st4PointAlign_Result.dRotationCenterX;
+                        m_st4PointAlign_Result_LastSuccess.dRotationCenterY = m_st4PointAlign_Result.dRotationCenterY;
+                        m_st4PointAlign_Result_LastSuccess.dRotationCenterX = m_st4PointAlign_Result.dRotationCenterX;
+                        m_st4PointAlign_Result_LastSuccess.dRotationCenterY = m_st4PointAlign_Result.dRotationCenterY;
+
+
                     }
 
                     //  찾은 마크의 크기 및 좌표 데이터를 확인하여 얼라인 성공 여부를 결정한다.
