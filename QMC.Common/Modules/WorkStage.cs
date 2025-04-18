@@ -10103,7 +10103,36 @@ namespace QMC.Common.Modules
 
                     xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
                     xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
+                    
+                    if(m_bSocketAlign_OK)
+                    {
+                        if(m_st4PointPosition_DwgPos.Count() == 4 && m_st4PointPosition_InspectedPos.Count() == 4 
+                            && m_st4PointAlign_Result.dRotationCenterX != 0 
+                            && m_st4PointAlign_Result.dRotationCenterX != 0 
+                            && m_st4PointAlign_Result.dRotationAngle != 0)
+                        {
+                            XyCoordinate xyCoordinate = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
+                            xyCoordinate = CoordinateTransform(xyCoordinate, m_st4PointAlign_Result.dRotationCenterX, m_st4PointAlign_Result.dRotationCenterY, -m_st4PointAlign_Result.dRotationAngle);
+                        }
+                    }
+
                     MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                    // Todo :김영남  얼라인 위치 이동 계산. 해야되는 부분..
+
+
+                    //m_st4PointAlign_Result = Calc_4Point_AlignData(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
+
+                    //if ((m_st4PointAlign_Result.dCenterOffsetX == 0.0) && (m_st4PointAlign_Result.dCenterOffsetY == 0.0) && (m_st4PointAlign_Result.dRotationAngle == 0.0))
+                    //{
+                    //    m_bSocketAlign_OK = false;
+                    //}
+                    //else
+                    //{
+                    //    m_bSocketAlign_OK = true;
+                    //}
+
+
+
 
                     TickCount_Start((int)TickType.TICK_ALIGN);
 
@@ -10215,9 +10244,9 @@ namespace QMC.Common.Modules
                         //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height = Fiducial_circlesResult[0].Height;
 
                         //  Stage Center 가 0, 0 인 좌표계로 변환
-                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = MC_Func.MC_GetEncPos((int)nAxis.X) + 
+                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = MC_Func.MC_GetEncPos((int)nAxis.X) +
                                                                                                             ((((double)Fiducial_circlesResult[0].X + ((double)Fiducial_circlesResult[0].Width / 2.0)) - (double)(Camera_HighRes.Resolution.Width / 2)) * Config.ParamConfig.UpperVision_Scale_X);
-                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = MC_Func.MC_GetEncPos((int)nAxis.Y) + 
+                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = MC_Func.MC_GetEncPos((int)nAxis.Y) +
                                                                                                             (((double)(Camera_HighRes.Resolution.Height / 2) - ((double)Fiducial_circlesResult[0].Y + ((double)Fiducial_circlesResult[0].Height / 2.0))) * Config.ParamConfig.UpperVision_Scale_Y);
 
                         //  데이터 위치를 Scanner 위치로 변경
@@ -10610,6 +10639,15 @@ namespace QMC.Common.Modules
             }
         }
 
+        private XyCoordinate CoordinateTransform(XyCoordinate xyCoordinate, double dRotationCenterX, double dRotationCenterY, double v)
+        {
+            double dX = xyCoordinate.X - dRotationCenterX;
+            double dY = xyCoordinate.Y - dRotationCenterY;
+            double dNewX = (dX * Math.Cos(v)) - (dY * Math.Sin(v));
+            double dNewY = (dX * Math.Sin(v)) + (dY * Math.Cos(v));
+            return new XyCoordinate(dNewX + dRotationCenterX, dNewY + dRotationCenterY);
+        }
+
         private int SpiralSearch(double dWidth)
         {
             int ret = -1;
@@ -10696,22 +10734,6 @@ namespace QMC.Common.Modules
                             bFound = true;
                             continue;
 
-                        }
-                        MC_Func.MovePosition(xyFirst, 10.0, 5.0, 5.0); // 속도 및 가속도는 예시 값
-                        
-                        while (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) == false)
-                        {
-                            tick++;
-                            Thread.Sleep(1);
-                            if (tick > 1000)
-                                break;
-                        }
-                        while (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == false)
-                        {
-                            tick++;
-                            Thread.Sleep(1);
-                            if (tick > 1000)
-                                break;
                         }
                         return 0;
                     }
