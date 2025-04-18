@@ -10188,24 +10188,24 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 시작");
 
                     Equipment.MachineStop_byUser = false;
+                    this.jigAligner_HighRes.UsePatternMatchingTool = true;
+                    this.jigAligner_HighRes.Work();
 
-                    //jigAligner.Work();
+                    ////  이미지 Grab
+                    //Camera_HighRes.Grab();
+                    ////Camera_HighRes.LatestImage.Save("D:\\TempImage_HighRes_Align.bmp", QMC.Common.Vision.VisionImage.FileFilter.bmp);
+                    ////bm_AlignImage = new Bitmap("D:\\TempImage_HighRes_Align.bmp");
 
-                    //  이미지 Grab
-                    Camera_HighRes.Grab();
-                    //Camera_HighRes.LatestImage.Save("D:\\TempImage_HighRes_Align.bmp", QMC.Common.Vision.VisionImage.FileFilter.bmp);
-                    //bm_AlignImage = new Bitmap("D:\\TempImage_HighRes_Align.bmp");
+                    //bm_AlignRawData = new byte[Camera_HighRes.Resolution.Width * Camera_HighRes.Resolution.Height];
+                    //bm_AlignRawData = Camera_HighRes.LatestImage.RawData;
 
-                    bm_AlignRawData = new byte[Camera_HighRes.Resolution.Width * Camera_HighRes.Resolution.Height];
-                    bm_AlignRawData = Camera_HighRes.LatestImage.RawData;
+                    ////  Circle Find 함수 call
+                    //Fiducial_aligner = new QMC_ImageProcessFindAlign();
+                    //Fiducial_circlesResult = new List<RectangleF>();
 
-                    //  Circle Find 함수 call
-                    Fiducial_aligner = new QMC_ImageProcessFindAlign();
-                    Fiducial_circlesResult = new List<RectangleF>();
-
-                    // Bitmap을 byte 배열로 변환
-                    //byte[] pixelData = Fiducial_aligner.ConvertBitmapToByteArray(bm_AlignImage);
-                    Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, bm_AlignRawData, Camera_HighRes.Resolution.Width, Camera_HighRes.Resolution.Height, ref Fiducial_circleFound);
+                    //// Bitmap을 byte 배열로 변환
+                    ////byte[] pixelData = Fiducial_aligner.ConvertBitmapToByteArray(bm_AlignImage);
+                    //Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, bm_AlignRawData, Camera_HighRes.Resolution.Width, Camera_HighRes.Resolution.Height, ref Fiducial_circleFound);
 
                     timer_VisionAlign.Enabled = true;
 
