@@ -10191,7 +10191,10 @@ namespace QMC.Common.Modules
 
                     this.jigAligner_HighRes.UsePatternMatchingTool = true;
                     //this.jigAligner_HighRes.Work();
-                    int ret = SpiralSearch();
+                    int ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width);
+
+
+                    
 
                     timer_VisionAlign.Enabled = true;
 
@@ -10607,7 +10610,7 @@ namespace QMC.Common.Modules
             }
         }
 
-        private int SpiralSearch()
+        private int SpiralSearch(double dWidth)
         {
             int ret = -1;
             try
@@ -10617,6 +10620,7 @@ namespace QMC.Common.Modules
                 xyCenter.X = MC_Func.MC_GetCmdPos((int)WorkStage.nAxis.X);
                 xyCenter.Y = MC_Func.MC_GetCmdPos((int)WorkStage.nAxis.Y);
 
+                XyCoordinate xyFirst = new XyCoordinate(xyCenter.X, xyCenter.Y);
                 // 이동 거리 및 검색 횟수 설정
                 double stepSize = 1.0; // 1mm 이동
                 int maxSteps = 50; // 최대 50번 검색
@@ -10634,6 +10638,7 @@ namespace QMC.Common.Modules
                     Y = xyCenter.Y
                 };
 
+                bool bFound = false;
                 for (int i = 0; i < maxSteps; i++)
                 {
 
@@ -10642,15 +10647,72 @@ namespace QMC.Common.Modules
 
                     // 이동 명령 실행
                     MC_Func.MovePosition(currentPosition, 10.0, 5.0, 5.0); // 속도 및 가속도는 예시 값
+                    int tick = 0;
+                    while(MC_Func.MC_GetDone((int)WorkStage.nAxis.X) ==false)
+                    {
+                        tick++;
+                        Thread.Sleep(1);
+                        if (tick > 1000)
+                            break;
+                    }
+                    while (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == false)
+                    {
+                        tick++;
+                        Thread.Sleep(1);
+                        if (tick > 1000)
+                            break;
+                    }
+
+                    if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
 
                     // 이미지 Grab 및 원 검색
                     Camera_HighRes.Grab();
+                    int nWidthImageCount = (int)(dWidth / this.Config.ParamConfig.UpperVision_Scale_X);
                     bm_AlignRawData = Camera_HighRes.LatestImage.RawData;
                     Fiducial_aligner = new QMC_ImageProcessFindAlign();
                     Fiducial_circlesResult = new List<RectangleF>();
-                    Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, bm_AlignRawData, Camera_HighRes.Resolution.Width, Camera_HighRes.Resolution.Height, ref Fiducial_circleFound);
+                    if(bm_AlignRawData == null)
+                    {
+                        Camera_HighRes.Initialize();
+                        continue;
+                    }
+                    Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, bm_AlignRawData, Camera_HighRes.Resolution.Width, Camera_HighRes.Resolution.Height, nWidthImageCount,0.05, ref Fiducial_circleFound);
                     if(Fiducial_circleFound)
                     {
+                        if(bFound == false)
+                        {
+                            int nCenterX = (int)(Fiducial_circlesResult[0].X + Fiducial_circlesResult[0].Width / 2);
+                            int nOffsetX = nCenterX - Camera_HighRes.Resolution.Width / 2;
+                            
+                            int nCenterY = (int)(Fiducial_circlesResult[0].Y + Fiducial_circlesResult[0].Height / 2) ;
+                            int nOffsetY = nCenterY - Camera_HighRes.Resolution.Height / 2;
+                            
+                            double dXoffset = nOffsetX * this.Config.ParamConfig.UpperVision_Scale_X;
+                            double dYoffset = nOffsetY * this.Config.ParamConfig.UpperVision_Scale_Y;
+
+                            currentPosition.X -= dXoffset;
+
+                            currentPosition.Y += dYoffset;
+                            bFound = true;
+                            continue;
+
+                        }
+                        MC_Func.MovePosition(xyFirst, 10.0, 5.0, 5.0); // 속도 및 가속도는 예시 값
+                        
+                        while (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) == false)
+                        {
+                            tick++;
+                            Thread.Sleep(1);
+                            if (tick > 1000)
+                                break;
+                        }
+                        while (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == false)
+                        {
+                            tick++;
+                            Thread.Sleep(1);
+                            if (tick > 1000)
+                                break;
+                        }
                         return 0;
                     }
                     // 스파이럴 이동 계산

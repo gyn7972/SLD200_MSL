@@ -137,20 +137,12 @@ namespace QMC.Common.Parts
         public PatternMatchingResult Search()
         {
             int ret = 0;
-            if (this.UsePatternMatchingTool)
+
+            if ((ret = OnSearch(Recipe.InspectRoiStartLocation, Recipe.InspectRoiEndLocation, Recipe.PatternMatchingParameter, IlluminationData)) != 0)
             {
-                if ((ret = OnSearch(Recipe.InspectRoiStartLocation, Recipe.InspectRoiEndLocation, Recipe.PatternMatchingParameter, IlluminationData)) != 0)
-                {
-                    return null;
-                }
+                return null;
             }
-            else
-            {
-                if ((ret = OnSearchForRule(Recipe.InspectRoiStartLocation, Recipe.InspectRoiEndLocation, Recipe.PatternMatchingParameter, IlluminationData)) != 0)
-                {
-                    return null;
-                }
-            }
+
             return m_PatternMatchingTool.Result;
         }
 
@@ -159,54 +151,7 @@ namespace QMC.Common.Parts
         {
             int ret = 0;
 
-            VisionImage image;
-            VisionImage inputImage = null;
-
-            if (Simulated)
-            {
-                image = TestImage;
-            }
-            else
-            {
-                if (Illuminator != null)
-                {
-                    if ((ret = OnSetIllumination(illuminationData, true)) != 0) return ret;
-                }
-                Camera.StopLive();
-                if ((ret = Camera.GrabSync(Purpose.Processing, out image)) != 0) return ret;
-            }
-            //bm_AlignImage = new Bitmap("D:\\TempImage_HighRes_Align.bmp");
-
-
-            byte[] bImage = Camera.LatestImage.RawData;
-
-            //  Circle Find 함수 call
-            QMC_ImageProcessFindAlign Fiducial_aligner = new QMC_ImageProcessFindAlign();
-            List<RectangleF>  Fiducial_circlesResult = new List<RectangleF>();
-
-            int w = Camera.LatestImage.Header.Stride;
-            int h = Camera.LatestImage.Header.Height;
-            // Bitmap을 byte 배열로 변환
-            //byte[] pixelData = Fiducial_aligner.ConvertBitmapToByteArray(bm_AlignImage);
-            bool Fiducial_circleFound = false;
-            Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, bImage, w, h, ref Fiducial_circleFound);
-
-            if(Fiducial_circleFound)
-            {
-                return -1;
-            }
-            m_PatternMatchingTool.Result.Values.Clear();
-
-            foreach(var v in Fiducial_circlesResult)
-            {
-                PatternMatchingResultValue patternMatchingResultValue = new PatternMatchingResultValue();
-                patternMatchingResultValue.X = v.X + v.Width/2;
-                patternMatchingResultValue.Y = v.Y+ v.Height / 2;
-                m_PatternMatchingTool.Result.Values.Add(patternMatchingResultValue);
-                m_PatternMatchingTool.Result.ResultOverlays.Add(
-                    new RectangleFrameVisionImageOverlay("Result", new Point((int)v.Left, (int)v.Top), new Point((int)v.Right, (int)v.Bottom))
-                    );
-            }
+            
 
             return ret;
         }
