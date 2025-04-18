@@ -5711,27 +5711,27 @@
         private System.Windows.Forms.Label label91;
         private System.Windows.Forms.TextBox textBox_Setup_ScannerCal_CalPitch;
         private System.Windows.Forms.Button button30;
-        private System.Windows.Forms.Label label77;
+        //private System.Windows.Forms.Label label77;
         private System.Windows.Forms.TextBox textBox_Setup_ScannerCal_CalAreaHeight;
         private System.Windows.Forms.Button button29;
-        private System.Windows.Forms.Label label76;
+        //private System.Windows.Forms.Label label76;
         private System.Windows.Forms.TextBox textBox_Setup_ScannerCal_CalAreaWidth;
-        private System.Windows.Forms.Button button28;
-        private System.Windows.Forms.Label label75;
+        //private System.Windows.Forms.Button button28;
+        //private System.Windows.Forms.Label label75;
         private System.Windows.Forms.Label label_Setup_ScannerCal_LastPosY;
-        private System.Windows.Forms.Label label81;
+        //private System.Windows.Forms.Label label81;
         private System.Windows.Forms.Label label_Setup_ScannerCal_LastPosX;
-        private System.Windows.Forms.Label label78;
+        //private System.Windows.Forms.Label label78;
         private System.Windows.Forms.Button btnOffsetStart_Vision;
         private System.Windows.Forms.Label label_Setup_ScannerCal_OffsetY;
-        private System.Windows.Forms.Label label80;
+        //private System.Windows.Forms.Label label80;
         private System.Windows.Forms.Label label_Setup_ScannerCal_OffsetX;
-        private System.Windows.Forms.Label label83;
-        private System.Windows.Forms.Label label86;
+        //private System.Windows.Forms.Label label83;
+        //private System.Windows.Forms.Label label86;
         private System.Windows.Forms.Label label_Setup_S_V_OffsetY;
-        private System.Windows.Forms.Label label82;
+        //private System.Windows.Forms.Label label82;
         private System.Windows.Forms.Label label_Setup_S_V_OffsetX;
-        private System.Windows.Forms.Label label85;
+        //private System.Windows.Forms.Label label85;
         private System.Windows.Forms.Button btnOffsetApply;
     }
 }
