@@ -445,7 +445,6 @@ namespace QMC.Common.Parts
             XyCoordinate centerPosition = new XyCoordinate();
             QMCFindLenzCenter findLenzCenter = new QMCFindLenzCenter();
 
-
             int defaultXIndex = (int)(((this.Config.Count.X - 1) * this.Config.PitchDistanceX) / 2);
             int defaultYIndex = -(int)(((this.Config.Count.Y - 1) * this.Config.PitchDistanceY) / 2);
 
@@ -753,6 +752,11 @@ namespace QMC.Common.Parts
             }
             #endregion
 
+
+
+            // Convert 대기를 위한 변수 처리.
+            Equipment.Scanner_Calibration_Convert = 0;
+
             //  폴더 없으면 만들기
             m_strScannerCompensatorDataPath = LogManager.Instance.GetLogPath() + "\\ScannerCalData";
             if (Directory.Exists( m_strScannerCompensatorDataPath ) == false)
@@ -763,9 +767,9 @@ namespace QMC.Common.Parts
 
             correctionDataSaver.SaveData(LogManager.Instance.GetLogPath() + "\\ScannerCalData");
 
-            //
             ActionSaveDone?.Invoke(fileName1);
             ActionSaveDoneAllData?.Invoke(findLenzCenter);
+
             timer.End();
             Log.Write("ScannerCompensator Time", string.Format($"{timer.Latest.Interval.TotalSeconds.ToString()}"));
             return ret;
@@ -902,13 +906,12 @@ namespace QMC.Common.Parts
             //this.Stage.GetCommandPosition(ref currentPos);
             //this.Config.GridPositions[(int)GridXyMotionPositionKeys.StartPosition].Coordinate = currentPos;
             //m_Owner.SaveConfigData();
-            #endregion
-
             //Path Generator 생성 주석
             //timer.Start();
             //if ((ret = this.CreatePathGeneratorSync()) != 0) return ret;
             //timer.End();
             //Log.Write("MotionVisionCompensator", string.Format("Create Path Generator [{0}] Completed. Inverval: {1} ms", OperatorKeys.Measurement, timer.Latest.Interval));
+            #endregion
 
             if ((ret = this.SearchGridXy(out results, out position)) != 0) return ret;
 

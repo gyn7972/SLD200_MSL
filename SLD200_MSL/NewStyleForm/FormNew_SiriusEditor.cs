@@ -154,7 +154,7 @@ namespace SLD200_MSL
 
             //SpiralLab.Sirius.Config.AngleFactor = 20;
 
-            m_bRet = SpiralLab.Core.Initialize();                            //  Sirius1
+            m_bRet = SpiralLab.Core.Initialize();                   //  Sirius1
             //SpiralLab.Sirius2.Core.Initialize();                  //  Sirius2
                        
 
@@ -250,7 +250,9 @@ namespace SLD200_MSL
                     return false;
                 }
                 // initialize rtc controller
-                m_bRet &= workStage.rtc.Initialize(kfactor, LaserMode.Yag1, correctionFile);                                                                       //  Sirius1
+                m_bRet &= workStage.rtc.Initialize(kfactor, LaserMode.Yag1, correctionFile);
+                //m_bRet &=  workStage.rtc.CtlLoadCorrectionFile(0, correctionFile);       
+                //  Sirius1
                 //if (!workStage.rtc.Initialize(kfactor, LaserMode.Yag1, correctionFile))                                                                         //  Sirius1
                 //{
                 //    //return false;

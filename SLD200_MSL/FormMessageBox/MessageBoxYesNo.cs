@@ -43,6 +43,10 @@ namespace QMC.Core
         public MessageBoxYesNo()
         {
             InitializeComponent();
+
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.TopMost = true;
+
             //lblTitle.MouseMove += lblTitle_MouseDown;
             //lblTitle.MouseDown += lblTitle_MouseMove;
 

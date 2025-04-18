@@ -36,6 +36,7 @@ namespace SLD200_MSL
             this.button41 = new System.Windows.Forms.Button();
             this.button42 = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.btnTest = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.textBox_VisionPopup_LaserHeightValue = new System.Windows.Forms.Label();
             this.button_VisionPopup_LaserHeightCheck_Start = new System.Windows.Forms.Button();
@@ -70,6 +71,7 @@ namespace SLD200_MSL
             this.button_Test_SocketAlign_Start = new System.Windows.Forms.Button();
             this.comboBox_Config_VisionPopup_AlignTest_SocketList = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.tabPage_ScannerCal = new System.Windows.Forms.TabPage();
             this.button_Scanner_FineCam_OffsetChange = new System.Windows.Forms.Button();
             this.button_Scanner_FineCam_OffsetCheck = new System.Windows.Forms.Button();
             this.btnCamera_StartLive = new System.Windows.Forms.Button();
@@ -147,7 +149,9 @@ namespace SLD200_MSL
             this.button43 = new System.Windows.Forms.Button();
             this.button47 = new System.Windows.Forms.Button();
             this.button48 = new System.Windows.Forms.Button();
-            this.btnTest = new System.Windows.Forms.Button();
+            this.btnTrain = new System.Windows.Forms.Button();
+            this.pictureBox_ImageDisplayScannerCal = new System.Windows.Forms.PictureBox();
+            this.button2 = new System.Windows.Forms.Button();
             this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -158,6 +162,7 @@ namespace SLD200_MSL
             this.tabPage_MarkFind_CircleFind.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ImageDisplay)).BeginInit();
             this.tabPage_Socket_AlignTest.SuspendLayout();
+            this.tabPage_ScannerCal.SuspendLayout();
             this.groupBox19.SuspendLayout();
             this.groupBox20.SuspendLayout();
             this.groupBox22.SuspendLayout();
@@ -172,6 +177,7 @@ namespace SLD200_MSL
             this.groupBox36.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_LowRes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_HighRes)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ImageDisplayScannerCal)).BeginInit();
             this.SuspendLayout();
             // 
             // panel4
@@ -241,6 +247,18 @@ namespace SLD200_MSL
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(1236, 699);
             this.panel3.TabIndex = 41;
+            // 
+            // btnTest
+            // 
+            this.btnTest.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.btnTest.Location = new System.Drawing.Point(975, 10);
+            this.btnTest.Margin = new System.Windows.Forms.Padding(6);
+            this.btnTest.Name = "btnTest";
+            this.btnTest.Size = new System.Drawing.Size(60, 64);
+            this.btnTest.TabIndex = 139;
+            this.btnTest.Text = "TEST";
+            this.btnTest.UseVisualStyleBackColor = true;
+            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
             // 
             // groupBox4
             // 
@@ -329,6 +347,7 @@ namespace SLD200_MSL
             this.tabControl_MarkFindType.Controls.Add(this.tabPage_MarkFind_PatternMatching);
             this.tabControl_MarkFindType.Controls.Add(this.tabPage_MarkFind_CircleFind);
             this.tabControl_MarkFindType.Controls.Add(this.tabPage_Socket_AlignTest);
+            this.tabControl_MarkFindType.Controls.Add(this.tabPage_ScannerCal);
             this.tabControl_MarkFindType.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.tabControl_MarkFindType.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.tabControl_MarkFindType.ItemSize = new System.Drawing.Size(130, 21);
@@ -673,6 +692,19 @@ namespace SLD200_MSL
             this.label3.TabIndex = 75;
             this.label3.Text = "Socket No. :";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // tabPage_ScannerCal
+            // 
+            this.tabPage_ScannerCal.Controls.Add(this.btnTrain);
+            this.tabPage_ScannerCal.Controls.Add(this.pictureBox_ImageDisplayScannerCal);
+            this.tabPage_ScannerCal.Controls.Add(this.button2);
+            this.tabPage_ScannerCal.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_ScannerCal.Name = "tabPage_ScannerCal";
+            this.tabPage_ScannerCal.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_ScannerCal.Size = new System.Drawing.Size(449, 254);
+            this.tabPage_ScannerCal.TabIndex = 3;
+            this.tabPage_ScannerCal.Text = "Scanner Cal.";
+            this.tabPage_ScannerCal.UseVisualStyleBackColor = true;
             // 
             // button_Scanner_FineCam_OffsetChange
             // 
@@ -1696,17 +1728,37 @@ namespace SLD200_MSL
             this.button48.Text = "Apply";
             this.button48.UseVisualStyleBackColor = true;
             // 
-            // btnTest
+            // btnTrain
             // 
-            this.btnTest.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.btnTest.Location = new System.Drawing.Point(975, 10);
-            this.btnTest.Margin = new System.Windows.Forms.Padding(6);
-            this.btnTest.Name = "btnTest";
-            this.btnTest.Size = new System.Drawing.Size(60, 64);
-            this.btnTest.TabIndex = 139;
-            this.btnTest.Text = "TEST";
-            this.btnTest.UseVisualStyleBackColor = true;
-            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
+            this.btnTrain.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.btnTrain.Location = new System.Drawing.Point(10, 8);
+            this.btnTrain.Margin = new System.Windows.Forms.Padding(6);
+            this.btnTrain.Name = "btnTrain";
+            this.btnTrain.Size = new System.Drawing.Size(107, 42);
+            this.btnTrain.TabIndex = 76;
+            this.btnTrain.Text = "Train";
+            this.btnTrain.UseVisualStyleBackColor = true;
+            this.btnTrain.Click += new System.EventHandler(this.btnTrain_Click);
+            // 
+            // pictureBox_ImageDisplayScannerCal
+            // 
+            this.pictureBox_ImageDisplayScannerCal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBox_ImageDisplayScannerCal.Location = new System.Drawing.Point(10, 59);
+            this.pictureBox_ImageDisplayScannerCal.Name = "pictureBox_ImageDisplayScannerCal";
+            this.pictureBox_ImageDisplayScannerCal.Size = new System.Drawing.Size(223, 187);
+            this.pictureBox_ImageDisplayScannerCal.TabIndex = 75;
+            this.pictureBox_ImageDisplayScannerCal.TabStop = false;
+            // 
+            // button2
+            // 
+            this.button2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button2.Location = new System.Drawing.Point(252, 8);
+            this.button2.Margin = new System.Windows.Forms.Padding(6);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(186, 42);
+            this.button2.TabIndex = 74;
+            this.button2.Text = "Search      [Fiducial]";
+            this.button2.UseVisualStyleBackColor = true;
             // 
             // FormNew_VisionPopup
             // 
@@ -1735,6 +1787,7 @@ namespace SLD200_MSL
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ImageDisplay)).EndInit();
             this.tabPage_Socket_AlignTest.ResumeLayout(false);
             this.tabPage_Socket_AlignTest.PerformLayout();
+            this.tabPage_ScannerCal.ResumeLayout(false);
             this.groupBox19.ResumeLayout(false);
             this.groupBox20.ResumeLayout(false);
             this.groupBox20.PerformLayout();
@@ -1753,6 +1806,7 @@ namespace SLD200_MSL
             this.groupBox36.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_LowRes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_HighRes)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ImageDisplayScannerCal)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1875,5 +1929,9 @@ namespace SLD200_MSL
         private Button button_VisionPopup_LaserHeightCheck_Start;
         private Label textBox_VisionPopup_LaserHeightValue;
         private Button btnTest;
+        private TabPage tabPage_ScannerCal;
+        private Button btnTrain;
+        private PictureBox pictureBox_ImageDisplayScannerCal;
+        private Button button2;
     }
 }

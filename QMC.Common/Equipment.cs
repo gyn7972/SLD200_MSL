@@ -421,6 +421,22 @@ namespace QMC.Common
         public static double Scanner_Calibration_MarkDelay { set; get; } = 0.0;                  //  Scanner Calibration Mark Delay (us)
         public static double Scanner_Calibration_JumpDelay { set; get; } = 0.0;                  //  Scanner Calibration Jump Delay (us)
         public static double Scanner_Calibration_PolygonDelay { set; get; } = 0.0;               //  Scanner Calibration Polygon Delay (us)
+        public static double Scanner_Calibration_CalAreaWidth { set; get; } = 0.0;
+        public static double Scanner_Calibration_CalAreaHeight { set; get; } = 0.0;
+        public static double Scanner_Calibration_CalPitch   { set; get; } = 0.0;
+        public static double Scanner_Calibration_PosX_Last { set; get; } = 0.0;
+        public static double Scanner_Calibration_PosY_Last { set; get; } = 0.0;
+
+        //Status로 사용
+        public static bool Scanner_Calibration_Change { set; get; } = false;
+
+        public static int Scanner_Calibration_Convert { set; get; } = 0;            //  Scanner Calibration Use (true: Use, false: Not Use)
+
+        public static bool Scanner_Vision_Offset_Setting_Use { set; get; } = false;            //  Scanner Calibration Use (true: Use, false: Not Use)
+
+        public static double Scanner_Vision_Offset_Setting_X { set; get; } = 0.0;            //  Scanner Calibration Use (true: Use, false: Not Use)
+        public static double Scanner_Vision_Offset_Setting_Y { set; get; } = 0.0;            //  Scanner Calibration Use (true: Use, false: Not Use)
+
 
 
         public static string Scanner_Calibration_srcFilePath { set; get; } = "";            //  Scanner Calibration Source File Path
@@ -2406,7 +2422,19 @@ namespace QMC.Common
             Equipment.Scanner_Calibration_JumpDelay = Convert.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Polygon_Delay", "0.0", temp, 255, strFIle);
             Equipment.Scanner_Calibration_PolygonDelay = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Width", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_CalAreaWidth = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Height", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_CalAreaHeight = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Cal_Pitch", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_CalPitch = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "PosX_Last", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_PosX_Last = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "PosY_Last", "0.0", temp, 255, strFIle);
+            Equipment.Scanner_Calibration_PosY_Last = Convert.ToDouble(temp.ToString());
 
+
+            //
 
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "srcFilePath", "", temp, 255, strFIle);
             Equipment.Scanner_Calibration_srcFilePath = temp.ToString();

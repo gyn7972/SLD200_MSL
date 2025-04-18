@@ -109,7 +109,24 @@ namespace SLD200_MSL
             FormNewMainShow();
 
             //AlarmManager.Instance.PostAlarm += AlarmManager_PostAlarm;
+            // PostAlarm 이벤트 구독
+            AlarmManager.Instance.PostAlarm += alarm =>
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog($"Error", $"알람 발생:{alarm.Title}," +
+                    $"\r\n알람 코드: {alarm.Code}" +
+                    $"\r\n알람 명: {alarm.Cause}");
 
+                Log.Write("SLD-200", "ALARM", 
+                    $"Title={alarm.Title}," +
+                    $"Code={alarm.Code}," +
+                    $"Source={alarm.Source}," +
+                    $"Grade={alarm.Grade}," +
+                    $"Cause={alarm.Cause},");
+
+
+                //MessageBox.Show($"알람 발생: {alarm.Title}\n원인: {alarm.Cause}", "알람", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            };
             //m_Form1.ShowDialog();
         }
         

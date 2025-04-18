@@ -4941,7 +4941,8 @@
             "Vision Image Focus Z Axis Position",
             "Laser Focus Z Axis Position",
             "Laser Sensor, Height Check Position",
-            "Safety Z Axis Position"});
+            "Safety Z Axis Position",
+            "Laser Sensor, Height Check Cal Position"});
             this.listBox_Config_Vision_TeachingPositions.Location = new System.Drawing.Point(10, 25);
             this.listBox_Config_Vision_TeachingPositions.Margin = new System.Windows.Forms.Padding(5);
             this.listBox_Config_Vision_TeachingPositions.Name = "listBox_Config_Vision_TeachingPositions";

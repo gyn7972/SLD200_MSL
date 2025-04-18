@@ -84,7 +84,8 @@ namespace QMC.Common
             m_dicAlarms.Add(alarm.Code, alarm);
         }
 
-        protected Alarm GetAlarm(int nCode)
+        //protected Alarm GetAlarm(int nCode)
+        public Alarm GetAlarm(int nCode)
         {
             Alarm alarm = null;
             if (m_dicAlarms.ContainsKey(nCode))
