@@ -32,8 +32,8 @@ namespace QMC.Common.Modules
         #region Define
 
 
-#if true                                                                //  SLD-200C
-//#if false                                                               //  SLD-200U
+//#if true                                                                //  SLD-200C
+#if false                                                               //  SLD-200U
         public enum nAxis                                                       //  SLD-200C 에서 사용하는 축 번호    
         {
             //  축 번호 변경 전 (Z0:4,    Z1:5,   TR_X:6,     TR_Z:7,     ALN_X:8,    ALN_Y:9)
@@ -4852,6 +4852,7 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "WorkStage, Module Vacuum On");
 
                     workStage.workStageParameter.DO_Stage_Vacuum(true);
+                    workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
 
                     //  Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
                     workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);            //  임시로 -30 고정

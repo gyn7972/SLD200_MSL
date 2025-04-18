@@ -278,6 +278,8 @@ namespace QMC.Common
             Hole2,
             Hole3,
             Hole4,
+            Hole5,
+            Hole6,
             Rect,
             Outline,
             Marking,
@@ -323,6 +325,7 @@ namespace QMC.Common
             public int Miscellaneous_MaskIndex;                         //  Mask Index (0:None, 1:Mask1, 2:Mask2, 3:Mask3, 4:Mask4)
             public int Miscellaneous_BETPositionIndex;                  //  BET Position Index (0:0.1X, 1:0.5X, 2:1.0X, 3:1.5X, 4:2.0X)
             public int Miscellaneous_HoleProcessingType;                //  Hole Processing Type (0:Circle, 1:Spiral)
+            public int Miscellaneous_FiducialAlignType;                 //  Fiducial Align Type (0:Circle Find, 2:Pattern Matching)
 
             public bool ProcessOption_SocketAlign_Use;                  //  Socket Align Use (true: Use, false: Not Use)
             public bool ProcessOption_SocketHeightCheck_Use;            //  Socket Height Check Use Offset (true: Use, false: Not Use)
@@ -343,6 +346,10 @@ namespace QMC.Common
             public int IlluminatorValue_FineCamRed;                     //  Illuminator Value (Fine Camera, Red)                            //  조명은 0번 index 만 사용
             public int IlluminatorValue_FineCamIR;                      //  Illuminator Value (Fine Camera, IR)                             //  조명은 0번 index 만 사용
             public int IlluminatorValue_CoarseCamIR;                    //  Illuminator Value (Coarse Camera, IR)                           //  조명은 0번 index 만 사용
+
+            public bool DustCollectorRemoteMode_Use;                    //  Dust Collector Remote Mode (true: Remote, false: Local)
+            public double DustCollectorFreq_Upper;                      //  Dust Collector Frequency (Upper)
+            public double DustCollectorFreq_Lower;                      //  Dust Collector Frequency (Lower)
         }
         public static stLayerRecipeParameter[] stLayerRecipeSet = new stLayerRecipeParameter[System.Enum.GetValues(typeof(LayerList)).Length];
 
@@ -589,6 +596,22 @@ namespace QMC.Common
         public static bool m_bMainProcessStatus_UL_Module_PortPutDown_Complete { set; get; } = false;       //  Unloader Port 에 Module Put Down 완료
 
 
+        //  평탄도 특정 위치
+        public enum FlatMeasureList : int
+        {
+            Stage = 0,
+            CalPos,
+            User1,
+            User2,
+            User3,
+        }
+        public struct stFlatnessMeasurementParameter
+        {
+            public PointD[] StagePos;                         //  Stage 위치값
+            public double[] LaserHeightValue;                 //  Laser Height Sensor 측정값
+        }
+        public static stFlatnessMeasurementParameter[] stFlatMeasurePos = new stFlatnessMeasurementParameter[System.Enum.GetValues(typeof(FlatMeasureList)).Length];
+
 
         public static void CreateInstance(string strEquipmentName)
         {
@@ -772,6 +795,7 @@ namespace QMC.Common
                 stLayerRecipeSet[i].Miscellaneous_BETPositionIndex = 0;                             //  BET Index  
                 stLayerRecipeSet[i].Miscellaneous_Drilling_Power = 10;                              //  Drilling Power              
                 stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = 0;                           //  Hole Processing Type (0:Circle, 1:Spiral)
+                stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = 0;                            //  Fiducial Align Type (0:Circle Find, 1:Pattern Matching)
 
                 //  Process Options
                 stLayerRecipeSet[i].ProcessOption_SocketAlign_Use = false;                          //  Socket Align Use (true: Use, false: Not Use)
@@ -792,8 +816,29 @@ namespace QMC.Common
                 stLayerRecipeSet[i].MAligner_VacuumPos_Center = true;                               //  Mechanical-Alignment Center Vacuum Use (true: Use, false: Not Use)
                 stLayerRecipeSet[i].MAligner_VacuumPos_Outer = false;                               //  Mechanical-Alignment Outer Vacuum Use (true: Use, false: Not Use)
                 stLayerRecipeSet[i].MAligner_VacuumPos_Inner = false;                               //  Mechanical-Alignment Inner Vacuum Use (true: Use, false: Not Use)
+
+                //  Dust Collector
+                stLayerRecipeSet[i].DustCollectorRemoteMode_Use = false;                            //  Dust Collector Mode (true: Remote, false: Local)
+                stLayerRecipeSet[i].DustCollectorFreq_Upper = 20.0;                                 //  Dust Collector Upper Frequency (Hz)
+                stLayerRecipeSet[i].DustCollectorFreq_Lower = 20.0;                                 //  Dust Collector Lower Frequency (Hz)
             }
 
+
+            //  평탄도 측정 위치 초기화
+            for (int i = 0; i < System.Enum.GetValues(typeof(FlatMeasureList)).Length; i++)
+            {
+                stFlatMeasurePos[i].StagePos = new PointD[9];
+                stFlatMeasurePos[i].LaserHeightValue = new double[9];
+            }
+
+            for (int i = 0; i < System.Enum.GetValues(typeof(FlatMeasureList)).Length; i++)
+            {
+                for ( int j = 0; j < 9; j++)
+                {
+                    stFlatMeasurePos[i].StagePos[j] = new PointD(0, 0);
+                    stFlatMeasurePos[i].LaserHeightValue[j] = 0.0;
+                }
+            }
 
             //  Scanner Head Offset
             Scanner_HeadOffset_X = 0;

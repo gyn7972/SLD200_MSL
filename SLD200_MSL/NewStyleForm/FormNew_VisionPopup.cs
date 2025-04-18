@@ -1328,7 +1328,7 @@ namespace SLD200_MSL
 
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, workStage.Camera_LowRes.LatestImage.RawData, w, h);
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h);
-                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
+                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h,3000,0.99, ref m_bFindCircle);
             }
             else
             {
@@ -1342,7 +1342,7 @@ namespace SLD200_MSL
                 //byte[] pixelData = aligner.ConvertBitmapToByteArray(bm_Temp);                
 
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h);
-                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
+                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, 3000, 0.99, ref m_bFindCircle);
             }
 
             if (m_bFindCircle && (circlesResult.Count > 0))
@@ -1975,13 +1975,13 @@ namespace SLD200_MSL
             //}
 
 
-            ////  맵 데이터 변경
-            //workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
-
 
             //  Target 위치 계산
             lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromScannerToFineCam.X;
             lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+
+            ////  맵 데이터 변경
+            workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
 
             //  속도 설정
             if (radioButton_VisionPopup_Move_MoveMode_Fine.Checked)

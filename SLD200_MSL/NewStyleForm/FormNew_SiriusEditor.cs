@@ -1308,8 +1308,12 @@ namespace SLD200_MSL
             m_dOffsetY = Convert.ToDouble(tb_ScannerOffset_Y.Text);
             m_dAngle = Convert.ToDouble(tb_ScannerOffset_Angle.Text);
 
-            m_dRotCenter_X = workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dGroupCenter.X;
-            m_dRotCenter_Y = workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dGroupCenter.Y;
+            //m_dRotCenter_X = workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dGroupCenter.X;
+            //m_dRotCenter_Y = workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dGroupCenter.Y;
+            m_dRotCenter_X = double.Parse(textboxCorX.Text);
+            m_dRotCenter_Y = double.Parse(textBoxCorY.Text);
+
+
 
             SiriusEditor.Document.Action.ActEntityRotate(SiriusEditor.Document.Action.SelectedEntity, (float)m_dAngle, (float)m_dRotCenter_X, (float)m_dRotCenter_Y);
             SiriusEditor.Document.Action.ActEntityTransit(SiriusEditor.Document.Action.SelectedEntity, (float)m_dOffsetX, (float)m_dOffsetY);

@@ -481,6 +481,8 @@
             this.button_Test_WorkStage_ModuleLoadingPos_Cyc = new System.Windows.Forms.Button();
             this.button_Test_WorkStage_ModuleUnloadingPos_Cyc = new System.Windows.Forms.Button();
             this.groupBox28 = new System.Windows.Forms.GroupBox();
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc = new System.Windows.Forms.Button();
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc = new System.Windows.Forms.Button();
             this.button_TestbyUser_LPort_Start = new System.Windows.Forms.Button();
             this.button_TestbyUser_RPort_Start = new System.Windows.Forms.Button();
             this.label47 = new System.Windows.Forms.Label();
@@ -539,11 +541,10 @@
             this.label_Config_EncPosition_LD_Z1 = new System.Windows.Forms.Label();
             this.label154 = new System.Windows.Forms.Label();
             this.label_Config_EncPosition_LD_Z0 = new System.Windows.Forms.Label();
-            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc = new System.Windows.Forms.Button();
-            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc = new System.Windows.Forms.Button();
             this.groupBox30 = new System.Windows.Forms.GroupBox();
             this.labelStagePressure = new System.Windows.Forms.Label();
             this.label51 = new System.Windows.Forms.Label();
+            this.button_Test_WorkStage_ModuleLoadingFlag_OK = new System.Windows.Forms.Button();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -6532,6 +6533,7 @@
             // 
             // groupBox29
             // 
+            this.groupBox29.Controls.Add(this.button_Test_WorkStage_ModuleLoadingFlag_OK);
             this.groupBox29.Controls.Add(this.button_TestbyUser_LaserDrilling_toLPort_OK);
             this.groupBox29.Controls.Add(this.button_TestbyUser_LaserDrilling_NG);
             this.groupBox29.Controls.Add(this.button_TestbyUser_LaserDrilling_toRPort_OK);
@@ -6677,6 +6679,30 @@
             this.groupBox28.TabIndex = 51;
             this.groupBox28.TabStop = false;
             this.groupBox28.Text = " Loader ";
+            // 
+            // button_Test_LDStacker0_ModulesLoadingPos_Cyc
+            // 
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Location = new System.Drawing.Point(637, 30);
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Name = "button_Test_LDStacker0_ModulesLoadingPos_Cyc";
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Size = new System.Drawing.Size(184, 88);
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.TabIndex = 84;
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Text = "LD R-Port Position  ▼\r\n\r\n[To Loading Modules]\r\n";
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.UseVisualStyleBackColor = true;
+            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Click += new System.EventHandler(this.button_Test_LDStacker0_ModulesLoadingPos_Cyc_Click);
+            // 
+            // button_Test_LDStacker1_ModulesLoadingPos_Cyc
+            // 
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Location = new System.Drawing.Point(443, 30);
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Name = "button_Test_LDStacker1_ModulesLoadingPos_Cyc";
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Size = new System.Drawing.Size(184, 88);
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.TabIndex = 83;
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Text = "LD L-Port Position  ▼\r\n\r\n[To Loading Modules]\r\n";
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.UseVisualStyleBackColor = true;
+            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Click += new System.EventHandler(this.button_Test_LDStacker1_ModulesLoadingPos_Cyc_Click);
             // 
             // button_TestbyUser_LPort_Start
             // 
@@ -7463,29 +7489,17 @@
             this.label51.Text = "Pressure(kPa) : ";
             this.label51.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button_Test_LDStacker0_ModulesLoadingPos_Cyc
+            // button_Test_WorkStage_ModuleLoadingFlag_OK
             // 
-            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Location = new System.Drawing.Point(637, 30);
-            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Name = "button_Test_LDStacker0_ModulesLoadingPos_Cyc";
-            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Size = new System.Drawing.Size(184, 88);
-            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.TabIndex = 84;
-            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Text = "LD R-Port Position  ▼\r\n\r\n[To Loading Modules]\r\n";
-            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.UseVisualStyleBackColor = true;
-            this.button_Test_LDStacker0_ModulesLoadingPos_Cyc.Click += new System.EventHandler(this.button_Test_LDStacker0_ModulesLoadingPos_Cyc_Click);
-            // 
-            // button_Test_LDStacker1_ModulesLoadingPos_Cyc
-            // 
-            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Location = new System.Drawing.Point(443, 30);
-            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Name = "button_Test_LDStacker1_ModulesLoadingPos_Cyc";
-            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Size = new System.Drawing.Size(184, 88);
-            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.TabIndex = 83;
-            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Text = "LD L-Port Position  ▼\r\n\r\n[To Loading Modules]\r\n";
-            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.UseVisualStyleBackColor = true;
-            this.button_Test_LDStacker1_ModulesLoadingPos_Cyc.Click += new System.EventHandler(this.button_Test_LDStacker1_ModulesLoadingPos_Cyc_Click);
+            this.button_Test_WorkStage_ModuleLoadingFlag_OK.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Test_WorkStage_ModuleLoadingFlag_OK.Location = new System.Drawing.Point(418, 121);
+            this.button_Test_WorkStage_ModuleLoadingFlag_OK.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Test_WorkStage_ModuleLoadingFlag_OK.Name = "button_Test_WorkStage_ModuleLoadingFlag_OK";
+            this.button_Test_WorkStage_ModuleLoadingFlag_OK.Size = new System.Drawing.Size(184, 54);
+            this.button_Test_WorkStage_ModuleLoadingFlag_OK.TabIndex = 86;
+            this.button_Test_WorkStage_ModuleLoadingFlag_OK.Text = "Module Loading Flag OK\r\n[Module to Put Down]";
+            this.button_Test_WorkStage_ModuleLoadingFlag_OK.UseVisualStyleBackColor = true;
+            this.button_Test_WorkStage_ModuleLoadingFlag_OK.Click += new System.EventHandler(this.button_Test_WorkStage_ModuleLoadingFlag_OK_Click);
             // 
             // FormNew_Config
             // 
@@ -8152,5 +8166,6 @@
         private System.Windows.Forms.Label label51;
         private System.Windows.Forms.Button button_Test_LDStacker0_ModulesLoadingPos_Cyc;
         private System.Windows.Forms.Button button_Test_LDStacker1_ModulesLoadingPos_Cyc;
+        private System.Windows.Forms.Button button_Test_WorkStage_ModuleLoadingFlag_OK;
     }
 }

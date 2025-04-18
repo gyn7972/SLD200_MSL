@@ -23,6 +23,7 @@ using System.Numerics;
 using SpiralLab.Sirius;
 using Point = System.Drawing.Point;
 using System.Windows.Controls;
+using ListViewItem = System.Windows.Forms.ListViewItem;
 using QMC.Common.Parts; // AlarmKey가 정의된 네임스페이스 포함
 
 namespace SLD200_MSL
@@ -123,6 +124,18 @@ namespace SLD200_MSL
             this.tabPage_Setup_IO.Controls.Add(this.Outputlist);
 
             this.VisibleChanged += FormNew_Setup_VisibleChanged;
+
+            //  장비 타입에 따라 Mask 축 추가 / 제거
+            //if (Equipment.Machine_LaserType_CO2)
+            //{
+            //    listBox_Setup_Motion_SelectAxis.Items.Clear();
+
+            //}
+            //else        //  UV
+            //{
+            //    listBox_Setup_Motion_SelectAxis.Items.Clear();
+
+            //}
 
             Axis_Parameter_Apply();
             Comm_Parameter_Apply();
@@ -2127,6 +2140,46 @@ namespace SLD200_MSL
                 Equipment.Machine_FiducialMarkJudgementRange_Enable = false;
                 textBox_Setup_Option_FiducialMarkJudgementRange.Enabled = false;
             }
+        }
+
+        private void button_Setup_Flatness_MeasurementPosition1_Clear_Click(object sender, EventArgs e)
+        {
+            //  1. Flatness 측정 위치 초기화
+
+
+        }
+
+        private void comboBox_Setup_FlatnessMeasurementPos_List_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //  선택한 측정 위치의 데이터로 변경
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                return;
+            }
+
+            //  Flatness 측정 위치 데이터 불러오기
+
+            textBox_Setup_Flatness_TeachingPos1_StageX.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[0].X.ToString();
+            textBox_Setup_Flatness_TeachingPos1_StageY.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[0].Y.ToString();
+            textBox_Setup_Flatness_TeachingPos2_StageX.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[1].X.ToString();
+            textBox_Setup_Flatness_TeachingPos2_StageY.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[1].Y.ToString();
+            textBox_Setup_Flatness_TeachingPos3_StageX.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[2].X.ToString();
+            textBox_Setup_Flatness_TeachingPos3_StageY.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[2].Y.ToString();
+            textBox_Setup_Flatness_TeachingPos4_StageX.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[3].X.ToString();
+            textBox_Setup_Flatness_TeachingPos4_StageY.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[3].Y.ToString();
+            textBox_Setup_Flatness_TeachingPos5_StageX.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[4].X.ToString();
+            textBox_Setup_Flatness_TeachingPos5_StageY.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[4].Y.ToString();
+            textBox_Setup_Flatness_TeachingPos6_StageX.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[5].X.ToString();
+            textBox_Setup_Flatness_TeachingPos6_StageY.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[5].Y.ToString();
+            textBox_Setup_Flatness_TeachingPos7_StageX.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[6].X.ToString();
+            textBox_Setup_Flatness_TeachingPos7_StageY.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[6].Y.ToString();
+            textBox_Setup_Flatness_TeachingPos8_StageX.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[7].X.ToString();
+            textBox_Setup_Flatness_TeachingPos8_StageY.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[7].Y.ToString();
+            textBox_Setup_Flatness_TeachingPos9_StageX.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[8].X.ToString();
+            textBox_Setup_Flatness_TeachingPos9_StageY.Text = Equipment.stFlatMeasurePos[nIndex].StagePos[8].Y.ToString();
         }
 
         private void btnOffsetStart_Vision_Click(object sender, EventArgs e)

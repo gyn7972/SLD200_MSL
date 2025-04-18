@@ -293,6 +293,9 @@ namespace SLD200_MSL
                 (m_strLayerName == "Hole2") ||
                 (m_strLayerName == "Hole3") ||
                 (m_strLayerName == "Hole4") ||
+                (m_strLayerName == "Hole5") ||
+                (m_strLayerName == "Hole6") ||
+                (m_strLayerName == "Thruhole") ||
                 (m_strLayerName == "Fiducial"))
             {
                 listView_Recipe_TabRecipe_LayerData.Columns.Add("Index", 50, HorizontalAlignment.Center);
@@ -375,6 +378,38 @@ namespace SLD200_MSL
                         item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole4[i].CenterX));
                         item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole4[i].CenterY));
                         item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole4[i].radius));
+                        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+                    }
+                }
+            }
+            else if (m_strLayerName == "Hole5")
+            {
+                //if (workStage.m_nDrawing_Hole5Count > 0)
+                {
+                    //  Fiducial Data를 ListView에 표시
+                    for (int i = 0; i < workStage.m_nDrawing_Hole5Count; i++)
+                    {
+                        ListViewItem item = new ListViewItem();
+                        item.Text = (i + 1).ToString();
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole5[i].CenterX));
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole5[i].CenterY));
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole5[i].radius));
+                        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+                    }
+                }
+            }
+            else if (m_strLayerName == "Hole6")
+            {
+                //if (workStage.m_nDrawing_Hole6Count > 0)
+                {
+                    //  Fiducial Data를 ListView에 표시
+                    for (int i = 0; i < workStage.m_nDrawing_Hole6Count; i++)
+                    {
+                        ListViewItem item = new ListViewItem();
+                        item.Text = (i + 1).ToString();
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole6[i].CenterX));
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole6[i].CenterY));
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole6[i].radius));
                         listView_Recipe_TabRecipe_LayerData.Items.Add(item);
                     }
                 }
@@ -534,6 +569,9 @@ namespace SLD200_MSL
                 //  Hole Processing Type (0:Circle, 1:Spiral)
                 NativeMethods.GetPrivateProfileString(strTemp, "HoleProcessingType", "0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = Convert.ToInt32(temp.ToString());
+                //  Fiducial Align Type (0:Circle Find, 1:Pattern Matching)
+                NativeMethods.GetPrivateProfileString(strTemp, "FiducialAlignType", "0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = Convert.ToInt32(temp.ToString());
 
                 //  Process Options
                 NativeMethods.GetPrivateProfileString(strTemp, "Socket_Align_Use", "false", temp, 255, strFIle);
@@ -576,6 +614,14 @@ namespace SLD200_MSL
                 //  Coarse Cam. IR
                 NativeMethods.GetPrivateProfileString(strTemp, "CoarseCam_IR", "0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR = Convert.ToInt32(temp.ToString());
+
+                //  Dust Collector
+                NativeMethods.GetPrivateProfileString(strTemp, "DustCollector_RemoteMode_Use", "false", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use = Convert.ToBoolean(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "DustCollector_Frequency_Upper", "20.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper = Convert.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "DustCollector_Frequency_Lower", "20.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower = Convert.ToDouble(temp.ToString());
             }
 
             return m_bRet;
@@ -662,6 +708,8 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "BETPositionIndex", Equipment.stLayerRecipeSet[i].Miscellaneous_BETPositionIndex.ToString(), strFIle);
                 //  Hole Processing Type (0:Circle, 1:Spiral)
                 NativeMethods.WritePrivateProfileString(strTemp, "HoleProcessingType", Equipment.stLayerRecipeSet[i].Miscellaneous_HoleProcessingType.ToString(), strFIle);
+                //  Fiducial Align Type (0:Circle Find, 1:Pattern Matching)
+                NativeMethods.WritePrivateProfileString(strTemp, "FiducialAlignType", Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialAlignType.ToString(), strFIle);
 
                 //  Process Options
                 NativeMethods.WritePrivateProfileString(strTemp, "Socket_Align_Use", Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use.ToString(), strFIle);
@@ -689,6 +737,11 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "FineCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR.ToString(), strFIle);
                 //  Coarse Cam. IR
                 NativeMethods.WritePrivateProfileString(strTemp, "CoarseCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR.ToString(), strFIle);
+
+                //  Dust Collector
+                NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_RemoteMode_Use", Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_Frequency_Upper", Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_Frequency_Lower", Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString(), strFIle);
             }
         }
         #endregion
@@ -762,6 +815,14 @@ namespace SLD200_MSL
             {
                 m_nLayerIndex = (int)LayerList.Hole4;
             }
+            else if (m_strLayerName == "Hole5")
+            {
+                m_nLayerIndex = (int)LayerList.Hole5;
+            }
+            else if (m_strLayerName == "Hole6")
+            {
+                m_nLayerIndex = (int)LayerList.Hole6;
+            }
             else if (m_strLayerName == "Rect")
             {
                 m_nLayerIndex = (int)LayerList.Rect;
@@ -777,6 +838,10 @@ namespace SLD200_MSL
             else if (m_strLayerName == "Fiducial")
             {
                 m_nLayerIndex = (int)LayerList.Fiducial;
+            }
+            else if (m_strLayerName == "Thruhole")
+            {
+                m_nLayerIndex = (int)LayerList.Thruhole;
             }
 
             //  Drawing File
@@ -814,6 +879,7 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_MaskIndex = comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_BETPositionIndex = comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_HoleProcessingType = comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_FiducialAlignType = comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex;
 
             //  Process Options
             Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use = checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked;                         //  Socket Align 기능 사용 여부
@@ -839,6 +905,11 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed = textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text.Length > 0 ? Convert.ToInt32(textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text) : 0;
             Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR = textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text.Length > 0 ? Convert.ToInt32(textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text) : 0;
             Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR = textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text.Length > 0 ? Convert.ToInt32(textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text) : 0;
+
+            //  집진기 주파수
+            Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use = checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked;                         //  집진기 Remote Mode 사용 여부
+            Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper = textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text) : 20.0;
+            Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower = textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text) : 20.0;
 
             //  도면 데이터를 가공용 Document 에 적용
             Equipment.EqpSiriusViewer.Document = m_formSiriusEditor.SiriusEditor.Document;
@@ -921,6 +992,7 @@ namespace SLD200_MSL
                 comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString());
                 comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString());
                 comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_HoleProcessingType.ToString());
+                comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialAlignType.ToString());
 
                 //  process Options
                 checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부
@@ -947,6 +1019,11 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR.ToString();
                 textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR.ToString();
 
+                //  집진기 주파수
+                checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked = Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use;                         //  집진기 Remote Mode 사용 여부
+                textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper.ToString();
+                textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString();
+
                 //  도면 Import
                 m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
 
@@ -961,7 +1038,7 @@ namespace SLD200_MSL
                 //  Layer List 전체 삭제
                 listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Clear();
 
-                foreach (var layer in m_formSiriusEditor.SiriusEditor.Document.Layers)
+                foreach (var layer in  m_formSiriusEditor.SiriusEditor.Document.Layers)
                 {
                     if (layer.IsMarkerable)
                     {
@@ -1007,6 +1084,14 @@ namespace SLD200_MSL
             {
                 m_nIndex = (int)LayerList.Hole4;
             }
+            else if (m_strLayerName == "Hole5")
+            {
+                m_nIndex = (int)LayerList.Hole5;
+            }
+            else if (m_strLayerName == "Hole6")
+            {
+                m_nIndex = (int)LayerList.Hole6;
+            }
             else if (m_strLayerName == "Rect")
             {
                 m_nIndex = (int)LayerList.Rect;
@@ -1022,6 +1107,10 @@ namespace SLD200_MSL
             else if (m_strLayerName == "Fiducial")
             {
                 m_nIndex = (int)LayerList.Fiducial;
+            }
+            else if (m_strLayerName == "Thruhole")
+            {
+                m_nIndex = (int)LayerList.Thruhole;
             }
 
             //  Laser Parameter
@@ -1072,6 +1161,7 @@ namespace SLD200_MSL
             comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_MaskIndex.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_BETPositionIndex.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_HoleProcessingType.ToString());
+            comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialAlignType.ToString());
 
             //  process Options
             checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부
@@ -1097,6 +1187,11 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed.ToString();
             textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR.ToString();
             textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR.ToString();
+
+            //  집진기 주파수
+            checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked = Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use;                         //  집진기 Remote Mode 사용 여부
+            textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper.ToString();
+            textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString();
         }
 
         public void Recipe_Open(string m_strRecipeFile)
@@ -1167,6 +1262,7 @@ namespace SLD200_MSL
             comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_HoleProcessingType.ToString());
+            comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialAlignType.ToString());
 
             //  process Options
             checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부
@@ -1192,6 +1288,11 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed.ToString();
             textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR.ToString();
             textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR.ToString();
+
+            //  집진기 주파수
+            checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked = Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use;                         //  집진기 Remote Mode 사용 여부
+            textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper.ToString();
+            textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString();
 
             //  도면 Import
             m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);

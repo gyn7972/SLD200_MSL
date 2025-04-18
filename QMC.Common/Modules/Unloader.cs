@@ -18,8 +18,8 @@ namespace QMC.Common.Modules
     {
         #region Define
 
-#if true                                                                //  SLD-200C
-//#if false                                                               //  SLD-200U
+//#if true                                                                //  SLD-200C
+#if false                                                               //  SLD-200U
         public enum nAxis                                                       //  SLD-200C 에서 사용하는 축 번호    
         {
             //  축 번호 변경 전 (Z0:10,   Z1:11,  TR_X:12,    TR_Z:13)
@@ -913,7 +913,7 @@ namespace QMC.Common.Modules
 
                             m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
 
-                            MessageBox.Show("UL Stacker0 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                           // MessageBox.Show("UL Stacker0 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -1065,7 +1065,7 @@ namespace QMC.Common.Modules
 
                             m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
 
-                            MessageBox.Show("UL Stacker0 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            //MessageBox.Show("UL Stacker0 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -1147,7 +1147,7 @@ namespace QMC.Common.Modules
 
                             m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
 
-                            MessageBox.Show("UL Stacker0 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            //MessageBox.Show("UL Stacker0 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -1299,7 +1299,7 @@ namespace QMC.Common.Modules
 
                             m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
 
-                            MessageBox.Show("UL Stacker0 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            //MessageBox.Show("UL Stacker0 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -2716,6 +2716,7 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage, Module Vacuum Off");
 
                     workStage.workStageParameter.DO_Stage_Vacuum(false);
+                    workStage.workStageParameter.DO_Stage_Blow(true);                   //  Blow On
 
                     //  Stage Vacuum Off 시, 진공레귤레이터도 함께 동작시켜야 한다.
                     workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
@@ -2806,6 +2807,8 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 1단계 이동 완료");
 
+                        workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
+
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_ReadyPos2_2ndStep;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
@@ -2857,6 +2860,8 @@ namespace QMC.Common.Modules
                     if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 2단계 이동 완료");
+
+                        workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
 
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Complete;
                     }
