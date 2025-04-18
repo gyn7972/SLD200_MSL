@@ -1325,7 +1325,7 @@ namespace SLD200_MSL
 
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, workStage.Camera_LowRes.LatestImage.RawData, w, h);
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h);
-                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
+                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h,3000,0.99, ref m_bFindCircle);
             }
             else
             {
@@ -1339,7 +1339,7 @@ namespace SLD200_MSL
                 //byte[] pixelData = aligner.ConvertBitmapToByteArray(bm_Temp);                
 
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h);
-                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
+                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, 3000, 0.99, ref m_bFindCircle);
             }
 
             if (m_bFindCircle && (circlesResult.Count > 0))

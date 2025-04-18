@@ -344,6 +344,10 @@ namespace QMC.Common.Modules
         public st4PointPosition_Data[] m_st4PointPosition_InspectedPos;         //  4-Point 의 측정된 위치 데이터
         public st4PointAlign_Result m_st4PointAlign_Result;                     //  Align 데이터
 
+        public st4PointPosition_Data[] m_st4PointPosition_DwgPos_LastSuccess;     //  4-Point 의 도면상 위치 데이터 (마지막 성공한 데이터)
+        public st4PointPosition_Data[] m_st4PointPosition_InspectedPos_LastSuccess; //  4-Point 의 측정된 위치 데이터 (마지막 성공한 데이터)
+        public st4PointAlign_Result m_st4PointAlign_Result_LastSuccess;
+        public bool m_bIsFirstAlign = true; // 첫번째 얼라인
         public bool m_bAlignCompleted;                                          //  얼라인 완료 되었는지?
 
         #endregion
@@ -3171,7 +3175,12 @@ namespace QMC.Common.Modules
             m_st4PointPosition_DwgPos = new st4PointPosition_Data[4];            //  4-Point 의 도면상 위치 데이터
             m_st4PointPosition_InspectedPos = new st4PointPosition_Data[4];      //  4-Point 의 측정된 위치 데이터
             m_st4PointAlign_Result = new st4PointAlign_Result();                //  Align 데이터
-            m_bAlignCompleted = false;
+
+            m_st4PointPosition_DwgPos_LastSuccess = new st4PointPosition_Data[4];     //  4-Point 의 도면상 위치 데이터 (마지막 성공한 데이터)
+            m_st4PointPosition_InspectedPos_LastSuccess = new st4PointPosition_Data[4]; //  4-Point 의 측정된 위치 데이터 (마지막 성공한 데이터)
+            m_bIsFirstAlign = true; // 첫번째 얼라인
+
+        m_bAlignCompleted = false;
 
             m_nSocketNum_forAlign = 0;                                          //  Align 할 Socket 번호
 
@@ -9907,6 +9916,10 @@ namespace QMC.Common.Modules
 
 
 
+        XyCoordinate xyCoordinateAlignPositionLast = new XyCoordinate();
+        XyCoordinate xyCoordinateAlignPositionOrgLast = new XyCoordinate();
+        XyCoordinate xyCoordinateAlign = new XyCoordinate();
+        
         #region Socket Align
         void Run_SocketAlign_Func(int m_nSocketNum)
         {
@@ -9917,7 +9930,6 @@ namespace QMC.Common.Modules
 
             double lfVelocity = 0.0;
             double lfAccDec = 0.0;
-
             switch (m_nSocketAlign_MainStep)
             {
                 case (int)SocketAlign_Step.Start:
@@ -9930,7 +9942,11 @@ namespace QMC.Common.Modules
                     m_bAlignCompleted = false;
 
                     m_bSocketAlign_OK = false;
+                    if(m_nSocketNum ==0)
+                    {
 
+                        m_bIsFirstAlign = true;
+                    }
                     for (int i = 0; i < 4; i++)
                     {
                         //  4-Point 의 도면상 위치 데이터
@@ -9939,19 +9955,41 @@ namespace QMC.Common.Modules
                         m_st4PointPosition_DwgPos[i].dFiducial_Width = 0.0;
                         m_st4PointPosition_DwgPos[i].dFiducial_Height = 0.0;
 
-                        //  4-Point 의 측정된 위치 데이터
-                        m_st4PointPosition_InspectedPos[i].ptFiducial_Center.X = 0.0;
-                        m_st4PointPosition_InspectedPos[i].ptFiducial_Center.Y = 0.0;
-                        m_st4PointPosition_InspectedPos[i].dFiducial_Width = 0.0;
-                        m_st4PointPosition_InspectedPos[i].dFiducial_Height = 0.0;
+                        m_st4PointPosition_DwgPos_LastSuccess[i] .ptFiducial_Center.X = 0.0; //  4-Point 의 도면상 위치 데이터 (마지막 성공한 데이터)
+                        m_st4PointPosition_DwgPos_LastSuccess[i].ptFiducial_Center.Y = 0.0;
+                        m_st4PointPosition_DwgPos_LastSuccess[i].dFiducial_Width = 0.0;
+                        m_st4PointPosition_DwgPos_LastSuccess[i].dFiducial_Height = 0.0;
+
+
+
+                        if(m_bIsFirstAlign)
+                        {
+
+                            m_st4PointPosition_InspectedPos[i].ptFiducial_Center.X = 0.0;
+                            m_st4PointPosition_InspectedPos[i].ptFiducial_Center.Y = 0.0;
+                            m_st4PointPosition_InspectedPos[i].dFiducial_Width = 0.0;
+                            m_st4PointPosition_InspectedPos[i].dFiducial_Height = 0.0;
+
+                            m_st4PointPosition_InspectedPos_LastSuccess[i].ptFiducial_Center.X = 0.0; //  4-Point 의 도면상 위치 데이터 (마지막 성공한 데이터)
+                            m_st4PointPosition_InspectedPos_LastSuccess[i].ptFiducial_Center.Y = 0.0;
+                            m_st4PointPosition_InspectedPos_LastSuccess[i].dFiducial_Width = 0.0;
+                            m_st4PointPosition_InspectedPos_LastSuccess[i].dFiducial_Height = 0.0;
+
+
+
+                        }
                     }
 
-                    m_st4PointAlign_Result.dRotationCenterX = 0.0;
-                    m_st4PointAlign_Result.dRotationCenterY = 0.0;
-                    m_st4PointAlign_Result.dCenterOffsetX = 0.0;                    
-                    m_st4PointAlign_Result.dCenterOffsetY = 0.0;
-                    m_st4PointAlign_Result.dRotationAngle = 0.0;
+                    if(m_bIsFirstAlign)
+                    {
 
+                        m_st4PointAlign_Result.dRotationCenterX = 0.0;
+                        m_st4PointAlign_Result.dRotationCenterY = 0.0;
+                        m_st4PointAlign_Result.dCenterOffsetX = 0.0;
+                        m_st4PointAlign_Result.dCenterOffsetY = 0.0;
+                        m_st4PointAlign_Result.dRotationAngle = 0.0;
+
+                    }
                     m_nSocketAlign_Retry_Max = 3;
                     m_nSocketAlign_Retry_Count = 0;
 
@@ -10108,7 +10146,49 @@ namespace QMC.Common.Modules
 
                     xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
                     xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
-                    MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                    //XyCoordinate xyCoordinateLast = xyCoordinateAlign;
+                    xyCoordinateAlign = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
+                    
+                    if (m_bIsFirstAlign == false)
+                    {
+                        //if(m_st4PointPosition_DwgPos_LastSuccess.Count() == 4 && m_st4PointPosition_DwgPos_LastSuccess.Count() == 4 
+                        //    && m_st4PointAlign_Result_LastSuccess.dRotationCenterX != 0 
+                        //    && m_st4PointAlign_Result_LastSuccess.dRotationCenterX != 0 
+                        //    && m_st4PointAlign_Result_LastSuccess.dRotationAngle != 0)
+                        {
+                            //xyCoordinate = CoordinateTransform(xyCoordinate, 
+                            //    m_st4PointPosition_InspectedPos_LastSuccess[0].ptFiducial_Center.X
+                            //    , m_st4PointPosition_DwgPos_LastSuccess[0].ptFiducial_Center.Y, -m_st4PointAlign_Result.dRotationAngle);
+                            XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
+                            xyCoordinateAlign = xyInterpolatedCoordinate + offset;
+                            xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionLast.X, xyCoordinateAlignPositionLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
+                            
+                            //xyCoordinateAlign.X += m_st4PointAlign_Result_LastSuccess.dCenterOffsetX;
+                            //xyCoordinateAlign.Y += m_st4PointAlign_Result_LastSuccess.dCenterOffsetY;
+
+
+                        }
+                    }
+                    xyCoordinateAlignPositionOrgLast = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
+                    MC_Func.MovePosition(xyCoordinateAlign, lfVelocity, lfAccDec, lfAccDec);
+                    // Todo :김영남  얼라인 위치 이동 계산. 해야되는 부분..
+
+
+
+
+                    //m_st4PointAlign_Result = Calc_4Point_AlignData(m_st4PointPosition_DwgPos, m_st4PointPosition_InspectedPos);
+
+                    //if ((m_st4PointAlign_Result.dCenterOffsetX == 0.0) && (m_st4PointAlign_Result.dCenterOffsetY == 0.0) && (m_st4PointAlign_Result.dRotationAngle == 0.0))
+                    //{
+                    //    m_bSocketAlign_OK = false;
+                    //}
+                    //else
+                    //{
+                    //    m_bSocketAlign_OK = true;
+                    //}
+
+
+
 
                     TickCount_Start((int)TickType.TICK_ALIGN);
 
@@ -10118,9 +10198,14 @@ namespace QMC.Common.Modules
 
                 case (int)SocketAlign_Step.SocketAlignXY_MoveFiducialPosDoneCheck:                                      //  Stage XY 축, Fiducial Mark 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
-                    {
+                    //if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
+                    //    MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                    //{
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, xyCoordinateAlign.X) &&
+                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, xyCoordinateAlign.Y))
+                    
+                    
+                    { 
                         Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Fiducial 마크 위치로 이동 완료");
 
                         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -10194,23 +10279,12 @@ namespace QMC.Common.Modules
 
                     Equipment.MachineStop_byUser = false;
 
-                    //jigAligner.Work();
+                    this.jigAligner_HighRes.UsePatternMatchingTool = true;
+                    //this.jigAligner_HighRes.Work();
+                    int ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width);
 
-                    //  이미지 Grab
-                    Camera_HighRes.Grab();
-                    //Camera_HighRes.LatestImage.Save("D:\\TempImage_HighRes_Align.bmp", QMC.Common.Vision.VisionImage.FileFilter.bmp);
-                    //bm_AlignImage = new Bitmap("D:\\TempImage_HighRes_Align.bmp");
 
-                    bm_AlignRawData = new byte[Camera_HighRes.Resolution.Width * Camera_HighRes.Resolution.Height];
-                    bm_AlignRawData = Camera_HighRes.LatestImage.RawData;
-
-                    //  Circle Find 함수 call
-                    Fiducial_aligner = new QMC_ImageProcessFindAlign();
-                    Fiducial_circlesResult = new List<RectangleF>();
-
-                    // Bitmap을 byte 배열로 변환
-                    //byte[] pixelData = Fiducial_aligner.ConvertBitmapToByteArray(bm_AlignImage);
-                    Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, bm_AlignRawData, Camera_HighRes.Resolution.Width, Camera_HighRes.Resolution.Height, ref Fiducial_circleFound);
+                    
 
                     timer_VisionAlign.Enabled = true;
 
@@ -10231,10 +10305,14 @@ namespace QMC.Common.Modules
                         //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height = Fiducial_circlesResult[0].Height;
 
                         //  Stage Center 가 0, 0 인 좌표계로 변환
-                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = MC_Func.MC_GetEncPos((int)nAxis.X) + 
+                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = MC_Func.MC_GetEncPos((int)nAxis.X) +
                                                                                                             ((((double)Fiducial_circlesResult[0].X + ((double)Fiducial_circlesResult[0].Width / 2.0)) - (double)(Camera_HighRes.Resolution.Width / 2)) * Config.ParamConfig.UpperVision_Scale_X);
-                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = MC_Func.MC_GetEncPos((int)nAxis.Y) + 
+                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = MC_Func.MC_GetEncPos((int)nAxis.Y) +
                                                                                                             (((double)(Camera_HighRes.Resolution.Height / 2) - ((double)Fiducial_circlesResult[0].Y + ((double)Fiducial_circlesResult[0].Height / 2.0))) * Config.ParamConfig.UpperVision_Scale_Y);
+
+                        xyCoordinateAlignPositionLast = new XyCoordinate(m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X,
+                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y);
+                       
 
                         //  데이터 위치를 Scanner 위치로 변경
                         m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X += Equipment.stOffsetDistance.FromScannerToFineCam.X;
@@ -10289,6 +10367,21 @@ namespace QMC.Common.Modules
                     else
                     {
                         m_bSocketAlign_OK = true;
+                        m_bIsFirstAlign = false;
+
+                        m_st4PointPosition_DwgPos_LastSuccess = m_st4PointPosition_DwgPos.ToArray();
+                        m_st4PointPosition_InspectedPos_LastSuccess = m_st4PointPosition_InspectedPos.ToArray();
+
+                        m_st4PointAlign_Result_LastSuccess = new st4PointAlign_Result();
+                        m_st4PointAlign_Result_LastSuccess.dCenterOffsetX = m_st4PointAlign_Result.dCenterOffsetX;
+                        m_st4PointAlign_Result_LastSuccess.dCenterOffsetY = m_st4PointAlign_Result.dCenterOffsetY;
+                        m_st4PointAlign_Result_LastSuccess.dRotationAngle = m_st4PointAlign_Result.dRotationAngle;
+                        m_st4PointAlign_Result_LastSuccess.dRotationCenterX = m_st4PointAlign_Result.dRotationCenterX;
+                        m_st4PointAlign_Result_LastSuccess.dRotationCenterY = m_st4PointAlign_Result.dRotationCenterY;
+                        m_st4PointAlign_Result_LastSuccess.dRotationCenterX = m_st4PointAlign_Result.dRotationCenterX;
+                        m_st4PointAlign_Result_LastSuccess.dRotationCenterY = m_st4PointAlign_Result.dRotationCenterY;
+
+
                     }
 
                     //  찾은 마크의 크기 및 좌표 데이터를 확인하여 얼라인 성공 여부를 결정한다.
@@ -10624,6 +10717,150 @@ namespace QMC.Common.Modules
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
                     break;
             }
+        }
+
+        private XyCoordinate CoordinateTransform(XyCoordinate xyCoordinate, double dRotationCenterX, double dRotationCenterY, double v)
+        {
+            double dX = xyCoordinate.X - dRotationCenterX;
+            double dY = xyCoordinate.Y - dRotationCenterY;
+            double dNewX = (dX * Math.Cos(v)) - (dY * Math.Sin(v));
+            double dNewY = (dX * Math.Sin(v)) + (dY * Math.Cos(v));
+            return new XyCoordinate(dNewX + dRotationCenterX, dNewY + dRotationCenterY);
+        }
+
+        private int SpiralSearch(double dWidth)
+        {
+            int ret = -1;
+            try
+            {
+                // 중심 좌표 설정
+                XyCoordinate xyCenter = new XyCoordinate();
+                xyCenter.X = MC_Func.MC_GetCmdPos((int)WorkStage.nAxis.X);
+                xyCenter.Y = MC_Func.MC_GetCmdPos((int)WorkStage.nAxis.Y);
+
+                XyCoordinate xyFirst = new XyCoordinate(xyCenter.X, xyCenter.Y);
+                // 이동 거리 및 검색 횟수 설정
+                double stepSize = 1.1; // 1mm 이동
+                int maxSteps = 20; // 최대 50번 검색
+                List<XyCoordinate> xyCoordinates = new List<XyCoordinate>();
+
+                // 스파이럴 이동 구현
+                int direction = 0; // 0: 오른쪽, 1: 위, 2: 왼쪽, 3: 아래
+                int stepsInCurrentDirection = 1;
+                int stepsTaken = 0;
+                int directionChangeCount = 0;
+
+                XyCoordinate currentPosition = new XyCoordinate
+                {
+                    X = xyCenter.X,
+                    Y = xyCenter.Y
+                };
+
+                bool bFound = false;
+                for (int i = 0; i < maxSteps; i++)
+                {
+
+                    // 현재 위치를 리스트에 추가
+                    xyCoordinates.Add(new XyCoordinate { X = currentPosition.X, Y = currentPosition.Y });
+
+                    double lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                    double lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                    if( i!= 0)
+                    {
+                        // 이동 명령 실행
+                        MC_Func.MovePosition(currentPosition, lfVelocity, lfAccDec, lfAccDec); // 속도 및 가속도는 예시 값
+                        int tick = 0;
+                        while (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) == false)
+                        {
+                            tick++;
+                            Thread.Sleep(1);
+                            if (tick > 1000)
+                                break;
+                        }
+                        while (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == false)
+                        {
+                            tick++;
+                            Thread.Sleep(1);
+                            if (tick > 1000)
+                                break;
+                        }
+                        Thread.Sleep(100);
+                    }
+                    
+
+                    if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
+
+                    // 이미지 Grab 및 원 검색
+                    Camera_HighRes.Grab();
+                    int nWidthImageCount = (int)(dWidth / this.Config.ParamConfig.UpperVision_Scale_X);
+                    bm_AlignRawData = Camera_HighRes.LatestImage.RawData;
+                    Fiducial_aligner = new QMC_ImageProcessFindAlign();
+                    Fiducial_circlesResult = new List<RectangleF>();
+                    if(bm_AlignRawData == null)
+                    {
+                        Camera_HighRes.Initialize();
+                        continue;
+                    }
+                    Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, bm_AlignRawData, Camera_HighRes.Resolution.Width, Camera_HighRes.Resolution.Height, nWidthImageCount,0.05, ref Fiducial_circleFound);
+                    if(Fiducial_circleFound)
+                    {
+                        if(bFound == false)
+                        {
+                            int nCenterX = (int)(Fiducial_circlesResult[0].X + Fiducial_circlesResult[0].Width / 2);
+                            int nOffsetX = nCenterX - Camera_HighRes.Resolution.Width / 2;
+                            
+                            int nCenterY = (int)(Fiducial_circlesResult[0].Y + Fiducial_circlesResult[0].Height / 2) ;
+                            int nOffsetY = nCenterY - Camera_HighRes.Resolution.Height / 2;
+                            
+                            double dXoffset = nOffsetX * this.Config.ParamConfig.UpperVision_Scale_X;
+                            double dYoffset = nOffsetY * this.Config.ParamConfig.UpperVision_Scale_Y;
+
+                            currentPosition.X -= dXoffset;
+
+                            currentPosition.Y += dYoffset;
+                            bFound = true;
+                            continue;
+
+                        }
+                        return 0;
+                    }
+                    // 스파이럴 이동 계산
+                    switch (direction)
+                    {
+                        case 0: // 오른쪽
+                            currentPosition.X += stepSize;
+                            break;
+                        case 1: // 위
+                            currentPosition.Y += stepSize;
+                            break;
+                        case 2: // 왼쪽
+                            currentPosition.X -= stepSize;
+                            break;
+                        case 3: // 아래
+                            currentPosition.Y -= stepSize;
+                            break;
+                    }
+
+                    stepsTaken++;
+                    if (stepsTaken == stepsInCurrentDirection)
+                    {
+                        stepsTaken = 0;
+                        direction = (direction + 1) % 4; // 방향 전환
+                        directionChangeCount++;
+
+                        if (directionChangeCount % 2 == 0)
+                        {
+                            stepsInCurrentDirection++; // 두 번 방향 전환 후 이동 거리 증가
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                //Log.Write(ex);
+            }
+            return ret;
         }
         #endregion
 

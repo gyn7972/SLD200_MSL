@@ -987,7 +987,7 @@ namespace SLD200_MSL
 
             Equipment.AutoRunStatus = true;
 
-            //  선택 가공 인덱스를 전체 가공 인덱스로 변경
+            //  선택 가공 인덱스를 전체 가공으로 변경
             workStage.m_nSelectedSocket_Index = -1;
 
             //  Main Work Timer Start

@@ -7,10 +7,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using QMC.Common.Modules;
 using QMC.Common.PathGenerators;
+using QMC.Common.Vision.Cameras;
+using QMC.Common.Vision;
 using QMC.Common.Vision.Tools;
 using QMC.Common.VisionPart;
 using static QMC.Common.Modules.WorkStage;
 using static QMC.Common.PathGenerators.PathGenerator;
+using System.Drawing;
+using static QMC.Common.Vision.Tools.PatternMatchingResult;
+using System.Net.Http.Headers;
 
 namespace QMC.Common.Parts
 {
@@ -67,6 +72,11 @@ namespace QMC.Common.Parts
         public VisionPart.PathGeneratorCollection PathGenerators { set; get; }
         public PathParameterCollection PathParameters { set; get; }
         #endregion
+        public bool UsePatternMatchingTool
+        {
+            get;
+            set;
+        }
 
         #region Method
         protected int GetMotionLimit(MotionAxis axis, out RangeD range)
@@ -127,6 +137,7 @@ namespace QMC.Common.Parts
         public PatternMatchingResult Search()
         {
             int ret = 0;
+
             if ((ret = OnSearch(Recipe.InspectRoiStartLocation, Recipe.InspectRoiEndLocation, Recipe.PatternMatchingParameter, IlluminationData)) != 0)
             {
                 return null;
@@ -135,6 +146,15 @@ namespace QMC.Common.Parts
             return m_PatternMatchingTool.Result;
         }
 
+
+        public int OnSearchForRule(Point startRoiPoint, Point endRoiPoint, PatternMatchingParameters parameter, IlluminationDataSet illuminationData)
+        {
+            int ret = 0;
+
+            
+
+            return ret;
+        }
         protected XyCoordinate GetCoordinate(double dX, double dY)
         {
             XyCoordinate coordinate = new XyCoordinate();

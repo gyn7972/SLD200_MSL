@@ -281,12 +281,12 @@ namespace QMC.Common.VisionPart
             }
             SaveImage(images, w, h, filename);
         }
-        public List<RectangleF> FindCirclesWidthCircleBoundary(List<RectangleF> circlesResult, byte[] pixelData, int w, int h, ref bool circleFound)
+        public List<RectangleF> FindCirclesWidthCircleBoundary(List<RectangleF> circlesResult, byte[] pixelData, int w, int h,int radius,double dSpec, ref bool circleFound)
         {
             List<PointF> polygon = new List<PointF>();
             List<PointF> points = new List<PointF>();
-            int nStepX = w / 20;
-            int nStepY = h / 20;
+            int nStepX = w / 3;
+            int nStepY = h / 3;
             int nDirectionX = 0;
             int nDirectionY = 0;
             bool bFindCircle = false;
@@ -294,7 +294,7 @@ namespace QMC.Common.VisionPart
             float cx = 0;
             float cy = 0;
             double dErrorRatio = 0.1;
-            for (int y = 0; y < 9; y++)
+            for (int y = 0; y < 3; y++)
             {
                 if (bFindCircle)
                     break;
@@ -303,7 +303,7 @@ namespace QMC.Common.VisionPart
 
                 int nCy = h / 2 + nShiftY;
                 nDirectionX = 0;
-                for (int x = 0; x < 9; x++)
+                for (int x = 0; x < 3; x++)
                 {
 
 
@@ -324,10 +324,13 @@ namespace QMC.Common.VisionPart
                     points = polygon;
                     circlesResult.Clear();
                     FindCircleFitter(circlesResult, points, out dRadius, 5);
+                    
+                    int nMaxCircle = (int)(radius *(1+ dSpec)) ;
+                    int nMinCircle = (int)(radius  *(1- dSpec));
 
                     cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
                     cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
-                    if (dRadius < 550 && dRadius > 300 && cx > 0 && cx < w
+                    if (dRadius < nMaxCircle && dRadius > nMinCircle && cx > 0 && cx < w
                         && cy < h && cy > 0)
                     {
 
@@ -364,10 +367,11 @@ namespace QMC.Common.VisionPart
             //  원을 찾았는지 여부 Ref.
             circleFound = bFindCircle;
 
-            //if (bFindCircle == false)
-            //{
-
-            //}
+            if (bFindCircle == false)
+            {
+                circlesResult.Clear();
+                return circlesResult;
+            }
 
             cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
             cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
