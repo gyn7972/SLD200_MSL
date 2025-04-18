@@ -10557,7 +10557,7 @@ namespace QMC.Common.Modules
                     m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  전체 가공 도면 회전 중심 Y
                     m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  전체 가공 도면 이동 Offset X
                     m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  전체 가공 도면 이동 Offset Y
-                    m_dALIGN_FACTOR_Theta = m_st4PointAlign_Result.dRotationAngle;                                             //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
+                    m_dALIGN_FACTOR_Theta = -m_st4PointAlign_Result.dRotationAngle;                                             //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
 
                     //  테스트용
                     //m_dALIGN_FACTOR_Offset_Y += 30.0;
@@ -10818,6 +10818,11 @@ namespace QMC.Common.Modules
                             currentPosition.X -= dXoffset;
 
                             currentPosition.Y += dYoffset;
+                            double dSpec = 0.1;
+                            //if(dXoffset < dSpec && dYoffset < dSpec)
+                            //{
+                            //    return 0;
+                            //}
                             bFound = true;
                             continue;
 
@@ -11364,8 +11369,8 @@ namespace QMC.Common.Modules
 
 
                 case (int)LaserDrilling_Step.DustCollector_On_Check:                                //  집진기 On 확인
-                    if (workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) && !workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Upper) &&
-                        workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower) && !workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Lower))
+                    if (true/*workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) && !workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Upper) &&
+                        workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower) && !workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Lower)*/)
                     {
                         Log.Write("SLD-200", "Auto Run", "집진기 On 확인");
 
