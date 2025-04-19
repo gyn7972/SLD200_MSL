@@ -52,7 +52,7 @@ namespace SLD200_MSL
             this.StartPosition = FormStartPosition.CenterScreen;
 
             // Todo: 구영남 - TopMost 설정을 해제 여부 확인
-            this.TopMost = true; // 항상 최상위 창으로 설정
+            //this.TopMost = true; // 항상 최상위 창으로 설정
 
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;

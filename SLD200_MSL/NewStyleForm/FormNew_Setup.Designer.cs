@@ -3200,9 +3200,9 @@
             // 
             // groupBox15
             // 
-            this.groupBox15.Controls.Add(this.button31);
-            this.groupBox15.Controls.Add(this.label95);
-            this.groupBox15.Controls.Add(this.label94);
+            //this.groupBox15.Controls.Add(this.button31);
+            //this.groupBox15.Controls.Add(this.label95);
+            //this.groupBox15.Controls.Add(this.label94);
             this.groupBox15.Controls.Add(this.label93);
             this.groupBox15.Controls.Add(this.label_Setup_ScannerCal_LastPosY);
             this.groupBox15.Controls.Add(this.label_Setup_ScannerCal_LastPosX);
@@ -3741,7 +3741,7 @@
             // 
             // groupBox18
             // 
-            this.groupBox18.Controls.Add(this.button28);
+            //this.groupBox18.Controls.Add(this.button28);
             this.groupBox18.Controls.Add(this.button_Setup_Flatness_MeasurementPosition_Stop);
             this.groupBox18.Controls.Add(this.label92);
             this.groupBox18.Controls.Add(this.comboBox_Setup_FlatnessMeasurementPos_List);

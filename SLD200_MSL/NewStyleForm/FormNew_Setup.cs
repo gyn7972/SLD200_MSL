@@ -2104,9 +2104,14 @@ namespace SLD200_MSL
                 // CorrectionData에서 필요한 값을 추출하여 AddAbsolute 호출
                 indexX = data.m_nIndexX;
                 indexY = data.m_nindexY;
-                
+                double dOffsetX = data.m_dX - data.m_dMeasureX;
+                double dMeasureX = data.m_dX + dOffsetX;
+
+                double dOffsetY = data.m_dY - data.m_dMeasureY;
+                double dMeasureY = data.m_dY + dOffsetY;
+
                 Vector2 position = new Vector2((float)data.m_dX, (float)data.m_dY);   //현재 장비 위치값 넣고..
-                Vector2 offset = new Vector2((float)data.m_dMeasureX, (float)data.m_dMeasureY);   //현재 장비 위치값 넣고..
+                Vector2 offset = new Vector2((float)dMeasureX, (float)dMeasureY);   //현재 장비 위치값 넣고..
 
                 m_correction2DRtc.AddAbsolute(indexX, indexY, position, offset);
             }
@@ -2118,31 +2123,48 @@ namespace SLD200_MSL
             string filePath = strPath + "Cour_200_U_" + timeString + ".txt";
             
             m_correction2DRtc.TargetCorrectionFile = m_targetFile;
-            m_correction2DRtcForm.RefreshData();
-            m_correction2DRtc.Convert();
-            m_correctionDataList = correctionDataList;
+
+            if (m_correction2DRtcForm.InvokeRequired)
+            {
+                this.Invoke(new MethodInvoker(delegate ()
+                {
+                    m_correction2DRtcForm.RefreshData();
+                    m_correction2DRtc.Convert();
+
+                }));
+            }
+            else
+            {
+
+                m_correction2DRtcForm.RefreshData();
+                m_correction2DRtc.Convert();
+            }
+                m_correctionDataList = correctionDataList;
+
+
+            Equipment.Scanner_Calibration_Convert = 1; // 성공
 
             // Todo: 구영남 - 처리 완료 메세지 확인!
             //Msg :: 처리 완료 메세지... 장비 돌리면서 확인 필요.
-            while (true)
-            {
-                string rtcMsg = m_correction2DRtc.ResultMessage;
-                if (rtcMsg != null)
-                {
-                    if (rtcMsg.Contains("Success")) // 성공 메시지 확인 (예: "Success"라는 문자열 포함 여부)
-                    {
-                        Equipment.Scanner_Calibration_Convert = 1; // 성공
-                    }
-                    else
-                    {
-                        Equipment.Scanner_Calibration_Convert = -1; // 실패
-                    }
-                    break; // 루프 종료
-                }
+            //while (true)
+            //{
+            //    string rtcMsg = m_correction2DRtc.ResultMessage;
+            //    if (rtcMsg != null)
+            //    {
+            //        if (rtcMsg.Contains("Success")) // 성공 메시지 확인 (예: "Success"라는 문자열 포함 여부)
+            //        {
+            //            Equipment.Scanner_Calibration_Convert = 1; // 성공
+            //        }
+            //        else
+            //        {
+            //            Equipment.Scanner_Calibration_Convert = -1; // 실패
+            //        }
+            //        break; // 루프 종료
+            //    }
 
-                // CPU 점유율을 낮추기 위해 잠시 대기
-                Thread.Sleep(100); // 100ms 대기
-            }
+            //    // CPU 점유율을 낮추기 위해 잠시 대기
+            //    Thread.Sleep(100); // 100ms 대기
+            //}
 
 
 

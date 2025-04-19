@@ -20,6 +20,7 @@ using static QMC.Common.PathGenerators.PathGenerator;
 using QMC.Common.Motion;
 using QMC.Common.Motion.Ajin.Motions;
 using static QMC.Common.Modules.WorkStage;
+using Newtonsoft.Json.Linq;
 
 namespace QMC.Common.Parts
 {
@@ -640,8 +641,39 @@ namespace QMC.Common.Parts
                     xyInterpolatedCoordinate.Y = position.Y; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
                     
                     MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                    int nWait = 0;
+                    while(true)
+                    {
+                        if(MC_Func.MC_GetDone((int)WorkStage.nAxis.X) == true)
+                        {
+                            break;
+                        }
+                        Thread.Sleep(1);
+                        nWait++;
+                        if(nWait == 1000)
+                        {
+                            break;
+                        }
+
+                    }
+
+                    nWait = 0;
+                    while (true)
+                    {
+                        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == true)
+                        {
+                            break;
+                        }
+                        Thread.Sleep(1);
+                        nWait++;
+                        if (nWait == 1000)
+                        {
+                            break;
+                        }
+
+                    }
                     //Thread.Sleep(Config.MoveToDelay);
-                    Thread.Sleep(200);
+                    Thread.Sleep(500);
 
                     //if ((ret = this.Stage.Move(dicMovingProjection)) != 0) return ret;
                     //Thread.Sleep(Config.MoveToDelay);
@@ -649,9 +681,26 @@ namespace QMC.Common.Parts
                     XyzCoordinate currentPos = new XyzCoordinate();
                     this.Stage.GetCommandPosition(ref currentPos);
                     CommandPosition = (XyCoordinate)currentPos;
+                    List<PatternMatchingResult.PatternMatchingResultValue> values = new List<PatternMatchingResult.PatternMatchingResultValue>();
 
                     if (this.Config.SearchMethod == SearchMethod.PatternMatching)
                     {
+                        for (int iter = 0; iter < 1; iter++)
+                        {
+                            patternMatchingResult = this.Search();
+
+                            if (patternMatchingResult.Values.Count <= 0)
+                            {
+                                PatternMatchingResult.PatternMatchingResultValue value = new PatternMatchingResult.PatternMatchingResultValue();
+                                value.X = this.Camera.Resolution.Width / 2;
+                                value.Y = this.Camera.Resolution.Height / 2;
+                                value.R = 0.0;
+
+                                patternMatchingResult.Values.Add(value);
+                            }
+                            values.Add(patternMatchingResult.Values[0]);
+                        }
+
                         patternMatchingResult = this.Search();
 
                         if (patternMatchingResult.Values.Count <= 0)
@@ -663,7 +712,12 @@ namespace QMC.Common.Parts
 
                             patternMatchingResult.Values.Add(value);
                         }
+                        var avgValue = new PatternMatchingResult.PatternMatchingResultValue();
 
+                        avgValue.X = values.Average(t => t.X);
+                        avgValue.Y = values.Average(t => t.Y);
+                        patternMatchingResult.Values.Clear();
+                        patternMatchingResult.Values.Add(avgValue);
                         if (this.Stage.GetCommandPosition(ref currentPosition) != 0) continue;
 
                         if (((WorkStage)this.Owner).Config.ParamConfig.ManualScale_Usage)
