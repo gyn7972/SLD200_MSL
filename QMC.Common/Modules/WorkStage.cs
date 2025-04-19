@@ -11777,14 +11777,17 @@ namespace QMC.Common.Modules
                             DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, "0005", 1, m_strRet_Lower);
                         }
 
+                        TickCount_Start((int)TickType.TICK_MAIN);
+
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DustCollector_On_Check;
                     }
                     break;
 
 
                 case (int)LaserDrilling_Step.DustCollector_On_Check:                                //  집진기 On 확인
-                    if (true/*workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) && !workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Upper) &&
-                        workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower) && !workStageParameter.DI_DustCollector_Fan_Fault((int)nDustCollector.DustCollector_Lower)*/)
+                    if ((workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) && workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower)) ||
+
+                        (TickCount_Elapsed((int)TickType.TICK_MAIN) > DustCollector_TurnOn_AfterStableTime))
                     {
                         Log.Write("SLD-200", "Auto Run", "집진기 On 확인");
 
@@ -11798,7 +11801,7 @@ namespace QMC.Common.Modules
 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 120000)
                     {
                         Log.Write("SLD-200", "Auto Run", "집진기 On 실패");
 
@@ -18856,7 +18859,10 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.StageXY_MoveUnloadingPos_DoneCheck:                 //  XY 축 Unloading 위치로 이동 완료 체크
 
                     if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y))
+                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y) &&
+
+                        ((!workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) && !workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower)) ||
+                        (TickCount_Elapsed((int)TickType.TICK_MAIN) > DustCollector_TurnOn_AfterStableTime)))
                     {
                         Log.Write("SLD-200", "Auto Run", "Stage Unloading 위치로 이동 완료");
 

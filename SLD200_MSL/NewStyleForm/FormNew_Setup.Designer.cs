@@ -415,6 +415,8 @@
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
+            this.label93 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Option_DustCollector_WaitingTime = new System.Windows.Forms.TextBox();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -4292,6 +4294,8 @@
             // 
             // groupBox13
             // 
+            this.groupBox13.Controls.Add(this.label93);
+            this.groupBox13.Controls.Add(this.textBox_Setup_Option_DustCollector_WaitingTime);
             this.groupBox13.Controls.Add(this.label67);
             this.groupBox13.Controls.Add(this.radioButton_Setup_Option_FiducialImageSave_FailedToFind);
             this.groupBox13.Controls.Add(this.radioButton_Setup_Option_FiducialImageSave_Always);
@@ -4318,7 +4322,7 @@
             this.groupBox13.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox13.Name = "groupBox13";
             this.groupBox13.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox13.Size = new System.Drawing.Size(270, 484);
+            this.groupBox13.Size = new System.Drawing.Size(270, 521);
             this.groupBox13.TabIndex = 63;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " Options ";
@@ -5217,6 +5221,27 @@
             this.radioButton_Setup_Option_LaserType_CO2.Text = "CO₂";
             this.radioButton_Setup_Option_LaserType_CO2.UseVisualStyleBackColor = true;
             // 
+            // label93
+            // 
+            this.label93.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label93.Location = new System.Drawing.Point(0, 462);
+            this.label93.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label93.Name = "label93";
+            this.label93.Size = new System.Drawing.Size(210, 33);
+            this.label93.TabIndex = 77;
+            this.label93.Text = "Waiting time after turning on the dust collector (ms) :";
+            this.label93.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Option_DustCollector_WaitingTime
+            // 
+            this.textBox_Setup_Option_DustCollector_WaitingTime.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_DustCollector_WaitingTime.Location = new System.Drawing.Point(210, 463);
+            this.textBox_Setup_Option_DustCollector_WaitingTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_DustCollector_WaitingTime.Name = "textBox_Setup_Option_DustCollector_WaitingTime";
+            this.textBox_Setup_Option_DustCollector_WaitingTime.Size = new System.Drawing.Size(50, 24);
+            this.textBox_Setup_Option_DustCollector_WaitingTime.TabIndex = 78;
+            this.textBox_Setup_Option_DustCollector_WaitingTime.Text = "500";
+            // 
             // FormNew_Setup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -5690,5 +5715,7 @@
         private System.Windows.Forms.Label label92;
         private System.Windows.Forms.Button button_Setup_Flatness_MeasurementPosition_Start;
         private System.Windows.Forms.Button button_Setup_Flatness_MeasurementPosition_Stop;
+        private System.Windows.Forms.Label label93;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_DustCollector_WaitingTime;
     }
 }
