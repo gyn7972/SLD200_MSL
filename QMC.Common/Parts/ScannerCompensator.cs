@@ -430,7 +430,7 @@ namespace QMC.Common.Parts
         }
         class ResultData
         {
-            public ResultData(string fileName, PatternMatchingResult results, XyCoordinate commandPosition)
+            public ResultData(string fileName, PatternMatchingResult results, XyzCoordinate commandPosition)
             {
                 FileName = fileName;
                 Results = results;
@@ -438,7 +438,12 @@ namespace QMC.Common.Parts
             }
             public string FileName { get; set; }
             public PatternMatchingResult Results { get; set; }
-            public XyCoordinate CommandPosition { get; set; }
+            public XyzCoordinate CommandPosition { get; set; }
+        }
+        class RunData
+        {
+            public List<VisionImage> images;
+            public XyzCoordinate CommandPosition;
         }
         private int SearchGridXy(out List<PositionOffset> results, out XyCoordinate CommandPosition)
         {
@@ -632,85 +637,85 @@ namespace QMC.Common.Parts
                     XyzCoordinate currentPos = new XyzCoordinate();
                     this.Stage.GetCommandPosition(ref currentPos);
                     CommandPosition = (XyCoordinate)currentPos;
-                    List<PatternMatchingResult.PatternMatchingResultValue> values = new List<PatternMatchingResult.PatternMatchingResultValue>();
+
 
                     if (this.Config.SearchMethod == SearchMethod.PatternMatching)
                     {
                         List<VisionImage> images = new List<VisionImage>();
+                        DateTime dt = DateTime.Now;
+                        
                         for (int iter = 0; iter < 5; iter++)
                         {
                             VisionImage image = null;
                             this.Camera.GrabSync(Vision.Cameras.Purpose.Processing, out image);
                             images.Add(image);
                         }
-                        //patternMatchingResult = this.Search();
-
-                        //if (patternMatchingResult.Values.Count <= 0)
-                        //{
-                        //    PatternMatchingResult.PatternMatchingResultValue value = new PatternMatchingResult.PatternMatchingResultValue();
-                        //    value.X = this.Camera.Resolution.Width / 2;
-                        //    value.Y = this.Camera.Resolution.Height / 2;
-                        //    value.R = 0.0;
-
-                        //    patternMatchingResult.Values.Add(value);
-                        //}
-                        //values.Add(patternMatchingResult.Values[0]);
-                        if(task != null)
+                        TimeSpan ts = DateTime.Now - dt;
+                        if (task != null)
                         {
                             task.Wait();
                             var avgValue = new PatternMatchingResult.PatternMatchingResultValue();
 
-                            avgValue.X = task.Result.Results.Values.Average(t => t.X);
-                            avgValue.Y = task.Result.Results.Values.Average(t => t.Y);
-                            patternMatchingResult.Values.Clear();
-                            patternMatchingResult.Values.Add(avgValue);
-
-
-                            if (((WorkStage)this.Owner).Config.ParamConfig.ManualScale_Usage)
+                            try
                             {
-                                VisionScale m_TempScale = new VisionScale();
-                                m_TempScale.X = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_X;
-                                m_TempScale.Y = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
-                                m_TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
-                                m_TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
-                                VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, Camera.Resolution, patternMatchingResult.Values[0], out resultPosition);
+
+                                avgValue.X = task.Result.Results.Values.Average(t => t.X);
+                                avgValue.Y = task.Result.Results.Values.Average(t => t.Y);
+
+
+                                if (((WorkStage)this.Owner).Config.ParamConfig.ManualScale_Usage)
+                                {
+                                    VisionScale m_TempScale = new VisionScale();
+                                    m_TempScale.X = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_X;
+                                    m_TempScale.Y = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
+                                    m_TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
+                                    m_TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
+                                    VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, Camera.Resolution, avgValue, out resultPosition);
+                                }
+                                else
+                                {
+                                    //VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_HighRes.Resolution, patternMatchingResult.Values[0], out resultPosition);
+                                    VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, Camera.Resolution, avgValue, out resultPosition);
+                                }
+
+                                result = new PositionOffset((XyCoordinate)task.Result.CommandPosition, resultPosition);
+                                results.Add(result);
+
+                                //double xIndex = defaultXIndex - this.Config.PitchDistanceX * x;
+                                double xIndex = defaultXIndex - this.Config.PitchDistanceX * x;
+                                double yIndex = defaultYIndex + this.Config.PitchDistanceY * y;
+
+                                PointD offset = new PointD(result.Offset.X, result.Offset.Y);
+
+                                double resultX = xIndex + offset.X;
+                                double resultY = yIndex + offset.Y;
+
+                                // data format : row, col, reference, measured
+                                LogManager.Instance.WriteTxt(fileName, string.Format($"{x}, {y} : {yIndex.ToString("0.000")}, {xIndex.ToString("0.000")}, {resultY.ToString("0.00000")}, {resultX.ToString("0.00000")}"));
+                                //LogManager.Instance.WriteTxt(fileName, string.Format($"{x}, {y} : {xIndex.ToString("0.000")}, {yIndex.ToString("0.000")}, {resultX.ToString("0.000")}, {resultY.ToString("0.000")}"));
+
+                                findLenzCenter.AddSLDMeasureData(new SLDMeasureData(x, y, yIndex, xIndex, resultY, resultX));
+                                //findLenzCenter.AddSLDMeasureData(new SLDMeasureData(x, y, yIndex, xIndex, offset.Y, offset.X));
+
+                                //SpiralLabScanner Compensator Data 사용 위함.
+                                correctionDataSaver.AddCorrectionData(new CorrectionData(x, y, task.Result.CommandPosition.Y, task.Result.CommandPosition.X, offset.Y, offset.X));
+
+
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                //VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_HighRes.Resolution, patternMatchingResult.Values[0], out resultPosition);
-                                VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, Camera.Resolution, patternMatchingResult.Values[0], out resultPosition);
+
+                                ;
                             }
-
-                            result = new PositionOffset((XyCoordinate)task.Result.CommandPosition, resultPosition);
-                            results.Add(result);
-
-                            //double xIndex = defaultXIndex - this.Config.PitchDistanceX * x;
-                            double xIndex = defaultXIndex - this.Config.PitchDistanceX * x;
-                            double yIndex = defaultYIndex + this.Config.PitchDistanceY * y;
-
-                            PointD offset = new PointD(result.Offset.X, result.Offset.Y);
-
-                            double resultX = xIndex + offset.X;
-                            double resultY = yIndex + offset.Y;
-
-                            // data format : row, col, reference, measured
-                            LogManager.Instance.WriteTxt(fileName, string.Format($"{x}, {y} : {yIndex.ToString("0.000")}, {xIndex.ToString("0.000")}, {resultY.ToString("0.00000")}, {resultX.ToString("0.00000")}"));
-                            //LogManager.Instance.WriteTxt(fileName, string.Format($"{x}, {y} : {xIndex.ToString("0.000")}, {yIndex.ToString("0.000")}, {resultX.ToString("0.000")}, {resultY.ToString("0.000")}"));
-
-                            findLenzCenter.AddSLDMeasureData(new SLDMeasureData(x, y, yIndex, xIndex, resultY, resultX));
-                            //findLenzCenter.AddSLDMeasureData(new SLDMeasureData(x, y, yIndex, xIndex, offset.Y, offset.X));
-
-                            //SpiralLabScanner Compensator Data 사용 위함.
-                            correctionDataSaver.AddCorrectionData(new CorrectionData(x, y, task.Result.CommandPosition.Y, task.Result.CommandPosition.X, offset.Y, offset.X));
-
-
-
+                            
                         }
+                        RunData runData = new RunData();
+                        runData.images = images;
+                        runData.CommandPosition = currentPosition;
                         task = Task.Factory.StartNew((obj) =>
                         {
-                            List<VisionImage> visionImages = (List<VisionImage>)obj;
-                            ResultData resultData = new ResultData("", null, new XyCoordinate());
-
+                            RunData run = obj as RunData;
+                            List<VisionImage> visionImages = (List<VisionImage>)run.images;
                             PatternMatchingResult pmrAll = new PatternMatchingResult();
                             
                             foreach (VisionImage imageGrabed in visionImages)
@@ -732,8 +737,11 @@ namespace QMC.Common.Parts
                                     pmrAll.Values.Add(pmrv);
                                 }
                             }
+
+                            ResultData resultData = new ResultData("", pmrAll, run.CommandPosition);
+
                             return resultData;
-                        }, images);
+                        }, runData);
                         continue;
                                             
                     }

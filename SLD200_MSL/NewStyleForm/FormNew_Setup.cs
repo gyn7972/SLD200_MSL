@@ -2113,7 +2113,7 @@ namespace SLD200_MSL
                 Vector2 position = new Vector2((float)data.m_dX, (float)data.m_dY);   //현재 장비 위치값 넣고..
                 Vector2 offset = new Vector2((float)dMeasureX, (float)dMeasureY);   //현재 장비 위치값 넣고..
 
-                m_correction2DRtc.AddAbsolute(indexX, indexY, position, offset);
+               // m_correction2DRtc.AddAbsolute(indexX, indexY, position, offset);
             }
 
             string strPath = "D:\\SLD-200_Parameter\\";
@@ -2126,12 +2126,19 @@ namespace SLD200_MSL
 
             if (m_correction2DRtcForm.InvokeRequired)
             {
-                this.Invoke(new MethodInvoker(delegate ()
+                try
                 {
-                    m_correction2DRtcForm.RefreshData();
-                    m_correction2DRtc.Convert();
+                    this.Invoke(new MethodInvoker(delegate ()
+                    {
+                        m_correction2DRtcForm.RefreshData();
+                        m_correction2DRtc.Convert();
 
-                }));
+                    }));
+
+                }catch(Exception ex)
+                {
+
+                }
             }
             else
             {
