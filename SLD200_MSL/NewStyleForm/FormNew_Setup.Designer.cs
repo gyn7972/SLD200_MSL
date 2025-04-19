@@ -428,11 +428,8 @@
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
-            this.button28 = new System.Windows.Forms.Button();
             this.label93 = new System.Windows.Forms.Label();
-            this.label94 = new System.Windows.Forms.Label();
-            this.label95 = new System.Windows.Forms.Label();
-            this.button31 = new System.Windows.Forms.Button();
+            this.textBox_Setup_Option_DustCollector_WaitingTime = new System.Windows.Forms.TextBox();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -4477,6 +4474,8 @@
             // 
             // groupBox13
             // 
+            this.groupBox13.Controls.Add(this.label93);
+            this.groupBox13.Controls.Add(this.textBox_Setup_Option_DustCollector_WaitingTime);
             this.groupBox13.Controls.Add(this.label67);
             this.groupBox13.Controls.Add(this.radioButton_Setup_Option_FiducialImageSave_FailedToFind);
             this.groupBox13.Controls.Add(this.radioButton_Setup_Option_FiducialImageSave_Always);
@@ -4503,7 +4502,7 @@
             this.groupBox13.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox13.Name = "groupBox13";
             this.groupBox13.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox13.Size = new System.Drawing.Size(270, 484);
+            this.groupBox13.Size = new System.Drawing.Size(270, 521);
             this.groupBox13.TabIndex = 63;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " Options ";
@@ -5402,60 +5401,26 @@
             this.radioButton_Setup_Option_LaserType_CO2.Text = "CO₂";
             this.radioButton_Setup_Option_LaserType_CO2.UseVisualStyleBackColor = true;
             // 
-            // button28
-            // 
-            this.button28.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button28.Location = new System.Drawing.Point(920, 195);
-            this.button28.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button28.Name = "button28";
-            this.button28.Size = new System.Drawing.Size(109, 26);
-            this.button28.TabIndex = 158;
-            this.button28.Text = "Get Position";
-            this.button28.UseVisualStyleBackColor = true;
-            // 
             // label93
             // 
-            this.label93.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label93.Location = new System.Drawing.Point(8, 337);
-            this.label93.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label93.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label93.Location = new System.Drawing.Point(0, 462);
+            this.label93.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label93.Name = "label93";
-            this.label93.Size = new System.Drawing.Size(175, 25);
-            this.label93.TabIndex = 149;
-            this.label93.Text = "Polygon Delay :";
+            this.label93.Size = new System.Drawing.Size(210, 33);
+            this.label93.TabIndex = 77;
+            this.label93.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label93.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label94
+            // textBox_Setup_Option_DustCollector_WaitingTime
             // 
-            this.label94.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label94.Location = new System.Drawing.Point(7, 370);
-            this.label94.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.label94.Name = "label94";
-            this.label94.Size = new System.Drawing.Size(175, 25);
-            this.label94.TabIndex = 150;
-            this.label94.Text = "Polygon Delay :";
-            this.label94.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label95
-            // 
-            this.label95.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label95.Location = new System.Drawing.Point(8, 402);
-            this.label95.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.label95.Name = "label95";
-            this.label95.Size = new System.Drawing.Size(175, 25);
-            this.label95.TabIndex = 151;
-            this.label95.Text = "Polygon Delay :";
-            this.label95.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // button31
-            // 
-            this.button31.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button31.Location = new System.Drawing.Point(280, 336);
-            this.button31.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button31.Name = "button31";
-            this.button31.Size = new System.Drawing.Size(35, 25);
-            this.button31.TabIndex = 152;
-            this.button31.Text = "#";
-            this.button31.UseVisualStyleBackColor = true;
+            this.textBox_Setup_Option_DustCollector_WaitingTime.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_DustCollector_WaitingTime.Location = new System.Drawing.Point(210, 463);
+            this.textBox_Setup_Option_DustCollector_WaitingTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_DustCollector_WaitingTime.Name = "textBox_Setup_Option_DustCollector_WaitingTime";
+            this.textBox_Setup_Option_DustCollector_WaitingTime.Size = new System.Drawing.Size(50, 24);
+            this.textBox_Setup_Option_DustCollector_WaitingTime.TabIndex = 78;
+            this.textBox_Setup_Option_DustCollector_WaitingTime.Text = "500";
             // 
             // FormNew_Setup
             // 
@@ -5953,10 +5918,7 @@
         private System.Windows.Forms.Label label92;
         private System.Windows.Forms.Button button_Setup_Flatness_MeasurementPosition_Start;
         private System.Windows.Forms.Button button_Setup_Flatness_MeasurementPosition_Stop;
-        private System.Windows.Forms.Button button28;
-        private System.Windows.Forms.Label label95;
-        private System.Windows.Forms.Label label94;
         private System.Windows.Forms.Label label93;
-        private System.Windows.Forms.Button button31;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_DustCollector_WaitingTime;
     }
 }

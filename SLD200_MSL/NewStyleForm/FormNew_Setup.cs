@@ -1046,6 +1046,10 @@ namespace SLD200_MSL
             textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Text = Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition.ToString();
 
 
+            //  집진기 동작 후 안정화 시간
+            textBox_Setup_Option_DustCollector_WaitingTime.Text = Equipment.DustCollector_TurnOn_AfterStableTime.ToString();
+
+
             //  Options
             checkBox_Setup_Option_DoorEnable.Checked = Equipment.Machine_Door_Enable;
             checkBox_Setup_Option_VacuumSensorEnable.Checked = Equipment.Machine_VacuumSensor_Enable;
@@ -1495,6 +1499,10 @@ namespace SLD200_MSL
             Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition = Equipment.ToDouble(textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Text);
             NativeMethods.WritePrivateProfileString("LaserHeightSensor_ReferenceValue", "at_Vision_Focus_Position", textBox_Setup_Option_ReferenceValue_atVisionFocusPosition.Text, strFIle);
             NativeMethods.WritePrivateProfileString("LaserHeightSensor_ReferenceValue", "at_Scanner_Focus_Position", textBox_Setup_Option_ReferenceValue_atScannerFocusPosition.Text, strFIle);
+
+            //  집진기 동작 후 대기 시간
+            Equipment.DustCollector_TurnOn_AfterStableTime = Equipment.ToDouble(textBox_Setup_Option_DustCollector_WaitingTime.Text);
+            NativeMethods.WritePrivateProfileString("Dust_Collector", "After_TurnOn_StableTime", textBox_Setup_Option_DustCollector_WaitingTime.Text, strFIle);            
 
             //  Scanner Calibration parameter
             Equipment.Scanner_Calibration_LaserFrequency = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserFrequency.Text);

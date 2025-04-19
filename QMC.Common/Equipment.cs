@@ -417,6 +417,10 @@ namespace QMC.Common
         public static double LaserHeightSensor_ReferenceValue_atScannerFocusPosition { set; get; } = 0.0;        //  Scanner Focus 위치에서의 Keyence Laser Height Sensor 기준값
 
 
+        //  집진기 Run 후 대기 시간 (집진기 동작 IO 는 들어오는데, 동작 안한다는 분기로 빠져서 대기시간 추가함, 디버깅 필요)
+        public static double DustCollector_TurnOn_AfterStableTime { set; get; } = 0.0;          //  집진기를 켠 후 대기시간
+
+
         //  Scanner Calibration Parameter
         public static double Scanner_Calibration_LaserFrequency { set; get; } = 0.0;            //  Scanner Calibration Laser Frequency
         public static double Scanner_Calibration_LaserEnergy { set; get; } = 0.0;               //  Scanner Calibration Laser Energy
@@ -867,6 +871,7 @@ namespace QMC.Common
             //  Keyence Laser Height Sensor 기준값 설정
             LaserHeightSensor_ReferenceValue_atVisionFocusPosition = 0.0;         //  Vision Focus 위치에서의 Keyence Laser Height Sensor 기준값
             LaserHeightSensor_ReferenceValue_atScannerFocusPosition = 0.0;        //  Scanner Focus 위치에서의 Keyence Laser Height Sensor 기준값
+            DustCollector_TurnOn_AfterStableTime = 1000.0;                        //  Dust Collector On 시 안정화 시간 (sec)
 
             Scanner_Calibration_LaserFrequency = 0.0;            //  Scanner Calibration Laser Frequency
             Scanner_Calibration_LaserEnergy = 0.0;               //  Scanner Calibration Laser Energy
@@ -2453,6 +2458,10 @@ namespace QMC.Common
             Equipment.LaserHeightSensor_ReferenceValue_atVisionFocusPosition = Convert.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("LaserHeightSensor_ReferenceValue", "at_Scanner_Focus_Position", "0.0", temp, 255, strFIle);
             Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition = Convert.ToDouble(temp.ToString());
+
+            //  집진기 동작 후 대기 시간
+            NativeMethods.GetPrivateProfileString("Dust_Collector", "After_TurnOn_StableTime", "1000.0", temp, 255, strFIle);
+            Equipment.DustCollector_TurnOn_AfterStableTime = Convert.ToDouble(temp.ToString());
 
             //  Scanner Calibration parameter
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Laser_Frequency", "50.0", temp, 255, strFIle);

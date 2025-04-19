@@ -541,7 +541,7 @@ namespace SLD200_MSL
             //  메인 화면 열린 후 타이머 시작
 
             //workStage.timer_SubWork.Enabled = true;                            //  Power Meter
-            workStage.timer_Comm.Enabled = true;                                //  Comm
+            workStage.timer_Comm.Enabled = true;                                 //  Comm
             //loader.timer_LoaderWork.Enabled = true;                            //  Loader 
             //unloader.timer_UnloaderWork.Enabled = true;                        //  Unloader
         }
