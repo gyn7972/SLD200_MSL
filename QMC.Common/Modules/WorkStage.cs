@@ -69,6 +69,7 @@ using LwPolyline = SpiralLab.Sirius.LwPolyline;
 using PositionOffset = QMC.Common.Parts.PositionOffset;
 using QMC.Common.Vision.Tools;
 using Microsoft.VisualBasic.ApplicationServices;
+using System.Threading.Tasks;
 
 namespace QMC.Common.Modules
 {
@@ -280,6 +281,8 @@ namespace QMC.Common.Modules
             public double CenterY;              //  중심 Y 좌표
             public double radius;               //  반지름
         }
+
+        Task taskRunScannerConpensation;
         public stDrawingHoleParam[] m_stDrawing_Hole1;                          //  Hole1 데이터
         public stDrawingHoleParam[] m_stDrawing_Hole2;                          //  Hole2 데이터
         public stDrawingHoleParam[] m_stDrawing_Hole3;                          //  Hole3 데이터
@@ -2962,6 +2965,7 @@ namespace QMC.Common.Modules
 
 
             ScannerCompensator_Start,                                   //  Scanner Compensator 시작
+            ScannerCompensator_Wait,                                   //  Scanner Compensator 시작
             ScannerCompensator_Complete,                                //  Scanner Compensator 완료 확인
 
             ScannerCompensatedData_Check,                               //  Scanner 보정 데이터 확인 (오차 체크하여, 오차범위 이내이면 OK, 아니면 다시 보정)
@@ -26386,7 +26390,7 @@ namespace QMC.Common.Modules
                 //  가공된 영역의 우측 상단 모서리 위치로 이동 (이동 거리, X: Pitch * (Row - 1) / 2, Y: Pitch * (Col - 1) / 2)
                 case (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibration_RightTopPos:
                     {
-                        int ret = 0;
+                        
                         if (scannerCompensator == null || scannerCompensator.Stage == null)
                         {
                             Log.Write("ScannerCalibration", "ScannerCompensator or Stage is null");
@@ -26479,7 +26483,7 @@ namespace QMC.Common.Modules
                 //  Scanner 보정 시작       
                 case (int)ScannerCalibration_Step.ScannerCompensator_Start:
                     {
-                        int ret = 0;
+                        
 
                         if (scannerCompensator == null)
                         {
@@ -26491,20 +26495,41 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", "Scanner Calibration", "ScannerCompensator 보정 시작 (OnWork)");
 
                         // 내부적으로 RunSearchGridXy → SearchGridXy 자동 수행
-                        ret = scannerCompensator.OnWork();
-
-                        if (ret != 0)
+                        taskRunScannerConpensation = Task.Factory.StartNew(() => 
                         {
-                            Log.Write("ScannerCalibration", "ScannerCompensator.OnWork() 실패");
-                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
-                            MessageBox.Show("Scanner 보정 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            break;
-                        }
+                            scannerCompensator.OnWork();
+                        });
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensator_Wait;
 
-                        Log.Write("SLD-200", "Scanner Calibration", "ScannerCompensator 보정 완료");
-
-                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensator_Complete;
                     }
+                    break;
+
+
+                case (int)ScannerCalibration_Step.ScannerCompensator_Wait:
+
+                    int ret = -1;
+                    if(taskRunScannerConpensation != null && taskRunScannerConpensation.IsCompleted)
+                    {
+                        taskRunScannerConpensation.Dispose();
+                        taskRunScannerConpensation = null;
+                        ret = 0;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                    
+                    if (ret != 0)
+                    {
+                        Log.Write("ScannerCalibration", "ScannerCompensator.OnWork() 실패");
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                        MessageBox.Show("Scanner 보정 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        break;
+                    }
+
+                    Log.Write("SLD-200", "Scanner Calibration", "ScannerCompensator 보정 완료");
+
+                    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensator_Complete;
                     break;
 
                 case (int)ScannerCalibration_Step.ScannerCompensator_Complete:
