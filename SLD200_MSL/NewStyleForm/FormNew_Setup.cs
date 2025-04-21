@@ -1965,7 +1965,6 @@ namespace SLD200_MSL
                 MessageBox.Show("\"Offset Distance for Coordinate Matching\" 과\r\n\"Offset Distance to the Center of the Scanner\" 두 그룹 전체에 값이 들어가면 안됩니다.\n\r\n[두 그룹 중 한쪽에만 값이 들어가거나, 모두 0 이어야 합니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
             strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
 
             if (File.Exists(strFIle) == false)
@@ -2032,7 +2031,7 @@ namespace SLD200_MSL
             Equipment.AutoRunStatus = false;
             workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.None;
             workStage.timer_ScannerCalibration.Enabled = false;
-
+            workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
         }
 
         private void btnCalStart_Vision_Click(object sender, EventArgs e)
@@ -2113,7 +2112,7 @@ namespace SLD200_MSL
                 Vector2 position = new Vector2((float)data.m_dX, (float)data.m_dY);   //현재 장비 위치값 넣고..
                 Vector2 offset = new Vector2((float)dMeasureX, (float)dMeasureY);   //현재 장비 위치값 넣고..
 
-               // m_correction2DRtc.AddAbsolute(indexX, indexY, position, offset);
+                m_correction2DRtc.AddAbsolute(indexX, indexY, position, offset);
             }
 
             string strPath = "D:\\SLD-200_Parameter\\";

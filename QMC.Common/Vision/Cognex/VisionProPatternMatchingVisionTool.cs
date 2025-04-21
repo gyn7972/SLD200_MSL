@@ -73,7 +73,7 @@ namespace QMC.Common.Vision.Cognex
         #endregion
 
         #region Method
-        private int SetValue(VisionImage image)
+        public int SetValue(VisionImage image ,bool bLearn = true)
         {
             int ret = 0;
 
@@ -81,7 +81,19 @@ namespace QMC.Common.Vision.Cognex
             ICogImage cognexImage = null;
 
             this.m_LatestImage = image;
-            if ((ret = this.OnLearn()) != 0) return ret;
+            if(bLearn)
+            {
+
+                if ((ret = this.OnLearn()) != 0) return ret;
+            }
+            else
+            {
+                if (image.CustomizedData == null)
+                {
+                    if ((ret = VisionProCustomizedVisionImage.Create(ref image)) != 0) return ret;
+                }
+
+            }
 
             cognexVisionImage = image.CustomizedData as VisionProCustomizedVisionImage;
             cognexImage = cognexVisionImage.Image as ICogImage;
@@ -99,7 +111,7 @@ namespace QMC.Common.Vision.Cognex
 
             return ret;
         }
-        private int GetValue()
+        public int GetValue()
         {
             int ret = 0;
             int count = 0;
