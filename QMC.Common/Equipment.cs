@@ -519,6 +519,12 @@ namespace QMC.Common
         public static string RecipeOpen_DrawingFilePath { set; get; } = "";
 
 
+        //  타임아웃으로 인한 Stop
+        public static bool MachineStop_byTimeout_Loader { set; get; } = false;
+        public static bool MachineStop_byTimeout_Unloader { set; get; } = false;
+        public static bool MachineStop_byTimeout_WorkStage { set; get; } = false;
+
+
 
 
         ////  Recipe Data

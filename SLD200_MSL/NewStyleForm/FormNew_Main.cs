@@ -1039,6 +1039,10 @@ namespace SLD200_MSL
 
             Equipment.AutoRunStatus = true;
 
+            Equipment.MachineStop_byTimeout_Loader = false;
+            Equipment.MachineStop_byTimeout_Unloader = false;
+            Equipment.MachineStop_byTimeout_WorkStage = false;
+
             Equipment.CycleStop = false;
             Equipment.CycleStopped_LoaderTransfer = false;
             Equipment.CycleStopped_UnloaderTransfer = false;
@@ -1437,6 +1441,22 @@ namespace SLD200_MSL
 
             workStage.Camera_HighRes.Initialize();
             workStage.Camera_LowRes.Initialize();
+        }
+
+        private void button_Main_Loader_Continue_Click(object sender, EventArgs e)
+        {
+            //  Loader Cycle Continue
+
+            if (Equipment.MachineStop_byTimeout_Loader)
+            {
+                //  Timeout 이 발생하여 Cycle Stop 상태인 경우
+                Equipment.MachineStop_byTimeout_Loader = false;
+
+                loader.Loader_Transfer_Restart_MoveType_Check();
+
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "Loader Cycle Continue");
+            }
         }
     }
 }

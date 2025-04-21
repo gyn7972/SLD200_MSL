@@ -978,6 +978,27 @@ namespace QMC.Common.Modules
 
         #region Stop 후 Start 시 동작 Sequence 를 재설정 하기 위한 함수
 
+        public void Loader_CurrentStatus_Save_StopedByTimeout()
+        {
+            //  Loader 상태
+            m_nLD_RESTORE_Transfer_Step = m_nLoader_Transfer_Step;
+            m_nLD_RESTORE_Transfer_MoveType = m_nLoaderTransferMoveType;
+            m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete;               //  Work Stage 에 Module Put Down 완료 여부
+            m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete;               //  Stacker0 에서 Module Pick Up 완료 여부
+            m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete;               //  Stacker1 에서 Module Pick Up 완료 여부
+            m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete;               //  M-Aligner 에서 Module Pick Up 완료 여부
+            m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete;                 //  M-Aligner 에 Module Put Down 완료 여부
+            m_nLD_RESTORE_MainWork_Cycle_Step = workStage.m_nMainWork_Step;                                                                                              //  Main Work Cycle Step
+            m_nLD_RESTORE_DryRun_Cycle_Step = workStage.m_nDryRun_Step;                                                                                                  //  Dry Run Cycle Step
+            m_nLD_RESTORE_LaserDrilling_Cycle_Step = workStage.m_nLaserDrilling_MainStep;                                                                                //  Laser Drilling Cycle Step
+            m_bLD_RESTORE_MainWork_Cycle_Complete = workStage.m_bMainWorkCycle_Complete;                                                                                 //  Main Work Cycle 완료 여부
+            m_bLD_RESTORE_Transfer_fromStacker0_Module_PickUp_Complete_Flag = m_bLD_Transfer_fromStacker0_Module_PickUp_Complete_Flag;                            //  Stacker0 에서 Module Pick Up 완료 여부
+            m_bLD_RESTORE_Transfer_fromStacker1_Module_PickUp_Complete_Flag = m_bLD_Transfer_fromStacker1_Module_PickUp_Complete_Flag;                            //  Stacker1 에서 Module Pick Up 완료 여부
+            m_bLD_RESTORE_Transfer_fromMAligner_Module_PickUp_Complete_Flag = m_bLD_Transfer_fromMAligner_Module_PickUp_Complete_Flag;                            //  M-Aligner 에서 Module Pick Up 완료 여부
+            m_bLD_RESTORE_Transfer_toMAligner_Module_PutDown_Complete_Flag = m_bLD_Transfer_toMAligner_Module_PutDown_Complete_Flag;                              //  M-Aligner 에 Module Put Down 완료 여부
+            m_bLD_RESTORE_Transfer_toWorkStage_Module_PutDown_Complete_Flag = m_bLD_Transfer_toWorkStage_Module_PutDown_Complete_Flag;                            //  Work Stage 에 Module Put Down 완료 여부
+        }
+
         public void Loader_Transfer_Restart_MoveType_Check()
         {
             //  Stop 했을 때의 조건들을 조합하여 시작 조건 결정
@@ -1021,32 +1042,32 @@ namespace QMC.Common.Modules
 
 
 
-            //  1. Laser Drilling 이 진행중이면? Loader 모든 동작 Stop
-            if (m_nLD_RESTORE_LaserDrilling_Cycle_Step != (int)WorkStage.LaserDrilling_Step.None)
-            {
-                m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = false;                           //  Stacker0 에서 Module Pick Up 완료 여부
-                m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = false;                           //  Stacker1 에서 Module Pick Up 완료 여부
-                m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;                           //  M-Aligner 에서 Module Pick Up 완료 여부
-                m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = false;                            //  M-Aligner 에 Module Put Down 완료 여부
-                m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = false;                           //  Work Stage 에 Module Put Down 완료 여부
+            ////  1. Laser Drilling 이 진행중이면? Loader 모든 동작 Stop
+            //if (m_nLD_RESTORE_LaserDrilling_Cycle_Step != (int)WorkStage.LaserDrilling_Step.None)
+            //{
+            //    m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = false;                           //  Stacker0 에서 Module Pick Up 완료 여부
+            //    m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = false;                           //  Stacker1 에서 Module Pick Up 완료 여부
+            //    m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;                           //  M-Aligner 에서 Module Pick Up 완료 여부
+            //    m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = false;                            //  M-Aligner 에 Module Put Down 완료 여부
+            //    m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = false;                           //  Work Stage 에 Module Put Down 완료 여부
 
-                m_bStacker0_Complete = true;                //  Stacker 는 false 조건에 동작하기 때문에, Transfer 의 동작이 없을 때 동작시키도록 조건을 걸어준다.
-                m_bStacker1_Complete = true;                //  Stacker 는 false 조건에 동작하기 때문에, Transfer 의 동작이 없을 때 동작시키도록 조건을 걸어준다.
-            }
-            //  2. Main Work Cycle 이 진행중이면? Loader 모든 동작 Stop
-            else if (m_nLD_RESTORE_MainWork_Cycle_Step != (int)WorkStage.MainWork_Step.None)
-            {
-                m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = false;                           //  Stacker0 에서 Module Pick Up 완료 여부
-                m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = false;                           //  Stacker1 에서 Module Pick Up 완료 여부
-                m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;                           //  M-Aligner 에서 Module Pick Up 완료 여부
-                m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = false;                            //  M-Aligner 에 Module Put Down 완료 여부
-                m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = false;                           //  Work Stage 에 Module Put Down 완료 여부
+            //    m_bStacker0_Complete = true;                //  Stacker 는 false 조건에 동작하기 때문에, Transfer 의 동작이 없을 때 동작시키도록 조건을 걸어준다.
+            //    m_bStacker1_Complete = true;                //  Stacker 는 false 조건에 동작하기 때문에, Transfer 의 동작이 없을 때 동작시키도록 조건을 걸어준다.
+            //}
+            ////  2. Main Work Cycle 이 진행중이면? Loader 모든 동작 Stop
+            //else if (m_nLD_RESTORE_MainWork_Cycle_Step != (int)WorkStage.MainWork_Step.None)
+            //{
+            //    m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = false;                           //  Stacker0 에서 Module Pick Up 완료 여부
+            //    m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = false;                           //  Stacker1 에서 Module Pick Up 완료 여부
+            //    m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;                           //  M-Aligner 에서 Module Pick Up 완료 여부
+            //    m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = false;                            //  M-Aligner 에 Module Put Down 완료 여부
+            //    m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = false;                           //  Work Stage 에 Module Put Down 완료 여부
 
-                m_bStacker0_Complete = true;                //  Stacker 는 false 조건에 동작하기 때문에, Transfer 의 동작이 없을 때 동작시키도록 조건을 걸어준다.
-                m_bStacker1_Complete = true;                //  Stacker 는 false 조건에 동작하기 때문에, Transfer 의 동작이 없을 때 동작시키도록 조건을 걸어준다.
-            }
+            //    m_bStacker0_Complete = true;                //  Stacker 는 false 조건에 동작하기 때문에, Transfer 의 동작이 없을 때 동작시키도록 조건을 걸어준다.
+            //    m_bStacker1_Complete = true;                //  Stacker 는 false 조건에 동작하기 때문에, Transfer 의 동작이 없을 때 동작시키도록 조건을 걸어준다.
+            //}
             //  3. Loader Transfer Cycle 이 None 상태이면, 동작이 없던 상태이므로 기존 조건들 그대로 적용하여 Start 한다. 
-            else if (m_nLD_RESTORE_Transfer_Step == (int)Loader_Transfer_Step.None)
+            /*else*/ if (m_nLD_RESTORE_Transfer_Step == (int)Loader_Transfer_Step.None)
             {
                 m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete;             //  Stacker0 에서 Module Pick Up 완료 여부
                 m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete;             //  Stacker1 에서 Module Pick Up 완료 여부
@@ -2969,9 +2990,11 @@ namespace QMC.Common.Modules
             //  자동운전 시, Transfer 동작 조건
             if (Equipment.AutoRunStatus &&
 
-                !Equipment.Loader_Transfer_Pause &&
+                !Equipment.Loader_Transfer_Pause &&                                 //  Loader Transfer Cycle Pause 시 동작 안되도록
 
-                !Equipment.CycleStopped_LoaderTransfer &&
+                !Equipment.CycleStopped_LoaderTransfer &&                           //  Loader 가 Cycle Stop 으로 멈추면 동작 안되도록
+
+                !Equipment.MachineStop_byTimeout_Loader &&                          //  Loader 가 Time out 으로 멈추면 동작 안되도록
 
                 m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
                 m_nMAlign_Step == (int)MAlign_Step.None) 
@@ -3288,6 +3311,16 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Stacker0 에 Module 이 감지되지 않음.");
 
                         //  Out.
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                     }
                     else if (loaderParameter.DI_Loader_Stacker_FullCheck((int)LoaderParameter.StackerTable.Stacker_0))         //  감지 시 Off
@@ -3295,6 +3328,16 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Stacker0 의 Full 감지 센서에 Module 이 감지되지 않음.");
 
                         //  Out.
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                     }
                     else if (loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
@@ -3303,6 +3346,16 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Picker 에 자재가 감지됨.");
 
                         //  Out.
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                     }
                     else if (m_nStacker0_ModulePickupWaitingPos_Step > (int)StackerModulePickupWaitingPos_Step.None)                                                       //  Transfer Cycle 이 동작중
@@ -3310,6 +3363,16 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Stacker0 이 동작중이므로 Module Pickup 동작 중지.");
 
                         //  Out. (Stacker 동작이 완료되면 진행하도록 대기할 것인지는 테스트 하면서 결정하기로 함)
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                     }                    
                     else
@@ -3598,6 +3661,15 @@ namespace QMC.Common.Modules
                         //timer_Motion_Home.Enabled = false;
                         //m_btimer_Motion_Home_Stop = true;
 
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
 
                         MessageBox.Show("Transfer 축, Module Picker Vacuum On 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -3726,6 +3798,15 @@ namespace QMC.Common.Modules
                                 //  알람 정지 (LED Bar - Red Blink)
                                 Equipment.MachineStop_byAlarm = true;
 
+                                //////////////////////////////////////////////////////////////////////////////////////////
+                                //  재시작 위치 저장용
+                                //
+                                Equipment.MachineStop_byTimeout_Loader = true;
+                                Loader_CurrentStatus_Save_StopedByTimeout();
+                                //
+                                //  재시작 위치 저장용
+                                //////////////////////////////////////////////////////////////////////////////////////////
+
                                 m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                                 MessageBox.Show("Transfer Z 축, Module Pickup 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
@@ -3768,6 +3849,16 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Stacker1 에 Module 이 감지되지 않음.");
 
                         //  Out.
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                     }
                     else if (loaderParameter.DI_Loader_Stacker_FullCheck((int)LoaderParameter.StackerTable.Stacker_1))         //  감지 시 Off
@@ -3775,6 +3866,16 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Stacker1 의 Full 감지 센서에 Module 이 감지되지 않음.");
 
                         //  Out.
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                     }
                     else if (loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
@@ -3783,6 +3884,16 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Picker 에 자재가 감지됨.");
 
                         //  Out.
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                     }
                     else if (m_nStacker1_ModulePickupWaitingPos_Step > (int)StackerModulePickupWaitingPos_Step.None)                                                       //  Transfer Cycle 이 동작중
@@ -3790,6 +3901,16 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Stacker1 이 동작중이므로 Module Pickup 동작 중지.");
 
                         //  Out. (Stacker 동작이 완료되면 진행하도록 대기할 것인지는 테스트 하면서 결정하기로 함)
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                     }
                     else
@@ -4078,6 +4199,15 @@ namespace QMC.Common.Modules
                         //timer_Motion_Home.Enabled = false;
                         //m_btimer_Motion_Home_Stop = true;
 
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
 
                         MessageBox.Show("Transfer 축, Module Picker Vacuum On 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -4207,6 +4337,15 @@ namespace QMC.Common.Modules
                                 //  알람 정지 (LED Bar - Red Blink)
                                 Equipment.MachineStop_byAlarm = true;
 
+                                //////////////////////////////////////////////////////////////////////////////////////////
+                                //  재시작 위치 저장용
+                                //
+                                Equipment.MachineStop_byTimeout_Loader = true;
+                                Loader_CurrentStatus_Save_StopedByTimeout();
+                                //
+                                //  재시작 위치 저장용
+                                //////////////////////////////////////////////////////////////////////////////////////////
+
                                 m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
 
                                 MessageBox.Show("Transfer Z 축, Module Pickup 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -4250,6 +4389,16 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner 동작중.");
 
                         //  Out.
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                     }
                     else
@@ -4576,6 +4725,16 @@ namespace QMC.Common.Modules
                         //timer_Motion_Home.Enabled = false;
                         //m_btimer_Motion_Home_Stop = true;
 
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
 
                         MessageBox.Show("Transfer 축, Module Picker Vacuum On 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -4900,6 +5059,16 @@ namespace QMC.Common.Modules
                                 //  알람 정지 (LED Bar - Red Blink)
                                 Equipment.MachineStop_byAlarm = true;
 
+
+                                //////////////////////////////////////////////////////////////////////////////////////////
+                                //  재시작 위치 저장용
+                                //
+                                Equipment.MachineStop_byTimeout_Loader = true;
+                                Loader_CurrentStatus_Save_StopedByTimeout();
+                                //
+                                //  재시작 위치 저장용
+                                //////////////////////////////////////////////////////////////////////////////////////////
+
                                 m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;                                
                             }
                         }
@@ -4941,6 +5110,16 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Picker 에 Module 이 감지되지 않음.");
 
                         //  Out.
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                     }
                     else if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
@@ -4948,6 +5127,16 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage 에 Module 이 감지됨. (Vacuum Sensor : On)");
 
                         //  Out.
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                     }
                     else if (workStage.m_nWorkStage_Move_Step > (int)WorkStage.WorkStage_Move_Step.None)                                                       //  Transfer Cycle 이 동작중
@@ -4955,6 +5144,16 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage 가 이동 중.");
 
                         //  Out.
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        ///
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                     }
                     else if (workStage.m_nLaserDrilling_MainStep > (int)WorkStage.LaserDrilling_Step.None)                                                     //  Laser Drilling Cycle 이 동작중
@@ -4962,6 +5161,16 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Laser Drilling Cycle 동작 중.");
 
                         //  Out.
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        ///
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                     }
                     else
@@ -5333,6 +5542,16 @@ namespace QMC.Common.Modules
                         //timer_Motion_Home.Enabled = false;
                         //m_btimer_Motion_Home_Stop = true;
 
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////                        
+
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
 
                         MessageBox.Show("Transfer 축, Module Picker Vacuum Off 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -5463,6 +5682,15 @@ namespace QMC.Common.Modules
 
                                 //  알람 정지 (LED Bar - Red Blink)
                                 Equipment.MachineStop_byAlarm = true;
+
+                                //////////////////////////////////////////////////////////////////////////////////////////
+                                //  재시작 위치 저장용
+                                //
+                                Equipment.MachineStop_byTimeout_Loader = true;
+                                Loader_CurrentStatus_Save_StopedByTimeout();
+                                //
+                                //  재시작 위치 저장용
+                                //////////////////////////////////////////////////////////////////////////////////////////
 
                                 m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                             }
@@ -5915,7 +6143,18 @@ namespace QMC.Common.Modules
 
                         //timer_Motion_Home.Enabled = false;
                         //m_btimer_Motion_Home_Stop = true;
-                         
+
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        ///
+
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
 
                         MessageBox.Show("Transfer 축, Module Picker Vacuum Off 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
