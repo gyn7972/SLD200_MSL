@@ -2526,6 +2526,9 @@ namespace QMC.Common.Modules
 
             DustCollector_Chiller_Status_Check,                                             //  집진기, Chiller 상태 확인 (Alarm Check)
 
+            Mask_Change,                                                                    //  Mask Change (CO2 용, UV 는 Mask 없음)
+            Mask_Change_Check,                                                              //  Mask Change 확인
+
             MapDataChange_ScannerMap,                                                       //  Scanner 위치 Map Data 로 변경
             MapDataFlagCheck_ScannerMap,                                                    //  Scanner 위치 Map Data 로 변경되었는지 확인
 
@@ -12146,8 +12149,67 @@ namespace QMC.Common.Modules
                     //}
 
 
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap;
+                    if (Equipment.Machine_LaserType_CO2)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "설비 타입 : CO2, Mask 위치 세팅 시작");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Mask_Change;
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "설비 타입 : UV, Mask 없음");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap;
+                    }
                     break;
+
+
+                case (int)LaserDrilling_Step.Mask_Change:                                      //  Mask Change (CO2 용, UV 는 Mask 없음)
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Mask Y 축, Hole1 Layer 의 Mask 로 이동 시작.");
+
+                    workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
+
+                    //  속도 설정
+                    lfVelocity = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Common_Speed_Coarse;
+                    lfAccDec = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Common_Acceleration_Coarse;
+
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.MASK_Y] = 
+                        bds.stBDSTeachingPos[(int)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_MaskIndex].Mask_Y;
+
+                    MC_Func.MC_MovePosition((int)Bds.nAxis.MASK_Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.MASK_Y],
+                                          lfVelocity, lfAccDec, lfAccDec);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Mask_Change_Check;
+                    break;
+
+
+                case (int)LaserDrilling_Step.Mask_Change_Check:                            //  Mask Change 확인
+
+                    if (MC_Func.MC_GetDone((int)Bds.nAxis.MASK_Y) && MC_Func.MC_PosTolerance((int)Bds.nAxis.MASK_Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.MASK_Y]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Mask Y 축, Hole1 Layer 의 Mask 로 이동 완료.");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Mask Y 축, Hole1 Layer 의 Mask 로 이동 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        //timer_LaserDrillingWork.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                        MessageBox.Show("Mask Y 축, Hole1 Layer 의 Mask 로 이동", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    break;
+
 
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 //  Map Data 변경 (Scanner) - 시작

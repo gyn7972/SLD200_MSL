@@ -1141,7 +1141,7 @@ namespace SLD200_MSL
             //m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
 
             //Equipment.m_bDrawingFileOpen_1time = true;
-
+            
             //return;
 
 
