@@ -830,6 +830,12 @@ namespace SLD200_MSL
             //}
 
 
+
+            workStage.Module_Allocation();
+            unloader.Module_Allocation();
+            loader.Module_Allocation();
+
+
             //  카메라는 여러번 초기화 할 수 있으니, 이 조건을 걸어서 스캐너 초기화를 1회만 하도록 한다.
             if (Equipment.ScannerMode_Change_byUser != (int)RtcMode.RTC_RTC6_COMPLETE)
             {
@@ -1449,13 +1455,13 @@ namespace SLD200_MSL
 
             if (Equipment.MachineStop_byTimeout_Loader)
             {
-                //  Timeout 이 발생하여 Cycle Stop 상태인 경우
-                Equipment.MachineStop_byTimeout_Loader = false;
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "Loader Cycle Continue");
 
                 loader.Loader_Transfer_Restart_MoveType_Check();
 
-                var mb = new MessageBoxOk();
-                mb.ShowDialog("Information !", "Loader Cycle Continue");
+                //  Timeout 이 발생하여 Cycle Stop 상태인 경우
+                Equipment.MachineStop_byTimeout_Loader = false;                
             }
         }
     }

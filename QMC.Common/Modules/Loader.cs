@@ -1181,6 +1181,8 @@ namespace QMC.Common.Modules
 
                         workStage.m_bMainWorkCycle_Complete = false;
 
+                        m_bMAlign_Complete = true;
+
                         m_bMAlignZone_ModuleExist = true;
                     }
                 }
@@ -5105,7 +5107,8 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "TR 축, Work Stage 에 Module Put Down 조건 체크");
 
-                    if (!workStage.m_bMainWorkCycle_DryRun && Equipment.Machine_VacuumSensor_Enable && !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) && !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+                    if (!workStage.m_bMainWorkCycle_DryRun && Equipment.Machine_VacuumSensor_Enable && 
+                        !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) && !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Picker 에 Module 이 감지되지 않음.");
 
