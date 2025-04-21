@@ -1533,10 +1533,12 @@ namespace SLD200_MSL
         private void button_CurrentZPos_toFineCamFocus_Click(object sender, EventArgs e)
         {
             var mb = new MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "현재 Z축 높이를 Fine Camera Focus 로 설정하시겠습니까?"))
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "현재 Z축 높이를 Fine Camera, Laser, Laser Height Sensor Focus 로 설정하시겠습니까?"))
                 return;
 
-            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_FocusPos].Vision_Z = Convert.ToDouble(string.Format("{0:0.000}", vision.MC_Func.MC_GetEncPos((int)Vision.nAxis.Z).ToString())); 
+            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_FocusPos].Vision_Z = Convert.ToDouble(string.Format("{0:0.000}", vision.MC_Func.MC_GetEncPos((int)Vision.nAxis.Z).ToString()));
+            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z = Convert.ToDouble(string.Format("{0:0.000}", vision.MC_Func.MC_GetEncPos((int)Vision.nAxis.Z).ToString()));
+            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos].Vision_Z = Convert.ToDouble(string.Format("{0:0.000}", vision.MC_Func.MC_GetEncPos((int)Vision.nAxis.Z).ToString()));
 
             //  리스트 전체 저장
             vision.Teaching_Position_Save();

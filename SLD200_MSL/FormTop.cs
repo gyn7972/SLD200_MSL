@@ -252,6 +252,7 @@ namespace SLD200_MSL
                     break;
             }
 
+
             //  Recipe
             if (Equipment.Current_Recipe.Length > 0)
             {
@@ -267,7 +268,34 @@ namespace SLD200_MSL
             else
             {
                 label_Title_Recipe.Text = "Recipe not loaded.";
-            }            
+            }
+
+
+            //  System Message
+            if (Equipment.CycleStop && 
+
+                Equipment.CycleStopped_LoaderTransfer &&
+                Equipment.CycleStopped_UnloaderTransfer && 
+                Equipment.CycleStopped_MainWork)
+            {
+                label_Title_SystemMessage.Text = "Cycle Stopped";
+            }
+            else if (Equipment.CycleStop && 
+                
+                (!Equipment.CycleStopped_LoaderTransfer ||
+                !Equipment.CycleStopped_UnloaderTransfer ||
+                !Equipment.CycleStopped_MainWork))
+            {
+                label_Title_SystemMessage.Text = "Cycle Stop in Progress...";
+            }
+            else if (Equipment.AutoRunStatus)
+            {
+                label_Title_SystemMessage.Text = "Auto Run";
+            }
+            else if (!Equipment.AutoRunStatus)
+            {
+                label_Title_SystemMessage.Text = "Ready";
+            }
         }
 
         public void LogInInfo()

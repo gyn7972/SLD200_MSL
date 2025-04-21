@@ -278,6 +278,8 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
+            this.label81 = new System.Windows.Forms.Label();
+            this.label82 = new System.Windows.Forms.Label();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox19.SuspendLayout();
@@ -519,6 +521,8 @@
             // 
             // groupBox17
             // 
+            this.groupBox17.Controls.Add(this.label81);
+            this.groupBox17.Controls.Add(this.label82);
             this.groupBox17.Controls.Add(this.label49);
             this.groupBox17.Controls.Add(this.label50);
             this.groupBox17.Controls.Add(this.label64);
@@ -536,7 +540,7 @@
             this.groupBox17.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox17.Name = "groupBox17";
             this.groupBox17.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox17.Size = new System.Drawing.Size(341, 225);
+            this.groupBox17.Size = new System.Drawing.Size(344, 225);
             this.groupBox17.TabIndex = 64;
             this.groupBox17.TabStop = false;
             this.groupBox17.Text = " Available Layer Names ";
@@ -549,7 +553,7 @@
             this.label49.Name = "label49";
             this.label49.Size = new System.Drawing.Size(205, 24);
             this.label49.TabIndex = 24;
-            this.label49.Text = "2nd. ~ 4th. Hole Processing";
+            this.label49.Text = "2nd. ~ 10th. Hole Processing";
             this.label49.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label50
@@ -560,7 +564,7 @@
             this.label50.Name = "label50";
             this.label50.Size = new System.Drawing.Size(114, 24);
             this.label50.TabIndex = 23;
-            this.label50.Text = "Hole2 ~ Hole4  :";
+            this.label50.Text = "Hole2 ~ Hole10 :";
             this.label50.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label64
@@ -577,10 +581,10 @@
             // label65
             // 
             this.label65.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label65.Location = new System.Drawing.Point(48, 155);
+            this.label65.Location = new System.Drawing.Point(7, 155);
             this.label65.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label65.Name = "label65";
-            this.label65.Size = new System.Drawing.Size(73, 24);
+            this.label65.Size = new System.Drawing.Size(114, 24);
             this.label65.TabIndex = 21;
             this.label65.Text = "Fiducial  :";
             this.label65.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -593,7 +597,7 @@
             this.label58.Name = "label58";
             this.label58.Size = new System.Drawing.Size(205, 24);
             this.label58.TabIndex = 20;
-            this.label58.Text = "Marking Processing";
+            this.label58.Text = "Marking Processing (Not yet)";
             this.label58.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label59
@@ -604,7 +608,7 @@
             this.label59.Name = "label59";
             this.label59.Size = new System.Drawing.Size(205, 24);
             this.label59.TabIndex = 19;
-            this.label59.Text = "Outline Processing";
+            this.label59.Text = "Outline Processing (Not yet)";
             this.label59.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label60
@@ -613,9 +617,9 @@
             this.label60.Location = new System.Drawing.Point(125, 83);
             this.label60.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label60.Name = "label60";
-            this.label60.Size = new System.Drawing.Size(205, 24);
+            this.label60.Size = new System.Drawing.Size(213, 24);
             this.label60.TabIndex = 18;
-            this.label60.Text = "Rectangular Processing";
+            this.label60.Text = "Rectangular Processing (Not yet)";
             this.label60.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label57
@@ -632,10 +636,10 @@
             // label56
             // 
             this.label56.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label56.Location = new System.Drawing.Point(48, 131);
+            this.label56.Location = new System.Drawing.Point(7, 131);
             this.label56.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label56.Name = "label56";
-            this.label56.Size = new System.Drawing.Size(73, 24);
+            this.label56.Size = new System.Drawing.Size(114, 24);
             this.label56.TabIndex = 13;
             this.label56.Text = "Marking  :";
             this.label56.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -643,10 +647,10 @@
             // label55
             // 
             this.label55.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label55.Location = new System.Drawing.Point(48, 107);
+            this.label55.Location = new System.Drawing.Point(7, 107);
             this.label55.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(73, 24);
+            this.label55.Size = new System.Drawing.Size(114, 24);
             this.label55.TabIndex = 12;
             this.label55.Text = "Outline  :";
             this.label55.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -654,10 +658,10 @@
             // label54
             // 
             this.label54.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label54.Location = new System.Drawing.Point(48, 83);
+            this.label54.Location = new System.Drawing.Point(7, 83);
             this.label54.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(73, 24);
+            this.label54.Size = new System.Drawing.Size(114, 24);
             this.label54.TabIndex = 11;
             this.label54.Text = "Rect  :";
             this.label54.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -3410,6 +3414,28 @@
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
             // 
+            // label81
+            // 
+            this.label81.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label81.Location = new System.Drawing.Point(125, 179);
+            this.label81.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label81.Name = "label81";
+            this.label81.Size = new System.Drawing.Size(205, 24);
+            this.label81.TabIndex = 26;
+            this.label81.Text = "Thruhole Processing (Not yet)";
+            this.label81.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label82
+            // 
+            this.label82.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label82.Location = new System.Drawing.Point(7, 179);
+            this.label82.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label82.Name = "label82";
+            this.label82.Size = new System.Drawing.Size(114, 24);
+            this.label82.TabIndex = 25;
+            this.label82.Text = "Thruhole  :";
+            this.label82.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // FormNew_Recipe
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -3728,5 +3754,7 @@
         private System.Windows.Forms.Label label48;
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode;
         private System.Windows.Forms.Label label47;
+        private System.Windows.Forms.Label label81;
+        private System.Windows.Forms.Label label82;
     }
 }

@@ -36,6 +36,7 @@ namespace SLD200_MSL
             this.button41 = new System.Windows.Forms.Button();
             this.button42 = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.btnTest = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.textBox_VisionPopup_LaserHeightValue = new System.Windows.Forms.Label();
             this.button_VisionPopup_LaserHeightCheck_Start = new System.Windows.Forms.Button();
@@ -147,7 +148,6 @@ namespace SLD200_MSL
             this.button43 = new System.Windows.Forms.Button();
             this.button47 = new System.Windows.Forms.Button();
             this.button48 = new System.Windows.Forms.Button();
-            this.btnTest = new System.Windows.Forms.Button();
             this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -242,6 +242,18 @@ namespace SLD200_MSL
             this.panel3.Size = new System.Drawing.Size(1236, 699);
             this.panel3.TabIndex = 41;
             // 
+            // btnTest
+            // 
+            this.btnTest.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.btnTest.Location = new System.Drawing.Point(975, 10);
+            this.btnTest.Margin = new System.Windows.Forms.Padding(6);
+            this.btnTest.Name = "btnTest";
+            this.btnTest.Size = new System.Drawing.Size(60, 64);
+            this.btnTest.TabIndex = 139;
+            this.btnTest.Text = "TEST";
+            this.btnTest.UseVisualStyleBackColor = true;
+            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
+            // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.textBox_VisionPopup_LaserHeightValue);
@@ -303,7 +315,7 @@ namespace SLD200_MSL
             // button_CurrentZPos_toLaserFocus
             // 
             this.button_CurrentZPos_toLaserFocus.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_CurrentZPos_toLaserFocus.Location = new System.Drawing.Point(1108, 92);
+            this.button_CurrentZPos_toLaserFocus.Location = new System.Drawing.Point(1108, 160);
             this.button_CurrentZPos_toLaserFocus.Margin = new System.Windows.Forms.Padding(6);
             this.button_CurrentZPos_toLaserFocus.Name = "button_CurrentZPos_toLaserFocus";
             this.button_CurrentZPos_toLaserFocus.Size = new System.Drawing.Size(118, 64);
@@ -318,9 +330,9 @@ namespace SLD200_MSL
             this.button_CurrentZPos_toFineCamFocus.Location = new System.Drawing.Point(985, 92);
             this.button_CurrentZPos_toFineCamFocus.Margin = new System.Windows.Forms.Padding(6);
             this.button_CurrentZPos_toFineCamFocus.Name = "button_CurrentZPos_toFineCamFocus";
-            this.button_CurrentZPos_toFineCamFocus.Size = new System.Drawing.Size(118, 64);
+            this.button_CurrentZPos_toFineCamFocus.Size = new System.Drawing.Size(241, 64);
             this.button_CurrentZPos_toFineCamFocus.TabIndex = 135;
-            this.button_CurrentZPos_toFineCamFocus.Text = "Current Z Pos.\r\nto Cam. focus";
+            this.button_CurrentZPos_toFineCamFocus.Text = "Current Z Pos. to Fine Cam. ,\r\nLaser and Height Sensor focus";
             this.button_CurrentZPos_toFineCamFocus.UseVisualStyleBackColor = true;
             this.button_CurrentZPos_toFineCamFocus.Click += new System.EventHandler(this.button_CurrentZPos_toFineCamFocus_Click);
             // 
@@ -1695,18 +1707,6 @@ namespace SLD200_MSL
             this.button48.TabIndex = 29;
             this.button48.Text = "Apply";
             this.button48.UseVisualStyleBackColor = true;
-            // 
-            // btnTest
-            // 
-            this.btnTest.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.btnTest.Location = new System.Drawing.Point(975, 10);
-            this.btnTest.Margin = new System.Windows.Forms.Padding(6);
-            this.btnTest.Name = "btnTest";
-            this.btnTest.Size = new System.Drawing.Size(60, 64);
-            this.btnTest.TabIndex = 139;
-            this.btnTest.Text = "TEST";
-            this.btnTest.UseVisualStyleBackColor = true;
-            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
             // 
             // FormNew_VisionPopup
             // 

@@ -152,7 +152,15 @@ namespace SLD200_MSL
         {
             bool m_bRet = true;
 
-            //SpiralLab.Sirius.Config.AngleFactor = 20;
+            //SpiralLab.Sirius.Config.AngleFactor = 50;
+            if (Equipment.SiriusDrawing_Rendering_Resolution < 0)
+            {
+                SpiralLab.Sirius.Config.AngleFactor = 50;
+            }
+            else
+            {
+                SpiralLab.Sirius.Config.AngleFactor = Equipment.SiriusDrawing_Rendering_Resolution;
+            }
 
             m_bRet = SpiralLab.Core.Initialize();                            //  Sirius1
             //SpiralLab.Sirius2.Core.Initialize();                  //  Sirius2
@@ -461,7 +469,9 @@ namespace SLD200_MSL
             {
                 timer_RtcInit.Enabled = false;
 
-                Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_NONE;
+                //Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_NONE;
+                Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
+
 
                 //if (btnTest_RTC6.BackColor == Color.GreenYellow)
                 //    return;
@@ -885,9 +895,16 @@ namespace SLD200_MSL
             int m_nHole2_ObjectCount = 0;                                       //  Hole2 데이터 개수
             int m_nHole3_ObjectCount = 0;                                       //  Hole3 데이터 개수
             int m_nHole4_ObjectCount = 0;                                       //  Hole4 데이터 개수
+            int m_nHole5_ObjectCount = 0;                                       //  Hole5 데이터 개수
+            int m_nHole6_ObjectCount = 0;                                       //  Hole6 데이터 개수
+            int m_nHole7_ObjectCount = 0;                                       //  Hole7 데이터 개수
+            int m_nHole8_ObjectCount = 0;                                       //  Hole8 데이터 개수
+            int m_nHole9_ObjectCount = 0;                                       //  Hole9 데이터 개수
+            int m_nHole10_ObjectCount = 0;                                      //  Hole10 데이터 개수
             int m_nRect_ObjectCount = 0;                                        //  Rect 데이터 개수
             int m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
             int m_nFiducial_ObjectCount = 0;                                    //  Fiducial 마크 데이터 개수
+            int m_nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
 
             int m_nLayerCount = 0;
 

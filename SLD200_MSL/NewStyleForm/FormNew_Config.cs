@@ -6704,23 +6704,251 @@ namespace SLD200_MSL
 
         private void Button_Config_LDUL_TeachingPositions_Move_Click(object sender, EventArgs e)
         {
-            var mb1 = new MessageBoxOk();
-            mb1.ShowDialog("Warning !", "미 구현 상태");
+            //  Loader Unloader Teaching Position 이동
+
+            var mb = new MessageBoxOk();
+            mb.ShowDialog("Information !", "미구현 기능.");
             return;
+
+
+
+            //double lfVelocity = 0.0f;
+            //double lfAccDec = 0.0f;
+
+            //int m_nIndex = listBox_Config_LDUL_TeachingPositions.SelectedIndex;
+
+            //if (m_nIndex < 0)
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Warning !", "Teaching Position 이 선택되지 않았습니다.");
+            //    return;
+            //}
+
+            ////if (!workStage.m_bHomeOK)
+            ////{
+            ////    var mb1 = new MessageBoxOk();
+            ////    mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+            ////    return;
+            ////}
+
+            //var mb = new MessageBoxYesNo();
+            //if (DialogResult.Yes != mb.ShowDialog("Question ?", "Stage 를 선택 위치로 보내시겠습니까?\r\n\r\n##  XY 방향 이동 시 Z축 충돌 주의!!!  ##"))
+            //    return;
+
+            //if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
+            //    !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Warning !", "Stage 가 이동중입니다.");
+            //    return;
+            //}
+
+
+            //switch (m_nIndex)
+            //{
+
+            //}
+
+
+            ////  속도 설정
+            //if (radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine.Checked)
+            //{
+            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+            //}
+            //else
+            //{
+            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+            //}
+
+            ////workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X,
+            ////                                lfVelocity, lfAccDec, lfAccDec);
+            ////workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y,
+            ////                               lfVelocity, lfAccDec, lfAccDec);
+
+            //xyInterpolatedCoordinate.X = workStage.stWorkStageTeachingPos[m_nIndex].Stage_X;
+            //xyInterpolatedCoordinate.Y = workStage.stWorkStageTeachingPos[m_nIndex].Stage_Y;
+            //workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
         }
 
         private void Button_Config_Vision_TeachingPositions_Move_Click(object sender, EventArgs e)
         {
-            var mb1 = new MessageBoxOk();
-            mb1.ShowDialog("Warning !", "미 구현 상태");
-            return;
+            //  Vision(Scanner) Z Teaching Position 이동
+
+            double lfVelocity = 0.0f;
+            double lfAccDec = 0.0f;
+
+            int m_nIndex = listBox_Config_Vision_TeachingPositions.SelectedIndex;
+
+            if (m_nIndex < 0)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Warning !", "Teaching Position 이 선택되지 않았습니다.");
+                return;
+            }
+
+            //if (!workStage.m_bHomeOK)
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+            //    return;
+            //}
+
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Vision(Scanner) Z축을 선택 위치로 보내시겠습니까?\r\n\r\n##  Z축 충돌 주의!!!  ##"))
+                return;
+
+            if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Warning !", "Stage 가 이동중입니다.");
+                return;
+            }
+
+            ////  StageZ 한계위치 설정되어 있는지 체크
+            //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos <= 0.0)
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이가 설정되어 있지 않습니다.\r\n\r\n(Config -> [17] Interlock  확인)");
+            //    return;
+            //}
+
+            ////  StageZ 한계위치를 초과하여 이동하는지 체크
+            //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos < laserDrilling.laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.Z])
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이를 초과하여 이동하려고 하였습니다.\r\n\r\n[ Cancel ]");
+            //    return;
+            //}
+
+            ////  맵 데이터를 이원화 할 경우
+            //if (laserDrilling.Config.ParamConfig.ScannerCamera_MapData_Div)
+            //{
+            //    laserDrilling.MapData_Change((int)LaserDrilling.MapDataType.MAPDATASTATUS_SCANNER);
+            //}
+
+
+            //  속도 설정
+            if (radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine.Checked)
+            {
+                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+            }
+            else
+            {
+                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
+                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
+            }
+
+            workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[m_nIndex].Vision_Z,
+                                            lfVelocity, lfAccDec, lfAccDec);
         }
 
         private void Button_Config_BDS_TeachingPositions_Move_Click(object sender, EventArgs e)
         {
-            var mb1 = new MessageBoxOk();
-            mb1.ShowDialog("Warning !", "미 구현 상태");
-            return;
+            //  BDS Mask Y Teaching Position 이동
+
+            double lfVelocity = 0.0f;
+            double lfAccDec = 0.0f;
+
+            if (!Equipment.Machine_LaserType_CO2)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Warning !", "UV Laser System 에는 Mask 가 없습니다.");
+                return;
+            }
+
+            int m_nIndex = listBox_Config_BDS_TeachingPositions.SelectedIndex;
+
+            if (m_nIndex < 0)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Warning !", "Teaching Position 이 선택되지 않았습니다.");
+                return;
+            }
+
+            //if (!workStage.m_bHomeOK)
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+            //    return;
+            //}
+
+            var mb = new MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Mask Y축을 선택 위치로 보내시겠습니까?\r\n\r\n"))
+                return;
+
+
+            ////  StageZ 한계위치 설정되어 있는지 체크
+            //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos <= 0.0)
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이가 설정되어 있지 않습니다.\r\n\r\n(Config -> [17] Interlock  확인)");
+            //    return;
+            //}
+
+            ////  StageZ 한계위치를 초과하여 이동하는지 체크
+            //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos < laserDrilling.laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.Z])
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이를 초과하여 이동하려고 하였습니다.\r\n\r\n[ Cancel ]");
+            //    return;
+            //}
+
+            ////  맵 데이터를 이원화 할 경우
+            //if (laserDrilling.Config.ParamConfig.ScannerCamera_MapData_Div)
+            //{
+            //    laserDrilling.MapData_Change((int)LaserDrilling.MapDataType.MAPDATASTATUS_SCANNER);
+            //}
+
+
+            //  레이저 끄기
+            if (workStage.rtc != null)
+            {
+                workStage.rtc.CtlLaserOff();
+            }
+
+            //  셔터 (BDS Power Meter) 닫기
+            int m_nShutterCloseCount = 0;
+            bool m_bShutterClosed = false;
+            do
+            {
+                m_nShutterCloseCount++;
+
+                //  BDS Power Meter 셔터 닫기
+                bds.bdsParameter.DO_BDS_PowerMeter_FW(true);
+                bds.bdsParameter.DO_BDS_PowerMeter_BW(false);
+
+                //  BDS Power Meter 셔터 닫기 확인
+                if (bds.bdsParameter.DI_BDS_PowerMeter_FW() && !bds.bdsParameter.DI_BDS_PowerMeter_BW())
+                {
+                    m_bShutterClosed = true;
+                }
+            } while ((m_nShutterCloseCount < 5000) && !m_bShutterClosed);
+
+            if (!m_bShutterClosed)
+            {
+                var mb1 = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb1.ShowDialog("Question ?", "Shutter 가 닫히지 않았습니다.\r\n\r\nMask Y축을 선택 위치 이동을 계속하시겠습니까?\r\n\r\n"))
+                    return;
+            }
+
+            //  속도 설정
+            if (radioButton_Config_BDS_Move_MoveMode_Fine.Checked)
+            {
+                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+            }
+            else
+            {
+                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
+                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
+            }
+                        
+            bds.MC_Func.MC_MovePosition((int)Bds.nAxis.MASK_Y, bds.stBDSTeachingPos[m_nIndex].Mask_Y,
+                                            lfVelocity, lfAccDec, lfAccDec);
         }
 
         private void button_Config_WorkStage_CurrentLaserSensorPos_To_FineCamPos_Click(object sender, EventArgs e)
@@ -7263,7 +7491,8 @@ namespace SLD200_MSL
             if (Equipment.AutoRunStatus)
             {
                 workStage.m_bMainWorkCycle_Complete = true;
-                workStage.m_bMainWorkCycle_ResultOK = true;
+                //workStage.m_bMainWorkCycle_ResultOK = true;
+                workStage.m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.OK;
                 workStage.m_bMainWorkCycle_ResultOK_toRPort = true;
             }
             else
@@ -7279,7 +7508,8 @@ namespace SLD200_MSL
             if (Equipment.AutoRunStatus)
             {
                 workStage.m_bMainWorkCycle_Complete = true;
-                workStage.m_bMainWorkCycle_ResultOK = false;
+                //workStage.m_bMainWorkCycle_ResultOK = false;
+                workStage.m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
             }
             else
             {
@@ -7294,7 +7524,8 @@ namespace SLD200_MSL
             if (Equipment.AutoRunStatus)
             {
                 workStage.m_bMainWorkCycle_Complete = true;
-                workStage.m_bMainWorkCycle_ResultOK = true;
+                //workStage.m_bMainWorkCycle_ResultOK = true;
+                workStage.m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.OK;
                 workStage.m_bMainWorkCycle_ResultOK_toRPort = false;
             }
             else
@@ -7381,7 +7612,127 @@ namespace SLD200_MSL
 
         private void button_Test_WorkStage_ModuleLoadingFlag_OK_Click(object sender, EventArgs e)
         {
-            loader.m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete = false;
+            loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = false;
+        }
+
+        private void button_Test_ULTransfer_AxisZ_SafetyPos_Click(object sender, EventArgs e)
+        {
+            //  Unloader Axis-Z, 대기위치 이동
+
+            if (!Equipment.AjinBoard_Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
+                return;
+            }
+
+            if (unloader.m_nUnloader_Transfer_Step == (int)Unloader.Unloader_Transfer_Step.None)
+            {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Transfer Z축, 대기 위치로 이동하시겠습니까?"))
+                    return;
+
+                //  속도
+                double m_dSpeed = Equipment.stAxisParam[(int)Unloader.nAxis.TR_Z].Common_Speed_Coarse;
+
+                //  가감속 배율
+                double m_dSpeedMag = 2.0;
+
+                workStage.MC_Func.MC_MovePosition((int)Unloader.nAxis.TR_Z,
+                                    loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].UL_Transfer_Z,
+                                    m_dSpeed,
+                                    m_dSpeed * m_dSpeedMag,
+                                    m_dSpeed * m_dSpeedMag);
+            }
+            else
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "Unloader Transfer 가 동작중입니다.");
+                return;
+            }
+        }
+
+        private void button_Test_LDTransfer_AxisZ_SafetyPos_Click(object sender, EventArgs e)
+        {
+            //  Loader Axis-Z, 대기위치 이동
+
+            if (!Equipment.AjinBoard_Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
+                return;
+            }
+
+            if (loader.m_nLoader_Transfer_Step == (int)Loader.Loader_Transfer_Step.None)
+            {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader Transfer Z축, 대기 위치로 이동하시겠습니까?"))
+                    return;
+
+                //  속도
+                double m_dSpeed = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Common_Speed_Coarse;
+
+                //  가감속 배율
+                double m_dSpeedMag = 2.0;
+
+                workStage.MC_Func.MC_MovePosition((int)Loader.nAxis.TR_Z,
+                                    loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_SafetyPos].LD_Transfer_Z,
+                                    m_dSpeed,
+                                    m_dSpeed * m_dSpeedMag,
+                                    m_dSpeed * m_dSpeedMag);
+            }
+            else
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "Loader Transfer 가 동작중입니다.");
+                return;
+            }
+        }
+
+        private void button_Test_Scanner_AxisZ_SafetyPos_Click(object sender, EventArgs e)
+        {
+            //  Scanner (Vision) Axis-Z, 대기위치 이동
+
+            if (!Equipment.AjinBoard_Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "AJIN 모션 제어기가 연결되지 않았습니다.");
+                return;
+            }
+
+            if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Warning !", "Stage 가 이동중입니다.");
+                return;
+            }
+
+            if ((workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) &&
+                (workStage.m_nMainWork_Step == (int)WorkStage.MainWork_Step.None))
+            {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Scanner (Vision) Z축, 대기 위치로 이동하시겠습니까?"))
+                    return;
+
+                //  속도
+                double m_dSpeed = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Coarse;
+
+                //  가감속 배율
+                double m_dSpeedMag = 2.0;
+
+                workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z,
+                                    vision.stVisionTeachingPos[(int)Vision_TeachingPosList.Vision_SafetyPos].Vision_Z,
+                                    m_dSpeed,
+                                    m_dSpeed * m_dSpeedMag,
+                                    m_dSpeed * m_dSpeedMag);
+            }
+            else
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "Work Stage 가 동작중입니다.");
+                return;
+            }
         }
     }
 }
