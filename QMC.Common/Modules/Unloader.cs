@@ -4293,8 +4293,12 @@ namespace QMC.Common.Modules
                             //  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
                             if (Equipment.CycleStop)
                             {
-                                //  Unloader Transfer 돌아가지 않게
-                                Equipment.CycleStopped_UnloaderTransfer = true;
+                                //  Loader 와 Work Stage 모두 Cycle Stop 되었을 때만 Unloader 를 cycle Stop 처리 한다.
+                                if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)
+                                {
+                                    //  Unloader Transfer 돌아가지 않게
+                                    Equipment.CycleStopped_UnloaderTransfer = true;
+                                }
                             }
                             break;
 
@@ -4312,8 +4316,12 @@ namespace QMC.Common.Modules
                             //  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
                             if (Equipment.CycleStop)
                             {
-                                //  Unloader Transfer 돌아가지 않게
-                                Equipment.CycleStopped_UnloaderTransfer = true;
+                                //  Loader 와 Work Stage 모두 Cycle Stop 되었을 때만 Unloader 를 cycle Stop 처리 한다.
+                                if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)
+                                {
+                                    //  Unloader Transfer 돌아가지 않게
+                                    Equipment.CycleStopped_UnloaderTransfer = true;
+                                }
                             }
                             break;
 
@@ -4330,8 +4338,12 @@ namespace QMC.Common.Modules
                             //  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
                             if (Equipment.CycleStop)
                             {
-                                //  Unloader Transfer 돌아가지 않게
-                                Equipment.CycleStopped_UnloaderTransfer = true;
+                                //  Loader 와 Work Stage 모두 Cycle Stop 되었을 때만 Unloader 를 cycle Stop 처리 한다.
+                                if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)
+                                {
+                                    //  Unloader Transfer 돌아가지 않게
+                                    Equipment.CycleStopped_UnloaderTransfer = true;
+                                }
                             }
                             break;
 

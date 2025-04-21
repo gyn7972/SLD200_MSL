@@ -1037,6 +1037,12 @@ namespace SLD200_MSL
             Equipment.CycleStopped_UnloaderTransfer = false;
             Equipment.CycleStopped_MainWork = false;
 
+            checkBox_Main_SocketStop.Checked = false;
+            checkBox_Main_CycleStop.Checked = false;
+            checkBox_Main_Loader_Transfer_Pause.Checked = false;
+            checkBox_Main_Loader_LPort_Pause.Checked = false;
+            checkBox_Main_Loader_RPort_Pause.Checked = false;
+
 
             //  선택 가공 인덱스를 전체 가공으로 변경
             workStage.m_nSelectedSocket_Index = -1;

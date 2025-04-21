@@ -9109,6 +9109,8 @@ namespace QMC.Common.Modules
             double lfVelocity = 0.0;
             double lfAccDec = 0.0;
 
+            double m_dDeviation = 0.0;
+
             //if ((m_nLaserDrilling_MainStep != (int)LaserDrilling_Step.None) ||
 
             //    ((m_nLaserPowerCal_Step >= (int)LaserPowerCal_Step.ThruHole_LaserParameter_Change_Start) && (m_nLaserPowerCal_Step <= (int)LaserPowerCal_Step.ThruHole_LaserParameter_Change_Complete)) ||
@@ -9348,11 +9350,14 @@ namespace QMC.Common.Modules
 
                 case (int)FlatnessMeasure_Step.FlatnessMeasure_LaserHeightValue_Get:                                                    //  높이값 가져오기
 
+                    //  Laser 값 저장
+                    Equipment.stFlatMeasurePos[m_nFlatnessMeasure_Type].LaserHeightValue[m_nFlatnessMeasure_Count] = m_dLaserHeightSensorSocket_Value;
+
                     if ((m_dLaserHeightSensorSocket_Value < -4.5) || (m_dLaserHeightSensorSocket_Value > 5.5) || (m_dLaserHeightSensorSocket_Value < -99.9))            //  잘못된 값은 사용하지 않는다.
                     {
                         m_strTemp = string.Format("데이터값 NG, Flatness Measurement Type Index ({0}), Position Index ({1}), Laser Height Value ({2:0.000})",
                                                     m_nFlatnessMeasure_Type, m_nFlatnessMeasure_Count, m_dLaserHeightSensorSocket_Value);
-
+                        
                         Log.Write("SLD-200", Equipment.User_Name, "Flatness Measurement", m_strTemp);
 
                         m_nFlatnessMeasure_Count++;     //  다음 위치
@@ -9383,7 +9388,7 @@ namespace QMC.Common.Modules
 
                     if (m_nHeightValue_OK_Count > 0)
                     {
-                        m_dHeightValue_Avg = m_dHeightValue_Sum / m_nHeightValue_OK_Count;                     //  Height Value Avg
+                        m_dHeightValue_Avg = m_dHeightValue_Sum / (double)m_nHeightValue_OK_Count;                     //  Height Value Avg
 
                         m_nFlatnessMeasure_Step = (int)FlatnessMeasure_Step.Complete;
                     }
@@ -9402,8 +9407,28 @@ namespace QMC.Common.Modules
 
                     if (m_nHeightValue_OK_Count > 0)
                     {
-                        m_strTemp += string.Format("\r\n\n   - Flatness Measurement Type Index ({0})\r\n   - 측정 위치 개수 ({1})\r\n   - Laser Height Value Min ({2:0.000})\r\n   - Max ({3:0.000})\r\n   - Avg ({4:0.000})",
-                                                    m_nFlatnessMeasure_Type, m_nFlatnessMeasure_Count, m_dHeightValue_Min_Value, m_dHeightValue_Max_Value, m_dHeightValue_Avg);
+                        m_strTemp += string.Format("\r\n\r\n   - Flatness Measurement Type Index ({0})\r\n   - 측정 위치 개수 ({1})\r\n   - 정상 측정 개수 ({2})\r\n\r\n",
+                                                    m_nFlatnessMeasure_Type, m_nFlatnessMeasure_Count, m_nHeightValue_OK_Count);
+
+                        m_dHeightValue_Avg = m_dHeightValue_Sum / (double)m_nHeightValue_OK_Count;                     //  Height Value Avg
+
+                        //  측정된 높이값 보여주기
+                        for ( int i = 0; i < 9; i++ )
+                        {
+                            if (Equipment.stFlatMeasurePos[m_nFlatnessMeasure_Type].LaserHeightValue[i] > -10.0)
+                            {
+                                m_strTemp += string.Format("   - Pos.{0} : {1:0.000}\r\n", i + 1, Equipment.stFlatMeasurePos[m_nFlatnessMeasure_Type].LaserHeightValue[i]);
+                            }
+                            else                                                                                        //  값이 -4.5 이하로 내려가면 측정 실패
+                            {
+                                m_strTemp += string.Format("   - Pos.{0} : Failed\r\n", i + 1);
+                            }
+                        }
+
+                        m_dDeviation = Math.Abs(m_dHeightValue_Max_Value - m_dHeightValue_Min_Value);
+
+                        m_strTemp += string.Format("\r\n   - Min. ({0:0.000})\r\n   - Max. ({1:0.000})\r\n   - Average ({2:0.000}\r\n\r\n   - Deviation ({3:0.000})",
+                                                    m_dHeightValue_Min_Value, m_dHeightValue_Max_Value, m_dHeightValue_Avg, m_dDeviation);
                     }
                     else
                     {
