@@ -24,7 +24,8 @@ using SpiralLab.Sirius;
 using Point = System.Drawing.Point;
 using System.Windows.Controls;
 using ListViewItem = System.Windows.Forms.ListViewItem;
-using QMC.Common.Parts; // AlarmKey가 정의된 네임스페이스 포함
+using Microsoft.Win32;
+using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 
 namespace SLD200_MSL
 {
@@ -126,16 +127,43 @@ namespace SLD200_MSL
             this.VisibleChanged += FormNew_Setup_VisibleChanged;
 
             //  장비 타입에 따라 Mask 축 추가 / 제거
-            //if (Equipment.Machine_LaserType_CO2)
-            //{
-            //    listBox_Setup_Motion_SelectAxis.Items.Clear();
+            if (Equipment.Machine_LaserType_CO2)
+            {
+                listBox_Setup_Motion_SelectAxis.Items.Clear();
 
-            //}
-            //else        //  UV
-            //{
-            //    listBox_Setup_Motion_SelectAxis.Items.Clear();
+                listBox_Setup_Motion_SelectAxis.Items.Add("Mask Y");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Mechanic Aligner X");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Mechanic Aligner Y");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Work Stage X");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Work Stage Y");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Work Head Z");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Loader R-Port Z");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Loader L-Port Z");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Loader Transfer X");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Loader Transfer Z");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Unloader R-Port Z");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Unloader L-Port Z");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Unloader Transfer X");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Unloader Transfer Z");
+            }
+            else        //  UV
+            {
+                listBox_Setup_Motion_SelectAxis.Items.Clear();
 
-            //}
+                listBox_Setup_Motion_SelectAxis.Items.Add("Mechanic Aligner X");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Mechanic Aligner Y");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Work Stage X");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Work Stage Y");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Work Head Z");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Loader R-Port Z");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Loader L-Port Z");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Loader Transfer X");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Loader Transfer Z");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Unloader R-Port Z");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Unloader L-Port Z");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Unloader Transfer X");
+                listBox_Setup_Motion_SelectAxis.Items.Add("Unloader Transfer Z");
+            }
 
             Axis_Parameter_Apply();
             Comm_Parameter_Apply();
@@ -1050,6 +1078,15 @@ namespace SLD200_MSL
             textBox_Setup_Option_DustCollector_WaitingTime.Text = Equipment.DustCollector_TurnOn_AfterStableTime.ToString();
 
 
+            //  저장 폴더
+            richTextBox_Recipe_TabRecipe_RecipeFileFolder.Text = Equipment.RecipeFilePath.ToString();
+            richTextBox_Recipe_TabRecipe_DrawingFileFolder.Text = Equipment.DrawingFilePath.ToString();
+
+
+            //  도면 렌더링 분해능
+            textBox_Setup_Option_Sirius_Drawing_Resolution.Text = Equipment.SiriusDrawing_Rendering_Resolution.ToString();
+
+
             //  Options
             checkBox_Setup_Option_DoorEnable.Checked = Equipment.Machine_Door_Enable;
             checkBox_Setup_Option_VacuumSensorEnable.Checked = Equipment.Machine_VacuumSensor_Enable;
@@ -1502,7 +1539,18 @@ namespace SLD200_MSL
 
             //  집진기 동작 후 대기 시간
             Equipment.DustCollector_TurnOn_AfterStableTime = Equipment.ToDouble(textBox_Setup_Option_DustCollector_WaitingTime.Text);
-            NativeMethods.WritePrivateProfileString("Dust_Collector", "After_TurnOn_StableTime", textBox_Setup_Option_DustCollector_WaitingTime.Text, strFIle);            
+            NativeMethods.WritePrivateProfileString("Dust_Collector", "After_TurnOn_StableTime", textBox_Setup_Option_DustCollector_WaitingTime.Text, strFIle);
+
+            //  레시피, 도면 폴더
+            Equipment.RecipeFilePath = richTextBox_Recipe_TabRecipe_RecipeFileFolder.Text;
+            NativeMethods.WritePrivateProfileString("File_Path", "RecipeFile", richTextBox_Recipe_TabRecipe_RecipeFileFolder.Text, strFIle);
+            Equipment.DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFileFolder.Text;
+            NativeMethods.WritePrivateProfileString("File_Path", "DrawingFile", richTextBox_Recipe_TabRecipe_DrawingFileFolder.Text, strFIle);
+
+            //  도면 렌더링 분해능
+            Equipment.SiriusDrawing_Rendering_Resolution = Equipment.ToInt(textBox_Setup_Option_Sirius_Drawing_Resolution.Text);
+            NativeMethods.WritePrivateProfileString("Sirius_Drawing", "Rendering_Resolution", textBox_Setup_Option_Sirius_Drawing_Resolution.Text, strFIle);
+            SpiralLab.Sirius.Config.AngleFactor = Equipment.SiriusDrawing_Rendering_Resolution;
 
             //  Scanner Calibration parameter
             Equipment.Scanner_Calibration_LaserFrequency = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserFrequency.Text);
@@ -1728,7 +1776,7 @@ namespace SLD200_MSL
         }
 
         private void button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show_Click(object sender, EventArgs e)
-        {
+        {           
             //  Scanner 와 Fine Camera 간의 Offset 값을 변경한다.
 
             Equipment.m_bVisionFormOpenMode_ScannerFineCamOffsetChange = true;

@@ -397,17 +397,63 @@ namespace QMC.Common.Modules
 
         #region Single Action (Loader Transfer)
 
-        public int m_nLoader_Transfer_Step { set; get; }                    //  Transfer Step
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>
+        /// 
+        ///     Stop -> Start 시 동작 Sequence 를 재설정 하기 위한 변수
+        /// 
+        /// </summary>
+        /// 
+        public int m_nLoader_Transfer_Restart_MoveType { set; get; }                        //  어떤 작업을 하다가 멈춘 것인지?
+                                                                                            //      1. Stacker0 에서 Module Pick Up
+                                                                                            //      2. Stacker1 에서 Module Pick Up
+                                                                                            //      3. M-Aligner 에서 Module Pick Up
+                                                                                            //      4. M-Aligner 에 Module Put Down
+                                                                                            //      5. Work Stage 에 Module Put Down
+        public int m_nLD_RESTORE_Transfer_Step { set; get; } = 0;
+        public int m_nLD_RESTORE_Transfer_MoveType { set; get; } = 0;
+        public bool m_bLD_RESTORE_Transfer_toWorkStage_Module_PutDown_Complete_Flag { set; get; } = false;      //  Work Stage 에 Module Put Down 완료 여부
+        public bool m_bLD_RESTORE_Transfer_fromStacker0_Module_PickUp_Complete_Flag { set; get; } = false;      //  Stacker0 에서 Module Pick Up 완료 여부
+        public bool m_bLD_RESTORE_Transfer_fromStacker1_Module_PickUp_Complete_Flag { set; get; } = false;      //  Stacker1 에서 Module Pick Up 완료 여부
+        public bool m_bLD_RESTORE_Transfer_fromMAligner_Module_PickUp_Complete_Flag { set; get; } = false;      //  M-Aligner 에서 Module Pick Up 완료 여부
+        public bool m_bLD_RESTORE_Transfer_toMAligner_Module_PutDown_Complete_Flag { set; get; } = false;       //  M-Aligner 에 Module Put Down 완료 여부
+        public int m_nLD_RESTORE_MainWork_Cycle_Step { set; get; } = 0;
+        public int m_nLD_RESTORE_DryRun_Cycle_Step { set; get; } = 0;
+        public int m_nLD_RESTORE_LaserDrilling_Cycle_Step { set; get; } = 0;
+        public bool m_bLD_RESTORE_MainWork_Cycle_Complete { set; get; } = false;
+
+        public bool m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete { set; get; }       //  Stacker0 에서 Module Pick Up 완료 여부
+        public bool m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete { set; get; }       //  Stacker1 에서 Module Pick Up 완료 여부
+        public bool m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete { set; get; }       //  M-Aligner 에서 Module Pick Up 완료 여부
+        public bool m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete { set; get; }        //  M-Aligner 에 Module Put Down 완료 여부
+        public bool m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete { set; get; }       //  Work Stage 에 Module Put Down 완료 여부
+
+        /// <summary>
+        /// 
+        ///     Stop -> Start 시 동작 Sequence 를 재설정 하기 위한 변수
+        /// 
+        /// </summary>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
         //  자동 운전을 위한 변수
-        public bool m_bLoader_Transfer_ModulePickUpfromStacker_Complete { set; get; }   //  Stacker 에서 Module Pick Up 완료 여부
-        public bool m_bLoader_Transfer_ModulePickUpfromMAligner_Complete { set; get; }  //  M-Aligner 에서 Module Pick Up 완료 여부
-        public bool m_bLoader_Transfer_ModulePutDowntoMAligner_Complete { set; get; }   //  M-Aligner 에 Module Put Down 완료 여부
-        public bool m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete { set; get; }  //  Work Stage 에 Module Put Down 완료 여부
+        public bool m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete { set; get; }              //  Stacker0 에서 Module Pick Up 완료 여부
+        public bool m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete { set; get; }              //  Stacker1 에서 Module Pick Up 완료 여부
+        public bool m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete { set; get; }              //  M-Aligner 에서 Module Pick Up 완료 여부
+        public bool m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete { set; get; }               //  M-Aligner 에 Module Put Down 완료 여부
+        public bool m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete { set; get; }              //  Work Stage 에 Module Put Down 완료 여부
 
 
+        public int m_nLoader_Transfer_Step { set; get; }                    //  Transfer Step
         public int m_nLoaderTransferMoveType { set; get; }                  //  Transfer Move Type
+        public bool m_bLD_Transfer_fromStacker0_Module_PickUp_Complete_Flag { set; get; } = false;          //  Stacker0 에서 Module Pick Up 완료 여부
+        public bool m_bLD_Transfer_fromStacker1_Module_PickUp_Complete_Flag { set; get; } = false;          //  Stacker1 에서 Module Pick Up 완료 여부
+        public bool m_bLD_Transfer_fromMAligner_Module_PickUp_Complete_Flag { set; get; } = false;          //  M-Aligner 에서 Module Pick Up 완료 여부
+        public bool m_bLD_Transfer_toWorkStage_Module_PutDown_Complete_Flag { set; get; } = false;          //  Work Stage 에 Module Put Down 완료 여부
+        public bool m_bLD_Transfer_toMAligner_Module_PutDown_Complete_Flag { set; get; } = false;           //  M-Aligner 에 Module Put Down 완료 여부
+
         public enum LoaderTransferMoveType : int
         {
             Cycle_None = -1,
@@ -685,10 +731,11 @@ namespace QMC.Common.Modules
             m_bStacker0_Complete = false;
             m_bStacker1_Complete = false;
 
-            m_bLoader_Transfer_ModulePickUpfromStacker_Complete = false;                //  Stacker 에서 Module Pick Up 완료 여부
-            m_bLoader_Transfer_ModulePickUpfromMAligner_Complete = false;               //  M-Aligner 에서 Module Pick Up 완료 여부
-            m_bLoader_Transfer_ModulePutDowntoMAligner_Complete = false;                //  M-Aligner 에 Module Put Down 완료 여부
-            m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete = false;               //  Work Stage 에 Module Put Down 완료 여부
+            m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = false;               //  Stacker0 에서 Module Pick Up 완료 여부
+            m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = false;               //  Stacker1 에서 Module Pick Up 완료 여부
+            m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;               //  M-Aligner 에서 Module Pick Up 완료 여부
+            m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = false;                //  M-Aligner 에 Module Put Down 완료 여부
+            m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = false;               //  Work Stage 에 Module Put Down 완료 여부
 
             m_bStacker0_Run_byUser = false;                     //  Stacker0 Module Pick Up Cycle
             m_bStacker1_Run_byUser = false;                     //  Stacker1 Module Pick Up Cycle
@@ -925,6 +972,230 @@ namespace QMC.Common.Modules
             //    ACS_Motion.CloseComm();
             //}
         }
+        #endregion
+
+
+
+        #region Stop 후 Start 시 동작 Sequence 를 재설정 하기 위한 함수
+
+        public void Loader_Transfer_Restart_MoveType_Check()
+        {
+            //  Stop 했을 때의 조건들을 조합하여 시작 조건 결정
+
+            //  1. Loader Transfer Cycle 의 Step
+            //  2. Transfer 의 Move Type
+            //  3. Module Pick Up 완료 여부
+            //  4. Loader 가 Stacker 에서 Module 을 Pick Up 했는지 여부
+            //  5. Loader 가 M-Aligner 에 Module 을 Put Down 했는지 여부
+            //  6. Loader 가 M-Aligner 에서 Module 을 Pick Up 했는지 여부
+            //  7. Loader 가 Stage 에 Module 을 Put Down 했는지 여부
+            //  8. Main Work Cycle 의 동작 여부
+            //  9. Main Work Cycle 의 완료 여부
+            //  10. Main Work Cycle 이 완료되었다면, 양불 결과
+
+
+            //int m_nLD_RESTORE_Transfer_Step { set; get; } = 0;
+            //int m_nLD_RESTORE_Transfer_MoveType { set; get; } = 0;
+            //bool m_bLD_RESTORE_Transfer_toWorkStage_Module_PutDown_Complete_Flag { set; get; } = false;      //  Work Stage 에 Module Put Down 완료 여부
+            //bool m_bLD_RESTORE_Transfer_fromStacker0_Module_PickUp_Complete_Flag { set; get; } = false;      //  Stacker0 에서 Module Pick Up 완료 여부
+            //bool m_bLD_RESTORE_Transfer_fromStacker1_Module_PickUp_Complete_Flag { set; get; } = false;      //  Stacker1 에서 Module Pick Up 완료 여부
+            //bool m_bLD_RESTORE_Transfer_fromMAligner_Module_PickUp_Complete_Flag { set; get; } = false;      //  M-Aligner 에서 Module Pick Up 완료 여부
+            //bool m_bLD_RESTORE_Transfer_toMAligner_Module_PutDown_Complete_Flag { set; get; } = false;       //  M-Aligner 에 Module Put Down 완료 여부
+            //int m_nLD_RESTORE_MainWork_Cycle_Step { set; get; } = 0;
+            //int m_nLD_RESTORE_DryRun_Cycle_Step { set; get; } = 0;
+            //int m_nLD_RESTORE_LaserDrilling_Cycle_Step { set; get; } = 0;
+            //bool m_bLD_RESTORE_MainWork_Cycle_Complete { set; get; } = false;
+            //bool m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete { set; get; }       //  Stacker0 에서 Module Pick Up 완료 여부
+            //bool m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete { set; get; }       //  Stacker1 에서 Module Pick Up 완료 여부
+            //bool m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete { set; get; }       //  M-Aligner 에서 Module Pick Up 완료 여부
+            //bool m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete { set; get; }        //  M-Aligner 에 Module Put Down 완료 여부
+            //bool m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete { set; get; }       //  Work Stage 에 Module Put Down 완료 여부
+
+
+            //  Auto Run 시 동작 조건을 결정하는 변수들. 위 Restore 조건으로 이 변수들의 값을 결정해서 Restart 하도록 한다.
+            //bool m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete { set; get; }              //  Stacker0 에서 Module Pick Up 완료 여부
+            //bool m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete { set; get; }              //  Stacker1 에서 Module Pick Up 완료 여부
+            //bool m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete { set; get; }              //  M-Aligner 에서 Module Pick Up 완료 여부
+            //bool m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete { set; get; }               //  M-Aligner 에 Module Put Down 완료 여부
+            //bool m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete { set; get; }              //  Work Stage 에 Module Put Down 완료 여부
+
+
+
+            //  1. Laser Drilling 이 진행중이면? Loader 모든 동작 Stop
+            if (m_nLD_RESTORE_LaserDrilling_Cycle_Step != (int)WorkStage.LaserDrilling_Step.None)
+            {
+                m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = false;                           //  Stacker0 에서 Module Pick Up 완료 여부
+                m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = false;                           //  Stacker1 에서 Module Pick Up 완료 여부
+                m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;                           //  M-Aligner 에서 Module Pick Up 완료 여부
+                m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = false;                            //  M-Aligner 에 Module Put Down 완료 여부
+                m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = false;                           //  Work Stage 에 Module Put Down 완료 여부
+
+                m_bStacker0_Complete = true;                //  Stacker 는 false 조건에 동작하기 때문에, Transfer 의 동작이 없을 때 동작시키도록 조건을 걸어준다.
+                m_bStacker1_Complete = true;                //  Stacker 는 false 조건에 동작하기 때문에, Transfer 의 동작이 없을 때 동작시키도록 조건을 걸어준다.
+            }
+            //  2. Main Work Cycle 이 진행중이면? Loader 모든 동작 Stop
+            else if (m_nLD_RESTORE_MainWork_Cycle_Step != (int)WorkStage.MainWork_Step.None)
+            {
+                m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = false;                           //  Stacker0 에서 Module Pick Up 완료 여부
+                m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = false;                           //  Stacker1 에서 Module Pick Up 완료 여부
+                m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;                           //  M-Aligner 에서 Module Pick Up 완료 여부
+                m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = false;                            //  M-Aligner 에 Module Put Down 완료 여부
+                m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = false;                           //  Work Stage 에 Module Put Down 완료 여부
+
+                m_bStacker0_Complete = true;                //  Stacker 는 false 조건에 동작하기 때문에, Transfer 의 동작이 없을 때 동작시키도록 조건을 걸어준다.
+                m_bStacker1_Complete = true;                //  Stacker 는 false 조건에 동작하기 때문에, Transfer 의 동작이 없을 때 동작시키도록 조건을 걸어준다.
+            }
+            //  3. Loader Transfer Cycle 이 None 상태이면, 동작이 없던 상태이므로 기존 조건들 그대로 적용하여 Start 한다. 
+            else if (m_nLD_RESTORE_Transfer_Step == (int)Loader_Transfer_Step.None)
+            {
+                m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete;             //  Stacker0 에서 Module Pick Up 완료 여부
+                m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete;             //  Stacker1 에서 Module Pick Up 완료 여부
+                m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete;             //  M-Aligner 에서 Module Pick Up 완료 여부
+                m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete;               //  M-Aligner 에 Module Put Down 완료 여부
+                m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete;             //  Work Stage 에 Module Put Down 완료 여부
+
+                m_bStacker0_Complete = false;               //  Stacker 는 false 조건에 동작
+                m_bStacker1_Complete = false;               //  Stacker 는 false 조건에 동작
+            }
+            //  4. Loader Transfer Cycle 이 None 이 아니면, 뭔가 동작을 하던 상황
+            else
+            {
+                //  4-1. Loader Transfer Cycle 이 Stacker0 에서 Module Pick Up 인 경우
+                if (m_nLD_RESTORE_Transfer_MoveType == (int)LoaderTransferMoveType.Cycle_Stacker0_PickUp)
+                {
+                    //  4-1-1. Stacker0 에서 Module Pick Up 완료했을 경우 --> M-Aligner 에 Module 을 내려놓는 Cycle 진행해야 한다.
+                    if (m_bLD_RESTORE_Transfer_fromStacker0_Module_PickUp_Complete_Flag)
+                    {
+                        m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = true;
+                        m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = false;
+
+                        m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_MAligner;
+
+                        m_bMAlignZone_ModuleExist = false;
+
+                        m_bStacker0_Complete = false;
+                    }
+                    //  4-1-2. Stacker0 에서 Module Pick Up 완료하지 못했을 경우 --> Stacker0 에서 Module Pick Up Cycle 재 진행
+                    else
+                    {
+                        m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = false;
+                        m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
+
+                        m_bStacker0_Complete = true;
+
+                        m_bMAlignZone_ModuleExist = false;
+                    }
+                }
+                //  4-2. Loader Transfer Cycle 이 Stacker1 에서 Module Pick Up 인 경우
+                else if (m_nLD_RESTORE_Transfer_MoveType == (int)LoaderTransferMoveType.Cycle_Stacker1_PickUp)
+                {
+                    //  4-2-1. Stacker1 에서 Module Pick Up 완료했을 경우 --> M-Aligner 에 Module 을 내려놓는 Cycle 진행해야 한다.
+                    if (m_bLD_RESTORE_Transfer_fromStacker1_Module_PickUp_Complete_Flag)
+                    {
+                        m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = true;
+                        m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = false;
+
+                        m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_MAligner;
+
+                        m_bMAlignZone_ModuleExist = false;
+
+                        m_bStacker1_Complete = false;
+                    }
+                    //  4-2-2. Stacker1 에서 Module Pick Up 완료하지 못했을 경우 --> Stacker1 에서 Module Pick Up Cycle 재 진행
+                    else
+                    {
+                        m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = false;
+                        m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
+                        
+                        m_bStacker1_Complete = true;
+
+                        m_bMAlignZone_ModuleExist = false;
+                    }
+                }
+                //  4-3. Loader Transfer Cycle 이 M-Aligner 에 Module Put Down 인 경우
+                else if (m_nLD_RESTORE_Transfer_MoveType == (int)LoaderTransferMoveType.Cycle_MAligner_PutDown)
+                {
+                    //  4-3-1. M-Aligner 에 Module Put Down 완료했을 경우 --> M-Aligner 을 진행한다.
+                    if (m_bLD_RESTORE_Transfer_toMAligner_Module_PutDown_Complete_Flag)
+                    {
+                        m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = true;
+                        m_bMAlignZone_ModuleExist = true;                       //  M-Aligner 에 모듈을 내려놨으므로
+
+                        //  M-Align 시작
+                        m_nMAlign_Step = (int)MAlign_Step.Start;
+                    }
+                    //  4-3-2. M-Aligner 에 Module Put Down 완료하지 못했을 경우 --> M-Aligner 에 Module Put Down Cycle 재 진행
+                    else
+                    {
+                        m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete;         //  둘 중에 하나는 true 겠지...
+                        m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete;         //  둘 중에 하나는 true 겠지...
+
+                        m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = false;
+                        
+                        m_bMAlignZone_ModuleExist = false;
+
+                        m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_MAligner;
+                    }
+                }
+                //  4-4. Loader Transfer Cycle 이 M-Aligner 에서 Module Pick Up 인 경우
+                else if (m_nLD_RESTORE_Transfer_MoveType == (int)LoaderTransferMoveType.Cycle_MAligner_PickUp)
+                {
+                    //  4-4-1. M-Aligner 에서 Module Pick Up 완료했을 경우 --> Work Stage 에 Module 을 내려놓는 Cycle 진행해야 한다.
+                    if (m_bLD_RESTORE_Transfer_fromMAligner_Module_PickUp_Complete_Flag)
+                    {
+                        m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = true;
+                        m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = false;
+                        m_bMAlignZone_ModuleExist = false;
+                        m_bMAlign_Complete = false;
+
+                        m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_Stage;
+                    }
+                    //  4-4-2. M-Aligner 에서 Module Pick Up 완료하지 못했을 경우 --> M-Aligner 에서 Module Pick Up Cycle 재 진행
+                    else
+                    {
+                        m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = true;
+                        m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;
+
+                        m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickUp_MAligner;
+
+                        workStage.m_bMainWorkCycle_Complete = false;
+
+                        m_bMAlignZone_ModuleExist = true;
+                    }
+                }
+                //  4-5. Loader Transfer Cycle 이 Work Stage 에 Module Put Down 인 경우
+                else if (m_nLD_RESTORE_Transfer_MoveType == (int)LoaderTransferMoveType.Cycle_WorkStage_PutDown)
+                {
+                    //  4-5-1. Work Stage 에 Module Put Down 완료했을 경우 --> Main Work Cycle 진행해야 한다.
+                    if (m_bLD_RESTORE_Transfer_toWorkStage_Module_PutDown_Complete_Flag)
+                    {
+                        //  Work Stage 에 모듈을 내려놨으니 도면을 다시 로드해야 한다. (DryRun 이면 안함)
+                        if (!workStage.m_bMainWorkCycle_DryRun)
+                        {
+                            workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
+                        }
+
+                        m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = true;
+                        m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;
+                        m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = false;
+                        m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = false;
+
+                        m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
+
+                        workStage.m_bDryRun_Complete = false;
+                        workStage.m_bLaserDrilling_Complete = false;
+                    }
+                    //  4-5-2. Work Stage 에 Module Put Down 완료하지 못했을 경우 --> Work Stage 에 Module Put Down Cycle 재 진행
+                    else
+                    {
+                        m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = true;
+                        m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = false;
+                        m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_Stage;
+                    }
+                }
+            }
+        }
+
         #endregion
 
 
@@ -2706,7 +2977,7 @@ namespace QMC.Common.Modules
                 m_nMAlign_Step == (int)MAlign_Step.None) 
             {
                 //  Stacker0 에서 Module 을 Pick Up 하기 위한 조건
-                if (!m_bLoader_Transfer_ModulePickUpfromStacker_Complete &&
+                if (!m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete &&
 
                     (m_nStacker0_ModulePickupWaitingPos_Step == (int)StackerModulePickupWaitingPos_Step.None) &&
 
@@ -2720,7 +2991,7 @@ namespace QMC.Common.Modules
                     m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Start;
                 }
                 //  Stacker1 에서 Module 을 Pick Up 하기 위한 조건
-                else if (!m_bLoader_Transfer_ModulePickUpfromStacker_Complete &&
+                else if (!m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete &&
 
                     (m_nStacker1_ModulePickupWaitingPos_Step == (int)StackerModulePickupWaitingPos_Step.None) &&
 
@@ -2734,8 +3005,8 @@ namespace QMC.Common.Modules
                     m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Start;
                 }
                 //  M-Aligner 에 Module 을 Put Down 하기 위한 조건
-                else if (m_bLoader_Transfer_ModulePickUpfromStacker_Complete &&
-                    !m_bLoader_Transfer_ModulePutDowntoMAligner_Complete && 
+                else if ((m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete || m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete) &&
+                    !m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete && 
 
                     (m_nMAlign_Step == (int)MAlign_Step.None) &&
 
@@ -2747,8 +3018,8 @@ namespace QMC.Common.Modules
                     m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Start;
                 }
                 //  M-Aligner 에서 Module 을 Pick Up 하기 위한 조건
-                else if (m_bLoader_Transfer_ModulePutDowntoMAligner_Complete &&
-                    !m_bLoader_Transfer_ModulePickUpfromMAligner_Complete &&
+                else if (m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete &&
+                    !m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete &&
 
                     (m_nMAlign_Step == (int)MAlign_Step.None) &&
                     m_bMAlign_Complete &&
@@ -2771,8 +3042,8 @@ namespace QMC.Common.Modules
                     m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Start;
                 }
                 //  Work Stage 에 Module 을 Put Down 하기 위한 조건
-                else if (m_bLoader_Transfer_ModulePickUpfromMAligner_Complete &&
-                    !m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete &&
+                else if (m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete &&
+                    !m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete &&
 
                     (unloader.m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None) &&
 
@@ -3305,6 +3576,16 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum On 완료");
 
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  복원 지점 체크용 (Stacker0 에서 Module Pick Up 완료) - Picker 공압이 형성되었으므로, Z 축을 올리면 자재가 들어올려짐
+                        //
+                        m_bLD_Transfer_fromStacker0_Module_PickUp_Complete_Flag = true;
+                        //
+                        //  복원 지점 체크용 (Stacker0 에서 Module Pick Up 완료)
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
+
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Move_ReadyPos2_1stStep;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 10000)
@@ -3420,7 +3701,39 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 2단계 이동 완료");
 
-                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
+                        if (Equipment.Machine_VacuumSensor_Enable)
+                        {
+                            //  여기서 Module 을 정상적으로 들어 올렸는지 한번 더 체크
+                            if (loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
+                                loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+                            {
+                                m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, Module Picker 공압이 형성되지 않음");
+
+
+                                //////////////////////////////////////////////////////////////////////////////////////////
+                                //  복원 지점 체크용 (Stacker0 에서 Module Pick Up 실패) - Picker 공압이 형성되지 않았음
+                                //
+                                m_bLD_Transfer_fromStacker0_Module_PickUp_Complete_Flag = false;
+                                //
+                                //  복원 지점 체크용 (Stacker0 에서 Module Pick Up 실패)
+                                //////////////////////////////////////////////////////////////////////////////////////////
+
+
+                                //  알람 정지 (LED Bar - Red Blink)
+                                Equipment.MachineStop_byAlarm = true;
+
+                                m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
+                                MessageBox.Show("Transfer Z 축, Module Pickup 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                        else
+                        {
+                            m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
+                        }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
                     {
@@ -3743,6 +4056,16 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum On 완료");
 
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  복원 지점 체크용 (Stacker1 에서 Module Pick Up 완료) - Picker 공압이 형성되었으므로, Z 축을 올리면 자재가 들어올려짐
+                        //
+                        m_bLD_Transfer_fromStacker1_Module_PickUp_Complete_Flag = true;
+                        //
+                        //  복원 지점 체크용 (Stacker0 에서 Module Pick Up 완료)
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
+
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_1stStep;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 10000)
@@ -3858,7 +4181,41 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 2단계 이동 완료");
 
-                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
+
+                        if (Equipment.Machine_VacuumSensor_Enable)
+                        {
+                            //  여기서 Module 을 정상적으로 들어 올렸는지 한번 더 체크
+                            if (loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
+                                loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+                            {
+                                m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, Module Picker 공압이 형성되지 않음");
+
+
+                                //////////////////////////////////////////////////////////////////////////////////////////
+                                //  복원 지점 체크용 (Stacker1 에서 Module Pick Up 실패) - Picker 공압이 형성되지 않았음
+                                //
+                                m_bLD_Transfer_fromStacker1_Module_PickUp_Complete_Flag = false;
+                                //
+                                //  복원 지점 체크용 (Stacker0 에서 Module Pick Up 완료)
+                                //////////////////////////////////////////////////////////////////////////////////////////
+
+
+                                //  알람 정지 (LED Bar - Red Blink)
+                                Equipment.MachineStop_byAlarm = true;
+
+                                m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
+
+                                MessageBox.Show("Transfer Z 축, Module Pickup 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                        else
+                        {
+                            m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
+                        }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
                     {
@@ -4237,6 +4594,16 @@ namespace QMC.Common.Modules
                     loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Inner, true);
                     loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Outer, true);
 
+
+                    //////////////////////////////////////////////////////////////////////////////////////////
+                    //  복원 지점 체크용 (M-Aligner 에서 Module Pick Up 완료) - Picker 공압이 형성되었으므로, Z 축을 올리면 자재가 들어올려짐
+                    //
+                    m_bLD_Transfer_fromMAligner_Module_PickUp_Complete_Flag = true;
+                    //
+                    //  복원 지점 체크용 (M-Aligner 에서 Module Pick Up 완료)
+                    //////////////////////////////////////////////////////////////////////////////////////////
+
+
                     TickCount_Start((int)TickType.TICK_LDTR);
 
                     m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.MAlignerPickUp_MAligner_Vacuum_OffCheck;
@@ -4505,7 +4872,41 @@ namespace QMC.Common.Modules
 
                         m_bMAlign_Complete = false;                                             //  M-Aligner 에서 자재를 가져갔으므로 false 로 변경
 
-                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
+
+                        if (Equipment.Machine_VacuumSensor_Enable)
+                        {
+                            //  여기서 모듈을 정상적으로 Pick Up 했는지 확인
+                            if (loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
+                                loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner 에서 Module Pick Up 완료.");
+
+                                m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner 에서 Module Pick Up 실패.");
+
+
+                                //////////////////////////////////////////////////////////////////////////////////////////
+                                //  복원 지점 체크용 (M-Aligner 에서 Module Pick Up 실패) - Picker 공압이 형성되지 않음.
+                                //
+                                m_bLD_Transfer_fromMAligner_Module_PickUp_Complete_Flag = false;
+                                //
+                                //  복원 지점 체크용 (M-Aligner 에서 Module Pick Up 실패)
+                                //////////////////////////////////////////////////////////////////////////////////////////
+
+
+                                //  알람 정지 (LED Bar - Red Blink)
+                                Equipment.MachineStop_byAlarm = true;
+
+                                m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;                                
+                            }
+                        }
+                        else
+                        {
+                            m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
+                        }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
                     {
@@ -4910,6 +5311,16 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum Off 완료");
 
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  복원 지점 체크용 (Work Stage 에 Module Put Down 완료) - Work Stage 공압이 형성되었고, Picker 공압이 파기되었으므로, 자재가 Stage 에 안착되었다고 본다.
+                        //
+                        m_bLD_Transfer_toWorkStage_Module_PutDown_Complete_Flag = true;
+                        //
+                        //  복원 지점 체크용 (Work Stage 에 Module Put Down 완료)
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
+
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_ReadyPos2_1stStep;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 10000)
@@ -5025,7 +5436,41 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 2단계 이동 완료");
 
-                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
+
+                        if (Equipment.Machine_VacuumSensor_Enable)
+                        {
+                            //  여기서 Module 을 정상적으로 내려놓았는지 다시 체크
+                            if (!loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) &&
+                                !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Module 을 Work Stage 에 정상적으로 내려놓음");
+
+                                //  Out.
+                                m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Module 을 Work Stage 에 정상적으로 내려놓지 못함");
+
+
+                                //////////////////////////////////////////////////////////////////////////////////////////
+                                //  복원 지점 체크용 (Work Stage 에 Module Put Down 실패) - Picker 공압이 파기되지 않음
+                                //
+                                m_bLD_Transfer_toWorkStage_Module_PutDown_Complete_Flag = false;
+                                //
+                                //  복원 지점 체크용 (Work Stage 에 Module Put Down 실패)
+                                //////////////////////////////////////////////////////////////////////////////////////////
+
+                                //  알람 정지 (LED Bar - Red Blink)
+                                Equipment.MachineStop_byAlarm = true;
+
+                                m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
+                            }
+                        }
+                        else
+                        {
+                            m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
+                        }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
                     {
@@ -5449,6 +5894,16 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum Off 완료");
 
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  복원 지점 체크용 (M-Aligner 에 Module Put Down 완료) - M-Aligner 에 공압이 형성되었고, Picker 공압이 파기되었으므로, 자재가 M-Aligner 에 안착되었다고 본다.
+                        //
+                        m_bLD_Transfer_toMAligner_Module_PutDown_Complete_Flag = true;
+                        //
+                        //  복원 지점 체크용 (M-Aligner 에 Module Put Down 완료)
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
+
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.MAlignerPutDown_TransferZ_Move_ReadyPos2_1stStep;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 10000)
@@ -5656,7 +6111,7 @@ namespace QMC.Common.Modules
                             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Stacker0 에서 Module Pick Up 완료");
                             m_strTemp = "LD Transfer, Stacker0 에서 Module Pick Up 완료";
 
-                            m_bLoader_Transfer_ModulePickUpfromStacker_Complete = true;
+                            m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = true;
                             m_bStacker0_Complete = false;
 
                             m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_MAligner;
@@ -5666,7 +6121,7 @@ namespace QMC.Common.Modules
                             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Stacker1 에서 Module Pick Up 완료");
                             m_strTemp = "LD Transfer, Stacker1 에서 Module Pick Up 완료";
 
-                            m_bLoader_Transfer_ModulePickUpfromStacker_Complete = true;
+                            m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = true;
                             m_bStacker1_Complete = false;
 
                             m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_MAligner;
@@ -5676,7 +6131,7 @@ namespace QMC.Common.Modules
                             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner 에 Module Put Down 완료");
                             m_strTemp = "LD Transfer, M-Aligner 에 Module Put Down 완료";
 
-                            m_bLoader_Transfer_ModulePutDowntoMAligner_Complete = true;
+                            m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = true;
                             //m_bLoader_Transfer_ModulePickUpfromStacker_Complete = false;
                             m_bMAlignZone_ModuleExist = true;
                             //m_bMAlign_Complete = false;
@@ -5688,8 +6143,8 @@ namespace QMC.Common.Modules
                             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner 에서 Module Pick Up 완료");
                             m_strTemp = "LD Transfer, M-Aligner 에서 Module Pick Up 완료";
 
-                            m_bLoader_Transfer_ModulePickUpfromMAligner_Complete = true;
-                            m_bLoader_Transfer_ModulePutDowntoMAligner_Complete = false;
+                            m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = true;
+                            m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = false;
                             m_bMAlignZone_ModuleExist = false;
                             m_bMAlign_Complete = false;
 
@@ -5706,26 +6161,27 @@ namespace QMC.Common.Modules
                                 workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
                             }
 
-                            m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete = true;
-                            m_bLoader_Transfer_ModulePickUpfromMAligner_Complete = false;
-                            m_bLoader_Transfer_ModulePickUpfromStacker_Complete = false;
+                            m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = true;
+                            m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;
+                            m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = false;
+                            m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = false;
 
                             m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
 
                             workStage.m_bDryRun_Complete = false;
                             workStage.m_bLaserDrilling_Complete = false;
+
+
+                            //  Cycle Stop 이면?   --> Loader 에게 Cycle Stop 은, Stage 에 Module 을 갖다 놓으면 Cycle 완료
+                            if (Equipment.CycleStop)
+                            {
+                                //  Loader Transfer 돌아가지 않게
+                                Equipment.CycleStopped_LoaderTransfer = true;
+                            }
                             break;
                     }
 
                     m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
-
-
-                    //  Cycle Stop 이면?
-                    if (Equipment.CycleStop)
-                    {
-                        //  Loader Transfer 돌아가지 않게
-                        Equipment.CycleStopped_LoaderTransfer = true;
-                    }
 
 
                     //  Seq. Test 일 경우
@@ -6394,7 +6850,7 @@ namespace QMC.Common.Modules
             Equipment.m_bMainProcessStatus_LD_Module_MAlignerPickUp_Complete = m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_Stage ? true : false;
 
             //  Work Stage 에 Module 을 내려놓는  단계 완료
-            Equipment.m_bMainProcessStatus_LD_Module_WorkStagePutDown_Complete = m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete && (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker) ? true : false;
+            Equipment.m_bMainProcessStatus_LD_Module_WorkStagePutDown_Complete = m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete && (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker) ? true : false;
             //  메인 화면 갱신용 변수
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

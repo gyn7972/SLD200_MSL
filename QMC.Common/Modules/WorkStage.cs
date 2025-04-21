@@ -269,10 +269,15 @@ namespace QMC.Common.Modules
             LayerHole4,                         //  홀 가공
             LayerHole5,                         //  홀 가공
             LayerHole6,                         //  홀 가공
+            LayerHole7,                         //  홀 가공
+            LayerHole8,                         //  홀 가공
+            LayerHole9,                         //  홀 가공
+            LayerHole10,                        //  홀 가공
             LayerRect,                          //  칩 외곽선 가공
             LayerOutline,                       //  모듈 외곽선 가공
             LayerMarking,                       //  마킹 가공
             LayerFiducial,                      //  얼라인 마크
+            LayerThruHole,                      //  쓰루홀 가공
         }
 
         public struct stDrawingHoleParam                                        //  Hole (Circle, Arc) 파라미터
@@ -289,6 +294,10 @@ namespace QMC.Common.Modules
         public stDrawingHoleParam[] m_stDrawing_Hole4;                          //  Hole4 데이터
         public stDrawingHoleParam[] m_stDrawing_Hole5;                          //  Hole5 데이터
         public stDrawingHoleParam[] m_stDrawing_Hole6;                          //  Hole6 데이터
+        public stDrawingHoleParam[] m_stDrawing_Hole7;                          //  Hole7 데이터
+        public stDrawingHoleParam[] m_stDrawing_Hole8;                          //  Hole8 데이터
+        public stDrawingHoleParam[] m_stDrawing_Hole9;                          //  Hole9 데이터
+        public stDrawingHoleParam[] m_stDrawing_Hole10;                         //  Hole10 데이터
         public PointD m_Drawing_Hole1_Center;                                   //  Hole1 데이터의 중심 좌표
         public int m_nDrawing_Hole1Count;                                       //  Hole1 데이터 개수
         public int m_nDrawing_Hole2Count;                                       //  Hole2 데이터 개수
@@ -296,6 +305,13 @@ namespace QMC.Common.Modules
         public int m_nDrawing_Hole4Count;                                       //  Hole4 데이터 개수
         public int m_nDrawing_Hole5Count;                                       //  Hole5 데이터 개수
         public int m_nDrawing_Hole6Count;                                       //  Hole6 데이터 개수
+        public int m_nDrawing_Hole7Count;                                       //  Hole7 데이터 개수
+        public int m_nDrawing_Hole8Count;                                       //  Hole8 데이터 개수
+        public int m_nDrawing_Hole9Count;                                       //  Hole9 데이터 개수
+        public int m_nDrawing_Hole10Count;                                      //  Hole10 데이터 개수
+
+        public stDrawingHoleParam[] m_stDrawing_Thruhole;                       //  Thruhole 데이터
+        public int m_nDrawing_ThruholeCount;                                    //  Thruhole 데이터 개수
 
         public struct stDrawingRectParam                                        //  Rect 파라미터
         {
@@ -741,6 +757,8 @@ namespace QMC.Common.Modules
 
             public PointD[] dEdgePoint;                 //  가공 객체의 Edge 좌표 (PolyLine, Rect 등.... Circle 의 경우 Center 좌표)
             public int nEdgePointNum;                   //  가공 객체의 Edge 개수
+
+            public PointD dObjectCenter;                //  가공 객체의 Center 좌표
 
             public stArc stArcData;                     //  Arc 데이터
 
@@ -2160,12 +2178,20 @@ namespace QMC.Common.Modules
 
         #region Main Cycle
 
+        public enum MainCycle_Result
+        {
+            None = 0,
+            OK,
+            NG,
+        }
+
         public int m_nMainWork_Step { set; get; }                            //  Main Work Step
         public int m_nMainWorkCycleType { set; get; }                       //  Main Work Cycle Type
         public bool m_bMainWorkCycle_DryRun { set; get; }                   //  Main Work Cycle Dry Run 여부
         public bool m_bMainWorkCycle_Complete { set; get; }                 //  Laser Drilling Cycle 완료 확인
                                                                             //  WorkStatus 를 "WORK_DONE" 으로 세팅
-        public bool m_bMainWorkCycle_ResultOK { set; get; }                 //  Laser Drilling Cycle 결과 (OK / NG) 확인
+        //public bool m_bMainWorkCycle_ResultOK { set; get; }                 //  Laser Drilling Cycle 결과 (OK / NG) 확인
+        public int m_nMainWorkCycle_ResultOKNG { set; get; }                 //  Laser Drilling Cycle 결과 (OK / NG) 확인 - 0 : None, 1 :  OK, 2 : NG
         public bool m_bMainWorkCycle_ResultOK_toRPort { set; get; }         //  Laser Drilling Cycle 결과 양품을 R-Port 로 적재함. (false : L-Port 적재)
         public enum MainWorkCycleType : int
         {
@@ -2345,6 +2371,7 @@ namespace QMC.Common.Modules
         public int m_nThruHole_ObjectDataCount { set; get; }                //  Thruhole 가공 시 원래 각 Object 를 1회씩 가공해서 반복 회수만큼 했는데, 하나의 Object 를 반복회수만큼 가공하고 다음 Object 로 넘어가기 위해서. (StageAndScanner --> ScannerOnly)
         public int m_nThruHole_LayerNum { set; get; }                       //  Thruhole 가공 시 Thruhole Layer 개수
         public int m_nThruHole_LayerCount { set; get; }                     //  Thruhole 가공 시 Layer Count (Thruhole Layer 가 2개 이상일 경우가 있어서...)
+        public int m_nOutLine_ObjectDataCount { set; get; }                 //  Outline 가공 시 원래 각 Object 를 1회씩 가공해서 반복 회수만큼 했는데, 하나의 Object 를 반복회수만큼 가공하고 다음 Object 로 넘어가기 위해서. (StageAndScanner --> ScannerOnly)
         public int m_nOutLine_LayerNum { set; get; }                        //  Outline 가공 시 Outline Layer 개수
         public int m_nOutLine_LayerCount { set; get; }                      //  Outline 가공 시 Layer Count (Outline Layer 가 2개 이상일 경우가 있어서...)
         public int m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount { set; get; }        //  드릴링 홀 가공 시 한 면 단위로 가공할 때, 몇 번째 면인지 Count
@@ -2462,6 +2489,11 @@ namespace QMC.Common.Modules
         //  Thruhole Layer 가공 파라미터
         public double m_dThruholeLayer_Defocusing { set; get; }
         public double m_dThruholeLayer_Resizing { set; get; }
+
+
+        //  Outline Layer 가공 파라미터
+        public double m_dOutlineLayer_Defocusing { set; get; }
+        public double m_dOutlineLayer_Resizing { set; get; }
 
 
         //  선택 가공을 위한 변수
@@ -2582,6 +2614,74 @@ namespace QMC.Common.Modules
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///
         /// Thruhole Layer 가공 - 끝
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///
+        /// Outline Layer 가공 - 시작
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            /// <summary>
+            /// Outline 작업 시작
+            /// </summary>
+            OutLine_DrillingWork_Start,                                     //  Outline 가공 작업 시작
+
+            OutLine_StageZ_MoveStartPos,                                    //  Outline 가공 작업 시작 위치로 이동
+            OutLine_StageZ_MoveStartPos_DoneCheck,                          //  Outline 가공 작업 시작 위치로 이동 완료 확인
+
+            /// <summary>
+            /// Outline Layer 가공 파라미터 변경 시작
+            /// </summary>
+            /// 
+            OutLine_LayerParameter_Change_Start,                            //  Outline 가공 Layer 파라미터로 변경 시작
+            OutLine_LayerParameter_ZOffset_Move,                            //  Outline 가공 Layer 파라미터, Z Offset 이동
+            OutLine_LayerParameter_ZOffset_Move_DoneCheck,                  //  Outline 가공 Layer 파라미터, Z Offset 이동 완료 확인
+            OutLine_LayerParameter_forCO2_Set,                              //  Outline 가공 Layer 파라미터, CO2 용 세팅값 설정
+            OutLine_LayerParameter_forCO2_Check,                            //  Outline 가공 Layer 파라미터, CO2 용 세팅값 확인
+            OutLine_LayerParameter_forUV_Set,                               //  Outline 가공 Layer 파라미터, UV 용 세팅값 설정
+            OutLine_LayerParameter_LaserPower_Change,                       //  Outline 가공 Laser Power 변경
+            OutLine_LayerParameter_LaserPower_Change_DoneCheck,             //  Outline 가공 Laser Power 변경 완료 확인
+            OutLine_LayerParameter_forUV_Check,                             //  Outline 가공 Layer 파라미터, UV 용 세팅값 확인
+            OutLine_LayerParameter_Change_Complete,                         //  Outline 가공 Layer 파라미터로 변경 완료
+            /// 
+            /// <summary>
+            /// Outline Layer 가공 파라미터 변경 완료
+            /// </summary>
+            /// 
+
+            MapDataChange_ScannerMap4,                                      //  Scanner 위치 Map Data 로 변경
+            MapDataFlagCheck_ScannerMap4,                                   //  Scanner 위치 Map Data 로 변경되었는지 확인
+
+            //--    MotionType : ScannerOnly
+            OutLine_ScannerOnly_RepeatStart,                                //  가공 반복 시작
+
+            OutLine_ScannerOnly_ObjectData_RemainedCheck,                   //  가공 할 Object 가 남아있는지 체크
+            OutLine_ScannerOnly_StageXY_MoveObjectCenterPos,                //  가공 할 Object Center 위치로 이동
+            OutLine_ScannerOnly_StageXY_MoveObjectCenterPos_DoneCheck,      //  가공 할 Object Center 위치로 이동 완료 확인
+
+            OutLine_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime,     //  가공 할 Object Center 위치로 이동 후 안정화 시간
+
+            OutLine_ScannerOnly_ListOpen,                                   //  List Buffer Open
+            OutLine_ScannerOnly_ListData_Add,                               //  List 에 데이터 추가
+            OutLine_ScannerOnly_ListData_Execute,                           //  List 실행
+            OutLine_ScannerOnly_ListData_ExecuteCheck,                      //  List 실행 되었는지 확인
+            OutLine_ScannerOnly_LaserBusyCheck,                             //  가공 완료되었는지 확인
+            OutLine_ScannerOnly_RepeatComplete,                             //  가공 반복 완료
+
+            OutLine_DrillingWork_CompleteCheck,                             //  Outline 가공 작업 완료 확인
+            /// 
+            /// <summary>
+            /// Outline 작업 종료
+            /// </summary>
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///
+        /// Outline Layer 가공 - 끝
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -3090,7 +3190,7 @@ namespace QMC.Common.Modules
             m_nMainWorkCycleType = (int)MainWorkCycleType.Cycle_None;                   //  자동 운전 시 사용하는 변수
             m_bMainWorkCycle_DryRun = false;
             m_bMainWorkCycle_Complete = false;                                          //  MainWork Cycle 완료 여부 (이 변수를 보고 Unloader 로 가져간다)
-            m_bMainWorkCycle_ResultOK = false;
+            m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.None;
             m_bMainWorkCycle_ResultOK_toRPort = true;
 
             m_bFindAlignMark_OK = false;
@@ -3217,6 +3317,14 @@ namespace QMC.Common.Modules
             m_nDrawing_Hole2Count = 0;                                          //  Hole2 데이터 개수
             m_nDrawing_Hole3Count = 0;                                          //  Hole3 데이터 개수
             m_nDrawing_Hole4Count = 0;                                          //  Hole4 데이터 개수
+            m_nDrawing_Hole5Count = 0;                                          //  Hole5 데이터 개수
+            m_nDrawing_Hole6Count = 0;                                          //  Hole6 데이터 개수
+            m_nDrawing_Hole7Count = 0;                                          //  Hole7 데이터 개수
+            m_nDrawing_Hole8Count = 0;                                          //  Hole8 데이터 개수
+            m_nDrawing_Hole9Count = 0;                                          //  Hole9 데이터 개수
+            m_nDrawing_Hole10Count = 0;                                         //  Hole10 데이터 개수
+            m_nDrawing_ThruholeCount = 0;                                       //  Thruhole 데이터 개수
+
             m_nDrawing_RectCount = 0;                                           //  Rect 데이터 개수
             m_nDrawing_OutlineCount = 0;                                        //  Outline 데이터 개수
             m_nDrawing_FiducialCount = 0;                                       //  Fiducial 마크 데이터 개수
@@ -3235,7 +3343,7 @@ namespace QMC.Common.Modules
             m_st4PointPosition_InspectedPos_LastSuccess = new st4PointPosition_Data[4]; //  4-Point 의 측정된 위치 데이터 (마지막 성공한 데이터)
             m_bIsFirstAlign = true; // 첫번째 얼라인
 
-        m_bAlignCompleted = false;
+            m_bAlignCompleted = false;
 
             m_nSocketNum_forAlign = 0;                                          //  Align 할 Socket 번호
 
@@ -6656,6 +6764,17 @@ namespace QMC.Common.Modules
 
                     m_nTotalAxisCount = (int)LoaderParameter.MotionKey.Max + (int)UnloaderParameter.MotionKey.Max + (int)WorkStageParameter.MotionKey.Max;
 
+                    Equipment.m_bMainProcessStatus_LD_LPort_Complete = false;                       //  Loader LPort 투입 완료
+                    Equipment.m_bMainProcessStatus_LD_RPort_Complete = false;                       //  Loader RPort 투입 완료
+                    Equipment.m_bMainProcessStatus_LD_Module_PortPickUp_Complete = false;           //  Loader Port 에서 Module Pick Up 완료
+                    Equipment.m_bMainProcessStatus_LD_Module_MAlignerPutDown_Complete = false;      //  Loader M-Aligner 에 Module Put Down 완료
+                    Equipment.m_bMainProcessStatus_LD_M_Aligner_Align_Complete = false;             //  Loader M-Align 완료
+                    Equipment.m_bMainProcessStatus_LD_Module_MAlignerPickUp_Complete = false;       //  Loader M-Aligner 에서 Module Pick Up 완료
+                    Equipment.m_bMainProcessStatus_LD_Module_WorkStagePutDown_Complete = false;     //  Loader Work Stage 에 Module Put Down 완료
+                    Equipment.m_bMainProcessStatus_WorkStage_Module_Process_Complete = false;       //  Work Stage Process 완료
+                    Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete = false;      //  Unloader Work Stage 에서 Module Pick Up 완료
+                    Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete = false;          //  Unloader Port 에 Module Put Down 완료
+
                     loader.MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z0, 2000);
                     loader.MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z1, 2000);
                     loader.MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.TR_X, 2000);
@@ -6683,23 +6802,46 @@ namespace QMC.Common.Modules
 
                     loader.m_bMAlignZone_ModuleExist = false;
 
-                    loader.m_bLoader_Transfer_ModulePickUpfromStacker_Complete = false;                //  Stacker 에서 Module Pick Up 완료 여부
-                    loader.m_bLoader_Transfer_ModulePickUpfromMAligner_Complete = false;               //  M-Aligner 에서 Module Pick Up 완료 여부
-                    loader.m_bLoader_Transfer_ModulePutDowntoMAligner_Complete = false;                //  M-Aligner 에 Module Put Down 완료 여부
-                    loader.m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete = false;               //  Work Stage 에 Module Put Down 완료 여부
+                    loader.m_nLD_RESTORE_Transfer_Step = 0;
+                    loader.m_nLD_RESTORE_Transfer_MoveType = 0;
+                    loader.m_bLD_RESTORE_Transfer_toWorkStage_Module_PutDown_Complete_Flag = false;                 //  Work Stage 에 Module Put Down 완료 여부
+                    loader.m_bLD_RESTORE_Transfer_fromStacker0_Module_PickUp_Complete_Flag = false;                 //  Stacker0 에서 Module Pick Up 완료 여부
+                    loader.m_bLD_RESTORE_Transfer_fromStacker1_Module_PickUp_Complete_Flag = false;                 //  Stacker1 에서 Module Pick Up 완료 여부
+                    loader.m_bLD_RESTORE_Transfer_fromMAligner_Module_PickUp_Complete_Flag = false;                 //  M-Aligner 에서 Module Pick Up 완료 여부
+                    loader.m_bLD_RESTORE_Transfer_toMAligner_Module_PutDown_Complete_Flag = false;                  //  M-Aligner 에 Module Put Down 완료 여부
+                    loader.m_nLD_RESTORE_MainWork_Cycle_Step = 0;
+                    loader.m_nLD_RESTORE_DryRun_Cycle_Step = 0;
+                    loader.m_nLD_RESTORE_LaserDrilling_Cycle_Step = 0;
+                    loader.m_bLD_RESTORE_MainWork_Cycle_Complete = false;
+                    loader.m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = false;         //  Stacker0 에서 Module Pick Up 완료 여부
+                    loader.m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = false;         //  Stacker1 에서 Module Pick Up 완료 여부
+                    loader.m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;         //  M-Aligner 에서 Module Pick Up 완료 여부
+                    loader.m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = false;          //  M-Aligner 에 Module Put Down 완료 여부
+                    loader.m_bLD_RESTORE_AUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = false;         //  Work Stage 에 Module Put Down 완료 여부
 
-                    loader.m_bStacker0_Run_byUser = false;                     //  Stacker0 Module Pick Up Cycle
-                    loader.m_bStacker1_Run_byUser = false;                     //  Stacker1 Module Pick Up Cycle
+                    loader.m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker0_Complete = false;                    //  Stacker 에서 Module Pick Up 완료 여부
+                    loader.m_bAUTORUN_Loader_Transfer_ModulePickUpfromStacker1_Complete = false;                    //  Stacker 에서 Module Pick Up 완료 여부
+                    loader.m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;                    //  M-Aligner 에서 Module Pick Up 완료 여부
+                    loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoMAligner_Complete = false;                     //  M-Aligner 에 Module Put Down 완료 여부
+                    loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = false;                    //  Work Stage 에 Module Put Down 완료 여부
+                    loader.m_bLD_Transfer_fromStacker0_Module_PickUp_Complete_Flag = false;                         //  Stacker0 에서 Module Pick Up 완료 여부
+                    loader.m_bLD_Transfer_fromStacker1_Module_PickUp_Complete_Flag = false;                         //  Stacker1 에서 Module Pick Up 완료 여부
+                    loader.m_bLD_Transfer_fromMAligner_Module_PickUp_Complete_Flag = false;                         //  M-Aligner 에서 Module Pick Up 완료 여부
+                    loader.m_bLD_Transfer_toWorkStage_Module_PutDown_Complete_Flag = false;                         //  Work Stage 에 Module Put Down 완료 여부
+                    loader.m_bLD_Transfer_toMAligner_Module_PutDown_Complete_Flag = false;                          //  M-Aligner 에 Module Put Down 완료 여부
 
-                    loader.m_bLD_LPort_Complete = false;                               //  L-Port 동작 완료 여부
-                    loader.m_bLD_RPort_Complete = false;                               //  R-Port 동작 완료 여부
-                    loader.m_bLD_TR_ModulePickUp_LPort_Complete = false;               //  Transfer L-Port Module Pick Up 동작 완료 여부
-                    loader.m_bLD_TR_ModulePickUp_RPort_Complete = false;               //  Transfer R-Port Module Pick Up 동작 완료 여부
-                    loader.m_bLD_TR_ModulePutDown_MAligner_Complete = false;           //  Transfer Module Put Down 동작 완료 여부
-                    loader.m_bLD_MAligner_Exist = false;                               //  M-Aligner 로 Module Pick & Place
-                    loader.m_bLD_MAlign_Complete = false;                              //  M-Aligner 동작 완료 여부
-                    loader.m_bLD_TR_ModulePickUp_MAligner_Complete = false;            //  M-Aligner Module Pick Up 동작 완료 여부
-                    loader.m_bLD_WorkStage_LoadingComplete = false;                    //  Work Stage 로 Module Loading 완료 여부
+                    loader.m_bStacker0_Run_byUser = false;                                                          //  Stacker0 Module Pick Up Cycle
+                    loader.m_bStacker1_Run_byUser = false;                                                          //  Stacker1 Module Pick Up Cycle
+
+                    loader.m_bLD_LPort_Complete = false;                                                            //  L-Port 동작 완료 여부
+                    loader.m_bLD_RPort_Complete = false;                                                            //  R-Port 동작 완료 여부
+                    loader.m_bLD_TR_ModulePickUp_LPort_Complete = false;                                            //  Transfer L-Port Module Pick Up 동작 완료 여부
+                    loader.m_bLD_TR_ModulePickUp_RPort_Complete = false;                                            //  Transfer R-Port Module Pick Up 동작 완료 여부
+                    loader.m_bLD_TR_ModulePutDown_MAligner_Complete = false;                                        //  Transfer Module Put Down 동작 완료 여부
+                    loader.m_bLD_MAligner_Exist = false;                                                            //  M-Aligner 로 Module Pick & Place
+                    loader.m_bLD_MAlign_Complete = false;                                                           //  M-Aligner 동작 완료 여부
+                    loader.m_bLD_TR_ModulePickUp_MAligner_Complete = false;                                         //  M-Aligner Module Pick Up 동작 완료 여부
+                    loader.m_bLD_WorkStage_LoadingComplete = false;                                                 //  Work Stage 로 Module Loading 완료 여부
 
 
                     //  Unloader 파츠 사용 변수 초기화
@@ -6710,15 +6852,32 @@ namespace QMC.Common.Modules
                     unloader.m_bStacker0_Complete = false;
                     unloader.m_bStacker1_Complete = false;
 
-                    unloader.m_bUnloader_Transfer_ModulePickUpfromWorkStage_Complete = false;        //  Work Stage 에서 Module Pick Up 완료 여부
-                    unloader.m_bUnloader_Transfer_ModulePutDowntoStacker0_Complete = false;          //  Stacker0 에 Module Put Down 완료 여부
-                    unloader.m_bUnloader_Transfer_ModulePutDowntoStacker1_Complete = false;          //  Stacker1 에 Module Put Down 완료 여부
-                    unloader.m_bUnloader_Transfer_ModulePutDowntoNG_Complete = false;                //  NG-Port 에 Module Put Down 완료 여부
+                    unloader.m_nUL_RESTORE_Transfer_Step = 0;
+                    unloader.m_nUL_RESTORE_Transfer_MoveType = 0;
+                    unloader.m_bUL_RESTORE_Transfer_fromWorkStage_Module_PickUp_Complete_Flag = false;
+                    unloader.m_bUL_RESTORE_LD_Transfer_toWorkStage_Module_PutDown_Complete = false;
+                    unloader.m_nUL_RESTORE_MainWork_Cycle_Step = 0;
+                    unloader.m_nUL_RESTORE_DryRun_Cycle_Step = 0;
+                    unloader.m_nUL_RESTORE_LaserDrilling_Cycle_Step = 0;
+                    unloader.m_bUL_RESTORE_MainWork_Cycle_Complete = false;
+                    unloader.m_nUL_RESTORE_MainWork_Cycle_ResultOKNG = (int)WorkStage.MainCycle_Result.None;
+                    unloader.m_bUL_RESTORE_MainWorkCycle_ResultOK_toRPort = false;                                  //  OK 인 Module 을 R-Port 로 가져갈 것인지 L-Port 로 가져갈 것인지
 
+                    unloader.m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = false;    //  Work Stage 에서 Module Pick Up 완료 여부
+                    unloader.m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = false;      //  Stacker0 에 Module Put Down 완료 여부
+                    unloader.m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = false;      //  Stacker1 에 Module Put Down 완료 여부
+                    unloader.m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = false;            //  NG-Port 에 Module Put Down 완료 여부     
+
+                    unloader.m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = false;               //  Work Stage 에서 Module Pick Up 완료 여부
+                    unloader.m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = false;                 //  Stacker0 에 Module Put Down 완료 여부
+                    unloader.m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = false;                 //  Stacker1 에 Module Put Down 완료 여부
+                    unloader.m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = false;                       //  NG-Port 에 Module Put Down 완료 여부
+                    unloader.m_bUL_Transfer_fromWorkStage_Module_PickUp_Complete_Flag = false;                      //  Work Stage 에서 Module Pick Up 완료 여부
 
                     //  Main 파츠 사용 변수 초기화
                     m_bMainWorkCycle_Complete = false;
-                    m_bMainWorkCycle_ResultOK = false;
+                    //m_bMainWorkCycle_ResultOK = false;
+                    m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.None;
                     m_bMainWorkCycle_ResultOK_toRPort = true;
                     m_nMainWork_Step = (int)MainWork_Step.None;                                 //  Main Work Step
                     m_nMainWorkCycleType = (int)MainWorkCycleType.Cycle_None;                   //  자동 운전 시 사용하는 변수
@@ -10025,7 +10184,7 @@ namespace QMC.Common.Modules
             {
                 //  Dry Run 하기 위한 조건
                 if (!m_bMainWorkCycle_Complete &&
-                    loader.m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete &&
+                    loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete &&
 
                     m_bMainWorkCycle_DryRun &&
 
@@ -10042,7 +10201,7 @@ namespace QMC.Common.Modules
                 }
                 //  Laser Drilling 을 위한 조건
                 else if (!m_bMainWorkCycle_Complete &&
-                    loader.m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete &&
+                    loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete &&
 
                     !m_bMainWorkCycle_DryRun &&
 
@@ -10121,7 +10280,7 @@ namespace QMC.Common.Modules
                         //  Out.
                         m_nMainWork_Step = (int)Loader_Transfer_Step.None;
                     }
-                    else if (!loader.m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete)
+                    else if (!loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete)
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "Loader 에서 Module 이 투입되지 않음.");
 
@@ -10204,7 +10363,7 @@ namespace QMC.Common.Modules
                         //  Out.
                         m_nMainWork_Step = (int)MainWork_Step.None;
                     }
-                    else if (!loader.m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete)
+                    else if (!loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete)
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "Loader 에서 Module 이 투입되지 않음.");
 
@@ -10277,8 +10436,9 @@ namespace QMC.Common.Modules
 
                             m_bMainWorkCycle_Complete = true;
 
-                            //  Laser Drilling 결과에 따라 OK/NG 다르게 해야 함.
-                            m_bMainWorkCycle_ResultOK = true;
+                            //m_bMainWorkCycle_ResultOK = true;
+                            //  Laser Drilling 결과에 따라 OK/NG 다르게 해야 함. (임시로 OK 처리)
+                            m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.OK;
                             m_bMainWorkCycle_ResultOK_toRPort = true;
                             break;
 
@@ -10287,8 +10447,9 @@ namespace QMC.Common.Modules
 
                             m_bMainWorkCycle_Complete = true;
 
+                            //m_bMainWorkCycle_ResultOK = true;
                             //  Laser Drilling 결과에 따라 OK/NG 다르게 해야 함.
-                            m_bMainWorkCycle_ResultOK = true;
+                            m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.OK;
                             m_bMainWorkCycle_ResultOK_toRPort = true;
                             break;
 
@@ -10301,7 +10462,7 @@ namespace QMC.Common.Modules
                     m_nMainWork_Step = (int)MainWork_Step.None;
 
 
-                    //  Cycle Stop 이면?
+                    //  Cycle Stop 이면?              --> Main Work 에게 Cycle Stop 은, Dry Run 이나 Drilling Cycle 이 끝났을 때 Stop 시킴.
                     if (Equipment.CycleStop)
                     {
                         //  Main Work 돌아가지 않게
@@ -11618,7 +11779,7 @@ namespace QMC.Common.Modules
 
                     m_bDrillingDirection_FwdRev = true;
 
-                    m_nHoleLayer_ProcessIndex = 0;                  //  Hole Layer Process Index (0 ~ 3)
+                    m_nHoleLayer_ProcessIndex = 0;                  //  Hole Layer Process Index (0 ~ 9)
                     m_nHoleLayer_ProcessIndex_Count = 0;            //  Hole Layer Process Index Count  
 
                     m_dHoleLayer_Defocusing = 0.0;
@@ -12309,6 +12470,9 @@ namespace QMC.Common.Modules
                         //}
 
 
+                        /// <summary>
+                        /// Thruhole Layer 가공
+                        /// 
                         if (m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_THRUHOLE)
                         {
                             Log.Write("SLD-200", "Auto Run", "가공 데이터 Layer 종류 : Thruhole");
@@ -12323,20 +12487,30 @@ namespace QMC.Common.Modules
                             m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
 
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_Start;
-
-                            //Equipment.WorkStartTick_Thruhole = Environment.TickCount;                   //  Thruhole Tick Start
                         }
-                        //else if (m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_OUTLINE)
-                        //{
-                        //    Log.Write("SLD-200", "Auto Run", "가공 데이터 Layer 종류 : Outline");
+                        /// <summary>
+                        /// Outline Layer 가공
+                        /// 
+                        else if (m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_OUTLINE)
+                        {
+                            Log.Write("SLD-200", "Auto Run", "가공 데이터 Layer 종류 : Outline");
 
-                        //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_Start;
+                            m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
 
-                        //    Equipment.WorkStartTick_Outline = Environment.TickCount;                    //  Outline Tick Start
-                        //}
-                        //if (m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_DRILLING)
+                            m_dOutlineLayer_Defocusing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance;
+                            m_dOutlineLayer_Resizing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Resizing;
+
+                            //  Layer 별로 다르게 해야 하는 파라미터
+                            m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition;            //  총 반복 회수
+                            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_Start;
+                        }
+                        /// <summary>
+                        /// Drilling Layer 가공
+                        /// 
                         else if ((m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_DRILLING) &&
-                            (m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount] == (int)LayerList.Hole1))
+                                (m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount] == (int)LayerList.Hole1))
                         {
                             Log.Write("SLD-200", "Auto Run", "가공 데이터 Layer 종류 : Drilling");
 
@@ -12352,6 +12526,8 @@ namespace QMC.Common.Modules
                             //  m_nHoleLayer_ProcessIndex : 1 (Hole2)
                             //  m_nHoleLayer_ProcessIndex : 2 (Hole3)
                             //  m_nHoleLayer_ProcessIndex : 3 (Hole4)
+                            //  ~~
+                            //  m_nHoleLayer_ProcessIndex : 10 (Hole10)
 
                             m_dHoleLayer_Defocusing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DefocusingDistance;
                             m_dHoleLayer_Resizing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Resizing;
@@ -12410,7 +12586,6 @@ namespace QMC.Common.Modules
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff2;
                     }
                     break;
-
 
 
 
@@ -12689,14 +12864,14 @@ namespace QMC.Common.Modules
                     if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power - 0.5)) &&
                         (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power + 0.5)))
                     {
-                        m_strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 성공, Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                        m_strTemp = string.Format("Thruhole Layer 가공 Laser Power 변경 성공, Laser Power ({0})", m_dLaser_OutputEnergy);
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_forUV_Check;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
                     {
-                        m_strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 실패, 현재 Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                        m_strTemp = string.Format("Thruhole Layer 가공 Laser Power 변경 실패, 현재 Laser Power ({0})", m_dLaser_OutputEnergy);
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_forUV_Check;
@@ -12747,7 +12922,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.ThruHole_LayerParameter_Change_Complete:              //  ThruHole 가공 Layer 파라미터로 변경 완료
 
-                    Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Layer 파라미터 변경 완료");
+                    Log.Write("SLD-200", "Auto Run", "Thruhole Layer 가공 파라미터 변경 완료");
 
                     //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6)
                     //{
@@ -12908,7 +13083,7 @@ namespace QMC.Common.Modules
                         MessageBox.Show("Stage XY 축, 가공할 Object 의 Center 위치로 Stage 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
-//  여기부터 해야 됨.
+
 
                 case (int)LaserDrilling_Step.ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime:       //  다음 가공 영역 Group Center 위치로 이동 후 안정화 시간
 
@@ -13400,11 +13575,992 @@ namespace QMC.Common.Modules
 
 
 
+                #region 아웃 라인 가공
+
+                ///////////////////////////////////////
+                ///                                 ///
+                ///      OutLine (라우터 가공)      ///
+                ///                                 ///
+                ///////////////////////////////////////
+                /// 
+                case (int)LaserDrilling_Step.OutLine_DrillingWork_Start:                        //  아웃 라인 (라우터) Drilling 작업 시작
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "OutLine 가공 Loop, 시작");
+
+                    m_nDrillingWork_Repeat_Count = 0;
+                    m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_StageZ_MoveStartPos;
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_StageZ_MoveStartPos:                                 //  아웃 라인 (라우터) Drilling 작업 시작 위치로 이동
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Outline 가공 높이로 이동 시작.");
+
+                    workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
+
+                    //  속도 설정
+                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
+                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+
+                    //  좌표계 (기존)
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z;
+
+                    MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
+                                          lfVelocity, lfAccDec, lfAccDec);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_StageZ_MoveStartPos_DoneCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_StageZ_MoveStartPos_DoneCheck:           //  아웃 라인 (라우터) Drilling 작업 시작 위치로 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Outline 가공 높이로 이동 완료.");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_Change_Start;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Outline 가공 높이로 이동 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        //timer_LaserDrillingWork.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                        MessageBox.Show("Stage Z 축, Outline 가공 높이로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    break;
+
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //  OutLine Layer 가공 파라미터 변경 - 시작
+                case (int)LaserDrilling_Step.OutLine_LayerParameter_Change_Start:             //  OutLine 가공 Layer 파라미터로 변경 시작
+                    //if (m_bLaserComm_Paused)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline 가공 Layer 파라미터 변경 시작");
+
+                        //m_nLaserParamChangeDelayCount = 0;
+                        //m_nParamChange_RetryCount = 0;
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move:                              //  OutLine 가공 Layer 파라미터, Z Offset 이동
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Outline Layer Z Offset 이동 시작");
+
+                    workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
+
+                    //  속도 설정
+                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
+                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+
+                    //  가공 할 Layer 의 Z Offset 값으로 이동
+                    //  임시로 0 설정 --> Recipe 에서 값 가져오도록 --> Layer 별로 Defocusing 거리 다르게 설정하도록 해야 함
+                    m_dOffset = m_dOutlineLayer_Defocusing;
+
+                    //  좌표계 (기존)
+                    //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z) - m_dOffset;
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dOffset;
+
+                    MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
+                                          lfVelocity, lfAccDec, lfAccDec);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move_DoneCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move_DoneCheck:                 //  OutLine 가공 Layer 파라미터, Z Offset 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Outline Layer Z Offset 이동 완료 확인");
+
+                        if (Equipment.Machine_LaserType_CO2)
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_forCO2_Set;                 //  CO2 일 경우
+                        }
+                        else
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_forUV_Set;                  //  UV 일 경우
+                        }
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Outline Layer Z Offset 이동 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        //timer_LaserDrillingWork.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                        MessageBox.Show("Stage Z 축, Outline Layer Z Offset 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_LayerParameter_forCO2_Set:                  //  OutLine 가공 Layer 파라미터, CO2 용 세팅값 설정
+
+                    //if (m_nParamChange_RetryCount > 50)
+                    //{
+                    //    Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, 가공 레이저 파라미터 RepRate 변경 실패 (회수 초과)");
+
+                    //    timer_LaserDrillingWork.Enabled = false;
+                    //    m_bExit = true;
+                    //    MessageBox.Show("Drilling 가공 Parameter 변경, Q-Switch 값 변경 실패.", "Error");
+
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                    //}
+                    //else
+                    //{
+                    //    Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, 가공 레이저 파라미터 RepRate 변경 시도 (QSwitch)");
+
+                    //    m_strLaser_QSW_forUserSet = Config.ParamConfig.Drilling_RepRate_QSwitch.ToString();
+                    //    SpectraPhysicsLaserComm_QSW_Set(Convert.ToInt32(m_strLaser_QSW_forUserSet));
+
+                    //    m_nLaserParamChangeDelayCount = 0;
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forCO2_Check;
+                    //}
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_forCO2_Check;
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_LayerParameter_forCO2_Check:                 //  OutLine 가공 Layer 파라미터, CO2 용 세팅값 확인
+
+                    //byte[] m_cSendCmd5 = new byte[3];
+
+                    //if (m_nLaserParamChangeDelayCount++ > 2)                                        //  Main Cycle 이 3번 돌 때 이 부분을 한번 실행하도록 하기 위함. (테스트 후에 상수 변경 가능)
+                    //{
+                    //    m_nLaserParamChangeDelayCount = 0;
+
+                    //    m_cSendCmd5[0] = (byte)'?';
+                    //    m_cSendCmd5[1] = (byte)'Q';
+                    //    m_cSendCmd5[2] = chrCR;
+
+                    //    m_strSendData = Encoding.Default.GetString(m_cSendCmd5);
+
+                    //    if (m_spectraPhysicsLaserComm.IsOpen)
+                    //    {
+                    //        m_bLaserCommData_Received = false;
+                    //        m_strLaserComm_ReceivedData = "";
+                    //        m_nLaserCommRecvData_LF_Count = 0;
+
+                    //        m_spectraPhysicsLaserComm.Send(m_strSendData);
+
+                    //        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, 가공 레이저 파라미터 RepRate 데이터 읽기");
+
+                    //        TickCount_Start((int)TickType.TICK_MAIN);
+
+                    //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LaserParameter_QSW_Received;
+                    //    }
+                    //    else
+                    //    {
+                    //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                    //        //timer_LaserComm.Enabled = false;
+
+                    //        MessageBox.Show("Laser Comm. Not Opened.", "Error");
+                    //    }
+                    //}
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_Change_Complete;
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_LayerParameter_forUV_Set:                  //  OutLine 가공 Layer 파라미터, UV 용 세팅값 설정
+
+                    //if (m_nParamChange_RetryCount > 50)
+                    //{
+                    //    Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, 가공 레이저 파라미터 RepRate 변경 실패 (회수 초과)");
+
+                    //    timer_LaserDrillingWork.Enabled = false;
+                    //    m_bExit = true;
+                    //    MessageBox.Show("Drilling 가공 Parameter 변경, Q-Switch 값 변경 실패.", "Error");
+
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                    //}
+                    //else
+                    //{
+                    //    Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, 가공 레이저 파라미터 RepRate 변경 시도 (QSwitch)");
+
+                    //    m_strLaser_QSW_forUserSet = Config.ParamConfig.Drilling_RepRate_QSwitch.ToString();
+                    //    SpectraPhysicsLaserComm_QSW_Set(Convert.ToInt32(m_strLaser_QSW_forUserSet));
+
+                    //    m_nLaserParamChangeDelayCount = 0;
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forCO2_Check;
+                    //}
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_LaserPower_Change;
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_LayerParameter_LaserPower_Change:                        //  Outline 가공 Laser Power 변경
+
+                    m_dLaserPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
+
+                    if ((m_rapidLxLaser_Comm != null) && (m_dLaserPower > 0.0))
+                    {
+                        if (m_rapidLxLaser_Comm.IsOpen)
+                        {
+                            m_strTemp = string.Format("Outline Layer 가공 Laser Power 변경 시작, Laser Power ({0:0.000})", m_dLaserPower);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                            TickCount_Start((int)TickType.TICK_MAIN);
+
+                            RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_LaserPower_Change_DoneCheck;
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline Layer 가공 Laser Power 변경 실패. (Laser Comm 열리지 않음)");
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_forUV_Check;
+                        }
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline Layer 가공 Laser Power 변경 실패. (Laser Comm 준비되지 않았거나, 변경 출력이 0)");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_forUV_Check;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_LayerParameter_LaserPower_Change_DoneCheck:                     //  Outline 가공 Laser Power 변경 완료 확인
+
+                    if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power - 0.5)) &&
+                        (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power + 0.5)))
+                    {
+                        m_strTemp = string.Format("Outline Layer 가공을 위한 Laser Power 변경 성공, Laser Power ({0})", m_dLaser_OutputEnergy);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_forUV_Check;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
+                    {
+                        m_strTemp = string.Format("Outline Layer 가공을 위한 Laser Power 변경 실패, 현재 Laser Power ({0})", m_dLaser_OutputEnergy);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_forUV_Check;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_LayerParameter_forUV_Check:                 //  OutLine 가공 Layer 파라미터, UV 용 세팅값 확인
+
+                    //byte[] m_cSendCmd5 = new byte[3];
+
+                    //if (m_nLaserParamChangeDelayCount++ > 2)                                        //  Main Cycle 이 3번 돌 때 이 부분을 한번 실행하도록 하기 위함. (테스트 후에 상수 변경 가능)
+                    //{
+                    //    m_nLaserParamChangeDelayCount = 0;
+
+                    //    m_cSendCmd5[0] = (byte)'?';
+                    //    m_cSendCmd5[1] = (byte)'Q';
+                    //    m_cSendCmd5[2] = chrCR;
+
+                    //    m_strSendData = Encoding.Default.GetString(m_cSendCmd5);
+
+                    //    if (m_spectraPhysicsLaserComm.IsOpen)
+                    //    {
+                    //        m_bLaserCommData_Received = false;
+                    //        m_strLaserComm_ReceivedData = "";
+                    //        m_nLaserCommRecvData_LF_Count = 0;
+
+                    //        m_spectraPhysicsLaserComm.Send(m_strSendData);
+
+                    //        Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, 가공 레이저 파라미터 RepRate 데이터 읽기");
+
+                    //        TickCount_Start((int)TickType.TICK_MAIN);
+
+                    //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LaserParameter_QSW_Received;
+                    //    }
+                    //    else
+                    //    {
+                    //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                    //        //timer_LaserComm.Enabled = false;
+
+                    //        MessageBox.Show("Laser Comm. Not Opened.", "Error");
+                    //    }
+                    //}
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_Change_Complete;
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_LayerParameter_Change_Complete:              //  OutLine 가공 Layer 파라미터로 변경 완료
+
+                    Log.Write("SLD-200", "Auto Run", "Outline Layer 가공 파라미터 변경 완료");
+
+                    //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6)
+                    //{
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;
+                    //}
+                    //else if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                    //{
+                    //    if (Config.ParamConfig.Drilling_RepRate_QSwitch == 0)
+                    //    {
+                    //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_syncAxisParameter_Change_Start;
+                    //    }
+                    //    else
+                    //    {
+                    //        if (m_stLayerType.m_bDrillingGroupSize_withinScannerFOV)
+                    //        {
+                    //            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.EntireDrilling_DrillingWork_Start;
+                    //        }
+                    //        else
+                    //        {
+                    //            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;
+                    //        }
+                    //    }
+                    //}
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_ScannerMap4;
+                    break;
+                //  OutLine Layer 가공 파라미터 변경 - 종료
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //  Map Data 변경 (Scanner) - 시작
+                case (int)LaserDrilling_Step.MapDataChange_ScannerMap4:                                      //  Scanner 위치 Map Data 로 변경
+
+                    //MapData_Change((int)MapDataType.MAPDATASTATUS_SCANNER);
+                    MapData_Apply((int)nMapData_Type.MapData_Stage_Scanner);
+
+                    //TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataFlagCheck_ScannerMap4;
+                    break;
+
+
+                case (int)LaserDrilling_Step.MapDataFlagCheck_ScannerMap4:                                   //  Scanner 위치 Map Data 로 변경되었는지 확인
+
+                    //if (MapDataFlag_Read() == (int)MapDataType.MAPDATASTATUS_SCANNER)
+                    //{
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_RepeatStart;
+                    //}
+                    //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000)
+                    //{
+                    //    m_bScannerCamVerify_Complete = false;
+
+                    //    timer_LaserDrillingWork.Enabled = false;
+
+                    //    MessageBox.Show("Map Data 변경 실패 [Scanner]", "Error");
+
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                    //}
+                    break;
+                //  Map Data 변경 (Scanner) - 끝
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+                ///////////////////////////////////////////////////////////////////
+                ///                                                             ///
+                ///       OutLine (아웃 라인 (라우터) 가공, ScannerOnly)        ///
+                ///                                                             ///
+                ///////////////////////////////////////////////////////////////////
+                /// 
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_RepeatStart:                               //  가공 반복 시작
+
+                    Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, 가공 반복 시작");
+
+                    m_nDrillingWork_Repeat_Count = 0;
+                    m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
+
+                    m_nOutLine_ObjectDataCount = 0;
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_ObjectData_RemainedCheck;
+
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_ObjectData_RemainedCheck:
+                    if (m_nOutLine_ObjectDataCount < m_stOutLine_LayerData[m_nOutLine_LayerCount].nRegion_ObjectTotalNum)
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, 가공할 Object 가 남아있음");
+
+                        m_nDrillingWork_Repeat_Count = 0;
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos;
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, 가공할 Object 가 남아있지 않음");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_RepeatComplete;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos:                              //  가공 할 Object Center 위치로 이동
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 시작");
+
+                    workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
+
+                    //  좌표계 (기존)
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = 0.0;
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0.0;
+
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = -m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X;
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = -m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+
+                    //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
+
+                    //  속도 설정
+                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+                    xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
+                    xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
+                    MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos_DoneCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos_DoneCheck:                    //  다음 가공 영역 Group Center 위치로 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
+                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 완료 확인");
+
+                        TickCount_Start((int)TickType.TICK_MAIN);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, 가공할 Object 의 Center 위치로 Stage 이동 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        //timer_LaserDrillingWork.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                        MessageBox.Show("Stage XY 축, 가공할 Object 의 Center 위치로 Stage 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_StageXY_MoveObjectCenterPos_StableTime:       //  다음 가공 영역 Group Center 위치로 이동 후 안정화 시간
+
+                    if (TickCount_Elapsed((int)TickType.TICK_MAIN) >= 500)
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, 가공할 Object Center 를 Scanner Center 위치로 이동 후 안정화 시간. (임시로 500ms 로 고정)");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_ListOpen;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_ListOpen:                                  //  List Buffer Open
+                    if (!rtc.CtlGetStatus(RtcStatus.Busy))
+                    {
+                        //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                        {
+                            m_bOutLineList_Success = true;
+                            m_bScannerLib_Success = true;
+
+                            var rtcMode = rtc as IRtc;                                  //  RTC6
+
+                            //Thread.Sleep(Config.ParamConfig.ThreadSleep_beforeListBegin);
+
+                            m_bOutLineList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
+
+                            Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, Buffer List Open");
+
+                            //if (!m_bOutLineList_Success && Config.ParamConfig.MachineStop_whenMarkingDataUploadFail)
+                            //{
+                            //    timer_LaserDrillingWork.Enabled = false;
+
+                            //    MessageBox.Show($"DividedRegion ScannerOnly Drilling, ListBegin 실패");
+
+                            //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                            //    break;
+                            //}
+
+
+                            if ((Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].ProcessPriority_P2P) &&                   //  P2P Mode
+                                (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_P2PDistance > 0.0))
+                            {
+                                m_strTemp = string.Format("Outline 가공 Loop, ScannerOnly Mode, Spot Distance Control 파라미터 적용, Spot Distance ({0:0.0000})",
+                                                        Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_P2PDistance);
+
+                                Log.Write("SLD-200", "Auto Run", m_strTemp);
+
+                                int m_nSDC_Count = 0;
+
+                                do
+                                {
+                                    //  Spot Distance Control
+                                    var alc = rtc as IRtcAutoLaserControl;
+
+                                    m_bScannerLib_Success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.SpotDistance, AutoLaserControlMode.ActualVelocityWithSCANAhead,
+                                        (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_P2PDistance,                              //  Percentage100
+                                        (float)(Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_P2PDistance * 0.8),                      //  Min
+                                        (float)(Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_P2PDistance * 1.2));                     //  Max
+
+                                    if (!m_bScannerLib_Success)
+                                    {
+                                        m_strTemp = string.Format("Outline 가공 Loop, ScannerOnly Mode, Spot Distance Control 파라미터 적용 실패, ({0}/3)", m_nSDC_Count + 1);
+
+                                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                                    }
+                                    else
+                                    {
+                                        m_strTemp = string.Format("Outline 가공 Loop, ScannerOnly Mode, Spot Distance Control 파라미터 적용 성공, ({0}/3)", m_nSDC_Count + 1);
+                                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                                    }
+
+                                    m_nSDC_Count++;
+                                } while (!m_bScannerLib_Success && (m_nSDC_Count < 3));
+                            }
+
+                            //if (Config.ParamConfig.nLaserSource_Type == (int)LaserDrillingParameterConfig.LaserSource.Tangerine)
+                            //{
+
+                            //  Frequency, Pulse Width 값이 있으면 적용
+                            if ((Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_Frequency > 0.0) &&
+                                (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_PulseWidth > 0.0))
+                            {
+                                m_strTemp = string.Format("Outline 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
+                                                        Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_Frequency,
+                                                        Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_PulseWidth);
+
+                                Log.Write("SLD-200", "Auto Run", m_strTemp);
+
+                                m_bScannerLib_Success = rtc.ListFrequency((float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_Frequency,
+                                                                            (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_PulseWidth);
+
+                                if (!m_bScannerLib_Success)
+                                {
+                                    Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, Frequency 파라미터 적용 실패");
+                                }
+                                else
+                                {
+                                    Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, Frequency 파라미터 적용 성공");
+                                }
+                            }
+
+                            //m_bOutLineList_Success &= rtc.ListDelay((float)Config.ParamConfig.LaserOn_Delay, (float)Config.ParamConfig.LaserOff_Delay,
+                            //                                                        (float)Config.ParamConfig.Drilling_Jump_Delay, (float)Config.ParamConfig.Drilling_Mark_Delay, (float)Config.ParamConfig.Drilling_Polygon_Delay);
+                            m_bOutLineList_Success &= rtc.ListDelay((float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_LaserOnDelay,
+                                                                        (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_LaserOffDelay,
+                                                                        (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_JumpDelay,
+                                                                        (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_MarkDelay,
+                                                                        (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_PolygonDelay);
+
+                            //if (!m_bOutLineList_Success && Config.ParamConfig.MachineStop_whenMarkingDataUploadFail)
+                            //{
+                            //    timer_LaserDrillingWork.Enabled = false;
+
+                            //    MessageBox.Show($"DividedRegion ScannerOnly Drilling, ListDelay 실패");
+
+                            //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                            //    break;
+                            //}
+
+                            //m_bOutLineList_Success &= rtc.ListSpeed((float)Config.ParamConfig.Drilling_Jump_Speed, (float)Config.ParamConfig.Drilling_Mark_Speed);
+                            m_bOutLineList_Success &= rtc.ListSpeed((float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_ScannerJumpSpeed, (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_ScannerDrillingSpeed);
+
+                            //if (!m_bOutLineList_Success && Config.ParamConfig.MachineStop_whenMarkingDataUploadFail)
+                            //{
+                            //    timer_LaserDrillingWork.Enabled = false;
+
+                            //    MessageBox.Show($"DividedRegion ScannerOnly Drilling, ListSpeed 실패");
+
+                            //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                            //    break;
+                            //}
+                        }
+
+                        //if (!m_bOutLineList_Success && Config.ParamConfig.MachineStop_whenMarkingDataUploadFail)                      //  ListBegin 이나, ListDelay 나 ListSpeed 가 실패일 경우
+                        //{
+                        //    m_nMarkerFunc_RetryCount = Config.ParamConfig.Marker_ListBegin_Retry <= 0 ? 10 : Config.ParamConfig.Marker_ListBegin_Retry;
+                        //    if (m_nListBeginRetry_Count++ < m_nMarkerFunc_RetryCount)
+                        //    {
+                        //        rtcSyncAxis.CtlAbort();
+                        //        Thread.Sleep(2000);
+                        //        rtcSyncAxis.CtlReset();
+                        //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListOpen;
+                        //    }
+                        //    else
+                        //    {
+                        //        timer_LaserDrillingWork.Enabled = false;
+                        //        m_bExit = true;
+                        //        MessageBox.Show($"DividedRegion ScannerOnly Drilling, ListBegin or ListDelay or ListSpeed 실패\r\n\r\n[재시도 회수 초과]");
+
+                        //        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                        //    }
+                        //}
+                        //else
+                        {
+                            Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, Buffer List 에 데이터 추가");
+
+                            m_nListBeginRetry_Count = 0;                    //  데이터 추가할 때도 안되는 경우가 있는 듯 하여, 데이터 집어넣기 재시도 Count 용 변수로 사용
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_ListData_Add;
+                        }
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_ListData_Add:                                  //  List 에 데이터 추가
+                    //for (int nObject = 0; nObject < m_stOutLine_LayerData.nRegion_ObjectTotalNum; nObject++)
+                    for (m_nDrillingWork_Repeat_Count = 0; m_nDrillingWork_Repeat_Count < m_nDrillingWork_Repeat_Count_Total; m_nDrillingWork_Repeat_Count++)
+                    {
+                        switch (m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].nObjectType)
+                        {
+                            case (int)ObjectType.OBJECT_POLY:
+                                //  첫 번째 Edge Point 로 Jump 이동
+                                entity_Position.X = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[0].X -
+                                                    m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X;
+                                entity_Position.Y = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[0].Y -
+                                                    m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+
+                                //  사각형 돌릴 때 쓰던거
+                                entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                m_bOutLineList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+
+                                //  이어서 오는 Edge Point 로 Mark 이동(cont') 하여 Polyline 완성
+                                for (int nEntity = 1; nEntity < m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].nEdgePointNum; nEntity++)
+                                {
+                                    entity_Position.X = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[nEntity].X -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X;
+                                    entity_Position.Y = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[nEntity].Y -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+
+                                    //  사각형 돌릴 때 쓰던거
+                                    entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                    m_bOutLineList_Success &= rtc.ListMark(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+                                }
+                                break;
+
+
+                            case (int)ObjectType.OBJECT_CIR:
+
+                                //if (Config.ParamConfig.bOutlineSizeReduce_Enable)
+                                if (Math.Abs(m_dOutlineLayer_Resizing) > 0.0)
+                                {
+                                    //  지름에서 Reduce Size 만큼 줄임
+
+                                    //  첫 번째 Edge Point 로 Jump 이동. (원 모양이므로 반지름 만큼 왼쪽으로)
+                                    entity_Position.X = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[0].X + m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[1].X -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X - (m_dOutlineLayer_Resizing / 2.0);
+                                    entity_Position.Y = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[0].Y -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+                                }
+                                else
+                                {
+                                    //  첫 번째 Edge Point 로 Jump 이동. (원 모양이므로 반지름 만큼 왼쪽으로)
+                                    entity_Position.X = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[0].X + m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[1].X -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X;
+                                    entity_Position.Y = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[0].Y -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+                                }
+
+                                //  사각형 돌릴 때 쓰던거
+                                entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                m_bOutLineList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+
+                                //  Arc 구동 
+                                entity_Position.X = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[0].X -
+                                                    m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X;
+                                entity_Position.Y = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[0].Y -
+                                                    m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+
+                                //  사각형 돌릴 때 쓰던거
+                                entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                m_bOutLineList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 360.0f);
+
+                                ////  Object Center 로 Jump (테스트 후에 삭제 여부 결정)
+                                //entity_Position.X = m_stOutLine_LayerData.m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[0].X -
+                                //                    m_stOutLine_LayerData.m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X;
+                                //entity_Position.Y = m_stOutLine_LayerData.m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[0].Y -
+                                //                    m_stOutLine_LayerData.m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+
+                                //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
+                                //{
+                                //    m_bOutLineList_Success &= rtcSyncAxis.ListJump(new Vector2((float)entity_Position.X, (float)entity_Position.Y));
+                                //}
+
+                                break;
+
+
+                            case (int)ObjectType.OBJECT_RECT:
+                                //  첫 번째 Edge Point 로 Jump 이동
+                                entity_Position.X = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[0].X -
+                                                    m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X;
+                                entity_Position.Y = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[0].Y -
+                                                    m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+
+                                //  사각형 돌릴 때 쓰던거
+                                entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                m_bOutLineList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+
+                                //  이어서 오는 Edge Point 로 Mark 이동(cont') 하여 Polyline 완성
+                                for (int nEntity = 1; nEntity < m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].nEdgePointNum; nEntity++)
+                                {
+                                    entity_Position.X = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[nEntity].X -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X;
+                                    entity_Position.Y = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[nEntity].Y -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+
+                                    //  사각형 돌릴 때 쓰던거
+                                    entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                    m_bOutLineList_Success &= rtc.ListMark(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+                                }
+                                break;
+
+
+                            case (int)ObjectType.OBJECT_LINE:
+                                //  첫 번째 Edge Point 로 Jump 이동 (Start)
+                                entity_Position.X = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[0].X -
+                                                    m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X;
+                                entity_Position.Y = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[0].Y -
+                                                    m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+
+                                //  사각형 돌릴 때 쓰던거
+                                entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                m_bOutLineList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+
+                                //  이어서 오는 Edge Point 로 Mark 이동 (End)
+                                entity_Position.X = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[1].X -
+                                                    m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X;
+                                entity_Position.Y = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[1].Y -
+                                                    m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+
+                                //  사각형 돌릴 때 쓰던거
+                                entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                m_bOutLineList_Success &= rtc.ListMark(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+                                break;
+
+
+                            case (int)ObjectType.OBJECT_ARC:
+                                //  Center 위치에서 Start Angle 만큼 회전한 위치로 Jump 이동
+                                entity_Position.X = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dCenter.X -
+                                                    m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X;
+                                entity_Position.Y = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dCenter.Y -
+                                                    m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+
+                                //  Start Angle 각도에 따른 Jump 위치 계산
+                                if (m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle == 0.0)            //  0 도 위치
+                                {
+                                    entity_Position.X = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dCenter.X + m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dRadius -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X;
+                                }
+                                else if (m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle == 90.0)       //  90 도 위치
+                                {
+                                    entity_Position.Y = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dCenter.Y + m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dRadius -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+                                }
+                                else if (m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle == 180.0)      //  180 도 위치
+                                {
+                                    entity_Position.X = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dCenter.X - m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dRadius -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X;
+                                }
+                                else if (m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle == 270.0)      //  270 도 위치
+                                {
+                                    entity_Position.Y = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dCenter.Y - m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dRadius -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+                                }
+                                else if ((m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle > 0.0) &&
+                                    (m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle < 90.0))           //  0 도 ~ 90 도 사이 위치
+                                {
+                                    entity_Position.X = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dCenter.X +
+                                                        (Math.Cos(m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle * (Math.PI / 180.0)) *
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dRadius) -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X;
+                                    entity_Position.Y = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dCenter.Y +
+                                                        (Math.Sin(m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle * (Math.PI / 180.0)) *
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dRadius) -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+                                }
+                                else if ((m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle > 90.0) &&
+                                    (m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle < 180.0))          //  90 도 ~ 180 도 사이 위치
+                                {
+                                    entity_Position.X = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dCenter.X -
+                                                        (Math.Cos((180.0 - m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle) * (Math.PI / 180.0)) *
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dRadius) -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X;
+                                    entity_Position.Y = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dCenter.Y +
+                                                        (Math.Sin((180.0 - m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle) * (Math.PI / 180.0)) *
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dRadius) -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+                                }
+                                else if ((m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle > 180.0) &&
+                                    (m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle < 270.0))          //  180 도 ~ 270 도 사이 위치
+                                {
+                                    entity_Position.X = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dCenter.X -
+                                                        (Math.Cos((m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle - 180.0) * (Math.PI / 180.0)) *
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dRadius) -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X;
+                                    entity_Position.Y = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dCenter.Y -
+                                                        (Math.Sin((m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle - 180.0) * (Math.PI / 180.0)) *
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dRadius) -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+                                }
+                                else if ((m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle > 270.0) &&
+                                    (m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle <= 360.0))          //  270 도 ~ 360 도 사이 위치
+                                {
+                                    entity_Position.X = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dCenter.X +
+                                                        (Math.Cos((360.0 - m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle) * (Math.PI / 180.0)) *
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dRadius) -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X;
+                                    entity_Position.Y = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dCenter.Y -
+                                                        (Math.Sin((360.0 - m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dStartAngle) * (Math.PI / 180.0)) *
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dRadius) -
+                                                        m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+                                }
+
+
+                                //  사각형 돌릴 때 쓰던거
+                                entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                m_bOutLineList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+
+
+                                //  이어서 오는 Sweep Angle 만큼 Arc 로 Mark 이동
+                                entity_Position.X = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dCenter.X - (float)m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X;
+                                entity_Position.Y = m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dCenter.Y - (float)m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
+
+                                //  사각형 돌릴 때 쓰던거
+                                entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                //m_bOutLineList_Success &= rtc.ListArc(new Vector2((float)m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dCenter.X - (float)m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X,
+                                //                                                    (float)m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dCenter.Y - (float)m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y),
+                                //                                                    (float)m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dSweepAngle);
+                                m_bOutLineList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y),
+                                                                                    (float)m_stOutLine_LayerData[m_nOutLine_LayerCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].stArcData.dSweepAngle);
+                                break;
+                        }
+
+                        //  데이터가 정상적으로 추가 되었는지 로그
+                        if (m_bOutLineList_Success)
+                        {
+                            m_strTemp = "Outline 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가, [Object : " + m_nOutLine_ObjectDataCount.ToString() + " , RepeatCount : " + m_nDrillingWork_Repeat_Count.ToString() + " ], 성공";
+                        }
+                        else
+                        {
+                            m_strTemp = "Outline 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가, [Object : " + m_nOutLine_ObjectDataCount.ToString() + " , RepeatCount : " + m_nDrillingWork_Repeat_Count.ToString() + " ], 실패";
+                        }
+
+                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    }
+
+                    //  ScannerOnly Mode 일 경우
+                    m_nOutLine_ObjectDataCount++;
+
+                    m_bOutLineList_Success &= rtc.ListEnd();
+
+                    if (m_bOutLineList_Success)
+                    {
+                        m_strTemp = "Outline 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가 완료, 성공";
+                    }
+                    else
+                    {
+                        m_strTemp = "Outline 가공 Loop, ScannerOnly Mode, Buffer List 에 가공 데이터 추가 완료, 실패";
+                    }
+
+                    Log.Write("SLD-200", "Auto Run", m_strTemp);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_ListData_Execute;
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_ListData_Execute:                              //  List 실행
+
+                    m_bDivRegionList_Success &= rtc.ListExecute(Config.ParamConfig.BusyWait_MarkingComplete);
+
+                    Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, Buffer List 실행 (Execute)");
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_LaserBusyCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_ListData_ExecuteCheck:                                //  List 실행 되었는지 확인
+                    if ((TickCount_Elapsed((int)TickType.TICK_MAIN) >= 1000) &&
+                        ((Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6) && rtc.CtlGetStatus(RtcStatus.Busy)))
+                    {
+                        TickCount_Start((int)TickType.TICK_MAIN);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_LaserBusyCheck;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_LaserBusyCheck:                                //  가공 완료되었는지 확인
+                    if ((TickCount_Elapsed((int)TickType.TICK_MAIN) >= 300) &&
+                        (!rtc.CtlGetStatus(RtcStatus.Busy)))
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, Buffer List 가공 완료");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_ObjectData_RemainedCheck;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_RepeatComplete:                          //  ScannerOny Mode 아웃 라인 (라우터) 가공 완료
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck:              //  아웃 라인 (라우터) Drilling 작업 완료 확인
+
+                    Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, Outline 반복 가공 완료, 가공할 Layer 가 남아 있는지 확인");
+
+                    m_nLaserDrilling_LayerCount++;
+                    //m_nOutLine_LayerCount++;                                                                               //  Outline Layer 카운트 +1
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+
+                    break;
+
+                #endregion
+
+
+
+
+
                 #region 드릴링 가공
 
                 ///////////////////////////////////////
                 ///                                 ///
-                ///      Hole1~4 가공 (드릴링)      ///
+                ///      Hole1~10 가공 (드릴링)     ///
                 ///                                 ///
                 ///////////////////////////////////////
                 /// 
@@ -13735,7 +14891,7 @@ namespace QMC.Common.Modules
                         //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_BeforeMoveToNextRegion_CoolingTime_Start;
                         //}
 
-                        if ((m_nHoleLayer_ProcessIndex_Count >= (int)LayerList.Hole2) && (m_nHoleLayer_ProcessIndex_Count <= (int)LayerList.Hole6))
+                        if ((m_nHoleLayer_ProcessIndex_Count >= (int)LayerList.Hole2) && (m_nHoleLayer_ProcessIndex_Count <= (int)LayerList.Hole10))
                         {
                             Log.Write("SLD-200", "Auto Run", "Hole Layer 2 ~ 6, Socket Align 이나 Height Check 를 다시 하지 않음.");
 
@@ -14226,9 +15382,9 @@ namespace QMC.Common.Modules
                             m_dALIGN_FACTOR_Theta = m_st4PointAlign_Result.dRotationAngle;                                              //  얼라인 된 소켓 회전 (Theta,     기준위치 : 소켓 Center)
 
                             //  메인 화면의 소켓 얼라인 Offset 값을 적용 (테스트)
-                            m_dALIGN_FACTOR_Offset_X += Equipment.m_dTest_SocketAlign_OffsetX;
-                            m_dALIGN_FACTOR_Offset_Y += Equipment.m_dTest_SocketAlign_OffsetY;
-                            m_dALIGN_FACTOR_Theta += Equipment.m_dTest_SocketAlign_Theta;
+                            //m_dALIGN_FACTOR_Offset_X += Equipment.m_dTest_SocketAlign_OffsetX;
+                            //m_dALIGN_FACTOR_Offset_Y += Equipment.m_dTest_SocketAlign_OffsetY;
+                            //m_dALIGN_FACTOR_Theta += Equipment.m_dTest_SocketAlign_Theta;
 
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketData_RotAndOffset_Move;
                         }
@@ -14697,7 +15853,7 @@ namespace QMC.Common.Modules
                         m_nHoleLayer_ProcessIndex_Count++;
                         bool m_bLayerExist = false;
 
-                        if ((m_nHoleLayer_ProcessIndex_Count >= (int)LayerList.Hole2) && (m_nHoleLayer_ProcessIndex_Count <= (int)LayerList.Hole4))
+                        if ((m_nHoleLayer_ProcessIndex_Count >= (int)LayerList.Hole2) && (m_nHoleLayer_ProcessIndex_Count <= (int)LayerList.Hole10))
                         {
                             for (int i = 0; i < m_stLayerType.m_nLayerIndex.Length; i++)
                             {
@@ -19146,6 +20302,12 @@ namespace QMC.Common.Modules
             int m_nHole2_ObjectCount = 0;                                       //  Hole2 데이터 개수
             int m_nHole3_ObjectCount = 0;                                       //  Hole3 데이터 개수
             int m_nHole4_ObjectCount = 0;                                       //  Hole4 데이터 개수
+            int m_nHole5_ObjectCount = 0;                                       //  Hole5 데이터 개수
+            int m_nHole6_ObjectCount = 0;                                       //  Hole6 데이터 개수
+            int m_nHole7_ObjectCount = 0;                                       //  Hole7 데이터 개수
+            int m_nHole8_ObjectCount = 0;                                       //  Hole8 데이터 개수
+            int m_nHole9_ObjectCount = 0;                                       //  Hole9 데이터 개수
+            int m_nHole10_ObjectCount = 0;                                      //  Hole10 데이터 개수
             int m_nRect_ObjectCount = 0;                                        //  Rect 데이터 개수
             int m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
             int m_nFiducial_ObjectCount = 0;                                    //  Fiducial 마크 데이터 개수
@@ -19697,6 +20859,12 @@ namespace QMC.Common.Modules
             int m_nHole2_ObjectCount = 0;                                       //  Hole2 데이터 개수
             int m_nHole3_ObjectCount = 0;                                       //  Hole3 데이터 개수
             int m_nHole4_ObjectCount = 0;                                       //  Hole4 데이터 개수
+            int m_nHole5_ObjectCount = 0;                                       //  Hole5 데이터 개수
+            int m_nHole6_ObjectCount = 0;                                       //  Hole6 데이터 개수
+            int m_nHole7_ObjectCount = 0;                                       //  Hole7 데이터 개수
+            int m_nHole8_ObjectCount = 0;                                       //  Hole8 데이터 개수
+            int m_nHole9_ObjectCount = 0;                                       //  Hole9 데이터 개수
+            int m_nHole10_ObjectCount = 0;                                      //  Hole10 데이터 개수
             int m_nRect_ObjectCount = 0;                                        //  Rect 데이터 개수
             int m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
             int m_nFiducial_ObjectCount = 0;                                    //  Fiducial 마크 데이터 개수
@@ -20144,6 +21312,10 @@ namespace QMC.Common.Modules
             int m_nLayerHole4_Count = 0;
             int m_nLayerHole5_Count = 0;
             int m_nLayerHole6_Count = 0;
+            int m_nLayerHole7_Count = 0;
+            int m_nLayerHole8_Count = 0;
+            int m_nLayerHole9_Count = 0;
+            int m_nLayerHole10_Count = 0;
             int m_nLayerRect_Count = 0;
             int m_nLayerOutline_Count = 0;
             int m_nLayerMarking_Count = 0;
@@ -20308,6 +21480,22 @@ namespace QMC.Common.Modules
                     else if (layer.Name == "Hole6")
                     {
                         m_nLayerHole6_Count++;
+                    }
+                    else if (layer.Name == "Hole7")
+                    {
+                        m_nLayerHole7_Count++;
+                    }
+                    else if (layer.Name == "Hole8")
+                    {
+                        m_nLayerHole8_Count++;
+                    }
+                    else if (layer.Name == "Hole9")
+                    {
+                        m_nLayerHole9_Count++;
+                    }
+                    else if (layer.Name == "Hole10")
+                    {
+                        m_nLayerHole10_Count++;
                     }
                     else if (layer.Name == "Rect")
                     {
@@ -22467,30 +23655,50 @@ namespace QMC.Common.Modules
                             }
                         }
                     }
-                    else if (layer.Name == "Hole2")                                                                     //  Hole2 ~ Hole6 은 Hole1 의 데이터로 가공한다.
+                    else if (layer.Name == "Hole2")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
                     {
                         m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
                         m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole2;                  //  Layer Parameter 변경을 위한 Index
                     }
-                    else if (layer.Name == "Hole3")                                                                     //  Hole2 ~ Hole6 은 Hole1 의 데이터로 가공한다.
+                    else if (layer.Name == "Hole3")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
                     {
                         m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
                         m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole3;                  //  Layer Parameter 변경을 위한 Index
                     }
-                    else if (layer.Name == "Hole4")                                                                     //  Hole2 ~ Hole6 은 Hole1 의 데이터로 가공한다.
+                    else if (layer.Name == "Hole4")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
                     {
                         m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
                         m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole4;                  //  Layer Parameter 변경을 위한 Index
                     }
-                    else if (layer.Name == "Hole5")                                                                     //  Hole2 ~ Hole6 은 Hole1 의 데이터로 가공한다.
+                    else if (layer.Name == "Hole5")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
                     {
                         m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
                         m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole5;                  //  Layer Parameter 변경을 위한 Index
                     }
-                    else if (layer.Name == "Hole6")                                                                     //  Hole2 ~ Hole6 은 Hole1 의 데이터로 가공한다.
+                    else if (layer.Name == "Hole6")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
                     {
                         m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
                         m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole6;                  //  Layer Parameter 변경을 위한 Index
+                    }
+                    else if (layer.Name == "Hole7")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
+                    {
+                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
+                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole7;                  //  Layer Parameter 변경을 위한 Index
+                    }
+                    else if (layer.Name == "Hole8")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
+                    {
+                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
+                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole8;                  //  Layer Parameter 변경을 위한 Index
+                    }
+                    else if (layer.Name == "Hole9")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
+                    {
+                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
+                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole9;                  //  Layer Parameter 변경을 위한 Index
+                    }
+                    else if (layer.Name == "Hole10")                                                                    //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
+                    {
+                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
+                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole10;                 //  Layer Parameter 변경을 위한 Index
                     }
                     else if (layer.Name == "Rect")                                                                      //  Rect 가공
                     {
@@ -23224,19 +24432,21 @@ namespace QMC.Common.Modules
                             break;
                         }
 
-                        if (!LayerIsGroup || (m_nCount > 1))
-                        {
-                            //m_stOutline_LayerData = new LaserDrilling.stThruHole_LayerData();
+                        //  위에서 공간 할당
 
-                            //  전체 Object 개수
-                            m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectTotalNum = layer.Count;
+                        //if (!LayerIsGroup || (m_nCount > 1))
+                        //{
+                        //    //m_stOutline_LayerData = new LaserDrilling.stThruHole_LayerData();
 
-                            //  Object 별 데이터 공간 메모리 할당
-                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData = new stOutLine_ObjectData[layer.Count];
+                        //    //  전체 Object 개수
+                        //    m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectTotalNum = layer.Count;
 
-                            //  Thruhole 데이터 개수
-                            m_nThruholeData_Count = m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectTotalNum;
-                        }
+                        //    //  Object 별 데이터 공간 메모리 할당
+                        //    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData = new stOutLine_ObjectData[layer.Count];
+
+                        //    //  Thruhole 데이터 개수
+                        //    m_nLayerOutline_Count = m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectTotalNum;
+                        //}
 
                         //  세부 데이터 저장
                         m_nGroupData_Count = 0;
@@ -23265,30 +24475,30 @@ namespace QMC.Common.Modules
                                 case EType.Line:
                                     var line = entity as SpiralLab.Sirius.Line;
 
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Start      1 : End
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Start      1 : End
 
                                     //  객체 Type
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_LINE;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_LINE;
 
                                     //  객체 Edge 좌표 개수
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].nEdgePointNum = 2;               //  Line 데이터는 시작점과 끝 점 2개.
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].nEdgePointNum = 2;               //  Line 데이터는 시작점과 끝 점 2개.
 
                                     //  객체 Center 좌표 데이터 저장
-                                    //m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dObjectCenter.X = (double)line.Start.X + (double)line.End.X != 0.0 ? ((double)line.Start.X + (double)line.End.X) / 2.0 : 0.0;
-                                    //m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)line.Start.Y + (double)line.End.Y != 0.0 ? ((double)line.Start.Y + (double)line.End.Y) / 2.0 : 0.0;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.X = (double)line.Start.X + (double)line.End.X != 0.0 ? ((double)line.Start.X + (double)line.End.X) / 2.0 : 0.0;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)line.Start.Y + (double)line.End.Y != 0.0 ? ((double)line.Start.Y + (double)line.End.Y) / 2.0 : 0.0;
 
                                     //  객체 Edge 좌표 데이터 저장
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)line.Start.X;
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)line.Start.Y;
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)line.End.X;
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)line.End.Y;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)line.Start.X;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)line.Start.Y;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)line.End.X;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)line.End.Y;
 
                                     //  마지막 좌표 위치 저장
                                     m_ptLast.X = (double)line.End.X;
                                     m_ptLast.Y = (double)line.End.Y;
 
                                     //  영역 객체 개수 +1
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount++;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount++;
 
                                     //line.Start
                                     //line.End
@@ -23299,31 +24509,31 @@ namespace QMC.Common.Modules
                                     var arc = entity as SpiralLab.Sirius.Arc;
 
                                     //  객체 Type
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_ARC;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_ARC;
 
                                     //  객체 Radius
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].stArcData.dRadius = (double)arc.Radius;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].stArcData.dRadius = (double)arc.Radius;
 
                                     //  객체 Center 좌표
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].stArcData.dCenter.X = (double)arc.Center.X;
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].stArcData.dCenter.Y = (double)arc.Center.Y;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].stArcData.dCenter.X = (double)arc.Center.X;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].stArcData.dCenter.Y = (double)arc.Center.Y;
 
                                     //  객체 Center 좌표 데이터 저장
-                                    //m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dObjectCenter.X = (double)arc.Center.X;
-                                    //m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)arc.Center.Y;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.X = (double)arc.Center.X;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)arc.Center.Y;
 
                                     //  객체 Start Angle
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].stArcData.dStartAngle = (double)arc.StartAngle;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].stArcData.dStartAngle = (double)arc.StartAngle;
 
                                     //  객체 Sweep Angle
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].stArcData.dSweepAngle = (double)arc.SweepAngle;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].stArcData.dSweepAngle = (double)arc.SweepAngle;
 
                                     //  마지막 좌표 위치 저장
                                     m_ptLast.X = (double)arc.Center.X;
                                     m_ptLast.Y = (double)arc.Center.Y;
 
                                     //  영역 객체 개수 +1
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount++;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount++;
 
                                     //arc.Radius
                                     //arc.Center
@@ -23335,71 +24545,71 @@ namespace QMC.Common.Modules
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
 
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
 
                                     //  객체 Type
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_CIR;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_CIR;
 
                                     //  객체 Edge 좌표 개수
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].nEdgePointNum = 1;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].nEdgePointNum = 1;
 
                                     //  객체 Center 좌표 데이터 저장
-                                    //m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dObjectCenter.X = (double)circle.Center.X;
-                                    //m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)circle.Center.Y;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.X = (double)circle.Center.X;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)circle.Center.Y;
 
                                     //  객체 Edge 좌표 데이터 저장 (Circle Center, Circle 은 1개 고정)
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)circle.Center.X;
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)circle.Center.Y;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)circle.Center.X;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)circle.Center.Y;
 
                                     //  Circle 의 경우, 두 번째 데이터는 Radius 값
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)circle.Radius;
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)circle.Radius;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)circle.Radius;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)circle.Radius;
 
                                     //  마지막 좌표 위치 저장
                                     m_ptLast.X = (double)circle.Center.X;
                                     m_ptLast.Y = (double)circle.Center.Y;
 
                                     //  영역 객체 개수 +1
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount++;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount++;
                                     break;
 
                                 case EType.Rectangle:
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
 
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
 
                                     //  객체 Type
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_RECT;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_RECT;
 
                                     //  객체 Edge 좌표 개수
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].nEdgePointNum = 5;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].nEdgePointNum = 5;
 
                                     //  객체 Center 좌표 데이터 저장
-                                    //m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dObjectCenter.X = (double)rectangle.Center.X;
-                                    //m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)rectangle.Center.Y;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.X = (double)rectangle.Center.X;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)rectangle.Center.Y;
 
                                     //  객체 Edge 좌표 데이터 저장 (Rectangle 은 4개 고정)
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
 
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)rectangle.Center.X + ((double)rectangle.Width / 2.0);
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)rectangle.Center.X + ((double)rectangle.Width / 2.0);
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
 
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[2].X = (double)rectangle.Center.X + ((double)rectangle.Width / 2.0);
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[2].Y = (double)rectangle.Center.Y - ((double)rectangle.Height / 2.0);
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[2].X = (double)rectangle.Center.X + ((double)rectangle.Width / 2.0);
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[2].Y = (double)rectangle.Center.Y - ((double)rectangle.Height / 2.0);
 
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[3].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[3].Y = (double)rectangle.Center.Y - ((double)rectangle.Height / 2.0);
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[3].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[3].Y = (double)rectangle.Center.Y - ((double)rectangle.Height / 2.0);
 
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[4].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[4].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[4].X = (double)rectangle.Center.X - ((double)rectangle.Width / 2.0);
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[4].Y = (double)rectangle.Center.Y + ((double)rectangle.Height / 2.0);
 
                                     //  마지막 좌표 위치 저장
-                                    m_ptLast.X = m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].X;
-                                    m_ptLast.Y = m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                    m_ptLast.X = m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].X;
+                                    m_ptLast.Y = m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
 
                                     //  영역 객체 개수 +1
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount++;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount++;
 
                                     //rectangle.Width
                                     //rectangle.Height
@@ -23412,38 +24622,38 @@ namespace QMC.Common.Modules
                                     var lwPolyline = entity as SpiralLab.Sirius.LwPolyline;
                                     //lwPolyline.IsClosed
 
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint = new PointD[lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint = new PointD[lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
 
                                     //  객체 Type
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_POLY;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_POLY;
 
                                     //  객체 Edge 좌표 개수
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].nEdgePointNum = lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].nEdgePointNum = lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count;
 
                                     //  객체 Center 좌표 데이터 저장
-                                    //m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dObjectCenter.X = (double)lwPolyline.BoundRect.Center.X;
-                                    //m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)lwPolyline.BoundRect.Center.Y;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.X = (double)lwPolyline.BoundRect.Center.X;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)lwPolyline.BoundRect.Center.Y;
 
                                     //  객체 Edge 좌표 데이터 저장
                                     for (int n_pl = 0; n_pl < lwPolyline.Count; n_pl++)
                                     {
-                                        m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[n_pl].X = (double)lwPolyline.Items[n_pl].X;
-                                        m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[n_pl].Y = (double)lwPolyline.Items[n_pl].Y;
+                                        m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[n_pl].X = (double)lwPolyline.Items[n_pl].X;
+                                        m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[n_pl].Y = (double)lwPolyline.Items[n_pl].Y;
                                     }
 
                                     //  닫힌 도형일 경우, 시작 좌표 한번 더 추가)
                                     if (lwPolyline.IsClosed)
                                     {
-                                        m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[lwPolyline.Count].X = (double)lwPolyline.Items[0].X;
-                                        m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[lwPolyline.Count].Y = (double)lwPolyline.Items[0].Y;
+                                        m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[lwPolyline.Count].X = (double)lwPolyline.Items[0].X;
+                                        m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[lwPolyline.Count].Y = (double)lwPolyline.Items[0].Y;
                                     }
 
                                     //  마지막 좌표 위치 저장
-                                    m_ptLast.X = m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].X;
-                                    m_ptLast.Y = m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                    m_ptLast.X = m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].X;
+                                    m_ptLast.Y = m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
 
                                     //  영역 객체 개수 +1
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount++;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount++;
 
                                     //foreach (var vertex in lwPolyline)
                                     //{
@@ -23471,163 +24681,183 @@ namespace QMC.Common.Modules
                                     //m_stOutLine_LayerData = new LaserDrilling.stThruHole_LayerData();
 
                                     //  전체 Object 개수
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectTotalNum = group.Count;
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectTotalNum = group.Count;
 
                                     //  Object 별 데이터 공간 메모리 할당
-                                    m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData = new stOutLine_ObjectData[group.Count];
+                                    m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData = new stOutLine_ObjectData[group.Count];
 
                                     //  세부 데이터 저장
                                     m_nGroupData_Count = 0;
                                     foreach (var subEntity in group)
                                     {
-                                        m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_nGroupData_Count].bAssigned = false;
+                                        m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_nGroupData_Count].bAssigned = false;
 
                                         Type t = subEntity.GetType();
                                         if (t.Name == "LwPolyline")
                                         {
                                             var pl = subEntity as SpiralLab.Sirius.LwPolyline;
 
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
 
                                             //  객체 Type
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_POLY;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_POLY;
 
                                             //  객체 Edge 좌표 개수
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].nEdgePointNum = pl.IsClosed ? pl.Count + 1 : pl.Count;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].nEdgePointNum = pl.IsClosed ? pl.Count + 1 : pl.Count;
+
+                                            //  객체 Center 좌표 데이터 저장
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.BoundRect.Center.X;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.BoundRect.Center.Y;
 
                                             //  객체 Edge 좌표 데이터 저장
                                             for (int n_pl = 0; n_pl < pl.Count; n_pl++)
                                             {
-                                                m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[n_pl].X = (double)pl.Items[n_pl].X;
-                                                m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[n_pl].Y = (double)pl.Items[n_pl].Y;
+                                                m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[n_pl].X = (double)pl.Items[n_pl].X;
+                                                m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[n_pl].Y = (double)pl.Items[n_pl].Y;
                                             }
 
                                             //  닫힌 도형일 경우, 시작 좌표 한번 더 추가)
                                             if (pl.IsClosed)
                                             {
-                                                m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[pl.Count].X = (double)pl.Items[0].X;
-                                                m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[pl.Count].Y = (double)pl.Items[0].Y;
+                                                m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[pl.Count].X = (double)pl.Items[0].X;
+                                                m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[pl.Count].Y = (double)pl.Items[0].Y;
                                             }
 
                                             //  마지막 좌표 위치 저장
-                                            m_ptLast.X = m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].X;
-                                            m_ptLast.Y = m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                            m_ptLast.X = m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].X;
+                                            m_ptLast.Y = m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
 
                                             //  영역 객체 개수 +1
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount++;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount++;
                                         }
                                         else if (t.Name == "Circle")
                                         {
                                             var pl = subEntity as SpiralLab.Sirius.Circle;
 
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
 
                                             //  객체 Type
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_CIR;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_CIR;
 
                                             //  객체 Edge 좌표 개수
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].nEdgePointNum = 1;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].nEdgePointNum = 1;
+
+                                            //  객체 Center 좌표 데이터 저장
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.Center.X;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.Center.Y;
 
                                             //  객체 Edge 좌표 데이터 저장 (Circle Center, Circle 은 1개 고정)
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X;
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y;
 
                                             //  Circle 의 경우, 두 번째 데이터는 Radius 값
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Radius;
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Radius;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Radius;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Radius;
 
                                             //  마지막 좌표 위치 저장
                                             m_ptLast.X = (double)pl.Center.X;
                                             m_ptLast.Y = (double)pl.Center.Y;
 
                                             //  영역 객체 개수 +1
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount++;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount++;
                                         }
                                         else if (t.Name == "Rectangle")
                                         {
                                             var pl = subEntity as SpiralLab.Sirius.Rectangle;
 
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
 
                                             //  객체 Type
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_RECT;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_RECT;
 
                                             //  객체 Edge 좌표 개수
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].nEdgePointNum = 5;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].nEdgePointNum = 5;
+
+                                            //  객체 Center 좌표 데이터 저장
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.Center.X;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.Center.Y;
 
                                             //  객체 Edge 좌표 데이터 저장 (Rectangle 은 4개 고정)
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
 
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
 
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[2].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[2].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[2].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[2].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
 
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[3].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[3].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[3].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[3].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
 
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[4].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[4].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[4].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[4].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
 
                                             //  마지막 좌표 위치 저장
-                                            m_ptLast.X = m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].X;
-                                            m_ptLast.Y = m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                            m_ptLast.X = m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].X;
+                                            m_ptLast.Y = m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].Y;
 
                                             //  영역 객체 개수 +1
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount++;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount++;
                                         }
                                         else if (t.Name == "Line")
                                         {
                                             var pl = subEntity as SpiralLab.Sirius.Line;
 
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Start      1 : Endm_stThruHole_LayerData[m_nLayerThruHole_Count]
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Start      1 : Endm_stThruHole_LayerData[m_nLayerThruHole_Count]
                                             //  객체 Type
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_LINE;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_LINE;
 
                                             //  객체 Edge 좌표 개수
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].nEdgePointNum = 2;               //  Line 데이터는 시작점과 끝 점 2개.
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].nEdgePointNum = 2;               //  Line 데이터는 시작점과 끝 점 2개.
+
+                                            //  객체 Center 좌표 데이터 저장
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.BoundRect.Center.X;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.BoundRect.Center.Y;
 
                                             //  객체 Edge 좌표 데이터 저장
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Start.X;
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Start.Y;
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.End.X;
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.End.Y;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Start.X;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Start.Y;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.End.X;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.End.Y;
 
                                             //  마지막 좌표 위치 저장
                                             m_ptLast.X = (double)pl.End.X;
                                             m_ptLast.Y = (double)pl.End.Y;
 
                                             //  영역 객체 개수 +1
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount++;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount++;
                                         }
                                         else if (t.Name == "Arc")
                                         {
                                             var pl = subEntity as SpiralLab.Sirius.Arc;
 
                                             //  객체 Type
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_ARC;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_ARC;
 
                                             //  객체 Radius
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].stArcData.dRadius = (double)pl.Radius;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].stArcData.dRadius = (double)pl.Radius;
+
+                                            //  객체 Center 좌표 데이터 저장
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.X = (double)pl.Center.X;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].dObjectCenter.Y = (double)pl.Center.Y;
 
                                             //  객체 Center 좌표
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].stArcData.dCenter.X = (double)pl.Center.X;
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].stArcData.dCenter.Y = (double)pl.Center.Y;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].stArcData.dCenter.X = (double)pl.Center.X;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].stArcData.dCenter.Y = (double)pl.Center.Y;
 
                                             //  객체 Start Angle
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].stArcData.dStartAngle = (double)pl.StartAngle;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].stArcData.dStartAngle = (double)pl.StartAngle;
 
                                             //  객체 Sweep Angle
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount].stArcData.dSweepAngle = (double)pl.SweepAngle;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].m_stOutLine_ObjectData[m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount].stArcData.dSweepAngle = (double)pl.SweepAngle;
 
                                             //  마지막 좌표 위치 저장
                                             m_ptLast.X = (double)pl.Center.X;
                                             m_ptLast.Y = (double)pl.Center.Y;
 
                                             //  영역 객체 개수 +1
-                                            m_stOutLine_LayerData[m_nLayerThruhole_Count].nRegion_ObjectCount++;
+                                            m_stOutLine_LayerData[m_nLayerOutline_Count].nRegion_ObjectCount++;
                                         }
                                         else        //  또 뭐가 있나...
                                         {
@@ -23654,7 +24884,7 @@ namespace QMC.Common.Modules
                         }
 
                         m_nLayerCount++;
-                        m_nLayerThruhole_Count++;                   //  Thruhole Layer 카운트 +1
+                        m_nLayerOutline_Count++;                   //  Thruhole Layer 카운트 +1
                     }
                     else
                     {
