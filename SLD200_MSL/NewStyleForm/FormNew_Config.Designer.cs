@@ -548,6 +548,7 @@
             this.groupBox30 = new System.Windows.Forms.GroupBox();
             this.labelStagePressure = new System.Windows.Forms.Label();
             this.label51 = new System.Windows.Forms.Label();
+            this.label_Mask_Gap = new System.Windows.Forms.Label();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -6341,6 +6342,7 @@
             // 
             // groupBox77
             // 
+            this.groupBox77.Controls.Add(this.label_Mask_Gap);
             this.groupBox77.Controls.Add(this.button37);
             this.groupBox77.Controls.Add(this.button_Config_BDS_TeachingPositions_Save);
             this.groupBox77.Controls.Add(this.groupBox78);
@@ -7509,11 +7511,11 @@
             this.groupBox30.Controls.Add(this.labelStagePressure);
             this.groupBox30.Controls.Add(this.label51);
             this.groupBox30.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox30.Location = new System.Drawing.Point(1674, 732);
+            this.groupBox30.Location = new System.Drawing.Point(1674, 739);
             this.groupBox30.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox30.Name = "groupBox30";
             this.groupBox30.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox30.Size = new System.Drawing.Size(232, 70);
+            this.groupBox30.Size = new System.Drawing.Size(234, 65);
             this.groupBox30.TabIndex = 84;
             this.groupBox30.TabStop = false;
             this.groupBox30.Text = " Dust Collector (Lower) ";
@@ -7542,6 +7544,17 @@
             this.label51.TabIndex = 49;
             this.label51.Text = "Pressure(kPa) : ";
             this.label51.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Mask_Gap
+            // 
+            this.label_Mask_Gap.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Mask_Gap.Location = new System.Drawing.Point(48, 326);
+            this.label_Mask_Gap.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_Mask_Gap.Name = "label_Mask_Gap";
+            this.label_Mask_Gap.Size = new System.Drawing.Size(247, 24);
+            this.label_Mask_Gap.TabIndex = 47;
+            this.label_Mask_Gap.Text = "(* Gap between masks : 35.0 mm)";
+            this.label_Mask_Gap.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FormNew_Config
             // 
@@ -8212,5 +8225,6 @@
         private System.Windows.Forms.Button button_Test_ULTransfer_AxisZ_SafetyPos;
         private System.Windows.Forms.Button button_Test_LDTransfer_AxisZ_SafetyPos;
         private System.Windows.Forms.Button button_Test_Scanner_AxisZ_SafetyPos;
+        private System.Windows.Forms.Label label_Mask_Gap;
     }
 }

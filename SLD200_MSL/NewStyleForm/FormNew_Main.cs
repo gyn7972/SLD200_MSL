@@ -1087,8 +1087,11 @@ namespace SLD200_MSL
 
 
 
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //
             //  장비 운전 정지 시점의 모든 상태 데이터 저장
-
+            //
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             //  Loader 상태
             loader.m_nLD_RESTORE_Transfer_Step = loader.m_nLoader_Transfer_Step;
@@ -1107,7 +1110,6 @@ namespace SLD200_MSL
             loader.m_bLD_RESTORE_Transfer_fromMAligner_Module_PickUp_Complete_Flag = loader.m_bLD_Transfer_fromMAligner_Module_PickUp_Complete_Flag;                            //  M-Aligner 에서 Module Pick Up 완료 여부
             loader.m_bLD_RESTORE_Transfer_toMAligner_Module_PutDown_Complete_Flag = loader.m_bLD_Transfer_toMAligner_Module_PutDown_Complete_Flag;                              //  M-Aligner 에 Module Put Down 완료 여부
             loader.m_bLD_RESTORE_Transfer_toWorkStage_Module_PutDown_Complete_Flag = loader.m_bLD_Transfer_toWorkStage_Module_PutDown_Complete_Flag;                            //  Work Stage 에 Module Put Down 완료 여부
-
 
             //  Unloader 상태
             unloader.m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = unloader.m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete;     //  Work Stage 에서 Module Pick Up 완료 여부
