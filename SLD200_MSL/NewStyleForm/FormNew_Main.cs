@@ -573,6 +573,13 @@ namespace SLD200_MSL
                 return;
             }
 
+            if (Equipment.AutoRunStatus)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "자동 운전 중입니다.");
+                return;
+            }
+
             if (Equipment.RecipeOpen_DrawingFilePath.Length == 0)
             {
                 var mb1 = new MessageBoxOk();
