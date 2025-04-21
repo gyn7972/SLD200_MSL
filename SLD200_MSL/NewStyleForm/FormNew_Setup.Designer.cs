@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPage_Setup_Communication = new System.Windows.Forms.TabPage();
             this.groupBox86 = new System.Windows.Forms.GroupBox();
             this.button_Test_SocketConnect = new System.Windows.Forms.Button();
@@ -230,12 +230,26 @@
             this.label51 = new System.Windows.Forms.Label();
             this.label53 = new System.Windows.Forms.Label();
             this.tabPage_Setup_ScannerCalibration = new System.Windows.Forms.TabPage();
+            this.btnOffsetApply = new System.Windows.Forms.Button();
+            this.label_Setup_S_V_OffsetY = new System.Windows.Forms.Label();
+            this.label_Setup_S_V_OffsetX = new System.Windows.Forms.Label();
+            this.label_Setup_ScannerCal_OffsetY = new System.Windows.Forms.Label();
+            this.btnOffsetStart_Vision = new System.Windows.Forms.Button();
             this.btnCalStart_Vision = new System.Windows.Forms.Button();
+            this.label_Setup_ScannerCal_OffsetX = new System.Windows.Forms.Label();
             this.btnCalStop = new System.Windows.Forms.Button();
             this.btnCalStart = new System.Windows.Forms.Button();
             this.button17 = new System.Windows.Forms.Button();
             this.button_Setup_ScannerCal_Save = new System.Windows.Forms.Button();
             this.groupBox15 = new System.Windows.Forms.GroupBox();
+            this.label93 = new System.Windows.Forms.Label();
+            this.label_Setup_ScannerCal_LastPosY = new System.Windows.Forms.Label();
+            this.label_Setup_ScannerCal_LastPosX = new System.Windows.Forms.Label();
+            this.textBox_Setup_ScannerCal_CalPitch = new System.Windows.Forms.TextBox();
+            this.button30 = new System.Windows.Forms.Button();
+            this.textBox_Setup_ScannerCal_CalAreaHeight = new System.Windows.Forms.TextBox();
+            this.button29 = new System.Windows.Forms.Button();
+            this.textBox_Setup_ScannerCal_CalAreaWidth = new System.Windows.Forms.TextBox();
             this.textBox_Setup_ScannerCal_PolygonDelay = new System.Windows.Forms.TextBox();
             this.button25 = new System.Windows.Forms.Button();
             this.label74 = new System.Windows.Forms.Label();
@@ -1084,14 +1098,14 @@
             this.Output_Active,
             this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn2});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle5;
             this.dataGridView3.Location = new System.Drawing.Point(10, 28);
             this.dataGridView3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView3.Name = "dataGridView3";
@@ -1144,14 +1158,14 @@
             this.Active,
             this.Column4,
             this.Column5});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle6;
             this.dataGridView2.Location = new System.Drawing.Point(10, 28);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView2.Name = "dataGridView2";
@@ -2748,6 +2762,7 @@
             this.listBox_Setup_Motion_SelectAxis.HorizontalScrollbar = true;
             this.listBox_Setup_Motion_SelectAxis.ItemHeight = 18;
             this.listBox_Setup_Motion_SelectAxis.Items.AddRange(new object[] {
+            "Mask Y",
             "Mechanic Aligner X",
             "Mechanic Aligner Y",
             "Work Stage X",
@@ -2997,7 +3012,13 @@
             // 
             // tabPage_Setup_ScannerCalibration
             // 
+            this.tabPage_Setup_ScannerCalibration.Controls.Add(this.btnOffsetApply);
+            this.tabPage_Setup_ScannerCalibration.Controls.Add(this.label_Setup_S_V_OffsetY);
+            this.tabPage_Setup_ScannerCalibration.Controls.Add(this.label_Setup_S_V_OffsetX);
+            this.tabPage_Setup_ScannerCalibration.Controls.Add(this.label_Setup_ScannerCal_OffsetY);
+            this.tabPage_Setup_ScannerCalibration.Controls.Add(this.btnOffsetStart_Vision);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.btnCalStart_Vision);
+            this.tabPage_Setup_ScannerCalibration.Controls.Add(this.label_Setup_ScannerCal_OffsetX);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.btnCalStop);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.btnCalStart);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.button17);
@@ -3013,9 +3034,65 @@
             this.tabPage_Setup_ScannerCalibration.Text = "Scanner Calibration";
             this.tabPage_Setup_ScannerCalibration.UseVisualStyleBackColor = true;
             // 
+            // btnOffsetApply
+            // 
+            this.btnOffsetApply.Location = new System.Drawing.Point(1767, 237);
+            this.btnOffsetApply.Name = "btnOffsetApply";
+            this.btnOffsetApply.Size = new System.Drawing.Size(103, 51);
+            this.btnOffsetApply.TabIndex = 158;
+            this.btnOffsetApply.Text = "Apply";
+            this.btnOffsetApply.UseVisualStyleBackColor = true;
+            this.btnOffsetApply.Click += new System.EventHandler(this.btnOffsetApply_Click);
+            // 
+            // label_Setup_S_V_OffsetY
+            // 
+            this.label_Setup_S_V_OffsetY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label_Setup_S_V_OffsetY.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Setup_S_V_OffsetY.Location = new System.Drawing.Point(1767, 73);
+            this.label_Setup_S_V_OffsetY.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label_Setup_S_V_OffsetY.Name = "label_Setup_S_V_OffsetY";
+            this.label_Setup_S_V_OffsetY.Size = new System.Drawing.Size(103, 25);
+            this.label_Setup_S_V_OffsetY.TabIndex = 156;
+            this.label_Setup_S_V_OffsetY.Text = "--";
+            this.label_Setup_S_V_OffsetY.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Setup_S_V_OffsetX
+            // 
+            this.label_Setup_S_V_OffsetX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label_Setup_S_V_OffsetX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Setup_S_V_OffsetX.Location = new System.Drawing.Point(1767, 40);
+            this.label_Setup_S_V_OffsetX.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label_Setup_S_V_OffsetX.Name = "label_Setup_S_V_OffsetX";
+            this.label_Setup_S_V_OffsetX.Size = new System.Drawing.Size(103, 25);
+            this.label_Setup_S_V_OffsetX.TabIndex = 154;
+            this.label_Setup_S_V_OffsetX.Text = "--";
+            this.label_Setup_S_V_OffsetX.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Setup_ScannerCal_OffsetY
+            // 
+            this.label_Setup_ScannerCal_OffsetY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label_Setup_ScannerCal_OffsetY.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Setup_ScannerCal_OffsetY.Location = new System.Drawing.Point(1767, 205);
+            this.label_Setup_ScannerCal_OffsetY.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label_Setup_ScannerCal_OffsetY.Name = "label_Setup_ScannerCal_OffsetY";
+            this.label_Setup_ScannerCal_OffsetY.Size = new System.Drawing.Size(103, 25);
+            this.label_Setup_ScannerCal_OffsetY.TabIndex = 152;
+            this.label_Setup_ScannerCal_OffsetY.Text = "--";
+            this.label_Setup_ScannerCal_OffsetY.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // btnOffsetStart_Vision
+            // 
+            this.btnOffsetStart_Vision.Location = new System.Drawing.Point(1642, 114);
+            this.btnOffsetStart_Vision.Name = "btnOffsetStart_Vision";
+            this.btnOffsetStart_Vision.Size = new System.Drawing.Size(228, 51);
+            this.btnOffsetStart_Vision.TabIndex = 64;
+            this.btnOffsetStart_Vision.Text = "Scanner <-> Vision Offset START";
+            this.btnOffsetStart_Vision.UseVisualStyleBackColor = true;
+            this.btnOffsetStart_Vision.Click += new System.EventHandler(this.btnOffsetStart_Vision_Click);
+            // 
             // btnCalStart_Vision
             // 
-            this.btnCalStart_Vision.Location = new System.Drawing.Point(1287, 479);
+            this.btnCalStart_Vision.Location = new System.Drawing.Point(1287, 592);
             this.btnCalStart_Vision.Name = "btnCalStart_Vision";
             this.btnCalStart_Vision.Size = new System.Drawing.Size(153, 51);
             this.btnCalStart_Vision.TabIndex = 63;
@@ -3023,9 +3100,21 @@
             this.btnCalStart_Vision.UseVisualStyleBackColor = true;
             this.btnCalStart_Vision.Click += new System.EventHandler(this.btnCalStart_Vision_Click);
             // 
+            // label_Setup_ScannerCal_OffsetX
+            // 
+            this.label_Setup_ScannerCal_OffsetX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label_Setup_ScannerCal_OffsetX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Setup_ScannerCal_OffsetX.Location = new System.Drawing.Point(1767, 172);
+            this.label_Setup_ScannerCal_OffsetX.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label_Setup_ScannerCal_OffsetX.Name = "label_Setup_ScannerCal_OffsetX";
+            this.label_Setup_ScannerCal_OffsetX.Size = new System.Drawing.Size(103, 25);
+            this.label_Setup_ScannerCal_OffsetX.TabIndex = 150;
+            this.label_Setup_ScannerCal_OffsetX.Text = "--";
+            this.label_Setup_ScannerCal_OffsetX.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // btnCalStop
             // 
-            this.btnCalStop.Location = new System.Drawing.Point(1459, 403);
+            this.btnCalStop.Location = new System.Drawing.Point(1459, 533);
             this.btnCalStop.Name = "btnCalStop";
             this.btnCalStop.Size = new System.Drawing.Size(153, 51);
             this.btnCalStop.TabIndex = 62;
@@ -3035,11 +3124,11 @@
             // 
             // btnCalStart
             // 
-            this.btnCalStart.Location = new System.Drawing.Point(1287, 403);
+            this.btnCalStart.Location = new System.Drawing.Point(1287, 533);
             this.btnCalStart.Name = "btnCalStart";
             this.btnCalStart.Size = new System.Drawing.Size(153, 51);
             this.btnCalStart.TabIndex = 61;
-            this.btnCalStart.Text = "START";
+            this.btnCalStart.Text = "CAL START";
             this.btnCalStart.UseVisualStyleBackColor = true;
             this.btnCalStart.Click += new System.EventHandler(this.btnCalStart_Click);
             // 
@@ -3068,6 +3157,13 @@
             // 
             // groupBox15
             // 
+            this.groupBox15.Controls.Add(this.label_Setup_ScannerCal_LastPosY);
+            this.groupBox15.Controls.Add(this.label_Setup_ScannerCal_LastPosX);
+            this.groupBox15.Controls.Add(this.textBox_Setup_ScannerCal_CalPitch);
+            this.groupBox15.Controls.Add(this.button30);
+            this.groupBox15.Controls.Add(this.textBox_Setup_ScannerCal_CalAreaHeight);
+            this.groupBox15.Controls.Add(this.button29);
+            this.groupBox15.Controls.Add(this.textBox_Setup_ScannerCal_CalAreaWidth);
             this.groupBox15.Controls.Add(this.textBox_Setup_ScannerCal_PolygonDelay);
             this.groupBox15.Controls.Add(this.button25);
             this.groupBox15.Controls.Add(this.label74);
@@ -3103,15 +3199,102 @@
             this.groupBox15.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox15.Name = "groupBox15";
             this.groupBox15.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox15.Size = new System.Drawing.Size(325, 392);
+            this.groupBox15.Size = new System.Drawing.Size(325, 522);
             this.groupBox15.TabIndex = 58;
             this.groupBox15.TabStop = false;
             this.groupBox15.Text = " Laser Param. for Scanner Cal. ";
             // 
+            // label93
+            // 
+            this.label93.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label93.Location = new System.Drawing.Point(0, 462);
+            this.label93.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label93.Name = "label93";
+            this.label93.Size = new System.Drawing.Size(210, 33);
+            this.label93.TabIndex = 77;
+            this.label93.Text = "Waiting time after turning on the dust collector (ms) :";
+            this.label93.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Setup_ScannerCal_LastPosY
+            // 
+            this.label_Setup_ScannerCal_LastPosY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label_Setup_ScannerCal_LastPosY.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Setup_ScannerCal_LastPosY.Location = new System.Drawing.Point(193, 479);
+            this.label_Setup_ScannerCal_LastPosY.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label_Setup_ScannerCal_LastPosY.Name = "label_Setup_ScannerCal_LastPosY";
+            this.label_Setup_ScannerCal_LastPosY.Size = new System.Drawing.Size(123, 25);
+            this.label_Setup_ScannerCal_LastPosY.TabIndex = 148;
+            this.label_Setup_ScannerCal_LastPosY.Text = "--";
+            this.label_Setup_ScannerCal_LastPosY.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Setup_ScannerCal_LastPosX
+            // 
+            this.label_Setup_ScannerCal_LastPosX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label_Setup_ScannerCal_LastPosX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Setup_ScannerCal_LastPosX.Location = new System.Drawing.Point(193, 446);
+            this.label_Setup_ScannerCal_LastPosX.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label_Setup_ScannerCal_LastPosX.Name = "label_Setup_ScannerCal_LastPosX";
+            this.label_Setup_ScannerCal_LastPosX.Size = new System.Drawing.Size(123, 25);
+            this.label_Setup_ScannerCal_LastPosX.TabIndex = 146;
+            this.label_Setup_ScannerCal_LastPosX.Text = "--";
+            this.label_Setup_ScannerCal_LastPosX.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_ScannerCal_CalPitch
+            // 
+            this.textBox_Setup_ScannerCal_CalPitch.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_ScannerCal_CalPitch.Location = new System.Drawing.Point(184, 403);
+            this.textBox_Setup_ScannerCal_CalPitch.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_ScannerCal_CalPitch.Name = "textBox_Setup_ScannerCal_CalPitch";
+            this.textBox_Setup_ScannerCal_CalPitch.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_ScannerCal_CalPitch.TabIndex = 144;
+            this.textBox_Setup_ScannerCal_CalPitch.Text = "0.0";
+            // 
+            // button30
+            // 
+            this.button30.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button30.Location = new System.Drawing.Point(280, 404);
+            this.button30.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button30.Name = "button30";
+            this.button30.Size = new System.Drawing.Size(35, 25);
+            this.button30.TabIndex = 143;
+            this.button30.Text = "#";
+            this.button30.UseVisualStyleBackColor = true;
+            // 
+            // textBox_Setup_ScannerCal_CalAreaHeight
+            // 
+            this.textBox_Setup_ScannerCal_CalAreaHeight.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_ScannerCal_CalAreaHeight.Location = new System.Drawing.Point(184, 370);
+            this.textBox_Setup_ScannerCal_CalAreaHeight.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_ScannerCal_CalAreaHeight.Name = "textBox_Setup_ScannerCal_CalAreaHeight";
+            this.textBox_Setup_ScannerCal_CalAreaHeight.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_ScannerCal_CalAreaHeight.TabIndex = 141;
+            this.textBox_Setup_ScannerCal_CalAreaHeight.Text = "0.0";
+            // 
+            // button29
+            // 
+            this.button29.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button29.Location = new System.Drawing.Point(280, 371);
+            this.button29.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button29.Name = "button29";
+            this.button29.Size = new System.Drawing.Size(35, 25);
+            this.button29.TabIndex = 140;
+            this.button29.Text = "#";
+            this.button29.UseVisualStyleBackColor = true;
+            // 
+            // textBox_Setup_ScannerCal_CalAreaWidth
+            // 
+            this.textBox_Setup_ScannerCal_CalAreaWidth.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_ScannerCal_CalAreaWidth.Location = new System.Drawing.Point(184, 337);
+            this.textBox_Setup_ScannerCal_CalAreaWidth.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_ScannerCal_CalAreaWidth.Name = "textBox_Setup_ScannerCal_CalAreaWidth";
+            this.textBox_Setup_ScannerCal_CalAreaWidth.Size = new System.Drawing.Size(90, 24);
+            this.textBox_Setup_ScannerCal_CalAreaWidth.TabIndex = 138;
+            this.textBox_Setup_ScannerCal_CalAreaWidth.Text = "0.0";
+            // 
             // textBox_Setup_ScannerCal_PolygonDelay
             // 
             this.textBox_Setup_ScannerCal_PolygonDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_ScannerCal_PolygonDelay.Location = new System.Drawing.Point(184, 316);
+            this.textBox_Setup_ScannerCal_PolygonDelay.Location = new System.Drawing.Point(184, 304);
             this.textBox_Setup_ScannerCal_PolygonDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_ScannerCal_PolygonDelay.Name = "textBox_Setup_ScannerCal_PolygonDelay";
             this.textBox_Setup_ScannerCal_PolygonDelay.Size = new System.Drawing.Size(90, 24);
@@ -3121,7 +3304,7 @@
             // button25
             // 
             this.button25.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button25.Location = new System.Drawing.Point(280, 317);
+            this.button25.Location = new System.Drawing.Point(280, 305);
             this.button25.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button25.Name = "button25";
             this.button25.Size = new System.Drawing.Size(35, 25);
@@ -3132,7 +3315,7 @@
             // label74
             // 
             this.label74.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label74.Location = new System.Drawing.Point(8, 315);
+            this.label74.Location = new System.Drawing.Point(8, 303);
             this.label74.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label74.Name = "label74";
             this.label74.Size = new System.Drawing.Size(175, 25);
@@ -3143,7 +3326,7 @@
             // textBox_Setup_ScannerCal_JumpDelay
             // 
             this.textBox_Setup_ScannerCal_JumpDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_ScannerCal_JumpDelay.Location = new System.Drawing.Point(184, 283);
+            this.textBox_Setup_ScannerCal_JumpDelay.Location = new System.Drawing.Point(184, 271);
             this.textBox_Setup_ScannerCal_JumpDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_ScannerCal_JumpDelay.Name = "textBox_Setup_ScannerCal_JumpDelay";
             this.textBox_Setup_ScannerCal_JumpDelay.Size = new System.Drawing.Size(90, 24);
@@ -3153,7 +3336,7 @@
             // button24
             // 
             this.button24.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button24.Location = new System.Drawing.Point(280, 284);
+            this.button24.Location = new System.Drawing.Point(280, 272);
             this.button24.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button24.Name = "button24";
             this.button24.Size = new System.Drawing.Size(35, 25);
@@ -3164,7 +3347,7 @@
             // label73
             // 
             this.label73.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label73.Location = new System.Drawing.Point(8, 282);
+            this.label73.Location = new System.Drawing.Point(8, 270);
             this.label73.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label73.Name = "label73";
             this.label73.Size = new System.Drawing.Size(175, 25);
@@ -3175,7 +3358,7 @@
             // textBox_Setup_ScannerCal_MarkDelay
             // 
             this.textBox_Setup_ScannerCal_MarkDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_ScannerCal_MarkDelay.Location = new System.Drawing.Point(184, 250);
+            this.textBox_Setup_ScannerCal_MarkDelay.Location = new System.Drawing.Point(184, 238);
             this.textBox_Setup_ScannerCal_MarkDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_ScannerCal_MarkDelay.Name = "textBox_Setup_ScannerCal_MarkDelay";
             this.textBox_Setup_ScannerCal_MarkDelay.Size = new System.Drawing.Size(90, 24);
@@ -3185,7 +3368,7 @@
             // button23
             // 
             this.button23.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button23.Location = new System.Drawing.Point(280, 251);
+            this.button23.Location = new System.Drawing.Point(280, 239);
             this.button23.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button23.Name = "button23";
             this.button23.Size = new System.Drawing.Size(35, 25);
@@ -3196,7 +3379,7 @@
             // label72
             // 
             this.label72.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label72.Location = new System.Drawing.Point(8, 249);
+            this.label72.Location = new System.Drawing.Point(8, 237);
             this.label72.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label72.Name = "label72";
             this.label72.Size = new System.Drawing.Size(175, 25);
@@ -3207,7 +3390,7 @@
             // textBox_Setup_ScannerCal_LaserOffDelay
             // 
             this.textBox_Setup_ScannerCal_LaserOffDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_ScannerCal_LaserOffDelay.Location = new System.Drawing.Point(185, 217);
+            this.textBox_Setup_ScannerCal_LaserOffDelay.Location = new System.Drawing.Point(185, 205);
             this.textBox_Setup_ScannerCal_LaserOffDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_ScannerCal_LaserOffDelay.Name = "textBox_Setup_ScannerCal_LaserOffDelay";
             this.textBox_Setup_ScannerCal_LaserOffDelay.Size = new System.Drawing.Size(90, 24);
@@ -3217,7 +3400,7 @@
             // button22
             // 
             this.button22.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button22.Location = new System.Drawing.Point(281, 218);
+            this.button22.Location = new System.Drawing.Point(281, 206);
             this.button22.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button22.Name = "button22";
             this.button22.Size = new System.Drawing.Size(35, 25);
@@ -3228,7 +3411,7 @@
             // label71
             // 
             this.label71.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label71.Location = new System.Drawing.Point(9, 216);
+            this.label71.Location = new System.Drawing.Point(9, 204);
             this.label71.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label71.Name = "label71";
             this.label71.Size = new System.Drawing.Size(175, 25);
@@ -3239,7 +3422,7 @@
             // textBox_Setup_ScannerCal_LaserOnDelay
             // 
             this.textBox_Setup_ScannerCal_LaserOnDelay.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_ScannerCal_LaserOnDelay.Location = new System.Drawing.Point(185, 184);
+            this.textBox_Setup_ScannerCal_LaserOnDelay.Location = new System.Drawing.Point(185, 172);
             this.textBox_Setup_ScannerCal_LaserOnDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_ScannerCal_LaserOnDelay.Name = "textBox_Setup_ScannerCal_LaserOnDelay";
             this.textBox_Setup_ScannerCal_LaserOnDelay.Size = new System.Drawing.Size(90, 24);
@@ -3249,7 +3432,7 @@
             // button21
             // 
             this.button21.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button21.Location = new System.Drawing.Point(281, 185);
+            this.button21.Location = new System.Drawing.Point(281, 173);
             this.button21.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button21.Name = "button21";
             this.button21.Size = new System.Drawing.Size(35, 25);
@@ -3260,7 +3443,7 @@
             // label70
             // 
             this.label70.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label70.Location = new System.Drawing.Point(9, 183);
+            this.label70.Location = new System.Drawing.Point(9, 171);
             this.label70.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label70.Name = "label70";
             this.label70.Size = new System.Drawing.Size(175, 25);
@@ -3437,21 +3620,21 @@
             // 
             // button20
             // 
-            this.button20.Location = new System.Drawing.Point(1725, 86);
+            this.button20.Location = new System.Drawing.Point(1755, 675);
             this.button20.Name = "button20";
-            this.button20.Size = new System.Drawing.Size(153, 51);
+            this.button20.Size = new System.Drawing.Size(101, 35);
             this.button20.TabIndex = 0;
-            this.button20.Text = "다시";
+            this.button20.Text = "다시_TEST";
             this.button20.UseVisualStyleBackColor = true;
             this.button20.Click += new System.EventHandler(this.button20_Click);
             // 
             // button15
             // 
-            this.button15.Location = new System.Drawing.Point(1725, 3);
+            this.button15.Location = new System.Drawing.Point(1755, 634);
             this.button15.Name = "button15";
-            this.button15.Size = new System.Drawing.Size(153, 51);
+            this.button15.Size = new System.Drawing.Size(101, 35);
             this.button15.TabIndex = 0;
-            this.button15.Text = "button15";
+            this.button15.Text = "TEST";
             this.button15.UseVisualStyleBackColor = true;
             this.button15.Click += new System.EventHandler(this.button15_Click);
             // 
@@ -3467,6 +3650,8 @@
             // 
             // groupBox18
             // 
+            this.groupBox18.Controls.Add(this.label94);
+            this.groupBox18.Controls.Add(this.label95);
             this.groupBox18.Controls.Add(this.button_Setup_Flatness_MeasurementPosition_Stop);
             this.groupBox18.Controls.Add(this.label92);
             this.groupBox18.Controls.Add(this.comboBox_Setup_FlatnessMeasurementPos_List);
@@ -3532,7 +3717,7 @@
             this.groupBox18.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox18.Name = "groupBox18";
             this.groupBox18.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox18.Size = new System.Drawing.Size(849, 379);
+            this.groupBox18.Size = new System.Drawing.Size(1037, 454);
             this.groupBox18.TabIndex = 89;
             this.groupBox18.TabStop = false;
             this.groupBox18.Text = " Flatness Measurement Position ";
@@ -3540,7 +3725,7 @@
             // button_Setup_Flatness_MeasurementPosition_Stop
             // 
             this.button_Setup_Flatness_MeasurementPosition_Stop.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Flatness_MeasurementPosition_Stop.Location = new System.Drawing.Point(635, 302);
+            this.button_Setup_Flatness_MeasurementPosition_Stop.Location = new System.Drawing.Point(661, 373);
             this.button_Setup_Flatness_MeasurementPosition_Stop.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Flatness_MeasurementPosition_Stop.Name = "button_Setup_Flatness_MeasurementPosition_Stop";
             this.button_Setup_Flatness_MeasurementPosition_Stop.Size = new System.Drawing.Size(203, 62);
@@ -3569,8 +3754,13 @@
             "Cal. Plate",
             "User1",
             "User2",
+            "User3",
+            "Work Stage",
+            "Cal. Plate",
+            "User1",
+            "User2",
             "User3"});
-            this.comboBox_Setup_FlatnessMeasurementPos_List.Location = new System.Drawing.Point(109, 36);
+            this.comboBox_Setup_FlatnessMeasurementPos_List.Location = new System.Drawing.Point(109, 26);
             this.comboBox_Setup_FlatnessMeasurementPos_List.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Setup_FlatnessMeasurementPos_List.Name = "comboBox_Setup_FlatnessMeasurementPos_List";
             this.comboBox_Setup_FlatnessMeasurementPos_List.Size = new System.Drawing.Size(118, 26);
@@ -3581,7 +3771,7 @@
             // label91
             // 
             this.label91.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label91.Location = new System.Drawing.Point(8, 36);
+            this.label91.Location = new System.Drawing.Point(8, 26);
             this.label91.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.label91.Name = "label91";
             this.label91.Size = new System.Drawing.Size(97, 25);
@@ -3592,7 +3782,7 @@
             // button_Setup_Flatness_MeasurementPosition_Start
             // 
             this.button_Setup_Flatness_MeasurementPosition_Start.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Flatness_MeasurementPosition_Start.Location = new System.Drawing.Point(422, 302);
+            this.button_Setup_Flatness_MeasurementPosition_Start.Location = new System.Drawing.Point(448, 373);
             this.button_Setup_Flatness_MeasurementPosition_Start.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Flatness_MeasurementPosition_Start.Name = "button_Setup_Flatness_MeasurementPosition_Start";
             this.button_Setup_Flatness_MeasurementPosition_Start.Size = new System.Drawing.Size(203, 62);
@@ -3616,7 +3806,7 @@
             // button_Setup_Flatness_MeasurementPosition9_Clear
             // 
             this.button_Setup_Flatness_MeasurementPosition9_Clear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Flatness_MeasurementPosition9_Clear.Location = new System.Drawing.Point(785, 249);
+            this.button_Setup_Flatness_MeasurementPosition9_Clear.Location = new System.Drawing.Point(811, 297);
             this.button_Setup_Flatness_MeasurementPosition9_Clear.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Flatness_MeasurementPosition9_Clear.Name = "button_Setup_Flatness_MeasurementPosition9_Clear";
             this.button_Setup_Flatness_MeasurementPosition9_Clear.Size = new System.Drawing.Size(53, 26);
@@ -3628,7 +3818,7 @@
             // button_Setup_Flatness_MeasurementPosition8_Clear
             // 
             this.button_Setup_Flatness_MeasurementPosition8_Clear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Flatness_MeasurementPosition8_Clear.Location = new System.Drawing.Point(785, 221);
+            this.button_Setup_Flatness_MeasurementPosition8_Clear.Location = new System.Drawing.Point(811, 263);
             this.button_Setup_Flatness_MeasurementPosition8_Clear.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Flatness_MeasurementPosition8_Clear.Name = "button_Setup_Flatness_MeasurementPosition8_Clear";
             this.button_Setup_Flatness_MeasurementPosition8_Clear.Size = new System.Drawing.Size(53, 26);
@@ -3640,7 +3830,7 @@
             // button_Setup_Flatness_MeasurementPosition7_Clear
             // 
             this.button_Setup_Flatness_MeasurementPosition7_Clear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Flatness_MeasurementPosition7_Clear.Location = new System.Drawing.Point(785, 193);
+            this.button_Setup_Flatness_MeasurementPosition7_Clear.Location = new System.Drawing.Point(811, 229);
             this.button_Setup_Flatness_MeasurementPosition7_Clear.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Flatness_MeasurementPosition7_Clear.Name = "button_Setup_Flatness_MeasurementPosition7_Clear";
             this.button_Setup_Flatness_MeasurementPosition7_Clear.Size = new System.Drawing.Size(53, 26);
@@ -3652,7 +3842,7 @@
             // button_Setup_Flatness_MeasurementPosition6_Clear
             // 
             this.button_Setup_Flatness_MeasurementPosition6_Clear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Flatness_MeasurementPosition6_Clear.Location = new System.Drawing.Point(785, 165);
+            this.button_Setup_Flatness_MeasurementPosition6_Clear.Location = new System.Drawing.Point(811, 195);
             this.button_Setup_Flatness_MeasurementPosition6_Clear.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Flatness_MeasurementPosition6_Clear.Name = "button_Setup_Flatness_MeasurementPosition6_Clear";
             this.button_Setup_Flatness_MeasurementPosition6_Clear.Size = new System.Drawing.Size(53, 26);
@@ -3664,7 +3854,7 @@
             // button_Setup_Flatness_MeasurementPosition5_Clear
             // 
             this.button_Setup_Flatness_MeasurementPosition5_Clear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Flatness_MeasurementPosition5_Clear.Location = new System.Drawing.Point(785, 137);
+            this.button_Setup_Flatness_MeasurementPosition5_Clear.Location = new System.Drawing.Point(811, 161);
             this.button_Setup_Flatness_MeasurementPosition5_Clear.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Flatness_MeasurementPosition5_Clear.Name = "button_Setup_Flatness_MeasurementPosition5_Clear";
             this.button_Setup_Flatness_MeasurementPosition5_Clear.Size = new System.Drawing.Size(53, 26);
@@ -3676,7 +3866,7 @@
             // button_Setup_Flatness_MeasurementPosition4_Clear
             // 
             this.button_Setup_Flatness_MeasurementPosition4_Clear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Flatness_MeasurementPosition4_Clear.Location = new System.Drawing.Point(785, 109);
+            this.button_Setup_Flatness_MeasurementPosition4_Clear.Location = new System.Drawing.Point(811, 127);
             this.button_Setup_Flatness_MeasurementPosition4_Clear.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Flatness_MeasurementPosition4_Clear.Name = "button_Setup_Flatness_MeasurementPosition4_Clear";
             this.button_Setup_Flatness_MeasurementPosition4_Clear.Size = new System.Drawing.Size(53, 26);
@@ -3688,7 +3878,7 @@
             // button_Setup_Flatness_MeasurementPosition3_Clear
             // 
             this.button_Setup_Flatness_MeasurementPosition3_Clear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Flatness_MeasurementPosition3_Clear.Location = new System.Drawing.Point(785, 81);
+            this.button_Setup_Flatness_MeasurementPosition3_Clear.Location = new System.Drawing.Point(811, 93);
             this.button_Setup_Flatness_MeasurementPosition3_Clear.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Flatness_MeasurementPosition3_Clear.Name = "button_Setup_Flatness_MeasurementPosition3_Clear";
             this.button_Setup_Flatness_MeasurementPosition3_Clear.Size = new System.Drawing.Size(53, 26);
@@ -3700,7 +3890,7 @@
             // button_Setup_Flatness_MeasurementPosition2_Clear
             // 
             this.button_Setup_Flatness_MeasurementPosition2_Clear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Flatness_MeasurementPosition2_Clear.Location = new System.Drawing.Point(785, 53);
+            this.button_Setup_Flatness_MeasurementPosition2_Clear.Location = new System.Drawing.Point(811, 59);
             this.button_Setup_Flatness_MeasurementPosition2_Clear.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Flatness_MeasurementPosition2_Clear.Name = "button_Setup_Flatness_MeasurementPosition2_Clear";
             this.button_Setup_Flatness_MeasurementPosition2_Clear.Size = new System.Drawing.Size(53, 26);
@@ -3712,7 +3902,7 @@
             // button_Setup_Flatness_MeasurementPosition1_Clear
             // 
             this.button_Setup_Flatness_MeasurementPosition1_Clear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Flatness_MeasurementPosition1_Clear.Location = new System.Drawing.Point(785, 25);
+            this.button_Setup_Flatness_MeasurementPosition1_Clear.Location = new System.Drawing.Point(811, 25);
             this.button_Setup_Flatness_MeasurementPosition1_Clear.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Flatness_MeasurementPosition1_Clear.Name = "button_Setup_Flatness_MeasurementPosition1_Clear";
             this.button_Setup_Flatness_MeasurementPosition1_Clear.Size = new System.Drawing.Size(53, 26);
@@ -3724,7 +3914,7 @@
             // textBox_Setup_Flatness_TeachingPos9_StageY
             // 
             this.textBox_Setup_Flatness_TeachingPos9_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Flatness_TeachingPos9_StageY.Location = new System.Drawing.Point(564, 249);
+            this.textBox_Setup_Flatness_TeachingPos9_StageY.Location = new System.Drawing.Point(564, 297);
             this.textBox_Setup_Flatness_TeachingPos9_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Setup_Flatness_TeachingPos9_StageY.Name = "textBox_Setup_Flatness_TeachingPos9_StageY";
             this.textBox_Setup_Flatness_TeachingPos9_StageY.Size = new System.Drawing.Size(97, 24);
@@ -3746,7 +3936,7 @@
             // textBox_Setup_Flatness_TeachingPos9_StageX
             // 
             this.textBox_Setup_Flatness_TeachingPos9_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Flatness_TeachingPos9_StageX.Location = new System.Drawing.Point(391, 249);
+            this.textBox_Setup_Flatness_TeachingPos9_StageX.Location = new System.Drawing.Point(391, 297);
             this.textBox_Setup_Flatness_TeachingPos9_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Setup_Flatness_TeachingPos9_StageX.Name = "textBox_Setup_Flatness_TeachingPos9_StageX";
             this.textBox_Setup_Flatness_TeachingPos9_StageX.Size = new System.Drawing.Size(97, 24);
@@ -3768,7 +3958,7 @@
             // button_Setup_Flatness_MeasurementPosition9_Get
             // 
             this.button_Setup_Flatness_MeasurementPosition9_Get.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Flatness_MeasurementPosition9_Get.Location = new System.Drawing.Point(674, 249);
+            this.button_Setup_Flatness_MeasurementPosition9_Get.Location = new System.Drawing.Point(674, 297);
             this.button_Setup_Flatness_MeasurementPosition9_Get.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Flatness_MeasurementPosition9_Get.Name = "button_Setup_Flatness_MeasurementPosition9_Get";
             this.button_Setup_Flatness_MeasurementPosition9_Get.Size = new System.Drawing.Size(109, 26);
@@ -3780,7 +3970,7 @@
             // textBox_Setup_Flatness_TeachingPos8_StageY
             // 
             this.textBox_Setup_Flatness_TeachingPos8_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Flatness_TeachingPos8_StageY.Location = new System.Drawing.Point(564, 221);
+            this.textBox_Setup_Flatness_TeachingPos8_StageY.Location = new System.Drawing.Point(564, 264);
             this.textBox_Setup_Flatness_TeachingPos8_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Setup_Flatness_TeachingPos8_StageY.Name = "textBox_Setup_Flatness_TeachingPos8_StageY";
             this.textBox_Setup_Flatness_TeachingPos8_StageY.Size = new System.Drawing.Size(97, 24);
@@ -3802,7 +3992,7 @@
             // textBox_Setup_Flatness_TeachingPos8_StageX
             // 
             this.textBox_Setup_Flatness_TeachingPos8_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Flatness_TeachingPos8_StageX.Location = new System.Drawing.Point(391, 221);
+            this.textBox_Setup_Flatness_TeachingPos8_StageX.Location = new System.Drawing.Point(391, 263);
             this.textBox_Setup_Flatness_TeachingPos8_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Setup_Flatness_TeachingPos8_StageX.Name = "textBox_Setup_Flatness_TeachingPos8_StageX";
             this.textBox_Setup_Flatness_TeachingPos8_StageX.Size = new System.Drawing.Size(97, 24);
@@ -3824,7 +4014,7 @@
             // button_Setup_Flatness_MeasurementPosition8_Get
             // 
             this.button_Setup_Flatness_MeasurementPosition8_Get.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Flatness_MeasurementPosition8_Get.Location = new System.Drawing.Point(674, 221);
+            this.button_Setup_Flatness_MeasurementPosition8_Get.Location = new System.Drawing.Point(674, 263);
             this.button_Setup_Flatness_MeasurementPosition8_Get.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Flatness_MeasurementPosition8_Get.Name = "button_Setup_Flatness_MeasurementPosition8_Get";
             this.button_Setup_Flatness_MeasurementPosition8_Get.Size = new System.Drawing.Size(109, 26);
@@ -3836,7 +4026,7 @@
             // textBox_Setup_Flatness_TeachingPos7_StageY
             // 
             this.textBox_Setup_Flatness_TeachingPos7_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Flatness_TeachingPos7_StageY.Location = new System.Drawing.Point(564, 193);
+            this.textBox_Setup_Flatness_TeachingPos7_StageY.Location = new System.Drawing.Point(564, 230);
             this.textBox_Setup_Flatness_TeachingPos7_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Setup_Flatness_TeachingPos7_StageY.Name = "textBox_Setup_Flatness_TeachingPos7_StageY";
             this.textBox_Setup_Flatness_TeachingPos7_StageY.Size = new System.Drawing.Size(97, 24);
@@ -3858,7 +4048,7 @@
             // textBox_Setup_Flatness_TeachingPos7_StageX
             // 
             this.textBox_Setup_Flatness_TeachingPos7_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Flatness_TeachingPos7_StageX.Location = new System.Drawing.Point(391, 193);
+            this.textBox_Setup_Flatness_TeachingPos7_StageX.Location = new System.Drawing.Point(391, 229);
             this.textBox_Setup_Flatness_TeachingPos7_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Setup_Flatness_TeachingPos7_StageX.Name = "textBox_Setup_Flatness_TeachingPos7_StageX";
             this.textBox_Setup_Flatness_TeachingPos7_StageX.Size = new System.Drawing.Size(97, 24);
@@ -3880,7 +4070,7 @@
             // button_Setup_Flatness_MeasurementPosition7_Get
             // 
             this.button_Setup_Flatness_MeasurementPosition7_Get.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Flatness_MeasurementPosition7_Get.Location = new System.Drawing.Point(674, 193);
+            this.button_Setup_Flatness_MeasurementPosition7_Get.Location = new System.Drawing.Point(674, 229);
             this.button_Setup_Flatness_MeasurementPosition7_Get.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Flatness_MeasurementPosition7_Get.Name = "button_Setup_Flatness_MeasurementPosition7_Get";
             this.button_Setup_Flatness_MeasurementPosition7_Get.Size = new System.Drawing.Size(109, 26);
@@ -3892,7 +4082,7 @@
             // textBox_Setup_Flatness_TeachingPos6_StageY
             // 
             this.textBox_Setup_Flatness_TeachingPos6_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Flatness_TeachingPos6_StageY.Location = new System.Drawing.Point(564, 165);
+            this.textBox_Setup_Flatness_TeachingPos6_StageY.Location = new System.Drawing.Point(564, 194);
             this.textBox_Setup_Flatness_TeachingPos6_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Setup_Flatness_TeachingPos6_StageY.Name = "textBox_Setup_Flatness_TeachingPos6_StageY";
             this.textBox_Setup_Flatness_TeachingPos6_StageY.Size = new System.Drawing.Size(97, 24);
@@ -3914,7 +4104,7 @@
             // textBox_Setup_Flatness_TeachingPos6_StageX
             // 
             this.textBox_Setup_Flatness_TeachingPos6_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Flatness_TeachingPos6_StageX.Location = new System.Drawing.Point(391, 165);
+            this.textBox_Setup_Flatness_TeachingPos6_StageX.Location = new System.Drawing.Point(391, 195);
             this.textBox_Setup_Flatness_TeachingPos6_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Setup_Flatness_TeachingPos6_StageX.Name = "textBox_Setup_Flatness_TeachingPos6_StageX";
             this.textBox_Setup_Flatness_TeachingPos6_StageX.Size = new System.Drawing.Size(97, 24);
@@ -3936,7 +4126,7 @@
             // button_Setup_Flatness_MeasurementPosition6_Get
             // 
             this.button_Setup_Flatness_MeasurementPosition6_Get.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Flatness_MeasurementPosition6_Get.Location = new System.Drawing.Point(674, 165);
+            this.button_Setup_Flatness_MeasurementPosition6_Get.Location = new System.Drawing.Point(674, 195);
             this.button_Setup_Flatness_MeasurementPosition6_Get.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Flatness_MeasurementPosition6_Get.Name = "button_Setup_Flatness_MeasurementPosition6_Get";
             this.button_Setup_Flatness_MeasurementPosition6_Get.Size = new System.Drawing.Size(109, 26);
@@ -3948,7 +4138,7 @@
             // textBox_Setup_Flatness_TeachingPos5_StageY
             // 
             this.textBox_Setup_Flatness_TeachingPos5_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Flatness_TeachingPos5_StageY.Location = new System.Drawing.Point(564, 137);
+            this.textBox_Setup_Flatness_TeachingPos5_StageY.Location = new System.Drawing.Point(564, 162);
             this.textBox_Setup_Flatness_TeachingPos5_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Setup_Flatness_TeachingPos5_StageY.Name = "textBox_Setup_Flatness_TeachingPos5_StageY";
             this.textBox_Setup_Flatness_TeachingPos5_StageY.Size = new System.Drawing.Size(97, 24);
@@ -3970,7 +4160,7 @@
             // textBox_Setup_Flatness_TeachingPos5_StageX
             // 
             this.textBox_Setup_Flatness_TeachingPos5_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Flatness_TeachingPos5_StageX.Location = new System.Drawing.Point(391, 137);
+            this.textBox_Setup_Flatness_TeachingPos5_StageX.Location = new System.Drawing.Point(391, 161);
             this.textBox_Setup_Flatness_TeachingPos5_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Setup_Flatness_TeachingPos5_StageX.Name = "textBox_Setup_Flatness_TeachingPos5_StageX";
             this.textBox_Setup_Flatness_TeachingPos5_StageX.Size = new System.Drawing.Size(97, 24);
@@ -3992,7 +4182,7 @@
             // button_Setup_Flatness_MeasurementPosition5_Get
             // 
             this.button_Setup_Flatness_MeasurementPosition5_Get.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Flatness_MeasurementPosition5_Get.Location = new System.Drawing.Point(674, 137);
+            this.button_Setup_Flatness_MeasurementPosition5_Get.Location = new System.Drawing.Point(674, 149);
             this.button_Setup_Flatness_MeasurementPosition5_Get.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Flatness_MeasurementPosition5_Get.Name = "button_Setup_Flatness_MeasurementPosition5_Get";
             this.button_Setup_Flatness_MeasurementPosition5_Get.Size = new System.Drawing.Size(109, 26);
@@ -4004,7 +4194,7 @@
             // textBox_Setup_Flatness_TeachingPos4_StageY
             // 
             this.textBox_Setup_Flatness_TeachingPos4_StageY.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Flatness_TeachingPos4_StageY.Location = new System.Drawing.Point(564, 109);
+            this.textBox_Setup_Flatness_TeachingPos4_StageY.Location = new System.Drawing.Point(564, 117);
             this.textBox_Setup_Flatness_TeachingPos4_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Setup_Flatness_TeachingPos4_StageY.Name = "textBox_Setup_Flatness_TeachingPos4_StageY";
             this.textBox_Setup_Flatness_TeachingPos4_StageY.Size = new System.Drawing.Size(97, 24);
@@ -4026,7 +4216,7 @@
             // textBox_Setup_Flatness_TeachingPos4_StageX
             // 
             this.textBox_Setup_Flatness_TeachingPos4_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Flatness_TeachingPos4_StageX.Location = new System.Drawing.Point(391, 109);
+            this.textBox_Setup_Flatness_TeachingPos4_StageX.Location = new System.Drawing.Point(391, 127);
             this.textBox_Setup_Flatness_TeachingPos4_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Setup_Flatness_TeachingPos4_StageX.Name = "textBox_Setup_Flatness_TeachingPos4_StageX";
             this.textBox_Setup_Flatness_TeachingPos4_StageX.Size = new System.Drawing.Size(97, 24);
@@ -4048,7 +4238,7 @@
             // button_Setup_Flatness_MeasurementPosition4_Get
             // 
             this.button_Setup_Flatness_MeasurementPosition4_Get.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Setup_Flatness_MeasurementPosition4_Get.Location = new System.Drawing.Point(674, 109);
+            this.button_Setup_Flatness_MeasurementPosition4_Get.Location = new System.Drawing.Point(674, 115);
             this.button_Setup_Flatness_MeasurementPosition4_Get.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_Setup_Flatness_MeasurementPosition4_Get.Name = "button_Setup_Flatness_MeasurementPosition4_Get";
             this.button_Setup_Flatness_MeasurementPosition4_Get.Size = new System.Drawing.Size(109, 26);
@@ -4082,7 +4272,7 @@
             // textBox_Setup_Flatness_TeachingPos3_StageX
             // 
             this.textBox_Setup_Flatness_TeachingPos3_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Flatness_TeachingPos3_StageX.Location = new System.Drawing.Point(391, 81);
+            this.textBox_Setup_Flatness_TeachingPos3_StageX.Location = new System.Drawing.Point(391, 93);
             this.textBox_Setup_Flatness_TeachingPos3_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Setup_Flatness_TeachingPos3_StageX.Name = "textBox_Setup_Flatness_TeachingPos3_StageX";
             this.textBox_Setup_Flatness_TeachingPos3_StageX.Size = new System.Drawing.Size(97, 24);
@@ -4138,7 +4328,7 @@
             // textBox_Setup_Flatness_TeachingPos2_StageX
             // 
             this.textBox_Setup_Flatness_TeachingPos2_StageX.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Flatness_TeachingPos2_StageX.Location = new System.Drawing.Point(391, 53);
+            this.textBox_Setup_Flatness_TeachingPos2_StageX.Location = new System.Drawing.Point(391, 59);
             this.textBox_Setup_Flatness_TeachingPos2_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Setup_Flatness_TeachingPos2_StageX.Name = "textBox_Setup_Flatness_TeachingPos2_StageX";
             this.textBox_Setup_Flatness_TeachingPos2_StageX.Size = new System.Drawing.Size(97, 24);
@@ -5434,8 +5624,8 @@
             this.ResumeLayout(false);
 
         }
-
         #endregion
+
 
         private System.Windows.Forms.TabPage tabPage_Setup_Communication;
         private System.Windows.Forms.GroupBox groupBox86;
@@ -5819,6 +6009,29 @@
         private System.Windows.Forms.Button button_Setup_Flatness_MeasurementPosition1_Clear;
         private System.Windows.Forms.ComboBox comboBox_Setup_FlatnessMeasurementPos_List;
         private System.Windows.Forms.Label label91;
+        private System.Windows.Forms.TextBox textBox_Setup_ScannerCal_CalPitch;
+        private System.Windows.Forms.Button button30;
+        //private System.Windows.Forms.Label label77;
+        private System.Windows.Forms.TextBox textBox_Setup_ScannerCal_CalAreaHeight;
+        private System.Windows.Forms.Button button29;
+        //private System.Windows.Forms.Label label76;
+        private System.Windows.Forms.TextBox textBox_Setup_ScannerCal_CalAreaWidth;
+        //private System.Windows.Forms.Label label75;
+        private System.Windows.Forms.Label label_Setup_ScannerCal_LastPosY;
+        //private System.Windows.Forms.Label label81;
+        private System.Windows.Forms.Label label_Setup_ScannerCal_LastPosX;
+        //private System.Windows.Forms.Label label78;
+        private System.Windows.Forms.Button btnOffsetStart_Vision;
+        private System.Windows.Forms.Label label_Setup_ScannerCal_OffsetY;
+        //private System.Windows.Forms.Label label80;
+        private System.Windows.Forms.Label label_Setup_ScannerCal_OffsetX;
+        //private System.Windows.Forms.Label label83;
+        //private System.Windows.Forms.Label label86;
+        private System.Windows.Forms.Label label_Setup_S_V_OffsetY;
+        //private System.Windows.Forms.Label label82;
+        private System.Windows.Forms.Label label_Setup_S_V_OffsetX;
+        //private System.Windows.Forms.Label label85;
+        private System.Windows.Forms.Button btnOffsetApply;
         private System.Windows.Forms.Label label92;
         private System.Windows.Forms.Button button_Setup_Flatness_MeasurementPosition_Start;
         private System.Windows.Forms.Button button_Setup_Flatness_MeasurementPosition_Stop;

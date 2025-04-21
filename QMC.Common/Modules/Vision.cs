@@ -30,8 +30,8 @@ namespace QMC.Common.Modules
         #region Define
 
 
-//#if true                                                                //  SLD-200C
-#if false                                                               //  SLD-200U
+#if true                                                                //  SLD-200C
+//#if false                                                               //  SLD-200U
         public enum nAxis                                                       //  SLD-200C 에서 사용하는 축 번호    
         {
             //  축 번호 변경 전 (X:0,     Y:1,    Z:2,    MASK_Y:3)
@@ -318,6 +318,7 @@ namespace QMC.Common.Modules
             Laser_FocusPos,          
             Laser_Sensor_HeightCheckPos,
             Vision_SafetyPos,
+            Laser_Sensor_HeightCheck_CalPos
         }
 
         public struct stVisionAxesPos
@@ -336,8 +337,6 @@ namespace QMC.Common.Modules
         public stVisionMoveProperties[] stVisionPosMoveProperties = new stVisionMoveProperties[System.Enum.GetValues(typeof(Vision_TeachingPosList)).Length];
 
         #endregion
-
-
 
         public override void SetModuleScale(double dScaleX, double dScaleY, double dXaxisT, double dYaxisT, bool bInvertedX, bool bInvertedY)
         {
@@ -451,7 +450,6 @@ namespace QMC.Common.Modules
             SafetySensorPause_Start,                            //  안전 센서에 의한 Pause 상태일 때 여기로 들어옴
             SafetySensorPause_SafetySensor_Off_Start,           //  안전 센서가 Off 되면 Count 시작
             SafetySensorPause_SafetySensor_Off_Count,           //  안전 센서가 Off 상태에서 Count 진행, 도중에 센서가 On 이 되면 SafetySensorPause_SafetySensor_Off_Start 단계로 다시 감
-
 
             Start,                                              //  시작
 

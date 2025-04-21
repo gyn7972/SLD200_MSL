@@ -18,8 +18,8 @@ namespace QMC.Common.Modules
     {
         #region Define
 
-//#if true                                                                //  SLD-200C
-#if false                                                               //  SLD-200U
+#if true                                                                //  SLD-200C
+//#if false                                                               //  SLD-200U
         public enum nAxis                                                       //  SLD-200C 에서 사용하는 축 번호    
         {
             //  축 번호 변경 전 (Z0:10,   Z1:11,  TR_X:12,    TR_Z:13)
