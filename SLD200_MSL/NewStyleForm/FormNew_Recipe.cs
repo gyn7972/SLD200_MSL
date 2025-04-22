@@ -863,7 +863,17 @@ namespace SLD200_MSL
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = "Recipe Data Path";
             saveFileDialog.OverwritePrompt = true;
-            saveFileDialog.InitialDirectory = ConfigManager.GetRecipeDataPath();
+            //saveFileDialog.InitialDirectory = ConfigManager.GetRecipeDataPath();
+
+            if (Equipment.RecipeFilePath.Length > 0)
+            {
+                saveFileDialog.InitialDirectory = Equipment.RecipeFilePath;
+            }
+            else
+            {
+                saveFileDialog.InitialDirectory = ConfigManager.GetRecipeDataPath();
+            }
+
             saveFileDialog.Filter = "Recipe File(*.ini)|*.ini";
 
             DirectoryInfo di = new DirectoryInfo(ConfigManager.GetRecipeDataPath());
