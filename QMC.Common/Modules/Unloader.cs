@@ -2352,9 +2352,11 @@ namespace QMC.Common.Modules
             //  자동운전 시, Transfer 동작 조건
             if (Equipment.AutoRunStatus &&
 
-                !Equipment.CycleStopped_UnloaderTransfer &&
+                !Equipment.SocketStopped &&                                             //  Socket Stop 시 동작 안되도록
 
-                !Equipment.MachineStop_byTimeout_Unloader &&                          //  Unloader 가 Time out 으로 멈추면 동작 안되도록
+                !Equipment.CycleStopped_UnloaderTransfer &&                             //  Cycle Stop 시 동작 안되도록
+
+                !Equipment.MachineStop_byTimeout_Unloader &&                            //  Unloader 가 Time out 으로 멈추면 동작 안되도록
 
                 m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None)
             {

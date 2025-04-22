@@ -509,6 +509,7 @@ namespace QMC.Common
 
         //  Cycle Stop
         public static bool SocketStop { set; get; } = false;
+        public static bool SocketStopped { set; get; } = false;
         public static bool CycleStop { set; get; } = false;
         public static bool CycleStopped_LoaderTransfer { set; get; } = false;
         public static bool CycleStopped_UnloaderTransfer { set; get; } = false;
