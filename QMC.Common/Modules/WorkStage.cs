@@ -10642,8 +10642,12 @@ namespace QMC.Common.Modules
                     //  Cycle Stop 이면?              --> Main Work 에게 Cycle Stop 은, Dry Run 이나 Drilling Cycle 이 끝났을 때 Stop 시킴.
                     if (Equipment.CycleStop)
                     {
-                        //  Main Work 돌아가지 않게
-                        Equipment.CycleStopped_MainWork = true;
+                        //  Loader 가 Cycle Stop 일 때만 Main Work 도 Cycle Stop 한다.
+                        if (Equipment.CycleStopped_LoaderTransfer)
+                        {
+                            //  Main Work 돌아가지 않게
+                            Equipment.CycleStopped_MainWork = true;
+                        }
                     }
 
 
