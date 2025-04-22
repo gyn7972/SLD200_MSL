@@ -18538,6 +18538,13 @@ namespace QMC.Common.Modules
                                         entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
                                         m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 360.0f);
+
+
+
+                                        //  Test
+                                        m_strTemp = string.Format("Circle 원 Center 좌표, X : {0:0.000}, Y : {1:0.000}", entity_Position_Rot.X, entity_Position_Rot.Y);
+
+                                        Log.Write("SLD_200_CIRCLE", "Auto Run", m_strTemp);
                                     }
                                 }
                                 //  Hole : Spiral 타입으로 가공
@@ -18566,6 +18573,15 @@ namespace QMC.Common.Modules
 
                                     //  Spiral 데이터 파라미터 (외경 크기, 내경 크기, Spiral 회전 횟수, Spiral 회전 각도, Hole Center X, Hole Center Y)
                                     lwPolyLineSpiral = SpiralData_Create(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot.X, entity_Position_Rot.Y);
+
+
+
+                                    //  Test
+                                    m_strTemp = string.Format("Spiral 원 Center 좌표, X : {0:0.000}, Y : {1:0.000}", entity_Position_Rot.X, entity_Position_Rot.Y);
+
+                                    Log.Write("SLD_200_Spiral", "Auto Run", m_strTemp);
+
+
 
                                     //  객체 Edge 좌표 데이터 저장
                                     for (int n_pl = 0; n_pl < lwPolyLineSpiral.Count; n_pl++)
@@ -20510,6 +20526,7 @@ namespace QMC.Common.Modules
                     break;
             }
         }
+
 
         #endregion
 
