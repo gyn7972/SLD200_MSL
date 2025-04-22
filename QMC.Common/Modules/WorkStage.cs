@@ -8370,19 +8370,34 @@ namespace QMC.Common.Modules
                         {
                             string[] words = m_strLaserPowerMeter_ExitPos_Comm_ReceivedData.Split((char)chrCR);
 
-                            m_strPowerMeterBDS_PowerValue = words[0].Trim();
-                            m_strPowerMeterBDS_DataStatus = words[1].Trim();
-
-                            if (m_strPowerMeterBDS_DataStatus == "OK")
+                            if (words.Length < 2)
                             {
-                                m_dPowerMeterBDS_Value = Convert.ToDouble(m_strPowerMeterBDS_PowerValue);
+                                m_nPowerMeterBDSCommStep = (int)PowerMeterBDSComm_Step.PM_Value_Get;
                             }
                             else
                             {
-                                m_dPowerMeterBDS_Value = 0.0;
-                            }
+                                m_strPowerMeterBDS_PowerValue = words[0].Trim();
+                                m_strPowerMeterBDS_DataStatus = words[1].Trim();
 
-                            m_nPowerMeterBDSCommStep = (int)PowerMeterBDSComm_Step.PM_Value_Get;
+                                if (m_strPowerMeterBDS_DataStatus == "OK")
+                                {
+                                    try
+                                    {
+                                        m_dPowerMeterBDS_Value = Convert.ToDouble(m_strPowerMeterBDS_PowerValue);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Log.Write("SLD-200", Equipment.User_Name, "Power Meter BDS Comm", "Convert Error : " + ex.Message);
+                                        m_dPowerMeterBDS_Value = 0.0;
+                                    }
+                                }
+                                else
+                                {
+                                    m_dPowerMeterBDS_Value = 0.0;
+                                }
+
+                                m_nPowerMeterBDSCommStep = (int)PowerMeterBDSComm_Step.PM_Value_Get;
+                            }
                         }
                         else if (m_nPowerMeterBDSCommRecvData_CR_Count == 1)         //  수신 데이터 안에 \r 이 1개이면? 정상 데이터.
                         {
@@ -8393,7 +8408,19 @@ namespace QMC.Common.Modules
 
                             //if (m_strPowerMeter_DataStatus == "OK")
                             //{
-                            m_dPowerMeterBDS_Value = Convert.ToDouble(m_strPowerMeterBDS_PowerValue);
+
+                            if (m_strPowerMeterBDS_PowerValue.Length > 0)
+                            {
+                                try
+                                {
+                                    m_dPowerMeterBDS_Value = Convert.ToDouble(m_strPowerMeterBDS_PowerValue);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Power Meter BDS Comm", "Convert Error : " + ex.Message);
+                                    m_dPowerMeterBDS_Value = 0.0;
+                                }
+                            }
                             //}
                             //else
                             //{
@@ -8473,19 +8500,34 @@ namespace QMC.Common.Modules
                         {
                             string[] words = m_strLaserPowerMeter_TargetPos_Comm_ReceivedData.Split((char)chrCR);
 
-                            m_strPowerMeterStage_PowerValue = words[0].Trim();
-                            m_strPowerMeterStage_DataStatus = words[1].Trim();
-
-                            if (m_strPowerMeterStage_DataStatus == "OK")
+                            if (words.Length < 2)
                             {
-                                m_dPowerMeterStage_Value = Convert.ToDouble(m_strPowerMeterStage_PowerValue);
+                                m_nPowerMeterStageCommStep = (int)PowerMeterStageComm_Step.PM_Value_Get;
                             }
                             else
                             {
-                                m_dPowerMeterStage_Value = 0.0;
-                            }
+                                m_strPowerMeterStage_PowerValue = words[0].Trim();
+                                m_strPowerMeterStage_DataStatus = words[1].Trim();
 
-                            m_nPowerMeterStageCommStep = (int)PowerMeterStageComm_Step.PM_Value_Get;
+                                if (m_strPowerMeterStage_DataStatus == "OK")
+                                {
+                                    try
+                                    {
+                                        m_dPowerMeterStage_Value = Convert.ToDouble(m_strPowerMeterStage_PowerValue);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Log.Write("SLD-200", Equipment.User_Name, "Power Meter Stage Comm", "Convert Error : " + ex.Message);
+                                        m_dPowerMeterStage_Value = 0.0;
+                                    }
+                                }
+                                else
+                                {
+                                    m_dPowerMeterStage_Value = 0.0;
+                                }
+
+                                m_nPowerMeterStageCommStep = (int)PowerMeterStageComm_Step.PM_Value_Get;
+                            }
                         }
                         else if (m_nPowerMeterStageCommRecvData_CR_Count == 1)         //  수신 데이터 안에 \r 이 1개이면? 정상 데이터.
                         {
@@ -8499,7 +8541,15 @@ namespace QMC.Common.Modules
 
                             if (m_strPowerMeterStage_PowerValue.Length > 0)
                             {
-                                m_dPowerMeterStage_Value = Convert.ToDouble(m_strPowerMeterStage_PowerValue);
+                                try
+                                {
+                                    m_dPowerMeterStage_Value = Convert.ToDouble(m_strPowerMeterStage_PowerValue);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Power Meter Stage Comm", "Convert Error : " + ex.Message);
+                                    m_dPowerMeterStage_Value = 0.0;
+                                }
                             }
                             //}
                             //else
