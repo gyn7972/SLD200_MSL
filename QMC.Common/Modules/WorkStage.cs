@@ -2504,6 +2504,12 @@ namespace QMC.Common.Modules
         public double m_dZOffset_SocketHeightCheck { set; get; }                            //  Z 축 Offset 이동량
 
 
+        //  Socket Stop 을 위한 변수
+        public bool m_bLaserDrilling_SocketStopped { set; get; } = false;                   //  Socket Stop Flag
+        public int m_nLaserDrilling_SocketStopped_SocketIndex { set; get; } = -1;            //  Socket Stop 시 가공 차례 Index
+        public int m_nLaserDrilling_SocketStopped_MainStep { set; get; } = -1;                  //  Socket Stop 시 가공 차례 Main Step
+
+
         public enum LaserDrilling_Step
         {
             None = 0,
@@ -2721,6 +2727,28 @@ namespace QMC.Common.Modules
 
             //  가공 할 Socket 이 남아있는지 체크
             DrillingData_SocketRemainedCheck,                                               //  가공 할 Socket 이 남아있는지 체크
+
+
+
+            /// <summary>
+            /// Socket Stop 시 Pause 위치
+            /// </summary>
+            /// 
+            SocketStop_Start,                                                               //  Socket Stop 시작
+
+            SocketStop_Variable_Save,                                                       //  Socket Stop 시 관련 변수 저장
+
+            SOcketStop_LaserOff,                                                            //  레이저 Off
+
+            SocketStop_StageXY_Move_PausePos,                                               //  Socket Stop 시 대기 위치로 이동
+            SocketStop_StageXY_Move_PausePos_DoneCheck,                                     //  Socket Stop 시 대기 위치로 이동 완료 확인
+
+            SocketStop_UserConfirmWait,                                                     //  Socket Stop 시 사용자 확인 대기
+            /// 
+            /// <summary>
+            /// Socket Stop 시 Pause 위치
+            /// </summary>
+
 
 
             /// <summary>
@@ -3195,6 +3223,8 @@ namespace QMC.Common.Modules
             m_bMainWorkCycle_Complete = false;                                          //  MainWork Cycle 완료 여부 (이 변수를 보고 Unloader 로 가져간다)
             m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.None;
             m_bMainWorkCycle_ResultOK_toRPort = true;
+
+            m_bLaserDrilling_SocketStopped = false;
 
             m_bFindAlignMark_OK = false;
 
@@ -10528,6 +10558,8 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "Laser Drilling 시작");
 
                     m_bLaserDrilling_Complete = false;
+                    m_bLaserDrilling_SocketStopped = false;
+                    Equipment.SocketStopped = false;
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Start;
 
@@ -10541,7 +10573,8 @@ namespace QMC.Common.Modules
 
                 case (int)MainWork_Step.LaserDrilling_Cycle_CompleteCheck:                         //  Laser Drilling Cycle 완료 확인
 
-                    if ((m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None) && m_bLaserDrilling_Complete)
+                    if ((m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None) && 
+                        !Equipment.SocketStop && m_bLaserDrilling_Complete)
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "Laser Drilling 완료");
 
@@ -11767,6 +11800,20 @@ namespace QMC.Common.Modules
 
         #region Laser Drilling Cycle Function
 
+
+
+        public void WorkStage_Restart_Check()
+        {
+            if (Equipment.SocketStopped)
+            {
+                m_nLaserDrilling_MainStep = m_nLaserDrilling_SocketStopped_MainStep;                //  Socket Stop 시 저장했던 Main Step
+                m_nDrillingWork_Group_Count = m_nLaserDrilling_SocketStopped_SocketIndex;           //  Socket Stop 시 진행중이던 Socket 번호
+            }
+        }
+        
+
+
+
         private void Func_LaserDrilling_Main_Cycle()
         {
             bool success = true;
@@ -11891,10 +11938,21 @@ namespace QMC.Common.Modules
             //    laser.Rtc.CtlReset();             //  에러 해제
             //}
 
+
+
+            //  자동운전 중 Socket Stop 처리
+            if (Equipment.SocketStopped)
+            {
+                return;
+            }
+
+
             switch (m_nLaserDrilling_MainStep)
             {
                 case (int)LaserDrilling_Step.Start:
                     Log.Write("SLD-200", "Auto Run", "가공 시작");
+
+                    m_bLaserDrilling_SocketStopped = false;                         //  Socket Stop 일 때 Laser Drilling Cycle 에 진입하지 못하도록 하는 변수
 
                     m_bLaserDrilling_Complete = false;
 
@@ -15094,49 +15152,79 @@ namespace QMC.Common.Modules
                         //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_BeforeMoveToNextRegion_CoolingTime_Start;
                         //}
 
-                        if ((m_nHoleLayer_ProcessIndex_Count >= (int)LayerList.Hole2) && (m_nHoleLayer_ProcessIndex_Count <= (int)LayerList.Hole10))
-                        {
-                            Log.Write("SLD-200", "Auto Run", "Hole Layer 2 ~ 6, Socket Align 이나 Height Check 를 다시 하지 않음.");
 
-                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;
+
+                        //  Socket Stop 일 경우, 더 이상  가공하지 않고 밖으로 Stage 배출 후 Pause 상태로 변경한다. 
+                        if (Equipment.SocketStop)
+                        {
+                            Log.Write("SLD-200", "Auto Run", "Socket Stop 모드 시작");
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.SocketStop_Start;                           //  Socket Stop 모드 시작
                         }
+                        //  Socket Stop 이 아닐 경우, 계속 진행
                         else
                         {
-                            if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
+                            if ((m_nHoleLayer_ProcessIndex_Count >= (int)LayerList.Hole2) && (m_nHoleLayer_ProcessIndex_Count <= (int)LayerList.Hole10))
                             {
-                                Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : On");
+                                Log.Write("SLD-200", "Auto Run", "Hole Layer 2 ~ 10 은 Socket Align 이나 Height Check 를 다시 하지 않음.");
 
-                                //  Fiducial Mark 가 있는지? 없으면 Socket Align 할 필요 없지
-                                int m_nFiducial_Num = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dFiducialPos.Length;
-                                bool m_bFiducial_Exist = false;
-                                if (m_nFiducial_Num > 0)
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;
+                            }
+                            else
+                            {
+                                if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use)
                                 {
-                                    for (int i = 0; i < m_nFiducial_Num; i++)
+                                    Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : On");
+
+                                    //  Fiducial Mark 가 있는지? 없으면 Socket Align 할 필요 없지
+                                    int m_nFiducial_Num = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dFiducialPos.Length;
+                                    bool m_bFiducial_Exist = false;
+                                    if (m_nFiducial_Num > 0)
                                     {
-                                        if ((m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dFiducialPos[i].X != 0.0) ||
-                                            (m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dFiducialPos[i].Y != 0.0))
+                                        for (int i = 0; i < m_nFiducial_Num; i++)
                                         {
-                                            m_bFiducial_Exist = true;
+                                            if ((m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dFiducialPos[i].X != 0.0) ||
+                                                (m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dFiducialPos[i].Y != 0.0))
+                                            {
+                                                m_bFiducial_Exist = true;
+                                            }
                                         }
-                                    }
 
-                                    if (m_bFiducial_Exist)
-                                    {
-                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 존재하므로 Socket Align 진행.");
+                                        if (m_bFiducial_Exist)
+                                        {
+                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 존재하므로 Socket Align 진행.");
 
-                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Start;
+                                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Start;
+                                        }
+                                        else
+                                        {
+                                            if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
+                                            {
+                                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 는 있지만 위치 데이터가 없음. Socket Height Check 모드 On");
+
+                                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;                 //  분할 영역 Drilling 작업 시작
+                                            }
+                                            else
+                                            {
+                                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 는 있지만 위치 데이터가 없음. Socket Height Check 모드가 Off 이므로 바로 가공 진행.");
+
+                                                m_dZOffset_SocketHeightCheck = 0.0;
+
+                                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;                 //  분할 영역 Drilling 작업 시작
+                                            }
+                                        }
                                     }
                                     else
                                     {
                                         if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
                                         {
-                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 는 있지만 위치 데이터가 없음. Socket Height Check 모드 On");
+                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 없음. Socket Height Check 모드 On");
 
                                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;                 //  분할 영역 Drilling 작업 시작
                                         }
                                         else
                                         {
-                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 는 있지만 위치 데이터가 없음. Socket Height Check 모드가 Off 이므로 바로 가공 진행.");
+                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 없음. Socket Height Check 모드가 Off 이므로 바로 가공 진행.");
 
                                             m_dZOffset_SocketHeightCheck = 0.0;
 
@@ -15144,36 +15232,19 @@ namespace QMC.Common.Modules
                                         }
                                     }
                                 }
+                                else if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
+                                {
+                                    Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : Off, Socket Height Check 모드 : On");
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;                 //  분할 영역 Drilling 작업 시작
+                                }
                                 else
                                 {
-                                    if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
-                                    {
-                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 없음. Socket Height Check 모드 On");
+                                    Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : Off, Socket Height Check 모드 : Off");
 
-                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;                 //  분할 영역 Drilling 작업 시작
-                                    }
-                                    else
-                                    {
-                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Fiducial Mark 가 없음. Socket Height Check 모드가 Off 이므로 바로 가공 진행.");
+                                    m_dZOffset_SocketHeightCheck = 0.0;
 
-                                        m_dZOffset_SocketHeightCheck = 0.0;
-
-                                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;                 //  분할 영역 Drilling 작업 시작
-                                    }
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;                 //  분할 영역 Drilling 작업 시작
                                 }
-                            }
-                            else if (Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use)
-                            {
-                                Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : Off, Socket Height Check 모드 : On");
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start;                 //  분할 영역 Drilling 작업 시작
-                            }
-                            else
-                            {
-                                Log.Write("SLD-200", "Auto Run", "Socket Align 모드 : Off, Socket Height Check 모드 : Off");
-
-                                m_dZOffset_SocketHeightCheck = 0.0;
-
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;                 //  분할 영역 Drilling 작업 시작
                             }
                         }
                     }
@@ -15185,6 +15256,119 @@ namespace QMC.Common.Modules
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                     }
                     break;
+
+
+
+
+
+                /// <summary>
+                /// Socket Stop 시 Pause 위치
+                /// </summary>
+                /// 
+                case (int)LaserDrilling_Step.SocketStop_Start:                                  //  Socket Stop 시작
+
+                    m_nLaserDrilling_SocketStopped_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;             //  Socket Stop 시 Main Step
+                    m_nLaserDrilling_SocketStopped_SocketIndex = m_nDrillingWork_Group_Count;                                       //  Socket Stop 시 진행중이던 Socket 번호
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.SocketStop_Variable_Save;
+                    break;
+
+
+                case (int)LaserDrilling_Step.SocketStop_Variable_Save:                          //  Socket Stop 시 관련 변수 저장
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.SOcketStop_LaserOff;
+                    break;
+
+
+                case (int)LaserDrilling_Step.SOcketStop_LaserOff:                               //  레이저 Off
+
+                    try
+                    {
+                        rtc.CtlLaserOff();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "레이저 Off 실패 : " + ex.Message);
+                    }
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.SocketStop_StageXY_Move_PausePos;
+                    break;
+
+
+                case (int)LaserDrilling_Step.SocketStop_StageXY_Move_PausePos:                  //  Socket Stop 시 대기 위치로 이동
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY축, Socket Stop 에 의한 대기 위치로 이동 시작.");
+
+                    workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
+
+                    //  좌표계 (기존)
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = 0.0;
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0.0;
+
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
+                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0;
+
+                    //  속도 설정
+                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+                    //MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X],
+                    //                      lfVelocity, lfAccDec, lfAccDec);
+                    //MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y],
+                    //                      lfVelocity, lfAccDec, lfAccDec);
+
+                    xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
+                    xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
+                    MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.SocketStop_StageXY_Move_PausePos_DoneCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.SocketStop_StageXY_Move_PausePos_DoneCheck:        //  Socket Stop 시 대기 위치로 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
+                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY축, Socket Stop 에 의한 대기 위치로 이동 완료.");
+
+                        TickCount_Start((int)TickType.TICK_MAIN);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.SocketStop_UserConfirmWait;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY축, Socket Stop 에 의한 대기 위치로 이동 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        //Equipment.MachineStop_byAlarm = true;
+
+                        //timer_LaserDrillingWork.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.SocketStop_UserConfirmWait;             //  Socket Stop 시에는 이동에 실패해도 User 입력을 기다린다.
+
+                        MessageBox.Show("Stage XY축, Socket Stop 에 의한 대기 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.SocketStop_UserConfirmWait:                        //  Socket Stop 시 사용자 확인 대기
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Stop 에 의한 대기 상태로 전환. 사용자 입력 시 Continue");
+
+                    m_bLaserDrilling_SocketStopped = true;
+                    Equipment.SocketStopped = true;
+                    break;
+                /// 
+                /// <summary>
+                /// Socket Stop 시 Pause 위치
+                /// </summary>
+
+
 
 
 

@@ -372,6 +372,15 @@ namespace SLD200_MSL
                 button_Main_Unloader_Continue.Enabled = false;
             }
 
+            if (Equipment.SocketStopped)
+            {
+                button_Main_WorkStage_Continue.Enabled = true;
+            }
+            else
+            {
+                button_Main_WorkStage_Continue.Enabled = false;
+            }
+
 
             //  Cycle Stop 으로 Loader, Unloader, Main Work 가 Stop 되면 자동운전을 종료한다.
             if (Equipment.AutoRunStatus &&
@@ -812,6 +821,9 @@ namespace SLD200_MSL
                 //Equipment.WorkElapsedTick_Drilling = 0;
                 //Equipment.WorkElapsedTick_Marking = 0;
 
+                workStage.m_bLaserDrilling_SocketStopped = false;
+                Equipment.SocketStopped = false;
+
                 workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
                 workStage.timer_LaserDrillingWork.Enabled = true;
                 //laserDrilling.StartThread();
@@ -1068,6 +1080,8 @@ namespace SLD200_MSL
             Equipment.MachineStop_byTimeout_Unloader = false;
             Equipment.MachineStop_byTimeout_WorkStage = false;
 
+            Equipment.SocketStop = false;
+            Equipment.SocketStopped = false;
             Equipment.CycleStop = false;
             Equipment.CycleStopped_LoaderTransfer = false;
             Equipment.CycleStopped_UnloaderTransfer = false;
@@ -1284,6 +1298,7 @@ namespace SLD200_MSL
             //  Work Stage : Main Work
 
             Equipment.SocketStop = checkBox_Main_SocketStop.Checked;
+            Equipment.SocketStopped = false;
 
             if (SocketStop)
             {
@@ -1311,6 +1326,7 @@ namespace SLD200_MSL
             {
                 //  Cycle Stop 을 설정했으므로 Socket Stop 은 Cancel
                 Equipment.SocketStop = false;
+                Equipment.SocketStopped = false;
                 checkBox_Main_SocketStop.Checked = false;
             }
         }
@@ -1497,6 +1513,21 @@ namespace SLD200_MSL
 
                 //  Timeout 이 발생하여 Cycle Stop 상태인 경우
                 Equipment.MachineStop_byTimeout_Unloader = false;
+            }
+        }
+
+        private void button_Main_WorkStage_Continue_Click(object sender, EventArgs e)
+        {
+            //  Laser Drilling Cycle Continue
+
+            if (Equipment.SocketStopped)
+            {
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "Laser Drilling Cycle Continue...");
+
+                workStage.WorkStage_Restart_Check();
+
+                Equipment.SocketStopped = false;
             }
         }
     }
