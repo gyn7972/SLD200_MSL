@@ -61,6 +61,7 @@
             this.checkBox_Main_Loader_Transfer_Pause = new System.Windows.Forms.CheckBox();
             this.button_Main_CameraInit = new System.Windows.Forms.Button();
             this.checkBox_Main_SocketStop = new System.Windows.Forms.CheckBox();
+            this.button_Main_Loader_Continue = new System.Windows.Forms.Button();
             this.baseTextBox_DryRun_ProcessingTime = new SLD200_MSL.BaseTextBox();
             this.baseLabel5 = new SLD200_MSL.BaseLabel();
             this.baseTextBox_Socket_Index = new SLD200_MSL.BaseTextBox();
@@ -90,7 +91,7 @@
             this.baseLabel_CurrentOneCycle_TotalTime = new SLD200_MSL.BaseLabel();
             this.baseLabel_CurrentOneCycle_ElapsedTime = new SLD200_MSL.BaseLabel();
             this.baseLabel_CurrentOneCycle_Time = new SLD200_MSL.BaseLabel();
-            this.button_Main_Loader_Continue = new System.Windows.Forms.Button();
+            this.button_Main_Unloader_Continue = new System.Windows.Forms.Button();
             this.groupBoxMain_ProcessingStatus.SuspendLayout();
             this.groupBoxMain_MaterialInformation.SuspendLayout();
             this.groupBox_ProcessingData.SuspendLayout();
@@ -594,6 +595,21 @@
             this.checkBox_Main_SocketStop.UseVisualStyleBackColor = false;
             this.checkBox_Main_SocketStop.CheckedChanged += new System.EventHandler(this.checkBox_Main_SocketStop_CheckedChanged);
             // 
+            // button_Main_Loader_Continue
+            // 
+            this.button_Main_Loader_Continue.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_Main_Loader_Continue.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.button_Main_Loader_Continue.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button_Main_Loader_Continue.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.button_Main_Loader_Continue.Location = new System.Drawing.Point(1222, 615);
+            this.button_Main_Loader_Continue.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_Main_Loader_Continue.Name = "button_Main_Loader_Continue";
+            this.button_Main_Loader_Continue.Size = new System.Drawing.Size(118, 73);
+            this.button_Main_Loader_Continue.TabIndex = 155;
+            this.button_Main_Loader_Continue.Text = "Loader\r\nContinue";
+            this.button_Main_Loader_Continue.UseVisualStyleBackColor = false;
+            this.button_Main_Loader_Continue.Click += new System.EventHandler(this.button_Main_Loader_Continue_Click);
+            // 
             // baseTextBox_DryRun_ProcessingTime
             // 
             this.baseTextBox_DryRun_ProcessingTime.BackColor = System.Drawing.Color.White;
@@ -988,20 +1004,20 @@
             this.baseLabel_CurrentOneCycle_Time.TabIndex = 109;
             this.baseLabel_CurrentOneCycle_Time.Text = "One Cycle Time";
             // 
-            // button_Main_Loader_Continue
+            // button_Main_Unloader_Continue
             // 
-            this.button_Main_Loader_Continue.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button_Main_Loader_Continue.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.button_Main_Loader_Continue.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button_Main_Loader_Continue.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_Main_Loader_Continue.Location = new System.Drawing.Point(1160, 616);
-            this.button_Main_Loader_Continue.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button_Main_Loader_Continue.Name = "button_Main_Loader_Continue";
-            this.button_Main_Loader_Continue.Size = new System.Drawing.Size(118, 73);
-            this.button_Main_Loader_Continue.TabIndex = 155;
-            this.button_Main_Loader_Continue.Text = "Loader\r\nContinue";
-            this.button_Main_Loader_Continue.UseVisualStyleBackColor = false;
-            this.button_Main_Loader_Continue.Click += new System.EventHandler(this.button_Main_Loader_Continue_Click);
+            this.button_Main_Unloader_Continue.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_Main_Unloader_Continue.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.button_Main_Unloader_Continue.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button_Main_Unloader_Continue.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.button_Main_Unloader_Continue.Location = new System.Drawing.Point(1079, 616);
+            this.button_Main_Unloader_Continue.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_Main_Unloader_Continue.Name = "button_Main_Unloader_Continue";
+            this.button_Main_Unloader_Continue.Size = new System.Drawing.Size(118, 73);
+            this.button_Main_Unloader_Continue.TabIndex = 156;
+            this.button_Main_Unloader_Continue.Text = "Unloader\r\nContinue";
+            this.button_Main_Unloader_Continue.UseVisualStyleBackColor = false;
+            this.button_Main_Unloader_Continue.Click += new System.EventHandler(this.button_Main_Unloader_Continue_Click);
             // 
             // FormNew_Main
             // 
@@ -1009,6 +1025,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 877);
             this.ControlBox = false;
+            this.Controls.Add(this.button_Main_Unloader_Continue);
             this.Controls.Add(this.button_Main_Loader_Continue);
             this.Controls.Add(this.checkBox_Main_SocketStop);
             this.Controls.Add(this.button_Main_CameraInit);
@@ -1119,5 +1136,6 @@
         private System.Windows.Forms.Button button_Main_CameraInit;
         private System.Windows.Forms.CheckBox checkBox_Main_SocketStop;
         private System.Windows.Forms.Button button_Main_Loader_Continue;
+        private System.Windows.Forms.Button button_Main_Unloader_Continue;
     }
 }

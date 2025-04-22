@@ -3144,7 +3144,7 @@ namespace QMC.Common.Modules
                     unloader = module as Unloader;
                 }
 
-                if (module.Name == "Bds")
+                if (module.Name == "BDS")
                 {
                     bds = module as Bds;
                 }
@@ -3474,7 +3474,7 @@ namespace QMC.Common.Modules
                     unloader = module as Unloader;
                 }
 
-                if (module.Name == "Bds")
+                if (module.Name == "BDS")
                 {
                     bds = module as Bds;
                 }
@@ -7696,23 +7696,45 @@ namespace QMC.Common.Modules
 
                 case (int)WorkStage_Move_Step.ToLoadingPos_ScannerZ_Move_ReadyPos:                            //  Scanner Z 축, 대기 위치로 이동
 
-                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 대기 위치 이동 시작");
+                    //  가공 높이 이상이면 대기위치까지 올리지 않고 바로 이동한다.
+                    double m_dVisionPos = 0.0;
+                    double m_dLaserFocusPos = 0.0;
+                    double m_LaserSensorPos = 0.0;
+                    double m_dLowestPos = 0.0;
 
-                    workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Safety");
+                    m_dVisionPos = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_FocusPos].Vision_Z;
+                    m_dLaserFocusPos = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z;
+                    m_LaserSensorPos = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos].Vision_Z;
 
-                    //  Target Position 변경 : Z 축 대기 위치
-                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_SafetyPos].Vision_Z;
+                    m_dLowestPos = Math.Min(m_dVisionPos, m_dLaserFocusPos);
+                    m_dLowestPos = Math.Min(m_dLowestPos, m_LaserSensorPos);
 
-                    //  속도 설정
-                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
-                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+                    if (MC_Func.MC_GetEncPos((int)nAxis.Z) >= (m_dLowestPos - 1.0))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 대기 위치 이동 없이 다음 단계 이동");
 
-                    MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
-                                          lfVelocity, lfAccDec, lfAccDec);
+                        m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.ToLoadingPos_StageXY_Move_LoadingPos;
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 대기 위치 이동 시작");
 
-                    TickCount_Start((int)TickType.TICK_STAGE_MOVE);
+                        workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Safety");
 
-                    m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.ToLoadingPos_ScannerZ_Move_ReadyPos_DoneCheck;
+                        //  Target Position 변경 : Z 축 대기 위치
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_SafetyPos].Vision_Z;
+
+                        //  속도 설정
+                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
+                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+
+                        MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
+                                              lfVelocity, lfAccDec, lfAccDec);
+
+                        TickCount_Start((int)TickType.TICK_STAGE_MOVE);
+
+                        m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.ToLoadingPos_ScannerZ_Move_ReadyPos_DoneCheck;
+                    }
                     break;
 
 
@@ -7839,23 +7861,45 @@ namespace QMC.Common.Modules
 
                 case (int)WorkStage_Move_Step.ToUnloadingPos_ScannerZ_Move_ReadyPos:                            //  Scanner Z 축, 대기 위치로 이동
 
-                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 대기 위치 이동 시작");
+                    //  가공 높이 이상이면 대기위치까지 올리지 않고 바로 이동한다.
+                    m_dVisionPos = 0.0;
+                    m_dLaserFocusPos = 0.0;
+                    m_LaserSensorPos = 0.0;
+                    m_dLowestPos = 0.0;
 
-                    workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Safety");
+                    m_dVisionPos = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_FocusPos].Vision_Z;
+                    m_dLaserFocusPos = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z;
+                    m_LaserSensorPos = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos].Vision_Z;
 
-                    //  Target Position 변경 : Z 축 대기 위치
-                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_SafetyPos].Vision_Z;
+                    m_dLowestPos = Math.Min(m_dVisionPos, m_dLaserFocusPos);
+                    m_dLowestPos = Math.Min(m_dLowestPos, m_LaserSensorPos);
 
-                    //  속도 설정
-                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
-                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+                    if (MC_Func.MC_GetEncPos((int)nAxis.Z) >= (m_dLowestPos - 1.0))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 대기 위치 이동 없이 다음 단계 이동");
 
-                    MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
-                                          lfVelocity, lfAccDec, lfAccDec);
+                        m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.ToUnloadingPos_StageXY_Move_UnloadingPos;
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 대기 위치 이동 시작");
 
-                    TickCount_Start((int)TickType.TICK_STAGE_MOVE);
+                        workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Safety");
 
-                    m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.ToUnloadingPos_ScannerZ_Move_ReadyPos_DoneCheck;
+                        //  Target Position 변경 : Z 축 대기 위치
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_SafetyPos].Vision_Z;
+
+                        //  속도 설정
+                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
+                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+
+                        MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
+                                              lfVelocity, lfAccDec, lfAccDec);
+
+                        TickCount_Start((int)TickType.TICK_STAGE_MOVE);
+
+                        m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.ToUnloadingPos_ScannerZ_Move_ReadyPos_DoneCheck;
+                    }
                     break;
 
 
@@ -7984,23 +8028,45 @@ namespace QMC.Common.Modules
 
                 case (int)WorkStage_Move_Step.ToScannerCenterPos_ScannerZ_Move_ReadyPos:                            //  Scanner Z 축, 대기 위치로 이동
 
-                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 대기 위치 이동 시작");
+                    //  가공 높이 이상이면 대기위치까지 올리지 않고 바로 이동한다.
+                    m_dVisionPos = 0.0;
+                    m_dLaserFocusPos = 0.0;
+                    m_LaserSensorPos = 0.0;
+                    m_dLowestPos = 0.0;
 
-                    workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Safety");
+                    m_dVisionPos = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_FocusPos].Vision_Z;
+                    m_dLaserFocusPos = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z;
+                    m_LaserSensorPos = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos].Vision_Z;
 
-                    //  Target Position 변경 : Z 축 대기 위치
-                    workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_SafetyPos].Vision_Z;
+                    m_dLowestPos = Math.Min(m_dVisionPos, m_dLaserFocusPos);
+                    m_dLowestPos = Math.Min(m_dLowestPos, m_LaserSensorPos);
 
-                    //  속도 설정
-                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
-                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+                    if (MC_Func.MC_GetEncPos((int)nAxis.Z) >= (m_dLowestPos - 1.0))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 대기 위치 이동 없이 다음 단계 이동");
 
-                    MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
-                                          lfVelocity, lfAccDec, lfAccDec);
+                        m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.ToScannerCenterPos_StageXY_Move_StageScannerCenterPos;
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, 대기 위치 이동 시작");
 
-                    TickCount_Start((int)TickType.TICK_STAGE_MOVE);
+                        workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Safety");
 
-                    m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.ToScannerCenterPos_ScannerZ_Move_ReadyPos_DoneCheck;
+                        //  Target Position 변경 : Z 축 대기 위치
+                        workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_SafetyPos].Vision_Z;
+
+                        //  속도 설정
+                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
+                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+
+                        MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
+                                              lfVelocity, lfAccDec, lfAccDec);
+
+                        TickCount_Start((int)TickType.TICK_STAGE_MOVE);
+
+                        m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.ToScannerCenterPos_ScannerZ_Move_ReadyPos_DoneCheck;
+                    }
                     break;
 
 

@@ -78,7 +78,7 @@ namespace SLD200_MSL
                     vision = module as Vision;
                 }
 
-                if (module.Name == "Bds")
+                if (module.Name == "BDS")
                 {
                     bds = module as Bds;
                 }
@@ -352,6 +352,25 @@ namespace SLD200_MSL
             checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete;
             checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete;
 
+
+            //  계속 진행 버튼 활성화
+            if (Equipment.MachineStop_byTimeout_Loader)
+            {
+                button_Main_Loader_Continue.Enabled = true;
+            }
+            else
+            {
+                button_Main_Loader_Continue.Enabled = false;
+            }
+
+            if (Equipment.MachineStop_byTimeout_Unloader)
+            {
+                button_Main_Unloader_Continue.Enabled = true;
+            }
+            else
+            {
+                button_Main_Unloader_Continue.Enabled = false;
+            }
 
 
             //  Cycle Stop 으로 Loader, Unloader, Main Work 가 Stop 되면 자동운전을 종료한다.
@@ -1456,12 +1475,28 @@ namespace SLD200_MSL
             if (Equipment.MachineStop_byTimeout_Loader)
             {
                 var mb = new MessageBoxOk();
-                mb.ShowDialog("Information !", "Loader Cycle Continue");
+                mb.ShowDialog("Information !", "Loader Cycle Continue...");
 
                 loader.Loader_Transfer_Restart_MoveType_Check();
 
                 //  Timeout 이 발생하여 Cycle Stop 상태인 경우
                 Equipment.MachineStop_byTimeout_Loader = false;                
+            }
+        }
+
+        private void button_Main_Unloader_Continue_Click(object sender, EventArgs e)
+        {
+            //  Unloader Cycle Continue
+
+            if (Equipment.MachineStop_byTimeout_Unloader)
+            {
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "Unloader Cycle Continue...");
+
+                unloader.Unloader_Transfer_Restart_MoveType_Check();
+
+                //  Timeout 이 발생하여 Cycle Stop 상태인 경우
+                Equipment.MachineStop_byTimeout_Unloader = false;
             }
         }
     }
