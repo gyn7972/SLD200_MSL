@@ -13370,7 +13370,7 @@ namespace QMC.Common.Modules
                             //Thread.Sleep(Config.ParamConfig.ThreadSleep_beforeListBegin);
 
                             // Tobo: 구영남 =
-                            m_bThruHoleList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
+                            m_bThruHoleList_Success &= rtcMode.ListBegin(laser, ListType.Single);
 
                             Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List Open");
 
@@ -13765,6 +13765,7 @@ namespace QMC.Common.Modules
                     m_nThruHole_ObjectDataCount++;
 
                     m_bThruHoleList_Success &= rtc.ListEnd();
+                    Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List End");
 
                     if (m_bThruHoleList_Success)
                     {
@@ -14351,7 +14352,7 @@ namespace QMC.Common.Modules
 
                             //Thread.Sleep(Config.ParamConfig.ThreadSleep_beforeListBegin);
 
-                            m_bOutLineList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
+                            m_bOutLineList_Success &= rtcMode.ListBegin(laser, ListType.Single);
 
                             Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, Buffer List Open");
 
@@ -14746,6 +14747,7 @@ namespace QMC.Common.Modules
                     m_nOutLine_ObjectDataCount++;
 
                     m_bOutLineList_Success &= rtc.ListEnd();
+                    Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List End");
 
                     if (m_bOutLineList_Success)
                     {
@@ -16557,7 +16559,12 @@ namespace QMC.Common.Modules
 
                             //Thread.Sleep(Config.ParamConfig.ThreadSleep_beforeListBegin);
 
-                            m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
+                            m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Single);
+                            
+
+                            //m_bDivRegionList_Success &= rtcMode.ListExecute(true);
+                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_1Rect;
+                            //break;
 
                             Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer List Open");
 
@@ -17446,6 +17453,7 @@ namespace QMC.Common.Modules
                                     //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
                                     {
                                         m_bDivRegionList_Success &= rtc.ListEnd();
+                                        Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List End");
                                     }
 
                                     //  가공 버퍼에 데이터가 정상적으로 등록되었는지 체크
@@ -17526,6 +17534,7 @@ namespace QMC.Common.Modules
                                 //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
                                 {
                                     m_bDivRegionList_Success &= rtc.ListEnd();
+                                    Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List End");
                                 }
 
                                 //  가공 버퍼에 데이터가 정상적으로 등록되었는지 체크
@@ -17636,6 +17645,7 @@ namespace QMC.Common.Modules
                                 //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
                                 {
                                     m_bDivRegionList_Success &= rtc.ListEnd();
+                                    Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List End");
                                 }
 
                                 //  가공 버퍼에 데이터가 정상적으로 등록되었는지 체크
@@ -17734,6 +17744,7 @@ namespace QMC.Common.Modules
                             //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
                             {
                                 m_bDivRegionList_Success &= rtc.ListEnd();
+                                Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List End");
                             }
 
                             //  가공 버퍼에 데이터가 정상적으로 등록되었는지 체크
@@ -18564,23 +18575,15 @@ namespace QMC.Common.Modules
                                     double m_dTemp_AngleFactor = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_AngleFactor;
 
                                     //  Hole Center
-                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X -
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
                                                         m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
-                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y -
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
                                                         m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
 
                                     entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
                                     //  Spiral 데이터 파라미터 (외경 크기, 내경 크기, Spiral 회전 횟수, Spiral 회전 각도, Hole Center X, Hole Center Y)
                                     lwPolyLineSpiral = SpiralData_Create(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot.X, entity_Position_Rot.Y);
-
-
-
-                                    //  Test
-                                    m_strTemp = string.Format("Spiral 원 Center 좌표, X : {0:0.000}, Y : {1:0.000}", entity_Position_Rot.X, entity_Position_Rot.Y);
-
-                                    Log.Write("SLD_200_Spiral", "Auto Run", m_strTemp);
-
 
 
                                     //  객체 Edge 좌표 데이터 저장
@@ -18708,15 +18711,16 @@ namespace QMC.Common.Modules
                                     double m_dTemp_AngleFactor = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_AngleFactor;
 
                                     //  Hole Center
-                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X -
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
                                                         m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
-                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y -
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
                                                         m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
 
                                     entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
                                     //  Spiral 데이터 파라미터 (외경 크기, 내경 크기, Spiral 회전 횟수, Spiral 회전 각도, Hole Center X, Hole Center Y)
                                     lwPolyLineSpiral = SpiralData_Create(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot.X, entity_Position_Rot.Y);
+
 
                                     //  객체 Edge 좌표 데이터 저장
                                     for (int n_pl = 0; n_pl < lwPolyLineSpiral.Count; n_pl++)
@@ -18861,6 +18865,7 @@ namespace QMC.Common.Modules
                                     //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
                                     {
                                         m_bDivRegionList_Success &= rtc.ListEnd();
+                                        Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List End");
                                     }
 
                                     //  가공 버퍼에 데이터가 정상적으로 등록되었는지 체크
@@ -18939,6 +18944,7 @@ namespace QMC.Common.Modules
                                 //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
                                 {
                                     m_bDivRegionList_Success &= rtc.ListEnd();
+                                    Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List End");
                                 }
 
                                 //  가공 버퍼에 데이터가 정상적으로 등록되었는지 체크
@@ -19051,6 +19057,7 @@ namespace QMC.Common.Modules
                                     //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
                                     {
                                         m_bDivRegionList_Success &= rtc.ListEnd();
+                                        Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List End");
                                     }
 
                                     //  가공 버퍼에 데이터가 정상적으로 등록되었는지 체크
@@ -19128,6 +19135,7 @@ namespace QMC.Common.Modules
                                 //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
                                 {
                                     m_bDivRegionList_Success &= rtc.ListEnd();
+                                    Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List End");
                                 }
 
                                 //  가공 버퍼에 데이터가 정상적으로 등록되었는지 체크
@@ -19209,6 +19217,8 @@ namespace QMC.Common.Modules
 
                             m_nDrillingWork_Repeat_Count_Backup = m_nDrillingWork_Repeat_Count;
                             m_nListBeginRetry_Count = 0;
+
+                            m_bDivRegionList_Success &= rtc.ListEnd();
 
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Execute;
                         }
@@ -19539,8 +19549,9 @@ namespace QMC.Common.Modules
 
                         var rtcMode = rtc as IRtc;                                  //  RTC6
 
-                        m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
+                        m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Single);
 
+                        Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List Open");
                         //  테스트
                         //m_bDivRegionList_Success &= rtc.ListFrequency((float)Config.ParamConfig.Drilling_Frequency, (float)Config.ParamConfig.Drilling_PulseWidth);
 
@@ -20155,6 +20166,7 @@ namespace QMC.Common.Modules
                                     //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
                                     {
                                         m_bDivRegionList_Success &= rtc.ListEnd();
+                                        Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List End");
                                     }
 
                                     m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
@@ -20166,6 +20178,7 @@ namespace QMC.Common.Modules
                                 //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
                                 {
                                     m_bDivRegionList_Success &= rtc.ListEnd();
+                                    Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List End");
                                 }
 
                                 m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount = 0;
@@ -20205,6 +20218,7 @@ namespace QMC.Common.Modules
                                 //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
                                 {
                                     m_bDivRegionList_Success &= rtc.ListEnd();
+                                    Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List End");
                                 }
 
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListObjectData_Execute;
@@ -20215,6 +20229,7 @@ namespace QMC.Common.Modules
                             //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
                             {
                                 m_bDivRegionList_Success &= rtc.ListEnd();
+                                Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List End");
                             }
 
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListObjectData_Execute;
@@ -21629,7 +21644,9 @@ namespace QMC.Common.Modules
         /// 
         public LwPolyline SpiralData_Create(double m_dOuterDiameter, double m_dInnerDiameter, double m_nRevolutions, double m_nAngleFactor, double m_dHoleCenter_X, double m_dHoleCenter_Y)
         {
+
             var entity = new LwPolyline();
+            
             //  entity.Color2 = this.color;
 
             //  Outer Diameter : Spiral 시작 위치
