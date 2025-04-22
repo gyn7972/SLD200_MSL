@@ -18559,12 +18559,7 @@ namespace QMC.Common.Modules
                                         //  Test
                                         m_strTemp = string.Format("Circle 원 Center 좌표, X : {0:0.000}, Y : {1:0.000}", entity_Position_Rot.X, entity_Position_Rot.Y);
 
-                                        Log.Write("SLD_200_CIRCLE_Center", "Auto Run", m_strTemp);
-
-
-                                        m_strTemp = string.Format("Circle 원 Stage 좌표, X : {0:0.000}, Y : {1:0.000}", MC_Func.MC_GetEncPos((int)nAxis.X), MC_Func.MC_GetEncPos((int)nAxis.Y));
-
-                                        Log.Write("SLD_200_CIRCLE_Stage", "Auto Run", m_strTemp);
+                                        Log.Write("SLD_200_CIRCLE", "Auto Run", m_strTemp);
                                     }
                                 }
                                 //  Hole : Spiral 타입으로 가공
@@ -20550,6 +20545,7 @@ namespace QMC.Common.Modules
                     break;
             }
         }
+
 
         #endregion
 
