@@ -1033,6 +1033,10 @@ namespace SLD200_MSL
             }
 
 
+            //  Machine Name
+            textBox_ModelName.Text = Equipment.Machine_Name;
+
+
             //  Laser Type                        
             if (Equipment.Machine_LaserType_CO2)                                            //  CO₂Laser
             {

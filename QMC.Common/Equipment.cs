@@ -293,6 +293,12 @@ namespace QMC.Common
             Thruhole,
         }
 
+        public enum MarkTypeList : int
+        {
+            Circle = 0,
+            GoldPowder,
+        }
+
         public enum HoleProcessingType : int
         {
             Circle = 0,
@@ -332,6 +338,7 @@ namespace QMC.Common
             public int Miscellaneous_BETPositionIndex;                  //  BET Position Index (0:0.1X, 1:0.5X, 2:1.0X, 3:1.5X, 4:2.0X)
             public int Miscellaneous_HoleProcessingType;                //  Hole Processing Type (0:Circle, 1:Spiral)
             public int Miscellaneous_FiducialAlignType;                 //  Fiducial Align Type (0:Circle Find, 2:Pattern Matching)
+            public int Miscellaneous_FiducialMarkType;                  //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
 
             public bool ProcessOption_SocketAlign_Use;                  //  Socket Align Use (true: Use, false: Not Use)
             public bool ProcessOption_SocketHeightCheck_Use;            //  Socket Height Check Use Offset (true: Use, false: Not Use)
@@ -832,6 +839,7 @@ namespace QMC.Common
                 stLayerRecipeSet[i].Miscellaneous_Drilling_Power = 10;                              //  Drilling Power              
                 stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = 0;                           //  Hole Processing Type (0:Circle, 1:Spiral)
                 stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = 0;                            //  Fiducial Align Type (0:Circle Find, 1:Pattern Matching)
+                stLayerRecipeSet[i].Miscellaneous_FiducialMarkType = 0;                             //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
 
                 //  Process Options
                 stLayerRecipeSet[i].ProcessOption_SocketAlign_Use = false;                          //  Socket Align Use (true: Use, false: Not Use)
