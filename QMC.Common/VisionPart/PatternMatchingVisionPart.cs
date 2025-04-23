@@ -1,4 +1,5 @@
-﻿using QMC.Common.Vision;
+﻿using QMC.Common.Modules;
+using QMC.Common.Vision;
 using QMC.Common.Vision.Cameras;
 using QMC.Common.Vision.Cognex;
 using QMC.Common.Vision.Matrox.Tools;
@@ -58,6 +59,9 @@ namespace QMC.Common.VisionPart
         {
             int ret = 0;
             VisionImage image;
+
+            // Todo 장비에서 무조건 주석할것!
+            //Simulated = true;
             if (Simulated)
             {
                 image = TestImage;
@@ -91,6 +95,7 @@ namespace QMC.Common.VisionPart
             VisionImage image;
             VisionImage inputImage = null;
 
+            //Simulated = true;
             if (Simulated)
             {
                 image = TestImage;
@@ -105,7 +110,7 @@ namespace QMC.Common.VisionPart
                 if ((ret = Camera.GrabSync(Purpose.Processing, out image)) != 0) return ret;
             }
 
-            m_PatternMatchingTool.Parameter.AngleTolerance = new RangeD(parameter.MinTolerance, parameter.MaxTolerance);
+            m_PatternMatchingTool.Parameter.AngleTolerance = new RangeD(parameter.MinTolerance, parameter.MaxTolerance);            
             m_PatternMatchingTool.Parameter.DuplicateChecked = parameter.DuplicateChecked;
             m_PatternMatchingTool.Parameter.MaxInstance = parameter.MaxInstance;
             m_PatternMatchingTool.Parameter.MinScore = parameter.MinScore;
@@ -122,6 +127,7 @@ namespace QMC.Common.VisionPart
 
 
             m_RoiInspect.InputImage = image;
+            m_RoiInspect.SubTools.InputImage = TrainImage;
             m_RoiInspect.Parameter.IsFull = false;
 
             if ((ret = m_RoiInspect.Run()) != 0) return ret;
@@ -138,7 +144,7 @@ namespace QMC.Common.VisionPart
             return ret;
         }
 
-        public int OnSearch(VisionImage image, Point startRoiPoint, Point endRoiPoint, PatternMatchingParameters parameter, IlluminationDataSet illuminationData)
+        public int OnSearch(VisionImage image, Point startRoiPoint, Point endRoiPoint, PatternMatchingParameters parameter, IlluminationDataSet illuminationData , bool bLearn = true)
         {
             int ret = 0;
 
@@ -166,6 +172,9 @@ namespace QMC.Common.VisionPart
                 }
             }
 
+
+
+            //
             m_PatternMatchingTool.Parameter.AngleTolerance = new RangeD(parameter.MinTolerance, parameter.MaxTolerance);
             m_PatternMatchingTool.Parameter.DuplicateChecked = parameter.DuplicateChecked;
             m_PatternMatchingTool.Parameter.MaxInstance = parameter.MaxInstance;
@@ -181,15 +190,30 @@ namespace QMC.Common.VisionPart
 
             m_RoiTrain.Parameter.IsFull = true;
 
-            inputImage = image.CutVisionImage(m_RoiInspect.Parameter.StartLocation, m_RoiInspect.Parameter.EndLocation);
 
-            m_RoiInspect.InputImage = inputImage;
+            m_RoiInspect.InputImage = image;
             m_RoiInspect.Parameter.IsFull = false;
 
             if ((ret = m_RoiInspect.Run()) != 0) return ret;
             m_PatternMatchingTool.InputImage = m_RoiInspect.OutputImage;
 
-            if ((ret = m_PatternMatchingTool.Run()) != 0) return ret;
+            
+
+            //
+
+
+
+
+            if (bLearn)
+            {
+
+                if ((ret = m_PatternMatchingTool.Run()) != 0) return ret;
+            }
+            else
+            {
+                m_PatternMatchingTool.SetValue(m_PatternMatchingTool.InputImage, bLearn);
+                ret = m_PatternMatchingTool.GetValue();
+            }
 
             if (m_PatternMatchingTool.Result.Values.Count <= 0)
             {

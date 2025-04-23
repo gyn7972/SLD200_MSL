@@ -45,5 +45,15 @@ namespace SLD200_MSL
         {
             this.pictureBoxTrainImage.Image = image.GetImage();
         }
+
+        private void groupBoxTrainImage_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBoxTrainImage_Click(object sender, EventArgs e)
+        {
+
+        }
     } 
 }

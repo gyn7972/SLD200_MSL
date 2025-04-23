@@ -33,15 +33,15 @@ namespace SLD200_MSL
 
             tabControl.Location = new Point(Configuration.ContentLocation.X, Configuration.ContentLocation.Y + Configuration.ButtonSize.Height + Configuration.PanelSize.Height);
             
-
+            //사용안함.?
             //m_VisionCalibratorRecipeControl = new PatternMatchingRecipeControl(m_Owner.visionCalibrator_HighRes);
             //m_VisionCalibratorRecipeControl.SetGroupBoxName("VisionCalibrator");
             //m_VisionCalibratorRecipeControl.BackColor = Color.FromArgb(90, 90, 90);
             //m_VisionCalibratorTabPage.Controls.Add(m_VisionCalibratorRecipeControl);
 
-            tabControl.Controls.Add(m_VisionCalibratorTabPage);
-            tabControl.Size = new Size(m_VisionCalibratorRecipeControl.Width + Configuration.ControlGap, m_VisionCalibratorRecipeControl.Height + Configuration.ControlGap);
-            this.Controls.Add(tabControl);
+            //tabControl.Controls.Add(m_VisionCalibratorTabPage);
+            //tabControl.Size = new Size(m_VisionCalibratorRecipeControl.Width + Configuration.ControlGap, m_VisionCalibratorRecipeControl.Height + Configuration.ControlGap);
+            //this.Controls.Add(tabControl);
         }
     }
 }

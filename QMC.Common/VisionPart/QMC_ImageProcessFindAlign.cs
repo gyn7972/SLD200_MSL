@@ -281,7 +281,8 @@ namespace QMC.Common.VisionPart
             }
             SaveImage(images, w, h, filename);
         }
-        public List<RectangleF> FindCirclesWidthCircleBoundary(List<RectangleF> circlesResult, byte[] pixelData, int w, int h,int radius,double dSpec, ref bool circleFound)
+        public List<RectangleF> FindCirclesWidthCircleBoundary(List<RectangleF> circlesResult, 
+            byte[] pixelData, int w, int h,int radius,double dSpec, ref bool circleFound, int ncX = 0, int ncY = 0)
         {
             List<PointF> polygon = new List<PointF>();
             List<PointF> points = new List<PointF>();
@@ -294,6 +295,10 @@ namespace QMC.Common.VisionPart
             float cx = 0;
             float cy = 0;
             double dErrorRatio = 0.1;
+
+
+
+
             for (int y = 0; y < 3; y++)
             {
                 if (bFindCircle)
@@ -305,9 +310,6 @@ namespace QMC.Common.VisionPart
                 nDirectionX = 0;
                 for (int x = 0; x < 3; x++)
                 {
-
-
-
                     int nShiftX = nDirectionX % 2 == 0 ? nStepX : -nStepX;
                     nShiftX *= x;
                     int nCx = w / 2 + nShiftX;
@@ -319,17 +321,30 @@ namespace QMC.Common.VisionPart
 
                         }
                     }
-                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, 280, 1000, 1, 10);
+
+                    int nMaxCircle = (int)(radius * (1 + dSpec));
+                    int nMinCircle = (int)(radius * (1 - dSpec));
+
+                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, nMinCircle, nMaxCircle, 1, 10);
                     //polygon = FindCircleBoundary(pixelData, w, h, 540, 1150, 50, 1000, 1);
                     points = polygon;
                     circlesResult.Clear();
                     FindCircleFitter(circlesResult, points, out dRadius, 5);
-                    
-                    int nMaxCircle = (int)(radius *(1+ dSpec)) ;
-                    int nMinCircle = (int)(radius  *(1- dSpec));
 
-                    cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
-                    cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
+                    if (ncX == 0 || ncY == 0)
+                    {
+                        cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
+                        cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
+                    }
+                    else
+                    {
+                        cx = (float)ncX;
+                        cy = (float)ncY;
+                    }
+                    //cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
+                    //cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
+
+
                     if (dRadius < nMaxCircle && dRadius > nMinCircle && cx > 0 && cx < w
                         && cy < h && cy > 0)
                     {
@@ -360,8 +375,6 @@ namespace QMC.Common.VisionPart
 
                 }
                 nDirectionY++;
-
-
             }
 
             //  원을 찾았는지 여부 Ref.

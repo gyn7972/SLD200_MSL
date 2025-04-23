@@ -53,7 +53,6 @@ namespace QMC.Common
         }
         public string SaveData(string strPath = "")
         {
-
             MoveToCenter();
             FindLenzCenter();
             DateTime now = DateTime.Now;
@@ -369,17 +368,17 @@ namespace QMC.Common
             }
             File.AppendAllText(filePath + ".txt", strData);
 
-            filePath = strPath + "./CenterPoint" + timeString;
-            strData = "";
-            File.WriteAllText(filePath + ".csv", strData);
-            List<PointF> pt = GetResult();
-            foreach (var v in pt)
-            {
-                strData += v.X.ToString();
-                strData += "," + v.Y.ToString();
-                strData += "\n";
-            }
-            File.AppendAllText(filePath + ".csv", strData);
+            //filePath = strPath + "./QMC_CenterPoint" + timeString;
+            //strData = "";
+            //File.WriteAllText(filePath + ".csv", strData);
+            //List<PointF> pt = GetResult();
+            //foreach (var v in pt)
+            //{
+            //    strData += v.X.ToString();
+            //    strData += "," + v.Y.ToString();
+            //    strData += "\n";
+            //}
+            //File.AppendAllText(filePath + ".csv", strData);
         }
 
         public List<PointF> GetResult()

@@ -94,7 +94,7 @@
             this.baseGroupBoxPatternMatching.Controls.Add(this.baseToggleButtonUseMaskImage);
             this.baseGroupBoxPatternMatching.Controls.Add(this.baseToggleButtonDuplicateCheck);
             this.baseGroupBoxPatternMatching.ForeColor = System.Drawing.Color.Black;
-            this.baseGroupBoxPatternMatching.Location = new System.Drawing.Point(6, 22);
+            this.baseGroupBoxPatternMatching.Location = new System.Drawing.Point(22, 32);
             this.baseGroupBoxPatternMatching.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.baseGroupBoxPatternMatching.Name = "baseGroupBoxPatternMatching";
             this.baseGroupBoxPatternMatching.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);

@@ -48,6 +48,7 @@
             this.groupBoxTrainImage.TabIndex = 1;
             this.groupBoxTrainImage.TabStop = false;
             this.groupBoxTrainImage.Text = " Train Image ";
+            this.groupBoxTrainImage.Enter += new System.EventHandler(this.groupBoxTrainImage_Enter);
             // 
             // pictureBoxTrainImage
             // 
@@ -58,6 +59,7 @@
             this.pictureBoxTrainImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxTrainImage.TabIndex = 1;
             this.pictureBoxTrainImage.TabStop = false;
+            this.pictureBoxTrainImage.Click += new System.EventHandler(this.pictureBoxTrainImage_Click);
             // 
             // baseButtonTrain
             // 

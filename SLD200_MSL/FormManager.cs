@@ -73,6 +73,10 @@ namespace SLD200_MSL
                 {
                     form = new FormJigAlignerMaint(part);
                 }
+                //else if(part is CommonModule)
+                //{
+                //    form = new FormCommonModuleConfig((Module)part);
+                //}
                 //else if(part is LaserPitchMoveShotter)
                 //{
                 //    form = new FormLaserPitchMoveShotterMaint(part);
@@ -150,10 +154,15 @@ namespace SLD200_MSL
                     //form = new 
                     form = new FormJigAlignerMaint(part);
                 }
+                //else if(part is CommonModule)
+                //{
+                //    form = new FormCommonModuleConfig((Module)part);
+                //}
                 else
                 {
-                    return form;
+                    return form;// = new Form();
                 }
+
                 m_dicConfigForm.Add(part, form);
             }
 

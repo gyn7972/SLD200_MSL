@@ -344,13 +344,13 @@ namespace SLD200_MSL
             Equipment.ApplyRecipeData();
 
 
-            if (m_Owner.Name == "Scanner Compensator")
+            //if (m_Owner.Name == "Scanner Compensator")
+            if(m_Owner.Name == "ScannerCompen. (Fine)")
             {
                 m_strFile = string.Format("{0}\\ScannerCal.jpg", ConfigManager.GetPatternImagePath());
                 m_Owner.TrainImage.Save(m_strFile, QMC.Common.Vision.VisionImage.FileFilter.jpg);
 
                 //workStage.PatternMatchingImage_Reticle_Loaded_HighRes = true;
-
                 //workStage.m_bLowerCam_AlignPattern_Reset = true;
             }
         }

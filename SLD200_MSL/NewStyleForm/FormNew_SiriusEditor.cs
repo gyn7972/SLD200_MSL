@@ -156,10 +156,7 @@ namespace SLD200_MSL
 
             m_bRet = SpiralLab.Core.Initialize();                   //  Sirius1
             //SpiralLab.Sirius2.Core.Initialize();                  //  Sirius2
-                       
-
             //this.SiriusEditor.EnablePens = true;
-
             // create document
             // 신규 문서 생성
             var doc = new DocumentDefault();                        //  Sirius1
@@ -171,13 +168,10 @@ namespace SLD200_MSL
             //{
             //    SiriusViewer = new SpiralLab.Sirius.SiriusViewerForm();
             //}
-
             if (SiriusEditor == null)
             {
                 SiriusEditor = new SpiralLab.Sirius.SiriusEditorForm();
             }
-            
-
             // 문서 지정
             //this.SiriusViewer.Document = doc;
             this.SiriusEditor.Document = doc;
@@ -503,7 +497,6 @@ namespace SLD200_MSL
                 //SiriusEditor.Laser = workStage.SiriusEditor.Laser;
                 //SiriusEditor.Rtc = workStage.SiriusEditor.Rtc;
             }
-
             //timer_RtcInit.Enabled = true;
         }
 
@@ -529,7 +522,6 @@ namespace SLD200_MSL
         private void button_DataParsing_Click(object sender, EventArgs e)
         {
             //  여기 도면 데이터를 WorkStage 의 Doc 로 넘겨준다.
-
             //  Sirius2
             //workStage.siriusEditorUserControl_WorkStage = siriusEditor;
             

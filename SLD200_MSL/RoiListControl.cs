@@ -53,7 +53,7 @@ namespace SLD200_MSL
         {
             InitializeComponent();
             Configuration = new FormBaseConfiguration();
-           if(roiTrainVisionTool != null)
+            if (roiTrainVisionTool != null)
             {
                 RoiTrainVisionTool = roiTrainVisionTool;
             }
@@ -76,7 +76,7 @@ namespace SLD200_MSL
             {
                 if (RoiTrainVisionTool == null)
                 {
-                    if(item == RoiListControl.RoiButton.Train)
+                    if (item == RoiListControl.RoiButton.Train)
                     {
                         continue;
                     }
@@ -104,38 +104,38 @@ namespace SLD200_MSL
         }
         public void RoiTrainButton_Click(RoiVisionTool roiVisionTool)
         {
-            if(roiTrainButtonClick != null)
+            if (roiTrainButtonClick != null)
                 roiTrainButtonClick(RoiTrainVisionTool);
         }
         public void RoiAlignButton_Click(RoiVisionTool roiVisionTool)
         {
-            if(roiAlignButtonClick != null)
+            if (roiAlignButtonClick != null)
                 roiAlignButtonClick(RoiAlignVisionTool);
         }
         public void RoiTrainClick()
         {
-            if(roiTrainClick != null)
+            if (roiTrainClick != null)
                 roiTrainClick();
         }
         public void RoiAlignClick()
         {
-            if(roiAlignClick != null)
+            if (roiAlignClick != null)
                 roiAlignClick();
         }
         private void Button_Click(object sender, EventArgs e)
         {
             BaseButton baseButton = (BaseButton)sender;
-            if(baseButton != null)
+            if (baseButton != null)
             {
-                if(baseButton.Name == RoiButton.Train.ToString())
+                if (baseButton.Name == RoiButton.Train.ToString())
                 {
                     RoiTrainClick();
                     FormSetRoi FormSetRoi = new FormSetRoi(RoiTrainVisionTool, FullSize);
                     FormSetRoi.RoiButtonClick += RoiTrainButton_Click;
-                    
+
                     FormSetRoi.Location = this.Location;
                     FormSetRoi.StartPosition = FormStartPosition.CenterScreen;
-                    
+
                     if (FormSetRoi.ShowDialog() == DialogResult.OK)
                     {
                         CenterX = FormSetRoi.CenterX;
@@ -160,10 +160,10 @@ namespace SLD200_MSL
                     FormSetRoi FormSetRoi = new FormSetRoi(RoiAlignVisionTool, FullSize);
                     FormSetRoi.RoiButtonClick += RoiAlignButton_Click;
 
-                    
+
                     FormSetRoi.Location = this.Location;
                     FormSetRoi.StartPosition = FormStartPosition.CenterScreen;
-                    
+
                     if (FormSetRoi.ShowDialog() == DialogResult.OK)
                     {
                         CenterX = FormSetRoi.CenterX;
@@ -181,10 +181,59 @@ namespace SLD200_MSL
                         roiAlignSaveButtonClick(FormSetRoi.RoiVisionTool, false);
                     }
                 }
-                
+
                 //
             }
         }
 
+        public void RoiTrainClickNew()
+        {
+            FormSetRoi FormSetRoi = new FormSetRoi(RoiTrainVisionTool, FullSize);
+            FormSetRoi.RoiButtonClick += RoiTrainButton_Click;
+
+            FormSetRoi.Location = this.Location;
+            FormSetRoi.StartPosition = FormStartPosition.CenterScreen;
+
+            if (FormSetRoi.ShowDialog() == DialogResult.OK)
+            {
+                CenterX = FormSetRoi.CenterX;
+                CenterY = FormSetRoi.CenterY;
+                Width = FormSetRoi.Width;
+                Height = FormSetRoi.Height;
+                roiTrainSaveButtonClick(FormSetRoi.RoiVisionTool, true);
+            }
+            else
+            {
+                CenterX = FormSetRoi.CenterX;
+                CenterY = FormSetRoi.CenterY;
+                Width = FormSetRoi.Width;
+                Height = FormSetRoi.Height;
+                roiTrainSaveButtonClick(FormSetRoi.RoiVisionTool, false);
+            }
+        }
+
+        public void RoiAlignClickNew()
+        {
+            FormSetRoi FormSetRoi = new FormSetRoi(RoiAlignVisionTool, FullSize);
+            FormSetRoi.RoiButtonClick += RoiAlignButton_Click;
+            FormSetRoi.Location = this.Location;
+            FormSetRoi.StartPosition = FormStartPosition.CenterScreen;
+            if (FormSetRoi.ShowDialog() == DialogResult.OK)
+            {
+                CenterX = FormSetRoi.CenterX;
+                CenterY = FormSetRoi.CenterY;
+                Width = FormSetRoi.Width;
+                Height = FormSetRoi.Height;
+                roiAlignSaveButtonClick(FormSetRoi.RoiVisionTool, true);
+            }
+            else
+            {
+                CenterX = FormSetRoi.CenterX;
+                CenterY = FormSetRoi.CenterY;
+                Width = FormSetRoi.Width;
+                Height = FormSetRoi.Height;
+                roiAlignSaveButtonClick(FormSetRoi.RoiVisionTool, false);
+            }
+        }
     }
 }

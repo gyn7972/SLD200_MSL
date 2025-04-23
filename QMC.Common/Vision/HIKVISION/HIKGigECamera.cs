@@ -734,12 +734,22 @@ namespace QMC.Common.Vision.HIKVISION
             {
                 m_hReceiveThread.Join();
             }
-            int nRet = m_MyCamera.MV_CC_StopGrabbing_NET();
-            m_MyCamera.MV_CC_CloseDevice_NET();
-            if (nRet != MyCamera.MV_OK)
+            
+            try
             {
-                CamLog += string.Format("Stop Grabbing Fail", nRet);
+                int nRet = m_MyCamera.MV_CC_StopGrabbing_NET();
+                if (nRet != MyCamera.MV_OK)
+                {
+                    CamLog += string.Format("Stop Grabbing Fail", nRet);
+                }
+                m_MyCamera.MV_CC_CloseDevice_NET();
             }
+            catch (DllNotFoundException ex)
+            {
+                // DLL 로드 실패 시 로그를 남기고 예외를 처리
+                CamLog += "DLL not found: " + ex.Message;
+            }
+            
             this.Opened = false;
         }
 

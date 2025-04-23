@@ -51,9 +51,6 @@ namespace SLD200_MSL
 
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            // Todo: 구영남 - TopMost 설정을 해제 여부 확인
-            //this.TopMost = true; // 항상 최상위 창으로 설정
-
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
 
@@ -2721,17 +2718,30 @@ namespace SLD200_MSL
             {
                 double markPixelX = result1.Values[0].X;
                 double markPixelY = result1.Values[0].Y;
+
+                MessageBox.Show("Search Center Mark - OK");
             }
 
             double markPositionX = workStage.scannerCompensator.ResultPosition.X;
             double markPositionY = workStage.scannerCompensator.ResultPosition.Y;
-
-
-            MessageBox.Show("Search Center Mark - OK");
-
         }
 
         private void btnTrain_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button34_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button55_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button47_Click(object sender, EventArgs e)
         {
 
         }

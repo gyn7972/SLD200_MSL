@@ -533,7 +533,9 @@ namespace QMC.Common.Vision
 
         public int Load(string path, FileFilter filter)
         {
-            return this.LoadProcedure(path, filter);
+            this.LoadProcedure(path, filter);
+
+            return 1;
         }
 
         private int LoadProcedure(string path, FileFilter filter)

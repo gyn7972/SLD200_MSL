@@ -25,6 +25,7 @@ using QMC.Common.Vision.Cameras;
 using System.Threading.Tasks;
 using System.Threading;
 using static QMC.Common.Vision.Tools.PatternMatchingResult;
+using System.Linq;
 //using QMC.eFramework.Vision.Tools;
 
 namespace QMC.Common.Hmi
@@ -36,6 +37,8 @@ namespace QMC.Common.Hmi
         [Serializable]
         public enum MenuItems
         {
+            [Abbreviation("Image load")]
+            ImageLoad,
             [Abbreviation("Image save")]
             ImageSave,
             [Abbreviation("Result overlay clear")]
@@ -612,7 +615,8 @@ namespace QMC.Common.Hmi
         #region Property
 
         public int UpdateDelayTime { set; get; }
-        public bool Simulated { set; get; }
+        public bool Simulated { set; get; } //Load로 사용해 보자.
+
         [Browsable(false)]
         public VisionImage InputImage
         {
@@ -1035,8 +1039,38 @@ namespace QMC.Common.Hmi
             SaveFileDialog dialog = null;
             StringBuilder builder = null;
             VisionImage.FileFilter[] filter = null;
+            if (item.Name == MenuItems.ImageLoad.ToString())
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog();
 
-            if (item.Name == MenuItems.ImageSave.ToString())
+                openFileDialog.Filter = "Image Files|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff";
+                openFileDialog.Title = "이미지 불러오기";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // 파일 확장자 추출
+                    string fileExtension = Path.GetExtension(openFileDialog.FileName).ToLower().TrimStart('.');
+                    // VisionImage.FileFilter와 매핑
+                    VisionImage.FileFilter? selectedFilter = Enum.GetValues(typeof(VisionImage.FileFilter))
+                        .Cast<VisionImage.FileFilter>()
+                        .FirstOrDefault(f => f.ToString().Equals(fileExtension, StringComparison.OrdinalIgnoreCase));
+
+                    if (selectedFilter.HasValue)
+                    {
+                        // 적절한 필터로 Load 호출
+                        this.InputImage = new VisionImage();
+                        this.InputImage.Load(openFileDialog.FileName, selectedFilter.Value);
+
+                        Simulated = true;
+                        Display();
+                    }
+                    else
+                    {
+                        MessageBox.Show($"지원하지 않는 파일 형식입니다: {fileExtension}", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            else if (item.Name == MenuItems.ImageSave.ToString())
             {
                 if (this.InputImage == null || this.InputImage.Header == null || this.InputImage.RawData == null)
                 {
@@ -1104,6 +1138,7 @@ namespace QMC.Common.Hmi
             {
 
                 this.ResultOverlays.Clear();
+                this.Refresh();
                 //Module module = Camera.Owner as Module;
                 //if (module.ResultOverlays != null)
                 //{
@@ -1260,6 +1295,10 @@ namespace QMC.Common.Hmi
 
         public void Display()
         {
+
+            // To bo : 장비에서 돌릴때 무조건 주석처리 할 것!
+            //Simulated = true;
+
             try
             {
                 if (Simulated != true)
@@ -1338,6 +1377,26 @@ namespace QMC.Common.Hmi
                 }
                 else
                 {
+                    this.SuspendLayout();
+                    int time = DateTime.Now.Subtract(this.m_LatestDisplayTime).Milliseconds + DateTime.Now.Subtract(this.m_LatestDisplayTime).Seconds * 1000;
+
+                    if (time <= 1000 / this.FrameRate) return;
+
+                    if (this.SuspendedDisplay == true) return;
+
+                    this.SetTopCaption();
+
+                    this.m_LatestDisplayTime = DateTime.Now;
+
+                    if (InputImage.Header == null || InputImage.Header.Width < 0 || InputImage.Header.Height < 0)
+                    {
+                        this.Scale.Scale = new PointD(1, 1);
+                    }
+                    else
+                    {
+                        this.Scale.Scale = new PointD(InputImage.Header.Width * 1.0 / this.Width, InputImage.Header.Height * 1.0 / this.Height);
+                    }
+
                     this.m_IsChanged = true;
 
                     if (this.m_Graphics == null) return;

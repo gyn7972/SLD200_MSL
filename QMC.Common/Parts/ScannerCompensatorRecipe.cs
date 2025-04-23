@@ -13,12 +13,13 @@ namespace QMC.Common.Parts
     [Serializable]
     public class ScannerCompensatorRecipe
     {
+        [NonSerialized]
         #region Field
-        //private ScannerCompensator m_Owner;
+        private ScannerCompensator m_Owner;
         #endregion
 
         #region Property
-
+        
         public PatternMatchingParameters PatternMatchingParameter { get; set; }
 
         [Browsable(false)]
@@ -29,6 +30,7 @@ namespace QMC.Common.Parts
         public Point TrainRoiStartLocation { set; get; }
         [Browsable(false)]
         public Point TrainRoiEndLocation { set; get; }
+
         [Browsable(false)]
         public IlluminationDataSet IlluminationDataSet { set; get; }
 
@@ -38,12 +40,21 @@ namespace QMC.Common.Parts
         #region Constructor
         public ScannerCompensatorRecipe(Part part)
         {
-            if(part != null && part is ScannerCompensator)
+            if (part != null && part is ScannerCompensator)
             {
-                
+                m_Owner = part as ScannerCompensator;
             }
 
+            //MoveToDelay = 0;
+
             Init(part);
+
+            //if (part != null && part is ScannerCompensator)
+            //{
+                
+            //}
+
+            //Init(part);
         }
         #endregion
 
@@ -52,6 +63,9 @@ namespace QMC.Common.Parts
         {
             if (PatternMatchingParameter == null)
                 PatternMatchingParameter = new PatternMatchingParameters();
+
+            if (BlobParameter == null)
+                BlobParameter = new BlobVisionToolParameter();
 
             if (TrainRoiStartLocation == null)
                 TrainRoiStartLocation = new Point();
@@ -67,9 +81,6 @@ namespace QMC.Common.Parts
 
             if (IlluminationDataSet == null)
                 IlluminationDataSet = new IlluminationDataSet(part.Name);
-
-            if (BlobParameter == null)
-                BlobParameter = new BlobVisionToolParameter();
         }
         #endregion
     }

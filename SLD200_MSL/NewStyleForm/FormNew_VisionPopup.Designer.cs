@@ -72,6 +72,9 @@ namespace SLD200_MSL
             this.comboBox_Config_VisionPopup_AlignTest_SocketList = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.tabPage_ScannerCal = new System.Windows.Forms.TabPage();
+            this.btnTrain = new System.Windows.Forms.Button();
+            this.pictureBox_ImageDisplayScannerCal = new System.Windows.Forms.PictureBox();
+            this.button2 = new System.Windows.Forms.Button();
             this.button_Scanner_FineCam_OffsetChange = new System.Windows.Forms.Button();
             this.button_Scanner_FineCam_OffsetCheck = new System.Windows.Forms.Button();
             this.btnCamera_StartLive = new System.Windows.Forms.Button();
@@ -149,9 +152,6 @@ namespace SLD200_MSL
             this.button43 = new System.Windows.Forms.Button();
             this.button47 = new System.Windows.Forms.Button();
             this.button48 = new System.Windows.Forms.Button();
-            this.btnTrain = new System.Windows.Forms.Button();
-            this.pictureBox_ImageDisplayScannerCal = new System.Windows.Forms.PictureBox();
-            this.button2 = new System.Windows.Forms.Button();
             this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -163,6 +163,7 @@ namespace SLD200_MSL
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ImageDisplay)).BeginInit();
             this.tabPage_Socket_AlignTest.SuspendLayout();
             this.tabPage_ScannerCal.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ImageDisplayScannerCal)).BeginInit();
             this.groupBox19.SuspendLayout();
             this.groupBox20.SuspendLayout();
             this.groupBox22.SuspendLayout();
@@ -177,7 +178,6 @@ namespace SLD200_MSL
             this.groupBox36.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_LowRes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_HighRes)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ImageDisplayScannerCal)).BeginInit();
             this.SuspendLayout();
             // 
             // panel4
@@ -382,6 +382,7 @@ namespace SLD200_MSL
             this.button34.TabIndex = 68;
             this.button34.Text = "Image Teaching";
             this.button34.UseVisualStyleBackColor = true;
+            this.button34.Click += new System.EventHandler(this.button34_Click);
             // 
             // button55
             // 
@@ -393,6 +394,7 @@ namespace SLD200_MSL
             this.button55.TabIndex = 69;
             this.button55.Text = "Search";
             this.button55.UseVisualStyleBackColor = true;
+            this.button55.Click += new System.EventHandler(this.button55_Click);
             // 
             // groupBox5
             // 
@@ -705,6 +707,38 @@ namespace SLD200_MSL
             this.tabPage_ScannerCal.TabIndex = 3;
             this.tabPage_ScannerCal.Text = "Scanner Cal.";
             this.tabPage_ScannerCal.UseVisualStyleBackColor = true;
+            // 
+            // btnTrain
+            // 
+            this.btnTrain.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.btnTrain.Location = new System.Drawing.Point(10, 8);
+            this.btnTrain.Margin = new System.Windows.Forms.Padding(6);
+            this.btnTrain.Name = "btnTrain";
+            this.btnTrain.Size = new System.Drawing.Size(107, 42);
+            this.btnTrain.TabIndex = 76;
+            this.btnTrain.Text = "Train";
+            this.btnTrain.UseVisualStyleBackColor = true;
+            this.btnTrain.Click += new System.EventHandler(this.btnTrain_Click);
+            // 
+            // pictureBox_ImageDisplayScannerCal
+            // 
+            this.pictureBox_ImageDisplayScannerCal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBox_ImageDisplayScannerCal.Location = new System.Drawing.Point(10, 59);
+            this.pictureBox_ImageDisplayScannerCal.Name = "pictureBox_ImageDisplayScannerCal";
+            this.pictureBox_ImageDisplayScannerCal.Size = new System.Drawing.Size(223, 187);
+            this.pictureBox_ImageDisplayScannerCal.TabIndex = 75;
+            this.pictureBox_ImageDisplayScannerCal.TabStop = false;
+            // 
+            // button2
+            // 
+            this.button2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button2.Location = new System.Drawing.Point(252, 8);
+            this.button2.Margin = new System.Windows.Forms.Padding(6);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(186, 42);
+            this.button2.TabIndex = 74;
+            this.button2.Text = "Search      [Fiducial]";
+            this.button2.UseVisualStyleBackColor = true;
             // 
             // button_Scanner_FineCam_OffsetChange
             // 
@@ -1715,6 +1749,7 @@ namespace SLD200_MSL
             this.button47.TabIndex = 30;
             this.button47.Text = "Save";
             this.button47.UseVisualStyleBackColor = true;
+            this.button47.Click += new System.EventHandler(this.button47_Click);
             // 
             // button48
             // 
@@ -1727,38 +1762,6 @@ namespace SLD200_MSL
             this.button48.TabIndex = 29;
             this.button48.Text = "Apply";
             this.button48.UseVisualStyleBackColor = true;
-            // 
-            // btnTrain
-            // 
-            this.btnTrain.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.btnTrain.Location = new System.Drawing.Point(10, 8);
-            this.btnTrain.Margin = new System.Windows.Forms.Padding(6);
-            this.btnTrain.Name = "btnTrain";
-            this.btnTrain.Size = new System.Drawing.Size(107, 42);
-            this.btnTrain.TabIndex = 76;
-            this.btnTrain.Text = "Train";
-            this.btnTrain.UseVisualStyleBackColor = true;
-            this.btnTrain.Click += new System.EventHandler(this.btnTrain_Click);
-            // 
-            // pictureBox_ImageDisplayScannerCal
-            // 
-            this.pictureBox_ImageDisplayScannerCal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox_ImageDisplayScannerCal.Location = new System.Drawing.Point(10, 59);
-            this.pictureBox_ImageDisplayScannerCal.Name = "pictureBox_ImageDisplayScannerCal";
-            this.pictureBox_ImageDisplayScannerCal.Size = new System.Drawing.Size(223, 187);
-            this.pictureBox_ImageDisplayScannerCal.TabIndex = 75;
-            this.pictureBox_ImageDisplayScannerCal.TabStop = false;
-            // 
-            // button2
-            // 
-            this.button2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button2.Location = new System.Drawing.Point(252, 8);
-            this.button2.Margin = new System.Windows.Forms.Padding(6);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(186, 42);
-            this.button2.TabIndex = 74;
-            this.button2.Text = "Search      [Fiducial]";
-            this.button2.UseVisualStyleBackColor = true;
             // 
             // FormNew_VisionPopup
             // 
@@ -1788,6 +1791,7 @@ namespace SLD200_MSL
             this.tabPage_Socket_AlignTest.ResumeLayout(false);
             this.tabPage_Socket_AlignTest.PerformLayout();
             this.tabPage_ScannerCal.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ImageDisplayScannerCal)).EndInit();
             this.groupBox19.ResumeLayout(false);
             this.groupBox20.ResumeLayout(false);
             this.groupBox20.PerformLayout();
@@ -1806,7 +1810,6 @@ namespace SLD200_MSL
             this.groupBox36.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_LowRes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_visionImageViewer_HighRes)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ImageDisplayScannerCal)).EndInit();
             this.ResumeLayout(false);
 
         }

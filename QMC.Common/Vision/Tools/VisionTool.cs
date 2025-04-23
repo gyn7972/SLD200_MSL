@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Text;
 using System.Reflection;
+using System.Windows.Forms;
 
 
 namespace QMC.Common.Vision.Tools
@@ -150,7 +151,11 @@ namespace QMC.Common.Vision.Tools
             {
                 if (this.ChekedLicense == false)
                 {
-                    if ((ret = this.CheckedLicense()) != 0) return ret;
+                    if ((ret = this.CheckedLicense()) != 0)
+                    {
+                        //MessageBox()
+                        return ret;
+                    }
                 }
 
                 if ((ret = this.SubToolExecute()) != 0) return ret;

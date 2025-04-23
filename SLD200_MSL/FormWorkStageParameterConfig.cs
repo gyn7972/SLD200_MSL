@@ -61,7 +61,6 @@ namespace SLD200_MSL
             this.panelContent.Location = new Point(Configuration.ContentLocation.X, Configuration.PanelbuttonSize.Height);
             this.panelContent.BackColor = Configuration.PanelBackColor;
 
-
             this.buttonLoad.Size = Configuration.ButtonSize;
             this.buttonLoad.Location = new Point(Configuration.PanelSize.Width - Configuration.ControlsLocation.Width - Configuration.ButtonSize.Width * 2 - Configuration.ContentLocation.X, 3);
             this.buttonSave.Size = Configuration.ButtonSize;

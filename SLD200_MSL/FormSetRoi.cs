@@ -61,7 +61,6 @@ namespace SLD200_MSL
         }
         private void baseButtonSave_Click(object sender, EventArgs e)
         {
-
             CenterX = long.Parse(baseTextBoxCenterX.Text);
             CenterY = long.Parse(baseTextBoxCenterY.Text);
 

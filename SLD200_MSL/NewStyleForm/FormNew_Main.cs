@@ -1077,16 +1077,10 @@ namespace SLD200_MSL
             //SiriusViewer_Main.Document = Equipment.EqpSiriusViewer_Origin.Document;
             workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
             //m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
-
             //Equipment.m_bDrawingFileOpen_1time = true;
-
             return;
 
-
-
-
             //  RTC 초기화 테스트
-
             bool m_bRet = true;
 
             if (Equipment.Machine_LaserType_CO2)                                                                                //  CO2 레이저

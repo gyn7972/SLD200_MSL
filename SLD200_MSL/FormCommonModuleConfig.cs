@@ -24,25 +24,37 @@ namespace SLD200_MSL
         private PropertyGridControl m_PropertyGridControl;
         //private LineInfoControl m_LineInfoControl;
         public FormCommonModuleConfig(Module module)
-            : base(FormType.withButton.ToString(), module.Name)
+            : base(FormType.Content.ToString(), module.Name)    //: base(FormType.withButton.ToString(), module.Name)
         {
             InitializeComponent();
             m_Module = module as CommonModule;
+
+            this.BackColor = Configuration.PanelBackColor;
+
+            this.panelContent.Location = new Point(Configuration.ContentLocation.X, Configuration.PanelbuttonSize.Height);
+            this.panelContent.BackColor = Configuration.PanelBackColor;
+
             this.flowLayoutPanelButton.FlowDirection = FlowDirection.RightToLeft;
             this.flowLayoutPanelButton.Location = new Point(0, this.baseLabelTitle.Location.Y + this.baseLabelTitle.Height);
             this.flowLayoutPanelButton.BackColor = Configuration.PanelBackColor;
+            //this.flowLayoutPanelButton.Size= new Size(100,500);
 
-            this.panelContent.Location = new Point(Configuration.ContentLocation.X, Configuration.PanelbuttonSize.Height);
-            this.panelContent.Hide();
+            //this.panelContent.Location = new Point(Configuration.ContentLocation.X, Configuration.PanelbuttonSize.Height);
+
             m_PropertyGridControl = new PropertyGridControl();
             m_PropertyGridControl.Location = new Point(Configuration.ContentLocation.X, this.flowLayoutPanelButton.Location.Y + this.flowLayoutPanelButton.Height + Configuration.ControlGap + baseLabelModuleConfiguration.Height);
             m_PropertyGridControl.SetGroupBoxName("Parameter");
+
+            CreateButton();
+
+            this.panelContent.Hide();
+            
             this.Controls.Add(m_PropertyGridControl);
 
-            /*m_LineInfoControl = new LineInfoControl(m_Module);
-            m_LineInfoControl.Location = new Point(m_PropertyGridControl.Location.X + m_PropertyGridControl.Size.Width + Configuration.ControlGap, m_PropertyGridControl.Location.Y);
-            this.Controls.Add(m_LineInfoControl);
-            CreateButton();*/
+            //m_LineInfoControl = new LineInfoControl(m_Module);
+            //m_LineInfoControl.Location = new Point(m_PropertyGridControl.Location.X + m_PropertyGridControl.Size.Width + Configuration.ControlGap, m_PropertyGridControl.Location.Y);
+            //this.Controls.Add(m_LineInfoControl);
+            
 
             if (m_Module != null)
                 m_PropertyGridControl.SetData(m_Module.Config);

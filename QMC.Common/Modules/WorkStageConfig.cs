@@ -131,6 +131,11 @@ namespace QMC.Common.Modules
             if (ListIlluminationChannel == null)
                 ListIlluminationChannel = new List<IlluminationChannel>();
 
+            //ListIlluminationChannel.Add(new IlluminationChannel("1"));
+            //ListIlluminationChannel.Add(new IlluminationChannel("2"));
+            //ListIlluminationChannel.Add(new IlluminationChannel("3"));
+            //ListIlluminationChannel.Add(new IlluminationChannel("4"));
+
             if (VisonCalibratorConfig_LowRes == null)
                 VisonCalibratorConfig_LowRes = new VisionCalibratorConfig();
                 VisonCalibratorConfig_LowRes.Init();

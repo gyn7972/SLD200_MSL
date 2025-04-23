@@ -60,7 +60,6 @@ namespace QMC.Common.Modules
         public VisionCalibratorRecipe VisionCalibratorRecipe_LowRes { set; get; }
 
         public RealTimeScannerRecipe ScannerRecipe { get; set; }
-        //public ScannerCompensatorRecipe scannerCompensatorRecipe { set; get; }
 
         public JigAlignerRecipe jigAlignerRecipe_HighRes { set; get; }
         public JigAlignerRecipe jigAlignerRecipe_LowRes { set; get; }
