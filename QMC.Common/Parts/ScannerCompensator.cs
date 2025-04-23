@@ -680,6 +680,7 @@ namespace QMC.Common.Parts
 
                             foreach (VisionImage imageGrabed in visionImages)
                             {
+                                
                                 int r = this.OnSearch(imageGrabed, Recipe.InspectRoiStartLocation
                                     , Recipe.InspectRoiEndLocation
                                     , Recipe.PatternMatchingParameter

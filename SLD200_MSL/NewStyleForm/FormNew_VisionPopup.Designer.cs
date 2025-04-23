@@ -321,7 +321,7 @@ namespace SLD200_MSL
             // button_CurrentZPos_toLaserFocus
             // 
             this.button_CurrentZPos_toLaserFocus.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_CurrentZPos_toLaserFocus.Location = new System.Drawing.Point(1108, 92);
+            this.button_CurrentZPos_toLaserFocus.Location = new System.Drawing.Point(1108, 160);
             this.button_CurrentZPos_toLaserFocus.Margin = new System.Windows.Forms.Padding(6);
             this.button_CurrentZPos_toLaserFocus.Name = "button_CurrentZPos_toLaserFocus";
             this.button_CurrentZPos_toLaserFocus.Size = new System.Drawing.Size(118, 64);
@@ -336,9 +336,9 @@ namespace SLD200_MSL
             this.button_CurrentZPos_toFineCamFocus.Location = new System.Drawing.Point(985, 92);
             this.button_CurrentZPos_toFineCamFocus.Margin = new System.Windows.Forms.Padding(6);
             this.button_CurrentZPos_toFineCamFocus.Name = "button_CurrentZPos_toFineCamFocus";
-            this.button_CurrentZPos_toFineCamFocus.Size = new System.Drawing.Size(118, 64);
+            this.button_CurrentZPos_toFineCamFocus.Size = new System.Drawing.Size(241, 64);
             this.button_CurrentZPos_toFineCamFocus.TabIndex = 135;
-            this.button_CurrentZPos_toFineCamFocus.Text = "Current Z Pos.\r\nto Cam. focus";
+            this.button_CurrentZPos_toFineCamFocus.Text = "Current Z Pos. to Fine Cam. ,\r\nLaser and Height Sensor focus";
             this.button_CurrentZPos_toFineCamFocus.UseVisualStyleBackColor = true;
             this.button_CurrentZPos_toFineCamFocus.Click += new System.EventHandler(this.button_CurrentZPos_toFineCamFocus_Click);
             // 

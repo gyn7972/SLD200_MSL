@@ -99,6 +99,8 @@ namespace QMC.Common
             RTC_NONE = 0,           //  0 : None (Not Initialize)
             RTC_SYNCAXIS = 1,       //  1 : syncAxis Mode
             RTC_RTC6 = 2,           //  2 : RTC6 Mode
+
+            RTC_RTC6_COMPLETE = 3,  //  3 : RTC6 Complete Mode
         }
 
         public static bool Mode_DryRun { set; get; }
@@ -281,6 +283,10 @@ namespace QMC.Common
             Hole4,
             Hole5,
             Hole6,
+            Hole7,
+            Hole8,
+            Hole9,
+            Hole10,
             Rect,
             Outline,
             Marking,
@@ -422,6 +428,15 @@ namespace QMC.Common
         public static double DustCollector_TurnOn_AfterStableTime { set; get; } = 0.0;          //  집진기를 켠 후 대기시간
 
 
+        //  도면, 레시피 폴더
+        public static string DrawingFilePath { set; get; } = "";            //  도면 파일 경로
+        public static string RecipeFilePath { set; get; } = "";             //  레시피 파일 경로
+
+
+        //  도면 렌더링 분해능
+        public static int SiriusDrawing_Rendering_Resolution { set; get; } = 50;
+
+
         //  Scanner Calibration Parameter
         public static double Scanner_Calibration_LaserFrequency { set; get; } = 0.0;            //  Scanner Calibration Laser Frequency
         public static double Scanner_Calibration_LaserPulseWidth { set; get; } = 0.0;            //  Scanner Calibration Laser Pulse Width
@@ -521,9 +536,11 @@ namespace QMC.Common
         public static bool Loader_Transfer_Pause { set; get; } = false;
         public static bool Loader_LPort_Pause { set; get; } = false;
         public static bool Loader_RPort_Pause { set; get; } = false;
-        
+
 
         //  Cycle Stop
+        public static bool SocketStop { set; get; } = false;
+        public static bool SocketStopped { set; get; } = false;
         public static bool CycleStop { set; get; } = false;
         public static bool CycleStopped_LoaderTransfer { set; get; } = false;
         public static bool CycleStopped_UnloaderTransfer { set; get; } = false;
@@ -532,6 +549,13 @@ namespace QMC.Common
 
         //  Recipe Open 시 열린 도면 파일 경로
         public static string RecipeOpen_DrawingFilePath { set; get; } = "";
+
+
+        //  타임아웃으로 인한 Stop
+        public static bool MachineStop_byTimeout_Loader { set; get; } = false;
+        public static bool MachineStop_byTimeout_Unloader { set; get; } = false;
+        public static bool MachineStop_byTimeout_WorkStage { set; get; } = false;
+
 
 
 
@@ -902,7 +926,20 @@ namespace QMC.Common
             //  Keyence Laser Height Sensor 기준값 설정
             LaserHeightSensor_ReferenceValue_atVisionFocusPosition = 0.0;         //  Vision Focus 위치에서의 Keyence Laser Height Sensor 기준값
             LaserHeightSensor_ReferenceValue_atScannerFocusPosition = 0.0;        //  Scanner Focus 위치에서의 Keyence Laser Height Sensor 기준값
+
+
+            //  집진기 대기 시간
             DustCollector_TurnOn_AfterStableTime = 1000.0;                        //  Dust Collector On 시 안정화 시간 (sec)
+
+
+            //  파일 저장 위치
+            RecipeFilePath = "";
+            DrawingFilePath = "";
+
+
+            //  도면 렌더링  분해능
+            SiriusDrawing_Rendering_Resolution = 50;
+
 
             Scanner_Calibration_LaserFrequency = 0.0;            //  Scanner Calibration Laser Frequency
             Scanner_Calibration_LaserPulseWidth = 0.0;
@@ -2507,6 +2544,16 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Dust_Collector", "After_TurnOn_StableTime", "1000.0", temp, 255, strFIle);
             Equipment.DustCollector_TurnOn_AfterStableTime = Convert.ToDouble(temp.ToString());
 
+            //  저장 폴더 위치
+            NativeMethods.GetPrivateProfileString("File_Path", "RecipeFile", "", temp, 255, strFIle);
+            Equipment.RecipeFilePath = temp.ToString();
+            NativeMethods.GetPrivateProfileString("File_Path", "DrawingFile", "", temp, 255, strFIle);
+            Equipment.DrawingFilePath = temp.ToString();
+
+            //  도면 렌더링 분해능
+            NativeMethods.GetPrivateProfileString("Sirius_Drawing", "Rendering_Resolution", "50", temp, 255, strFIle);
+            Equipment.SiriusDrawing_Rendering_Resolution = Convert.ToInt16(temp.ToString());
+            
             //  Scanner Calibration parameter
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Laser_Frequency", "5000.0", temp, 255, strFIle);
             Equipment.Scanner_Calibration_LaserFrequency = Convert.ToDouble(temp.ToString());

@@ -19,6 +19,10 @@ using static QMC.Common.Modules.Loader;
 using netDxf.Units;
 using QMC.Core;
 using static QMC.Common.Equipment;
+using Microsoft.Win32;
+using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
+using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
+using QMC.Common.Vision.Cameras;
 
 namespace SLD200_MSL
 {
@@ -100,12 +104,24 @@ namespace SLD200_MSL
         {
             //  Sirius Editor 창을 연다.
 
-            if (m_formSiriusEditor == null)
+            if (Equipment.EqpSiriusViewer == null)
             {
-                m_formSiriusEditor.CreateSiriusEditor();                
+                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                return;
             }
 
-            foreach( Form openForm in Application.OpenForms)
+            if (workStage.rtc == null)
+            {
+                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                return;
+            }
+
+            if (m_formSiriusEditor == null)
+            {
+                m_formSiriusEditor.CreateSiriusEditor();
+            }
+
+            foreach ( Form openForm in Application.OpenForms)
             {
                 if (openForm.Name == m_formSiriusEditor.Name)
                 {
@@ -162,7 +178,16 @@ namespace SLD200_MSL
             using (OpenFileDialog fd = new OpenFileDialog())
             {
                 fd.CustomPlaces.Add(SLD200.Properties.Settings.Default.JobFolder);
-                //fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Recent);    //  최근 목록으로 기본폴더 설정
+
+                if (Equipment.DrawingFilePath.Length > 0)
+                {
+                    fd.InitialDirectory = Equipment.DrawingFilePath;
+                }
+                else
+                {
+                    fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Recent);          //  최근 폴더
+                }
+
                 fd.Filter = "sirius files (*.sirius)|*.sirius|All files (*.*)|*.*"; //필터 설정
                 fd.FilterIndex = 1; //1번 선택시 txt , 2번 선택시 *.*
 
@@ -295,6 +320,10 @@ namespace SLD200_MSL
                 (m_strLayerName == "Hole4") ||
                 (m_strLayerName == "Hole5") ||
                 (m_strLayerName == "Hole6") ||
+                (m_strLayerName == "Hole7") ||
+                (m_strLayerName == "Hole8") ||
+                (m_strLayerName == "Hole9") ||
+                (m_strLayerName == "Hole10") ||
                 (m_strLayerName == "Thruhole") ||
                 (m_strLayerName == "Fiducial"))
             {
@@ -414,6 +443,86 @@ namespace SLD200_MSL
                     }
                 }
             }
+            else if (m_strLayerName == "Hole7")
+            {
+                //if (workStage.m_nDrawing_Hole7Count > 0)
+                {
+                    //  Fiducial Data를 ListView에 표시
+                    for (int i = 0; i < workStage.m_nDrawing_Hole7Count; i++)
+                    {
+                        ListViewItem item = new ListViewItem();
+                        item.Text = (i + 1).ToString();
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole7[i].CenterX));
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole7[i].CenterY));
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole7[i].radius));
+                        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+                    }
+                }
+            }
+            else if (m_strLayerName == "Hole8")
+            {
+                //if (workStage.m_nDrawing_Hole8Count > 0)
+                {
+                    //  Fiducial Data를 ListView에 표시
+                    for (int i = 0; i < workStage.m_nDrawing_Hole8Count; i++)
+                    {
+                        ListViewItem item = new ListViewItem();
+                        item.Text = (i + 1).ToString();
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole8[i].CenterX));
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole8[i].CenterY));
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole8[i].radius));
+                        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+                    }
+                }
+            }
+            else if (m_strLayerName == "Hole9")
+            {
+                //if (workStage.m_nDrawing_Hole8Count > 0)
+                {
+                    //  Fiducial Data를 ListView에 표시
+                    for (int i = 0; i < workStage.m_nDrawing_Hole8Count; i++)
+                    {
+                        ListViewItem item = new ListViewItem();
+                        item.Text = (i + 1).ToString();
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole9[i].CenterX));
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole9[i].CenterY));
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole9[i].radius));
+                        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+                    }
+                }
+            }
+            else if (m_strLayerName == "Hole10")
+            {
+                //if (workStage.m_nDrawing_Hole8Count > 0)
+                {
+                    //  Fiducial Data를 ListView에 표시
+                    for (int i = 0; i < workStage.m_nDrawing_Hole8Count; i++)
+                    {
+                        ListViewItem item = new ListViewItem();
+                        item.Text = (i + 1).ToString();
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole10[i].CenterX));
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole10[i].CenterY));
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole10[i].radius));
+                        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+                    }
+                }
+            }
+            else if (m_strLayerName == "Thruhole")
+            {
+                //if (workStage.m_nDrawing_Hole8Count > 0)
+                {
+                    //  Fiducial Data를 ListView에 표시
+                    for (int i = 0; i < workStage.m_nDrawing_Hole8Count; i++)
+                    {
+                        ListViewItem item = new ListViewItem();
+                        item.Text = (i + 1).ToString();
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Thruhole[i].CenterX));
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Thruhole[i].CenterY));
+                        item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Thruhole[i].radius));
+                        listView_Recipe_TabRecipe_LayerData.Items.Add(item);
+                    }
+                }
+            }
             else if (m_strLayerName == "Rect")
             {
                 //if (workStage.m_nDrawing_RectCount > 0)
@@ -486,7 +595,7 @@ namespace SLD200_MSL
 
                 //  Recipe File Path and Name
                 NativeMethods.GetPrivateProfileString(strTemp, "Drawing_File_Name", "", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[0].DrawingFile = temp.ToString();
+                Equipment.stLayerRecipeSet[i].DrawingFile = temp.ToString();
 
                 //  Laser Pulse Width (us)
                 NativeMethods.GetPrivateProfileString(strTemp, "Pulse_Width", "0", temp, 255, strFIle);
@@ -575,35 +684,35 @@ namespace SLD200_MSL
 
                 //  Process Options
                 NativeMethods.GetPrivateProfileString(strTemp, "Socket_Align_Use", "false", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use = Convert.ToBoolean(temp.ToString());
+                Equipment.stLayerRecipeSet[i].ProcessOption_SocketAlign_Use = Convert.ToBoolean(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "Socket_HeightCheck_Use", "false", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use = Convert.ToBoolean(temp.ToString());
+                Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheck_Use = Convert.ToBoolean(temp.ToString());
 
                 //  Module Information
                 NativeMethods.GetPrivateProfileString(strTemp, "Module_Width", "125.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Width = Convert.ToDouble(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "Module_Height", "120.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Height = Convert.ToDouble(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "Module_SiliconThickness", "0.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness = Convert.ToDouble(temp.ToString());
 
                 //  Spiral Parameter
                 NativeMethods.GetPrivateProfileString(strTemp, "Spiral_OuterDiameter", "0.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[0].SpiralParam_OuterDiameter = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].SpiralParam_OuterDiameter = Convert.ToDouble(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "Spiral_InnerDiameter", "0.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[0].SpiralParam_InnerDiameter = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].SpiralParam_InnerDiameter = Convert.ToDouble(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "Spiral_Revolutions", "10", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[0].SpiralParam_Revolutions = Convert.ToInt32(temp.ToString());
+                Equipment.stLayerRecipeSet[i].SpiralParam_Revolutions = Convert.ToInt32(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "Spiral_AngleFactor", "10.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[0].SpiralParam_AngleFactor = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].SpiralParam_AngleFactor = Convert.ToDouble(temp.ToString());
 
                 //  M-Aligner Vacuum Use
                 NativeMethods.GetPrivateProfileString(strTemp, "MAlignerVacuumUse_Center", "true", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center = Convert.ToBoolean(temp.ToString());
+                Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Center = Convert.ToBoolean(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "MAlignerVacuumUse_Inner", "false", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner = Convert.ToBoolean(temp.ToString());
+                Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Inner = Convert.ToBoolean(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "MAlignerVacuumUse_Outer", "false", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer = Convert.ToBoolean(temp.ToString());
+                Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Outer = Convert.ToBoolean(temp.ToString());
 
                 //  Fine Cam. Red
                 NativeMethods.GetPrivateProfileString(strTemp, "FineCam_Red", "0", temp, 255, strFIle);
@@ -617,11 +726,11 @@ namespace SLD200_MSL
 
                 //  Dust Collector
                 NativeMethods.GetPrivateProfileString(strTemp, "DustCollector_RemoteMode_Use", "false", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use = Convert.ToBoolean(temp.ToString());
+                Equipment.stLayerRecipeSet[i].DustCollectorRemoteMode_Use = Convert.ToBoolean(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "DustCollector_Frequency_Upper", "20.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper = Convert.ToDouble(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "DustCollector_Frequency_Lower", "20.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower = Convert.ToDouble(temp.ToString());
             }
 
             return m_bRet;
@@ -651,7 +760,7 @@ namespace SLD200_MSL
                 strTemp = string.Format("Layer_{0}", i);
 
                 //  Recipe File Path and Name
-                NativeMethods.WritePrivateProfileString(strTemp, "Drawing_File_Name", Equipment.stLayerRecipeSet[0].DrawingFile, strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "Drawing_File_Name", Equipment.stLayerRecipeSet[i].DrawingFile, strFIle);
 
                 //  Laser Pulse Width (us)
                 NativeMethods.WritePrivateProfileString(strTemp, "Pulse_Width", Equipment.stLayerRecipeSet[i].LaserParam_PulseWidth.ToString(), strFIle);
@@ -712,24 +821,24 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "FiducialAlignType", Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialAlignType.ToString(), strFIle);
 
                 //  Process Options
-                NativeMethods.WritePrivateProfileString(strTemp, "Socket_Align_Use", Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use.ToString(), strFIle);
-                NativeMethods.WritePrivateProfileString(strTemp, "Socket_HeightCheck_Use", Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "Socket_Align_Use", Equipment.stLayerRecipeSet[i].ProcessOption_SocketAlign_Use.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "Socket_HeightCheck_Use", Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheck_Use.ToString(), strFIle);
 
                 //  Module Information  
-                NativeMethods.WritePrivateProfileString(strTemp, "Module_Width", Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width.ToString(), strFIle);
-                NativeMethods.WritePrivateProfileString(strTemp, "Module_Height", Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height.ToString(), strFIle);
-                NativeMethods.WritePrivateProfileString(strTemp, "Module_SiliconThickness", Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "Module_Width", Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Width.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "Module_Height", Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Height.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "Module_SiliconThickness", Equipment.stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness.ToString(), strFIle);
 
                 //  Spiral Parameter
-                NativeMethods.WritePrivateProfileString(strTemp, "Spiral_OuterDiameter", Equipment.stLayerRecipeSet[0].SpiralParam_OuterDiameter.ToString(), strFIle);
-                NativeMethods.WritePrivateProfileString(strTemp, "Spiral_InnerDiameter", Equipment.stLayerRecipeSet[0].SpiralParam_InnerDiameter.ToString(), strFIle);
-                NativeMethods.WritePrivateProfileString(strTemp, "Spiral_Revolutions", Equipment.stLayerRecipeSet[0].SpiralParam_Revolutions.ToString(), strFIle);
-                NativeMethods.WritePrivateProfileString(strTemp, "Spiral_AngleFactor", Equipment.stLayerRecipeSet[0].SpiralParam_AngleFactor.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "Spiral_OuterDiameter", Equipment.stLayerRecipeSet[i].SpiralParam_OuterDiameter.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "Spiral_InnerDiameter", Equipment.stLayerRecipeSet[i].SpiralParam_InnerDiameter.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "Spiral_Revolutions", Equipment.stLayerRecipeSet[i].SpiralParam_Revolutions.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "Spiral_AngleFactor", Equipment.stLayerRecipeSet[i].SpiralParam_AngleFactor.ToString(), strFIle);
 
                 //  M-Aligner Vacuum Use
-                NativeMethods.WritePrivateProfileString(strTemp, "MAlignerVacuumUse_Center", Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center.ToString(), strFIle);
-                NativeMethods.WritePrivateProfileString(strTemp, "MAlignerVacuumUse_Inner", Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner.ToString(), strFIle);
-                NativeMethods.WritePrivateProfileString(strTemp, "MAlignerVacuumUse_Outer", Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MAlignerVacuumUse_Center", Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Center.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MAlignerVacuumUse_Inner", Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Inner.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MAlignerVacuumUse_Outer", Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Outer.ToString(), strFIle);
 
                 //  Fine Cam. Red
                 NativeMethods.WritePrivateProfileString(strTemp, "FineCam_Red", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed.ToString(), strFIle);
@@ -739,9 +848,9 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "CoarseCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR.ToString(), strFIle);
 
                 //  Dust Collector
-                NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_RemoteMode_Use", Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use.ToString(), strFIle);
-                NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_Frequency_Upper", Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper.ToString(), strFIle);
-                NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_Frequency_Lower", Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_RemoteMode_Use", Equipment.stLayerRecipeSet[i].DustCollectorRemoteMode_Use.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_Frequency_Upper", Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_Frequency_Lower", Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower.ToString(), strFIle);
             }
         }
         #endregion
@@ -754,7 +863,17 @@ namespace SLD200_MSL
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = "Recipe Data Path";
             saveFileDialog.OverwritePrompt = true;
-            saveFileDialog.InitialDirectory = ConfigManager.GetRecipeDataPath();
+            //saveFileDialog.InitialDirectory = ConfigManager.GetRecipeDataPath();
+
+            if (Equipment.RecipeFilePath.Length > 0)
+            {
+                saveFileDialog.InitialDirectory = Equipment.RecipeFilePath;
+            }
+            else
+            {
+                saveFileDialog.InitialDirectory = ConfigManager.GetRecipeDataPath();
+            }
+
             saveFileDialog.Filter = "Recipe File(*.ini)|*.ini";
 
             DirectoryInfo di = new DirectoryInfo(ConfigManager.GetRecipeDataPath());
@@ -822,6 +941,22 @@ namespace SLD200_MSL
             else if (m_strLayerName == "Hole6")
             {
                 m_nLayerIndex = (int)LayerList.Hole6;
+            }
+            else if (m_strLayerName == "Hole7")
+            {
+                m_nLayerIndex = (int)LayerList.Hole7;
+            }
+            else if (m_strLayerName == "Hole8")
+            {
+                m_nLayerIndex = (int)LayerList.Hole8;
+            }
+            else if (m_strLayerName == "Hole9")
+            {
+                m_nLayerIndex = (int)LayerList.Hole9;
+            }
+            else if (m_strLayerName == "Hole10")
+            {
+                m_nLayerIndex = (int)LayerList.Hole10;
             }
             else if (m_strLayerName == "Rect")
             {
@@ -921,9 +1056,30 @@ namespace SLD200_MSL
         {
             string fileName;
 
+            if (Equipment.EqpSiriusViewer == null)
+            {
+                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                return;
+            }
+
+            if (workStage.rtc == null)
+            {
+                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                return;
+            }
+
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "Recipe Data Path";
-            openFileDialog.InitialDirectory = ConfigManager.GetRecipeDataPath();
+
+            if (Equipment.RecipeFilePath.Length > 0)
+            {
+                openFileDialog.InitialDirectory = Equipment.RecipeFilePath;
+            }
+            else
+            {
+                openFileDialog.InitialDirectory = ConfigManager.GetRecipeDataPath();
+            }
+            
             openFileDialog.Filter = "Recipe File(*.ini)|*.ini";
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -1024,6 +1180,14 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper.ToString();
                 textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString();
 
+                int m_nCount = 0;
+
+                do
+                {
+                    m_nCount++;
+                } while (m_nCount < 1000);
+                
+                
                 //  도면 Import
                 m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
 
@@ -1091,6 +1255,22 @@ namespace SLD200_MSL
             else if (m_strLayerName == "Hole6")
             {
                 m_nIndex = (int)LayerList.Hole6;
+            }
+            else if (m_strLayerName == "Hole7")
+            {
+                m_nIndex = (int)LayerList.Hole7;
+            }
+            else if (m_strLayerName == "Hole8")
+            {
+                m_nIndex = (int)LayerList.Hole8;
+            }
+            else if (m_strLayerName == "Hole9")
+            {
+                m_nIndex = (int)LayerList.Hole9;
+            }
+            else if (m_strLayerName == "Hole10")
+            {
+                m_nIndex = (int)LayerList.Hole10;
             }
             else if (m_strLayerName == "Rect")
             {

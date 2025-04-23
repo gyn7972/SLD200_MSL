@@ -1,4 +1,5 @@
-﻿using QMC.Common.Motion.Ajin.Motions;
+﻿using Cognex.VisionPro.Implementation.Internal;
+using QMC.Common.Motion.Ajin.Motions;
 using QMC.Common.Parts;
 using System;
 using System.Collections.Generic;
@@ -259,17 +260,56 @@ namespace QMC.Common.Modules
 
         #region Single Action (Unloader Transfer)
 
-        public int m_nUnloader_Transfer_Step { set; get; }                                   //  Transfer Step
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>
+        /// 
+        ///     Stop -> Start 시 동작 Sequence 를 재설정 하기 위한 변수
+        /// 
+        /// </summary>
+        /// 
+        public int m_nUnloader_Transfer_Restart_MoveType { set; get; }                      //  어떤 작업을 하다가 멈춘 것인지?
+                                                                                            //      1. Work Stage 에서 Module Pick Up
+                                                                                            //      2. Stacker0 에 Module Put Down
+                                                                                            //      3. Stacker1 에 Module Put Down
+
+        public bool m_bUnloader_WorkStage_PickUp_Retry { set; get; }
+
+        public int m_nUL_RESTORE_Transfer_Step { set; get; } = 0;
+        public int m_nUL_RESTORE_Transfer_MoveType { set; get; } = 0;
+        public bool m_bUL_RESTORE_Transfer_fromWorkStage_Module_PickUp_Complete_Flag { set; get; } = false;
+        public bool m_bUL_RESTORE_LD_Transfer_toWorkStage_Module_PutDown_Complete { set; get; } = false;
+        public int m_nUL_RESTORE_MainWork_Cycle_Step { set; get; } = 0;
+        public int m_nUL_RESTORE_DryRun_Cycle_Step { set; get; } = 0;
+        public int m_nUL_RESTORE_LaserDrilling_Cycle_Step { set; get; } = 0;
+        public bool m_bUL_RESTORE_MainWork_Cycle_Complete { set; get; } = false;
+        public int m_nUL_RESTORE_MainWork_Cycle_ResultOKNG { set; get; } = (int)WorkStage.MainCycle_Result.None;
+        public bool m_bUL_RESTORE_MainWorkCycle_ResultOK_toRPort { set; get; } = false;                         //  OK 인 Module 을 R-Port 로 가져갈 것인지 L-Port 로 가져갈 것인지
+
+        public bool m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete { set; get; } = false;      //  Work Stage 에서 Module Pick Up 완료 여부
+        public bool m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete { set; get; } = false;         //  Stacker0 에 Module Put Down 완료 여부
+        public bool m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete { set; get; } = false;        //  Stacker1 에 Module Put Down 완료 여부
+        public bool m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete { set; get; } = false;              //  NG-Port 에 Module Put Down 완료 여부        
+
+        /// <summary>
+        /// 
+        ///     Stop -> Start 시 동작 Sequence 를 재설정 하기 위한 변수
+        /// 
+        /// </summary>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
         //  자동 운전을 위한 변수
-        public bool m_bUnloader_Transfer_ModulePickUpfromWorkStage_Complete { set; get; }   //  Work Stage 에서 Module Pick Up 완료 여부
-        public bool m_bUnloader_Transfer_ModulePutDowntoStacker0_Complete { set; get; }     //  Stacker0 에 Module Put Down 완료 여부
-        public bool m_bUnloader_Transfer_ModulePutDowntoStacker1_Complete { set; get; }     //  Stacker1 에 Module Put Down 완료 여부
-        public bool m_bUnloader_Transfer_ModulePutDowntoNG_Complete { set; get; }           //  NG-Port 에 Module Put Down 완료 여부        
+        public bool m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete { set; get; }   //  Work Stage 에서 Module Pick Up 완료 여부
+        public bool m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete { set; get; }     //  Stacker0 에 Module Put Down 완료 여부
+        public bool m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete { set; get; }     //  Stacker1 에 Module Put Down 완료 여부
+        public bool m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete { set; get; }           //  NG-Port 에 Module Put Down 완료 여부        
 
 
+        public int m_nUnloader_Transfer_Step { set; get; }                                   //  Transfer Step
         public int m_nUnloaderTransferMoveType { set; get; }                  //  Transfer Move Type
+        public bool m_bUL_Transfer_fromWorkStage_Module_PickUp_Complete_Flag { set; get; } = false;      //  Work Stage 에서 Module Pick Up 완료 여부
         public enum UnloaderTransferMoveType : int
         {
             Cycle_None = -1,
@@ -282,6 +322,7 @@ namespace QMC.Common.Modules
             Cycle_Stacker1_PutDown,                                         //  Module Put Down Cycle (Stacker 1)
             Cycle_NG_PutDown,                                               //  Module Put Down Cycle (NG)
         }
+
 
         public enum Unloader_Transfer_Step
         {
@@ -455,10 +496,30 @@ namespace QMC.Common.Modules
             m_bStacker0_Complete = false;
             m_bStacker1_Complete = false;
 
-            m_bUnloader_Transfer_ModulePickUpfromWorkStage_Complete = false;        //  Work Stage 에서 Module Pick Up 완료 여부
-            m_bUnloader_Transfer_ModulePutDowntoStacker0_Complete = false;          //  Stacker0 에 Module Put Down 완료 여부
-            m_bUnloader_Transfer_ModulePutDowntoStacker1_Complete = false;          //  Stacker1 에 Module Put Down 완료 여부
-            m_bUnloader_Transfer_ModulePutDowntoNG_Complete = false;                //  NG-Port 에 Module Put Down 완료 여부
+            m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = false;                    //  Work Stage 에서 Module Pick Up 완료 여부
+            m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = false;                      //  Stacker0 에 Module Put Down 완료 여부
+            m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = false;                      //  Stacker1 에 Module Put Down 완료 여부
+            m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = false;                            //  NG-Port 에 Module Put Down 완료 여부
+
+            m_bUL_Transfer_fromWorkStage_Module_PickUp_Complete_Flag = false;
+
+            m_nUL_RESTORE_Transfer_Step = 0;
+            m_nUL_RESTORE_Transfer_MoveType = 0;
+            m_bUL_RESTORE_Transfer_fromWorkStage_Module_PickUp_Complete_Flag = false;
+            m_bUL_RESTORE_LD_Transfer_toWorkStage_Module_PutDown_Complete = false;
+            m_nUL_RESTORE_MainWork_Cycle_Step = 0;
+            m_nUL_RESTORE_DryRun_Cycle_Step = 0;
+            m_nUL_RESTORE_LaserDrilling_Cycle_Step = 0;
+            m_bUL_RESTORE_MainWork_Cycle_Complete = false;
+            m_nUL_RESTORE_MainWork_Cycle_ResultOKNG = (int)WorkStage.MainCycle_Result.None;
+            m_bUL_RESTORE_MainWorkCycle_ResultOK_toRPort = false;                               //  OK 인 Module 을 R-Port 로 가져갈 것인지 L-Port 로 가져갈 것인지
+
+            m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = false;         //  Work Stage 에서 Module Pick Up 완료 여부
+            m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = false;           //  Stacker0 에 Module Put Down 완료 여부
+            m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = false;           //  Stacker1 에 Module Put Down 완료 여부
+            m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = false;                 //  NG-Port 에 Module Put Down 완료 여부        
+
+            m_bUnloader_WorkStage_PickUp_Retry = false;
 
             m_bInManualMoving_SafetySensor_Detected = false;
             m_bInCycleMoving_SafetySensor_Detected = false;
@@ -638,7 +699,7 @@ namespace QMC.Common.Modules
                     loader = module as Loader;
                 }                
 
-                //if (module.Name == "Bds")
+                //if (module.Name == "BDS")
                 //{
                 //    bds = module as Bds;
                 //}
@@ -649,6 +710,193 @@ namespace QMC.Common.Modules
                 //}
             }
         }
+
+
+        #region Stop 후 Start 시 동작 Sequence 를 재설정 하기 위한 함수
+
+
+        public void Unloader_CurrentStatus_Save_StopedByTimeout()
+        {
+            //  Unloader 상태
+            m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete;     //  Work Stage 에서 Module Pick Up 완료 여부
+            m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete;         //  Stacker0 에 Module Put Down 완료 여부
+            m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete;         //  Stacker1 에 Module Put Down 완료 여부
+            m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete;                     //  NG-Port 에 Module Put Down 완료 여부        
+            m_nUL_RESTORE_Transfer_Step = m_nUnloader_Transfer_Step;                                                                                          //  Unloader Transfer Step
+            m_nUL_RESTORE_Transfer_MoveType = m_nUnloaderTransferMoveType;                                                                                    //  Unloader Transfer Move Type
+            m_bUL_RESTORE_Transfer_fromWorkStage_Module_PickUp_Complete_Flag = m_bUL_Transfer_fromWorkStage_Module_PickUp_Complete_Flag;                      //  Unloader 가 Work Stage 에서 Module Pick Up 완료 여부
+            m_bUL_RESTORE_LD_Transfer_toWorkStage_Module_PutDown_Complete = loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete;                       //  Loader 가 Work Stage 에 Module Put Down 완료 여부
+            m_nUL_RESTORE_MainWork_Cycle_Step = workStage.m_nMainWork_Step;                                                                                            //  Main Work Cycle Step
+            m_nUL_RESTORE_DryRun_Cycle_Step = workStage.m_nDryRun_Step;                                                                                                //  Dry Run Cycle Step
+            m_nUL_RESTORE_LaserDrilling_Cycle_Step = workStage.m_nLaserDrilling_MainStep;                                                                              //  Laser Drilling Cycle Step
+            m_bUL_RESTORE_MainWork_Cycle_Complete = workStage.m_bMainWorkCycle_Complete;                                                                               //  Main Work Cycle 완료 여부
+            m_nUL_RESTORE_MainWork_Cycle_ResultOKNG = workStage.m_nMainWorkCycle_ResultOKNG;                                                                           //  Main Work Cycle 결과 (OK, NG) : OK 인 경우에만 R-Port 로 가져감
+            m_bUL_RESTORE_MainWorkCycle_ResultOK_toRPort = workStage.m_bMainWorkCycle_ResultOK_toRPort;                                                                //  OK 인 Module 을 R-Port 로 가져갈 것인지 L-Port 로 가져갈 것인지
+        }
+
+        public void Unloader_Transfer_Restart_MoveType_Check()
+        {
+            //  Stop 했을 때의 조건들을 조합하여 시작 조건 결정
+
+            //  1. Unloader Transfer Cycle 의 Step
+            //  2. Transfer 의 Move Type
+            //  3. Module Pick Up 완료 여부
+            //  4. Loader 가 Stage 에 Module 을 내려놨는지 여부
+            //  5. Main Work Cycle 의 동작 여부
+            //  6. Main Work Cycle 의 완료 여부
+            //  7. Main Work Cycle 이 완료되었다면, 양불 결과
+
+
+            //int m_nRESTORE_UL_Transfer_Cycle_Step = 0;
+            //int m_nRESTORE_UL_Transfer_MoveType = 0;
+            //bool m_bRESTORE_UL_Transfer_fromWorkStage_Module_PickUp_Complete = false;
+            //bool m_bRESTORE_LD_Transfer_toWorkStage_Module_PutDown_Complete = false;
+            //int m_nRESTORE_MainWork_Cycle_Step = 0;
+            //bool m_bRESTORE_MainWork_Cycle_Complete = false;
+            //int m_nRESTORE_MainWork_Cycle_ResultOKNG = (int)WorkStage.MainCycle_Result.None;
+            //bool m_bRESTORE_Unloader_Transfer_ModulePickUpfromWorkStage_Complete;   //  Work Stage 에서 Module Pick Up 완료 여부
+            //bool m_bRESTORE_Unloader_Transfer_ModulePutDowntoStacker0_Complete;     //  Stacker0 에 Module Put Down 완료 여부
+            //bool m_bRESTORE_Unloader_Transfer_ModulePutDowntoStacker1_Complete;     //  Stacker1 에 Module Put Down 완료 여부
+            //bool m_bRESTORE_Unloader_Transfer_ModulePutDowntoNG_Complete;           //  NG-Port 에 Module Put Down 완료 여부        
+
+            //  Auto Run 시 동작 조건을 결정하는 변수들. 위 Restore 조건으로 이 변수들의 값을 결정해서 Restart 하도록 한다.
+            //bool m_bUnloader_Transfer_ModulePickUpfromWorkStage_Complete;   //  Work Stage 에서 Module Pick Up 완료 여부
+            //bool m_bUnloader_Transfer_ModulePutDowntoStacker0_Complete;     //  Stacker0 에 Module Put Down 완료 여부
+            //bool m_bUnloader_Transfer_ModulePutDowntoStacker1_Complete;     //  Stacker1 에 Module Put Down 완료 여부
+            //bool m_bUnloader_Transfer_ModulePutDowntoNG_Complete;           //  NG-Port 에 Module Put Down 완료 여부
+
+
+            //  1. Laser Drilling 이 진행중이면? Unloader 모든 동작 Stop
+            if (m_nUL_RESTORE_LaserDrilling_Cycle_Step != (int)WorkStage.LaserDrilling_Step.None)
+            {
+                m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = false;                                //  Work Stage 에서 Module Pick Up 완료 여부
+                m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = false;                                  //  Stacker0 에 Module Put Down 완료 여부
+                m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = false;                                  //  Stacker1 에 Module Put Down 완료 여부
+                m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = false;                                        //  NG-Port 에 Module Put Down 완료 여부        
+
+                m_bStacker0_Complete = true;
+                m_bStacker1_Complete = true;
+            }
+            //  2. Main Work Cycle 이 진행중이면? Unloader 모든 동작 Stop
+            else if (m_nUL_RESTORE_MainWork_Cycle_Step != (int)WorkStage.MainWork_Step.None)
+            {
+                m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = false;                                //  Work Stage 에서 Module Pick Up 완료 여부
+                m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = false;                                  //  Stacker0 에 Module Put Down 완료 여부
+                m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = false;                                  //  Stacker1 에 Module Put Down 완료 여부
+                m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = false;                                        //  NG-Port 에 Module Put Down 완료 여부        
+
+                m_bStacker0_Complete = true;
+                m_bStacker1_Complete = true;
+            }
+            //  3. Unloader Transfer Cycle 이 None 상태이면, 동작이 없던 상태이므로 기존 조건들 그대로 적용하여 Start 한다. 
+            else if (m_nUL_RESTORE_Transfer_Step == (int)Unloader_Transfer_Step.None)
+            {
+                m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete;      //  Work Stage 에서 Module Pick Up 완료 여부
+                m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete;          //  Stacker0 에 Module Put Down 완료 여부
+                m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete;          //  Stacker1 에 Module Put Down 완료 여부
+                m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete;                      //  NG-Port 에 Module Put Down 완료 여부        
+            }
+            //  4. Unloader Transfer Cycle 이 None 이 아니면, 뭔가 동작을 하던 상황
+            else
+            {
+                //  4-1. Unloader Transfer Cycle 이 Work Stage 에서 Module Pick Up 인 경우
+                if (m_nUL_RESTORE_Transfer_MoveType == (int)UnloaderTransferMoveType.Cycle_WorkStage_PickUp)
+                {
+                    //  4-1-1. Work Stage 에서 Module Pick Up 완료했을 경우 --> Port 에 Module 을 내려놓는 Cycle 진행해야 한다.
+                    if (m_bUL_RESTORE_Transfer_fromWorkStage_Module_PickUp_Complete_Flag)
+                    {
+                        //  4-1-1-1. Pick Up 한 Module 이 양품일 경우
+                        if (m_nUL_RESTORE_MainWork_Cycle_ResultOKNG == (int)WorkStage.MainCycle_Result.OK)
+                        {
+                            workStage.m_bMainWorkCycle_ResultOK_toRPort = m_bUL_RESTORE_MainWorkCycle_ResultOK_toRPort;
+
+                            //  4-1-1-1-1. R-Port 에 내려놓을지, L-Port 에 내려놓을지 결정해야 한다.
+                            if (m_bUL_RESTORE_MainWorkCycle_ResultOK_toRPort)           //  R-Port 로
+                            {
+                                //m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete;     //  Work Stage 에서 Module Pick Up 완료 여부
+                                //m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete;         //  Stacker0 에 Module Put Down 완료 여부
+                                m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = true;                                                                             //  Work Stage 에서 Module Pick Up 완료 여부
+                                m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = true;                                                                               //  Stacker0 에 Module Put Down 완료 여부
+                                m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = false;                                                                              //  Stacker1 에 Module Put Down 완료 여부
+                                m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = false;                                                                                    //  NG-Port 에 Module Put Down 완료 여부        
+                            }
+                            else                                                        //  L-Port 로                            
+                            {
+                                //m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete;     //  Work Stage 에서 Module Pick Up 완료 여부
+                                m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = true;                                                                             //  Work Stage 에서 Module Pick Up 완료 여부
+                                m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = false;                                                                              //  Stacker0 에 Module Put Down 완료 여부
+                                //m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete;         //  Stacker1 에 Module Put Down 완료 여부
+                                m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = true;                                                                               //  Stacker1 에 Module Put Down 완료 여부
+                                m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = false;                                                                                    //  NG-Port 에 Module Put Down 완료 여부        
+                            }
+                        }
+                        //  4-1-1-2. Pick Up 한 Module 이 불량일 경우
+                        else if (m_nUL_RESTORE_MainWork_Cycle_ResultOKNG == (int)WorkStage.MainCycle_Result.NG)
+                        {
+                            //m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete;         //  Work Stage 에서 Module Pick Up 완료 여부
+                            m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = true;                                                                                 //  Work Stage 에서 Module Pick Up 완료 여부
+                            m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = false;                                                                                  //  Stacker0 에 Module Put Down 완료 여부
+                            m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = false;                                                                                  //  Stacker1 에 Module Put Down 완료 여부
+                            //m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete;                         //  NG-Port 에 Module Put Down 완료 여부        
+                            m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = true;                                                                                         //  NG-Port 에 Module Put Down 완료 여부        
+                        }
+                    }
+                    //  4-1-2. Work Stage 에서 Module Pick Up 완료하지 못했을 경우 --> 다시 PickUp 진행해야 한다.
+                    else
+                    {
+                        //m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete;             //  Work Stage 에서 Module Pick Up 완료 여부
+                        m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = false;                                                                                    //  Work Stage 에서 Module Pick Up 완료 여부
+                        m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = false;                                                                                      //  Stacker0 에 Module Put Down 완료 여부
+                        m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = false;                                                                                      //  Stacker1 에 Module Put Down 완료 여부
+                        m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = false;                                                                                            //  NG-Port 에 Module Put Down 완료 여부        
+
+                        //  주의!
+                        //  "loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete" 가 "true" 가 되어야 한다.
+                    }
+                }
+                //  4-2. Unloader Transfer Cycle 이 Stacker0 에 Module Put Down 인 경우
+                else if (m_nUL_RESTORE_Transfer_MoveType == (int)UnloaderTransferMoveType.Cycle_Stacker0_PutDown)
+                {
+                    //  R-Port 에 내려놓는 양품만 진행됨
+                    //m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete;                 //  Work Stage 에서 Module Pick Up 완료 여부
+                    //m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete;                     //  Stacker0 에 Module Put Down 완료 여부
+                    m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = true;                                                                                         //  Work Stage 에서 Module Pick Up 완료 여부
+                    m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = true;                                                                                           //  Stacker0 에 Module Put Down 완료 여부
+                    m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = false;                                                                                          //  Stacker1 에 Module Put Down 완료 여부
+                    m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = false;                                                                                                //  NG-Port 에 Module Put Down 완료 여부        
+                }
+                //  4-3. Unloader Transfer Cycle 이 Stacker1 에 Module Put Down 인 경우
+                else if (m_nUL_RESTORE_Transfer_MoveType == (int)UnloaderTransferMoveType.Cycle_Stacker1_PutDown)
+                {
+                    //  L-Port 에 내려놓는 양품만 진행됨
+                    //m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete;                 //  Work Stage 에서 Module Pick Up 완료 여부
+                    m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = true;                                                                                         //  Work Stage 에서 Module Pick Up 완료 여부
+                    m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = false;                                                                                          //  Stacker0 에 Module Put Down 완료 여부
+                    //m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete;                     //  Stacker1 에 Module Put Down 완료 여부
+                    m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = true;                                                                                           //  Stacker1 에 Module Put Down 완료 여부
+                    m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = false;                                                                                                //  NG-Port 에 Module Put Down 완료 여부        
+                }
+                //  4-4. Unloader Transfer Cycle 이 NG-Stacker 에 Module Drop 인 경우
+                else if (m_nUL_RESTORE_Transfer_MoveType == (int)UnloaderTransferMoveType.Cycle_NG_PutDown)
+                {
+                    //  NG-Port 에 내려놓는 불량만 진행됨
+                    //m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete;                 //  Work Stage 에서 Module Pick Up 완료 여부
+                    m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = true;                                                                                         //  Work Stage 에서 Module Pick Up 완료 여부
+                    m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = false;                                                                                          //  Stacker0 에 Module Put Down 완료 여부
+                    m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = false;                                                                                          //  Stacker1 에 Module Put Down 완료 여부
+                    //m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = m_bUL_RESTORE_AUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete;                                 //  NG-Port 에 Module Put Down 완료 여부        
+                    m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = true;                                                                                                 //  NG-Port 에 Module Put Down 완료 여부        
+                }
+            }
+            
+
+            //  5. Stop 후 Start 할 때는 Stacker 는 다시 동작시킬 필요 없다. 
+            m_bStacker0_Complete = true;            //  true : 동작 안함,   false : 동작함
+            m_bStacker1_Complete = true;            //  true : 동작 안함,   false : 동작함
+        }
+
+        #endregion
+
 
 
         #region Stacker Move Function (Module PickUp & PutDown 높이로 이동 -> 이건 Loader Unloader 에서 하도록 해야 할듯???)
@@ -2104,17 +2352,21 @@ namespace QMC.Common.Modules
             //  자동운전 시, Transfer 동작 조건
             if (Equipment.AutoRunStatus &&
 
-                !Equipment.CycleStopped_UnloaderTransfer &&
+                !Equipment.SocketStopped &&                                             //  Socket Stop 시 동작 안되도록
+
+                !Equipment.CycleStopped_UnloaderTransfer &&                             //  Cycle Stop 시 동작 안되도록
+
+                !Equipment.MachineStop_byTimeout_Unloader &&                            //  Unloader 가 Time out 으로 멈추면 동작 안되도록
 
                 m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None)
             {
                 //  Work Stage 에서 Module 을 Pick Up 하기 위한 조건
-                if (!m_bUnloader_Transfer_ModulePickUpfromWorkStage_Complete &&
+                if (!m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete &&
 
                     (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) &&
                     (workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
 
-                    loader.m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete &&
+                    loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete &&
 
                     workStage.m_bMainWorkCycle_Complete)                                                //  Laser Drilling Main Cycle 이 완료되었을 경우
                 {
@@ -2122,11 +2374,12 @@ namespace QMC.Common.Modules
                     m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
                 }
                 //  Stacker0 에 Module 을 Put Down 하기 위한 조건
-                else if (m_bUnloader_Transfer_ModulePickUpfromWorkStage_Complete &&
+                else if (m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete &&
 
                     (m_nStacker0_ModulePutdownWaitingPos_Step == (int)StackerModulePutdownWaitingPos_Step.None) &&
 
-                    workStage.m_bMainWorkCycle_ResultOK &&
+                    //workStage.m_bMainWorkCycle_ResultOK &&
+                    (workStage.m_nMainWorkCycle_ResultOKNG == (int)WorkStage.MainCycle_Result.OK) &&
                     workStage.m_bMainWorkCycle_ResultOK_toRPort &&
 
                     m_bStacker0_Complete)
@@ -2135,11 +2388,12 @@ namespace QMC.Common.Modules
                     m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
                 }
                 //  Stacker1 에 Module 을 Put Down 하기 위한 조건
-                else if (m_bUnloader_Transfer_ModulePickUpfromWorkStage_Complete &&
+                else if (m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete &&
 
                     (m_nStacker1_ModulePutdownWaitingPos_Step == (int)StackerModulePutdownWaitingPos_Step.None) &&
 
-                    workStage.m_bMainWorkCycle_ResultOK &&
+                    //workStage.m_bMainWorkCycle_ResultOK &&
+                    (workStage.m_nMainWorkCycle_ResultOKNG == (int)WorkStage.MainCycle_Result.OK) &&
                     !workStage.m_bMainWorkCycle_ResultOK_toRPort &&
 
                     m_bStacker1_Complete)
@@ -2148,9 +2402,10 @@ namespace QMC.Common.Modules
                     m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
                 }
                 //  NG-Port 에 Module 을 Drop 하기 위한 조건
-                else if (m_bUnloader_Transfer_ModulePickUpfromWorkStage_Complete &&
+                else if (m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete &&
 
-                    !workStage.m_bMainWorkCycle_ResultOK)
+                    //!workStage.m_bMainWorkCycle_ResultOK)
+                    (workStage.m_nMainWorkCycle_ResultOKNG == (int)WorkStage.MainCycle_Result.NG))
                 {
                     m_nUnloaderTransferMoveType = (int)UnloaderTransferMoveType.Cycle_NG_PutDown;            //  NG-Port 에 Module Drop Cycle
                     m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
@@ -2391,7 +2646,8 @@ namespace QMC.Common.Modules
                         //  Out.
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
                     }
-                    else if (Equipment.Machine_VacuumSensor_Enable && !workStage.workStageParameter.DI_Stage_Vacuum_Check())
+                    else if (Equipment.Machine_VacuumSensor_Enable && !workStage.workStageParameter.DI_Stage_Vacuum_Check() && 
+                        !m_bUnloader_WorkStage_PickUp_Retry)                                                                        //  Work Stage 에서 Module Pick Up 실패 시 재시도 할 경우, Stage Vacuum 이 파기된 상태이므로 체크하지 않는다.
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage 에 자재 없음.");
 
@@ -2708,6 +2964,7 @@ namespace QMC.Common.Modules
 
                     unloaderParameter.DO_Unloader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
                     unloaderParameter.DO_Unloader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, true);
+                    unloaderParameter.DO_Unloader_Picker_Blow(false);
 
                     m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_WorkStage_Vacuum_Off;
                     break;
@@ -2737,14 +2994,24 @@ namespace QMC.Common.Modules
                                                                     unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Outer)) &&
 
                         (!Equipment.Machine_VacuumStableTime_Enable ||
-                        (Equipment.Machine_VacuumStableTime_Enable && (TickCount_Elapsed((int)TickType.TICK_ULTR) > Equipment.Machine_VacuumStableTime))))) &&
+                        (Equipment.Machine_VacuumStableTime_Enable && (TickCount_Elapsed((int)TickType.TICK_ULTR) > Equipment.Machine_VacuumStableTime))))) )//&&
 
-                        !workStage.workStageParameter.DI_Stage_Vacuum_Check())
+                        //!workStage.workStageParameter.DI_Stage_Vacuum_Check())
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage, Module Vacuum Off 완료");
 
                         //  Stage Vacuum Off 시, 진공레귤레이터도 함께 동작시켜야 한다. (안꺼질 때가 있어서 한번 더)
                         workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
+
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  복원 지점 체크용 (Work Stage 에서 Module Pick Up 완료)
+                        //
+                        m_bUL_Transfer_fromWorkStage_Module_PickUp_Complete_Flag = true;
+                        //
+                        //  복원 지점 체크용 (Work Stage 에서 Module Pick Up 완료)
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
 
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_ReadyPos2_1stStep;
                     }
@@ -2865,7 +3132,57 @@ namespace QMC.Common.Modules
 
                         workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
 
-                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Complete;
+
+                        if (Equipment.Machine_VacuumSensor_Enable)
+                        {
+                            //  여기서 Module 을 정상적으로 들어올렸는지 다시 체크
+
+                            if (unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Inner) ||
+                                unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Outer))
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer 축, Module Picker Vacuum On 확인");
+
+                                m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Complete;
+                            }
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer 축, Module Picker Vacuum On 확인 실패");
+
+
+                                //////////////////////////////////////////////////////////////////////////////////////////
+                                //  복원 지점 체크용 (Work Stage 에서 Module Pick Up 실패) - Picker 공압이 형성되지  않음
+                                //
+                                m_bUL_Transfer_fromWorkStage_Module_PickUp_Complete_Flag = false;
+                                //
+                                //  복원 지점 체크용 (Work Stage 에서 Module Pick Up 실패)
+                                //////////////////////////////////////////////////////////////////////////////////////////
+
+
+                                //  알람 정지 (LED Bar - Red Blink)
+                                Equipment.MachineStop_byAlarm = true;
+
+
+                                //////////////////////////////////////////////////////////////////////////////////////////
+                                //  재시작 위치 저장용
+                                //
+                                m_bUnloader_WorkStage_PickUp_Retry = true;
+
+                                Equipment.MachineStop_byTimeout_Unloader = true;
+                                Unloader_CurrentStatus_Save_StopedByTimeout();
+                                //
+                                //  재시작 위치 저장용
+                                //////////////////////////////////////////////////////////////////////////////////////////
+
+
+                                m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
+
+                                MessageBox.Show("Module Picker Vacuum On 확인 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                        else
+                        {
+                            m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Complete;
+                        }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
@@ -3999,8 +4316,8 @@ namespace QMC.Common.Modules
                         case (int)UnloaderTransferMoveType.Cycle_WorkStage_PickUp:
                             Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage 에서 Module Pick Up 완료");
 
-                            loader.m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete = false;                                                //  Unloader 에서 Work Stage 의 Module 을 가져갔으므로 false 로 만들어 줌. l
-                            m_bUnloader_Transfer_ModulePickUpfromWorkStage_Complete = true;
+                            loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = false;                                                //  Unloader 에서 Work Stage 의 Module 을 가져갔으므로 false 로 만들어 줌. 
+                            m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = true;
 
                             workStage.m_bMainWorkCycle_Complete = false;
                             break;
@@ -4008,26 +4325,69 @@ namespace QMC.Common.Modules
                         case (int)UnloaderTransferMoveType.Cycle_Stacker0_PutDown:
                             Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 에 Module Put Down 완료");
 
-                            m_bUnloader_Transfer_ModulePickUpfromWorkStage_Complete = false;
+                            m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = false;
                             //workStage.m_bMainWorkCycle_Complete = false;
 
-                            m_bStacker0_Complete = false;                                       //  Module 내려놨으면 Stacker 높이 재조정해야 함.
+                            workStage.m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.None;       //  모듈을 Unloading 했으니 결과데이터 초기화
+                            m_bStacker0_Complete = false;                                                       //  Module 내려놨으면 Stacker 높이 재조정해야 함.
+
+
+
+                            //  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
+                            if (Equipment.CycleStop)
+                            {
+                                //  Loader 와 Work Stage 모두 Cycle Stop 되었을 때만 Unloader 를 cycle Stop 처리 한다.
+                                if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)
+                                {
+                                    //  Unloader Transfer 돌아가지 않게
+                                    Equipment.CycleStopped_UnloaderTransfer = true;
+                                }
+                            }
                             break;
 
                         case (int)UnloaderTransferMoveType.Cycle_Stacker1_PutDown:
                             Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker1 에 Module Put Down 완료");
 
-                            m_bUnloader_Transfer_ModulePickUpfromWorkStage_Complete = false;
+                            m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = false;
                             //workStage.m_bMainWorkCycle_Complete = false;
 
-                            m_bStacker1_Complete = false;                                       //  Module 내려놨으면 Stacker 높이 재조정해야 함.
+                            workStage.m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.None;       //  모듈을 Unloading 했으니 결과데이터 초기화
+                            m_bStacker1_Complete = false;                                                       //  Module 내려놨으면 Stacker 높이 재조정해야 함.
+
+
+
+                            //  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
+                            if (Equipment.CycleStop)
+                            {
+                                //  Loader 와 Work Stage 모두 Cycle Stop 되었을 때만 Unloader 를 cycle Stop 처리 한다.
+                                if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)
+                                {
+                                    //  Unloader Transfer 돌아가지 않게
+                                    Equipment.CycleStopped_UnloaderTransfer = true;
+                                }
+                            }
                             break;
 
                         case (int)UnloaderTransferMoveType.Cycle_NG_PutDown:
                             Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "NG-Port 에 Module Drop 완료");
 
-                            m_bUnloader_Transfer_ModulePickUpfromWorkStage_Complete = false;
+                            m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = false;
                             //workStage.m_bMainWorkCycle_Complete = false;
+
+                            workStage.m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.None;       //  모듈을 Unloading 했으니 결과데이터 초기화
+
+
+
+                            //  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
+                            if (Equipment.CycleStop)
+                            {
+                                //  Loader 와 Work Stage 모두 Cycle Stop 되었을 때만 Unloader 를 cycle Stop 처리 한다.
+                                if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)
+                                {
+                                    //  Unloader Transfer 돌아가지 않게
+                                    Equipment.CycleStopped_UnloaderTransfer = true;
+                                }
+                            }
                             break;
 
                         default:            //  Error
@@ -4036,13 +4396,6 @@ namespace QMC.Common.Modules
                     }
 
                     m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
-
-                    //  Cycle Stop 이면?
-                    if (Equipment.CycleStop)
-                    {
-                        //  Unloader Transfer 돌아가지 않게
-                        Equipment.CycleStopped_UnloaderTransfer = true;
-                    }
 
                     //MessageBox.Show(m_strTemp, "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
@@ -4069,10 +4422,10 @@ namespace QMC.Common.Modules
             //  메인 화면 갱신용 변수
 
             //  Work Stage 에서 Module 을 Pick Up 완료
-            Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete = m_bUnloader_Transfer_ModulePickUpfromWorkStage_Complete;
+            Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete = m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete;
 
             //  Port 에 Module 을 Put Down 완료
-            Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete = !m_bUnloader_Transfer_ModulePickUpfromWorkStage_Complete;
+            Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete = !m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete;
 
             //  메인 화면 갱신용 변수
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
