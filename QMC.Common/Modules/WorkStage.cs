@@ -71,6 +71,7 @@ using QMC.Common.Vision.Tools;
 using Microsoft.VisualBasic.ApplicationServices;
 using System.Threading.Tasks;
 using System.Net;
+using System.Timers;
 
 namespace QMC.Common.Modules
 {
@@ -258,10 +259,7 @@ namespace QMC.Common.Modules
 
         #endregion
 
-        SpiralLabScanner _spiralLabScanner;
-
         #region Sirius Data Variable
-
         public enum nDrawingLayerType               //  도면 Layer 종류
         {
             LayerHole1 = 0,                     //  홀 가공
@@ -373,10 +371,7 @@ namespace QMC.Common.Modules
 
         #endregion
 
-
-
         #region Drilling Data Variable
-
         public enum LayerType : int
         {
             LAYER_DRILLING = 0,
@@ -996,6 +991,7 @@ namespace QMC.Common.Modules
 
 
         #region Variables
+        
 
         public double FirstPositionX { set; get; }
         public double FirstPositionY { set; get; }
@@ -1297,6 +1293,8 @@ namespace QMC.Common.Modules
         public AutoFocuser autoFocuser_HighRes { set; get; }
         public AutoFocusResult autoFocusResult_HighRes;
 
+        public SpiralLabScanner spiralLabScanner { set; get; }
+
         public int MAX_IMAGE_WIDTH = 2448;
         public int MAX_IMAGE_HEIGHT = 2048;
         //public int MAX_IMAGE_WIDTH = 2248;            //  현장에서 조정된 Size (Center Offset X : 100, Offset Y : 84)
@@ -1349,7 +1347,11 @@ namespace QMC.Common.Modules
         public System.Windows.Forms.Timer timer_VisionAlign;
         public System.Windows.Forms.Timer timer_ReticleGlass_Check;
         public System.Windows.Forms.Timer timer_VerifyScannerCamOffset;
-        public System.Windows.Forms.Timer timer_ScannerCalibration;
+        //변경해보자.-> 변경하면 죽는다. inbok 해야하나?
+        //public System.Windows.Forms.Timer timer_ScannerCalibration;
+        public System.Timers.Timer timer_ScannerCalibration;
+
+        //private System.Threading.Timer _scannerCalibrationTimer;
 
         public bool m_btimer_MainWork_Stop;
         public bool m_btimer_LaserDrillingWork_Stop;
@@ -1576,7 +1578,6 @@ namespace QMC.Common.Modules
 
         //  --> 얘네들 초기화는 "EditMode_SLD100.cs" 의 생성자에서 한다. 여기서는 선언만...
         #region RTC Variable
-
         public RtcVirtual rtcVirtual { set; get; }
         //public Rtc6SyncAxis rtcSyncAxis { set; get; }
         public Rtc6 rtc { set; get; }
@@ -1611,6 +1612,10 @@ namespace QMC.Common.Modules
 
         //public PowerMapBase powerMap { set; get; }                        //  Sirius2 꺼
 
+
+        // Todo: SpiralLab
+        public IRtc SpiralLabrtc { get; private set; }
+        public LaserVirtual SpiralLablaser { get; private set; }
         #endregion
 
 
@@ -3059,7 +3064,7 @@ namespace QMC.Common.Modules
             MapDataFlagCheck_ScannerCalMap,                             //  Scanner Calibration 위치 Map Data 로 변경되었는지 확인
 
             StageZ_Move_LaserHeightSensorPos,                           //  Scanner Calibration 을 진행할 위치를 Laser Height Sensor 위치로 이동
-            StageZ_Move_LaserHeightSensorPos_DoneCheck,                 //  Scanner Calibration 을 진행할 위치를 Laser Height Sensor 위치로 이동 완료 확인
+            StageZ_Move_LaserHeightSensorPos_DoneCheck,                 //  20 Scanner Calibration 을 진행할 위치를 Laser Height Sensor 위치로 이동 완료 확인
             StageXY_Move_LaserHeightSensorPos,                          //  Scanner Calibration 을 진행할 위치를 Laser Height Sensor 위치로 이동
             StageXY_Move_LaserHeightSensorPos_DoneCheck,                //  Scanner Calibration 을 진행할 위치를 Laser Height Sensor 위치로 이동 완료 확인
 
@@ -3087,6 +3092,7 @@ namespace QMC.Common.Modules
 
             CrossMarkCenter_MarkFind_Ready,                             //  Fine Camera 얼라인 마크 찾기 준비
             CrossMarkCenter_Find,                                       //  Cross Mark Center 찾기
+            CrossMarkCenter_Find_Wait,                                  //  Cross Mark Center 찾기 대기
             CrossMarkCenter_FindResultCheck,                            //  Cross Mark Center 찾기 결과 확인
             CrossMarkCenter_XYAlignData_Calc,                           //  XY Align Data 계산
             CrossMarkCenter_XYAlign_CorrectionMove,                     //  XY 보정 이동 (카메라 Center 로)
@@ -3290,10 +3296,16 @@ namespace QMC.Common.Modules
             timer_VerifyScannerCamOffset.Tick += new System.EventHandler(Timer_VerifyScannerCamOffset_Func);
             //timer_VerifyScannerCamOffset.Enabled = true;
 
-            timer_ScannerCalibration = new System.Windows.Forms.Timer();
-            timer_ScannerCalibration.Interval = 20;
-            timer_ScannerCalibration.Tick += new System.EventHandler(Timer_ScannerCalibration_Func);
+            //timer_ScannerCalibration = new System.Windows.Forms.Timer();
+            //timer_ScannerCalibration.Interval = 50;
+            ////timer_ScannerCalibration.Tick += new System.EventHandler(timer_ScannerCalibration_Tick);
+            //timer_ScannerCalibration.Tick += new System.EventHandler(Timer_ScannerCalibration_Func);
+            //timer_ScannerCalibration.Enabled = false;
 
+            timer_ScannerCalibration = new System.Timers.Timer(50); // 1초 간격
+            timer_ScannerCalibration.Elapsed += timer_ScannerCalibration_Tick;
+            timer_ScannerCalibration.AutoReset = true; // 반복 실행
+            timer_ScannerCalibration.Enabled = false; // 초기
 
             m_btimer_MainWork_Stop = false;
             m_btimer_LaserDrillingWork_Stop = false;
@@ -3301,7 +3313,6 @@ namespace QMC.Common.Modules
             m_btimer_Motion_Home_Stop = false;
             m_btimer_VisionAlign_Stop = false;
             m_btimer_ReticleGlass_Check_Stop = false;
-
 
             ////  Laser Status 갱신 실행 타이머
             //timer_Calibration = new System.Windows.Forms.Timer();
@@ -3429,7 +3440,7 @@ namespace QMC.Common.Modules
 
             Teaching_Position_Load();
 
-            _spiralLabScanner = new SpiralLabScanner();
+            //_spiralLabScanner = new SpiralLabScanner();
 
 
             ////  가공 도면 Align
@@ -3516,6 +3527,72 @@ namespace QMC.Common.Modules
                 }
             }
         }
+
+        #endregion
+
+        #region Thread
+        public void StartScannerCalibrationTimer()
+        {
+            // Timer를 1초 간격으로 실행
+            //_scannerCalibrationTimer = new System.Threading.Timer(ScannerCalibrationCallback, null, 0, 10);
+        }
+
+        //private bool _isCalibrationRunning = false; // 중복 실행 방지 플래그
+        //private void ScannerCalibrationCallback(object state)
+        //{
+        //    try
+        //    {
+        //        // 중복 실행 방지
+        //        if (_isCalibrationRunning)
+        //        {
+        //            Console.WriteLine("Scanner Calibration is already running. Skipping this call.");
+        //            return;
+        //        }
+
+        //        // 플래그 설정
+        //        _isCalibrationRunning = true;
+
+        //        // Scanner Calibration이 활성화되지 않은 경우 종료
+        //        if (!m_ScannerCalibration_Start)
+        //        {
+        //            Console.WriteLine("Scanner Calibration is not started.");
+        //            _isCalibrationRunning = false; // 플래그 해제
+        //            return;
+        //        }
+
+        //        // 현재 단계가 None이면 타이머 중지
+        //        if (m_nScanner_Calibration_Step == (int)ScannerCalibration_Step.None)
+        //        {
+        //            _scannerCalibrationTimer.Change(Timeout.Infinite, Timeout.Infinite); // 타이머 중지
+        //            //Console.WriteLine("Scanner Calibration completed.");
+        //            _isCalibrationRunning = false; // 플래그 해제
+        //            return;
+        //        }
+
+        //        // 단계별 실행
+        //        Console.WriteLine($"Scanner Calibration running at {DateTime.Now}, Step: {m_nScanner_Calibration_Step}");
+
+        //        // Run_Scanner_Calibration_Func 실행
+        //        Run_Scanner_Calibration_Func();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Error in ScannerCalibrationCallback: {ex.Message}");
+        //    }
+        //    finally
+        //    {
+        //        // 플래그 해제
+        //        _isCalibrationRunning = false;
+        //    }
+
+        //}
+
+        //public void StopScannerCalibrationTimer()
+        //{
+        //    // 타이머 중지
+        //    _scannerCalibrationTimer?.Change(Timeout.Infinite, Timeout.Infinite);
+        //    _scannerCalibrationTimer?.Dispose();
+        //}
 
         #endregion
 
@@ -3673,12 +3750,28 @@ namespace QMC.Common.Modules
             StagePressureSensor= new PressureSensor(Config.StagePresureSensorId, "StagePressureSensor");
             StagePressureSensor.Create(); 
             StagePressureSensor.Owner = this;
-
             Parts.Add(StagePressureSensor);
+
             //PosParam_Dispenser = GetConfigData();     //  요건 나중에
 
             //ACS_Motion_isSimulationMode = false;
             //ACS_Motion = new Api();
+
+            //SpiralLabScanner
+            spiralLabScanner = new SpiralLabScanner("Scanner");
+            spiralLabScanner.Create();
+            spiralLabScanner.Owner = this;
+            spiralLabScanner.rtc = rtc;
+            spiralLabScanner.laser = laser;
+            //spiralLabScanner._owner.SpiralLabrtc = rtc;
+            //spiralLabScanner._owner.SpiralLablaser = laser;
+            //spiral.SpiralLabrtc = rtc;
+            //spiral.SpiralLablaser = laser;
+            //spiralLabScanner._owner = spiral;
+            //spiralLabScanner._owner.SpiralLabrtc = SpiralLabrtc;
+            //spiralLabScanner._owner.SpiralLab = this;
+            Parts.Add(spiralLabScanner);
+
 
             Recipe = new WorkStageRecipe(this);
 
@@ -6165,13 +6258,13 @@ namespace QMC.Common.Modules
             string strTemp = "";
 
             string strFIle = "";
-            strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
+            strFIle = ConfigManager.GetConfigPath() + "\\Machine ScannerCalibration (Do not delete or modify).ini";
 
             if (File.Exists(strFIle) == false)
             {
                 File.Create(strFIle);
-                //MessageBox.Show("Machine Option 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                
+                //MessageBox.Show("Machine ScannerCalibration 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                 return;
             }
 
@@ -6186,12 +6279,12 @@ namespace QMC.Common.Modules
             string strTemp = "";
 
             string strFIle = "";
-            strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
+            strFIle = ConfigManager.GetConfigPath() + "\\Machine ScannerCalibration (Do not delete or modify).ini";
 
             if (File.Exists(strFIle) == false)
             {
                 File.Create(strFIle);
-                //MessageBox.Show("Machine Option 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show("Machine ScannerCalibration 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 return;
             }
@@ -6344,15 +6437,108 @@ namespace QMC.Common.Modules
             timer_VerifyScannerCamOffset.Enabled = true;
         }
 
+        public bool m_ScannerCalibration_Start = false;
+        public bool _isCalibrationRunning = false; // 중복 실행 방지 플래그
+
+        private async void timer_ScannerCalibration_Tick(object sender, ElapsedEventArgs e)
+        {
+            // 중복 실행 방지
+            if (_isCalibrationRunning)
+            {
+                //Console.WriteLine("Scanner Calibration is already running. Skipping this call.");
+                return;
+            }
+
+            try
+            {
+                _isCalibrationRunning = true;
+
+                // Scanner Calibration이 활성화되지 않은 경우 종료
+                if (!m_ScannerCalibration_Start)
+                {
+                    Console.WriteLine("Scanner Calibration is not started.");
+                    timer_ScannerCalibration.Stop(); // 타이머 중지
+                    return;
+                }
+
+                // 현재 단계가 None이면 타이머 중지
+                if (m_nScanner_Calibration_Step == (int)ScannerCalibration_Step.None)
+                {
+                    Console.WriteLine("Scanner Calibration completed.");
+                    timer_ScannerCalibration.Stop(); // 타이머 중지
+                    return;
+                }
+
+                // 단계별 실행
+                //Console.WriteLine($"Scanner Calibration running at {DateTime.Now}, Step: {m_nScanner_Calibration_Step}");
+                Run_Scanner_Calibration_Func();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Timer_ScannerCalibration_Elapsed: {ex.Message}");
+            }
+            finally
+            {
+                _isCalibrationRunning = false; // 플래그 해제
+            }
+
+
+            //if (!m_ScannerCalibration_Start) return;    //이미 실행 중이면 종료.
+            
+            //m_ScannerCalibration_Start = true;
+            //timer_ScannerCalibration.Enabled = false; // 타이머 비활성화
+
+            //try
+            //{
+            //    if (m_ScannerCalibration_Start)
+            //    {
+            //        await Task.Run(() => Run_Scanner_Calibration_Func()); // 비동기 작업 실행
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    // 예외 처리
+            //    Console.WriteLine($"Error during calibration: {ex.Message}");
+            //}
+            //finally
+            //{
+            //    m_ScannerCalibration_Start = false; // 실행 상태 해제
+            //    timer_ScannerCalibration.Enabled = true; // 타이머 재활성화
+            //}
+
+            //Task.Run(() =>
+            //{
+            //    try
+            //    {
+            //        // 무거운 로직 직접 실행 (UI 멈출 수 있음)
+            //        Run_Scanner_Calibration_Func();
+            //    }
+            //    finally
+            //    {
+            //        //m_ScannerCalibration_Start = false;
+            //    }
+            //});
+        }
+
         private void Timer_ScannerCalibration_Func(object sender, EventArgs e)
         {
             m_btimer_ScannerCalibratio_Stop = false;
             timer_ScannerCalibration.Enabled = false;
 
+            if (!m_ScannerCalibration_Start) return;
+
             Run_Scanner_Calibration_Func();
 
             timer_ScannerCalibration.Enabled = true;
         }
+
+        
+        //private void Timer_ScannerCalibration_Func(object sender, ElapsedEventArgs e)
+        //{
+        //    if (!m_ScannerCalibrationTimer_Start) return;
+            
+        //    Run_Scanner_Calibration_Func();
+        //}
 
         public void forThread_MainWorkCycle()
         {
@@ -26754,6 +26940,7 @@ namespace QMC.Common.Modules
                                     //마지막 캘 위치를 가지고 온다.
         double m_dScannerCalPosX_Last = Equipment.Scanner_Calibration_PosX_Last;
         double m_dScannerCalPosY_Last = Equipment.Scanner_Calibration_PosY_Last;
+        private const int LaserScannerCalTimeout = 5000; // 5초
 
         void Run_Scanner_Calibration_Func()
         {
@@ -26776,18 +26963,25 @@ namespace QMC.Common.Modules
 
             bool bCalChagne = Equipment.Scanner_Calibration_Change;    //캘리브레이션 변경 여부
             
-
             switch (m_nScanner_Calibration_Step)
             {
                 case (int)ScannerCalibration_Step.None:
                     {
                         //Equipment.AutoRunStatus = false;
-                        timer_ScannerCalibration.Enabled = false;
+                        //timer_ScannerCalibration.Enabled = false;
                     }
                     break;
 
                 case (int)ScannerCalibration_Step.Start:
                     {
+
+                        DrawCalibrationCrosses(3, 3, 2, 2);
+                        spiralLabScanner.DrawCalibrationCrosses(3, 3, 2, 2);
+
+                        //Test
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_MarkFind_Ready;
+                        break;
+
                         m_bScannerCalibration_Complete = false;
                         m_pStageXY_Pos_BeforeVerify.X = 0.0;
                         m_pStageXY_Pos_BeforeVerify.Y = 0.0;
@@ -26800,18 +26994,6 @@ namespace QMC.Common.Modules
                         int ch2Val = Equipment.Scanner_Calibration_Illumination_channel_02_Value;
                         CommonModule.Instance.Illuminator.SetVolume(ch1Val, 1);
                         CommonModule.Instance.Illuminator.SetVolume(ch2Val, 2);
-
-                        //조명.
-                        //if (Equipment.Machine_LaserType_CO2)
-                        //{
-                        //    CommonModule.Instance.Illuminator.SetVolume(ch1Val, 1);
-                        //    CommonModule.Instance.Illuminator.SetVolume(ch2Val, 2);
-                        //}
-                        //else
-                        //{
-                        //    CommonModule.Instance.Illuminator.SetVolume(4000, 1);
-                        //    CommonModule.Instance.Illuminator.SetVolume(0, 2);
-                        //}
                         CommonModule.Instance.Illuminator.TurnOnOff(true,1);
                         CommonModule.Instance.Illuminator.TurnOnOff(true, 2);
 
@@ -26849,7 +27031,7 @@ namespace QMC.Common.Modules
                                     m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserFrequency_Change;
                                 }
                             }
-                            else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 5000)
+                            else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout)
                             {
                                 //MessageBox.Show("Error", "Laser Off 실패");
                                 Log.Write("SLD-200", "Scanner Calibration", "Laser Off Check 실패.");
@@ -26895,7 +27077,7 @@ namespace QMC.Common.Modules
                         {
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserFrequency_Change;
                         }
-                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 5000)
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout)
                         {
                             MessageBox.Show("Power Meter (Shutter) Close 실패", "Error");
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
@@ -26942,7 +27124,7 @@ namespace QMC.Common.Modules
                             Log.Write("SLD-200", "Scanner Calibration", m_strTemp);
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.LaserPower_Change;
                         }
-                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 5000)
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout)
                         {
                             MessageBox.Show("Laser Frequency 변경 완료 확인 실패");
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
@@ -26987,7 +27169,7 @@ namespace QMC.Common.Modules
                             Log.Write("SLD-200", "Scanner Calibration", m_strTemp);
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.DustCollector_On;
                         }
-                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 5000)
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout)
                         {
                             MessageBox.Show("Laser Energy 변경 완료 확인 실패");
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
@@ -27026,7 +27208,7 @@ namespace QMC.Common.Modules
                         //    MessageBox.Show("Alarm", "Dust Collector 점검 요망\r\n\r\n[Fault Signal 확인]");
                         //    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
                         //}
-                        //else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 5000)
+                        //else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout)
                         //{
                         //    Log.Write("SLD-200", "Auto Run", "집진기 On 실패");
                         //    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
@@ -27055,7 +27237,7 @@ namespace QMC.Common.Modules
                         {
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.WaterLine_Open;
                         }
-                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 5000)
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout)
                         {
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
                             MessageBox.Show("Power Meter (Shutter) Open 실패", "Error");
@@ -27151,8 +27333,8 @@ namespace QMC.Common.Modules
                         {
                             nRow = 1;
                             nCol = 1;
-                            fRowInterval = 3;
-                            fColInterval = 3;
+                            fRowInterval = 1;
+                            fColInterval = 1;
                         }
 
                         double dCalWidth = (nCol - 1) * fColInterval;
@@ -27274,7 +27456,7 @@ namespace QMC.Common.Modules
                         {
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_LaserHeightSensorPos;
                         }
-                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) >= 6000)
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) >= LaserScannerCalTimeout)
                         {
                             //  알람 정지 (LED Bar - Red Blink)
                             Equipment.MachineStop_byAlarm = true;
@@ -27339,7 +27521,7 @@ namespace QMC.Common.Modules
 
                             //m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageZ_Move_LaserHeightSensor_CalPos;
                         }
-                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 60000)
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout)
                         {
                             //  알람 정지 (LED Bar - Red Blink)
                             Equipment.MachineStop_byAlarm = true;
@@ -27390,7 +27572,7 @@ namespace QMC.Common.Modules
                         {
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Move_LaserHeightSensorPos_StableTime;
                         }
-                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) >= 6000)
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) >= LaserScannerCalTimeout)
                         {
                             //  알람 정지 (LED Bar - Red Blink)
                             Equipment.MachineStop_byAlarm = true;
@@ -27405,7 +27587,7 @@ namespace QMC.Common.Modules
                     {
                         if (Equipment.Machine_LaserHeightCheckStableTime_Enable)
                         {
-                            if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > Equipment.Machine_LaserHeightCheckStableTime)
+                            if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout)
                             {
                                 m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCalHeightValue_Get;
                             }
@@ -27483,7 +27665,7 @@ namespace QMC.Common.Modules
 
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos;
                         }
-                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 60000)
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "Stage Z 축, Socket 가공 Focus 조정 실패. (Timeout)");
 
@@ -27501,6 +27683,7 @@ namespace QMC.Common.Modules
                         //좌표 맵을 바꿔줘야 하나?
                         //MapData_Apply((int)nMapData_Type.MapData_Stage_Scanner);            //그냥 이거 사용하면 되지 않나?
                         //MapData_Apply((int)nMapData_Type.MapData_Stage_CalPos_Scanner);
+                        MapData_Apply((int)nMapData_Type.MapData_Stage_Scanner);
 
                         workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
 
@@ -27517,7 +27700,7 @@ namespace QMC.Common.Modules
                         xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
 
 
-                        MapData_Apply((int)nMapData_Type.MapData_Stage_Scanner);
+                        //MapData_Apply((int)nMapData_Type.MapData_Stage_Scanner);
 
                         MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
 
@@ -27537,7 +27720,7 @@ namespace QMC.Common.Modules
 
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMark_MarkingStart;
                         }
-                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 60000)
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Stage Center 위치로 이동 실패. (Timeout)");
 
@@ -27565,18 +27748,48 @@ namespace QMC.Common.Modules
                             // 1x1로 설정.: Laser <-> Scanner Offset Setting
                             nRow = 1;
                             nCol = 1;
-                            fRowInterval = 3;
-                            fColInterval = 3;
+                            fRowInterval = 1;
+                            fColInterval = 1;
                         }
 
                         //Laser & Scanner 준비 상태 확인 필요. (발진 가능 여부 및 셋팅 값)
                         if(Equipment.Machine_LaserType_CO2)
                         {
-                            DrawCalibrationArc(nRow, nCol, fRowInterval, fColInterval);
+                            if(Equipment.Scanner_Vision_Offset_Setting_Use == true)
+                            {
+                                //걍 무조건 Closs로
+                                DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
+                            }
+                            else
+                            {
+                                if (Equipment.Scanner_Calibration_MarkType_Cross)
+                                {
+                                    DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
+                                }
+                                else //Circle
+                                {
+                                    DrawCalibrationArc(nRow, nCol, fRowInterval, fColInterval);
+                                }
+                            }
                         }
-                        else
+                        else //UV
                         {
-                            DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
+                            if (Equipment.Scanner_Vision_Offset_Setting_Use == true)
+                            {
+                                //걍 무조건 Closs로
+                                DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
+                            }
+                            else
+                            {
+                                if (Equipment.Scanner_Calibration_MarkType_Cross)
+                                {
+                                    DrawCalibrationCrosses(nRow, nCol, fRowInterval, fColInterval, dMarkLength);
+                                }
+                                else //Circle
+                                {
+                                    DrawCalibrationArc(nRow, nCol, fRowInterval, fColInterval);
+                                }
+                            }
                         }
 
                         TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
@@ -27596,7 +27809,7 @@ namespace QMC.Common.Modules
                             Log.Write("SLD-200", "Scanner Calibration", "Scanner Calibration, Cross Mark 가공 완료");
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.MapDataChange_FineCamMap;
                         }
-                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 60000)
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout)
                         {
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
                             MessageBox.Show("Cross Mark Marking 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -27612,7 +27825,7 @@ namespace QMC.Common.Modules
                         //  맵 데이터 변경 (기준위치 : Scanner)
                         //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
                         //  그 외에는, 위치로 보낸 후 맵데이터를 변경한다.
-                        //MapData_Apply((int)nMapData_Type.MapData_Stage_CalPos_FineCam);
+                        MapData_Apply((int)nMapData_Type.MapData_Stage_CalPos_FineCam);
 
                         m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.MapDataFlagCheck_FineCamMap;
                     }
@@ -27627,8 +27840,6 @@ namespace QMC.Common.Modules
                 case (int)ScannerCalibration_Step.StageXY_Move_CrossMarkCenterPos:
                     {
                         workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
-
-
 
                         //  속도 설정 (스트로크 짧은 Z축은 느리게)
                         //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
@@ -27645,13 +27856,18 @@ namespace QMC.Common.Modules
                         ////dZPos -= 0.1;
                         //MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, dZPos, lfVelocity, lfAccDec, lfAccDec);
 
-
-                        //  좌표계 (기존)
+                        //  좌표계 (기존) :: 현재값 기준으로 모션이동
                         workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = 
                             MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) - Equipment.stOffsetDistance.FromScannerToFineCam.X;
                         workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 
                             MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
 
+                        //가공 위치 기준으로 움직이자.
+                        //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] =
+                        //    m_dScannerCalPosX_Last - Equipment.stOffsetDistance.FromScannerToFineCam.X;
+                        //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] =
+                        //    m_dScannerCalPosY_Last - Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+                        
                         MapData_Apply((int)nMapData_Type.MapData_Stage_CalPos_FineCam);
 
                         //  속도 설정
@@ -27679,7 +27895,7 @@ namespace QMC.Common.Modules
                             TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensation_StartPosition_Set;
                         }
-                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 60000)
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout)
                         {
                             Log.Write("SLD-200", "Scanner Calibration", "Stage XY축, 가공 Center 위치로 이동 실패. (Timeout)");
 
@@ -27788,7 +28004,21 @@ namespace QMC.Common.Modules
                         {
                             // scannerCompensator를 사용하여 마크 검색
                             //PatternMatchingResult result = scannerCompensator.Search();
-                            int result = scannerCompensator.RunSearchMark();
+                            //int result = scannerCompensator.RunSearchMark();
+                            int result = 0;
+                            if (scannerCompensator == null)
+                            {
+                                Log.Write("ScannerCalibration", "ScannerCompensator is null");
+                                m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                                break;
+                            }
+
+                            //taskRunScannerConpensation = Task.Factory.StartNew(() =>
+                            //{
+                                //scannerCompensator.SetRunStatus(RunStatus.Run);
+                                result = scannerCompensator.RunSearchMark();
+                            //scannerCompensator.OnWork();
+                            //});
 
                             //if (result != null && result.Values.Count > 0)
                             if (result == 1)
@@ -27796,11 +28026,14 @@ namespace QMC.Common.Modules
                                 double markPositionX = scannerCompensator.ResultPosition.X;
                                 double markPositionY = scannerCompensator.ResultPosition.Y;
 
+                                Equipment.MachineStop_byUser = false;
+
                                 Log.Write("SLD-200", "Scanner Calibration",
                                           $"마크 위치: X={markPositionX}, Y={markPositionY}");
                             }
                             else
                             {
+                                Equipment.MachineStop_byUser = true;
                                 // 마크 검색 실패 -> 밑에서 결과 확인 및 Retry 여부 검토 
                                 Log.Write("SLD-200", "Scanner Calibration", "마크를 찾을 수 없습니다.");
                                 m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
@@ -27827,6 +28060,40 @@ namespace QMC.Common.Modules
                             TickCount_Start((int)TickType.TICK_LASER_SCANNER_CAL);
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_FindResultCheck;
                         }
+                    }
+                    break;
+
+                case (int)ScannerCalibration_Step.CrossMarkCenter_Find_Wait:
+                    {
+                        //int ret = -1;
+                        //if (taskRunScannerConpensation != null && taskRunScannerConpensation.IsCompleted)
+                        //{
+                        //    taskRunScannerConpensation.Dispose();
+                        //    taskRunScannerConpensation = null;
+                        //    ret = 0;
+                        //}
+                        //else
+                        //{
+                        //    break;
+                        //}
+
+                        m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_FindResultCheck;
+
+                        //if (result == 1)
+                        //{
+                        //    double markPositionX = scannerCompensator.ResultPosition.X;
+                        //    double markPositionY = scannerCompensator.ResultPosition.Y;
+
+                        //    Log.Write("SLD-200", "Scanner Calibration",
+                        //              $"마크 위치: X={markPositionX}, Y={markPositionY}");
+                        //}
+                        //else
+                        //{
+                        //    // 마크 검색 실패 -> 밑에서 결과 확인 및 Retry 여부 검토 
+                        //    Log.Write("SLD-200", "Scanner Calibration", "마크를 찾을 수 없습니다.");
+                        //    m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
+                        //    break;
+                        //}
                     }
                     break;
 
@@ -27915,7 +28182,7 @@ namespace QMC.Common.Modules
                         }
 
                         // 1분 동안 마크를 찾지 못할 경우
-                        if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) >= 60000) 
+                        if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) >= LaserScannerCalTimeout*12) //1분 
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Scanner Calibration", "작업 중지. (Cross Mark 검출 시간 초과)");
 
@@ -28071,7 +28338,7 @@ namespace QMC.Common.Modules
                             //m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
 
                         }
-                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 60000)
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout)
                         {
                             Log.Write("SLD-200", "Scanner Calibration", "Stage XY축, 보정 Center 위치로 이동 실패. (Timeout)");
 
@@ -28188,12 +28455,15 @@ namespace QMC.Common.Modules
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensator_Start;
                             //m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
                         }
-                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 60000) // 60초 초과시 실패 처리
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout)
                         {
                             Log.Write("SLD-200", "Scanner Calibration", "Stage XY축, 우측 상단 위치로 이동 실패. (Timeout)");
 
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
                             MessageBox.Show("Stage XY 축, 우측 상단 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                            //Test
+                            m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensator_Start;
                         }
                     }
                     break;
@@ -28216,6 +28486,7 @@ namespace QMC.Common.Modules
                             scannerCompensator.SetRunStatus(RunStatus.Run);
                             scannerCompensator.OnWork();
                         });
+
                         m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.ScannerCompensator_Wait;
 
                     }
@@ -28273,7 +28544,7 @@ namespace QMC.Common.Modules
                             m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.None;
                             MessageBox.Show("Scanner 보정 데이터 확인 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
-                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > 300000) // 60초 초과시 실패 처리 (5분)
+                        else if (TickCount_Elapsed((int)TickType.TICK_LASER_SCANNER_CAL) > LaserScannerCalTimeout*12) // 60초 초과시 실패 처리 (5분)
                         {
                             Log.Write("SLD-200", "Scanner Calibration", "Scanner 보정 데이터 확인 실패. (Timeout)");
 
@@ -28328,9 +28599,6 @@ namespace QMC.Common.Modules
                     }
                     break;
             }
-
-
-
         }
 
 
@@ -28498,6 +28766,7 @@ namespace QMC.Common.Modules
             }
         }
 
+        // Todo : 아래 함수. SpiralLabScanner 정상 동작하면 지우고 옮기자.
         public bool DrawCalibrationCrosses(int rows, int cols, float pitchX, float pitchY, double markLength = 0.5)
         {
             if (rows <= 0 || cols <= 0)

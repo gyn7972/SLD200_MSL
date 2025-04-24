@@ -30,6 +30,8 @@ using QMC.Common.Vision;
 using QMC.Common.VisionPart;
 using static OpenCvSharp.LineIterator;
 using static QMC.Common.Vision.Tools.PatternMatchingResult;
+using Cognex.VisionPro.Exceptions;
+//using OpenCvSharp;
 
 namespace SLD200_MSL
 {
@@ -383,6 +385,7 @@ namespace SLD200_MSL
             workStage.Config.ListIlluminationChannel[0].Value = Equipment.Scanner_Calibration_Illumination_channel_01_Value; //RED
             workStage.Config.ListIlluminationChannel[1].Value = Equipment.Scanner_Calibration_Illumination_channel_02_Value; //IR
 
+            IsPixel = true;
             this.Refresh();
 
         }
@@ -1693,6 +1696,83 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Sirius_Drawing", "Rendering_Resolution", textBox_Setup_Option_Sirius_Drawing_Resolution.Text, strFIle);
             SpiralLab.Sirius.Config.AngleFactor = Equipment.SiriusDrawing_Rendering_Resolution;
 
+            ////  Scanner Calibration parameter
+            //Equipment.Scanner_Calibration_LaserFrequency = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserFrequency.Text);
+            //Equipment.Scanner_Calibration_LaserPulseWidth = Equipment.ToDouble(textBox_Setup_ScannerCal_PulseWidth.Text);
+            //Equipment.Scanner_Calibration_LaserEnergy = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserEnergy.Text);
+            //Equipment.Scanner_Calibration_CrossMarkLength = Equipment.ToDouble(textBox_Setup_ScannerCal_CrossMarkLength.Text);
+            //Equipment.Scanner_Calibration_LaserMarkSpeed = Equipment.ToDouble(textBox_Setup_ScannerCal_MarkingSpeed.Text);
+            //Equipment.Scanner_Calibration_LaserJumpSpeed = Equipment.ToDouble(textBox_Setup_ScannerCal_JumpSpeed.Text);
+            //Equipment.Scanner_Calibration_LaserOnDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserOnDelay.Text);
+            //Equipment.Scanner_Calibration_LaserOffDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserOffDelay.Text);
+            //Equipment.Scanner_Calibration_MarkDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_MarkDelay.Text);
+            //Equipment.Scanner_Calibration_JumpDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_JumpDelay.Text);
+            //Equipment.Scanner_Calibration_PolygonDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_PolygonDelay.Text);
+            //Equipment.Scanner_Calibration_CalAreaWidth = Equipment.ToDouble(textBox_Setup_ScannerCal_CalAreaWidth.Text);
+            //Equipment.Scanner_Calibration_CalAreaHeight = Equipment.ToDouble(textBox_Setup_ScannerCal_CalAreaHeight.Text);
+            //Equipment.Scanner_Calibration_CalPitch = Equipment.ToDouble(textBox_Setup_ScannerCal_CalPitch.Text);
+
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Frequency", textBox_Setup_ScannerCal_LaserFrequency.Text, strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Pulse_Width", textBox_Setup_ScannerCal_PulseWidth.Text, strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Energy", textBox_Setup_ScannerCal_LaserEnergy.Text, strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "CrossMark_Length", textBox_Setup_ScannerCal_CrossMarkLength.Text, strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Marking_Speed", textBox_Setup_ScannerCal_MarkingSpeed.Text, strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Jump_Speed", textBox_Setup_ScannerCal_JumpSpeed.Text, strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_On_Delay", textBox_Setup_ScannerCal_LaserOnDelay.Text, strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Off_Delay", textBox_Setup_ScannerCal_LaserOffDelay.Text, strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Mark_Delay", textBox_Setup_ScannerCal_MarkDelay.Text, strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Jump_Delay", textBox_Setup_ScannerCal_JumpDelay.Text, strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Polygon_Delay", textBox_Setup_ScannerCal_PolygonDelay.Text, strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Width", textBox_Setup_ScannerCal_CalAreaWidth.Text, strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Height", textBox_Setup_ScannerCal_CalAreaHeight.Text, strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Cal_Pitch", textBox_Setup_ScannerCal_CalPitch.Text, strFIle);
+
+            //Equipment.Scanner_Calibration_srcFilePath = m_correction2DRtc.SourceCorrectionFile; // m_srcFile;
+            //Equipment.Scanner_Calibration_targetFilePath = m_correction2DRtc.TargetCorrectionFile;  // m_targetFile;
+            //Equipment.Scanner_Calibration_FieldSize = m_fieldSize;
+            //Equipment.Scanner_Calibration_rowInterval = m_correction2DRtc.RowInterval;  // m_rowInterval;
+            //Equipment.Scanner_Calibration_colInterval = m_correction2DRtc.ColInterval; //m_colInterval;
+            //Equipment.Scanner_Calibration_rowCount = m_correction2DRtc.Rows;   //m_row;
+            //Equipment.Scanner_Calibration_colCount = m_correction2DRtc.Cols;   //m_col;
+
+            //m_srcFile = Equipment.Scanner_Calibration_srcFilePath;
+            //m_targetFile = Equipment.Scanner_Calibration_targetFilePath;
+            //m_rowInterval = (float)Equipment.Scanner_Calibration_rowInterval;
+            //m_colInterval = (float)Equipment.Scanner_Calibration_colInterval;
+            //m_row = Equipment.Scanner_Calibration_rowCount;
+            //m_col = Equipment.Scanner_Calibration_colCount;
+
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "srcFilePath", m_srcFile, strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "targetFilePath", m_targetFile, strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "FieldSize", m_fieldSize.ToString(), strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "rowInterval", m_rowInterval.ToString(), strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "colInterval", m_colInterval.ToString(), strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "rowCount", m_row.ToString(), strFIle);
+            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "colCount", m_col.ToString(), strFIle);
+
+            MessageBox.Show("Machine Option 파일을 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        public void Machine_ScannerCalibration_Save()
+        {
+            string strTemp = "";
+            string strFIle = "";
+            strFIle = ConfigManager.GetConfigPath() + "\\Machine ScannerCalibration (Do not delete or modify).ini";
+            if (File.Exists(strFIle) == false)
+            {
+                MessageBox.Show("Machine ScannerCalibration 파일이 없습니다.\r\n\r\n[Default 값(CO₂)으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return false;
+            }
+
+            if (File.Exists(strFIle) == false)
+            {
+                File.Create(strFIle);
+                //return;
+
+                MessageBox.Show("Machine ScannerCalibration 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             //  Scanner Calibration parameter
             Equipment.Scanner_Calibration_LaserFrequency = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserFrequency.Text);
             Equipment.Scanner_Calibration_LaserPulseWidth = Equipment.ToDouble(textBox_Setup_ScannerCal_PulseWidth.Text);
@@ -1723,12 +1803,12 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Width", textBox_Setup_ScannerCal_CalAreaWidth.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Height", textBox_Setup_ScannerCal_CalAreaHeight.Text, strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Cal_Pitch", textBox_Setup_ScannerCal_CalPitch.Text, strFIle);
-            
+
             Equipment.Scanner_Calibration_srcFilePath = m_correction2DRtc.SourceCorrectionFile; // m_srcFile;
             Equipment.Scanner_Calibration_targetFilePath = m_correction2DRtc.TargetCorrectionFile;  // m_targetFile;
             Equipment.Scanner_Calibration_FieldSize = m_fieldSize;
             Equipment.Scanner_Calibration_rowInterval = m_correction2DRtc.RowInterval;  // m_rowInterval;
-            Equipment.Scanner_Calibration_colInterval = m_correction2DRtc.ColInterval; //m_colInterval;
+            Equipment.Scanner_Calibration_colInterval = m_correction2DRtc.ColInterval;  //m_colInterval;
             Equipment.Scanner_Calibration_rowCount = m_correction2DRtc.Rows;   //m_row;
             Equipment.Scanner_Calibration_colCount = m_correction2DRtc.Cols;   //m_col;
 
@@ -1747,7 +1827,7 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "rowCount", m_row.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "colCount", m_col.ToString(), strFIle);
 
-            MessageBox.Show("Machine Option 파일을 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Machine ScannerCalibration 파일을 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btnScannerOffset_Set_Click(object sender, EventArgs e)
@@ -2142,11 +2222,7 @@ namespace SLD200_MSL
         private void button_Setup_ScannerCal_Save_Click(object sender, EventArgs e)
         {
             //  Scanner Calibration Parameter 저장
-
             string strTemp = "";
-
-            bool m_bRet = true;
-            string strFIle = "";
             StringBuilder temp = new StringBuilder(255);
 
             //  체크 포인트
@@ -2156,22 +2232,28 @@ namespace SLD200_MSL
                 MessageBox.Show("\"Offset Distance for Coordinate Matching\" 과\r\n\"Offset Distance to the Center of the Scanner\" 두 그룹 전체에 값이 들어가면 안됩니다.\n\r\n[두 그룹 중 한쪽에만 값이 들어가거나, 모두 0 이어야 합니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            strFIle = ConfigManager.GetConfigPath() + "\\Machine Option (Do not delete or modify).ini";
-
-            if (File.Exists(strFIle) == false)
-            {
-                MessageBox.Show("Machine Option 파일이 없습니다.\r\n\r\n[Default 값(CO₂)으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //return false;
-            }
 
             //  Scanner Calibration 관련 파라미터 저장
-            Machine_Option_Save();
-
+            Machine_ScannerCalibration_Save();
         }
 
         private void btnCalStart_Click(object sender, EventArgs e)
         {
             string m_strTemp = "";
+
+            workStage.m_ScannerCalibration_Start = true;
+            //workStage.timer_ScannerCalibration.Enabled = true;
+            workStage.timer_ScannerCalibration.Start();
+            workStage._isCalibrationRunning = false;
+            workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.Start;
+
+            return;
+
+            var mb = new QMC.Common.UI.MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Scanner Calibration - Laser부터 시작합니다.\n\n시작하시겠습니까?"))
+            {
+                return;
+            }
 
             //TEST
             //if (!workStage.m_bHomeOK)
@@ -2195,8 +2277,9 @@ namespace SLD200_MSL
 
             //Equipment.Scanner_Calibration_Change;
             // 캘판 변경 유/무에 대해서 물어보는 메세지 박스해주고 True/False 리턴받기
-            var mb = new QMC.Common.UI.MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Scanner Calibration을 시작합니다.\n\n캘리브레이션 판이 변경되었습니까?"))
+            //var mb = new QMC.Common.UI.MessageBoxYesNo();
+            var mb1 = new QMC.Common.UI.MessageBoxYesNo();
+            if (DialogResult.Yes != mb1.ShowDialog("Question ?", "Scanner Calibration을 시작합니다.\n\n캘리브레이션 판이 변경되었습니까?"))
             {
                 Equipment.Scanner_Calibration_Change = false;
             }
@@ -2205,30 +2288,49 @@ namespace SLD200_MSL
                 Equipment.Scanner_Calibration_Change = true;
             }
 
+
             if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)
             {
                 Equipment.Scanner_Vision_Offset_Setting_Use = false;
 
-                workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.Start;
-                //workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.VerifyCalibrationAreaPos;
+                workStage.m_ScannerCalibration_Start = true;
                 workStage.timer_ScannerCalibration.Enabled = true;
+                workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.Start;
                 
-                WorkStartTick = Environment.TickCount;
+
+                //workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.VerifyCalibrationAreaPos;
+                
+                //WorkStartTick = Environment.TickCount;
             }
         }
 
         private void btnCalStop_Click(object sender, EventArgs e)
         {
             Equipment.AutoRunStatus = false;
+
+            workStage.m_ScannerCalibration_Start = true;
+            //workStage.timer_ScannerCalibration.Enabled = true;
+            workStage.timer_ScannerCalibration.Stop();
             workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.None;
+
+            return;
+
+            workStage.m_ScannerCalibration_Start = false;
             workStage.timer_ScannerCalibration.Enabled = false;
             workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
+            workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.None;
+
         }
 
         private void btnCalStart_Vision_Click(object sender, EventArgs e)
         {
             string m_strTemp = "";
 
+            var mb = new QMC.Common.UI.MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Scanner Calibration - Vision부터 시작합니다.\n\n시작하시겠습니까?"))
+            {
+                return;
+            }
             //TEST
             //if (!workStage.m_bHomeOK)
             //{
@@ -2249,35 +2351,26 @@ namespace SLD200_MSL
                 return;
             }
 
-            //Equipment.Scanner_Calibration_Change = true;
-            // 캘판 변경 유/무에 대해서 물어보는 메세지 박스해주고 True/False 리턴받기
-            //var mb = new MessageBoxYesNo();
-            //if (DialogResult.Yes != mb.ShowDialog("Question ?", "Scanner Calibration을 시작합니다.\n\n캘리브레이션 판이 변경되었습니까?"))
-            //{
-            //    Equipment.Scanner_Calibration_Change = false;
-            //}
-            //else
-            //{
-            //    Equipment.Scanner_Calibration_Change = true;
-            //}
-
-            //if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)
-            //{
-
-            //    workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.Start;
-            //    workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.VerifyCalibrationAreaPos;
-            //    workStage.timer_ScannerCalibration.Enabled = true;
-
-            //    WorkStartTick = Environment.TickCount;
-            //}
             if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)
             {
                 Equipment.Scanner_Vision_Offset_Setting_Use = false;
-                workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.ScannerCompensation_StartPosition_Set;
-                //workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.MapDataChange_FineCamMap;
-                workStage.timer_ScannerCalibration.Enabled = true;
 
-                WorkStartTick = Environment.TickCount;
+                workStage.m_ScannerCalibration_Start = true;
+                workStage.timer_ScannerCalibration.Enabled = true;
+                //workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.StageXY_Move_CrossMarkCenterPos; //고민 필요. 
+                workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.ScannerCompensation_StartPosition_Set;
+                //MapDataChange_FineCamMap
+                
+
+                //workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.VerifyCalibrationAreaPos;
+                
+                //WorkStartTick = Environment.TickCount;
+
+                //Equipment.Scanner_Vision_Offset_Setting_Use = false;
+                //workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.ScannerCompensation_StartPosition_Set;
+                ////workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.MapDataChange_FineCamMap;
+                //workStage.timer_ScannerCalibration.Enabled = true;
+                //WorkStartTick = Environment.TickCount;
             }
         }
 
@@ -2296,16 +2389,16 @@ namespace SLD200_MSL
                 indexY = data.m_nindexY;
 
                 // excel 계산식과 동일하게 수정.
-                double dOffsetX = data.m_dX - data.m_dMeasureX;
-                double dMeasureX = data.m_dX + dOffsetX;
-
-                double dOffsetY = data.m_dY - data.m_dMeasureY;
-                double dMeasureY = data.m_dY + dOffsetY;
+                //double dOffsetX = data.m_dX - data.m_dMeasureX;
+                //double dMeasureX = data.m_dX + dOffsetX;
+                //double dOffsetY = data.m_dY - data.m_dMeasureY;
+                //double dMeasureY = data.m_dY + dOffsetY;
 
                 Vector2 position = new Vector2((float)data.m_dX, (float)data.m_dY);   //현재 장비 위치값 넣고..
-                Vector2 offset = new Vector2((float)dMeasureX, (float)dMeasureY);   //현재 장비 위치값 넣고..
+                Vector2 offset = new Vector2((float)data.m_dMeasureX, (float)data.m_dMeasureY);   //현재 장비 위치값 넣고..
 
                 m_correction2DRtc.AddAbsolute(indexX, indexY, position, offset);
+                
             }
 
             string strPath = "D:\\SLD-200_Parameter\\"; //"D:\\SLD-200\\Log\\"; 
@@ -2324,7 +2417,6 @@ namespace SLD200_MSL
                 filePath = strPath + "Cor_200U_" + timeString + ".ct5";
             }
             m_targetFile = filePath;
-
             m_correction2DRtc.TargetCorrectionFile = m_targetFile;
             if (m_correction2DRtcForm.InvokeRequired)
             {
@@ -2356,28 +2448,30 @@ namespace SLD200_MSL
 
             // Todo: 구영남 - 처리 완료 메세지 확인!
             //Msg :: 처리 완료 메세지... 장비 돌리면서 확인 필요.
-            //while (true)
-            //{
-            //    string rtcMsg = m_correction2DRtc.ResultMessage;
+            while (true)
+            {
+                string rtcMsg = m_correction2DRtc.ResultMessage;
 
-            //    //m_correction2DRtc.OnResult();
-            //    if (rtcMsg != null)
-            //    {
-            //        // Todo: 구영남 - 처리 완료 메세지 확인!
-            //        if (rtcMsg.Contains("Success")) // 성공 메시지 확인 (예: "Success"라는 문자열 포함 여부)
-            //        {
-            //            Equipment.Scanner_Calibration_Convert = 1; // 성공
-            //        }
-            //        else
-            //        {
-            //            Equipment.Scanner_Calibration_Convert = -1; // 실패
-            //        }
-            //        break; // 루프 종료
-            //    }
+                //m_correction2DRtc.OnResult();
+                if (rtcMsg != null)
+                {
+                    Equipment.Scanner_Calibration_Convert = 1; // 성공
 
-            //    // CPU 점유율을 낮추기 위해 잠시 대기
-            //    Thread.Sleep(100); // 100ms 대기
-            //}
+                    // Todo: 구영남 - 처리 완료 메세지 확인!
+                    //if (rtcMsg.Contains("Success")) // 성공 메시지 확인 (예: "Success"라는 문자열 포함 여부)
+                    //{
+                    //    Equipment.Scanner_Calibration_Convert = 1; // 성공
+                    //}
+                    //else
+                    //{
+                    //    Equipment.Scanner_Calibration_Convert = -1; // 실패
+                    //}
+                    break; // 루프 종료
+                }
+
+                // CPU 점유율을 낮추기 위해 잠시 대기
+                Thread.Sleep(100); // 100ms 대기
+            }
 
 
             //Convert완료 확인 후 해야 한다.
@@ -2391,6 +2485,8 @@ namespace SLD200_MSL
             //{
             //    MessageBox.Show("파일을 적용하지 못했습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             //}
+
+            //Equipment.Scanner_Calibration_Convert = 1; // 성공
         }
 
         // Todo: 구영남 Cal파일 넣기 함수 만들것.
@@ -2411,7 +2507,12 @@ namespace SLD200_MSL
 
             m_srcFile = filePath;
             m_correction2DRtc.SourceCorrectionFile = m_srcFile;
-            //m_correction2DRtcForm.RefreshData();
+            m_correction2DRtc.TargetCorrectionFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "correction", $"newfile.ct5"); //Equipment.Scanner_Calibration_targetFilePath;
+            m_correction2DRtcForm.RefreshData();
+
+            Equipment.Scanner_Calibration_srcFilePath = m_srcFile;
+
+            Machine_ScannerCalibration_Save();
 
             return true;
         }
@@ -3076,7 +3177,7 @@ namespace SLD200_MSL
             recipe.TrainRoiStartLocation = RoiTrain.Parameter.StartLocation;
             recipe.TrainRoiEndLocation = RoiTrain.Parameter.EndLocation;
 
-            Box_Setup_ScannerCal_ImageViewer.Display();
+            //Box_Setup_ScannerCal_ImageViewer.Display();
             //if (m_JogControl != null)
             //{
             //    m_JogControl.Show();
@@ -3110,7 +3211,7 @@ namespace SLD200_MSL
             recipe.InspectRoiStartLocation = RoiInspect.Parameter.StartLocation;
             recipe.InspectRoiEndLocation = RoiInspect.Parameter.EndLocation;
 
-            Box_Setup_ScannerCal_ImageViewer.Display();
+            //Box_Setup_ScannerCal_ImageViewer.Display();
             //if (m_JogControl != null)
             //{
             //    m_JogControl.Show();
@@ -3251,71 +3352,95 @@ namespace SLD200_MSL
 
             if(Equipment.Scanner_Calibration_UseBlobVisionTool)
             {
-                //BlobResult result = workStage.scannerCompensator.Blob();
-                bool bFind = false;
-                QMC_ImageProcessFindAlign qip = new QMC_ImageProcessFindAlign();
-                List<RectangleF> Fiducial_circlesResult = new List<RectangleF>();
-
-                PatternMatchingResult result = workStage.scannerCompensator.GetResult();
-                if (result != null)
-                {
-                    Box_Setup_ScannerCal_ImageViewer.ResultOverlays.Clear();
-                }
                 if (IsPixel == true)
                 {
+                    PatternMatchingParameter.MaxTolerance = 0;
+                    PatternMatchingParameter.MaxInstance = Equipment.ToInt(basetextBox_Setup_ScannerCal_MaxInstance.Text);
+                    PatternMatchingParameter.MinTolerance = 0;
+                    PatternMatchingParameter.MinScore = Equipment.ToDouble(basetextBox_Setup_ScannerCal_MinScore.Text);
+                    PatternMatchingParameter.DuplicateChecked = baseToggleButton_Setup_ScannerCal_DuplicateCheck.GetButtonStatus();
+                    PatternMatchingParameter.UseMaskImage = baseToggleButton_Setup_ScannerCal_UseMaskImage.GetButtonStatus();
+
+                    PatternMatchingResult result = workStage.scannerCompensator.GetResult();
+                    if (result != null)
+                    {
+                        Box_Setup_ScannerCal_ImageViewer.ResultOverlays.Clear();
+                    }
+
+                    result = workStage.scannerCompensator.Search();
+                    if (result != null)
+                    {
+                        foreach (var overlay in result.ResultOverlays)
+                        {
+                            Box_Setup_ScannerCal_ImageViewer.ResultOverlays.Add(overlay);
+                            //overlay.Visible = true;
+                        }
+                    }
+
+                    //BlobResult result = workStage.scannerCompensator.Blob();
+                    bool bFind = false;
+                    QMC_ImageProcessFindAlign qip = new QMC_ImageProcessFindAlign();
+                    List<RectangleF> Fiducial_circlesResult = new List<RectangleF>();
+
+                    VisionScale m_TempScale = new VisionScale();
+                    m_TempScale.X = workStage.Config.ParamConfig.UpperVision_Scale_X;
+                    m_TempScale.Y = workStage.Config.ParamConfig.UpperVision_Scale_Y;
+                    m_TempScale.InvertedX = workStage.Config.ParamConfig.UpperVision_ScaleInvert_X;
+                    m_TempScale.InvertedY = workStage.Config.ParamConfig.UpperVision_ScaleInvert_Y;
+
+                    
+                    double pixelR = (Equipment.Scanner_Calibration_CrossMarkLength / 2) / (m_TempScale.X);
                     if (Box_Setup_ScannerCal_ImageViewer.Simulated)
                     {
                         qip.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, Box_Setup_ScannerCal_ImageViewer.InputImage.RawData
                             , Box_Setup_ScannerCal_ImageViewer.InputImage.Header.Width
                             , Box_Setup_ScannerCal_ImageViewer.InputImage.Header.Height
-                            , 1000, .9, ref bFind);
-                        if (Fiducial_circlesResult.Count > 0)
-                        {
-                            double x = Fiducial_circlesResult[0].X + (Fiducial_circlesResult[0].Width / 2);
-                            double y = Fiducial_circlesResult[0].Y + (Fiducial_circlesResult[0].Height / 2);
-
-                            PatternMatchingResultValue pmrv = new PatternMatchingResultValue();
-                            pmrv.X = x;
-                            pmrv.Y = y;
-
-                            //비교를 위해서 우선 막아놈.
-                            //result.Values[0] = pmrv;
-                            RectangleFrameVisionImageOverlay overlay = new RectangleFrameVisionImageOverlay("FindCircle", new Point((int)Fiducial_circlesResult[0].Left, (int)Fiducial_circlesResult[0].Top)
-                                , new Point((int)(Fiducial_circlesResult[0].Right), (int)Fiducial_circlesResult[0].Bottom));
-
-                            Box_Setup_ScannerCal_ImageViewer.ResultOverlays.Add(overlay);
-                            overlay.Visible = true;
-
-
-                            UpdataPositionData(result.Values[0].X, result.Values[0].Y, result.Values[0].R, pmrv.X, pmrv.Y);
-                        }
+                            , (int)pixelR, 0.5, ref bFind, (int)result.Values[0].X, (int)result.Values[0].Y);
+                        //1000, 1 -> 엄청느린값 // 원의 반지름의 값이랑 오차범위
+                        //센터점 전달해서 찾기로, 센터 못찾으면 그냥 센터로. 
                     }
                     else
                     {
                         qip.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, workStage.scannerCompensator.Camera.LatestImage.RawData
                             , workStage.scannerCompensator.Camera.LatestImage.Header.Width
                             , workStage.scannerCompensator.Camera.LatestImage.Header.Height
-                            , 1000, 1, ref bFind);
-                        if (Fiducial_circlesResult.Count > 0)
-                        {
-                            double x = Fiducial_circlesResult[0].X + (Fiducial_circlesResult[0].Width / 2);
-                            double y = Fiducial_circlesResult[0].Y + (Fiducial_circlesResult[0].Height / 2);
+                            , (int)pixelR, 0.5, ref bFind, (int)result.Values[0].X, (int)result.Values[0].Y);
+                        //1000, 1 -> 엄청느린값 // 원의 반지름의 값이랑 오차범위
+                        //센터점 전달해서 찾기로, 센터 못찾으면 그냥 센터로. 
+                    }
 
-                            PatternMatchingResultValue pmrv = new PatternMatchingResultValue();
-                            pmrv.X = x;
-                            pmrv.Y = y;
+                    if (Fiducial_circlesResult.Count > 0)
+                    {
+                        double x = Fiducial_circlesResult[0].X + (Fiducial_circlesResult[0].Width / 2);
+                        double y = Fiducial_circlesResult[0].Y + (Fiducial_circlesResult[0].Height / 2);
 
-                            result.Values[0] = pmrv;
+                        PatternMatchingResultValue pmrv = new PatternMatchingResultValue();
+                        pmrv.X = x;
+                        pmrv.Y = y;
 
-                            UpdataPositionData(result.Values[0].X, result.Values[0].Y, result.Values[0].R);
-                        }
+                        //비교를 위해서 우선 막아놈.
+                        //result.Values[0] = pmrv;
+                        RectangleFrameVisionImageOverlay overlay = new RectangleFrameVisionImageOverlay("FindCircle", 
+                            new Point((int)Fiducial_circlesResult[0].Left, (int)Fiducial_circlesResult[0].Top)
+                            , new Point((int)(Fiducial_circlesResult[0].Right), (int)Fiducial_circlesResult[0].Bottom));
+
+                        Box_Setup_ScannerCal_ImageViewer.ResultOverlays.Add(overlay);
+                        overlay.Visible = true;
+
+                        UpdataPositionData(result.Values[0].X, result.Values[0].Y, result.Values[0].R, pmrv.X, pmrv.Y);
                     }
                 }
                 else
                 {
+                    //PointD converted = new PointD((result.Values[0].X - this.m_Owner.Camera.Resolution.Width / 2) * ((WorkStage)this.m_Owner.Owner).Scale.X * (((WorkStage)this.m_Owner.Owner).Scale.InvertedX ? 1 : -1),
+                    //                              (result.Values[0].Y - this.m_Owner.Camera.Resolution.Height / 2) * ((WorkStage)this.m_Owner.Owner).Scale.Y * (((WorkStage)this.m_Owner.Owner).Scale.InvertedY ? 1 : -1));
 
+                    //PointD converted = new PointD((result.Values[0].X - workStage.scannerCompensator.Camera.Resolution.Width / 2) * (workStage.scannerCompensator.Owner).Scale.X * ((workStage.scannerCompensator.Owner).Scale.InvertedX ? 1 : -1),
+                    //                              (result.Values[0].Y - workStage.scannerCompensator.Camera.Resolution.Height / 2) * (workStage.scannerCompensator.Owner).Scale.Y * ((workStage.scannerCompensator.Owner).Scale.InvertedY ? 1 : -1));
+
+                    //UpdataPositionData(converted.X, converted.Y, result.Values[0].R);
                 }
-                    
+
             }
             else //Scanner_Calibration_UsePatternMatching
             {
@@ -3344,59 +3469,9 @@ namespace SLD200_MSL
                 
                 if (result != null && result.Values.Count > 0)
                 {
-                    //? 스케일값 제대로 넣어줘야함
                     if (IsPixel == true)
                     {
-                        bool bFind = false;
-                        QMC_ImageProcessFindAlign qip = new QMC_ImageProcessFindAlign();
-                        List<RectangleF> Fiducial_circlesResult = new List<RectangleF>();
-                        
-                        if(Box_Setup_ScannerCal_ImageViewer.Simulated)
-                        {
-                            qip.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, Box_Setup_ScannerCal_ImageViewer.InputImage.RawData
-                                , Box_Setup_ScannerCal_ImageViewer.InputImage.Header.Width
-                                , Box_Setup_ScannerCal_ImageViewer.InputImage.Header.Height
-                                , 1000, .9, ref bFind);
-                            if (Fiducial_circlesResult.Count > 0)
-                            {
-                                double x = Fiducial_circlesResult[0].X + (Fiducial_circlesResult[0].Width / 2);
-                                double y = Fiducial_circlesResult[0].Y + (Fiducial_circlesResult[0].Height / 2);
-
-                                PatternMatchingResultValue pmrv = new PatternMatchingResultValue();
-                                pmrv.X = x;
-                                pmrv.Y = y;
-
-                                //result.Values[0] = pmrv;
-                                RectangleFrameVisionImageOverlay overlay = new RectangleFrameVisionImageOverlay("FindCircle", new Point((int)Fiducial_circlesResult[0].Left, (int)Fiducial_circlesResult[0].Top)
-                                    , new Point((int)(Fiducial_circlesResult[0].Right), (int)Fiducial_circlesResult[0].Bottom));
-
-                                Box_Setup_ScannerCal_ImageViewer.ResultOverlays.Add(overlay);
-                                overlay.Visible = true;
-
-                                
-                                UpdataPositionData(result.Values[0].X, result.Values[0].Y, result.Values[0].R, pmrv.X, pmrv.Y);
-                            }
-                        }
-                        else
-                        {
-                            qip.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, workStage.scannerCompensator.Camera.LatestImage.RawData
-                                , workStage.scannerCompensator.Camera.LatestImage.Header.Width
-                                , workStage.scannerCompensator.Camera.LatestImage.Header.Height
-                                , 1000, 1, ref bFind);
-                            if (Fiducial_circlesResult.Count > 0)
-                            {
-                                double x = Fiducial_circlesResult[0].X + (Fiducial_circlesResult[0].Width / 2);
-                                double y = Fiducial_circlesResult[0].Y + (Fiducial_circlesResult[0].Height / 2);
-
-                                PatternMatchingResultValue pmrv = new PatternMatchingResultValue();
-                                pmrv.X = x;
-                                pmrv.Y = y;
-
-                                result.Values[0] = pmrv;
-
-                                UpdataPositionData(result.Values[0].X, result.Values[0].Y, result.Values[0].R);
-                            }
-                        }
+                        UpdataPositionData(result.Values[0].X, result.Values[0].Y, result.Values[0].R);
                     }
                     else
                     {
@@ -3631,7 +3706,17 @@ namespace SLD200_MSL
 
         private void button_Setup_ScannerCal_Rtc6_Cal_File_Load_Click(object sender, EventArgs e)
         {
-            LoadCorrectionData(0, m_targetFile);
+            var mb = new QMC.Common.UI.MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "신규 ct5 파일\n\n적용하시겠습니까?"))
+            {
+                return;
+            }
+
+            bool bRtn = LoadCorrectionData(0, m_targetFile);
+            if (bRtn)
+            {
+                Machine_ScannerCalibration_Save();
+            }
         }
 
         private void button_Setup_ScannerCal_CameraLive_Click(object sender, EventArgs e)
@@ -3656,6 +3741,25 @@ namespace SLD200_MSL
                 workStage.Camera_HighRes.StartLive();
             }
 
+        }
+
+        private void button_Setup_ScannerCal_CameraStop_Click(object sender, EventArgs e)
+        {
+            if (!workStage.Camera_HighRes.Opened ||
+                !workStage.Camera_LowRes.Opened)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
+                return;
+            }
+
+            this.Box_Setup_ScannerCal_ImageViewer.StopUpdateTask();
+            //this.Box_Setup_ScannerCal_ImageViewer.Visible = false;
+
+            if (workStage.Camera_HighRes != null)
+            {
+                workStage.Camera_HighRes.StopLive();
+            }
         }
     }
 }

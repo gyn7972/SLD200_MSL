@@ -45,8 +45,6 @@ namespace QMC.Common.Parts
         }
         #endregion
 
-        public Action<string> ActionSaveDone;
-        public Action<QMCFindLenzCenter> ActionSaveDoneAllData;
         #region Field
         private WorkStage m_Owner;
 
@@ -64,7 +62,6 @@ namespace QMC.Common.Parts
             base.UpdateRecipeData();
         }
 
-        
         #region Constructor
         public ScannerCompensator(string strName) : base(strName)
         {
@@ -131,14 +128,17 @@ namespace QMC.Common.Parts
 
         private XyCoordinate xyInterpolatedCoordinate = new XyCoordinate();         //  Stage XY Map Data 로 변환된 위치 이동 좌표
 
-
         CorrectionDataSaver correctionDataSaver = new CorrectionDataSaver();
+
+        public Action<string> ActionSaveDone;
+        public Action<QMCFindLenzCenter> ActionSaveDoneAllData;
+
         // CorrectionData 전달을 위한 이벤트 정의
         public event Action<List<CorrectionData>> CorrectionDataUpdated;
+
         #endregion
 
         #region Method
-
         protected int GetMotionLimit(MotionAxis axis, out RangeD range)
         {
             int ret = 0;
@@ -402,11 +402,19 @@ namespace QMC.Common.Parts
         {
             int ret = 0;
 
+            //VisionProPatternMatchingVisionTool
             PatternMatchingResult patternMatchingResult = null;
             XyzCoordinate currentPos = new XyzCoordinate();
             XyCoordinate resultPosition = new XyCoordinate();
 
             patternMatchingResult = Search();
+
+            if(patternMatchingResult == null)
+            {
+                MessageBox.Show("Can not Search Center Mark");
+
+                return -1;
+            }
 
             if (patternMatchingResult.Values.Count <= 0)
             {
@@ -717,7 +725,7 @@ namespace QMC.Common.Parts
                                     qip.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, Camera.LatestImage.RawData
                                             , Camera.LatestImage.Header.Width
                                             , Camera.LatestImage.Header.Height
-                                            , (int)pixelR, 0.2, ref bFind, (int)pmr.Values[0].X, (int)pmr.Values[0].Y);
+                                            , (int)pixelR, 0.5, ref bFind, (int)pmr.Values[0].X, (int)pmr.Values[0].Y);
                                     //1000, 1 -> 엄청느린값 // 원의 반지름의 값이랑 오차범위
                                     //센터점 전달해서 찾기로, 센터 못찾으면 그냥 센터로. 
 
@@ -745,7 +753,6 @@ namespace QMC.Common.Parts
                     else
                     {
                         blobResult = this.Blob();
-
                         if (blobResult.PixelValues.Count <= 0)
                         {
                             if (this.Stage.GetCommandPosition(ref currentPosition) != 0) continue;
@@ -772,65 +779,35 @@ namespace QMC.Common.Parts
 
                             PointD offset = new PointD(result.Offset.X, result.Offset.Y);
 
-                            double resultX = xIndex + offset.X;
-                            double resultY = yIndex + offset.Y;
+                            //double resultX = xIndex + offset.X;
+                            //double resultY = yIndex + offset.Y;
+                            double resultX = xIndex - offset.X;
+                            double resultY = yIndex - offset.Y;
 
                             // data format : row, col, reference, measured
                             LogManager.Instance.WriteTxt(fileName, string.Format($"{x}, {y} : {yIndex.ToString("0.000")}, {xIndex.ToString("0.000")}, {resultY.ToString("0.00000")}, {resultX.ToString("0.00000")}"));
                             //LogManager.Instance.WriteTxt(fileName, string.Format($"{x}, {y} : {xIndex.ToString("0.000")}, {yIndex.ToString("0.000")}, {resultX.ToString("0.000")}, {resultY.ToString("0.000")}"));
 
-                            findLenzCenter.AddSLDMeasureData(new SLDMeasureData(x, y, yIndex, xIndex, resultY, resultX));
+                            //Motor <-> Scanner 좌표에 따른 x, y -> y, x 반전.
+                            int nIndexX = task.Result.x;
+                            int nIndexY = task.Result.y;
+                            double dX = TruncateTo3DecimalPlacesAndZeroRest(yIndex);
+                            double dY = TruncateTo3DecimalPlacesAndZeroRest(xIndex);
+                            double dMeasureX = TruncateTo3DecimalPlacesAndZeroRest(resultY);
+                            double dMeasureY = TruncateTo3DecimalPlacesAndZeroRest(resultX);
+
+                            findLenzCenter.AddSLDMeasureData(new SLDMeasureData(nIndexX, nIndexY, dX, dY, dMeasureX, dMeasureY));
+                            //findLenzCenter.AddSLDMeasureData(new SLDMeasureData(x, y, yIndex, xIndex, resultY, resultX));
                             //findLenzCenter.AddSLDMeasureData(new SLDMeasureData(x, y, yIndex, xIndex, offset.Y, offset.X));
-
-                            //SpiralLabScanner Compensator Data 사용 위함.
-                            correctionDataSaver.AddCorrectionData(new CorrectionData(x, y, task.Result.CommandPosition.Y, task.Result.CommandPosition.X, offset.Y, offset.X));
-
-                        }
-                        else
-                        {
-                            if (this.Stage.GetCommandPosition(ref currentPosition) != 0) continue;
-
-                            if (((WorkStage)this.Owner).Config.ParamConfig.ManualScale_Usage)
-                            {
-                                VisionScale m_TempScale = new VisionScale();
-                                m_TempScale.X = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_X;
-                                m_TempScale.Y = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
-                                m_TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
-                                m_TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
-
-                                VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, m_Owner.Camera_HighRes.Resolution, new PointD(blobResult.PixelValues[0][1].Value, blobResult.PixelValues[0][2].Value), out resultPosition);
-                            }
-                            else
-                            {
-                                VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, m_Owner.Camera_HighRes.Resolution, new PointD(blobResult.PixelValues[0][1].Value, blobResult.PixelValues[0][2].Value), out resultPosition);
-                            }
-
-
-                            //double xIndex = defaultXIndex - this.Config.PitchDistanceX * x;
-                            double xIndex = defaultXIndex - this.Config.PitchDistanceX * x;
-                            double yIndex = defaultYIndex + this.Config.PitchDistanceY * y;
-
-                            PointD offset = new PointD(result.Offset.X, result.Offset.Y);
-
-                            double resultX = xIndex + offset.X;
-                            double resultY = yIndex + offset.Y;
-
-                            // data format : row, col, reference, measured
-                            LogManager.Instance.WriteTxt(fileName, string.Format($"{x}, {y} : {yIndex.ToString("0.000")}, {xIndex.ToString("0.000")}, {resultY.ToString("0.00000")}, {resultX.ToString("0.00000")}"));
-                            //LogManager.Instance.WriteTxt(fileName, string.Format($"{x}, {y} : {xIndex.ToString("0.000")}, {yIndex.ToString("0.000")}, {resultX.ToString("0.000")}, {resultY.ToString("0.000")}"));
-
-                            findLenzCenter.AddSLDMeasureData(new SLDMeasureData(x, y, yIndex, xIndex, resultY, resultX));
-                            //findLenzCenter.AddSLDMeasureData(new SLDMeasureData(x, y, yIndex, xIndex, offset.Y, offset.X));
-
-                            //SpiralLabScanner Compensator Data 사용 위함.
-                            //correctionDataSaver.AddCorrectionData(new CorrectionData(x, y, task.Result.CommandPosition.Y, task.Result.CommandPosition.X, offset.Y, offset.X));
-
                         }
                     }
                 }
             }
             #endregion
-            WaitNCalcData(results, fileName, ref resultPosition, ref result, findLenzCenter, defaultXIndex, defaultYIndex, task);
+            if (this.Config.SearchMethod == SearchMethod.PatternMatching)
+            {
+                WaitNCalcData(results, fileName, ref resultPosition, ref result, findLenzCenter, defaultXIndex, defaultYIndex, task);
+            }
 
             // Convert 대기를 위한 변수 처리.
             Equipment.Scanner_Calibration_Convert = 0;
@@ -899,25 +876,33 @@ namespace QMC.Common.Parts
 
                     PointD offset = new PointD(result.Offset.X, result.Offset.Y);
 
-                    double resultX = xIndex + offset.X;
-                    double resultY = yIndex + offset.Y;
+                    //기존
+                    //double resultX = xIndex + offset.X;
+                    //double resultY = yIndex + offset.Y;
+                    //FormNew_Setup에서 수정하던 부분 옮김.
+                    double resultX = xIndex - offset.X;
+                    double resultY = yIndex - offset.Y;
 
                     // data format : row, col, reference, measured
                     LogManager.Instance.WriteTxt(fileName, string.Format($"{task.Result.x}, {task.Result.y} : {yIndex.ToString("0.000")}, {xIndex.ToString("0.000")}, {resultY.ToString("0.00000")}, {resultX.ToString("0.00000")}"));
                     //LogManager.Instance.WriteTxt(fileName, string.Format($"{x}, {y} : {xIndex.ToString("0.000")}, {yIndex.ToString("0.000")}, {resultX.ToString("0.000")}, {resultY.ToString("0.000")}"));
 
-                    findLenzCenter.AddSLDMeasureData(new SLDMeasureData(task.Result.x, task.Result.y, yIndex, xIndex, resultY, resultX));
+                    //Motor <-> Scanner 좌표에 따른 x, y -> y, x 반전.
+                    int x = task.Result.x;// TruncateTo3DecimalPlaces()
+                    int y = task.Result.y;
+                    double dX = TruncateTo3DecimalPlacesAndZeroRest(yIndex);
+                    double dY = TruncateTo3DecimalPlacesAndZeroRest(xIndex);
+                    double dMeasureX = TruncateTo3DecimalPlacesAndZeroRest(resultY);
+                    double dMeasureY = TruncateTo3DecimalPlacesAndZeroRest(resultX);
+
+                    findLenzCenter.AddSLDMeasureData(new SLDMeasureData(x, y, dX, dY, dMeasureX, dMeasureY));
+                    //findLenzCenter.AddSLDMeasureData(new SLDMeasureData(task.Result.x, task.Result.y, yIndex, xIndex, resultY, resultX));
                     //findLenzCenter.AddSLDMeasureData(new SLDMeasureData(x, y, yIndex, xIndex, offset.Y, offset.X));
-
-                    //SpiralLabScanner Compensator Data 사용 위함.
-                    correctionDataSaver.AddCorrectionData(new CorrectionData(task.Result.x, task.Result.y, task.Result.CommandPosition.Y, task.Result.CommandPosition.X, offset.Y, offset.X));
-
                 }
                 catch (Exception ex)
                 {
                     ;
                 }
-
             }
         }
 
@@ -955,19 +940,15 @@ namespace QMC.Common.Parts
 
             ////2. CenterPoint로 이동. (Count와 Pitch 이용)
             //this.Stage.GetCommandPosition(ref currentPos);
-
             ////movePosition.X = currentPos.X - (this.Config.PitchDistanceX * (this.Config.Count.X / 2));
             ////movePosition.Y = currentPos.Y - (this.Config.PitchDistanceY * (this.Config.Count.Y / 2));
             //movePosition.X = currentPos.X + (this.Config.PitchDistanceX * (this.Config.Count.X / 2));
             //movePosition.Y = currentPos.Y + (this.Config.PitchDistanceY * (this.Config.Count.Y / 2));
-
             //dicMovingProjection[XyzyStage.MotionKey.X.ToString()].Position = movePosition.X;
             //dicMovingProjection[XyzyStage.MotionKey.Y.ToString()].Position = movePosition.Y;
             //dicMovingProjection[XyzyStage.MotionKey.Z.ToString()].Position = movePosition.Z;
-
             //if ((ret = this.Stage.Move(dicMovingProjection)) != 0) return ret;
             //Thread.Sleep(Config.MoveToDelay);
-
             ////3. Search후 Center로 Move.
             //if (this.Config.SearchMethod == SearchMethod.PatternMatching)
             //{
@@ -1062,7 +1043,6 @@ namespace QMC.Common.Parts
             if ((ret = this.SearchGridXy(out results, out position)) != 0) return ret;
 
             //Log.Write("MotionVisionCompensator", string.Format("Search Grid [{0}] Complete. Inverval: {1} ms", OperatorKeys.Measurement, timer.Latest.Interval));
-
             Config.XyGridSearchResults = results;
             Config.Positions.Add(position);
 
@@ -1072,10 +1052,18 @@ namespace QMC.Common.Parts
             //    compensator.SetOffset(result);
             //}
 
-
             return ret;
         }
 
+        public static double TruncateTo3DecimalPlacesAndZeroRest(double value)
+        {
+            // 먼저 소수점 셋째 자리까지 자르기 (버림)
+            double truncated = Math.Truncate(value * 1000) / 1000.0;
+
+            // double은 소수점 자릿수 표현이 불확실하므로, string 포맷을 거쳐 보정 가능
+            string fixedStr = truncated.ToString("F6");  // 항상 소수점 이하 6자리로 표현
+            return double.Parse(fixedStr);               // 다시 double로 변환
+        }
         #endregion
     }
     #endregion

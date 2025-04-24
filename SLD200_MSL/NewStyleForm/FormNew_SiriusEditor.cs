@@ -214,6 +214,8 @@ namespace SLD200_MSL
                 //kfactor = (float)18830.1889;
                 // full path of correction file
                 //var correctionFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "correction", "cor_1to1.ct5");
+
+                string correctionSrcFile = Equipment.Scanner_Calibration_srcFilePath;
                 string correctionFile = "D:\\SLD-200_Parameter\\Cor_200C.ct5";
 
                 if (File.Exists(correctionFile) == false)
@@ -244,6 +246,8 @@ namespace SLD200_MSL
                 //kfactor = (float)18830.1889;
                 // full path of correction file
                 //var correctionFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "correction", "cor_1to1.ct5");
+
+                string correctionSrcFile = Equipment.Scanner_Calibration_srcFilePath;
                 string correctionFile = "D:\\SLD-200_Parameter\\Cor_200U.ct5";
                 if (File.Exists(correctionFile) == false)
                 {
@@ -468,25 +472,20 @@ namespace SLD200_MSL
                 //Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_NONE;
                 Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6_COMPLETE;
 
-
                 //if (btnTest_RTC6.BackColor == Color.GreenYellow)
                 //    return;
-
                 //if (btnTest_syncAxis.BackColor == Color.GreenYellow)
                 //{
                 //    var mb = new MessageBoxYesNo();
                 //    if (DialogResult.Yes != mb.ShowDialog("Question ?", "RTC6 모드로 변경하시겠습니까?"))
                 //        return;
                 //}
-
                 //btnTest_RTC6.BackColor = Color.GreenYellow;
                 //btnTest_syncAxis.BackColor = Color.Gray;
                 ////btnTest_syncAxis.Enabled = false;
-
                 //Equipment.RtcMode_syncAxis = (int)Equipment.RtcMode.RTC_RTC6;
 
                 Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화");
-
                 if (Rtc_Init())
                 {
                     MessageBox.Show("Scanner Board 초기화 완료", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);

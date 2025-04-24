@@ -123,7 +123,12 @@ namespace QMC.Common.Vision.Cognex
             try
             {
                 
-                this.Tool.Run();
+                // Tobo : fu..
+                //this.Tool.Run();
+                lock (this.Tool)
+                {
+                    this.Tool.Run();
+                }
 
                 if (this.Tool.Results != null)
                 {
@@ -173,6 +178,11 @@ namespace QMC.Common.Vision.Cognex
                     return -1;
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Tool.Run(): {ex.Message}");
+                throw;
+            }
             finally
             {
                 this.Result = result;
@@ -204,6 +214,7 @@ namespace QMC.Common.Vision.Cognex
                     this.RotateMatchPoint(new Size((int)roi.Width, (int)roi.Height));
                 }
             }
+            
 
             return ret;
         }
