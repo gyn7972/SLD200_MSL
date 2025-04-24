@@ -5287,7 +5287,10 @@ namespace QMC.Common.Modules
 
                     if (!loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center) &&
                         !loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner) &&
-                        !loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer))
+                        !loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer) &&
+
+                        (!Equipment.Machine_VacuumBlowTime_Enable ||
+                        (Equipment.Machine_VacuumBlowTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_VacuumBlowTime))) )
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner, Module Vacuum Off 완료");
 
@@ -6034,7 +6037,10 @@ namespace QMC.Common.Modules
                         (!Equipment.Machine_VacuumStableTime_Enable ||
                         (Equipment.Machine_VacuumStableTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_VacuumStableTime)))) ||
 
-                        (!Equipment.Machine_VacuumSensor_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_SignalHoldTime))))
+                        (!Equipment.Machine_VacuumSensor_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_SignalHoldTime))) &&
+
+                        (!Equipment.Machine_VacuumBlowTime_Enable ||
+                        (Equipment.Machine_VacuumBlowTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_VacuumBlowTime))))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum Off 완료");
 
@@ -6663,7 +6669,10 @@ namespace QMC.Common.Modules
                         !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer)) &&
 
                         (!Equipment.Machine_VacuumStableTime_Enable ||
-                        (Equipment.Machine_VacuumStableTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_VacuumStableTime))))
+                        (Equipment.Machine_VacuumStableTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_VacuumStableTime))) &&
+
+                        (!Equipment.Machine_VacuumBlowTime_Enable ||
+                        (Equipment.Machine_VacuumBlowTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_VacuumBlowTime))) )
 
                         //((Equipment.Machine_VacuumSensor_Enable &&
 
@@ -7179,8 +7188,14 @@ namespace QMC.Common.Modules
                     m_dMAlign_CalculatedModuleSize_ALN_Y = 0.0;
 
                     //  임시 코드 (모듈 사이즈 고정) --> Recipe 에서 모듈 사이즈 입력하도록 해야 함.
-                    m_dMAlign_ModuleSize_Width = 125.0;
-                    m_dMAlign_ModuleSize_Height = 120.0;
+                    //m_dMAlign_ModuleSize_Width = 125.0;
+                    //m_dMAlign_ModuleSize_Height = 120.0;
+
+                    if (!Equipment.SeqTestMode)
+                    {
+                        m_dMAlign_ModuleSize_Width = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width;
+                        m_dMAlign_ModuleSize_Height = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height;
+                    }
 
                     m_nMAlign_Step = (int)MAlign_Step.Process_Condition_Check;
                     break;

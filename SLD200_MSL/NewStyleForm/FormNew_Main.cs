@@ -1149,6 +1149,8 @@ namespace SLD200_MSL
             //workStage.BeamExpander_Send();
             //workStage.BeamExpander_Send_ZoomMotor_Reverse();
 
+            double m_dData = 0.24;
+
             return;
 
 

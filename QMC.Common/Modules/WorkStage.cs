@@ -4371,6 +4371,17 @@ namespace QMC.Common.Modules
         }
 
 
+        public string ConvertDoubleToHex(double value)
+        {
+            // double 값을 바이트 배열로 변환 (IEEE 754 형식)
+            byte[] bytes = BitConverter.GetBytes(value);
+
+            // 바이트 배열을 16진수 문자열로 변환
+            Array.Reverse(bytes); // 빅엔디안 형식으로 변환 (필요 시)
+            return BitConverter.ToString(bytes).Replace("-", "");
+        }
+
+
         public bool BeamExpander_Send()
         {
             bool m_bRet = false;

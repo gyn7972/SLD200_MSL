@@ -391,6 +391,8 @@ namespace QMC.Common
         public static bool Machine_FiducialMarkJudgementRange_Enable { set; get; } = true;      //  FIducial Mark Judgement Enable
         public static double Machine_FiducialMarkJudgementRange { set; get; } = 0.1;            //  Fiducial Mark Judgement Range (mm)
         public static bool Machine_FiducialImageSave_Always { set; get; } = false;              //  Fiducial Image Save Always
+        public static bool Machine_VacuumBlowTime_Enable { set; get; } = true;                //  Vacuum Stabilization Time Enable
+        public static int Machine_VacuumBlowTime { set; get; } = 500;                         //  Vacuum Signal Stabilization Time (ms)
 
 
         //  Offset Distance
@@ -2463,6 +2465,11 @@ namespace QMC.Common
             Equipment.Machine_FiducialMarkJudgementRange = Convert.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "FiducialImageSave_Always", "True", temp, 255, strFIle);
             Equipment.Machine_FiducialImageSave_Always = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "VacuumBlowTime_Enable", "True", temp, 255, strFIle);
+            Equipment.Machine_VacuumBlowTime_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "VacuumBlowTime", "500", temp, 255, strFIle);
+            Equipment.Machine_VacuumBlowTime = Convert.ToInt16(temp.ToString());
+
 
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);

@@ -6492,8 +6492,18 @@ namespace SLD200_MSL
                 //  Seq. Test
                 Equipment.SeqTestMode = true;
 
-                double m_dModuleWidth = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
-                double m_dModuleHeight = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
+
+                double m_dModuleWidth = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width;
+                double m_dModuleHeight = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height;
+
+                if ((m_dModuleWidth <= 0.0) || (m_dModuleHeight <= 0.0))
+                {
+                    m_dModuleWidth = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
+                    m_dModuleHeight = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
+                }
+
+                //m_dModuleWidth = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
+                //m_dModuleHeight = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
 
                 if ((m_dModuleWidth <= 0.0) || (m_dModuleHeight <= 0.0))
                 {
