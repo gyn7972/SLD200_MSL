@@ -1177,6 +1177,10 @@ namespace SLD200_MSL
             }
 
 
+            //  Machine Name
+            textBox_ModelName.Text = Equipment.Machine_Name;
+
+
             //  Laser Type                        
             if (Equipment.Machine_LaserType_CO2)                                            //  CO₂Laser
             {
@@ -1244,6 +1248,9 @@ namespace SLD200_MSL
             textBox_Setup_Option_LaserHeightCheckStableTime.Text = Equipment.Machine_LaserHeightCheckStableTime.ToString();
             checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.Checked = Equipment.Machine_FiducialMarkJudgementRange_Enable;
             textBox_Setup_Option_FiducialMarkJudgementRange.Text = Equipment.Machine_FiducialMarkJudgementRange.ToString();
+            checkBox_Setup_Option_VacuumBlowTime_Enable.Checked = Equipment.Machine_VacuumBlowTime_Enable;
+            textBox_Setup_Option_VacuumBlowTime.Text = Equipment.Machine_VacuumBlowTime.ToString();
+
             if (Equipment.Machine_FiducialImageSave_Always)
             {
                 radioButton_Setup_Option_FiducialImageSave_Always.Checked = true;
@@ -1639,7 +1646,10 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Machine_Option", "FiducialMarkJudgementRange", textBox_Setup_Option_FiducialMarkJudgementRange.Text, strFIle);
             Equipment.Machine_FiducialImageSave_Always = radioButton_Setup_Option_FiducialImageSave_Always.Checked ? true : false;
             NativeMethods.WritePrivateProfileString("Machine_Option", "FiducialImageSave_Always", radioButton_Setup_Option_FiducialImageSave_Always.Checked.ToString(), strFIle);
-
+            Equipment.Machine_VacuumBlowTime_Enable = checkBox_Setup_Option_VacuumBlowTime_Enable.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "VacuumBlowTime_Enable", checkBox_Setup_Option_VacuumBlowTime_Enable.Checked.ToString(), strFIle);
+            Equipment.Machine_VacuumBlowTime = Equipment.ToInt(textBox_Setup_Option_VacuumBlowTime.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "VacuumBlowTime", textBox_Setup_Option_VacuumBlowTime.Text, strFIle);
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);
@@ -2128,6 +2138,17 @@ namespace SLD200_MSL
             else
             {
                 radioButton_Setup_Option_FiducialImageSave_FailedToFind.Checked = true;
+            }
+
+            if (Equipment.Machine_VacuumBlowTime_Enable)
+            {
+                checkBox_Setup_Option_VacuumBlowTime_Enable.Checked = true;
+                textBox_Setup_Option_VacuumBlowTime.Enabled = true;
+            }
+            else
+            {
+                checkBox_Setup_Option_VacuumBlowTime_Enable.Checked = false;
+                textBox_Setup_Option_VacuumBlowTime.Enabled = false;
             }
         }
 
@@ -3759,6 +3780,20 @@ namespace SLD200_MSL
             if (workStage.Camera_HighRes != null)
             {
                 workStage.Camera_HighRes.StopLive();
+            }
+        }
+
+        private void checkBox_Setup_Option_VacuumBlowTime_Enable_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_Setup_Option_VacuumBlowTime_Enable.Checked)
+            {
+                Equipment.Machine_VacuumBlowTime_Enable = true;
+                textBox_Setup_Option_VacuumBlowTime.Enabled = true;
+            }
+            else
+            {
+                Equipment.Machine_VacuumBlowTime_Enable = false;
+                textBox_Setup_Option_VacuumBlowTime.Enabled = false;
             }
         }
     }

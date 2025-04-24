@@ -26,8 +26,9 @@ namespace QMC.Common.VisionPart
 
             int w = bitmap.Width;
             int h = bitmap.Height;
+            bool m_bFindCircle = false;
 
-            List < RectangleF > listMetal = FindMetalPowder(circlesResult, pixelData, w, h); ;
+            List < RectangleF > listMetal = FindMetalPowder(circlesResult, pixelData, w, h, ref m_bFindCircle); ;
             
             var v = MatchCoordinates(listMetal,  3);
             // v의 좌표를 원점으로 하고 listMetal의 w,h 를 가지는 List < RectangleF > result를  생성
@@ -400,7 +401,7 @@ namespace QMC.Common.VisionPart
             return circlesResult;
         }
 
-        public List<RectangleF> FindMetalPowder(List<RectangleF> circlesResult, byte[] pixelData, int w, int h)
+        public List<RectangleF> FindMetalPowder(List<RectangleF> circlesResult, byte[] pixelData, int w, int h, ref bool circleFound)
         {
             List<RectangleF> circlesResultLocal = new List<RectangleF>();
             List<PointF> polygon = new List<PointF>();
@@ -467,6 +468,12 @@ namespace QMC.Common.VisionPart
             else
             {
                 Console.WriteLine("No blobs found.");
+
+                //  원을 찾았는지 여부 Ref.
+                circleFound = false;
+
+                circlesResult.Clear();
+                return circlesResult;
             }
 
 

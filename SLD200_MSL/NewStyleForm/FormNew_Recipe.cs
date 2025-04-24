@@ -681,6 +681,9 @@ namespace SLD200_MSL
                 //  Fiducial Align Type (0:Circle Find, 1:Pattern Matching)
                 NativeMethods.GetPrivateProfileString(strTemp, "FiducialAlignType", "0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = Convert.ToInt32(temp.ToString());
+                //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
+                NativeMethods.GetPrivateProfileString(strTemp, "FiducialMarkType", "0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialMarkType = Convert.ToInt32(temp.ToString());                
 
                 //  Process Options
                 NativeMethods.GetPrivateProfileString(strTemp, "Socket_Align_Use", "false", temp, 255, strFIle);
@@ -819,6 +822,8 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "HoleProcessingType", Equipment.stLayerRecipeSet[i].Miscellaneous_HoleProcessingType.ToString(), strFIle);
                 //  Fiducial Align Type (0:Circle Find, 1:Pattern Matching)
                 NativeMethods.WritePrivateProfileString(strTemp, "FiducialAlignType", Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialAlignType.ToString(), strFIle);
+                //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
+                NativeMethods.WritePrivateProfileString(strTemp, "FiducialMarkType", Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialMarkType.ToString(), strFIle);
 
                 //  Process Options
                 NativeMethods.WritePrivateProfileString(strTemp, "Socket_Align_Use", Equipment.stLayerRecipeSet[i].ProcessOption_SocketAlign_Use.ToString(), strFIle);
@@ -995,8 +1000,8 @@ namespace SLD200_MSL
 
             //  Miscellaneous
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_ReferenceLayer = textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_DefocusingDistance = textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_Resizing = textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_DefocusingDistance = Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text);
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_Resizing = Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text);
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_HoleDrilling_StartPosDivision = comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text.Length > 0 ? Convert.ToInt32(comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text) : 0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_GroupSplitSize = textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text) : 0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_ScannerDrillingSpeed = textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text) : 0;
@@ -1014,7 +1019,8 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_MaskIndex = comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_BETPositionIndex = comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_HoleProcessingType = comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_FiducialAlignType = comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex;
+            Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialAlignType = comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex;
+            Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType = comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex;
 
             //  Process Options
             Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use = checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked;                         //  Socket Align 기능 사용 여부
@@ -1149,6 +1155,7 @@ namespace SLD200_MSL
                 comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString());
                 comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_HoleProcessingType.ToString());
                 comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialAlignType.ToString());
+                comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType.ToString());
 
                 //  process Options
                 checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부
@@ -1342,6 +1349,7 @@ namespace SLD200_MSL
             comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_BETPositionIndex.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_HoleProcessingType.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialAlignType.ToString());
+            comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialMarkType.ToString());
 
             //  process Options
             checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부
@@ -1443,6 +1451,7 @@ namespace SLD200_MSL
             comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_HoleProcessingType.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialAlignType.ToString());
+            comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType.ToString());
 
             //  process Options
             checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부

@@ -395,6 +395,19 @@ namespace SLD200_MSL
                 //  Percent of Energy
                 baseLabel_Config_TabLaser_PercentOfEnergy.Text = string.Format("{0}", workStage.m_dLaser_OutputEnergy);
 
+                //  Laser Head Operating Hours
+                baseLabel_Config_TabLaser_LaserHeadOperatingHours.Text = string.Format("{0}", workStage.m_dLaser_OperatingHours);
+
+                //  Water Temperature
+                baseLabel_Config_TabLaser_WaterTemperature.Text = string.Format("{0}", workStage.m_dLaser_WaterTemperature);
+
+                //  SHG Temperature
+                baseLabel_Config_TabLaser_SHGTemperature.Text = string.Format("{0}", workStage.m_dLaser_SHGTemperature);
+
+                //  THG Temperature
+                baseLabel_Config_TabLaser_THGTemperature.Text = string.Format("{0}", workStage.m_dLaser_THGTemperature);
+
+
 
                 //  Laser Comm 최초 연결 시 세팅된 값을 읽기 위함. (User 세팅 파라미터를 현재 세팅값으로 표시하기 위해서), (0 : Get, 1 : Get Complete, 2 : Set Complete)
                 if (workStage.m_nLaserComm_SetValue_Get_Process == 1)
@@ -6098,11 +6111,14 @@ namespace SLD200_MSL
 
             double m_dFreq = Convert.ToDouble(textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Text);
 
+            //  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
+            double m_dRet_Freq = GetClosestValue_DustCollector(m_dFreq);
+
             //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-            m_dFreq *= 100.0;
+            m_dRet_Freq *= 100.0;
 
             //  숫자를 4자리 숫자로 고정
-            string m_strFreq = m_dFreq.ToString("0000");
+            string m_strFreq = m_dRet_Freq.ToString("0000");
 
             string m_strRet = workStage.ConvertDecimalToHex(m_strFreq);
 
@@ -6135,11 +6151,14 @@ namespace SLD200_MSL
 
             double m_dFreq = Convert.ToDouble(textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Text);
 
+            //  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
+            double m_dRet_Freq = GetClosestValue_DustCollector(m_dFreq);
+
             //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-            m_dFreq *= 100.0;
+            m_dRet_Freq *= 100.0;
 
             //  숫자를 4자리 숫자로 고정
-            string m_strFreq = m_dFreq.ToString("0000");
+            string m_strFreq = m_dRet_Freq.ToString("0000");
 
             string m_strRet = workStage.ConvertDecimalToHex(m_strFreq);
 
@@ -6473,8 +6492,18 @@ namespace SLD200_MSL
                 //  Seq. Test
                 Equipment.SeqTestMode = true;
 
-                double m_dModuleWidth = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
-                double m_dModuleHeight = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
+
+                double m_dModuleWidth = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width;
+                double m_dModuleHeight = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height;
+
+                if ((m_dModuleWidth <= 0.0) || (m_dModuleHeight <= 0.0))
+                {
+                    m_dModuleWidth = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
+                    m_dModuleHeight = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
+                }
+
+                //m_dModuleWidth = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
+                //m_dModuleHeight = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
 
                 if ((m_dModuleWidth <= 0.0) || (m_dModuleHeight <= 0.0))
                 {
@@ -6609,7 +6638,7 @@ namespace SLD200_MSL
 
                 //  Loader 실행 타이머
                 loader.m_btimer_LoaderWork_Stop = false;
-                loader.timer_LoaderWork.Enabled = true;
+                loader.timer_LoaderWork.Enabled = true; 
             }
             else
             {

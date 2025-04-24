@@ -21,6 +21,8 @@ using static QMC.Common.Modules.WorkStage;
 using Bitmap = System.Drawing.Bitmap;
 using static QMC.Common.Modules.Loader;
 using static QMC.Common.Modules.Unloader;
+using Point = System.Drawing.Point;
+using System.Runtime.CompilerServices;
 
 namespace SLD200_MSL
 {
@@ -37,6 +39,20 @@ namespace SLD200_MSL
         static Laser laser;
         static Vision vision;
         static Bds bds;
+
+
+
+        //  모듈 진행 상태 표시용 변수 
+        private int Rows = 3; // 세로 개수 (기본값)
+        private int Columns = 4; // 가로 개수 (기본값)
+        private int CellSize_Width = 50; // 각 셀의 크기 (가로)
+        private int CellSize_Height = 50; // 각 셀의 크기 (세로)
+
+
+        // 작업 상태를 저장하는 배열 (0: 미작업, 1: 진행 중, 2: 완료)
+        private int[,] pcbStatus; // 작업 상태 배열
+
+
 
         private System.Windows.Forms.Timer timer_Main_Status;
 
@@ -109,6 +125,17 @@ namespace SLD200_MSL
             Equipment.EqpSiriusViewer_Origin = new SpiralLab.Sirius.SiriusViewerForm();
 
 
+            //  Fiducial Align Data 를 보여주는 ListView 설정
+            listView_Main_FiducialAlignData.View = View.Details;
+            listView_Main_FiducialAlignData.GridLines = true;         //  구분선 표시
+            listView_Main_FiducialAlignData.FullRowSelect = true;     //  한줄씩 선택 설정
+
+
+            //  Module Socket Processing 상태를 보여주는 Picture Box
+            Initialize_SocketStatus(Columns, Rows); // 초기화
+            pictureBox_ModuleProcessingStatus.Paint += PictureBox_ModuleProcessingStatus_Paint;
+
+
             //  마크 이미지
             //  Reticle Upper
             string m_strFile = string.Format("{0}\\ScannerCal.jpg", ConfigManager.GetPatternImagePath());
@@ -137,7 +164,114 @@ namespace SLD200_MSL
             //}
         }
 
+
+        #region Socket 작업 상황 Display
+
+        // 작업 상태 배열 초기화
+        private void Initialize_SocketStatus(int columns, int rows)
+        {
+            Columns = columns;
+            Rows = rows;
+            pcbStatus = new int[Rows, Columns];
+
+            // 모든 상태를 초기화 (0: 미작업)
+            for (int i = 0; i < Rows; i++)
+            {
+                for (int j = 0; j < Columns; j++)
+                {
+                    pcbStatus[i, j] = 0;
+                }
+            }
+
+            //  Cell Size 계산
+            CellSize_Width = pictureBox_ModuleProcessingStatus.Width / Columns;
+            CellSize_Height = pictureBox_ModuleProcessingStatus.Height / Rows;
+
+            Rows = Rows > 0 ? Rows : 1; // 최소 1행
+            Columns = Columns > 0 ? Columns : 1; // 최소 1열
+            CellSize_Width = CellSize_Width > 0 ? CellSize_Width : 1; // 최소 1픽셀
+            CellSize_Height = CellSize_Height > 0 ? CellSize_Height : 1; // 최소 1픽셀
+
+            // PictureBox 크기 조정
+            if (pictureBox_ModuleProcessingStatus != null)
+            {
+                pictureBox_ModuleProcessingStatus.Width = Columns * CellSize_Width;
+                pictureBox_ModuleProcessingStatus.Height = Rows * CellSize_Height;
+                pictureBox_ModuleProcessingStatus.Invalidate(); // 다시 그리기
+            }
+        }
+
+        // 작업 상태 업데이트 메서드
+        public void Update_SocketStatus(int row, int column, int status)
+        {
+            if (row >= 0 && row < Rows && column >= 0 && column < Columns)
+            {
+                pcbStatus[row, column] = status;
+                pictureBox_ModuleProcessingStatus.Invalidate(); // PictureBox 다시 그리기
+            }
+        }
+
+        // 가로, 세로 배열 크기 변경 메서드
+        public void Change_SocketArraySize(int columns, int rows)
+        {
+            Initialize_SocketStatus(columns, rows);
+        }
+
+        private void PictureBox_ModuleProcessingStatus_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+
+            for (int i = 0; i < Rows; i++)
+            {
+                for (int j = 0; j < Columns; j++)
+                {
+                    Color cellColor;
+                    switch (pcbStatus[i, j])
+                    {
+                        case 0:
+                            cellColor = Color.LightGray; // 미작업
+                            break;
+                        case 1:
+                            cellColor = Color.Yellow;   // 진행 중
+                            break;
+                        case 2:
+                            cellColor = Color.Green;    // 완료
+                            break;
+                        default:
+                            cellColor = Color.Red;      // 오류
+                            break;
+                    }
+
+                    // 셀 그리기
+                    using (Brush brush = new SolidBrush(cellColor))
+                    {
+                        g.FillRectangle(brush, j * CellSize_Width, i * CellSize_Height, CellSize_Width, CellSize_Height);
+                    }
+
+                    // 셀 테두리 그리기
+                    using (Pen pen = new Pen(Color.Black))
+                    {
+                        g.DrawRectangle(pen, j * CellSize_Width, i * CellSize_Height, CellSize_Width, CellSize_Height);
+                    }
+                }
+            }
+        }
+
+        // 작업 상태 업데이트 메서드
+        public void UpdatePCBStatus(int row, int column, int status)
+        {
+            if (row >= 0 && row < Rows && column >= 0 && column < Columns)
+            {
+                pcbStatus[row, column] = status;
+                pictureBox_ModuleProcessingStatus.Invalidate(); // PictureBox 다시 그리기
+            }
+        }
+
+        #endregion
+
+
         #region Thread
+
         public void ThreadStart()
         {
             //  Status Cycle
@@ -420,6 +554,7 @@ namespace SLD200_MSL
             //}
         }
 
+
         private void button_Main_Home_Click(object sender, EventArgs e)
         {
             Log.Write("SLD-200", Equipment.User_Name, "Button Click", "장비 초기화");
@@ -500,6 +635,14 @@ namespace SLD200_MSL
 
                 //  이것저것 다 리셋 - 끝
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                ///
+
+
+                //  카메라 초기화
+                workStage.Camera_HighRes.SetRunStatus(Part.RunStatus.Run);
+                workStage.Camera_LowRes.SetRunStatus(Part.RunStatus.Run);
+                workStage.Camera_HighRes.Initialize();
+                workStage.Camera_LowRes.Initialize();
 
 
                 workStage.m_bHomeOK = false;
@@ -999,6 +1142,13 @@ namespace SLD200_MSL
             //Equipment.CycleStopped_MainWork = true;
             //Equipment.AutoRunStatus = true;
 
+            //Change_SocketArraySize(4, 5);
+
+            //workStage.BeamExpander_Send();
+            //workStage.BeamExpander_Send_ZoomMotor_Reverse();
+
+            double m_dData = 0.24;
+
             return;
 
 
@@ -1189,8 +1339,11 @@ namespace SLD200_MSL
             //workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
             //m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
             //Equipment.m_bDrawingFileOpen_1time = true;
-            
-            //return;
+
+            UpdatePCBStatus(0, 0, 3);
+            return;
+
+
 
             //  RTC 초기화 테스트
             bool m_bRet = true;
@@ -1523,6 +1676,61 @@ namespace SLD200_MSL
 
                 Equipment.SocketStopped = false;
             }
+        }
+
+
+        public void Main_FiducialAlignData_Clear()
+        {
+            listView_Main_FiducialAlignData.BeginUpdate();
+
+            //  ListView Column 삭제
+            listView_Main_FiducialAlignData.Items.Clear();
+            foreach (ColumnHeader header in listView_Main_FiducialAlignData.Columns)
+            {
+                listView_Main_FiducialAlignData.Columns.Remove(header);
+            }
+
+            //  ListView Column 설정
+            listView_Main_FiducialAlignData.Columns.Add("No", 50, HorizontalAlignment.Center);
+            listView_Main_FiducialAlignData.Columns.Add("Socket", 55, HorizontalAlignment.Center);
+            listView_Main_FiducialAlignData.Columns.Add("Devi. X", 70, HorizontalAlignment.Center);
+            listView_Main_FiducialAlignData.Columns.Add("Devi. Y", 70, HorizontalAlignment.Center);
+            listView_Main_FiducialAlignData.Columns.Add("Hole Size", 70, HorizontalAlignment.Center);
+
+            listView_Main_FiducialAlignData.EndUpdate();
+        }
+
+
+        public void Main_FiducialAlignData_Add()
+        {
+            listView_Main_FiducialAlignData.BeginUpdate();
+
+            ////  ListView Column 삭제
+            //listView_Main_FiducialAlignData.Items.Clear();
+            //foreach (ColumnHeader header in listView_Main_FiducialAlignData.Columns)
+            //{
+            //    listView_Main_FiducialAlignData.Columns.Remove(header);
+            //}
+
+            ////  ListView Column 설정
+            //listView_Main_FiducialAlignData.Columns.Add("No", 50, HorizontalAlignment.Center);
+            //listView_Main_FiducialAlignData.Columns.Add("Socket", 55, HorizontalAlignment.Center);
+            //listView_Main_FiducialAlignData.Columns.Add("Devi. X", 70, HorizontalAlignment.Center);
+            //listView_Main_FiducialAlignData.Columns.Add("Devi. Y", 70, HorizontalAlignment.Center);
+            //listView_Main_FiducialAlignData.Columns.Add("Hole Size", 70, HorizontalAlignment.Center);
+
+            //  Fiducial Data를 ListView에 표시
+            for (int i = 0; i < workStage.m_nDrawing_Hole1Count; i++)
+            {
+                ListViewItem item = new ListViewItem();
+                item.Text = (i + 1).ToString();
+                item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole1[i].CenterX));
+                item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole1[i].CenterY));
+                item.SubItems.Add(string.Format("{0:0.000}", workStage.m_stDrawing_Hole1[i].radius));
+            listView_Main_FiducialAlignData.Items.Add(item);
+            }
+
+            listView_Main_FiducialAlignData.EndUpdate();
         }
     }
 }

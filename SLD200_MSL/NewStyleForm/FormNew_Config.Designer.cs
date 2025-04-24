@@ -457,6 +457,7 @@
             this.radioButton_Config_BDS_Move_MoveMode_Coarse = new System.Windows.Forms.RadioButton();
             this.radioButton_Config_BDS_Move_MoveMode_Fine = new System.Windows.Forms.RadioButton();
             this.groupBox77 = new System.Windows.Forms.GroupBox();
+            this.label_Mask_Gap = new System.Windows.Forms.Label();
             this.button37 = new System.Windows.Forms.Button();
             this.button_Config_BDS_TeachingPositions_Save = new System.Windows.Forms.Button();
             this.groupBox78 = new System.Windows.Forms.GroupBox();
@@ -548,7 +549,15 @@
             this.groupBox30 = new System.Windows.Forms.GroupBox();
             this.labelStagePressure = new System.Windows.Forms.Label();
             this.label51 = new System.Windows.Forms.Label();
-            this.label_Mask_Gap = new System.Windows.Forms.Label();
+            this.groupBox37 = new System.Windows.Forms.GroupBox();
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours = new System.Windows.Forms.Label();
+            this.label54 = new System.Windows.Forms.Label();
+            this.baseLabel_Config_TabLaser_WaterTemperature = new System.Windows.Forms.Label();
+            this.label55 = new System.Windows.Forms.Label();
+            this.baseLabel_Config_TabLaser_SHGTemperature = new System.Windows.Forms.Label();
+            this.label57 = new System.Windows.Forms.Label();
+            this.baseLabel_Config_TabLaser_THGTemperature = new System.Windows.Forms.Label();
+            this.label59 = new System.Windows.Forms.Label();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -655,6 +664,7 @@
             this.groupBox_Config_AxisPositions_LoadTransfer.SuspendLayout();
             this.groupBox_Config_AxisPositions_Loader.SuspendLayout();
             this.groupBox30.SuspendLayout();
+            this.groupBox37.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl_Config
@@ -2399,7 +2409,7 @@
             this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Name = "textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue";
             this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Size = new System.Drawing.Size(58, 27);
             this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.TabIndex = 43;
-            this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Text = "10.0";
+            this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Text = "20.0";
             // 
             // groupBox25
             // 
@@ -2500,7 +2510,7 @@
             this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Name = "textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue";
             this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Size = new System.Drawing.Size(58, 27);
             this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.TabIndex = 43;
-            this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Text = "10.0";
+            this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Text = "20.0";
             // 
             // groupBox70
             // 
@@ -4975,6 +4985,7 @@
             // 
             // groupBox_Config_Laser_UVLaser
             // 
+            this.groupBox_Config_Laser_UVLaser.Controls.Add(this.groupBox37);
             this.groupBox_Config_Laser_UVLaser.Controls.Add(this.groupBox69);
             this.groupBox_Config_Laser_UVLaser.Controls.Add(this.groupBox68);
             this.groupBox_Config_Laser_UVLaser.Controls.Add(this.groupBox67);
@@ -4985,7 +4996,7 @@
             this.groupBox_Config_Laser_UVLaser.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox_Config_Laser_UVLaser.Name = "groupBox_Config_Laser_UVLaser";
             this.groupBox_Config_Laser_UVLaser.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_Config_Laser_UVLaser.Size = new System.Drawing.Size(475, 535);
+            this.groupBox_Config_Laser_UVLaser.Size = new System.Drawing.Size(475, 739);
             this.groupBox_Config_Laser_UVLaser.TabIndex = 79;
             this.groupBox_Config_Laser_UVLaser.TabStop = false;
             this.groupBox_Config_Laser_UVLaser.Text = " Laser ";
@@ -4997,7 +5008,7 @@
             this.groupBox69.Controls.Add(this.baseLabel_Config_TabLaser_PercentOfEnergy);
             this.groupBox69.Controls.Add(this.label99);
             this.groupBox69.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox69.Location = new System.Drawing.Point(10, 462);
+            this.groupBox69.Location = new System.Drawing.Point(10, 637);
             this.groupBox69.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox69.Name = "groupBox69";
             this.groupBox69.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -5065,7 +5076,7 @@
             this.groupBox68.Controls.Add(this.baseLabel_Config_TabLaser_PulseMode);
             this.groupBox68.Controls.Add(this.label105);
             this.groupBox68.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox68.Location = new System.Drawing.Point(10, 327);
+            this.groupBox68.Location = new System.Drawing.Point(10, 500);
             this.groupBox68.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox68.Name = "groupBox68";
             this.groupBox68.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -5204,7 +5215,7 @@
             this.groupBox67.Controls.Add(this.baseLabel_Config_TabLaser_SystemStatus);
             this.groupBox67.Controls.Add(this.pictureBox_Config_TabLaser_SystemStatus);
             this.groupBox67.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox67.Location = new System.Drawing.Point(10, 250);
+            this.groupBox67.Location = new System.Drawing.Point(10, 254);
             this.groupBox67.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox67.Name = "groupBox67";
             this.groupBox67.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -5266,7 +5277,7 @@
             this.groupBox39.Controls.Add(this.baseLabel_Config_TabLaser_SystemFaults);
             this.groupBox39.Controls.Add(this.pictureBox_Config_TabLaser_SystemFaults);
             this.groupBox39.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox39.Location = new System.Drawing.Point(10, 102);
+            this.groupBox39.Location = new System.Drawing.Point(10, 104);
             this.groupBox39.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox39.Name = "groupBox39";
             this.groupBox39.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -6357,6 +6368,17 @@
             this.groupBox77.TabIndex = 67;
             this.groupBox77.TabStop = false;
             this.groupBox77.Text = " Teaching Positions ";
+            // 
+            // label_Mask_Gap
+            // 
+            this.label_Mask_Gap.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Mask_Gap.Location = new System.Drawing.Point(48, 326);
+            this.label_Mask_Gap.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_Mask_Gap.Name = "label_Mask_Gap";
+            this.label_Mask_Gap.Size = new System.Drawing.Size(247, 24);
+            this.label_Mask_Gap.TabIndex = 47;
+            this.label_Mask_Gap.Text = "(* Gap between masks : 35.0 mm)";
+            this.label_Mask_Gap.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // button37
             // 
@@ -7545,16 +7567,121 @@
             this.label51.Text = "Pressure(kPa) : ";
             this.label51.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label_Mask_Gap
+            // groupBox37
             // 
-            this.label_Mask_Gap.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_Mask_Gap.Location = new System.Drawing.Point(48, 326);
-            this.label_Mask_Gap.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label_Mask_Gap.Name = "label_Mask_Gap";
-            this.label_Mask_Gap.Size = new System.Drawing.Size(247, 24);
-            this.label_Mask_Gap.TabIndex = 47;
-            this.label_Mask_Gap.Text = "(* Gap between masks : 35.0 mm)";
-            this.label_Mask_Gap.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.groupBox37.Controls.Add(this.baseLabel_Config_TabLaser_THGTemperature);
+            this.groupBox37.Controls.Add(this.label59);
+            this.groupBox37.Controls.Add(this.baseLabel_Config_TabLaser_SHGTemperature);
+            this.groupBox37.Controls.Add(this.label57);
+            this.groupBox37.Controls.Add(this.baseLabel_Config_TabLaser_WaterTemperature);
+            this.groupBox37.Controls.Add(this.label55);
+            this.groupBox37.Controls.Add(this.baseLabel_Config_TabLaser_LaserHeadOperatingHours);
+            this.groupBox37.Controls.Add(this.label54);
+            this.groupBox37.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.groupBox37.Location = new System.Drawing.Point(10, 333);
+            this.groupBox37.Margin = new System.Windows.Forms.Padding(5);
+            this.groupBox37.Name = "groupBox37";
+            this.groupBox37.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox37.Size = new System.Drawing.Size(454, 149);
+            this.groupBox37.TabIndex = 223;
+            this.groupBox37.TabStop = false;
+            this.groupBox37.Text = " Monitoring ";
+            // 
+            // baseLabel_Config_TabLaser_LaserHeadOperatingHours
+            // 
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.ForeColor = System.Drawing.Color.Lime;
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Location = new System.Drawing.Point(320, 26);
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Name = "baseLabel_Config_TabLaser_LaserHeadOperatingHours";
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Size = new System.Drawing.Size(126, 25);
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.TabIndex = 121;
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label54
+            // 
+            this.label54.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label54.Location = new System.Drawing.Point(7, 25);
+            this.label54.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label54.Name = "label54";
+            this.label54.Size = new System.Drawing.Size(307, 24);
+            this.label54.TabIndex = 120;
+            this.label54.Text = "Laser Head Operating Hours :";
+            this.label54.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // baseLabel_Config_TabLaser_WaterTemperature
+            // 
+            this.baseLabel_Config_TabLaser_WaterTemperature.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.baseLabel_Config_TabLaser_WaterTemperature.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.baseLabel_Config_TabLaser_WaterTemperature.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel_Config_TabLaser_WaterTemperature.ForeColor = System.Drawing.Color.Lime;
+            this.baseLabel_Config_TabLaser_WaterTemperature.Location = new System.Drawing.Point(320, 55);
+            this.baseLabel_Config_TabLaser_WaterTemperature.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.baseLabel_Config_TabLaser_WaterTemperature.Name = "baseLabel_Config_TabLaser_WaterTemperature";
+            this.baseLabel_Config_TabLaser_WaterTemperature.Size = new System.Drawing.Size(126, 25);
+            this.baseLabel_Config_TabLaser_WaterTemperature.TabIndex = 123;
+            this.baseLabel_Config_TabLaser_WaterTemperature.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label55
+            // 
+            this.label55.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label55.Location = new System.Drawing.Point(6, 54);
+            this.label55.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label55.Name = "label55";
+            this.label55.Size = new System.Drawing.Size(307, 24);
+            this.label55.TabIndex = 122;
+            this.label55.Text = "Water Temperature (℃) :";
+            this.label55.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // baseLabel_Config_TabLaser_SHGTemperature
+            // 
+            this.baseLabel_Config_TabLaser_SHGTemperature.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.baseLabel_Config_TabLaser_SHGTemperature.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.baseLabel_Config_TabLaser_SHGTemperature.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel_Config_TabLaser_SHGTemperature.ForeColor = System.Drawing.Color.Lime;
+            this.baseLabel_Config_TabLaser_SHGTemperature.Location = new System.Drawing.Point(320, 84);
+            this.baseLabel_Config_TabLaser_SHGTemperature.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.baseLabel_Config_TabLaser_SHGTemperature.Name = "baseLabel_Config_TabLaser_SHGTemperature";
+            this.baseLabel_Config_TabLaser_SHGTemperature.Size = new System.Drawing.Size(126, 25);
+            this.baseLabel_Config_TabLaser_SHGTemperature.TabIndex = 125;
+            this.baseLabel_Config_TabLaser_SHGTemperature.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label57
+            // 
+            this.label57.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label57.Location = new System.Drawing.Point(7, 83);
+            this.label57.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label57.Name = "label57";
+            this.label57.Size = new System.Drawing.Size(307, 24);
+            this.label57.TabIndex = 124;
+            this.label57.Text = "SHG Crystal Temperature (℃) :";
+            this.label57.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // baseLabel_Config_TabLaser_THGTemperature
+            // 
+            this.baseLabel_Config_TabLaser_THGTemperature.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.baseLabel_Config_TabLaser_THGTemperature.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.baseLabel_Config_TabLaser_THGTemperature.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel_Config_TabLaser_THGTemperature.ForeColor = System.Drawing.Color.Lime;
+            this.baseLabel_Config_TabLaser_THGTemperature.Location = new System.Drawing.Point(320, 113);
+            this.baseLabel_Config_TabLaser_THGTemperature.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.baseLabel_Config_TabLaser_THGTemperature.Name = "baseLabel_Config_TabLaser_THGTemperature";
+            this.baseLabel_Config_TabLaser_THGTemperature.Size = new System.Drawing.Size(126, 25);
+            this.baseLabel_Config_TabLaser_THGTemperature.TabIndex = 127;
+            this.baseLabel_Config_TabLaser_THGTemperature.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label59
+            // 
+            this.label59.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label59.Location = new System.Drawing.Point(7, 112);
+            this.label59.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label59.Name = "label59";
+            this.label59.Size = new System.Drawing.Size(307, 24);
+            this.label59.TabIndex = 126;
+            this.label59.Text = "THG Crystal Temperature (℃) :";
+            this.label59.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FormNew_Config
             // 
@@ -7699,6 +7826,7 @@
             this.groupBox_Config_AxisPositions_LoadTransfer.ResumeLayout(false);
             this.groupBox_Config_AxisPositions_Loader.ResumeLayout(false);
             this.groupBox30.ResumeLayout(false);
+            this.groupBox37.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -8226,5 +8354,14 @@
         private System.Windows.Forms.Button button_Test_LDTransfer_AxisZ_SafetyPos;
         private System.Windows.Forms.Button button_Test_Scanner_AxisZ_SafetyPos;
         private System.Windows.Forms.Label label_Mask_Gap;
+        private System.Windows.Forms.GroupBox groupBox37;
+        private System.Windows.Forms.Label baseLabel_Config_TabLaser_THGTemperature;
+        private System.Windows.Forms.Label label59;
+        private System.Windows.Forms.Label baseLabel_Config_TabLaser_SHGTemperature;
+        private System.Windows.Forms.Label label57;
+        private System.Windows.Forms.Label baseLabel_Config_TabLaser_WaterTemperature;
+        private System.Windows.Forms.Label label55;
+        private System.Windows.Forms.Label baseLabel_Config_TabLaser_LaserHeadOperatingHours;
+        private System.Windows.Forms.Label label54;
     }
 }

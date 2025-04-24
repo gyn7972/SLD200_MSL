@@ -294,6 +294,12 @@ namespace QMC.Common
             Thruhole,
         }
 
+        public enum MarkTypeList : int
+        {
+            Circle = 0,
+            GoldPowder,
+        }
+
         public enum HoleProcessingType : int
         {
             Circle = 0,
@@ -333,6 +339,7 @@ namespace QMC.Common
             public int Miscellaneous_BETPositionIndex;                  //  BET Position Index (0:0.1X, 1:0.5X, 2:1.0X, 3:1.5X, 4:2.0X)
             public int Miscellaneous_HoleProcessingType;                //  Hole Processing Type (0:Circle, 1:Spiral)
             public int Miscellaneous_FiducialAlignType;                 //  Fiducial Align Type (0:Circle Find, 2:Pattern Matching)
+            public int Miscellaneous_FiducialMarkType;                  //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
 
             public bool ProcessOption_SocketAlign_Use;                  //  Socket Align Use (true: Use, false: Not Use)
             public bool ProcessOption_SocketHeightCheck_Use;            //  Socket Height Check Use Offset (true: Use, false: Not Use)
@@ -385,6 +392,8 @@ namespace QMC.Common
         public static bool Machine_FiducialMarkJudgementRange_Enable { set; get; } = true;      //  FIducial Mark Judgement Enable
         public static double Machine_FiducialMarkJudgementRange { set; get; } = 0.1;            //  Fiducial Mark Judgement Range (mm)
         public static bool Machine_FiducialImageSave_Always { set; get; } = false;              //  Fiducial Image Save Always
+        public static bool Machine_VacuumBlowTime_Enable { set; get; } = true;                //  Vacuum Stabilization Time Enable
+        public static int Machine_VacuumBlowTime { set; get; } = 500;                         //  Vacuum Signal Stabilization Time (ms)
 
 
         //  Offset Distance
@@ -863,6 +872,7 @@ namespace QMC.Common
                 stLayerRecipeSet[i].Miscellaneous_Drilling_Power = 10;                              //  Drilling Power              
                 stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = 0;                           //  Hole Processing Type (0:Circle, 1:Spiral)
                 stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = 0;                            //  Fiducial Align Type (0:Circle Find, 1:Pattern Matching)
+                stLayerRecipeSet[i].Miscellaneous_FiducialMarkType = 0;                             //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
 
                 //  Process Options
                 stLayerRecipeSet[i].ProcessOption_SocketAlign_Use = false;                          //  Socket Align Use (true: Use, false: Not Use)
@@ -2627,6 +2637,11 @@ namespace QMC.Common
             Equipment.Machine_FiducialMarkJudgementRange = Convert.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "FiducialImageSave_Always", "True", temp, 255, strFIle);
             Equipment.Machine_FiducialImageSave_Always = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "VacuumBlowTime_Enable", "True", temp, 255, strFIle);
+            Equipment.Machine_VacuumBlowTime_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "VacuumBlowTime", "500", temp, 255, strFIle);
+            Equipment.Machine_VacuumBlowTime = Convert.ToInt16(temp.ToString());
+
 
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);

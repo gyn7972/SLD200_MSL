@@ -2497,7 +2497,7 @@ namespace SLD200_MSL
                 //byte[] pixelData = aligner.ConvertBitmapToByteArray(bm_Temp);
 
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
-                aligner.FindMetalPowder(circlesResult, bm_RawData, w, h);
+                aligner.FindMetalPowder(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
             }
             else
             {
@@ -2511,11 +2511,11 @@ namespace SLD200_MSL
                 //byte[] pixelData = aligner.ConvertBitmapToByteArray(bm_Temp);                
 
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
-                aligner.FindMetalPowder(circlesResult, bm_RawData, w, h);
+                aligner.FindMetalPowder(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
             }
 
             if (circlesResult.Count > 0)
-            {
+            { 
                 detectedCircles.Clear();
 
                 //  좌표 표시

@@ -177,6 +177,12 @@ namespace QMC.Common.Modules
         //    PEG_RandomPEG = 4,
         //}
 
+        public enum nMotorizedBET
+        {
+            ZoomMotor = 0,
+            BeamExpansionMotor = 1,
+        }
+
 #endregion
 
 
@@ -1193,7 +1199,15 @@ namespace QMC.Common.Modules
             ENQ_MON_REGIST_REQ = 2,         //  모니터 등록 요구 (모니터할 필요가 있는 데이터를 미리 지정하여 주기적으로 데이터를 업데이트 하기 위해, n개의 번지를 등록 요구)
             ENQ_MON_READ_REQ = 3            //  모니터 등록 실행 요구 (모니터 등록 요구로 등록된 번지의 데이터 읽기 요구)
         }
-        
+
+        //  Motorized BET
+        public const byte chrHeader = 0x73;    //  Frame Header
+        public const byte chrFooter = 0x65;    //  Frame Footer
+
+        public const byte chrDataLength = 0x02;    //  Frame Footer
+        public const byte chrFunction = 0x01;    //  Frame Footer
+        public const byte chrData = 0x55;    //  Frame Footer
+
         public const byte chrSTX = 0x02;
         public const byte chrETX = 0x13;
         public int m_nChillerCommRecvData_ETX_Count { set; get; }
@@ -1438,6 +1452,24 @@ namespace QMC.Common.Modules
         public AsyncSocketClient m_SocketLaserHeightSensor { set; get; }
         public string m_strLaserSensorSocket_ReceivedData;
         public bool m_bLaserSensorSocket_Received { set; get; }
+
+        #endregion
+
+
+        #region 집진기 유량 제어 가능 데이터 (임시)
+
+        //  집진기 인버터에서 동작하는 데이터 배열
+        private static readonly double[] DustCollector_FrequencyDataArray = new double[]
+        {
+            59, 58.1, 57.9, 56, 53, 52, 50.9, 50, 49, 48, 47, 46.1, 45.5, 44, 43, 41, 40, 39.9,
+            29, 26.5, 26, 25.9, 23.6, 23.2, 22, 21.5, 21.2, 20
+        };
+
+        // 입력 값과 가장 가까운 값을 반환하는 함수
+        public static double GetClosestValue_DustCollector(double input)
+        {
+            return DustCollector_FrequencyDataArray.OrderBy(value => Math.Abs(value - input)).First();
+        }
 
         #endregion
 
@@ -1725,6 +1757,12 @@ namespace QMC.Common.Modules
         public double m_dLaser_OutputRR { set; get; }
         public double m_dLaser_OutputEnergy { set; get; }
 
+        public double m_dLaser_OperatingHours { set; get; }
+        public double m_dLaser_WaterTemperature { set; get; }
+        public double m_dLaser_SHGTemperature { set; get; }
+        public double m_dLaser_THGTemperature { set; get; }
+
+
         public bool GateStatus_OK { get; set; }
         public bool ExtGateStatus_OK { get; set; }
         public bool EmissionStatus_OK { get; set; }
@@ -1765,7 +1803,21 @@ namespace QMC.Common.Modules
             OutputRR_Received,
 
             EnergyPercent_Get,
-            EnergyPercent_Received,            
+            EnergyPercent_Received,
+
+
+            // 추가
+            LaserHeadOperatingHours_Get,
+            LaserHeadOperatingHours_Received,
+
+            WaterTemperature_Get,
+            WaterTemperature_Received,
+
+            SHGTemperature_Get,
+            SHGTemperature_Received,
+
+            THGTemperature_Get,
+            THGTemperature_Received,
         }
 
 
@@ -4411,6 +4463,349 @@ namespace QMC.Common.Modules
             Console.WriteLine("Beam Expander serial COM4 disconnected");
         }
 
+
+        public string ConvertDoubleToHex(double value)
+        {
+            // double 값을 바이트 배열로 변환 (IEEE 754 형식)
+            byte[] bytes = BitConverter.GetBytes(value);
+
+            // 바이트 배열을 16진수 문자열로 변환
+            Array.Reverse(bytes); // 빅엔디안 형식으로 변환 (필요 시)
+            return BitConverter.ToString(bytes).Replace("-", "");
+        }
+
+
+        public bool BeamExpander_Send()
+        {
+            bool m_bRet = false;
+
+            int m_nIndex = 0;
+            int m_DataNum = 0;
+            int m_nCheckSum = 0;
+            string m_strSendData = "";
+            byte[] m_cSendCmd = null;
+
+
+            m_DataNum = 7;
+            m_cSendCmd = new byte[m_DataNum];
+
+            m_cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
+            m_cSendCmd[1] = 0x02;                                   //  Data Length (1B)
+            m_cSendCmd[2] = 0x01;                                   //  Function Code (1B)
+            m_cSendCmd[3] = 0x55;                                   //  Data
+            m_nCheckSum = m_cSendCmd[2] + m_cSendCmd[3];            //  CheckSum
+
+            // 상위 바이트와 하위 바이트 계산
+            byte highByte = (byte)((m_nCheckSum >> 8) & 0xFF);      // 상위 바이트
+            byte lowByte = (byte)(m_nCheckSum & 0xFF);              // 하위 바이트
+
+            m_cSendCmd[4] = highByte;
+            m_cSendCmd[5] = lowByte;
+            m_cSendCmd[6] = chrFooter;
+
+            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
+
+
+            if (m_beamExpander_Comm.IsOpen)
+            {
+                m_beamExpander_Comm.Send(m_strSendData);
+                m_bRet = true;
+            }
+
+            return m_bRet;
+        }
+
+        //  Motor Rotates Forward (Zoom / Expander)
+        public bool BeamExpander_Send_Motor_Rotates_Forward(int m_nMotor)
+        {
+            bool m_bRet = false;
+
+            int m_DataNum = 0;
+            int m_nCheckSum = 0;
+            string m_strSendData = "";
+            byte[] m_cSendCmd = null;
+
+
+            m_DataNum = 7;
+            m_cSendCmd = new byte[m_DataNum];
+
+            m_cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
+            m_cSendCmd[1] = 0x02;                                   //  Data Length (1B)
+
+
+            if (m_nMotor == (int)nMotorizedBET.ZoomMotor)
+            { 
+                m_cSendCmd[2] = 0x01;                                   //  Function Code (1B)
+                m_cSendCmd[3] = 0x55;                                   //  Data
+            }
+            else if (m_nMotor == (int)nMotorizedBET.BeamExpansionMotor)
+            {
+                m_cSendCmd[2] = 0x02;                                   //  Function Code (1B)
+                m_cSendCmd[3] = 0x55;                                   //  Data
+            }
+
+
+            m_nCheckSum = m_cSendCmd[2] + m_cSendCmd[3];            //  CheckSum
+
+            // 상위 바이트와 하위 바이트 계산
+            byte highByte = (byte)((m_nCheckSum >> 8) & 0xFF);      // 상위 바이트
+            byte lowByte = (byte)(m_nCheckSum & 0xFF);              // 하위 바이트
+
+            m_cSendCmd[4] = highByte;
+            m_cSendCmd[5] = lowByte;
+            m_cSendCmd[6] = chrFooter;
+
+            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
+
+
+            if (m_beamExpander_Comm.IsOpen)
+            {
+                m_beamExpander_Comm.Send(m_strSendData);
+                m_bRet = true;
+            }
+
+            return m_bRet;
+        }
+
+        //  Motor Reverse (Zoom / Expander)
+        public bool BeamExpander_Send_Motor_Reverse(int m_nMotor)
+        {
+            bool m_bRet = false;
+
+            int m_DataNum = 0;
+            int m_nCheckSum = 0;
+            string m_strSendData = "";
+            byte[] m_cSendCmd = null;
+
+
+            m_DataNum = 7;
+            m_cSendCmd = new byte[m_DataNum];
+
+            m_cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
+            m_cSendCmd[1] = 0x02;                                   //  Data Length (1B)
+
+
+            if (m_nMotor == (int)nMotorizedBET.ZoomMotor)
+            {
+                m_cSendCmd[2] = 0x01;                                   //  Function Code (1B)
+                m_cSendCmd[3] = 0xAA;                                   //  Data
+            }
+            else if (m_nMotor == (int)nMotorizedBET.BeamExpansionMotor)
+            {
+                m_cSendCmd[2] = 0x02;                                   //  Function Code (1B)
+                m_cSendCmd[3] = 0xAA;                                   //  Data
+            }
+
+
+            m_nCheckSum = m_cSendCmd[2] + m_cSendCmd[3];            //  CheckSum
+
+            // 상위 바이트와 하위 바이트 계산
+            byte highByte = (byte)((m_nCheckSum >> 8) & 0xFF);      // 상위 바이트
+            byte lowByte = (byte)(m_nCheckSum & 0xFF);              // 하위 바이트
+
+            m_cSendCmd[4] = highByte;
+            m_cSendCmd[5] = lowByte;
+            m_cSendCmd[6] = chrFooter;
+
+            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
+
+
+            if (m_beamExpander_Comm.IsOpen)
+            {
+                m_beamExpander_Comm.Send(m_strSendData);
+                m_bRet = true;
+            }
+
+            return m_bRet;
+        }
+
+        //  Motor Stop (Zoom / Expander)
+        public bool BeamExpander_Send_Motor_Stop(int m_nMotor)
+        {
+            bool m_bRet = false;
+
+            int m_DataNum = 0;
+            int m_nCheckSum = 0;
+            string m_strSendData = "";
+            byte[] m_cSendCmd = null;
+
+
+            m_DataNum = 7;
+            m_cSendCmd = new byte[m_DataNum];
+
+            m_cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
+            m_cSendCmd[1] = 0x02;                                   //  Data Length (1B)
+
+
+            if (m_nMotor == (int)nMotorizedBET.ZoomMotor)
+            {
+                m_cSendCmd[2] = 0x01;                                   //  Function Code (1B)
+                m_cSendCmd[3] = 0x00;                                   //  Data
+            }
+            else if (m_nMotor == (int)nMotorizedBET.BeamExpansionMotor)
+            {
+                m_cSendCmd[2] = 0x02;                                   //  Function Code (1B)
+                m_cSendCmd[3] = 0x00;                                   //  Data
+            }
+            
+
+            m_nCheckSum = m_cSendCmd[2] + m_cSendCmd[3];            //  CheckSum
+
+            // 상위 바이트와 하위 바이트 계산
+            byte highByte = (byte)((m_nCheckSum >> 8) & 0xFF);      // 상위 바이트
+            byte lowByte = (byte)(m_nCheckSum & 0xFF);              // 하위 바이트
+
+            m_cSendCmd[4] = highByte;
+            m_cSendCmd[5] = lowByte;
+            m_cSendCmd[6] = chrFooter;
+
+            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
+
+
+            if (m_beamExpander_Comm.IsOpen)
+            {
+                m_beamExpander_Comm.Send(m_strSendData);
+                m_bRet = true;
+            }
+
+            return m_bRet;
+        }
+
+        //  Zoom Motor Initial Pos.
+        public bool BeamExpander_Send_Motor_InitialPosition(int m_nMotor)
+        {
+            bool m_bRet = false;
+
+            int m_DataNum = 0;
+            int m_nCheckSum = 0;
+            string m_strSendData = "";
+            byte[] m_cSendCmd = null;
+
+
+            m_DataNum = 7;
+            m_cSendCmd = new byte[m_DataNum];
+
+            m_cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
+            m_cSendCmd[1] = 0x02;                                   //  Data Length (1B)
+
+
+            if (m_nMotor == (int)nMotorizedBET.ZoomMotor)
+            {
+                m_cSendCmd[2] = 0x01;                                   //  Function Code (1B)
+                m_cSendCmd[3] = 0x0C;                                   //  Data
+            }
+            else if (m_nMotor == (int)nMotorizedBET.BeamExpansionMotor)
+            {
+                m_cSendCmd[2] = 0x02;                                   //  Function Code (1B)
+                m_cSendCmd[3] = 0x0C;                                   //  Data
+            }
+
+
+            m_nCheckSum = m_cSendCmd[2] + m_cSendCmd[3];            //  CheckSum
+
+            // 상위 바이트와 하위 바이트 계산
+            byte highByte = (byte)((m_nCheckSum >> 8) & 0xFF);      // 상위 바이트
+            byte lowByte = (byte)(m_nCheckSum & 0xFF);              // 하위 바이트
+
+            m_cSendCmd[4] = highByte;
+            m_cSendCmd[5] = lowByte;
+            m_cSendCmd[6] = chrFooter;
+
+            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
+
+
+            if (m_beamExpander_Comm.IsOpen)
+            {
+                m_beamExpander_Comm.Send(m_strSendData);
+                m_bRet = true;
+            }
+
+            return m_bRet;
+        }
+
+
+        //  Get Current Status and Position
+        public bool BeamExpander_Send_GetCurrentStatusPosition()
+        {
+            bool m_bRet = false;
+
+            int m_DataNum = 0;
+            int m_nCheckSum = 0;
+            string m_strSendData = "";
+            byte[] m_cSendCmd = null;
+
+
+            m_DataNum = 7;
+            m_cSendCmd = new byte[m_DataNum];
+
+            m_cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
+            m_cSendCmd[1] = 0x02;                                   //  Data Length (1B)
+            m_cSendCmd[2] = 0x06;                                   //  Function Code (1B)
+            m_cSendCmd[3] = 0x00;                                   //  Data
+
+            m_nCheckSum = m_cSendCmd[2] + m_cSendCmd[3];            //  CheckSum
+
+            // 상위 바이트와 하위 바이트 계산
+            byte highByte = (byte)((m_nCheckSum >> 8) & 0xFF);      // 상위 바이트
+            byte lowByte = (byte)(m_nCheckSum & 0xFF);              // 하위 바이트
+
+            m_cSendCmd[4] = highByte;
+            m_cSendCmd[5] = lowByte;
+            m_cSendCmd[6] = chrFooter;
+
+            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
+
+
+            if (m_beamExpander_Comm.IsOpen)
+            {
+                m_beamExpander_Comm.Send(m_strSendData);
+                m_bRet = true;
+            }
+
+            return m_bRet;
+        }
+
+        //  Get Current Status, Magnification, divergence angle
+        public bool BeamExpander_Send_GetCurrentStatus_Magnification_DivergenceAngle()
+        {
+            bool m_bRet = false;
+
+            int m_DataNum = 0;
+            int m_nCheckSum = 0;
+            string m_strSendData = "";
+            byte[] m_cSendCmd = null;
+
+
+            m_DataNum = 7;
+            m_cSendCmd = new byte[m_DataNum];
+
+            m_cSendCmd[0] = chrHeader;                              //  Frame Header (1B)
+            m_cSendCmd[1] = 0x02;                                   //  Data Length (1B)
+            m_cSendCmd[2] = 0x09;                                   //  Function Code (1B)
+            m_cSendCmd[3] = 0x00;                                   //  Data
+
+            m_nCheckSum = m_cSendCmd[2] + m_cSendCmd[3];            //  CheckSum
+
+            // 상위 바이트와 하위 바이트 계산
+            byte highByte = (byte)((m_nCheckSum >> 8) & 0xFF);      // 상위 바이트
+            byte lowByte = (byte)(m_nCheckSum & 0xFF);              // 하위 바이트
+
+            m_cSendCmd[4] = highByte;
+            m_cSendCmd[5] = lowByte;
+            m_cSendCmd[6] = chrFooter;
+
+            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
+
+
+            if (m_beamExpander_Comm.IsOpen)
+            {
+                m_beamExpander_Comm.Send(m_strSendData);
+                m_bRet = true;
+            }
+
+            return m_bRet;
+        }
+
         #endregion
 
 
@@ -4713,7 +5108,7 @@ namespace QMC.Common.Modules
             int m_nTemp = m_nCheckSum & 0xFF;                       //  CheckSum 계산 (하위 1바이트)
             m_btTemp = (byte)m_nTemp;
             string m_strCheckSum = m_btTemp.ToString("x2");
-
+             
             m_cSendCmd[9] = (byte)m_strCheckSum[0];                 //  CheckSum 2자리 중 앞자리
             m_cSendCmd[10] = (byte)m_strCheckSum[1];                //  CheckSum 2자리 중 뒷자리
             m_cSendCmd[11] = chrEOT;
@@ -5929,6 +6324,114 @@ namespace QMC.Common.Modules
 
             m_cSendCmd[3 + m_strEnergyData.Length] = chrCR;
             m_cSendCmd[3 + m_strEnergyData.Length + 1] = chrLF;
+
+            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
+
+            if (m_rapidLxLaser_Comm.IsOpen)
+            {
+                m_rapidLxLaser_Comm.Send(m_strSendData);
+                m_bRet = true;
+            }
+
+            return m_bRet;
+        }
+
+        public bool RapidLxLaserComm_Laser_LaserHeadOperatingHours_Read()
+        {
+            bool m_bRet = false;
+
+            string m_strSendData = "";
+            byte[] m_cSendCmd = null;
+
+            m_cSendCmd = new byte[5];            //  5 : '?HH' + CR + LF
+
+            m_cSendCmd[0] = (byte)'?';
+            m_cSendCmd[1] = (byte)'H';
+            m_cSendCmd[2] = (byte)'H';
+            m_cSendCmd[3] = chrCR;
+            m_cSendCmd[4] = chrLF;
+
+            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
+
+            if (m_rapidLxLaser_Comm.IsOpen)
+            {
+                m_rapidLxLaser_Comm.Send(m_strSendData);
+                m_bRet = true;
+            }
+
+            return m_bRet;
+        }
+
+        public bool RapidLxLaserComm_Laser_WaterTemperature_Read()
+        {
+            bool m_bRet = false;
+
+            string m_strSendData = "";
+            byte[] m_cSendCmd = null;
+
+            m_cSendCmd = new byte[5];            //  5 : '?WT' + CR + LF
+
+            m_cSendCmd[0] = (byte)'?';
+            m_cSendCmd[1] = (byte)'W';
+            m_cSendCmd[2] = (byte)'T';
+            m_cSendCmd[3] = chrCR;
+            m_cSendCmd[4] = chrLF;
+
+            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
+
+            if (m_rapidLxLaser_Comm.IsOpen)
+            {
+                m_rapidLxLaser_Comm.Send(m_strSendData);
+                m_bRet = true;
+            }
+
+            return m_bRet;
+        }
+
+        public bool RapidLxLaserComm_Laser_SHGTemperature_Read()
+        {
+            bool m_bRet = false;
+
+            string m_strSendData = "";
+            byte[] m_cSendCmd = null;
+
+            m_cSendCmd = new byte[7];            //  7 : '?SHGT' + CR + LF
+
+            m_cSendCmd[0] = (byte)'?';
+            m_cSendCmd[1] = (byte)'S';
+            m_cSendCmd[2] = (byte)'H';
+            m_cSendCmd[3] = (byte)'G';
+            m_cSendCmd[4] = (byte)'T';
+            m_cSendCmd[5] = chrCR;
+            m_cSendCmd[6] = chrLF;
+
+            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
+
+            if (m_rapidLxLaser_Comm.IsOpen)
+            {
+                m_rapidLxLaser_Comm.Send(m_strSendData);
+                m_bRet = true;
+            }
+
+            return m_bRet;
+        }
+
+        public bool RapidLxLaserComm_Laser_THGTemperature_Read()
+        {
+            bool m_bRet = false;
+
+            string m_strSendData = "";
+            byte[] m_cSendCmd = null;
+
+            m_cSendCmd = new byte[7];            //  7 : '?THGT' + CR + LF
+
+            m_cSendCmd[0] = (byte)'?';
+            m_cSendCmd[1] = (byte)'T';
+            m_cSendCmd[2] = (byte)'H';
+            m_cSendCmd[3] = (byte)'G';
+            m_cSendCmd[4] = (byte)'T';
+            m_cSendCmd[5] = chrCR;
+            m_cSendCmd[6] = chrLF;
 
             m_strSendData = Encoding.Default.GetString(m_cSendCmd);
 
@@ -7749,6 +8252,22 @@ namespace QMC.Common.Modules
                     m_nHomeStep = (int)Home_Step.None;
 
                     MessageBox.Show(m_strTemp, "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+
+
+                    ////  장비 초기화 완료 후 카메라 초기화
+                    //Task<int> task = Task.Factory.StartNew<int>(() =>
+                    //{
+                    //    Camera_HighRes.SetRunStatus(Part.RunStatus.Run);
+                    //    Camera_LowRes.SetRunStatus(Part.RunStatus.Run);
+                    //    Camera_HighRes.Initialize();
+                    //    Camera_LowRes.Initialize();
+                    //    return 0;
+                    //});
+
+                    //Camera_HighRes.Initialize();
+                    //Camera_LowRes.Initialize();
+
                     break;
             }
         }
@@ -10481,7 +11000,7 @@ namespace QMC.Common.Modules
                                 m_strRapidLxLaser_Comm_ReceivedData = "";
                                 m_nLaserCommRecvData_LF_Count = 0;
 
-                                m_nLaserCommStep = (int)LaserComm_Step.Model_Get;
+                                m_nLaserCommStep = (int)LaserComm_Step.LaserHeadOperatingHours_Get;
                             }
                             else
                             {
@@ -10510,9 +11029,364 @@ namespace QMC.Common.Modules
                         m_strRapidLxLaser_Comm_ReceivedData = "";
                         m_nLaserCommRecvData_LF_Count = 0;
 
+                        m_nLaserCommStep = (int)LaserComm_Step.LaserHeadOperatingHours_Get;
+                    }
+                    break;
+
+
+
+                //  추가
+                case (int)LaserComm_Step.LaserHeadOperatingHours_Get:
+                    //  Laser Head Operating Hours 읽기
+
+                    if (m_rapidLxLaser_Comm.IsOpen)
+                    {
+                        m_bRapidLxLaser_CommData_Received = false;
+                        m_strRapidLxLaser_Comm_ReceivedData = "";
+                        m_nLaserCommRecvData_LF_Count = 0;
+
+                        RapidLxLaserComm_Laser_LaserHeadOperatingHours_Read();
+
+                        TickCount_Start((int)TickType.TICK_LASER_COMM);
+
+                        m_nLaserCommStep = (int)LaserComm_Step.LaserHeadOperatingHours_Received;
+                    }
+                    else
+                    {
+                        m_nLaserCommStep = (int)LaserComm_Step.None;
+                        //timer_LaserComm.Enabled = false;
+
+                        MessageBox.Show("Laser Comm. Not Opened.", "Error");
+                    }
+                    break;
+
+
+                case (int)LaserComm_Step.LaserHeadOperatingHours_Received:
+                    if (m_bRapidLxLaser_CommData_Received)
+                    {
+                        //  데이터 체크 (2개가 붙어서 들어오는 경우가 있어서... ctrLF 가 1개인지 확인)
+                        for (int i = 0; i < m_strRapidLxLaser_Comm_ReceivedData.Length; i++)
+                        {
+                            if (m_strRapidLxLaser_Comm_ReceivedData[i] == chrLF)
+                                m_nLaserCommRecvData_LF_Count++;
+                        }
+
+                        //if (m_nLaserCommRecvData_LF_Count == 1)         //  수신 데이터 안에 \n 이 1개이면? 정상 데이터.
+                        if ((m_nLaserCommRecvData_LF_Count == 1) && (m_strRapidLxLaser_Comm_ReceivedData.Length >= 2))         //  수신 데이터 안에 \n 이 1개이면? 정상 데이터.
+                        {
+                            m_strTemp = m_strRapidLxLaser_Comm_ReceivedData;
+                            m_strTemp = m_strTemp.Replace("\r", "");
+                            m_strTemp = m_strTemp.Replace("\n", "");
+
+                            string[] words = m_strTemp.Split(' ');
+
+                            if (words.Length >= 2)
+                            {
+                                //m_dLaser_OutputRR = Convert.ToDouble(m_strRapidLxLaser_Comm_ReceivedData.Substring(3, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
+                                m_dLaser_OperatingHours = Convert.ToDouble(words[1]);
+
+                                //  데이터를 사용했으니 초기화
+                                m_bRapidLxLaser_CommData_Received = false;
+                                m_strRapidLxLaser_Comm_ReceivedData = "";
+                                m_nLaserCommRecvData_LF_Count = 0;
+
+                                m_nLaserCommStep = (int)LaserComm_Step.WaterTemperature_Get;
+                            }
+                            else
+                            {
+                                //  데이터 개수가 안맞으니 다시 시도
+                                m_bRapidLxLaser_CommData_Received = false;
+                                m_strRapidLxLaser_Comm_ReceivedData = "";
+                                m_nLaserCommRecvData_LF_Count = 0;
+
+                                m_nLaserCommStep = (int)LaserComm_Step.LaserHeadOperatingHours_Get;
+                            }
+                        }
+                        else                                            //  수신 데이터 안에 \n 이 2개 이상이면? 데이터가 잘못 들어온 것으로 판단하여 다시 데이터 읽기.
+                        {
+                            //  데이터 개수가 안맞으니 다시 시도
+                            m_bRapidLxLaser_CommData_Received = false;
+                            m_strRapidLxLaser_Comm_ReceivedData = "";
+                            m_nLaserCommRecvData_LF_Count = 0;
+
+                            m_nLaserCommStep = (int)LaserComm_Step.LaserHeadOperatingHours_Get;
+                        }
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_LASER_COMM) >= 500)
+                    {
+                        //  데이터를 사용했으니 초기화
+                        m_bRapidLxLaser_CommData_Received = false;
+                        m_strRapidLxLaser_Comm_ReceivedData = "";
+                        m_nLaserCommRecvData_LF_Count = 0;
+
+                        m_nLaserCommStep = (int)LaserComm_Step.WaterTemperature_Get;
+                    }
+                    break;
+
+
+                case (int)LaserComm_Step.WaterTemperature_Get:
+                    //  Water Temperature 읽기
+
+                    if (m_rapidLxLaser_Comm.IsOpen)
+                    {
+                        m_bRapidLxLaser_CommData_Received = false;
+                        m_strRapidLxLaser_Comm_ReceivedData = "";
+                        m_nLaserCommRecvData_LF_Count = 0;
+
+                        RapidLxLaserComm_Laser_WaterTemperature_Read();
+
+                        TickCount_Start((int)TickType.TICK_LASER_COMM);
+
+                        m_nLaserCommStep = (int)LaserComm_Step.WaterTemperature_Received;
+                    }
+                    else
+                    {
+                        m_nLaserCommStep = (int)LaserComm_Step.None;
+                        //timer_LaserComm.Enabled = false;
+
+                        MessageBox.Show("Laser Comm. Not Opened.", "Error");
+                    }
+                    break;
+
+
+                case (int)LaserComm_Step.WaterTemperature_Received:
+                    if (m_bRapidLxLaser_CommData_Received)
+                    {
+                        //  데이터 체크 (2개가 붙어서 들어오는 경우가 있어서... ctrLF 가 1개인지 확인)
+                        for (int i = 0; i < m_strRapidLxLaser_Comm_ReceivedData.Length; i++)
+                        {
+                            if (m_strRapidLxLaser_Comm_ReceivedData[i] == chrLF)
+                                m_nLaserCommRecvData_LF_Count++;
+                        }
+
+                        //if (m_nLaserCommRecvData_LF_Count == 1)         //  수신 데이터 안에 \n 이 1개이면? 정상 데이터.
+                        if ((m_nLaserCommRecvData_LF_Count == 1) && (m_strRapidLxLaser_Comm_ReceivedData.Length >= 2))         //  수신 데이터 안에 \n 이 1개이면? 정상 데이터.
+                        {
+                            m_strTemp = m_strRapidLxLaser_Comm_ReceivedData;
+                            m_strTemp = m_strTemp.Replace("\r", "");
+                            m_strTemp = m_strTemp.Replace("\n", "");
+
+                            string[] words = m_strTemp.Split(' ');
+
+                            if (words.Length >= 2)
+                            {
+                                //m_dLaser_OutputRR = Convert.ToDouble(m_strRapidLxLaser_Comm_ReceivedData.Substring(3, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
+                                m_dLaser_WaterTemperature = Convert.ToDouble(words[1]);
+
+                                //  데이터를 사용했으니 초기화
+                                m_bRapidLxLaser_CommData_Received = false;
+                                m_strRapidLxLaser_Comm_ReceivedData = "";
+                                m_nLaserCommRecvData_LF_Count = 0;
+
+                                m_nLaserCommStep = (int)LaserComm_Step.SHGTemperature_Get;
+                            }
+                            else
+                            {
+                                //  데이터 개수가 안맞으니 다시 시도
+                                m_bRapidLxLaser_CommData_Received = false;
+                                m_strRapidLxLaser_Comm_ReceivedData = "";
+                                m_nLaserCommRecvData_LF_Count = 0;
+
+                                m_nLaserCommStep = (int)LaserComm_Step.WaterTemperature_Get;
+                            }
+                        }
+                        else                                            //  수신 데이터 안에 \n 이 2개 이상이면? 데이터가 잘못 들어온 것으로 판단하여 다시 데이터 읽기.
+                        {
+                            //  데이터 개수가 안맞으니 다시 시도
+                            m_bRapidLxLaser_CommData_Received = false;
+                            m_strRapidLxLaser_Comm_ReceivedData = "";
+                            m_nLaserCommRecvData_LF_Count = 0;
+
+                            m_nLaserCommStep = (int)LaserComm_Step.WaterTemperature_Get;
+                        }
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_LASER_COMM) >= 500)
+                    {
+                        //  데이터를 사용했으니 초기화
+                        m_bRapidLxLaser_CommData_Received = false;
+                        m_strRapidLxLaser_Comm_ReceivedData = "";
+                        m_nLaserCommRecvData_LF_Count = 0;
+
+                        m_nLaserCommStep = (int)LaserComm_Step.SHGTemperature_Get;
+                    }
+                    break;
+
+
+                case (int)LaserComm_Step.SHGTemperature_Get:
+                    //  SHG Temperature 읽기
+
+                    if (m_rapidLxLaser_Comm.IsOpen)
+                    {
+                        m_bRapidLxLaser_CommData_Received = false;
+                        m_strRapidLxLaser_Comm_ReceivedData = "";
+                        m_nLaserCommRecvData_LF_Count = 0;
+
+                        RapidLxLaserComm_Laser_SHGTemperature_Read();
+
+                        TickCount_Start((int)TickType.TICK_LASER_COMM);
+
+                        m_nLaserCommStep = (int)LaserComm_Step.SHGTemperature_Received;
+                    }
+                    else
+                    {
+                        m_nLaserCommStep = (int)LaserComm_Step.None;
+                        //timer_LaserComm.Enabled = false;
+
+                        MessageBox.Show("Laser Comm. Not Opened.", "Error");
+                    }
+                    break;
+
+
+                case (int)LaserComm_Step.SHGTemperature_Received:
+                    if (m_bRapidLxLaser_CommData_Received)
+                    {
+                        //  데이터 체크 (2개가 붙어서 들어오는 경우가 있어서... ctrLF 가 1개인지 확인)
+                        for (int i = 0; i < m_strRapidLxLaser_Comm_ReceivedData.Length; i++)
+                        {
+                            if (m_strRapidLxLaser_Comm_ReceivedData[i] == chrLF)
+                                m_nLaserCommRecvData_LF_Count++;
+                        }
+
+                        //if (m_nLaserCommRecvData_LF_Count == 1)         //  수신 데이터 안에 \n 이 1개이면? 정상 데이터.
+                        if ((m_nLaserCommRecvData_LF_Count == 1) && (m_strRapidLxLaser_Comm_ReceivedData.Length >= 2))         //  수신 데이터 안에 \n 이 1개이면? 정상 데이터.
+                        {
+                            m_strTemp = m_strRapidLxLaser_Comm_ReceivedData;
+                            m_strTemp = m_strTemp.Replace("\r", "");
+                            m_strTemp = m_strTemp.Replace("\n", "");
+
+                            string[] words = m_strTemp.Split(' ');
+
+                            if (words.Length >= 2)
+                            {
+                                //m_dLaser_OutputRR = Convert.ToDouble(m_strRapidLxLaser_Comm_ReceivedData.Substring(3, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
+                                m_dLaser_SHGTemperature = Convert.ToDouble(words[1]);
+
+                                //  데이터를 사용했으니 초기화
+                                m_bRapidLxLaser_CommData_Received = false;
+                                m_strRapidLxLaser_Comm_ReceivedData = "";
+                                m_nLaserCommRecvData_LF_Count = 0;
+
+                                m_nLaserCommStep = (int)LaserComm_Step.THGTemperature_Get;
+                            }
+                            else
+                            {
+                                //  데이터 개수가 안맞으니 다시 시도
+                                m_bRapidLxLaser_CommData_Received = false;
+                                m_strRapidLxLaser_Comm_ReceivedData = "";
+                                m_nLaserCommRecvData_LF_Count = 0;
+
+                                m_nLaserCommStep = (int)LaserComm_Step.SHGTemperature_Get;
+                            }
+                        }
+                        else                                            //  수신 데이터 안에 \n 이 2개 이상이면? 데이터가 잘못 들어온 것으로 판단하여 다시 데이터 읽기.
+                        {
+                            //  데이터 개수가 안맞으니 다시 시도
+                            m_bRapidLxLaser_CommData_Received = false;
+                            m_strRapidLxLaser_Comm_ReceivedData = "";
+                            m_nLaserCommRecvData_LF_Count = 0;
+
+                            m_nLaserCommStep = (int)LaserComm_Step.SHGTemperature_Get;
+                        }
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_LASER_COMM) >= 500)
+                    {
+                        //  데이터를 사용했으니 초기화
+                        m_bRapidLxLaser_CommData_Received = false;
+                        m_strRapidLxLaser_Comm_ReceivedData = "";
+                        m_nLaserCommRecvData_LF_Count = 0;
+
+                        m_nLaserCommStep = (int)LaserComm_Step.THGTemperature_Get;
+                    }
+                    break;
+
+
+                case (int)LaserComm_Step.THGTemperature_Get:
+                    //  THG Temperature 읽기
+
+                    if (m_rapidLxLaser_Comm.IsOpen)
+                    {
+                        m_bRapidLxLaser_CommData_Received = false;
+                        m_strRapidLxLaser_Comm_ReceivedData = "";
+                        m_nLaserCommRecvData_LF_Count = 0;
+
+                        RapidLxLaserComm_Laser_THGTemperature_Read();
+
+                        TickCount_Start((int)TickType.TICK_LASER_COMM);
+
+                        m_nLaserCommStep = (int)LaserComm_Step.THGTemperature_Received;
+                    }
+                    else
+                    {
+                        m_nLaserCommStep = (int)LaserComm_Step.None;
+                        //timer_LaserComm.Enabled = false;
+
+                        MessageBox.Show("Laser Comm. Not Opened.", "Error");
+                    }
+                    break;
+
+
+                case (int)LaserComm_Step.THGTemperature_Received:
+                    if (m_bRapidLxLaser_CommData_Received)
+                    {
+                        //  데이터 체크 (2개가 붙어서 들어오는 경우가 있어서... ctrLF 가 1개인지 확인)
+                        for (int i = 0; i < m_strRapidLxLaser_Comm_ReceivedData.Length; i++)
+                        {
+                            if (m_strRapidLxLaser_Comm_ReceivedData[i] == chrLF)
+                                m_nLaserCommRecvData_LF_Count++;
+                        }
+
+                        //if (m_nLaserCommRecvData_LF_Count == 1)         //  수신 데이터 안에 \n 이 1개이면? 정상 데이터.
+                        if ((m_nLaserCommRecvData_LF_Count == 1) && (m_strRapidLxLaser_Comm_ReceivedData.Length >= 2))         //  수신 데이터 안에 \n 이 1개이면? 정상 데이터.
+                        {
+                            m_strTemp = m_strRapidLxLaser_Comm_ReceivedData;
+                            m_strTemp = m_strTemp.Replace("\r", "");
+                            m_strTemp = m_strTemp.Replace("\n", "");
+
+                            string[] words = m_strTemp.Split(' ');
+
+                            if (words.Length >= 2)
+                            {
+                                //m_dLaser_OutputRR = Convert.ToDouble(m_strRapidLxLaser_Comm_ReceivedData.Substring(3, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
+                                m_dLaser_THGTemperature = Convert.ToDouble(words[1]);
+
+                                //  데이터를 사용했으니 초기화
+                                m_bRapidLxLaser_CommData_Received = false;
+                                m_strRapidLxLaser_Comm_ReceivedData = "";
+                                m_nLaserCommRecvData_LF_Count = 0;
+
+                                m_nLaserCommStep = (int)LaserComm_Step.Model_Get;
+                            }
+                            else
+                            {
+                                //  데이터 개수가 안맞으니 다시 시도
+                                m_bRapidLxLaser_CommData_Received = false;
+                                m_strRapidLxLaser_Comm_ReceivedData = "";
+                                m_nLaserCommRecvData_LF_Count = 0;
+
+                                m_nLaserCommStep = (int)LaserComm_Step.THGTemperature_Get;
+                            }
+                        }
+                        else                                            //  수신 데이터 안에 \n 이 2개 이상이면? 데이터가 잘못 들어온 것으로 판단하여 다시 데이터 읽기.
+                        {
+                            //  데이터 개수가 안맞으니 다시 시도
+                            m_bRapidLxLaser_CommData_Received = false;
+                            m_strRapidLxLaser_Comm_ReceivedData = "";
+                            m_nLaserCommRecvData_LF_Count = 0;
+
+                            m_nLaserCommStep = (int)LaserComm_Step.THGTemperature_Get;
+                        }
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_LASER_COMM) >= 500)
+                    {
+                        //  데이터를 사용했으니 초기화
+                        m_bRapidLxLaser_CommData_Received = false;
+                        m_strRapidLxLaser_Comm_ReceivedData = "";
+                        m_nLaserCommRecvData_LF_Count = 0;
+
                         m_nLaserCommStep = (int)LaserComm_Step.Model_Get;
                     }
                     break;
+
             }
         }
 
@@ -11819,8 +12693,24 @@ namespace QMC.Common.Modules
                         Camera_HighRes.Initialize();
                         continue;
                     }
-                    Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, bm_AlignRawData, Camera_HighRes.Resolution.Width, Camera_HighRes.Resolution.Height, nWidthImageCount,0.05, ref Fiducial_circleFound);
-                    if(Fiducial_circleFound)
+
+                    //  마크 검출 형식 (Circle, Gold Powder)
+                    if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
+                    {
+                        Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, bm_AlignRawData, Camera_HighRes.Resolution.Width, Camera_HighRes.Resolution.Height, nWidthImageCount, 0.05, ref Fiducial_circleFound);
+                    }
+                    else if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
+                    {
+                        Fiducial_aligner.FindMetalPowder(Fiducial_circlesResult, bm_AlignRawData, Camera_HighRes.Resolution.Width, Camera_HighRes.Resolution.Height, ref Fiducial_circleFound);
+                    }
+                    
+
+
+
+
+
+
+                    if (Fiducial_circleFound)
                     {
                         if(bFound == false)
                         {
@@ -12337,9 +13227,15 @@ namespace QMC.Common.Modules
                         double m_dFreq_Upper = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper * 100.0;
                         double m_dFreq_Lower = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower * 100.0;
 
+                        //  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
+                        double m_dRet_Freq_Upper = GetClosestValue_DustCollector(m_dFreq_Upper);
+                        double m_dRet_Freq_Lower = GetClosestValue_DustCollector(m_dFreq_Lower);
+
                         //  숫자를 4자리 숫자로 고정
-                        string m_strFreq_Upper = m_dFreq_Upper.ToString("0000");
-                        string m_strFreq_Lower = m_dFreq_Lower.ToString("0000");
+                        //string m_strFreq_Upper = m_dFreq_Upper.ToString("0000");
+                        //string m_strFreq_Lower = m_dFreq_Lower.ToString("0000");
+                        string m_strFreq_Upper = m_dRet_Freq_Upper.ToString("0000");
+                        string m_strFreq_Lower = m_dRet_Freq_Lower.ToString("0000");
 
                         string m_strRet_Upper = ConvertDecimalToHex(m_strFreq_Upper);
                         string m_strRet_Lower = ConvertDecimalToHex(m_strFreq_Lower);
@@ -12357,12 +13253,12 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_strTemp = string.Format("상부 집진기 Frequency 계산 NG : 20.0 Hz 로 세팅");
+                            m_strTemp = string.Format("상부 집진기 Frequency 계산 NG : 29.0 Hz 로 세팅");
                             Log.Write("SLD-200", "Auto Run", m_strTemp);
 
-                            //  20.0 Hz 로 설정
+                            //  29.0 Hz 로 설정
                             //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-                            m_dFreq_Upper = 20.0 * 100.0;
+                            m_dFreq_Upper = 29.0 * 100.0;
 
                             //  숫자를 4자리 숫자로 고정
                             m_strFreq_Upper = m_dFreq_Upper.ToString("0000");
@@ -12388,12 +13284,12 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_strTemp = string.Format("하부 집진기 Frequency 계산 NG : 20.0 Hz 로 세팅");
+                            m_strTemp = string.Format("하부 집진기 Frequency 계산 NG : 29.0 Hz 로 세팅");
                             Log.Write("SLD-200", "Auto Run", m_strTemp);
 
-                            //  20.0 Hz 로 설정
+                            //  29.0 Hz 로 설정
                             //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-                            m_dFreq_Lower = 20.0 * 100.0;
+                            m_dFreq_Lower = 29.0 * 100.0;
 
                             //  숫자를 4자리 숫자로 고정
                             m_strFreq_Lower = m_dFreq_Lower.ToString("0000");
@@ -28862,6 +29758,96 @@ namespace QMC.Common.Modules
             rtc.ListJump(centerX, centerY - halfSize);
             rtc.ListMark(centerX, centerY + halfSize);
         }
+
+
+        /// <summary>
+        /// Vacuum 관련 장치에 제품 유무 확인하는 함수 (Auto Run 시 체크하여 메세지 창 Pup-Up)
+        /// 
+        private void Check_VacuumParts_Module_Exist()
+        {
+            bool m_bLoader_Exist = false;
+            bool m_bWorkStage_Exist = false;
+            bool m_bUnloader_Exist = false;
+
+            //  Loader Picker Vacuum On
+            loader.loaderParameter.DO_Loader_Picker_Blow(false);
+            loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
+            loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, true);
+
+            //  Loader M-Aligner Vacuum On
+            loader.loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Center, false);
+            loader.loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Inner, false);
+            loader.loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Outer, false);
+            loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, true);
+            loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, true);
+            loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, true);
+
+            //  Work Stage
+            workStageParameter.DO_Stage_Blow(false);
+            workStageParameter.DO_Stage_Vacuum(true);
+            ElectroPneumaticRegulatorComm_Pressure_Set(-60);
+
+            //  Unloader Picker Vacuum On
+            unloader.unloaderParameter.DO_Unloader_Picker_Blow(false);
+            unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Inner, true);
+            unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Outer, true);
+
+            int m_nCount = 0;
+
+            do
+            {
+                //  모든 공압을 켠 후 1초 정도 기다린다.
+            } while (m_nCount++ < 1000);
+
+            //  Loader Picker 에 Module 이 붙어있는지 체크
+            if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
+                loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+            {
+                m_bLoader_Exist = true;
+            }
+
+            loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, false);
+            loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, false);
+            loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, false);
+            loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, false);
+            loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, false);
+
+            //  Work Stage 에 Module 이 붙어있는지 체크
+            if (workStageParameter.DI_Stage_Vacuum_Check())
+            {
+                m_bWorkStage_Exist = true;
+            }
+
+            workStageParameter.DO_Stage_Vacuum(false);
+            ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
+
+            //  Unloader Picker 에 Module 이 붙어있는지 체크
+            if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Inner) ||
+                unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Outer))
+            {
+                m_bUnloader_Exist = true;
+            }
+
+            unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Inner, false);
+            unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Outer, false);
+
+
+            if (m_bLoader_Exist)
+            {
+                MessageBox.Show("Loader Transfer Picker 에 제품 감지됨.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (m_bWorkStage_Exist)
+            {
+                MessageBox.Show("Work Stage 에 제품 감지됨.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (m_bUnloader_Exist)
+            {
+                MessageBox.Show("Unloader Transfer Picker 에 제품 감지됨.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+    }
 
         public bool DrawCalibrationArc(int rows, int cols, float pitchX, float pitchY)
         {
