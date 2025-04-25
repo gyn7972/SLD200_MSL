@@ -18326,6 +18326,7 @@ namespace QMC.Common.Modules
                     }
                     break;
             }
+            return 0;
         }
 
         private void LaserDrilling_StepStageXY_MoveUnloadingPos(out double lfVelocity, out double lfAccDec)
@@ -21490,7 +21491,7 @@ namespace QMC.Common.Modules
             // Todo : enum 전달
             //ActionLaserDrillingStep
 
-        }
+        
 
         #endregion
 
