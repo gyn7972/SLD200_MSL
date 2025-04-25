@@ -13269,84 +13269,11 @@ namespace QMC.Common.Modules
                 TickCount_MainCycle_Start = TickCount_MainCycle_Current;
             }
 
-            //if (m_nLaserDrilling_MainStep >= (int)LaserDrilling_Step.Start)
-            //{
-            //    //  Main Elapsed Time
-            //    Equipment.WorkElapsedTick = Environment.TickCount - Equipment.WorkStartTick;
-            //    Equipment.m_bWorkElapsedTime_Changed = true;
-
-            //    //  Thruhole Elapsed Time
-            //    if ((m_nLaserDrilling_MainStep >= (int)LaserDrilling_Step.ThruHole_DrillingWork_Start) && (m_nLaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_StageZ_Movement_DoneCheck))
-            //    {
-            //        Equipment.WorkElapsedTick_Thruhole = Environment.TickCount - Equipment.WorkStartTick_Thruhole;
-            //    }
-
-            //    //  Outline Elapsed Time
-            //    if ((m_nLaserDrilling_MainStep >= (int)LaserDrilling_Step.OutLine_DrillingWork_Start) && (m_nLaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_StageZ_Movement_DoneCheck))
-            //    {
-            //        Equipment.WorkElapsedTick_Outline = Environment.TickCount - Equipment.WorkStartTick_Outline;
-            //    }
-
-            //    //  Drilling Elapsed Time
-            //    if ((m_nLaserDrilling_MainStep >= (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start) && (m_nLaserDrilling_MainStep <= (int)LaserDrilling_Step.EntireDrilling_StageZ_Movement_DoneCheck))
-            //    {
-            //        Equipment.WorkElapsedTick_Drilling = Environment.TickCount - Equipment.WorkStartTick_Drilling;
-            //    }
-            //}
-            //else
-            //{
-            //    Equipment.WorkElapsedTick = 0;
-            //    Equipment.WorkElapsedTick_Outline = 0;
-            //    Equipment.WorkElapsedTick_Thruhole = 0;
-            //    Equipment.WorkElapsedTick_Drilling = 0;
-            //    Equipment.WorkElapsedTick_Marking = 0;
-            //    Equipment.m_bWorkElapsedTime_Changed = false;
-            //}
-
-            ////  자동 운전 중 집진기가 꺼지면 (Alarm 이 뜨면) Stop
-            //if (((m_nLaserDrilling_MainStep > (int)LaserDrilling_Step.DustCollector_Chiller_Status_Check) && (m_nLaserDrilling_MainStep <= (int)LaserDrilling_Step.StageXY_MoveUnloadingPos_DoneCheck)) &&
-            //    laserDrillingParameter.DI_DustCollector_Alarm())
-            //{
-            //    timer_MainWork.Enabled = false;
-            //    m_bExit = true;
-            //    MessageBox.Show("집진기 Alarm !!!", "Error");
-
-            //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-
-            //    ACSSPiiPlusMotionBoard.Api.Halt((Axis)laserDrillingParameter.Axes[LaserDrillingParameter.MotionKey.Y.ToString()].No);
-            //    ACSSPiiPlusMotionBoard.Api.Halt((Axis)laserDrillingParameter.Axes[LaserDrillingParameter.MotionKey.X.ToString()].No);
-            //    MC_Func.MC_JogStop(0);
-
-            //    laser.Rtc.CtlAbort();             //  실행중인 리스트 명령(busy 상태를)을 강제 종료
-            //    Thread.Sleep(2000);
-            //    laser.Rtc.CtlReset();             //  에러 해제                    
-            //}
-            //else if (((m_nLaserDrilling_MainStep > (int)LaserDrilling_Step.DustCollector_Chiller_Status_Check) && (m_nLaserDrilling_MainStep <= (int)LaserDrilling_Step.StageXY_MoveUnloadingPos_DoneCheck)) &&
-            //    laserDrillingParameter.DI_Chiller_Fault())
-            //{
-            //    timer_MainWork.Enabled = false;
-            //    m_bExit = true;
-            //    MessageBox.Show("Chiller Fault !!!", "Error");
-
-            //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-
-            //    ACSSPiiPlusMotionBoard.Api.Halt((Axis)laserDrillingParameter.Axes[LaserDrillingParameter.MotionKey.Y.ToString()].No);
-            //    ACSSPiiPlusMotionBoard.Api.Halt((Axis)laserDrillingParameter.Axes[LaserDrillingParameter.MotionKey.X.ToString()].No);
-            //    MC_Func.MC_JogStop(0);
-
-            //    laser.Rtc.CtlAbort();             //  실행중인 리스트 명령(busy 상태를)을 강제 종료
-            //    Thread.Sleep(2000);
-            //    laser.Rtc.CtlReset();             //  에러 해제
-            //}
-
-
-
             //  자동운전 중 Socket Stop 처리
             if (Equipment.SocketStopped)
             {
                 return 0;
             }
-
 
             switch (m_nLaserDrilling_MainStep)
             {
@@ -13368,10 +13295,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000)
                     {
-                        
+
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
 
-                        Alarm alarm =  GetAlarm((int)AlarmKey.eRTC_FAIL);
+                        Alarm alarm = GetAlarm((int)AlarmKey.eRTC_FAIL);
                         AlarmManager.Instance.ShowAlarm(alarm);
                         return alarm.Code;
 
@@ -13523,7 +13450,7 @@ namespace QMC.Common.Modules
                     break;
 
                 case (int)LaserDrilling_Step.DustCollector_Chiller_Status_Check:                      //  집진기, Chiller 상태 확인 (Alarm Check)
-                   
+
 
                     if (Equipment.Machine_LaserType_CO2)
                     {
@@ -13685,7 +13612,7 @@ namespace QMC.Common.Modules
 
 
                 case (int)LaserDrilling_Step.DrillingData_Load:                                    //  Drilling 데이터 가져오기
-                    
+
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Parsing;
                     break;
 
@@ -14040,14 +13967,14 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.ThruHole_LayerParameter_forCO2_Check:                 //  ThruHole 가공 Layer 파라미터, CO2 용 세팅값 확인
 
-                    
+
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_Change_Complete;
                     break;
 
 
                 case (int)LaserDrilling_Step.ThruHole_LayerParameter_forUV_Set:                  //  ThruHole 가공 Layer 파라미터, UV 용 세팅값 설정
 
-                    
+
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_LaserPower_Change;
                     break;
 
@@ -14106,7 +14033,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.ThruHole_LayerParameter_forUV_Check:                 //  ThruHole 가공 Layer 파라미터, UV 용 세팅값 확인
 
-                    
+
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_Change_Complete;
                     break;
@@ -14138,7 +14065,7 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.MapDataFlagCheck_ScannerMap3:                                   //  Scanner 위치 Map Data 로 변경되었는지 확인
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_RepeatStart;
-                    
+
                     break;
                 //  Map Data 변경 (Scanner) - 끝
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -14419,11 +14346,11 @@ namespace QMC.Common.Modules
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 //  OutLine Layer 가공 파라미터 변경 - 시작
                 case (int)LaserDrilling_Step.OutLine_LayerParameter_Change_Start:             //  OutLine 가공 Layer 파라미터로 변경 시작
-                   
+
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline 가공 Layer 파라미터 변경 시작");
 
-                        
+
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_ZOffset_Move;
                     }
                     break;
@@ -14472,7 +14399,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.OutLine_LayerParameter_forCO2_Set:                  //  OutLine 가공 Layer 파라미터, CO2 용 세팅값 설정
 
-                    
+
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_forCO2_Check;
                     break;
 
@@ -14573,9 +14500,9 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.MapDataFlagCheck_ScannerMap4:                                   //  Scanner 위치 Map Data 로 변경되었는지 확인
 
-                    
+
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_RepeatStart;
-                   
+
                     break;
                 //  Map Data 변경 (Scanner) - 끝
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -14880,7 +14807,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.Drilling_LayerParameter_forCO2_Check:                 //  Drilling 가공 Layer 파라미터, CO2 용 세팅값 확인
 
-                   
+
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Complete;
                     break;
@@ -14888,7 +14815,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Set:                  //  Drilling 가공 Layer 파라미터, UV 용 세팅값 설정
 
-                    
+
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change;
                     break;
 
@@ -14947,7 +14874,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check:                 //  Drilling 가공 Layer 파라미터, UV 용 세팅값 확인
 
-                    
+
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Complete;
                     break;
@@ -15413,7 +15340,7 @@ namespace QMC.Common.Modules
                     //  메인 화면의 뷰어 갱신
                     m_bMain_SiriusViewer_Refresh = true;
                     ActionSiriusViewerRefresy?.Invoke(m_bMain_SiriusViewer_Refresh);
-                    
+
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 보정 데이터 적용");
 
@@ -15627,8 +15554,8 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.MapDataFlagCheck_ScannerMap2:                                   //  Scanner 위치 Map Data 로 변경되었는지 확인
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRepeatStart;
-                    
-                    
+
+
                     break;
                 //  Map Data 변경 (Scanner) - 끝
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -15706,7 +15633,7 @@ namespace QMC.Common.Modules
 
 
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck:
-                    {   
+                    {
                         //  가공 할 Region 영역이 남아 있는지 체크
                         m_nLaserDrilling_MainStep = LaserDrilling_StepDividedRegion_ScannerOnly_RegionRemainedCheck(ref m_nZigZag_CurrentRow, ref m_nZigZag_CurRow_FirstIndex, ref m_nZigZag_CurRow_CurIndex, ref m_nZigZag_CurRow_LastIndex);
                     }
@@ -21567,9 +21494,6 @@ namespace QMC.Common.Modules
 
             // Todo : enum 전달
             //ActionLaserDrillingStep
-
-        }
-
         #endregion
 
 
