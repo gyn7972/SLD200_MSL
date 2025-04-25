@@ -2641,7 +2641,7 @@ namespace QMC.Common.Modules
         public int m_nParamChange_RetryCount { set; get; }                  //  파라미터 변경 재시도 회수
         public int m_nLaserDrilling_MainStep { set; get; }                  //  Laser Drilling Main Cycle Step
 
-        public int m_nLaserDrilling_MainStep_Recovery { set; get; }                  //  Laser Drilling Main Cycle Step
+        public int m_nLaserDrilling_MainStep_Recovery { set; get; } = -1;                //  Laser Drilling Main Cycle Step
 
         public double[] m_dCmdPos = new double[2];
         public double[] m_dActPos = new double[2];
@@ -7270,7 +7270,10 @@ namespace QMC.Common.Modules
             try
             {
                 _isLaserDrillingWorkRunning = true;
-
+                if(m_nLaserDrilling_MainStep_Recovery != -1)
+                {
+                    m_nLaserDrilling_MainStep = m_nLaserDrilling_MainStep_Recovery;
+                }
                 // Scanner Calibration이 활성화되지 않은 경우 종료
                 if (!m_LaserDrillingWork_Start)
                 {
@@ -13380,6 +13383,7 @@ namespace QMC.Common.Modules
 
         private int Func_LaserDrilling_Main_Cycle()
         {
+            m_nLaserDrilling_MainStep_Recovery = -1;
             bool success = true;
             string m_strTemp = "";
 
