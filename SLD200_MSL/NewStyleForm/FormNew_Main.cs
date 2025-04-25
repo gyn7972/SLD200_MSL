@@ -643,6 +643,14 @@ namespace SLD200_MSL
                 return;
             }
 
+            if (AlarmManager.Instance.IsAlarm)
+            {
+                // 알람을 클리어 해주세요 메세지
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "알람 해제 바랍니다.");
+                return;
+            }
+
             //if (Equipment.User_Mode == null)
             //{
             //    var mb1 = new MessageBoxOk();
@@ -818,6 +826,15 @@ namespace SLD200_MSL
         {
             //  Main Work Start
             Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Start 버튼");
+
+            if (AlarmManager.Instance.IsAlarm)
+            {
+                // 알람을 클리어 해주세요 메세지
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "알람 해제 바랍니다.");
+                return;
+            }
+
 
             string m_strTemp = "";
 
@@ -1281,36 +1298,17 @@ namespace SLD200_MSL
 
         private void button_Main_AutoRun_Click(object sender, EventArgs e)
         {
-            Equipment.AutoRunStatus = true;
-
-            workStage.timer_MainWork.Start();
-            workStage.timer_MainWork.Enabled = true;
-            workStage._isMainWorkRunning = false;
-            workStage.m_MainWork_Start = true;
-            workStage.m_nMainWork_Step = (int)WorkStage.MainWork_Step.Start;
-
-            loader.timer_LoaderWork.Start();
-            loader.timer_LoaderWork.Enabled = true;
-            loader._isLoaderWorkRunning = false;
-            loader.m_LoaderWork_Start = true;
-            loader.m_nLoader_Transfer_Step = (int)Loader.Loader_Transfer_Step.Start;
-
-            workStage.timer_LaserDrillingWork.Start();
-            workStage.timer_LaserDrillingWork.Enabled = true;
-            workStage._isLaserDrillingWorkRunning = false;
-            workStage.m_LaserDrillingWork_Start = true;
-            workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
-
-            unloader.timer_UnloaderWork.Start();
-            unloader.timer_UnloaderWork.Enabled = true;
-            unloader._isUnloaderWorkRunning = false;
-            unloader.m_UnloaderWork_Start = true;
-            unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.Start;
-
-            return;
-
-
             //  자동 운전 시작
+
+            if(AlarmManager.Instance.IsAlarm)
+            {
+                // 알람을 클리어 해주세요 메세지
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "알람 해제 바랍니다.");
+                return;
+            }
+
+
             //  테스트 : 강제로 Dry Run
             //workStage.m_bMainWorkCycle_DryRun = true;
             Equipment.DryRun_ProcessingTime = Convert.ToInt16(baseTextBox_DryRun_ProcessingTime.Text);
