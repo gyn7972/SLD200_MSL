@@ -2640,6 +2640,9 @@ namespace QMC.Common.Modules
         public int m_nCircleDrilling_CurrentRotStep { set; get; }           //  원형 드릴링일 경우, 시작 위치가 몇 번 이동했는지 카운트
         public int m_nParamChange_RetryCount { set; get; }                  //  파라미터 변경 재시도 회수
         public int m_nLaserDrilling_MainStep { set; get; }                  //  Laser Drilling Main Cycle Step
+
+        public int m_nLaserDrilling_MainStep_Recovery { set; get; }                  //  Laser Drilling Main Cycle Step
+
         public double[] m_dCmdPos = new double[2];
         public double[] m_dActPos = new double[2];
 
@@ -7097,7 +7100,161 @@ namespace QMC.Common.Modules
                 timer_MainWork.Enabled = true;
             }
         }
+        public void SetRecoveraryLaserDrilling_MainStep(int LaserDrilling_MainStep)
+        {
+            if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.StageZ_MoveProcessingPos_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.Start;
+            }else if(LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_Load;
+            }
+            else if (LaserDrilling_MainStep < (int)LaserDrilling_Step.ThruHole_DrillingWork_Start)
+            {
+                m_nLaserDrilling_MainStep_Recovery = LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_StageZ_MoveStartPos_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.ThruHole_StageZ_MoveStartPos;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_StageZ_MoveStartPos_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.OutLine_StageZ_MoveStartPos;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_LayerParameter_Change_Complete)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.Drilling_LayerParameter_ZOffset_Move_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.Drilling_LayerParameter_ZOffset_Move;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.Drilling_LayerParameter_LaserPower_Change;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.Drilling_LayerParameter_Change_Complete)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Start)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_StageZ_SocketCenter_MovetoLaserHeightSensorPos_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_StageZ_SocketCenter_MovetoLaserHeightSensorPos;
+            }
 
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Complete)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep < (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_SocketAlign_CompleteCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_Reload)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ParameterChange_Start)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ZOffset_Move_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ZOffset_Move;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_LaserPower_Change_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_LaserPower_Change;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionLaserBusyCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListObjectData_RemainedCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveObjectCenterPos_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveObjectCenterPos_Unfollow;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionObjectRepeatComplete)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DividedRegion_StageZ_Movement)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DividedRegion_StageZ_Movement_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DividedRegion_StageZ_Movement;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.LaserOff2)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.LaserOff2_Check)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.LaserOff2;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.StageXY_MoveUnloadingPos_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.StageXY_MoveUnloadingPos;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DustCollector_Off)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DustCollector_Off;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DustCollector_Off_Check)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DustCollector_Off;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.Complete)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+        }
         //Timer_LaserDrillingWork_Tick
         public bool m_LaserDrillingWork_Start = false;
         public bool _isLaserDrillingWorkRunning = false; // 중복 실행 방지 플래그
@@ -7119,6 +7276,7 @@ namespace QMC.Common.Modules
                 {
                     Console.WriteLine("Laser Drilling is not started.");
                     timer_ScannerCalibration.Stop(); // 타이머 중지
+                    SetRecoveraryLaserDrilling_MainStep(m_nLaserDrilling_MainStep);
                     return;
                 }
                 
@@ -7133,7 +7291,12 @@ namespace QMC.Common.Modules
                 // 단계별 실행
                 //Console.WriteLine($"Scanner Calibration running at {DateTime.Now}, Step: {m_nScanner_Calibration_Step}");
                 Func_DryRun_Cycle();
-                Func_LaserDrilling_Main_Cycle();
+                int ret = Func_LaserDrilling_Main_Cycle();
+                if(ret !=0)
+                {
+                    SetRecoveraryLaserDrilling_MainStep(m_nLaserDrilling_MainStep);
+
+                }
                 Console.WriteLine($"WorkStage running at {DateTime.Now}, Step: {m_nLaserDrilling_MainStep}");
             }
             catch (Exception ex)
