@@ -1,4 +1,5 @@
-﻿using ACS.SPiiPlusNET;
+﻿
+using ACS.SPiiPlusNET;
 using QMC.Common.Laser;
 using QMC.Common.Motion.ACS.Motions;
 using QMC.Common.Motion.Ajin.Motions;
@@ -22,6 +23,8 @@ using System.IO.Ports;
 using MessageBox = System.Windows.Forms.MessageBox;
 using static QMC.Common.Modules.Unloader;
 using System.ServiceModel.Syndication;
+using static QMC.Common.Modules.WorkStage;
+using System.Timers;
 
 
 namespace QMC.Common.Modules
@@ -32,8 +35,8 @@ namespace QMC.Common.Modules
         #region Define
 
 
-#if true                                                                //  SLD-200C
-//#if false                                                               //  SLD-200U
+        //#if true                                                                //  SLD-200C
+#if SLD_200C                                                                 //  SLD-200U
         public enum nAxis                                                       //  SLD-200C 에서 사용하는 축 번호    
         {
             //  축 번호 변경 전 (Z0:4,    Z1:5,   TR_X:6,     TR_Z:7,     ALN_X:8,    ALN_Y:9)
@@ -115,8 +118,7 @@ namespace QMC.Common.Modules
 
         //public bool ACS_Motion_isSimulationMode { set; get; }
 
-        //  쓰레드로 변경 --> 변경 취소. 그냥 타이머 쓴다. Thread 쓰니까 뭐가 막 잘 안됨 ㅡㅡ
-        public System.Windows.Forms.Timer timer_LoaderWork;
+        public System.Timers.Timer timer_LoaderWork;
         public bool m_btimer_LoaderWork_Stop;
 
         public bool m_bBlink;
@@ -778,10 +780,16 @@ namespace QMC.Common.Modules
 
             //  타이머를 쓰레드로 변경 --> 다시 타이머 사용하기로...
 
+            //  쓰레드로 변경 --> 변경 취소. 그냥 타이머 쓴다. Thread 쓰니까 뭐가 막 잘 안됨 ㅡㅡ
+           
             //  Loader Work 타이머
-            timer_LoaderWork = new System.Windows.Forms.Timer();
-            timer_LoaderWork.Interval = 20;
-            timer_LoaderWork.Tick += new System.EventHandler(Timer_LoaderWork_Func);
+            //timer_LoaderWork = new System.Windows.Forms.Timer();
+            //timer_LoaderWork.Interval = 20;
+            //timer_LoaderWork.Tick += new System.EventHandler(Timer_LoaderWork_Func);
+            timer_LoaderWork = new System.Timers.Timer(10);
+            timer_LoaderWork.Elapsed += Timer_LoaderWork_Tick;
+            timer_LoaderWork.AutoReset = true; // 반복 실행
+            timer_LoaderWork.Enabled = false; // 초기
 
             m_btimer_LoaderWork_Stop = false;
 
@@ -3135,7 +3143,6 @@ namespace QMC.Common.Modules
                     m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Start;
                 }
             }
-
 
             switch (m_nLoader_Transfer_Step)
             {
@@ -7731,6 +7738,84 @@ namespace QMC.Common.Modules
 
         #region Event Handler
 
+        public bool m_LoaderWork_Start = false;
+        public bool _isLoaderWorkRunning = false; // 중복 실행 방지 플래그
+        private async void Timer_LoaderWork_Tick(object sender, ElapsedEventArgs e)
+        {
+            // 중복 실행 방지
+            if (_isLoaderWorkRunning)
+            {
+                //Console.WriteLine("Scanner Calibration is already running. Skipping this call.");
+                return;
+            }
+
+            try
+            {
+                _isLoaderWorkRunning = true;
+
+                // Scanner Calibration이 활성화되지 않은 경우 종료
+                if (!m_LoaderWork_Start)
+                {
+                    Console.WriteLine("LoaderWork is not started.");
+                    //timer_ScannerCalibration.Stop(); // 타이머 중지
+                    return;
+                }
+
+                // 현재 단계가 None이면 타이머 중지
+                //if (m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None)
+                //{
+                //    Console.WriteLine("LoaderWork completed.");
+                //    //timer_ScannerCalibration.Stop(); // 타이머 중지
+                //    return;
+                //}
+
+                // 단계별 실행
+                //Console.WriteLine($"LoaderWork running at {DateTime.Now}, Step: {m_nLoader_Transfer_Step}");
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //  메인 화면 갱신용 변수
+                Equipment.m_bMainProcessStatus_LD_LPort_Complete = m_bStacker1_Complete;
+                Equipment.m_bMainProcessStatus_LD_RPort_Complete = m_bStacker0_Complete;
+
+                //  M-Aligner 에 Module 을 내려놓는 단계를 진행해야 하므로, Port 에서 Pick Up 이 완료된 것으로 본다.
+                Equipment.m_bMainProcessStatus_LD_Module_PortPickUp_Complete = m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_MAligner ? true : false;
+
+                //  M-Aligner 에서 Module 을 집어올리는 단계를 진행해야 하므로, M-Aligner 에 Put Down 이 완료된 것으로 본다.
+                Equipment.m_bMainProcessStatus_LD_Module_MAlignerPutDown_Complete = m_bMAlignZone_ModuleExist || (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickUp_MAligner) ? true : false;
+
+                //  M-Align 완료
+                Equipment.m_bMainProcessStatus_LD_M_Aligner_Align_Complete = m_bMAlign_Complete;
+
+                //  Work Stage 에 Module 을 내려놓는 단계를 진행해야 하므로, M-Aligner 에서 Pick Up 이 완료된 것으로 본다.
+                Equipment.m_bMainProcessStatus_LD_Module_MAlignerPickUp_Complete = m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_Stage ? true : false;
+
+                //  Work Stage 에 Module 을 내려놓는  단계 완료
+                Equipment.m_bMainProcessStatus_LD_Module_WorkStagePutDown_Complete = m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete && (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker) ? true : false;
+                //  메인 화면 갱신용 변수
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+                //  자동운전 시, R-Port 동작 조건 : TR Cycle (None), R-Port Cycle (None), R-Port Module Pickup Complete
+                Run_Stacker0Module_PickupWaitingPos_Func();
+                //  자동운전 시, L-Port 동작 조건 : TR Cycle (None), L-Port Cycle (None), L-Port Module Pickup Complete
+                Run_Stacker1Module_PickupWaitingPos_Func();
+                //  자동운전 시, M-Align 동작 조건 : TR Cycle (None), M-Aligner Module Exist, M-Aligner Cycle (None)
+                Run_MAlign_Cycle_Func();
+                ////  자동운전 시, M-Aligner 에서 Module Pick-Up 조건 : M-Aligner Cycle (None), TR Cycle (None), M-Aligner Module Exist, M-Aligner Complete
+                //m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_MAligner_PickUp;
+                Run_Transfer_Cycle_Func();
+                Console.WriteLine($"LoaderWork Running at {DateTime.Now}, Step: {m_nLoader_Transfer_Step}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Timer_ScannerCalibration_Elapsed: {ex.Message}");
+            }
+            finally
+            {
+                _isLoaderWorkRunning = false; // 플래그 해제
+            }
+        }
+
         private void Timer_LoaderWork_Func(object sender, EventArgs e)
         {
             //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
@@ -7760,7 +7845,6 @@ namespace QMC.Common.Modules
             Equipment.m_bMainProcessStatus_LD_Module_WorkStagePutDown_Complete = m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete && (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker) ? true : false;
             //  메인 화면 갱신용 변수
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
             //m_bLD_LPort_Complete = false;                               //  Left Port 동작 완료 여부
             //m_bLD_RPort_Complete = false;                               //  Right Port 동작 완료 여부

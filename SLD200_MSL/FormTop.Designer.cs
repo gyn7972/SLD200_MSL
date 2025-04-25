@@ -37,7 +37,7 @@
             this.label_Title_MESMessage = new System.Windows.Forms.Label();
             this.label_Title_SystemMessage = new System.Windows.Forms.Label();
             this.label_Title_Recipe = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.buttonAlarmClear = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label_LoginMode = new System.Windows.Forms.Label();
             this.label_DateTime = new System.Windows.Forms.Label();
@@ -144,15 +144,16 @@
             this.label_Title_Recipe.Text = "OP Recipe";
             this.label_Title_Recipe.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // button1
+            // buttonAlarmClear
             // 
-            this.button1.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.button1.Location = new System.Drawing.Point(1318, 5);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(102, 83);
-            this.button1.TabIndex = 205;
-            this.button1.Text = "Alarm\r\nClear";
-            this.button1.UseVisualStyleBackColor = true;
+            this.buttonAlarmClear.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.buttonAlarmClear.Location = new System.Drawing.Point(1318, 5);
+            this.buttonAlarmClear.Name = "buttonAlarmClear";
+            this.buttonAlarmClear.Size = new System.Drawing.Size(102, 83);
+            this.buttonAlarmClear.TabIndex = 205;
+            this.buttonAlarmClear.Text = "Alarm\r\nClear";
+            this.buttonAlarmClear.UseVisualStyleBackColor = true;
+            this.buttonAlarmClear.Click += new System.EventHandler(this.buttonAlarmClear_Click);
             // 
             // groupBox1
             // 
@@ -205,7 +206,7 @@
             // 
             this.lbl_UI_TowerLamp_Green.BackColor = System.Drawing.Color.LightGreen;
             this.lbl_UI_TowerLamp_Green.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lbl_UI_TowerLamp_Green.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lbl_UI_TowerLamp_Green.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lbl_UI_TowerLamp_Green.ForeColor = System.Drawing.Color.Black;
             this.lbl_UI_TowerLamp_Green.Location = new System.Drawing.Point(1876, 63);
             this.lbl_UI_TowerLamp_Green.Name = "lbl_UI_TowerLamp_Green";
@@ -217,7 +218,7 @@
             // 
             this.lbl_UI_TowerLamp_Yellow.BackColor = System.Drawing.Color.LightYellow;
             this.lbl_UI_TowerLamp_Yellow.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lbl_UI_TowerLamp_Yellow.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lbl_UI_TowerLamp_Yellow.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lbl_UI_TowerLamp_Yellow.ForeColor = System.Drawing.Color.Black;
             this.lbl_UI_TowerLamp_Yellow.Location = new System.Drawing.Point(1876, 32);
             this.lbl_UI_TowerLamp_Yellow.Name = "lbl_UI_TowerLamp_Yellow";
@@ -229,7 +230,7 @@
             // 
             this.lbl_UI_TowerLamp_Red.BackColor = System.Drawing.Color.LightCoral;
             this.lbl_UI_TowerLamp_Red.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lbl_UI_TowerLamp_Red.Font = new System.Drawing.Font("나눔바른고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lbl_UI_TowerLamp_Red.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lbl_UI_TowerLamp_Red.ForeColor = System.Drawing.Color.Black;
             this.lbl_UI_TowerLamp_Red.Location = new System.Drawing.Point(1876, 1);
             this.lbl_UI_TowerLamp_Red.Name = "lbl_UI_TowerLamp_Red";
@@ -244,7 +245,7 @@
             this.Controls.Add(this.label_Ver);
             this.Controls.Add(this.label_DateTime);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.buttonAlarmClear);
             this.Controls.Add(this.label_Title_Recipe);
             this.Controls.Add(this.label_Title_SystemMessage);
             this.Controls.Add(this.label_Title_MESMessage);
@@ -278,7 +279,7 @@
         private System.Windows.Forms.Label label_Title_MESMessage;
         private System.Windows.Forms.Label label_Title_SystemMessage;
         private System.Windows.Forms.Label label_Title_Recipe;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonAlarmClear;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label_LoginMode;
         private System.Windows.Forms.Label label_DateTime;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -33,6 +35,8 @@ using MessageBox = System.Windows.Forms.MessageBox;
 using QMC.Core;
 using static QMC.Common.Modules.Loader;
 using QMC.Common.Vision.Tools;
+
+
 
 namespace QMC.Common
 {
@@ -93,7 +97,7 @@ namespace QMC.Common
         public static int RtcMode_syncAxis { set; get; }           //  0 : None     1 : syncAxis    2 : RTC6
 
         public static string XmlFile_forSyncAxis { set; get; }
-
+        public static Form formMain;
         public enum RtcMode : int
         {
             RTC_NONE = 0,           //  0 : None (Not Initialize)
@@ -650,7 +654,7 @@ namespace QMC.Common
         //  바코드 리더 Comm 1번만
         public static bool m_bBarcodeReaderComm_1time { set; get; }
 
-
+        //private static Object g_objLock = new object();
         public static SiriusViewerForm EqpSiriusViewer { set; get; }
         public static SiriusViewerForm EqpSiriusViewer_Origin { set; get; }                     //  모듈 생산 완료 후, 다음 모듈이 투입될 때 이 데이터로 재설정
         public static bool m_bAlignVisionThread_1time { set; get; }

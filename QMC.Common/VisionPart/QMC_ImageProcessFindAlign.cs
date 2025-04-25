@@ -287,8 +287,9 @@ namespace QMC.Common.VisionPart
         {
             List<PointF> polygon = new List<PointF>();
             List<PointF> points = new List<PointF>();
-            int nStepX = w / 3;
-            int nStepY = h / 3;
+            int nDivideCount = 5;
+            int nStepX =(int)( w / (nDivideCount *1.5));
+            int nStepY = (int)(h / (nDivideCount * 1.5));
             int nDirectionX = 0;
             int nDirectionY = 0;
             bool bFindCircle = false;
@@ -300,7 +301,7 @@ namespace QMC.Common.VisionPart
 
 
 
-            for (int y = 0; y < 3; y++)
+            for (int y = 0; y < nDivideCount; y++)
             {
                 if (bFindCircle)
                     break;
@@ -309,7 +310,7 @@ namespace QMC.Common.VisionPart
 
                 int nCy = h / 2 + nShiftY;
                 nDirectionX = 0;
-                for (int x = 0; x < 3; x++)
+                for (int x = 0; x < nDivideCount; x++)
                 {
                     int nShiftX = nDirectionX % 2 == 0 ? nStepX : -nStepX;
                     nShiftX *= x;
@@ -326,7 +327,7 @@ namespace QMC.Common.VisionPart
                     int nMaxCircle = (int)(radius * (1 + dSpec));
                     int nMinCircle = (int)(radius * (1 - dSpec));
 
-                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, nMinCircle, nMaxCircle, 1, 10);
+                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, 100, 1200, 1, 10);
                     //polygon = FindCircleBoundary(pixelData, w, h, 540, 1150, 50, 1000, 1);
                     points = polygon;
                     circlesResult.Clear();

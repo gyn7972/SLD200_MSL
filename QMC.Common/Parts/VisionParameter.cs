@@ -1,4 +1,6 @@
-﻿using QMC.Common.Modules;
+﻿
+
+using QMC.Common.Modules;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,7 +16,7 @@ namespace QMC.Common.Parts
         #region => Axis Define 
 
 
-#if true                                                                //  SLD-200C
+#if SLD_200C                                                              //  SLD-200C
 //#if false                                                               //  SLD-200U
         public enum AxisAjinEnum                                                       //  SLD-200C 에서 사용하는 축 번호    
         {

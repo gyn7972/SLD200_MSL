@@ -59,6 +59,11 @@ namespace SLD200_MSL
         private Thread m_MainStatusThread;
         private bool m_bMainStatusCycleExit;
 
+
+        #region Action
+        bool m_SiriusViewerRefresy;
+        #endregion
+
         public FormNew_Main()
         {
             InitializeComponent();
@@ -161,7 +166,19 @@ namespace SLD200_MSL
             //        }
             //    }
             //}
+
+            m_SiriusViewerRefresy = false;
+            workStage.ActionSiriusViewerRefresy += OnSiriusViewerRefresy;
+
         }
+
+        #region Action
+        public void OnSiriusViewerRefresy(bool bRtn)
+        {
+            m_SiriusViewerRefresy = bRtn;
+        }
+        #endregion
+
 
 
         #region Socket 작업 상황 Display
@@ -433,124 +450,185 @@ namespace SLD200_MSL
             }
         }
 
+        public bool _isMainStatusRunning = false; // 중복 실행 방지 플래그
         private void Timer_MainStatus_Func(object sender, EventArgs e)
         {
             //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
-
-            //m_btimer_MainWork_Stop = false;
-            timer_Main_Status.Enabled = false;
-
-
-            //  Home Progress 창 닫기
-            if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
+            // 중복 실행 방지
+            if (_isMainStatusRunning)
             {
-                workStage.m_bHomeProgressForm_Close = false;
-                m_bHomeProgress_Show = false;
-
-                m_FormProgress.Hide();
+                //Console.WriteLine("Scanner Calibration is already running. Skipping this call.");
+                return;
             }
 
-
-            //  메인 화면 도면 갱신 (요상스럽도다... 메인 화면에 도면을 불러온 후 다른 화면으로 넘어갔다가 돌아오면, 메인 화면의 Viewer 에 도면이 사라진다. 보이기만 안보이는 게 아니라 데이터도 사라진다. 
-            //                      그래서 Equipment 에 SiriusView 를 하나 임시로 두고, 서로 데이터가 다를 경우(로드된 파일명) 임시 Viewer 의 데이터를 메인 화면의 Viewer 로 가져온다.
-            if ((SiriusViewer_Main.Document != null) && (Equipment.EqpSiriusViewer.Document != null))
+            try
             {
-                //if ((SiriusViewer_Main.Document.FileName != Equipment.EqpSiriusViewer.Document.FileName) &&
-                //    (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))            //  자동운전이 아닐 때만 데이터를 Copy 하도록
-                if ((SiriusViewer_Main.Document != Equipment.EqpSiriusViewer.Document) &&
+                _isMainStatusRunning = true;
 
-                    ((workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) ||
-                    workStage.m_bMain_SiriusViewer_Refresh) )            //  자동운전이 아닐 때만 데이터를 Copy 하도록
+                timer_Main_Status.Enabled = false;
+
+                //  Home Progress 창 닫기
+                if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
                 {
-                    if (workStage.m_bMain_SiriusViewer_Refresh)
-                    {
-                        workStage.m_bMain_SiriusViewer_Refresh = false;
-                    }
+                    workStage.m_bHomeProgressForm_Close = false;
+                    m_bHomeProgress_Show = false;
 
-                    SiriusViewer_Main.Document = Equipment.EqpSiriusViewer.Document;
-                    //workStage.SiriusEditor.Document = Equipment.EqpSiriusViewer.Document;
-                    //workStage.MainSiriusEditor.Document = Equipment.EqpSiriusViewer.Document;
+                    m_FormProgress.Hide();
                 }
-            }
 
 
-            //  Main Processing Status 표시
-            checkBox_Main_ProcessStatus_LD_LPort_Complete.Checked = Equipment.m_bMainProcessStatus_LD_LPort_Complete;
-            checkBox_Main_ProcessStatus_LD_RPort_Complete.Checked = Equipment.m_bMainProcessStatus_LD_RPort_Complete;
-            checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_PortPickUp_Complete;
-            checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_MAlignerPutDown_Complete;
-            checkBox_Main_ProcessStatus_LD_MAlign_Complete.Checked = Equipment.m_bMainProcessStatus_LD_M_Aligner_Align_Complete;
-            checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_MAlignerPickUp_Complete;
-            checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_WorkStagePutDown_Complete;
-            checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Checked = Equipment.m_bMainProcessStatus_WorkStage_Module_Process_Complete;
-            checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete;
-            checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete;
+                //  메인 화면 도면 갱신 (요상스럽도다... 메인 화면에 도면을 불러온 후 다른 화면으로 넘어갔다가 돌아오면, 메인 화면의 Viewer 에 도면이 사라진다. 보이기만 안보이는 게 아니라 데이터도 사라진다. 
+                //                      그래서 Equipment 에 SiriusView 를 하나 임시로 두고, 서로 데이터가 다를 경우(로드된 파일명) 임시 Viewer 의 데이터를 메인 화면의 Viewer 로 가져온다.
+                if ((SiriusViewer_Main.Document != null) && (Equipment.EqpSiriusViewer.Document != null))
+                {
+                    //if ((SiriusViewer_Main.Document.FileName != Equipment.EqpSiriusViewer.Document.FileName) &&
+                    //    (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))            //  자동운전이 아닐 때만 데이터를 Copy 하도록
 
 
-            //  계속 진행 버튼 활성화
-            if (Equipment.MachineStop_byTimeout_Loader)
-            {
-                button_Main_Loader_Continue.Enabled = true;
-            }
-            else
-            {
-                button_Main_Loader_Continue.Enabled = false;
-            }
+                    //m_SiriusViewerRefresy
+                    if ((SiriusViewer_Main.Document != Equipment.EqpSiriusViewer.Document) &&
 
-            if (Equipment.MachineStop_byTimeout_Unloader)
-            {
-                button_Main_Unloader_Continue.Enabled = true;
-            }
-            else
-            {
-                button_Main_Unloader_Continue.Enabled = false;
-            }
+                        ((workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) ||
+                        m_SiriusViewerRefresy))            //  자동운전이 아닐 때만 데이터를 Copy 하도록
+                    {
+                        if (m_SiriusViewerRefresy)
+                        {
+                            m_SiriusViewerRefresy = false;
+                        }
+                        while (true)
+                        {
+                            try
+                            {
+                                if (this.InvokeRequired)
+                                {
+                                    this.Invoke(new System.Action(() => {
+                                        SiriusViewer_Main.Document = Equipment.EqpSiriusViewer.Document;
 
-            if (Equipment.SocketStopped)
-            {
-                button_Main_WorkStage_Continue.Enabled = true;
-            }
-            else
-            {
-                button_Main_WorkStage_Continue.Enabled = false;
-            }
+                                    }));
+                                }
+                                else
+                                {
+                                    SiriusViewer_Main.Document = (IDocument)Equipment.EqpSiriusViewer.Document.Clone();
+                                }
+                                break;
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Write(ex);
+                            }
+                        }
 
+                        //workStage.SiriusEditor.Document = Equipment.EqpSiriusViewer.Document;
+                        //workStage.MainSiriusEditor.Document = Equipment.EqpSiriusViewer.Document;
+                    }
+                }
+                //m_btimer_MainWork_Stop = false;
 
-            //  Cycle Stop 으로 Loader, Unloader, Main Work 가 Stop 되면 자동운전을 종료한다.
-            if (Equipment.AutoRunStatus &&
-
-                Equipment.CycleStop &&
-                Equipment.CycleStopped_LoaderTransfer &&
-                Equipment.CycleStopped_UnloaderTransfer &&
-                Equipment.CycleStopped_MainWork)
-            {
-                Equipment.AutoRunStatus = false;
-
-                //  Main Work Timer Stop
-                workStage.m_btimer_MainWork_Stop = true;
-                workStage.timer_MainWork.Enabled = false;
-
-                //  Laser Drilling Timer Stop
-                workStage.m_btimer_LaserDrillingWork_Stop = true;
-                workStage.timer_LaserDrillingWork.Enabled = false;
-
-                //  Loader Work Timer Stop
-                loader.m_btimer_LoaderWork_Stop = true;
-                loader.timer_LoaderWork.Enabled = false;
-
-                //  Unloader Work Timer Stop
-                unloader.m_btimer_UnloaderWork_Stop = true;
-                unloader.timer_UnloaderWork.Enabled = false;
-
-                MessageBox.Show("자동 운전 종료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+                //  Main Processing Status 표시
+                checkBox_Main_ProcessStatus_LD_LPort_Complete.Checked = Equipment.m_bMainProcessStatus_LD_LPort_Complete;
+                checkBox_Main_ProcessStatus_LD_RPort_Complete.Checked = Equipment.m_bMainProcessStatus_LD_RPort_Complete;
+                checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_PortPickUp_Complete;
+                checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_MAlignerPutDown_Complete;
+                checkBox_Main_ProcessStatus_LD_MAlign_Complete.Checked = Equipment.m_bMainProcessStatus_LD_M_Aligner_Align_Complete;
+                checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_MAlignerPickUp_Complete;
+                checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_WorkStagePutDown_Complete;
+                checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Checked = Equipment.m_bMainProcessStatus_WorkStage_Module_Process_Complete;
+                checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete;
+                checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete;
 
 
+                //  계속 진행 버튼 활성화
+                if (Equipment.MachineStop_byTimeout_Loader)
+                {
+                    button_Main_Loader_Continue.Enabled = true;
+                }
+                else
+                {
+                    button_Main_Loader_Continue.Enabled = false;
+                }
 
-            //if (!m_btimer_MainWork_Stop)
-            //{
+                if (Equipment.MachineStop_byTimeout_Unloader)
+                {
+                    button_Main_Unloader_Continue.Enabled = true;
+                }
+                else
+                {
+                    button_Main_Unloader_Continue.Enabled = false;
+                }
+
+                if (Equipment.SocketStopped)
+                {
+                    button_Main_WorkStage_Continue.Enabled = true;
+                }
+                else
+                {
+                    button_Main_WorkStage_Continue.Enabled = false;
+                }
+
+
+                //  Cycle Stop 으로 Loader, Unloader, Main Work 가 Stop 되면 자동운전을 종료한다.
+                if (Equipment.AutoRunStatus &&
+
+                    Equipment.CycleStop &&
+                    Equipment.CycleStopped_LoaderTransfer &&
+                    Equipment.CycleStopped_UnloaderTransfer &&
+                    Equipment.CycleStopped_MainWork)
+                {
+                    //Equipment.AutoRunStatus = false;
+                    ////  Main Work Timer Stop
+                    //workStage.m_btimer_MainWork_Stop = true;
+                    //workStage.timer_MainWork.Enabled = false;
+                    ////  Laser Drilling Timer Stop
+                    //workStage.m_btimer_LaserDrillingWork_Stop = true;
+                    //workStage.timer_LaserDrillingWork.Enabled = false;
+                    ////  Loader Work Timer Stop
+                    //loader.m_btimer_LoaderWork_Stop = true;
+                    //loader.timer_LoaderWork.Enabled = false;
+                    ////  Unloader Work Timer Stop
+                    //unloader.m_btimer_UnloaderWork_Stop = true;
+                    //unloader.timer_UnloaderWork.Enabled = false;
+
+                    Equipment.AutoRunStatus = false;
+
+                    workStage.timer_MainWork.Stop();
+                    //workStage.timer_MainWork.Enabled = false;
+                    workStage.m_MainWork_Start = false;
+                    //workStage.m_nMainWork_Step = (int)WorkStage.MainWork_Step.None;
+
+                    loader.timer_LoaderWork.Stop();
+                    //loader.timer_LoaderWork.Enabled = false;
+                    loader.m_LoaderWork_Start = false;
+                    //loader.m_nLoader_Transfer_Step = (int)Loader.Loader_Transfer_Step.None;
+
+                    workStage.timer_LaserDrillingWork.Stop();
+                    //workStage.timer_LaserDrillingWork.Enabled = false;
+                    workStage.m_LaserDrillingWork_Start = false;
+                    //workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
+
+                    unloader.timer_UnloaderWork.Stop();
+                    //unloader.timer_UnloaderWork.Enabled = false;
+                    unloader.m_UnloaderWork_Start = false;
+                    //unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.None;
+
+                    MessageBox.Show("자동 운전 종료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                //if (!m_btimer_MainWork_Stop)
+                //{
                 timer_Main_Status.Enabled = true;
-            //}
+                //}
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Timer_Main Status_Elapsed: {ex.Message}");
+            }
+            finally
+            {
+                _isMainStatusRunning = false; // 플래그 해제
+            }
+
+
+
         }
 
 
@@ -592,14 +670,39 @@ namespace SLD200_MSL
 
 
                 //  Main Work 타이머
-                workStage.m_btimer_MainWork_Stop = true;                
-                workStage.timer_MainWork.Enabled = false;
+                //workStage.m_btimer_MainWork_Stop = true;                
+                //workStage.timer_MainWork.Enabled = false;
+                ////  Sub Work 타이머
+                //workStage.m_btimer_LaserDrillingWork_Stop = true;
+                //workStage.timer_LaserDrillingWork.Enabled = false;
+                //workStage.m_btimer_SubWork_Stop = true;
+                //workStage.timer_SubWork.Enabled = false;
 
-                //  Sub Work 타이머
-                workStage.m_btimer_LaserDrillingWork_Stop = true;
+                workStage.timer_MainWork.Stop();
+                workStage.timer_MainWork.Enabled = false;
+                workStage.m_MainWork_Start = false;
+                //workStage.m_nMainWork_Step = (int)WorkStage.MainWork_Step.None;
+                loader.timer_LoaderWork.Stop();
+                loader.timer_LoaderWork.Enabled = false;
+                loader.m_LoaderWork_Start = false;
+                //loader.m_nLoader_Transfer_Step = (int)Loader.Loader_Transfer_Step.None;
+                workStage.timer_LaserDrillingWork.Stop();
                 workStage.timer_LaserDrillingWork.Enabled = false;
-                workStage.m_btimer_SubWork_Stop = true;
-                workStage.timer_SubWork.Enabled = false;
+                workStage.m_LaserDrillingWork_Start = false;
+                //workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
+                unloader.timer_UnloaderWork.Stop();
+                unloader.timer_UnloaderWork.Enabled = false;
+                unloader.m_UnloaderWork_Start = false;
+                //unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.None;
+
+
+
+
+
+
+
+
+
 
                 //  Product Align 타이머
                 //workStage.timer_VisionAlign_Stop = true;
@@ -710,9 +813,9 @@ namespace SLD200_MSL
         private void FormNew_Main_Shown(object sender, EventArgs e)
         {
             //  메인 화면 열린 후 타이머 시작
-
-            //workStage.timer_SubWork.Enabled = true;                            //  Power Meter
             workStage.timer_Comm.Enabled = true;                                 //  Comm
+            workStage.timer_Comm.Start();
+
             //loader.timer_LoaderWork.Enabled = true;                            //  Loader 
             //unloader.timer_UnloaderWork.Enabled = true;                        //  Unloader
         }
@@ -720,7 +823,6 @@ namespace SLD200_MSL
         private void button_Main_Start_Click(object sender, EventArgs e)
         {
             //  Main Work Start
-
             Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Start 버튼");
 
             string m_strTemp = "";
@@ -898,20 +1000,16 @@ namespace SLD200_MSL
                 }
                 ////  Socket 선택 가공인지 확인용
                 ////////////////////////////////////////////////////////////////////////////
-
-
                 //if (laserDrilling.m_nAutoCal_ScannerCamCenter_Step > (int)LaserDrilling.AutoCalScannerCameraCenter_Step.None)
                 //{
                 //    var mb1 = new MessageBoxOk();
                 //    mb1.ShowDialog("Warning !", "스캐너와 카메라 Offset 자동 보정 진행중입니다.");
                 //    return;
                 //}
-
                 //  도면 갱신 (Main 화면의 Sirius Document 를 가공할때 사용하는 Document 로 복사)
                 //workStage.SiriusEditor.Document = SiriusViewer_Main.Document;
-                Equipment.EqpSiriusViewer.Document = SiriusViewer_Main.Document;                            //  메인 화면에 보이는 도면을 가공하기 위함
 
-
+                Equipment.EqpSiriusViewer.Document = SiriusViewer_Main.Document;     
                 if (workStage.m_nSelectedSocket_Index >= 0)
                 {
                     m_strTemp = string.Format("선택 가공을 시작하시겠습니까?\r\n\r\n[소켓 번호 : {0}]", workStage.m_nSelectedSocket_Index);
@@ -963,7 +1061,6 @@ namespace SLD200_MSL
                 //Equipment.WorkElapsedTick_Thruhole = 0;
                 //Equipment.WorkElapsedTick_Drilling = 0;
                 //Equipment.WorkElapsedTick_Marking = 0;
-
 
                 workStage.m_bLaserDrilling_SocketStopped = false;
                 Equipment.SocketStopped = false;
@@ -1191,13 +1288,9 @@ namespace SLD200_MSL
         private void button_Main_AutoRun_Click(object sender, EventArgs e)
         {
             //  자동 운전 시작
-
-
             //  테스트 : 강제로 Dry Run
             //workStage.m_bMainWorkCycle_DryRun = true;
             Equipment.DryRun_ProcessingTime = Convert.ToInt16(baseTextBox_DryRun_ProcessingTime.Text);
-
-
             if (!workStage.m_bMainWorkCycle_DryRun && (Equipment.RecipeOpen_DrawingFilePath.Length <= 0))
             {
                 var mb = new MessageBoxOk();
@@ -1208,7 +1301,6 @@ namespace SLD200_MSL
             if (checkBox_Test_DryRun.Checked)
             {
                 workStage.m_bMainWorkCycle_DryRun = true;
-
                 var mb = new MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 시작하시겠습니까?\r\n\r\n[Dry Run]"))
                     return;
@@ -1216,14 +1308,12 @@ namespace SLD200_MSL
             else
             {
                 workStage.m_bMainWorkCycle_DryRun = false;
-
                 var mb = new MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 시작하시겠습니까?"))
                     return;
             }
 
-            Equipment.AutoRunStatus = true;
-
+            
             Equipment.MachineStop_byTimeout_Loader = false;
             Equipment.MachineStop_byTimeout_Unloader = false;
             Equipment.MachineStop_byTimeout_WorkStage = false;
@@ -1241,31 +1331,62 @@ namespace SLD200_MSL
             checkBox_Main_Loader_LPort_Pause.Checked = false;
             checkBox_Main_Loader_RPort_Pause.Checked = false;
 
-
             //  선택 가공 인덱스를 전체 가공으로 변경
             workStage.m_nSelectedSocket_Index = -1;
 
+
             //  Main Work Timer Start
-            workStage.m_btimer_MainWork_Stop = false;
+            //workStage.m_btimer_MainWork_Stop = false;
+            //workStage.timer_MainWork.Enabled = true;
+            ////  Laser Drilling Timer Stop
+            //workStage.m_btimer_LaserDrillingWork_Stop = false;
+            //workStage.timer_LaserDrillingWork.Enabled = true;
+            ////  Loader Work Timer Start
+            //loader.m_btimer_LoaderWork_Stop = false;
+            //loader.timer_LoaderWork.Enabled = true;
+            ////  Unloader Work Timer Start
+            //unloader.m_btimer_UnloaderWork_Stop = false;
+            //unloader.timer_UnloaderWork.Enabled = true;
+
+            Equipment.AutoRunStatus = true;
+
+            workStage.timer_MainWork.Start();
             workStage.timer_MainWork.Enabled = true;
+            workStage._isMainWorkRunning = false;
+            workStage.m_MainWork_Start = true;
+            //workStage.m_nMainWork_Step = (int)WorkStage.MainWork_Step.Start;
 
-            //  Laser Drilling Timer Stop
-            workStage.m_btimer_LaserDrillingWork_Stop = false;
-            workStage.timer_LaserDrillingWork.Enabled = true;
-
-            //  Loader Work Timer Start
-            loader.m_btimer_LoaderWork_Stop = false;
+            loader.timer_LoaderWork.Start();
             loader.timer_LoaderWork.Enabled = true;
+            loader._isLoaderWorkRunning = false;
+            loader.m_LoaderWork_Start = true;
+            //loader.m_nLoader_Transfer_Step = (int)Loader.Loader_Transfer_Step.Start;
 
-            //  Unloader Work Timer Start
-            unloader.m_btimer_UnloaderWork_Stop = false;
+            workStage.timer_LaserDrillingWork.Start();
+            workStage.timer_LaserDrillingWork.Enabled = true;
+            workStage._isLaserDrillingWorkRunning = false;
+            workStage.m_LaserDrillingWork_Start = true;
+            //workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
+
+            unloader.timer_UnloaderWork.Start();
             unloader.timer_UnloaderWork.Enabled = true;
+            unloader._isUnloaderWorkRunning = false;
+            unloader.m_UnloaderWork_Start = true;
+            //unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.Start;
+
         }
 
         private void button_Main_Stop_Click(object sender, EventArgs e)
         {
+            //Alarm alarm = new Alarm();
+            //alarm.Code = 2000;
+            //alarm.Title = "메롱";
+            //alarm.Cause = "잘 됩니다.";
+            //alarm.Source = "스탑";
+            //AlarmManager.Instance.ShowAlarm(alarm);
+            //return;
+            
             //  자동 운전 중지
-
             var mb = new MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 중지하시겠습니까?"))
                 return;
@@ -1273,22 +1394,39 @@ namespace SLD200_MSL
             Equipment.AutoRunStatus = false;
 
             //  Main Work Timer Stop
-            workStage.m_btimer_MainWork_Stop = true;
+            //workStage.m_btimer_MainWork_Stop = true;
+            //workStage.timer_MainWork.Enabled = false;
+            ////  Laser Drilling Timer Stop
+            //workStage.m_btimer_LaserDrillingWork_Stop = true;
+            //workStage.timer_LaserDrillingWork.Enabled = false;
+            ////  Loader Work Timer Stop
+            //loader.m_btimer_LoaderWork_Stop = true;
+            //loader.timer_LoaderWork.Enabled = false;
+            ////  Unloader Work Timer Stop
+            //unloader.m_btimer_UnloaderWork_Stop = true;
+            //unloader.timer_UnloaderWork.Enabled = false;
+
+            Equipment.AutoRunStatus = false;
+
+            workStage.timer_MainWork.Stop();
             workStage.timer_MainWork.Enabled = false;
+            workStage.m_MainWork_Start = false;
+            //workStage.m_nMainWork_Step = (int)WorkStage.MainWork_Step.None;
 
-            //  Laser Drilling Timer Stop
-            workStage.m_btimer_LaserDrillingWork_Stop = true;
-            workStage.timer_LaserDrillingWork.Enabled = false;
-
-            //  Loader Work Timer Stop
-            loader.m_btimer_LoaderWork_Stop = true;
+            loader.timer_LoaderWork.Stop();
             loader.timer_LoaderWork.Enabled = false;
+            loader.m_LoaderWork_Start = false;
+            //loader.m_nLoader_Transfer_Step = (int)Loader.Loader_Transfer_Step.None;
 
-            //  Unloader Work Timer Stop
-            unloader.m_btimer_UnloaderWork_Stop = true;
+            workStage.timer_LaserDrillingWork.Stop();
+            workStage.timer_LaserDrillingWork.Enabled = false;
+            workStage.m_LaserDrillingWork_Start = false;
+            //workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
+
+            unloader.timer_UnloaderWork.Stop();
             unloader.timer_UnloaderWork.Enabled = false;
-
-
+            unloader.m_UnloaderWork_Start = false;
+            //unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.None;
 
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1498,7 +1636,6 @@ namespace SLD200_MSL
             Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete = false;      //  Unloader Work Stage 에서 Module Pick Up 완료
             Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete = false;          //  Unloader Port 에 Module Put Down 완료
 
-
             //  Loader 파츠 사용 변수 초기화
             loader.m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_None; //  Transfer Move Type
             loader.m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
@@ -1552,7 +1689,6 @@ namespace SLD200_MSL
             loader.m_bLD_TR_ModulePickUp_MAligner_Complete = false;                                         //  M-Aligner Module Pick Up 동작 완료 여부
             loader.m_bLD_WorkStage_LoadingComplete = false;                                                 //  Work Stage 로 Module Loading 완료 여부
 
-
             //  Unloader 파츠 사용 변수 초기화
             unloader.m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
             unloader.m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
@@ -1582,7 +1718,6 @@ namespace SLD200_MSL
             unloader.m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = false;                 //  Stacker1 에 Module Put Down 완료 여부
             unloader.m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = false;                       //  NG-Port 에 Module Put Down 완료 여부
             unloader.m_bUL_Transfer_fromWorkStage_Module_PickUp_Complete_Flag = false;                      //  Work Stage 에서 Module Pick Up 완료 여부
-
 
             //  Main 파츠 사용 변수 초기화
             workStage.m_bMainWorkCycle_Complete = false;

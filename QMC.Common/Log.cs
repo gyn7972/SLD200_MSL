@@ -36,7 +36,12 @@ namespace QMC.Common
         {
             LogManager.Instance.Write(level, strClass, part.Name, strMessage);
         }
-
+        public static void Write(Exception ex)
+        {
+            LogManager.Instance.Write(LogLevel.Highest, "ProgramExeption", ex.Source);
+            LogManager.Instance.Write(LogLevel.Highest, "ProgramExeption", ex.Message);
+            LogManager.Instance.Write(LogLevel.Highest, "ProgramExeption", ex.StackTrace);
+        }
         public static void WriteWorkLog(string strMessage)
         {
             LogManager.Instance.WriteWorkLog(strMessage);

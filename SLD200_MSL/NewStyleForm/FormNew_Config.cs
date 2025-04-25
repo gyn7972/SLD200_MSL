@@ -7504,7 +7504,6 @@ namespace SLD200_MSL
             if (Equipment.AutoRunStatus)
             {
                 loader.m_bStacker1_Run_byUser = true;
-
                 loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
             }
             else

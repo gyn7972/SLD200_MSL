@@ -1,4 +1,6 @@
-﻿using Cognex.VisionPro.Implementation.Internal;
+﻿
+
+using Cognex.VisionPro.Implementation.Internal;
 using QMC.Common.Motion.Ajin.Motions;
 using QMC.Common.Parts;
 using System;
@@ -6,9 +8,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.ServiceModel.Syndication;
 using System.Text;
+using System.Timers;
 using System.Windows.Forms;
 using static QMC.Common.Modules.Loader;
 using static QMC.Common.Modules.Unloader;
+using static QMC.Common.Modules.WorkStage;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 
@@ -19,8 +23,8 @@ namespace QMC.Common.Modules
     {
         #region Define
 
-#if true                                                                //  SLD-200C
-//#if false                                                               //  SLD-200U
+        //#if true                                                                //  SLD-200C
+#if SLD_200C                                                                //  SLD-200U
         public enum nAxis                                                       //  SLD-200C 에서 사용하는 축 번호    
         {
             //  축 번호 변경 전 (Z0:10,   Z1:11,  TR_X:12,    TR_Z:13)
@@ -81,7 +85,9 @@ namespace QMC.Common.Modules
         //public bool ACS_Motion_isSimulationMode { set; get; }
 
         //  쓰레드로 변경 --> 변경 취소. 그냥 타이머 쓴다. Thread 쓰니까 뭐가 막 잘 안됨 ㅡㅡ
-        public System.Windows.Forms.Timer timer_UnloaderWork;
+        //public System.Windows.Forms.Timer timer_UnloaderWork;
+        public System.Timers.Timer timer_UnloaderWork;
+
         public bool m_btimer_UnloaderWork_Stop;
 
         public bool m_bBlink;
@@ -527,9 +533,13 @@ namespace QMC.Common.Modules
             //  타이머를 쓰레드로 변경 --> 다시 타이머 사용하기로...
 
             //  Unloader Work 타이머
-            timer_UnloaderWork = new System.Windows.Forms.Timer();
-            timer_UnloaderWork.Interval = 1;
-            timer_UnloaderWork.Tick += new System.EventHandler(Timer_UnloaderWork_Func);
+            //timer_UnloaderWork = new System.Windows.Forms.Timer();
+            //timer_UnloaderWork.Interval = 1;
+            //timer_UnloaderWork.Tick += new System.EventHandler(Timer_UnloaderWork_Func);
+            timer_UnloaderWork = new System.Timers.Timer(10);
+            timer_UnloaderWork.Elapsed += Timer_UnloaderWork_Tick;
+            timer_UnloaderWork.AutoReset = true; // 반복 실행
+            timer_UnloaderWork.Enabled = false; // 초기
 
             m_btimer_UnloaderWork_Stop = false;
 
@@ -1806,33 +1816,11 @@ namespace QMC.Common.Modules
 
                 case (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_SlowUp:                               //  Stacker Z 축, 느리게 올림 (최 상단까지)
 
-                    Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Full 센서가 On 되는 위치까지 이동 시작 (중속)");
-
-                    unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Stacker1_Top");
-
-                    //  Target Position 변경 : 맨 위로 올라가는 위치
-                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_LPort_TopPos].UL_Stacker_Z1;
-
-                    //  속도 (기본 속도 / 2)
-                    m_dSpeed_Stacker_Slow = Equipment.stAxisParam[(int)nAxis.Z1].Common_Speed_Fine / 2.0;
-
-                    //  가감속 배율
-                    m_dSpeedMag_forAccDec = 2.0;
-
-                    MC_Func.MC_MovePosition((int)nAxis.Z1,
-                                        unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1],
-                                        m_dSpeed_Stacker_Slow,
-                                        m_dSpeed_Stacker_Slow * m_dSpeedMag_forAccDec,
-                                        m_dSpeed_Stacker_Slow * m_dSpeedMag_forAccDec);
-
-                    //MC_Func.MC_MovePosition((int)UnloaderParameter.AxisAjinEnum.Z0,
-                    //                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0],
-                    //                    unloaderParameter.stUnloaderPosParam.dVel[(int)UnloaderParameter.MotionKey.Z0],
-                    //                    unloaderParameter.stUnloaderPosParam.dAcc[(int)UnloaderParameter.MotionKey.Z0],
-                    //                    unloaderParameter.stUnloaderPosParam.dDec[(int)UnloaderParameter.MotionKey.Z0]);
+                    StackerModulePutdownWaitingPosStepStackerZMoveType1SlowUp(out m_dSpeed_Stacker_Slow, out m_dSpeedMag_forAccDec);
 
                     TickCount_Start((int)TickType.TICK_ULSZ1);
 
+                    
                     m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_SlowUp_DoneCheck;
                     break;
 
@@ -2286,6 +2274,34 @@ namespace QMC.Common.Modules
                     //MessageBox.Show(m_strTemp, "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
             }
+        }
+
+        private void StackerModulePutdownWaitingPosStepStackerZMoveType1SlowUp(out double m_dSpeed_Stacker_Slow, out double m_dSpeedMag_forAccDec)
+        {
+            Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Full 센서가 On 되는 위치까지 이동 시작 (중속)");
+
+            unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Stacker1_Top");
+
+            //  Target Position 변경 : 맨 위로 올라가는 위치
+            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_LPort_TopPos].UL_Stacker_Z1;
+
+            //  속도 (기본 속도 / 2)
+            m_dSpeed_Stacker_Slow = Equipment.stAxisParam[(int)nAxis.Z1].Common_Speed_Fine / 2.0;
+
+            //  가감속 배율
+            m_dSpeedMag_forAccDec = 2.0;
+
+            MC_Func.MC_MovePosition((int)nAxis.Z1,
+                                unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1],
+                                m_dSpeed_Stacker_Slow,
+                                m_dSpeed_Stacker_Slow * m_dSpeedMag_forAccDec,
+                                m_dSpeed_Stacker_Slow * m_dSpeedMag_forAccDec);
+
+            //MC_Func.MC_MovePosition((int)UnloaderParameter.AxisAjinEnum.Z0,
+            //                    unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0],
+            //                    unloaderParameter.stUnloaderPosParam.dVel[(int)UnloaderParameter.MotionKey.Z0],
+            //                    unloaderParameter.stUnloaderPosParam.dAcc[(int)UnloaderParameter.MotionKey.Z0],
+            //                    unloaderParameter.stUnloaderPosParam.dDec[(int)UnloaderParameter.MotionKey.Z0]);
         }
         #endregion
 
@@ -4409,6 +4425,70 @@ namespace QMC.Common.Modules
 
 
         #region Event Handler
+
+
+        //Timer_UnloaderWork_Tick
+        public bool m_UnloaderWork_Start = false;
+        public bool _isUnloaderWorkRunning = false; // 중복 실행 방지 플래그
+
+        private async void Timer_UnloaderWork_Tick(object sender, ElapsedEventArgs e)
+        {
+            // 중복 실행 방지
+            if (_isUnloaderWorkRunning)
+            {
+                //Console.WriteLine("Scanner Calibration is already running. Skipping this call.");
+                return;
+            }
+
+            try
+            {
+                _isUnloaderWorkRunning = true;
+
+                // Scanner Calibration이 활성화되지 않은 경우 종료
+                if (!m_UnloaderWork_Start)
+                {
+                    Console.WriteLine("UnloadTransfer is not started.");
+                    //timer_ScannerCalibration.Stop(); // 타이머 중지
+                    return;
+                }
+
+                // 현재 단계가 None이면 타이머 중지
+                //if (m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None)
+                //{
+                //    Console.WriteLine("UnloadTransfer completed.");
+                //    //timer_ScannerCalibration.Stop(); // 타이머 중지
+                //    return;
+                //}
+
+                // 단계별 실행
+                //Console.WriteLine($"Scanner Calibration running at {DateTime.Now}, Step: {m_nScanner_Calibration_Step}");
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //  메인 화면 갱신용 변수
+
+                //  Work Stage 에서 Module 을 Pick Up 완료
+                Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete = m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete;
+
+                //  Port 에 Module 을 Put Down 완료
+                Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete = !m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete;
+
+                //  메인 화면 갱신용 변수
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                
+                Run_Stacker0Module_PutdownWaitingPos_Func();
+                Run_Stacker1Module_PutdownWaitingPos_Func();
+
+                Run_Transfer_Cycle_Func();
+                Console.WriteLine($"UnLoaderWork Running at {DateTime.Now}, Step: {m_nUnloader_Transfer_Step}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Timer_ScannerCalibration_Elapsed: {ex.Message}");
+            }
+            finally
+            {
+                _isUnloaderWorkRunning = false; // 플래그 해제
+            }
+        }
 
         private void Timer_UnloaderWork_Func(object sender, EventArgs e)
         {

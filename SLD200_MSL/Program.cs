@@ -19,7 +19,8 @@ namespace SLD200_MSL
             Application.EnableVisualStyles();
              Application.SetCompatibleTextRenderingDefault(false);
             //   Application.Run(new Form1());
-            Application.Run(new FormMain());
+            Equipment.formMain = new FormMain();
+            Application.Run(Equipment.formMain);
             Equipment.Close();
         }
     }

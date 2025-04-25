@@ -353,6 +353,15 @@
             this.listBox_Config_Vision_TeachingPositions = new System.Windows.Forms.ListBox();
             this.tabPage_Config_Laser = new System.Windows.Forms.TabPage();
             this.groupBox_Config_Laser_UVLaser = new System.Windows.Forms.GroupBox();
+            this.groupBox37 = new System.Windows.Forms.GroupBox();
+            this.baseLabel_Config_TabLaser_THGTemperature = new System.Windows.Forms.Label();
+            this.label59 = new System.Windows.Forms.Label();
+            this.baseLabel_Config_TabLaser_SHGTemperature = new System.Windows.Forms.Label();
+            this.label57 = new System.Windows.Forms.Label();
+            this.baseLabel_Config_TabLaser_WaterTemperature = new System.Windows.Forms.Label();
+            this.label55 = new System.Windows.Forms.Label();
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours = new System.Windows.Forms.Label();
+            this.label54 = new System.Windows.Forms.Label();
             this.groupBox69 = new System.Windows.Forms.GroupBox();
             this.button_Config_TabLaser_PercentOfEnergySet = new System.Windows.Forms.Button();
             this.textBox_Config_TabLaser_PercentOfEnergy = new System.Windows.Forms.TextBox();
@@ -549,15 +558,32 @@
             this.groupBox30 = new System.Windows.Forms.GroupBox();
             this.labelStagePressure = new System.Windows.Forms.Label();
             this.label51 = new System.Windows.Forms.Label();
-            this.groupBox37 = new System.Windows.Forms.GroupBox();
-            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours = new System.Windows.Forms.Label();
-            this.label54 = new System.Windows.Forms.Label();
-            this.baseLabel_Config_TabLaser_WaterTemperature = new System.Windows.Forms.Label();
-            this.label55 = new System.Windows.Forms.Label();
-            this.baseLabel_Config_TabLaser_SHGTemperature = new System.Windows.Forms.Label();
-            this.label57 = new System.Windows.Forms.Label();
-            this.baseLabel_Config_TabLaser_THGTemperature = new System.Windows.Forms.Label();
-            this.label59 = new System.Windows.Forms.Label();
+            this.label_Config_SeqTest_SeqStatus_Loader = new System.Windows.Forms.Label();
+            this.label_Config_SeqTest_SeqStatus_Disp_Loader = new System.Windows.Forms.Label();
+            this.groupBox41 = new System.Windows.Forms.GroupBox();
+            this.button18 = new System.Windows.Forms.Button();
+            this.button19 = new System.Windows.Forms.Button();
+            this.button20 = new System.Windows.Forms.Button();
+            this.button21 = new System.Windows.Forms.Button();
+            this.button22 = new System.Windows.Forms.Button();
+            this.label56 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label58 = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.label60 = new System.Windows.Forms.Label();
+            this.button23 = new System.Windows.Forms.Button();
+            this.button24 = new System.Windows.Forms.Button();
+            this.button25 = new System.Windows.Forms.Button();
+            this.button26 = new System.Windows.Forms.Button();
+            this.button27 = new System.Windows.Forms.Button();
+            this.button28 = new System.Windows.Forms.Button();
+            this.button29 = new System.Windows.Forms.Button();
+            this.button30 = new System.Windows.Forms.Button();
+            this.groupBox_Config_SeqTest_SeqStatus = new System.Windows.Forms.GroupBox();
+            this.label_Config_SeqTest_SeqStatus_WorkStage = new System.Windows.Forms.Label();
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage = new System.Windows.Forms.Label();
+            this.label_Config_SeqTest_SeqStatus_UnLoader = new System.Windows.Forms.Label();
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader = new System.Windows.Forms.Label();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -618,6 +644,7 @@
             this.groupBox40.SuspendLayout();
             this.tabPage_Config_Laser.SuspendLayout();
             this.groupBox_Config_Laser_UVLaser.SuspendLayout();
+            this.groupBox37.SuspendLayout();
             this.groupBox69.SuspendLayout();
             this.groupBox68.SuspendLayout();
             this.groupBox67.SuspendLayout();
@@ -664,7 +691,8 @@
             this.groupBox_Config_AxisPositions_LoadTransfer.SuspendLayout();
             this.groupBox_Config_AxisPositions_Loader.SuspendLayout();
             this.groupBox30.SuspendLayout();
-            this.groupBox37.SuspendLayout();
+            this.groupBox41.SuspendLayout();
+            this.groupBox_Config_SeqTest_SeqStatus.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl_Config
@@ -748,7 +776,7 @@
             this.checkedListBox_Config_LDUL_DIO_Output.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_LDUL_DIO_Output.Name = "checkedListBox_Config_LDUL_DIO_Output";
             this.checkedListBox_Config_LDUL_DIO_Output.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_LDUL_DIO_Output.Size = new System.Drawing.Size(279, 194);
+            this.checkedListBox_Config_LDUL_DIO_Output.Size = new System.Drawing.Size(279, 169);
             this.checkedListBox_Config_LDUL_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_LDUL_DIO_Output.ThreeDCheckBoxes = true;
             this.checkedListBox_Config_LDUL_DIO_Output.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_LDUL_DIO_Output_MouseDoubleClick);
@@ -798,7 +826,7 @@
             this.checkedListBox_Config_LDUL_DIO_Input.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_LDUL_DIO_Input.Name = "checkedListBox_Config_LDUL_DIO_Input";
             this.checkedListBox_Config_LDUL_DIO_Input.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_LDUL_DIO_Input.Size = new System.Drawing.Size(279, 194);
+            this.checkedListBox_Config_LDUL_DIO_Input.Size = new System.Drawing.Size(279, 169);
             this.checkedListBox_Config_LDUL_DIO_Input.TabIndex = 50;
             this.checkedListBox_Config_LDUL_DIO_Input.ThreeDCheckBoxes = true;
             // 
@@ -969,7 +997,7 @@
             this.textBox33.Location = new System.Drawing.Point(181, 177);
             this.textBox33.Margin = new System.Windows.Forms.Padding(5);
             this.textBox33.Name = "textBox33";
-            this.textBox33.Size = new System.Drawing.Size(97, 24);
+            this.textBox33.Size = new System.Drawing.Size(97, 36);
             this.textBox33.TabIndex = 54;
             this.textBox33.Text = "000.000";
             this.textBox33.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -991,7 +1019,7 @@
             this.textBox34.Location = new System.Drawing.Point(181, 147);
             this.textBox34.Margin = new System.Windows.Forms.Padding(5);
             this.textBox34.Name = "textBox34";
-            this.textBox34.Size = new System.Drawing.Size(97, 24);
+            this.textBox34.Size = new System.Drawing.Size(97, 36);
             this.textBox34.TabIndex = 52;
             this.textBox34.Text = "000.000";
             this.textBox34.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1024,7 +1052,7 @@
             this.textBox35.Location = new System.Drawing.Point(181, 117);
             this.textBox35.Margin = new System.Windows.Forms.Padding(5);
             this.textBox35.Name = "textBox35";
-            this.textBox35.Size = new System.Drawing.Size(97, 24);
+            this.textBox35.Size = new System.Drawing.Size(97, 36);
             this.textBox35.TabIndex = 49;
             this.textBox35.Text = "000.000";
             this.textBox35.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1057,7 +1085,7 @@
             this.textBox36.Location = new System.Drawing.Point(181, 87);
             this.textBox36.Margin = new System.Windows.Forms.Padding(5);
             this.textBox36.Name = "textBox36";
-            this.textBox36.Size = new System.Drawing.Size(97, 24);
+            this.textBox36.Size = new System.Drawing.Size(97, 36);
             this.textBox36.TabIndex = 46;
             this.textBox36.Text = "000.000";
             this.textBox36.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1101,7 +1129,7 @@
             this.textBox37.Location = new System.Drawing.Point(181, 57);
             this.textBox37.Margin = new System.Windows.Forms.Padding(5);
             this.textBox37.Name = "textBox37";
-            this.textBox37.Size = new System.Drawing.Size(97, 24);
+            this.textBox37.Size = new System.Drawing.Size(97, 36);
             this.textBox37.TabIndex = 42;
             this.textBox37.Text = "000.000";
             this.textBox37.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1123,7 +1151,7 @@
             this.textBox38.Location = new System.Drawing.Point(181, 27);
             this.textBox38.Margin = new System.Windows.Forms.Padding(5);
             this.textBox38.Name = "textBox38";
-            this.textBox38.Size = new System.Drawing.Size(97, 24);
+            this.textBox38.Size = new System.Drawing.Size(97, 36);
             this.textBox38.TabIndex = 40;
             this.textBox38.Text = "000.000";
             this.textBox38.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1228,7 +1256,7 @@
             this.textBox_Config_LDUL_JogMove_StepSize.Location = new System.Drawing.Point(217, 51);
             this.textBox_Config_LDUL_JogMove_StepSize.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Config_LDUL_JogMove_StepSize.Name = "textBox_Config_LDUL_JogMove_StepSize";
-            this.textBox_Config_LDUL_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
+            this.textBox_Config_LDUL_JogMove_StepSize.Size = new System.Drawing.Size(71, 36);
             this.textBox_Config_LDUL_JogMove_StepSize.TabIndex = 75;
             this.textBox_Config_LDUL_JogMove_StepSize.Text = "1.000";
             // 
@@ -2086,7 +2114,7 @@
             this.textBox_Config_LDUL_TeachingPos_MAlignerY.Location = new System.Drawing.Point(147, 177);
             this.textBox_Config_LDUL_TeachingPos_MAlignerY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_LDUL_TeachingPos_MAlignerY.Name = "textBox_Config_LDUL_TeachingPos_MAlignerY";
-            this.textBox_Config_LDUL_TeachingPos_MAlignerY.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_LDUL_TeachingPos_MAlignerY.Size = new System.Drawing.Size(97, 36);
             this.textBox_Config_LDUL_TeachingPos_MAlignerY.TabIndex = 36;
             this.textBox_Config_LDUL_TeachingPos_MAlignerY.Text = "000.000";
             this.textBox_Config_LDUL_TeachingPos_MAlignerY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2108,7 +2136,7 @@
             this.textBox_Config_LDUL_TeachingPos_MAlignerX.Location = new System.Drawing.Point(147, 147);
             this.textBox_Config_LDUL_TeachingPos_MAlignerX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_LDUL_TeachingPos_MAlignerX.Name = "textBox_Config_LDUL_TeachingPos_MAlignerX";
-            this.textBox_Config_LDUL_TeachingPos_MAlignerX.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_LDUL_TeachingPos_MAlignerX.Size = new System.Drawing.Size(97, 36);
             this.textBox_Config_LDUL_TeachingPos_MAlignerX.TabIndex = 34;
             this.textBox_Config_LDUL_TeachingPos_MAlignerX.Text = "000.000";
             this.textBox_Config_LDUL_TeachingPos_MAlignerX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2141,7 +2169,7 @@
             this.textBox_Config_LDUL_TeachingPos_LPortZ.Location = new System.Drawing.Point(147, 117);
             this.textBox_Config_LDUL_TeachingPos_LPortZ.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_LDUL_TeachingPos_LPortZ.Name = "textBox_Config_LDUL_TeachingPos_LPortZ";
-            this.textBox_Config_LDUL_TeachingPos_LPortZ.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_LDUL_TeachingPos_LPortZ.Size = new System.Drawing.Size(97, 36);
             this.textBox_Config_LDUL_TeachingPos_LPortZ.TabIndex = 31;
             this.textBox_Config_LDUL_TeachingPos_LPortZ.Text = "000.000";
             this.textBox_Config_LDUL_TeachingPos_LPortZ.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2174,7 +2202,7 @@
             this.textBox_Config_LDUL_TeachingPos_RPortZ.Location = new System.Drawing.Point(147, 87);
             this.textBox_Config_LDUL_TeachingPos_RPortZ.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_LDUL_TeachingPos_RPortZ.Name = "textBox_Config_LDUL_TeachingPos_RPortZ";
-            this.textBox_Config_LDUL_TeachingPos_RPortZ.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_LDUL_TeachingPos_RPortZ.Size = new System.Drawing.Size(97, 36);
             this.textBox_Config_LDUL_TeachingPos_RPortZ.TabIndex = 28;
             this.textBox_Config_LDUL_TeachingPos_RPortZ.Text = "000.000";
             this.textBox_Config_LDUL_TeachingPos_RPortZ.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2219,7 +2247,7 @@
             this.textBox_Config_LDUL_TeachingPos_TransferZ.Location = new System.Drawing.Point(147, 57);
             this.textBox_Config_LDUL_TeachingPos_TransferZ.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_LDUL_TeachingPos_TransferZ.Name = "textBox_Config_LDUL_TeachingPos_TransferZ";
-            this.textBox_Config_LDUL_TeachingPos_TransferZ.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_LDUL_TeachingPos_TransferZ.Size = new System.Drawing.Size(97, 36);
             this.textBox_Config_LDUL_TeachingPos_TransferZ.TabIndex = 24;
             this.textBox_Config_LDUL_TeachingPos_TransferZ.Text = "000.000";
             this.textBox_Config_LDUL_TeachingPos_TransferZ.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2241,7 +2269,7 @@
             this.textBox_Config_LDUL_TeachingPos_TransferX.Location = new System.Drawing.Point(147, 27);
             this.textBox_Config_LDUL_TeachingPos_TransferX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_LDUL_TeachingPos_TransferX.Name = "textBox_Config_LDUL_TeachingPos_TransferX";
-            this.textBox_Config_LDUL_TeachingPos_TransferX.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_LDUL_TeachingPos_TransferX.Size = new System.Drawing.Size(97, 36);
             this.textBox_Config_LDUL_TeachingPos_TransferX.TabIndex = 22;
             this.textBox_Config_LDUL_TeachingPos_TransferX.Text = "000.000";
             this.textBox_Config_LDUL_TeachingPos_TransferX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2261,7 +2289,7 @@
             // 
             this.listBox_Config_LDUL_TeachingPositions.Font = new System.Drawing.Font("Tahoma", 11F);
             this.listBox_Config_LDUL_TeachingPositions.FormattingEnabled = true;
-            this.listBox_Config_LDUL_TeachingPositions.ItemHeight = 18;
+            this.listBox_Config_LDUL_TeachingPositions.ItemHeight = 31;
             this.listBox_Config_LDUL_TeachingPositions.Items.AddRange(new object[] {
             "Load R-Port Ready Position",
             "Load R-Port Top Position",
@@ -2287,7 +2315,7 @@
             this.listBox_Config_LDUL_TeachingPositions.Location = new System.Drawing.Point(10, 25);
             this.listBox_Config_LDUL_TeachingPositions.Margin = new System.Windows.Forms.Padding(5);
             this.listBox_Config_LDUL_TeachingPositions.Name = "listBox_Config_LDUL_TeachingPositions";
-            this.listBox_Config_LDUL_TeachingPositions.Size = new System.Drawing.Size(285, 454);
+            this.listBox_Config_LDUL_TeachingPositions.Size = new System.Drawing.Size(285, 438);
             this.listBox_Config_LDUL_TeachingPositions.TabIndex = 0;
             this.listBox_Config_LDUL_TeachingPositions.SelectedIndexChanged += new System.EventHandler(this.listBox_Config_LDUL_TeachingPositions_SelectedIndexChanged);
             // 
@@ -2407,7 +2435,7 @@
             this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Location = new System.Drawing.Point(76, 60);
             this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Margin = new System.Windows.Forms.Padding(6);
             this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Name = "textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue";
-            this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Size = new System.Drawing.Size(58, 27);
+            this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Size = new System.Drawing.Size(58, 41);
             this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.TabIndex = 43;
             this.textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Text = "20.0";
             // 
@@ -2508,7 +2536,7 @@
             this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Location = new System.Drawing.Point(76, 60);
             this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Margin = new System.Windows.Forms.Padding(6);
             this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Name = "textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue";
-            this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Size = new System.Drawing.Size(58, 27);
+            this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Size = new System.Drawing.Size(58, 41);
             this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.TabIndex = 43;
             this.textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Text = "20.0";
             // 
@@ -2650,7 +2678,7 @@
             this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Location = new System.Drawing.Point(159, 104);
             this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Margin = new System.Windows.Forms.Padding(6);
             this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Name = "textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue";
-            this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Size = new System.Drawing.Size(87, 27);
+            this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Size = new System.Drawing.Size(87, 41);
             this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.TabIndex = 43;
             this.textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text = "0";
             // 
@@ -2835,7 +2863,7 @@
             this.textBox_Config_WorkStage_TempPos3_StageY.Location = new System.Drawing.Point(57, 172);
             this.textBox_Config_WorkStage_TempPos3_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos3_StageY.Name = "textBox_Config_WorkStage_TempPos3_StageY";
-            this.textBox_Config_WorkStage_TempPos3_StageY.Size = new System.Drawing.Size(70, 24);
+            this.textBox_Config_WorkStage_TempPos3_StageY.Size = new System.Drawing.Size(70, 36);
             this.textBox_Config_WorkStage_TempPos3_StageY.TabIndex = 57;
             this.textBox_Config_WorkStage_TempPos3_StageY.Text = "000.000";
             this.textBox_Config_WorkStage_TempPos3_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2869,7 +2897,7 @@
             this.textBox_Config_WorkStage_TempPos3_StageX.Location = new System.Drawing.Point(57, 148);
             this.textBox_Config_WorkStage_TempPos3_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos3_StageX.Name = "textBox_Config_WorkStage_TempPos3_StageX";
-            this.textBox_Config_WorkStage_TempPos3_StageX.Size = new System.Drawing.Size(70, 24);
+            this.textBox_Config_WorkStage_TempPos3_StageX.Size = new System.Drawing.Size(70, 36);
             this.textBox_Config_WorkStage_TempPos3_StageX.TabIndex = 54;
             this.textBox_Config_WorkStage_TempPos3_StageX.Text = "000.000";
             this.textBox_Config_WorkStage_TempPos3_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2903,7 +2931,7 @@
             this.textBox_Config_WorkStage_TempPos2_StageY.Location = new System.Drawing.Point(57, 112);
             this.textBox_Config_WorkStage_TempPos2_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos2_StageY.Name = "textBox_Config_WorkStage_TempPos2_StageY";
-            this.textBox_Config_WorkStage_TempPos2_StageY.Size = new System.Drawing.Size(70, 24);
+            this.textBox_Config_WorkStage_TempPos2_StageY.Size = new System.Drawing.Size(70, 36);
             this.textBox_Config_WorkStage_TempPos2_StageY.TabIndex = 51;
             this.textBox_Config_WorkStage_TempPos2_StageY.Text = "000.000";
             this.textBox_Config_WorkStage_TempPos2_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2937,7 +2965,7 @@
             this.textBox_Config_WorkStage_TempPos2_StageX.Location = new System.Drawing.Point(57, 88);
             this.textBox_Config_WorkStage_TempPos2_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos2_StageX.Name = "textBox_Config_WorkStage_TempPos2_StageX";
-            this.textBox_Config_WorkStage_TempPos2_StageX.Size = new System.Drawing.Size(70, 24);
+            this.textBox_Config_WorkStage_TempPos2_StageX.Size = new System.Drawing.Size(70, 36);
             this.textBox_Config_WorkStage_TempPos2_StageX.TabIndex = 48;
             this.textBox_Config_WorkStage_TempPos2_StageX.Text = "000.000";
             this.textBox_Config_WorkStage_TempPos2_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2971,7 +2999,7 @@
             this.textBox_Config_WorkStage_TempPos1_StageY.Location = new System.Drawing.Point(57, 52);
             this.textBox_Config_WorkStage_TempPos1_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos1_StageY.Name = "textBox_Config_WorkStage_TempPos1_StageY";
-            this.textBox_Config_WorkStage_TempPos1_StageY.Size = new System.Drawing.Size(70, 24);
+            this.textBox_Config_WorkStage_TempPos1_StageY.Size = new System.Drawing.Size(70, 36);
             this.textBox_Config_WorkStage_TempPos1_StageY.TabIndex = 45;
             this.textBox_Config_WorkStage_TempPos1_StageY.Text = "000.000";
             this.textBox_Config_WorkStage_TempPos1_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3005,7 +3033,7 @@
             this.textBox_Config_WorkStage_TempPos1_StageX.Location = new System.Drawing.Point(57, 28);
             this.textBox_Config_WorkStage_TempPos1_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TempPos1_StageX.Name = "textBox_Config_WorkStage_TempPos1_StageX";
-            this.textBox_Config_WorkStage_TempPos1_StageX.Size = new System.Drawing.Size(70, 24);
+            this.textBox_Config_WorkStage_TempPos1_StageX.Size = new System.Drawing.Size(70, 36);
             this.textBox_Config_WorkStage_TempPos1_StageX.TabIndex = 22;
             this.textBox_Config_WorkStage_TempPos1_StageX.Text = "000.000";
             this.textBox_Config_WorkStage_TempPos1_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3107,7 +3135,7 @@
             this.checkedListBox_Config_WorkStage_DIO_Output.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_WorkStage_DIO_Output.Name = "checkedListBox_Config_WorkStage_DIO_Output";
             this.checkedListBox_Config_WorkStage_DIO_Output.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_WorkStage_DIO_Output.Size = new System.Drawing.Size(279, 289);
+            this.checkedListBox_Config_WorkStage_DIO_Output.Size = new System.Drawing.Size(279, 268);
             this.checkedListBox_Config_WorkStage_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_WorkStage_DIO_Output.ThreeDCheckBoxes = true;
             this.checkedListBox_Config_WorkStage_DIO_Output.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_WorkStage_DIO_Output_MouseDoubleClick);
@@ -3159,7 +3187,7 @@
             this.checkedListBox_Config_WorkStage_DIO_Input.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_WorkStage_DIO_Input.Name = "checkedListBox_Config_WorkStage_DIO_Input";
             this.checkedListBox_Config_WorkStage_DIO_Input.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_WorkStage_DIO_Input.Size = new System.Drawing.Size(279, 289);
+            this.checkedListBox_Config_WorkStage_DIO_Input.Size = new System.Drawing.Size(279, 268);
             this.checkedListBox_Config_WorkStage_DIO_Input.TabIndex = 50;
             this.checkedListBox_Config_WorkStage_DIO_Input.ThreeDCheckBoxes = true;
             // 
@@ -3325,7 +3353,7 @@
             this.textBox14.Location = new System.Drawing.Point(181, 87);
             this.textBox14.Margin = new System.Windows.Forms.Padding(5);
             this.textBox14.Name = "textBox14";
-            this.textBox14.Size = new System.Drawing.Size(97, 24);
+            this.textBox14.Size = new System.Drawing.Size(97, 36);
             this.textBox14.TabIndex = 46;
             this.textBox14.Text = "000.000";
             this.textBox14.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3369,7 +3397,7 @@
             this.textBox15.Location = new System.Drawing.Point(181, 57);
             this.textBox15.Margin = new System.Windows.Forms.Padding(5);
             this.textBox15.Name = "textBox15";
-            this.textBox15.Size = new System.Drawing.Size(97, 24);
+            this.textBox15.Size = new System.Drawing.Size(97, 36);
             this.textBox15.TabIndex = 42;
             this.textBox15.Text = "000.000";
             this.textBox15.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3391,7 +3419,7 @@
             this.textBox18.Location = new System.Drawing.Point(181, 27);
             this.textBox18.Margin = new System.Windows.Forms.Padding(5);
             this.textBox18.Name = "textBox18";
-            this.textBox18.Size = new System.Drawing.Size(97, 24);
+            this.textBox18.Size = new System.Drawing.Size(97, 36);
             this.textBox18.TabIndex = 40;
             this.textBox18.Text = "000.000";
             this.textBox18.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -3456,7 +3484,7 @@
             this.textBox_Config_WorkStage_JogMove_StepSize.Location = new System.Drawing.Point(217, 51);
             this.textBox_Config_WorkStage_JogMove_StepSize.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Config_WorkStage_JogMove_StepSize.Name = "textBox_Config_WorkStage_JogMove_StepSize";
-            this.textBox_Config_WorkStage_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
+            this.textBox_Config_WorkStage_JogMove_StepSize.Size = new System.Drawing.Size(71, 36);
             this.textBox_Config_WorkStage_JogMove_StepSize.TabIndex = 75;
             this.textBox_Config_WorkStage_JogMove_StepSize.Text = "1.000";
             // 
@@ -4005,7 +4033,7 @@
             this.textBox_Config_WorkStage_TeachingPos_StageY.Location = new System.Drawing.Point(147, 57);
             this.textBox_Config_WorkStage_TeachingPos_StageY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TeachingPos_StageY.Name = "textBox_Config_WorkStage_TeachingPos_StageY";
-            this.textBox_Config_WorkStage_TeachingPos_StageY.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_WorkStage_TeachingPos_StageY.Size = new System.Drawing.Size(97, 36);
             this.textBox_Config_WorkStage_TeachingPos_StageY.TabIndex = 24;
             this.textBox_Config_WorkStage_TeachingPos_StageY.Text = "000.000";
             this.textBox_Config_WorkStage_TeachingPos_StageY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -4027,7 +4055,7 @@
             this.textBox_Config_WorkStage_TeachingPos_StageX.Location = new System.Drawing.Point(147, 27);
             this.textBox_Config_WorkStage_TeachingPos_StageX.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_WorkStage_TeachingPos_StageX.Name = "textBox_Config_WorkStage_TeachingPos_StageX";
-            this.textBox_Config_WorkStage_TeachingPos_StageX.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_WorkStage_TeachingPos_StageX.Size = new System.Drawing.Size(97, 36);
             this.textBox_Config_WorkStage_TeachingPos_StageX.TabIndex = 22;
             this.textBox_Config_WorkStage_TeachingPos_StageX.Text = "000.000";
             this.textBox_Config_WorkStage_TeachingPos_StageX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -4047,7 +4075,7 @@
             // 
             this.listBox_Config_WorkStage_TeachingPositions.Font = new System.Drawing.Font("Tahoma", 11F);
             this.listBox_Config_WorkStage_TeachingPositions.FormattingEnabled = true;
-            this.listBox_Config_WorkStage_TeachingPositions.ItemHeight = 18;
+            this.listBox_Config_WorkStage_TeachingPositions.ItemHeight = 31;
             this.listBox_Config_WorkStage_TeachingPositions.Items.AddRange(new object[] {
             "Origin Position",
             "Loading Position",
@@ -4063,7 +4091,7 @@
             this.listBox_Config_WorkStage_TeachingPositions.Location = new System.Drawing.Point(10, 25);
             this.listBox_Config_WorkStage_TeachingPositions.Margin = new System.Windows.Forms.Padding(5);
             this.listBox_Config_WorkStage_TeachingPositions.Name = "listBox_Config_WorkStage_TeachingPositions";
-            this.listBox_Config_WorkStage_TeachingPositions.Size = new System.Drawing.Size(285, 310);
+            this.listBox_Config_WorkStage_TeachingPositions.Size = new System.Drawing.Size(285, 283);
             this.listBox_Config_WorkStage_TeachingPositions.TabIndex = 0;
             this.listBox_Config_WorkStage_TeachingPositions.SelectedIndexChanged += new System.EventHandler(this.listBox_Config_WorkStage_TeachingPositions_SelectedIndexChanged);
             // 
@@ -4152,7 +4180,7 @@
             this.textBox_Config_Vision_JogMove_StepSize.Location = new System.Drawing.Point(217, 51);
             this.textBox_Config_Vision_JogMove_StepSize.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Config_Vision_JogMove_StepSize.Name = "textBox_Config_Vision_JogMove_StepSize";
-            this.textBox_Config_Vision_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
+            this.textBox_Config_Vision_JogMove_StepSize.Size = new System.Drawing.Size(71, 36);
             this.textBox_Config_Vision_JogMove_StepSize.TabIndex = 75;
             this.textBox_Config_Vision_JogMove_StepSize.Text = "1.000";
             // 
@@ -4526,7 +4554,7 @@
             this.textBox7.Location = new System.Drawing.Point(181, 87);
             this.textBox7.Margin = new System.Windows.Forms.Padding(5);
             this.textBox7.Name = "textBox7";
-            this.textBox7.Size = new System.Drawing.Size(97, 24);
+            this.textBox7.Size = new System.Drawing.Size(97, 36);
             this.textBox7.TabIndex = 46;
             this.textBox7.Text = "000.000";
             this.textBox7.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -4570,7 +4598,7 @@
             this.textBox8.Location = new System.Drawing.Point(181, 57);
             this.textBox8.Margin = new System.Windows.Forms.Padding(5);
             this.textBox8.Name = "textBox8";
-            this.textBox8.Size = new System.Drawing.Size(97, 24);
+            this.textBox8.Size = new System.Drawing.Size(97, 36);
             this.textBox8.TabIndex = 42;
             this.textBox8.Text = "000.000";
             this.textBox8.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -4592,7 +4620,7 @@
             this.textBox9.Location = new System.Drawing.Point(181, 27);
             this.textBox9.Margin = new System.Windows.Forms.Padding(5);
             this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(97, 24);
+            this.textBox9.Size = new System.Drawing.Size(97, 36);
             this.textBox9.TabIndex = 40;
             this.textBox9.Text = "000.000";
             this.textBox9.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -4931,7 +4959,7 @@
             this.textBox_Config_Vision_TeachingPos_VisionZ.Location = new System.Drawing.Point(147, 27);
             this.textBox_Config_Vision_TeachingPos_VisionZ.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_Vision_TeachingPos_VisionZ.Name = "textBox_Config_Vision_TeachingPos_VisionZ";
-            this.textBox_Config_Vision_TeachingPos_VisionZ.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_Vision_TeachingPos_VisionZ.Size = new System.Drawing.Size(97, 36);
             this.textBox_Config_Vision_TeachingPos_VisionZ.TabIndex = 22;
             this.textBox_Config_Vision_TeachingPos_VisionZ.Text = "000.000";
             this.textBox_Config_Vision_TeachingPos_VisionZ.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -4951,7 +4979,7 @@
             // 
             this.listBox_Config_Vision_TeachingPositions.Font = new System.Drawing.Font("Tahoma", 11F);
             this.listBox_Config_Vision_TeachingPositions.FormattingEnabled = true;
-            this.listBox_Config_Vision_TeachingPositions.ItemHeight = 18;
+            this.listBox_Config_Vision_TeachingPositions.ItemHeight = 31;
             this.listBox_Config_Vision_TeachingPositions.Items.AddRange(new object[] {
             "Vision Image Focus Z Axis Position",
             "Laser Focus Z Axis Position",
@@ -4961,7 +4989,7 @@
             this.listBox_Config_Vision_TeachingPositions.Location = new System.Drawing.Point(10, 25);
             this.listBox_Config_Vision_TeachingPositions.Margin = new System.Windows.Forms.Padding(5);
             this.listBox_Config_Vision_TeachingPositions.Name = "listBox_Config_Vision_TeachingPositions";
-            this.listBox_Config_Vision_TeachingPositions.Size = new System.Drawing.Size(285, 220);
+            this.listBox_Config_Vision_TeachingPositions.Size = new System.Drawing.Size(285, 190);
             this.listBox_Config_Vision_TeachingPositions.TabIndex = 0;
             this.listBox_Config_Vision_TeachingPositions.SelectedIndexChanged += new System.EventHandler(this.listBox_Config_Vision_TeachingPositions_SelectedIndexChanged);
             // 
@@ -5001,6 +5029,122 @@
             this.groupBox_Config_Laser_UVLaser.TabStop = false;
             this.groupBox_Config_Laser_UVLaser.Text = " Laser ";
             // 
+            // groupBox37
+            // 
+            this.groupBox37.Controls.Add(this.baseLabel_Config_TabLaser_THGTemperature);
+            this.groupBox37.Controls.Add(this.label59);
+            this.groupBox37.Controls.Add(this.baseLabel_Config_TabLaser_SHGTemperature);
+            this.groupBox37.Controls.Add(this.label57);
+            this.groupBox37.Controls.Add(this.baseLabel_Config_TabLaser_WaterTemperature);
+            this.groupBox37.Controls.Add(this.label55);
+            this.groupBox37.Controls.Add(this.baseLabel_Config_TabLaser_LaserHeadOperatingHours);
+            this.groupBox37.Controls.Add(this.label54);
+            this.groupBox37.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.groupBox37.Location = new System.Drawing.Point(10, 333);
+            this.groupBox37.Margin = new System.Windows.Forms.Padding(5);
+            this.groupBox37.Name = "groupBox37";
+            this.groupBox37.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox37.Size = new System.Drawing.Size(454, 149);
+            this.groupBox37.TabIndex = 223;
+            this.groupBox37.TabStop = false;
+            this.groupBox37.Text = " Monitoring ";
+            // 
+            // baseLabel_Config_TabLaser_THGTemperature
+            // 
+            this.baseLabel_Config_TabLaser_THGTemperature.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.baseLabel_Config_TabLaser_THGTemperature.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.baseLabel_Config_TabLaser_THGTemperature.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel_Config_TabLaser_THGTemperature.ForeColor = System.Drawing.Color.Lime;
+            this.baseLabel_Config_TabLaser_THGTemperature.Location = new System.Drawing.Point(320, 113);
+            this.baseLabel_Config_TabLaser_THGTemperature.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.baseLabel_Config_TabLaser_THGTemperature.Name = "baseLabel_Config_TabLaser_THGTemperature";
+            this.baseLabel_Config_TabLaser_THGTemperature.Size = new System.Drawing.Size(126, 25);
+            this.baseLabel_Config_TabLaser_THGTemperature.TabIndex = 127;
+            this.baseLabel_Config_TabLaser_THGTemperature.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label59
+            // 
+            this.label59.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label59.Location = new System.Drawing.Point(7, 112);
+            this.label59.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label59.Name = "label59";
+            this.label59.Size = new System.Drawing.Size(307, 24);
+            this.label59.TabIndex = 126;
+            this.label59.Text = "THG Crystal Temperature (℃) :";
+            this.label59.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // baseLabel_Config_TabLaser_SHGTemperature
+            // 
+            this.baseLabel_Config_TabLaser_SHGTemperature.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.baseLabel_Config_TabLaser_SHGTemperature.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.baseLabel_Config_TabLaser_SHGTemperature.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel_Config_TabLaser_SHGTemperature.ForeColor = System.Drawing.Color.Lime;
+            this.baseLabel_Config_TabLaser_SHGTemperature.Location = new System.Drawing.Point(320, 84);
+            this.baseLabel_Config_TabLaser_SHGTemperature.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.baseLabel_Config_TabLaser_SHGTemperature.Name = "baseLabel_Config_TabLaser_SHGTemperature";
+            this.baseLabel_Config_TabLaser_SHGTemperature.Size = new System.Drawing.Size(126, 25);
+            this.baseLabel_Config_TabLaser_SHGTemperature.TabIndex = 125;
+            this.baseLabel_Config_TabLaser_SHGTemperature.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label57
+            // 
+            this.label57.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label57.Location = new System.Drawing.Point(7, 83);
+            this.label57.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label57.Name = "label57";
+            this.label57.Size = new System.Drawing.Size(307, 24);
+            this.label57.TabIndex = 124;
+            this.label57.Text = "SHG Crystal Temperature (℃) :";
+            this.label57.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // baseLabel_Config_TabLaser_WaterTemperature
+            // 
+            this.baseLabel_Config_TabLaser_WaterTemperature.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.baseLabel_Config_TabLaser_WaterTemperature.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.baseLabel_Config_TabLaser_WaterTemperature.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel_Config_TabLaser_WaterTemperature.ForeColor = System.Drawing.Color.Lime;
+            this.baseLabel_Config_TabLaser_WaterTemperature.Location = new System.Drawing.Point(320, 55);
+            this.baseLabel_Config_TabLaser_WaterTemperature.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.baseLabel_Config_TabLaser_WaterTemperature.Name = "baseLabel_Config_TabLaser_WaterTemperature";
+            this.baseLabel_Config_TabLaser_WaterTemperature.Size = new System.Drawing.Size(126, 25);
+            this.baseLabel_Config_TabLaser_WaterTemperature.TabIndex = 123;
+            this.baseLabel_Config_TabLaser_WaterTemperature.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label55
+            // 
+            this.label55.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label55.Location = new System.Drawing.Point(6, 54);
+            this.label55.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label55.Name = "label55";
+            this.label55.Size = new System.Drawing.Size(307, 24);
+            this.label55.TabIndex = 122;
+            this.label55.Text = "Water Temperature (℃) :";
+            this.label55.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // baseLabel_Config_TabLaser_LaserHeadOperatingHours
+            // 
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.ForeColor = System.Drawing.Color.Lime;
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Location = new System.Drawing.Point(320, 26);
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Name = "baseLabel_Config_TabLaser_LaserHeadOperatingHours";
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Size = new System.Drawing.Size(126, 25);
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.TabIndex = 121;
+            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label54
+            // 
+            this.label54.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label54.Location = new System.Drawing.Point(7, 25);
+            this.label54.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label54.Name = "label54";
+            this.label54.Size = new System.Drawing.Size(307, 24);
+            this.label54.TabIndex = 120;
+            this.label54.Text = "Laser Head Operating Hours :";
+            this.label54.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // groupBox69
             // 
             this.groupBox69.Controls.Add(this.button_Config_TabLaser_PercentOfEnergySet);
@@ -5035,7 +5179,7 @@
             this.textBox_Config_TabLaser_PercentOfEnergy.Location = new System.Drawing.Point(287, 26);
             this.textBox_Config_TabLaser_PercentOfEnergy.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Config_TabLaser_PercentOfEnergy.Name = "textBox_Config_TabLaser_PercentOfEnergy";
-            this.textBox_Config_TabLaser_PercentOfEnergy.Size = new System.Drawing.Size(91, 24);
+            this.textBox_Config_TabLaser_PercentOfEnergy.Size = new System.Drawing.Size(91, 36);
             this.textBox_Config_TabLaser_PercentOfEnergy.TabIndex = 120;
             this.textBox_Config_TabLaser_PercentOfEnergy.Text = "0";
             // 
@@ -5139,7 +5283,7 @@
             this.textBox_Config_TabLaser_Amplifier.Location = new System.Drawing.Point(243, 57);
             this.textBox_Config_TabLaser_Amplifier.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Config_TabLaser_Amplifier.Name = "textBox_Config_TabLaser_Amplifier";
-            this.textBox_Config_TabLaser_Amplifier.Size = new System.Drawing.Size(135, 24);
+            this.textBox_Config_TabLaser_Amplifier.Size = new System.Drawing.Size(135, 36);
             this.textBox_Config_TabLaser_Amplifier.TabIndex = 120;
             this.textBox_Config_TabLaser_Amplifier.Text = "0";
             // 
@@ -5179,7 +5323,7 @@
             this.comboBox_Config_TabLaser_PulseMode.Location = new System.Drawing.Point(243, 26);
             this.comboBox_Config_TabLaser_PulseMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Config_TabLaser_PulseMode.Name = "comboBox_Config_TabLaser_PulseMode";
-            this.comboBox_Config_TabLaser_PulseMode.Size = new System.Drawing.Size(135, 24);
+            this.comboBox_Config_TabLaser_PulseMode.Size = new System.Drawing.Size(135, 36);
             this.comboBox_Config_TabLaser_PulseMode.TabIndex = 117;
             this.comboBox_Config_TabLaser_PulseMode.Text = "Internal+ & gated";
             // 
@@ -5521,7 +5665,7 @@
             this.checkedListBox_Config_Laser_DIO_Output.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_Laser_DIO_Output.Name = "checkedListBox_Config_Laser_DIO_Output";
             this.checkedListBox_Config_Laser_DIO_Output.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_Laser_DIO_Output.Size = new System.Drawing.Size(279, 175);
+            this.checkedListBox_Config_Laser_DIO_Output.Size = new System.Drawing.Size(279, 169);
             this.checkedListBox_Config_Laser_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_Laser_DIO_Output.ThreeDCheckBoxes = true;
             this.checkedListBox_Config_Laser_DIO_Output.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_Laser_DIO_Output_MouseDoubleClick);
@@ -5553,7 +5697,7 @@
             this.checkedListBox_Config_Laser_DIO_Input.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_Laser_DIO_Input.Name = "checkedListBox_Config_Laser_DIO_Input";
             this.checkedListBox_Config_Laser_DIO_Input.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_Laser_DIO_Input.Size = new System.Drawing.Size(279, 175);
+            this.checkedListBox_Config_Laser_DIO_Input.Size = new System.Drawing.Size(279, 169);
             this.checkedListBox_Config_Laser_DIO_Input.TabIndex = 50;
             this.checkedListBox_Config_Laser_DIO_Input.ThreeDCheckBoxes = true;
             // 
@@ -5670,7 +5814,7 @@
             this.textBox6.Location = new System.Drawing.Point(124, 57);
             this.textBox6.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(87, 24);
+            this.textBox6.Size = new System.Drawing.Size(87, 36);
             this.textBox6.TabIndex = 16;
             this.textBox6.Text = "1000";
             // 
@@ -5691,7 +5835,7 @@
             this.textBox5.Location = new System.Drawing.Point(124, 27);
             this.textBox5.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(87, 24);
+            this.textBox5.Size = new System.Drawing.Size(87, 36);
             this.textBox5.TabIndex = 14;
             this.textBox5.Text = "10";
             // 
@@ -5955,7 +6099,7 @@
             this.checkedListBox_Config_BDS_DIO_Output.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_BDS_DIO_Output.Name = "checkedListBox_Config_BDS_DIO_Output";
             this.checkedListBox_Config_BDS_DIO_Output.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_BDS_DIO_Output.Size = new System.Drawing.Size(279, 175);
+            this.checkedListBox_Config_BDS_DIO_Output.Size = new System.Drawing.Size(279, 169);
             this.checkedListBox_Config_BDS_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_BDS_DIO_Output.ThreeDCheckBoxes = true;
             this.checkedListBox_Config_BDS_DIO_Output.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_BDS_DIO_Output_MouseDoubleClick);
@@ -5986,7 +6130,7 @@
             this.checkedListBox_Config_BDS_DIO_Input.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.checkedListBox_Config_BDS_DIO_Input.Name = "checkedListBox_Config_BDS_DIO_Input";
             this.checkedListBox_Config_BDS_DIO_Input.ScrollAlwaysVisible = true;
-            this.checkedListBox_Config_BDS_DIO_Input.Size = new System.Drawing.Size(279, 175);
+            this.checkedListBox_Config_BDS_DIO_Input.Size = new System.Drawing.Size(279, 169);
             this.checkedListBox_Config_BDS_DIO_Input.TabIndex = 50;
             this.checkedListBox_Config_BDS_DIO_Input.ThreeDCheckBoxes = true;
             // 
@@ -6116,7 +6260,7 @@
             this.textBox3.Location = new System.Drawing.Point(181, 27);
             this.textBox3.Margin = new System.Windows.Forms.Padding(5);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(97, 24);
+            this.textBox3.Size = new System.Drawing.Size(97, 36);
             this.textBox3.TabIndex = 40;
             this.textBox3.Text = "000.000";
             this.textBox3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -6209,7 +6353,7 @@
             this.textBox_Config_BDS_JogMove_StepSize.Location = new System.Drawing.Point(217, 51);
             this.textBox_Config_BDS_JogMove_StepSize.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Config_BDS_JogMove_StepSize.Name = "textBox_Config_BDS_JogMove_StepSize";
-            this.textBox_Config_BDS_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
+            this.textBox_Config_BDS_JogMove_StepSize.Size = new System.Drawing.Size(71, 36);
             this.textBox_Config_BDS_JogMove_StepSize.TabIndex = 75;
             this.textBox_Config_BDS_JogMove_StepSize.Text = "1.000";
             // 
@@ -6512,7 +6656,7 @@
             this.textBox_Config_BDS_TeachingPos_MaskY.Location = new System.Drawing.Point(147, 27);
             this.textBox_Config_BDS_TeachingPos_MaskY.Margin = new System.Windows.Forms.Padding(5);
             this.textBox_Config_BDS_TeachingPos_MaskY.Name = "textBox_Config_BDS_TeachingPos_MaskY";
-            this.textBox_Config_BDS_TeachingPos_MaskY.Size = new System.Drawing.Size(97, 24);
+            this.textBox_Config_BDS_TeachingPos_MaskY.Size = new System.Drawing.Size(97, 36);
             this.textBox_Config_BDS_TeachingPos_MaskY.TabIndex = 22;
             this.textBox_Config_BDS_TeachingPos_MaskY.Text = "000.000";
             this.textBox_Config_BDS_TeachingPos_MaskY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -6532,7 +6676,7 @@
             // 
             this.listBox_Config_BDS_TeachingPositions.Font = new System.Drawing.Font("Tahoma", 11F);
             this.listBox_Config_BDS_TeachingPositions.FormattingEnabled = true;
-            this.listBox_Config_BDS_TeachingPositions.ItemHeight = 18;
+            this.listBox_Config_BDS_TeachingPositions.ItemHeight = 31;
             this.listBox_Config_BDS_TeachingPositions.Items.AddRange(new object[] {
             "None Mask Position",
             "#1 Mask Position",
@@ -6542,12 +6686,13 @@
             this.listBox_Config_BDS_TeachingPositions.Location = new System.Drawing.Point(10, 25);
             this.listBox_Config_BDS_TeachingPositions.Margin = new System.Windows.Forms.Padding(5);
             this.listBox_Config_BDS_TeachingPositions.Name = "listBox_Config_BDS_TeachingPositions";
-            this.listBox_Config_BDS_TeachingPositions.Size = new System.Drawing.Size(285, 292);
+            this.listBox_Config_BDS_TeachingPositions.Size = new System.Drawing.Size(285, 283);
             this.listBox_Config_BDS_TeachingPositions.TabIndex = 0;
             this.listBox_Config_BDS_TeachingPositions.SelectedIndexChanged += new System.EventHandler(this.listBox_Config_BDS_TeachingPositions_SelectedIndexChanged);
             // 
             // tabPage_Config_SeqTest
             // 
+            this.tabPage_Config_SeqTest.Controls.Add(this.groupBox_Config_SeqTest_SeqStatus);
             this.tabPage_Config_SeqTest.Controls.Add(this.groupBox29);
             this.tabPage_Config_SeqTest.Controls.Add(this.groupBox28);
             this.tabPage_Config_SeqTest.Controls.Add(this.groupBox27);
@@ -6705,6 +6850,7 @@
             // 
             // groupBox28
             // 
+            this.groupBox28.Controls.Add(this.groupBox41);
             this.groupBox28.Controls.Add(this.button_Test_LDTransfer_AxisZ_SafetyPos);
             this.groupBox28.Controls.Add(this.button_Test_LDStacker0_ModulesLoadingPos_Cyc);
             this.groupBox28.Controls.Add(this.button_Test_LDStacker1_ModulesLoadingPos_Cyc);
@@ -6812,7 +6958,7 @@
             this.textBox_Config_SeqTest_ModuleSize_Height.Location = new System.Drawing.Point(147, 325);
             this.textBox_Config_SeqTest_ModuleSize_Height.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Config_SeqTest_ModuleSize_Height.Name = "textBox_Config_SeqTest_ModuleSize_Height";
-            this.textBox_Config_SeqTest_ModuleSize_Height.Size = new System.Drawing.Size(71, 24);
+            this.textBox_Config_SeqTest_ModuleSize_Height.Size = new System.Drawing.Size(71, 36);
             this.textBox_Config_SeqTest_ModuleSize_Height.TabIndex = 79;
             this.textBox_Config_SeqTest_ModuleSize_Height.Text = "0.0";
             // 
@@ -6833,7 +6979,7 @@
             this.textBox_Config_SeqTest_ModuleSize_Width.Location = new System.Drawing.Point(147, 298);
             this.textBox_Config_SeqTest_ModuleSize_Width.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Config_SeqTest_ModuleSize_Width.Name = "textBox_Config_SeqTest_ModuleSize_Width";
-            this.textBox_Config_SeqTest_ModuleSize_Width.Size = new System.Drawing.Size(71, 24);
+            this.textBox_Config_SeqTest_ModuleSize_Width.Size = new System.Drawing.Size(71, 36);
             this.textBox_Config_SeqTest_ModuleSize_Width.TabIndex = 77;
             this.textBox_Config_SeqTest_ModuleSize_Width.Text = "0.0";
             // 
@@ -7567,125 +7713,327 @@
             this.label51.Text = "Pressure(kPa) : ";
             this.label51.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // groupBox37
+            // label_Config_SeqTest_SeqStatus_Loader
             // 
-            this.groupBox37.Controls.Add(this.baseLabel_Config_TabLaser_THGTemperature);
-            this.groupBox37.Controls.Add(this.label59);
-            this.groupBox37.Controls.Add(this.baseLabel_Config_TabLaser_SHGTemperature);
-            this.groupBox37.Controls.Add(this.label57);
-            this.groupBox37.Controls.Add(this.baseLabel_Config_TabLaser_WaterTemperature);
-            this.groupBox37.Controls.Add(this.label55);
-            this.groupBox37.Controls.Add(this.baseLabel_Config_TabLaser_LaserHeadOperatingHours);
-            this.groupBox37.Controls.Add(this.label54);
-            this.groupBox37.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox37.Location = new System.Drawing.Point(10, 333);
-            this.groupBox37.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox37.Name = "groupBox37";
-            this.groupBox37.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox37.Size = new System.Drawing.Size(454, 149);
-            this.groupBox37.TabIndex = 223;
-            this.groupBox37.TabStop = false;
-            this.groupBox37.Text = " Monitoring ";
+            this.label_Config_SeqTest_SeqStatus_Loader.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Config_SeqTest_SeqStatus_Loader.Location = new System.Drawing.Point(13, 45);
+            this.label_Config_SeqTest_SeqStatus_Loader.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Config_SeqTest_SeqStatus_Loader.Name = "label_Config_SeqTest_SeqStatus_Loader";
+            this.label_Config_SeqTest_SeqStatus_Loader.Size = new System.Drawing.Size(189, 39);
+            this.label_Config_SeqTest_SeqStatus_Loader.TabIndex = 42;
+            this.label_Config_SeqTest_SeqStatus_Loader.Text = "Loader :";
+            this.label_Config_SeqTest_SeqStatus_Loader.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // baseLabel_Config_TabLaser_LaserHeadOperatingHours
+            // label_Config_SeqTest_SeqStatus_Disp_Loader
             // 
-            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.ForeColor = System.Drawing.Color.Lime;
-            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Location = new System.Drawing.Point(320, 26);
-            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Name = "baseLabel_Config_TabLaser_LaserHeadOperatingHours";
-            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.Size = new System.Drawing.Size(126, 25);
-            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.TabIndex = 121;
-            this.baseLabel_Config_TabLaser_LaserHeadOperatingHours.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label_Config_SeqTest_SeqStatus_Disp_Loader.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Config_SeqTest_SeqStatus_Disp_Loader.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Config_SeqTest_SeqStatus_Disp_Loader.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Config_SeqTest_SeqStatus_Disp_Loader.ForeColor = System.Drawing.Color.Lime;
+            this.label_Config_SeqTest_SeqStatus_Disp_Loader.Location = new System.Drawing.Point(210, 47);
+            this.label_Config_SeqTest_SeqStatus_Disp_Loader.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Config_SeqTest_SeqStatus_Disp_Loader.Name = "label_Config_SeqTest_SeqStatus_Disp_Loader";
+            this.label_Config_SeqTest_SeqStatus_Disp_Loader.Size = new System.Drawing.Size(611, 37);
+            this.label_Config_SeqTest_SeqStatus_Disp_Loader.TabIndex = 43;
+            this.label_Config_SeqTest_SeqStatus_Disp_Loader.Text = "Seq: --";
+            this.label_Config_SeqTest_SeqStatus_Disp_Loader.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label54
+            // groupBox41
             // 
-            this.label54.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label54.Location = new System.Drawing.Point(7, 25);
-            this.label54.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(307, 24);
-            this.label54.TabIndex = 120;
-            this.label54.Text = "Laser Head Operating Hours :";
-            this.label54.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.groupBox41.Controls.Add(this.button18);
+            this.groupBox41.Controls.Add(this.button19);
+            this.groupBox41.Controls.Add(this.button20);
+            this.groupBox41.Controls.Add(this.button21);
+            this.groupBox41.Controls.Add(this.button22);
+            this.groupBox41.Controls.Add(this.label56);
+            this.groupBox41.Controls.Add(this.textBox1);
+            this.groupBox41.Controls.Add(this.label58);
+            this.groupBox41.Controls.Add(this.textBox2);
+            this.groupBox41.Controls.Add(this.label60);
+            this.groupBox41.Controls.Add(this.button23);
+            this.groupBox41.Controls.Add(this.button24);
+            this.groupBox41.Controls.Add(this.button25);
+            this.groupBox41.Controls.Add(this.button26);
+            this.groupBox41.Controls.Add(this.button27);
+            this.groupBox41.Controls.Add(this.button28);
+            this.groupBox41.Controls.Add(this.button29);
+            this.groupBox41.Controls.Add(this.button30);
+            this.groupBox41.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.groupBox41.Location = new System.Drawing.Point(8, 8);
+            this.groupBox41.Margin = new System.Windows.Forms.Padding(5);
+            this.groupBox41.Name = "groupBox41";
+            this.groupBox41.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox41.Size = new System.Drawing.Size(831, 467);
+            this.groupBox41.TabIndex = 86;
+            this.groupBox41.TabStop = false;
+            this.groupBox41.Text = " Loader ";
             // 
-            // baseLabel_Config_TabLaser_WaterTemperature
+            // button18
             // 
-            this.baseLabel_Config_TabLaser_WaterTemperature.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.baseLabel_Config_TabLaser_WaterTemperature.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.baseLabel_Config_TabLaser_WaterTemperature.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.baseLabel_Config_TabLaser_WaterTemperature.ForeColor = System.Drawing.Color.Lime;
-            this.baseLabel_Config_TabLaser_WaterTemperature.Location = new System.Drawing.Point(320, 55);
-            this.baseLabel_Config_TabLaser_WaterTemperature.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.baseLabel_Config_TabLaser_WaterTemperature.Name = "baseLabel_Config_TabLaser_WaterTemperature";
-            this.baseLabel_Config_TabLaser_WaterTemperature.Size = new System.Drawing.Size(126, 25);
-            this.baseLabel_Config_TabLaser_WaterTemperature.TabIndex = 123;
-            this.baseLabel_Config_TabLaser_WaterTemperature.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.button18.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button18.Location = new System.Drawing.Point(10, 30);
+            this.button18.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button18.Name = "button18";
+            this.button18.Size = new System.Drawing.Size(184, 88);
+            this.button18.TabIndex = 85;
+            this.button18.Text = "LD Transfer Position\r\n\r\n[Axis Z, Safety]";
+            this.button18.UseVisualStyleBackColor = true;
             // 
-            // label55
+            // button19
             // 
-            this.label55.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label55.Location = new System.Drawing.Point(6, 54);
-            this.label55.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(307, 24);
-            this.label55.TabIndex = 122;
-            this.label55.Text = "Water Temperature (℃) :";
-            this.label55.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.button19.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button19.Location = new System.Drawing.Point(637, 121);
+            this.button19.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button19.Name = "button19";
+            this.button19.Size = new System.Drawing.Size(184, 88);
+            this.button19.TabIndex = 84;
+            this.button19.Text = "LD R-Port Position  ▼\r\n\r\n[To Loading Modules]\r\n";
+            this.button19.UseVisualStyleBackColor = true;
             // 
-            // baseLabel_Config_TabLaser_SHGTemperature
+            // button20
             // 
-            this.baseLabel_Config_TabLaser_SHGTemperature.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.baseLabel_Config_TabLaser_SHGTemperature.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.baseLabel_Config_TabLaser_SHGTemperature.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.baseLabel_Config_TabLaser_SHGTemperature.ForeColor = System.Drawing.Color.Lime;
-            this.baseLabel_Config_TabLaser_SHGTemperature.Location = new System.Drawing.Point(320, 84);
-            this.baseLabel_Config_TabLaser_SHGTemperature.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.baseLabel_Config_TabLaser_SHGTemperature.Name = "baseLabel_Config_TabLaser_SHGTemperature";
-            this.baseLabel_Config_TabLaser_SHGTemperature.Size = new System.Drawing.Size(126, 25);
-            this.baseLabel_Config_TabLaser_SHGTemperature.TabIndex = 125;
-            this.baseLabel_Config_TabLaser_SHGTemperature.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.button20.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button20.Location = new System.Drawing.Point(443, 121);
+            this.button20.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button20.Name = "button20";
+            this.button20.Size = new System.Drawing.Size(184, 88);
+            this.button20.TabIndex = 83;
+            this.button20.Text = "LD L-Port Position  ▼\r\n\r\n[To Loading Modules]\r\n";
+            this.button20.UseVisualStyleBackColor = true;
             // 
-            // label57
+            // button21
             // 
-            this.label57.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label57.Location = new System.Drawing.Point(7, 83);
-            this.label57.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label57.Name = "label57";
-            this.label57.Size = new System.Drawing.Size(307, 24);
-            this.label57.TabIndex = 124;
-            this.label57.Text = "SHG Crystal Temperature (℃) :";
-            this.label57.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.button21.BackColor = System.Drawing.Color.DarkGray;
+            this.button21.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button21.Location = new System.Drawing.Point(490, 401);
+            this.button21.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button21.Name = "button21";
+            this.button21.Size = new System.Drawing.Size(137, 54);
+            this.button21.TabIndex = 82;
+            this.button21.Text = "LD L-Port Start\r\n(by User)";
+            this.button21.UseVisualStyleBackColor = false;
             // 
-            // baseLabel_Config_TabLaser_THGTemperature
+            // button22
             // 
-            this.baseLabel_Config_TabLaser_THGTemperature.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.baseLabel_Config_TabLaser_THGTemperature.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.baseLabel_Config_TabLaser_THGTemperature.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.baseLabel_Config_TabLaser_THGTemperature.ForeColor = System.Drawing.Color.Lime;
-            this.baseLabel_Config_TabLaser_THGTemperature.Location = new System.Drawing.Point(320, 113);
-            this.baseLabel_Config_TabLaser_THGTemperature.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.baseLabel_Config_TabLaser_THGTemperature.Name = "baseLabel_Config_TabLaser_THGTemperature";
-            this.baseLabel_Config_TabLaser_THGTemperature.Size = new System.Drawing.Size(126, 25);
-            this.baseLabel_Config_TabLaser_THGTemperature.TabIndex = 127;
-            this.baseLabel_Config_TabLaser_THGTemperature.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.button22.BackColor = System.Drawing.Color.DarkGray;
+            this.button22.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button22.Location = new System.Drawing.Point(684, 401);
+            this.button22.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button22.Name = "button22";
+            this.button22.Size = new System.Drawing.Size(137, 54);
+            this.button22.TabIndex = 81;
+            this.button22.Text = "LD R-Port Start\r\n(by User)";
+            this.button22.UseVisualStyleBackColor = false;
             // 
-            // label59
+            // label56
             // 
-            this.label59.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label59.Location = new System.Drawing.Point(7, 112);
-            this.label59.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label59.Name = "label59";
-            this.label59.Size = new System.Drawing.Size(307, 24);
-            this.label59.TabIndex = 126;
-            this.label59.Text = "THG Crystal Temperature (℃) :";
-            this.label59.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label56.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label56.Location = new System.Drawing.Point(85, 324);
+            this.label56.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label56.Name = "label56";
+            this.label56.Size = new System.Drawing.Size(61, 24);
+            this.label56.TabIndex = 80;
+            this.label56.Text = "Height :";
+            this.label56.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox1.Location = new System.Drawing.Point(147, 325);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(71, 36);
+            this.textBox1.TabIndex = 79;
+            this.textBox1.Text = "0.0";
+            // 
+            // label58
+            // 
+            this.label58.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label58.Location = new System.Drawing.Point(84, 297);
+            this.label58.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label58.Name = "label58";
+            this.label58.Size = new System.Drawing.Size(61, 24);
+            this.label58.TabIndex = 78;
+            this.label58.Text = "Width :";
+            this.label58.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox2
+            // 
+            this.textBox2.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox2.Location = new System.Drawing.Point(147, 298);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(71, 36);
+            this.textBox2.TabIndex = 77;
+            this.textBox2.Text = "0.0";
+            // 
+            // label60
+            // 
+            this.label60.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label60.Location = new System.Drawing.Point(82, 263);
+            this.label60.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label60.Name = "label60";
+            this.label60.Size = new System.Drawing.Size(136, 24);
+            this.label60.TabIndex = 76;
+            this.label60.Text = "Module Size  (mm)";
+            this.label60.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // button23
+            // 
+            this.button23.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button23.Location = new System.Drawing.Point(228, 263);
+            this.button23.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button23.Name = "button23";
+            this.button23.Size = new System.Drawing.Size(184, 88);
+            this.button23.TabIndex = 59;
+            this.button23.Text = "Module M-Align Cycle";
+            this.button23.UseVisualStyleBackColor = true;
+            // 
+            // button24
+            // 
+            this.button24.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button24.Location = new System.Drawing.Point(10, 159);
+            this.button24.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button24.Name = "button24";
+            this.button24.Size = new System.Drawing.Size(184, 88);
+            this.button24.TabIndex = 58;
+            this.button24.Text = "Module Put Down Cycle\r\n\r\n[to Work Stage]";
+            this.button24.UseVisualStyleBackColor = true;
+            // 
+            // button25
+            // 
+            this.button25.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button25.Location = new System.Drawing.Point(228, 367);
+            this.button25.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button25.Name = "button25";
+            this.button25.Size = new System.Drawing.Size(184, 88);
+            this.button25.TabIndex = 57;
+            this.button25.Text = "Module Pick Up Cycle\r\n\r\n[from M-Aligner]";
+            this.button25.UseVisualStyleBackColor = true;
+            // 
+            // button26
+            // 
+            this.button26.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button26.Location = new System.Drawing.Point(228, 159);
+            this.button26.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button26.Name = "button26";
+            this.button26.Size = new System.Drawing.Size(184, 88);
+            this.button26.TabIndex = 56;
+            this.button26.Text = "Module Put Down Cycle\r\n\r\n[to M-Aligner]";
+            this.button26.UseVisualStyleBackColor = true;
+            // 
+            // button27
+            // 
+            this.button27.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button27.Location = new System.Drawing.Point(443, 265);
+            this.button27.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button27.Name = "button27";
+            this.button27.Size = new System.Drawing.Size(184, 88);
+            this.button27.TabIndex = 55;
+            this.button27.Text = "Module Pick Up Cycle\r\n\r\n[from L-Port]\r\n";
+            this.button27.UseVisualStyleBackColor = true;
+            // 
+            // button28
+            // 
+            this.button28.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button28.Location = new System.Drawing.Point(637, 265);
+            this.button28.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button28.Name = "button28";
+            this.button28.Size = new System.Drawing.Size(184, 88);
+            this.button28.TabIndex = 54;
+            this.button28.Text = "Module Pick Up Cycle\r\n\r\n[from R-Port]";
+            this.button28.UseVisualStyleBackColor = true;
+            // 
+            // button29
+            // 
+            this.button29.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button29.Location = new System.Drawing.Point(637, 30);
+            this.button29.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button29.Name = "button29";
+            this.button29.Size = new System.Drawing.Size(184, 88);
+            this.button29.TabIndex = 49;
+            this.button29.Text = "LD R-Port Position  ▲\r\n\r\n[Module to Pick Up]\r\n";
+            this.button29.UseVisualStyleBackColor = true;
+            // 
+            // button30
+            // 
+            this.button30.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button30.Location = new System.Drawing.Point(443, 30);
+            this.button30.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button30.Name = "button30";
+            this.button30.Size = new System.Drawing.Size(184, 88);
+            this.button30.TabIndex = 48;
+            this.button30.Text = "LD L-Port Position  ▲\r\n\r\n[Module to Pick Up]\r\n";
+            this.button30.UseVisualStyleBackColor = true;
+            // 
+            // groupBox_Config_SeqTest_SeqStatus
+            // 
+            this.groupBox_Config_SeqTest_SeqStatus.Controls.Add(this.label_Config_SeqTest_SeqStatus_UnLoader);
+            this.groupBox_Config_SeqTest_SeqStatus.Controls.Add(this.label_Config_SeqTest_SeqStatus_Disp_UnLoader);
+            this.groupBox_Config_SeqTest_SeqStatus.Controls.Add(this.label_Config_SeqTest_SeqStatus_WorkStage);
+            this.groupBox_Config_SeqTest_SeqStatus.Controls.Add(this.label_Config_SeqTest_SeqStatus_Disp_workStage);
+            this.groupBox_Config_SeqTest_SeqStatus.Controls.Add(this.label_Config_SeqTest_SeqStatus_Loader);
+            this.groupBox_Config_SeqTest_SeqStatus.Controls.Add(this.label_Config_SeqTest_SeqStatus_Disp_Loader);
+            this.groupBox_Config_SeqTest_SeqStatus.Location = new System.Drawing.Point(664, 522);
+            this.groupBox_Config_SeqTest_SeqStatus.Name = "groupBox_Config_SeqTest_SeqStatus";
+            this.groupBox_Config_SeqTest_SeqStatus.Size = new System.Drawing.Size(839, 262);
+            this.groupBox_Config_SeqTest_SeqStatus.TabIndex = 53;
+            this.groupBox_Config_SeqTest_SeqStatus.TabStop = false;
+            this.groupBox_Config_SeqTest_SeqStatus.Text = "Seq Status";
+            // 
+            // label_Config_SeqTest_SeqStatus_WorkStage
+            // 
+            this.label_Config_SeqTest_SeqStatus_WorkStage.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Config_SeqTest_SeqStatus_WorkStage.Location = new System.Drawing.Point(13, 87);
+            this.label_Config_SeqTest_SeqStatus_WorkStage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Config_SeqTest_SeqStatus_WorkStage.Name = "label_Config_SeqTest_SeqStatus_WorkStage";
+            this.label_Config_SeqTest_SeqStatus_WorkStage.Size = new System.Drawing.Size(189, 39);
+            this.label_Config_SeqTest_SeqStatus_WorkStage.TabIndex = 44;
+            this.label_Config_SeqTest_SeqStatus_WorkStage.Text = "workStage :";
+            this.label_Config_SeqTest_SeqStatus_WorkStage.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Config_SeqTest_SeqStatus_Disp_workStage
+            // 
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage.ForeColor = System.Drawing.Color.Lime;
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage.Location = new System.Drawing.Point(210, 89);
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage.Name = "label_Config_SeqTest_SeqStatus_Disp_workStage";
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage.Size = new System.Drawing.Size(611, 37);
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage.TabIndex = 45;
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage.Text = "Seq: --";
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label_Config_SeqTest_SeqStatus_UnLoader
+            // 
+            this.label_Config_SeqTest_SeqStatus_UnLoader.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Config_SeqTest_SeqStatus_UnLoader.Location = new System.Drawing.Point(13, 128);
+            this.label_Config_SeqTest_SeqStatus_UnLoader.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Config_SeqTest_SeqStatus_UnLoader.Name = "label_Config_SeqTest_SeqStatus_UnLoader";
+            this.label_Config_SeqTest_SeqStatus_UnLoader.Size = new System.Drawing.Size(189, 39);
+            this.label_Config_SeqTest_SeqStatus_UnLoader.TabIndex = 46;
+            this.label_Config_SeqTest_SeqStatus_UnLoader.Text = "UnLoader :";
+            this.label_Config_SeqTest_SeqStatus_UnLoader.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Config_SeqTest_SeqStatus_Disp_UnLoader
+            // 
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader.ForeColor = System.Drawing.Color.Lime;
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader.Location = new System.Drawing.Point(210, 130);
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader.Name = "label_Config_SeqTest_SeqStatus_Disp_UnLoader";
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader.Size = new System.Drawing.Size(611, 37);
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader.TabIndex = 47;
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader.Text = "Seq: --";
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // FormNew_Config
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 877);
             this.ControlBox = false;
@@ -7773,6 +8121,7 @@
             this.groupBox40.PerformLayout();
             this.tabPage_Config_Laser.ResumeLayout(false);
             this.groupBox_Config_Laser_UVLaser.ResumeLayout(false);
+            this.groupBox37.ResumeLayout(false);
             this.groupBox69.ResumeLayout(false);
             this.groupBox69.PerformLayout();
             this.groupBox68.ResumeLayout(false);
@@ -7826,7 +8175,9 @@
             this.groupBox_Config_AxisPositions_LoadTransfer.ResumeLayout(false);
             this.groupBox_Config_AxisPositions_Loader.ResumeLayout(false);
             this.groupBox30.ResumeLayout(false);
-            this.groupBox37.ResumeLayout(false);
+            this.groupBox41.ResumeLayout(false);
+            this.groupBox41.PerformLayout();
+            this.groupBox_Config_SeqTest_SeqStatus.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -8363,5 +8714,31 @@
         private System.Windows.Forms.Label label55;
         private System.Windows.Forms.Label baseLabel_Config_TabLaser_LaserHeadOperatingHours;
         private System.Windows.Forms.Label label54;
+        private System.Windows.Forms.Label label_Config_SeqTest_SeqStatus_Loader;
+        private System.Windows.Forms.Label label_Config_SeqTest_SeqStatus_Disp_Loader;
+        private System.Windows.Forms.GroupBox groupBox_Config_SeqTest_SeqStatus;
+        private System.Windows.Forms.Label label_Config_SeqTest_SeqStatus_UnLoader;
+        private System.Windows.Forms.Label label_Config_SeqTest_SeqStatus_Disp_UnLoader;
+        private System.Windows.Forms.Label label_Config_SeqTest_SeqStatus_WorkStage;
+        private System.Windows.Forms.Label label_Config_SeqTest_SeqStatus_Disp_workStage;
+        private System.Windows.Forms.GroupBox groupBox41;
+        private System.Windows.Forms.Button button18;
+        private System.Windows.Forms.Button button19;
+        private System.Windows.Forms.Button button20;
+        private System.Windows.Forms.Button button21;
+        private System.Windows.Forms.Button button22;
+        private System.Windows.Forms.Label label56;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label58;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Label label60;
+        private System.Windows.Forms.Button button23;
+        private System.Windows.Forms.Button button24;
+        private System.Windows.Forms.Button button25;
+        private System.Windows.Forms.Button button26;
+        private System.Windows.Forms.Button button27;
+        private System.Windows.Forms.Button button28;
+        private System.Windows.Forms.Button button29;
+        private System.Windows.Forms.Button button30;
     }
 }
