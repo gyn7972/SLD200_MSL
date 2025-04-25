@@ -13269,6 +13269,8 @@ namespace QMC.Common.Modules
                 TickCount_MainCycle_Start = TickCount_MainCycle_Current;
             }
 
+           
+
             //  자동운전 중 Socket Stop 처리
             if (Equipment.SocketStopped)
             {
@@ -13298,9 +13300,7 @@ namespace QMC.Common.Modules
 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
 
-                        Alarm alarm = GetAlarm((int)AlarmKey.eRTC_FAIL);
-                        AlarmManager.Instance.ShowAlarm(alarm);
-                        return alarm.Code;
+                        return AlarmPost(AlarmKey.eRTC_FAIL);
 
                     }
                     break;
@@ -13355,9 +13355,8 @@ namespace QMC.Common.Modules
                         //timer_Motion_Home.Enabled = false;
 
                         //MessageBox.Show("Alarm", "Dust Collector 점검 요망\r\n\r\n[Fault Signal 확인]");
-                        Alarm alarm = GetAlarm((int)AlarmKey.eDustCollectorFail);
-                        AlarmManager.Instance.ShowAlarm(alarm);
-                        return alarm.Code;
+                        
+                        return AlarmPost(AlarmKey.eDustCollectorFail);
 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
                     }
@@ -13366,9 +13365,7 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", "Auto Run", "집진기 On 실패");
 
 
-                        Alarm alarm = GetAlarm((int)AlarmKey.eDustCollectorFail);
-                        AlarmManager.Instance.ShowAlarm(alarm);
-                        return alarm.Code;
+                        return AlarmPost(AlarmKey.eDustCollectorFail);
 
 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
@@ -13402,10 +13399,7 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", "Auto Run", "출사구 셔터 Open 실패");
 
 
-                        Alarm alarm = GetAlarm((int)AlarmKey.eBeamShutterOpenFail);
-                        AlarmManager.Instance.ShowAlarm(alarm);
-                        return alarm.Code;
-
+                        return AlarmPost(AlarmKey.eBeamShutterOpenFail);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
 
                         MessageBox.Show("Laser Shutter Open 실패", "Error");
@@ -18331,6 +18325,7 @@ namespace QMC.Common.Modules
                     }
                     break;
             }
+            return 0;
         }
 
         private void LaserDrilling_StepStageXY_MoveUnloadingPos(out double lfVelocity, out double lfAccDec)
@@ -21494,6 +21489,9 @@ namespace QMC.Common.Modules
 
             // Todo : enum 전달
             //ActionLaserDrillingStep
+
+        
+
         #endregion
 
 
