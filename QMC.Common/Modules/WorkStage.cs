@@ -7298,6 +7298,7 @@ namespace QMC.Common.Modules
                 if(ret !=0)
                 {
                     SetRecoveraryLaserDrilling_MainStep(m_nLaserDrilling_MainStep);
+                    timer_ScannerCalibration.Stop(); // 타이머 중지
 
                 }
                 Console.WriteLine($"WorkStage running at {DateTime.Now}, Step: {m_nLaserDrilling_MainStep}");
