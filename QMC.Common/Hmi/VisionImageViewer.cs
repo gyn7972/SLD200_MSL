@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using static QMC.Common.Vision.Tools.PatternMatchingResult;
 using System.Linq;
+using QMC.Common.Modules;
 //using QMC.eFramework.Vision.Tools;
 
 namespace QMC.Common.Hmi
@@ -1058,11 +1059,26 @@ namespace QMC.Common.Hmi
                     if (selectedFilter.HasValue)
                     {
                         // 적절한 필터로 Load 호출
-                        this.InputImage = new VisionImage();
-                        this.InputImage.Load(openFileDialog.FileName, selectedFilter.Value);
+                        if (this.InputImage == null)
+                        {
+                            this.InputImage = new VisionImage();
+                            this.InputImage.Load(openFileDialog.FileName, selectedFilter.Value);
+                        }
+                        else
+                        {
+                            this.InputImage.RawData = null;
+                            this.InputImage.Header = new VisionImageHeader();
+                            if (this.m_bitmap != null)
+                            {
+                                this.m_bitmap.Dispose();
+                                this.m_bitmap = null;
+                            }
+                            this.InputImage.Load(openFileDialog.FileName, selectedFilter.Value);
+                        }                            
 
                         Simulated = true;
                         Display();
+                        Refresh();
                     }
                     else
                     {
@@ -1295,10 +1311,6 @@ namespace QMC.Common.Hmi
 
         public void Display()
         {
-
-            // To bo : 장비에서 돌릴때 무조건 주석처리 할 것!
-            //Simulated = true;
-
             try
             {
                 if (Simulated != true)

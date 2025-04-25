@@ -323,7 +323,14 @@ namespace QMC.Common.Vision.Cognex
 
                 this.Parameter.HasChanged = true;
             }
-            this.Parameter.AngleTolerance = new RangeD(-180.0, 180.0);
+
+            // Todo : 구영남 : angle : 180 -> 15 으로 변경.
+            //this.Parameter.AngleTolerance = new RangeD(-180.0, 180.0);
+            //this.Parameter.AngleTolerance = new RangeD(-15.0, 15.0);
+            double dMin = this.Parameter.AngleTolerance.Minimum;
+            double dMax = this.Parameter.AngleTolerance.Maximum;
+            dMin = dMax * -1;
+            this.Parameter.AngleTolerance = new RangeD(dMin, dMax);
             timer.Start();
             if (this.Parameter.HasChanged == true)
             {

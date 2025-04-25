@@ -135,7 +135,6 @@ namespace SLD200_MSL
             Initialize_SocketStatus(Columns, Rows); // 초기화
             pictureBox_ModuleProcessingStatus.Paint += PictureBox_ModuleProcessingStatus_Paint;
 
-
             //  마크 이미지
             //  Reticle Upper
             string m_strFile = string.Format("{0}\\ScannerCal.jpg", ConfigManager.GetPatternImagePath());

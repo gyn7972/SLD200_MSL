@@ -172,9 +172,6 @@ namespace QMC.Common.VisionPart
                 }
             }
 
-
-
-            //
             m_PatternMatchingTool.Parameter.AngleTolerance = new RangeD(parameter.MinTolerance, parameter.MaxTolerance);
             m_PatternMatchingTool.Parameter.DuplicateChecked = parameter.DuplicateChecked;
             m_PatternMatchingTool.Parameter.MaxInstance = parameter.MaxInstance;
@@ -190,19 +187,11 @@ namespace QMC.Common.VisionPart
 
             m_RoiTrain.Parameter.IsFull = true;
 
-
             m_RoiInspect.InputImage = image;
             m_RoiInspect.Parameter.IsFull = false;
 
             if ((ret = m_RoiInspect.Run()) != 0) return ret;
             m_PatternMatchingTool.InputImage = m_RoiInspect.OutputImage;
-
-            
-
-            //
-
-
-
 
             if (bLearn)
             {
