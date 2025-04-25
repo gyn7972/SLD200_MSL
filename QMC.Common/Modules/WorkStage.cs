@@ -1357,22 +1357,18 @@ namespace QMC.Common.Modules
 
         //  쓰레드로 변경 --> 변경 취소. 그냥 타이머 쓴다. Thread 쓰니까 뭐가 막 잘 안됨 ㅡㅡ
         //public System.Windows.Forms.Timer timer_MainWork;
-        public System.Timers.Timer timer_MainWork;
         //public System.Windows.Forms.Timer timer_LaserDrillingWork;
+
+        public System.Timers.Timer timer_MainWork;
         public System.Timers.Timer timer_LaserDrillingWork;
+        public System.Timers.Timer timer_Comm;
+        public System.Timers.Timer timer_ScannerCalibration;
+        public System.Timers.Timer timer_Motion_Home;
+
         public System.Windows.Forms.Timer timer_SubWork;
-        
-        public System.Windows.Forms.Timer timer_Motion_Home;
         public System.Windows.Forms.Timer timer_VisionAlign;
         public System.Windows.Forms.Timer timer_ReticleGlass_Check;
         public System.Windows.Forms.Timer timer_VerifyScannerCamOffset;
-
-
-        //public System.Windows.Forms.Timer timer_Comm;
-        public System.Timers.Timer timer_Comm;
-        //public System.Windows.Forms.Timer timer_ScannerCalibration;
-        public System.Timers.Timer timer_ScannerCalibration;
-
 
 
         public bool m_btimer_MainWork_Stop;
@@ -2489,10 +2485,8 @@ namespace QMC.Common.Modules
         #endregion
 
 
-
-        #region Single Action
-
         public int m_nSafetyPos_Move_Step { set; get; }                 //  Safety Position Move Step
+
 
         //  Pause 관련 변수
         public bool m_bSafetyPos_Pause_Start;                   //  안전센서를 Touch 하여 Pause 상태가 시작되었는지
@@ -3260,7 +3254,6 @@ namespace QMC.Common.Modules
         }
 
 
-
         public int m_nScanner_Calibration_Step { set; get; }         //  Scanner Center 와 Camera Center 간 오차 검증 Step
         public bool m_bScannerCalibration_Complete { set; get; }
 
@@ -3359,8 +3352,6 @@ namespace QMC.Common.Modules
             Complete                                                    //  완료
         }
 
-
-
         public int m_nLaserHeightCheck_Step { set; get; }                       //  Keyence Laser Sensor 를 이용한 높이 측정 Step
         public bool m_bLaserHeightCheck_Complete { set; get; }                  //  Laser Height Check 완료
         public double m_dLaserHeightCheck_Value { set; get; }                   //  Laser Height Check 값
@@ -3383,9 +3374,6 @@ namespace QMC.Common.Modules
 
             Complete                                            //  완료
         }
-
-        #endregion
-
 
         #region Constructor
         public WorkStage(string strName) : base(strName)
@@ -3535,9 +3523,15 @@ namespace QMC.Common.Modules
             timer_VisionAlign.Tick += new System.EventHandler(Timer_ProductAlign_Func);
 
             //  Motion 홈 실행 타이머
-            timer_Motion_Home = new System.Windows.Forms.Timer();
-            timer_Motion_Home.Interval = 20;
-            timer_Motion_Home.Tick += new System.EventHandler(Timer_MotionHome_Func);
+            //timer_Motion_Home = new System.Windows.Forms.Timer();
+            //timer_Motion_Home.Interval = 20;
+            //timer_Motion_Home.Tick += new System.EventHandler(Timer_MotionHome_Func);
+            timer_Motion_Home = new System.Timers.Timer(50);
+            timer_Motion_Home.Elapsed += Timer_MotionHome_Tick;
+            timer_Motion_Home.AutoReset = true;    // 반복 실행
+            timer_Motion_Home.Enabled = false;     // 초기
+            timer_Motion_Home.Stop();
+
 
             //  Reticle Glass check 타이머
             timer_ReticleGlass_Check = new System.Windows.Forms.Timer();
@@ -3559,6 +3553,8 @@ namespace QMC.Common.Modules
             timer_ScannerCalibration.Elapsed += timer_ScannerCalibration_Tick;
             timer_ScannerCalibration.AutoReset = true; // 반복 실행
             timer_ScannerCalibration.Enabled = false; // 초기
+
+
 
             m_btimer_MainWork_Stop = false;
             m_btimer_LaserDrillingWork_Stop = false;
@@ -7237,6 +7233,40 @@ namespace QMC.Common.Modules
             if (!m_bAlignVisionThread_Use)
             {
                 Run_SocketAlign_Func(m_nSocketNum_forAlign);                  //  Thread 를 사용할 경우 주석 처리. 타이머 사용하려면 주석 해제
+            }
+        }
+
+        public bool m_MotionHome_Start = false;
+        public bool _isMotionHome = false; // 중복 실행 방지 플래그
+        private async void Timer_MotionHome_Tick(object sender, ElapsedEventArgs e)
+        {
+            // 중복 실행 방지
+            if (_isMotionHome)
+            {
+                //Console.WriteLine("MotionHome is already running. Skipping this call.");
+                return;
+            }
+
+            try
+            {
+                _isMotionHome = true;
+
+                if (!m_MotionHome_Start)
+                {
+                    Console.WriteLine("MotionHome is not started.");
+                    //timer_ScannerCalibration.Stop(); // 타이머 중지
+                    return;
+                }
+
+                Run_Home_Func();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Timer_MotionHome_Tick: {ex.Message}");
+            }
+            finally
+            {
+                _isMotionHome = false; // 플래그 해제
             }
         }
 
@@ -13277,6 +13307,9 @@ namespace QMC.Common.Modules
                 return 0;
             }
 
+            // Todo : Action으로 Enum값 전달.
+            ActionLaserDrillingStep?.Invoke((LaserDrilling_Step)m_nLaserDrilling_MainStep);
+
             switch (m_nLaserDrilling_MainStep)
             {
                 case (int)LaserDrilling_Step.Start:
@@ -18325,6 +18358,7 @@ namespace QMC.Common.Modules
                     }
                     break;
             }
+
             return 0;
         }
 
@@ -21485,13 +21519,6 @@ namespace QMC.Common.Modules
 
             
         }
-
-
-            // Todo : enum 전달
-            //ActionLaserDrillingStep
-
-        
-
         #endregion
 
 

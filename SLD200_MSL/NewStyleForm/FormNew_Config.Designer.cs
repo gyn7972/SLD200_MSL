@@ -7736,7 +7736,7 @@
             this.label_Config_SeqTest_SeqStatus_Disp_Loader.Size = new System.Drawing.Size(611, 37);
             this.label_Config_SeqTest_SeqStatus_Disp_Loader.TabIndex = 43;
             this.label_Config_SeqTest_SeqStatus_Disp_Loader.Text = "Seq: --";
-            this.label_Config_SeqTest_SeqStatus_Disp_Loader.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label_Config_SeqTest_SeqStatus_Disp_Loader.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // groupBox41
             // 
@@ -8004,7 +8004,7 @@
             this.label_Config_SeqTest_SeqStatus_Disp_workStage.Size = new System.Drawing.Size(611, 37);
             this.label_Config_SeqTest_SeqStatus_Disp_workStage.TabIndex = 45;
             this.label_Config_SeqTest_SeqStatus_Disp_workStage.Text = "Seq: --";
-            this.label_Config_SeqTest_SeqStatus_Disp_workStage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label_Config_SeqTest_SeqStatus_UnLoader
             // 
@@ -8029,7 +8029,7 @@
             this.label_Config_SeqTest_SeqStatus_Disp_UnLoader.Size = new System.Drawing.Size(611, 37);
             this.label_Config_SeqTest_SeqStatus_Disp_UnLoader.TabIndex = 47;
             this.label_Config_SeqTest_SeqStatus_Disp_UnLoader.Text = "Seq: --";
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FormNew_Config
             // 

@@ -558,6 +558,8 @@ namespace QMC.Common.Modules
         }                                                   
         #endregion
 
+
+
         #region IExecuter
         public override int Initialize()
         {
@@ -587,6 +589,14 @@ namespace QMC.Common.Modules
             return ret;
         }
         #endregion
+
+
+        #region Action
+
+        public Action<Unloader_Transfer_Step> ActionUnloaderTransferStep;
+
+        #endregion
+
 
         #region Module Members
 
@@ -2429,6 +2439,8 @@ namespace QMC.Common.Modules
             }
 
 
+            ActionUnloaderTransferStep?.Invoke((Unloader_Transfer_Step)m_nUnloader_Transfer_Step);
+
             switch (m_nUnloader_Transfer_Step)
             {
                 case (int)Unloader_Transfer_Step.Start:
@@ -2486,8 +2498,6 @@ namespace QMC.Common.Modules
                             break;
                     }
                     break;
-
-
 
                 /// <summary>
                 /// Transfer 대기 위치로 이동 - 시작

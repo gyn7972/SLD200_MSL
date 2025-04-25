@@ -138,7 +138,47 @@ namespace SLD200_MSL
             m_bEmgBtn_Clicked = false;
 
             //checkedListBox_Config_LDUL_DIO_Input.SetItemChecked(0, true);                     //  IO 상태 표시
+
+            //Action
+            workStage.ActionLaserDrillingStep += OnLaserDrillingStep;
+            loader.ActionLoaderTransferStep += OnLoaderStep;
+            unloader.ActionUnloaderTransferStep += OnUnLoaderStep;
+
         }
+
+        public void OnLaserDrillingStep(LaserDrilling_Step step)
+        {
+            // Enum 값 순환
+            LaserDrilling_Step currentStep = (LaserDrilling_Step)(((int)step + 1) % Enum.GetValues(typeof(LaserDrilling_Step)).Length);
+
+            string str = $"STEP: {currentStep}";
+            label_Config_SeqTest_SeqStatus_Disp_workStage.Text = str;
+
+            Log.Write("SLD-200", "WORKSTAGE_seq:", str);
+        }
+
+        public void OnLoaderStep(Loader_Transfer_Step step)
+        {
+            // Enum 값 순환
+            Loader_Transfer_Step currentStep = (Loader_Transfer_Step)(((int)step + 1) % Enum.GetValues(typeof(Loader_Transfer_Step)).Length);
+
+            string str = $"STEP: {currentStep}";
+            label_Config_SeqTest_SeqStatus_Disp_Loader.Text = str;
+
+            Log.Write("SLD-200", "LOADER_seq:", str);
+        }
+
+        public void OnUnLoaderStep(Unloader_Transfer_Step step)
+        {
+            // Enum 값 순환
+            Unloader_Transfer_Step currentStep = (Unloader_Transfer_Step)(((int)step + 1) % Enum.GetValues(typeof(Unloader_Transfer_Step)).Length);
+
+            string str = $"STEP: {currentStep}";
+            label_Config_SeqTest_SeqStatus_Disp_UnLoader.Text = str;
+
+            Log.Write("SLD-200", "UNLOADER_seq:", str);
+        }
+
 
         #region Thread
         public void ThreadStart()
@@ -232,7 +272,7 @@ namespace SLD200_MSL
 
                 //  Motion 홈 실행 타이머
                 workStage.timer_Motion_Home.Enabled = false;
-
+                
                 //  Reticle Glass check 타이머
                 workStage.timer_ReticleGlass_Check.Enabled = false;
 

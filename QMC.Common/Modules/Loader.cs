@@ -883,6 +883,11 @@ namespace QMC.Common.Modules
             }
         }
 
+        #region Action
+
+        public Action<Loader_Transfer_Step> ActionLoaderTransferStep;
+
+        #endregion
 
         #region IExecuter
         public override int Initialize()
@@ -3144,6 +3149,10 @@ namespace QMC.Common.Modules
                 }
             }
 
+
+
+            ActionLoaderTransferStep?.Invoke((Loader_Transfer_Step)m_nLoader_Transfer_Step);
+
             switch (m_nLoader_Transfer_Step)
             {
                 case (int)Loader_Transfer_Step.Start:
@@ -3374,7 +3383,6 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Stacker0 에 Module 이 감지되지 않음.");
 
                         //  Out.
-
                         //////////////////////////////////////////////////////////////////////////////////////////
                         //  재시작 위치 저장용
                         //
@@ -7548,6 +7556,7 @@ namespace QMC.Common.Modules
                     }
                     break;
             }
+
         }
 
         #endregion

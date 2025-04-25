@@ -696,14 +696,6 @@ namespace SLD200_MSL
                 //unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.None;
 
 
-
-
-
-
-
-
-
-
                 //  Product Align 타이머
                 //workStage.timer_VisionAlign_Stop = true;
                 //workStage.timer_VisionAlign.Enabled = false;
@@ -711,6 +703,7 @@ namespace SLD200_MSL
                 //  Motion 홈 실행 타이머
                 workStage.m_btimer_Motion_Home_Stop = true;
                 workStage.timer_Motion_Home.Enabled = false;
+                workStage.m_MotionHome_Start = false;
 
                 //  Reticle Glass check 타이머
                 workStage.m_btimer_ReticleGlass_Check_Stop = true;
@@ -739,13 +732,11 @@ namespace SLD200_MSL
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 ///
 
-
                 //  카메라 초기화
                 workStage.Camera_HighRes.SetRunStatus(Part.RunStatus.Run);
                 workStage.Camera_LowRes.SetRunStatus(Part.RunStatus.Run);
                 workStage.Camera_HighRes.Initialize();
                 workStage.Camera_LowRes.Initialize();
-
 
                 workStage.m_bHomeOK = false;
                 m_bHomeProgress_Show = true;
@@ -754,6 +745,8 @@ namespace SLD200_MSL
                 //  Motion 홈 실행 타이머
                 workStage.m_btimer_Motion_Home_Stop = false;
                 workStage.timer_Motion_Home.Enabled = true;
+                workStage.timer_Motion_Home.Start();
+                workStage.m_MotionHome_Start = true;
 
                 workStage.m_bHomeProgressForm_Close = false;
 
@@ -777,7 +770,8 @@ namespace SLD200_MSL
                     //  Motion 홈 실행 타이머
                     workStage.timer_Motion_Home.Enabled = false;
                     workStage.m_btimer_Motion_Home_Stop = true;
-
+                    workStage.timer_Motion_Home.Stop();
+                    workStage.m_MotionHome_Start = false;
                     workStage.m_nHomeStep = (int)WorkStage.Home_Step.None;
 
                     if (Equipment.AjinBoard_Opened)
@@ -1287,6 +1281,35 @@ namespace SLD200_MSL
 
         private void button_Main_AutoRun_Click(object sender, EventArgs e)
         {
+            Equipment.AutoRunStatus = true;
+
+            workStage.timer_MainWork.Start();
+            workStage.timer_MainWork.Enabled = true;
+            workStage._isMainWorkRunning = false;
+            workStage.m_MainWork_Start = true;
+            workStage.m_nMainWork_Step = (int)WorkStage.MainWork_Step.Start;
+
+            loader.timer_LoaderWork.Start();
+            loader.timer_LoaderWork.Enabled = true;
+            loader._isLoaderWorkRunning = false;
+            loader.m_LoaderWork_Start = true;
+            loader.m_nLoader_Transfer_Step = (int)Loader.Loader_Transfer_Step.Start;
+
+            workStage.timer_LaserDrillingWork.Start();
+            workStage.timer_LaserDrillingWork.Enabled = true;
+            workStage._isLaserDrillingWorkRunning = false;
+            workStage.m_LaserDrillingWork_Start = true;
+            workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
+
+            unloader.timer_UnloaderWork.Start();
+            unloader.timer_UnloaderWork.Enabled = true;
+            unloader._isUnloaderWorkRunning = false;
+            unloader.m_UnloaderWork_Start = true;
+            unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.Start;
+
+            return;
+
+
             //  자동 운전 시작
             //  테스트 : 강제로 Dry Run
             //workStage.m_bMainWorkCycle_DryRun = true;
