@@ -336,5 +336,14 @@ namespace SLD200_MSL
                 Equipment.Machine_LogIn = false;
             }
         }
+
+        private void buttonAlarmClear_Click(object sender, EventArgs e)
+        {
+            if(TopButtonClick != null)
+            {
+
+                TopButtonClick (TopButtons.Alarm);
+            }
+        }
     }
 }

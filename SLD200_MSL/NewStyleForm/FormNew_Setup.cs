@@ -2727,6 +2727,7 @@ namespace SLD200_MSL
 
                 workStage.m_nFlatnessMeasure_Step = (int)WorkStage.FlatnessMeasure_Step.Start;
                 workStage.timer_Comm.Enabled = true;
+                workStage.timer_Comm.Start();
             }
             else
             {

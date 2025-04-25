@@ -1,4 +1,6 @@
-﻿using ACS.SPiiPlusNET;
+﻿
+
+using ACS.SPiiPlusNET;
 using QMC.Common.Laser;
 using QMC.Common.Motion.ACS.Motions;
 using QMC.Common.Motion.Ajin.Motions;
@@ -82,8 +84,8 @@ namespace QMC.Common.Modules
         #region Define
 
 
-#if true                                                                //  SLD-200C
-        //#if false                                                               //  SLD-200U
+        //#if true                                                                //  SLD-200C
+#if SLD_200C                                                                 //  SLD-200U
         public enum nAxis                                                       //  SLD-200C 에서 사용하는 축 번호    
         {
             //  축 번호 변경 전 (X:0,     Y:1,    Z:2,    MASK_Y:3)
@@ -1354,19 +1356,24 @@ namespace QMC.Common.Modules
         private MotorStates m_nMotorState1;
 
         //  쓰레드로 변경 --> 변경 취소. 그냥 타이머 쓴다. Thread 쓰니까 뭐가 막 잘 안됨 ㅡㅡ
-        public System.Windows.Forms.Timer timer_MainWork;
-        public System.Windows.Forms.Timer timer_LaserDrillingWork;
+        //public System.Windows.Forms.Timer timer_MainWork;
+        public System.Timers.Timer timer_MainWork;
+        //public System.Windows.Forms.Timer timer_LaserDrillingWork;
+        public System.Timers.Timer timer_LaserDrillingWork;
         public System.Windows.Forms.Timer timer_SubWork;
-        public System.Windows.Forms.Timer timer_Comm;
+        
         public System.Windows.Forms.Timer timer_Motion_Home;
         public System.Windows.Forms.Timer timer_VisionAlign;
         public System.Windows.Forms.Timer timer_ReticleGlass_Check;
         public System.Windows.Forms.Timer timer_VerifyScannerCamOffset;
-        //변경해보자.-> 변경하면 죽는다. inbok 해야하나?
+
+
+        //public System.Windows.Forms.Timer timer_Comm;
+        public System.Timers.Timer timer_Comm;
         //public System.Windows.Forms.Timer timer_ScannerCalibration;
         public System.Timers.Timer timer_ScannerCalibration;
 
-        //private System.Threading.Timer _scannerCalibrationTimer;
+
 
         public bool m_btimer_MainWork_Stop;
         public bool m_btimer_LaserDrillingWork_Stop;
@@ -3488,14 +3495,23 @@ namespace QMC.Common.Modules
             //  타이머를 쓰레드로 변경 --> 다시 타이머 사용하기로...
 
             //  Main Work 타이머
-            timer_MainWork = new System.Windows.Forms.Timer();
-            timer_MainWork.Interval = 10;
-            timer_MainWork.Tick += new System.EventHandler(Timer_MainWork_Func);
+            //timer_MainWork = new System.Windows.Forms.Timer();
+            //timer_MainWork.Interval = 10;
+            //timer_MainWork.Tick += new System.EventHandler(Timer_MainWork_Func);
+            timer_MainWork = new System.Timers.Timer(10);
+            timer_MainWork.Elapsed += Timer_MainWork_Tick;
+            timer_MainWork.AutoReset = true; // 반복 실행
+            timer_MainWork.Enabled = false; // 초기
 
             //  Laser Drilling Work 타이머
-            timer_LaserDrillingWork = new System.Windows.Forms.Timer();
-            timer_LaserDrillingWork.Interval = 10;
-            timer_LaserDrillingWork.Tick += new System.EventHandler(Timer_LaserDrillingWork_Func);
+            //timer_LaserDrillingWork = new System.Windows.Forms.Timer();
+            //timer_LaserDrillingWork.Interval = 10;
+            //timer_LaserDrillingWork.Tick += new System.EventHandler(Timer_LaserDrillingWork_Func);
+            timer_LaserDrillingWork = new System.Timers.Timer(10);
+            timer_LaserDrillingWork.Elapsed += Timer_LaserDrillingWork_Tick;
+            timer_LaserDrillingWork.AutoReset = true; // 반복 실행
+            timer_LaserDrillingWork.Enabled = false; // 초기
+
 
             //  Sub Work 타이머
             timer_SubWork = new System.Windows.Forms.Timer();
@@ -3504,9 +3520,14 @@ namespace QMC.Common.Modules
             //timer_SubWork.Enabled = true;
 
             //  Comm. 타이머
-            timer_Comm = new System.Windows.Forms.Timer();
-            timer_Comm.Interval = 50;
-            timer_Comm.Tick += new System.EventHandler(Timer_Comm_Func);
+            //timer_Comm = new System.Windows.Forms.Timer();
+            //timer_Comm.Interval = 50;
+            //timer_Comm.Tick += new System.EventHandler(Timer_Comm_Func);
+            timer_Comm = new System.Timers.Timer(100);
+            timer_Comm.Elapsed += timer_Comm_Tick;
+            timer_Comm.AutoReset = true; // 반복 실행
+            timer_Comm.Enabled = false; // 초기
+            timer_Comm.Stop();
 
             //  Product Align 타이머
             timer_VisionAlign = new System.Windows.Forms.Timer();
@@ -3534,8 +3555,7 @@ namespace QMC.Common.Modules
             ////timer_ScannerCalibration.Tick += new System.EventHandler(timer_ScannerCalibration_Tick);
             //timer_ScannerCalibration.Tick += new System.EventHandler(Timer_ScannerCalibration_Func);
             //timer_ScannerCalibration.Enabled = false;
-
-            timer_ScannerCalibration = new System.Timers.Timer(50); // 1초 간격
+            timer_ScannerCalibration = new System.Timers.Timer(50); 
             timer_ScannerCalibration.Elapsed += timer_ScannerCalibration_Tick;
             timer_ScannerCalibration.AutoReset = true; // 반복 실행
             timer_ScannerCalibration.Enabled = false; // 초기
@@ -3828,6 +3848,15 @@ namespace QMC.Common.Modules
         //}
 
         #endregion
+
+
+        #region Action
+
+        public Action<bool> ActionSiriusViewerRefresy;
+        public Action<LaserDrilling_Step> ActionLaserDrillingStep;
+
+        #endregion
+
 
         #region IExecuter
         public override int Initialize()
@@ -7003,6 +7032,51 @@ namespace QMC.Common.Modules
 
         #region Event Handler
 
+        public bool m_MainWork_Start = false;
+        public bool _isMainWorkRunning = false; // 중복 실행 방지 플래그
+        private async void Timer_MainWork_Tick(object sender, ElapsedEventArgs e)
+        {
+            // 중복 실행 방지
+            if (_isMainWorkRunning)
+            {
+                //Console.WriteLine("Scanner Calibration is already running. Skipping this call.");
+                return;
+            }
+
+            try
+            {
+                _isMainWorkRunning = true;
+
+                // Scanner Calibration이 활성화되지 않은 경우 종료
+                if (!m_MainWork_Start)
+                {
+                    Console.WriteLine("Main Work is not started.");
+                    //timer_ScannerCalibration.Stop(); // 타이머 중지
+                    return;
+                }
+
+                // 현재 단계가 None이면 타이머 중지
+                //if (m_nMainWork_Step == (int)MainWork_Step.None)
+                //{
+                //    Console.WriteLine("Main Work completed.");
+                //    //timer_ScannerCalibration.Stop(); // 타이머 중지
+                //    return;
+                //}
+
+                // 단계별 실행
+                Run_MainWork_Cycle_Func();
+                Console.WriteLine($"Main running at {DateTime.Now}, Step: {m_nMainWork_Step}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Timer_Main Work_Elapsed: {ex.Message}");
+            }
+            finally
+            {
+                _isMainWorkRunning = false; // 플래그 해제
+            }
+        }
+
         private void Timer_MainWork_Func(object sender, EventArgs e)
         {
             //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
@@ -7010,13 +7084,11 @@ namespace QMC.Common.Modules
             m_btimer_MainWork_Stop = false;
             timer_MainWork.Enabled = false;
 
-
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //  메인 화면 갱신용 변수
             Equipment.m_bMainProcessStatus_WorkStage_Module_Process_Complete = m_bMainWorkCycle_Complete;
             //  메인 화면 갱신용 변수
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
             Run_MainWork_Cycle_Func();
 
@@ -7026,6 +7098,53 @@ namespace QMC.Common.Modules
             }
         }
 
+        //Timer_LaserDrillingWork_Tick
+        public bool m_LaserDrillingWork_Start = false;
+        public bool _isLaserDrillingWorkRunning = false; // 중복 실행 방지 플래그
+        private async void Timer_LaserDrillingWork_Tick(object sender, ElapsedEventArgs e)
+        {
+            // 중복 실행 방지
+            if (_isLaserDrillingWorkRunning)
+            {
+                //Console.WriteLine("Scanner Calibration is already running. Skipping this call.");
+                return;
+            }
+
+            try
+            {
+                _isLaserDrillingWorkRunning = true;
+
+                // Scanner Calibration이 활성화되지 않은 경우 종료
+                if (!m_LaserDrillingWork_Start)
+                {
+                    Console.WriteLine("Laser Drilling is not started.");
+                    timer_ScannerCalibration.Stop(); // 타이머 중지
+                    return;
+                }
+                
+                // 현재 단계가 None이면 타이머 중지
+                //if (m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None)
+                //{
+                //    Console.WriteLine("Laser Drilling completed.");
+                //    timer_ScannerCalibration.Stop(); // 타이머 중지
+                //    return;
+                //}
+
+                // 단계별 실행
+                //Console.WriteLine($"Scanner Calibration running at {DateTime.Now}, Step: {m_nScanner_Calibration_Step}");
+                Func_DryRun_Cycle();
+                Func_LaserDrilling_Main_Cycle();
+                Console.WriteLine($"WorkStage running at {DateTime.Now}, Step: {m_nLaserDrilling_MainStep}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Timer_WorkStage_Elapsed: {ex.Message}");
+            }
+            finally
+            {
+                _isLaserDrillingWorkRunning = false; // 플래그 해제
+            }
+        }
         private void Timer_LaserDrillingWork_Func(object sender, EventArgs e)
         {
             //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
@@ -7076,6 +7195,40 @@ namespace QMC.Common.Modules
             if (!m_btimer_Comm_Stop)
             {
                 timer_Comm.Enabled = true;
+            }
+        }
+
+        public bool m_Comm_Start = false;
+        public bool _isCommRunning = false; // 중복 실행 방지 플래그
+        private async void timer_Comm_Tick(object sender, ElapsedEventArgs e)
+        {
+            // 중복 실행 방지
+            if (_isCommRunning)
+            {
+                //Console.WriteLine("Scanner Calibration is already running. Skipping this call.");
+                return;
+            }
+
+            try
+            {
+                _isCommRunning = true;
+
+                Run_PowerMeterBDSComm_Func();
+                Run_PowerMeterStageComm_Func();
+                Run_LaserComm_Func();
+                Run_EPROComm_Func();
+
+                Run_LaserHeightSensorSocket_Func();
+                Run_Flatness_Measurement_Func();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Timer_ScannerCalibration_Elapsed: {ex.Message}");
+            }
+            finally
+            {
+                _isCommRunning = false; // 플래그 해제
             }
         }
 
@@ -7166,43 +7319,6 @@ namespace QMC.Common.Modules
             {
                 _isCalibrationRunning = false; // 플래그 해제
             }
-
-
-            //if (!m_ScannerCalibration_Start) return;    //이미 실행 중이면 종료.
-
-            //m_ScannerCalibration_Start = true;
-            //timer_ScannerCalibration.Enabled = false; // 타이머 비활성화
-
-            //try
-            //{
-            //    if (m_ScannerCalibration_Start)
-            //    {
-            //        await Task.Run(() => Run_Scanner_Calibration_Func()); // 비동기 작업 실행
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    // 예외 처리
-            //    Console.WriteLine($"Error during calibration: {ex.Message}");
-            //}
-            //finally
-            //{
-            //    m_ScannerCalibration_Start = false; // 실행 상태 해제
-            //    timer_ScannerCalibration.Enabled = true; // 타이머 재활성화
-            //}
-
-            //Task.Run(() =>
-            //{
-            //    try
-            //    {
-            //        // 무거운 로직 직접 실행 (UI 멈출 수 있음)
-            //        Run_Scanner_Calibration_Func();
-            //    }
-            //    finally
-            //    {
-            //        //m_ScannerCalibration_Start = false;
-            //    }
-            //});
         }
 
         private void Timer_ScannerCalibration_Func(object sender, EventArgs e)
@@ -8428,6 +8544,7 @@ namespace QMC.Common.Modules
                     //  Comm. 타이머
                     m_btimer_Comm_Stop = false;
                     timer_Comm.Enabled = true;
+                    timer_Comm.Start();
 
                     m_strTemp = "===  장비 초기화 완료  ===";
 
@@ -11633,12 +11750,9 @@ namespace QMC.Common.Modules
                 //}
             }
 
-
             //  자동운전 시, Transfer 동작 조건
             if (Equipment.AutoRunStatus &&
-
                 !Equipment.CycleStopped_MainWork &&
-
                 m_nMainWork_Step == (int)MainWork_Step.None)
             {
                 //  Dry Run 하기 위한 조건
@@ -11846,7 +11960,7 @@ namespace QMC.Common.Modules
                     m_bLaserDrilling_SocketStopped = false;
                     Equipment.SocketStopped = false;
 
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Start;
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Start;   //X
 
                     timer_LaserDrillingWork.Enabled = true;
 
@@ -11946,10 +12060,7 @@ namespace QMC.Common.Modules
                     break;
             }
         }
-
         #endregion
-
-
 
         XyCoordinate xyCoordinateAlignPositionLast = new XyCoordinate();
         XyCoordinate xyCoordinateAlignPositionOrgLast = new XyCoordinate();
@@ -12302,12 +12413,15 @@ namespace QMC.Common.Modules
                     //this.jigAligner_HighRes.Work();
                     int ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width);
 
-
-
-
                     timer_VisionAlign.Enabled = true;
 
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_fromVision_ResultCheck;
+
+                    if (this.IsStopAutoSequence == true)
+                    {
+                        Equipment.AutoRunStatus = false;
+                        m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+                    }
                     break;
 
 
@@ -12769,6 +12883,14 @@ namespace QMC.Common.Modules
             }
         }
 
+        public bool IsStopAutoSequence
+        {
+            get
+            {
+                return this.m_btimer_LaserDrillingWork_Stop;
+            }
+
+        }
         private XyCoordinate CoordinateTransform(XyCoordinate xyCoordinate, double dRotationCenterX, double dRotationCenterY, double v)
         {
             double dX = xyCoordinate.X - dRotationCenterX;
@@ -12810,6 +12932,10 @@ namespace QMC.Common.Modules
                 for (int i = 0; i < maxSteps; i++)
                 {
 
+                    if( this.IsStopAutoSequence == true)
+                    {
+                        return 0;
+                    }
                     // 현재 위치를 리스트에 추가
                     xyCoordinates.Add(new XyCoordinate { X = currentPosition.X, Y = currentPosition.Y });
 
@@ -15208,6 +15334,8 @@ namespace QMC.Common.Modules
 
                     //  메인 화면의 뷰어 갱신
                     m_bMain_SiriusViewer_Refresh = true;
+                    ActionSiriusViewerRefresy?.Invoke(m_bMain_SiriusViewer_Refresh);
+                    
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 보정 데이터 적용");
 
@@ -21359,6 +21487,11 @@ namespace QMC.Common.Modules
         }
 
 
+            // Todo : enum 전달
+            //ActionLaserDrillingStep
+
+        }
+
         #endregion
 
 
@@ -26279,13 +26412,22 @@ namespace QMC.Common.Modules
         }
 
 
-        public void Import_DrawingFile(string strFileName)
+        public void Import_DrawingFile(string strFileName,bool bIsInvoke = true)
         {
             //  Sirius2
             //var doc = DocumentFactory.CreateDefault();
             //doc.ActOpen(strFileName);
             //siriusEditor.Document = doc;
 
+            if (bIsInvoke)
+            {
+                Equipment.formMain.Invoke(new System.Action(() =>
+                {
+                    //화면에 출력.
+                    Import_DrawingFile(strFileName , false);
+                }));
+                return;
+            }
             if (File.Exists(strFileName) == false)
             {
                 MessageBox.Show("도면 파일이 존재하지 않습니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -26301,6 +26443,7 @@ namespace QMC.Common.Modules
                 //SiriusEditor.Document.New();
                 var doc = DocumentSerializer.OpenDxf(strFileName);
                 //SiriusViewer_Main.Document = doc;
+                
                 Equipment.EqpSiriusViewer.Document = doc;
             }
             else if (m_strExt.ToUpper() == ".SIRIUS")

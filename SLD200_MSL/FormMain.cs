@@ -1,4 +1,6 @@
-﻿    using QMC.Common;
+﻿
+
+using QMC.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -108,25 +110,25 @@ namespace SLD200_MSL
             //FormMonitoringShow();
             FormNewMainShow();
 
-            //AlarmManager.Instance.PostAlarm += AlarmManager_PostAlarm;
+            AlarmManager.Instance.PostAlarm += AlarmManager_PostAlarm;
             // PostAlarm 이벤트 구독
-            AlarmManager.Instance.PostAlarm += alarm =>
-            {
-                var mb1 = new MessageBoxOk();
-                mb1.ShowDialog($"Error", $"알람 발생:{alarm.Title}," +
-                    $"\r\n알람 코드: {alarm.Code}" +
-                    $"\r\n알람 명: {alarm.Cause}");
+            //AlarmManager.Instance.PostAlarm += alarm =>
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog($"Error", $"알람 발생:{alarm.Title}," +
+            //        $"\r\n알람 코드: {alarm.Code}" +
+            //        $"\r\n알람 명: {alarm.Cause}");
 
-                Log.Write("SLD-200", "ALARM", 
-                    $"Title={alarm.Title}," +
-                    $"Code={alarm.Code}," +
-                    $"Source={alarm.Source}," +
-                    $"Grade={alarm.Grade}," +
-                    $"Cause={alarm.Cause},");
+            //    Log.Write("SLD-200", "ALARM", 
+            //        $"Title={alarm.Title}," +
+            //        $"Code={alarm.Code}," +
+            //        $"Source={alarm.Source}," +
+            //        $"Grade={alarm.Grade}," +
+            //        $"Cause={alarm.Cause},");
 
 
-                //MessageBox.Show($"알람 발생: {alarm.Title}\n원인: {alarm.Cause}", "알람", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            };
+            //    //MessageBox.Show($"알람 발생: {alarm.Title}\n원인: {alarm.Cause}", "알람", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //};
             //m_Form1.ShowDialog();
         }
         
@@ -267,6 +269,21 @@ namespace SLD200_MSL
         #endregion
 
         #region Method
+        public void HideShowAlarm()
+        {
+            if(this.FormAlarm.Visible)
+            {
+                this.FormAlarm.Hide();
+                this.FormAlarm.Visible = false;
+            }
+            else
+            {
+                this.ShowAlarmForm(FormAlarm);
+
+
+            }
+            
+        }
         public void FormTopShow()
         {
             FormTop formTop = new FormTop();
@@ -331,6 +348,13 @@ namespace SLD200_MSL
         }
         public void TopButton_Click(TopButtons button)
         {
+            switch(button)
+            {
+                case TopButtons.Alarm:
+                    HideShowAlarm();
+
+                    break;
+            }
             return;
 
             Button button1 = FormTop.Controls[1].Controls[(int)TopButtons.Alarm] as Button;
