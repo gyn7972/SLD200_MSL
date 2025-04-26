@@ -45,10 +45,13 @@ namespace SLD200_MSL
             this.button_CurrentZPos_toFineCamFocus = new System.Windows.Forms.Button();
             this.tabControl_MarkFindType = new System.Windows.Forms.TabControl();
             this.tabPage_MarkFind_PatternMatching = new System.Windows.Forms.TabPage();
+            this.listBox_VisionPopup_PM_Result = new System.Windows.Forms.ListBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.button34 = new System.Windows.Forms.Button();
-            this.button55 = new System.Windows.Forms.Button();
+            this.button_VisionPopup_Search = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.button_VisionPopup_PM_Grab = new System.Windows.Forms.Button();
+            this.pictureBox_VisionPopup_PM_ImageDisplay = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
@@ -158,7 +161,7 @@ namespace SLD200_MSL
             this.tabControl_MarkFindType.SuspendLayout();
             this.tabPage_MarkFind_PatternMatching.SuspendLayout();
             this.groupBox5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_VisionPopup_PM_ImageDisplay)).BeginInit();
             this.tabPage_MarkFind_CircleFind.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ImageDisplay)).BeginInit();
             this.tabPage_Socket_AlignTest.SuspendLayout();
@@ -360,8 +363,10 @@ namespace SLD200_MSL
             // 
             // tabPage_MarkFind_PatternMatching
             // 
+            this.tabPage_MarkFind_PatternMatching.Controls.Add(this.listBox_VisionPopup_PM_Result);
+            this.tabPage_MarkFind_PatternMatching.Controls.Add(this.button1);
             this.tabPage_MarkFind_PatternMatching.Controls.Add(this.button34);
-            this.tabPage_MarkFind_PatternMatching.Controls.Add(this.button55);
+            this.tabPage_MarkFind_PatternMatching.Controls.Add(this.button_VisionPopup_Search);
             this.tabPage_MarkFind_PatternMatching.Controls.Add(this.groupBox5);
             this.tabPage_MarkFind_PatternMatching.Font = new System.Drawing.Font("Tahoma", 9.75F);
             this.tabPage_MarkFind_PatternMatching.Location = new System.Drawing.Point(4, 25);
@@ -371,6 +376,26 @@ namespace SLD200_MSL
             this.tabPage_MarkFind_PatternMatching.TabIndex = 0;
             this.tabPage_MarkFind_PatternMatching.Text = "Pattern Matching";
             this.tabPage_MarkFind_PatternMatching.UseVisualStyleBackColor = true;
+            // 
+            // listBox_VisionPopup_PM_Result
+            // 
+            this.listBox_VisionPopup_PM_Result.FormattingEnabled = true;
+            this.listBox_VisionPopup_PM_Result.ItemHeight = 24;
+            this.listBox_VisionPopup_PM_Result.Location = new System.Drawing.Point(310, 108);
+            this.listBox_VisionPopup_PM_Result.Name = "listBox_VisionPopup_PM_Result";
+            this.listBox_VisionPopup_PM_Result.Size = new System.Drawing.Size(127, 100);
+            this.listBox_VisionPopup_PM_Result.TabIndex = 75;
+            // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button1.Location = new System.Drawing.Point(336, 59);
+            this.button1.Margin = new System.Windows.Forms.Padding(6);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(101, 42);
+            this.button1.TabIndex = 70;
+            this.button1.Text = "Image Teaching";
+            this.button1.UseVisualStyleBackColor = true;
             // 
             // button34
             // 
@@ -384,21 +409,22 @@ namespace SLD200_MSL
             this.button34.UseVisualStyleBackColor = true;
             this.button34.Click += new System.EventHandler(this.button34_Click);
             // 
-            // button55
+            // button_VisionPopup_Search
             // 
-            this.button55.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button55.Location = new System.Drawing.Point(336, 67);
-            this.button55.Margin = new System.Windows.Forms.Padding(6);
-            this.button55.Name = "button55";
-            this.button55.Size = new System.Drawing.Size(101, 42);
-            this.button55.TabIndex = 69;
-            this.button55.Text = "Search";
-            this.button55.UseVisualStyleBackColor = true;
-            this.button55.Click += new System.EventHandler(this.button55_Click);
+            this.button_VisionPopup_Search.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_VisionPopup_Search.Location = new System.Drawing.Point(310, 203);
+            this.button_VisionPopup_Search.Margin = new System.Windows.Forms.Padding(6);
+            this.button_VisionPopup_Search.Name = "button_VisionPopup_Search";
+            this.button_VisionPopup_Search.Size = new System.Drawing.Size(127, 42);
+            this.button_VisionPopup_Search.TabIndex = 69;
+            this.button_VisionPopup_Search.Text = "Search";
+            this.button_VisionPopup_Search.UseVisualStyleBackColor = true;
+            this.button_VisionPopup_Search.Click += new System.EventHandler(this.button_VisionPopup_Search_Click);
             // 
             // groupBox5
             // 
-            this.groupBox5.Controls.Add(this.pictureBox2);
+            this.groupBox5.Controls.Add(this.button_VisionPopup_PM_Grab);
+            this.groupBox5.Controls.Add(this.pictureBox_VisionPopup_PM_ImageDisplay);
             this.groupBox5.Controls.Add(this.label2);
             this.groupBox5.Controls.Add(this.label1);
             this.groupBox5.Controls.Add(this.richTextBox1);
@@ -407,28 +433,42 @@ namespace SLD200_MSL
             this.groupBox5.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Padding = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.groupBox5.Size = new System.Drawing.Size(323, 244);
+            this.groupBox5.Size = new System.Drawing.Size(296, 244);
             this.groupBox5.TabIndex = 67;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = " Teaching Image ";
             // 
-            // pictureBox2
+            // button_VisionPopup_PM_Grab
             // 
-            this.pictureBox2.BackColor = System.Drawing.Color.Black;
-            this.pictureBox2.Location = new System.Drawing.Point(134, 54);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(6);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(180, 180);
-            this.pictureBox2.TabIndex = 56;
-            this.pictureBox2.TabStop = false;
+            this.button_VisionPopup_PM_Grab.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_VisionPopup_PM_Grab.Location = new System.Drawing.Point(1, 191);
+            this.button_VisionPopup_PM_Grab.Margin = new System.Windows.Forms.Padding(6);
+            this.button_VisionPopup_PM_Grab.Name = "button_VisionPopup_PM_Grab";
+            this.button_VisionPopup_PM_Grab.Size = new System.Drawing.Size(98, 42);
+            this.button_VisionPopup_PM_Grab.TabIndex = 76;
+            this.button_VisionPopup_PM_Grab.Text = "Grab";
+            this.button_VisionPopup_PM_Grab.UseVisualStyleBackColor = true;
+            this.button_VisionPopup_PM_Grab.Click += new System.EventHandler(this.button_VisionPopup_PM_Grab_Click);
+            // 
+            // pictureBox_VisionPopup_PM_ImageDisplay
+            // 
+            this.pictureBox_VisionPopup_PM_ImageDisplay.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox_VisionPopup_PM_ImageDisplay.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBox_VisionPopup_PM_ImageDisplay.Location = new System.Drawing.Point(105, 54);
+            this.pictureBox_VisionPopup_PM_ImageDisplay.Margin = new System.Windows.Forms.Padding(6);
+            this.pictureBox_VisionPopup_PM_ImageDisplay.Name = "pictureBox_VisionPopup_PM_ImageDisplay";
+            this.pictureBox_VisionPopup_PM_ImageDisplay.Size = new System.Drawing.Size(180, 180);
+            this.pictureBox_VisionPopup_PM_ImageDisplay.TabIndex = 56;
+            this.pictureBox_VisionPopup_PM_ImageDisplay.TabStop = false;
+            this.pictureBox_VisionPopup_PM_ImageDisplay.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox_VisionPopup_PM_ImageDisplay_paint);
             // 
             // label2
             // 
             this.label2.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label2.Location = new System.Drawing.Point(9, 52);
+            this.label2.Location = new System.Drawing.Point(-3, 54);
             this.label2.Margin = new System.Windows.Forms.Padding(3);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(123, 27);
+            this.label2.Size = new System.Drawing.Size(107, 27);
             this.label2.TabIndex = 45;
             this.label2.Text = "Teaching Image :";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -436,17 +476,17 @@ namespace SLD200_MSL
             // label1
             // 
             this.label1.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label1.Location = new System.Drawing.Point(9, 23);
+            this.label1.Location = new System.Drawing.Point(-3, 25);
             this.label1.Margin = new System.Windows.Forms.Padding(3);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(123, 27);
+            this.label1.Size = new System.Drawing.Size(107, 27);
             this.label1.TabIndex = 44;
             this.label1.Text = "Image File Name :";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // richTextBox1
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(134, 23);
+            this.richTextBox1.Location = new System.Drawing.Point(105, 23);
             this.richTextBox1.Margin = new System.Windows.Forms.Padding(6);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.Size = new System.Drawing.Size(180, 27);
@@ -484,10 +524,10 @@ namespace SLD200_MSL
             // listBox_FindCircle_Result
             // 
             this.listBox_FindCircle_Result.FormattingEnabled = true;
-            this.listBox_FindCircle_Result.ItemHeight = 16;
+            this.listBox_FindCircle_Result.ItemHeight = 24;
             this.listBox_FindCircle_Result.Location = new System.Drawing.Point(252, 109);
             this.listBox_FindCircle_Result.Name = "listBox_FindCircle_Result";
-            this.listBox_FindCircle_Result.Size = new System.Drawing.Size(186, 132);
+            this.listBox_FindCircle_Result.Size = new System.Drawing.Size(186, 124);
             this.listBox_FindCircle_Result.TabIndex = 74;
             // 
             // button_VisionPopup_FindCircle_GrabImage
@@ -599,7 +639,7 @@ namespace SLD200_MSL
             this.comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList.Location = new System.Drawing.Point(10, 156);
             this.comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList.Name = "comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList";
-            this.comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList.Size = new System.Drawing.Size(80, 24);
+            this.comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList.Size = new System.Drawing.Size(80, 32);
             this.comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList.TabIndex = 137;
             // 
             // label6
@@ -619,7 +659,7 @@ namespace SLD200_MSL
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterY.Location = new System.Drawing.Point(128, 71);
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterY.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterY.Name = "textBox_Config_VisionPopup_AlignTest_Socket_CenterY";
-            this.textBox_Config_VisionPopup_AlignTest_Socket_CenterY.Size = new System.Drawing.Size(72, 24);
+            this.textBox_Config_VisionPopup_AlignTest_Socket_CenterY.Size = new System.Drawing.Size(72, 32);
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterY.TabIndex = 135;
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterY.Text = "0.000";
             // 
@@ -629,7 +669,7 @@ namespace SLD200_MSL
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterX.Location = new System.Drawing.Point(128, 43);
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterX.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterX.Name = "textBox_Config_VisionPopup_AlignTest_Socket_CenterX";
-            this.textBox_Config_VisionPopup_AlignTest_Socket_CenterX.Size = new System.Drawing.Size(72, 24);
+            this.textBox_Config_VisionPopup_AlignTest_Socket_CenterX.Size = new System.Drawing.Size(72, 32);
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterX.TabIndex = 134;
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterX.Text = "0.000";
             // 
@@ -680,7 +720,7 @@ namespace SLD200_MSL
             this.comboBox_Config_VisionPopup_AlignTest_SocketList.Location = new System.Drawing.Point(105, 8);
             this.comboBox_Config_VisionPopup_AlignTest_SocketList.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Config_VisionPopup_AlignTest_SocketList.Name = "comboBox_Config_VisionPopup_AlignTest_SocketList";
-            this.comboBox_Config_VisionPopup_AlignTest_SocketList.Size = new System.Drawing.Size(95, 24);
+            this.comboBox_Config_VisionPopup_AlignTest_SocketList.Size = new System.Drawing.Size(95, 32);
             this.comboBox_Config_VisionPopup_AlignTest_SocketList.TabIndex = 118;
             this.comboBox_Config_VisionPopup_AlignTest_SocketList.SelectedIndexChanged += new System.EventHandler(this.comboBox_Config_VisionPopup_AlignTest_SocketList_SelectedIndexChanged);
             // 
@@ -850,7 +890,7 @@ namespace SLD200_MSL
             this.textBox_VisionPopup_JogMove_StepSize.Location = new System.Drawing.Point(162, 45);
             this.textBox_VisionPopup_JogMove_StepSize.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_VisionPopup_JogMove_StepSize.Name = "textBox_VisionPopup_JogMove_StepSize";
-            this.textBox_VisionPopup_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
+            this.textBox_VisionPopup_JogMove_StepSize.Size = new System.Drawing.Size(71, 32);
             this.textBox_VisionPopup_JogMove_StepSize.TabIndex = 75;
             this.textBox_VisionPopup_JogMove_StepSize.Text = "1.000";
             // 
@@ -1295,7 +1335,7 @@ namespace SLD200_MSL
             this.checkBox1.Location = new System.Drawing.Point(247, 37);
             this.checkBox1.Margin = new System.Windows.Forms.Padding(6);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(125, 38);
+            this.checkBox1.Size = new System.Drawing.Size(183, 52);
             this.checkBox1.TabIndex = 7;
             this.checkBox1.Text = "with\r\nCamera Seletion";
             this.checkBox1.UseVisualStyleBackColor = true;
@@ -1472,7 +1512,7 @@ namespace SLD200_MSL
             this.textBox_IlluminationValue.Font = new System.Drawing.Font("Tahoma", 10F);
             this.textBox_IlluminationValue.Location = new System.Drawing.Point(129, 27);
             this.textBox_IlluminationValue.Name = "textBox_IlluminationValue";
-            this.textBox_IlluminationValue.Size = new System.Drawing.Size(100, 24);
+            this.textBox_IlluminationValue.Size = new System.Drawing.Size(100, 32);
             this.textBox_IlluminationValue.TabIndex = 27;
             this.textBox_IlluminationValue.Text = "000";
             this.textBox_IlluminationValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1639,7 +1679,7 @@ namespace SLD200_MSL
             this.textBox16.Font = new System.Drawing.Font("Tahoma", 10F);
             this.textBox16.Location = new System.Drawing.Point(129, 57);
             this.textBox16.Name = "textBox16";
-            this.textBox16.Size = new System.Drawing.Size(100, 24);
+            this.textBox16.Size = new System.Drawing.Size(100, 32);
             this.textBox16.TabIndex = 24;
             this.textBox16.Text = "000.000";
             // 
@@ -1659,7 +1699,7 @@ namespace SLD200_MSL
             this.textBox17.Font = new System.Drawing.Font("Tahoma", 10F);
             this.textBox17.Location = new System.Drawing.Point(129, 27);
             this.textBox17.Name = "textBox17";
-            this.textBox17.Size = new System.Drawing.Size(100, 24);
+            this.textBox17.Size = new System.Drawing.Size(100, 32);
             this.textBox17.TabIndex = 22;
             this.textBox17.Text = "000.000";
             // 
@@ -1765,7 +1805,7 @@ namespace SLD200_MSL
             // 
             // FormNew_VisionPopup
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1373, 729);
             this.Controls.Add(this.panel4);
@@ -1785,7 +1825,7 @@ namespace SLD200_MSL
             this.tabControl_MarkFindType.ResumeLayout(false);
             this.tabPage_MarkFind_PatternMatching.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_VisionPopup_PM_ImageDisplay)).EndInit();
             this.tabPage_MarkFind_CircleFind.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ImageDisplay)).EndInit();
             this.tabPage_Socket_AlignTest.ResumeLayout(false);
@@ -1890,12 +1930,12 @@ namespace SLD200_MSL
         private TabPage tabPage_MarkFind_PatternMatching;
         private TabPage tabPage_MarkFind_CircleFind;
         private GroupBox groupBox5;
-        private PictureBox pictureBox2;
+        private PictureBox pictureBox_VisionPopup_PM_ImageDisplay;
         private Label label2;
         private Label label1;
         private RichTextBox richTextBox1;
         private Button button34;
-        private Button button55;
+        private Button button_VisionPopup_Search;
         private Button button_VisionPopup_FindCircle_Search;
         private Button button_VisionPopup_FindCircle_LoadImage;
         private PictureBox pictureBox_ImageDisplay;
@@ -1936,5 +1976,8 @@ namespace SLD200_MSL
         private Button btnTrain;
         private PictureBox pictureBox_ImageDisplayScannerCal;
         private Button button2;
+        private Button button1;
+        private ListBox listBox_VisionPopup_PM_Result;
+        private Button button_VisionPopup_PM_Grab;
     }
 }

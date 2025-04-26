@@ -2740,14 +2740,183 @@ namespace SLD200_MSL
 
         }
 
-        private void button55_Click(object sender, EventArgs e)
+        private void button47_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void button47_Click(object sender, EventArgs e)
+        private void button_VisionPopup_Search_Click(object sender, EventArgs e)
         {
+            PatternMatchingResult result;
+            int nImage_Width = 0;
+            int nImage_Height = 0;
 
+            if (radioButton_VisionPopup_CameraSelection_LowMag.Checked)
+            {
+                int w = workStage.Camera_LowRes.Resolution.Width;
+                int h = workStage.Camera_LowRes.Resolution.Height;
+
+                nImage_Width = w;
+                nImage_Height = h;
+
+                result = workStage.jigAligner_LowRes.Search();
+                //PatternMatchingResult result1 = workStage.scannerCompensator.GetResult();
+            }
+            else
+            {
+                //안한다고 봐야함..?
+                int w = workStage.Camera_HighRes.Resolution.Width;
+                int h = workStage.Camera_HighRes.Resolution.Height;
+
+                nImage_Width = w;
+                nImage_Height = h;
+
+                result = workStage.jigAligner_LowRes.Search();
+                //PatternMatchingResult result1 = workStage.scannerCompensator.GetResult();
+            }
+
+            if (result.Values.Count > 0)
+            {
+                double markPixelX = result.Values[0].X;
+                double markPixelY = result.Values[0].Y;
+                double markR = result.Values[0].R;
+
+                MessageBox.Show("Search Mark - OK");
+            
+
+                detectedCircles.Clear();
+                //  좌표 표시
+                listBox_VisionPopup_PM_Result.Items.Clear();
+                for (int i = 0; i < result.Values.Count; i++)
+                {
+                    listBox_VisionPopup_PM_Result.Items.Add((i + 1) + "X:" + result.Values[i].X);
+                    listBox_VisionPopup_PM_Result.Items.Add((i + 1) + "Y :" + result.Values[i].Y);
+                    listBox_VisionPopup_PM_Result.Items.Add((i + 1) + "R :" + result.Values[i].R);
+                }
+
+                foreach (var circle in result.ResultOverlays)
+                {
+                    //float ratioX = (float)pictureBox_ImageDisplay.Width / bm_Temp.Width;
+                    //float ratioY = (float)pictureBox_ImageDisplay.Height / bm_Temp.Height;
+                    float ratioX = (float)pictureBox_VisionPopup_PM_ImageDisplay.Width / nImage_Width;
+                    float ratioY = (float)pictureBox_VisionPopup_PM_ImageDisplay.Height / nImage_Height;
+                    float ratio = Math.Min(ratioX, ratioY);
+
+                    int newWidth = (int)(circle.Size.Width * ratio);
+                    int newHeight = (int)(circle.Size.Width * ratio);
+                    int newX = (int)(result.Values[0].X - (newWidth / 2) * ratio);
+                    int newY = (int)(result.Values[0].Y - (newHeight / 2) * ratio);
+                    
+                    detectedCircles.Add(new Rectangle(newX, newY, newWidth, newHeight));
+                    pictureBox_VisionPopup_PM_ImageDisplay.Invalidate(); // PictureBox를 다시 그리도록 요청
+
+                }
+            }
+            else
+            {
+                MessageBox.Show("검출 실패", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                detectedCircles.Clear();
+
+                listBox_FindCircle_Result.Items.Clear();
+            }
+
+            //  원 찾기 후 다시 Live
+            if (radioButton_VisionPopup_CameraSelection_LowMag.Checked)
+            {
+                if (workStage.Camera_LowRes.Opened)
+                {
+                    workStage.Camera_LowRes.StartLive();
+                }
+            }
+            else
+            {
+                if (workStage.Camera_HighRes.Opened)
+                {
+                    workStage.Camera_HighRes.StartLive();
+                }
+            }
+        }
+
+        private void button_VisionPopup_PM_Grab_Click(object sender, EventArgs e)
+        {
+            //  이미지 Grab
+            detectedCircles.Clear();
+            listBox_VisionPopup_PM_Result.Items.Clear();
+
+            Image image = new Bitmap(workStage.Camera_LowRes.Resolution.Width, workStage.Camera_LowRes.Resolution.Height);
+
+            //  Grab
+            if (radioButton_VisionPopup_CameraSelection_LowMag.Checked)
+            {
+                if (false)
+                {
+                    workStage.Camera_LowRes.Grab();
+
+                    bm_RawData = new byte[workStage.Camera_LowRes.Resolution.Width * workStage.Camera_LowRes.Resolution.Height];
+                    bm_RawData = workStage.Camera_LowRes.LatestImage.RawData;
+                    image = workStage.Camera_LowRes.LatestImage.GetImage();
+                }
+                else //Test Code
+                {
+                    workStage.Camera_LowRes.LatestImage = m_visionImageViewer_LowRes.InputImage;
+
+                    bm_RawData = new byte[workStage.Camera_LowRes.Resolution.Width * workStage.Camera_LowRes.Resolution.Height];
+                    //if (m_visionImageViewer_LowRes.InputImage.RawData[0]. > 0)
+                    {
+                        bm_RawData = workStage.Camera_LowRes.LatestImage.RawData;
+                        image = workStage.Camera_LowRes.LatestImage.GetImage();
+                        workStage.jigAligner_LowRes.Simulated = true;
+                        workStage.jigAligner_LowRes.TestImage = image;
+                    }
+                }
+                
+
+                //workStage.Camera_LowRes.LatestImage.Save("D:\\TempImage_LowRes.bmp", QMC.Common.Vision.VisionImage.FileFilter.bmp);
+                //bm_Temp = new Bitmap("D:\\TempImage_LowRes.bmp");                
+            }
+            else
+            {
+                workStage.Camera_HighRes.Grab();
+
+                bm_RawData = new byte[workStage.Camera_HighRes.Resolution.Width * workStage.Camera_HighRes.Resolution.Height];
+                bm_RawData = workStage.Camera_HighRes.LatestImage.RawData;
+
+                image = workStage.Camera_HighRes.LatestImage.GetImage();
+
+                //workStage.Camera_HighRes.LatestImage.Save("D:\\TempImage_HighRes.bmp", QMC.Common.Vision.VisionImage.FileFilter.bmp);
+                //bm_Temp = new Bitmap("D:\\TempImage_HighRes.bmp");
+            }
+
+            //pictureBox_ImageDisplay.Image = ResizeImageToFitPictureBox(bm_Temp, pictureBox_ImageDisplay);
+            pictureBox_VisionPopup_PM_ImageDisplay.Image = ResizeImageToFitPictureBox(image, pictureBox_VisionPopup_PM_ImageDisplay);
+        }
+
+        private void pictureBox_VisionPopup_PM_ImageDisplay_paint(object sender, PaintEventArgs e)
+        {
+            int nIndex = 0;
+            foreach (var detectedCircle in detectedCircles)
+            {
+                Color color = Color.Blue;
+                switch (nIndex)
+                {
+                    case 1:
+                        color = Color.Red;
+                        break;
+                    case 2:
+                        color = Color.Lime;
+                        break;
+                    case 3:
+                        color = Color.Yellow;
+                        break;
+                }
+
+                using (Pen pen = new Pen(color, 1)) // 펜의 두께를 3포인트로 설정
+                {
+                    e.Graphics.DrawRectangle(pen, detectedCircle);
+                }
+                nIndex++;
+            }
         }
     }
 }

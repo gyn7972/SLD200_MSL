@@ -16,6 +16,7 @@ using static QMC.Common.PathGenerators.PathGenerator;
 using System.Drawing;
 using static QMC.Common.Vision.Tools.PatternMatchingResult;
 using System.Net.Http.Headers;
+using QMC.Common.Motion.Ajin.Motions;
 
 namespace QMC.Common.Parts
 {
@@ -78,7 +79,10 @@ namespace QMC.Common.Parts
             set;
         }
 
+
         #region Method
+        public InterpolatorMotionFunction MC_Func = new InterpolatorMotionFunction();
+
         protected int GetMotionLimit(MotionAxis axis, out RangeD range)
         {
             int ret = 0;
@@ -299,6 +303,8 @@ namespace QMC.Common.Parts
             return ret;
         }
 
+        private XyCoordinate xyInterpolatedCoordinate = new XyCoordinate();         //  Stage XY Map Data 로 변환된 위치 이동 좌표
+
         public override int OnWork()
         {
             int ret = 0;
@@ -310,7 +316,7 @@ namespace QMC.Common.Parts
             if (m_AlignPositions == null) return -1;
 
             //XyCoordinate center = (m_AlignPositions[0] + m_AlignPositions[1]) / 2;
-
+            XyzCoordinate position = new XyzCoordinate();
             #region 주석
             //List<PatternMatchingResult> listResults = new List<PatternMatchingResult>();
             //foreach (XyCoordinate position in m_AlignPositions)
@@ -360,10 +366,63 @@ namespace QMC.Common.Parts
             XyCoordinate finalFirstPosition = new XyCoordinate();
             XyCoordinate finalSecondPosition = new XyCoordinate();
 
+            double lfVelocity = 0.0;
+            double lfAccDec = 0.0;
+            int nWait = 0;
+
             //첫번째 위치 Search
             if (m_Owner.m_nFindAlignMarkType != (int)WorkStage.AlignMarkType.ALIGN_2NDMARK)                                                      //  2번 Align Mark 만 찾을 경우가 아닐 때만 1번 마크를 찾는다.
             {
+                //위치만 살리면 된다...
                 //this.Stage.MovePosition(m_AlignPositions[0]);
+                position = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
+
+                
+                //  속도 설정
+                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+                xyInterpolatedCoordinate.X = position.X; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
+                xyInterpolatedCoordinate.Y = position.Y; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+
+                MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                nWait = 0;
+                while (true)
+                {
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) == true)
+                    {
+                        break;
+                    }
+                    Thread.Sleep(1);
+                    nWait++;
+                    if (nWait == 1000)
+                    {
+                        break;
+                    }
+
+                }
+
+                nWait = 0;
+                while (true)
+                {
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == true)
+                    {
+                        break;
+                    }
+                    Thread.Sleep(1);
+                    nWait++;
+                    if (nWait == 1000)
+                    {
+                        break;
+                    }
+
+                }
+                //Thread.Sleep(Config.MoveToDelay);
+                Thread.Sleep(500);
+
+                m_AlignPositions[0].X = xyInterpolatedCoordinate.X;
+                m_AlignPositions[0].Y = xyInterpolatedCoordinate.Y;
+
                 this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[0];
                 this.FindFiducialMark(out firstPointSearchResult, out firstPointCoordinate);
             }
@@ -397,6 +456,51 @@ namespace QMC.Common.Parts
 
             //두번째 위치 Search
             //this.Stage.MovePosition(m_AlignPositions[1]);
+            position = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos2.X, Equipment.stLayerRecipeSet[0].PreAlignPos2.Y, 0.0);
+
+            //  속도 설정
+            lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+            lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+            xyInterpolatedCoordinate.X = position.X; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
+            xyInterpolatedCoordinate.Y = position.Y; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+
+            MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+            nWait = 0;
+            while (true)
+            {
+                if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) == true)
+                {
+                    break;
+                }
+                Thread.Sleep(1);
+                nWait++;
+                if (nWait == 1000)
+                {
+                    break;
+                }
+            }
+
+            nWait = 0;
+            while (true)
+            {
+                if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == true)
+                {
+                    break;
+                }
+                Thread.Sleep(1);
+                nWait++;
+                if (nWait == 1000)
+                {
+                    break;
+                }
+            }
+            //Thread.Sleep(Config.MoveToDelay);
+            Thread.Sleep(500);
+
+            m_AlignPositions[1].X = xyInterpolatedCoordinate.X;
+            m_AlignPositions[1].Y = xyInterpolatedCoordinate.Y;
+
             this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[1];
             this.FindFiducialMark(out secondPointSearchResult, out secondPointCoordinate);
 
