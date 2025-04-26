@@ -1357,30 +1357,25 @@ namespace QMC.Common.Modules
         private MotorStates m_nMotorState0;
         private MotorStates m_nMotorState1;
 
-        //  쓰레드로 변경 --> 변경 취소. 그냥 타이머 쓴다. Thread 쓰니까 뭐가 막 잘 안됨 ㅡㅡ
+        // 쓰레드로 변경 --> 변경 취소. 그냥 타이머 쓴다. Thread 쓰니까 뭐가 막 잘 안됨 ㅡㅡ
+        // 2025.04.26 - 비동기 timer로 변경하여 사용. 
         //public System.Windows.Forms.Timer timer_MainWork;
         //public System.Windows.Forms.Timer timer_LaserDrillingWork;
-
         public System.Timers.Timer timer_MainWork;
         public System.Timers.Timer timer_LaserDrillingWork;
         public System.Timers.Timer timer_Comm;
         public System.Timers.Timer timer_ScannerCalibration;
         public System.Timers.Timer timer_Motion_Home;
-
-        public System.Windows.Forms.Timer timer_SubWork;
-        public System.Windows.Forms.Timer timer_VisionAlign;
-        public System.Windows.Forms.Timer timer_ReticleGlass_Check;
-        public System.Windows.Forms.Timer timer_VerifyScannerCamOffset;
-
+        public System.Timers.Timer timer_SubWork;
+        public System.Timers.Timer timer_VisionAlign;
+        public System.Timers.Timer timer_VerifyScannerCamOffset;
 
         public bool m_btimer_MainWork_Stop;
         public bool m_btimer_LaserDrillingWork_Stop;
         public bool m_btimer_SubWork_Stop;
         public bool m_btimer_Comm_Stop;
         public bool m_btimer_Motion_Home_Stop;
-        //public bool m_btimer_Calibration_Stop;
         public bool m_btimer_VisionAlign_Stop;
-        public bool m_btimer_ReticleGlass_Check_Stop;
         public bool m_btimer_ScannerCalibratio_Stop;
 
         public bool m_bBlink;
@@ -2584,48 +2579,6 @@ namespace QMC.Common.Modules
         }
 
 
-
-        public int m_nPreAlign_FiducialCount_Total { set; get; }             //  Socket Align Vision Fiducial Total Count
-        public int m_nPreAlign_FiducialCount { set; get; }                   //  Socket Align Vision Fiducial Count
-
-        public enum PreAlign_Step
-        {
-            None = 0,
-            Start,                      //  시작
-
-            AlignSocketData_Load,                                               //  얼라인 할 Socket Data Load
-
-            PreAlignZ_MoveReadyPos,                                          //  Satge Z 축, 대기위치(높이)로 이동                       --> 자동운전 중이면 pass
-            PreAlignZ_MoveReadyPosDoneCheck,                                 //  Stage Z 축, 대기위치(높이)로 이동 완료 확인
-
-            __PreAlign_Start,                                                //  비전 검사 시작
-
-            PreAlign_RemainedCheck,                                          //  남아있는 얼라인 위치가 있는지 확인 (4개의 얼라인 위치를 모두 확인)
-            
-            PreAlignXY_MoveFiducialPos,                                      //  Stage XY 축, Fiducial Mark 1번(LT) 위치로 이동
-            PreAlignXY_MoveFiducialPosDoneCheck,                             //  Stage XY 축, Fiducial Mark 1번(LT) 위치로 이동 완료 확인
-            
-            PreAlignZ_MoveInspPos,                                           //  Stage Z 축, 비전 검사 위치(높이)로 이동
-            PreAlignZ_MoveInspPosDoneCheck,                                  //  Stage Z 축, 비전 검사 위치(높이)로 이동 완료 확인
-            
-            PreAlign_toVision_AlignStart,                                    //  Align Start
-            PreAlign_fromVision_ResultCheck,                                 //  Align 결과 확인
-
-            __PreAlign_Complete,                                            //  비전 검사 완료
-
-            PreAlignZ_MoveReadyPos2,                                        //  Stage Z 축, 대기위치(높이)로 이동                        --> 자동운전 중이면 pass
-            PreAlignZ_MoveReadyPos2DoneCheck,                               //  Stage Z 축, 대기위치(높이)로 이동 완료 확인
-            
-            PreAlignXY_MoveReadyPos,                                        //  Stage XY 축, 대기위치로 이동                             --> 자동운전 중이면 pass
-            PreAlignXY_MoveReadyPosDoneCheck,                               //  Stage XY 축, 대기위치로 이동 완료 확인
-            
-            PreAlign_RotAndOffsetMove,                                      //  가공 데이터 회전 및 Offset 이동
-            PreAlign_Reload,                                                //  가공 데이터를 회전했으면 데이터를 다시 불러온다.
-
-            Complete                                                            //  완료
-        }
-
-
         public int m_nDryRun_Step { set; get; }                                 //  Dry Run Cycle Step
         public bool m_bDryRun_Complete { set; get; }                            //  Dry Run Cycle 완료 여부
         public enum DryRun_Step
@@ -3240,6 +3193,7 @@ namespace QMC.Common.Modules
 
         public int m_nFindAlignMark_Step { set; get; }                      //  마크 찾기 Step
         public bool m_bFindAlignMark_OK { set; get; }                       //  Find Align Mark OK
+        public bool m_bFindAlignMark_Complete { set; get; }                       //  Find Align Mark Search Complete.
         public bool m_bFindUpperAlignMark_OK { set; get; }                  //  Find Upper Camera Align Mark OK
         public bool m_bFindLowerAlignMark_OK { set; get; }                  //  Find Lower Camera Align Mark OK
         public enum FindAlignMark_Step
@@ -3480,9 +3434,6 @@ namespace QMC.Common.Modules
             Equipment.WaferCamera_Width = stCamera.LowRes_Width;
             Equipment.WaferCamera_Height = stCamera.LowRes_Height;
 
-
-            m_nPreAlign_MainStep = (int)PreAlign_Step.None;
-
             m_nHomeStep = (int)Home_Step.None;
             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
             m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
@@ -3538,9 +3489,6 @@ namespace QMC.Common.Modules
             //  타이머를 쓰레드로 변경 --> 다시 타이머 사용하기로...
 
             //  Main Work 타이머
-            //timer_MainWork = new System.Windows.Forms.Timer();
-            //timer_MainWork.Interval = 10;
-            //timer_MainWork.Tick += new System.EventHandler(Timer_MainWork_Func);
             timer_MainWork = new System.Timers.Timer(10);
             timer_MainWork.Elapsed += Timer_MainWork_Tick;
             timer_MainWork.AutoReset = true; // 반복 실행
@@ -3557,10 +3505,14 @@ namespace QMC.Common.Modules
 
 
             //  Sub Work 타이머
-            timer_SubWork = new System.Windows.Forms.Timer();
-            timer_SubWork.Interval = 20;
-            timer_SubWork.Tick += new System.EventHandler(Timer_SubWork_Func);
-            timer_SubWork.Enabled = true;
+            //timer_SubWork = new System.Windows.Forms.Timer();
+            //timer_SubWork.Interval = 20;
+            //timer_SubWork.Tick += new System.EventHandler(Timer_SubWork_Func);
+            //timer_SubWork.Enabled = true;
+            timer_SubWork = new System.Timers.Timer(10);
+            timer_SubWork.Elapsed += Timer_SubWork_Tick;
+            timer_SubWork.AutoReset = true; // 반복 실행
+            timer_SubWork.Enabled = true; // 초기
 
             //  Comm. 타이머
             //timer_Comm = new System.Windows.Forms.Timer();
@@ -3570,12 +3522,15 @@ namespace QMC.Common.Modules
             timer_Comm.Elapsed += timer_Comm_Tick;
             timer_Comm.AutoReset = true; // 반복 실행
             timer_Comm.Enabled = false; // 초기
-            timer_Comm.Stop();
 
             //  Product Align 타이머
-            timer_VisionAlign = new System.Windows.Forms.Timer();
-            timer_VisionAlign.Interval = 20;
-            timer_VisionAlign.Tick += new System.EventHandler(Timer_ProductAlign_Func);
+            //timer_VisionAlign = new System.Windows.Forms.Timer();
+            //timer_VisionAlign.Interval = 20;
+            //timer_VisionAlign.Tick += new System.EventHandler(Timer_ProductAlign_Func);
+            timer_VisionAlign = new System.Timers.Timer(10);
+            timer_VisionAlign.Elapsed += Timer_ProductAlign_tick;
+            timer_VisionAlign.AutoReset = true; // 반복 실행
+            timer_VisionAlign.Enabled = false; // 초기
 
             //  Motion 홈 실행 타이머
             //timer_Motion_Home = new System.Windows.Forms.Timer();
@@ -3585,30 +3540,20 @@ namespace QMC.Common.Modules
             timer_Motion_Home.Elapsed += Timer_MotionHome_Tick;
             timer_Motion_Home.AutoReset = true;    // 반복 실행
             timer_Motion_Home.Enabled = false;     // 초기
-            timer_Motion_Home.Stop();
-
-
-            //  Reticle Glass check 타이머
-            timer_ReticleGlass_Check = new System.Windows.Forms.Timer();
-            timer_ReticleGlass_Check.Interval = 20;
-            timer_ReticleGlass_Check.Tick += new System.EventHandler(Timer_ReticleGlass_Func);
 
             //  Scanner 와 Camera Offset 검증 타이머
-            timer_VerifyScannerCamOffset = new System.Windows.Forms.Timer();
-            timer_VerifyScannerCamOffset.Interval = 20;
-            timer_VerifyScannerCamOffset.Tick += new System.EventHandler(Timer_VerifyScannerCamOffset_Func);
-            //timer_VerifyScannerCamOffset.Enabled = true;
-
-            //timer_ScannerCalibration = new System.Windows.Forms.Timer();
-            //timer_ScannerCalibration.Interval = 50;
-            ////timer_ScannerCalibration.Tick += new System.EventHandler(timer_ScannerCalibration_Tick);
-            //timer_ScannerCalibration.Tick += new System.EventHandler(Timer_ScannerCalibration_Func);
-            //timer_ScannerCalibration.Enabled = false;
+            //timer_VerifyScannerCamOffset = new System.Windows.Forms.Timer();
+            //timer_VerifyScannerCamOffset.Interval = 20;
+            //timer_VerifyScannerCamOffset.Tick += new System.EventHandler(Timer_VerifyScannerCamOffset_Func);
+            timer_Motion_Home = new System.Timers.Timer(50);
+            timer_Motion_Home.Elapsed += Timer_VerifyScannerCamOffset_Tick;
+            timer_Motion_Home.AutoReset = true;    // 반복 실행
+            timer_Motion_Home.Enabled = false;     // 초기
+            
             timer_ScannerCalibration = new System.Timers.Timer(50); 
             timer_ScannerCalibration.Elapsed += timer_ScannerCalibration_Tick;
             timer_ScannerCalibration.AutoReset = true; // 반복 실행
             timer_ScannerCalibration.Enabled = false; // 초기
-
 
 
             m_btimer_MainWork_Stop = false;
@@ -3616,7 +3561,6 @@ namespace QMC.Common.Modules
             m_btimer_SubWork_Stop = false;
             m_btimer_Motion_Home_Stop = false;
             m_btimer_VisionAlign_Stop = false;
-            m_btimer_ReticleGlass_Check_Stop = false;
 
             ////  Laser Status 갱신 실행 타이머
             //timer_Calibration = new System.Windows.Forms.Timer();
@@ -7381,6 +7325,43 @@ namespace QMC.Common.Modules
             }
         }
 
+        //
+        public bool m_SubWork_Start = false;
+        public bool _isSubWorkRunning = false; // 중복 실행 방지 플래그
+        private async void Timer_SubWork_Tick(object sender, ElapsedEventArgs e)
+        {
+            // 중복 실행 방지
+            if (_isSubWorkRunning)
+            {
+                //Console.WriteLine("Scanner Calibration is already running. Skipping this call.");
+                return;
+            }
+
+            try
+            {
+                _isSubWorkRunning = true;
+
+                if (!m_SubWork_Start)
+                {
+                    Console.WriteLine("Laser Drilling is not started.");
+                    timer_ScannerCalibration.Stop(); // 타이머 중지
+                    SetRecoveraryLaserDrilling_MainStep(m_nLaserDrilling_MainStep);
+                    return;
+                }
+
+                Run_WorkStageMove_Cycle_Func();
+                //Console.WriteLine($"WorkStage running at {DateTime.Now}, Step: {m_nWorkStage_Move_Step}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Timer_WorkStage_Elapsed: {ex.Message}");
+            }
+            finally
+            {
+                _isSubWorkRunning = false; // 플래그 해제
+            }
+        }
+
         private void Timer_SubWork_Func(object sender, EventArgs e)
         {
             //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
@@ -7451,6 +7432,43 @@ namespace QMC.Common.Modules
             }
         }
 
+        //
+        public bool m_ProductAlign_Start = false;
+        public bool _isProductAlign = false; // 중복 실행 방지 플래그
+        private async void Timer_ProductAlign_tick(object sender, ElapsedEventArgs e)
+        {
+            // 중복 실행 방지
+            if (_isProductAlign)
+            {
+                //Console.WriteLine("MotionHome is already running. Skipping this call.");
+                return;
+            }
+
+            try
+            {
+                _isProductAlign = true;
+
+                if (!m_MotionHome_Start)
+                {
+                    //Console.WriteLine("MotionHome is not started.");
+                    //timer_ScannerCalibration.Stop(); // 타이머 중지
+                    return;
+                }
+
+                Run_SocketAlign_Func(m_nSocketNum_forAlign);                  //  Thread 를 사용할 경우 주석 처리. 타이머 사용하려면 주석 해제
+                Run_FindAlignMark_Func();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Timer_MotionHome_Tick: {ex.Message}");
+            }
+            finally
+            {
+                _isProductAlign = false; // 플래그 해제
+            }
+        }
+
         private void Timer_ProductAlign_Func(object sender, EventArgs e)
         {
             //여기 구동중.
@@ -7496,7 +7514,6 @@ namespace QMC.Common.Modules
                 _isMotionHome = false; // 플래그 해제
             }
         }
-
         private void Timer_MotionHome_Func(object sender, EventArgs e)
         {
             m_btimer_Motion_Home_Stop = false;
@@ -7510,14 +7527,50 @@ namespace QMC.Common.Modules
             }
         }
 
-        private void Timer_ReticleGlass_Func(object sender, EventArgs e)
+        public bool m_VerifyScannerCamOffset_Start = false;
+        public bool _isVerifyScannerCamOffsetRunning = false; // 중복 실행 방지 플래그
+        private async void Timer_VerifyScannerCamOffset_Tick(object sender, ElapsedEventArgs e)
         {
-            m_btimer_ReticleGlass_Check_Stop = false;
-            timer_ReticleGlass_Check.Enabled = false;
-
-            if (!m_btimer_ReticleGlass_Check_Stop)
+            // 중복 실행 방지
+            if (_isVerifyScannerCamOffsetRunning)
             {
-                timer_ReticleGlass_Check.Enabled = true;
+                //Console.WriteLine("Scanner Calibration is already running. Skipping this call.");
+                return;
+            }
+
+            try
+            {
+                _isVerifyScannerCamOffsetRunning = true;
+
+                // Scanner Calibration이 활성화되지 않은 경우 종료
+                if (!m_VerifyScannerCamOffset_Start)
+                {
+                    Console.WriteLine("Scanner Calibration is not started.");
+                    //timer_ScannerCalibration.Stop(); // 타이머 중지
+                    return;
+                }
+
+                // 현재 단계가 None이면 타이머 중지
+                if (m_nScanner_Calibration_Step == (int)ScannerCalibration_Step.None)
+                {
+                    //Console.WriteLine("Scanner Calibration completed.");
+                    //timer_ScannerCalibration.Stop(); // 타이머 중지
+                    return;
+                }
+
+                // 단계별 실행
+                //Console.WriteLine($"Scanner Calibration running at {DateTime.Now}, Step: {m_nScanner_Calibration_Step}");
+                Run_Verify_ScannerCameraOffset_Func();
+                Run_LaserHeightCheck_Func();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Timer_ScannerCalibration_Elapsed: {ex.Message}");
+            }
+            finally
+            {
+                _isVerifyScannerCamOffsetRunning = false; // 플래그 해제
             }
         }
 
@@ -7577,26 +7630,6 @@ namespace QMC.Common.Modules
                 _isCalibrationRunning = false; // 플래그 해제
             }
         }
-
-        private void Timer_ScannerCalibration_Func(object sender, EventArgs e)
-        {
-            m_btimer_ScannerCalibratio_Stop = false;
-            timer_ScannerCalibration.Enabled = false;
-
-            if (!m_ScannerCalibration_Start) return;
-
-            Run_Scanner_Calibration_Func();
-
-            timer_ScannerCalibration.Enabled = true;
-        }
-
-
-        //private void Timer_ScannerCalibration_Func(object sender, ElapsedEventArgs e)
-        //{
-        //    if (!m_ScannerCalibrationTimer_Start) return;
-
-        //    Run_Scanner_Calibration_Func();
-        //}
 
         public void forThread_MainWorkCycle()
         {
@@ -7861,6 +7894,8 @@ namespace QMC.Common.Modules
                     m_bFindUpperAlignMark_OK = false;
                     m_bFindLowerAlignMark_OK = false;
 
+                    m_bFindAlignMark_Complete = false;
+
                     //  어느 쪽 마크를 찾을 것인지... 1번 마크인지 2번 마크인지...
                     if ((m_nFindAlignMarkType == (int)AlignMarkType.ALIGN_2POINT) || (m_nFindAlignMarkType == (int)AlignMarkType.ALIGN_1STMARK))        //  2 Point 찾기나, 1번 마크 찾기일 경우
                     {
@@ -8033,6 +8068,7 @@ namespace QMC.Common.Modules
                         }
                     }
 
+                    m_bFindAlignMark_Complete = true;
                     m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
                     break;
             }
@@ -8928,7 +8964,6 @@ namespace QMC.Common.Modules
                 //}
             }
 
-
             switch (m_nWorkStage_Move_Step)
             {
                 case (int)WorkStage_Move_Step.Start:
@@ -9017,8 +9052,6 @@ namespace QMC.Common.Modules
                     }
                     break;
 
-
-
                 /// <summary>
                 /// Module Loading Pos Move - 시작
                 /// </summary>                
@@ -9050,7 +9083,6 @@ namespace QMC.Common.Modules
                         m_nWorkStage_Move_Step = (int)WorkStage_Move_Step.ToLoadingPos_ScannerZ_Move_ReadyPos;
                     }
                     break;
-
 
                 case (int)WorkStage_Move_Step.ToLoadingPos_ScannerZ_Move_ReadyPos:                            //  Scanner Z 축, 대기 위치로 이동
 
@@ -9657,15 +9689,6 @@ namespace QMC.Common.Modules
                 /// <summary>
                 /// Stage and Camera Center Pos Move - 완료
                 /// </summary>
-
-
-
-
-
-
-
-
-
 
                 case (int)WorkStage_Move_Step.Complete:
 
@@ -12039,14 +12062,10 @@ namespace QMC.Common.Modules
                 //  Dry Run 하기 위한 조건
                 if (!m_bMainWorkCycle_Complete &&
                     loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete &&
-
                     m_bMainWorkCycle_DryRun &&
-
                     !m_bDryRun_Complete &&
-
                     (loader.m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None) &&               //  테스트 후 주석 처리 가능
                     (unloader.m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None) &&         //  테스트 후 주석 처리 가능
-
                     (m_nDryRun_Step == (int)DryRun_Step.None) &&
                     (m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None))
                 {
@@ -16099,7 +16118,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DrillingData_PreAlign_CompleteCheck:              //  가공 할 Socket Align 완료 확인
                     
-                    if ((m_nFindAlignMark_Step == (int)SocketAlign_Step.None))
+                    if (m_bFindAlignMark_Complete && (m_nFindAlignMark_Step == (int)SocketAlign_Step.None))
                     {
                         if (m_bFindLowerAlignMark_OK)
                         {
