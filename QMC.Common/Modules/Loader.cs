@@ -783,9 +783,6 @@ namespace QMC.Common.Modules
             //  쓰레드로 변경 --> 변경 취소. 그냥 타이머 쓴다. Thread 쓰니까 뭐가 막 잘 안됨 ㅡㅡ
            
             //  Loader Work 타이머
-            //timer_LoaderWork = new System.Windows.Forms.Timer();
-            //timer_LoaderWork.Interval = 20;
-            //timer_LoaderWork.Tick += new System.EventHandler(Timer_LoaderWork_Func);
             timer_LoaderWork = new System.Timers.Timer(10);
             timer_LoaderWork.Elapsed += Timer_LoaderWork_Tick;
             timer_LoaderWork.AutoReset = true; // 반복 실행
@@ -7811,8 +7808,6 @@ namespace QMC.Common.Modules
                 Equipment.m_bMainProcessStatus_LD_Module_WorkStagePutDown_Complete = m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete && (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker) ? true : false;
                 //  메인 화면 갱신용 변수
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
                 //  자동운전 시, R-Port 동작 조건 : TR Cycle (None), R-Port Cycle (None), R-Port Module Pickup Complete
                 Run_Stacker0Module_PickupWaitingPos_Func();
