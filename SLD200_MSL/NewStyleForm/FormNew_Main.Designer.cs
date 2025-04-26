@@ -104,6 +104,7 @@
             this.button_Main_WorkStage_Continue = new System.Windows.Forms.Button();
             this.baseTextBox_DryRun_ProcessingTime = new SLD200_MSL.BaseTextBox();
             this.baseLabel5 = new SLD200_MSL.BaseLabel();
+            this.buttonForceMaterialOut = new System.Windows.Forms.Button();
             this.groupBoxMain_ModuleProcessingStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -1186,12 +1187,28 @@
             this.baseLabel5.Text = "(Dry Run Processing Time (sec) :";
             this.baseLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // buttonForceMaterialOut
+            // 
+            this.buttonForceMaterialOut.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.buttonForceMaterialOut.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.buttonForceMaterialOut.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.buttonForceMaterialOut.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.buttonForceMaterialOut.Location = new System.Drawing.Point(1394, 802);
+            this.buttonForceMaterialOut.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonForceMaterialOut.Name = "buttonForceMaterialOut";
+            this.buttonForceMaterialOut.Size = new System.Drawing.Size(118, 64);
+            this.buttonForceMaterialOut.TabIndex = 158;
+            this.buttonForceMaterialOut.Text = "강제배출";
+            this.buttonForceMaterialOut.UseVisualStyleBackColor = false;
+            this.buttonForceMaterialOut.Click += new System.EventHandler(this.buttonForceMaterialOut_Click);
+            // 
             // FormNew_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 877);
             this.ControlBox = false;
+            this.Controls.Add(this.buttonForceMaterialOut);
             this.Controls.Add(this.button_Main_WorkStage_Continue);
             this.Controls.Add(this.button_Main_Unloader_Continue);
             this.Controls.Add(this.button_Main_Loader_Continue);
@@ -1325,5 +1342,6 @@
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Button buttonForceMaterialOut;
     }
 }

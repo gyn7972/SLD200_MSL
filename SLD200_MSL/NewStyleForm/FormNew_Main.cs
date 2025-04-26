@@ -1309,6 +1309,8 @@ namespace SLD200_MSL
             }
 
 
+            workStage.SetRecoveraryLaserDrilling_MainStep(workStage.m_nLaserDrilling_MainStep);
+            workStage.m_nLaserDrilling_MainStep = workStage.m_nLaserDrilling_MainStep_Recovery;
             //  테스트 : 강제로 Dry Run
             //workStage.m_bMainWorkCycle_DryRun = true;
             Equipment.DryRun_ProcessingTime = Convert.ToInt16(baseTextBox_DryRun_ProcessingTime.Text);
@@ -1886,6 +1888,13 @@ namespace SLD200_MSL
             }
 
             listView_Main_FiducialAlignData.EndUpdate();
+        }
+
+        private void buttonForceMaterialOut_Click(object sender, EventArgs e)
+        {
+            workStage.m_bLaserDrilling_Complete = true;
+            workStage.m_nLaserDrilling_MainStep = 0;
+            workStage.m_nSocketAlign_MainStep = 0;
         }
     }
 }

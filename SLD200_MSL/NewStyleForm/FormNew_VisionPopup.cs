@@ -348,6 +348,8 @@ namespace SLD200_MSL
 
         private void SetScroll(int nChannel)
         {
+            //return;
+
             hScrollBarIlluminator.Minimum = (int)workStage.Config.ListIlluminationChannel[nChannel].Min;
             hScrollBarIlluminator.Maximum = (int)workStage.Config.ListIlluminationChannel[nChannel].Max;
 
@@ -422,7 +424,7 @@ namespace SLD200_MSL
             hScrollBarIlluminator.Value = workStage.Config.ListIlluminationChannel[2].Value;                //  저해상도 카메라 IR 조명 (3번, Index 는 2번)
             this.textBox_IlluminationValue.Text = hScrollBarIlluminator.Value.ToString();
 
-            //  High Mag Camera 조명 끄기
+            ////  High Mag Camera 조명 끄기
             CommonModule.Instance.Illuminator.TurnOnOff(false, 1);
             CommonModule.Instance.Illuminator.TurnOnOff(false, 2);
         }
@@ -480,7 +482,7 @@ namespace SLD200_MSL
             }
 
             //  Low Mag Camera 조명 끄기
-            CommonModule.Instance.Illuminator.TurnOnOff(false, 3);
+            //CommonModule.Instance.Illuminator.TurnOnOff(false, 3);
         }
 
         private void radioButton_VisionPopup_DisplayMode_Live_CheckedChanged(object sender, EventArgs e)
@@ -1622,13 +1624,13 @@ namespace SLD200_MSL
             {
                 SetScroll(2);
 
-                //  조명값 변경
+                ////  조명값 변경
                 CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[2].Value, 3);
                 CommonModule.Instance.Illuminator.TurnOnOff(true, 3);
                 hScrollBarIlluminator.Value = workStage.Config.ListIlluminationChannel[2].Value;                //  저해상도 카메라 IR 조명 (3번, Index 는 2번)
                 this.textBox_IlluminationValue.Text = hScrollBarIlluminator.Value.ToString();
 
-                //  High Mag Camera 조명 끄기
+                ////  High Mag Camera 조명 끄기
                 CommonModule.Instance.Illuminator.TurnOnOff(false, 1);
                 CommonModule.Instance.Illuminator.TurnOnOff(false, 2);
             }
@@ -1636,7 +1638,7 @@ namespace SLD200_MSL
             {
                 SetScroll(1);
 
-                //  조명값 변경
+                ////  조명값 변경
                 CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[1].Value, 2);
                 CommonModule.Instance.Illuminator.TurnOnOff(true, 2);
                 CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[0].Value, 1);
@@ -1645,7 +1647,7 @@ namespace SLD200_MSL
                 hScrollBarIlluminator.Value = workStage.Config.ListIlluminationChannel[1].Value;                //  고해상도 카메라 IR 조명 (2번, Index 는 1번)
                 this.textBox_IlluminationValue.Text = hScrollBarIlluminator.Value.ToString();
 
-                //  Low Mag Camera 조명 끄기
+                ////  Low Mag Camera 조명 끄기
                 CommonModule.Instance.Illuminator.TurnOnOff(false, 3);
             }
         }
@@ -1665,7 +1667,7 @@ namespace SLD200_MSL
                 hScrollBarIlluminator.Value = workStage.Config.ListIlluminationChannel[0].Value;                //  저해상도 카메라 IR 조명 (3번, Index 는 2번)
                 this.textBox_IlluminationValue.Text = hScrollBarIlluminator.Value.ToString();
 
-                //  Low Mag Camera 조명 끄기
+                ////  Low Mag Camera 조명 끄기
                 CommonModule.Instance.Illuminator.TurnOnOff(false, 3);
             }
         }
