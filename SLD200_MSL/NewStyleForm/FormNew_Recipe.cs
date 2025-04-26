@@ -734,6 +734,17 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper = Convert.ToDouble(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "DustCollector_Frequency_Lower", "20.0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower = Convert.ToDouble(temp.ToString());
+
+                // Pre Align
+                NativeMethods.GetPrivateProfileString(strTemp, "PreAlignPosX1", "0.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].PreAlignPos1.X = Equipment.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "PreAlignPosY1", "0.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].PreAlignPos1.Y = Equipment.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "PreAlignPosX2", "0.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].PreAlignPos2.X = Equipment.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "PreAlignPosY2", "0.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].PreAlignPos2.Y = Equipment.ToDouble(temp.ToString());
+
             }
 
             return m_bRet;
@@ -754,8 +765,15 @@ namespace SLD200_MSL
                 strTemp = string.Format("{0} 파일을 생성하였습니다. 다시 시도하십시오.", System.IO.Path.GetFileName(strFIle));
                 MessageBox.Show(strTemp, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
-            }
 
+                //생성하고 바로 열어서 쓰면 저장 안됨. 여기서는...
+                //if (File.Exists(strFIle) == false)
+                //{
+                //    strTemp = string.Format("{0} 파일을 읽지 못하였습니다. 다시 시도하십시오.", System.IO.Path.GetFileName(strFIle));
+                //    MessageBox.Show(strTemp, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //    return;
+                //}
+            }
 
             //  Recipe Parameter 저장
             for ( int i = 0; i < (int)System.Enum.GetValues(typeof(LayerList)).Length; i++)
@@ -856,6 +874,13 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_RemoteMode_Use", Equipment.stLayerRecipeSet[i].DustCollectorRemoteMode_Use.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_Frequency_Upper", Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_Frequency_Lower", Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower.ToString(), strFIle);
+
+                // Pre Align
+                NativeMethods.WritePrivateProfileString(strTemp, "PreAlignPosX1", Equipment.stLayerRecipeSet[i].PreAlignPos1.X.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "PreAlignPosY1", Equipment.stLayerRecipeSet[i].PreAlignPos1.Y.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "PreAlignPosX2", Equipment.stLayerRecipeSet[i].PreAlignPos2.X.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "PreAlignPosY2", Equipment.stLayerRecipeSet[i].PreAlignPos2.Y.ToString(), strFIle);
+
             }
         }
         #endregion
@@ -868,6 +893,8 @@ namespace SLD200_MSL
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = "Recipe Data Path";
             saveFileDialog.OverwritePrompt = true;
+            saveFileDialog.CreatePrompt = true;
+
             //saveFileDialog.InitialDirectory = ConfigManager.GetRecipeDataPath();
 
             if (Equipment.RecipeFilePath.Length > 0)
@@ -890,6 +917,15 @@ namespace SLD200_MSL
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 fileName = saveFileDialog.FileName;
+
+                if (File.Exists(fileName) == false)
+                {
+                    //File.Create(fileName);
+                    using (FileStream fs = File.Create(fileName))
+                    {
+                        // 파일만 생성하고 바로 닫음
+                    }
+                }
 
                 //  Recipe Data 저장
                 Recipe_Data_Save(fileName);
@@ -1052,6 +1088,17 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper = textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text) : 20.0;
             Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower = textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text) : 20.0;
 
+            //PreAlign
+            Equipment.stLayerRecipeSet[0].PreAlignPos1.X =
+                textBox_Recipe_TabRecipe_PreAlignPosX1.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosX1.Text) : 0.0;
+            Equipment.stLayerRecipeSet[0].PreAlignPos1.Y =
+                textBox_Recipe_TabRecipe_PreAlignPosY1.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosY1.Text) : 0.0;
+            Equipment.stLayerRecipeSet[0].PreAlignPos2.X =
+                textBox_Recipe_TabRecipe_PreAlignPosX2.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosX2.Text) : 0.0;
+            Equipment.stLayerRecipeSet[0].PreAlignPos2.Y =
+                textBox_Recipe_TabRecipe_PreAlignPosY2.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosY2.Text) : 0.0;
+
+
             //  도면 데이터를 가공용 Document 에 적용
             Equipment.EqpSiriusViewer.Document = m_formSiriusEditor.SiriusEditor.Document;
 
@@ -1187,6 +1234,12 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper.ToString();
                 textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString();
 
+                // PreAlign
+                textBox_Recipe_TabRecipe_PreAlignPosX1.Text = Equipment.stLayerRecipeSet[0].PreAlignPos1.X.ToString();
+                textBox_Recipe_TabRecipe_PreAlignPosY1.Text = Equipment.stLayerRecipeSet[0].PreAlignPos1.Y.ToString();
+                textBox_Recipe_TabRecipe_PreAlignPosX2.Text = Equipment.stLayerRecipeSet[0].PreAlignPos2.X.ToString();
+                textBox_Recipe_TabRecipe_PreAlignPosY2.Text = Equipment.stLayerRecipeSet[0].PreAlignPos2.Y.ToString();
+
                 int m_nCount = 0;
 
                 do
@@ -1209,11 +1262,15 @@ namespace SLD200_MSL
                 //  Layer List 전체 삭제
                 listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Clear();
 
-                foreach (var layer in  m_formSiriusEditor.SiriusEditor.Document.Layers)
+                // Todo : 20250426 확인
+                if(m_formSiriusEditor.SiriusEditor.Document != null)
                 {
-                    if (layer.IsMarkerable)
+                    foreach (var layer in m_formSiriusEditor.SiriusEditor.Document.Layers)
                     {
-                        listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Add(layer.Name);
+                        if (layer.IsMarkerable)
+                        {
+                            listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Add(layer.Name);
+                        }
                     }
                 }
 
@@ -1380,6 +1437,12 @@ namespace SLD200_MSL
             checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked = Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use;                         //  집진기 Remote Mode 사용 여부
             textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper.ToString();
             textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString();
+
+            // PreAlign
+            textBox_Recipe_TabRecipe_PreAlignPosX1.Text = Equipment.stLayerRecipeSet[0].PreAlignPos1.X.ToString();
+            textBox_Recipe_TabRecipe_PreAlignPosY1.Text = Equipment.stLayerRecipeSet[0].PreAlignPos1.Y.ToString();
+            textBox_Recipe_TabRecipe_PreAlignPosX2.Text = Equipment.stLayerRecipeSet[0].PreAlignPos2.X.ToString();
+            textBox_Recipe_TabRecipe_PreAlignPosY2.Text = Equipment.stLayerRecipeSet[0].PreAlignPos2.Y.ToString();
         }
 
         public void Recipe_Open(string m_strRecipeFile)
@@ -1482,6 +1545,12 @@ namespace SLD200_MSL
             checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked = Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use;                         //  집진기 Remote Mode 사용 여부
             textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper.ToString();
             textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString();
+
+            // PreAlign
+            textBox_Recipe_TabRecipe_PreAlignPosX1.Text = Equipment.stLayerRecipeSet[0].PreAlignPos1.X.ToString();
+            textBox_Recipe_TabRecipe_PreAlignPosY1.Text = Equipment.stLayerRecipeSet[0].PreAlignPos1.Y.ToString();
+            textBox_Recipe_TabRecipe_PreAlignPosX2.Text = Equipment.stLayerRecipeSet[0].PreAlignPos2.X.ToString();
+            textBox_Recipe_TabRecipe_PreAlignPosY2.Text = Equipment.stLayerRecipeSet[0].PreAlignPos2.Y.ToString();
 
             //  도면 Import
             m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
