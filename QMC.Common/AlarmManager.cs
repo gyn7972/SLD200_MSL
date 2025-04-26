@@ -37,6 +37,11 @@ namespace QMC.Common
             m_Alarms = new AlarmCollection();
         }
 
+        public bool IsAlarm { get 
+            {
+                return m_Alarms.Count > 0;
+            }
+        }
         public void ShowAlarm(Alarm alarm)
         {
             m_Alarms.Add(alarm);
