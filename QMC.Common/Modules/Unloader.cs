@@ -533,9 +533,6 @@ namespace QMC.Common.Modules
             //  타이머를 쓰레드로 변경 --> 다시 타이머 사용하기로...
 
             //  Unloader Work 타이머
-            //timer_UnloaderWork = new System.Windows.Forms.Timer();
-            //timer_UnloaderWork.Interval = 1;
-            //timer_UnloaderWork.Tick += new System.EventHandler(Timer_UnloaderWork_Func);
             timer_UnloaderWork = new System.Timers.Timer(10);
             timer_UnloaderWork.Elapsed += Timer_UnloaderWork_Tick;
             timer_UnloaderWork.AutoReset = true; // 반복 실행
@@ -4455,12 +4452,12 @@ namespace QMC.Common.Modules
                 _isUnloaderWorkRunning = true;
 
                 // Scanner Calibration이 활성화되지 않은 경우 종료
-                if (!m_UnloaderWork_Start)
-                {
-                    Console.WriteLine("UnloadTransfer is not started.");
-                    //timer_ScannerCalibration.Stop(); // 타이머 중지
-                    return;
-                }
+                //if (!m_UnloaderWork_Start)
+                //{
+                //    Console.WriteLine("UnloadTransfer is not started.");
+                //    //timer_ScannerCalibration.Stop(); // 타이머 중지
+                //    return;
+                //}
 
                 // 현재 단계가 None이면 타이머 중지
                 //if (m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None)
@@ -4488,6 +4485,7 @@ namespace QMC.Common.Modules
                 Run_Stacker1Module_PutdownWaitingPos_Func();
 
                 Run_Transfer_Cycle_Func();
+
                 Console.WriteLine($"UnLoaderWork Running at {DateTime.Now}, Step: {m_nUnloader_Transfer_Step}");
             }
             catch (Exception ex)

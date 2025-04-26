@@ -2417,9 +2417,6 @@ namespace SLD200_MSL
                 workStage.m_btimer_Motion_Home_Stop = true;
                 workStage.timer_Motion_Home.Enabled = false;
 
-                //  Reticle Glass check 타이머
-                workStage.m_btimer_ReticleGlass_Check_Stop = true;
-                workStage.timer_ReticleGlass_Check.Enabled = false;
 
                 MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.X, 2000);
                 MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.Y, 2000);

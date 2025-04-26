@@ -335,10 +335,6 @@ namespace SLD200_MSL
 
                 //  Motion 홈 실행 타이머
                 workStage.timer_Motion_Home.Enabled = false;
-                
-                //  Reticle Glass check 타이머
-                workStage.timer_ReticleGlass_Check.Enabled = false;
-
 
                 workStage.m_nHomeStep = (int)WorkStage.Home_Step.None;
                 workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
