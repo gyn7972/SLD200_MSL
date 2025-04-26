@@ -5789,6 +5789,7 @@ namespace QMC.Common.Modules
                             (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y - 0.1)) &&
                             (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y + 0.1)))
                     {
+                        
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage, Module Loading 위치에 있으므로 PutDown 진행, (위치 및 로딩 조건 OK)");
 
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferX_Move_LoadingPos;
@@ -5817,7 +5818,7 @@ namespace QMC.Common.Modules
 
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferX_Move_LoadingPos;
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
+                    else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 6000000)
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage, Module Loading 위치로 이동 실패. (Timeout)");
 
@@ -6018,7 +6019,10 @@ namespace QMC.Common.Modules
 
                     workStage.workStageParameter.DO_Stage_Vacuum(true);
                     workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
-
+                    workStage.DustCollector_SetFrequence(20);
+                    Thread.Sleep(1000);
+                    workStage.DustCollector_On((int)nDustCollector.DustCollector_Lower);
+                    
                     //  Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
                     workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);            //  임시로 -30 고정
 
@@ -6067,9 +6071,12 @@ namespace QMC.Common.Modules
                         //
                         //  복원 지점 체크용 (Work Stage 에 Module Put Down 완료)
                         //////////////////////////////////////////////////////////////////////////////////////////
+                        if(workStage.workStageParameter.DI_Stage_Vacuum_Check())
+                        {
+                            m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_ReadyPos2_1stStep;
 
+                        }
 
-                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_ReadyPos2_1stStep;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 10000)
                     {
@@ -7172,7 +7179,7 @@ namespace QMC.Common.Modules
 
             //  Loader 에서 Module 내려놓고 얼라인을 시작하니, 자동으로 얼라인 하는 Flag 는 없어도 될듯
 
-            //  자동운전 시, M-Align 동작 조건 : TR Cycle (None), M-Aligner Module Exist, M-Aligner Cycle (None)
+            //자동운전 시, M-Align 동작 조건 : TR Cycle(None), M - Aligner Module Exist, M-Aligner Cycle(None)
             //if (Equipment.AutoRunStatus &&
 
             //    m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&

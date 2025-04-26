@@ -1853,7 +1853,7 @@ namespace QMC.Common.Modules
 
                             m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
 
-                            MessageBox.Show("UL Stacker1 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            //MessageBox.Show("UL Stacker1 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -2005,7 +2005,7 @@ namespace QMC.Common.Modules
 
                             m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
 
-                            MessageBox.Show("UL Stacker1 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                           // MessageBox.Show("UL Stacker1 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -2087,7 +2087,7 @@ namespace QMC.Common.Modules
 
                             m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
 
-                            MessageBox.Show("UL Stacker1 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                           // MessageBox.Show("UL Stacker1 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -2239,7 +2239,7 @@ namespace QMC.Common.Modules
 
                             m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
 
-                            MessageBox.Show("UL Stacker1 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            //MessageBox.Show("UL Stacker1 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {

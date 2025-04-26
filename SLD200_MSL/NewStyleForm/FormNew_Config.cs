@@ -139,44 +139,107 @@ namespace SLD200_MSL
 
             //checkedListBox_Config_LDUL_DIO_Input.SetItemChecked(0, true);                     //  IO 상태 표시
 
-            //Action
-            workStage.ActionLaserDrillingStep += OnLaserDrillingStep;
-            loader.ActionLoaderTransferStep += OnLoaderStep;
-            unloader.ActionUnloaderTransferStep += OnUnLoaderStep;
+            ////Action
+            //workStage.ActionLaserDrillingStep += OnLaserDrillingStep;
+            //loader.ActionLoaderTransferStep += OnLoaderStep;
+            //unloader.ActionUnloaderTransferStep += OnUnLoaderStep;
 
         }
 
         public void OnLaserDrillingStep(LaserDrilling_Step step)
         {
-            // Enum 값 순환
-            LaserDrilling_Step currentStep = (LaserDrilling_Step)(((int)step + 1) % Enum.GetValues(typeof(LaserDrilling_Step)).Length);
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() =>
+                {
+                    this.OnLaserDrillingStep(step);
+                }));
+            }
+            else
+            {
+                // Enum 값 순환
+                LaserDrilling_Step currentStep = (LaserDrilling_Step)(((int)step) % Enum.GetValues(typeof(LaserDrilling_Step)).Length);
+                string str = $"STEP: {currentStep}";
+                label_Config_SeqTest_SeqStatus_Disp_workStage.Text = str;
 
-            string str = $"STEP: {currentStep}";
-            label_Config_SeqTest_SeqStatus_Disp_workStage.Text = str;
+                int nStep = workStage.m_nSocketAlign_MainStep;
+                SocketAlign_Step currentStopSocket = (SocketAlign_Step)(((int)nStep) % Enum.GetValues(typeof(SocketAlign_Step)).Length);
 
-            Log.Write("SLD-200", "WORKSTAGE_seq:", str);
+                str = $"STEP: {currentStopSocket}";
+                label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.Text = str;
+
+            }
         }
 
         public void OnLoaderStep(Loader_Transfer_Step step)
         {
-            // Enum 값 순환
-            Loader_Transfer_Step currentStep = (Loader_Transfer_Step)(((int)step + 1) % Enum.GetValues(typeof(Loader_Transfer_Step)).Length);
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() =>
+                {
+                    this.OnLoaderStep(step);
+                }));
+            }
+            else
+            {
+                // Enum 값 순환
+                Loader_Transfer_Step currentStep = (Loader_Transfer_Step)(((int)step) % Enum.GetValues(typeof(Loader_Transfer_Step)).Length);
 
-            string str = $"STEP: {currentStep}";
-            label_Config_SeqTest_SeqStatus_Disp_Loader.Text = str;
+                string str = $"STEP: {currentStep}";
+                label_Config_SeqTest_SeqStatus_Disp_Loader.Text = str;
 
-            Log.Write("SLD-200", "LOADER_seq:", str);
+
+                // Enum 값 순환
+                MAlign_Step currentMAStep = (MAlign_Step)(((int)loader.m_nMAlign_Step) % Enum.GetValues(typeof(MAlign_Step)).Length);
+
+                str = $"STEP: {currentMAStep}";
+                Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.Text = str;
+
+
+
+                // Enum 값 순환
+                StackerModulePickupWaitingPos_Step currentLPStep = (StackerModulePickupWaitingPos_Step)(((int)loader.m_nStacker0_ModulePickupWaitingPos_Step) % Enum.GetValues(typeof(StackerModulePickupWaitingPos_Step)).Length);
+
+                str = $"STEP: {currentLPStep}";
+                Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.Text = str;
+
+
+                StackerModulePickupWaitingPos_Step currentRPStep = (StackerModulePickupWaitingPos_Step)(((int)loader.m_nStacker1_ModulePickupWaitingPos_Step) % Enum.GetValues(typeof(StackerModulePickupWaitingPos_Step)).Length);
+
+                str = $"STEP: {currentRPStep}";
+                Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.Text = str;
+            }
         }
 
         public void OnUnLoaderStep(Unloader_Transfer_Step step)
         {
-            // Enum 값 순환
-            Unloader_Transfer_Step currentStep = (Unloader_Transfer_Step)(((int)step + 1) % Enum.GetValues(typeof(Unloader_Transfer_Step)).Length);
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new System.Action(() =>
+                {
+                    this.OnUnLoaderStep(step);
+                }));
+            }
+            else
+            {
+                // Enum 값 순환
+                Unloader_Transfer_Step currentStep = (Unloader_Transfer_Step)(((int)step) % Enum.GetValues(typeof(Unloader_Transfer_Step)).Length);
 
-            string str = $"STEP: {currentStep}";
-            label_Config_SeqTest_SeqStatus_Disp_UnLoader.Text = str;
+                string str = $"STEP: {currentStep}";
+                label_Config_SeqTest_SeqStatus_Disp_UnLoader.Text = str;
 
-            Log.Write("SLD-200", "UNLOADER_seq:", str);
+                StackerModulePutdownWaitingPos_Step currentLpStep = (StackerModulePutdownWaitingPos_Step)(((int)unloader.m_nStacker0_ModulePutdownWaitingPos_Step) % Enum.GetValues(typeof(StackerModulePutdownWaitingPos_Step)).Length);
+
+                str = $"STEP: {currentStep}";
+                label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.Text = str;
+
+
+                StackerModulePutdownWaitingPos_Step currentRpStep = (StackerModulePutdownWaitingPos_Step)(((int)unloader.m_nStacker1_ModulePutdownWaitingPos_Step) % Enum.GetValues(typeof(StackerModulePutdownWaitingPos_Step)).Length);
+
+                str = $"STEP: {currentRpStep}";
+                label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.Text = str;
+
+            }
         }
 
 
@@ -255,7 +318,7 @@ namespace SLD200_MSL
             DIO_Status();
             Motor_Position();
             AIO_Status();
-
+            UpdateSeqStatus();
             ///////////////////////////////////////////////////////////////////////////////////////
             //  비상 정지 시
             //
@@ -509,6 +572,19 @@ namespace SLD200_MSL
             //}
 
             timer_Status.Enabled = true;
+        }
+
+        private void UpdateSeqStatus()
+        {
+            OnLaserDrillingStep((LaserDrilling_Step)workStage.m_nLaserDrilling_MainStep);
+            OnLoaderStep((Loader_Transfer_Step)loader.m_nLoader_Transfer_Step);
+            OnUnLoaderStep((Unloader_Transfer_Step)unloader.m_nUnloader_Transfer_Step);
+
+            ////Action
+            //workStage.ActionLaserDrillingStep += OnLaserDrillingStep;
+            //loader.ActionLoaderTransferStep += OnLoaderStep;
+            //unloader.ActionUnloaderTransferStep += OnUnLoaderStep;
+
         }
 
         private void AIO_Status()
@@ -6189,27 +6265,14 @@ namespace SLD200_MSL
         {
             //  집진기1 주파수 세팅
 
-            double m_dFreq = Convert.ToDouble(textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Text);
+            double dFreq = Convert.ToDouble(textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Text);
 
             //  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
-            double m_dRet_Freq = GetClosestValue_DustCollector(m_dFreq);
-
-            //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-            m_dRet_Freq *= 100.0;
-
-            //  숫자를 4자리 숫자로 고정
-            string m_strFreq = m_dRet_Freq.ToString("0000");
-
-            string m_strRet = workStage.ConvertDecimalToHex(m_strFreq);
-
-            if (m_strRet != "NG")
-            {
-                workStage.m_bDustCollector_LowerPos_CommData_Received = false;
-                workStage.m_strDustCollector_LowerPos_Comm_ReceivedData = "";
-
-                workStage.DustCollectorComm_Send_Write((int)WorkStage.nDustCollector.DustCollector_Lower, "0005", 1, m_strRet);
-            }
+            double dRet_Freq = GetClosestValue_DustCollector(dFreq);
+            dRet_Freq = workStage.DustCollector_SetFrequence(dRet_Freq);
         }
+
+        
 
         private void button_Test_ULTransfer_PickupWorkStagePos_Cyc_Click(object sender, EventArgs e)
         {
