@@ -43,8 +43,8 @@ namespace SLD200_MSL
 
 
         //  모듈 진행 상태 표시용 변수 
-        private int Rows = 3; // 세로 개수 (기본값)
-        private int Columns = 4; // 가로 개수 (기본값)
+        private int Rows = 1; // 세로 개수 (기본값)
+        private int Columns = 1; // 가로 개수 (기본값)
         private int CellSize_Width = 50; // 각 셀의 크기 (가로)
         private int CellSize_Height = 50; // 각 셀의 크기 (세로)
 
@@ -537,6 +537,28 @@ namespace SLD200_MSL
                 checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete;
 
 
+		//  Socket 가공 진행 상태 표시
+            if (workStage.Main_SocketPositions_Draw)
+            {
+                workStage.Main_SocketPositions_Draw = false;
+
+                Change_SocketArraySize(workStage.Main_SocketPositions_ColumnCount, workStage.Main_SocketPositions_RowCount);
+
+                workStage.Main_SocketPositions_Drawed = true;
+            }
+
+            //  Socket 가공 진행 상태 다시 그리기
+            if (workStage.Main_SocketPositions_Drawed)
+            {
+                if (workStage.Main_SocketPositions_SetStatus)
+                {
+                    workStage.Main_SocketPositions_SetStatus = false;
+
+                    (int rows, int columns) = workStage.GetRowColumnFromPosition(workStage.Main_SocketPositions, workStage.Main_SocketPositions_CurrentSocketPosition);
+                    Update_SocketStatus(rows, columns, workStage.Main_SocketPositions_ProcessingStatus);
+                }
+            }
+
                 //  계속 진행 버튼 활성화
                 if (Equipment.MachineStop_byTimeout_Loader)
                 {
@@ -664,6 +686,10 @@ namespace SLD200_MSL
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "장비를 초기화 하시겠습니까?"))
                     return;
 
+                workStage.Module_Allocation();
+                unloader.Module_Allocation();
+                loader.Module_Allocation();
+
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 //  이것저것 다 리셋 - 시작
                 workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
@@ -735,6 +761,18 @@ namespace SLD200_MSL
                 //  이것저것 다 리셋 - 끝
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 ///
+
+                //  RTC 보드 초기화
+
+                //  카메라는 여러번 초기화 할 수 있으니, 이 조건을 걸어서 스캐너 초기화를 1회만 하도록 한다.
+                if (Equipment.ScannerMode_Change_byUser != (int)RtcMode.RTC_RTC6_COMPLETE)
+                {
+                    // 문서 생성후 뷰어에 지정
+                    var doc = new DocumentDefault();
+                    SiriusViewer_Main.Document = doc;
+
+                    Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
+                }
 
                 //  카메라 초기화
                 workStage.Camera_HighRes.SetRunStatus(Part.RunStatus.Run);
@@ -994,18 +1032,21 @@ namespace SLD200_MSL
                 baseTextBox_Socket_Index.Text = "All";
                 workStage.m_nSelectedSocket_Index = -1;
 
-                //  선택된 Socket 이 몇번 Socket 인지 확인
-                for (int i = 0; i < workStage.m_stDividedRegion_GroupData.Length; i++)
-                {
-                    if ((m_dSelectedGroup_Center_X == workStage.m_stDividedRegion_GroupData[i].dGroupCenter.X) &&
-                        (m_dSelectedGroup_Center_Y == workStage.m_stDividedRegion_GroupData[i].dGroupCenter.Y))
-                    {
-                        baseTextBox_Socket_Index.Text = i.ToString();
-                        workStage.m_nSelectedSocket_Index = i;
-                        break;
-                    }
-                }
-                ////  Socket 선택 가공인지 확인용
+				if (workStage.m_stDividedRegion_GroupData != null)
+				{
+					//  선택된 Socket 이 몇번 Socket 인지 확인
+	                for (int i = 0; i < workStage.m_stDividedRegion_GroupData.Length; i++)
+	                {
+	                    if ((m_dSelectedGroup_Center_X == workStage.m_stDividedRegion_GroupData[i].dGroupCenter.X) &&
+	                        (m_dSelectedGroup_Center_Y == workStage.m_stDividedRegion_GroupData[i].dGroupCenter.Y))
+	                    {
+	                        baseTextBox_Socket_Index.Text = i.ToString();
+	                        workStage.m_nSelectedSocket_Index = i;
+	                        break;
+	                    }
+	                }
+	         	}
+                ////  Socket 선택 가공인지 확인용                
                 ////////////////////////////////////////////////////////////////////////////
                 //if (laserDrilling.m_nAutoCal_ScannerCamCenter_Step > (int)LaserDrilling.AutoCalScannerCameraCenter_Step.None)
                 //{

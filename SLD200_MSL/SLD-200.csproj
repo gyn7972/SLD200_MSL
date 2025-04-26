@@ -214,6 +214,18 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>2DMappingFileControl.resx</DependentUpon>
     </Compile>
+    <Compile Include="AlarmInfoControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AlarmInfoControl.Designer.cs">
+      <DependentUpon>AlarmInfoControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AlarmLogOptionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AlarmLogOptionControl.Designer.cs">
+      <DependentUpon>AlarmLogOptionControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="AutoFocusConfigControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -260,6 +272,12 @@
       <DependentUpon>EditMode_SLD200.cs</DependentUpon>
     </Compile>
     <Compile Include="EquipmentVision.cs" />
+    <Compile Include="FormAlarmLog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAlarmLog.Designer.cs">
+      <DependentUpon>FormAlarmLog.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormBdsParameterConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -296,6 +314,12 @@
     <Compile Include="FormLoaderParameterRecipe.designer.cs">
       <DependentUpon>FormLoaderParameterRecipe.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewStyleForm\FormNew_AlarmLog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\FormNew_AlarmLog.Designer.cs">
+      <DependentUpon>FormNew_AlarmLog.cs</DependentUpon>
+    </Compile>
     <Compile Include="NewStyleForm\FormNew_SiriusEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -307,6 +331,12 @@
     </Compile>
     <Compile Include="NewStyleForm\FormNew_CommunicationTerminal.Designer.cs">
       <DependentUpon>FormNew_CommunicationTerminal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewStyleForm\FormNew_Alarm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\FormNew_Alarm.Designer.cs">
+      <DependentUpon>FormNew_Alarm.cs</DependentUpon>
     </Compile>
     <Compile Include="NewStyleForm\FormNew_VisionPopup.cs">
       <SubType>Form</SubType>
@@ -1273,6 +1303,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>2DMappingFileControl1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="AlarmInfoControl.resx">
+      <DependentUpon>AlarmInfoControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AlarmLogOptionControl.resx">
+      <DependentUpon>AlarmLogOptionControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AutoFocusConfigControl.resx">
       <DependentUpon>AutoFocusConfigControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -1311,11 +1347,17 @@
     <EmbeddedResource Include="FormLoaderParameterRecipe.resx">
       <DependentUpon>FormLoaderParameterRecipe.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\FormNew_AlarmLog.resx">
+      <DependentUpon>FormNew_AlarmLog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\FormNew_SiriusEditor.resx">
       <DependentUpon>FormNew_SiriusEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\FormNew_CommunicationTerminal.resx">
       <DependentUpon>FormNew_CommunicationTerminal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\FormNew_Alarm.resx">
+      <DependentUpon>FormNew_Alarm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\FormNew_VisionPopup.resx">
       <DependentUpon>FormNew_VisionPopup.cs</DependentUpon>

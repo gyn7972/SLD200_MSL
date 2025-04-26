@@ -31,6 +31,7 @@ namespace SLD200_MSL
         private FormOperation m_FormOperation;
         private FormRecipeMain m_FormRecipe;
         private FormAlarm m_FormAlarm;
+        private FormAlarmLog m_FormAlarmLog;
         private FormOperationMonitering m_FormOperationMornitor;
         private FormSelectIO m_FormSelectIO;
 
@@ -45,6 +46,8 @@ namespace SLD200_MSL
         private FormNew_Setup m_FormNew_Setup;
         private FormNew_Log m_FormNew_Log;
         private FormNew_Logout m_FormNew_Logout;
+        private FormNew_Alarm m_FormNew_Alarm;
+        private FormNew_AlarmLog m_FormNew_AlarmLog;
 
 
         private Monitoring_CWA150SA m_Monitoring_CWA150SA;
@@ -90,6 +93,7 @@ namespace SLD200_MSL
             this.FormOperation = new FormOperation();
             this.FormConfiguration = new FormConfiguration();
             this.FormAlarm = new FormAlarm();
+            this.m_FormAlarmLog = new FormAlarmLog();
             this.Monitoring_CWA150SA = new Monitoring_CWA150SA();
             //this.SingleMode_LPM100 = new SingleMode_LPM100();
             this.m_FormSelectIO = new FormSelectIO();
@@ -102,6 +106,8 @@ namespace SLD200_MSL
             this.FormNew_Setup = new FormNew_Setup();
             this.FormNew_Log = new FormNew_Log();
             this.FormNew_Logout = new FormNew_Logout();
+            this.FormNew_Alarm = new FormNew_Alarm();
+            this.FormNew_AlarmLog = new FormNew_AlarmLog();
 
 
             FormTopShow();
@@ -136,8 +142,10 @@ namespace SLD200_MSL
         {
             BeginInvoke(new Action(() =>
             {
-                this.FormAlarm.Alarms = AlarmManager.Instance.Alarms;
-                this.ShowAlarmForm(FormAlarm);
+                //this.FormAlarm.Alarms = AlarmManager.Instance.Alarms;
+                //this.ShowAlarmForm(FormAlarm);
+                this.FormNew_Alarm.Alarms = AlarmManager.Instance.Alarms;
+                this.ShowAlarmForm(FormNew_Alarm);
             }));
         }
 
@@ -174,6 +182,12 @@ namespace SLD200_MSL
         {
             get { return this.m_FormAlarm; }
             set { this.m_FormAlarm = value; }
+        }
+
+        public FormAlarmLog FormAlarmLog
+        {
+            get { return this.m_FormAlarmLog; }
+            set { this.m_FormAlarmLog = value; }
         }
 
         public FormConfiguration FormConfiguration
@@ -259,6 +273,18 @@ namespace SLD200_MSL
             set { this.m_FormNew_Logout = value; }
         }
 
+        public FormNew_Alarm FormNew_Alarm
+        {
+            get { return this.m_FormNew_Alarm; }
+            set { this.m_FormNew_Alarm = value; }
+        }
+
+        public FormNew_AlarmLog FormNew_AlarmLog
+        {
+            get { return this.m_FormNew_AlarmLog; }
+            set { this.m_FormNew_AlarmLog = value; }
+        }
+
 
         /*public SingleMode_LPM100 SingleMode_LPM100
         {
@@ -271,19 +297,52 @@ namespace SLD200_MSL
         #region Method
         public void HideShowAlarm()
         {
-            if(this.FormAlarm.Visible)
+            //if(this.FormAlarm.Visible)
+            //{
+            //    this.FormAlarm.Hide();
+            //    this.FormAlarm.Visible = false;
+            //}
+            //else
+            //{
+            //    this.ShowAlarmForm(FormAlarm);
+            //}
+
+            //  2025. 02. 04.  SCH : 새로운 Alarm Form 추가
+            if (this.FormNew_Alarm.Visible)
             {
-                this.FormAlarm.Hide();
-                this.FormAlarm.Visible = false;
+                this.FormNew_Alarm.Hide();
+                this.FormNew_Alarm.Visible = false;
             }
             else
             {
-                this.ShowAlarmForm(FormAlarm);
-
-
+                this.ShowAlarmForm(FormNew_Alarm);
             }
-            
         }
+
+        public void HideShowAlarmLog()
+        {
+            //if (this.FormAlarmLog.Visible)
+            //{
+            //    this.FormAlarmLog.Hide();
+            //    this.FormAlarmLog.Visible = false;
+            //}
+            //else
+            //{
+            //    this.ShowAlarmForm(FormAlarmLog);
+            //}
+
+            //  2025. 02. 04.  SCH : 새로운 Alarm Form 추가
+            if (this.FormNew_AlarmLog.Visible)
+            {
+                this.FormNew_AlarmLog.Hide();
+                this.FormNew_AlarmLog.Visible = false;
+            }
+            else
+            {
+                this.ShowAlarmForm(FormNew_AlarmLog);
+            }
+        }
+
         public void FormTopShow()
         {
             FormTop formTop = new FormTop();
@@ -354,6 +413,39 @@ namespace SLD200_MSL
                     HideShowAlarm();
 
                     break;
+
+
+                case TopButtons.AlarmLog:
+                    HideShowAlarmLog();
+
+                    break;
+
+                    //form = null;
+                    //foreach (Form openForm in Application.OpenForms)
+                    //{
+                    //    if (openForm.Name == FormAlarmLog.Name)
+                    //    {
+                    //        if (openForm.Visible == false)
+                    //        {
+                    //            form = openForm;
+
+                    //            this.ShowAlarmForm(FormAlarmLog);
+                    //            return;
+                    //        }
+                    //        form = openForm;
+                    //        form.Hide();
+
+                    //        return;
+
+                    //    }
+
+                    //}
+                    //if (form == null)
+                    //{
+                    //    this.ShowAlarmForm(FormAlarmLog);
+
+                    //}
+                    //break;
             }
             return;
 
@@ -514,6 +606,14 @@ namespace SLD200_MSL
             form.BringToFront();
             form.Show();
         }
+
+        //public void ShowAlarmLogForm(Form form)
+        //{
+        //    form.TopLevel = false;
+        //    panelContent.Controls.Add(form);
+        //    form.BringToFront();
+        //    form.Show();
+        //}
         #endregion
 
         #region 화면 깜빡임 제거

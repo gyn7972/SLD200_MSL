@@ -31,6 +31,9 @@ namespace QMC.Common
                 return m_Alarms;
             }
         }
+
+        public AlarmSaver Saver { set; get; }
+
         public event PostAlarmEvent PostAlarm;
         public AlarmManager()
         {

@@ -21,6 +21,7 @@ namespace SLD200_MSL
     {
         Alarm,
         Buzzer,
+        AlarmLog,
         //Module
     }
     public enum TopButtonSize
@@ -341,8 +342,15 @@ namespace SLD200_MSL
         {
             if(TopButtonClick != null)
             {
-
                 TopButtonClick (TopButtons.Alarm);
+            }
+        }
+
+        private void buttonAlarmLog_Click(object sender, EventArgs e)
+        {
+            if (TopButtonClick != null)
+            {
+                TopButtonClick(TopButtons.AlarmLog);
             }
         }
     }

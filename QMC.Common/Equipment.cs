@@ -401,6 +401,8 @@ namespace QMC.Common
         public static bool Machine_FiducialImageSave_Always { set; get; } = false;              //  Fiducial Image Save Always
         public static bool Machine_VacuumBlowTime_Enable { set; get; } = true;                //  Vacuum Stabilization Time Enable
         public static int Machine_VacuumBlowTime { set; get; } = 500;                         //  Vacuum Signal Stabilization Time (ms)
+        public static bool Machine_SocketAlignNG_toNgBox_Enable { set; get; } = true;           //  Vacuum Stabilization Time Enable
+        public static int Machine_SocketAlignNG_toNgBox_ReferenceCount { set; get; } = 1;       //  Vacuum Signal Stabilization Time (ms)
 
 
         //  Offset Distance
@@ -542,6 +544,19 @@ namespace QMC.Common
         //  자동운전 상태 확인
         public static bool AutoRunStatus { set; get; }
         public static int DryRun_ProcessingTime { set; get; } = 5;
+
+
+        public enum LoaderPortList : int
+        {
+            R_Port = 0,
+            L_Port,
+        }
+
+        //  자동 운전 중, Loader 의 어떤 Port 에서 Pick Up 했는지
+        public static int AUTORUN_Loader_PickUpPort { set; get; } = 0;            //  0: RPort, 1: LPort
+
+        //  자동 운전 중, Work Stage 에 내려놓은 Module 이 어떤 Port 에서 Pick Up 했는지
+        public static int AUTORUN_WorkStage_PickUpPort { set; get; } = 0;            //  0: RPort, 1: LPort
 
 
         //  Sequence Test 일 경우

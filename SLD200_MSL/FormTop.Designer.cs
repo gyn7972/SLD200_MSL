@@ -45,6 +45,7 @@
             this.lbl_UI_TowerLamp_Green = new SLD200_MSL.BaseLabel();
             this.lbl_UI_TowerLamp_Yellow = new SLD200_MSL.BaseLabel();
             this.lbl_UI_TowerLamp_Red = new SLD200_MSL.BaseLabel();
+            this.buttonAlarmLog = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_QMC_Logo)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -65,7 +66,7 @@
             this.label_Title.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Title.Location = new System.Drawing.Point(24, 61);
             this.label_Title.Name = "label_Title";
-            this.label_Title.Size = new System.Drawing.Size(128, 19);
+            this.label_Title.Size = new System.Drawing.Size(191, 29);
             this.label_Title.TabIndex = 200;
             this.label_Title.Text = "SLD-200 (CO₂)";
             // 
@@ -111,7 +112,7 @@
             this.label_Title_MESMessage.Location = new System.Drawing.Point(352, 5);
             this.label_Title_MESMessage.Name = "label_Title_MESMessage";
             this.label_Title_MESMessage.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.label_Title_MESMessage.Size = new System.Drawing.Size(960, 25);
+            this.label_Title_MESMessage.Size = new System.Drawing.Size(868, 25);
             this.label_Title_MESMessage.TabIndex = 204;
             this.label_Title_MESMessage.Text = "OP Recipe";
             this.label_Title_MESMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -125,7 +126,7 @@
             this.label_Title_SystemMessage.Location = new System.Drawing.Point(352, 34);
             this.label_Title_SystemMessage.Name = "label_Title_SystemMessage";
             this.label_Title_SystemMessage.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.label_Title_SystemMessage.Size = new System.Drawing.Size(960, 25);
+            this.label_Title_SystemMessage.Size = new System.Drawing.Size(868, 25);
             this.label_Title_SystemMessage.TabIndex = 204;
             this.label_Title_SystemMessage.Text = "OP Recipe";
             this.label_Title_SystemMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -139,7 +140,7 @@
             this.label_Title_Recipe.Location = new System.Drawing.Point(352, 63);
             this.label_Title_Recipe.Name = "label_Title_Recipe";
             this.label_Title_Recipe.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.label_Title_Recipe.Size = new System.Drawing.Size(960, 25);
+            this.label_Title_Recipe.Size = new System.Drawing.Size(868, 25);
             this.label_Title_Recipe.TabIndex = 204;
             this.label_Title_Recipe.Text = "OP Recipe";
             this.label_Title_Recipe.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -147,7 +148,7 @@
             // buttonAlarmClear
             // 
             this.buttonAlarmClear.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.buttonAlarmClear.Location = new System.Drawing.Point(1318, 5);
+            this.buttonAlarmClear.Location = new System.Drawing.Point(1254, 5);
             this.buttonAlarmClear.Name = "buttonAlarmClear";
             this.buttonAlarmClear.Size = new System.Drawing.Size(102, 83);
             this.buttonAlarmClear.TabIndex = 205;
@@ -159,7 +160,7 @@
             // 
             this.groupBox1.Controls.Add(this.label_LoginMode);
             this.groupBox1.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.groupBox1.Location = new System.Drawing.Point(1451, 10);
+            this.groupBox1.Location = new System.Drawing.Point(1508, 10);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(196, 78);
             this.groupBox1.TabIndex = 206;
@@ -186,7 +187,7 @@
             this.label_DateTime.Font = new System.Drawing.Font("Tahoma", 11.25F);
             this.label_DateTime.Location = new System.Drawing.Point(1737, 6);
             this.label_DateTime.Name = "label_DateTime";
-            this.label_DateTime.Size = new System.Drawing.Size(82, 36);
+            this.label_DateTime.Size = new System.Drawing.Size(132, 56);
             this.label_DateTime.TabIndex = 207;
             this.label_DateTime.Text = "2024-02-01\r\n12:01:01";
             this.label_DateTime.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -197,7 +198,7 @@
             this.label_Ver.Font = new System.Drawing.Font("Tahoma", 9.75F);
             this.label_Ver.Location = new System.Drawing.Point(1737, 71);
             this.label_Ver.Name = "label_Ver";
-            this.label_Ver.Size = new System.Drawing.Size(71, 16);
+            this.label_Ver.Size = new System.Drawing.Size(108, 24);
             this.label_Ver.TabIndex = 208;
             this.label_Ver.Text = "Ver 1.0.0.1";
             this.label_Ver.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -238,10 +239,22 @@
             this.lbl_UI_TowerLamp_Red.TabIndex = 187;
             this.lbl_UI_TowerLamp_Red.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // buttonAlarmLog
+            // 
+            this.buttonAlarmLog.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.buttonAlarmLog.Location = new System.Drawing.Point(1369, 5);
+            this.buttonAlarmLog.Name = "buttonAlarmLog";
+            this.buttonAlarmLog.Size = new System.Drawing.Size(102, 83);
+            this.buttonAlarmLog.TabIndex = 209;
+            this.buttonAlarmLog.Text = "Alarm\r\nLog";
+            this.buttonAlarmLog.UseVisualStyleBackColor = true;
+            this.buttonAlarmLog.Click += new System.EventHandler(this.buttonAlarmLog_Click);
+            // 
             // FormTop
             // 
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(1919, 97);
+            this.Controls.Add(this.buttonAlarmLog);
             this.Controls.Add(this.label_Ver);
             this.Controls.Add(this.label_DateTime);
             this.Controls.Add(this.groupBox1);
@@ -284,5 +297,6 @@
         private System.Windows.Forms.Label label_LoginMode;
         private System.Windows.Forms.Label label_DateTime;
         private System.Windows.Forms.Label label_Ver;
+        private System.Windows.Forms.Button buttonAlarmLog;
     }
 }

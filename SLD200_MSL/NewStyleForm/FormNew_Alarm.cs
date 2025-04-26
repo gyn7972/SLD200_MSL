@@ -1,52 +1,56 @@
-﻿using QMC.Common;
+﻿using netDxf.Entities;
+using QMC.Common;
+using QMC.Common.Modules;
+using QMC.Common.Motion.ACS.Motions;
+using QMC.Common.Parts;
+using QMC.Common.Vision.Optics;
+using QMC.Common.Vision.Tools;
+using QMC.Common.VisionPart;
+using QMC.Core;
+using SLD200_MSL;
+using SpiralLab.Sirius;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static QMC.Common.Equipment;
+using static QMC.Common.Modules.Vision;
+using static QMC.Common.Modules.WorkStage;
+using Bitmap = System.Drawing.Bitmap;
+using Image = System.Drawing.Image;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace SLD200_MSL
 {
-    public partial class FormAlarm : FormSubContentBase
-    {
+    public partial class FormNew_Alarm : Form
+    {        
         public AlarmCollection Alarms { get; set; }
         Alarm Alarm { get; set; }
 
+        private Size ConfirmButton = new Size(220, 130);
         protected Size m_imagesize = new Size(30, 25);
 
-        //public string m_path = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName;
-        public FormAlarm()
-            : base(FormType.withButton.ToString(), "Alarm Viewer")
+        protected BaseButton m_BaseButton;
+        //public string m_path = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName;        //  요기 자꾸 뻑남
 
+        public FormNew_Alarm()
         {
             InitializeComponent();
-            //this.Size
 
-            this.flowLayoutPanelButton.Size = new System.Drawing.Size(0, 0);
-            this.baseLabelTitle.Location = new Point((Configuration.ContentSize.Width / 2) - (Configuration.ButtonSize.Width / 2), 0);
-            this.panelContent.Location = new Point(Configuration.ContentLocation.X, Configuration.PanelbuttonSize.Height);
-            this.panelContent.Size = new Size(Configuration.PanelbuttonSize.Width, Configuration.FormWithbuttonSize.Height);
+            this.StartPosition = FormStartPosition.CenterScreen;
 
-
-            this.panelContent.Controls.Add(this.groupBoxSelectedAlarmDetails);
-            this.panelContent.Controls.Add(this.baseDataGridViewAlarm);
-            this.groupBoxRecovery.Controls.Add(this.panelComfirm);
-
-            this.groupBoxSelectedAlarmDetails.Size = Configuration.AlarmGroupBoxSize;
-            this.groupBoxSelectedAlarmDetails.Location = new Point(Configuration.ContentLocation.X, 0);
-
-            this.baseDataGridViewAlarm.Location = new Point(Configuration.ContentLocation.X, this.groupBoxSelectedAlarmDetails.Location.Y + this.groupBoxSelectedAlarmDetails.Size.Height + 5);
-            this.baseDataGridViewAlarm.Size = new Size(Configuration.AlarmdataGridViewSize.Width, Configuration.AlarmdataGridViewSize.Height);
-            this.VisibleChanged += FormAlarm_VisibleChanged;
+            this.VisibleChanged += FormNew_Alarm_VisibleChanged;
         }
 
-        private void FormAlarm_Load(object sender, EventArgs e)
+        private void FormNew_Alarm_Load(object sender, EventArgs e)
         {
-            InitDataGridViewColumn();
+            InitDataGridViewColumn();            
 
             if (Alarms != null && Alarms.Count > 0)
             {
@@ -54,12 +58,61 @@ namespace SLD200_MSL
                 baseDataGridViewAlarm.DataSource = Alarms;
                 BaseButton baseButton = new BaseButton();
                 baseButton.Text = "Comfirm";
-                baseButton.Size = Configuration.ButtonSize;
+                baseButton.Size = ConfirmButton;
                 baseButton.TextAlign = ContentAlignment.MiddleCenter;
                 baseButton.FlatStyle = FlatStyle.Flat;
                 baseButton.Click += ButtonComfirm_Click;
 
                 this.panelComfirm.Controls.Add(baseButton);
+            }
+        }
+
+        public void InitDataGridViewColumn()
+        {
+            baseDataGridViewAlarm.Columns.Clear();
+            baseDataGridViewAlarm.AutoGenerateColumns = false;
+            baseDataGridViewAlarm.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.None);
+            //  baseDataGridViewAlarm.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader;
+            // 알람이 들어왔을때는 위에꺼
+            baseDataGridViewAlarm.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            {
+                DataGridViewImageColumn imageColumn = new DataGridViewImageColumn();
+                imageColumn.DataPropertyName = "StateImage";
+                imageColumn.Name = "State";
+                imageColumn.Width = 130;
+                baseDataGridViewAlarm.Columns.Add(imageColumn);
+            }
+
+            {
+                DataGridViewColumn column = new DataGridViewTextBoxColumn();
+                column.DataPropertyName = "GeneratedTime";
+                column.Name = "Generated Time";
+                column.Width = 250;
+                baseDataGridViewAlarm.Columns.Add(column);
+            }
+
+            {
+                DataGridViewColumn column = new DataGridViewTextBoxColumn();
+                column.DataPropertyName = "Source";
+                column.Name = "Source";
+                column.Width = 250;
+                baseDataGridViewAlarm.Columns.Add(column);
+            }
+
+            {
+                DataGridViewColumn column = new DataGridViewTextBoxColumn();
+                column.DataPropertyName = "Grade";
+                column.Name = "Grade";
+                column.Width = 200;
+                baseDataGridViewAlarm.Columns.Add(column);
+            }
+
+            {
+                DataGridViewColumn column = new DataGridViewTextBoxColumn();
+                column.DataPropertyName = "Title";
+                column.Name = "Title";
+                column.Width = 1000;
+                baseDataGridViewAlarm.Columns.Add(column);
             }
         }
 
@@ -74,7 +127,6 @@ namespace SLD200_MSL
                     {
                         if (alarm == alarm1)
                         {
-                            
                             Alarms.Remove(alarm1);
                             baseDataGridViewAlarm.DataSource = null;
                             baseDataGridViewAlarm.DataSource = Alarms;
@@ -89,67 +141,8 @@ namespace SLD200_MSL
                 }
             }
         }
-        public void InitDataGridViewColumn()
-        {
-            baseDataGridViewAlarm.Columns.Clear();
-            baseDataGridViewAlarm.AutoGenerateColumns = false;
-            baseDataGridViewAlarm.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.None);
-            //  baseDataGridViewAlarm.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader;
-            // 알람이 들어왔을때는 위에꺼
-            baseDataGridViewAlarm.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
-            {
-                DataGridViewImageColumn imageColumn = new DataGridViewImageColumn();
-                imageColumn.DataPropertyName = "StateImage";
-                imageColumn.Name = "State";
-                imageColumn.Width = 30;
-                baseDataGridViewAlarm.Columns.Add(imageColumn);
-            }
 
-            {
-                DataGridViewColumn column = new DataGridViewTextBoxColumn();
-                column.DataPropertyName = "GeneratedTime";
-                column.Name = "GeneratedTime";
-                column.Width = 155;
-                baseDataGridViewAlarm.Columns.Add(column);
-            }
-            {
-                DataGridViewColumn column = new DataGridViewTextBoxColumn();
-                column.DataPropertyName = "Source";
-                column.Name = "Source";
-                column.Width = 100;
-                baseDataGridViewAlarm.Columns.Add(column);
-            }
-            {
-                DataGridViewColumn column = new DataGridViewTextBoxColumn();
-                column.DataPropertyName = "Grade";
-                column.Name = "Grade";
-                column.Width = 100;
-                baseDataGridViewAlarm.Columns.Add(column);
-            }
-            {
-                DataGridViewColumn column = new DataGridViewTextBoxColumn();
-                column.DataPropertyName = "Title";
-                column.Name = "Title";
-                column.Width = 1000;
-                baseDataGridViewAlarm.Columns.Add(column);
-            }
-        }
-        private void baseDataGridViewAlarm_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            //if(e.ColumnIndex <0|| e.RowIndex <0)
-            //{
-            //    return;
-            //}
-            //Alarm = baseDataGridViewAlarm.Rows[e.RowIndex].DataBoundItem as Alarm;
-
-            //baseTextBoxAlarmTitle.Text = Alarm.Title;
-            //baseTextBoxCause.Text = Alarm.Cause;
-            //baseTextBoxCode.Text = Alarm.Code.ToString();
-            //baseTextBoxGrade.Text = Alarm.Grade.ToString();//이넘?
-            //baseTextBoxSource.Text = Alarm.Source.ToString();
-
-        }
-        private void FormAlarm_VisibleChanged(object sender, EventArgs e)
+        private void FormNew_Alarm_VisibleChanged(object sender, EventArgs e)
         {
             //InitDataGridViewColumn();
             if (Alarms != null && Alarms.Count > 0)
@@ -186,7 +179,7 @@ namespace SLD200_MSL
 
                 BaseButton baseButton = new BaseButton();
                 baseButton.Text = "Comfirm";
-                baseButton.Size = Configuration.ButtonSize;
+                baseButton.Size = ConfirmButton;
                 baseButton.TextAlign = ContentAlignment.MiddleCenter;
                 baseButton.FlatStyle = FlatStyle.Flat;
                 baseButton.Click += ButtonComfirm_Click;
@@ -195,12 +188,29 @@ namespace SLD200_MSL
             }
         }
 
+        private void baseDataGridViewAlarm_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            //if(e.ColumnIndex <0|| e.RowIndex <0)
+            //{
+            //    return;
+            //}
+            //Alarm = baseDataGridViewAlarm.Rows[e.RowIndex].DataBoundItem as Alarm;
+
+            //baseTextBoxAlarmTitle.Text = Alarm.Title;
+            //baseTextBoxCause.Text = Alarm.Cause;
+            //baseTextBoxCode.Text = Alarm.Code.ToString();
+            //baseTextBoxGrade.Text = Alarm.Grade.ToString();//이넘?
+            //baseTextBoxSource.Text = Alarm.Source.ToString();
+
+        }
+
         private void baseDataGridViewAlarm_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex < 0 || e.RowIndex < 0)
             {
                 return;
             }
+
             Alarm = baseDataGridViewAlarm.Rows[e.RowIndex].DataBoundItem as Alarm;
 
             baseTextBoxAlarmTitle.Text = Alarm.Title;
@@ -209,6 +219,7 @@ namespace SLD200_MSL
             baseTextBoxGrade.Text = Alarm.Grade.ToString();//이넘?
             baseTextBoxSource.Text = Alarm.Source.ToString();
         }
+
         private void baseDataGridViewAlarm_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
 

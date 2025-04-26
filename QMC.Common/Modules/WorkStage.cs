@@ -1655,6 +1655,29 @@ namespace QMC.Common.Modules
         #endregion
 
 
+        #region Main 화면에 가공 상태 표시
+
+        public enum Socket_Process_Status
+        {
+            Ready = 0,
+            Processing,
+            Complete,
+            NG,
+        }
+
+        //  소켓 좌표값
+        public List<PointD> Main_SocketPositions = new List<PointD>();
+        public int Main_SocketPositions_ColumnCount = 0;                                //  소켓 좌표값의 열 개수
+        public int Main_SocketPositions_RowCount = 0;                                   //  소켓 좌표값의 행 개수
+        public bool Main_SocketPositions_Draw = false;                                  //  소켓 위치 그리기 여부
+        public bool Main_SocketPositions_Drawed = false;                                //  소켓 위치 그리기 성공 여부
+        public bool Main_SocketPositions_SetStatus = false;                             //  소켓 상태 세팅
+        public PointD Main_SocketPositions_CurrentSocketPosition = new PointD(0, 0);    //  현재 가공중인 소켓 좌표값
+        public int Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Ready;
+
+        #endregion
+
+
 
         #region NewForm 을 위한 Teaching Position List 변수
 
@@ -2698,10 +2721,12 @@ namespace QMC.Common.Modules
 
 
         //  Data Parsing 후 데이터
-        public int m_nDrillingData_SocketTotal { set; get; }                 //  진행해야하는 Socket 총 개수 (제품 단위 : Module, 하나의 Module 은 n 개의 Socket 으로 구성된다)
-        public int m_nDrillingData_SocketCount { set; get; }                 //  진행하는 Socket Count
-        public int m_nDrillingData_LayerTotal { set; get; }                  //  진행해야하는 Layer 총 개수
-        public int m_nDrillingData_LayerCount { set; get; }                  //  진행하는 Layer Count (제품 단위 : Module, 하나의 Module 은 n 개의 Layer 로 구성된다)
+        public int m_nDrillingData_SocketTotal { set; get; }                    //  진행해야하는 Socket 총 개수 (제품 단위 : Module, 하나의 Module 은 n 개의 Socket 으로 구성된다)
+        public int m_nDrillingData_SocketCount { set; get; }                    //  진행하는 Socket Count
+        public int m_nDrillingData_SocketAlign_Count { set; get; }              //  진행하는 Socket Align Count
+        public int m_nDrillingData_SocketAlign_NGCount { set; get; }            //  진행하는 Socket Align NG Count
+        public int m_nDrillingData_LayerTotal { set; get; }                     //  진행해야하는 Layer 총 개수
+        public int m_nDrillingData_LayerCount { set; get; }                     //  진행하는 Layer Count (제품 단위 : Module, 하나의 Module 은 n 개의 Layer 로 구성된다)
 
 
         //  분할 영역 관련 변수
@@ -3685,6 +3710,8 @@ namespace QMC.Common.Modules
             m_nCrossMark_AlignMark_Count = 0;                               //  얼라인 마크 개수. (평균 계산용)
             m_pCrossMark_AlignMarkPosition_Sum = new PointD(0, 0);          //  얼라인 마크 위치 누적. (평균 계산용)
             m_pCrossMark_AlignMarkPosition_Average = new PointD(0, 0);      //  얼라인 마크 위치 누적. (평균 계산용)
+
+            Main_SocketPositions = null;                                    //  메인 화면에 소켓 가공 상태 표시를 위한 변수
 
             Teaching_Position_Load();
 
@@ -12325,8 +12352,29 @@ namespace QMC.Common.Modules
 
                             //m_bMainWorkCycle_ResultOK = true;
                             //  Laser Drilling 결과에 따라 OK/NG 다르게 해야 함.
-                            m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.OK;
-                            m_bMainWorkCycle_ResultOK_toRPort = true;
+
+                            //  소켓 얼라인 결과가 NG 이면 NG 로 (설정 개수 이상 NG 일 경우에)
+                            //m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.OK;
+
+                            if (m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount)
+                            {
+                                m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.NG;
+                            }
+                            else
+                            {
+                                m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.OK;
+                            }                            
+
+                            //  Loader 에서 Pick Up 한 Port 번호를 넣어준다. (Pick Up 한 Port 에 Put Down 하기 위함)
+                            if (Equipment.AUTORUN_WorkStage_PickUpPort == (int)Equipment.LoaderPortList.R_Port)
+                            {
+                                m_bMainWorkCycle_ResultOK_toRPort = true;
+                            }
+                            else
+                            {
+                                m_bMainWorkCycle_ResultOK_toRPort = false;
+                            }
+
                             break;
 
                         default:            //  Error
@@ -14585,6 +14633,23 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.DrillingWork_Start:                                    //  Drilling 작업 시작                    
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 Process 시작");
 
+
+                    if (m_stDividedRegion_GroupData != null)
+                    {
+                        //  메인 화면에 가공위치 표시용
+                        Main_SocketPositions = new List<PointD>();
+
+                        for (int i = 0; i < m_stDividedRegion_GroupData[0].nGroup_Num; i++)
+                        {
+                            Main_SocketPositions.Add(new PointD(m_stDividedRegion_GroupData[i].dGroupCenter.X, m_stDividedRegion_GroupData[i].dGroupCenter.Y));
+                        }
+
+                        //  메인 화면에 그려지는 가공위치의 개수
+                        (Main_SocketPositions_RowCount, Main_SocketPositions_ColumnCount) = CalculateArraySize(Main_SocketPositions);
+
+                        Main_SocketPositions_Draw = true;
+                    }
+
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                     break;
 
@@ -15556,11 +15621,14 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck:              //  아웃 라인 (라우터) Drilling 작업 완료 확인
 
-                    Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, Outline 반복 가공 완료, 가공할 Layer 가 남아 있는지 확인");
+                    Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, Outline 반복 가공 완료, 가공할 소켓이 남아 있는지 확인");
 
-                    m_nLaserDrilling_LayerCount++;
-                    //m_nOutLine_LayerCount++;                                                                               //  Outline Layer 카운트 +1
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
+                    Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
+                    Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+
+
+                    m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
 
                     break;
 
@@ -15743,6 +15811,13 @@ namespace QMC.Common.Modules
                     {
                         int nextStep = 0;
                         nextStep = LaserDrilling_StepDrillingData_SocketRemainedCheck();
+                        
+                        //  가공중인 소켓 좌표 (메인 화면 표시용)
+                        //Main_SocketPositions_CurrentSocketPosition.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.X;
+                        //Main_SocketPositions_CurrentSocketPosition.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.Y;
+                        //Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Processing;
+                        //Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+                        
                         m_nLaserDrilling_MainStep = nextStep;
                     }
 
@@ -16243,6 +16318,14 @@ namespace QMC.Common.Modules
                             //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
                             //MessageBox.Show("Socket Align 실패", "Error");
 
+
+
+							//  소켓 얼라인 실패했으니 화면 갱신해야 한다.
+
+                            m_nDrillingData_SocketAlign_NGCount++;                                              //  소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
+
+                            Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
+                            Main_SocketPositions_SetStatus = true;                                              //  상태 변경
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                         }
@@ -16533,6 +16616,12 @@ namespace QMC.Common.Modules
                     else                                                                                    //  회수 초과 (Shutter 닫으러)
                     {
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Group, ScannerOnly Mode, 가공할 분할 영역 남아있지 않음. 다음 소켓 확인하러 이동.");
+
+
+                        //  소켓 가공이 끝나서 다음 소켓 확인하러 가야 하므로, 현재 상태를 갱신한다.
+                        Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
+                        Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+
 
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
 
@@ -30846,6 +30935,68 @@ namespace QMC.Common.Modules
             }
 
             return dRet_Freq;
+        }
+
+
+        /// <summary>
+        /// 위치 좌표값 리스트로부터 배열의 Rows와 Columns를 계산합니다.
+        /// </summary>
+        public (int Rows, int Columns) CalculateArraySize(List<PointD> positions)
+        {
+            if (positions == null || positions.Count == 0)
+            {
+                MessageBox.Show("좌표값 리스트가 비어 있습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            // 허용 오차 설정 (예: 0.01)
+            double tolerance = 0.01;
+
+            // X, Y 좌표값을 정렬하여 고유한 값 추출 (허용 오차 적용)
+            var uniqueX = positions.Select(p => Math.Round(p.X / tolerance) * tolerance).Distinct().OrderBy(x => x).ToList();
+            var uniqueY = positions.Select(p => Math.Round(p.Y / tolerance) * tolerance).Distinct().OrderBy(y => y).ToList();
+
+            // 가로(Columns)와 세로(Rows) 계산
+            int columns = uniqueX.Count;
+            int rows = uniqueY.Count;
+
+            return (rows, columns);
+        }
+
+
+        /// <summary>
+        /// 특정 위치 좌표가 배열의 몇 번째 Row와 Column에 해당하는지 반환합니다.
+        /// </summary>
+        public (int Row, int Column) GetRowColumnFromPosition(List<PointD> positions, PointD target)
+        {
+            if (positions == null || positions.Count == 0)
+            {
+                MessageBox.Show("좌표값 리스트가 비어 있습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            // 허용 오차 설정 (예: 0.01)
+            double tolerance = 0.01;
+
+            // X, Y 좌표값을 정렬하여 고유한 값 추출 (허용 오차 적용)
+            var uniqueX = positions.Select(p => Math.Round(p.X / tolerance) * tolerance).Distinct().OrderBy(x => x).ToList();
+            var uniqueY = positions.Select(p => Math.Round(p.Y / tolerance) * tolerance).Distinct().OrderBy(y => -y).ToList();
+
+            //// X, Y 좌표값을 정렬하여 고유한 값 추출
+            //var uniqueX = positions.Select(p => p.X).Distinct().OrderBy(x => x).ToList();
+            //var uniqueY = positions.Select(p => p.Y).Distinct().OrderBy(y => -y).ToList();
+
+            // Row와 Column 계산
+            target.X = Math.Round(target.X, 4);
+            target.Y = Math.Round(target.Y, 4);
+
+            int row = uniqueY.IndexOf(target.Y);
+            int column = uniqueX.IndexOf(target.X);
+
+            if (row == -1 || column == -1)
+            {
+                MessageBox.Show("해당 좌표는 리스트에 존재하지 않습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return (row, column);
         }
     }
 }

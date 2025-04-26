@@ -176,6 +176,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlarmManager.cs" />
+    <Compile Include="AlarmSaver.cs" />
     <Compile Include="AsyncSocket.cs" />
     <Compile Include="BaseConfig.cs" />
     <Compile Include="BaseRecipe.cs" />
