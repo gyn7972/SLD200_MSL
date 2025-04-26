@@ -34,17 +34,19 @@
             this.button_Recipe_Apply = new System.Windows.Forms.Button();
             this.tabControl_Recipe = new System.Windows.Forms.TabControl();
             this.tabPage_Recipe = new System.Windows.Forms.TabPage();
-            this.label_Recipe_TabRecipe_PreAlignPosY2 = new System.Windows.Forms.Label();
-            this.label_Recipe_TabRecipe_PreAlignPosX2 = new System.Windows.Forms.Label();
-            this.label_Recipe_TabRecipe_PreAlignPosY1 = new System.Windows.Forms.Label();
+            this.groupBox_Recipe_TabRecipe_PreAlignPos = new System.Windows.Forms.GroupBox();
             this.label_Recipe_TabRecipe_PreAlignPosX1 = new System.Windows.Forms.Label();
+            this.label_Recipe_TabRecipe_PreAlignPosY2 = new System.Windows.Forms.Label();
+            this.textBox_Recipe_TabRecipe_PreAlignPosX1 = new System.Windows.Forms.TextBox();
+            this.label_Recipe_TabRecipe_PreAlignPosX2 = new System.Windows.Forms.Label();
+            this.button_Recipe_TabRecipe_PreAlignPosX1 = new System.Windows.Forms.Button();
+            this.label_Recipe_TabRecipe_PreAlignPosY1 = new System.Windows.Forms.Label();
+            this.textBox_Recipe_TabRecipe_PreAlignPosY1 = new System.Windows.Forms.TextBox();
+            this.button_Recipe_TabRecipe_PreAlignPosY1 = new System.Windows.Forms.Button();
             this.button_Recipe_TabRecipe_PreAlignPosY2 = new System.Windows.Forms.Button();
+            this.textBox_Recipe_TabRecipe_PreAlignPosX2 = new System.Windows.Forms.TextBox();
             this.textBox_Recipe_TabRecipe_PreAlignPosY2 = new System.Windows.Forms.TextBox();
             this.button_Recipe_TabRecipe_PreAlignPosX2 = new System.Windows.Forms.Button();
-            this.textBox_Recipe_TabRecipe_PreAlignPosX2 = new System.Windows.Forms.TextBox();
-            this.button_Recipe_TabRecipe_PreAlignPosY1 = new System.Windows.Forms.Button();
-            this.textBox_Recipe_TabRecipe_PreAlignPosY1 = new System.Windows.Forms.TextBox();
-            this.button_Recipe_TabRecipe_PreAlignPosX1 = new System.Windows.Forms.Button();
             this.groupBox19 = new System.Windows.Forms.GroupBox();
             this.button35 = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Illuminator_FineCamRed = new System.Windows.Forms.TextBox();
@@ -55,7 +57,6 @@
             this.textBox_Recipe_TabRecipe_Illuminator_FineCamIR = new System.Windows.Forms.TextBox();
             this.label79 = new System.Windows.Forms.Label();
             this.label80 = new System.Windows.Forms.Label();
-            this.textBox_Recipe_TabRecipe_PreAlignPosX1 = new System.Windows.Forms.TextBox();
             this.groupBox17 = new System.Windows.Forms.GroupBox();
             this.label81 = new System.Windows.Forms.Label();
             this.label82 = new System.Windows.Forms.Label();
@@ -222,6 +223,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button_Recipe_TabRecipe_LayerImport = new System.Windows.Forms.Button();
             this.listBox_Recipe_TabRecipe_ListOfDrawingLayer = new System.Windows.Forms.ListBox();
+            this.tabPage_RecipeVision = new System.Windows.Forms.TabPage();
             this.tabPage_Test = new System.Windows.Forms.TabPage();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
@@ -297,9 +299,9 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
-            this.groupBox_Recipe_TabRecipe_PreAlignPos = new System.Windows.Forms.GroupBox();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.SuspendLayout();
             this.groupBox19.SuspendLayout();
             this.groupBox17.SuspendLayout();
             this.groupBox14.SuspendLayout();
@@ -330,7 +332,6 @@
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox177.SuspendLayout();
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.SuspendLayout();
             this.SuspendLayout();
             // 
             // label_Recipe_FileName
@@ -387,6 +388,7 @@
             // 
             this.tabControl_Recipe.Appearance = System.Windows.Forms.TabAppearance.Buttons;
             this.tabControl_Recipe.Controls.Add(this.tabPage_Recipe);
+            this.tabControl_Recipe.Controls.Add(this.tabPage_RecipeVision);
             this.tabControl_Recipe.Controls.Add(this.tabPage_Test);
             this.tabControl_Recipe.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
             this.tabControl_Recipe.ItemSize = new System.Drawing.Size(170, 40);
@@ -422,38 +424,26 @@
             this.tabPage_Recipe.Text = "Recipe";
             this.tabPage_Recipe.UseVisualStyleBackColor = true;
             // 
-            // label_Recipe_TabRecipe_PreAlignPosY2
+            // groupBox_Recipe_TabRecipe_PreAlignPos
             // 
-            this.label_Recipe_TabRecipe_PreAlignPosY2.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_Recipe_TabRecipe_PreAlignPosY2.Location = new System.Drawing.Point(9, 137);
-            this.label_Recipe_TabRecipe_PreAlignPosY2.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label_Recipe_TabRecipe_PreAlignPosY2.Name = "label_Recipe_TabRecipe_PreAlignPosY2";
-            this.label_Recipe_TabRecipe_PreAlignPosY2.Size = new System.Drawing.Size(86, 25);
-            this.label_Recipe_TabRecipe_PreAlignPosY2.TabIndex = 99;
-            this.label_Recipe_TabRecipe_PreAlignPosY2.Text = "PreY2 :";
-            this.label_Recipe_TabRecipe_PreAlignPosY2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label_Recipe_TabRecipe_PreAlignPosX2
-            // 
-            this.label_Recipe_TabRecipe_PreAlignPosX2.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_Recipe_TabRecipe_PreAlignPosX2.Location = new System.Drawing.Point(9, 105);
-            this.label_Recipe_TabRecipe_PreAlignPosX2.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label_Recipe_TabRecipe_PreAlignPosX2.Name = "label_Recipe_TabRecipe_PreAlignPosX2";
-            this.label_Recipe_TabRecipe_PreAlignPosX2.Size = new System.Drawing.Size(86, 25);
-            this.label_Recipe_TabRecipe_PreAlignPosX2.TabIndex = 98;
-            this.label_Recipe_TabRecipe_PreAlignPosX2.Text = "PreX2 :";
-            this.label_Recipe_TabRecipe_PreAlignPosX2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label_Recipe_TabRecipe_PreAlignPosY1
-            // 
-            this.label_Recipe_TabRecipe_PreAlignPosY1.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_Recipe_TabRecipe_PreAlignPosY1.Location = new System.Drawing.Point(9, 73);
-            this.label_Recipe_TabRecipe_PreAlignPosY1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label_Recipe_TabRecipe_PreAlignPosY1.Name = "label_Recipe_TabRecipe_PreAlignPosY1";
-            this.label_Recipe_TabRecipe_PreAlignPosY1.Size = new System.Drawing.Size(86, 25);
-            this.label_Recipe_TabRecipe_PreAlignPosY1.TabIndex = 97;
-            this.label_Recipe_TabRecipe_PreAlignPosY1.Text = "PreY1 :";
-            this.label_Recipe_TabRecipe_PreAlignPosY1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.label_Recipe_TabRecipe_PreAlignPosX1);
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.label_Recipe_TabRecipe_PreAlignPosY2);
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.textBox_Recipe_TabRecipe_PreAlignPosX1);
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.label_Recipe_TabRecipe_PreAlignPosX2);
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.button_Recipe_TabRecipe_PreAlignPosX1);
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.label_Recipe_TabRecipe_PreAlignPosY1);
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.textBox_Recipe_TabRecipe_PreAlignPosY1);
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.button_Recipe_TabRecipe_PreAlignPosY1);
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.button_Recipe_TabRecipe_PreAlignPosY2);
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.textBox_Recipe_TabRecipe_PreAlignPosX2);
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.textBox_Recipe_TabRecipe_PreAlignPosY2);
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.button_Recipe_TabRecipe_PreAlignPosX2);
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.Location = new System.Drawing.Point(387, 503);
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.Name = "groupBox_Recipe_TabRecipe_PreAlignPos";
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.Size = new System.Drawing.Size(286, 179);
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.TabIndex = 100;
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.TabStop = false;
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.Text = "groupBox15";
             // 
             // label_Recipe_TabRecipe_PreAlignPosX1
             // 
@@ -466,6 +456,81 @@
             this.label_Recipe_TabRecipe_PreAlignPosX1.Text = "PreX1 :";
             this.label_Recipe_TabRecipe_PreAlignPosX1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // label_Recipe_TabRecipe_PreAlignPosY2
+            // 
+            this.label_Recipe_TabRecipe_PreAlignPosY2.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Recipe_TabRecipe_PreAlignPosY2.Location = new System.Drawing.Point(9, 137);
+            this.label_Recipe_TabRecipe_PreAlignPosY2.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_Recipe_TabRecipe_PreAlignPosY2.Name = "label_Recipe_TabRecipe_PreAlignPosY2";
+            this.label_Recipe_TabRecipe_PreAlignPosY2.Size = new System.Drawing.Size(86, 25);
+            this.label_Recipe_TabRecipe_PreAlignPosY2.TabIndex = 99;
+            this.label_Recipe_TabRecipe_PreAlignPosY2.Text = "PreY2 :";
+            this.label_Recipe_TabRecipe_PreAlignPosY2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Recipe_TabRecipe_PreAlignPosX1
+            // 
+            this.textBox_Recipe_TabRecipe_PreAlignPosX1.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_PreAlignPosX1.Location = new System.Drawing.Point(98, 41);
+            this.textBox_Recipe_TabRecipe_PreAlignPosX1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_PreAlignPosX1.Name = "textBox_Recipe_TabRecipe_PreAlignPosX1";
+            this.textBox_Recipe_TabRecipe_PreAlignPosX1.Size = new System.Drawing.Size(122, 32);
+            this.textBox_Recipe_TabRecipe_PreAlignPosX1.TabIndex = 21;
+            this.textBox_Recipe_TabRecipe_PreAlignPosX1.Text = "0";
+            // 
+            // label_Recipe_TabRecipe_PreAlignPosX2
+            // 
+            this.label_Recipe_TabRecipe_PreAlignPosX2.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Recipe_TabRecipe_PreAlignPosX2.Location = new System.Drawing.Point(9, 105);
+            this.label_Recipe_TabRecipe_PreAlignPosX2.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_Recipe_TabRecipe_PreAlignPosX2.Name = "label_Recipe_TabRecipe_PreAlignPosX2";
+            this.label_Recipe_TabRecipe_PreAlignPosX2.Size = new System.Drawing.Size(86, 25);
+            this.label_Recipe_TabRecipe_PreAlignPosX2.TabIndex = 98;
+            this.label_Recipe_TabRecipe_PreAlignPosX2.Text = "PreX2 :";
+            this.label_Recipe_TabRecipe_PreAlignPosX2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button_Recipe_TabRecipe_PreAlignPosX1
+            // 
+            this.button_Recipe_TabRecipe_PreAlignPosX1.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_PreAlignPosX1.Location = new System.Drawing.Point(235, 41);
+            this.button_Recipe_TabRecipe_PreAlignPosX1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.button_Recipe_TabRecipe_PreAlignPosX1.Name = "button_Recipe_TabRecipe_PreAlignPosX1";
+            this.button_Recipe_TabRecipe_PreAlignPosX1.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_PreAlignPosX1.TabIndex = 22;
+            this.button_Recipe_TabRecipe_PreAlignPosX1.Text = "#";
+            this.button_Recipe_TabRecipe_PreAlignPosX1.UseVisualStyleBackColor = true;
+            // 
+            // label_Recipe_TabRecipe_PreAlignPosY1
+            // 
+            this.label_Recipe_TabRecipe_PreAlignPosY1.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Recipe_TabRecipe_PreAlignPosY1.Location = new System.Drawing.Point(9, 73);
+            this.label_Recipe_TabRecipe_PreAlignPosY1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_Recipe_TabRecipe_PreAlignPosY1.Name = "label_Recipe_TabRecipe_PreAlignPosY1";
+            this.label_Recipe_TabRecipe_PreAlignPosY1.Size = new System.Drawing.Size(86, 25);
+            this.label_Recipe_TabRecipe_PreAlignPosY1.TabIndex = 97;
+            this.label_Recipe_TabRecipe_PreAlignPosY1.Text = "PreY1 :";
+            this.label_Recipe_TabRecipe_PreAlignPosY1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Recipe_TabRecipe_PreAlignPosY1
+            // 
+            this.textBox_Recipe_TabRecipe_PreAlignPosY1.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_PreAlignPosY1.Location = new System.Drawing.Point(98, 73);
+            this.textBox_Recipe_TabRecipe_PreAlignPosY1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_PreAlignPosY1.Name = "textBox_Recipe_TabRecipe_PreAlignPosY1";
+            this.textBox_Recipe_TabRecipe_PreAlignPosY1.Size = new System.Drawing.Size(122, 32);
+            this.textBox_Recipe_TabRecipe_PreAlignPosY1.TabIndex = 91;
+            this.textBox_Recipe_TabRecipe_PreAlignPosY1.Text = "0";
+            // 
+            // button_Recipe_TabRecipe_PreAlignPosY1
+            // 
+            this.button_Recipe_TabRecipe_PreAlignPosY1.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_PreAlignPosY1.Location = new System.Drawing.Point(235, 73);
+            this.button_Recipe_TabRecipe_PreAlignPosY1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.button_Recipe_TabRecipe_PreAlignPosY1.Name = "button_Recipe_TabRecipe_PreAlignPosY1";
+            this.button_Recipe_TabRecipe_PreAlignPosY1.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_PreAlignPosY1.TabIndex = 92;
+            this.button_Recipe_TabRecipe_PreAlignPosY1.Text = "#";
+            this.button_Recipe_TabRecipe_PreAlignPosY1.UseVisualStyleBackColor = true;
+            // 
             // button_Recipe_TabRecipe_PreAlignPosY2
             // 
             this.button_Recipe_TabRecipe_PreAlignPosY2.Font = new System.Drawing.Font("Tahoma", 10F);
@@ -476,6 +541,16 @@
             this.button_Recipe_TabRecipe_PreAlignPosY2.TabIndex = 96;
             this.button_Recipe_TabRecipe_PreAlignPosY2.Text = "#";
             this.button_Recipe_TabRecipe_PreAlignPosY2.UseVisualStyleBackColor = true;
+            // 
+            // textBox_Recipe_TabRecipe_PreAlignPosX2
+            // 
+            this.textBox_Recipe_TabRecipe_PreAlignPosX2.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_PreAlignPosX2.Location = new System.Drawing.Point(98, 105);
+            this.textBox_Recipe_TabRecipe_PreAlignPosX2.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_PreAlignPosX2.Name = "textBox_Recipe_TabRecipe_PreAlignPosX2";
+            this.textBox_Recipe_TabRecipe_PreAlignPosX2.Size = new System.Drawing.Size(122, 32);
+            this.textBox_Recipe_TabRecipe_PreAlignPosX2.TabIndex = 93;
+            this.textBox_Recipe_TabRecipe_PreAlignPosX2.Text = "0";
             // 
             // textBox_Recipe_TabRecipe_PreAlignPosY2
             // 
@@ -497,48 +572,6 @@
             this.button_Recipe_TabRecipe_PreAlignPosX2.TabIndex = 94;
             this.button_Recipe_TabRecipe_PreAlignPosX2.Text = "#";
             this.button_Recipe_TabRecipe_PreAlignPosX2.UseVisualStyleBackColor = true;
-            // 
-            // textBox_Recipe_TabRecipe_PreAlignPosX2
-            // 
-            this.textBox_Recipe_TabRecipe_PreAlignPosX2.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_PreAlignPosX2.Location = new System.Drawing.Point(98, 105);
-            this.textBox_Recipe_TabRecipe_PreAlignPosX2.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_PreAlignPosX2.Name = "textBox_Recipe_TabRecipe_PreAlignPosX2";
-            this.textBox_Recipe_TabRecipe_PreAlignPosX2.Size = new System.Drawing.Size(122, 32);
-            this.textBox_Recipe_TabRecipe_PreAlignPosX2.TabIndex = 93;
-            this.textBox_Recipe_TabRecipe_PreAlignPosX2.Text = "0";
-            // 
-            // button_Recipe_TabRecipe_PreAlignPosY1
-            // 
-            this.button_Recipe_TabRecipe_PreAlignPosY1.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_Recipe_TabRecipe_PreAlignPosY1.Location = new System.Drawing.Point(235, 73);
-            this.button_Recipe_TabRecipe_PreAlignPosY1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.button_Recipe_TabRecipe_PreAlignPosY1.Name = "button_Recipe_TabRecipe_PreAlignPosY1";
-            this.button_Recipe_TabRecipe_PreAlignPosY1.Size = new System.Drawing.Size(35, 25);
-            this.button_Recipe_TabRecipe_PreAlignPosY1.TabIndex = 92;
-            this.button_Recipe_TabRecipe_PreAlignPosY1.Text = "#";
-            this.button_Recipe_TabRecipe_PreAlignPosY1.UseVisualStyleBackColor = true;
-            // 
-            // textBox_Recipe_TabRecipe_PreAlignPosY1
-            // 
-            this.textBox_Recipe_TabRecipe_PreAlignPosY1.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_PreAlignPosY1.Location = new System.Drawing.Point(98, 73);
-            this.textBox_Recipe_TabRecipe_PreAlignPosY1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_PreAlignPosY1.Name = "textBox_Recipe_TabRecipe_PreAlignPosY1";
-            this.textBox_Recipe_TabRecipe_PreAlignPosY1.Size = new System.Drawing.Size(122, 32);
-            this.textBox_Recipe_TabRecipe_PreAlignPosY1.TabIndex = 91;
-            this.textBox_Recipe_TabRecipe_PreAlignPosY1.Text = "0";
-            // 
-            // button_Recipe_TabRecipe_PreAlignPosX1
-            // 
-            this.button_Recipe_TabRecipe_PreAlignPosX1.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_Recipe_TabRecipe_PreAlignPosX1.Location = new System.Drawing.Point(235, 41);
-            this.button_Recipe_TabRecipe_PreAlignPosX1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.button_Recipe_TabRecipe_PreAlignPosX1.Name = "button_Recipe_TabRecipe_PreAlignPosX1";
-            this.button_Recipe_TabRecipe_PreAlignPosX1.Size = new System.Drawing.Size(35, 25);
-            this.button_Recipe_TabRecipe_PreAlignPosX1.TabIndex = 22;
-            this.button_Recipe_TabRecipe_PreAlignPosX1.Text = "#";
-            this.button_Recipe_TabRecipe_PreAlignPosX1.UseVisualStyleBackColor = true;
             // 
             // groupBox19
             // 
@@ -656,16 +689,6 @@
             this.label80.TabIndex = 6;
             this.label80.Text = "Fine Cam. IR :";
             this.label80.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Recipe_TabRecipe_PreAlignPosX1
-            // 
-            this.textBox_Recipe_TabRecipe_PreAlignPosX1.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_PreAlignPosX1.Location = new System.Drawing.Point(98, 41);
-            this.textBox_Recipe_TabRecipe_PreAlignPosX1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_PreAlignPosX1.Name = "textBox_Recipe_TabRecipe_PreAlignPosX1";
-            this.textBox_Recipe_TabRecipe_PreAlignPosX1.Size = new System.Drawing.Size(122, 32);
-            this.textBox_Recipe_TabRecipe_PreAlignPosX1.TabIndex = 21;
-            this.textBox_Recipe_TabRecipe_PreAlignPosX1.Text = "0";
             // 
             // groupBox17
             // 
@@ -2709,6 +2732,15 @@
             this.listBox_Recipe_TabRecipe_ListOfDrawingLayer.TabIndex = 57;
             this.listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndexChanged += new System.EventHandler(this.listBox_Recipe_TabRecipe_ListOfDrawingLayer_SelectedIndexChanged);
             // 
+            // tabPage_RecipeVision
+            // 
+            this.tabPage_RecipeVision.Location = new System.Drawing.Point(4, 44);
+            this.tabPage_RecipeVision.Name = "tabPage_RecipeVision";
+            this.tabPage_RecipeVision.Size = new System.Drawing.Size(1737, 756);
+            this.tabPage_RecipeVision.TabIndex = 8;
+            this.tabPage_RecipeVision.Text = "Recipe Vision";
+            this.tabPage_RecipeVision.UseVisualStyleBackColor = true;
+            // 
             // tabPage_Test
             // 
             this.tabPage_Test.Controls.Add(this.groupBox8);
@@ -3647,27 +3679,6 @@
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
             // 
-            // groupBox_Recipe_TabRecipe_PreAlignPos
-            // 
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.label_Recipe_TabRecipe_PreAlignPosX1);
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.label_Recipe_TabRecipe_PreAlignPosY2);
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.textBox_Recipe_TabRecipe_PreAlignPosX1);
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.label_Recipe_TabRecipe_PreAlignPosX2);
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.button_Recipe_TabRecipe_PreAlignPosX1);
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.label_Recipe_TabRecipe_PreAlignPosY1);
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.textBox_Recipe_TabRecipe_PreAlignPosY1);
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.button_Recipe_TabRecipe_PreAlignPosY1);
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.button_Recipe_TabRecipe_PreAlignPosY2);
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.textBox_Recipe_TabRecipe_PreAlignPosX2);
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.textBox_Recipe_TabRecipe_PreAlignPosY2);
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.Controls.Add(this.button_Recipe_TabRecipe_PreAlignPosX2);
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.Location = new System.Drawing.Point(387, 503);
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.Name = "groupBox_Recipe_TabRecipe_PreAlignPos";
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.Size = new System.Drawing.Size(286, 179);
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.TabIndex = 100;
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.TabStop = false;
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.Text = "groupBox15";
-            // 
             // FormNew_Recipe
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
@@ -3692,6 +3703,8 @@
             this.Text = "FormNew_Main";
             this.tabControl_Recipe.ResumeLayout(false);
             this.tabPage_Recipe.ResumeLayout(false);
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.ResumeLayout(false);
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.PerformLayout();
             this.groupBox19.ResumeLayout(false);
             this.groupBox19.PerformLayout();
             this.groupBox17.ResumeLayout(false);
@@ -3730,8 +3743,6 @@
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox177.ResumeLayout(false);
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.ResumeLayout(false);
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -4008,5 +4019,6 @@
         private System.Windows.Forms.Button button_Recipe_TabRecipe_PreAlign_search;
         private System.Windows.Forms.Button button_Recipe_TabRecipe_PreAlign_ROI;
         private System.Windows.Forms.GroupBox groupBox_Recipe_TabRecipe_PreAlignPos;
+        private System.Windows.Forms.TabPage tabPage_RecipeVision;
     }
 }
