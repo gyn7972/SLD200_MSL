@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.ServiceModel.Syndication;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 using static QMC.Common.Modules.Loader;
@@ -87,7 +89,7 @@ namespace QMC.Common.Modules
         //  쓰레드로 변경 --> 변경 취소. 그냥 타이머 쓴다. Thread 쓰니까 뭐가 막 잘 안됨 ㅡㅡ
         //public System.Windows.Forms.Timer timer_UnloaderWork;
         public System.Timers.Timer timer_UnloaderWork;
-
+        protected Task m_taskTimer_UnloaderWork_Tick = null;
         public bool m_btimer_UnloaderWork_Stop;
 
         public bool m_bBlink;
@@ -534,7 +536,7 @@ namespace QMC.Common.Modules
 
             //  Unloader Work 타이머
             timer_UnloaderWork = new System.Timers.Timer(10);
-            timer_UnloaderWork.Elapsed += Timer_UnloaderWork_Tick;
+            //timer_UnloaderWork.Elapsed += Timer_UnloaderWork_Tick;
             timer_UnloaderWork.AutoReset = true; // 반복 실행
             timer_UnloaderWork.Enabled = false; // 초기
 
@@ -620,7 +622,22 @@ namespace QMC.Common.Modules
             //PosParam_Dispenser = GetConfigData();     //  요건 나중에
 
             Recipe = new UnloaderRecipe(this);
+            m_taskTimer_UnloaderWork_Tick = Task.Factory.StartNew(() =>
+            {
+                Thread.CurrentThread.Name = "m_taskTimer_UnloaderWork_Tick";
+                while (true)
+                {
+                    Timer_UnloaderWork_Tick(null, null);
 
+                    if (m_IsModuleClose)
+                    {
+                        break;
+                    }
+                    Thread.Sleep(1);
+                }
+            }); ;
+
+            
             return ret;
         }
 
@@ -685,6 +702,13 @@ namespace QMC.Common.Modules
 
         public override void Close()
         {
+            m_IsModuleClose = true;
+            if (m_taskTimer_UnloaderWork_Tick != null)
+            {
+                m_taskTimer_UnloaderWork_Tick.Wait();
+                m_taskTimer_UnloaderWork_Tick.Dispose();
+                m_taskTimer_UnloaderWork_Tick = null;
+            }
             base.Close();
 
             if (Stage != null)
@@ -4437,6 +4461,7 @@ namespace QMC.Common.Modules
         //Timer_UnloaderWork_Tick
         public bool m_UnloaderWork_Start = false;
         public bool _isUnloaderWorkRunning = false; // 중복 실행 방지 플래그
+        private bool m_IsModuleClose = false;
 
         private async void Timer_UnloaderWork_Tick(object sender, ElapsedEventArgs e)
         {
