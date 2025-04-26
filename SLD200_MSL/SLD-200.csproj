@@ -647,6 +647,12 @@
     <Compile Include="NeedleCalibrationJogControl.designer.cs">
       <DependentUpon>NeedleCalibrationJogControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Recipe_Vision.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Recipe_Vision.Designer.cs">
+      <DependentUpon>FormNewSub_Recipe_Vision.cs</DependentUpon>
+    </Compile>
     <Compile Include="NormalDataConfigControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1460,6 +1466,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NeedleCalibrationJogControl.resx">
       <DependentUpon>NeedleCalibrationJogControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_Recipe_Vision.resx">
+      <DependentUpon>FormNewSub_Recipe_Vision.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NormalDataConfigControl.resx">
       <DependentUpon>NormalDataConfigControl.cs</DependentUpon>

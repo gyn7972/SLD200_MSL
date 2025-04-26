@@ -40,9 +40,10 @@ namespace QMC.Common
             m_Alarms = new AlarmCollection();
         }
 
-        public bool IsAlarm { get 
+        public bool IsAlarm { 
+            get 
             {
-                return m_Alarms.Count > 0;
+                return m_Alarms.Where(t=>t.Grade.Equals("Error")).Count()> 0;
             }
         }
         public void ShowAlarm(Alarm alarm)

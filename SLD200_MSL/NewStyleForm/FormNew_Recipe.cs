@@ -23,6 +23,7 @@ using Microsoft.Win32;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 using QMC.Common.Vision.Cameras;
+using SLD200.NewStyleForm.NewSubForm;
 
 namespace SLD200_MSL
 {
@@ -33,6 +34,8 @@ namespace SLD200_MSL
         FormNew_SiriusEditor m_formSiriusEditor = null;
 
         private System.Windows.Forms.Timer timer_Recipe_Open;
+
+        private FormNewSub_Recipe_Vision userform_RecipeVision;
 
         public FormNew_Recipe()
         {
@@ -82,6 +85,30 @@ namespace SLD200_MSL
             timer_Recipe_Open.Interval = 10;
             timer_Recipe_Open.Tick += new System.EventHandler(Timer_RecipeOpen_Func);
             timer_Recipe_Open.Enabled = true;
+
+            LoadSubForm();
+        }
+
+        protected override void OnCreateControl()
+        {
+            base.OnCreateControl(); // 반드시 호출
+                                    // 추가 초기화 코드
+        }
+
+        private void LoadSubForm()
+        {
+            OnCreateControl();
+
+            if (userform_RecipeVision == null)
+            {
+                userform_RecipeVision = new FormNewSub_Recipe_Vision();
+                userform_RecipeVision.Dock = DockStyle.Fill;
+                tabPage_RecipeVision.Controls.Add(userform_RecipeVision);
+                //userform_RecipeVision.Initialize(); // 필요하면 초기화
+                // OnCreateControl 강제 호출
+                userform_RecipeVision.CreateControl();
+
+            }
         }
 
         private void Timer_RecipeOpen_Func(object sender, EventArgs e)

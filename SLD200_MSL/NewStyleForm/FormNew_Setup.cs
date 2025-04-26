@@ -10,8 +10,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-//using OpenTK;
-//using OpenTK.Input;
 using QMC.Common;
 using QMC.Common.Modules;
 using QMC.Common.Motion.Ajin;

@@ -368,7 +368,6 @@ namespace QMC.Common
             public bool DustCollectorRemoteMode_Use;                    //  Dust Collector Remote Mode (true: Remote, false: Local)
             public double DustCollectorFreq_Upper;                      //  Dust Collector Frequency (Upper)
             public double DustCollectorFreq_Lower;                      //  Dust Collector Frequency (Lower)
-
             public PointD PreAlignPos1;
             public PointD PreAlignPos2;
         }
@@ -709,7 +708,7 @@ namespace QMC.Common
             public double[] LaserHeightValue;                 //  Laser Height Sensor 측정값
         }
         public static stFlatnessMeasurementParameter[] stFlatMeasurePos = new stFlatnessMeasurementParameter[System.Enum.GetValues(typeof(FlatMeasureList)).Length];
-
+        public static bool g_IsProgramEnd = false;
 
         public static void CreateInstance(string strEquipmentName)
         {
@@ -920,12 +919,6 @@ namespace QMC.Common
                 stLayerRecipeSet[i].DustCollectorRemoteMode_Use = false;                            //  Dust Collector Mode (true: Remote, false: Local)
                 stLayerRecipeSet[i].DustCollectorFreq_Upper = 20.0;                                 //  Dust Collector Upper Frequency (Hz)
                 stLayerRecipeSet[i].DustCollectorFreq_Lower = 20.0;                                 //  Dust Collector Lower Frequency (Hz)
-
-                // Pre Align
-                stLayerRecipeSet[i].PreAlignPos1.X = 0.0;
-                stLayerRecipeSet[i].PreAlignPos1.Y = 0.0;
-                stLayerRecipeSet[i].PreAlignPos2.X = 0.0;
-                stLayerRecipeSet[i].PreAlignPos2.Y = 0.0;
             }
 
 
