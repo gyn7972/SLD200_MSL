@@ -368,6 +368,8 @@ namespace QMC.Common
             public bool DustCollectorRemoteMode_Use;                    //  Dust Collector Remote Mode (true: Remote, false: Local)
             public double DustCollectorFreq_Upper;                      //  Dust Collector Frequency (Upper)
             public double DustCollectorFreq_Lower;                      //  Dust Collector Frequency (Lower)
+            public PointD PreAlignPos1;
+            public PointD PreAlignPos2;
         }
         public static stLayerRecipeParameter[] stLayerRecipeSet = new stLayerRecipeParameter[System.Enum.GetValues(typeof(LayerList)).Length];
 
