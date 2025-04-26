@@ -1484,7 +1484,7 @@ namespace QMC.Common.Modules
 
 
         }
-        protected virtual void InitAlarm()
+        protected override void InitAlarm()
         {
             Alarm alarm = new Alarm();
             alarm.Code = (int)AlarmKey.eRTC_FAIL;
