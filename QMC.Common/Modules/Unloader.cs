@@ -2458,10 +2458,6 @@ namespace QMC.Common.Modules
                     m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
                 }
             }
-
-
-            ActionUnloaderTransferStep?.Invoke((Unloader_Transfer_Step)m_nUnloader_Transfer_Step);
-
             switch (m_nUnloader_Transfer_Step)
             {
                 case (int)Unloader_Transfer_Step.Start:
@@ -4463,7 +4459,7 @@ namespace QMC.Common.Modules
         public bool _isUnloaderWorkRunning = false; // 중복 실행 방지 플래그
         private bool m_IsModuleClose = false;
 
-        private async void Timer_UnloaderWork_Tick(object sender, ElapsedEventArgs e)
+        private void Timer_UnloaderWork_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
             if (_isUnloaderWorkRunning)
