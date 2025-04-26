@@ -89,14 +89,25 @@ namespace SLD200_MSL
             LoadSubForm();
         }
 
+        protected override void OnCreateControl()
+        {
+            base.OnCreateControl(); // 반드시 호출
+                                    // 추가 초기화 코드
+        }
+
         private void LoadSubForm()
         {
+            OnCreateControl();
+
             if (userform_RecipeVision == null)
             {
                 userform_RecipeVision = new FormNewSub_Recipe_Vision();
                 userform_RecipeVision.Dock = DockStyle.Fill;
                 tabPage_RecipeVision.Controls.Add(userform_RecipeVision);
                 //userform_RecipeVision.Initialize(); // 필요하면 초기화
+                // OnCreateControl 강제 호출
+                userform_RecipeVision.CreateControl();
+
             }
         }
 

@@ -46,9 +46,6 @@ namespace SLD200_MSL
         public double RoiWidth { get; set; }
         public double RoiHeight { get; set; }
 
-
-
-
         public RoiListControl(RoiVisionTool roiTrainVisionTool, RoiVisionTool roiAlignVisionTool, Size fullsize)
         {
             InitializeComponent();
@@ -117,6 +114,7 @@ namespace SLD200_MSL
             if (roiTrainClick != null)
                 roiTrainClick();
         }
+
         public void RoiAlignClick()
         {
             if (roiAlignClick != null)
@@ -129,6 +127,11 @@ namespace SLD200_MSL
             {
                 if (baseButton.Name == RoiButton.Train.ToString())
                 {
+                    if (RoiTrainVisionTool == null)
+                    {
+                        throw new InvalidOperationException("RoiTrainVisionTool is not initialized.");
+                    }
+
                     RoiTrainClick();
                     FormSetRoi FormSetRoi = new FormSetRoi(RoiTrainVisionTool, FullSize);
                     FormSetRoi.RoiButtonClick += RoiTrainButton_Click;

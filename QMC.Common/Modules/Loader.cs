@@ -77,7 +77,8 @@ namespace QMC.Common.Modules
             MAligner_MoveXY_Widely_DoneCheck_Timeout,
             MAligner_VacuumOn_Fail,
             MAligner_MoveXY_Narrowly_Fail,
-            MAligner_MoveXY_LittleWidely_Fail,            
+            MAligner_MoveXY_LittleWidely_Fail,
+            MAligner_MoveXY_ModulePickupWaitingPos_Fail,
             LD_Stacker1_ModuleWork_PosSet = 4000,
             LD_Stacker1_ModulePickupWaitingPos_Step_No_More_Material,
             LD_Stacker1_ModulePickupWaitingPos_Step_Too_Many_Material,
@@ -105,8 +106,6 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
-
-
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.MAligner_VacuumOn_Fail;
             alarm.Title = "메카닉 얼라이너";
@@ -114,9 +113,6 @@ namespace QMC.Common.Modules
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
-
-
-
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.MAligner_MoveXY_Narrowly_Fail;
@@ -126,7 +122,6 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
-
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.MAligner_MoveXY_LittleWidely_Fail;
             alarm.Title = "메카닉 얼라이너";
@@ -135,16 +130,13 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
-
-
             alarm = new Alarm();
-            alarm.Code = (int)AlarmKey.LD_Stacker1_ModulePickupWaitingPos_Step_No_More_Material;
+            alarm.Code = (int)AlarmKey.MAligner_MoveXY_ModulePickupWaitingPos_Fail;
             alarm.Title = "Loader Left 스태커";
             alarm.Cause = "Loader Left 을 모듈 픽업 대기 위치로 보내는데 실패 하였습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
-
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Stacker1_ModuleWork_PosSet;
@@ -154,9 +146,6 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
-
-
-
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Stacker1_ModulePickupWaitingPos_Step_No_More_Material;
             alarm.Title = "Loader Left 스태커";
@@ -165,7 +154,6 @@ namespace QMC.Common.Modules
             alarm.Grade = "Info";
             m_dicAlarms.Add(alarm.Code, alarm);
 
-
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Stacker1_ModulePickupWaitingPos_Step_Too_Many_Material;
             alarm.Title = "Loader Left 스태커";
@@ -173,7 +161,6 @@ namespace QMC.Common.Modules
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
-
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Stacker1_Module_Move_To_Loading_Position_Fail;
