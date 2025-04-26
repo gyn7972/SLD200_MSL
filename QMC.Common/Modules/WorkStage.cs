@@ -16057,8 +16057,8 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Fiducial Align 을 위한 실리콘 두께 조정 완료.");
 
-                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
 
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
@@ -16115,14 +16115,14 @@ namespace QMC.Common.Modules
                         else
                         {
                             //  Pre Align NG 이면, Alarm 발생
-                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align 실패");
+                            //Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align 실패");
 
                             //timer_LaserDrillingWork.Enabled = false;
                             //m_bExit = true;
                             //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
                             //MessageBox.Show("Socket Align 실패", "Error");
 
-                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
                         }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 3)               //  60 sec * 5

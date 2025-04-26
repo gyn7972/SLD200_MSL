@@ -4455,12 +4455,12 @@ namespace QMC.Common.Modules
                 _isUnloaderWorkRunning = true;
 
                 // Scanner Calibration이 활성화되지 않은 경우 종료
-                if (!m_UnloaderWork_Start)
-                {
-                    Console.WriteLine("UnloadTransfer is not started.");
-                    //timer_ScannerCalibration.Stop(); // 타이머 중지
-                    return;
-                }
+                //if (!m_UnloaderWork_Start)
+                //{
+                //    Console.WriteLine("UnloadTransfer is not started.");
+                //    //timer_ScannerCalibration.Stop(); // 타이머 중지
+                //    return;
+                //}
 
                 // 현재 단계가 None이면 타이머 중지
                 //if (m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None)

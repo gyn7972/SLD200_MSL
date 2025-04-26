@@ -2849,7 +2849,7 @@ namespace SLD200_MSL
             //  Grab
             if (radioButton_VisionPopup_CameraSelection_LowMag.Checked)
             {
-                if (false)
+                if (true)
                 {
                     workStage.Camera_LowRes.Grab();
 
