@@ -4302,6 +4302,50 @@ namespace QMC.Common.Modules
             {
                 Camera_LowRes.Close();
             }
+
+            if (m_powerMeter_ExitPos_Comm != null)
+            {
+                m_powerMeter_ExitPos_Comm.CloseComm();
+                m_powerMeter_ExitPos_Comm.Close();
+            }
+
+            if (m_powerMeter_TargetPos_Comm != null)
+            {
+                m_powerMeter_TargetPos_Comm.CloseComm();
+                m_powerMeter_TargetPos_Comm.Close();
+            }
+
+            if (m_beamExpander_Comm != null)
+            {
+                m_beamExpander_Comm.CloseComm();
+                m_beamExpander_Comm.Close();
+            }
+
+            if (m_dustCollector_UpperPos_Comm != null)
+            {
+                m_dustCollector_UpperPos_Comm.CloseComm();
+                m_dustCollector_UpperPos_Comm.Close();
+            }
+
+            if (m_dustCollector_LowerPos_Comm != null)
+            {
+                m_dustCollector_LowerPos_Comm.CloseComm();
+                m_dustCollector_LowerPos_Comm.Close();
+            }
+
+            if (m_electroRegulator_Comm != null)
+            {
+                m_electroRegulator_Comm.CloseComm();
+                m_electroRegulator_Comm.Close();
+            }
+
+            if (m_SocketLaserHeightSensor != null)
+            {
+                if (m_SocketLaserHeightSensor.isConnected)
+                {
+                    m_SocketLaserHeightSensor.Close();
+                }
+            }
         }
 
         public override void SetConfigData(object configData)
@@ -7316,7 +7360,7 @@ namespace QMC.Common.Modules
                 // Scanner Calibration이 활성화되지 않은 경우 종료
                 if (!m_MainWork_Start)
                 {
-                    Console.WriteLine("Main Work is not started.");
+                    
                     //timer_ScannerCalibration.Stop(); // 타이머 중지
                     return;
                 }
@@ -7331,7 +7375,6 @@ namespace QMC.Common.Modules
 
                 // 단계별 실행
                 Run_MainWork_Cycle_Func();
-                Console.WriteLine($"Main running at {DateTime.Now}, Step: {m_nMainWork_Step}");
             }
             catch (Exception ex)
             {
@@ -7543,7 +7586,7 @@ namespace QMC.Common.Modules
                 // Scanner Calibration이 활성화되지 않은 경우 종료
                 if (!m_LaserDrillingWork_Start)
                 {
-                    Console.WriteLine("Laser Drilling is not started.");
+                    //Console.WriteLine("Laser Drilling is not started.");
                     //timer_ScannerCalibration.Stop(); // 타이머 중지
                     SetRecoveryLaserDrilling_MainStep(m_nLaserDrilling_MainStep);
                     return;
@@ -7567,7 +7610,6 @@ namespace QMC.Common.Modules
                     timer_ScannerCalibration.Stop(); // 타이머 중지
 
                 }
-                Console.WriteLine($"WorkStage running at {DateTime.Now}, Step: {m_nLaserDrilling_MainStep}");
             }
             catch (Exception ex)
             {
@@ -7612,7 +7654,7 @@ namespace QMC.Common.Modules
 
                 if (!m_SubWork_Start)
                 {
-                    Console.WriteLine("Laser Drilling is not started.");
+                    //Console.WriteLine("Laser Drilling is not started.");
                     timer_ScannerCalibration.Stop(); // 타이머 중지
                     SetRecoveryLaserDrilling_MainStep(m_nLaserDrilling_MainStep);
                     return;
@@ -7813,7 +7855,7 @@ namespace QMC.Common.Modules
                 // Scanner Calibration이 활성화되지 않은 경우 종료
                 if (!m_VerifyScannerCamOffset_Start)
                 {
-                    Console.WriteLine("Scanner Calibration is not started.");
+                    //Console.WriteLine("Scanner Calibration is not started.");
                     //timer_ScannerCalibration.Stop(); // 타이머 중지
                     return;
                 }
@@ -7871,7 +7913,7 @@ namespace QMC.Common.Modules
                 // Scanner Calibration이 활성화되지 않은 경우 종료
                 if (!m_ScannerCalibration_Start)
                 {
-                    Console.WriteLine("Scanner Calibration is not started.");
+                   // Console.WriteLine("Scanner Calibration is not started.");
                     timer_ScannerCalibration.Stop(); // 타이머 중지
                     return;
                 }
@@ -9120,6 +9162,20 @@ namespace QMC.Common.Modules
                 case (int)Home_Step.Complete:
 
                     Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "완료");
+
+                    //  RTC 보드 초기화
+
+                    //  카메라는 여러번 초기화 할 수 있으니, 이 조건을 걸어서 스캐너 초기화를 1회만 하도록 한다.
+                    if (Equipment.ScannerMode_Change_byUser != (int)RtcMode.RTC_RTC6_COMPLETE)
+                    {
+                        Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
+                    }
+
+                    //  카메라 초기화
+                    Camera_HighRes.SetRunStatus(Part.RunStatus.Run);
+                    Camera_LowRes.SetRunStatus(Part.RunStatus.Run);
+                    Camera_HighRes.Initialize();
+                    Camera_LowRes.Initialize();
 
                     m_bHomeOK = true;
                     m_bHomeProgressForm_Close = true;
@@ -12970,8 +13026,7 @@ namespace QMC.Common.Modules
                         double xOffset = ((((double)Fiducial_circlesResult[0].X
                             + ((double)Fiducial_circlesResult[0].Width / 2.0)) - (double)(Camera_HighRes.Resolution.Width / 2)) * Config.ParamConfig.UpperVision_Scale_X);
 
-                        double yOffset =
-                                                                                                            (((double)(Camera_HighRes.Resolution.Height / 2) - ((double)Fiducial_circlesResult[0].Y + ((double)Fiducial_circlesResult[0].Height / 2.0))) * Config.ParamConfig.UpperVision_Scale_Y);
+                        double yOffset =(((double)(Camera_HighRes.Resolution.Height / 2) - ((double)Fiducial_circlesResult[0].Y + ((double)Fiducial_circlesResult[0].Height / 2.0))) * Config.ParamConfig.UpperVision_Scale_Y);
 
                         m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = MC_Func.MC_GetEncPos((int)nAxis.X) + xOffset;
 
@@ -22042,6 +22097,7 @@ namespace QMC.Common.Modules
                 this.m_MainWork_Start = false;
 
             }
+            MessageBox.Show(alarm.Cause);
             AlarmManager.Instance.ShowAlarm(alarm);
             return alarm.Code;
         }

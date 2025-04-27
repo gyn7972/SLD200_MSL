@@ -508,7 +508,11 @@ namespace SLD200_MSL
                                 }
                                 else
                                 {
-                                    SiriusViewer_Main.Document = (IDocument)Equipment.EqpSiriusViewer.Document.Clone();
+                                    if(SiriusViewer_Main.Document != Equipment.EqpSiriusViewer.Document)
+                                    {
+                                        SiriusViewer_Main.Document = (IDocument)Equipment.EqpSiriusViewer.Document;
+
+                                    }
                                 }
                                 break;
                             }
@@ -762,24 +766,6 @@ namespace SLD200_MSL
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 ///
 
-                //  RTC 보드 초기화
-
-                //  카메라는 여러번 초기화 할 수 있으니, 이 조건을 걸어서 스캐너 초기화를 1회만 하도록 한다.
-                if (Equipment.ScannerMode_Change_byUser != (int)RtcMode.RTC_RTC6_COMPLETE)
-                {
-                    // 문서 생성후 뷰어에 지정
-                    var doc = new DocumentDefault();
-                    SiriusViewer_Main.Document = doc;
-
-                    Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
-                }
-
-                //  카메라 초기화
-                workStage.Camera_HighRes.SetRunStatus(Part.RunStatus.Run);
-                workStage.Camera_LowRes.SetRunStatus(Part.RunStatus.Run);
-                workStage.Camera_HighRes.Initialize();
-                workStage.Camera_LowRes.Initialize();
-
                 workStage.m_bHomeOK = false;
                 m_bHomeProgress_Show = true;
                 workStage.m_nHomeStep = (int)WorkStage.Home_Step.Start;
@@ -800,6 +786,10 @@ namespace SLD200_MSL
                 m_FormProgress.StartPosition = FormStartPosition.CenterScreen;
                 m_FormProgress.TopMost = true;
                 m_FormProgress.Show();
+
+                // 문서 생성후 뷰어에 지정
+                var doc = new DocumentDefault();
+                SiriusViewer_Main.Document = doc;
             }
             else
             {
@@ -1345,6 +1335,21 @@ namespace SLD200_MSL
                 return;
             }
 
+            if (checkBox_Test_DryRun.Checked)
+            {
+                workStage.m_bMainWorkCycle_DryRun = true;
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 시작하시겠습니까?\r\n\r\n[Dry Run]"))
+                    return;
+            }
+            else
+            {
+                workStage.m_bMainWorkCycle_DryRun = false;
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 시작하시겠습니까?"))
+                    return;
+            }
+
 
             workStage.SetRecoveryLaserDrilling_MainStep(workStage.m_nLaserDrilling_MainStep);
             workStage.m_nLaserDrilling_MainStep = workStage.m_nLaserDrilling_MainStep_Recovery;
@@ -1361,26 +1366,11 @@ namespace SLD200_MSL
                 return;
             }
 
-            if (checkBox_Test_DryRun.Checked)
-            {
-                workStage.m_bMainWorkCycle_DryRun = true;
-                var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 시작하시겠습니까?\r\n\r\n[Dry Run]"))
-                    return;
-            }
-            else
-            {
-                workStage.m_bMainWorkCycle_DryRun = false;
-                var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 시작하시겠습니까?"))
-                    return;
-            }
-
             
             Equipment.MachineStop_byTimeout_Loader = false;
             Equipment.MachineStop_byTimeout_Unloader = false;
             Equipment.MachineStop_byTimeout_WorkStage = false;
-
+            
             Equipment.SocketStop = false;
             Equipment.SocketStopped = false;
             Equipment.CycleStop = false;
@@ -1413,26 +1403,30 @@ namespace SLD200_MSL
 
             Equipment.AutoRunStatus = true;
 
-            workStage.timer_MainWork.Start();
-            workStage.timer_MainWork.Enabled = true;
             workStage._isMainWorkRunning = false;
             workStage.m_MainWork_Start = true;
+
             //workStage.m_nMainWork_Step = (int)WorkStage.MainWork_Step.Start;
 
-            loader.timer_LoaderWork.Start();
-            loader.timer_LoaderWork.Enabled = true;
             loader._isLoaderWorkRunning = false;
             loader.m_LoaderWork_Start = true;
             //loader.m_nLoader_Transfer_Step = (int)Loader.Loader_Transfer_Step.Start;
 
-            workStage.timer_LaserDrillingWork.Start();
-            workStage.timer_LaserDrillingWork.Enabled = true;
             workStage._isLaserDrillingWorkRunning = false;
             workStage.m_LaserDrillingWork_Start = true;
+
+
+            workStage._isLaserDrillingWorkRunning = false;
+            workStage.m_LaserDrillingWork_Start = true;
+
+            workStage.m_ProductAlign_Start = true;
+            workStage.m_SubWork_Start = true;
+            workStage.m_LaserDrillingWork_Start = true;
+            workStage.m_MainWork_Start = true;
+
+
             //workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
 
-            unloader.timer_UnloaderWork.Start();
-            unloader.timer_UnloaderWork.Enabled = true;
             unloader._isUnloaderWorkRunning = false;
             unloader.m_UnloaderWork_Start = true;
             //unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.Start;

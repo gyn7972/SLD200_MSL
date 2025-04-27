@@ -304,12 +304,12 @@ namespace SLD200_MSL
 
             //timer_DIO_Status.Enabled = true;        //  메인 화면 IO 갱신 타이머
 
-            if (workStage.m_bAlignVisionThread_Use && !Equipment.m_bAlignVisionThread_1time)              //  Thread 한번만 실행
-            {
-                Equipment.m_bAlignVisionThread_1time = true;
+            //if (workStage.m_bAlignVisionThread_Use && !Equipment.m_bAlignVisionThread_1time)              //  Thread 한번만 실행
+            //{
+            //    Equipment.m_bAlignVisionThread_1time = true;
 
-                ThreadStart();
-            }
+            //    ThreadStart();
+            //}
 
 
             //  요거는 나중에 주석 해제한다. (자꾸 이것저것 뜸)
