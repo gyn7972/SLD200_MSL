@@ -122,21 +122,28 @@ namespace SLD200_MSL
             {
                 if (baseDataGridViewAlarm.SelectedCells != null)
                 {
-                    Alarm alarm = baseDataGridViewAlarm.Rows[baseDataGridViewAlarm.SelectedCells[0].RowIndex].DataBoundItem as Alarm;
-                    foreach (Alarm alarm1 in Alarms)
+                    try
                     {
-                        if (alarm == alarm1)
+                        Alarm alarm = baseDataGridViewAlarm.Rows[baseDataGridViewAlarm.SelectedCells[0].RowIndex].DataBoundItem as Alarm;
+                        foreach (Alarm alarm1 in Alarms)
                         {
-                            Alarms.Remove(alarm1);
-                            baseDataGridViewAlarm.DataSource = null;
-                            baseDataGridViewAlarm.DataSource = Alarms;
-                            if (Alarms.Count > 0)
+                            if (alarm == alarm1)
                             {
-                                baseDataGridViewAlarm.Rows[0].Cells[1].Selected = true;
+                                Alarms.Remove(alarm1);
+                                baseDataGridViewAlarm.DataSource = null;
+                                baseDataGridViewAlarm.DataSource = Alarms;
+                                if (Alarms.Count > 0)
+                                {
+                                    baseDataGridViewAlarm.Rows[0].Cells[1].Selected = true;
+                                }
+                                break;
                             }
-                            break;
                         }
+                    }catch(Exception ex)
+                    {
+
                     }
+                    
                     //알람 지우기
                 }
             }

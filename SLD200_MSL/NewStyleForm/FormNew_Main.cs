@@ -1100,6 +1100,8 @@ namespace SLD200_MSL
                 //Equipment.WorkElapsedTick_Drilling = 0;
                 //Equipment.WorkElapsedTick_Marking = 0;
 
+                Equipment.SeqTestMode = false;
+
                 workStage.m_bLaserDrilling_SocketStopped = false;
                 Equipment.SocketStopped = false;
 
@@ -1366,7 +1368,8 @@ namespace SLD200_MSL
                 return;
             }
 
-            
+            Equipment.SeqTestMode = false;
+
             Equipment.MachineStop_byTimeout_Loader = false;
             Equipment.MachineStop_byTimeout_Unloader = false;
             Equipment.MachineStop_byTimeout_WorkStage = false;
@@ -1789,6 +1792,12 @@ namespace SLD200_MSL
             //  Laser Drilling 파츠 사용 변수 초기화
             workStage.m_bLaserDrilling_Complete = false;
             workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+            workStage.ResetRecovery();
+            unloader.ResetRecovery();
+            loader.ResetRecovery();
+            
+
         }
 
         private void checkBox_Main_Loader_Transfer_Pause_CheckedChanged(object sender, EventArgs e)

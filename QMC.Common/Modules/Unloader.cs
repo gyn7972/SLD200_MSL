@@ -6356,5 +6356,13 @@ namespace QMC.Common.Modules
             SetRecoveryTransfer(m_nUnloader_Transfer_Step_Recovery);
             m_nUnloader_Transfer_Step = m_nUnloader_Transfer_Step_Recovery;
         }
+
+        public void ResetRecovery()
+        {
+            m_nStacker0_ModulePutdownWaitingPos_Step_Recovery = 0;
+            m_nStacker1_ModulePutdownWaitingPos_Step_Recovery = 0;
+            m_nUnloader_Transfer_Step_Recovery = 0;
+
+        }
     }
 }

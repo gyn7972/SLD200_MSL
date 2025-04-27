@@ -1492,6 +1492,7 @@ namespace QMC.Common.Modules
             SocketAlignZMoveFail,
             SocketAlignXYMoveFail,
             SocketAlignMovePositionCalcFail,
+            PreAlignFail,
             LastAlarm = 3999
         }
         protected override void InitAlarm()
@@ -7765,7 +7766,17 @@ namespace QMC.Common.Modules
                     return;
                 }
 
-                Run_SocketAlign_Func(m_nSocketNum_forAlign);                  //  Thread 를 사용할 경우 주석 처리. 타이머 사용하려면 주석 해제
+                int ret = Run_SocketAlign_Func(m_nSocketNum_forAlign);                  //  Thread 를 사용할 경우 주석 처리. 타이머 사용하려면 주석 해제
+                 if(ret != 0)
+                {
+                    m_nSocketAlign_MainStep = 0;
+                }
+
+                //int ret = Run_FindAlignMark_Func();                //  Thread 를 사용할 경우 주석 처리. 타이머 사용하려면 주석 해제
+                //if (ret != 0)
+                //{
+                //    m_nSocketAlign_MainStep = 0;
+                //}
                 Run_FindAlignMark_Func();
 
             }
@@ -8205,6 +8216,8 @@ namespace QMC.Common.Modules
 
                     m_bFindAlignMark_Complete = false;
 
+                    m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
+
                     //  어느 쪽 마크를 찾을 것인지... 1번 마크인지 2번 마크인지...
                     if ((m_nFindAlignMarkType == (int)AlignMarkType.ALIGN_2POINT) || (m_nFindAlignMarkType == (int)AlignMarkType.ALIGN_1STMARK))        //  2 Point 찾기나, 1번 마크 찾기일 경우
                     {
@@ -8289,14 +8302,17 @@ namespace QMC.Common.Modules
                         m_bFindLowerAlignMark_OK = false;
                     }
 
-                    if ((m_nVisionAligner_Type >= (int)Aligner_Type.Aligner_Wafer) && (m_nVisionAligner_Type <= (int)Aligner_Type.Aligner_Reticle_Upper))
-                    {
-                        m_nFindAlignMark_Step = (int)FindAlignMark_Step.FindMark_ResultCheck;
-                    }
-                    else
-                    {
-                        m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
-                    }
+                    //if ((m_nVisionAligner_Type >= (int)Aligner_Type.Aligner_Wafer) && (m_nVisionAligner_Type <= (int)Aligner_Type.Aligner_Reticle_Upper))
+                    //{
+                    //    m_nFindAlignMark_Step = (int)FindAlignMark_Step.FindMark_ResultCheck;
+                    //}
+                    //else
+                    //{
+                    //    m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
+                    //}
+
+                    m_nFindAlignMark_Step = (int)FindAlignMark_Step.FindMark_ResultCheck;
+
                     break;
 
 
@@ -8390,7 +8406,8 @@ namespace QMC.Common.Modules
         protected bool IsAlarm()
         {
             var v = AlarmManager.Instance.Alarms;
-            var alarmList = v.Where(t => t.Code >= (int)AlarmKey.FirstAlarm && t.Code <= (int)AlarmKey.LastAlarm);
+            //var alarmList = v.Where(t => t.Code >= (int)AlarmKey.FirstAlarm && t.Code <= (int)AlarmKey.LastAlarm && t.Grade.Equals("Error"));
+            var alarmList = v.Where(t => t.Code >= (int)AlarmKey.FirstAlarm );
             return alarmList.Any();
         }
         void Run_Home_Func()
@@ -14420,6 +14437,8 @@ namespace QMC.Common.Modules
                         Main_SocketPositions_Draw = true;
                     }
 
+                    m_nDrillingData_SocketAlign_NGCount = 0;
+
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                     break;
 
@@ -15754,6 +15773,9 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.DrillingData_StageZ_SocketCenter_MovetoLaserHeightSensorPos:                     //  가공 할 Socket Center 위치를 Laser Height Sensor 위치로 이동
 
                     LaserDrilling_StepDrillingData_StageZ_SocketCenter_MovetoLaserHeightSensorPos(out lfVelocity, out lfAccDec);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_StageZ_SocketCenter_MovetoLaserHeightSensorPos_DoneCheck;
+
                     break;
 
 
@@ -15921,8 +15943,8 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Fiducial Align 을 위한 실리콘 두께 조정 완료.");
 
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
-                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
 
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
@@ -15946,11 +15968,6 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align Cycle 시작.");
 
-                    m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
-                    m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
-                    m_nFindAlignMark_Step = (int)FindAlignMark_Step.Start;
-                    m_bFindAlignMark_Complete = false;
-
                     //Align Mark Pos - 도면에서 추출하여 전달.
                     stDividedRegion_GroupData[] inputGroupData = m_stDividedRegion_GroupData;
                     PointD leftPoint, rightPoint;
@@ -15958,9 +15975,13 @@ namespace QMC.Common.Modules
 
                     Equipment.stLayerRecipeSet[0].PreAlignPos1 = leftPoint;
                     Equipment.stLayerRecipeSet[0].PreAlignPos2 = rightPoint;
-                    
-                    timer_VisionAlign.Enabled = true;
-                    
+
+                    m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
+                    m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
+                    m_nFindAlignMark_Step = (int)FindAlignMark_Step.Start;
+                    m_bFindAlignMark_Complete = false;
+                    //timer_VisionAlign.Enabled = true;
+
                     TickCount_Start((int)TickType.TICK_MAIN);
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_CompleteCheck;
@@ -16006,6 +16027,10 @@ namespace QMC.Common.Modules
 
                         //timer_LaserDrillingWork.Enabled = false;
                         //m_bExit = true;
+
+                        return AlarmPost(AlarmKey.PreAlignFail);
+
+
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
 
                         timer_VisionAlign.Enabled = false;
@@ -16048,6 +16073,8 @@ namespace QMC.Common.Modules
                     m_bFindFirstAlignMarkOnly = false;
 
                     m_bSocketAlign_OK = false;
+
+                    m_bAlignCompleted = false;
 
                     //  얼라인 하려는 소켓 번호
                     m_nSocketNum_forAlign = m_nDrillingWork_Group_Count;                        //  Group 이 Socket 이다. (Group 번호가 Socket 번호)
@@ -16109,8 +16136,10 @@ namespace QMC.Common.Modules
                             Main_SocketPositions_SetStatus = true;                                              //  상태 변경
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+
                         }
-                    }else if (m_nSocketAlign_MainStep == (int)SocketAlign_Step.None)
+                    }
+                    else if (m_nSocketAlign_MainStep == (int)SocketAlign_Step.None)
                     {
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
                     }
@@ -21012,8 +21041,6 @@ namespace QMC.Common.Modules
                                   lfVelocity, lfAccDec, lfAccDec);
 
             TickCount_Start((int)TickType.TICK_MAIN);
-
-            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_StageZ_SocketCenter_MovetoLaserHeightSensorPos_DoneCheck;
         }
 
         private void LaserDrilling_StepSocketStop_StageXY_Move_PausePos(out double lfVelocity, out double lfAccDec)
@@ -30849,6 +30876,11 @@ namespace QMC.Common.Modules
             }
 
             return (row, column);
+        }
+
+        public void ResetRecovery()
+        {
+            //m_nLaserDrilling_MainStep_Recovery = 0;
         }
     }
 }
