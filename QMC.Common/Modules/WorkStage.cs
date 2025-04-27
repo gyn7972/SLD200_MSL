@@ -1641,7 +1641,6 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
-
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.SocketAlignZMoveFail;
             alarm.Title = "Socket Align";
@@ -1649,7 +1648,6 @@ namespace QMC.Common.Modules
             alarm.Source = Name;
             alarm.Grade = "Info";
             m_dicAlarms.Add(alarm.Code, alarm);
-
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.SocketAlignXYMoveFail;
@@ -2630,7 +2628,6 @@ namespace QMC.Common.Modules
 
             Complete                                                            //  완료
         }
-
 
         public int m_nDryRun_Step { set; get; }                                 //  Dry Run Cycle Step
         public bool m_bDryRun_Complete { set; get; }                            //  Dry Run Cycle 완료 여부
@@ -15852,8 +15849,8 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Fiducial Align 을 위한 실리콘 두께 조정 완료.");
 
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
-                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
 
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)

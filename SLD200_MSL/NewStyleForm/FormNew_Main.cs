@@ -141,7 +141,7 @@ namespace SLD200_MSL
             pictureBox_ModuleProcessingStatus.Paint += PictureBox_ModuleProcessingStatus_Paint;
 
             //  마크 이미지
-            //  Reticle Upper
+            //  scannerCompensator
             string m_strFile = string.Format("{0}\\ScannerCal.jpg", ConfigManager.GetPatternImagePath());
             if (File.Exists(m_strFile))
             {
@@ -155,17 +155,21 @@ namespace SLD200_MSL
                     //workStage.PatternMatchingImage_Reticle_Loaded_Upper = true;
                 }
             }
-            //else
-            //{
-            //    if (waferProbeAlign.reticleAligner_Upper != null)
-            //    {
-            //        m_strFile = string.Format("{0}\\NoImage.jpg", ConfigManager.GetPatternImagePath());
-            //        if (File.Exists(m_strFile))
-            //        {
-            //            waferProbeAlign.reticleAligner_Upper.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
-            //        }
-            //    }
-            //}
+            
+            m_strFile = string.Format("{0}\\PreAlign.jpg", ConfigManager.GetPatternImagePath());
+            if (File.Exists(m_strFile))
+            {
+                workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
+                workStage.jigAligner_LowRes.TrainImage = Bitmap.FromFile(m_strFile); //이거 사용중.
+                if (workStage.jigAligner_LowRes != null)
+                {
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
+                    workStage.jigAligner_LowRes.TrainImage = Bitmap.FromFile(m_strFile); //이거 사용중.
+
+                    //workStage.PatternMatchingImage_Reticle_Loaded_Upper = true;
+                }
+            }
+
 
             m_SiriusViewerRefresy = false;
             workStage.ActionSiriusViewerRefresy += OnSiriusViewerRefresy;

@@ -3355,7 +3355,6 @@ namespace SLD200_MSL
         {
             UpdataPositionData(0.0, 0.0, 0.0);
 
-
             if (Box_Setup_ScannerCal_ImageViewer.Simulated)
             {
                 workStage.scannerCompensator.Simulated = true;

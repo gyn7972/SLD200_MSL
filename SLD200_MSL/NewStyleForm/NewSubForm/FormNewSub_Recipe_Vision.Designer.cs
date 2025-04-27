@@ -38,8 +38,6 @@
             this.groupBox_RecipeVision_Illumination = new System.Windows.Forms.GroupBox();
             this.radioButton_RecipeVision_Light_Red = new System.Windows.Forms.RadioButton();
             this.radioButton_RecipeVision_Light_IR = new System.Windows.Forms.RadioButton();
-            this.baseLabel_RecipeVision_Max = new SLD200_MSL.BaseLabel();
-            this.baseLabel_RecipeVision_Min = new SLD200_MSL.BaseLabel();
             this.hScrollBar_RecipeVision_Illuminator = new System.Windows.Forms.HScrollBar();
             this.button_RecipeVision_Illumin_value = new System.Windows.Forms.Button();
             this.textBox_RecipeVision_IlluminationValue = new System.Windows.Forms.TextBox();
@@ -51,6 +49,8 @@
             this.groupBox_RecipeVision_MarkType = new System.Windows.Forms.GroupBox();
             this.radioButton_RecipeVision_Circle = new System.Windows.Forms.RadioButton();
             this.radioButton_RecipeVision_Cross = new System.Windows.Forms.RadioButton();
+            this.baseLabel_RecipeVision_Max = new SLD200_MSL.BaseLabel();
+            this.baseLabel_RecipeVision_Min = new SLD200_MSL.BaseLabel();
             this.groupBox_RecipeVision_SearchResult = new SLD200_MSL.WATGroupBox();
             this.tabControl_RecipeVision_SearchResult = new System.Windows.Forms.TabControl();
             this.Parameter = new System.Windows.Forms.TabPage();
@@ -202,27 +202,6 @@
             this.radioButton_RecipeVision_Light_IR.UseVisualStyleBackColor = true;
             this.radioButton_RecipeVision_Light_IR.CheckedChanged += new System.EventHandler(this.radioButton_RecipeVision_Light_IR_CheckedChanged);
             // 
-            // baseLabel_RecipeVision_Max
-            // 
-            this.baseLabel_RecipeVision_Max.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_RecipeVision_Max.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_RecipeVision_Max.Location = new System.Drawing.Point(224, 67);
-            this.baseLabel_RecipeVision_Max.Name = "baseLabel_RecipeVision_Max";
-            this.baseLabel_RecipeVision_Max.Size = new System.Drawing.Size(55, 23);
-            this.baseLabel_RecipeVision_Max.TabIndex = 32;
-            this.baseLabel_RecipeVision_Max.Text = "255";
-            this.baseLabel_RecipeVision_Max.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // baseLabel_RecipeVision_Min
-            // 
-            this.baseLabel_RecipeVision_Min.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_RecipeVision_Min.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_RecipeVision_Min.Location = new System.Drawing.Point(16, 67);
-            this.baseLabel_RecipeVision_Min.Name = "baseLabel_RecipeVision_Min";
-            this.baseLabel_RecipeVision_Min.Size = new System.Drawing.Size(22, 23);
-            this.baseLabel_RecipeVision_Min.TabIndex = 31;
-            this.baseLabel_RecipeVision_Min.Text = "0";
-            // 
             // hScrollBar_RecipeVision_Illuminator
             // 
             this.hScrollBar_RecipeVision_Illuminator.Location = new System.Drawing.Point(47, 63);
@@ -349,6 +328,27 @@
             this.radioButton_RecipeVision_Cross.Text = "Cross";
             this.radioButton_RecipeVision_Cross.UseVisualStyleBackColor = true;
             this.radioButton_RecipeVision_Cross.CheckedChanged += new System.EventHandler(this.radioButton_RecipeVision_Cross_CheckedChanged);
+            // 
+            // baseLabel_RecipeVision_Max
+            // 
+            this.baseLabel_RecipeVision_Max.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_RecipeVision_Max.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_RecipeVision_Max.Location = new System.Drawing.Point(224, 67);
+            this.baseLabel_RecipeVision_Max.Name = "baseLabel_RecipeVision_Max";
+            this.baseLabel_RecipeVision_Max.Size = new System.Drawing.Size(55, 23);
+            this.baseLabel_RecipeVision_Max.TabIndex = 32;
+            this.baseLabel_RecipeVision_Max.Text = "255";
+            this.baseLabel_RecipeVision_Max.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // baseLabel_RecipeVision_Min
+            // 
+            this.baseLabel_RecipeVision_Min.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_RecipeVision_Min.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_RecipeVision_Min.Location = new System.Drawing.Point(16, 67);
+            this.baseLabel_RecipeVision_Min.Name = "baseLabel_RecipeVision_Min";
+            this.baseLabel_RecipeVision_Min.Size = new System.Drawing.Size(22, 23);
+            this.baseLabel_RecipeVision_Min.TabIndex = 31;
+            this.baseLabel_RecipeVision_Min.Text = "0";
             // 
             // groupBox_RecipeVision_SearchResult
             // 
