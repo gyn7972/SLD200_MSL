@@ -8168,7 +8168,12 @@ namespace QMC.Common.Modules
 
         protected int AlarmPost(AlarmKey AlarmCode)
         {
+            
             Alarm alarm = GetAlarm((int)AlarmCode);
+            if (alarm.Grade.Equals("Error"))
+            {
+                this.m_LoaderWork_Start = false;
+            }
             AlarmManager.Instance.ShowAlarm(alarm);
             return alarm.Code;
         }
@@ -8454,12 +8459,12 @@ namespace QMC.Common.Modules
                 _isLoaderWorkRunning = true;
 
                 // Scanner Calibration이 활성화되지 않은 경우 종료
-                //if (!m_LoaderWork_Start)
-                //{
-                //    Console.WriteLine("LoaderWork is not started.");
-                //    //timer_ScannerCalibration.Stop(); // 타이머 중지
-                //    return;
-                //}
+                if (!m_LoaderWork_Start)
+                {
+                    Console.WriteLine("LoaderWork is not started.");
+                    //timer_ScannerCalibration.Stop(); // 타이머 중지
+                    return;
+                }
 
                 // 현재 단계가 None이면 타이머 중지
                 //if (m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None)

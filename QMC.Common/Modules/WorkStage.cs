@@ -1172,6 +1172,7 @@ namespace QMC.Common.Modules
 
 
         #region Field
+
         public string m_strLaserComm_ReceivedData;
         public const byte chrESC = 0x1B;
         public const byte chrCR = 0x0D; //\r
@@ -1220,10 +1221,29 @@ namespace QMC.Common.Modules
         string m_strSendData = "";
         byte[] m_cSendCmd = new byte[11];
 
-        private bool m_bDrillingData_isLine { get; set; }       //  Drilling Hole Data 가 Polyline 구성인지, Line 구성인지?
+
+        public bool _isVerifyScannerCamOffsetRunning = false; // 중복 실행 방지 플래그
+        public bool _isMotionHome = false; // 중복 실행 방지 플래그
+        public bool _isProductAlign = false; // 중복 실행 방지 플래그
+        public bool _isCommRunning = false; // 중복 실행 방지 플래그
+        public bool _isSubWorkRunning = false; // 중복 실행 방지 플래그
+        public bool _isCalibrationRunning = false; // 중복 실행 방지 플래그
+        public bool _isLaserDrillingWorkRunning = false; // 중복 실행 방지 플래그
+        public bool _isMainWorkRunning = false; // 중복 실행 방지 플래그
+
+        public bool m_VerifyScannerCamOffset_Start = false;
+        public bool m_MotionHome_Start = false;
+        public bool m_ProductAlign_Start = false;
+        public bool m_Comm_Start = false;
+        public bool m_SubWork_Start = false;
+        public bool m_ScannerCalibration_Start = false;
+        public bool m_LaserDrillingWork_Start = false;
+        public bool m_MainWork_Start = false;
+        
         #endregion
 
         #region Property
+        private bool m_bDrillingData_isLine { get; set; }       //  Drilling Hole Data 가 Polyline 구성인지, Line 구성인지?
         public WorkStageConfig Config { set; get; }
         public WorkStageParameterConfig ParamConfig { set; get; }
         public WorkStageRecipe Recipe { set; get; }
@@ -7279,8 +7299,7 @@ namespace QMC.Common.Modules
 
         #region Event Handler
 
-        public bool m_MainWork_Start = false;
-        public bool _isMainWorkRunning = false; // 중복 실행 방지 플래그
+        
         private async void Timer_MainWork_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -7504,8 +7523,7 @@ namespace QMC.Common.Modules
             }
         }
         //Timer_LaserDrillingWork_Tick
-        public bool m_LaserDrillingWork_Start = false;
-        public bool _isLaserDrillingWorkRunning = false; // 중복 실행 방지 플래그
+
         private void Timer_LaserDrillingWork_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -7578,8 +7596,7 @@ namespace QMC.Common.Modules
         }
 
         //
-        public bool m_SubWork_Start = false;
-        public bool _isSubWorkRunning = false; // 중복 실행 방지 플래그
+
         private void Timer_SubWork_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -7650,8 +7667,7 @@ namespace QMC.Common.Modules
             }
         }
 
-        public bool m_Comm_Start = false;
-        public bool _isCommRunning = false; // 중복 실행 방지 플래그
+
         private void Timer_Comm_Tick(object sender, ElapsedEventArgs e)
         {
 
@@ -7686,8 +7702,7 @@ namespace QMC.Common.Modules
         }
 
         //
-        public bool m_ProductAlign_Start = false;
-        public bool _isProductAlign = false; // 중복 실행 방지 플래그
+        
         private void Timer_ProductAlign_tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -7734,8 +7749,7 @@ namespace QMC.Common.Modules
             Run_FindAlignMark_Func();
         }
 
-        public bool m_MotionHome_Start = false;
-        public bool _isMotionHome = false; // 중복 실행 방지 플래그
+        
         private async void Timer_MotionHome_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -7780,8 +7794,9 @@ namespace QMC.Common.Modules
             }
         }
 
-        public bool m_VerifyScannerCamOffset_Start = false;
-        public bool _isVerifyScannerCamOffsetRunning = false; // 중복 실행 방지 플래그
+        
+
+
         private void Timer_VerifyScannerCamOffset_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -7838,8 +7853,7 @@ namespace QMC.Common.Modules
             timer_VerifyScannerCamOffset.Enabled = true;
         }
 
-        public bool m_ScannerCalibration_Start = false;
-        public bool _isCalibrationRunning = false; // 중복 실행 방지 플래그
+
 
         private void Timer_ScannerCalibration_Tick(object sender, ElapsedEventArgs e)
         {
@@ -22017,7 +22031,17 @@ namespace QMC.Common.Modules
 
         protected int AlarmPost(AlarmKey AlarmCode)
         {
+            
+            
             Alarm alarm = GetAlarm((int)AlarmCode);
+            if(alarm.Grade.Equals("Error"))
+            {
+                this.m_ProductAlign_Start = false;
+                this.m_SubWork_Start = false;
+                this.m_LaserDrillingWork_Start = false;
+                this.m_MainWork_Start = false;
+
+            }
             AlarmManager.Instance.ShowAlarm(alarm);
             return alarm.Code;
         }
