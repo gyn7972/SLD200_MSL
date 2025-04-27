@@ -305,262 +305,284 @@ namespace QMC.Common.Parts
 
         private XyCoordinate xyInterpolatedCoordinate = new XyCoordinate();         //  Stage XY Map Data 로 변환된 위치 이동 좌표
 
+        
         public override int OnWork()
         {
+
             int ret = 0;
-            double dAngle = 0.0;
-            m_Owner = this.Owner as WorkStage;
-            if (m_Status == RunStatus.Stop) return 1;
-            if (this.Stage == null) return -1;
-
-            if (m_AlignPositions == null) return -1;
-
-            //XyCoordinate center = (m_AlignPositions[0] + m_AlignPositions[1]) / 2;
-            XyzCoordinate position = new XyzCoordinate();
-            #region 주석
-            //List<PatternMatchingResult> listResults = new List<PatternMatchingResult>();
-            //foreach (XyCoordinate position in m_AlignPositions)
-            //{
-            //    if ((ret = Stage.MovePosition(position)) != 0) return ret;
-            //    if (Recipe.MoveToDelay > 0)
-            //        Thread.Sleep(Recipe.MoveToDelay);
-
-            //    listResults.Add(Search());
-            //}
-
-            //if (listResults.Count == 2)
-            //{
-            //    if (listResults[0] != null && listResults[0].Values.Count > 0 &&
-            //        listResults[1] != null && listResults[1].Values.Count > 0)
-            //    {
-            //        XyCoordinate first = new XyCoordinate();
-            //        XyCoordinate second = new XyCoordinate();
-            //        first = m_AlignPositions[0] + GetCoordinate(listResults[0].Values[0].X, listResults[0].Values[0].Y);
-            //        second = m_AlignPositions[1] + GetCoordinate(listResults[1].Values[0].X, listResults[1].Values[0].Y);
-            //        double dAngle = GetAngle(first, second);
-            //        XyCoordinate result = new XyCoordinate();
-            //        result = ((first + second) / 2);
-
-            //        //m_Result.X = result.X;
-            //        //m_Result.Y = result.Y;
-            //        //reu.T = dAngle;
-            //        this.Result = dAngle;
-            //        ret = 0;
-            //    }
-            //    else
-            //    {
-            //        ret = -1;
-            //    }
-            //}
-            //else
-            //{
-            //    ret = -1;
-            //}
-            #endregion
-
-            PatternMatchingResult firstPointSearchResult = null;
-            PatternMatchingResult secondPointSearchResult = null;
-            XyCoordinate firstPointCoordinate = new XyCoordinate();
-            XyCoordinate secondPointCoordinate = new XyCoordinate();
-
-            XyCoordinate finalFirstPosition = new XyCoordinate();
-            XyCoordinate finalSecondPosition = new XyCoordinate();
-
-            double lfVelocity = 0.0;
-            double lfAccDec = 0.0;
-            int nWait = 0;
-
-            //첫번째 위치 Search
-            if (m_Owner.m_nFindAlignMarkType != (int)WorkStage.AlignMarkType.ALIGN_2NDMARK)                                                      //  2번 Align Mark 만 찾을 경우가 아닐 때만 1번 마크를 찾는다.
+            try
             {
-                //위치만 살리면 된다...
-                //this.Stage.MovePosition(m_AlignPositions[0]);
-                position = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
+                double dAngle = 0.0;
+                m_Owner = this.Owner as WorkStage;
+                if (m_Status == RunStatus.Stop) return 1;
+                //if (this.Stage == null) return -1;
 
-                
-                //  속도 설정
-                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                if (m_AlignPositions == null) return -1;
 
-                xyInterpolatedCoordinate.X = position.X; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
-                xyInterpolatedCoordinate.Y = position.Y; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+                //XyCoordinate center = (m_AlignPositions[0] + m_AlignPositions[1]) / 2;
+                XyzCoordinate position = new XyzCoordinate();
+                #region 주석
+                //List<PatternMatchingResult> listResults = new List<PatternMatchingResult>();
+                //foreach (XyCoordinate position in m_AlignPositions)
+                //{
+                //    if ((ret = Stage.MovePosition(position)) != 0) return ret;
+                //    if (Recipe.MoveToDelay > 0)
+                //        Thread.Sleep(Recipe.MoveToDelay);
 
-                MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-                nWait = 0;
-                while (true)
+                //    listResults.Add(Search());
+                //}
+
+                //if (listResults.Count == 2)
+                //{
+                //    if (listResults[0] != null && listResults[0].Values.Count > 0 &&
+                //        listResults[1] != null && listResults[1].Values.Count > 0)
+                //    {
+                //        XyCoordinate first = new XyCoordinate();
+                //        XyCoordinate second = new XyCoordinate();
+                //        first = m_AlignPositions[0] + GetCoordinate(listResults[0].Values[0].X, listResults[0].Values[0].Y);
+                //        second = m_AlignPositions[1] + GetCoordinate(listResults[1].Values[0].X, listResults[1].Values[0].Y);
+                //        double dAngle = GetAngle(first, second);
+                //        XyCoordinate result = new XyCoordinate();
+                //        result = ((first + second) / 2);
+
+                //        //m_Result.X = result.X;
+                //        //m_Result.Y = result.Y;
+                //        //reu.T = dAngle;
+                //        this.Result = dAngle;
+                //        ret = 0;
+                //    }
+                //    else
+                //    {
+                //        ret = -1;
+                //    }
+                //}
+                //else
+                //{
+                //    ret = -1;
+                //}
+                #endregion
+
+                PatternMatchingResult firstPointSearchResult = null;
+                PatternMatchingResult secondPointSearchResult = null;
+                XyCoordinate firstPointCoordinate = new XyCoordinate();
+                XyCoordinate secondPointCoordinate = new XyCoordinate();
+
+                XyCoordinate finalFirstPosition = new XyCoordinate();
+                XyCoordinate finalSecondPosition = new XyCoordinate();
+
+                double lfVelocity = 0.0;
+                double lfAccDec = 0.0;
+                int nWait = 0;
+                if (Owner is WorkStage workstage)
                 {
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) == true)
+                    //무조건 2개 서치 - 소스 확인 하자.
+                    m_Owner.m_nFindAlignMarkType = 2;
+                    //첫번째 위치 Search
+                    if (m_Owner.m_nFindAlignMarkType != (int)WorkStage.AlignMarkType.ALIGN_2NDMARK)                                                      //  2번 Align Mark 만 찾을 경우가 아닐 때만 1번 마크를 찾는다.
                     {
-                        break;
+                        //위치만 살리면 된다...
+                        //this.Stage.MovePosition(m_AlignPositions[0]);
+
+                        //도면 좌표 불러옴 
+                        position = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
+
+
+
+                        //  속도 설정
+                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+                        position = workstage.ConvertPointCoarseCam(position);
+
+                        xyInterpolatedCoordinate.X = position.X;
+                        xyInterpolatedCoordinate.Y = position.Y;
+
+                        MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                        nWait = 0;
+                        while (true)
+                        {
+                            if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) == true)
+                            {
+                                break;
+                            }
+                            Thread.Sleep(1);
+                            nWait++;
+                            if (nWait == 1000)
+                            {
+                                break;
+                            }
+
+                        }
+
+                        nWait = 0;
+                        while (true)
+                        {
+                            if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == true)
+                            {
+                                break;
+                            }
+                            Thread.Sleep(1);
+                            nWait++;
+                            if (nWait == 1000)
+                            {
+                                break;
+                            }
+
+                        }
+                        //Thread.Sleep(Config.MoveToDelay);
+                        Thread.Sleep(500);
+
+                        m_AlignPositions[0].X = xyInterpolatedCoordinate.X;
+                        m_AlignPositions[0].Y = xyInterpolatedCoordinate.Y;
+
+                        this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[0];
+                        this.FindFiducialMark(out firstPointSearchResult, out firstPointCoordinate);
                     }
-                    Thread.Sleep(1);
-                    nWait++;
-                    if (nWait == 1000)
+
+                    if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
+
+                    if (m_Owner.m_nFindAlignMarkType == (int)WorkStage.AlignMarkType.ALIGN_1STMARK)                                                      //  1번 Align Mark 만 찾을 경우, 여기서 Out
                     {
-                        break;
+                        //m_Owner.m_nFindAlignMarkType = (int)WorkStage.AlignMarkType.ALIGN_2POINT;
+
+                        if (firstPointSearchResult != null)
+                        {
+                            FirstPosition_ImageCoord = GetCoordinate(firstPointSearchResult.Values[0].X, firstPointSearchResult.Values[0].Y);                            //  이미지 좌표
+                                                                                                                                                                         //finalFirstPosition = firstPointCoordinate + GetCoordinate(firstPointSearchResult.Values[0].X, firstPointSearchResult.Values[0].Y);          //  이미지 좌표 + 모션 좌표
+                            finalFirstPosition = firstPointCoordinate + FirstPosition_ImageCoord;                                                                        //  이미지 좌표 + 모션 좌표
+
+                            FirstPosition = finalFirstPosition;
+                            this.Result = 0.0;
+                        }
+                        //  마크 찾기에 실패하면? --> 싹 다 0 으로 Set
+                        else
+                        {
+                            FirstPosition = new XyCoordinate(0.0, 0.0);
+                            FirstPosition_ImageCoord = new XyCoordinate(0.0, 0.0);
+                            this.Result = 0.0;
+                        }
+                        return ret;
                     }
 
-                }
+                    if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
 
-                nWait = 0;
-                while (true)
-                {
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == true)
+                    //두번째 위치 Search
+                    //this.Stage.MovePosition(m_AlignPositions[1]);
+                    position = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos2.X, Equipment.stLayerRecipeSet[0].PreAlignPos2.Y, 0.0);
+
+                    //  속도 설정
+                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+
+                    position = workstage.ConvertPointCoarseCam(position);
+
+                    xyInterpolatedCoordinate.X = position.X; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
+                    xyInterpolatedCoordinate.Y = position.Y; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
+
+                    MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                    nWait = 0;
+                    while (true)
                     {
-                        break;
+                        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) == true)
+                        {
+                            break;
+                        }
+                        Thread.Sleep(1);
+                        nWait++;
+                        if (nWait == 1000)
+                        {
+                            break;
+                        }
                     }
-                    Thread.Sleep(1);
-                    nWait++;
-                    if (nWait == 1000)
+
+                    nWait = 0;
+                    while (true)
                     {
-                        break;
+                        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == true)
+                        {
+                            break;
+                        }
+                        Thread.Sleep(1);
+                        nWait++;
+                        if (nWait == 1000)
+                        {
+                            break;
+                        }
+                    }
+                    //Thread.Sleep(Config.MoveToDelay);
+                    Thread.Sleep(500);
+
+                    m_AlignPositions[1].X = xyInterpolatedCoordinate.X;
+                    m_AlignPositions[1].Y = xyInterpolatedCoordinate.Y;
+
+                    this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[1];
+                    this.FindFiducialMark(out secondPointSearchResult, out secondPointCoordinate);
+
+                    if (m_Owner.m_nFindAlignMarkType == (int)WorkStage.AlignMarkType.ALIGN_2NDMARK)                                                      //  2번 Align Mark 만 찾을 경우, 여기서 Out
+                    {
+                        //m_Owner.m_nFindAlignMarkType = (int)WorkStage.AlignMarkType.ALIGN_2POINT;
+
+                        if (secondPointSearchResult != null)
+                        {
+                            FirstPosition_ImageCoord = GetCoordinate(secondPointSearchResult.Values[0].X, secondPointSearchResult.Values[0].Y);                              //  이미지 좌표
+                                                                                                                                                                             //finalSecondPosition = secondPointCoordinate + GetCoordinate(secondPointSearchResult.Values[0].X, secondPointSearchResult.Values[0].Y);          //  이미지 좌표 + 모션 좌표
+                            finalSecondPosition = secondPointCoordinate + FirstPosition_ImageCoord;                                                                          //  이미지 좌표 + 모션 좌표
+
+                            FirstPosition = finalSecondPosition;
+                            this.Result = 0.0;
+                        }
+                        //  마크 찾기에 실패하면? --> 싹 다 0 으로 Set
+                        else
+                        {
+                            FirstPosition = new XyCoordinate(0.0, 0.0);
+                            FirstPosition_ImageCoord = new XyCoordinate(0.0, 0.0);
+                            this.Result = 0.0;
+                        }
+                        return ret;
+                    }
+
+                    if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
+
+                    if ((firstPointSearchResult != null) && (secondPointSearchResult != null))
+                    {
+                        finalFirstPosition = firstPointCoordinate + GetCoordinate(firstPointSearchResult.Values[0].X, firstPointSearchResult.Values[0].Y);
+                        finalSecondPosition = secondPointCoordinate + GetCoordinate(secondPointSearchResult.Values[0].X, secondPointSearchResult.Values[0].Y);
+
+                        if (((WorkStage)this.Owner).Config.ParamConfig.Align_ThetaCalcFunction_Atan)
+                        {
+                            dAngle = GetAngle_byAtan(finalFirstPosition, finalSecondPosition);
+                        }
+                        else
+                        {
+                            dAngle = GetAngle(finalFirstPosition, finalSecondPosition);
+                        }
+
+                        //true면 NaN
+                        if (double.IsNaN(dAngle))
+                        {
+                            FirstPosition = new XyCoordinate(0.0, 0.0);
+                            this.Result = 0.0;
+                        }
+                        else
+                        {
+                            FirstPosition = finalFirstPosition;
+                            this.Result = dAngle;
+                        }
+                    }
+                    //  마크 찾기에 실패하면? --> 싹 다 0 으로 Set
+                    else
+                    {
+                        FirstPosition = new XyCoordinate(0.0, 0.0);
+                        this.Result = 0.0;
                     }
 
                 }
-                //Thread.Sleep(Config.MoveToDelay);
-                Thread.Sleep(500);
-
-                m_AlignPositions[0].X = xyInterpolatedCoordinate.X;
-                m_AlignPositions[0].Y = xyInterpolatedCoordinate.Y;
-
-                this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[0];
-                this.FindFiducialMark(out firstPointSearchResult, out firstPointCoordinate);
             }
-
-            if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
-
-            if (m_Owner.m_nFindAlignMarkType == (int)WorkStage.AlignMarkType.ALIGN_1STMARK )                                                      //  1번 Align Mark 만 찾을 경우, 여기서 Out
+            catch (Exception ex)
             {
-                //m_Owner.m_nFindAlignMarkType = (int)WorkStage.AlignMarkType.ALIGN_2POINT;
-
-                if (firstPointSearchResult != null)
-                {
-                    FirstPosition_ImageCoord = GetCoordinate(firstPointSearchResult.Values[0].X, firstPointSearchResult.Values[0].Y);                            //  이미지 좌표
-                    //finalFirstPosition = firstPointCoordinate + GetCoordinate(firstPointSearchResult.Values[0].X, firstPointSearchResult.Values[0].Y);          //  이미지 좌표 + 모션 좌표
-                    finalFirstPosition = firstPointCoordinate + FirstPosition_ImageCoord;                                                                        //  이미지 좌표 + 모션 좌표
-
-                    FirstPosition = finalFirstPosition;
-                    this.Result = 0.0;
-                }
-                //  마크 찾기에 실패하면? --> 싹 다 0 으로 Set
-                else
-                {
-                    FirstPosition = new XyCoordinate(0.0, 0.0);
-                    FirstPosition_ImageCoord = new XyCoordinate(0.0, 0.0);
-                    this.Result = 0.0;
-                }
-                return ret;
+                Log.Write(ex);
             }
-
-            if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
-
-            //두번째 위치 Search
-            //this.Stage.MovePosition(m_AlignPositions[1]);
-            position = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos2.X, Equipment.stLayerRecipeSet[0].PreAlignPos2.Y, 0.0);
-
-            //  속도 설정
-            lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-            lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-
-            xyInterpolatedCoordinate.X = position.X; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
-            xyInterpolatedCoordinate.Y = position.Y; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
-
-            MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-            nWait = 0;
-            while (true)
-            {
-                if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) == true)
-                {
-                    break;
-                }
-                Thread.Sleep(1);
-                nWait++;
-                if (nWait == 1000)
-                {
-                    break;
-                }
-            }
-
-            nWait = 0;
-            while (true)
-            {
-                if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == true)
-                {
-                    break;
-                }
-                Thread.Sleep(1);
-                nWait++;
-                if (nWait == 1000)
-                {
-                    break;
-                }
-            }
-            //Thread.Sleep(Config.MoveToDelay);
-            Thread.Sleep(500);
-
-            m_AlignPositions[1].X = xyInterpolatedCoordinate.X;
-            m_AlignPositions[1].Y = xyInterpolatedCoordinate.Y;
-
-            this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[1];
-            this.FindFiducialMark(out secondPointSearchResult, out secondPointCoordinate);
-
-            if (m_Owner.m_nFindAlignMarkType == (int)WorkStage.AlignMarkType.ALIGN_2NDMARK)                                                      //  2번 Align Mark 만 찾을 경우, 여기서 Out
-            {
-                //m_Owner.m_nFindAlignMarkType = (int)WorkStage.AlignMarkType.ALIGN_2POINT;
-
-                if (secondPointSearchResult != null)
-                {
-                    FirstPosition_ImageCoord = GetCoordinate(secondPointSearchResult.Values[0].X, secondPointSearchResult.Values[0].Y);                              //  이미지 좌표
-                    //finalSecondPosition = secondPointCoordinate + GetCoordinate(secondPointSearchResult.Values[0].X, secondPointSearchResult.Values[0].Y);          //  이미지 좌표 + 모션 좌표
-                    finalSecondPosition = secondPointCoordinate + FirstPosition_ImageCoord;                                                                          //  이미지 좌표 + 모션 좌표
-
-                    FirstPosition = finalSecondPosition;
-                    this.Result = 0.0;
-                }
-                //  마크 찾기에 실패하면? --> 싹 다 0 으로 Set
-                else
-                {
-                    FirstPosition = new XyCoordinate(0.0, 0.0);
-                    FirstPosition_ImageCoord = new XyCoordinate(0.0, 0.0);
-                    this.Result = 0.0;
-                }
-                return ret;
-            }
-
-            if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
-
-            if ((firstPointSearchResult != null) && (secondPointSearchResult != null))
-            {
-                finalFirstPosition = firstPointCoordinate + GetCoordinate(firstPointSearchResult.Values[0].X, firstPointSearchResult.Values[0].Y);
-                finalSecondPosition = secondPointCoordinate + GetCoordinate(secondPointSearchResult.Values[0].X, secondPointSearchResult.Values[0].Y);
-
-                if(((WorkStage)this.Owner).Config.ParamConfig.Align_ThetaCalcFunction_Atan)
-                {
-                    dAngle = GetAngle_byAtan(finalFirstPosition, finalSecondPosition);
-                }
-                else
-                {
-                    dAngle = GetAngle(finalFirstPosition, finalSecondPosition);
-                }
-
-                //true면 NaN
-                if (double.IsNaN(dAngle))
-                {
-                    FirstPosition = new XyCoordinate(0.0, 0.0);
-                    this.Result = 0.0;
-                }
-                else
-                {
-                    FirstPosition = finalFirstPosition;
-                    this.Result = dAngle;
-                }
-            }
-            //  마크 찾기에 실패하면? --> 싹 다 0 으로 Set
-            else
-            {
-                FirstPosition = new XyCoordinate(0.0, 0.0);
-                this.Result = 0.0;
-            }
+            
             return ret;
         }
 
@@ -576,10 +598,10 @@ namespace QMC.Common.Parts
             currentCoordinate = new XyCoordinate();
             searchResult = new PatternMatchingResult();
 
-            if (this.Stage == null)
-            {
-                return ret;
-            }
+            //if (this.Stage == null)
+            //{
+            //    return ret;
+            //}
 
             if (this.PathParameters == null || this.PathParameters.Count == 0)
             {
@@ -606,71 +628,72 @@ namespace QMC.Common.Parts
             currentPosition = new XyCoordinate();
             findResult = null;
             //Step 1 : 설정되어 있는 Parameter를 이용하여 Path들을 생성.
-            if ((ret = generator.Generate(parameter)) != 0) return ret;
+            //if ((ret = generator.Generate(parameter)) != 0) return ret;
 
             // Step 2 : 생성된 Path로 이동 시작.
-            if (Equipment.Vision_SpiralMove_Use)
+            //if (Equipment.Vision_SpiralMove_Use)
             {
-                for (int i = 0; i < generator.Paths.Count; i++)
+                //for (int i = 0; i < generator.Paths.Count; i++)
                 {
-                    if (Equipment.MachineStop_byUser)
-                    {
-                        m_Status = RunStatus.Stop;
-                        return -1;
-                    }
+                    //if (Equipment.MachineStop_byUser)
+                    //{
+                    //    m_Status = RunStatus.Stop;
+                    //    return -1;
+                    //}
 
-                    if (parameter.PathType == TwoPointAlignerRecipe.PathType.StepByStep) //parameter.PathType == PathType.StepByStep)
+                    //if (parameter.PathType == TwoPointAlignerRecipe.PathType.StepByStep) //parameter.PathType == PathType.StepByStep)
                     {
-                        if ((this.Stage.MovePosition(generator.Paths[i]) != 0)) return -1;
+                        //if ((this.Stage.MovePosition(generator.Paths[i]) != 0)) return -1;
 
-                        Thread.Sleep(m_Owner.Recipe.jigAlignerRecipe_HighRes.MoveToDelay);
+                        //Thread.Sleep(m_Owner.Recipe.jigAlignerRecipe_LowRes.MoveToDelay);
+                        Thread.Sleep(200);
                         result = this.Search();
 
-                        currenCoordinate = (XyCoordinate)generator.Paths[i];
+                        //currenCoordinate = (XyCoordinate)generator.Paths[i];
 
-                        if (result != null && result.Values.Count != 0)
-                        {
-                            break;
-                        }
+                        //if (result != null && result.Values.Count != 0)
+                        //{
+                        //    break;
+                        //}
 
                         FireUpdateResult(result);
                     }
-                    else if (parameter.PathType == TwoPointAlignerRecipe.PathType.Continuous)// parameter.PathType == PathType.Continuous)
+                    //else if (parameter.PathType == TwoPointAlignerRecipe.PathType.Continuous)// parameter.PathType == PathType.Continuous)
                     {
                     }
                 }
             }
-            else
-            {
-                for (int i = 0; i < 1; i++)
-                {
-                    if (Equipment.MachineStop_byUser)
-                    {
-                        m_Status = RunStatus.Stop;
-                        return -1;
-                    }
+            //else
+            //{
+            //    for (int i = 0; i < 1; i++)
+            //    {
+            //        if (Equipment.MachineStop_byUser)
+            //        {
+            //            m_Status = RunStatus.Stop;
+            //            return -1;
+            //        }
 
-                    if (parameter.PathType == TwoPointAlignerRecipe.PathType.StepByStep) //parameter.PathType == PathType.StepByStep)
-                    {
-                        //if ((this.Stage.MovePosition(generator.Paths[i]) != 0)) return -1;                //  테스트용 주석 : 모션 없이 테스트
+            //        if (parameter.PathType == TwoPointAlignerRecipe.PathType.StepByStep) //parameter.PathType == PathType.StepByStep)
+            //        {
+            //            //if ((this.Stage.MovePosition(generator.Paths[i]) != 0)) return -1;                //  테스트용 주석 : 모션 없이 테스트
 
-                        Thread.Sleep(m_Owner.Recipe.jigAlignerRecipe_HighRes.MoveToDelay);
-                        result = this.Search();
+            //            Thread.Sleep(m_Owner.Recipe.jigAlignerRecipe_HighRes.MoveToDelay);
+            //            result = this.Search();
 
-                        currenCoordinate = (XyCoordinate)generator.Paths[i];
+            //            currenCoordinate = (XyCoordinate)generator.Paths[i];
 
-                        if (result != null && result.Values.Count != 0)
-                        {
-                            break;
-                        }
+            //            if (result != null && result.Values.Count != 0)
+            //            {
+            //                break;
+            //            }
 
-                        FireUpdateResult(result);
-                    }
-                    else if (parameter.PathType == TwoPointAlignerRecipe.PathType.Continuous)// parameter.PathType == PathType.Continuous)
-                    {
-                    }
-                }
-            }
+            //            FireUpdateResult(result);
+            //        }
+            //        else if (parameter.PathType == TwoPointAlignerRecipe.PathType.Continuous)// parameter.PathType == PathType.Continuous)
+            //        {
+            //        }
+            //    }
+            //}
 
             //if ((ret = this.Stage.MovePosition(currenCoordinate)) != 0) return ret;               //  테스트용 주석 : 모션 없이 테스트
 

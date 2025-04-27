@@ -129,7 +129,7 @@ namespace SLD200_MSL
 
             //  Status 타이머
             timer_Status = new System.Windows.Forms.Timer();
-            timer_Status.Interval = 20;
+            timer_Status.Interval = 100;
             timer_Status.Tick += new System.EventHandler(Timer_Status_Func);
             timer_Status.Enabled = true;
 
