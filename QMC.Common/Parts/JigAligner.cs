@@ -183,15 +183,15 @@ namespace QMC.Common.Parts
                 }
                 else                                                        //  상부 카메라
                 {
-                    coordinate.X = (dX - this.Camera.Resolution.Width / 2) * ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_X * (((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X ? 1 : -1);
+                    coordinate.X = (dX - this.Camera.Resolution.Width / 2) * ((WorkStage)this.Owner).Config.ParamConfig.LowerVision_Scale_X * (((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X ? 1 : -1);
 
                     if (((WorkStage)this.Owner).Config.ParamConfig.AlignConcept_MyWaferAligner)  //  JigAligner 와 반대로 움직이길래... Invert 를 바꿔줌
                     {
-                        coordinate.Y = (dY - this.Camera.Resolution.Height / 2) * ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y * (((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y ? -1 : 1);
+                        coordinate.Y = (dY - this.Camera.Resolution.Height / 2) * ((WorkStage)this.Owner).Config.ParamConfig.LowerVision_Scale_Y * (((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y ? -1 : 1);
                     }
                     else
                     {
-                        coordinate.Y = (dY - this.Camera.Resolution.Height / 2) * ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y * (((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y ? 1 : -1);
+                        coordinate.Y = (dY - this.Camera.Resolution.Height / 2) * ((WorkStage)this.Owner).Config.ParamConfig.LowerVision_Scale_Y * (((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y ? 1 : -1);
                     }
                 }
             }
@@ -376,7 +376,7 @@ namespace QMC.Common.Parts
                 if (Owner is WorkStage workstage)
                 {
                     //무조건 2개 서치 - 소스 확인 하자.
-                    m_Owner.m_nFindAlignMarkType = 2;
+                    m_Owner.m_nFindAlignMarkType = 0;
                     //첫번째 위치 Search
                     if (m_Owner.m_nFindAlignMarkType != (int)WorkStage.AlignMarkType.ALIGN_2NDMARK)                                                      //  2번 Align Mark 만 찾을 경우가 아닐 때만 1번 마크를 찾는다.
                     {
@@ -393,6 +393,7 @@ namespace QMC.Common.Parts
                         lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
 
                         position = workstage.ConvertPointCoarseCam(position);
+
 
                         xyInterpolatedCoordinate.X = position.X;
                         xyInterpolatedCoordinate.Y = position.Y;
@@ -548,13 +549,38 @@ namespace QMC.Common.Parts
                         finalFirstPosition = firstPointCoordinate + GetCoordinate(firstPointSearchResult.Values[0].X, firstPointSearchResult.Values[0].Y);
                         finalSecondPosition = secondPointCoordinate + GetCoordinate(secondPointSearchResult.Values[0].X, secondPointSearchResult.Values[0].Y);
 
+
+
                         if (((WorkStage)this.Owner).Config.ParamConfig.Align_ThetaCalcFunction_Atan)
                         {
                             dAngle = GetAngle_byAtan(finalFirstPosition, finalSecondPosition);
                         }
                         else
                         {
-                            dAngle = GetAngle(finalFirstPosition, finalSecondPosition);
+                            XyzCoordinate position1 = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos2.X, Equipment.stLayerRecipeSet[0].PreAlignPos2.Y, 0.0);
+
+                            XyzCoordinate position2 = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
+
+
+
+                            //currentPosition.X -= dXoffset;
+
+                            //currentPosition.Y += dYoffset;
+
+
+                            double dRefAngle = GetAngle(new XyCoordinate(position1.X,position1.Y), new XyCoordinate(position2.X, position2.Y));
+                            position1.X -= finalFirstPosition.X;
+                            position1.Y += finalFirstPosition.Y;
+
+                            position2.X -= finalSecondPosition.X;
+                            position2.Y += finalSecondPosition.Y;
+
+
+
+
+
+                            dAngle = GetAngle(new XyCoordinate(position1.X, position1.Y), new XyCoordinate(position2.X, position2.Y));
+                            dAngle -= dRefAngle;
                         }
 
                         //true면 NaN

@@ -557,6 +557,15 @@ namespace SLD200_MSL
 
                 //workStage.m_bLowerCam_AlignPattern_Reset = true;
             }
+            else if (m_Owner.Name == "JigAligner (Coarse)")
+            {
+                m_strFile = string.Format("{0}\\PreAlign.bmp", ConfigManager.GetPatternImagePath());
+                m_Owner.TrainImage.Save(m_strFile, QMC.Common.Vision.VisionImage.FileFilter.bmp);
+
+                workStage.PatternMatchingImage_Reticle_Loaded_LowRes = true;
+
+                //workStage.m_bLowerCam_AlignPattern_Reset = true;
+            }
         }
 
         private void SearchResultClick(Control control)

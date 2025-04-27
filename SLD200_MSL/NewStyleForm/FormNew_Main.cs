@@ -142,7 +142,7 @@ namespace SLD200_MSL
 
             //  마크 이미지
             //  scannerCompensator
-            string m_strFile = string.Format("{0}\\ScannerCal.jpg", ConfigManager.GetPatternImagePath());
+            string m_strFile = string.Format("{0}\\ScannerCal.bmp", ConfigManager.GetPatternImagePath());
             if (File.Exists(m_strFile))
             {
                 workStage.scannerCompensator.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);
@@ -156,7 +156,7 @@ namespace SLD200_MSL
                 }
             }
             
-            m_strFile = string.Format("{0}\\PreAlign.jpg", ConfigManager.GetPatternImagePath());
+            m_strFile = string.Format("{0}\\PreAlign.bmp", ConfigManager.GetPatternImagePath());
             if (File.Exists(m_strFile))
             {
                 workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage = Bitmap.FromFile(m_strFile);

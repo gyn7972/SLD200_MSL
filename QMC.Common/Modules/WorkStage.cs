@@ -29,7 +29,7 @@ using SocketLaser;
 using SocketLaserHeightSensor;
 using System.IO.Ports;
 using MessageBox = System.Windows.Forms.MessageBox;
-
+using System;
 //  Sirius1
 using SpiralLab.Sirius;
 using LaserVirtual = SpiralLab.Sirius.LaserVirtual;
@@ -363,6 +363,7 @@ namespace QMC.Common.Modules
         public st4PointAlign_Result m_st4PointAlign_Result_LastSuccess;
         public bool m_bIsFirstAlign = true; // 첫번째 얼라인
         public bool m_bAlignCompleted;                                          //  얼라인 완료 되었는지?
+        public bool m_bPreAlignCompleted;                                          //  얼라인 완료 되었는지?
 
         public st4PointPosition_Data[] m_st2PointPosition_InspectedPos;         //  2-Point 의 측정된 위치 데이터
         public st4PointAlign_Result m_st2PointAlign_Result;                     //  Align 데이터
@@ -3723,6 +3724,7 @@ namespace QMC.Common.Modules
             m_bIsFirstAlign = true; // 첫번째 얼라인
 
             m_bAlignCompleted = false;
+            m_bPreAlignCompleted = false;
 
             m_nSocketNum_forAlign = 0;                                          //  Align 할 Socket 번호
 
@@ -13495,8 +13497,12 @@ namespace QMC.Common.Modules
             m_bSocketAlign_OK = false;
             if (nSocketNum == 0)
             {
-
-                m_bIsFirstAlign = true;
+                // TODO : 여기 변수 바꿔 주세요!! 구영남 부장님~~ 성공 실패..
+                if(m_bPreAlignCompleted)
+                {
+                    m_bIsFirstAlign = false;
+                }
+                
             }
             for (int i = 0; i < 4; i++)
             {
@@ -15946,8 +15952,16 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Fiducial Align 을 위한 실리콘 두께 조정 완료.");
 
-                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
+                        if(m_bPreAlignCompleted)
+                        {
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+
+                        }
+                        else
+                        {
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
+                        }
 
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
@@ -15970,6 +15984,13 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.DrillingData_PreAlign_Start:                      //  가공 할 Socket Align 시작
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align Cycle 시작.");
+
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
+                    CommonModule.Instance.Illuminator.SetVolume(1500, 3);
+                    CommonModule.Instance.Illuminator.TurnOnOff(false, 1);       //  Fine Cam Red 조명
+                    CommonModule.Instance.Illuminator.TurnOnOff(false, 2);       //  Fine Cam IR 조명
+                    CommonModule.Instance.Illuminator.TurnOnOff(true, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
 
                     //Align Mark Pos - 도면에서 추출하여 전달.
                     stDividedRegion_GroupData[] inputGroupData = m_stDividedRegion_GroupData;
@@ -16004,10 +16025,18 @@ namespace QMC.Common.Modules
                             double dft = jigAligner_LowRes.GetJigAlignResult();
 
 
-                            result = jigAligner_LowRes.GetResult();
-                            dx = result.Values[0].X;
-                            dy = result.Values[0].Y;
-                            dr = result.Values[0].R;
+                            XyzCoordinate positionFirst = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
+
+
+                            positionFirst = this.ConvertPointFineCam(positionFirst);
+
+                            xyCoordinateAlignPositionLast= new XyCoordinate( positionFirst.X, positionFirst.Y);
+
+                            positionFirst.X -= dfx;
+                            positionFirst.Y += dfy;
+
+                            xyCoordinateAlignPositionOrgLast  = new XyCoordinate(positionFirst.X, positionFirst.Y);
+                            
 
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Correction;
                         }
@@ -16025,9 +16054,9 @@ namespace QMC.Common.Modules
                             //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
                         }
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 3)               //  60 sec * 5
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000)               //  60 sec * 5
                     {
-                        break;
+                        //break;
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align 시간 초과.");
 
                         //timer_LaserDrillingWork.Enabled = false;
@@ -16066,7 +16095,7 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align 보정 완료.");
 
 
-
+                    m_bPreAlignCompleted = true;
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
                     break;
 
@@ -22118,20 +22147,27 @@ namespace QMC.Common.Modules
 
         protected int AlarmPost(AlarmKey AlarmCode)
         {
-            
-            
-            Alarm alarm = GetAlarm((int)AlarmCode);
-            if(alarm.Grade.Equals("Error"))
-            {
-                this.m_ProductAlign_Start = false;
-                this.m_SubWork_Start = false;
-                this.m_LaserDrillingWork_Start = false;
-                this.m_MainWork_Start = false;
 
+            try
+            {
+
+                Alarm alarm = GetAlarm((int)AlarmCode);
+                if (alarm.Grade.Equals("Error"))
+                {
+                    this.m_ProductAlign_Start = false;
+                    this.m_SubWork_Start = false;
+                    this.m_LaserDrillingWork_Start = false;
+                    this.m_MainWork_Start = false;
+
+                }
+                MessageBox.Show(alarm.Cause);
+                AlarmManager.Instance.ShowAlarm(alarm);
+            }catch(Exception ex)
+            {
+                Log.Write(ex);
             }
-            MessageBox.Show(alarm.Cause);
-            AlarmManager.Instance.ShowAlarm(alarm);
-            return alarm.Code;
+            
+            return (int)AlarmCode;
         }
 
         private void LaserDrillingStepStageXYMoveCenterPosition(out double lfVelocity, out double lfAccDec)
@@ -22345,8 +22381,10 @@ namespace QMC.Common.Modules
             m_nDrillingData_SocketCount = 0;                        //  진행하는 Socket Count
             m_nDrillingData_LayerTotal = 0;                         //  진행해야하는 Layer 총 개수 (제품 단위 : Module, 하나의 Module 은 n 개의 Layer 로 구성된다)
             m_nDrillingData_LayerCount = 0;                         //  진행하는 Layer Count (제품 단위 : Module, 하나의 Module 은 n 개의 Layer 로 구성된다)
+            m_bPreAlignCompleted = false;
 
-            
+
+
         }
         #endregion
 
@@ -23409,8 +23447,14 @@ namespace QMC.Common.Modules
             //  Select 된 객체가 있으면 회전 Offset 이동
             if (m_bSelected)
             {
-                Equipment.EqpSiriusViewer.Document.Action.ActEntityRotate(Equipment.EqpSiriusViewer.Document.Action.SelectedEntity, (float)m_dAngle, (float)m_dRotCenterX, (float)m_dRotCenterY);
-                Equipment.EqpSiriusViewer.Document.Action.ActEntityTransit(Equipment.EqpSiriusViewer.Document.Action.SelectedEntity, (float)m_dOffsetX, (float)m_dOffsetY);
+                if(Equipment.formMain.InvokeRequired)
+                {
+                    Equipment.formMain.Invoke(new System.Action(() => 
+                    { 
+                        Equipment.EqpSiriusViewer.Document.Action.ActEntityRotate(Equipment.EqpSiriusViewer.Document.Action.SelectedEntity, (float)m_dAngle, (float)m_dRotCenterX, (float)m_dRotCenterY);
+                        Equipment.EqpSiriusViewer.Document.Action.ActEntityTransit(Equipment.EqpSiriusViewer.Document.Action.SelectedEntity, (float)m_dOffsetX, (float)m_dOffsetY);
+                    }));
+                }
             }
 
             return success;
@@ -30888,6 +30932,32 @@ namespace QMC.Common.Modules
             //m_nLaserDrilling_MainStep_Recovery = 0;
         }
 
+        public XyzCoordinate ConvertPointFineCam(XyzCoordinate position)
+        {
+
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = 0.0;
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0.0;
+
+            //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
+
+            //  데이터 위치를 Fine 카메라 위치로 변경
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+
+            //바꿔보자
+            //this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= position.X;
+            //this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= position.Y;
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += position.X;
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += position.Y;
+
+            return new XyzCoordinate(this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]
+                , this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y], 0);
+
+
+
+        }
         public XyzCoordinate ConvertPointCoarseCam(XyzCoordinate position)
         {
 

@@ -371,8 +371,8 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             if (Owner.Name == "JigAligner (Coarse)")
             {
-                m_strFile = string.Format("{0}\\PreAlign.jpg", ConfigManager.GetPatternImagePath());
-                Owner.TrainImage.Save(m_strFile, QMC.Common.Vision.VisionImage.FileFilter.jpg);
+                m_strFile = string.Format("{0}\\PreAlign.bmp", ConfigManager.GetPatternImagePath());
+                Owner.TrainImage.Save(m_strFile, QMC.Common.Vision.VisionImage.FileFilter.bmp);
             }
         }
 
