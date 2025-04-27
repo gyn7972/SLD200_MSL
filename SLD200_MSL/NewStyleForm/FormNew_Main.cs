@@ -1346,10 +1346,11 @@ namespace SLD200_MSL
             }
 
 
-            workStage.SetRecoveraryLaserDrilling_MainStep(workStage.m_nLaserDrilling_MainStep);
+            workStage.SetRecoveryLaserDrilling_MainStep(workStage.m_nLaserDrilling_MainStep);
             workStage.m_nLaserDrilling_MainStep = workStage.m_nLaserDrilling_MainStep_Recovery;
 
-            loader.SetRecoveryLoader();
+            loader.SetRecovery();
+            unloader.SetRecovery();
             //  테스트 : 강제로 Dry Run
             //workStage.m_bMainWorkCycle_DryRun = true;
             Equipment.DryRun_ProcessingTime = Convert.ToInt16(baseTextBox_DryRun_ProcessingTime.Text);

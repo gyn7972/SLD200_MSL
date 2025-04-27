@@ -1447,7 +1447,9 @@ namespace QMC.Common.Modules
 
         public enum AlarmKey
         {
-            eRTC_FAIL = 2000,
+         
+            FirstAlarm = 3000,  
+            eRTC_FAIL ,
             eDustCollectorFail,
             eBeamShutterOpenFail,
             eChillerOpenFail,
@@ -1470,6 +1472,7 @@ namespace QMC.Common.Modules
             SocketAlignZMoveFail,
             SocketAlignXYMoveFail,
             SocketAlignMovePositionCalcFail,
+            LastAlarm = 3999
         }
         protected override void InitAlarm()
         {
@@ -4109,13 +4112,18 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Timer_Comm_Tick(null,null);
-                    
-                    if(m_IsModuleClose)
+
+                    Thread.Sleep(1);
+                    if (IsAlarm())
+                    {
+                        continue;
+                    }
+                    if (m_IsModuleClose)
                     {
                         break;
                     }
-                    Thread.Sleep(1);
+                    Timer_Comm_Tick(null, null);
+                    
                 }
             }); ;
 
@@ -4128,13 +4136,16 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Timer_MainWork_Tick(null, null);
-
+                    Thread.Sleep(1);
+                    if (IsAlarm())
+                    {
+                        continue;
+                    }
                     if (m_IsModuleClose)
                     {
                         break;
                     }
-                    Thread.Sleep(1);
+                    Timer_MainWork_Tick(null, null);
                 }
             }); ; ;
             m_taskTimer_LaserDrillingWork_Tick =  Task.Factory.StartNew(() =>
@@ -4145,13 +4156,17 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Timer_LaserDrillingWork_Tick(null, null);
-
+                    Thread.Sleep(1);
+                    if (IsAlarm())
+                    {
+                        continue;
+                    }
                     if (m_IsModuleClose)
                     {
                         break;
                     }
-                    Thread.Sleep(1);
+                    Timer_LaserDrillingWork_Tick(null, null);
+
                 }
             }); ; ;
             m_taskTimer_SubWork_Tick =  Task.Factory.StartNew(() =>
@@ -4161,13 +4176,17 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Timer_SubWork_Tick(null, null);
-
+                    Thread.Sleep(1);
+                    if (IsAlarm())
+                    {
+                        continue;
+                    }
                     if (m_IsModuleClose)
                     {
                         break;
                     }
-                    Thread.Sleep(1);
+                    Timer_SubWork_Tick(null, null);
+
                 }
             }); ; ;
 
@@ -4178,13 +4197,17 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Timer_ProductAlign_tick(null, null);
-
+                    Thread.Sleep(1);
+                    if (IsAlarm())
+                    {
+                        continue;
+                    }
                     if (m_IsModuleClose)
                     {
                         break;
                     }
-                    Thread.Sleep(1);
+                    Timer_ProductAlign_tick(null, null);
+
                 }
             }); ; ;
 
@@ -4195,13 +4218,17 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Timer_VerifyScannerCamOffset_Tick(null, null);
-
+                    Thread.Sleep(1);
+                    if (IsAlarm())
+                    {
+                        continue;
+                    }
                     if (m_IsModuleClose)
                     {
                         break;
                     }
-                    Thread.Sleep(1);
+                    Timer_VerifyScannerCamOffset_Tick(null, null);
+
                 }
             }); ; ;
 
@@ -4213,13 +4240,17 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Timer_ScannerCalibration_Tick(null, null);
-
+                    Thread.Sleep(1);
+                    if (IsAlarm())
+                    {
+                        continue;
+                    }
                     if (m_IsModuleClose)
                     {
                         break;
                     }
-                    Thread.Sleep(1);
+                    Timer_ScannerCalibration_Tick(null, null);
+
                 }
             });
 
@@ -7313,7 +7344,7 @@ namespace QMC.Common.Modules
                 timer_MainWork.Enabled = true;
             }
         }
-        public void SetRecoveraryLaserDrilling_MainStep(int LaserDrilling_MainStep)
+        public void SetRecoveryLaserDrilling_MainStep(int LaserDrilling_MainStep)
         {
             if (LaserDrilling_MainStep < (int)LaserDrilling_Step.Start)
             {
@@ -7514,7 +7545,7 @@ namespace QMC.Common.Modules
                 int ret = Run_LaserDrilling_Main_Cycle();
                 if(ret !=0)
                 {
-                    SetRecoveraryLaserDrilling_MainStep(m_nLaserDrilling_MainStep);
+                    SetRecoveryLaserDrilling_MainStep(m_nLaserDrilling_MainStep);
                     timer_ScannerCalibration.Stop(); // 타이머 중지
 
                 }
@@ -7566,7 +7597,7 @@ namespace QMC.Common.Modules
                 {
                     Console.WriteLine("Laser Drilling is not started.");
                     timer_ScannerCalibration.Stop(); // 타이머 중지
-                    SetRecoveraryLaserDrilling_MainStep(m_nLaserDrilling_MainStep);
+                    SetRecoveryLaserDrilling_MainStep(m_nLaserDrilling_MainStep);
                     return;
                 }
 
@@ -8300,7 +8331,12 @@ namespace QMC.Common.Modules
 
 
         #region Home Function
-
+        protected bool IsAlarm()
+        {
+            var v = AlarmManager.Instance.Alarms;
+            var alarmList = v.Where(t => t.Code >= (int)AlarmKey.FirstAlarm && t.Code <= (int)AlarmKey.LastAlarm);
+            return alarmList.Any();
+        }
         void Run_Home_Func()
         {
             bool m_bRet = false;
