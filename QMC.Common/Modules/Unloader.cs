@@ -1545,6 +1545,7 @@ namespace QMC.Common.Modules
 
                         //timer_Motion_Home.Enabled = false;
                         //m_btimer_Motion_Home_Stop = true;
+                        
 
                         m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
 

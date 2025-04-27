@@ -3613,10 +3613,10 @@ namespace QMC.Common.Modules
             //timer_VerifyScannerCamOffset = new System.Windows.Forms.Timer();
             //timer_VerifyScannerCamOffset.Interval = 20;
             //timer_VerifyScannerCamOffset.Tick += new System.EventHandler(Timer_VerifyScannerCamOffset_Func);
-            timer_Motion_Home = new System.Timers.Timer(50);
+            timer_VerifyScannerCamOffset = new System.Timers.Timer(50);
             //timer_Motion_Home.Elapsed += Timer_VerifyScannerCamOffset_Tick;
-            timer_Motion_Home.AutoReset = true;    // 반복 실행
-            timer_Motion_Home.Enabled = false;     // 초기
+            timer_VerifyScannerCamOffset.AutoReset = true;    // 반복 실행
+            timer_VerifyScannerCamOffset.Enabled = false;     // 초기
             
             timer_ScannerCalibration = new System.Timers.Timer(50); 
             //timer_ScannerCalibration.Elapsed += timer_ScannerCalibration_Tick;
@@ -15852,8 +15852,8 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Fiducial Align 을 위한 실리콘 두께 조정 완료.");
 
-                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
 
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
