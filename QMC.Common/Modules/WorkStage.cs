@@ -7485,6 +7485,11 @@ namespace QMC.Common.Modules
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move;
             }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_PreAlign_Correction_Complete)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
+            }
+
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_SocketAlign_CompleteCheck)
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
@@ -7799,7 +7804,7 @@ namespace QMC.Common.Modules
                 Run_SocketAlign_Func(m_nSocketNum_forAlign);                  //  Thread 를 사용할 경우 주석 처리. 타이머 사용하려면 주석 해제
             }
 
-            Run_FindAlignMark_Func();
+            //Run_FindAlignMark_Func();
         }
 
         
@@ -7967,8 +7972,9 @@ namespace QMC.Common.Modules
         {
             //Run_ProductAlign_Func();            
 
-            Run_SocketAlign_Func(m_nSocketNum_forAlign);
-            Run_FindAlignMark_Func();
+            //우선 막자. 구버전 놔둔
+            //Run_SocketAlign_Func(m_nSocketNum_forAlign);
+            //Run_FindAlignMark_Func();
         }
 
 
@@ -8381,7 +8387,7 @@ namespace QMC.Common.Modules
                     }
                     else if (m_nVisionAligner_Type == (int)Aligner_Type.Aligner_PreAlign_Lower)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Pre Align Mark", "Wafer 카메라 Reticle 마크 찾기 완료");
+                        Log.Write("SLD-200", Equipment.User_Name, "Pre Align Mark", "카메라 circle 마크 찾기 완료");
 
                         if ((jigAligner_LowRes.FirstPosition.X == 0.0) || (jigAligner_LowRes.FirstPosition.Y == 0.0))
                         {
@@ -16011,6 +16017,7 @@ namespace QMC.Common.Modules
                         else
                         {
                             //  Pre Align NG 이면, Alarm 발생
+                            return AlarmPost(AlarmKey.PreAlignFail);
                             //Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align 실패");
 
                             //timer_LaserDrillingWork.Enabled = false;
@@ -16023,6 +16030,7 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 3)               //  60 sec * 5
                     {
+                        break;
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align 시간 초과.");
 
                         //timer_LaserDrillingWork.Enabled = false;
@@ -30881,6 +30889,36 @@ namespace QMC.Common.Modules
         public void ResetRecovery()
         {
             //m_nLaserDrilling_MainStep_Recovery = 0;
+        }
+
+        public XyzCoordinate ConvertPointCoarseCam(XyzCoordinate position)
+        {
+
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = 0.0;
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0.0;
+
+            //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
+
+            //  데이터 위치를 Fine 카메라 위치로 변경
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromFineCamToCoarseCam.X;
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y;
+
+            //바꿔보자
+            //this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= position.X;
+            //this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= position.Y;
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += position.X;
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += position.Y;
+
+            return new XyzCoordinate(this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]
+                , this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] , 0);
+            
+
+
         }
     }
 }
