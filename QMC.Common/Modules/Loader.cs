@@ -27,6 +27,7 @@ using static QMC.Common.Modules.WorkStage;
 using System.Timers;
 using System.Threading.Tasks;
 using System.Security.Policy;
+using System.Linq;
 
 
 namespace QMC.Common.Modules
@@ -74,13 +75,14 @@ namespace QMC.Common.Modules
         #region Alarm
         public enum AlarmKey
         {
-            eMAligner_Wide_Fail = 3000,
+            FirstAlarm = 1000,
+            eMAligner_Wide_Fail  ,
             MAligner_MoveXY_Widely_DoneCheck_Timeout,
             MAligner_VacuumOn_Fail,
             MAligner_MoveXY_Narrowly_Fail,
             MAligner_MoveXY_LittleWidely_Fail,
             MAligner_MoveXY_ModulePickupWaitingPos_Fail,
-            LD_Stacker1_ModuleWork_PosSet = 4000,
+            LD_Stacker1_ModuleWork_PosSet = 2000,
             LD_Stacker1_ModulePickupWaitingPos_Step_No_More_Material,
             LD_Stacker1_ModulePickupWaitingPos_Step_Too_Many_Material,
             LD_Stacker1_Module_Move_To_Loading_Position_Fail,
@@ -115,7 +117,7 @@ namespace QMC.Common.Modules
             LD_TransferZ_Move_PutDownPos_Timeout,
             LD_MAlignerXY_Move_Widely_Timeout,
             LD_Transfer_PickerVacuumOff_MAlignerVacuumOn_Timeout,
-            
+            LastAlarm = 2999,
         }
         protected override void InitAlarm()
         {
@@ -1338,7 +1340,12 @@ namespace QMC.Common.Modules
         {
             return base.OnRun();
         }
-
+        protected bool IsAlarm()
+        {   
+            var v = AlarmManager.Instance.Alarms;
+            var alarmList = v.Where(t => t.Code >= (int)AlarmKey.FirstAlarm && t.Code <= (int)AlarmKey.LastAlarm);
+            return alarmList.Any();
+        }
         public override int Create()
         {
             int ret = base.Create();
@@ -1359,20 +1366,21 @@ namespace QMC.Common.Modules
             Recipe = new LoaderRecipe(this);
             m_taskTimer_LoaderWork_Tick = Task.Factory.StartNew(() =>
             {
-
-
                 Thread.CurrentThread.Name = "m_taskTimer_LoaderWork_Tick";
-
-
                 while (true)
                 {
-                    Timer_LoaderWork_Tick(null, null);
-
+                    Thread.Sleep(1);
+                    if (IsAlarm())
+                    {
+                        continue;
+                    }
                     if (m_IsModuleClose)
                     {
                         break;
                     }
-                    Thread.Sleep(1);
+                    Timer_LoaderWork_Tick(null, null);
+
+                    
                 }
             }); ;
              
@@ -8529,7 +8537,7 @@ namespace QMC.Common.Modules
                 _isLoaderWorkRunning = false; // 플래그 해제
             }
         }
-        public void SetRecoveryLoader()
+        public void SetRecovery()
         {
             SetRecoveryStaker0(m_nStacker1_ModulePickupWaitingPos_Step_Recovery);
             m_nStacker1_ModulePickupWaitingPos_Step = m_nStacker1_ModulePickupWaitingPos_Step_Recovery;

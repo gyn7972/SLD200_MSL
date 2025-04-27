@@ -6,6 +6,7 @@ using QMC.Common.Parts;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.ServiceModel.Syndication;
 using System.Text;
 using System.Threading;
@@ -58,7 +59,12 @@ namespace QMC.Common.Modules
         static WorkStage workStage;
         static Loader loader;
 
-
+        public enum AlarmKey
+        {
+            FirstAlarm = 5000,
+            
+            LastAlarm = 5999,
+        }
         #region Variables
 
         #endregion
@@ -627,18 +633,29 @@ namespace QMC.Common.Modules
                 Thread.CurrentThread.Name = "m_taskTimer_UnloaderWork_Tick";
                 while (true)
                 {
-                    Timer_UnloaderWork_Tick(null, null);
-
+                    Thread.Sleep(1);
+                    if (IsAlarm())
+                    {
+                        continue;
+                    }
                     if (m_IsModuleClose)
                     {
                         break;
                     }
-                    Thread.Sleep(1);
+                    Timer_UnloaderWork_Tick(null, null);
+
                 }
             }); ;
 
             
             return ret;
+        }
+
+        protected bool IsAlarm()
+        {
+            var v = AlarmManager.Instance.Alarms;
+            var alarmList = v.Where(t => t.Code >= (int)AlarmKey.FirstAlarm && t.Code <= (int)AlarmKey.LastAlarm);
+            return alarmList.Any();
         }
 
         public override void SetConfigData(object configData)
@@ -6009,6 +6026,10 @@ namespace QMC.Common.Modules
             {
 
             }
+        }
+
+        public void SetRecovery()
+        {
         }
     }
 }
