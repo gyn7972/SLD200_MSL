@@ -7526,8 +7526,8 @@ namespace QMC.Common.Modules
                 if (!m_LaserDrillingWork_Start)
                 {
                     Console.WriteLine("Laser Drilling is not started.");
-                    //timer_ScannerCalibration.Stop(); // 타이머 중지
-                    SetRecoveraryLaserDrilling_MainStep(m_nLaserDrilling_MainStep);
+                    timer_ScannerCalibration.Stop(); // 타이머 중지
+                    SetRecoveryLaserDrilling_MainStep(m_nLaserDrilling_MainStep);
                     return;
                 }
                 
