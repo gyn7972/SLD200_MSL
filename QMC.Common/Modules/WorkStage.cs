@@ -23454,7 +23454,7 @@ namespace QMC.Common.Modules
         {
 
             var entity = new LwPolyline();
-
+            
             //  entity.Color2 = this.color;
 
             //  Outer Diameter : Spiral 시작 위치
@@ -27754,7 +27754,36 @@ namespace QMC.Common.Modules
         leftMostPoint = candidates.OrderBy(p => p.X).First();
         rightMostPoint = candidates.OrderByDescending(p => p.X).First();
         }
+        public static bool TryGetIntersection(PointD p1, PointD p2, PointD p3, PointD p4, out PointD intersection)
+        {
+            intersection = new PointD();
 
+            // 대각선 1: p1 -> p2
+            double a1 = p2.Y - p1.Y;
+            double b1 = p1.X - p2.X;
+            double c1 = a1 * p1.X + b1 * p1.Y;
+
+            // 대각선 2: p3 -> p4
+            double a2 = p4.Y - p3.Y;
+            double b2 = p3.X - p4.X;
+            double c2 = a2 * p3.X + b2 * p3.Y;
+
+            // 두 직선의 교점 계산
+            double determinant = a1 * b2 - a2 * b1;
+
+            if (Math.Abs(determinant) < 1e-10)
+            {
+                // 두 직선이 평행하거나 겹침
+                return false;
+            }
+
+            double x = (b2 * c1 - b1 * c2) / determinant;
+            double y = (a1 * c2 - a2 * c1) / determinant;
+
+            // 교점 설정
+            intersection = new PointD(x, y);
+            return true;
+        }
 
         public st4PointAlign_Result Calc_4Point_AlignData(st4PointPosition_Data[] ptDwgPos, st4PointPosition_Data[] ptInspectedPos)
         {
@@ -27846,6 +27875,7 @@ namespace QMC.Common.Modules
             m_st4PointAlign_Result.dRotationCenterX = ptDwgPos[0].ptFiducial_Center.X;
             m_st4PointAlign_Result.dRotationCenterY = ptDwgPos[0].ptFiducial_Center.Y;
 
+            
 
             m_st4PointAlign_Result.dCenterOffsetX = ptInspectedPos[0].ptFiducial_Center.X - ptDwgPos[0].ptFiducial_Center.X;
             m_st4PointAlign_Result.dCenterOffsetY = ptInspectedPos[0].ptFiducial_Center.Y - ptDwgPos[0].ptFiducial_Center.Y; ;
