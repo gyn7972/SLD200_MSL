@@ -8856,9 +8856,11 @@ namespace QMC.Common.Modules
 
 
                 //  홈 실행이 완료된 후 부터 Loader Ionizer 는 상시 체크
-                if (workStage.m_bHomeOK)
+                if (workStage != null)
                 {
-                    if (loaderParameter.IsDO_Loader_Ionizer_On() &&
+                    if (workStage.m_bHomeOK)
+                    {
+                        if (loaderParameter.IsDO_Loader_Ionizer_On() &&
 
                         (!loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_0) ||
                         !loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_1)))

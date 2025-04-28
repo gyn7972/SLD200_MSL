@@ -63,6 +63,8 @@ namespace QMC.Common.Modules
         public JigAlignerRecipe reticleAlignerRecipe_HighRes { set; get; }
         public JigAlignerRecipe reticleAlignerRecipe_LowRes { set; get; }
 
+
+
         public ScannerCompensatorRecipe scannerCompensatorRecipe { set; get; }
         public WorkStageRecipe(WorkStage workStage)
         {
