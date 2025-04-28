@@ -1348,6 +1348,7 @@ namespace SLD200_MSL
             {
                 detectedCircles.Clear();
 
+                double dCenterPosX=0.0, dCenterPosY = 0.0;
                 //  좌표 표시
                 listBox_FindCircle_Result.Items.Clear();
                 for (int i = 0; i < circlesResult.Count; i++)
@@ -1356,6 +1357,12 @@ namespace SLD200_MSL
                     listBox_FindCircle_Result.Items.Add((i + 1) + ".  Left-Top Y : " + circlesResult[i].Y);
                     listBox_FindCircle_Result.Items.Add((i + 1) + ".  Width : " + circlesResult[i].Width);
                     listBox_FindCircle_Result.Items.Add((i + 1) + ".  Height : " + circlesResult[i].Height);
+
+                    dCenterPosX = circlesResult[i].X + (circlesResult[i].Width / 2);
+                    dCenterPosY = circlesResult[i].Y + (circlesResult[i].Height / 2);
+                    listBox_FindCircle_Result.Items.Add((i + 1) + ".  Center X : " + dCenterPosX);
+                    listBox_FindCircle_Result.Items.Add((i + 1) + ".  Center Y: " + dCenterPosY);
+
                 }
 
                 foreach (var circle in circlesResult)
