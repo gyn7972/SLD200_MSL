@@ -43,6 +43,7 @@ namespace SLD200.NewStyleForm.NewSubForm
         public FormNewSub_Recipe_Vision()
         {
             InitializeComponent();
+            this.Load += FormNewSub_Recipe_Vision_Load; // 👈 여기서 Load 이벤트 연결
 
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
@@ -54,21 +55,49 @@ namespace SLD200.NewStyleForm.NewSubForm
                     Owner = workStage.jigAligner_LowRes;
                 }
             }
+        }
 
-            this.ImageViewer_RecipeVision_highs.SizeMode = PictureBoxSizeMode.CenterImage;
-            this.ImageViewer_RecipeVision_highs.SuspendDisplay();
-            this.ImageViewer_RecipeVision_highs.Camera = Owner.Camera;
+        private void FormNewSub_Recipe_Vision_Load(object sender, EventArgs e)
+        {
+            //GUI생성 완료 후 Data 및 Cintroller 업데이트!
+            ModuleCollection m_collectionModules;
+            m_collectionModules = Equipment.Modules;
+            foreach (Module module in m_collectionModules)
+            {
+                if (module.Name == "WorkStage")
+                {
+                    workStage = module as WorkStage;
+                    Owner = workStage.jigAligner_LowRes;
+                }
+            }
 
-            this.ImageViewer_RecipeVision_Rows.SizeMode = PictureBoxSizeMode.CenterImage;
-            this.ImageViewer_RecipeVision_Rows.SuspendDisplay();
-            this.ImageViewer_RecipeVision_Rows.Camera = Owner.Camera;
-            this.ImageViewer_RecipeVision_Rows.StartUpdateTask();
+            if (this.ImageViewer_RecipeVision_highs.IsHandleCreated)
+            {
+                this.ImageViewer_RecipeVision_highs.SizeMode = PictureBoxSizeMode.CenterImage;
+                this.ImageViewer_RecipeVision_highs.SuspendDisplay();
+                this.ImageViewer_RecipeVision_highs.StopUpdateTask();
+
+                this.ImageViewer_RecipeVision_highs.Camera = Owner.Camera;
+
+                this.ImageViewer_RecipeVision_highs.ResumeDisplay();
+                this.ImageViewer_RecipeVision_highs.StartUpdateTask();
+            }
+
+            if (this.ImageViewer_RecipeVision_Rows.IsHandleCreated)
+            {
+                this.ImageViewer_RecipeVision_Rows.SizeMode = PictureBoxSizeMode.CenterImage;
+                this.ImageViewer_RecipeVision_Rows.SuspendDisplay();
+                this.ImageViewer_RecipeVision_Rows.StopUpdateTask();
+
+                this.ImageViewer_RecipeVision_Rows.Camera = Owner.Camera;
+
+                this.ImageViewer_RecipeVision_Rows.ResumeDisplay();
+                this.ImageViewer_RecipeVision_Rows.StartUpdateTask();
+            }
 
             this.pictureBox_RecipeVision_TrainImage.BackColor = Color.SpringGreen;
-
             this.RoiTrain = Owner.GetTrainRoi();
             this.RoiInspect = Owner.GetInspectRoi();
-
             this.m_RoiListControl = new SLD200_MSL.RoiListControl(RoiTrain, RoiInspect, Owner.Camera.Resolution);
             this.m_RoiListControl.roiTrainButtonClick += RoiTrainButtonClick;
             this.m_RoiListControl.roiAlignButtonClick += RoiInspectButtonClick;
@@ -82,11 +111,11 @@ namespace SLD200.NewStyleForm.NewSubForm
             SetScroll(2);
 
             IsPixel = true;
-            this.Refresh();
 
             InitPatternMatchingParameter();
             
         }
+
 
         private void InitPatternMatchingParameter()
         {
@@ -620,7 +649,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 PatternMatchingParameter.MinScore = Equipment.ToDouble(basetextBox_RecipeVision_MinScore.Text);
                 PatternMatchingParameter.DuplicateChecked = baseToggleButton_RecipeVision_DuplicateCheck.GetButtonStatus();
                 PatternMatchingParameter.UseMaskImage = baseToggleButton_RecipeVision_UseMaskImage.GetButtonStatus();
-                PatternMatchingParameter.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
+                //PatternMatchingParameter.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
                 Owner.Recipe.PatternMatchingParameter = PatternMatchingParameter;
 
                 PatternMatchingResult result = Owner.GetResult();

@@ -4170,8 +4170,6 @@ namespace QMC.Common.Modules
             }); ; ;
             m_taskTimer_LaserDrillingWork_Tick =  Task.Factory.StartNew(() =>
             {
-
-
                 Thread.CurrentThread.Name = "m_taskTimer_LaserDrillingWork_Tick";
 
                 while (true)
@@ -4373,8 +4371,11 @@ namespace QMC.Common.Modules
             autoFocuser_HighRes.Config = Config.AutoFocuserConfig_HighRes;
             autoFocuser_LowRes.Config = Config.AutoFocuserConfig_LowRes;
             scannerCompensator.Config = Config.ScannerCompensatorConfig;
-            //laserPitchMoveShotter.Config = Config.LaserPitchMoveShotterConfig;
 
+            //jigAligner_LowRes.Config = Config.CameraConfig_LowRes;
+            
+            
+            //laserPitchMoveShotter.Config = Config.LaserPitchMoveShotterConfig;
             //Stage.UpdateDirection();                              //  Z 축 방향 바꾸기? (주석 처리)
             //jigAligner.Config = Config.JigAlignerConfig;
         }
@@ -4389,13 +4390,15 @@ namespace QMC.Common.Modules
             Camera_HighRes.Config = Config.CameraConfig_HighRes;
             Camera_LowRes.Config = Config.CameraConfig_LowRes;
             visionCalibrator_HighRes.Config = Config.VisonCalibratorConfig_HighRes;
-            //visionCalibrator_LowRes.Config = Config.VisonCalibratorConfig_LowRes;
-            //visionCompensator_HighRes.Config = Config.VisionCompensatorConfig;
             autoFocuser_HighRes.Config = Config.AutoFocuserConfig_HighRes;
             autoFocuser_LowRes.Config = Config.AutoFocuserConfig_LowRes;
             scannerCompensator.Config = Config.ScannerCompensatorConfig;
-            //laserPitchMoveShotter.Config = Config.LaserPitchMoveShotterConfig;
             //jigAligner.Config = Config.JigAlignerConfig;
+
+            //visionCalibrator_LowRes.Config = Config.VisonCalibratorConfig_LowRes;
+            //visionCompensator_HighRes.Config = Config.VisionCompensatorConfig;
+            //laserPitchMoveShotter.Config = Config.LaserPitchMoveShotterConfig;
+
 
             base.UpdateConfigData();
         }
@@ -4419,6 +4422,7 @@ namespace QMC.Common.Modules
             jigAligner_LowRes.Recipe = Recipe.jigAlignerRecipe_LowRes;
             reticleAligner_HighRes.Recipe = Recipe.reticleAlignerRecipe_HighRes;
             reticleAligner_LowRes.Recipe = Recipe.reticleAlignerRecipe_LowRes;
+
 
             base.SetRecipeData(recipeData);
         }
@@ -8325,7 +8329,6 @@ namespace QMC.Common.Modules
 
                     m_nFindAlignMark_Step = (int)FindAlignMark_Step.Complete;
                     break;
-
 
                 case (int)FindAlignMark_Step.Complete:
 
@@ -22147,10 +22150,8 @@ namespace QMC.Common.Modules
 
         protected int AlarmPost(AlarmKey AlarmCode)
         {
-
             try
             {
-
                 Alarm alarm = GetAlarm((int)AlarmCode);
                 if (alarm.Grade.Equals("Error"))
                 {
@@ -22158,7 +22159,6 @@ namespace QMC.Common.Modules
                     this.m_SubWork_Start = false;
                     this.m_LaserDrillingWork_Start = false;
                     this.m_MainWork_Start = false;
-
                 }
                 MessageBox.Show(alarm.Cause);
                 AlarmManager.Instance.ShowAlarm(alarm);
