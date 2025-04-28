@@ -7377,13 +7377,13 @@ namespace QMC.Common.Modules
                     }
                     if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() == 0)
                     {
-                        CommonModule.Instance.TowerLamp.Buzzer_On();
+                        //CommonModule.Instance.TowerLamp.Buzzer_On();
                     }
 
-                    //  버튼 색깔 변경
-                    CommonModule.Instance.OperationButtons.Start(false);
-                    CommonModule.Instance.OperationButtons.Stop(true);
-                    CommonModule.Instance.OperationButtons.Reset(false);
+                    ////  버튼 색깔 변경
+                    //CommonModule.Instance.OperationButtons.Start(false);
+                    //CommonModule.Instance.OperationButtons.Stop(true);
+                    //CommonModule.Instance.OperationButtons.Reset(false);
                 }
                 //  자동운전
                 else if (Equipment.AutoRunStatus)
@@ -7405,10 +7405,10 @@ namespace QMC.Common.Modules
                         CommonModule.Instance.TowerLamp.Buzzer_Off();
                     }
 
-                    //  버튼 색깔 변경
-                    CommonModule.Instance.OperationButtons.Start(true);
-                    CommonModule.Instance.OperationButtons.Stop(false);
-                    CommonModule.Instance.OperationButtons.Reset(false);
+                    ////  버튼 색깔 변경
+                    //CommonModule.Instance.OperationButtons.Start(true);
+                    //CommonModule.Instance.OperationButtons.Stop(false);
+                    //CommonModule.Instance.OperationButtons.Reset(false);
                 }
                 //  Stop
                 else
@@ -7430,10 +7430,10 @@ namespace QMC.Common.Modules
                         CommonModule.Instance.TowerLamp.Buzzer_Off();
                     }
 
-                    //  버튼 색깔 변경
-                    CommonModule.Instance.OperationButtons.Start(false);
-                    CommonModule.Instance.OperationButtons.Stop(true);
-                    CommonModule.Instance.OperationButtons.Reset(false);
+                    ////  버튼 색깔 변경
+                    //CommonModule.Instance.OperationButtons.Start(false);
+                    //CommonModule.Instance.OperationButtons.Stop(true);
+                    //CommonModule.Instance.OperationButtons.Reset(false);
                 }
 
 
@@ -10842,6 +10842,13 @@ namespace QMC.Common.Modules
             {
                 m_nLaserHeightSensorSocketStep = (int)LaserHeightSensorSocket_Step.None;
                 return;
+            }
+            else
+            {
+                if (m_nLaserHeightSensorSocketStep == (int)LaserHeightSensorSocket_Step.None)
+                {
+                    m_nLaserHeightSensorSocketStep = (int)LaserHeightSensorSocket_Step.Start;
+                }
             }
 
             switch (m_nLaserHeightSensorSocketStep)
