@@ -118,6 +118,7 @@ namespace QMC.Common.Modules
             LD_MAlignerXY_Move_Widely_Timeout,
             LD_Transfer_PickerVacuumOff_MAlignerVacuumOn_Timeout,
             LD_Maligner_Not_Set_Module_Size,
+            LD_Ionizer_Alarm,
             LastAlarm = 2999,
             
         }
@@ -485,6 +486,14 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.LD_Ionizer_Alarm;
+            alarm.Title = "Loader 스태커";
+            alarm.Cause = "Loader 스태커의 이오나이저가 알람상태입니다. 이오나이저 동작 상태를 확인하여 주십시오.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
         } 
         #endregion
 
@@ -8833,6 +8842,22 @@ namespace QMC.Common.Modules
                 //    SetRecoveryTransfer_Cycle(m_nLoader_Transfer_Step);
                 //    return;
                 //}
+
+
+
+                //  홈 실행이 완료된 후 부터 Loader Ionizer 는 상시 체크
+                if (workStage.m_bHomeOK)
+                {
+                    if (loaderParameter.IsDO_Loader_Ionizer_On() &&
+
+                        (loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_0) ||
+                        loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_1)))
+                    {
+                        AlarmPost(AlarmKey.LD_Ionizer_Alarm);
+                    }
+                }
+
+
 
                 // Scanner Calibration이 활성화되지 않은 경우 종료
                 if (!m_LoaderWork_Start)

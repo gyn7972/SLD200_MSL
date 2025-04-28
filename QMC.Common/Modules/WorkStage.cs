@@ -7357,6 +7357,86 @@ namespace QMC.Common.Modules
             {
                 _isMainWorkRunning = true;
 
+
+                //  타워램프 상태 갱신
+
+                //  Alarm 상태
+                if (AlarmManager.Instance.IsAlarm)
+                {
+                    if (CommonModule.Instance.TowerLamp.Is_Green_On() != 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Green_Off();
+                    }
+                    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() != 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Yellow_Off();
+                    }
+                    if (CommonModule.Instance.TowerLamp.Is_Red_On() == 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Red_On();
+                    }
+                    if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() == 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Buzzer_On();
+                    }
+
+                    //  버튼 색깔 변경
+                    CommonModule.Instance.OperationButtons.Start(false);
+                    CommonModule.Instance.OperationButtons.Stop(true);
+                    CommonModule.Instance.OperationButtons.Reset(false);
+                }
+                //  자동운전
+                else if (Equipment.AutoRunStatus)
+                {
+                    if (CommonModule.Instance.TowerLamp.Is_Green_On() == 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Green_On();
+                    }
+                    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() != 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Yellow_Off();
+                    }
+                    if (CommonModule.Instance.TowerLamp.Is_Red_On() != 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Red_Off();
+                    }
+                    if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Buzzer_Off();
+                    }
+
+                    //  버튼 색깔 변경
+                    CommonModule.Instance.OperationButtons.Start(true);
+                    CommonModule.Instance.OperationButtons.Stop(false);
+                    CommonModule.Instance.OperationButtons.Reset(false);
+                }
+                //  Stop
+                else
+                {
+                    if (CommonModule.Instance.TowerLamp.Is_Green_On() != 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Green_Off();
+                    }
+                    if (CommonModule.Instance.TowerLamp.Is_Yellow_On() == 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Yellow_On();
+                    }
+                    if (CommonModule.Instance.TowerLamp.Is_Red_On() != 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Red_Off();
+                    }
+                    if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
+                    {
+                        CommonModule.Instance.TowerLamp.Buzzer_Off();
+                    }
+
+                    //  버튼 색깔 변경
+                    CommonModule.Instance.OperationButtons.Start(false);
+                    CommonModule.Instance.OperationButtons.Stop(true);
+                    CommonModule.Instance.OperationButtons.Reset(false);
+                }
+
+
                 // Scanner Calibration이 활성화되지 않은 경우 종료
                 if (!m_MainWork_Start)
                 {
@@ -8599,6 +8679,10 @@ namespace QMC.Common.Modules
                     m_nMainWork_Step = (int)MainWork_Step.None;                                 //  Main Work Step
                     m_nMainWorkCycleType = (int)MainWorkCycleType.Cycle_None;                   //  자동 운전 시 사용하는 변수
                     m_bMainWorkCycle_DryRun = false;
+
+
+                    //  홈 실행할 때 로더 쪽 이오나이저를 켜준다. (끄지 않음. 상시 On)
+                    loader.loaderParameter.DO_Loader_Ionizer(true);
 
 
                     loader.timer_LoaderWork.Enabled = false;
