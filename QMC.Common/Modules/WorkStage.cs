@@ -28007,7 +28007,20 @@ namespace QMC.Common.Modules
             m_st4PointAlign_Result.dRotationCenterX = ptDwgPos[0].ptFiducial_Center.X;
             m_st4PointAlign_Result.dRotationCenterY = ptDwgPos[0].ptFiducial_Center.Y;
 
-            
+            PointD InspectionCenter; 
+            TryGetIntersection(
+                ptInspectedPos[0].ptFiducial_Center
+                , ptInspectedPos[2].ptFiducial_Center
+                , ptInspectedPos[1].ptFiducial_Center
+                , ptInspectedPos[4].ptFiducial_Center
+                , out InspectionCenter);
+            PointD DwgCenter;
+            TryGetIntersection(
+                ptDwgPos[0].ptFiducial_Center
+                , ptDwgPos[2].ptFiducial_Center
+                , ptDwgPos[1].ptFiducial_Center
+                , ptDwgPos[4].ptFiducial_Center
+                ,out DwgCenter);
 
             m_st4PointAlign_Result.dCenterOffsetX = ptInspectedPos[0].ptFiducial_Center.X - ptDwgPos[0].ptFiducial_Center.X;
             m_st4PointAlign_Result.dCenterOffsetY = ptInspectedPos[0].ptFiducial_Center.Y - ptDwgPos[0].ptFiducial_Center.Y; ;
