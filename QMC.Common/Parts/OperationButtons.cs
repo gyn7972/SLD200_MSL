@@ -181,6 +181,7 @@ namespace QMC.Common.Parts
             }
             return ret;
         }
+
         public bool IsStart()
         {
             bool bRet = false;

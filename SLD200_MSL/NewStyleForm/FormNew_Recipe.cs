@@ -50,7 +50,7 @@ namespace SLD200_MSL
                 {
                     workStage = module as WorkStage;
                 }
-
+                
                 //if (module.Name == "Loader")
                 //{
                 //    loader = module as Loader;
@@ -86,18 +86,20 @@ namespace SLD200_MSL
             timer_Recipe_Open.Tick += new System.EventHandler(Timer_RecipeOpen_Func);
             timer_Recipe_Open.Enabled = true;
 
-            LoadSubForm();
+            this.tabControl_Recipe.SelectedIndexChanged += new System.EventHandler(this.tabControl_Recipe_SelectedIndexChanged);
+
+            //LoadSubForm();
         }
 
-        protected override void OnCreateControl()
-        {
-            base.OnCreateControl(); // 반드시 호출
-                                    // 추가 초기화 코드
-        }
+        //protected override void OnCreateControl()
+        //{
+        //    base.OnCreateControl(); // 반드시 호출
+        //                            // 추가 초기화 코드
+        //}
 
         private void LoadSubForm()
         {
-            OnCreateControl();
+            //OnCreateControl();
 
             if (userform_RecipeVision == null)
             {
@@ -106,7 +108,7 @@ namespace SLD200_MSL
                 tabPage_RecipeVision.Controls.Add(userform_RecipeVision);
                 //userform_RecipeVision.Initialize(); // 필요하면 초기화
                 // OnCreateControl 강제 호출
-                userform_RecipeVision.CreateControl();
+                //userform_RecipeVision.CreateControl();
 
             }
         }
@@ -314,6 +316,14 @@ namespace SLD200_MSL
                         listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Add(layer.Name);
                     }
                 }
+            }
+        }
+
+        private void tabControl_Recipe_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControl_Recipe.SelectedTab == tabPage_RecipeVision) // "RecipeVision" 탭을 선택했을 때
+            {
+                LoadSubForm();
             }
         }
 

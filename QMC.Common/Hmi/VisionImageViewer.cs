@@ -611,6 +611,44 @@ namespace QMC.Common.Hmi
             StopUpdateTask();
         }
 
+        private void VisionImageViewer_HandleCreated(object sender, EventArgs e)
+        {
+            //InitializeBufferedGraphics();
+            StopUpdateTask();
+        }
+
+        //private void VisionImageViewer_HandleDestroyed(object sender, EventArgs e)
+        //{
+        //    DisposeBufferedGraphics();
+        //}
+
+        private void VisionImageViewer_Resize(object sender, EventArgs e)
+        {
+            //if (_initialized)
+            //    InitializeBufferedGraphics();
+        }
+
+        private void InitializeBufferedGraphics()
+        {
+            if (!this.IsHandleCreated || this.Width <= 0 || this.Height <= 0)
+                return;
+
+            if (this.m_Context == null)
+                this.m_Context = BufferedGraphicsManager.Current;
+
+            this.m_Context.MaximumBuffer = new Size(this.Width + 1, this.Height + 1);
+
+            if (this.m_Graphics != null)
+            {
+                lock (this.m_Graphics)
+                {
+                    this.m_Graphics.Dispose();
+                    this.m_Graphics = null;
+                }
+            }
+
+            this.m_Graphics = this.m_Context.Allocate(this.CreateGraphics(), new Rectangle(0, 0, this.Width, this.Height));
+        }
         #endregion
 
         #region Property
@@ -1074,7 +1112,9 @@ namespace QMC.Common.Hmi
                                 this.m_bitmap = null;
                             }
                             this.InputImage.Load(openFileDialog.FileName, selectedFilter.Value);
-                        }                            
+                        }
+
+                        StartUpdateTask();
 
                         Simulated = true;
                         Display();

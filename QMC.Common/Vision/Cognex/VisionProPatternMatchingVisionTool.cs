@@ -236,7 +236,7 @@ namespace QMC.Common.Vision.Cognex
             {
                 if ((ret = VisionProCustomizedVisionImage.Create(ref image)) != 0) return ret;
             }
-
+            image.Save("d:\\TrainImage.bmp", VisionImage.FileFilter.bmp);
             cognexVisionImage = image.CustomizedData as VisionProCustomizedVisionImage;
             cognexImage = image.CustomizedData.Image as ICogImage;
 
