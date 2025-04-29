@@ -4170,6 +4170,8 @@ namespace QMC.Common.Modules
             }); ; ;
             m_taskTimer_LaserDrillingWork_Tick =  Task.Factory.StartNew(() =>
             {
+
+
                 Thread.CurrentThread.Name = "m_taskTimer_LaserDrillingWork_Tick";
 
                 while (true)
@@ -4371,11 +4373,8 @@ namespace QMC.Common.Modules
             autoFocuser_HighRes.Config = Config.AutoFocuserConfig_HighRes;
             autoFocuser_LowRes.Config = Config.AutoFocuserConfig_LowRes;
             scannerCompensator.Config = Config.ScannerCompensatorConfig;
-
-            //jigAligner_LowRes.Config = Config.CameraConfig_LowRes;
-            
-            
             //laserPitchMoveShotter.Config = Config.LaserPitchMoveShotterConfig;
+
             //Stage.UpdateDirection();                              //  Z 축 방향 바꾸기? (주석 처리)
             //jigAligner.Config = Config.JigAlignerConfig;
         }
@@ -4390,15 +4389,13 @@ namespace QMC.Common.Modules
             Camera_HighRes.Config = Config.CameraConfig_HighRes;
             Camera_LowRes.Config = Config.CameraConfig_LowRes;
             visionCalibrator_HighRes.Config = Config.VisonCalibratorConfig_HighRes;
+            //visionCalibrator_LowRes.Config = Config.VisonCalibratorConfig_LowRes;
+            //visionCompensator_HighRes.Config = Config.VisionCompensatorConfig;
             autoFocuser_HighRes.Config = Config.AutoFocuserConfig_HighRes;
             autoFocuser_LowRes.Config = Config.AutoFocuserConfig_LowRes;
             scannerCompensator.Config = Config.ScannerCompensatorConfig;
-            //jigAligner.Config = Config.JigAlignerConfig;
-
-            //visionCalibrator_LowRes.Config = Config.VisonCalibratorConfig_LowRes;
-            //visionCompensator_HighRes.Config = Config.VisionCompensatorConfig;
             //laserPitchMoveShotter.Config = Config.LaserPitchMoveShotterConfig;
-
+            //jigAligner.Config = Config.JigAlignerConfig;
 
             base.UpdateConfigData();
         }
@@ -4422,7 +4419,6 @@ namespace QMC.Common.Modules
             jigAligner_LowRes.Recipe = Recipe.jigAlignerRecipe_LowRes;
             reticleAligner_HighRes.Recipe = Recipe.reticleAlignerRecipe_HighRes;
             reticleAligner_LowRes.Recipe = Recipe.reticleAlignerRecipe_LowRes;
-
 
             base.SetRecipeData(recipeData);
         }
@@ -7572,7 +7568,6 @@ namespace QMC.Common.Modules
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
             }
-
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_SocketAlign_CompleteCheck)
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
@@ -8409,6 +8404,7 @@ namespace QMC.Common.Modules
 
                     m_nFindAlignMark_Step = (int)FindAlignMark_Step.Complete;
                     break;
+
 
                 case (int)FindAlignMark_Step.Complete:
 
@@ -13144,7 +13140,7 @@ namespace QMC.Common.Modules
 
                         double yOffset =(((double)(Camera_HighRes.Resolution.Height / 2) - ((double)Fiducial_circlesResult[0].Y + ((double)Fiducial_circlesResult[0].Height / 2.0))) * Config.ParamConfig.UpperVision_Scale_Y);
 
-                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = MC_Func.MC_GetEncPos((int)nAxis.X) + xOffset;
+                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = MC_Func.MC_GetEncPos((int)nAxis.X) - xOffset;
 
 
                         m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = MC_Func.MC_GetEncPos((int)nAxis.Y) - yOffset;
@@ -13668,6 +13664,12 @@ namespace QMC.Common.Modules
             }
 
         }
+        private PointD CoordinateTransform(PointD xyCoordinate, double dRotationCenterX, double dRotationCenterY, double v)
+        {
+            XyCoordinate result = CoordinateTransform(new XyCoordinate(xyCoordinate.X, xyCoordinate.Y), dRotationCenterX, dRotationCenterY, v);
+            return new PointD(result.X, result.Y);
+        }
+
         private XyCoordinate CoordinateTransform(XyCoordinate xyCoordinate, double dRotationCenterX, double dRotationCenterY, double v)
         {
             double dX = xyCoordinate.X - dRotationCenterX;
@@ -13782,7 +13784,7 @@ namespace QMC.Common.Modules
 
                             currentPosition.Y += dYoffset;
                             double dSpec = 0.1;
-                            //if(dXoffset < dSpec && dYoffset < dSpec)
+                            //if (dXoffset < dSpec && dYoffset < dSpec)
                             //{
                             //    return 0;
                             //}
@@ -16081,7 +16083,7 @@ namespace QMC.Common.Modules
 
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
-                    CommonModule.Instance.Illuminator.SetVolume(1500, 3);
+                    CommonModule.Instance.Illuminator.SetVolume(4000, 3);
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 1);       //  Fine Cam Red 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 2);       //  Fine Cam IR 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
@@ -16131,7 +16133,6 @@ namespace QMC.Common.Modules
 
                             xyCoordinateAlignPositionOrgLast  = new XyCoordinate(positionFirst.X, positionFirst.Y);
                             
-
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Correction;
                         }
                         else
@@ -16156,14 +16157,13 @@ namespace QMC.Common.Modules
                         //timer_LaserDrillingWork.Enabled = false;
                         //m_bExit = true;
 
+                        m_bPreAlignCompleted = false;
+
                         return AlarmPost(AlarmKey.PreAlignFail);
 
-
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-
                         timer_VisionAlign.Enabled = false;
                         m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
-
                         MessageBox.Show("Pre Align 시간 초과", "Error");
                     }
                     break;
@@ -16254,8 +16254,6 @@ namespace QMC.Common.Modules
                             //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
                             //MessageBox.Show("Socket Align 실패", "Error");
 
-
-
 							//  소켓 얼라인 실패했으니 화면 갱신해야 한다.
 
                             m_nDrillingData_SocketAlign_NGCount++;                                              //  소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
@@ -16336,8 +16334,8 @@ namespace QMC.Common.Modules
                         //m_btimer_Motion_Home_Stop = true;
 
                         return AlarmPost(AlarmKey.eZAxisFail);
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
 
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
                         MessageBox.Show("Stage Z 축, 가공 높이로 조정 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
@@ -22266,8 +22264,10 @@ namespace QMC.Common.Modules
 
         protected int AlarmPost(AlarmKey AlarmCode)
         {
+
             try
             {
+
                 Alarm alarm = GetAlarm((int)AlarmCode);
                 if (alarm.Grade.Equals("Error"))
                 {
@@ -22275,6 +22275,7 @@ namespace QMC.Common.Modules
                     this.m_SubWork_Start = false;
                     this.m_LaserDrillingWork_Start = false;
                     this.m_MainWork_Start = false;
+
                 }
                 MessageBox.Show(alarm.Cause);
                 AlarmManager.Instance.ShowAlarm(alarm);
@@ -23367,8 +23368,9 @@ namespace QMC.Common.Modules
 
                                         if (list.Count > 0)
                                         {
+                                            //1차로 죽어서 수정. 2차 시 에러코드 확인 요망.
                                             //  List 에 등록된 가공 객체 Select
-                                            Equipment.EqpSiriusViewer.Document.Action.ActEntitySelect(list);
+                                            SiriusViewObjectEntitySelect(list);
                                             m_bSelected = true;
                                         }
                                     }
@@ -23563,17 +23565,27 @@ namespace QMC.Common.Modules
             //  Select 된 객체가 있으면 회전 Offset 이동
             if (m_bSelected)
             {
-                if(Equipment.formMain.InvokeRequired)
-                {
-                    Equipment.formMain.Invoke(new System.Action(() => 
-                    { 
-                        Equipment.EqpSiriusViewer.Document.Action.ActEntityRotate(Equipment.EqpSiriusViewer.Document.Action.SelectedEntity, (float)m_dAngle, (float)m_dRotCenterX, (float)m_dRotCenterY);
-                        Equipment.EqpSiriusViewer.Document.Action.ActEntityTransit(Equipment.EqpSiriusViewer.Document.Action.SelectedEntity, (float)m_dOffsetX, (float)m_dOffsetY);
-                    }));
-                }
+                SiriusViewObjectRotateNOffset(m_dRotCenterX, m_dRotCenterY, m_dOffsetX, m_dOffsetY, m_dAngle);
             }
 
             return success;
+        }
+
+        private static void SiriusViewObjectRotateNOffset(double m_dRotCenterX, double m_dRotCenterY, double m_dOffsetX, double m_dOffsetY, double m_dAngle)
+        {
+            if (Equipment.formMain.InvokeRequired)
+            {
+                Equipment.formMain.Invoke(new System.Action(() =>
+                {
+                    SiriusViewObjectRotateNOffset(m_dRotCenterX, m_dRotCenterY, m_dOffsetX, m_dOffsetY, m_dAngle);
+                }));
+            }
+            else
+            {
+                Equipment.EqpSiriusViewer.Document.Action.ActEntityRotate(Equipment.EqpSiriusViewer.Document.Action.SelectedEntity, (float)m_dAngle, (float)m_dRotCenterX, (float)m_dRotCenterY);
+                Equipment.EqpSiriusViewer.Document.Action.ActEntityTransit(Equipment.EqpSiriusViewer.Document.Action.SelectedEntity, (float)m_dOffsetX, (float)m_dOffsetY);
+
+            }
         }
 
 
@@ -23611,7 +23623,7 @@ namespace QMC.Common.Modules
         {
 
             var entity = new LwPolyline();
-            
+
             //  entity.Color2 = this.color;
 
             //  Outer Diameter : Spiral 시작 위치
@@ -26057,6 +26069,7 @@ namespace QMC.Common.Modules
                             m_stLayerType.m_nLayerIndex[m_nLayerCount++] = m_nHoleLayer_Num - 1;                  //  Hole Layer 의 Index는 Hole Index -1
                         }
                     }
+                    
                     #region 간소화
                     //else if (layer.Name == "Hole2")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
                     //{
@@ -27930,6 +27943,8 @@ namespace QMC.Common.Modules
         leftMostPoint = candidates.OrderBy(p => p.X).First();
         rightMostPoint = candidates.OrderByDescending(p => p.X).First();
         }
+
+
         public static bool TryGetIntersection(PointD p1, PointD p2, PointD p3, PointD p4, out PointD intersection)
         {
             intersection = new PointD();
@@ -27960,7 +27975,6 @@ namespace QMC.Common.Modules
             intersection = new PointD(x, y);
             return true;
         }
-
         public st4PointAlign_Result Calc_4Point_AlignData(st4PointPosition_Data[] ptDwgPos, st4PointPosition_Data[] ptInspectedPos)
         {
             //  4 Point 위치 (좌측 하단부터 시계방향으로)
@@ -28036,12 +28050,13 @@ namespace QMC.Common.Modules
             dOffsetX = dDwgCrossX - dInspectedCrossX;
             dOffsetY = dDwgCrossY - dInspectedCrossY;
 
+
             //  도면상 좌표 데이터의 교차점과 비전 검사로 얻은 좌표 데이터의 교차점간 회전 각도 계산
             double dAngle = 0.0;
             double dDwgAngle = 0.0;
             double dInspectedAngle = 0.0;
-            dDwgAngle = Math.Atan2(ptDwgPos[0].ptFiducial_Center.Y - ptDwgPos[2].ptFiducial_Center.Y, ptDwgPos[0].ptFiducial_Center.X - ptDwgPos[2].ptFiducial_Center.X);
-            dInspectedAngle = Math.Atan2(ptInspectedPos[0].ptFiducial_Center.Y - ptInspectedPos[2].ptFiducial_Center.Y, ptInspectedPos[0].ptFiducial_Center.X - ptInspectedPos[2].ptFiducial_Center.X);
+            dDwgAngle = Math.Atan2(ptDwgPos[0].ptFiducial_Center.Y - ptDwgPos[3].ptFiducial_Center.Y, ptDwgPos[0].ptFiducial_Center.X - ptDwgPos[3].ptFiducial_Center.X);
+            dInspectedAngle = Math.Atan2(ptInspectedPos[0].ptFiducial_Center.Y - ptInspectedPos[3].ptFiducial_Center.Y, ptInspectedPos[0].ptFiducial_Center.X - ptInspectedPos[3].ptFiducial_Center.X);
             dAngle = dDwgAngle - dInspectedAngle;
 
             //  결과값 저장  
@@ -28051,24 +28066,28 @@ namespace QMC.Common.Modules
             m_st4PointAlign_Result.dRotationCenterX = ptDwgPos[0].ptFiducial_Center.X;
             m_st4PointAlign_Result.dRotationCenterY = ptDwgPos[0].ptFiducial_Center.Y;
 
-            PointD InspectionCenter; 
+            PointD InspectionCenter;
             TryGetIntersection(
                 ptInspectedPos[0].ptFiducial_Center
                 , ptInspectedPos[2].ptFiducial_Center
                 , ptInspectedPos[1].ptFiducial_Center
-                , ptInspectedPos[4].ptFiducial_Center
+                , ptInspectedPos[3].ptFiducial_Center
                 , out InspectionCenter);
             PointD DwgCenter;
             TryGetIntersection(
                 ptDwgPos[0].ptFiducial_Center
                 , ptDwgPos[2].ptFiducial_Center
                 , ptDwgPos[1].ptFiducial_Center
-                , ptDwgPos[4].ptFiducial_Center
-                ,out DwgCenter);
+                , ptDwgPos[3].ptFiducial_Center
+                , out DwgCenter);
 
-            m_st4PointAlign_Result.dCenterOffsetX = ptInspectedPos[0].ptFiducial_Center.X - ptDwgPos[0].ptFiducial_Center.X;
-            m_st4PointAlign_Result.dCenterOffsetY = ptInspectedPos[0].ptFiducial_Center.Y - ptDwgPos[0].ptFiducial_Center.Y; ;
+
+            DwgCenter = this.CoordinateTransform(DwgCenter, ptDwgPos[0].ptFiducial_Center.X, ptDwgPos[0].ptFiducial_Center.Y, -dAngle);
+
+            m_st4PointAlign_Result.dCenterOffsetX = InspectionCenter.X - DwgCenter.X;
+            m_st4PointAlign_Result.dCenterOffsetY = InspectionCenter.Y - DwgCenter.Y; ;
             m_st4PointAlign_Result.dRotationAngle = dAngle;
+
 
             return m_st4PointAlign_Result;
         }
@@ -31162,8 +31181,21 @@ namespace QMC.Common.Modules
             return new XyzCoordinate(this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]
                 , this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] , 0);
             
+        }
 
-
+        public void SiriusViewObjectEntitySelect(List<IEntity> list)
+        {
+            if (Equipment.formMain.InvokeRequired)
+            {
+                Equipment.formMain.Invoke(new System.Action(() =>
+                {
+                    SiriusViewObjectEntitySelect(list);
+                }));
+            }
+            else
+            {
+                Equipment.EqpSiriusViewer.Document.Action.ActEntitySelect(list);
+            }
         }
     }
 }

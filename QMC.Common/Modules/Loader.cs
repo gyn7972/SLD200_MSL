@@ -7024,7 +7024,12 @@ namespace QMC.Common.Modules
                             ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center)) ||
                             !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center) &&
 
-                            ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner)) ||
+                            //((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner)) ||
+                            //!Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner) &&
+                            //  아래 임시 코드
+                            ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner && (loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner) ||
+                                                                                        loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center) ||
+                                                                                        loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer))) ||
                             !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner) &&
 
                             ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer)) ||
@@ -8680,7 +8685,12 @@ namespace QMC.Common.Modules
                                                                             loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer)));
                     bool bMAlingerCenter = ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center)) ||
                             !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center);
-                    bool bMAlingerInner = ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner)) ||
+
+                    //bool bMAlingerInner = ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner)) ||
+                    //       !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner);
+                    //  임시 코드
+                    bool bMAlingerInner = ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner && (loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner) ||
+                                                                                                        loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center))) ||
                            !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner);
 
                     bool bMAlingerOuter = ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer)) ||
@@ -9254,15 +9264,13 @@ namespace QMC.Common.Modules
                     {
                         if (loaderParameter.IsDO_Loader_Ionizer_On() &&
 
-                            (loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_0) ||
-                            loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_1)))
+                        (!loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_0) ||
+                        !loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_1)))
                         {
                             AlarmPost(AlarmKey.LD_Ionizer_Alarm);
                         }
                     }
                 }
-
-
 
                 // Scanner Calibration이 활성화되지 않은 경우 종료
                 if (!m_LoaderWork_Start)

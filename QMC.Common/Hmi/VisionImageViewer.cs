@@ -2036,7 +2036,6 @@ namespace QMC.Common.Hmi
             //this.ResultOverlays = module.ResultOverlays;
             //if(this.m_ResultOverlayCollection != module.ResultOverlays)
             {
-
                 lock (this.ViewerSyncRoot)
                     try
                     {
