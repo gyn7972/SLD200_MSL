@@ -7568,7 +7568,6 @@ namespace QMC.Common.Modules
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
             }
-
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_SocketAlign_CompleteCheck)
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
@@ -16134,7 +16133,6 @@ namespace QMC.Common.Modules
 
                             xyCoordinateAlignPositionOrgLast  = new XyCoordinate(positionFirst.X, positionFirst.Y);
                             
-
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Correction;
                         }
                         else
@@ -16159,14 +16157,13 @@ namespace QMC.Common.Modules
                         //timer_LaserDrillingWork.Enabled = false;
                         //m_bExit = true;
 
+                        m_bPreAlignCompleted = false;
+
                         return AlarmPost(AlarmKey.PreAlignFail);
 
-
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-
                         timer_VisionAlign.Enabled = false;
                         m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
-
                         MessageBox.Show("Pre Align 시간 초과", "Error");
                     }
                     break;
@@ -16257,8 +16254,6 @@ namespace QMC.Common.Modules
                             //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
                             //MessageBox.Show("Socket Align 실패", "Error");
 
-
-
 							//  소켓 얼라인 실패했으니 화면 갱신해야 한다.
 
                             m_nDrillingData_SocketAlign_NGCount++;                                              //  소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
@@ -16339,8 +16334,8 @@ namespace QMC.Common.Modules
                         //m_btimer_Motion_Home_Stop = true;
 
                         return AlarmPost(AlarmKey.eZAxisFail);
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
 
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
                         MessageBox.Show("Stage Z 축, 가공 높이로 조정 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;

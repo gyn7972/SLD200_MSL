@@ -9252,12 +9252,11 @@ namespace QMC.Common.Modules
 
                         (!loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_0) ||
                         !loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_1)))
-                    {
-                        AlarmPost(AlarmKey.LD_Ionizer_Alarm);
+                        {
+                            AlarmPost(AlarmKey.LD_Ionizer_Alarm);
+                        }
                     }
                 }
-
-
 
                 // Scanner Calibration이 활성화되지 않은 경우 종료
                 if (!m_LoaderWork_Start)
