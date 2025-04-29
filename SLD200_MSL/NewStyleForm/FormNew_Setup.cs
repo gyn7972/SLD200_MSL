@@ -2740,6 +2740,16 @@ namespace SLD200_MSL
                 return;
             }
 
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            workStage.m_nFlatnessMeasure_Type = nIndex;
+
             if (workStage.m_nFlatnessMeasure_Step == (int)WorkStage.FlatnessMeasure_Step.None)
             {
                 var mb = new MessageBoxYesNo();
