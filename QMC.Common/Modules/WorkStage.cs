@@ -36,6 +36,7 @@ using LaserVirtual = SpiralLab.Sirius.LaserVirtual;
 using static QMC.Common.Modules.Loader;
 using System.Security.Policy;
 
+
 using System.Linq;
 //using SpiralLab.Sirius2.Vision.Camera;
 using System.ServiceModel.Syndication;
@@ -1683,6 +1684,15 @@ namespace QMC.Common.Modules
             alarm.Code = (int)AlarmKey.SocketAlignMovePositionCalcFail;
             alarm.Title = "Socket Align";
             alarm.Cause = "소켓 얼라인 데이터 계산에 실패 하였습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Info";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            //PreAlignFail
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.PreAlignFail;
+            alarm.Title = "Pre Align";
+            alarm.Cause = "프리 얼라인 데이터 계산에 실패 하였습니다.";
             alarm.Source = Name;
             alarm.Grade = "Info";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -21216,6 +21226,7 @@ namespace QMC.Common.Modules
             TickCount_Start((int)TickType.TICK_MAIN);
         }
 
+        // 소켓 갯수 파악 및 가공 완료 여부 판단 함수
         private int LaserDrilling_StepDrillingData_SocketRemainedCheck()
         {
             int nextStep;
@@ -22262,7 +22273,8 @@ namespace QMC.Common.Modules
             m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
         }
 
-        protected int AlarmPost(AlarmKey AlarmCode)
+        //protected int AlarmPost(AlarmKey AlarmCode)
+        public int AlarmPost(AlarmKey AlarmCode)
         {
 
             try
@@ -22277,7 +22289,7 @@ namespace QMC.Common.Modules
                     this.m_MainWork_Start = false;
 
                 }
-                MessageBox.Show(alarm.Cause);
+                //MessageBox.Show(alarm.Cause);
                 AlarmManager.Instance.ShowAlarm(alarm);
             }catch(Exception ex)
             {
@@ -31201,6 +31213,39 @@ namespace QMC.Common.Modules
             {
                 Equipment.EqpSiriusViewer.Document.Action.ActEntitySelect(list);
             }
+        }
+
+        public void ProcssMager()
+        {
+            //Test == 
+            //ProcessManager sdf = new ProcessManager();
+            ProcessManager.Init();
+
+            // Layer 추가
+            ProcessManager.AddLayer("hole1", 1);
+            ProcessManager.AddLayer("thruhole", 2);
+            ProcessManager.AddLayer("outline", 3);
+            ProcessManager.AddLayer("marking", 4);
+            // -- 있으면 계속 추가 사용.
+
+            // Socket 추가
+            var layer = ProcessManager.GetLayer(1);
+            for(int i = 0; i < 10; i++)
+            {
+                layer?.AddSocket(i);
+            }
+            
+            // 결과 저장
+            layer?.SetSocketResult(1, true, "검사 통과");
+            layer?.SetSocketResult(1, false, "검사 통과");
+
+            // 전체 리셋
+            ProcessManager.Reset();
+
+            ProcessManager.GetLayer(1).SetSocketResult(0, true);
+            ProcessManager.GetLayer(1).SetSocketResult(1, false);
+            //요라고 사용하자.
+            
         }
     }
 }

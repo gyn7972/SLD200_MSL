@@ -8971,15 +8971,16 @@ namespace QMC.Common.Modules
             return ret;
         }
 
-        protected int AlarmPost(AlarmKey AlarmCode)
+        //TEST 위해서 publc으로 
+        //protected int AlarmPost(AlarmKey AlarmCode)
+        public int AlarmPost(AlarmKey AlarmCode)
         {
-            
             Alarm alarm = GetAlarm((int)AlarmCode);
             if (alarm.Grade.Equals("Error"))
             {
                 this.m_LoaderWork_Start = false;
             }
-            MessageBox.Show(alarm.Cause);
+            //MessageBox.Show(alarm.Cause);
             AlarmManager.Instance.ShowAlarm(alarm);
             return alarm.Code;
         }

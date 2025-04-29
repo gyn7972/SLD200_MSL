@@ -6376,7 +6376,6 @@ namespace QMC.Common.Modules
             m_nStacker0_ModulePutdownWaitingPos_Step_Recovery = 0;
             m_nStacker1_ModulePutdownWaitingPos_Step_Recovery = 0;
             m_nUnloader_Transfer_Step_Recovery = 0;
-
         }
     }
 }

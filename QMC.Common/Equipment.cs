@@ -193,7 +193,6 @@ namespace QMC.Common
         public static int WaferCamera_Width { set; get; }
         public static int WaferCamera_Height { set; get; }
 
-
         //  모터 축 파라미터
         public static int Max_Axis = 14;
         public struct stAxisParameter
@@ -414,9 +413,19 @@ namespace QMC.Common
         }
         public static stLayerRecipeParameter[] stLayerRecipeSet = new stLayerRecipeParameter[System.Enum.GetValues(typeof(LayerList)).Length];
 
+        // Laser Process Result struct
+        public struct stProcessResultStatus
+        {
+            public string Layer;
+            public int sorket;
+            public bool result;
+        }
 
-        //  Machine Name
-        public static string Machine_Name { set; get; } = "SLD-200";
+
+
+
+            //  Machine Name
+            public static string Machine_Name { set; get; } = "SLD-200";
 
 
         //  Laser Type
@@ -3010,5 +3019,6 @@ namespace QMC.Common
 
             return m_bRet;
         }
+
     }
 }
