@@ -13008,9 +13008,6 @@ namespace QMC.Common.Modules
                             xyCoordinateAlign = xyInterpolatedCoordinate + offset;
                             xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionLast.X, xyCoordinateAlignPositionLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
 
-                            
-
-
                         }
                     }
                     xyCoordinateAlignPositionOrgLast = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
