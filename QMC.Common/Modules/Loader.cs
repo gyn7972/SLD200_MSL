@@ -9252,9 +9252,8 @@ namespace QMC.Common.Modules
 
                         (!loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_0) ||
                         !loaderParameter.DI_Loader_Ionizer_AlarmCheck((int)LoaderParameter.StackerTable.Stacker_1)))
-                        {
-                            AlarmPost(AlarmKey.LD_Ionizer_Alarm);
-                        }
+                    {
+                        AlarmPost(AlarmKey.LD_Ionizer_Alarm);
                     }
                 }
 
