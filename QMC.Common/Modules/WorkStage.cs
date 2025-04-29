@@ -4170,8 +4170,6 @@ namespace QMC.Common.Modules
             }); ; ;
             m_taskTimer_LaserDrillingWork_Tick =  Task.Factory.StartNew(() =>
             {
-
-
                 Thread.CurrentThread.Name = "m_taskTimer_LaserDrillingWork_Tick";
 
                 while (true)
@@ -4373,8 +4371,11 @@ namespace QMC.Common.Modules
             autoFocuser_HighRes.Config = Config.AutoFocuserConfig_HighRes;
             autoFocuser_LowRes.Config = Config.AutoFocuserConfig_LowRes;
             scannerCompensator.Config = Config.ScannerCompensatorConfig;
-            //laserPitchMoveShotter.Config = Config.LaserPitchMoveShotterConfig;
 
+            //jigAligner_LowRes.Config = Config.CameraConfig_LowRes;
+            
+            
+            //laserPitchMoveShotter.Config = Config.LaserPitchMoveShotterConfig;
             //Stage.UpdateDirection();                              //  Z 축 방향 바꾸기? (주석 처리)
             //jigAligner.Config = Config.JigAlignerConfig;
         }
@@ -4389,13 +4390,15 @@ namespace QMC.Common.Modules
             Camera_HighRes.Config = Config.CameraConfig_HighRes;
             Camera_LowRes.Config = Config.CameraConfig_LowRes;
             visionCalibrator_HighRes.Config = Config.VisonCalibratorConfig_HighRes;
-            //visionCalibrator_LowRes.Config = Config.VisonCalibratorConfig_LowRes;
-            //visionCompensator_HighRes.Config = Config.VisionCompensatorConfig;
             autoFocuser_HighRes.Config = Config.AutoFocuserConfig_HighRes;
             autoFocuser_LowRes.Config = Config.AutoFocuserConfig_LowRes;
             scannerCompensator.Config = Config.ScannerCompensatorConfig;
-            //laserPitchMoveShotter.Config = Config.LaserPitchMoveShotterConfig;
             //jigAligner.Config = Config.JigAlignerConfig;
+
+            //visionCalibrator_LowRes.Config = Config.VisonCalibratorConfig_LowRes;
+            //visionCompensator_HighRes.Config = Config.VisionCompensatorConfig;
+            //laserPitchMoveShotter.Config = Config.LaserPitchMoveShotterConfig;
+
 
             base.UpdateConfigData();
         }
@@ -4419,6 +4422,7 @@ namespace QMC.Common.Modules
             jigAligner_LowRes.Recipe = Recipe.jigAlignerRecipe_LowRes;
             reticleAligner_HighRes.Recipe = Recipe.reticleAlignerRecipe_HighRes;
             reticleAligner_LowRes.Recipe = Recipe.reticleAlignerRecipe_LowRes;
+
 
             base.SetRecipeData(recipeData);
         }
@@ -8405,7 +8409,6 @@ namespace QMC.Common.Modules
 
                     m_nFindAlignMark_Step = (int)FindAlignMark_Step.Complete;
                     break;
-
 
                 case (int)FindAlignMark_Step.Complete:
 
@@ -22263,10 +22266,8 @@ namespace QMC.Common.Modules
 
         protected int AlarmPost(AlarmKey AlarmCode)
         {
-
             try
             {
-
                 Alarm alarm = GetAlarm((int)AlarmCode);
                 if (alarm.Grade.Equals("Error"))
                 {
@@ -22274,7 +22275,6 @@ namespace QMC.Common.Modules
                     this.m_SubWork_Start = false;
                     this.m_LaserDrillingWork_Start = false;
                     this.m_MainWork_Start = false;
-
                 }
                 MessageBox.Show(alarm.Cause);
                 AlarmManager.Instance.ShowAlarm(alarm);
@@ -23611,7 +23611,7 @@ namespace QMC.Common.Modules
         {
 
             var entity = new LwPolyline();
-
+            
             //  entity.Color2 = this.color;
 
             //  Outer Diameter : Spiral 시작 위치
@@ -27930,7 +27930,36 @@ namespace QMC.Common.Modules
         leftMostPoint = candidates.OrderBy(p => p.X).First();
         rightMostPoint = candidates.OrderByDescending(p => p.X).First();
         }
+        public static bool TryGetIntersection(PointD p1, PointD p2, PointD p3, PointD p4, out PointD intersection)
+        {
+            intersection = new PointD();
 
+            // 대각선 1: p1 -> p2
+            double a1 = p2.Y - p1.Y;
+            double b1 = p1.X - p2.X;
+            double c1 = a1 * p1.X + b1 * p1.Y;
+
+            // 대각선 2: p3 -> p4
+            double a2 = p4.Y - p3.Y;
+            double b2 = p3.X - p4.X;
+            double c2 = a2 * p3.X + b2 * p3.Y;
+
+            // 두 직선의 교점 계산
+            double determinant = a1 * b2 - a2 * b1;
+
+            if (Math.Abs(determinant) < 1e-10)
+            {
+                // 두 직선이 평행하거나 겹침
+                return false;
+            }
+
+            double x = (b2 * c1 - b1 * c2) / determinant;
+            double y = (a1 * c2 - a2 * c1) / determinant;
+
+            // 교점 설정
+            intersection = new PointD(x, y);
+            return true;
+        }
 
         public st4PointAlign_Result Calc_4Point_AlignData(st4PointPosition_Data[] ptDwgPos, st4PointPosition_Data[] ptInspectedPos)
         {
@@ -28022,6 +28051,20 @@ namespace QMC.Common.Modules
             m_st4PointAlign_Result.dRotationCenterX = ptDwgPos[0].ptFiducial_Center.X;
             m_st4PointAlign_Result.dRotationCenterY = ptDwgPos[0].ptFiducial_Center.Y;
 
+            PointD InspectionCenter; 
+            TryGetIntersection(
+                ptInspectedPos[0].ptFiducial_Center
+                , ptInspectedPos[2].ptFiducial_Center
+                , ptInspectedPos[1].ptFiducial_Center
+                , ptInspectedPos[4].ptFiducial_Center
+                , out InspectionCenter);
+            PointD DwgCenter;
+            TryGetIntersection(
+                ptDwgPos[0].ptFiducial_Center
+                , ptDwgPos[2].ptFiducial_Center
+                , ptDwgPos[1].ptFiducial_Center
+                , ptDwgPos[4].ptFiducial_Center
+                ,out DwgCenter);
 
             m_st4PointAlign_Result.dCenterOffsetX = ptInspectedPos[0].ptFiducial_Center.X - ptDwgPos[0].ptFiducial_Center.X;
             m_st4PointAlign_Result.dCenterOffsetY = ptInspectedPos[0].ptFiducial_Center.Y - ptDwgPos[0].ptFiducial_Center.Y; ;
