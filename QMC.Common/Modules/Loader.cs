@@ -9277,7 +9277,7 @@ namespace QMC.Common.Modules
                 {
                     //Console.WriteLine("LoaderWork is not started.");
                     //timer_ScannerCalibration.Stop(); // 타이머 중지
-                    return;
+                    return;  
                 }
 
                 // 현재 단계가 None이면 타이머 중지
