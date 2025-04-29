@@ -3005,6 +3005,10 @@ namespace QMC.Common.Modules
 
                 case (int)Unloader_Transfer_Step.WorkStagePickUp_Transfer_PickerVacuum_OnCheck:                                //  Transfer, Module Picker Vacuum On 확인 (and Work Stage Vacuum Off 확인)
 
+                    //  Stage Vacuum 을 Off 했는데, 진공이 동작하는 경우가 있어서, Off 코드 추가
+                    workStage.workStageParameter.DO_Stage_Vacuum(false);
+                    workStage.workStageParameter.DO_Stage_Blow(true);                   //  Blow On
+
                     if (((!Equipment.Machine_VacuumSensor_Enable && (TickCount_Elapsed((int)TickType.TICK_ULTR) > Equipment.Machine_SignalHoldTime)) ||
 
                         (Equipment.Machine_VacuumSensor_Enable && (unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Inner) ||
@@ -3016,6 +3020,10 @@ namespace QMC.Common.Modules
                         //!workStage.workStageParameter.DI_Stage_Vacuum_Check())
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage, Module Vacuum Off 완료");
+
+                        //  Stage Vacuum 을 Off 했는데, 진공이 동작하는 경우가 있어서, Off 코드 추가
+                        workStage.workStageParameter.DO_Stage_Vacuum(false);
+                        workStage.workStageParameter.DO_Stage_Blow(true);                   //  Blow On
 
                         //  Stage Vacuum Off 시, 진공레귤레이터도 함께 동작시켜야 한다. (안꺼질 때가 있어서 한번 더)
                         workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
@@ -3052,6 +3060,10 @@ namespace QMC.Common.Modules
                 case (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_ReadyPos2_1stStep:                            //  Transfer Z 축, 대기 위치로 이동 (1단계, 현재 위치에서 위로 10 mm)
                     Unloader_Transfer_Step_WorkStagePickUp_TransferZ_Move_ReadyPos2_1stStep(out m_dSpeed, out m_dAccDec);
 
+                    //  Stage Vacuum 을 Off 했는데, 진공이 동작하는 경우가 있어서, Off 코드 추가
+                    workStage.workStageParameter.DO_Stage_Vacuum(false);
+                    workStage.workStageParameter.DO_Stage_Blow(true);                   //  Blow On
+
                     m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_ReadyPos2_1stStep_DoneCheck;
                     break;
 
@@ -3062,6 +3074,8 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 1단계 이동 완료");
 
+                        //  Stage Vacuum 을 Off 했는데, 진공이 동작하는 경우가 있어서, Off 코드 추가
+                        workStage.workStageParameter.DO_Stage_Vacuum(false);
                         workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
 
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_ReadyPos2_2ndStep;

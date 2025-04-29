@@ -1985,6 +1985,7 @@ namespace QMC.Common.Hmi
 
                                             Scale.SetMousePoint(new Point(Camera.LatestImage.Header.Width / 2, Camera.LatestImage.Header.Height / 2));
 
+
                                         }
                                     }
                                     if (this.m_InputImage != null && Camera.LatestImage != null)

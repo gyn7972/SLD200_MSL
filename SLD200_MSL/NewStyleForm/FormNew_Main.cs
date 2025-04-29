@@ -23,13 +23,13 @@ using static QMC.Common.Modules.Loader;
 using static QMC.Common.Modules.Unloader;
 using Point = System.Drawing.Point;
 using System.Runtime.CompilerServices;
-using SLD200.NewStyleForm.NewSubForm;
 
 namespace SLD200_MSL
 {
     public partial class FormNew_Main : Form
     {
         public FormNew_Recipe RecipeForm;
+
         public ProgressForm m_FormProgress;                             //  장비 초기화 시 진행창 표시
         public bool m_bHomeProgress_Show;
 
