@@ -972,6 +972,11 @@ namespace SLD200_MSL
             }
         }
 
+        public bool IsNumeric(string input)
+        {
+            return double.TryParse(input, out _);
+        }
+
         private void button_Recipe_Apply_Click(object sender, EventArgs e)
         {
             //  Recipe 창의 데이터를 Equipment Recipe Set에 적용
@@ -996,46 +1001,70 @@ namespace SLD200_MSL
             }
 
             //  Layer Index 확인
-            if (m_strLayerName == "Hole1")
+
+            //  Hole 인지?
+            string m_strLayer = m_strLayerName.Length > 4 ? m_strLayerName.Substring(0, 4) : m_strLayerName;
+
+            if (m_strLayer == "Hole")                   //  Layer 가 Hole 이면?
             {
-                m_nLayerIndex = (int)LayerList.Hole1;
+                //  Hole 로 시작하는 Layer 이면, 뒤에 숫자를 가져온다.
+                string m_strHoleLayer_Number = m_strLayerName.Substring(4);
+
+                if (IsNumeric(m_strHoleLayer_Number))
+                {
+                    int m_nHoleLayer_Index = Convert.ToInt16(m_strHoleLayer_Number);
+                    if ((m_nHoleLayer_Index >= 1) && (m_nHoleLayer_Index <= 50))
+                    {
+                        m_nLayerIndex = m_nHoleLayer_Index - 1;             //  Hole Layer 의 Index 는 0부터 시작
+                    }
+                    else
+                    {
+                        m_nLayerIndex = (int)LayerList.Hole1;
+                    }
+                }
             }
-            else if (m_strLayerName == "Hole2")
-            {
-                m_nLayerIndex = (int)LayerList.Hole2;
-            }
-            else if (m_strLayerName == "Hole3")
-            {
-                m_nLayerIndex = (int)LayerList.Hole3;
-            }
-            else if (m_strLayerName == "Hole4")
-            {
-                m_nLayerIndex = (int)LayerList.Hole4;
-            }
-            else if (m_strLayerName == "Hole5")
-            {
-                m_nLayerIndex = (int)LayerList.Hole5;
-            }
-            else if (m_strLayerName == "Hole6")
-            {
-                m_nLayerIndex = (int)LayerList.Hole6;
-            }
-            else if (m_strLayerName == "Hole7")
-            {
-                m_nLayerIndex = (int)LayerList.Hole7;
-            }
-            else if (m_strLayerName == "Hole8")
-            {
-                m_nLayerIndex = (int)LayerList.Hole8;
-            }
-            else if (m_strLayerName == "Hole9")
-            {
-                m_nLayerIndex = (int)LayerList.Hole9;
-            }
-            else if (m_strLayerName == "Hole10")
-            {
-                m_nLayerIndex = (int)LayerList.Hole10;
-            }
+        #region 간소화
+            //if (m_strLayerName == "Hole1")
+            //{
+            //    m_nLayerIndex = (int)LayerList.Hole1;
+            //}
+            //else if (m_strLayerName == "Hole2")
+            //{
+            //    m_nLayerIndex = (int)LayerList.Hole2;
+            //}
+            //else if (m_strLayerName == "Hole3")
+            //{
+            //    m_nLayerIndex = (int)LayerList.Hole3;
+            //}
+            //else if (m_strLayerName == "Hole4")
+            //{
+            //    m_nLayerIndex = (int)LayerList.Hole4;
+            //}
+            //else if (m_strLayerName == "Hole5")
+            //{
+            //    m_nLayerIndex = (int)LayerList.Hole5;
+            //}
+            //else if (m_strLayerName == "Hole6")
+            //{
+            //    m_nLayerIndex = (int)LayerList.Hole6;
+            //}
+            //else if (m_strLayerName == "Hole7")
+            //{
+            //    m_nLayerIndex = (int)LayerList.Hole7;
+            //}
+            //else if (m_strLayerName == "Hole8")
+            //{
+            //    m_nLayerIndex = (int)LayerList.Hole8;
+            //}
+            //else if (m_strLayerName == "Hole9")
+            //{
+            //    m_nLayerIndex = (int)LayerList.Hole9;
+            //}
+            //else if (m_strLayerName == "Hole10")
+            //{
+            //    m_nLayerIndex = (int)LayerList.Hole10;
+            //}
+        #endregion
             else if (m_strLayerName == "Rect")
             {
                 m_nLayerIndex = (int)LayerList.Rect;
@@ -1332,47 +1361,67 @@ namespace SLD200_MSL
             //}
 
             int m_nIndex = -1;
-            
-            if (m_strLayerName == "Hole1")
+
+            //  Hole 인지?
+            string m_strLayer = m_strLayerName.Length > 4 ? m_strLayerName.Substring(0, 4) : m_strLayerName;
+
+            //if (m_strLayerName == "Hole1")
+            if (m_strLayer == "Hole")                   //  Layer 가 Hole 이면?
             {
-                m_nIndex = (int)LayerList.Hole1;
+                //  Hole 로 시작하는 Layer 이면, 뒤에 숫자를 가져온다.
+                string m_strHoleLayer_Number = m_strLayerName.Substring(4);
+
+                if (IsNumeric(m_strHoleLayer_Number))
+                {
+                    int m_nHoleLayer_Index = Convert.ToInt16(m_strHoleLayer_Number);
+                    if ((m_nHoleLayer_Index >= 1) && (m_nHoleLayer_Index <= 50))
+                    {
+                        m_nIndex = m_nHoleLayer_Index - 1;             //  Hole Layer 의 Index 는 0부터 시작
+                    }
+                    else
+                    {
+                        m_nIndex = (int)LayerList.Hole1;
+                    }
+                }
             }
-            else if (m_strLayerName == "Hole2")
-            {
-                m_nIndex = (int)LayerList.Hole2;
-            }
-            else if (m_strLayerName == "Hole3")
-            {
-                m_nIndex = (int)LayerList.Hole3;
-            }
-            else if (m_strLayerName == "Hole4")
-            {
-                m_nIndex = (int)LayerList.Hole4;
-            }
-            else if (m_strLayerName == "Hole5")
-            {
-                m_nIndex = (int)LayerList.Hole5;
-            }
-            else if (m_strLayerName == "Hole6")
-            {
-                m_nIndex = (int)LayerList.Hole6;
-            }
-            else if (m_strLayerName == "Hole7")
-            {
-                m_nIndex = (int)LayerList.Hole7;
-            }
-            else if (m_strLayerName == "Hole8")
-            {
-                m_nIndex = (int)LayerList.Hole8;
-            }
-            else if (m_strLayerName == "Hole9")
-            {
-                m_nIndex = (int)LayerList.Hole9;
-            }
-            else if (m_strLayerName == "Hole10")
-            {
-                m_nIndex = (int)LayerList.Hole10;
-            }
+            #region 간소화
+            //else if (m_strLayerName == "Hole2")
+            //{
+            //    m_nIndex = (int)LayerList.Hole2;
+            //}
+            //else if (m_strLayerName == "Hole3")
+            //{
+            //    m_nIndex = (int)LayerList.Hole3;
+            //}
+            //else if (m_strLayerName == "Hole4")
+            //{
+            //    m_nIndex = (int)LayerList.Hole4;
+            //}
+            //else if (m_strLayerName == "Hole5")
+            //{
+            //    m_nIndex = (int)LayerList.Hole5;
+            //}
+            //else if (m_strLayerName == "Hole6")
+            //{
+            //    m_nIndex = (int)LayerList.Hole6;
+            //}
+            //else if (m_strLayerName == "Hole7")
+            //{
+            //    m_nIndex = (int)LayerList.Hole7;
+            //}
+            //else if (m_strLayerName == "Hole8")
+            //{
+            //    m_nIndex = (int)LayerList.Hole8;
+            //}
+            //else if (m_strLayerName == "Hole9")
+            //{
+            //    m_nIndex = (int)LayerList.Hole9;
+            //}
+            //else if (m_strLayerName == "Hole10")
+            //{
+            //    m_nIndex = (int)LayerList.Hole10;
+            //}
+            #endregion
             else if (m_strLayerName == "Rect")
             {
                 m_nIndex = (int)LayerList.Rect;

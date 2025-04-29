@@ -291,6 +291,47 @@ namespace QMC.Common
             Hole8,
             Hole9,
             Hole10,
+            Hole11,
+            Hole12,
+            Hole13,
+            Hole14,
+            Hole15,
+            Hole16,
+            Hole17,
+            Hole18,
+            Hole19,
+            Hole20,
+            Hole21,
+            Hole22,
+            Hole23,
+            Hole24,
+            Hole25,
+            Hole26,
+            Hole27,
+            Hole28,
+            Hole29,
+            Hole30,
+            Hole31,
+            Hole32,
+            Hole33,
+            Hole34,
+            Hole35,
+            Hole36,
+            Hole37,
+            Hole38,
+            Hole39,
+            Hole40,
+            Hole41,
+            Hole42,
+            Hole43,
+            Hole44,
+            Hole45,
+            Hole46,
+            Hole47,
+            Hole48,
+            Hole49,
+            Hole50,                 //  설마 50개는 안 넘겠지
+
             Rect,
             Outline,
             Marking,
@@ -402,6 +443,12 @@ namespace QMC.Common
         public static int Machine_VacuumBlowTime { set; get; } = 500;                         //  Vacuum Signal Stabilization Time (ms)
         public static bool Machine_SocketAlignNG_toNgBox_Enable { set; get; } = true;           //  Vacuum Stabilization Time Enable
         public static int Machine_SocketAlignNG_toNgBox_ReferenceCount { set; get; } = 1;       //  Vacuum Signal Stabilization Time (ms)
+        public static bool Machine_LoaderTransfer_Vibration_Enable { set; get; } = false;       //  Loader Transfer Vibration Enable
+        public static double Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio { set; get; } = 2.0;        //  Vibration 시 가감속 속도 비율
+        public static int Machine_LoaderTransfer_NumberOfVibrations { set; get; } = 2;                      //  Vibration 횟수
+        public static bool Machine_LoaderStacker_LiftUp_Enable { set; get; } = true;                        //  Loader Stacker Lift Up Enable
+        public static int Machine_LoaderStacker_LiftUpStep { set; get; } = 7;                               //  Loader Stacker Lift Up Step
+        public static int Machine_LoaderStacker_LiftUp_StableTime { set; get; } = 1000;                     //  Loader Stacker Lift Up Stable Time
 
 
         //  Offset Distance
@@ -2662,7 +2709,18 @@ namespace QMC.Common
             Equipment.Machine_VacuumBlowTime_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "VacuumBlowTime", "500", temp, 255, strFIle);
             Equipment.Machine_VacuumBlowTime = Convert.ToInt16(temp.ToString());
-
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderTransfer_Vibration_Enable", "False", temp, 255, strFIle);
+            Equipment.Machine_LoaderTransfer_Vibration_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderTransfer_Vibration_AccDecSpeed_Ratio", "2.0", temp, 255, strFIle);
+            Equipment.Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio = Convert.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderTransfer_NumberOfVibrations", "2", temp, 255, strFIle);
+            Equipment.Machine_LoaderTransfer_NumberOfVibrations = Convert.ToInt16(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_Enable", "True", temp, 255, strFIle);
+            Equipment.Machine_LoaderStacker_LiftUp_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_Step", "7", temp, 255, strFIle);
+            Equipment.Machine_LoaderStacker_LiftUpStep = Convert.ToInt16(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_StableTime", "1000", temp, 255, strFIle);
+            Equipment.Machine_LoaderStacker_LiftUp_StableTime = Convert.ToInt16(temp.ToString());
 
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);

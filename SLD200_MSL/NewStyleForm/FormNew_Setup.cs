@@ -1242,6 +1242,14 @@ namespace SLD200_MSL
             textBox_Setup_Option_FiducialMarkJudgementRange.Text = Equipment.Machine_FiducialMarkJudgementRange.ToString();
             checkBox_Setup_Option_VacuumBlowTime_Enable.Checked = Equipment.Machine_VacuumBlowTime_Enable;
             textBox_Setup_Option_VacuumBlowTime.Text = Equipment.Machine_VacuumBlowTime.ToString();
+            checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Checked = Equipment.Machine_LoaderTransfer_Vibration_Enable;
+            textBox_Setup_Option_Vibration_AccDec_Ratio.Text = Equipment.Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio.ToString();
+            textBox_Setup_Option_NumberOfVibrations.Text = Equipment.Machine_LoaderTransfer_NumberOfVibrations.ToString();
+            checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Checked = Equipment.Machine_LoaderStacker_LiftUp_Enable;
+            textBox_Setup_Option_LoaderStacker_LiftUpStep.Text = Equipment.Machine_LoaderStacker_LiftUpStep.ToString();
+            textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Text = Equipment.Machine_LoaderStacker_LiftUp_StableTime.ToString();
+
+
 
             if (Equipment.Machine_FiducialImageSave_Always)
             {
@@ -1642,6 +1650,19 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Machine_Option", "VacuumBlowTime_Enable", checkBox_Setup_Option_VacuumBlowTime_Enable.Checked.ToString(), strFIle);
             Equipment.Machine_VacuumBlowTime = Equipment.ToInt(textBox_Setup_Option_VacuumBlowTime.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "VacuumBlowTime", textBox_Setup_Option_VacuumBlowTime.Text, strFIle);
+            Equipment.Machine_LoaderTransfer_Vibration_Enable = checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderTransfer_Vibration_Enable", checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Checked.ToString(), strFIle);
+            Equipment.Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio = Equipment.ToDouble(textBox_Setup_Option_Vibration_AccDec_Ratio.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderTransfer_Vibration_AccDecSpeed_Ratio", textBox_Setup_Option_Vibration_AccDec_Ratio.Text.ToString(), strFIle);
+            Equipment.Machine_LoaderTransfer_NumberOfVibrations = Equipment.ToInt(textBox_Setup_Option_NumberOfVibrations.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderTransfer_NumberOfVibrations", textBox_Setup_Option_NumberOfVibrations.Text.ToString(), strFIle);
+            Equipment.Machine_LoaderStacker_LiftUp_Enable = checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_Enable", checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Checked.ToString(), strFIle);
+            Equipment.Machine_LoaderStacker_LiftUpStep = Equipment.ToInt(textBox_Setup_Option_LoaderStacker_LiftUpStep.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_Step", textBox_Setup_Option_LoaderStacker_LiftUpStep.Text.ToString(), strFIle);
+            Equipment.Machine_LoaderStacker_LiftUp_StableTime = Equipment.ToInt(textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_StableTime", textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Text.ToString(), strFIle);
+
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);
@@ -2141,6 +2162,32 @@ namespace SLD200_MSL
             {
                 checkBox_Setup_Option_VacuumBlowTime_Enable.Checked = false;
                 textBox_Setup_Option_VacuumBlowTime.Enabled = false;
+            }
+
+            if (Equipment.Machine_LoaderTransfer_Vibration_Enable)
+            {
+                checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Checked = true;
+                textBox_Setup_Option_Vibration_AccDec_Ratio.Enabled = true;
+                textBox_Setup_Option_NumberOfVibrations.Enabled = true;
+            }
+            else
+            {
+                checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Checked = false;
+                textBox_Setup_Option_Vibration_AccDec_Ratio.Enabled = false;
+                textBox_Setup_Option_NumberOfVibrations.Enabled = false;
+            }
+
+            if (Equipment.Machine_LoaderStacker_LiftUp_Enable)
+            {
+                checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Checked = true;
+                textBox_Setup_Option_LoaderStacker_LiftUpStep.Enabled = true;
+                textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Enabled = true;
+            }
+            else
+            {
+                checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Checked = false;
+                textBox_Setup_Option_LoaderStacker_LiftUpStep.Enabled = false;
+                textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Enabled = false;
             }
         }
 
@@ -3797,6 +3844,38 @@ namespace SLD200_MSL
             {
                 Equipment.Machine_VacuumBlowTime_Enable = false;
                 textBox_Setup_Option_VacuumBlowTime.Enabled = false;
+            }
+        }
+
+        private void checkBox_Setup_Option_Loader_Transfer_Vibration_Enable_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Checked)
+            {
+                Equipment.Machine_LoaderTransfer_Vibration_Enable = true;
+                textBox_Setup_Option_Vibration_AccDec_Ratio.Enabled = true;
+                textBox_Setup_Option_NumberOfVibrations.Enabled = true;
+            }
+            else
+            {
+                Equipment.Machine_LoaderTransfer_Vibration_Enable = false;
+                textBox_Setup_Option_Vibration_AccDec_Ratio.Enabled = false; 
+                textBox_Setup_Option_NumberOfVibrations.Enabled = false;
+            }
+        }
+
+        private void checkBox_Setup_Option_LoaderStackerLiftUp_Enable_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Checked)
+            {
+                Equipment.Machine_LoaderStacker_LiftUp_Enable = true;
+                textBox_Setup_Option_LoaderStacker_LiftUpStep.Enabled = true;
+                textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Enabled = true;
+            }
+            else
+            {
+                Equipment.Machine_LoaderStacker_LiftUp_Enable = false;
+                textBox_Setup_Option_LoaderStacker_LiftUpStep.Enabled = false;
+                textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Enabled = false;
             }
         }
     }
