@@ -787,6 +787,127 @@ namespace SLD200_MSL
             return m_bRet;
         }
 
+        public bool Recipe_Data_Load_Refactory(string strRecipeFile)
+        {
+            if (string.IsNullOrWhiteSpace(strRecipeFile) || !File.Exists(strRecipeFile))
+                return false;
+
+            var iniLines = File.ReadAllLines(strRecipeFile);
+            string currentSection = "";
+            var sectionData = new Dictionary<string, Dictionary<string, string>>();
+
+            foreach (var rawLine in iniLines)
+            {
+                string line = rawLine.Trim();
+
+                if (string.IsNullOrWhiteSpace(line) || line.StartsWith(";"))
+                    continue;
+
+                if (line.StartsWith("[") && line.EndsWith("]"))
+                {
+                    currentSection = line.Substring(1, line.Length - 2);
+                    if (!sectionData.ContainsKey(currentSection))
+                        sectionData[currentSection] = new Dictionary<string, string>();
+                }
+                else if (currentSection != "")
+                {
+                    var kvp = line.Split(new[] { '=' }, 2);
+                    if (kvp.Length == 2)
+                    {
+                        sectionData[currentSection][kvp[0].Trim()] = kvp[1].Trim();
+                    }
+                }
+            }
+
+            int layerCount = (int)System.Enum.GetValues(typeof(LayerList)).Length;
+            for (int i = 0; i < layerCount; i++)
+            {
+                string section = $"Layer_{i}";
+
+                if (!sectionData.ContainsKey(section))
+                    continue;
+
+                var data = sectionData[section];
+
+                Equipment.stLayerRecipeSet[i].DrawingFile = ReadValue(data, "Drawing_File_Name", "");
+
+                Equipment.stLayerRecipeSet[i].LaserParam_PulseWidth = ReadInt(data, "Pulse_Width", 0);
+                Equipment.stLayerRecipeSet[i].LaserParam_PulsePeriod = ReadInt(data, "Pulse_Period", 0);
+                Equipment.stLayerRecipeSet[i].LaserParam_Frequency = ReadInt(data, "Frequency", 0);
+                Equipment.stLayerRecipeSet[i].LaserParam_DutyCycle = ReadDouble(data, "Duty_Cycle", 0.0);
+
+                Equipment.stLayerRecipeSet[i].LaserParam_TriggerMode_External = ReadBool(data, "Trigger_Mode_External", false);
+                Equipment.stLayerRecipeSet[i].ProcessPriority_P2P = ReadBool(data, "P2P", false);
+
+                Equipment.stLayerRecipeSet[i].Miscellaneous_ReferenceLayer = ReadValue(data, "Reference_Layer", "");
+                Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance = ReadDouble(data, "Defocusing_Distance", 0.0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing = ReadDouble(data, "Resizing", 0.0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision = ReadInt(data, "HoleDrilling_StartPosDivision", 0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize = ReadDouble(data, "GroupSplitSize", 0.0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerDrillingSpeed = ReadDouble(data, "ScannerDrillingSpeed", 10.0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerJumpSpeed = ReadDouble(data, "ScannerJumpSpeed", 100.0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_LaserOnDelay = ReadInt(data, "LaserOnDelay", 0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_LaserOffDelay = ReadInt(data, "LaserOffDelay", 0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_MarkDelay = ReadInt(data, "MarkDelay", 0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_JumpDelay = ReadInt(data, "JumpDelay", 0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_PolygonDelay = ReadInt(data, "PolygonDelay", 0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_Drilling_Power = ReadDouble(data, "DrillingPower", 0.0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_P2PDistance = ReadDouble(data, "P2PDistance", 0.0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetition = (short)ReadInt(data, "DrillingRepetation", 0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle = (short)ReadInt(data, "DrillingRepetitionBundle", 50);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_RotationAngleArc = ReadDouble(data, "RotationAngleArc", 360.0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_MaskIndex = ReadInt(data, "MaskIndex", 0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_BETPositionIndex = ReadInt(data, "BETPositionIndex", 0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = ReadInt(data, "HoleProcessingType", 0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = ReadInt(data, "FiducialAlignType", 0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialMarkType = ReadInt(data, "FiducialMarkType", 0);
+
+                Equipment.stLayerRecipeSet[i].ProcessOption_SocketAlign_Use = ReadBool(data, "Socket_Align_Use", false);
+                Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheck_Use = ReadBool(data, "Socket_HeightCheck_Use", false);
+
+                Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Width = ReadDouble(data, "Module_Width", 125.0);
+                Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Height = ReadDouble(data, "Module_Height", 120.0);
+                Equipment.stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness = ReadDouble(data, "Module_SiliconThickness", 0.0);
+
+                Equipment.stLayerRecipeSet[i].SpiralParam_OuterDiameter = ReadDouble(data, "Spiral_OuterDiameter", 0.0);
+                Equipment.stLayerRecipeSet[i].SpiralParam_InnerDiameter = ReadDouble(data, "Spiral_InnerDiameter", 0.0);
+                Equipment.stLayerRecipeSet[i].SpiralParam_Revolutions = ReadInt(data, "Spiral_Revolutions", 10);
+                Equipment.stLayerRecipeSet[i].SpiralParam_AngleFactor = ReadDouble(data, "Spiral_AngleFactor", 10.0);
+
+                Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Center = ReadBool(data, "MAlignerVacuumUse_Center", true);
+                Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Inner = ReadBool(data, "MAlignerVacuumUse_Inner", false);
+                Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Outer = ReadBool(data, "MAlignerVacuumUse_Outer", false);
+
+                Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed = ReadInt(data, "FineCam_Red", 0);
+                Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR = ReadInt(data, "FineCam_IR", 0);
+                Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR = ReadInt(data, "CoarseCam_IR", 0);
+
+                Equipment.stLayerRecipeSet[i].DustCollectorRemoteMode_Use = ReadBool(data, "DustCollector_RemoteMode_Use", false);
+                Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper = ReadDouble(data, "DustCollector_Frequency_Upper", 20.0);
+                Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower = ReadDouble(data, "DustCollector_Frequency_Lower", 20.0);
+
+                Equipment.stLayerRecipeSet[i].PreAlignPos1.X = ReadDouble(data, "PreAlignPosX1", 0.0);
+                Equipment.stLayerRecipeSet[i].PreAlignPos1.Y = ReadDouble(data, "PreAlignPosY1", 0.0);
+                Equipment.stLayerRecipeSet[i].PreAlignPos2.X = ReadDouble(data, "PreAlignPosX2", 0.0);
+                Equipment.stLayerRecipeSet[i].PreAlignPos2.Y = ReadDouble(data, "PreAlignPosY2", 0.0);
+            }
+
+            return true;
+        }
+
+        private string ReadValue(Dictionary<string, string> data, string key, string defaultValue)
+    => data.TryGetValue(key, out var value) ? value : defaultValue;
+
+        private int ReadInt(Dictionary<string, string> data, string key, int defaultValue)
+            => int.TryParse(ReadValue(data, key, defaultValue.ToString()), out var result) ? result : defaultValue;
+
+        private double ReadDouble(Dictionary<string, string> data, string key, double defaultValue)
+            => double.TryParse(ReadValue(data, key, defaultValue.ToString()), out var result) ? result : defaultValue;
+
+        private bool ReadBool(Dictionary<string, string> data, string key, bool defaultValue)
+            => bool.TryParse(ReadValue(data, key, defaultValue.ToString()), out var result) ? result : defaultValue;
+
+        //Save
         public void Recipe_Data_Save(string m_strRecipeFile)
         {
             string strTemp = "";
@@ -920,6 +1041,138 @@ namespace SLD200_MSL
 
             }
         }
+
+        public void Recipe_Data_Save_Refactory(string strRecipeFile)
+        {
+            if (string.IsNullOrWhiteSpace(strRecipeFile))
+                return;
+
+            if (!File.Exists(strRecipeFile))
+            {
+                // 파일이 없으면 먼저 생성만 하고 리턴
+                using (FileStream fs = File.Create(strRecipeFile)) { }
+
+                string strTemp = string.Format("{0} 파일을 생성하였습니다. 다시 시도하십시오.", System.IO.Path.GetFileName(strRecipeFile));
+                MessageBox.Show(strTemp, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var iniData = new Dictionary<string, Dictionary<string, string>>();
+            int layerCount = (int)System.Enum.GetValues(typeof(LayerList)).Length;
+
+            for (int i = 0; i < layerCount; i++)
+            {
+                string section = $"Layer_{i}";
+                var layerDict = new Dictionary<string, string>();
+
+                layerDict["Drawing_File_Name"] = Equipment.stLayerRecipeSet[i].DrawingFile;
+                layerDict["Pulse_Width"] = Equipment.stLayerRecipeSet[i].LaserParam_PulseWidth.ToString();
+                layerDict["Pulse_Period"] = Equipment.stLayerRecipeSet[i].LaserParam_PulsePeriod.ToString();
+                layerDict["Frequency"] = Equipment.stLayerRecipeSet[i].LaserParam_Frequency.ToString();
+                layerDict["Duty_Cycle"] = Equipment.stLayerRecipeSet[i].LaserParam_DutyCycle.ToString();
+                layerDict["Trigger_Mode_External"] = Equipment.stLayerRecipeSet[i].LaserParam_TriggerMode_External.ToString();
+                layerDict["P2P"] = Equipment.stLayerRecipeSet[i].ProcessPriority_P2P.ToString();
+
+                layerDict["Reference_Layer"] = Equipment.stLayerRecipeSet[i].Miscellaneous_ReferenceLayer;
+                layerDict["Defocusing_Distance"] = Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance.ToString();
+                layerDict["Resizing"] = Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing.ToString();
+                layerDict["HoleDrilling_StartPosDivision"] = Equipment.stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision.ToString();
+                layerDict["GroupSplitSize"] = Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize.ToString();
+                layerDict["ScannerDrillingSpeed"] = Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerDrillingSpeed.ToString();
+                layerDict["ScannerJumpSpeed"] = Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerJumpSpeed.ToString();
+                layerDict["LaserOnDelay"] = Equipment.stLayerRecipeSet[i].Miscellaneous_LaserOnDelay.ToString();
+                layerDict["LaserOffDelay"] = Equipment.stLayerRecipeSet[i].Miscellaneous_LaserOffDelay.ToString();
+                layerDict["MarkDelay"] = Equipment.stLayerRecipeSet[i].Miscellaneous_MarkDelay.ToString();
+                layerDict["JumpDelay"] = Equipment.stLayerRecipeSet[i].Miscellaneous_JumpDelay.ToString();
+                layerDict["PolygonDelay"] = Equipment.stLayerRecipeSet[i].Miscellaneous_PolygonDelay.ToString();
+                layerDict["DrillingPower"] = Equipment.stLayerRecipeSet[i].Miscellaneous_Drilling_Power.ToString();
+                layerDict["P2PDistance"] = Equipment.stLayerRecipeSet[i].Miscellaneous_P2PDistance.ToString();
+                layerDict["DrillingRepetation"] = Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetition.ToString();
+                layerDict["DrillingRepetitionBundle"] = Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle.ToString();
+                layerDict["RotationAngleArc"] = Equipment.stLayerRecipeSet[i].Miscellaneous_RotationAngleArc.ToString();
+                layerDict["MaskIndex"] = Equipment.stLayerRecipeSet[i].Miscellaneous_MaskIndex.ToString();
+                layerDict["BETPositionIndex"] = Equipment.stLayerRecipeSet[i].Miscellaneous_BETPositionIndex.ToString();
+                layerDict["HoleProcessingType"] = Equipment.stLayerRecipeSet[i].Miscellaneous_HoleProcessingType.ToString();
+                layerDict["FiducialAlignType"] = Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialAlignType.ToString();
+                layerDict["FiducialMarkType"] = Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialMarkType.ToString();
+
+                layerDict["Socket_Align_Use"] = Equipment.stLayerRecipeSet[i].ProcessOption_SocketAlign_Use.ToString();
+                layerDict["Socket_HeightCheck_Use"] = Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheck_Use.ToString();
+
+                layerDict["Module_Width"] = Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Width.ToString();
+                layerDict["Module_Height"] = Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Height.ToString();
+                layerDict["Module_SiliconThickness"] = Equipment.stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness.ToString();
+
+                layerDict["Spiral_OuterDiameter"] = Equipment.stLayerRecipeSet[i].SpiralParam_OuterDiameter.ToString();
+                layerDict["Spiral_InnerDiameter"] = Equipment.stLayerRecipeSet[i].SpiralParam_InnerDiameter.ToString();
+                layerDict["Spiral_Revolutions"] = Equipment.stLayerRecipeSet[i].SpiralParam_Revolutions.ToString();
+                layerDict["Spiral_AngleFactor"] = Equipment.stLayerRecipeSet[i].SpiralParam_AngleFactor.ToString();
+
+                layerDict["MAlignerVacuumUse_Center"] = Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Center.ToString();
+                layerDict["MAlignerVacuumUse_Inner"] = Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Inner.ToString();
+                layerDict["MAlignerVacuumUse_Outer"] = Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Outer.ToString();
+
+                layerDict["FineCam_Red"] = Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed.ToString();
+                layerDict["FineCam_IR"] = Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR.ToString();
+                layerDict["CoarseCam_IR"] = Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR.ToString();
+
+                layerDict["DustCollector_RemoteMode_Use"] = Equipment.stLayerRecipeSet[i].DustCollectorRemoteMode_Use.ToString();
+                layerDict["DustCollector_Frequency_Upper"] = Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper.ToString();
+                layerDict["DustCollector_Frequency_Lower"] = Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower.ToString();
+
+                layerDict["PreAlignPosX1"] = Equipment.stLayerRecipeSet[i].PreAlignPos1.X.ToString();
+                layerDict["PreAlignPosY1"] = Equipment.stLayerRecipeSet[i].PreAlignPos1.Y.ToString();
+                layerDict["PreAlignPosX2"] = Equipment.stLayerRecipeSet[i].PreAlignPos2.X.ToString();
+                layerDict["PreAlignPosY2"] = Equipment.stLayerRecipeSet[i].PreAlignPos2.Y.ToString();
+
+                iniData[section] = layerDict;
+            }
+
+            SaveIniFile_Fast(strRecipeFile, iniData);
+        }
+        private void SaveIniFile_Fast(string filePath, Dictionary<string, Dictionary<string, string>> iniData)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                return;
+
+            // 1. 백업용 폴더 준비
+            string folder = Path.GetDirectoryName(filePath);
+            string fileNameWithoutExt = Path.GetFileNameWithoutExtension(filePath);
+            string backupFolder = Path.Combine(folder, "Backup");
+
+            if (!Directory.Exists(backupFolder))
+            {
+                Directory.CreateDirectory(backupFolder);
+            }
+
+            // 2. 백업 파일 이름 만들기
+            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss"); // 년월일_시분초
+            string backupFilePath = Path.Combine(backupFolder, $"{fileNameWithoutExt}_{timestamp}.ini");
+
+            // 3. 저장할 내용 만들기
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var section in iniData)
+            {
+                sb.AppendLine($"[{section.Key}]");
+
+                foreach (var kvp in section.Value)
+                {
+                    sb.AppendLine($"{kvp.Key}={kvp.Value}");
+                }
+
+                sb.AppendLine(); // 섹션 간 줄 띄움
+            }
+
+            string content = sb.ToString();
+
+            // 4. 먼저 백업 파일 저장
+            File.WriteAllText(backupFilePath, content, Encoding.UTF8);
+
+            // 5. 정상 파일 저장
+            File.WriteAllText(filePath, content, Encoding.UTF8);
+            //File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
+        }
         #endregion
 
 
@@ -961,11 +1214,12 @@ namespace SLD200_MSL
                     using (FileStream fs = File.Create(fileName))
                     {
                         // 파일만 생성하고 바로 닫음
-                     }
+                    }
                 }
 
                 //  Recipe Data 저장
-                Recipe_Data_Save(fileName);
+                //Recipe_Data_Save(fileName);
+                Recipe_Data_Save_Refactory(fileName);
                 Equipment.Current_Recipe = fileName;
 
                 MessageBox.Show("Recipe Data를 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1206,7 +1460,8 @@ namespace SLD200_MSL
                 fileName = openFileDialog.FileName;
 
                 //  Recipe Data 로드
-                Recipe_Data_Load(fileName);
+                //Recipe_Data_Load(fileName);
+                Recipe_Data_Load_Refactory(fileName);
                 Equipment.Current_Recipe = fileName;
 
 
@@ -1465,7 +1720,7 @@ namespace SLD200_MSL
             }
             else
             {
-                radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.Checked = true; ;
+                radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod.Checked = true; 
             }
 
             //  Miscellaneous
@@ -1538,7 +1793,8 @@ namespace SLD200_MSL
             fileName = m_strRecipeFile;
 
             //  Recipe Data 로드
-            Recipe_Data_Load(fileName);
+            //Recipe_Data_Load(fileName);
+            Recipe_Data_Load_Refactory(fileName);
             Equipment.Current_Recipe = fileName;
 
 
