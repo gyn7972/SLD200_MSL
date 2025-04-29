@@ -1431,6 +1431,12 @@ namespace SLD200_MSL
             checkBox_Main_Loader_LPort_Pause.Checked = false;
             checkBox_Main_Loader_RPort_Pause.Checked = false;
 
+
+            //  Loader L, R Port 바로 시작
+            loader.m_bStacker0_Run_byUser = true;
+            loader.m_bStacker1_Run_byUser = true;
+
+
             //  선택 가공 인덱스를 전체 가공으로 변경
             workStage.m_nSelectedSocket_Index = -1;
 
@@ -1481,6 +1487,9 @@ namespace SLD200_MSL
             //return;
             
             //  자동 운전 중지
+
+            Log.Write("SLD-200", Equipment.User_Name, "Button Click", "자동 운전 Stop 버튼");
+
             var mb = new MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 중지하시겠습니까?"))
                 return;

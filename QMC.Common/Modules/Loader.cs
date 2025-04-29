@@ -7526,7 +7526,7 @@ namespace QMC.Common.Modules
 
             workStage.workStageParameter.DO_Stage_Vacuum(true);
             workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
-            workStage.DustCollector_SetFrequence(20);
+            workStage.DustCollector_SetFrequence(Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);
             Thread.Sleep(1000);
             workStage.DustCollector_On((int)nDustCollector.DustCollector_Lower);
 

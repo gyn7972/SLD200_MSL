@@ -450,6 +450,7 @@ namespace QMC.Common
         public static bool Machine_LoaderStacker_LiftUp_Enable { set; get; } = true;                        //  Loader Stacker Lift Up Enable
         public static int Machine_LoaderStacker_LiftUpStep { set; get; } = 7;                               //  Loader Stacker Lift Up Step
         public static int Machine_LoaderStacker_LiftUp_StableTime { set; get; } = 1000;                     //  Loader Stacker Lift Up Stable Time
+        public static double Machine_WorkStage_ModuleAbsorption_JudgeLevel { set; get; } = -40.0;           //  Work Stage 에 Module Loading 시, 전자식 진공 레귤레이터 판정값
 
 
         //  Offset Distance
@@ -2724,6 +2725,8 @@ namespace QMC.Common
             Equipment.Machine_LoaderStacker_LiftUpStep = Convert.ToInt16(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_StableTime", "1000", temp, 255, strFIle);
             Equipment.Machine_LoaderStacker_LiftUp_StableTime = Convert.ToInt16(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "WorkStage_ModuleAbsorption_JudgeLevel", "-40.0", temp, 255, strFIle);
+            Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel = Convert.ToDouble(temp.ToString());                        
 
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);

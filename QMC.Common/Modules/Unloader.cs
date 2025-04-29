@@ -62,6 +62,15 @@ namespace QMC.Common.Modules
         public enum AlarmKey
         {
             FirstAlarm = 5000,
+
+            Drilling_NotCompleted,                          //  드릴링 가공 진행중입니다.
+            UL_Transfer_Picker_Module_Exist,                //  언로더 트랜스퍼 Picker 에 모듈이 존재합니다.
+            WorkStage_Module_NotExist,                      //  언로더 WorkStage 에 모듈이 존재하지 않습니다.
+            UL_Transfer_Picker_Module_NotExist,             //  언로더 트랜스퍼 Picker 에 모듈이 없습니다.
+            UL_Stacker0_Running,                            //  언로더 스태커0 가동중입니다.
+            UL_Stacker1_Running,                            //  언로더 스태커1 가동중입니다.
+            UL_NGPort_Full,                                 //  언로더 NG 포트가 가득 차 있습니다.
+
             UL_Staker0_Too_Many_Module,            
             UL_Staker0_Z_Full_Sensor_On_Fail,
             UL_Staker0_Z_Full_Sensor_On_Z_Move_Fail,
@@ -244,6 +253,55 @@ namespace QMC.Common.Modules
             alarm.Source = Name;
             alarm.Grade = "Error";
 
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Drilling_NotCompleted;
+            alarm.Title = "Unloader Transfer";
+            alarm.Cause = "드릴링 가공 진행중입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.UL_Transfer_Picker_Module_Exist;
+            alarm.Title = "Unloader Transfer";
+            alarm.Cause = "언로더 트랜스퍼 Picker 에 모듈이 존재합니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.WorkStage_Module_NotExist;
+            alarm.Title = "Unloader Transfer";
+            alarm.Cause = "WorkStage 에 Unloading 할 모듈이 존재하지 않습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.UL_Transfer_Picker_Module_NotExist;
+            alarm.Title = "Unloader Transfer";
+            alarm.Cause = "언로더 트랜스퍼 Picker 에 모듈이 없습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.UL_Stacker0_Running;
+            alarm.Title = "Unloader Transfer";
+            alarm.Cause = "언로더 스태커0 가동중입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.UL_Stacker1_Running;
+            alarm.Title = "Unloader Transfer";
+            alarm.Cause = "언로더 스태커1 가동중입니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.UL_NGPort_Full;
+            alarm.Title = "Unloader Transfer";
+            alarm.Cause = "언로더 NG 포트가 가득 차 있습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
         }
         public override void SetModuleScale(double dScaleX, double dScaleY, double dXaxisT, double dYaxisT, bool bInvertedX, bool bInvertedY)
         {
@@ -2741,30 +2799,59 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Laser Drilling 중.");
 
                         //  Out.
-                        break;
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Unloader = true;
+                        Unloader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
+                        return AlarmPost(AlarmKey.Drilling_NotCompleted);
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
                     }
                     else if (unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Inner) ||
                             unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Outer))
                     {
-                        break;
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "TR Picker 에 자재 있음.");
 
                         //  Out.
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Unloader = true;
+                        Unloader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
+                        return AlarmPost(AlarmKey.UL_Transfer_Picker_Module_Exist);
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
                     }
                     else if (Equipment.Machine_VacuumSensor_Enable && !workStage.workStageParameter.DI_Stage_Vacuum_Check() && 
                         !m_bUnloader_WorkStage_PickUp_Retry)                                                                        //  Work Stage 에서 Module Pick Up 실패 시 재시도 할 경우, Stage Vacuum 이 파기된 상태이므로 체크하지 않는다.
                     {
-                        break;
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage 에 자재 없음.");
 
                         //  Out.
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Unloader = true;
+                        Unloader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
+                        return AlarmPost(AlarmKey.WorkStage_Module_NotExist);
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
                     }
                     else
                     {
-
                         //Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage Module Pick Up 조건 OK");
 
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_ReadyPos;
@@ -3221,6 +3308,17 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Picker 에 자재가 감지되지 않음.");
 
                         //  Out.
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Unloader = true;
+                        Unloader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
+                        return AlarmPost(AlarmKey.UL_Transfer_Picker_Module_NotExist);
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
                     }
                     else if (m_nStacker0_ModulePutdownWaitingPos_Step > (int)StackerModulePutdownWaitingPos_Step.None)                                                       //  Stacker0 이 동작중
@@ -3228,6 +3326,17 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 이 동작중이므로 Module PutDown 동작 중지.");
 
                         //  Out. (Stacker 동작이 완료되면 진행하도록 대기할 것인지는 테스트 하면서 결정하기로 함)
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Unloader = true;
+                        Unloader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
+                        return AlarmPost(AlarmKey.UL_Stacker0_Running);
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
                     }
                     else
@@ -3624,6 +3733,17 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Picker 에 자재가 감지되지 않음.");
 
                         //  Out.
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Unloader = true;
+                        Unloader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
+                        return AlarmPost(AlarmKey.UL_Transfer_Picker_Module_NotExist);
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
                     }
                     else if (m_nStacker1_ModulePutdownWaitingPos_Step > (int)StackerModulePutdownWaitingPos_Step.None)                                                       //  Stacker1 이 동작중
@@ -3631,6 +3751,17 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker1 이 동작중이므로 Module PutDown 동작 중지.");
 
                         //  Out. (Stacker 동작이 완료되면 진행하도록 대기할 것인지는 테스트 하면서 결정하기로 함)
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Unloader = true;
+                        Unloader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
+                        return AlarmPost(AlarmKey.UL_Stacker1_Running);
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
                     }
                     else
@@ -4009,6 +4140,17 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Picker 에 Module 이 감지되지 않음.");
 
                         //  Out.
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Unloader = true;
+                        Unloader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
+                        return AlarmPost(AlarmKey.UL_Transfer_Picker_Module_NotExist);
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
                     }
                     else if (!unloaderParameter.DI_Unloader_NG_Stacker_FullCheck())              //  감지 시 Off
@@ -4016,6 +4158,17 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "NG-Port Full.");
 
                         //  Out.
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Unloader = true;
+                        Unloader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
+                        return AlarmPost(AlarmKey.UL_Transfer_Picker_Module_NotExist);
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
                     }
                     else

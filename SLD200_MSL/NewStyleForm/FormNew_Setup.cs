@@ -1249,8 +1249,8 @@ namespace SLD200_MSL
             checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Checked = Equipment.Machine_LoaderStacker_LiftUp_Enable;
             textBox_Setup_Option_LoaderStacker_LiftUpStep.Text = Equipment.Machine_LoaderStacker_LiftUpStep.ToString();
             textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Text = Equipment.Machine_LoaderStacker_LiftUp_StableTime.ToString();
-
-
+            textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Text = Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel.ToString();
+            
 
             if (Equipment.Machine_FiducialImageSave_Always)
             {
@@ -1665,7 +1665,8 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_Step", textBox_Setup_Option_LoaderStacker_LiftUpStep.Text.ToString(), strFIle);
             Equipment.Machine_LoaderStacker_LiftUp_StableTime = Equipment.ToInt(textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_StableTime", textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Text.ToString(), strFIle);
-
+            Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel = Equipment.ToDouble(textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "WorkStage_ModuleAbsorption_JudgeLevel", textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Text.ToString(), strFIle);
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);

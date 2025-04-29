@@ -6595,6 +6595,7 @@ namespace SLD200_MSL
                 double m_dModuleWidth = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width;
                 double m_dModuleHeight = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height;
 
+                //  Recipe 의 모듈 사이즈가 없으면 Seq. Test 에서 입력한 값을 사용
                 if ((m_dModuleWidth <= 0.0) || (m_dModuleHeight <= 0.0))
                 {
                     m_dModuleWidth = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
@@ -7267,6 +7268,8 @@ namespace SLD200_MSL
         {
             //  Module Mechanical Alignment Cycle
 
+            string m_strTemp = "";
+
             double m_dModuleWidth = 0.0;
             double m_dModuleHeight = 0.0;
 
@@ -7282,8 +7285,22 @@ namespace SLD200_MSL
 
             if ((m_dModuleWidth <= 0.0) || (m_dModuleHeight <= 0.0))
             {
+                m_strTemp = string.Format("Module Size 가 설정되어 있지 않습니다.\r\nRecipe 에 설정된 Module Size 로 진행하시겠습니까?\r\n\r\n[Width: {0:0.000}, Height: {1:0.000}]",
+                                        Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width, Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height);
+
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", m_strTemp))
+                    return;
+
+                m_dModuleWidth = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width;
+                m_dModuleHeight = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height;
+            }
+
+            //  모듈 사이즈가 없으면 경고 메시지 출력
+            if ((m_dModuleWidth <= 0.0) || (m_dModuleHeight <= 0.0))
+            {
                 var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Warning !", "Module Size 가 설정되어 있지 않습니다.");
+                mb1.ShowDialog("Information !", "Mechanical Align 을 위한 Module Size 를 입력해야 합니다.");
                 return;
             }
 

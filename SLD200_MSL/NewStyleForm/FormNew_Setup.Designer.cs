@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPage_Setup_Communication = new System.Windows.Forms.TabPage();
             this.groupBox86 = new System.Windows.Forms.GroupBox();
             this.button_Test_SocketConnect = new System.Windows.Forms.Button();
@@ -418,6 +418,9 @@
             this.label64 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition = new System.Windows.Forms.TextBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.label72 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Option_EPRO_ModuleAbsorptionLevel = new System.Windows.Forms.TextBox();
+            this.label71 = new System.Windows.Forms.Label();
             this.label70 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_VibrationMoveDistance = new System.Windows.Forms.TextBox();
             this.label69 = new System.Windows.Forms.Label();
@@ -517,7 +520,6 @@
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
-            this.label71 = new System.Windows.Forms.Label();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -1188,14 +1190,14 @@
             this.Output_Active,
             this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn2});
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView3.Location = new System.Drawing.Point(10, 28);
             this.dataGridView3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView3.Name = "dataGridView3";
@@ -1248,14 +1250,14 @@
             this.Active,
             this.Column4,
             this.Column5});
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView2.Location = new System.Drawing.Point(10, 28);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView2.Name = "dataGridView2";
@@ -5390,6 +5392,8 @@
             // 
             // groupBox13
             // 
+            this.groupBox13.Controls.Add(this.label72);
+            this.groupBox13.Controls.Add(this.textBox_Setup_Option_EPRO_ModuleAbsorptionLevel);
             this.groupBox13.Controls.Add(this.label71);
             this.groupBox13.Controls.Add(this.label70);
             this.groupBox13.Controls.Add(this.textBox_Setup_Option_VibrationMoveDistance);
@@ -5443,6 +5447,38 @@
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " Options ";
             // 
+            // label72
+            // 
+            this.label72.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label72.Location = new System.Drawing.Point(739, 138);
+            this.label72.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label72.Name = "label72";
+            this.label72.Size = new System.Drawing.Size(207, 33);
+            this.label72.TabIndex = 105;
+            this.label72.Text = "work stage module adsorption judgment value (EPRO, kPa) :";
+            this.label72.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Option_EPRO_ModuleAbsorptionLevel
+            // 
+            this.textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Location = new System.Drawing.Point(949, 139);
+            this.textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Name = "textBox_Setup_Option_EPRO_ModuleAbsorptionLevel";
+            this.textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Size = new System.Drawing.Size(50, 24);
+            this.textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.TabIndex = 106;
+            this.textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Text = "-40";
+            // 
+            // label71
+            // 
+            this.label71.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label71.Location = new System.Drawing.Point(321, 400);
+            this.label71.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label71.Name = "label71";
+            this.label71.Size = new System.Drawing.Size(243, 17);
+            this.label71.TabIndex = 104;
+            this.label71.Text = "* (0 < distance < 10)";
+            this.label71.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // label70
             // 
             this.label70.Font = new System.Drawing.Font("Tahoma", 10F);
@@ -5457,7 +5493,7 @@
             // textBox_Setup_Option_VibrationMoveDistance
             // 
             this.textBox_Setup_Option_VibrationMoveDistance.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_VibrationMoveDistance.Location = new System.Drawing.Point(573, 379);
+            this.textBox_Setup_Option_VibrationMoveDistance.Location = new System.Drawing.Point(574, 379);
             this.textBox_Setup_Option_VibrationMoveDistance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_VibrationMoveDistance.Name = "textBox_Setup_Option_VibrationMoveDistance";
             this.textBox_Setup_Option_VibrationMoveDistance.Size = new System.Drawing.Size(50, 24);
@@ -5467,7 +5503,7 @@
             // label69
             // 
             this.label69.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label69.Location = new System.Drawing.Point(730, 95);
+            this.label69.Location = new System.Drawing.Point(727, 89);
             this.label69.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label69.Name = "label69";
             this.label69.Size = new System.Drawing.Size(220, 20);
@@ -5478,7 +5514,7 @@
             // textBox_Setup_Option_LoaderStackerLiftUp_StableTime
             // 
             this.textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Location = new System.Drawing.Point(949, 94);
+            this.textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Location = new System.Drawing.Point(949, 88);
             this.textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Name = "textBox_Setup_Option_LoaderStackerLiftUp_StableTime";
             this.textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Size = new System.Drawing.Size(50, 24);
@@ -5532,7 +5568,7 @@
             // textBox_Setup_Option_NumberOfVibrations
             // 
             this.textBox_Setup_Option_NumberOfVibrations.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_NumberOfVibrations.Location = new System.Drawing.Point(573, 354);
+            this.textBox_Setup_Option_NumberOfVibrations.Location = new System.Drawing.Point(574, 354);
             this.textBox_Setup_Option_NumberOfVibrations.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_NumberOfVibrations.Name = "textBox_Setup_Option_NumberOfVibrations";
             this.textBox_Setup_Option_NumberOfVibrations.Size = new System.Drawing.Size(50, 24);
@@ -5553,7 +5589,7 @@
             // textBox_Setup_Option_Vibration_AccDec_Ratio
             // 
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_Vibration_AccDec_Ratio.Location = new System.Drawing.Point(573, 329);
+            this.textBox_Setup_Option_Vibration_AccDec_Ratio.Location = new System.Drawing.Point(574, 329);
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Name = "textBox_Setup_Option_Vibration_AccDec_Ratio";
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Size = new System.Drawing.Size(50, 24);
@@ -5596,7 +5632,7 @@
             // textBox_Setup_Option_VacuumBlowTime
             // 
             this.textBox_Setup_Option_VacuumBlowTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_VacuumBlowTime.Location = new System.Drawing.Point(573, 239);
+            this.textBox_Setup_Option_VacuumBlowTime.Location = new System.Drawing.Point(574, 239);
             this.textBox_Setup_Option_VacuumBlowTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_VacuumBlowTime.Name = "textBox_Setup_Option_VacuumBlowTime";
             this.textBox_Setup_Option_VacuumBlowTime.Size = new System.Drawing.Size(50, 24);
@@ -5639,7 +5675,7 @@
             // textBox_Setup_Option_Sirius_Drawing_Resolution
             // 
             this.textBox_Setup_Option_Sirius_Drawing_Resolution.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_Sirius_Drawing_Resolution.Location = new System.Drawing.Point(573, 135);
+            this.textBox_Setup_Option_Sirius_Drawing_Resolution.Location = new System.Drawing.Point(574, 135);
             this.textBox_Setup_Option_Sirius_Drawing_Resolution.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_Sirius_Drawing_Resolution.Name = "textBox_Setup_Option_Sirius_Drawing_Resolution";
             this.textBox_Setup_Option_Sirius_Drawing_Resolution.Size = new System.Drawing.Size(50, 24);
@@ -5660,7 +5696,7 @@
             // textBox_Setup_Option_DustCollector_WaitingTime
             // 
             this.textBox_Setup_Option_DustCollector_WaitingTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_DustCollector_WaitingTime.Location = new System.Drawing.Point(573, 85);
+            this.textBox_Setup_Option_DustCollector_WaitingTime.Location = new System.Drawing.Point(574, 85);
             this.textBox_Setup_Option_DustCollector_WaitingTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_DustCollector_WaitingTime.Name = "textBox_Setup_Option_DustCollector_WaitingTime";
             this.textBox_Setup_Option_DustCollector_WaitingTime.Size = new System.Drawing.Size(50, 24);
@@ -5718,7 +5754,7 @@
             // textBox_Setup_Option_FiducialMarkJudgementRange
             // 
             this.textBox_Setup_Option_FiducialMarkJudgementRange.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_FiducialMarkJudgementRange.Location = new System.Drawing.Point(210, 354);
+            this.textBox_Setup_Option_FiducialMarkJudgementRange.Location = new System.Drawing.Point(211, 354);
             this.textBox_Setup_Option_FiducialMarkJudgementRange.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_FiducialMarkJudgementRange.Name = "textBox_Setup_Option_FiducialMarkJudgementRange";
             this.textBox_Setup_Option_FiducialMarkJudgementRange.Size = new System.Drawing.Size(50, 24);
@@ -5739,7 +5775,7 @@
             // textBox_Setup_Option_LaserHeightCheckStableTime
             // 
             this.textBox_Setup_Option_LaserHeightCheckStableTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_LaserHeightCheckStableTime.Location = new System.Drawing.Point(210, 305);
+            this.textBox_Setup_Option_LaserHeightCheckStableTime.Location = new System.Drawing.Point(211, 305);
             this.textBox_Setup_Option_LaserHeightCheckStableTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_LaserHeightCheckStableTime.Name = "textBox_Setup_Option_LaserHeightCheckStableTime";
             this.textBox_Setup_Option_LaserHeightCheckStableTime.Size = new System.Drawing.Size(50, 24);
@@ -5760,7 +5796,7 @@
             // textBox_Setup_Option_VacuumStableTime
             // 
             this.textBox_Setup_Option_VacuumStableTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_VacuumStableTime.Location = new System.Drawing.Point(210, 264);
+            this.textBox_Setup_Option_VacuumStableTime.Location = new System.Drawing.Point(211, 264);
             this.textBox_Setup_Option_VacuumStableTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_VacuumStableTime.Name = "textBox_Setup_Option_VacuumStableTime";
             this.textBox_Setup_Option_VacuumStableTime.Size = new System.Drawing.Size(50, 24);
@@ -5803,7 +5839,7 @@
             // textBox_Setup_Option_MAligner_WidenDistance
             // 
             this.textBox_Setup_Option_MAligner_WidenDistance.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_MAligner_WidenDistance.Location = new System.Drawing.Point(210, 175);
+            this.textBox_Setup_Option_MAligner_WidenDistance.Location = new System.Drawing.Point(211, 175);
             this.textBox_Setup_Option_MAligner_WidenDistance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_MAligner_WidenDistance.Name = "textBox_Setup_Option_MAligner_WidenDistance";
             this.textBox_Setup_Option_MAligner_WidenDistance.Size = new System.Drawing.Size(50, 24);
@@ -5824,7 +5860,7 @@
             // textBox_Setup_Option_MAligner_NarrowingDistance
             // 
             this.textBox_Setup_Option_MAligner_NarrowingDistance.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_MAligner_NarrowingDistance.Location = new System.Drawing.Point(210, 216);
+            this.textBox_Setup_Option_MAligner_NarrowingDistance.Location = new System.Drawing.Point(211, 216);
             this.textBox_Setup_Option_MAligner_NarrowingDistance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_MAligner_NarrowingDistance.Name = "textBox_Setup_Option_MAligner_NarrowingDistance";
             this.textBox_Setup_Option_MAligner_NarrowingDistance.Size = new System.Drawing.Size(50, 24);
@@ -5866,7 +5902,7 @@
             // textBox_Setup_Option_SignalHoldTime
             // 
             this.textBox_Setup_Option_SignalHoldTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_SignalHoldTime.Location = new System.Drawing.Point(210, 76);
+            this.textBox_Setup_Option_SignalHoldTime.Location = new System.Drawing.Point(211, 76);
             this.textBox_Setup_Option_SignalHoldTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_SignalHoldTime.Name = "textBox_Setup_Option_SignalHoldTime";
             this.textBox_Setup_Option_SignalHoldTime.Size = new System.Drawing.Size(50, 24);
@@ -6572,17 +6608,6 @@
             this.label96.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label96.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label71
-            // 
-            this.label71.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label71.Location = new System.Drawing.Point(321, 400);
-            this.label71.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label71.Name = "label71";
-            this.label71.Size = new System.Drawing.Size(243, 17);
-            this.label71.TabIndex = 104;
-            this.label71.Text = "* (0 < distance < 10)";
-            this.label71.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // FormNew_Setup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -7179,5 +7204,7 @@
         private System.Windows.Forms.Label label70;
         private System.Windows.Forms.TextBox textBox_Setup_Option_VibrationMoveDistance;
         private System.Windows.Forms.Label label71;
+        private System.Windows.Forms.Label label72;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_EPRO_ModuleAbsorptionLevel;
     }
 }
