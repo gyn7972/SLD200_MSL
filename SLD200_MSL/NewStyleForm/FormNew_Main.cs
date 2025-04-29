@@ -23,13 +23,13 @@ using static QMC.Common.Modules.Loader;
 using static QMC.Common.Modules.Unloader;
 using Point = System.Drawing.Point;
 using System.Runtime.CompilerServices;
+using SLD200.NewStyleForm.NewSubForm;
 
 namespace SLD200_MSL
 {
     public partial class FormNew_Main : Form
     {
         public FormNew_Recipe RecipeForm;
-
         public ProgressForm m_FormProgress;                             //  장비 초기화 시 진행창 표시
         public bool m_bHomeProgress_Show;
 
@@ -67,6 +67,8 @@ namespace SLD200_MSL
         public FormNew_Main()
         {
             InitializeComponent();
+
+            this.Load += FormNew_Main_Load;
 
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
@@ -170,6 +172,7 @@ namespace SLD200_MSL
                 }
             }
 
+            //InitImageViewer();
 
             m_SiriusViewerRefresy = false;
             workStage.ActionSiriusViewerRefresy += OnSiriusViewerRefresy;
@@ -183,6 +186,35 @@ namespace SLD200_MSL
         }
         #endregion
 
+       
+        private void InitImageViewer()
+        {
+            if (this.ImageViewer_Main_highs.IsHandleCreated)
+            {
+                this.ImageViewer_Main_highs.SizeMode = PictureBoxSizeMode.CenterImage;
+                this.ImageViewer_Main_highs.SuspendDisplay();
+                this.ImageViewer_Main_highs.StopUpdateTask();
+
+                //Fine은 Workstage Camera와 연동
+                this.ImageViewer_Main_highs.Camera = workStage.Camera_HighRes;
+
+                this.ImageViewer_Main_highs.ResumeDisplay();
+                this.ImageViewer_Main_highs.StartUpdateTask();
+            }
+
+            if (this.ImageViewer_Main_Rows.IsHandleCreated)
+            {
+                this.ImageViewer_Main_Rows.SizeMode = PictureBoxSizeMode.CenterImage;
+                this.ImageViewer_Main_Rows.SuspendDisplay();
+                this.ImageViewer_Main_Rows.StopUpdateTask();
+
+                //Prealign은 jigAligner와 연동
+                this.ImageViewer_Main_Rows.Camera = workStage.jigAligner_LowRes.Camera;
+
+                this.ImageViewer_Main_Rows.ResumeDisplay();
+                this.ImageViewer_Main_Rows.StartUpdateTask();
+            }
+        }
 
 
         #region Socket 작업 상황 Display
@@ -480,14 +512,12 @@ namespace SLD200_MSL
                     m_FormProgress.Hide();
                 }
 
-
                 //  메인 화면 도면 갱신 (요상스럽도다... 메인 화면에 도면을 불러온 후 다른 화면으로 넘어갔다가 돌아오면, 메인 화면의 Viewer 에 도면이 사라진다. 보이기만 안보이는 게 아니라 데이터도 사라진다. 
                 //                      그래서 Equipment 에 SiriusView 를 하나 임시로 두고, 서로 데이터가 다를 경우(로드된 파일명) 임시 Viewer 의 데이터를 메인 화면의 Viewer 로 가져온다.
                 if ((SiriusViewer_Main.Document != null) && (Equipment.EqpSiriusViewer.Document != null))
                 {
                     //if ((SiriusViewer_Main.Document.FileName != Equipment.EqpSiriusViewer.Document.FileName) &&
                     //    (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))            //  자동운전이 아닐 때만 데이터를 Copy 하도록
-
 
                     //m_SiriusViewerRefresy
                     if ((SiriusViewer_Main.Document != Equipment.EqpSiriusViewer.Document) &&
@@ -545,7 +575,7 @@ namespace SLD200_MSL
                 checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete;
 
 
-		//  Socket 가공 진행 상태 표시
+		    //  Socket 가공 진행 상태 표시
             if (workStage.Main_SocketPositions_Draw)
             {
                 workStage.Main_SocketPositions_Draw = false;
@@ -641,6 +671,16 @@ namespace SLD200_MSL
                     //unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.None;
 
                     MessageBox.Show("자동 운전 종료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                if (workStage.Camera_HighRes.Opened)
+                {
+                    ImageViewer_Main_highs.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
+                }
+
+                if (workStage.jigAligner_LowRes.Camera.Opened)
+                {
+                    ImageViewer_Main_Rows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
                 }
 
                 //if (!m_btimer_MainWork_Stop)
@@ -1943,5 +1983,16 @@ namespace SLD200_MSL
             workStage.m_nLaserDrilling_MainStep = 0;
             workStage.m_nSocketAlign_MainStep = 0;
         }
+        private void FormNew_Main_Load(object sender, EventArgs e)
+        {
+            InitImageViewer();
+        }
+
+
+
+
+
+
+
     }
 }

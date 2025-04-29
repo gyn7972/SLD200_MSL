@@ -182,6 +182,33 @@ namespace QMC.Common.Parts
             return ret;
         }
 
+        public int StartLamp(bool bOn)
+        {
+            int ret = 0;
+            //if (m_Status == RunStatus.Stop)
+            //{
+            //    ret = 1;
+            //    return ret;
+            //}
+            DioPoint dioStart = m_dicDioPoints[DioPointKey.Output_Start.ToString()];
+
+            if (dioStart == null)
+                return -1;
+            DioValue dvOn = DioValue.Off;
+            if (bOn)
+            {
+                dvOn = DioValue.On;
+            }
+
+            if ((ret = dioStart.Write(dvOn)) != 0)
+            {
+                //Alarm alarm = GetAlarm((int)AlarmKey.eStop_Failed);
+                //AlarmManager.Instance.ShowAlarm(alarm);
+                return ret;
+            }
+            return ret;
+        }
+
         public bool IsStart()
         {
             bool bRet = false;
@@ -221,6 +248,30 @@ namespace QMC.Common.Parts
             }
             return ret;
         }
+
+        public int StopLamp(bool bOn)
+        {
+            int ret = 0;
+            DioPoint dioStop = m_dicDioPoints[DioPointKey.Output_Stop.ToString()];
+
+            if (dioStop == null)
+                return -1;
+
+            DioValue dvOff = DioValue.Off;
+            if (bOn)
+            {
+                dvOff = DioValue.On;
+            }
+
+            if ((ret = dioStop.Write(dvOff)) != 0)
+            {
+                //Alarm alarm = GetAlarm((int)AlarmKey.eStop_Failed);
+                //AlarmManager.Instance.ShowAlarm(alarm);
+                return ret;
+            }
+            return ret;
+        }
+
         public bool IsStop()
         {
             bool bRet = false;
@@ -256,6 +307,29 @@ namespace QMC.Common.Parts
             {
                 Alarm alarm = GetAlarm((int)AlarmKey.eReset_Failed);
                 AlarmManager.Instance.ShowAlarm(alarm);
+                return ret;
+            }
+            return ret;
+        }
+
+        public int ResetLamp(bool bOn)
+        {
+            int ret = 0;
+            DioPoint dioReset = m_dicDioPoints[DioPointKey.Output_Reset.ToString()];
+
+            if (dioReset == null)
+                return -1;
+
+            DioValue dvReset = DioValue.Off;
+            if (bOn)
+            {
+                dvReset = DioValue.On;
+            }
+
+            if ((ret = dioReset.Write(dvReset)) != 0)
+            {
+                //Alarm alarm = GetAlarm((int)AlarmKey.eReset_Failed);
+                //AlarmManager.Instance.ShowAlarm(alarm);
                 return ret;
             }
             return ret;

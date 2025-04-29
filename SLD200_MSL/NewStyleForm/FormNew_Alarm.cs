@@ -37,11 +37,32 @@ namespace SLD200_MSL
         protected Size m_imagesize = new Size(30, 25);
 
         protected BaseButton m_BaseButton;
-        //public string m_path = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName;        //  요기 자꾸 뻑남
+
+        public string m_path = "";
+
+        //  2025. 04. 27.  SCH : 아래 코드가 원래 코드인데, 현재 디렉토리의 상위 디렉토리가 루트에 가까우면 null 이 반환될 수 있다. 그래서 생성자에서 예외처리해줌. 
+        //public string m_path = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName;               
 
         public FormNew_Alarm()
         {
             InitializeComponent();
+
+
+            // 현재 디렉터리 가져오기
+            var currentDirectory = System.Environment.CurrentDirectory;
+
+            // 상위 디렉터리 확인 및 처리
+            var parentDirectory = System.IO.Directory.GetParent(currentDirectory)?.Parent;
+
+            if (parentDirectory != null)
+            {
+                m_path = parentDirectory.FullName; // 상위 디렉터리의 상위 디렉터리 경로
+            }
+            else
+            {
+                m_path = currentDirectory; // 기본값으로 현재 디렉터리 경로 사용
+            }
+
 
             this.StartPosition = FormStartPosition.CenterScreen;
 

@@ -118,6 +118,7 @@ namespace QMC.Common.Modules
             LD_MAlignerXY_Move_Widely_Timeout,
             LD_Transfer_PickerVacuumOff_MAlignerVacuumOn_Timeout,
             LD_Maligner_Not_Set_Module_Size,
+            LD_TransferZ_Move_VibrationPos_Timeout,
             LD_Ionizer_Alarm,
             LastAlarm = 2999,
             
@@ -481,7 +482,16 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Maligner_Not_Set_Module_Size;
             alarm.Title = "Loader Trasfer";
-            alarm.Cause = "Loader Trasfer 자재 싸이즈가 올바르지 않습니다. 레시피를 확인 하여 주십시요.";
+            alarm.Cause = "Loader Trasfer 자재 사이즈가 올바르지 않습니다. 레시피를 확인 하여 주십시요.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.LD_TransferZ_Move_VibrationPos_Timeout;
+            alarm.Title = "Loader Trasfer";
+            alarm.Cause = "Loader Trasfer Z축이 바이브레이션 이동을 하지 못하였습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -886,6 +896,9 @@ namespace QMC.Common.Modules
         public bool m_bLD_Transfer_toWorkStage_Module_PutDown_Complete_Flag { set; get; } = false;          //  Work Stage 에 Module Put Down 완료 여부
         public bool m_bLD_Transfer_toMAligner_Module_PutDown_Complete_Flag { set; get; } = false;           //  M-Aligner 에 Module Put Down 완료 여부
 
+        public int m_nLoader_Transfer_Vibration_Count { set; get; } = 0;                  //  Module 털기 횟수
+
+
         public int m_nStacker0_StepUp_Count { set; get; } = 0;          //  max 10mm
         public int m_nStacker1_StepUp_Count { set; get; } = 0;          //  max 10mm
 
@@ -965,6 +978,13 @@ namespace QMC.Common.Modules
             Stacker0PickUp_TransferZ_Move_ReadyPos2_1stStep,                //  Transfer Z 축, 대기 위치로 이동 (1단계, 현재 위치에서 위로 10 mm)
             Stacker0PickUp_TransferZ_Move_ReadyPos2_1stStep_DoneCheck,      //  Transfer Z 축, 대기 위치로 이동 완료 확인
 
+            //  모듈 털기
+            Stacker0PickUp_TransferZ_Vibration_Start,                       //  Transfer Z 축, 모듈 털기 시작
+            Stacker0PickUp_TransferZ_VibrationMove_DownPos,                 //  Transfer Z 축, 아래로 2mm 이동
+            Stacker0PickUp_TransferZ_VibrationMove_DownPos_DoneCheck,       //  Transfer Z 축, 아래로 2mm 이동 완료 확인
+            Stacker0PickUp_TransferZ_VibrationMove_UpPos,                   //  Transfer Z 축, 위로 2mm 이동
+            Stacker0PickUp_TransferZ_VibrationMove_UpPos_DoneCheck,         //  Transfer Z 축, 위로 2mm 이동 완료 확인
+
             Stacker0PickUp_TransferZ_Move_ReadyPos2_2ndStep,                //  Transfer Z 축, 대기 위치로 이동 (2단계, 최종 위치)
             Stacker0PickUp_TransferZ_Move_ReadyPos2_2ndStep_DoneCheck,      //  Transfer Z 축, 대기 위치로 이동 완료 확인
             /// <summary>
@@ -997,6 +1017,13 @@ namespace QMC.Common.Modules
 
             Stacker1PickUp_TransferZ_Move_ReadyPos2_1stStep,                //  Transfer Z 축, 대기 위치로 이동 (1단계, 현재 위치에서 위로 10 mm)
             Stacker1PickUp_TransferZ_Move_ReadyPos2_1stStep_DoneCheck,      //  Transfer Z 축, 대기 위치로 이동 완료 확인
+
+            //  모듈 털기
+            Stacker1PickUp_TransferZ_Vibration_Start,                       //  Transfer Z 축, 모듈 털기 시작
+            Stacker1PickUp_TransferZ_VibrationMove_DownPos,                 //  Transfer Z 축, 아래로 2mm 이동
+            Stacker1PickUp_TransferZ_VibrationMove_DownPos_DoneCheck,       //  Transfer Z 축, 아래로 2mm 이동 완료 확인
+            Stacker1PickUp_TransferZ_VibrationMove_UpPos,                   //  Transfer Z 축, 위로 2mm 이동
+            Stacker1PickUp_TransferZ_VibrationMove_UpPos_DoneCheck,         //  Transfer Z 축, 위로 2mm 이동 완료 확인
 
             Stacker1PickUp_TransferZ_Move_ReadyPos2_2ndStep,                //  Transfer Z 축, 대기 위치로 이동 (2단계, 최종 위치)
             Stacker1PickUp_TransferZ_Move_ReadyPos2_2ndStep_DoneCheck,      //  Transfer Z 축, 대기 위치로 이동 완료 확인
@@ -4112,11 +4139,11 @@ namespace QMC.Common.Modules
 
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Move_ReadyPos2_1stStep;
                     }
-                    else
+                    else if (Equipment.Machine_LoaderStacker_LiftUp_Enable)
                     {
                         //  진공이 생성되지 않았으면? 1밀리 올리기
 
-                        if (m_nStacker0_StepUp_Count++ < 7)
+                        if (m_nStacker0_StepUp_Count++ < Equipment.Machine_LoaderStacker_LiftUpStep)
                         {
                             m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker0PickUp_Transfer_Picker_StepUp;
                         }
@@ -4144,6 +4171,30 @@ namespace QMC.Common.Modules
 
                             MessageBox.Show("Transfer 축, Module Picker Vacuum On 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
+                    }
+                    else if (!Equipment.Machine_LoaderStacker_LiftUp_Enable && TickCount_Elapsed((int)TickType.TICK_LDTR) > 10000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum On 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        //timer_Motion_Home.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
+                        return AlarmPost(AlarmKey.LD_Transfer_PickerVacuumOn_Timeout);
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
+
+                        MessageBox.Show("Transfer 축, Module Picker Vacuum On 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
 
 
@@ -4209,7 +4260,7 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.Stacker0PickUp_Transfer_Picker_StepUp_DoneCheck:                       //  Transfer, Module Picker Step Up 완료 확인
 
-                    if ((TickCount_Elapsed((int)TickType.TICK_LDTR) > 1000) &&
+                    if ((TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_LoaderStacker_LiftUp_StableTime) &&
                         MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_PosTolerance((int)nAxis.Z0, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Stacker Z0 축, Step Up 이동 완료");
@@ -4253,7 +4304,17 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 1단계 이동 완료");
 
-                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Move_ReadyPos2_2ndStep;
+                        if (Equipment.Machine_LoaderTransfer_Vibration_Enable)
+                        {
+                            //  모듈 털기 횟수 초기화
+                            m_nLoader_Transfer_Vibration_Count = 0;
+
+                            m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Vibration_Start;
+                        }
+                        else
+                        {
+                            m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Move_ReadyPos2_2ndStep;
+                        }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
                     {
@@ -4278,6 +4339,99 @@ namespace QMC.Common.Modules
                         MessageBox.Show("Transfer Z 축, 대기 위치로 1단계 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
+
+
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //  모듈 털기 - 시작
+                case (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Vibration_Start:                            //  Transfer Z 축, 모듈 털기 시작
+
+                    if (m_nLoader_Transfer_Vibration_Count++ < Equipment.Machine_LoaderTransfer_NumberOfVibrations)
+                    {
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_VibrationMove_DownPos;
+                    }
+                    else
+                    {
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Move_ReadyPos2_2ndStep;
+                    }
+                    break;
+
+
+                case (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_VibrationMove_DownPos:                            //  Transfer Z 축, 아래로 2mm 이동
+
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z))
+                    {
+                        Loader_Transfer_Step_StackerPickUp_TransferZ_VibrationMove_DownPos(out m_dSpeed, out m_dAccDec);
+
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_VibrationMove_DownPos_DoneCheck;
+                    }
+                    break;
+
+
+                case (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_VibrationMove_DownPos_DoneCheck:                       //  Transfer Z 축, 아래로 2mm 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 바이브레이션 이동 완료. (1단계, 현재 위치에서 2mm 아래)");
+
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_VibrationMove_UpPos;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 바이브레이션 이동 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        //timer_Motion_Home.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+
+                        return AlarmPost(AlarmKey.LD_TransferZ_Move_VibrationPos_Timeout);
+
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
+
+                        MessageBox.Show("Transfer Z 축, 대기 위치로 1단계 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    break;
+
+
+                case (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_VibrationMove_UpPos:                            //  Transfer Z 축, 위로 2mm 이동
+
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z))
+                    {
+                        Loader_Transfer_Step_StackerPickUp_TransferZ_VibrationMove_UpPos(out m_dSpeed, out m_dAccDec);
+
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_VibrationMove_UpPos_DoneCheck;
+                    }
+                    break;
+
+
+                case (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_VibrationMove_UpPos_DoneCheck:                       //  Transfer Z 축, 위로 2mm 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 바이브레이션 이동 완료. (1단계, 현재 위치에서 2mm 위)");
+
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Vibration_Start;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 바이브레이션 이동 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        //timer_Motion_Home.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+
+                        return AlarmPost(AlarmKey.LD_TransferZ_Move_VibrationPos_Timeout);
+
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
+
+                        MessageBox.Show("Transfer Z 축, 대기 위치로 1단계 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    break;
+                //  모듈 털기 - 종료
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
                 case (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Move_ReadyPos2_2ndStep:                            //  Transfer Z 축, 대기 위치로 이동 (2단계, 최종 위치)
@@ -4336,6 +4490,9 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
+                            //  우측 Port 에서 Module PickUp 완료.
+                            Equipment.AUTORUN_Loader_PickUpPort = (int)Equipment.LoaderPortList.R_Port;
+
                             m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
                         }
                     }
@@ -4630,11 +4787,11 @@ namespace QMC.Common.Modules
 
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_1stStep;
                     }
-                    else
+                    else if (Equipment.Machine_LoaderStacker_LiftUp_Enable)
                     {
                         //  진공이 생성되지 않았으면? 1밀리 올리기
 
-                        if (m_nStacker1_StepUp_Count++ < 7)
+                        if (m_nStacker1_StepUp_Count++ < Equipment.Machine_LoaderStacker_LiftUpStep)
                         {
                             m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_Transfer_Picker_StepUp;
                         }
@@ -4663,56 +4820,79 @@ namespace QMC.Common.Modules
                             MessageBox.Show("Transfer 축, Module Picker Vacuum On 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
+                    else if (!Equipment.Machine_LoaderStacker_LiftUp_Enable && TickCount_Elapsed((int)TickType.TICK_LDTR) > 10000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum On 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        //timer_Motion_Home.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        //  재시작 위치 저장용
+                        //
+                        Equipment.MachineStop_byTimeout_Loader = true;
+                        Loader_CurrentStatus_Save_StopedByTimeout();
+                        //
+                        //  재시작 위치 저장용
+                        //////////////////////////////////////////////////////////////////////////////////////////
+
+                        return AlarmPost(AlarmKey.LD_Transfer_PickerVacuumOn_Timeout);
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
+
+                        MessageBox.Show("Transfer 축, Module Picker Vacuum On 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
 
 
+                    //if ((Equipment.Machine_VacuumSensor_Enable && (loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
+                    //                                            loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer)) &&
 
-                        //if ((Equipment.Machine_VacuumSensor_Enable && (loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
-                        //                                            loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer)) &&
+                    //    (!Equipment.Machine_VacuumStableTime_Enable ||
+                    //    (Equipment.Machine_VacuumStableTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_VacuumStableTime)))) ||
 
-                        //    (!Equipment.Machine_VacuumStableTime_Enable ||
-                        //    (Equipment.Machine_VacuumStableTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_VacuumStableTime)))) ||
-
-                        //    (!Equipment.Machine_VacuumSensor_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_SignalHoldTime)))
-                        //{
-                        //    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum On 완료");
-
-
-                        //    //////////////////////////////////////////////////////////////////////////////////////////
-                        //    //  복원 지점 체크용 (Stacker1 에서 Module Pick Up 완료) - Picker 공압이 형성되었으므로, Z 축을 올리면 자재가 들어올려짐
-                        //    //
-                        //    m_bLD_Transfer_fromStacker1_Module_PickUp_Complete_Flag = true;
-                        //    //
-                        //    //  복원 지점 체크용 (Stacker0 에서 Module Pick Up 완료)
-                        //    //////////////////////////////////////////////////////////////////////////////////////////
+                    //    (!Equipment.Machine_VacuumSensor_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_SignalHoldTime)))
+                    //{
+                    //    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum On 완료");
 
 
-                        //    m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_1stStep;
-                        //}
-                        //else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 10000)
-                        //{
-                        //    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum On 실패. (Timeout)");
+                    //    //////////////////////////////////////////////////////////////////////////////////////////
+                    //    //  복원 지점 체크용 (Stacker1 에서 Module Pick Up 완료) - Picker 공압이 형성되었으므로, Z 축을 올리면 자재가 들어올려짐
+                    //    //
+                    //    m_bLD_Transfer_fromStacker1_Module_PickUp_Complete_Flag = true;
+                    //    //
+                    //    //  복원 지점 체크용 (Stacker0 에서 Module Pick Up 완료)
+                    //    //////////////////////////////////////////////////////////////////////////////////////////
 
-                        //    //  알람 정지 (LED Bar - Red Blink)
-                        //    Equipment.MachineStop_byAlarm = true;
 
-                        //    //timer_Motion_Home.Enabled = false;
-                        //    //m_btimer_Motion_Home_Stop = true;
+                    //    m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_1stStep;
+                    //}
+                    //else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 10000)
+                    //{
+                    //    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum On 실패. (Timeout)");
 
-                        //    //////////////////////////////////////////////////////////////////////////////////////////
-                        //    //  재시작 위치 저장용
-                        //    //
-                        //    Equipment.MachineStop_byTimeout_Loader = true;
-                        //    Loader_CurrentStatus_Save_StopedByTimeout();
-                        //    //
-                        //    //  재시작 위치 저장용
-                        //    //////////////////////////////////////////////////////////////////////////////////////////
+                    //    //  알람 정지 (LED Bar - Red Blink)
+                    //    Equipment.MachineStop_byAlarm = true;
 
-                        //    return AlarmPost(AlarmKey.LD_Transfer_PickerVacuumOn_Timeout);
-                        //    m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
+                    //    //timer_Motion_Home.Enabled = false;
+                    //    //m_btimer_Motion_Home_Stop = true;
 
-                        //    MessageBox.Show("Transfer 축, Module Picker Vacuum On 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        //}
-                        break;
+                    //    //////////////////////////////////////////////////////////////////////////////////////////
+                    //    //  재시작 위치 저장용
+                    //    //
+                    //    Equipment.MachineStop_byTimeout_Loader = true;
+                    //    Loader_CurrentStatus_Save_StopedByTimeout();
+                    //    //
+                    //    //  재시작 위치 저장용
+                    //    //////////////////////////////////////////////////////////////////////////////////////////
+
+                    //    return AlarmPost(AlarmKey.LD_Transfer_PickerVacuumOn_Timeout);
+                    //    m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
+
+                    //    MessageBox.Show("Transfer 축, Module Picker Vacuum On 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //}
+                    break;
 
 
                 case (int)Loader_Transfer_Step.Stacker1PickUp_Transfer_Picker_StepUp:                               //  Transfer, Module Picker Step Up
@@ -4727,7 +4907,7 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.Stacker1PickUp_Transfer_Picker_StepUp_DoneCheck:                       //  Transfer, Module Picker Step Up 완료 확인
 
-                    if ((TickCount_Elapsed((int)TickType.TICK_LDTR) > 1000) &&
+                    if ((TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_LoaderStacker_LiftUp_StableTime) &&
                         MC_Func.MC_GetDone((int)nAxis.Z1) && MC_Func.MC_PosTolerance((int)nAxis.Z1, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z1]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Stacker Z1 축, Step Up 이동 완료");
@@ -4771,7 +4951,17 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 1단계 이동 완료");
 
-                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_2ndStep;
+                        if (Equipment.Machine_LoaderTransfer_Vibration_Enable)
+                        {
+                            //  모듈 털기 횟수 초기화
+                            m_nLoader_Transfer_Vibration_Count = 0;
+
+                            m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Vibration_Start;
+                        }
+                        else
+                        {
+                            m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_2ndStep;
+                        }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
                     {
@@ -4794,6 +4984,99 @@ namespace QMC.Common.Modules
                         MessageBox.Show("Transfer Z 축, 대기 위치로 1단계 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
+
+
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //  모듈 털기 - 시작
+                case (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Vibration_Start:                            //  Transfer Z 축, 모듈 털기 시작
+
+                    if (m_nLoader_Transfer_Vibration_Count++ < Equipment.Machine_LoaderTransfer_NumberOfVibrations)
+                    {
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_VibrationMove_DownPos;
+                    }
+                    else
+                    {
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_2ndStep;
+                    }
+                    break;
+
+
+                case (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_VibrationMove_DownPos:                            //  Transfer Z 축, 아래로 2mm 이동
+
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z))
+                    {
+                        Loader_Transfer_Step_StackerPickUp_TransferZ_VibrationMove_DownPos(out m_dSpeed, out m_dAccDec);
+
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_VibrationMove_DownPos_DoneCheck;
+                    }
+                    break;
+
+
+                case (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_VibrationMove_DownPos_DoneCheck:                       //  Transfer Z 축, 아래로 2mm 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 바이브레이션 이동 완료. (1단계, 현재 위치에서 2mm 아래)");
+
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_VibrationMove_UpPos;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 바이브레이션 이동 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        //timer_Motion_Home.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+
+                        return AlarmPost(AlarmKey.LD_TransferZ_Move_VibrationPos_Timeout);
+
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
+
+                        MessageBox.Show("Transfer Z 축, 대기 위치로 1단계 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    break;
+
+
+                case (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_VibrationMove_UpPos:                            //  Transfer Z 축, 위로 2mm 이동
+
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z))
+                    {
+                        Loader_Transfer_Step_StackerPickUp_TransferZ_VibrationMove_UpPos(out m_dSpeed, out m_dAccDec);
+
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_VibrationMove_UpPos_DoneCheck;
+                    }
+                    break;
+
+
+                case (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_VibrationMove_UpPos_DoneCheck:                       //  Transfer Z 축, 위로 2mm 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 바이브레이션 이동 완료. (1단계, 현재 위치에서 2mm 위)");
+
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Vibration_Start;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 바이브레이션 이동 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        //timer_Motion_Home.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+
+                        return AlarmPost(AlarmKey.LD_TransferZ_Move_VibrationPos_Timeout);
+
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
+
+                        MessageBox.Show("Transfer Z 축, 대기 위치로 1단계 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    break;
+                //  모듈 털기 - 종료
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
                 case (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_2ndStep:                            //  Transfer Z 축, 대기 위치로 이동 (2단계, 최종 위치)
@@ -4853,6 +5136,9 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
+                            //  좌측 Port 에서 Module PickUp 완료.
+                            Equipment.AUTORUN_Loader_PickUpPort = (int)Equipment.LoaderPortList.L_Port;
+
                             m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
                         }
                     }
@@ -5584,13 +5870,13 @@ namespace QMC.Common.Modules
                     if (MC_Func.MC_GetDone((int)nAxis.ALN_X) && MC_Func.MC_PosTolerance((int)nAxis.ALN_X, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X]) &&
                         MC_Func.MC_GetDone((int)nAxis.ALN_Y) && MC_Func.MC_PosTolerance((int)nAxis.ALN_Y, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y]))
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner XY 축, 5mm 넓히기 이동 완료");
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner XY 축, 10mm 넓히기 이동 완료");
 
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.MAlignerPickUp_TransferZ_Move_ReadyPos2_1stStep;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner XY 축, 5mm 넓히기 이동 실패. (Timeout)");
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner XY 축, 10mm 넓히기 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
                         Equipment.MachineStop_byAlarm = true;
@@ -5601,7 +5887,7 @@ namespace QMC.Common.Modules
                         return AlarmPost(AlarmKey.LD_Transfer_MAlignerXY_Move_Timeout);
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
 
-                        MessageBox.Show("M-Aligner XY 축, 1mm 넓히기 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("M-Aligner XY 축, 10mm 넓히기 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -6204,6 +6490,9 @@ namespace QMC.Common.Modules
                             //  여기서 Module 을 정상적으로 내려놓았는지 다시 체크                            
                             if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
                             {
+                                //  Loader 에서 Pick Up 한 Port 번호를 Work Stage 에 넘겨준다.
+                                Equipment.AUTORUN_WorkStage_PickUpPort = Equipment.AUTORUN_Loader_PickUpPort;
+
                                 m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
                             }
                             else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 10000)
@@ -6276,6 +6565,9 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
+                            //  Loader 에서 Pick Up 한 Port 번호를 Work Stage 에 넘겨준다.
+                            Equipment.AUTORUN_WorkStage_PickUpPort = Equipment.AUTORUN_Loader_PickUpPort;
+
                             m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
                         }
                     }
@@ -7388,13 +7680,25 @@ namespace QMC.Common.Modules
 
         private void Loader_Transfer_Step_MAlignerPickUp_MAlignerXY_MoveType2_Widely(out double m_dSpeed, out double m_dAccDec)
         {
-            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner XY 축, 5mm 넓히기 시작.");
+            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner XY 축, 10mm 넓히기 시작.");
 
             loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("M_Aligner_Open");
 
-            //  Target Position 변경 : 현재 위치에서 2mm 넓히기 (원래 Equipment.Machine_MAligner_WidenDistance 였는데 2mm 면 충분하다고 판단)
-            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = MC_Func.MC_GetEncPos((int)nAxis.ALN_X) + 5.0;
-            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = MC_Func.MC_GetEncPos((int)nAxis.ALN_Y) + 5.0;
+            //  Target Position 변경 : 현재 위치에서 2mm 넓히기 (Equipment.Machine_MAligner_WidenDistance 이만큼 했었는데, 2mm 면 충분하다고 판단)
+            //  5mm 도 부족하다 -_- 10mm 가자
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = MC_Func.MC_GetEncPos((int)nAxis.ALN_X) + 10.0;
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = MC_Func.MC_GetEncPos((int)nAxis.ALN_Y) + 10.0;
+
+            //  Target Position 체크
+            if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] > stLDULTeachingPos[(int)LDUL_TeachingPosList.MAligner_OpenPos].MAligner_X)
+            {
+                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = stLDULTeachingPos[(int)LDUL_TeachingPosList.MAligner_OpenPos].MAligner_X;
+            }
+
+            if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] > stLDULTeachingPos[(int)LDUL_TeachingPosList.MAligner_OpenPos].MAligner_Y)
+            {
+                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = stLDULTeachingPos[(int)LDUL_TeachingPosList.MAligner_OpenPos].MAligner_Y;
+            }
 
             //  속도
             m_dSpeed = Equipment.stAxisParam[(int)nAxis.ALN_X].Common_Speed_Fine;
@@ -7443,13 +7747,25 @@ namespace QMC.Common.Modules
 
         private void Loader_Transfer_Step_MAlignerPickUp_MAlignerXY_MoveType1_Widely(out double m_dSpeed, out double m_dAccDec)
         {
-            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner XY 축, 5mm 넓히기 시작.");
+            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "M-Aligner XY 축, 10mm 넓히기 시작.");
 
             loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("M_Aligner_Open");
 
             //  Target Position 변경 : 현재 위치에서 2mm 넓히기 (Equipment.Machine_MAligner_WidenDistance 이만큼 했었는데, 2mm 면 충분하다고 판단)
-            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = MC_Func.MC_GetEncPos((int)nAxis.ALN_X) + 5.0;
-            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = MC_Func.MC_GetEncPos((int)nAxis.ALN_Y) + 5.0;
+            //  5mm 도 부족하다 -_- 10mm 가자
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = MC_Func.MC_GetEncPos((int)nAxis.ALN_X) + 10.0;
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = MC_Func.MC_GetEncPos((int)nAxis.ALN_Y) + 10.0;
+
+            //  Target Position 체크
+            if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] > stLDULTeachingPos[(int)LDUL_TeachingPosList.MAligner_OpenPos].MAligner_X)
+            {
+                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = stLDULTeachingPos[(int)LDUL_TeachingPosList.MAligner_OpenPos].MAligner_X;
+            }
+
+            if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] > stLDULTeachingPos[(int)LDUL_TeachingPosList.MAligner_OpenPos].MAligner_Y)
+            {
+                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = stLDULTeachingPos[(int)LDUL_TeachingPosList.MAligner_OpenPos].MAligner_Y;
+            }
 
             //  속도
             m_dSpeed = Equipment.stAxisParam[(int)nAxis.ALN_X].Common_Speed_Fine;
@@ -8013,6 +8329,70 @@ namespace QMC.Common.Modules
             TickCount_Start((int)TickType.TICK_LDTR);
         }
 
+
+        private void Loader_Transfer_Step_StackerPickUp_TransferZ_VibrationMove_DownPos(out double m_dSpeed, out double m_dAccDec)
+        {
+            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 바이브레이션 이동 시작. (1단계, 현재 위치에서 2mm 아래)");
+
+            loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Transfer_To_R_Port");
+
+            //  Target Position 변경 : 대기 위치 1단계
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = MC_Func.MC_GetEncPos((int)nAxis.TR_Z) - 2.0;
+
+            //  속도
+            m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse * 2.0;
+
+            //  가감속
+            if (Equipment.Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio <= 0.0)
+            {
+                m_dAccDec = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Acceleration_Coarse * 2.0;
+            }
+            else
+            {
+                m_dAccDec = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Acceleration_Coarse * Equipment.Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio;
+            }            
+
+            MC_Func.MC_MovePosition((int)nAxis.TR_Z,
+                                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z],
+                                m_dSpeed,
+                                m_dAccDec,
+                                m_dAccDec);
+
+            TickCount_Start((int)TickType.TICK_LDTR);
+        }
+
+        private void Loader_Transfer_Step_StackerPickUp_TransferZ_VibrationMove_UpPos(out double m_dSpeed, out double m_dAccDec)
+        {
+            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 바이브레이션 이동 시작. (1단계, 현재 위치에서 2mm 위)");
+
+            loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Transfer_To_R_Port");
+
+            //  Target Position 변경 : 대기 위치 1단계
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = MC_Func.MC_GetEncPos((int)nAxis.TR_Z) + 2.0;
+
+            //  속도
+            m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse * 2.0;
+
+            //  가감속
+            if (Equipment.Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio <= 0.0)
+            {
+                m_dAccDec = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Acceleration_Coarse * 2.0;
+            }
+            else
+            {
+                m_dAccDec = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Acceleration_Coarse * Equipment.Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio;
+            }
+
+            MC_Func.MC_MovePosition((int)nAxis.TR_Z,
+                                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z],
+                                m_dSpeed,
+                                m_dAccDec,
+                                m_dAccDec);
+
+            TickCount_Start((int)TickType.TICK_LDTR);
+        }
+
+
         private void Loader_Transfer_Step_Stacker0PickUp_TransferZ_Move_PickUpPos_2ndStep(out double m_dSpeed, out double m_dAccDec)
         {
             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, Module Pickup 위치로 이동 시작.");
@@ -8287,8 +8667,8 @@ namespace QMC.Common.Modules
 
                 case (int)MAlign_Step.MAligner_ModuleVacuum_OnCheck:                                //  Module Vacuum On 확인
                     bool bVaccum = (Equipment.Machine_VacuumSensor_Enable && (loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center) ||
-                                                                    loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner) ||
-                                                                    loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer)));
+                                                                            loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner) ||
+                                                                            loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer)));
                     bool bMAlingerCenter = ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center && loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center)) ||
                             !Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center);
 
@@ -8410,6 +8790,14 @@ namespace QMC.Common.Modules
 
                     m_nMAlign_Step = (int)MAlign_Step.None;
 
+
+                    //  M-Align 중 알람이 발생했을 때, 알람 해제 후 다음 Step (M-Aligner 에서 Work Stage 로 모듈 이동) 을 진행하기 위해서 Flag 를 재설정함.
+                    if (m_bMAlignZone_ModuleExist)                       //  M-Aligner 에 모듈을 내려놨었다면?
+                    {
+                        m_bLD_Transfer_toMAligner_Module_PutDown_Complete_Flag = true;                  //  이 Flag 를 true 로 해 줘야 Work Stage 로 모듈을 이동할 수 있음.
+                    }
+
+
                     //  Seq. Test 일 경우
                     if (!Equipment.AutoRunStatus && Equipment.SeqTestMode)
                     {
@@ -8469,7 +8857,7 @@ namespace QMC.Common.Modules
             loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] -= Equipment.Machine_MAligner_NarrowingDistance;
 
             //  속도
-            m_dSpeed_Align_Slow = Equipment.stAxisParam[(int)nAxis.ALN_X].Common_Speed_Fine;
+            m_dSpeed_Align_Slow = Equipment.stAxisParam[(int)nAxis.ALN_X].Common_Speed_Fine / 2.0;
 
             //  가감속 배율
             m_dSpeedMag_forAccDec = 2.0;
