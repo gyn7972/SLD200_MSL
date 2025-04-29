@@ -1568,7 +1568,7 @@ namespace QMC.Common.Modules
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.eGetdata_Not_group;
             alarm.Title = "데이터로드에 실패";
-            alarm.Cause = "데이터를 Group이 아닙니다.. 데이터를 확인해 주세요.";
+            alarm.Cause = "데이터가 Group이 아닙니다.. 데이터를 확인해 주세요.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -7377,13 +7377,13 @@ namespace QMC.Common.Modules
                     }
                     if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() == 0)
                     {
-                        //CommonModule.Instance.TowerLamp.Buzzer_On();
+                        CommonModule.Instance.TowerLamp.Buzzer_On();
                     }
 
-                    ////  버튼 색깔 변경
-                    //CommonModule.Instance.OperationButtons.Start(false);
-                    //CommonModule.Instance.OperationButtons.Stop(true);
-                    //CommonModule.Instance.OperationButtons.Reset(false);
+                    //  버튼 색깔 변경
+                    CommonModule.Instance.OperationButtons.StartLamp(false);
+                    CommonModule.Instance.OperationButtons.StopLamp(true);
+                    CommonModule.Instance.OperationButtons.ResetLamp(false);
                 }
                 //  자동운전
                 else if (Equipment.AutoRunStatus)
@@ -7405,10 +7405,10 @@ namespace QMC.Common.Modules
                         CommonModule.Instance.TowerLamp.Buzzer_Off();
                     }
 
-                    ////  버튼 색깔 변경
-                    //CommonModule.Instance.OperationButtons.Start(true);
-                    //CommonModule.Instance.OperationButtons.Stop(false);
-                    //CommonModule.Instance.OperationButtons.Reset(false);
+                    //  버튼 색깔 변경
+                    CommonModule.Instance.OperationButtons.StartLamp(true);
+                    CommonModule.Instance.OperationButtons.StopLamp(false);
+                    CommonModule.Instance.OperationButtons.ResetLamp(false);
                 }
                 //  Stop
                 else
@@ -7430,10 +7430,10 @@ namespace QMC.Common.Modules
                         CommonModule.Instance.TowerLamp.Buzzer_Off();
                     }
 
-                    ////  버튼 색깔 변경
-                    //CommonModule.Instance.OperationButtons.Start(false);
-                    //CommonModule.Instance.OperationButtons.Stop(true);
-                    //CommonModule.Instance.OperationButtons.Reset(false);
+                    //  버튼 색깔 변경
+                    CommonModule.Instance.OperationButtons.StartLamp(false);
+                    CommonModule.Instance.OperationButtons.StopLamp(true);
+                    CommonModule.Instance.OperationButtons.ResetLamp(false);
                 }
 
 
@@ -18014,9 +18014,16 @@ namespace QMC.Common.Modules
 
                                     entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
+                                    
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Circle 원 데이터를 Spiral 데이터로 변환 생성 시작");
+
                                     //  Spiral 데이터 파라미터 (외경 크기, 내경 크기, Spiral 회전 횟수, Spiral 회전 각도, Hole Center X, Hole Center Y)
                                     lwPolyLineSpiral = SpiralData_Create(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot.X, entity_Position_Rot.Y);
 
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Circle 원 데이터를 Spiral 데이터로 변환 생성 완료");
+
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "변환된 Spiral 데이터 List 추가 시작");
 
                                     //  객체 Edge 좌표 데이터 저장
                                     for (int n_pl = 0; n_pl < lwPolyLineSpiral.Count; n_pl++)
@@ -18030,6 +18037,8 @@ namespace QMC.Common.Modules
                                             m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)lwPolyLineSpiral.Items[n_pl].X, (float)lwPolyLineSpiral.Items[n_pl].Y));
                                         }
                                     }
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "변환된 Spiral 데이터 List 추가 완료");
 
                                     ////  데이터 검증용 코드
                                     //if (Config.ParamConfig.DrillingData_SaveToLogFile)
@@ -18150,9 +18159,16 @@ namespace QMC.Common.Modules
 
                                     entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Arc 원 데이터를 Spiral 데이터로 변환 생성 시작");
+
                                     //  Spiral 데이터 파라미터 (외경 크기, 내경 크기, Spiral 회전 횟수, Spiral 회전 각도, Hole Center X, Hole Center Y)
                                     lwPolyLineSpiral = SpiralData_Create(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot.X, entity_Position_Rot.Y);
 
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Arc 원 데이터를 Spiral 데이터로 변환 생성 완료");
+
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "변환된 Spiral 데이터 List 추가 시작");
 
                                     //  객체 Edge 좌표 데이터 저장
                                     for (int n_pl = 0; n_pl < lwPolyLineSpiral.Count; n_pl++)
@@ -18166,6 +18182,8 @@ namespace QMC.Common.Modules
                                             m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)lwPolyLineSpiral.Items[n_pl].X, (float)lwPolyLineSpiral.Items[n_pl].Y));
                                         }
                                     }
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "변환된 Spiral 데이터 List 추가 완료");
 
                                     ////  데이터 검증용 코드
                                     //if (Config.ParamConfig.DrillingData_SaveToLogFile)
@@ -20970,7 +20988,7 @@ namespace QMC.Common.Modules
                 m_nHoleLayer_ProcessIndex_Count++;
                 bool m_bLayerExist = false;
 
-                if ((m_nHoleLayer_ProcessIndex_Count >= (int)LayerList.Hole2) && (m_nHoleLayer_ProcessIndex_Count <= (int)LayerList.Hole10))
+                if ((m_nHoleLayer_ProcessIndex_Count >= (int)LayerList.Hole2) && (m_nHoleLayer_ProcessIndex_Count <= (int)LayerList.Hole50))
                 {
                     for (int i = 0; i < m_stLayerType.m_nLayerIndex.Length; i++)
                     {
@@ -21205,6 +21223,13 @@ namespace QMC.Common.Modules
                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있음");
 
 
+                //  가공중인 소켓 좌표 (메인 화면 표시용)
+                Main_SocketPositions_CurrentSocketPosition.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.X;
+                Main_SocketPositions_CurrentSocketPosition.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.Y;
+                Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Processing;
+                Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+
+
                 if (Equipment.SocketStop)
                 {
                     Log.Write("SLD-200", "Auto Run", "Socket Stop 모드 시작");
@@ -21214,7 +21239,7 @@ namespace QMC.Common.Modules
                 //  Socket Stop 이 아닐 경우, 계속 진행
                 else
                 {
-                    if ((m_nHoleLayer_ProcessIndex_Count >= (int)LayerList.Hole2) && (m_nHoleLayer_ProcessIndex_Count <= (int)LayerList.Hole10))
+                    if ((m_nHoleLayer_ProcessIndex_Count >= (int)LayerList.Hole2) && (m_nHoleLayer_ProcessIndex_Count <= (int)LayerList.Hole50))
                     {
                         Log.Write("SLD-200", "Auto Run", "Hole Layer 2 ~ 10 은 Socket Align 이나 Height Check 를 다시 하지 않음.");
 
@@ -23906,1359 +23931,1396 @@ namespace QMC.Common.Modules
                     ///     Hole 드릴링     ///
                     ///                     ///
                     ///////////////////////////
-                    if (layer.Name == "Hole1")
+
+                    //  Hole 인지?
+                    string m_strLayer = layer.Name.Length > 4 ? layer.Name.Substring(0, 4) : layer.Name;
+
+                    //if (layer.Name == "Hole1")
+                    if (m_strLayer == "Hole")                   //  Layer 가 Hole 이면?
                     {
-                        //  Divide 크기는 Layer 별로 다르게 한다. (Recipe 에서 설정)
-                        if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize <= 0.0)                //  default : 3mm
-                            m_dDrilling_FOV = 3.0;
-                        else
-                            m_dDrilling_FOV = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize;
+                        //  Hole 로 시작하는 Layer 이면, 뒤에 숫자를 가져온다.
+                        int m_nHoleLayer_Num = Convert.ToInt16(layer.Name.Substring(4));
 
-                        if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_NONE)
+                        if (m_nHoleLayer_Num == 1)              //  Hole1 이면?
                         {
-                            //return (int)nGetDataResult.GETDATA_FAIL;
-                        }
-
-                        m_ptLast.X = 0.0;
-                        m_ptLast.Y = 0.0;
-
-                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
-                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole1;                  //  Layer Parameter 변경을 위한 Index
-
-                        //  Item 이 Group 인지 아닌지 확인 (Group 이면 저 아래에서 데이터 변수 할당, Group 이 아니면 여기서 할당)
-                        int m_nCount = 0;
-
-                        LayerIsGroup = true;
-
-                        foreach (var entity in layer)
-                        {
-                            var group = entity as Group;
-
-                            if (group == null)
-                            {
-                                m_nCount = layer.Count;
-
-                                LayerIsGroup = false;
-                            }
+                            //  Divide 크기는 Layer 별로 다르게 한다. (Recipe 에서 설정)
+                            if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize <= 0.0)                //  default : 3mm
+                                m_dDrilling_FOV = 3.0;
                             else
+                                m_dDrilling_FOV = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize;
+
+                            if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_NONE)
                             {
-                                m_nCount++;
+                                //return (int)nGetDataResult.GETDATA_FAIL;
                             }
-                        }
 
-                        if (!LayerIsGroup)
-                        {
-                            //  드릴링 데이터는 Group 만 해야 한다.
-                            return (int)nGetDataResult.GETDATA_DRILDATA_NOT_GROUP;        //  "드릴링 데이터가 Group 이 아닙니다."
-                        }
+                            m_ptLast.X = 0.0;
+                            m_ptLast.Y = 0.0;
 
-                        //  정상적인 데이터인지 체크
-                        if (m_nCount < 1)
-                        {
-                            return (int)nGetDataResult.GETDATA_NOT_GROUP;        //  "데이터가 Group 이 아닙니다."
-                        }
-                        //else if ((Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS) && (m_nCount == 1))
-                        //{
-                        //    //return (int)nGetDataResult.GETDATA_UNGROUP;          //  "데이터를 Group 해제 해야 합니다."
-                        //}
+                            m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
+                            m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole1;                  //  Layer Parameter 변경을 위한 Index
 
-                        if (m_nCount >= 1)
-                        {
-                            m_stDrilling_LayerData = new WorkStage.stDrilling_LayerData();
+                            //  Item 이 Group 인지 아닌지 확인 (Group 이면 저 아래에서 데이터 변수 할당, Group 이 아니면 여기서 할당)
+                            int m_nCount = 0;
 
-                            if (layer.MotionType == MotionType.ScannerOnly)
-                            {
-                                m_stDrilling_LayerData.nRegion_MotionType = (int)MotionType.ScannerOnly;
-
-                                //  Hole Layer 의 Group 개수
-                                //m_stDrilling_LayerData.nRegion_ObjectTotalNum = m_nCount;       //   layer.Count;
-                                m_stDrilling_LayerData.nRegion_GroupTotalNum = m_nCount;
-
-                                //  Layer Group 별 데이터 공간 메모리 할당
-                                //m_stDrilling_LayerData.m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[m_nCount/*layer.Count*/];
-                                m_stDrilling_LayerData.m_stDrilling_GroupData = new WorkStage.stDrilling_GroupData[m_nCount/*layer.Count*/];
-                            }
-                        }
-
-
-                        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                        //
-                        //  [드릴링] [syncAxis] [ScannerOnly]
-                        //
-                        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                        ///
-                        //if (layer.MotionType == MotionType.ScannerOnly)             //  MotionType.ScannerOnly
-                        {
-                            //  Group 개수
-                            foreach (var entity in layer)
-                            {
-                                m_nGroupCount++;
-                            }
-                            m_stDividedRegion_GroupData = new WorkStage.stDividedRegion_GroupData[m_nGroupCount];
-                            m_stDividedRegion_GroupData[0].nGroup_Num = m_nGroupCount;
-
-                            m_nGroupCount = 0;
-
-
-                            //  2023. 05. 23.  SCH : Group 객체들 중에 분할 영역을 넘어가는 부분이 하나라도 있으면 전체를 DividedRegion 으로 처리한다.
-                            m_bGroupExist_LargerThanDivideSize = false;
+                            LayerIsGroup = true;
 
                             foreach (var entity in layer)
                             {
-                                switch (entity.EntityType)
+                                var group = entity as Group;
+
+                                if (group == null)
                                 {
-                                    case EType.Point: break;
-                                    case EType.Points: break;
-                                    case EType.Line: break;
-                                    case EType.Arc: break;
-                                    case EType.Circle: break;
-                                    case EType.Rectangle: break;
-                                    case EType.LWPolyline: break;
-                                    case EType.Spiral: break;
-                                    case EType.Group:
-                                    default:
-                                        var group = entity as Group;
+                                    m_nCount = layer.Count;
 
-                                        //if (((double)group.Width > Config.ParamConfig.Drilling_DivideSize) ||
-                                        //    ((double)group.Height > Config.ParamConfig.Drilling_DivideSize))            //  2023. 11. 24.  SCH : Group 이 가로가 얇고 세로로 길게 되어 있는 도면이 있어서, 세로 크기도 함께 보도록 한다.
-                                        if (((double)group.Width > Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize) ||
-                                            ((double)group.Height > Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize))            //  2023. 11. 24.  SCH : Group 이 가로가 얇고 세로로 길게 되어 있는 도면이 있어서, 세로 크기도 함께 보도록 한다.
-                                        {
-                                            //  요건 조건 보고 살리자
-                                            m_bGroupExist_LargerThanDivideSize = true;
-                                        }
-
-                                        break;
+                                    LayerIsGroup = false;
+                                }
+                                else
+                                {
+                                    m_nCount++;
                                 }
                             }
 
-                            foreach (var entity in layer)
+                            if (!LayerIsGroup)
                             {
-                                switch (entity.EntityType)
+                                //  드릴링 데이터는 Group 만 해야 한다.
+                                return (int)nGetDataResult.GETDATA_DRILDATA_NOT_GROUP;        //  "드릴링 데이터가 Group 이 아닙니다."
+                            }
+
+                            //  정상적인 데이터인지 체크
+                            if (m_nCount < 1)
+                            {
+                                return (int)nGetDataResult.GETDATA_NOT_GROUP;        //  "데이터가 Group 이 아닙니다."
+                            }
+                            //else if ((Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS) && (m_nCount == 1))
+                            //{
+                            //    //return (int)nGetDataResult.GETDATA_UNGROUP;          //  "데이터를 Group 해제 해야 합니다."
+                            //}
+
+                            if (m_nCount >= 1)
+                            {
+                                m_stDrilling_LayerData = new WorkStage.stDrilling_LayerData();
+
+                                if (layer.MotionType == MotionType.ScannerOnly)
                                 {
-                                    case EType.Point:
-                                        var point = entity as SpiralLab.Sirius.Point;
-                                        //point.Location 
-                                        //point.DwellTime
-                                        //success &= point.Mark(markerArg);
-                                        break;
+                                    m_stDrilling_LayerData.nRegion_MotionType = (int)MotionType.ScannerOnly;
 
-                                    case EType.Points:
-                                        var points = entity as Points;
-                                        foreach (var vertex in points)
-                                        {
-                                            //vertex.X
-                                            //vertex.Y
-                                        }
-                                        //points.DwellTime
-                                        //success &= points.Mark(markerArg);
-                                        break;
+                                    //  Hole Layer 의 Group 개수
+                                    //m_stDrilling_LayerData.nRegion_ObjectTotalNum = m_nCount;       //   layer.Count;
+                                    m_stDrilling_LayerData.nRegion_GroupTotalNum = m_nCount;
 
-                                    case EType.Line:
-                                        var line = entity as SpiralLab.Sirius.Line;
+                                    //  Layer Group 별 데이터 공간 메모리 할당
+                                    //m_stDrilling_LayerData.m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[m_nCount/*layer.Count*/];
+                                    m_stDrilling_LayerData.m_stDrilling_GroupData = new WorkStage.stDrilling_GroupData[m_nCount/*layer.Count*/];
+                                }
+                            }
 
-                                        //line.Start
-                                        //line.End
-                                        //success &= line.Mark(markerArg);
-                                        break;
 
-                                    case EType.Arc:
-                                        var arc = entity as SpiralLab.Sirius.Arc;
-                                        //arc.Radius
-                                        //arc.Center
-                                        //arc.StartAngle
-                                        //arc.SweepAngle
-                                        //success &= arc.Mark(markerArg);
-                                        break;
+                            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            //
+                            //  [드릴링] [syncAxis] [ScannerOnly]
+                            //
+                            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ///
+                            //if (layer.MotionType == MotionType.ScannerOnly)             //  MotionType.ScannerOnly
+                            {
+                                //  Group 개수
+                                foreach (var entity in layer)
+                                {
+                                    m_nGroupCount++;
+                                }
+                                m_stDividedRegion_GroupData = new WorkStage.stDividedRegion_GroupData[m_nGroupCount];
+                                m_stDividedRegion_GroupData[0].nGroup_Num = m_nGroupCount;
 
-                                    case EType.Circle:
-                                        var circle = entity as SpiralLab.Sirius.Circle;
+                                m_nGroupCount = 0;
 
-                                        //circle.Center 
-                                        //circle.Radius
-                                        //success &= circle.Mark(markerArg);
-                                        break;
 
-                                    case EType.Rectangle:
-                                        var rectangle = entity as SpiralLab.Sirius.Rectangle;
+                                //  2023. 05. 23.  SCH : Group 객체들 중에 분할 영역을 넘어가는 부분이 하나라도 있으면 전체를 DividedRegion 으로 처리한다.
+                                m_bGroupExist_LargerThanDivideSize = false;
 
-                                        //rectangle.Width
-                                        //rectangle.Height
-                                        //rectangle.Align
-                                        //rectangle.Location
-                                        //success &= rectangle.Mark(markerArg);
-                                        break;
+                                foreach (var entity in layer)
+                                {
+                                    switch (entity.EntityType)
+                                    {
+                                        case EType.Point: break;
+                                        case EType.Points: break;
+                                        case EType.Line: break;
+                                        case EType.Arc: break;
+                                        case EType.Circle: break;
+                                        case EType.Rectangle: break;
+                                        case EType.LWPolyline: break;
+                                        case EType.Spiral: break;
+                                        case EType.Group:
+                                        default:
+                                            var group = entity as Group;
 
-                                    case EType.LWPolyline:
-                                        var lwPolyline = entity as SpiralLab.Sirius.LwPolyline;
-                                        //lwPolyline.IsClosed
-
-                                        //foreach (var vertex in lwPolyline)
-                                        //{
-                                        //    //vertex.X
-                                        //    //vertex.Y
-                                        //    //vertex.Bulge
-                                        //}
-                                        //success &= lwPolyline.Mark(markerArg);
-                                        break;
-
-                                    case EType.Spiral:
-                                        var spiral = entity as Spiral;
-                                        //spiral.OutterDiameter
-                                        //spiral.InnerDiameter
-                                        //spiral.RadialPitch
-                                        //spiral.Revolutions
-                                        //spiral.Center
-                                        //success &= spiral.Mark(markerArg);
-                                        break;
-
-                                    case EType.Group:
-                                    default:
-                                        var group = entity as Group;
-
-                                        //m_stDrilling_LayerData = new WorkStage.stDrilling_LayerData();
-
-                                        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                        /// Drilling 데이터가 Polyline 이면 좋지만, Line 일 경우는 Polyline 처럼 Drilling Hole 에 대한 데이터로 정리해줘야 한다. (Line 4개가 1개의 Drilling Hole 이 된다.)
-                                        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                        ///
-                                        m_nOtherData_Count = 0;
-                                        m_nPolylineData_Count = 0;
-                                        m_nLineData_Count = 0;
-                                        m_nRectangleData_Count = 0;
-                                        m_nCircleData_Count = 0;
-                                        m_nArcData_Count = 0;
-
-                                        //  Line 데이터가 몇개 있는지 확인 (4의 배수가 되어야 함. 사각형이기 때문에)
-                                        foreach (var subEntity_forLineCount in group)
-                                        {
-                                            Type t = subEntity_forLineCount.GetType();
-
-                                            if (t.Name == "LwPolyline")
+                                            //if (((double)group.Width > Config.ParamConfig.Drilling_DivideSize) ||
+                                            //    ((double)group.Height > Config.ParamConfig.Drilling_DivideSize))            //  2023. 11. 24.  SCH : Group 이 가로가 얇고 세로로 길게 되어 있는 도면이 있어서, 세로 크기도 함께 보도록 한다.
+                                            if (((double)group.Width > Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize) ||
+                                                ((double)group.Height > Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize))            //  2023. 11. 24.  SCH : Group 이 가로가 얇고 세로로 길게 되어 있는 도면이 있어서, 세로 크기도 함께 보도록 한다.
                                             {
-                                                m_nPolylineData_Count++;
-                                            }
-                                            else if (t.Name == "Line")
-                                            {
-                                                m_nLineData_Count++;
-                                            }
-                                            else if (t.Name == "Circle")
-                                            {
-                                                m_nCircleData_Count++;
-                                            }
-                                            else if (t.Name == "Arc")
-                                            {
-                                                m_nArcData_Count++;
-                                            }
-                                            else if (t.Name == "Rectangle")
-                                            {
-                                                m_nRectangleData_Count++;
-                                            }
-                                            else
-                                            {
-                                                m_nOtherData_Count++;
-                                            }
-                                        }
-
-                                        if ((m_nOtherData_Count > 0) ||                                         //  "Drilling Data 는 Polyline, Rectangle, Line, Circle, Arc 중 한 가지 데이터로만 구성되어야 합니다."
-                                            ((m_nPolylineData_Count > 0) && (m_nLineData_Count > 0)) ||
-                                            ((m_nPolylineData_Count > 0) && (m_nCircleData_Count > 0)) ||
-                                            ((m_nPolylineData_Count > 0) && (m_nArcData_Count > 0)) ||
-                                            ((m_nPolylineData_Count > 0) && (m_nRectangleData_Count > 0)) ||
-
-                                            ((m_nLineData_Count > 0) && (m_nCircleData_Count > 0)) ||
-                                            ((m_nLineData_Count > 0) && (m_nArcData_Count > 0)) ||
-                                            ((m_nLineData_Count > 0) && (m_nRectangleData_Count > 0)) ||
-
-                                            ((m_nCircleData_Count > 0) && (m_nArcData_Count > 0)) ||
-                                            ((m_nCircleData_Count > 0) && (m_nRectangleData_Count > 0)) ||
-
-                                            ((m_nArcData_Count > 0) && (m_nRectangleData_Count > 0)))
-                                        {
-                                            return (int)nGetDataResult.GETDATA_DRILDATA_NG;
-                                        }
-
-
-                                        //  2024. 01. 29.  SCH : [테스트] 미세홀 가공 시 무조건 Div 로 하기 위함.
-                                        m_bGroupExist_LargerThanDivideSize = true;
-
-                                        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                        //
-                                        //  [드릴링] [ScannerOnly]  :  Group Data 가 Scanner FOV 이내인 경우
-                                        //
-                                        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                        //if ((double)group.Width <= Config.ParamConfig.Drilling_DivideSize)
-                                        if (!m_bGroupExist_LargerThanDivideSize)
-                                        {
-                                            m_stLayerType.m_bDrillingGroupSize_withinScannerFOV = true;
-                                            m_bDrillingData_isLine = false;
-
-                                            if (m_nPolylineData_Count > 0)                                          //  데이터가 모두 Polyline 인 경우
-                                            {
-                                                m_nDrillingData_Type = (int)ObjectType.OBJECT_POLY;
-
-                                                //  전체 Object 개수
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = group.Count;
-
-                                                //  Object 별 데이터 공간 메모리 할당
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[group.Count];
-
-                                                //  Drilling 데이터 개수
-                                                //m_nOutlineData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
-                                                m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
-
-
-                                                //  Pre-Drilling 추가 시간
-                                                //if (Config.ParamConfig.bPreDrilling_Use)
-                                                //{
-                                                //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //    else                                                        //  Rect 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //}
-
-                                                //  Drilling 추가 시간
-                                                //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
-                                                //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
-                                                //else                                                                       //  rect 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
-                                            }
-                                            else if (m_nRectangleData_Count > 0)                                          //  데이터가 모두 Rectangle 인 경우
-                                            {
-                                                m_nDrillingData_Type = (int)ObjectType.OBJECT_RECT;
-
-                                                //  전체 Object 개수
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = group.Count;
-
-                                                //  Object 별 데이터 공간 메모리 할당
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[group.Count];
-
-                                                //  Drilling 데이터 개수
-                                                //m_nOutlineData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
-                                                m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
-
-
-                                                //  Pre-Drilling 추가 시간
-                                                //if (Config.ParamConfig.bPreDrilling_Use)
-                                                //{
-                                                //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //    else                                                        //  Rect 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //}
-
-                                                //  Drilling 추가 시간
-                                                //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
-                                                //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
-                                                //else                                                                       //  rect 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
-                                            }
-                                            else if (m_nLineData_Count > 0)                                         //  데이터가 모두 Line 인 경우
-                                            {
-                                                if ((m_nLineData_Count % 4) != 0)                                       //  "Drilling Data 에 Line 데이터 개수가 4의 배수가 아닙니다."
-                                                {
-                                                    return (int)nGetDataResult.GETDATA_DRILDATA_LINECNT;
-                                                }
-
-                                                m_nDrillingData_Type = (int)ObjectType.OBJECT_LINE;
-
-                                                m_bDrillingData_isLine = true;
-
-                                                //  Line Data 4개로 사각형을 만들어야 한다. Line 4개 당 1개의 polyline 저장 공간을 할당한다.
-
-                                                //  전체 Object 개수
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = m_nLineData_Count / 4;
-
-                                                //  Object 별 데이터 공간 메모리 할당
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[m_nLineData_Count / 4];
-
-                                                //  Drilling 데이터 개수
-                                                m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
-
-
-                                                //  Pre-Drilling 추가 시간
-                                                //if (Config.ParamConfig.bPreDrilling_Use)
-                                                //{
-                                                //    //  Pre-Drilling 추가 시간
-                                                //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //    else                                                        //  Rect 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //}
-
-                                                //  Drilling 추가 시간
-                                                //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
-                                                //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
-                                                //else                                                                       //  rect 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
+                                                //  요건 조건 보고 살리자
+                                                m_bGroupExist_LargerThanDivideSize = true;
                                             }
 
-                                            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                            /// 원 모양일 경우, 요걸 쓰거나
-                                            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                            else if (m_nCircleData_Count > 0)                                       //  데이터가 모두 Circle 인 경우 
+                                            break;
+                                    }
+                                }
+
+                                foreach (var entity in layer)
+                                {
+                                    switch (entity.EntityType)
+                                    {
+                                        case EType.Point:
+                                            var point = entity as SpiralLab.Sirius.Point;
+                                            //point.Location 
+                                            //point.DwellTime
+                                            //success &= point.Mark(markerArg);
+                                            break;
+
+                                        case EType.Points:
+                                            var points = entity as Points;
+                                            foreach (var vertex in points)
                                             {
-                                                m_nDrillingData_Type = (int)ObjectType.OBJECT_CIR;
-
-                                                //  전체 Object 개수
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = group.Count;
-
-                                                //  Object 별 데이터 공간 메모리 할당
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[group.Count];
-
-                                                //  Drilling 데이터 개수
-                                                m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
-
-
-                                                //  Pre-Drilling 추가 시간
-                                                //if (Config.ParamConfig.bPreDrilling_Use)
-                                                //{
-                                                //    //  Pre-Drilling 추가 시간
-                                                //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //    else                                                        //  Rect 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //}
-
-                                                //  Drilling 추가 시간
-                                                //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
-                                                //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
-                                                //else                                                                       //  rect 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
+                                                //vertex.X
+                                                //vertex.Y
                                             }
-                                            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                            /// 원 모양일 경우, 요걸 쓰거나
-                                            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                            else if (m_nArcData_Count > 0)                                       //  데이터가 모두 Arc 인 경우 
-                                            {
-                                                m_nDrillingData_Type = (int)ObjectType.OBJECT_ARC;
+                                            //points.DwellTime
+                                            //success &= points.Mark(markerArg);
+                                            break;
 
-                                                //  전체 Object 개수
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = group.Count;
+                                        case EType.Line:
+                                            var line = entity as SpiralLab.Sirius.Line;
 
-                                                //  Object 별 데이터 공간 메모리 할당
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[group.Count];
+                                            //line.Start
+                                            //line.End
+                                            //success &= line.Mark(markerArg);
+                                            break;
 
-                                                //  Drilling 데이터 개수
-                                                m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
+                                        case EType.Arc:
+                                            var arc = entity as SpiralLab.Sirius.Arc;
+                                            //arc.Radius
+                                            //arc.Center
+                                            //arc.StartAngle
+                                            //arc.SweepAngle
+                                            //success &= arc.Mark(markerArg);
+                                            break;
 
+                                        case EType.Circle:
+                                            var circle = entity as SpiralLab.Sirius.Circle;
 
-                                                //  Pre-Drilling 추가 시간
-                                                //if (Config.ParamConfig.bPreDrilling_Use)
-                                                //{
-                                                //    //  Pre-Drilling 추가 시간
-                                                //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //    else                                                        //  Rect 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //}
+                                            //circle.Center 
+                                            //circle.Radius
+                                            //success &= circle.Mark(markerArg);
+                                            break;
 
-                                                //  Drilling 추가 시간
-                                                //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
-                                                //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
-                                                //else                                                                       //  rect 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
-                                            }
+                                        case EType.Rectangle:
+                                            var rectangle = entity as SpiralLab.Sirius.Rectangle;
 
-                                            ///
+                                            //rectangle.Width
+                                            //rectangle.Height
+                                            //rectangle.Align
+                                            //rectangle.Location
+                                            //success &= rectangle.Mark(markerArg);
+                                            break;
+
+                                        case EType.LWPolyline:
+                                            var lwPolyline = entity as SpiralLab.Sirius.LwPolyline;
+                                            //lwPolyline.IsClosed
+
+                                            //foreach (var vertex in lwPolyline)
+                                            //{
+                                            //    //vertex.X
+                                            //    //vertex.Y
+                                            //    //vertex.Bulge
+                                            //}
+                                            //success &= lwPolyline.Mark(markerArg);
+                                            break;
+
+                                        case EType.Spiral:
+                                            var spiral = entity as Spiral;
+                                            //spiral.OutterDiameter
+                                            //spiral.InnerDiameter
+                                            //spiral.RadialPitch
+                                            //spiral.Revolutions
+                                            //spiral.Center
+                                            //success &= spiral.Mark(markerArg);
+                                            break;
+
+                                        case EType.Group:
+                                        default:
+                                            var group = entity as Group;
+
+                                            //m_stDrilling_LayerData = new WorkStage.stDrilling_LayerData();
+
                                             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                            /// Drilling 데이터가 Polyline 이면 좋지만, Line 일 경우는 Polyline 처럼 Drilling Hole 에 대한 데이터로 정리해줘야 한다. (Line 4개가 1개의 Drilling Hole 이 된다.)
+                                            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                            ///
+                                            m_nOtherData_Count = 0;
+                                            m_nPolylineData_Count = 0;
+                                            m_nLineData_Count = 0;
+                                            m_nRectangleData_Count = 0;
+                                            m_nCircleData_Count = 0;
+                                            m_nArcData_Count = 0;
 
-                                            //  Group 별 Center 좌표 저장
-                                            m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].dGroupCenter.X = (double)group.Location.X;
-                                            m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].dGroupCenter.Y = (double)group.Location.Y;
-
-                                            //  Drilling Hole 이 Line 으로 되어있을 경우, 4개 당 1개의 Hole 로 만들기 위한 카운트 변수
-                                            m_nEachDrillHole_LineCount = 0;
-
-                                            //  세부 데이터 저장
-                                            m_nGroupData_Count = 0;
-                                            foreach (var subEntity in group)
+                                            //  Line 데이터가 몇개 있는지 확인 (4의 배수가 되어야 함. 사각형이기 때문에)
+                                            foreach (var subEntity_forLineCount in group)
                                             {
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_nGroupData_Count].bAssigned = false;
+                                                Type t = subEntity_forLineCount.GetType();
 
-                                                Type t = subEntity.GetType();
                                                 if (t.Name == "LwPolyline")
                                                 {
-                                                    var pl = subEntity as SpiralLab.Sirius.LwPolyline;
-
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
-
-                                                    //  객체 Type
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_POLY;
-
-                                                    //  객체 Edge 좌표 개수
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].nEdgePointNum = pl.IsClosed ? pl.Count + 1 : pl.Count;
-
-                                                    //  객체 Edge 좌표 데이터 저장
-                                                    for (int n_pl = 0; n_pl < pl.Count; n_pl++)
-                                                    {
-                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[n_pl].X = (double)pl.Items[n_pl].X;
-                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[n_pl].Y = (double)pl.Items[n_pl].Y;
-                                                    }
-
-                                                    //  닫힌 도형일 경우, 시작 좌표 한번 더 추가)
-                                                    if (pl.IsClosed)
-                                                    {
-                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[pl.Count].X = (double)pl.Items[0].X;
-                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[pl.Count].Y = (double)pl.Items[0].Y;
-                                                    }
-
-                                                    //  Jump 데이터 길이 누적
-                                                    if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
-                                                    {
-                                                        m_ptFrom.X = (double)m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X;
-                                                        m_ptFrom.Y = (double)m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y;
-                                                        m_ptTo.X = (double)m_ptLast.X;
-                                                        m_ptTo.Y = (double)m_ptLast.Y;
-
-                                                        //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
-                                                        //}
-                                                    }
-
-                                                    //  마지막 좌표 위치 저장
-                                                    m_ptLast.X = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X;
-                                                    m_ptLast.Y = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y;
-
-                                                    //  가공 데이터 길이 누적
-                                                    for (int n_pl = 0; n_pl < pl.Count - 1; n_pl++)
-                                                    {
-                                                        m_ptFrom.X = (double)pl.Items[n_pl].X;
-                                                        m_ptFrom.Y = (double)pl.Items[n_pl].Y;
-                                                        m_ptTo.X = (double)pl.Items[n_pl + 1].X;
-                                                        m_ptTo.Y = (double)pl.Items[n_pl + 1].Y;
-
-                                                        //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingDataLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingDataLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
-                                                        //{
-                                                        //    m_dTotal_DrillingDataLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
-                                                        //}
-                                                    }
-
-                                                    //  영역 객체 개수 +1
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount++;
-                                                }
-                                                else if (t.Name == "Circle")
-                                                {
-                                                    var pl = subEntity as SpiralLab.Sirius.Circle;
-
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-
-                                                    //  객체 Type
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_CIR;
-
-                                                    //  객체 Edge 좌표 개수
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].nEdgePointNum = 1;
-
-                                                    //  객체 Edge 좌표 데이터 저장 (Circle Center, Circle 은 1개 고정)
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X;
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y;
-
-                                                    //  Circle 의 경우, 두 번째 데이터는 Radius 값
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Radius;
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Radius;
-
-                                                    //  Jump 데이터 길이 누적
-                                                    if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
-                                                    {
-                                                        m_ptFrom.X = (double)pl.Center.X;
-                                                        m_ptFrom.Y = (double)pl.Center.Y;
-                                                        m_ptTo.X = (double)m_ptLast.X;
-                                                        m_ptTo.Y = (double)m_ptLast.Y;
-
-                                                        //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
-                                                        //}
-                                                    }
-
-                                                    //  마지막 좌표 위치 저장
-                                                    m_ptLast.X = (double)pl.Center.X;
-                                                    m_ptLast.Y = (double)pl.Center.Y;
-
-                                                    ////  가공 데이터 길이 누적
-                                                    //m_dTotal_DrillingDataLength += (double)pl.Radius * 2.0 * Math.PI;
-
-                                                    //  영역 객체 개수 +1
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount++;
-                                                }
-                                                else if (t.Name == "Rectangle")
-                                                {
-                                                    var pl = subEntity as SpiralLab.Sirius.Rectangle;
-
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
-
-                                                    //  객체 Type
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_RECT;
-
-                                                    //  객체 Edge 좌표 개수
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].nEdgePointNum = 5;
-
-                                                    //  객체 Edge 좌표 데이터 저장 (Rectangle 은 4개 고정)
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
-
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
-
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[2].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[2].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
-
-                                                    //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[0].nRegion_ObjectCount].dEdgePoint[3].X = (double)pl.Center.X - ((double)pl.Width / 2.0);              //  왜 이걸로 되어 있는고?
-                                                    //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[0].nRegion_ObjectCount].dEdgePoint[3].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);             //  왜 이걸로 되어 있는고?
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[3].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[3].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
-
-                                                    //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[0].nRegion_ObjectCount].dEdgePoint[4].X = (double)pl.Center.X - ((double)pl.Width / 2.0);              //  왜 이걸로 되어 있는고?
-                                                    //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[0].nRegion_ObjectCount].dEdgePoint[4].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);             //  왜 이걸로 되어 있는고?
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[4].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[4].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
-
-                                                    //  Jump 데이터 길이 누적
-                                                    if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
-                                                    {
-                                                        m_ptFrom.X = (double)m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X;
-                                                        m_ptFrom.Y = (double)m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y;
-                                                        m_ptTo.X = (double)m_ptLast.X;
-                                                        m_ptTo.Y = (double)m_ptLast.Y;
-
-                                                        //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
-                                                        //}
-                                                    }
-
-                                                    //  마지막 좌표 위치 저장
-                                                    m_ptLast.X = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X;
-                                                    m_ptLast.Y = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y;
-
-                                                    ////  가공 데이터 길이 누적
-                                                    //m_dTotal_DrillingDataLength += ((double)pl.Width * 2.0) + ((double)pl.Height * 2.0);
-
-                                                    //  영역 객체 개수 +1
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount++;
+                                                    m_nPolylineData_Count++;
                                                 }
                                                 else if (t.Name == "Line")
                                                 {
-                                                    var pl = subEntity as SpiralLab.Sirius.Line;
+                                                    m_nLineData_Count++;
+                                                }
+                                                else if (t.Name == "Circle")
+                                                {
+                                                    m_nCircleData_Count++;
+                                                }
+                                                else if (t.Name == "Arc")
+                                                {
+                                                    m_nArcData_Count++;
+                                                }
+                                                else if (t.Name == "Rectangle")
+                                                {
+                                                    m_nRectangleData_Count++;
+                                                }
+                                                else
+                                                {
+                                                    m_nOtherData_Count++;
+                                                }
+                                            }
 
-                                                    //  Line 데이터를 Polyline 처럼 변경한다. (나열된 Line 으로는 드릴홀인지 아닌지 확인이 안됨)
+                                            if ((m_nOtherData_Count > 0) ||                                         //  "Drilling Data 는 Polyline, Rectangle, Line, Circle, Arc 중 한 가지 데이터로만 구성되어야 합니다."
+                                                ((m_nPolylineData_Count > 0) && (m_nLineData_Count > 0)) ||
+                                                ((m_nPolylineData_Count > 0) && (m_nCircleData_Count > 0)) ||
+                                                ((m_nPolylineData_Count > 0) && (m_nArcData_Count > 0)) ||
+                                                ((m_nPolylineData_Count > 0) && (m_nRectangleData_Count > 0)) ||
 
-                                                    if (m_nEachDrillHole_LineCount == 0)              //  사각형을 이루는 Line 의 시작
+                                                ((m_nLineData_Count > 0) && (m_nCircleData_Count > 0)) ||
+                                                ((m_nLineData_Count > 0) && (m_nArcData_Count > 0)) ||
+                                                ((m_nLineData_Count > 0) && (m_nRectangleData_Count > 0)) ||
+
+                                                ((m_nCircleData_Count > 0) && (m_nArcData_Count > 0)) ||
+                                                ((m_nCircleData_Count > 0) && (m_nRectangleData_Count > 0)) ||
+
+                                                ((m_nArcData_Count > 0) && (m_nRectangleData_Count > 0)))
+                                            {
+                                                return (int)nGetDataResult.GETDATA_DRILDATA_NG;
+                                            }
+
+
+                                            //  2024. 01. 29.  SCH : [테스트] 미세홀 가공 시 무조건 Div 로 하기 위함.
+                                            m_bGroupExist_LargerThanDivideSize = true;
+
+                                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                            //
+                                            //  [드릴링] [ScannerOnly]  :  Group Data 가 Scanner FOV 이내인 경우
+                                            //
+                                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                            //if ((double)group.Width <= Config.ParamConfig.Drilling_DivideSize)
+                                            if (!m_bGroupExist_LargerThanDivideSize)
+                                            {
+                                                m_stLayerType.m_bDrillingGroupSize_withinScannerFOV = true;
+                                                m_bDrillingData_isLine = false;
+
+                                                if (m_nPolylineData_Count > 0)                                          //  데이터가 모두 Polyline 인 경우
+                                                {
+                                                    m_nDrillingData_Type = (int)ObjectType.OBJECT_POLY;
+
+                                                    //  전체 Object 개수
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = group.Count;
+
+                                                    //  Object 별 데이터 공간 메모리 할당
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[group.Count];
+
+                                                    //  Drilling 데이터 개수
+                                                    //m_nOutlineData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
+                                                    m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
+
+
+                                                    //  Pre-Drilling 추가 시간
+                                                    //if (Config.ParamConfig.bPreDrilling_Use)
+                                                    //{
+                                                    //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //    else                                                        //  Rect 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //}
+
+                                                    //  Drilling 추가 시간
+                                                    //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
+                                                    //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
+                                                    //else                                                                       //  rect 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
+                                                }
+                                                else if (m_nRectangleData_Count > 0)                                          //  데이터가 모두 Rectangle 인 경우
+                                                {
+                                                    m_nDrillingData_Type = (int)ObjectType.OBJECT_RECT;
+
+                                                    //  전체 Object 개수
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = group.Count;
+
+                                                    //  Object 별 데이터 공간 메모리 할당
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[group.Count];
+
+                                                    //  Drilling 데이터 개수
+                                                    //m_nOutlineData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
+                                                    m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
+
+
+                                                    //  Pre-Drilling 추가 시간
+                                                    //if (Config.ParamConfig.bPreDrilling_Use)
+                                                    //{
+                                                    //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //    else                                                        //  Rect 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //}
+
+                                                    //  Drilling 추가 시간
+                                                    //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
+                                                    //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
+                                                    //else                                                                       //  rect 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
+                                                }
+                                                else if (m_nLineData_Count > 0)                                         //  데이터가 모두 Line 인 경우
+                                                {
+                                                    if ((m_nLineData_Count % 4) != 0)                                       //  "Drilling Data 에 Line 데이터 개수가 4의 배수가 아닙니다."
                                                     {
-                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  사각형은 좌표 개수가 5개 (시작 위치에서 다시 시작 위치로 와야 함)
-                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  사각형은 좌표 개수가 5개 (시작 위치에서 다시 시작 위치로 와야 함)   - 내부 가공에 사용                                                          
+                                                        return (int)nGetDataResult.GETDATA_DRILDATA_LINECNT;
+                                                    }
+
+                                                    m_nDrillingData_Type = (int)ObjectType.OBJECT_LINE;
+
+                                                    m_bDrillingData_isLine = true;
+
+                                                    //  Line Data 4개로 사각형을 만들어야 한다. Line 4개 당 1개의 polyline 저장 공간을 할당한다.
+
+                                                    //  전체 Object 개수
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = m_nLineData_Count / 4;
+
+                                                    //  Object 별 데이터 공간 메모리 할당
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[m_nLineData_Count / 4];
+
+                                                    //  Drilling 데이터 개수
+                                                    m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
+
+
+                                                    //  Pre-Drilling 추가 시간
+                                                    //if (Config.ParamConfig.bPreDrilling_Use)
+                                                    //{
+                                                    //    //  Pre-Drilling 추가 시간
+                                                    //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //    else                                                        //  Rect 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //}
+
+                                                    //  Drilling 추가 시간
+                                                    //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
+                                                    //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
+                                                    //else                                                                       //  rect 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
+                                                }
+
+                                                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                                /// 원 모양일 경우, 요걸 쓰거나
+                                                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                                else if (m_nCircleData_Count > 0)                                       //  데이터가 모두 Circle 인 경우 
+                                                {
+                                                    m_nDrillingData_Type = (int)ObjectType.OBJECT_CIR;
+
+                                                    //  전체 Object 개수
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = group.Count;
+
+                                                    //  Object 별 데이터 공간 메모리 할당
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[group.Count];
+
+                                                    //  Drilling 데이터 개수
+                                                    m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
+
+
+                                                    //  Pre-Drilling 추가 시간
+                                                    //if (Config.ParamConfig.bPreDrilling_Use)
+                                                    //{
+                                                    //    //  Pre-Drilling 추가 시간
+                                                    //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //    else                                                        //  Rect 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //}
+
+                                                    //  Drilling 추가 시간
+                                                    //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
+                                                    //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
+                                                    //else                                                                       //  rect 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
+                                                }
+                                                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                                /// 원 모양일 경우, 요걸 쓰거나
+                                                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                                else if (m_nArcData_Count > 0)                                       //  데이터가 모두 Arc 인 경우 
+                                                {
+                                                    m_nDrillingData_Type = (int)ObjectType.OBJECT_ARC;
+
+                                                    //  전체 Object 개수
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = group.Count;
+
+                                                    //  Object 별 데이터 공간 메모리 할당
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[group.Count];
+
+                                                    //  Drilling 데이터 개수
+                                                    m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
+
+
+                                                    //  Pre-Drilling 추가 시간
+                                                    //if (Config.ParamConfig.bPreDrilling_Use)
+                                                    //{
+                                                    //    //  Pre-Drilling 추가 시간
+                                                    //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //    else                                                        //  Rect 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //}
+
+                                                    //  Drilling 추가 시간
+                                                    //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
+                                                    //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
+                                                    //else                                                                       //  rect 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
+                                                }
+
+                                                ///
+                                                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                                                //  Group 별 Center 좌표 저장
+                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].dGroupCenter.X = (double)group.Location.X;
+                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].dGroupCenter.Y = (double)group.Location.Y;
+
+                                                //  Drilling Hole 이 Line 으로 되어있을 경우, 4개 당 1개의 Hole 로 만들기 위한 카운트 변수
+                                                m_nEachDrillHole_LineCount = 0;
+
+                                                //  세부 데이터 저장
+                                                m_nGroupData_Count = 0;
+                                                foreach (var subEntity in group)
+                                                {
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_nGroupData_Count].bAssigned = false;
+
+                                                    Type t = subEntity.GetType();
+                                                    if (t.Name == "LwPolyline")
+                                                    {
+                                                        var pl = subEntity as SpiralLab.Sirius.LwPolyline;
+
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
 
                                                         //  객체 Type
                                                         m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_POLY;
 
                                                         //  객체 Edge 좌표 개수
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].nEdgePointNum = pl.IsClosed ? pl.Count + 1 : pl.Count;
+
+                                                        //  객체 Edge 좌표 데이터 저장
+                                                        for (int n_pl = 0; n_pl < pl.Count; n_pl++)
+                                                        {
+                                                            m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[n_pl].X = (double)pl.Items[n_pl].X;
+                                                            m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[n_pl].Y = (double)pl.Items[n_pl].Y;
+                                                        }
+
+                                                        //  닫힌 도형일 경우, 시작 좌표 한번 더 추가)
+                                                        if (pl.IsClosed)
+                                                        {
+                                                            m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[pl.Count].X = (double)pl.Items[0].X;
+                                                            m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[pl.Count].Y = (double)pl.Items[0].Y;
+                                                        }
+
+                                                        //  Jump 데이터 길이 누적
+                                                        if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
+                                                        {
+                                                            m_ptFrom.X = (double)m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X;
+                                                            m_ptFrom.Y = (double)m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                                            m_ptTo.X = (double)m_ptLast.X;
+                                                            m_ptTo.Y = (double)m_ptLast.Y;
+
+                                                            //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
+                                                            //}
+                                                        }
+
+                                                        //  마지막 좌표 위치 저장
+                                                        m_ptLast.X = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X;
+                                                        m_ptLast.Y = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y;
+
+                                                        //  가공 데이터 길이 누적
+                                                        for (int n_pl = 0; n_pl < pl.Count - 1; n_pl++)
+                                                        {
+                                                            m_ptFrom.X = (double)pl.Items[n_pl].X;
+                                                            m_ptFrom.Y = (double)pl.Items[n_pl].Y;
+                                                            m_ptTo.X = (double)pl.Items[n_pl + 1].X;
+                                                            m_ptTo.Y = (double)pl.Items[n_pl + 1].Y;
+
+                                                            //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingDataLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingDataLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
+                                                            //{
+                                                            //    m_dTotal_DrillingDataLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
+                                                            //}
+                                                        }
+
+                                                        //  영역 객체 개수 +1
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount++;
+                                                    }
+                                                    else if (t.Name == "Circle")
+                                                    {
+                                                        var pl = subEntity as SpiralLab.Sirius.Circle;
+
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+
+                                                        //  객체 Type
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_CIR;
+
+                                                        //  객체 Edge 좌표 개수
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].nEdgePointNum = 1;
+
+                                                        //  객체 Edge 좌표 데이터 저장 (Circle Center, Circle 은 1개 고정)
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X;
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y;
+
+                                                        //  Circle 의 경우, 두 번째 데이터는 Radius 값
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Radius;
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Radius;
+
+                                                        //  Jump 데이터 길이 누적
+                                                        if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
+                                                        {
+                                                            m_ptFrom.X = (double)pl.Center.X;
+                                                            m_ptFrom.Y = (double)pl.Center.Y;
+                                                            m_ptTo.X = (double)m_ptLast.X;
+                                                            m_ptTo.Y = (double)m_ptLast.Y;
+
+                                                            //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
+                                                            //}
+                                                        }
+
+                                                        //  마지막 좌표 위치 저장
+                                                        m_ptLast.X = (double)pl.Center.X;
+                                                        m_ptLast.Y = (double)pl.Center.Y;
+
+                                                        ////  가공 데이터 길이 누적
+                                                        //m_dTotal_DrillingDataLength += (double)pl.Radius * 2.0 * Math.PI;
+
+                                                        //  영역 객체 개수 +1
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount++;
+                                                    }
+                                                    else if (t.Name == "Rectangle")
+                                                    {
+                                                        var pl = subEntity as SpiralLab.Sirius.Rectangle;
+
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
+
+                                                        //  객체 Type
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_RECT;
+
+                                                        //  객체 Edge 좌표 개수
                                                         m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].nEdgePointNum = 5;
 
-                                                        //  1 번째 Edge 좌표 저장 (Start)
-                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].X = (double)pl.Start.X;
-                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].Y = (double)pl.Start.Y;
-                                                        m_nEachDrillHole_LineCount++;
+                                                        //  객체 Edge 좌표 데이터 저장 (Rectangle 은 4개 고정)
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
 
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
 
-                                                        ////  기울어진 사각형에는 사용할 수 없는 코드
-                                                        //{
-                                                        //    //  2 번째 Edge 좌표 저장 (End)
-                                                        //    //  1 번째 Edge 좌표의 End 좌표와 거리가 먼 Start or End 좌표가 진짜 End 좌표이다.
-                                                        //    if (((m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.
-                                                        //        m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].X - 0.002) <= (double)pl.End.X) &&
-                                                        //        ((m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.
-                                                        //        m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].X + 0.002) >= (double)pl.End.X) &&
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[2].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[2].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
 
-                                                        //        ((m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.
-                                                        //        m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].Y - 0.002) <= (double)pl.End.Y) &&
-                                                        //        ((m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.
-                                                        //        m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].Y + 0.002) >= (double)pl.End.Y))
-                                                        //    {
-                                                        //        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].X = (double)pl.Start.X;
-                                                        //        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].Y = (double)pl.Start.Y;
-                                                        //    }
-                                                        //    else
-                                                        //    {
-                                                        //        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].X = (double)pl.End.X;
-                                                        //        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].Y = (double)pl.End.Y;
-                                                        //    }
-                                                        //}
-                                                        //m_nEachDrillHole_LineCount++;
-                                                    }
-                                                    else
-                                                    {
-                                                        ////  기울어진 사각형에는 사용할 수 없는 코드
-                                                        //{
-                                                        //    //  3 ~ 5 번째 Edge 좌표 저장 (End 위치만 사용)
-                                                        //    //  앞 Line 의 End 좌표와 거리가 먼 Start or End 좌표가 진짜 End 좌표이다.
-                                                        //    //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].X = (double)pl.End.X;
-                                                        //    //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].Y = (double)pl.End.Y;
-                                                        //    if (((m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.
-                                                        //        m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].X - 0.002) <= (double)pl.End.X) &&
-                                                        //        ((m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.
-                                                        //        m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].X + 0.002) >= (double)pl.End.X) &&
+                                                        //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[0].nRegion_ObjectCount].dEdgePoint[3].X = (double)pl.Center.X - ((double)pl.Width / 2.0);              //  왜 이걸로 되어 있는고?
+                                                        //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[0].nRegion_ObjectCount].dEdgePoint[3].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);             //  왜 이걸로 되어 있는고?
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[3].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[3].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
 
-                                                        //        ((m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.
-                                                        //        m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].Y - 0.002) <= (double)pl.End.Y) &&
-                                                        //        ((m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.
-                                                        //        m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].Y + 0.002) >= (double)pl.End.Y))
-                                                        //    {
-                                                        //        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].X = (double)pl.Start.X;
-                                                        //        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].Y = (double)pl.Start.Y;
-                                                        //    }
-                                                        //    else
-                                                        //    {
-                                                        //        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].X = (double)pl.End.X;
-                                                        //        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].Y = (double)pl.End.Y;
-                                                        //    }
-                                                        //}
+                                                        //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[0].nRegion_ObjectCount].dEdgePoint[4].X = (double)pl.Center.X - ((double)pl.Width / 2.0);              //  왜 이걸로 되어 있는고?
+                                                        //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[0].nRegion_ObjectCount].dEdgePoint[4].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);             //  왜 이걸로 되어 있는고?
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[4].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[4].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
 
-                                                        //  라인이 순서대로 되어 있다는 가정 하에 사용할 수 있는 코드
+                                                        //  Jump 데이터 길이 누적
+                                                        if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
                                                         {
-                                                            //  2 ~ 4 번째 Edge 좌표 저장 (Start), 5 번째는 처음 위치의 좌표값을 넣어줌
+                                                            m_ptFrom.X = (double)m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X;
+                                                            m_ptFrom.Y = (double)m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                                            m_ptTo.X = (double)m_ptLast.X;
+                                                            m_ptTo.Y = (double)m_ptLast.Y;
+
+                                                            //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
+                                                            //}
+                                                        }
+
+                                                        //  마지막 좌표 위치 저장
+                                                        m_ptLast.X = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X;
+                                                        m_ptLast.Y = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y;
+
+                                                        ////  가공 데이터 길이 누적
+                                                        //m_dTotal_DrillingDataLength += ((double)pl.Width * 2.0) + ((double)pl.Height * 2.0);
+
+                                                        //  영역 객체 개수 +1
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount++;
+                                                    }
+                                                    else if (t.Name == "Line")
+                                                    {
+                                                        var pl = subEntity as SpiralLab.Sirius.Line;
+
+                                                        //  Line 데이터를 Polyline 처럼 변경한다. (나열된 Line 으로는 드릴홀인지 아닌지 확인이 안됨)
+
+                                                        if (m_nEachDrillHole_LineCount == 0)              //  사각형을 이루는 Line 의 시작
+                                                        {
+                                                            m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  사각형은 좌표 개수가 5개 (시작 위치에서 다시 시작 위치로 와야 함)
+                                                            m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  사각형은 좌표 개수가 5개 (시작 위치에서 다시 시작 위치로 와야 함)   - 내부 가공에 사용                                                          
+
+                                                            //  객체 Type
+                                                            m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_POLY;
+
+                                                            //  객체 Edge 좌표 개수
+                                                            m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].nEdgePointNum = 5;
+
+                                                            //  1 번째 Edge 좌표 저장 (Start)
                                                             m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].X = (double)pl.Start.X;
                                                             m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].Y = (double)pl.Start.Y;
+                                                            m_nEachDrillHole_LineCount++;
+
+
+                                                            ////  기울어진 사각형에는 사용할 수 없는 코드
+                                                            //{
+                                                            //    //  2 번째 Edge 좌표 저장 (End)
+                                                            //    //  1 번째 Edge 좌표의 End 좌표와 거리가 먼 Start or End 좌표가 진짜 End 좌표이다.
+                                                            //    if (((m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.
+                                                            //        m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].X - 0.002) <= (double)pl.End.X) &&
+                                                            //        ((m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.
+                                                            //        m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].X + 0.002) >= (double)pl.End.X) &&
+
+                                                            //        ((m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.
+                                                            //        m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].Y - 0.002) <= (double)pl.End.Y) &&
+                                                            //        ((m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.
+                                                            //        m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].Y + 0.002) >= (double)pl.End.Y))
+                                                            //    {
+                                                            //        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].X = (double)pl.Start.X;
+                                                            //        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].Y = (double)pl.Start.Y;
+                                                            //    }
+                                                            //    else
+                                                            //    {
+                                                            //        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].X = (double)pl.End.X;
+                                                            //        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].Y = (double)pl.End.Y;
+                                                            //    }
+                                                            //}
+                                                            //m_nEachDrillHole_LineCount++;
                                                         }
-
-                                                        m_nEachDrillHole_LineCount++;
-
-                                                        //  마지막 Edge 좌표(5 번째) 였으면? --> Object 개수 증가, Line Count 0 세팅
-                                                        //if (m_nEachDrillHole_LineCount == 5)                                          //  기울어진 사각형에는 사용할 수 없는 코드
-                                                        if (m_nEachDrillHole_LineCount == 4)                                            //  라인이 순서대로 되어 있다는 가정 하에 사용할 수 있는 코드
+                                                        else
                                                         {
+                                                            ////  기울어진 사각형에는 사용할 수 없는 코드
+                                                            //{
+                                                            //    //  3 ~ 5 번째 Edge 좌표 저장 (End 위치만 사용)
+                                                            //    //  앞 Line 의 End 좌표와 거리가 먼 Start or End 좌표가 진짜 End 좌표이다.
+                                                            //    //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].X = (double)pl.End.X;
+                                                            //    //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].Y = (double)pl.End.Y;
+                                                            //    if (((m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.
+                                                            //        m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].X - 0.002) <= (double)pl.End.X) &&
+                                                            //        ((m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.
+                                                            //        m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].X + 0.002) >= (double)pl.End.X) &&
+
+                                                            //        ((m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.
+                                                            //        m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].Y - 0.002) <= (double)pl.End.Y) &&
+                                                            //        ((m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.
+                                                            //        m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].Y + 0.002) >= (double)pl.End.Y))
+                                                            //    {
+                                                            //        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].X = (double)pl.Start.X;
+                                                            //        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].Y = (double)pl.Start.Y;
+                                                            //    }
+                                                            //    else
+                                                            //    {
+                                                            //        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].X = (double)pl.End.X;
+                                                            //        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].Y = (double)pl.End.Y;
+                                                            //    }
+                                                            //}
+
                                                             //  라인이 순서대로 되어 있다는 가정 하에 사용할 수 있는 코드
                                                             {
-                                                                //  5 번째는 처음 위치의 좌표값을 넣어줌
-                                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].X =
-                                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X;
-                                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].Y =
-                                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                                                //  2 ~ 4 번째 Edge 좌표 저장 (Start), 5 번째는 처음 위치의 좌표값을 넣어줌
+                                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].X = (double)pl.Start.X;
+                                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].Y = (double)pl.Start.Y;
                                                             }
 
+                                                            m_nEachDrillHole_LineCount++;
 
-
-                                                            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                                            //  데이터 좌표계 정규화
-
-                                                            //  Min, Max 좌표
-                                                            m_dLine_Min_X = double.MaxValue;
-                                                            m_dLine_Max_X = double.MinValue;
-                                                            m_dLine_Min_Y = double.MaxValue;
-                                                            m_dLine_Max_Y = double.MinValue;
-
-                                                            //  기울어진 사각형에는 사용할 수 없는 코드
-                                                            for (int i = 0; i < 4; i++)
+                                                            //  마지막 Edge 좌표(5 번째) 였으면? --> Object 개수 증가, Line Count 0 세팅
+                                                            //if (m_nEachDrillHole_LineCount == 5)                                          //  기울어진 사각형에는 사용할 수 없는 코드
+                                                            if (m_nEachDrillHole_LineCount == 4)                                            //  라인이 순서대로 되어 있다는 가정 하에 사용할 수 있는 코드
                                                             {
-                                                                if (m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[i].X >= m_dLine_Max_X)
-                                                                    m_dLine_Max_X = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[i].X;
-                                                                if (m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[i].X <= m_dLine_Min_X)
-                                                                    m_dLine_Min_X = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[i].X;
+                                                                //  라인이 순서대로 되어 있다는 가정 하에 사용할 수 있는 코드
+                                                                {
+                                                                    //  5 번째는 처음 위치의 좌표값을 넣어줌
+                                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].X =
+                                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X;
+                                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount].Y =
+                                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                                                }
 
-                                                                if (m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[i].Y >= m_dLine_Max_Y)
-                                                                    m_dLine_Max_Y = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[i].Y;
-                                                                if (m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[i].Y <= m_dLine_Min_Y)
-                                                                    m_dLine_Min_Y = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[i].Y;
+
+
+                                                                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                                                //  데이터 좌표계 정규화
+
+                                                                //  Min, Max 좌표
+                                                                m_dLine_Min_X = double.MaxValue;
+                                                                m_dLine_Max_X = double.MinValue;
+                                                                m_dLine_Min_Y = double.MaxValue;
+                                                                m_dLine_Max_Y = double.MinValue;
+
+                                                                //  기울어진 사각형에는 사용할 수 없는 코드
+                                                                for (int i = 0; i < 4; i++)
+                                                                {
+                                                                    if (m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[i].X >= m_dLine_Max_X)
+                                                                        m_dLine_Max_X = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[i].X;
+                                                                    if (m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[i].X <= m_dLine_Min_X)
+                                                                        m_dLine_Min_X = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[i].X;
+
+                                                                    if (m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[i].Y >= m_dLine_Max_Y)
+                                                                        m_dLine_Max_Y = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[i].Y;
+                                                                    if (m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[i].Y <= m_dLine_Min_Y)
+                                                                        m_dLine_Min_Y = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[i].Y;
+                                                                }
+
+                                                                //  직각사각형(?)인 경우에만 적용할 수 있는 코드
+
+                                                                ////  객체 Edge 좌표 데이터 저장 (LT --> LB --> RB --> RT --> LT)
+                                                                ////  Left Top
+                                                                //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
+                                                                //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X = m_dLine_Min_X;
+                                                                //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
+                                                                //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y = m_dLine_Max_Y;
+
+                                                                ////  Left Bottom
+                                                                //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
+                                                                //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[1].X = m_dLine_Min_X;
+                                                                //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
+                                                                //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[1].Y = m_dLine_Min_Y;
+
+                                                                ////  Right Bottom
+                                                                //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
+                                                                //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[2].X = m_dLine_Max_X;
+                                                                //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
+                                                                //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[2].Y = m_dLine_Min_Y;
+
+                                                                ////  Right Top
+                                                                //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
+                                                                //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[3].X = m_dLine_Max_X;
+                                                                //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
+                                                                //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[3].Y = m_dLine_Max_Y;
+
+                                                                ////  Left Top
+                                                                //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
+                                                                //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[4].X = m_dLine_Min_X;
+                                                                //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
+                                                                //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[4].Y = m_dLine_Max_Y;
+
+                                                                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                                                ///
+
+                                                                if ((m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X !=
+                                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].X) ||
+                                                                    (m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y !=
+                                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].Y))
+                                                                {
+                                                                    return (int)nGetDataResult.GETDATA_DRILDATA_NOT_CLOSED;        //  "Line 으로 이루어진 Drilling Data 가 닫힌 도형이 아닙니다."
+                                                                }
+
+                                                                m_nEachDrillHole_LineCount = 0;
+
+                                                                //  Jump 데이터 길이 누적
+                                                                if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
+                                                                {
+                                                                    m_ptFrom.X = (double)m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
+                                                                                        m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X;
+                                                                    m_ptFrom.Y = (double)m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
+                                                                                        m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                                                    m_ptTo.X = (double)m_ptLast.X;
+                                                                    m_ptTo.Y = (double)m_ptLast.Y;
+
+                                                                    //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
+                                                                    //{
+                                                                    //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
+                                                                    //}
+                                                                    //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
+                                                                    //{
+                                                                    //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
+                                                                    //}
+                                                                    //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
+                                                                    //{
+                                                                    //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
+                                                                    //}
+                                                                }
+
+                                                                //  마지막 좌표 위치 저장
+                                                                m_ptLast.X = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
+                                                                            m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X;
+                                                                m_ptLast.Y = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
+                                                                            m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y;
+
+                                                                ////  가공 데이터 길이 누적
+                                                                //m_dTotal_DrillingDataLength += ((m_dLine_Max_X - m_dLine_Min_X) * 2.0) + ((m_dLine_Max_Y - m_dLine_Min_Y) * 2.0);
+
+                                                                //  영역 객체 개수 +1
+                                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount++;
                                                             }
-
-                                                            //  직각사각형(?)인 경우에만 적용할 수 있는 코드
-
-                                                            ////  객체 Edge 좌표 데이터 저장 (LT --> LB --> RB --> RT --> LT)
-                                                            ////  Left Top
-                                                            //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
-                                                            //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X = m_dLine_Min_X;
-                                                            //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
-                                                            //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y = m_dLine_Max_Y;
-
-                                                            ////  Left Bottom
-                                                            //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
-                                                            //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[1].X = m_dLine_Min_X;
-                                                            //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
-                                                            //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[1].Y = m_dLine_Min_Y;
-
-                                                            ////  Right Bottom
-                                                            //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
-                                                            //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[2].X = m_dLine_Max_X;
-                                                            //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
-                                                            //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[2].Y = m_dLine_Min_Y;
-
-                                                            ////  Right Top
-                                                            //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
-                                                            //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[3].X = m_dLine_Max_X;
-                                                            //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
-                                                            //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[3].Y = m_dLine_Max_Y;
-
-                                                            ////  Left Top
-                                                            //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
-                                                            //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[4].X = m_dLine_Min_X;
-                                                            //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
-                                                            //    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[4].Y = m_dLine_Max_Y;
-
-                                                            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                                            ///
-
-                                                            if ((m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X !=
-                                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].X) ||
-                                                                (m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y !=
-                                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[m_nEachDrillHole_LineCount - 1].Y))
-                                                            {
-                                                                return (int)nGetDataResult.GETDATA_DRILDATA_NOT_CLOSED;        //  "Line 으로 이루어진 Drilling Data 가 닫힌 도형이 아닙니다."
-                                                            }
-
-                                                            m_nEachDrillHole_LineCount = 0;
-
-                                                            //  Jump 데이터 길이 누적
-                                                            if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
-                                                            {
-                                                                m_ptFrom.X = (double)m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
-                                                                                    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X;
-                                                                m_ptFrom.Y = (double)m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
-                                                                                    m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y;
-                                                                m_ptTo.X = (double)m_ptLast.X;
-                                                                m_ptTo.Y = (double)m_ptLast.Y;
-
-                                                                //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
-                                                                //{
-                                                                //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
-                                                                //}
-                                                                //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
-                                                                //{
-                                                                //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
-                                                                //}
-                                                                //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
-                                                                //{
-                                                                //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
-                                                                //}
-                                                            }
-
-                                                            //  마지막 좌표 위치 저장
-                                                            m_ptLast.X = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
-                                                                        m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].X;
-                                                            m_ptLast.Y = m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].
-                                                                        m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].dEdgePoint[0].Y;
-
-                                                            ////  가공 데이터 길이 누적
-                                                            //m_dTotal_DrillingDataLength += ((m_dLine_Max_X - m_dLine_Min_X) * 2.0) + ((m_dLine_Max_Y - m_dLine_Min_Y) * 2.0);
-
-                                                            //  영역 객체 개수 +1
-                                                            m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount++;
                                                         }
                                                     }
-                                                }
-                                                else if (t.Name == "Arc")
-                                                {
-                                                    var pl = subEntity as SpiralLab.Sirius.Arc;
-
-                                                    //  객체 Type
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_ARC;
-
-                                                    //  객체 Radius
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].stArcData.dRadius = (double)pl.Radius;
-
-                                                    //  객체 Center 좌표
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].stArcData.dCenter.X = (double)pl.Center.X;
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].stArcData.dCenter.Y = (double)pl.Center.Y;
-
-                                                    //  객체 Start Angle
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].stArcData.dStartAngle = (double)pl.StartAngle;
-
-                                                    //  객체 Sweep Angle
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].stArcData.dSweepAngle = (double)pl.SweepAngle;
-
-                                                    //  Jump 데이터 길이 누적
-                                                    if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
+                                                    else if (t.Name == "Arc")
                                                     {
-                                                        m_ptFrom.X = (double)pl.Center.X;
-                                                        m_ptFrom.Y = (double)pl.Center.Y;
-                                                        m_ptTo.X = (double)m_ptLast.X;
-                                                        m_ptTo.Y = (double)m_ptLast.Y;
+                                                        var pl = subEntity as SpiralLab.Sirius.Arc;
 
-                                                        //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
-                                                        //}
+                                                        //  객체 Type
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_ARC;
+
+                                                        //  객체 Radius
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].stArcData.dRadius = (double)pl.Radius;
+
+                                                        //  객체 Center 좌표
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].stArcData.dCenter.X = (double)pl.Center.X;
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].stArcData.dCenter.Y = (double)pl.Center.Y;
+
+                                                        //  객체 Start Angle
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].stArcData.dStartAngle = (double)pl.StartAngle;
+
+                                                        //  객체 Sweep Angle
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount].stArcData.dSweepAngle = (double)pl.SweepAngle;
+
+                                                        //  Jump 데이터 길이 누적
+                                                        if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
+                                                        {
+                                                            m_ptFrom.X = (double)pl.Center.X;
+                                                            m_ptFrom.Y = (double)pl.Center.Y;
+                                                            m_ptTo.X = (double)m_ptLast.X;
+                                                            m_ptTo.Y = (double)m_ptLast.Y;
+
+                                                            //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
+                                                            //}
+                                                        }
+
+                                                        //  마지막 좌표 위치 저장
+                                                        m_ptLast.X = (double)pl.Center.X;
+                                                        m_ptLast.Y = (double)pl.Center.Y;
+
+                                                        ////  가공 데이터 길이 누적
+                                                        //if ((double)pl.SweepAngle > 0.0)
+                                                        //    m_dTotal_DrillingDataLength += (double)pl.Radius * 2.0 * Math.PI * ((double)pl.SweepAngle / 360.0);
+
+                                                        //  영역 객체 개수 +1
+                                                        m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount++;
+                                                    }
+                                                    else        //  또 뭐가 있나...
+                                                    {
+
+                                                    }
+                                                }
+                                            }
+
+                                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                            //
+                                            //  [드릴링] [ScannerOnly]  :  Group Data 가 Scanner FOV 를 초과하는 경우 --> 분할 가공
+                                            //
+                                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                            else
+                                            {
+                                                m_stLayerType.m_bDrillingGroupSize_withinScannerFOV = false;
+                                                m_bDrillingData_isLine = false;
+
+                                                //  어떤 데이터로 이루어져 있는지 확인하고 메모리 할당
+                                                if (m_nPolylineData_Count > 0)                                          //  데이터가 모두 Polyline 인 경우
+                                                {
+                                                    m_nDrillingData_Type = (int)ObjectType.OBJECT_POLY;
+
+                                                    //  전체 Object 개수
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = group.Count;
+
+                                                    //  Object 별 데이터 공간 메모리 할당
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[group.Count];
+
+                                                    //  Drilling 데이터 개수
+                                                    //m_nOutlineData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
+                                                    m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
+
+                                                    //  밑에 있던건데 요기서 해줌. 
+                                                    //  전체 도형 개수
+                                                    m_nGroupData_TotalCount = group.Count;
+
+
+                                                    //  Pre-Drilling 추가 시간
+                                                    //if (Config.ParamConfig.bPreDrilling_Use)
+                                                    //{
+                                                    //    //  Pre-Drilling 추가 시간
+                                                    //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //    else                                                        //  Rect 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //}
+
+                                                    //  Drilling 추가 시간
+                                                    //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
+                                                    //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
+                                                    //else                                                                       //  rect 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
+                                                }
+                                                else if (m_nRectangleData_Count > 0)                                          //  데이터가 모두 Rectangle 인 경우
+                                                {
+                                                    m_nDrillingData_Type = (int)ObjectType.OBJECT_RECT;
+
+                                                    //  전체 Object 개수
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = group.Count;
+
+                                                    //  Object 별 데이터 공간 메모리 할당
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[group.Count];
+
+                                                    //  Drilling 데이터 개수
+                                                    //m_nOutlineData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
+                                                    m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
+
+                                                    //  밑에 있던건데 요기서 해줌. 
+                                                    //  전체 도형 개수
+                                                    m_nGroupData_TotalCount = group.Count;
+
+                                                    //  Pre-Drilling 추가 시간
+                                                    //if (Config.ParamConfig.bPreDrilling_Use)
+                                                    //{
+                                                    //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //    else                                                        //  Rect 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //}
+
+                                                    //  Drilling 추가 시간
+                                                    //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
+                                                    //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
+                                                    //else                                                                       //  rect 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
+                                                }
+                                                else if (m_nLineData_Count > 0)                                         //  데이터가 모두 Line 인 경우
+                                                {
+                                                    if ((m_nLineData_Count % 4) != 0)                                       //  "Drilling Data 에 Line 데이터 개수가 4의 배수가 아닙니다."
+                                                    {
+                                                        return (int)nGetDataResult.GETDATA_DRILDATA_LINECNT;
                                                     }
 
-                                                    //  마지막 좌표 위치 저장
-                                                    m_ptLast.X = (double)pl.Center.X;
-                                                    m_ptLast.Y = (double)pl.Center.Y;
+                                                    m_nDrillingData_Type = (int)ObjectType.OBJECT_LINE;
 
-                                                    ////  가공 데이터 길이 누적
-                                                    //if ((double)pl.SweepAngle > 0.0)
-                                                    //    m_dTotal_DrillingDataLength += (double)pl.Radius * 2.0 * Math.PI * ((double)pl.SweepAngle / 360.0);
+                                                    m_bDrillingData_isLine = true;
 
-                                                    //  영역 객체 개수 +1
-                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectCount++;
+                                                    //  Line Data 4개로 사각형을 만들어야 한다. Line 4개 당 1개의 polyline 저장 공간을 할당한다.
+
+                                                    //  전체 Object 개수
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = m_nLineData_Count / 4;
+
+                                                    //  Object 별 데이터 공간 메모리 할당
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[m_nLineData_Count / 4];
+
+                                                    //  Drilling 데이터 개수
+                                                    m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
+
+                                                    //  밑에 있던건데 요기서 해줌. 
+                                                    //  전체 도형 개수
+                                                    m_nGroupData_TotalCount = group.Count / 4;
+
+
+                                                    //  Pre-Drilling 추가 시간
+                                                    //if (Config.ParamConfig.bPreDrilling_Use)
+                                                    //{
+                                                    //    //  Pre-Drilling 추가 시간
+                                                    //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //    else                                                        //  Rect 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //}
+
+                                                    //  Drilling 추가 시간
+                                                    //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
+                                                    //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
+                                                    //else                                                                       //  rect 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
                                                 }
-                                                else        //  또 뭐가 있나...
+                                                else if (m_nCircleData_Count > 0)                                       //  데이터가 모두 Circle 인 경우
                                                 {
+                                                    m_nDrillingData_Type = (int)ObjectType.OBJECT_CIR;
 
+                                                    //  전체 Object 개수
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = group.Count;
+
+                                                    //  Object 별 데이터 공간 메모리 할당
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[group.Count];
+
+                                                    //  Drilling 데이터 개수
+                                                    m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
+
+                                                    //  밑에 있던건데 요기서 해줌. 
+                                                    //  전체 도형 개수
+                                                    m_nGroupData_TotalCount = group.Count;
+
+
+                                                    //  Pre-Drilling 추가 시간
+                                                    //if (Config.ParamConfig.bPreDrilling_Use)
+                                                    //{
+                                                    //    //  Pre-Drilling 추가 시간
+                                                    //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //    else                                                        //  Rect 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //}
+
+                                                    //  Drilling 추가 시간
+                                                    //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
+                                                    //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
+                                                    //else                                                                       //  rect 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
                                                 }
-                                            }
-                                        }
-
-                                        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                        //
-                                        //  [드릴링] [ScannerOnly]  :  Group Data 가 Scanner FOV 를 초과하는 경우 --> 분할 가공
-                                        //
-                                        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                        else
-                                        {
-                                            m_stLayerType.m_bDrillingGroupSize_withinScannerFOV = false;
-                                            m_bDrillingData_isLine = false;
-
-                                            //  어떤 데이터로 이루어져 있는지 확인하고 메모리 할당
-                                            if (m_nPolylineData_Count > 0)                                          //  데이터가 모두 Polyline 인 경우
-                                            {
-                                                m_nDrillingData_Type = (int)ObjectType.OBJECT_POLY;
-
-                                                //  전체 Object 개수
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = group.Count;
-
-                                                //  Object 별 데이터 공간 메모리 할당
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[group.Count];
-
-                                                //  Drilling 데이터 개수
-                                                //m_nOutlineData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
-                                                m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
-
-                                                //  밑에 있던건데 요기서 해줌. 
-                                                //  전체 도형 개수
-                                                m_nGroupData_TotalCount = group.Count;
-
-
-                                                //  Pre-Drilling 추가 시간
-                                                //if (Config.ParamConfig.bPreDrilling_Use)
-                                                //{
-                                                //    //  Pre-Drilling 추가 시간
-                                                //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //    else                                                        //  Rect 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //}
-
-                                                //  Drilling 추가 시간
-                                                //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
-                                                //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
-                                                //else                                                                       //  rect 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
-                                            }
-                                            else if (m_nRectangleData_Count > 0)                                          //  데이터가 모두 Rectangle 인 경우
-                                            {
-                                                m_nDrillingData_Type = (int)ObjectType.OBJECT_RECT;
-
-                                                //  전체 Object 개수
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = group.Count;
-
-                                                //  Object 별 데이터 공간 메모리 할당
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[group.Count];
-
-                                                //  Drilling 데이터 개수
-                                                //m_nOutlineData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
-                                                m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
-
-                                                //  밑에 있던건데 요기서 해줌. 
-                                                //  전체 도형 개수
-                                                m_nGroupData_TotalCount = group.Count;
-
-                                                //  Pre-Drilling 추가 시간
-                                                //if (Config.ParamConfig.bPreDrilling_Use)
-                                                //{
-                                                //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //    else                                                        //  Rect 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //}
-
-                                                //  Drilling 추가 시간
-                                                //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
-                                                //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
-                                                //else                                                                       //  rect 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
-                                            }
-                                            else if (m_nLineData_Count > 0)                                         //  데이터가 모두 Line 인 경우
-                                            {
-                                                if ((m_nLineData_Count % 4) != 0)                                       //  "Drilling Data 에 Line 데이터 개수가 4의 배수가 아닙니다."
+                                                else if (m_nArcData_Count > 0)                                       //  데이터가 모두 Arc 인 경우
                                                 {
-                                                    return (int)nGetDataResult.GETDATA_DRILDATA_LINECNT;
+                                                    m_nDrillingData_Type = (int)ObjectType.OBJECT_ARC;
+
+                                                    //  전체 Object 개수
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = group.Count;
+
+                                                    //  Object 별 데이터 공간 메모리 할당
+                                                    m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[group.Count];
+
+                                                    //  Drilling 데이터 개수
+                                                    m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
+
+                                                    //  밑에 있던건데 요기서 해줌. 
+                                                    //  전체 도형 개수
+                                                    m_nGroupData_TotalCount = group.Count;
+
+
+                                                    //  Pre-Drilling 추가 시간
+                                                    //if (Config.ParamConfig.bPreDrilling_Use)
+                                                    //{
+                                                    //    //  Pre-Drilling 추가 시간
+                                                    //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //    else                                                        //  Rect 단위
+                                                    //    {
+                                                    //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //    }
+                                                    //}
+
+                                                    //  Drilling 추가 시간
+                                                    //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
+                                                    //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
+                                                    //else                                                                       //  rect 단위
+                                                    //{
+                                                    //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
+                                                    //}
                                                 }
 
-                                                m_nDrillingData_Type = (int)ObjectType.OBJECT_LINE;
-
-                                                m_bDrillingData_isLine = true;
-
-                                                //  Line Data 4개로 사각형을 만들어야 한다. Line 4개 당 1개의 polyline 저장 공간을 할당한다.
-
-                                                //  전체 Object 개수
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = m_nLineData_Count / 4;
-
-                                                //  Object 별 데이터 공간 메모리 할당
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[m_nLineData_Count / 4];
-
-                                                //  Drilling 데이터 개수
-                                                m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
-
-                                                //  밑에 있던건데 요기서 해줌. 
-                                                //  전체 도형 개수
-                                                m_nGroupData_TotalCount = group.Count / 4;
+                                                ///
+                                                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-                                                //  Pre-Drilling 추가 시간
-                                                //if (Config.ParamConfig.bPreDrilling_Use)
-                                                //{
-                                                //    //  Pre-Drilling 추가 시간
-                                                //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //    else                                                        //  Rect 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //}
+                                                //  전체 영역 크기 체크
+                                                m_dGroupSize_Width = (double)group.Width;
+                                                m_dGroupSize_Height = (double)group.Height;
 
-                                                //  Drilling 추가 시간
-                                                //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
-                                                //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
-                                                //else                                                                       //  rect 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
-                                            }
-                                            else if (m_nCircleData_Count > 0)                                       //  데이터가 모두 Circle 인 경우
-                                            {
-                                                m_nDrillingData_Type = (int)ObjectType.OBJECT_CIR;
+                                                ////  전체 도형 개수
+                                                //m_nGroupData_TotalCount = group.Count;
 
-                                                //  전체 Object 개수
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = group.Count;
+                                                //  전체 Index 계산
+                                                m_nGroupIndex_TotalX = (int)(m_dGroupSize_Width / m_dDrilling_FOV);
+                                                if ((m_dGroupSize_Width % m_dDrilling_FOV) > 0.0)
+                                                    m_nGroupIndex_TotalX++;
 
-                                                //  Object 별 데이터 공간 메모리 할당
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[group.Count];
+                                                m_nGroupIndex_TotalY = (int)(m_dGroupSize_Height / m_dDrilling_FOV);
+                                                if ((m_dGroupSize_Height % m_dDrilling_FOV) > 0.0)
+                                                    m_nGroupIndex_TotalY++;
 
-                                                //  Drilling 데이터 개수
-                                                m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
+                                                //  전체 영역 시작 위치 (2사분면에서 시작)
 
-                                                //  밑에 있던건데 요기서 해줌. 
-                                                //  전체 도형 개수
-                                                m_nGroupData_TotalCount = group.Count;
+                                                //           │
+                                                //   2사분면 │ 1사분면
+                                                //           │
+                                                // ───────────
+                                                //           │
+                                                //   3사분면 │ 4사분면
+                                                //           │
 
+                                                m_dGroupStartPos_X = (double)group.Location.X - (((double)m_nGroupIndex_TotalX * m_dDrilling_FOV) / 2.0);
+                                                m_dGroupStartPos_Y = (double)group.Location.Y + (((double)m_nGroupIndex_TotalY * m_dDrilling_FOV) / 2.0);
 
-                                                //  Pre-Drilling 추가 시간
-                                                //if (Config.ParamConfig.bPreDrilling_Use)
-                                                //{
-                                                //    //  Pre-Drilling 추가 시간
-                                                //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //    else                                                        //  Rect 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //}
+                                                m_stGroupDataForDivide = new stGroupDataForDivide[m_nGroupData_TotalCount];
 
-                                                //  Drilling 추가 시간
-                                                //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
-                                                //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
-                                                //else                                                                       //  rect 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
-                                            }
-                                            else if (m_nArcData_Count > 0)                                       //  데이터가 모두 Arc 인 경우
-                                            {
-                                                m_nDrillingData_Type = (int)ObjectType.OBJECT_ARC;
-
-                                                //  전체 Object 개수
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum = group.Count;
-
-                                                //  Object 별 데이터 공간 메모리 할당
-                                                m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData = new WorkStage.stDrilling_ObjectData[group.Count];
-
-                                                //  Drilling 데이터 개수
-                                                m_nDrillingData_Count += m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum;
-
-                                                //  밑에 있던건데 요기서 해줌. 
-                                                //  전체 도형 개수
-                                                m_nGroupData_TotalCount = group.Count;
-
-
-                                                //  Pre-Drilling 추가 시간
-                                                //if (Config.ParamConfig.bPreDrilling_Use)
-                                                //{
-                                                //    //  Pre-Drilling 추가 시간
-                                                //    if (Config.ParamConfig.bPreDrilling_WorkUnit_Hole)          //  Hole 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //    else                                                        //  Rect 단위
-                                                //    {
-                                                //        Equipment.WorkTotalTime_Drilling_AdditionalTime += Config.ParamConfig.PreDrilling_Repeat_Count * (double)Equipment.MainCycle_Interval;           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //    }
-                                                //}
-
-                                                //  Drilling 추가 시간
-                                                //if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)          //  면 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * 4 * Equipment.MainCycle_Interval);    //  4 는 4개의 Line 이 1개의 Rectangle 이 되므로 4를 곱해줌.
-                                                //                                                                                                                                                                                                                        //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
-                                                //else                                                                       //  rect 단위
-                                                //{
-                                                //    Equipment.WorkTotalTime_Drilling_AdditionalTime += (double)(m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].nRegion_ObjectTotalNum * Equipment.MainCycle_Interval);           //  20 은 Main Cycle 의 Interval. Interval이 변경되면 여기서도 바꿔줘야 한다.
-                                                //}
-                                            }
-
-                                            ///
-                                            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-                                            //  전체 영역 크기 체크
-                                            m_dGroupSize_Width = (double)group.Width;
-                                            m_dGroupSize_Height = (double)group.Height;
-
-                                            ////  전체 도형 개수
-                                            //m_nGroupData_TotalCount = group.Count;
-
-                                            //  전체 Index 계산
-                                            m_nGroupIndex_TotalX = (int)(m_dGroupSize_Width / m_dDrilling_FOV);
-                                            if ((m_dGroupSize_Width % m_dDrilling_FOV) > 0.0)
-                                                m_nGroupIndex_TotalX++;
-
-                                            m_nGroupIndex_TotalY = (int)(m_dGroupSize_Height / m_dDrilling_FOV);
-                                            if ((m_dGroupSize_Height % m_dDrilling_FOV) > 0.0)
-                                                m_nGroupIndex_TotalY++;
-
-                                            //  전체 영역 시작 위치 (2사분면에서 시작)
-
-                                            //           │
-                                            //   2사분면 │ 1사분면
-                                            //           │
-                                            // ───────────
-                                            //           │
-                                            //   3사분면 │ 4사분면
-                                            //           │
-
-                                            m_dGroupStartPos_X = (double)group.Location.X - (((double)m_nGroupIndex_TotalX * m_dDrilling_FOV) / 2.0);
-                                            m_dGroupStartPos_Y = (double)group.Location.Y + (((double)m_nGroupIndex_TotalY * m_dDrilling_FOV) / 2.0);
-
-                                            m_stGroupDataForDivide = new stGroupDataForDivide[m_nGroupData_TotalCount];
-
-                                            //  Index 계산
-                                            foreach (var subEntity in group)
-                                            {
-                                                m_stGroupDataForDivide[m_nGroupData_Count].bAssigned = false;
-
-                                                //  도형 Center 좌표 가져오기
-                                                Type t = subEntity.GetType();
-                                                if (t.Name == "LwPolyline")
+                                                //  Index 계산
+                                                foreach (var subEntity in group)
                                                 {
-                                                    var pl = subEntity as SpiralLab.Sirius.LwPolyline;
+                                                    m_stGroupDataForDivide[m_nGroupData_Count].bAssigned = false;
 
-                                                    m_stGroupDataForDivide[m_nGroupData_Count].dCenter.X = (double)pl.Location.X;
-                                                    m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y = (double)pl.Location.Y;
-                                                }
-                                                else if (t.Name == "Circle")
-                                                {
-                                                    var pl = subEntity as SpiralLab.Sirius.Circle;
-
-                                                    m_stGroupDataForDivide[m_nGroupData_Count].dCenter.X = (double)pl.Center.X;
-                                                    m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y = (double)pl.Center.Y;
-                                                }
-                                                else if (t.Name == "Arc")
-                                                {
-                                                    var pl = subEntity as SpiralLab.Sirius.Arc;
-
-                                                    m_stGroupDataForDivide[m_nGroupData_Count].dCenter.X = (double)pl.Center.X;
-                                                    m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y = (double)pl.Center.Y;
-                                                }
-                                                else if (t.Name == "Rectangle")
-                                                {
-                                                    var pl = subEntity as SpiralLab.Sirius.Rectangle;
-
-                                                    m_stGroupDataForDivide[m_nGroupData_Count].dCenter.X = (double)pl.Location.X;
-                                                    m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y = (double)pl.Location.Y;
-                                                }
-                                                else if (t.Name == "Line")
-                                                {
-                                                    var pl = subEntity as SpiralLab.Sirius.Line;
-
-                                                    //  Line 은 4개가 Drilling Hole 1개이다. (4개씩 데이터를 모아서 Center 좌표 계산하도록 한다)
-                                                    switch (m_nLineData_Count_forDrillHole)
+                                                    //  도형 Center 좌표 가져오기
+                                                    Type t = subEntity.GetType();
+                                                    if (t.Name == "LwPolyline")
                                                     {
-                                                        case 0:                 //  1번째 라인
-                                                        case 1:                 //  2번째 라인
-                                                        case 2:                 //  3번째 라인
-                                                            m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptStart.X = (double)pl.Start.X;
-                                                            m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptStart.Y = (double)pl.Start.Y;
-                                                            m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptEnd.X = (double)pl.End.X;
-                                                            m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptEnd.Y = (double)pl.End.Y;
-                                                            m_nLineData_Count_forDrillHole++;
+                                                        var pl = subEntity as SpiralLab.Sirius.LwPolyline;
 
-                                                            break;
+                                                        m_stGroupDataForDivide[m_nGroupData_Count].dCenter.X = (double)pl.Location.X;
+                                                        m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y = (double)pl.Location.Y;
+                                                    }
+                                                    else if (t.Name == "Circle")
+                                                    {
+                                                        var pl = subEntity as SpiralLab.Sirius.Circle;
+
+                                                        m_stGroupDataForDivide[m_nGroupData_Count].dCenter.X = (double)pl.Center.X;
+                                                        m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y = (double)pl.Center.Y;
+                                                    }
+                                                    else if (t.Name == "Arc")
+                                                    {
+                                                        var pl = subEntity as SpiralLab.Sirius.Arc;
+
+                                                        m_stGroupDataForDivide[m_nGroupData_Count].dCenter.X = (double)pl.Center.X;
+                                                        m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y = (double)pl.Center.Y;
+                                                    }
+                                                    else if (t.Name == "Rectangle")
+                                                    {
+                                                        var pl = subEntity as SpiralLab.Sirius.Rectangle;
+
+                                                        m_stGroupDataForDivide[m_nGroupData_Count].dCenter.X = (double)pl.Location.X;
+                                                        m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y = (double)pl.Location.Y;
+                                                    }
+                                                    else if (t.Name == "Line")
+                                                    {
+                                                        var pl = subEntity as SpiralLab.Sirius.Line;
+
+                                                        //  Line 은 4개가 Drilling Hole 1개이다. (4개씩 데이터를 모아서 Center 좌표 계산하도록 한다)
+                                                        switch (m_nLineData_Count_forDrillHole)
+                                                        {
+                                                            case 0:                 //  1번째 라인
+                                                            case 1:                 //  2번째 라인
+                                                            case 2:                 //  3번째 라인
+                                                                m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptStart.X = (double)pl.Start.X;
+                                                                m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptStart.Y = (double)pl.Start.Y;
+                                                                m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptEnd.X = (double)pl.End.X;
+                                                                m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptEnd.Y = (double)pl.End.Y;
+                                                                m_nLineData_Count_forDrillHole++;
+
+                                                                break;
 
 
-                                                        case 3:                 //  4번째 라인 --> 여기까지의 데이터로 사각형 만들기.
-                                                            m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptStart.X = (double)pl.Start.X;
-                                                            m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptStart.Y = (double)pl.Start.Y;
-                                                            m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptEnd.X = (double)pl.End.X;
-                                                            m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptEnd.Y = (double)pl.End.Y;
-                                                            m_nLineData_Count_forDrillHole++;
+                                                            case 3:                 //  4번째 라인 --> 여기까지의 데이터로 사각형 만들기.
+                                                                m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptStart.X = (double)pl.Start.X;
+                                                                m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptStart.Y = (double)pl.Start.Y;
+                                                                m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptEnd.X = (double)pl.End.X;
+                                                                m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptEnd.Y = (double)pl.End.Y;
+                                                                m_nLineData_Count_forDrillHole++;
 
-                                                            //  Min, Max 좌표
-                                                            m_dLine_Min_X = double.MaxValue;
-                                                            m_dLine_Max_X = double.MinValue;
-                                                            m_dLine_Min_Y = double.MaxValue;
-                                                            m_dLine_Max_Y = double.MinValue;
+                                                                //  Min, Max 좌표
+                                                                m_dLine_Min_X = double.MaxValue;
+                                                                m_dLine_Max_X = double.MinValue;
+                                                                m_dLine_Min_Y = double.MaxValue;
+                                                                m_dLine_Max_Y = double.MinValue;
 
-                                                            for (int i = 0; i < 4; i++)
+                                                                for (int i = 0; i < 4; i++)
+                                                                {
+                                                                    if (m_stDrillHole_byLine[i].ptStart.X >= m_dLine_Max_X) m_dLine_Max_X = m_stDrillHole_byLine[i].ptStart.X;
+                                                                    if (m_stDrillHole_byLine[i].ptStart.X <= m_dLine_Min_X) m_dLine_Min_X = m_stDrillHole_byLine[i].ptStart.X;
+                                                                    if (m_stDrillHole_byLine[i].ptEnd.X <= m_dLine_Min_X) m_dLine_Min_X = m_stDrillHole_byLine[i].ptEnd.X;
+                                                                    if (m_stDrillHole_byLine[i].ptEnd.X >= m_dLine_Max_X) m_dLine_Max_X = m_stDrillHole_byLine[i].ptEnd.X;
+
+                                                                    if (m_stDrillHole_byLine[i].ptStart.Y >= m_dLine_Max_Y) m_dLine_Max_Y = m_stDrillHole_byLine[i].ptStart.Y;
+                                                                    if (m_stDrillHole_byLine[i].ptStart.Y <= m_dLine_Min_Y) m_dLine_Min_Y = m_stDrillHole_byLine[i].ptStart.Y;
+                                                                    if (m_stDrillHole_byLine[i].ptEnd.Y >= m_dLine_Max_Y) m_dLine_Max_Y = m_stDrillHole_byLine[i].ptEnd.Y;
+                                                                    if (m_stDrillHole_byLine[i].ptEnd.Y <= m_dLine_Min_Y) m_dLine_Min_Y = m_stDrillHole_byLine[i].ptEnd.Y;
+                                                                }
+
+                                                                //  RTC6 모드에서 사용했던 코드
+                                                                //m_stGroupDataForDivide[m_nGroupData_Count].dCenter.X = (double)(pl.Start.X + pl.End.X) / 2.0;
+                                                                //m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y = (double)(pl.Start.Y + pl.End.Y) / 2.0;
+
+                                                                m_stGroupDataForDivide[m_nGroupData_Count].dCenter.X = (double)(m_dLine_Max_X + m_dLine_Min_X) / 2.0;
+                                                                m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y = (double)(m_dLine_Max_Y + m_dLine_Min_Y) / 2.0;
+
+                                                                break;
+                                                        }
+                                                    }
+                                                    else        //  또 뭐가 있나...
+                                                    {
+
+                                                    }
+
+                                                    //  각 도형이 분할 영역의 몇 번째 Index 에 들어가는지 계산 
+                                                    //  4개의 데이터가 모여야 하는 "Line" 은 4개의 데이터가 모인 후에 Index 계산.
+                                                    if (t.Name == "Line")
+                                                    {
+                                                        if (m_nLineData_Count_forDrillHole == 4)
+                                                        {
+                                                            m_nLineData_Count_forDrillHole = 0;
+
+                                                            //  각 도형이 Divided 영역의 몇 번째 Index 에 들어가는지 계산
+                                                            for (int x = 0; x < m_nGroupIndex_TotalX; x++)
                                                             {
-                                                                if (m_stDrillHole_byLine[i].ptStart.X >= m_dLine_Max_X) m_dLine_Max_X = m_stDrillHole_byLine[i].ptStart.X;
-                                                                if (m_stDrillHole_byLine[i].ptStart.X <= m_dLine_Min_X) m_dLine_Min_X = m_stDrillHole_byLine[i].ptStart.X;
-                                                                if (m_stDrillHole_byLine[i].ptEnd.X <= m_dLine_Min_X) m_dLine_Min_X = m_stDrillHole_byLine[i].ptEnd.X;
-                                                                if (m_stDrillHole_byLine[i].ptEnd.X >= m_dLine_Max_X) m_dLine_Max_X = m_stDrillHole_byLine[i].ptEnd.X;
-
-                                                                if (m_stDrillHole_byLine[i].ptStart.Y >= m_dLine_Max_Y) m_dLine_Max_Y = m_stDrillHole_byLine[i].ptStart.Y;
-                                                                if (m_stDrillHole_byLine[i].ptStart.Y <= m_dLine_Min_Y) m_dLine_Min_Y = m_stDrillHole_byLine[i].ptStart.Y;
-                                                                if (m_stDrillHole_byLine[i].ptEnd.Y >= m_dLine_Max_Y) m_dLine_Max_Y = m_stDrillHole_byLine[i].ptEnd.Y;
-                                                                if (m_stDrillHole_byLine[i].ptEnd.Y <= m_dLine_Min_Y) m_dLine_Min_Y = m_stDrillHole_byLine[i].ptEnd.Y;
+                                                                if ((m_stGroupDataForDivide[m_nGroupData_Count].dCenter.X >= (m_dGroupStartPos_X + (m_dDrilling_FOV * (double)x))) &&
+                                                                    (m_stGroupDataForDivide[m_nGroupData_Count].dCenter.X < (m_dGroupStartPos_X + (m_dDrilling_FOV * (double)x) + m_dDrilling_FOV)))
+                                                                {
+                                                                    m_nDivCount_X = x;
+                                                                    x = m_nGroupIndex_TotalX;
+                                                                }
+                                                            }
+                                                            for (int y = 0; y < m_nGroupIndex_TotalY; y++)
+                                                            {
+                                                                if ((m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y <= (m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)y))) &&
+                                                                    (m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y > (m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)y) - m_dDrilling_FOV)))
+                                                                {
+                                                                    m_nDivCount_Y = y;
+                                                                    y = m_nGroupIndex_TotalY;
+                                                                }
                                                             }
 
-                                                            //  RTC6 모드에서 사용했던 코드
-                                                            //m_stGroupDataForDivide[m_nGroupData_Count].dCenter.X = (double)(pl.Start.X + pl.End.X) / 2.0;
-                                                            //m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y = (double)(pl.Start.Y + pl.End.Y) / 2.0;
-
-                                                            m_stGroupDataForDivide[m_nGroupData_Count].dCenter.X = (double)(m_dLine_Max_X + m_dLine_Min_X) / 2.0;
-                                                            m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y = (double)(m_dLine_Max_Y + m_dLine_Min_Y) / 2.0;
-
-                                                            break;
+                                                            //m_stGroupDataForDivide[m_nGroupData_Count++].nDivideIndex = (m_nDivCount_Y * m_nGroupIndex_TotalY) + m_nDivCount_X;
+                                                            m_stGroupDataForDivide[m_nGroupData_Count++].nDivideIndex = (m_nDivCount_Y * m_nGroupIndex_TotalX) + m_nDivCount_X;
+                                                        }
                                                     }
-                                                }
-                                                else        //  또 뭐가 있나...
-                                                {
-
-                                                }
-
-                                                //  각 도형이 분할 영역의 몇 번째 Index 에 들어가는지 계산 
-                                                //  4개의 데이터가 모여야 하는 "Line" 은 4개의 데이터가 모인 후에 Index 계산.
-                                                if (t.Name == "Line")
-                                                {
-                                                    if (m_nLineData_Count_forDrillHole == 4)
+                                                    //  1개의 entity 로 도형이 완성되는 "LwPolyline", "Circle", "Arc", "Rectangle" 일 경우만 여기에서 Index 계산.
+                                                    else        //  "LwPolyline", "Circle", "Arc", "Rectangle" 일 경우
                                                     {
-                                                        m_nLineData_Count_forDrillHole = 0;
-
                                                         //  각 도형이 Divided 영역의 몇 번째 Index 에 들어가는지 계산
                                                         for (int x = 0; x < m_nGroupIndex_TotalX; x++)
                                                         {
@@ -25283,783 +25345,765 @@ namespace QMC.Common.Modules
                                                         m_stGroupDataForDivide[m_nGroupData_Count++].nDivideIndex = (m_nDivCount_Y * m_nGroupIndex_TotalX) + m_nDivCount_X;
                                                     }
                                                 }
-                                                //  1개의 entity 로 도형이 완성되는 "LwPolyline", "Circle", "Arc", "Rectangle" 일 경우만 여기에서 Index 계산.
-                                                else        //  "LwPolyline", "Circle", "Arc", "Rectangle" 일 경우
+
+                                                //  Divided 영역별 Fiducial 위치 저장 공간 할당 (최대 4개 위치 이므로 4개 할당)
+                                                m_stDividedRegion_GroupData[m_nGroupCount].dFiducialPos = new PointD[4];
+                                                m_stDividedRegion_GroupData[m_nGroupCount].dFiducialWidth = new double[4];
+                                                m_stDividedRegion_GroupData[m_nGroupCount].dFiducialHeight = new double[4];
+
+                                                //  Divided 영역별 데이터 개수 카운트
+                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData = new WorkStage.stDividedRegion_RegionData[m_nGroupIndex_TotalX * m_nGroupIndex_TotalY];
+                                                foreach (var eachObject in m_stGroupDataForDivide)
                                                 {
-                                                    //  각 도형이 Divided 영역의 몇 번째 Index 에 들어가는지 계산
-                                                    for (int x = 0; x < m_nGroupIndex_TotalX; x++)
+                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[eachObject.nDivideIndex].nRegion_ObjectTotalNum++;
+                                                }
+
+                                                //  Divided 영역 별 데이터 공간 메모리 할당.
+                                                for (int nIndex = 0; nIndex < m_nGroupIndex_TotalX * m_nGroupIndex_TotalY; nIndex++)
+                                                {
+                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[nIndex].m_stDividedRegion_ObjectData =
+                                                        new WorkStage.stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[nIndex].nRegion_ObjectTotalNum];
+                                                }
+
+                                                //  Divided 영역 별 Center 좌표 계산
+                                                for (int m_Y = 0; m_Y < m_nGroupIndex_TotalY; m_Y++)
+                                                {
+                                                    for (int m_X = 0; m_X < m_nGroupIndex_TotalX; m_X++)
                                                     {
-                                                        if ((m_stGroupDataForDivide[m_nGroupData_Count].dCenter.X >= (m_dGroupStartPos_X + (m_dDrilling_FOV * (double)x))) &&
-                                                            (m_stGroupDataForDivide[m_nGroupData_Count].dCenter.X < (m_dGroupStartPos_X + (m_dDrilling_FOV * (double)x) + m_dDrilling_FOV)))
+                                                        //m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalY) + m_X].dRegionCenter.X = m_dGroupStartPos_X + (m_dDrilling_FOV * (double)m_X) + (m_dDrilling_FOV / 2.0);
+                                                        //m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalY) + m_X].dRegionCenter.Y = m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)m_Y) - (m_dDrilling_FOV / 2.0);
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalX) + m_X].dRegionCenter.X = m_dGroupStartPos_X + (m_dDrilling_FOV * (double)m_X) + (m_dDrilling_FOV / 2.0);
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalX) + m_X].dRegionCenter.Y = m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)m_Y) - (m_dDrilling_FOV / 2.0);
+                                                    }
+                                                }
+
+                                                //  Divided 영역 개수
+                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[0].nRegion_Num = m_nGroupIndex_TotalX * m_nGroupIndex_TotalY;
+                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[0].nRegion_Num_X = m_nGroupIndex_TotalX;
+                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[0].nRegion_Num_Y = m_nGroupIndex_TotalY;
+
+                                                //  Group Center 좌표
+                                                m_stDividedRegion_GroupData[m_nGroupCount].dGroupCenter.X = (double)group.Location.X;
+                                                m_stDividedRegion_GroupData[m_nGroupCount].dGroupCenter.Y = (double)group.Location.Y;
+
+                                                //  카운트 변수 초기화
+                                                m_nGroupData_Count = 0;
+                                                m_nLineData_Count_forDrillHole = 0;
+                                                for (int i = 0; i < 4; i++)
+                                                {
+                                                    m_stDrillHole_byLine[i].ptStart.X = 0.0;
+                                                    m_stDrillHole_byLine[i].ptStart.Y = 0.0;
+                                                    m_stDrillHole_byLine[i].ptEnd.X = 0.0;
+                                                    m_stDrillHole_byLine[i].ptEnd.Y = 0.0;
+                                                }
+
+                                                //  세부 데이터 저장
+                                                foreach (var subEntity in group)
+                                                {
+                                                    //m_stGroupDataForDivide[m_nGroupData_Count].bAssigned = false;         //  안씀
+
+                                                    //  도형 Center 좌표 가져오기 
+                                                    Type t = subEntity.GetType();
+                                                    if (t.Name == "LwPolyline")
+                                                    {
+                                                        var pl = subEntity as SpiralLab.Sirius.LwPolyline;
+
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
+
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
+
+                                                        //  객체 Type
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_POLY;
+
+                                                        //  객체 Edge 좌표 개수
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].nEdgePointNum = pl.IsClosed ? pl.Count + 1 : pl.Count;
+
+                                                        //  객체 분할영역 Index
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].nDivideIndex = m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex;
+
+                                                        //  객체 Edge 좌표 데이터 저장
+                                                        for (int n_pl = 0; n_pl < pl.Count; n_pl++)
                                                         {
-                                                            m_nDivCount_X = x;
-                                                            x = m_nGroupIndex_TotalX;
+                                                            m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint[n_pl].X = (double)pl.Items[n_pl].X;
+
+                                                            m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint[n_pl].Y = (double)pl.Items[n_pl].Y;
                                                         }
-                                                    }
-                                                    for (int y = 0; y < m_nGroupIndex_TotalY; y++)
-                                                    {
-                                                        if ((m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y <= (m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)y))) &&
-                                                            (m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y > (m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)y) - m_dDrilling_FOV)))
+
+                                                        //  닫힌 도형일 경우, 시작 좌표 한번 더 추가)
+                                                        if (pl.IsClosed)
                                                         {
-                                                            m_nDivCount_Y = y;
-                                                            y = m_nGroupIndex_TotalY;
+                                                            m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint[pl.Count].X = (double)pl.Items[0].X;
+
+                                                            m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint[pl.Count].Y = (double)pl.Items[0].Y;
                                                         }
-                                                    }
 
-                                                    //m_stGroupDataForDivide[m_nGroupData_Count++].nDivideIndex = (m_nDivCount_Y * m_nGroupIndex_TotalY) + m_nDivCount_X;
-                                                    m_stGroupDataForDivide[m_nGroupData_Count++].nDivideIndex = (m_nDivCount_Y * m_nGroupIndex_TotalX) + m_nDivCount_X;
-                                                }
-                                            }
-
-                                            //  Divided 영역별 Fiducial 위치 저장 공간 할당 (최대 4개 위치 이므로 4개 할당)
-                                            m_stDividedRegion_GroupData[m_nGroupCount].dFiducialPos = new PointD[4];
-                                            m_stDividedRegion_GroupData[m_nGroupCount].dFiducialWidth = new double[4];
-                                            m_stDividedRegion_GroupData[m_nGroupCount].dFiducialHeight = new double[4];
-
-                                            //  Divided 영역별 데이터 개수 카운트
-                                            m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData = new WorkStage.stDividedRegion_RegionData[m_nGroupIndex_TotalX * m_nGroupIndex_TotalY];
-                                            foreach (var eachObject in m_stGroupDataForDivide)
-                                            {
-                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[eachObject.nDivideIndex].nRegion_ObjectTotalNum++;
-                                            }
-
-                                            //  Divided 영역 별 데이터 공간 메모리 할당.
-                                            for (int nIndex = 0; nIndex < m_nGroupIndex_TotalX * m_nGroupIndex_TotalY; nIndex++)
-                                            {
-                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[nIndex].m_stDividedRegion_ObjectData =
-                                                    new WorkStage.stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[nIndex].nRegion_ObjectTotalNum];
-                                            }
-
-                                            //  Divided 영역 별 Center 좌표 계산
-                                            for (int m_Y = 0; m_Y < m_nGroupIndex_TotalY; m_Y++)
-                                            {
-                                                for (int m_X = 0; m_X < m_nGroupIndex_TotalX; m_X++)
-                                                {
-                                                    //m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalY) + m_X].dRegionCenter.X = m_dGroupStartPos_X + (m_dDrilling_FOV * (double)m_X) + (m_dDrilling_FOV / 2.0);
-                                                    //m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalY) + m_X].dRegionCenter.Y = m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)m_Y) - (m_dDrilling_FOV / 2.0);
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalX) + m_X].dRegionCenter.X = m_dGroupStartPos_X + (m_dDrilling_FOV * (double)m_X) + (m_dDrilling_FOV / 2.0);
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalX) + m_X].dRegionCenter.Y = m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)m_Y) - (m_dDrilling_FOV / 2.0);
-                                                }
-                                            }
-
-                                            //  Divided 영역 개수
-                                            m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[0].nRegion_Num = m_nGroupIndex_TotalX * m_nGroupIndex_TotalY;
-                                            m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[0].nRegion_Num_X = m_nGroupIndex_TotalX;
-                                            m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[0].nRegion_Num_Y = m_nGroupIndex_TotalY;
-
-                                            //  Group Center 좌표
-                                            m_stDividedRegion_GroupData[m_nGroupCount].dGroupCenter.X = (double)group.Location.X;
-                                            m_stDividedRegion_GroupData[m_nGroupCount].dGroupCenter.Y = (double)group.Location.Y;
-
-                                            //  카운트 변수 초기화
-                                            m_nGroupData_Count = 0;
-                                            m_nLineData_Count_forDrillHole = 0;
-                                            for (int i = 0; i < 4; i++)
-                                            {
-                                                m_stDrillHole_byLine[i].ptStart.X = 0.0;
-                                                m_stDrillHole_byLine[i].ptStart.Y = 0.0;
-                                                m_stDrillHole_byLine[i].ptEnd.X = 0.0;
-                                                m_stDrillHole_byLine[i].ptEnd.Y = 0.0;
-                                            }
-
-                                            //  세부 데이터 저장
-                                            foreach (var subEntity in group)
-                                            {
-                                                //m_stGroupDataForDivide[m_nGroupData_Count].bAssigned = false;         //  안씀
-
-                                                //  도형 Center 좌표 가져오기 
-                                                Type t = subEntity.GetType();
-                                                if (t.Name == "LwPolyline")
-                                                {
-                                                    var pl = subEntity as SpiralLab.Sirius.LwPolyline;
-
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
-
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
-
-                                                    //  객체 Type
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_POLY;
-
-                                                    //  객체 Edge 좌표 개수
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].nEdgePointNum = pl.IsClosed ? pl.Count + 1 : pl.Count;
-
-                                                    //  객체 분할영역 Index
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].nDivideIndex = m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex;
-
-                                                    //  객체 Edge 좌표 데이터 저장
-                                                    for (int n_pl = 0; n_pl < pl.Count; n_pl++)
-                                                    {
-                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[n_pl].X = (double)pl.Items[n_pl].X;
-
-                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[n_pl].Y = (double)pl.Items[n_pl].Y;
-                                                    }
-
-                                                    //  닫힌 도형일 경우, 시작 좌표 한번 더 추가)
-                                                    if (pl.IsClosed)
-                                                    {
-                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[pl.Count].X = (double)pl.Items[0].X;
-
-                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[pl.Count].Y = (double)pl.Items[0].Y;
-                                                    }
-
-                                                    //  Jump 데이터 길이 누적
-                                                    if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
-                                                    {
-                                                        m_ptFrom.X = (double)m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X;
-                                                        m_ptFrom.Y = (double)m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y;
-                                                        m_ptTo.X = (double)m_ptLast.X;
-                                                        m_ptTo.Y = (double)m_ptLast.Y;
-
-                                                        //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
-                                                        //}
-                                                    }
-
-                                                    //  마지막 좌표 위치 저장
-                                                    m_ptLast.X = m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X;
-                                                    m_ptLast.Y = m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y;
-
-                                                    //  가공 데이터 길이 누적
-                                                    for (int n_pl = 0; n_pl < pl.Count - 1; n_pl++)
-                                                    {
-                                                        m_ptFrom.X = (double)pl.Items[n_pl].X;
-                                                        m_ptFrom.Y = (double)pl.Items[n_pl].Y;
-                                                        m_ptTo.X = (double)pl.Items[n_pl + 1].X;
-                                                        m_ptTo.Y = (double)pl.Items[n_pl + 1].Y;
-
-                                                        //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingDataLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingDataLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
-                                                        //{
-                                                        //    m_dTotal_DrillingDataLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
-                                                        //}
-                                                    }
-
-                                                    //  분할 영역 객체 개수 +1
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].nRegion_ObjectCount++;
-                                                }
-                                                else if (t.Name == "Circle")
-                                                {
-                                                    var pl = subEntity as SpiralLab.Sirius.Circle;
-
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-
-                                                    //  객체 Type
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_CIR;
-
-                                                    //  객체 Edge 좌표 개수
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].nEdgePointNum = 1;
-
-                                                    //  객체 분할영역 Index
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].nDivideIndex = m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex;
-
-                                                    //  객체 Edge 좌표 데이터 저장 (Circle Center, Circle 은 1개 고정)
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X;
-
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y;
-
-                                                    //  Circle 의 경우, 두 번째 데이터는 Radius 값
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Radius;
-
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Radius;
-
-                                                    //  Jump 데이터 길이 누적
-                                                    if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
-                                                    {
-                                                        m_ptFrom.X = (double)pl.Center.X;
-                                                        m_ptFrom.Y = (double)pl.Center.Y;
-                                                        m_ptTo.X = (double)m_ptLast.X;
-                                                        m_ptTo.Y = (double)m_ptLast.Y;
-
-                                                        //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
-                                                        //}
-                                                    }
-
-                                                    //  마지막 좌표 위치 저장
-                                                    m_ptLast.X = (double)pl.Center.X;
-                                                    m_ptLast.Y = (double)pl.Center.Y;
-
-                                                    ////  가공 데이터 길이 누적
-                                                    //m_dTotal_DrillingDataLength += (double)pl.Radius * 2.0 * Math.PI;
-
-                                                    //  분할 영역 객체 개수 +1
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].nRegion_ObjectCount++;
-                                                }
-                                                else if (t.Name == "Arc")
-                                                {
-                                                    var pl = subEntity as SpiralLab.Sirius.Arc;
-
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
-
-                                                    //  객체 Type
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_CIR;
-
-                                                    //  객체 Edge 좌표 개수
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].nEdgePointNum = 1;
-
-                                                    //  객체 분할영역 Index
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].nDivideIndex = m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex;
-
-                                                    //  객체 Edge 좌표 데이터 저장 (Circle Center, Circle 은 1개 고정)
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X;
-
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y;
-
-                                                    //  Circle 의 경우, 두 번째 데이터는 Radius 값
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Radius;
-
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Radius;
-
-                                                    //  Jump 데이터 길이 누적
-                                                    if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
-                                                    {
-                                                        m_ptFrom.X = (double)pl.Center.X;
-                                                        m_ptFrom.Y = (double)pl.Center.Y;
-                                                        m_ptTo.X = (double)m_ptLast.X;
-                                                        m_ptTo.Y = (double)m_ptLast.Y;
-
-                                                        //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
-                                                        //}
-                                                    }
-
-                                                    //  마지막 좌표 위치 저장
-                                                    m_ptLast.X = (double)pl.Center.X;
-                                                    m_ptLast.Y = (double)pl.Center.Y;
-
-                                                    ////  가공 데이터 길이 누적
-                                                    //m_dTotal_DrillingDataLength += (double)pl.Radius * 2.0 * Math.PI;
-
-                                                    //  분할 영역 객체 개수 +1
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].nRegion_ObjectCount++;
-                                                }
-                                                else if (t.Name == "Rectangle")
-                                                {
-                                                    var pl = subEntity as SpiralLab.Sirius.Rectangle;
-
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
-
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
-
-                                                    //  객체 Type
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_RECT;
-
-                                                    //  객체 Edge 좌표 개수
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].nEdgePointNum = 5;
-
-                                                    //  객체 분할영역 Index
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            nDivideIndex].nRegion_ObjectCount].nDivideIndex = m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex;
-
-                                                    //  객체 Edge 좌표 데이터 저장 (Rectangle 은 4개 고정)
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
-
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
-
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[2].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[2].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
-
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[3].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[3].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
-
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[4].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[4].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
-
-                                                    //  Jump 데이터 길이 누적
-                                                    if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
-                                                    {
-                                                        m_ptFrom.X = (double)m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X;
-                                                        m_ptFrom.Y = (double)m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y;
-                                                        m_ptTo.X = (double)m_ptLast.X;
-                                                        m_ptTo.Y = (double)m_ptLast.Y;
-
-                                                        //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
-                                                        //}
-                                                        //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
-                                                        //{
-                                                        //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
-                                                        //}
-                                                    }
-
-                                                    //  마지막 좌표 위치 저장
-                                                    m_ptLast.X = m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X;
-                                                    m_ptLast.Y = m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y;
-
-                                                    ////  가공 데이터 길이 누적
-                                                    //m_dTotal_DrillingDataLength += ((double)pl.Width * 2.0) + ((double)pl.Height * 2.0);
-
-                                                    //  분할 영역 객체 개수 +1
-                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].nRegion_ObjectCount++;
-                                                }
-                                                else if (t.Name == "Line")
-                                                {
-                                                    var pl = subEntity as SpiralLab.Sirius.Line;
-
-                                                    //  Drilling Hole 에서 Line 데이터가 들어오는 경우, Line 4개를 묶어서 1개의 POLYLINE 으로 한다. 
-                                                    //  (Drilling Hole 데이터가 Polyline 일 때도 있고, Line 일 때도 있다. 엿장수 맘대로...)
-
-                                                    switch (m_nLineData_Count_forDrillHole)
-                                                    {
-                                                        case 0:                 //  1번째 라인
-                                                        case 1:                 //  2번째 라인
-                                                        case 2:                 //  3번째 라인
-                                                            m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptStart.X = (double)pl.Start.X;
-                                                            m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptStart.Y = (double)pl.Start.Y;
-                                                            m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptEnd.X = (double)pl.End.X;
-                                                            m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptEnd.Y = (double)pl.End.Y;
-                                                            m_nLineData_Count_forDrillHole++;
-
-                                                            break;
-
-
-                                                        case 3:                 //  4번째 라인 --> 여기까지의 데이터로 사각형 만들기.
-                                                            m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptStart.X = (double)pl.Start.X;
-                                                            m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptStart.Y = (double)pl.Start.Y;
-                                                            m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptEnd.X = (double)pl.End.X;
-                                                            m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptEnd.Y = (double)pl.End.Y;
-                                                            m_nLineData_Count_forDrillHole++;
-
-                                                            //  Min, Max 좌표
-                                                            m_dLine_Min_X = double.MaxValue;
-                                                            m_dLine_Max_X = double.MinValue;
-                                                            m_dLine_Min_Y = double.MaxValue;
-                                                            m_dLine_Max_Y = double.MinValue;
-
-                                                            for (int i = 0; i < 4; i++)
-                                                            {
-                                                                if (m_stDrillHole_byLine[i].ptStart.X >= m_dLine_Max_X) m_dLine_Max_X = m_stDrillHole_byLine[i].ptStart.X;
-                                                                if (m_stDrillHole_byLine[i].ptStart.X <= m_dLine_Min_X) m_dLine_Min_X = m_stDrillHole_byLine[i].ptStart.X;
-                                                                if (m_stDrillHole_byLine[i].ptEnd.X <= m_dLine_Min_X) m_dLine_Min_X = m_stDrillHole_byLine[i].ptEnd.X;
-                                                                if (m_stDrillHole_byLine[i].ptEnd.X >= m_dLine_Max_X) m_dLine_Max_X = m_stDrillHole_byLine[i].ptEnd.X;
-
-                                                                if (m_stDrillHole_byLine[i].ptStart.Y >= m_dLine_Max_Y) m_dLine_Max_Y = m_stDrillHole_byLine[i].ptStart.Y;
-                                                                if (m_stDrillHole_byLine[i].ptStart.Y <= m_dLine_Min_Y) m_dLine_Min_Y = m_stDrillHole_byLine[i].ptStart.Y;
-                                                                if (m_stDrillHole_byLine[i].ptEnd.Y >= m_dLine_Max_Y) m_dLine_Max_Y = m_stDrillHole_byLine[i].ptEnd.Y;
-                                                                if (m_stDrillHole_byLine[i].ptEnd.Y <= m_dLine_Min_Y) m_dLine_Min_Y = m_stDrillHole_byLine[i].ptEnd.Y;
-                                                            }
-
-                                                            m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                    nDivideIndex].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  사각형은 좌표 개수가 5개 (시작 위치에서 다시 시작 위치로 와야 함)
-
-                                                            m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                    nDivideIndex].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  사각형은 좌표 개수가 5개 (시작 위치에서 다시 시작 위치로 와야 함)
-
-                                                            //  객체 Type
-                                                            m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                    nDivideIndex].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_POLY;
-
-                                                            //  객체 Edge 좌표 개수
-                                                            m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                    nDivideIndex].nRegion_ObjectCount].nEdgePointNum = 5;               //  사각형은 좌표 개수가 5개.
-
-                                                            //  객체 분할영역 Index
-                                                            m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                    nDivideIndex].nRegion_ObjectCount].nDivideIndex = m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex;
-
-
-                                                            ////  기울어진 사각형에는 사용할 수 없는 코드
+                                                        //  Jump 데이터 길이 누적
+                                                        if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
+                                                        {
+                                                            m_ptFrom.X = (double)m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                                m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X;
+                                                            m_ptFrom.Y = (double)m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                                m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                                            m_ptTo.X = (double)m_ptLast.X;
+                                                            m_ptTo.Y = (double)m_ptLast.Y;
+
+                                                            //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
                                                             //{
-                                                            //    //  객체 Edge 좌표 데이터 저장 (LT --> LB --> RB --> RT --> LT)
-                                                            //    //  Left Top
-                                                            //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                            //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X = m_dLine_Min_X;
-
-                                                            //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                            //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y = m_dLine_Max_Y;
-
-                                                            //    //  Left Bottom
-                                                            //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                            //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].X = m_dLine_Min_X;
-
-                                                            //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                            //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].Y = m_dLine_Min_Y;
-
-                                                            //    //  Right Bottom
-                                                            //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                            //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[2].X = m_dLine_Max_X;
-
-                                                            //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                            //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[2].Y = m_dLine_Min_Y;
-
-                                                            //    //  Right Top
-                                                            //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                            //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[3].X = m_dLine_Max_X;
-
-                                                            //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                            //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[3].Y = m_dLine_Max_Y;
-
-                                                            //    //  Left Top
-                                                            //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                            //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[4].X = m_dLine_Min_X;
-
-                                                            //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                            //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                            //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[4].Y = m_dLine_Max_Y;
+                                                            //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
                                                             //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
+                                                            //}
+                                                        }
 
-                                                            //  라인이 순서대로 되어 있다는 가정 하에 사용할 수 있는 코드
-                                                            {
-                                                                //  객체 Edge 좌표 데이터 저장 (LT --> LB --> RB --> RT --> LT)
-                                                                //  Left Top
-                                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                        //  마지막 좌표 위치 저장
+                                                        m_ptLast.X = m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
                                                                     m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                    nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X = m_stDrillHole_byLine[0].ptStart.X;
-
-                                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                    nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X;
+                                                        m_ptLast.Y = m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
                                                                     m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                    nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y = m_stDrillHole_byLine[0].ptStart.Y;
+                                                                    nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y;
 
-                                                                //  Left Bottom
-                                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                    m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                    nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].X = m_stDrillHole_byLine[1].ptStart.X;
+                                                        //  가공 데이터 길이 누적
+                                                        for (int n_pl = 0; n_pl < pl.Count - 1; n_pl++)
+                                                        {
+                                                            m_ptFrom.X = (double)pl.Items[n_pl].X;
+                                                            m_ptFrom.Y = (double)pl.Items[n_pl].Y;
+                                                            m_ptTo.X = (double)pl.Items[n_pl + 1].X;
+                                                            m_ptTo.Y = (double)pl.Items[n_pl + 1].Y;
 
-                                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                    m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                    nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].Y = m_stDrillHole_byLine[1].ptStart.Y;
+                                                            //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingDataLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingDataLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
+                                                            //{
+                                                            //    m_dTotal_DrillingDataLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
+                                                            //}
+                                                        }
 
-                                                                //  Right Bottom
-                                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                    m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                    nDivideIndex].nRegion_ObjectCount].dEdgePoint[2].X = m_stDrillHole_byLine[2].ptStart.X;
-
-                                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                    m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                    nDivideIndex].nRegion_ObjectCount].dEdgePoint[2].Y = m_stDrillHole_byLine[2].ptStart.Y;
-
-                                                                //  Right Top
-                                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                    m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                    nDivideIndex].nRegion_ObjectCount].dEdgePoint[3].X = m_stDrillHole_byLine[3].ptStart.X;
-
-                                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                    m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                    nDivideIndex].nRegion_ObjectCount].dEdgePoint[3].Y = m_stDrillHole_byLine[3].ptStart.Y;
-
-                                                                //  Left Top
-                                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                    m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                    nDivideIndex].nRegion_ObjectCount].dEdgePoint[4].X = m_stDrillHole_byLine[0].ptStart.X;
-
-                                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                    m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                    nDivideIndex].nRegion_ObjectCount].dEdgePoint[4].Y = m_stDrillHole_byLine[0].ptStart.Y;
-                                                            }
-
-                                                            //  Jump 데이터 길이 누적
-                                                            if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
-                                                            {
-                                                                m_ptFrom.X = (double)m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                                    m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                                    nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X;
-                                                                m_ptFrom.Y = (double)m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                                    m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                                    nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y;
-                                                                m_ptTo.X = (double)m_ptLast.X;
-                                                                m_ptTo.Y = (double)m_ptLast.Y;
-
-                                                                //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
-                                                                //{
-                                                                //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
-                                                                //}
-                                                                //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
-                                                                //{
-                                                                //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
-                                                                //}
-                                                                //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
-                                                                //{
-                                                                //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
-                                                                //}
-                                                            }
-
-                                                            //  마지막 좌표 위치 저장
-                                                            m_ptLast.X = m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X;
-                                                            m_ptLast.Y = m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
-                                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
-                                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y;
-
-                                                            ////  가공 데이터 길이 누적
-                                                            //m_dTotal_DrillingDataLength += ((m_dLine_Max_X - m_dLine_Min_X) * 2.0) + ((m_dLine_Max_Y - m_dLine_Min_Y) * 2.0);
-
-                                                            //  분할 영역 객체 개수 +1
-                                                            m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].nRegion_ObjectCount++;
-
-                                                            break;
+                                                        //  분할 영역 객체 개수 +1
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].nRegion_ObjectCount++;
                                                     }
-                                                }
-                                                else        //  또 뭐가 있나...
-                                                {
-
-                                                }
-
-                                                if (t.Name != "Line")
-                                                {
-                                                    m_nGroupData_Count++;
-                                                }
-                                                else
-                                                {
-                                                    if (m_bDrillingData_isLine && (m_nLineData_Count_forDrillHole == 4))
+                                                    else if (t.Name == "Circle")
                                                     {
-                                                        m_nLineData_Count_forDrillHole = 0;
+                                                        var pl = subEntity as SpiralLab.Sirius.Circle;
+
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+
+                                                        //  객체 Type
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_CIR;
+
+                                                        //  객체 Edge 좌표 개수
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].nEdgePointNum = 1;
+
+                                                        //  객체 분할영역 Index
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].nDivideIndex = m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex;
+
+                                                        //  객체 Edge 좌표 데이터 저장 (Circle Center, Circle 은 1개 고정)
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X;
+
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y;
+
+                                                        //  Circle 의 경우, 두 번째 데이터는 Radius 값
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Radius;
+
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Radius;
+
+                                                        //  Jump 데이터 길이 누적
+                                                        if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
+                                                        {
+                                                            m_ptFrom.X = (double)pl.Center.X;
+                                                            m_ptFrom.Y = (double)pl.Center.Y;
+                                                            m_ptTo.X = (double)m_ptLast.X;
+                                                            m_ptTo.Y = (double)m_ptLast.Y;
+
+                                                            //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
+                                                            //}
+                                                        }
+
+                                                        //  마지막 좌표 위치 저장
+                                                        m_ptLast.X = (double)pl.Center.X;
+                                                        m_ptLast.Y = (double)pl.Center.Y;
+
+                                                        ////  가공 데이터 길이 누적
+                                                        //m_dTotal_DrillingDataLength += (double)pl.Radius * 2.0 * Math.PI;
+
+                                                        //  분할 영역 객체 개수 +1
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].nRegion_ObjectCount++;
+                                                    }
+                                                    else if (t.Name == "Arc")
+                                                    {
+                                                        var pl = subEntity as SpiralLab.Sirius.Arc;
+
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+
+                                                        //  객체 Type
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_CIR;
+
+                                                        //  객체 Edge 좌표 개수
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].nEdgePointNum = 1;
+
+                                                        //  객체 분할영역 Index
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].nDivideIndex = m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex;
+
+                                                        //  객체 Edge 좌표 데이터 저장 (Circle Center, Circle 은 1개 고정)
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X;
+
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y;
+
+                                                        //  Circle 의 경우, 두 번째 데이터는 Radius 값
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Radius;
+
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Radius;
+
+                                                        //  Jump 데이터 길이 누적
+                                                        if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
+                                                        {
+                                                            m_ptFrom.X = (double)pl.Center.X;
+                                                            m_ptFrom.Y = (double)pl.Center.Y;
+                                                            m_ptTo.X = (double)m_ptLast.X;
+                                                            m_ptTo.Y = (double)m_ptLast.Y;
+
+                                                            //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
+                                                            //}
+                                                        }
+
+                                                        //  마지막 좌표 위치 저장
+                                                        m_ptLast.X = (double)pl.Center.X;
+                                                        m_ptLast.Y = (double)pl.Center.Y;
+
+                                                        ////  가공 데이터 길이 누적
+                                                        //m_dTotal_DrillingDataLength += (double)pl.Radius * 2.0 * Math.PI;
+
+                                                        //  분할 영역 객체 개수 +1
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].nRegion_ObjectCount++;
+                                                    }
+                                                    else if (t.Name == "Rectangle")
+                                                    {
+                                                        var pl = subEntity as SpiralLab.Sirius.Rectangle;
+
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
+
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
+
+                                                        //  객체 Type
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_RECT;
+
+                                                        //  객체 Edge 좌표 개수
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].nEdgePointNum = 5;
+
+                                                        //  객체 분할영역 Index
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                nDivideIndex].nRegion_ObjectCount].nDivideIndex = m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex;
+
+                                                        //  객체 Edge 좌표 데이터 저장 (Rectangle 은 4개 고정)
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
+
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
+
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[2].X = (double)pl.Center.X + ((double)pl.Width / 2.0);
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[2].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
+
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[3].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[3].Y = (double)pl.Center.Y - ((double)pl.Height / 2.0);
+
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[4].X = (double)pl.Center.X - ((double)pl.Width / 2.0);
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[4].Y = (double)pl.Center.Y + ((double)pl.Height / 2.0);
+
+                                                        //  Jump 데이터 길이 누적
+                                                        if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
+                                                        {
+                                                            m_ptFrom.X = (double)m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                                m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X;
+                                                            m_ptFrom.Y = (double)m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                                m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                                nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                                            m_ptTo.X = (double)m_ptLast.X;
+                                                            m_ptTo.Y = (double)m_ptLast.Y;
+
+                                                            //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
+                                                            //}
+                                                            //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
+                                                            //{
+                                                            //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
+                                                            //}
+                                                        }
+
+                                                        //  마지막 좌표 위치 저장
+                                                        m_ptLast.X = m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                    m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                    nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X;
+                                                        m_ptLast.Y = m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                    m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                    nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y;
+
+                                                        ////  가공 데이터 길이 누적
+                                                        //m_dTotal_DrillingDataLength += ((double)pl.Width * 2.0) + ((double)pl.Height * 2.0);
+
+                                                        //  분할 영역 객체 개수 +1
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].nRegion_ObjectCount++;
+                                                    }
+                                                    else if (t.Name == "Line")
+                                                    {
+                                                        var pl = subEntity as SpiralLab.Sirius.Line;
+
+                                                        //  Drilling Hole 에서 Line 데이터가 들어오는 경우, Line 4개를 묶어서 1개의 POLYLINE 으로 한다. 
+                                                        //  (Drilling Hole 데이터가 Polyline 일 때도 있고, Line 일 때도 있다. 엿장수 맘대로...)
+
+                                                        switch (m_nLineData_Count_forDrillHole)
+                                                        {
+                                                            case 0:                 //  1번째 라인
+                                                            case 1:                 //  2번째 라인
+                                                            case 2:                 //  3번째 라인
+                                                                m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptStart.X = (double)pl.Start.X;
+                                                                m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptStart.Y = (double)pl.Start.Y;
+                                                                m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptEnd.X = (double)pl.End.X;
+                                                                m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptEnd.Y = (double)pl.End.Y;
+                                                                m_nLineData_Count_forDrillHole++;
+
+                                                                break;
+
+
+                                                            case 3:                 //  4번째 라인 --> 여기까지의 데이터로 사각형 만들기.
+                                                                m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptStart.X = (double)pl.Start.X;
+                                                                m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptStart.Y = (double)pl.Start.Y;
+                                                                m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptEnd.X = (double)pl.End.X;
+                                                                m_stDrillHole_byLine[m_nLineData_Count_forDrillHole].ptEnd.Y = (double)pl.End.Y;
+                                                                m_nLineData_Count_forDrillHole++;
+
+                                                                //  Min, Max 좌표
+                                                                m_dLine_Min_X = double.MaxValue;
+                                                                m_dLine_Max_X = double.MinValue;
+                                                                m_dLine_Min_Y = double.MaxValue;
+                                                                m_dLine_Max_Y = double.MinValue;
+
+                                                                for (int i = 0; i < 4; i++)
+                                                                {
+                                                                    if (m_stDrillHole_byLine[i].ptStart.X >= m_dLine_Max_X) m_dLine_Max_X = m_stDrillHole_byLine[i].ptStart.X;
+                                                                    if (m_stDrillHole_byLine[i].ptStart.X <= m_dLine_Min_X) m_dLine_Min_X = m_stDrillHole_byLine[i].ptStart.X;
+                                                                    if (m_stDrillHole_byLine[i].ptEnd.X <= m_dLine_Min_X) m_dLine_Min_X = m_stDrillHole_byLine[i].ptEnd.X;
+                                                                    if (m_stDrillHole_byLine[i].ptEnd.X >= m_dLine_Max_X) m_dLine_Max_X = m_stDrillHole_byLine[i].ptEnd.X;
+
+                                                                    if (m_stDrillHole_byLine[i].ptStart.Y >= m_dLine_Max_Y) m_dLine_Max_Y = m_stDrillHole_byLine[i].ptStart.Y;
+                                                                    if (m_stDrillHole_byLine[i].ptStart.Y <= m_dLine_Min_Y) m_dLine_Min_Y = m_stDrillHole_byLine[i].ptStart.Y;
+                                                                    if (m_stDrillHole_byLine[i].ptEnd.Y >= m_dLine_Max_Y) m_dLine_Max_Y = m_stDrillHole_byLine[i].ptEnd.Y;
+                                                                    if (m_stDrillHole_byLine[i].ptEnd.Y <= m_dLine_Min_Y) m_dLine_Min_Y = m_stDrillHole_byLine[i].ptEnd.Y;
+                                                                }
+
+                                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                    m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  사각형은 좌표 개수가 5개 (시작 위치에서 다시 시작 위치로 와야 함)
+
+                                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                    m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  사각형은 좌표 개수가 5개 (시작 위치에서 다시 시작 위치로 와야 함)
+
+                                                                //  객체 Type
+                                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                    m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                        nDivideIndex].nRegion_ObjectCount].nObjectType = (int)WorkStage.ObjectType.OBJECT_POLY;
+
+                                                                //  객체 Edge 좌표 개수
+                                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                    m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                        nDivideIndex].nRegion_ObjectCount].nEdgePointNum = 5;               //  사각형은 좌표 개수가 5개.
+
+                                                                //  객체 분할영역 Index
+                                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                    m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                        nDivideIndex].nRegion_ObjectCount].nDivideIndex = m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex;
+
+
+                                                                ////  기울어진 사각형에는 사용할 수 없는 코드
+                                                                //{
+                                                                //    //  객체 Edge 좌표 데이터 저장 (LT --> LB --> RB --> RT --> LT)
+                                                                //    //  Left Top
+                                                                //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X = m_dLine_Min_X;
+
+                                                                //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y = m_dLine_Max_Y;
+
+                                                                //    //  Left Bottom
+                                                                //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].X = m_dLine_Min_X;
+
+                                                                //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].Y = m_dLine_Min_Y;
+
+                                                                //    //  Right Bottom
+                                                                //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[2].X = m_dLine_Max_X;
+
+                                                                //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[2].Y = m_dLine_Min_Y;
+
+                                                                //    //  Right Top
+                                                                //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[3].X = m_dLine_Max_X;
+
+                                                                //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[3].Y = m_dLine_Max_Y;
+
+                                                                //    //  Left Top
+                                                                //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[4].X = m_dLine_Min_X;
+
+                                                                //    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                //        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                //        nDivideIndex].nRegion_ObjectCount].dEdgePoint[4].Y = m_dLine_Max_Y;
+                                                                //}
+
+                                                                //  라인이 순서대로 되어 있다는 가정 하에 사용할 수 있는 코드
+                                                                {
+                                                                    //  객체 Edge 좌표 데이터 저장 (LT --> LB --> RB --> RT --> LT)
+                                                                    //  Left Top
+                                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X = m_stDrillHole_byLine[0].ptStart.X;
+
+                                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y = m_stDrillHole_byLine[0].ptStart.Y;
+
+                                                                    //  Left Bottom
+                                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].X = m_stDrillHole_byLine[1].ptStart.X;
+
+                                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[1].Y = m_stDrillHole_byLine[1].ptStart.Y;
+
+                                                                    //  Right Bottom
+                                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[2].X = m_stDrillHole_byLine[2].ptStart.X;
+
+                                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[2].Y = m_stDrillHole_byLine[2].ptStart.Y;
+
+                                                                    //  Right Top
+                                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[3].X = m_stDrillHole_byLine[3].ptStart.X;
+
+                                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[3].Y = m_stDrillHole_byLine[3].ptStart.Y;
+
+                                                                    //  Left Top
+                                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[4].X = m_stDrillHole_byLine[0].ptStart.X;
+
+                                                                    m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[4].Y = m_stDrillHole_byLine[0].ptStart.Y;
+                                                                }
+
+                                                                //  Jump 데이터 길이 누적
+                                                                if ((m_ptLast.X != 0.0) || (m_ptLast.Y != 0.0))
+                                                                {
+                                                                    m_ptFrom.X = (double)m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X;
+                                                                    m_ptFrom.Y = (double)m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                                        m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                                        nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y;
+                                                                    m_ptTo.X = (double)m_ptLast.X;
+                                                                    m_ptTo.Y = (double)m_ptLast.Y;
+
+                                                                    //if ((m_ptFrom.X == m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))                   //  X 축과 평행인 경우
+                                                                    //{
+                                                                    //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.Y - m_ptTo.Y);
+                                                                    //}
+                                                                    //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y == m_ptTo.Y))              //  Y 축과 평행인 경우
+                                                                    //{
+                                                                    //    m_dTotal_DrillingJumpLength += Math.Abs(m_ptFrom.X - m_ptTo.X);
+                                                                    //}
+                                                                    //else if ((m_ptFrom.X != m_ptTo.X) && (m_ptFrom.Y != m_ptTo.Y))              //  대각선
+                                                                    //{
+                                                                    //    m_dTotal_DrillingJumpLength += Math.Sqrt(Math.Pow(Math.Abs(m_ptFrom.X - m_ptTo.X), 2) + Math.Pow(Math.Abs(m_ptFrom.Y - m_ptTo.Y), 2));
+                                                                    //}
+                                                                }
+
+                                                                //  마지막 좌표 위치 저장
+                                                                m_ptLast.X = m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].X;
+                                                                m_ptLast.Y = m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].
+                                                                            m_stDividedRegion_ObjectData[m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].
+                                                                            nDivideIndex].nRegion_ObjectCount].dEdgePoint[0].Y;
+
+                                                                ////  가공 데이터 길이 누적
+                                                                //m_dTotal_DrillingDataLength += ((m_dLine_Max_X - m_dLine_Min_X) * 2.0) + ((m_dLine_Max_Y - m_dLine_Min_Y) * 2.0);
+
+                                                                //  분할 영역 객체 개수 +1
+                                                                m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[m_stGroupDataForDivide[m_nGroupData_Count].nDivideIndex].nRegion_ObjectCount++;
+
+                                                                break;
+                                                        }
+                                                    }
+                                                    else        //  또 뭐가 있나...
+                                                    {
+
+                                                    }
+
+                                                    if (t.Name != "Line")
+                                                    {
                                                         m_nGroupData_Count++;
                                                     }
+                                                    else
+                                                    {
+                                                        if (m_bDrillingData_isLine && (m_nLineData_Count_forDrillHole == 4))
+                                                        {
+                                                            m_nLineData_Count_forDrillHole = 0;
+                                                            m_nGroupData_Count++;
+                                                        }
+                                                    }
                                                 }
+
+                                                m_nGroupData_Count = 0;
+                                                int a = 0;
                                             }
 
-                                            m_nGroupData_Count = 0;
-                                            int a = 0;
-                                        }
+                                            //success &= group.Mark(markerArg);
+                                            break;
+                                            // case EType....
+                                            // ...
 
-                                        //success &= group.Mark(markerArg);
+                                            //default:
+                                            //    if (entity is IMarkerable markerable)
+                                            //    {
+                                            //        // mark entity
+                                            //        // 해당 개체(Entity) 가공 
+                                            //        //success &= markerable.Mark(markerArg);
+                                            //    }
+                                            //    break;
+                                    }
+
+                                    if (!success)
                                         break;
-                                        // case EType....
-                                        // ...
 
-                                        //default:
-                                        //    if (entity is IMarkerable markerable)
-                                        //    {
-                                        //        // mark entity
-                                        //        // 해당 개체(Entity) 가공 
-                                        //        //success &= markerable.Mark(markerArg);
-                                        //    }
-                                        //    break;
+                                    CreateProcessDrillingVectors();
+                                    m_nGroupCount++;
+                                    m_stDrilling_LayerData.nRegion_GroupCount++;
+
+
+                                    //foreach (var v in m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount - 1].m_stDrilling_ObjectData)
+                                    //{
+                                    //    Debug.WriteLine("x:" + v.dEdgePoint.Min(tt => tt.X).ToString() + ", Y:" + v.dEdgePoint.Min(tt => tt.Y).ToString());
+                                    //}
+
+
+                                    //  요건 보고 살리던가 말던가... 살리긴 허야는디..
+
+                                    //  데이터 정렬
+                                    //if (Config.ParamConfig.Drilling_DataSort_Use)
+                                    //{
+                                    //    SortFastPath(ref m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount - 1], Config.ParamConfig.Drilling_DataSortDir_HorVer, Config.ParamConfig.Drilling_DataSortStep_Size);
+                                    //}
+
+                                    //foreach (var v in m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount - 1].m_stDrilling_ObjectData)
+                                    //{
+                                    //    Debug.WriteLine("x:" + v.dEdgePoint.Min(tt => tt.X).ToString() + ", Y:" + v.dEdgePoint.Min(tt => tt.Y).ToString());
+                                    //}
                                 }
-
-                                if (!success)
-                                    break;
-
-                                CreateProcessDrillingVectors();
-                                m_nGroupCount++;
-                                m_stDrilling_LayerData.nRegion_GroupCount++;
-
-
-                                //foreach (var v in m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount - 1].m_stDrilling_ObjectData)
-                                //{
-                                //    Debug.WriteLine("x:" + v.dEdgePoint.Min(tt => tt.X).ToString() + ", Y:" + v.dEdgePoint.Min(tt => tt.Y).ToString());
-                                //}
-
-
-                                //  요건 보고 살리던가 말던가... 살리긴 허야는디..
-
-                                //  데이터 정렬
-                                //if (Config.ParamConfig.Drilling_DataSort_Use)
-                                //{
-                                //    SortFastPath(ref m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount - 1], Config.ParamConfig.Drilling_DataSortDir_HorVer, Config.ParamConfig.Drilling_DataSortStep_Size);
-                                //}
-
-                                //foreach (var v in m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount - 1].m_stDrilling_ObjectData)
-                                //{
-                                //    Debug.WriteLine("x:" + v.dEdgePoint.Min(tt => tt.X).ToString() + ", Y:" + v.dEdgePoint.Min(tt => tt.Y).ToString());
-                                //}
                             }
                         }
+                        else if ((m_nHoleLayer_Num >= 2) && (m_nHoleLayer_Num <= 50))              //  Hole2 ~ 50 이면?
+                        {
+                            m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
+                            //m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole2;                  //  Layer Parameter 변경을 위한 Index
+                            m_stLayerType.m_nLayerIndex[m_nLayerCount++] = m_nHoleLayer_Num - 1;                  //  Hole Layer 의 Index는 Hole Index -1
+                        }
                     }
-                    else if (layer.Name == "Hole2")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
-                    {
-                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
-                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole2;                  //  Layer Parameter 변경을 위한 Index
-                    }
-                    else if (layer.Name == "Hole3")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
-                    {
-                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
-                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole3;                  //  Layer Parameter 변경을 위한 Index
-                    }
-                    else if (layer.Name == "Hole4")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
-                    {
-                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
-                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole4;                  //  Layer Parameter 변경을 위한 Index
-                    }
-                    else if (layer.Name == "Hole5")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
-                    {
-                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
-                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole5;                  //  Layer Parameter 변경을 위한 Index
-                    }
-                    else if (layer.Name == "Hole6")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
-                    {
-                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
-                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole6;                  //  Layer Parameter 변경을 위한 Index
-                    }
-                    else if (layer.Name == "Hole7")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
-                    {
-                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
-                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole7;                  //  Layer Parameter 변경을 위한 Index
-                    }
-                    else if (layer.Name == "Hole8")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
-                    {
-                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
-                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole8;                  //  Layer Parameter 변경을 위한 Index
-                    }
-                    else if (layer.Name == "Hole9")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
-                    {
-                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
-                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole9;                  //  Layer Parameter 변경을 위한 Index
-                    }
-                    else if (layer.Name == "Hole10")                                                                    //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
-                    {
-                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
-                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole10;                 //  Layer Parameter 변경을 위한 Index
-                    }
+                    #region 간소화
+                    //else if (layer.Name == "Hole2")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
+                    //{
+                    //    m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
+                    //    m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole2;                  //  Layer Parameter 변경을 위한 Index
+                    //}
+                    //else if (layer.Name == "Hole3")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
+                    //{
+                    //    m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
+                    //    m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole3;                  //  Layer Parameter 변경을 위한 Index
+                    //}
+                    //else if (layer.Name == "Hole4")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
+                    //{
+                    //    m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
+                    //    m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole4;                  //  Layer Parameter 변경을 위한 Index
+                    //}
+                    //else if (layer.Name == "Hole5")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
+                    //{
+                    //    m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
+                    //    m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole5;                  //  Layer Parameter 변경을 위한 Index
+                    //}
+                    //else if (layer.Name == "Hole6")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
+                    //{
+                    //    m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
+                    //    m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole6;                  //  Layer Parameter 변경을 위한 Index
+                    //}
+                    //else if (layer.Name == "Hole7")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
+                    //{
+                    //    m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
+                    //    m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole7;                  //  Layer Parameter 변경을 위한 Index
+                    //}
+                    //else if (layer.Name == "Hole8")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
+                    //{
+                    //    m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
+                    //    m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole8;                  //  Layer Parameter 변경을 위한 Index
+                    //}
+                    //else if (layer.Name == "Hole9")                                                                     //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
+                    //{
+                    //    m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
+                    //    m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole9;                  //  Layer Parameter 변경을 위한 Index
+                    //}
+                    //else if (layer.Name == "Hole10")                                                                    //  Hole2 ~ Hole10 은 Hole1 의 데이터로 가공한다.
+                    //{
+                    //    m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_DRILLING;
+                    //    m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Hole10;                 //  Layer Parameter 변경을 위한 Index
+                    //}                    
+                    #endregion
                     else if (layer.Name == "Rect")                                                                      //  Rect 가공
                     {
                         m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_THRUHOLE;
