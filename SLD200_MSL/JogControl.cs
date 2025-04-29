@@ -150,9 +150,9 @@ namespace SLD200_MSL
                         m_axis[3].Configuration.DisplayAxisType = DisplayAxisType.CombinationPicker;
                     }
                 }
-                catch(Exception)
+                catch(Exception ex)
                 {
-
+                    Log.Write(ex);
                 }
             }
 

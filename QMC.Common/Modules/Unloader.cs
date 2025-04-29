@@ -780,7 +780,7 @@ namespace QMC.Common.Modules
 
             }catch(Exception ex)
             {
-
+                Log.Write(ex);
             }
             return bIsAlarm;
         }

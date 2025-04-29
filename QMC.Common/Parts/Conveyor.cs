@@ -163,6 +163,7 @@ namespace QMC.Common.Parts
             }
             catch(Exception ex)
             {
+                Log.Write(ex);
                 LastError = ex.Message;
                 return -1;
             }

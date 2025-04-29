@@ -162,7 +162,7 @@ namespace SLD200_MSL
                         }
                     }catch(Exception ex)
                     {
-
+                        Log.Write(ex);
                     }
                     
                     //알람 지우기

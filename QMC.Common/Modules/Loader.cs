@@ -1397,7 +1397,7 @@ namespace QMC.Common.Modules
                 bResult =  alarmList.Any();
             }catch(Exception ex)
             {
-
+                Log.Write(ex);
             }
             return bResult;
 
@@ -1806,7 +1806,6 @@ namespace QMC.Common.Modules
             double m_dSpeed_Stacker_MoreSlow = 0.0;
             double m_dSpeedMag_forAccDec = 0.0;
 
-
             //  운전 중 Door 를 열면 장비 Stop
             if (m_nStacker0_ModulePickupWaitingPos_Step >= (int)StackerModulePickupWaitingPos_Step.Start)
             {
@@ -1853,23 +1852,17 @@ namespace QMC.Common.Modules
                 //}
             }
 
-
             if (!loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))
             {
                 Equipment.Loader_RPort_Pause = true;
             }
 
-
             //  자동운전 시, Stacker0 동작 조건 : TR Cycle (None), Stacker0 Cycle (None), TR 이 Module 을 집어갔을 때
             if (Equipment.AutoRunStatus &&
-
                 !Equipment.Loader_RPort_Pause &&
-
                 m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
                 m_nStacker0_ModulePickupWaitingPos_Step == (int)StackerModulePickupWaitingPos_Step.None &&
-
                 m_bStacker0_Run_byUser &&
-
                 !m_bStacker0_Complete)                                                //  Stacker0 동작 완료되지 않은 상태 (TR 이 Module 을 집어간 후 false 로 변경됨)
             {
                 Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "시작 Flag");
@@ -2229,7 +2222,6 @@ namespace QMC.Common.Modules
                             Equipment.Loader_RPort_Pause = true;            //  자재는 감지되지만 Full 센서가 인식되지 않음. 
 
                             return AlarmPost(AlarmKey.LD_Stacker0_FullSensor_Off_MoveFail);
-                            MessageBox.Show("LD Stacker0 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -8696,10 +8688,7 @@ namespace QMC.Common.Modules
                         if(nNextStep != 0)
                         {
                             m_nMAlign_Step = nNextStep;
-
                         }
-                        
-
                     }
 
                     break;

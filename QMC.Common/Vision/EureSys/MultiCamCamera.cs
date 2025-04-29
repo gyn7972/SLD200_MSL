@@ -819,8 +819,9 @@ namespace QMC.Common.Vision.EureSys
             {
                 if (MultiCam.GetParam(this.Channel, (int)MultiCam.GetParameter.ChannelState, out channelState) == 0) return ret;
             }
-            catch(Exception)
+            catch(Exception ex)
             {
+                Log.Write(ex);
             }
 
             for (int i = 0; i < RetryCount; i++)

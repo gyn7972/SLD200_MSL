@@ -254,9 +254,7 @@ namespace QMC.Common
             }
             catch(Exception ex)
             {
-                //if (this.Owner is IOwned)
-                //    Log.Write((IOwned)this.Owner, new LogEntry(LogLevel.Normal, $"[CycleTimer Exception] {ex.Message}"));
-                Console.WriteLine(ex.Message);
+                Log.Write(ex);
             }
         }
 
