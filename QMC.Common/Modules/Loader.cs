@@ -6397,10 +6397,43 @@ namespace QMC.Common.Modules
                         //
                         //  복원 지점 체크용 (Work Stage 에 Module Put Down 완료)
                         //////////////////////////////////////////////////////////////////////////////////////////
-                        if(workStage.workStageParameter.DI_Stage_Vacuum_Check())
+                        if(workStage.workStageParameter.DI_Stage_Vacuum_Check() && (workStage.m_dEPRO_Value < -40.0))       //  Stage Vacuum 센서와 Regulator 값을 함께 본다.
                         {
                             m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_ReadyPos2_1stStep;
 
+                        }
+                        else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage Vacuum On 실패. (Timeout)");
+
+                            //  알람 정지 (LED Bar - Red Blink)
+                            Equipment.MachineStop_byAlarm = true;
+
+                            //timer_Motion_Home.Enabled = false;
+                            //m_btimer_Motion_Home_Stop = true;
+
+                            loaderParameter.DO_Loader_Picker_Blow(false);
+
+
+                            //////////////////////////////////////////////////////////////////////////////////////////
+                            //  재시작 위치 저장용
+                            //
+                            Equipment.MachineStop_byTimeout_Loader = true;
+                            Loader_CurrentStatus_Save_StopedByTimeout();
+                            //
+                            //  재시작 위치 저장용
+                            //////////////////////////////////////////////////////////////////////////////////////////                        
+
+                            return AlarmPost(AlarmKey.LD_Transfer_WorkStageVacuumOn_Timeout);
+                            m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
+                        }
+                        else
+                        {
+                            workStage.workStageParameter.DO_Stage_Vacuum(true);
+                            workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
+
+                            //  Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
+                            workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);            //  임시로 -30 고정
                         }
 
                     }
@@ -9445,7 +9478,8 @@ namespace QMC.Common.Modules
             }
             else if (Step <= (int)Loader_Transfer_Step.Stacker1_ModulePickup_Condition_Check)
             {
-                m_nLoader_Transfer_Step_Recovery = Step;
+                m_bStacker1_Complete = false;
+                m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.None;  // Step;
             }
             else if (Step <= (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos_DoneCheck)
             {
