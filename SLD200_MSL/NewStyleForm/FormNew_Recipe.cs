@@ -961,7 +961,7 @@ namespace SLD200_MSL
                     using (FileStream fs = File.Create(fileName))
                     {
                         // 파일만 생성하고 바로 닫음
-                    }
+                     }
                 }
 
                 //  Recipe Data 저장
