@@ -107,6 +107,7 @@
             this.ImageViewer_Main_highs = new QMC.Common.Hmi.VisionImageViewer();
             this.baseTextBox_DryRun_ProcessingTime = new SLD200_MSL.BaseTextBox();
             this.baseLabel5 = new SLD200_MSL.BaseLabel();
+            this.button_Test12 = new System.Windows.Forms.Button();
             this.groupBoxMain_ModuleProcessingStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -1230,12 +1231,29 @@
             this.baseLabel5.Text = "(Dry Run Processing Time (sec) :";
             this.baseLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // button_Test12
+            // 
+            this.button_Test12.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_Test12.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.button_Test12.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button_Test12.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.button_Test12.Location = new System.Drawing.Point(1176, 816);
+            this.button_Test12.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_Test12.Name = "button_Test12";
+            this.button_Test12.Size = new System.Drawing.Size(58, 35);
+            this.button_Test12.TabIndex = 192;
+            this.button_Test12.Text = "TEST";
+            this.button_Test12.UseVisualStyleBackColor = false;
+            this.button_Test12.Visible = false;
+            this.button_Test12.Click += new System.EventHandler(this.button_Test12_Click);
+            // 
             // FormNew_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 877);
             this.ControlBox = false;
+            this.Controls.Add(this.button_Test12);
             this.Controls.Add(this.checkBox_Main_AutoRun);
             this.Controls.Add(this.ImageViewer_Main_Rows);
             this.Controls.Add(this.ImageViewer_Main_highs);
@@ -1378,5 +1396,6 @@
         private QMC.Common.Hmi.VisionImageViewer ImageViewer_Main_Rows;
         private QMC.Common.Hmi.VisionImageViewer ImageViewer_Main_highs;
         private System.Windows.Forms.CheckBox checkBox_Main_AutoRun;
+        private System.Windows.Forms.Button button_Test12;
     }
 }
