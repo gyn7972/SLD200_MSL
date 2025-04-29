@@ -1471,6 +1471,8 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ0) > 60000)
                     {
+                        return AlarmPost(AlarmKey.UL_Staker0_Z_Full_Sensor_On_Fail);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
@@ -1478,7 +1480,7 @@ namespace QMC.Common.Modules
 
                         //timer_Motion_Home.Enabled = false;
                         //m_btimer_Motion_Home_Stop = true;
-                        return AlarmPost(AlarmKey.UL_Staker0_Z_Full_Sensor_On_Fail);
+                        
                         m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
 
                         MessageBox.Show("UL Stacker0 Z 축, Full 센서가 On 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

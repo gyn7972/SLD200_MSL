@@ -911,6 +911,22 @@ namespace SLD200_MSL
             {
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !", "장비가 [[ AUTO ]] 상태가 아닙니다.");
+                return;
+            }
+
+            if (checkBox_Test_DryRun.Checked)
+            {
+                workStage.m_bMainWorkCycle_DryRun = true;
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "[[DryRyn]]을 시작하시겠습니까?\r\n\r\n[Dry Run]"))
+                    return;
+            }
+            else
+            {
+                workStage.m_bMainWorkCycle_DryRun = false;
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 시작하시겠습니까?"))
+                    return;
             }
 
             // 아래 변수가 자동운전 Tick 돌리는 변수임.
@@ -1347,21 +1363,6 @@ namespace SLD200_MSL
                 return bRtn = false;
             }
 
-            if (checkBox_Test_DryRun.Checked)
-            {
-                workStage.m_bMainWorkCycle_DryRun = true;
-                var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "[[DryRyn]]을 시작하시겠습니까?\r\n\r\n[Dry Run]"))
-                    return bRtn = false;
-            }
-            else
-            {
-                workStage.m_bMainWorkCycle_DryRun = false;
-                var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 시작하시겠습니까?"))
-                    return bRtn = false;
-            }
-
             workStage.SetRecoveryLaserDrilling_MainStep(workStage.m_nLaserDrilling_MainStep);
             workStage.m_nLaserDrilling_MainStep = workStage.m_nLaserDrilling_MainStep_Recovery;
 
@@ -1511,6 +1512,8 @@ namespace SLD200_MSL
 
             button_Main_Start.BackColor = Color.LightGray;
             button_Main_Start.ForeColor = Color.Black;
+
+            checkBox_Main_AutoRun.Checked = false;
 
             // X
             //workStage.timer_MainWork.Stop();
@@ -2027,6 +2030,11 @@ namespace SLD200_MSL
                     Equipment.AutoManualStatus = false;
                 }
             }
+        }
+
+        private void button_Test12_Click(object sender, EventArgs e)
+        {
+            workStage.AlarmPost(QMC.Common.Modules.WorkStage.AlarmKey.PreAlignFail);
         }
 
         private void button_TEST12_Click(object sender, EventArgs e)

@@ -2830,7 +2830,7 @@ namespace QMC.Common.Modules
                         //timer_Motion_Home.Enabled = false;
                         //m_btimer_Motion_Home_Stop = true;
 
-                        AlarmPost(AlarmKey.LD_Stacker1_ModulePickupWaitingPos_Step_No_More_Material);
+                        return AlarmPost(AlarmKey.LD_Stacker1_ModulePickupWaitingPos_Step_No_More_Material);
                         m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
 
                         //MessageBox.Show("LD Stacker1 에 Module 이 감지되지 않음.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -6397,12 +6397,13 @@ namespace QMC.Common.Modules
                         //
                         //  복원 지점 체크용 (Work Stage 에 Module Put Down 완료)
                         //////////////////////////////////////////////////////////////////////////////////////////
-                        if(workStage.workStageParameter.DI_Stage_Vacuum_Check() && (workStage.m_dEPRO_Value < -40.0))       //  Stage Vacuum 센서와 Regulator 값을 함께 본다.
+                        //To do: stage 압력 스펙 제어 부분 성부장님 파라미터로 빼!!!
+                        if(workStage.workStageParameter.DI_Stage_Vacuum_Check() && (workStage.m_dEPRO_Value < -20.0))       //  Stage Vacuum 센서와 Regulator 값을 함께 본다.
                         {
                             m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_ReadyPos2_1stStep;
 
                         }
-                        else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
+                        else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 20000)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage Vacuum On 실패. (Timeout)");
 

@@ -1654,8 +1654,6 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
-
-
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.DataNotValidation;
             alarm.Title = "데이터로드에 실패";
@@ -1669,7 +1667,7 @@ namespace QMC.Common.Modules
             alarm.Title = "Socket Align";
             alarm.Cause = "Socket Align Z Move Fail";
             alarm.Source = Name;
-            alarm.Grade = "Info";
+            alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
@@ -1677,7 +1675,7 @@ namespace QMC.Common.Modules
             alarm.Title = "Socket Align";
             alarm.Cause = "Socket Align XY Move Fail";
             alarm.Source = Name;
-            alarm.Grade = "Info";
+            alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
@@ -1685,7 +1683,15 @@ namespace QMC.Common.Modules
             alarm.Title = "Socket Align";
             alarm.Cause = "소켓 얼라인 데이터 계산에 실패 하였습니다.";
             alarm.Source = Name;
-            alarm.Grade = "Info";
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.PreAlignFail;
+            alarm.Title = "PRE Align";
+            alarm.Cause = "PRE ALIGN 데이터 계산에 실패 하였습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
             //PreAlignFail
@@ -4144,10 +4150,10 @@ namespace QMC.Common.Modules
                 {
 
                     Thread.Sleep(1);
-                    if (IsAlarm())
-                    {
-                        continue;
-                    }
+                    //if (IsAlarm())
+                    //{
+                    //    continue;
+                    //}
                     if (m_IsModuleClose)
                     {
                         break;
@@ -16147,39 +16153,20 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
+                            m_bPreAlignCompleted = false;
                             //  Pre Align NG 이면, Alarm 발생
                             return AlarmPost(AlarmKey.PreAlignFail);
-                            //Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align 실패");
-
-                            //timer_LaserDrillingWork.Enabled = false;
-                            //m_bExit = true;
-                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-                            MessageBox.Show("Socket Align 실패", "Error");
-
-                            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
                         }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000)               //  60 sec * 5
                     {
-                        //break;
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align 시간 초과.");
 
-                        //timer_LaserDrillingWork.Enabled = false;
-                        //m_bExit = true;
-
                         m_bPreAlignCompleted = false;
-
                         return AlarmPost(AlarmKey.PreAlignFail);
-
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-                        timer_VisionAlign.Enabled = false;
-                        m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
-                        MessageBox.Show("Pre Align 시간 초과", "Error");
                     }
                     break;
 
-                //DrillingData_PreAlign_Correction,
-                //DrillingData_PreAlign_Correction_Complete,
                 case (int)LaserDrilling_Step.DrillingData_PreAlign_Correction:                      //  가공 할 Socket Align 시작
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 보정 시작.");
@@ -22516,8 +22503,6 @@ namespace QMC.Common.Modules
             m_nDrillingData_LayerTotal = 0;                         //  진행해야하는 Layer 총 개수 (제품 단위 : Module, 하나의 Module 은 n 개의 Layer 로 구성된다)
             m_nDrillingData_LayerCount = 0;                         //  진행하는 Layer Count (제품 단위 : Module, 하나의 Module 은 n 개의 Layer 로 구성된다)
             m_bPreAlignCompleted = false;
-
-
 
         }
         #endregion
