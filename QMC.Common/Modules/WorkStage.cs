@@ -22336,13 +22336,18 @@ namespace QMC.Common.Modules
         private string LaserDrillingStepDustCollectorFrequenceSet()
         {
             string m_strTemp;
-            //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
-            double m_dFreq_Upper = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper * 100.0;
-            double m_dFreq_Lower = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower * 100.0;
+
+            //  입력한 주파수 
+            double m_dFreq_Upper = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper;
+            double m_dFreq_Lower = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower;
 
             //  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
             double m_dRet_Freq_Upper = GetClosestValue_DustCollector(m_dFreq_Upper);
             double m_dRet_Freq_Lower = GetClosestValue_DustCollector(m_dFreq_Lower);
+
+            //  주파수 단위가 0.01Hz 이므로, 100배 해야 함.
+            m_dRet_Freq_Upper = m_dRet_Freq_Upper * 100.0;
+            m_dRet_Freq_Lower = m_dRet_Freq_Lower * 100.0;
 
             //  숫자를 4자리 숫자로 고정
             //string m_strFreq_Upper = m_dFreq_Upper.ToString("0000");
