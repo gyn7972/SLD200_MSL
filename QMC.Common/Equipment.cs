@@ -588,8 +588,17 @@ namespace QMC.Common
         public static string RecipeName_fromMainForm { set; get; }
 
 
-        //  자동운전 상태 확인
-        public static bool AutoRunStatus { set; get; }
+        //  Auto/Manual 상태 확인
+        // 현재 장비의 준비 상태를 관리 할것.! " Auto인 경우에만 시컨스와 같은 동작 가능 하도록 "
+        public static bool AutoManualStatus { set; get; }
+
+        // 장비 구동 유/무 변수 : 장비 시컨스 구동 유/무 변수 :: 실제로 장비 구동 확인 
+        // true: Auto Run // false : Manual Run
+        // 위와 같이 구분하여 장비 관리 할것!
+        public static bool AutoRunStatus { set; get; } // 장비 상태: Auto / Manul 상태 표시 
+
+
+
         public static int DryRun_ProcessingTime { set; get; } = 5;
 
 

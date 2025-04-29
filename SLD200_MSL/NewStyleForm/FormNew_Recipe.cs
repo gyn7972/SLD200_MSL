@@ -1166,6 +1166,7 @@ namespace SLD200_MSL
 
             string content = sb.ToString();
 
+            // Todo : WriteAllText :: 함수 안정성에 대하여 검증 필요. ( 기능은 구현됨 )
             // 4. 먼저 백업 파일 저장
             File.WriteAllText(backupFilePath, content, Encoding.UTF8);
 

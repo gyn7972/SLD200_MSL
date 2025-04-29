@@ -64,6 +64,8 @@
             this.baseLabel_CurrentOneCycle_TotalTime = new SLD200_MSL.BaseLabel();
             this.baseLabel_CurrentOneCycle_ElapsedTime = new SLD200_MSL.BaseLabel();
             this.baseLabel_CurrentOneCycle_Time = new SLD200_MSL.BaseLabel();
+            this.groupBox18 = new System.Windows.Forms.GroupBox();
+            this.listView_Main_FiducialAlignData = new System.Windows.Forms.ListView();
             this.groupBoxMain_MaterialInformation = new System.Windows.Forms.GroupBox();
             this.baseTextBox_Socket_Index = new SLD200_MSL.BaseTextBox();
             this.baseTextBox_SocketCountPerModule = new SLD200_MSL.BaseTextBox();
@@ -73,8 +75,6 @@
             this.button_Main_Pause = new System.Windows.Forms.Button();
             this.button_Main_Start = new System.Windows.Forms.Button();
             this.groupBox_ProcessingData = new System.Windows.Forms.GroupBox();
-            this.groupBox18 = new System.Windows.Forms.GroupBox();
-            this.listView_Main_FiducialAlignData = new System.Windows.Forms.ListView();
             this.button_Main_RecipeOpen = new System.Windows.Forms.Button();
             this.checkBox_Main_CycleStop = new System.Windows.Forms.CheckBox();
             this.button_Main_Reset = new System.Windows.Forms.Button();
@@ -102,10 +102,11 @@
             this.button_Main_Unloader_Continue = new System.Windows.Forms.Button();
             this.button_Main_WorkStage_Continue = new System.Windows.Forms.Button();
             this.buttonForceMaterialOut = new System.Windows.Forms.Button();
-            this.baseTextBox_DryRun_ProcessingTime = new SLD200_MSL.BaseTextBox();
-            this.baseLabel5 = new SLD200_MSL.BaseLabel();
+            this.checkBox_Main_AutoRun = new System.Windows.Forms.CheckBox();
             this.ImageViewer_Main_Rows = new QMC.Common.Hmi.VisionImageViewer();
             this.ImageViewer_Main_highs = new QMC.Common.Hmi.VisionImageViewer();
+            this.baseTextBox_DryRun_ProcessingTime = new SLD200_MSL.BaseTextBox();
+            this.baseLabel5 = new SLD200_MSL.BaseLabel();
             this.groupBoxMain_ModuleProcessingStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -116,9 +117,9 @@
             this.baseGroupBox_Progress.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Module_TargetCount)).BeginInit();
             this.baseGroupBox_WorkingTime.SuspendLayout();
+            this.groupBox18.SuspendLayout();
             this.groupBoxMain_MaterialInformation.SuspendLayout();
             this.groupBox_ProcessingData.SuspendLayout();
-            this.groupBox18.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Rows)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).BeginInit();
@@ -264,6 +265,7 @@
             // 
             this.groupBoxMain_ProcessingStatus.Controls.Add(this.baseGroupBox_Progress);
             this.groupBoxMain_ProcessingStatus.Controls.Add(this.baseGroupBox_WorkingTime);
+            this.groupBoxMain_ProcessingStatus.Controls.Add(this.groupBox18);
             this.groupBoxMain_ProcessingStatus.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBoxMain_ProcessingStatus.Location = new System.Drawing.Point(412, 9);
             this.groupBoxMain_ProcessingStatus.Name = "groupBoxMain_ProcessingStatus";
@@ -292,7 +294,7 @@
             this.baseGroupBox_Progress.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseGroupBox_Progress.Name = "baseGroupBox_Progress";
             this.baseGroupBox_Progress.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.baseGroupBox_Progress.Size = new System.Drawing.Size(426, 139);
+            this.baseGroupBox_Progress.Size = new System.Drawing.Size(426, 115);
             this.baseGroupBox_Progress.TabIndex = 193;
             this.baseGroupBox_Progress.TabStop = false;
             this.baseGroupBox_Progress.Text = " [ Progress ] ";
@@ -303,7 +305,7 @@
             this.baseTextBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.baseTextBox2.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseTextBox2.ForeColor = System.Drawing.Color.Black;
-            this.baseTextBox2.Location = new System.Drawing.Point(277, 101);
+            this.baseTextBox2.Location = new System.Drawing.Point(277, 80);
             this.baseTextBox2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseTextBox2.Name = "baseTextBox2";
             this.baseTextBox2.ReadOnly = true;
@@ -318,7 +320,7 @@
             this.baseTextBox_TotalSocketCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.baseTextBox_TotalSocketCount.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseTextBox_TotalSocketCount.ForeColor = System.Drawing.Color.Black;
-            this.baseTextBox_TotalSocketCount.Location = new System.Drawing.Point(196, 101);
+            this.baseTextBox_TotalSocketCount.Location = new System.Drawing.Point(196, 80);
             this.baseTextBox_TotalSocketCount.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseTextBox_TotalSocketCount.Name = "baseTextBox_TotalSocketCount";
             this.baseTextBox_TotalSocketCount.ReadOnly = true;
@@ -332,7 +334,7 @@
             this.baseLabel_SocketCount.AutoSize = true;
             this.baseLabel_SocketCount.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_SocketCount.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_SocketCount.Location = new System.Drawing.Point(10, 106);
+            this.baseLabel_SocketCount.Location = new System.Drawing.Point(10, 85);
             this.baseLabel_SocketCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_SocketCount.Name = "baseLabel_SocketCount";
             this.baseLabel_SocketCount.Size = new System.Drawing.Size(51, 18);
@@ -343,7 +345,7 @@
             // 
             this.numericUpDown_Module_TargetCount.BackColor = System.Drawing.Color.White;
             this.numericUpDown_Module_TargetCount.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.numericUpDown_Module_TargetCount.Location = new System.Drawing.Point(75, 60);
+            this.numericUpDown_Module_TargetCount.Location = new System.Drawing.Point(75, 45);
             this.numericUpDown_Module_TargetCount.Name = "numericUpDown_Module_TargetCount";
             this.numericUpDown_Module_TargetCount.Size = new System.Drawing.Size(98, 26);
             this.numericUpDown_Module_TargetCount.TabIndex = 133;
@@ -354,7 +356,7 @@
             this.baseLabel_ModuleCount_Target.AutoSize = true;
             this.baseLabel_ModuleCount_Target.Font = new System.Drawing.Font("Tahoma", 9.75F);
             this.baseLabel_ModuleCount_Target.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_ModuleCount_Target.Location = new System.Drawing.Point(101, 35);
+            this.baseLabel_ModuleCount_Target.Location = new System.Drawing.Point(101, 20);
             this.baseLabel_ModuleCount_Target.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_ModuleCount_Target.Name = "baseLabel_ModuleCount_Target";
             this.baseLabel_ModuleCount_Target.Size = new System.Drawing.Size(45, 16);
@@ -370,7 +372,7 @@
             this.button_PNLCount_Clear.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.button_PNLCount_Clear.Font = new System.Drawing.Font("Tahoma", 9.75F);
             this.button_PNLCount_Clear.ForeColor = System.Drawing.Color.Black;
-            this.button_PNLCount_Clear.Location = new System.Drawing.Point(359, 59);
+            this.button_PNLCount_Clear.Location = new System.Drawing.Point(359, 44);
             this.button_PNLCount_Clear.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.button_PNLCount_Clear.Name = "button_PNLCount_Clear";
             this.button_PNLCount_Clear.Size = new System.Drawing.Size(58, 29);
@@ -383,7 +385,7 @@
             this.baseLabel_PNLCount_NG.AutoSize = true;
             this.baseLabel_PNLCount_NG.Font = new System.Drawing.Font("Tahoma", 9.75F);
             this.baseLabel_PNLCount_NG.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_PNLCount_NG.Location = new System.Drawing.Point(302, 35);
+            this.baseLabel_PNLCount_NG.Location = new System.Drawing.Point(302, 20);
             this.baseLabel_PNLCount_NG.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_PNLCount_NG.Name = "baseLabel_PNLCount_NG";
             this.baseLabel_PNLCount_NG.Size = new System.Drawing.Size(23, 16);
@@ -396,7 +398,7 @@
             this.baseTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.baseTextBox1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseTextBox1.ForeColor = System.Drawing.Color.Black;
-            this.baseTextBox1.Location = new System.Drawing.Point(277, 60);
+            this.baseTextBox1.Location = new System.Drawing.Point(277, 45);
             this.baseTextBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseTextBox1.Name = "baseTextBox1";
             this.baseTextBox1.ReadOnly = true;
@@ -411,7 +413,7 @@
             this.baseTextBox_Module_TotalCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.baseTextBox_Module_TotalCount.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseTextBox_Module_TotalCount.ForeColor = System.Drawing.Color.Black;
-            this.baseTextBox_Module_TotalCount.Location = new System.Drawing.Point(196, 60);
+            this.baseTextBox_Module_TotalCount.Location = new System.Drawing.Point(196, 45);
             this.baseTextBox_Module_TotalCount.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseTextBox_Module_TotalCount.Name = "baseTextBox_Module_TotalCount";
             this.baseTextBox_Module_TotalCount.ReadOnly = true;
@@ -425,7 +427,7 @@
             this.baseLabel_ModuleCount.AutoSize = true;
             this.baseLabel_ModuleCount.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_ModuleCount.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_ModuleCount.Location = new System.Drawing.Point(10, 66);
+            this.baseLabel_ModuleCount.Location = new System.Drawing.Point(10, 51);
             this.baseLabel_ModuleCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_ModuleCount.Name = "baseLabel_ModuleCount";
             this.baseLabel_ModuleCount.Size = new System.Drawing.Size(54, 18);
@@ -438,7 +440,7 @@
             this.baseLabel_PNLCount_Total.AutoSize = true;
             this.baseLabel_PNLCount_Total.Font = new System.Drawing.Font("Tahoma", 9.75F);
             this.baseLabel_PNLCount_Total.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_PNLCount_Total.Location = new System.Drawing.Point(216, 35);
+            this.baseLabel_PNLCount_Total.Location = new System.Drawing.Point(216, 20);
             this.baseLabel_PNLCount_Total.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_PNLCount_Total.Name = "baseLabel_PNLCount_Total";
             this.baseLabel_PNLCount_Total.Size = new System.Drawing.Size(36, 16);
@@ -586,6 +588,29 @@
             this.baseLabel_CurrentOneCycle_Time.TabIndex = 109;
             this.baseLabel_CurrentOneCycle_Time.Text = "One Cycle Time";
             // 
+            // groupBox18
+            // 
+            this.groupBox18.Controls.Add(this.listView_Main_FiducialAlignData);
+            this.groupBox18.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.groupBox18.Location = new System.Drawing.Point(459, 160);
+            this.groupBox18.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.groupBox18.Name = "groupBox18";
+            this.groupBox18.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox18.Size = new System.Drawing.Size(426, 75);
+            this.groupBox18.TabIndex = 89;
+            this.groupBox18.TabStop = false;
+            this.groupBox18.Text = " Fiducial Align Data ";
+            // 
+            // listView_Main_FiducialAlignData
+            // 
+            this.listView_Main_FiducialAlignData.FullRowSelect = true;
+            this.listView_Main_FiducialAlignData.HideSelection = false;
+            this.listView_Main_FiducialAlignData.Location = new System.Drawing.Point(12, 26);
+            this.listView_Main_FiducialAlignData.Name = "listView_Main_FiducialAlignData";
+            this.listView_Main_FiducialAlignData.Size = new System.Drawing.Size(405, 39);
+            this.listView_Main_FiducialAlignData.TabIndex = 0;
+            this.listView_Main_FiducialAlignData.UseCompatibleStateImageBehavior = false;
+            // 
             // groupBoxMain_MaterialInformation
             // 
             this.groupBoxMain_MaterialInformation.Controls.Add(this.baseTextBox_Socket_Index);
@@ -712,29 +737,6 @@
             this.groupBox_ProcessingData.TabStop = false;
             this.groupBox_ProcessingData.Text = "Processing Data";
             // 
-            // groupBox18
-            // 
-            this.groupBox18.Controls.Add(this.listView_Main_FiducialAlignData);
-            this.groupBox18.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox18.Location = new System.Drawing.Point(1320, 208);
-            this.groupBox18.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox18.Name = "groupBox18";
-            this.groupBox18.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox18.Size = new System.Drawing.Size(366, 65);
-            this.groupBox18.TabIndex = 89;
-            this.groupBox18.TabStop = false;
-            this.groupBox18.Text = " Fiducial Align Data ";
-            // 
-            // listView_Main_FiducialAlignData
-            // 
-            this.listView_Main_FiducialAlignData.FullRowSelect = true;
-            this.listView_Main_FiducialAlignData.HideSelection = false;
-            this.listView_Main_FiducialAlignData.Location = new System.Drawing.Point(12, 26);
-            this.listView_Main_FiducialAlignData.Name = "listView_Main_FiducialAlignData";
-            this.listView_Main_FiducialAlignData.Size = new System.Drawing.Size(342, 25);
-            this.listView_Main_FiducialAlignData.TabIndex = 0;
-            this.listView_Main_FiducialAlignData.UseCompatibleStateImageBehavior = false;
-            // 
             // button_Main_RecipeOpen
             // 
             this.button_Main_RecipeOpen.BackColor = System.Drawing.SystemColors.ButtonHighlight;
@@ -812,22 +814,24 @@
             // button_Main_AutoRun
             // 
             this.button_Main_AutoRun.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_Main_AutoRun.Enabled = false;
             this.button_Main_AutoRun.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_AutoRun.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Main_AutoRun.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_Main_AutoRun.Location = new System.Drawing.Point(1726, 281);
+            this.button_Main_AutoRun.Location = new System.Drawing.Point(1726, 356);
             this.button_Main_AutoRun.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_AutoRun.Name = "button_Main_AutoRun";
-            this.button_Main_AutoRun.Size = new System.Drawing.Size(178, 78);
+            this.button_Main_AutoRun.Size = new System.Drawing.Size(178, 15);
             this.button_Main_AutoRun.TabIndex = 58;
             this.button_Main_AutoRun.Text = "Auto Run";
             this.button_Main_AutoRun.UseVisualStyleBackColor = false;
+            this.button_Main_AutoRun.Visible = false;
             this.button_Main_AutoRun.Click += new System.EventHandler(this.button_Main_AutoRun_Click);
             // 
             // checkBox_Test_DryRun
             // 
             this.checkBox_Test_DryRun.AutoSize = true;
-            this.checkBox_Test_DryRun.Location = new System.Drawing.Point(1593, 255);
+            this.checkBox_Test_DryRun.Location = new System.Drawing.Point(1833, 248);
             this.checkBox_Test_DryRun.Name = "checkBox_Test_DryRun";
             this.checkBox_Test_DryRun.Size = new System.Drawing.Size(69, 18);
             this.checkBox_Test_DryRun.TabIndex = 59;
@@ -1135,41 +1139,30 @@
             this.buttonForceMaterialOut.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.buttonForceMaterialOut.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.buttonForceMaterialOut.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonForceMaterialOut.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.buttonForceMaterialOut.Location = new System.Drawing.Point(1394, 802);
+            this.buttonForceMaterialOut.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.buttonForceMaterialOut.Location = new System.Drawing.Point(1493, 778);
             this.buttonForceMaterialOut.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonForceMaterialOut.Name = "buttonForceMaterialOut";
-            this.buttonForceMaterialOut.Size = new System.Drawing.Size(118, 64);
+            this.buttonForceMaterialOut.Size = new System.Drawing.Size(178, 73);
             this.buttonForceMaterialOut.TabIndex = 158;
             this.buttonForceMaterialOut.Text = "강제배출";
             this.buttonForceMaterialOut.UseVisualStyleBackColor = false;
             this.buttonForceMaterialOut.Click += new System.EventHandler(this.buttonForceMaterialOut_Click);
             // 
-            // baseTextBox_DryRun_ProcessingTime
+            // checkBox_Main_AutoRun
             // 
-            this.baseTextBox_DryRun_ProcessingTime.BackColor = System.Drawing.Color.White;
-            this.baseTextBox_DryRun_ProcessingTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.baseTextBox_DryRun_ProcessingTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.baseTextBox_DryRun_ProcessingTime.ForeColor = System.Drawing.Color.Black;
-            this.baseTextBox_DryRun_ProcessingTime.Location = new System.Drawing.Point(1858, 252);
-            this.baseTextBox_DryRun_ProcessingTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.baseTextBox_DryRun_ProcessingTime.Name = "baseTextBox_DryRun_ProcessingTime";
-            this.baseTextBox_DryRun_ProcessingTime.Size = new System.Drawing.Size(45, 24);
-            this.baseTextBox_DryRun_ProcessingTime.TabIndex = 151;
-            this.baseTextBox_DryRun_ProcessingTime.Text = "5";
-            this.baseTextBox_DryRun_ProcessingTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // baseLabel5
-            // 
-            this.baseLabel5.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.baseLabel5.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel5.Location = new System.Drawing.Point(1660, 250);
-            this.baseLabel5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.baseLabel5.Name = "baseLabel5";
-            this.baseLabel5.Size = new System.Drawing.Size(193, 26);
-            this.baseLabel5.TabIndex = 150;
-            this.baseLabel5.Text = "(Dry Run Processing Time (sec) :";
-            this.baseLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.checkBox_Main_AutoRun.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_Main_AutoRun.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.checkBox_Main_AutoRun.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.checkBox_Main_AutoRun.Location = new System.Drawing.Point(1726, 297);
+            this.checkBox_Main_AutoRun.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.checkBox_Main_AutoRun.Name = "checkBox_Main_AutoRun";
+            this.checkBox_Main_AutoRun.Size = new System.Drawing.Size(178, 55);
+            this.checkBox_Main_AutoRun.TabIndex = 191;
+            this.checkBox_Main_AutoRun.Text = "AutoRun";
+            this.checkBox_Main_AutoRun.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_Main_AutoRun.UseVisualStyleBackColor = false;
+            this.checkBox_Main_AutoRun.CheckedChanged += new System.EventHandler(this.checkBox_Main_AutoRun_CheckedChanged);
             // 
             // ImageViewer_Main_Rows
             // 
@@ -1211,15 +1204,41 @@
             this.ImageViewer_Main_highs.UpdateDelayTime = 160;
             this.ImageViewer_Main_highs.VisibleCrossLine = true;
             // 
+            // baseTextBox_DryRun_ProcessingTime
+            // 
+            this.baseTextBox_DryRun_ProcessingTime.BackColor = System.Drawing.Color.White;
+            this.baseTextBox_DryRun_ProcessingTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.baseTextBox_DryRun_ProcessingTime.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseTextBox_DryRun_ProcessingTime.ForeColor = System.Drawing.Color.Black;
+            this.baseTextBox_DryRun_ProcessingTime.Location = new System.Drawing.Point(1857, 271);
+            this.baseTextBox_DryRun_ProcessingTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.baseTextBox_DryRun_ProcessingTime.Name = "baseTextBox_DryRun_ProcessingTime";
+            this.baseTextBox_DryRun_ProcessingTime.Size = new System.Drawing.Size(45, 24);
+            this.baseTextBox_DryRun_ProcessingTime.TabIndex = 151;
+            this.baseTextBox_DryRun_ProcessingTime.Text = "5";
+            this.baseTextBox_DryRun_ProcessingTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // baseLabel5
+            // 
+            this.baseLabel5.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.baseLabel5.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel5.Location = new System.Drawing.Point(1659, 269);
+            this.baseLabel5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.baseLabel5.Name = "baseLabel5";
+            this.baseLabel5.Size = new System.Drawing.Size(193, 26);
+            this.baseLabel5.TabIndex = 150;
+            this.baseLabel5.Text = "(Dry Run Processing Time (sec) :";
+            this.baseLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // FormNew_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 877);
             this.ControlBox = false;
+            this.Controls.Add(this.checkBox_Main_AutoRun);
             this.Controls.Add(this.ImageViewer_Main_Rows);
             this.Controls.Add(this.ImageViewer_Main_highs);
-            this.Controls.Add(this.groupBox18);
             this.Controls.Add(this.buttonForceMaterialOut);
             this.Controls.Add(this.button_Main_RecipeOpen);
             this.Controls.Add(this.button_Main_WorkStage_Continue);
@@ -1267,10 +1286,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Module_TargetCount)).EndInit();
             this.baseGroupBox_WorkingTime.ResumeLayout(false);
             this.baseGroupBox_WorkingTime.PerformLayout();
+            this.groupBox18.ResumeLayout(false);
             this.groupBoxMain_MaterialInformation.ResumeLayout(false);
             this.groupBoxMain_MaterialInformation.PerformLayout();
             this.groupBox_ProcessingData.ResumeLayout(false);
-            this.groupBox18.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Rows)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).EndInit();
@@ -1358,5 +1377,6 @@
         private System.Windows.Forms.Button buttonForceMaterialOut;
         private QMC.Common.Hmi.VisionImageViewer ImageViewer_Main_Rows;
         private QMC.Common.Hmi.VisionImageViewer ImageViewer_Main_highs;
+        private System.Windows.Forms.CheckBox checkBox_Main_AutoRun;
     }
 }

@@ -109,7 +109,7 @@ namespace SLD200_MSL
 
             //  Main Status 타이머
             timer_Main_Status = new System.Windows.Forms.Timer();
-            timer_Main_Status.Interval = 20;
+            timer_Main_Status.Interval = 100;
             timer_Main_Status.Tick += new System.EventHandler(Timer_MainStatus_Func);
             timer_Main_Status.Enabled = true;
 
@@ -214,6 +214,11 @@ namespace SLD200_MSL
                 this.ImageViewer_Main_Rows.ResumeDisplay();
                 this.ImageViewer_Main_Rows.StartUpdateTask();
             }
+
+            // control 초기화 
+            checkBox_Main_AutoRun.Text = "MANUAL";
+            checkBox_Main_AutoRun.BackColor = Color.LightGray;
+            checkBox_Main_AutoRun.ForeColor = Color.Black;
         }
 
 
@@ -895,17 +900,37 @@ namespace SLD200_MSL
             //  Main Work Start
             Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Start 버튼");
 
-            if (AlarmManager.Instance.IsAlarm)
+            if (Equipment.AutoRunStatus)
             {
-                // 알람을 클리어 해주세요 메세지
                 var mb = new MessageBoxOk();
-                mb.ShowDialog("Information !", "알람 해제 바랍니다.");
+                mb.ShowDialog("Information !", "장비가 [[ 운전중 ]] 입니다.");
                 return;
             }
 
+            if (!Equipment.AutoManualStatus)
+            {
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "장비가 [[ AUTO ]] 상태가 아닙니다.");
+            }
 
+            // 아래 변수가 자동운전 Tick 돌리는 변수임.
+            workStage.m_MainWork_Start = true;
+            workStage.m_LaserDrillingWork_Start = true;
+            workStage.m_ProductAlign_Start = true;
+            workStage.m_SubWork_Start = true;
+            loader.m_LoaderWork_Start = true;
+            unloader.m_UnloaderWork_Start = true;
+
+            button_Main_Start.BackColor = Color.LightGreen;
+            button_Main_Start.ForeColor = Color.Black;
+
+            Equipment.AutoRunStatus = true;
+
+            return;
+
+
+            // 아래 구문 확인 필요. - 선택 가공시 사용?
             string m_strTemp = "";
-
             if (!workStage.m_bHomeOK)
             {
                 var mb1 = new MessageBoxOk();
@@ -939,7 +964,6 @@ namespace SLD200_MSL
                 return;
             }
 
-
             for (int i = 0; i < 4; i++)
             {
                 //  Laser Defocusing 양 체크 (너무 크면 안됨)
@@ -961,64 +985,6 @@ namespace SLD200_MSL
                 }
             }
 
-            //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_NONE)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "Scanner Mode 를 선택해야 합니다.");
-            //    return;
-            //}
-
-            //if (!laserDrilling.laserDrillingParameter.DI_Safety_Door())
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Safety Door 가 열려있습니다.");
-            //    return;
-            //}
-
-            //if (laserDrilling.laserDrillingParameter.IsDO_Door_Unlock())
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Safety Door Unlock 상태입니다.");
-            //    return;
-            //}
-
-            //if ((laserDrilling.Config.ParamConfig.nLaserSource_Type == (int)LaserDrillingParameterConfig.LaserSource.SpectraPhysics) &&
-            //    laserDrilling.laserDrillingParameter.DI_FrontDoor_Open())
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Front Door 가 열려있습니다.");
-            //    return;
-            //}
-
-
-            //if ((laserDrilling.Config.ParamConfig.Drilling_Repeat_Count > 0) && (laserDrilling.Config.ParamConfig.Drilling_Laser_Power_Percent <= 0))
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "미세홀 본 가공(1차) 가공 출력을 확인하십시오.\r\n\r\n[가공 출력 : 0 %]");
-            //    return;
-            //}
-
-            //if ((laserDrilling.Config.ParamConfig.Drilling_Repeat_Count_2nd > 0) && (laserDrilling.Config.ParamConfig.Drilling_Laser_Power_Percent_2nd <= 0))
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "미세홀 본 가공(2차) 가공 출력을 확인하십시오.\r\n\r\n[가공 출력 : 0 %]");
-            //    return;
-            //}
-
-            //if ((laserDrilling.Config.ParamConfig.PreDrilling_Repeat_Count > 0) && (laserDrilling.Config.ParamConfig.PreDrilling_Laser_Power_Percent <= 0))
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "미세홀 내부 가공(1차) 가공 출력을 확인하십시오.\r\n\r\n[가공 출력 : 0 %]");
-            //    return;
-            //}
-
-            //if ((laserDrilling.Config.ParamConfig.PreDrilling_Repeat_Count_2nd > 0) && (laserDrilling.Config.ParamConfig.PreDrilling_Laser_Power_Percent_2nd <= 0))
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "미세홀 내부 가공(2차) 가공 출력을 확인하십시오.\r\n\r\n[가공 출력 : 0 %]");
-            //    return;
-            //}
-
             if (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None)
             {
                 var mb = new MessageBoxYesNo();
@@ -1026,7 +992,6 @@ namespace SLD200_MSL
                 ////////////////////////////////////////////////////////////////////////////
                 ////  Socket 선택 가공인지 확인용
                 ///
-
                 if (workStage.m_stDividedRegion_GroupData == null)              //  Parsing 해야 확인할 수 있는 데이터
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "Start Button Click", "Data Parsing 진행. (GetDrillingData)");
@@ -1369,10 +1334,87 @@ namespace SLD200_MSL
             return decimalNumber.ToString("X4");
         }
 
+        private bool CheckAutoRunStatus()
+        {
+            bool bRtn = false;
+
+            //  자동 운전 시작
+            if (AlarmManager.Instance.IsAlarm)
+            {
+                // 알람을 클리어 해주세요 메세지
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "알람 해제 바랍니다.");
+                return bRtn = false;
+            }
+
+            if (checkBox_Test_DryRun.Checked)
+            {
+                workStage.m_bMainWorkCycle_DryRun = true;
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "[[DryRyn]]을 시작하시겠습니까?\r\n\r\n[Dry Run]"))
+                    return bRtn = false;
+            }
+            else
+            {
+                workStage.m_bMainWorkCycle_DryRun = false;
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 시작하시겠습니까?"))
+                    return bRtn = false;
+            }
+
+            workStage.SetRecoveryLaserDrilling_MainStep(workStage.m_nLaserDrilling_MainStep);
+            workStage.m_nLaserDrilling_MainStep = workStage.m_nLaserDrilling_MainStep_Recovery;
+
+            loader.SetRecovery();
+            unloader.SetRecovery();
+
+            //  테스트 : 강제로 Dry Run
+            //workStage.m_bMainWorkCycle_DryRun = true;
+            Equipment.DryRun_ProcessingTime = Convert.ToInt16(baseTextBox_DryRun_ProcessingTime.Text);
+
+            if (!workStage.m_bMainWorkCycle_DryRun && (Equipment.RecipeOpen_DrawingFilePath.Length <= 0))
+            {
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "도면(레시피)을 로드 하십시오.");
+                return bRtn = false;
+            }
+
+            Equipment.SeqTestMode = false;
+
+            Equipment.MachineStop_byTimeout_Loader = false;
+            Equipment.MachineStop_byTimeout_Unloader = false;
+            Equipment.MachineStop_byTimeout_WorkStage = false;
+
+            Equipment.SocketStop = false;
+            Equipment.SocketStopped = false;
+            Equipment.CycleStop = false;
+            Equipment.CycleStopped_LoaderTransfer = false;
+            Equipment.CycleStopped_UnloaderTransfer = false;
+            Equipment.CycleStopped_MainWork = false;
+
+            checkBox_Main_SocketStop.Checked = false;
+            checkBox_Main_CycleStop.Checked = false;
+            checkBox_Main_Loader_Transfer_Pause.Checked = false;
+            checkBox_Main_Loader_LPort_Pause.Checked = false;
+            checkBox_Main_Loader_RPort_Pause.Checked = false;
+
+            //  선택 가공 인덱스를 전체 가공으로 변경
+            workStage.m_nSelectedSocket_Index = -1;
+
+            //최종 AutoRunStatus 로 장비 구동 상태 확인 및 제어!!
+            Equipment.AutoManualStatus = true;
+
+            workStage._isMainWorkRunning = false;
+            workStage._isLaserDrillingWorkRunning = false;
+            loader._isLoaderWorkRunning = false;
+            unloader._isUnloaderWorkRunning = false;
+
+            return bRtn = true;
+        }
+
         private void button_Main_AutoRun_Click(object sender, EventArgs e)
         {
             //  자동 운전 시작
-
             if(AlarmManager.Instance.IsAlarm)
             {
                 // 알람을 클리어 해주세요 메세지
@@ -1385,7 +1427,7 @@ namespace SLD200_MSL
             {
                 workStage.m_bMainWorkCycle_DryRun = true;
                 var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 시작하시겠습니까?\r\n\r\n[Dry Run]"))
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "[[DryRyn]]을 시작하시겠습니까?\r\n\r\n[Dry Run]"))
                     return;
             }
             else
@@ -1396,15 +1438,16 @@ namespace SLD200_MSL
                     return;
             }
 
-
             workStage.SetRecoveryLaserDrilling_MainStep(workStage.m_nLaserDrilling_MainStep);
             workStage.m_nLaserDrilling_MainStep = workStage.m_nLaserDrilling_MainStep_Recovery;
 
             loader.SetRecovery();
             unloader.SetRecovery();
+
             //  테스트 : 강제로 Dry Run
             //workStage.m_bMainWorkCycle_DryRun = true;
             Equipment.DryRun_ProcessingTime = Convert.ToInt16(baseTextBox_DryRun_ProcessingTime.Text);
+
             if (!workStage.m_bMainWorkCycle_DryRun && (Equipment.RecipeOpen_DrawingFilePath.Length <= 0))
             {
                 var mb = new MessageBoxOk();
@@ -1434,94 +1477,54 @@ namespace SLD200_MSL
             //  선택 가공 인덱스를 전체 가공으로 변경
             workStage.m_nSelectedSocket_Index = -1;
 
-
-            //  Main Work Timer Start
-            //workStage.m_btimer_MainWork_Stop = false;
-            //workStage.timer_MainWork.Enabled = true;
-            ////  Laser Drilling Timer Stop
-            //workStage.m_btimer_LaserDrillingWork_Stop = false;
-            //workStage.timer_LaserDrillingWork.Enabled = true;
-            ////  Loader Work Timer Start
-            //loader.m_btimer_LoaderWork_Stop = false;
-            //loader.timer_LoaderWork.Enabled = true;
-            ////  Unloader Work Timer Start
-            //unloader.m_btimer_UnloaderWork_Stop = false;
-            //unloader.timer_UnloaderWork.Enabled = true;
-
+            //최종 AutoRunStatus 로 장비 구동 상태 확인 및 제어!!
             Equipment.AutoRunStatus = true;
 
             workStage._isMainWorkRunning = false;
-            workStage.m_MainWork_Start = true;
-
             workStage._isLaserDrillingWorkRunning = false;
-            workStage.m_LaserDrillingWork_Start = true;
-            workStage.m_ProductAlign_Start = true;
-            workStage.m_SubWork_Start = true;
-
-            //workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
-
             loader._isLoaderWorkRunning = false;
-            loader.m_LoaderWork_Start = true;
-
             unloader._isUnloaderWorkRunning = false;
-            unloader.m_UnloaderWork_Start = true;
-
-            //unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.Start;
-
         }
 
         private void button_Main_Stop_Click(object sender, EventArgs e)
         {
-            //Alarm alarm = new Alarm();
-            //alarm.Code = 2000;
-            //alarm.Title = "메롱";
-            //alarm.Cause = "잘 됩니다.";
-            //alarm.Source = "스탑";
-            //AlarmManager.Instance.ShowAlarm(alarm);
-            //return;
-            
             //  자동 운전 중지
             var mb = new MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 중지하시겠습니까?"))
                 return;
 
-            Equipment.AutoRunStatus = false;
+            Equipment.AutoRunStatus = false;        // 자동운전중
+            Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
 
-            //  Main Work Timer Stop
-            //workStage.m_btimer_MainWork_Stop = true;
-            //workStage.timer_MainWork.Enabled = false;
-            ////  Laser Drilling Timer Stop
-            //workStage.m_btimer_LaserDrillingWork_Stop = true;
-            //workStage.timer_LaserDrillingWork.Enabled = false;
-            ////  Loader Work Timer Stop
-            //loader.m_btimer_LoaderWork_Stop = true;
-            //loader.timer_LoaderWork.Enabled = false;
-            ////  Unloader Work Timer Stop
-            //unloader.m_btimer_UnloaderWork_Stop = true;
-            //unloader.timer_UnloaderWork.Enabled = false;
+            workStage._isMainWorkRunning = false;
+            workStage._isLaserDrillingWorkRunning = false;
+            loader._isLoaderWorkRunning = false;
+            unloader._isUnloaderWorkRunning = false;
 
-            Equipment.AutoRunStatus = false;
-
-            workStage.timer_MainWork.Stop();
-            workStage.timer_MainWork.Enabled = false;
+            // 아래 변수가 자동운전 Tick 돌리는 변수임.
             workStage.m_MainWork_Start = false;
-            //workStage.m_nMainWork_Step = (int)WorkStage.MainWork_Step.None;
-
-            loader.timer_LoaderWork.Stop();
-            loader.timer_LoaderWork.Enabled = false;
-            loader.m_LoaderWork_Start = false;
-            //loader.m_nLoader_Transfer_Step = (int)Loader.Loader_Transfer_Step.None;
-
-            workStage.timer_LaserDrillingWork.Stop();
-            workStage.timer_LaserDrillingWork.Enabled = false;
             workStage.m_LaserDrillingWork_Start = false;
-            //workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
-
-            unloader.timer_UnloaderWork.Stop();
-            unloader.timer_UnloaderWork.Enabled = false;
+            workStage.m_ProductAlign_Start = false;
+            workStage.m_SubWork_Start = false;
+            loader.m_LoaderWork_Start = false;
             unloader.m_UnloaderWork_Start = false;
-            //unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.None;
 
+            button_Main_Start.BackColor = Color.LightGray;
+            button_Main_Start.ForeColor = Color.Black;
+
+            // X
+            //workStage.timer_MainWork.Stop();
+            //workStage.timer_MainWork.Enabled = false;
+            //workStage.m_MainWork_Start = false;
+            //loader.timer_LoaderWork.Stop();
+            //loader.timer_LoaderWork.Enabled = false;
+            //loader.m_LoaderWork_Start = false;
+            //workStage.timer_LaserDrillingWork.Stop();
+            //workStage.timer_LaserDrillingWork.Enabled = false;
+            //workStage.m_LaserDrillingWork_Start = false;
+            //unloader.timer_UnloaderWork.Stop();
+            //unloader.timer_UnloaderWork.Enabled = false;
+            //unloader.m_UnloaderWork_Start = false;
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
@@ -1978,11 +1981,53 @@ namespace SLD200_MSL
             InitImageViewer();
         }
 
+        private void checkBox_Main_AutoRun_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_Main_AutoRun.Checked)
+            {
+                if (Equipment.AutoRunStatus)
+                    return;
 
+                if (!Equipment.AutoManualStatus && CheckAutoRunStatus())
+                {
+                    checkBox_Main_AutoRun.Text = "AUTO";
+                    checkBox_Main_AutoRun.BackColor = Color.LightGreen;
+                    checkBox_Main_AutoRun.ForeColor = Color.Black;
 
+                    Equipment.AutoManualStatus = true;
+                }
+                else if (Equipment.AutoManualStatus) // 장비가 정상적으로 구동 중일때는 변경되면 안되는데.
+                {
+                    checkBox_Main_AutoRun.Text = "MANUAL";
+                    checkBox_Main_AutoRun.BackColor = Color.LightGray;
+                    checkBox_Main_AutoRun.ForeColor = Color.Black;
 
+                    Equipment.AutoManualStatus = false;
+                }
+            }
+            else
+            {
+                if (Equipment.AutoRunStatus) // 장비가 정상적으로 구동 중일때는 변경되면 안되는데.
+                {
+                    var mb = new MessageBoxYesNo();
+                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "정지 하시겠습니까?"))
+                        return ;
 
+                    checkBox_Main_AutoRun.Text = "MANUAL";
+                    checkBox_Main_AutoRun.BackColor = Color.LightGray;
+                    checkBox_Main_AutoRun.ForeColor = Color.Black;
 
+                    Equipment.AutoManualStatus = false;
+                }
+                else
+                {
+                    checkBox_Main_AutoRun.Text = "MANUAL";
+                    checkBox_Main_AutoRun.BackColor = Color.LightGray;
+                    checkBox_Main_AutoRun.ForeColor = Color.Black;
 
+                    Equipment.AutoManualStatus = false;
+                }
+            }
+        }
     }
 }
