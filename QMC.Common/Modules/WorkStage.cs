@@ -2820,8 +2820,8 @@ namespace QMC.Common.Modules
 
         //  Socket Stop 을 위한 변수
         public bool m_bLaserDrilling_SocketStopped { set; get; } = false;                   //  Socket Stop Flag
-        public int m_nLaserDrilling_SocketStopped_SocketIndex { set; get; } = -1;            //  Socket Stop 시 가공 차례 Index
-        public int m_nLaserDrilling_SocketStopped_MainStep { set; get; } = -1;                  //  Socket Stop 시 가공 차례 Main Step
+        public int m_nLaserDrilling_SocketStopped_SocketIndex { set; get; } = -1;           //  Socket Stop 시 가공 차례 Index
+        public int m_nLaserDrilling_SocketStopped_MainStep { set; get; } = -1;              //  Socket Stop 시 가공 차례 Main Step
 
 
         public enum LaserDrilling_Step

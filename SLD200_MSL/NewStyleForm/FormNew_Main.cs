@@ -1413,29 +1413,19 @@ namespace SLD200_MSL
             workStage._isMainWorkRunning = false;
             workStage.m_MainWork_Start = true;
 
-            //workStage.m_nMainWork_Step = (int)WorkStage.MainWork_Step.Start;
-
-            loader._isLoaderWorkRunning = false;
-            loader.m_LoaderWork_Start = true;
-            //loader.m_nLoader_Transfer_Step = (int)Loader.Loader_Transfer_Step.Start;
-
             workStage._isLaserDrillingWorkRunning = false;
             workStage.m_LaserDrillingWork_Start = true;
-
-
-            workStage._isLaserDrillingWorkRunning = false;
-            workStage.m_LaserDrillingWork_Start = true;
-
             workStage.m_ProductAlign_Start = true;
             workStage.m_SubWork_Start = true;
-            workStage.m_LaserDrillingWork_Start = true;
-            workStage.m_MainWork_Start = true;
-
 
             //workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
 
+            loader._isLoaderWorkRunning = false;
+            loader.m_LoaderWork_Start = true;
+
             unloader._isUnloaderWorkRunning = false;
             unloader.m_UnloaderWork_Start = true;
+
             //unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.Start;
 
         }

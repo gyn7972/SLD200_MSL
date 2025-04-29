@@ -8332,7 +8332,14 @@ namespace QMC.Common.Modules
             loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Transfer_To_R_Port");
 
             //  Target Position 변경 : 대기 위치 1단계
-            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = MC_Func.MC_GetEncPos((int)nAxis.TR_Z) - 2.0;
+            if ((Equipment.Machine_LoaderTransfer_Vibration_MoveDistance < 0.0) || (Equipment.Machine_LoaderTransfer_Vibration_MoveDistance > 10.0))
+            {
+                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = MC_Func.MC_GetEncPos((int)nAxis.TR_Z) - 2.0;
+            }
+            else
+            {
+                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = MC_Func.MC_GetEncPos((int)nAxis.TR_Z) - Equipment.Machine_LoaderTransfer_Vibration_MoveDistance;
+            }            
 
             //  속도
             m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse * 2.0;
@@ -8363,7 +8370,14 @@ namespace QMC.Common.Modules
             loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Transfer_To_R_Port");
 
             //  Target Position 변경 : 대기 위치 1단계
-            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = MC_Func.MC_GetEncPos((int)nAxis.TR_Z) + 2.0;
+            if ((Equipment.Machine_LoaderTransfer_Vibration_MoveDistance < 0.0) || (Equipment.Machine_LoaderTransfer_Vibration_MoveDistance > 10.0))
+            {
+                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = MC_Func.MC_GetEncPos((int)nAxis.TR_Z) + 2.0;
+            }
+            else
+            {
+                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = MC_Func.MC_GetEncPos((int)nAxis.TR_Z) + Equipment.Machine_LoaderTransfer_Vibration_MoveDistance;
+            }
 
             //  속도
             m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse * 2.0;

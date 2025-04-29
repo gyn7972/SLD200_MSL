@@ -446,6 +446,7 @@ namespace QMC.Common
         public static bool Machine_LoaderTransfer_Vibration_Enable { set; get; } = false;       //  Loader Transfer Vibration Enable
         public static double Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio { set; get; } = 2.0;        //  Vibration 시 가감속 속도 비율
         public static int Machine_LoaderTransfer_NumberOfVibrations { set; get; } = 2;                      //  Vibration 횟수
+        public static double Machine_LoaderTransfer_Vibration_MoveDistance { set; get; } = 2.0;             //  Vibration 시 이동 거리
         public static bool Machine_LoaderStacker_LiftUp_Enable { set; get; } = true;                        //  Loader Stacker Lift Up Enable
         public static int Machine_LoaderStacker_LiftUpStep { set; get; } = 7;                               //  Loader Stacker Lift Up Step
         public static int Machine_LoaderStacker_LiftUp_StableTime { set; get; } = 1000;                     //  Loader Stacker Lift Up Stable Time
@@ -2715,6 +2716,8 @@ namespace QMC.Common
             Equipment.Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio = Convert.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderTransfer_NumberOfVibrations", "2", temp, 255, strFIle);
             Equipment.Machine_LoaderTransfer_NumberOfVibrations = Convert.ToInt16(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderTransfer_Vibration_MoveDistance", "2.0", temp, 255, strFIle);
+            Equipment.Machine_LoaderTransfer_Vibration_MoveDistance = Convert.ToDouble(temp.ToString());           
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_Enable", "True", temp, 255, strFIle);
             Equipment.Machine_LoaderStacker_LiftUp_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_Step", "7", temp, 255, strFIle);

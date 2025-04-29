@@ -95,9 +95,9 @@ namespace QMC.Common.Motion.Ajin.Motions
             {
                 return base.MC_MovePosition(Axis, position, vel, accel, decel);
             }
-            return false;
-            
+            return false;            
         }
+
         public override double MC_GetEncPos(int nAxis)
         {
 
@@ -169,11 +169,8 @@ namespace QMC.Common.Motion.Ajin.Motions
                 return base.MC_GetEncPos(nAxis);
             }
 
-
-
             return dPos;
         }
-
 
 
         public override bool MC_MoveRelPosition(int Axis, double position, double vel, double accel, double decel)

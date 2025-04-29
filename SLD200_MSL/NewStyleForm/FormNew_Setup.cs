@@ -1245,6 +1245,7 @@ namespace SLD200_MSL
             checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Checked = Equipment.Machine_LoaderTransfer_Vibration_Enable;
             textBox_Setup_Option_Vibration_AccDec_Ratio.Text = Equipment.Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio.ToString();
             textBox_Setup_Option_NumberOfVibrations.Text = Equipment.Machine_LoaderTransfer_NumberOfVibrations.ToString();
+            textBox_Setup_Option_VibrationMoveDistance.Text = Equipment.Machine_LoaderTransfer_Vibration_MoveDistance.ToString();
             checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Checked = Equipment.Machine_LoaderStacker_LiftUp_Enable;
             textBox_Setup_Option_LoaderStacker_LiftUpStep.Text = Equipment.Machine_LoaderStacker_LiftUpStep.ToString();
             textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Text = Equipment.Machine_LoaderStacker_LiftUp_StableTime.ToString();
@@ -1656,6 +1657,8 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderTransfer_Vibration_AccDecSpeed_Ratio", textBox_Setup_Option_Vibration_AccDec_Ratio.Text.ToString(), strFIle);
             Equipment.Machine_LoaderTransfer_NumberOfVibrations = Equipment.ToInt(textBox_Setup_Option_NumberOfVibrations.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderTransfer_NumberOfVibrations", textBox_Setup_Option_NumberOfVibrations.Text.ToString(), strFIle);
+            Equipment.Machine_LoaderTransfer_Vibration_MoveDistance = Equipment.ToDouble(textBox_Setup_Option_VibrationMoveDistance.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderTransfer_Vibration_MoveDistance", textBox_Setup_Option_VibrationMoveDistance.Text.ToString(), strFIle);
             Equipment.Machine_LoaderStacker_LiftUp_Enable = checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Checked;
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_Enable", checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Checked.ToString(), strFIle);
             Equipment.Machine_LoaderStacker_LiftUpStep = Equipment.ToInt(textBox_Setup_Option_LoaderStacker_LiftUpStep.Text);
@@ -2169,12 +2172,14 @@ namespace SLD200_MSL
                 checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Checked = true;
                 textBox_Setup_Option_Vibration_AccDec_Ratio.Enabled = true;
                 textBox_Setup_Option_NumberOfVibrations.Enabled = true;
+                textBox_Setup_Option_VibrationMoveDistance.Enabled = true;
             }
             else
             {
                 checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Checked = false;
                 textBox_Setup_Option_Vibration_AccDec_Ratio.Enabled = false;
                 textBox_Setup_Option_NumberOfVibrations.Enabled = false;
+                textBox_Setup_Option_VibrationMoveDistance.Enabled = false;
             }
 
             if (Equipment.Machine_LoaderStacker_LiftUp_Enable)
@@ -2739,6 +2744,16 @@ namespace SLD200_MSL
                 mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
                 return;
             }
+
+            int nIndex = comboBox_Setup_FlatnessMeasurementPos_List.SelectedIndex;
+            if (nIndex < 0)
+            {
+                MessageBox.Show("측정 위치를 선택하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //  선택한 위치 index 를 측정 위치로 설정
+            workStage.m_nFlatnessMeasure_Type = nIndex;
 
             if (workStage.m_nFlatnessMeasure_Step == (int)WorkStage.FlatnessMeasure_Step.None)
             {
@@ -3854,12 +3869,14 @@ namespace SLD200_MSL
                 Equipment.Machine_LoaderTransfer_Vibration_Enable = true;
                 textBox_Setup_Option_Vibration_AccDec_Ratio.Enabled = true;
                 textBox_Setup_Option_NumberOfVibrations.Enabled = true;
+                textBox_Setup_Option_VibrationMoveDistance.Enabled = true;
             }
             else
             {
                 Equipment.Machine_LoaderTransfer_Vibration_Enable = false;
                 textBox_Setup_Option_Vibration_AccDec_Ratio.Enabled = false; 
                 textBox_Setup_Option_NumberOfVibrations.Enabled = false;
+                textBox_Setup_Option_VibrationMoveDistance.Enabled = false;
             }
         }
 
