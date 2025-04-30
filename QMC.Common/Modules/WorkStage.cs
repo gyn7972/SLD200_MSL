@@ -7464,6 +7464,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Timer_Main Work_Elapsed: {ex.Message}");
             }
             finally
@@ -7703,6 +7704,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Timer_WorkStage_Elapsed: {ex.Message}");
             }
             finally
@@ -7755,6 +7757,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Timer_WorkStage_Elapsed: {ex.Message}");
             }
             finally
@@ -7872,6 +7875,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Timer_MotionHome_Tick: {ex.Message}");
             }
             finally
@@ -7917,6 +7921,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Timer_MotionHome_Tick: {ex.Message}");
             }
             finally
@@ -7977,6 +7982,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Timer_ScannerCalibration_Elapsed: {ex.Message}");
             }
             finally
@@ -8033,6 +8039,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Timer_ScannerCalibration_Elapsed: {ex.Message}");
             }
             finally
@@ -8341,6 +8348,7 @@ namespace QMC.Common.Modules
                         try
                         {
                             jigAligner_LowRes.Work();
+                            Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "Work() 완료");
                         }
                         catch(Exception ex)
                         {
@@ -10173,6 +10181,7 @@ namespace QMC.Common.Modules
                                     }
                                     catch (Exception ex)
                                     {
+                                        Log.Write(ex);
                                         Log.Write("SLD-200", Equipment.User_Name, "Power Meter BDS Comm", "Convert Error : " + ex.Message);
                                         m_dPowerMeterBDS_Value = 0.0;
                                     }
@@ -10303,6 +10312,7 @@ namespace QMC.Common.Modules
                                     }
                                     catch (Exception ex)
                                     {
+                                        Log.Write(ex);
                                         Log.Write("SLD-200", Equipment.User_Name, "Power Meter Stage Comm", "Convert Error : " + ex.Message);
                                         m_dPowerMeterStage_Value = 0.0;
                                     }
@@ -10333,6 +10343,7 @@ namespace QMC.Common.Modules
                                 }
                                 catch (Exception ex)
                                 {
+                                    Log.Write(ex);
                                     Log.Write("SLD-200", Equipment.User_Name, "Power Meter Stage Comm", "Convert Error : " + ex.Message);
                                     m_dPowerMeterStage_Value = 0.0;
                                 }
@@ -13729,7 +13740,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
-
+                Log.Write(ex);
                 //Log.Write(ex);
             }
             return ret;
@@ -15650,6 +15661,7 @@ namespace QMC.Common.Modules
                     }
                     catch (Exception ex)
                     {
+                        Log.Write(ex);
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "레이저 Off 실패 : " + ex.Message);
                     }
 
@@ -22549,9 +22561,9 @@ namespace QMC.Common.Modules
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Log.Write(ex);
             }
         }
 

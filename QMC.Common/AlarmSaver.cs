@@ -37,6 +37,7 @@ namespace QMC.Common
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 bRet = false;
                 Console.WriteLine(ex.Message);
             }
@@ -69,6 +70,7 @@ namespace QMC.Common
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine(ex.Message);
             }
 
@@ -108,6 +110,7 @@ namespace QMC.Common
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine(ex.Message);
             }
 

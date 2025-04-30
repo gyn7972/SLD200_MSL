@@ -384,7 +384,7 @@ namespace QMC.Common.Parts
 
                         //도면 좌표 불러옴 
                         position = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
-
+                        Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"positionX1{position.X}, positionY1{position.Y}"));
 
 
                         //  속도 설정
@@ -396,6 +396,7 @@ namespace QMC.Common.Parts
 
                         xyInterpolatedCoordinate.X = position.X;
                         xyInterpolatedCoordinate.Y = position.Y;
+                        Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"xyInterpolatedCoordinateX1{xyInterpolatedCoordinate.X}, xyInterpolatedCoordinateY1{xyInterpolatedCoordinate.Y}"));
 
                         MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
                         nWait = 0;
@@ -479,6 +480,7 @@ namespace QMC.Common.Parts
                     xyInterpolatedCoordinate.X = position.X; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
                     xyInterpolatedCoordinate.Y = position.Y; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
 
+                    Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"xyInterpolatedCoordinateX2{xyInterpolatedCoordinate.X}, xyInterpolatedCoordinateY2{xyInterpolatedCoordinate.Y}"));
                     MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
                     nWait = 0;
                     while (true)
@@ -543,6 +545,9 @@ namespace QMC.Common.Parts
 
                     if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
 
+                    Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"firstPointSearchResultX{firstPointSearchResult.Values[0].X}, firstPointSearchResultY{firstPointSearchResult.Values[0].Y}"));
+                    Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"firstPointSearchResultX{secondPointSearchResult.Values[0].X}, firstPointSearchResultY{secondPointSearchResult.Values[0].Y}"));
+
                     if ((firstPointSearchResult != null) && (secondPointSearchResult != null))
                     {
                         finalFirstPosition = firstPointCoordinate + GetCoordinate(firstPointSearchResult.Values[0].X, firstPointSearchResult.Values[0].Y);
@@ -573,10 +578,6 @@ namespace QMC.Common.Parts
 
                             position2.X -= finalSecondPosition.X;
                             position2.Y += finalSecondPosition.Y;
-
-
-
-
 
                             dAngle = GetAngle(new XyCoordinate(position1.X, position1.Y), new XyCoordinate(position2.X, position2.Y));
                             dAngle -= dRefAngle;

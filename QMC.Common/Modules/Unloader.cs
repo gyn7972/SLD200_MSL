@@ -147,7 +147,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더에 R-Port에 자재가 너무 많이 적재 되어 있습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
-
+            m_dicAlarms.Add(alarm.Code, alarm);
 
 
             alarm = new Alarm();
@@ -156,6 +156,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더에 R-Port에 만재 센서가 감지되지 않았습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.UL_Staker0_Z_Full_Sensor_On_Z_Move_Fail;
@@ -163,6 +164,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더에 R-Port에 만재 센서감지 위치까지 이동하지 못하였습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.UL_Staker1_Too_Many_Module;
@@ -170,6 +172,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더에 L-Port에 만재 센서감지 위치까지 이동하지 못하였습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
 
             alarm = new Alarm();
@@ -178,6 +181,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더에 L-Port에 만재 센서가 감지되지 않았습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.UL_Staker1_Z_Full_Sensor_On_Z_Move_Fail;
@@ -185,6 +189,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더에 L-Port에 만재 센서감지 위치까지 이동하지 못하였습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.UL_Staker1_Z_Full_Sensor_On_Z_Move_ToBottom_Fail;
@@ -192,6 +197,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더에 L-Port에 Bottom 포지션까지 이동에 실패 하였습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
 
             alarm = new Alarm();
@@ -200,6 +206,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더에 트랜스퍼 Z축대기 위치로 이동하는데 실패 하였습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.UL_Transfer_X_Move_To_Ready_Pos;
@@ -207,6 +214,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더에 트랜스퍼 X축대기 위치로 이동하는데 실패 하였습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.UL_Transfer_Z_Move_To_WorkStage_PickUp_Pos;
@@ -214,6 +222,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더에 트랜스퍼 Z축 WorkStage PickUp 위치로 이동하는데 실패 하였습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.UL_WorkStage_Move_To_Unloading_Pos;
@@ -221,6 +230,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더에 트랜스퍼 WorkStage Unloading 위치로 이동하는데 실패 하였습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.UL_Transfer_X_Move_To_WorkStage_Pos;
@@ -228,6 +238,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더에 트랜스퍼 X축 WorkStage PickUp 위치로 이동하는데 실패 하였습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.UL_WorkStage_Vacuum_Off;
@@ -235,6 +246,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더에 트랜스퍼 WorkStage Vacuum Off 에 실패 하였습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
 
             alarm = new Alarm();
@@ -243,6 +255,7 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더에 트랜스퍼 Picker Vacuum On Check 에 실패 하였습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
         }
         public override void SetModuleScale(double dScaleX, double dScaleY, double dXaxisT, double dYaxisT, bool bInvertedX, bool bInvertedY)
@@ -4682,6 +4695,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Timer_ScannerCalibration_Elapsed: {ex.Message}");
             }
             finally
@@ -6355,9 +6369,9 @@ namespace QMC.Common.Modules
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Log.Write(ex);
             }
         }
 

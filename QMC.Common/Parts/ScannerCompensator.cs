@@ -844,8 +844,9 @@ namespace QMC.Common.Parts
                         avgValue.X = task.Result.Results.Values.Average(t => t.X);
                         avgValue.Y = task.Result.Results.Values.Average(t => t.Y);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        Log.Write(ex);
                         avgValue.X = 0;
                         avgValue.Y = 0;
                     }
@@ -901,7 +902,7 @@ namespace QMC.Common.Parts
                 }
                 catch (Exception ex)
                 {
-                    ;
+                    Log.Write(ex);
                 }
             }
         }
