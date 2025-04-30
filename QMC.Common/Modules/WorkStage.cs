@@ -7636,7 +7636,7 @@ namespace QMC.Common.Modules
                 
 
                 //  Auto Run 모드일 때 칠러가 동작하지 않으면 알람
-                if (Equipment.AutoManualStatus)
+                if (Equipment.AutoRunStatus)
                 {
                     //  Chiller 상태 체크
                     if (!workStageParameter.DI_Chiller_Alarm_Check())
@@ -8812,6 +8812,9 @@ namespace QMC.Common.Modules
                     m_nMainWork_Step = (int)MainWork_Step.None;                                 //  Main Work Step
                     m_nMainWorkCycleType = (int)MainWorkCycleType.Cycle_None;                   //  자동 운전 시 사용하는 변수
                     m_bMainWorkCycle_DryRun = false;
+
+                    //  홈 실행할 때 Chiller 를 동작시켜준다. (끄지 않음. 상시 On)
+                    workStageParameter.DO_Chiller_Run(true);
 
                     //  홈 실행할 때 로더 쪽 이오나이저를 켜준다. (끄지 않음. 상시 On)
                     loader.loaderParameter.DO_Loader_Ionizer(true);
@@ -15283,7 +15286,7 @@ namespace QMC.Common.Modules
                     {
                         Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                         Main_SocketPositions_SetStatus = true;                                                      //  상태 변경
-                        GlobalSocketStatus_Set(m_nLaserDrilling_LayerCount, m_nDrillingWork_Group_Count, true, "Thruhole 가공 완료");
+                        GlobalSocketStatus_Set("Thruhole", m_nDrillingWork_Group_Count, true, "Thruhole 가공 완료");
 
                         Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                         Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
@@ -15727,7 +15730,7 @@ namespace QMC.Common.Modules
 
                     Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                     Main_SocketPositions_SetStatus = true;                                              //  상태 변경
-                    GlobalSocketStatus_Set(m_nLaserDrilling_LayerCount, m_nDrillingWork_Group_Count, true, "Outline 가공 완료");
+                    GlobalSocketStatus_Set("Outline", m_nDrillingWork_Group_Count, true, "Outline 가공 완료");
 
                     Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                     Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
@@ -17470,7 +17473,7 @@ namespace QMC.Common.Modules
 
                             Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
                             Main_SocketPositions_SetStatus = true;                                              //  상태 변경
-                            GlobalSocketStatus_Set(m_nLaserDrilling_LayerCount, m_nDrillingWork_Group_Count, false, "소켓 얼라인 실패");
+                            GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, false, "소켓 얼라인 실패");
 
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
@@ -17769,7 +17772,7 @@ namespace QMC.Common.Modules
                         //  소켓 가공이 끝나서 다음 소켓 확인하러 가야 하므로, 현재 상태를 갱신한다.
                         Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                         Main_SocketPositions_SetStatus = true;                                              //  상태 변경
-                        GlobalSocketStatus_Set(m_nLaserDrilling_LayerCount, m_nDrillingWork_Group_Count, true, "Drilling 가공 완료");
+                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, true, "Drilling 가공 완료");
 
                         Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                         Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
@@ -22308,7 +22311,7 @@ namespace QMC.Common.Modules
                                 //  다음 소켓으로 넘어가기 전에 현재 소켓의 가공 상태를 갱신한다.
                                 Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                                 Main_SocketPositions_SetStatus = true;                                              //  상태 변경
-                                GlobalSocketStatus_Set(m_nLaserDrilling_LayerCount, m_nDrillingWork_Group_Count, true, "Drilling 가공 완료");
+                                GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, true, "Drilling 가공 완료");
 
                                 Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                                 Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
@@ -25019,9 +25022,7 @@ namespace QMC.Common.Modules
         public bool GlobalSocketStatus_Init()
         {
             bool m_bRet = true;
-
-            int m_nLayerCount = 0;
-
+            
             //  Layer Info List 초기화
             ProcessManager.Init();
 
@@ -25032,19 +25033,12 @@ namespace QMC.Common.Modules
                 {
                     LayerList m_Layer = (LayerList)m_stLayerType.m_nLayerIndex[i];
 
-                    //  "Hole1", "Thruhole", "Outline", "Marking" Layer 만 저장한다.
-                    if ((m_Layer.ToString() == "Hole1") || (m_Layer.ToString() == "Thruhole") ||
-                        (m_Layer.ToString() == "Outline") || (m_Layer.ToString() == "Marking"))
+                    //  Layer 추가
+                    ProcessManager.AddLayer(m_Layer.ToString(), i);
+
+                    for (int nSocket = 0; nSocket < m_stDividedRegion_GroupData[0].nGroup_Num; nSocket++)
                     {
-                        //  Layer 추가
-                        ProcessManager.AddLayer(m_Layer.ToString(), m_nLayerCount);
-
-                        for (int nSocket = 0; nSocket < m_stDividedRegion_GroupData[0].nGroup_Num; nSocket++)
-                        {
-                            ProcessManager.GetLayer(m_nLayerCount).AddSocket(nSocket);
-                        }
-
-                        m_nLayerCount++;
+                        ProcessManager.GetLayer(i).AddSocket(nSocket);
                     }
                 }
             }
@@ -25068,12 +25062,12 @@ namespace QMC.Common.Modules
             return m_bRet;
         }
 
-        public bool GlobalSocketStatus_Set(int m_nLayerIndex, int m_nSocketNumber, bool m_bSocketResult, string m_strComment = "")
+        public bool GlobalSocketStatus_Set(string m_strLayerName, int m_nSocketNumber, bool m_bSocketResult, string m_strComment = "")
         {
             bool m_bRet = true;
 
             //  Socket 상태 세팅
-            ProcessManager.GetLayer(m_nLayerIndex).SetSocketResult(m_nSocketNumber, m_bSocketResult, m_strComment);
+            ProcessManager.GetLayer(m_strLayerName).SetSocketResult(m_nSocketNumber, m_bSocketResult, m_strComment);
 
             return m_bRet;
         }
