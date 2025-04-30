@@ -3625,15 +3625,10 @@ namespace QMC.Common.Modules
 
             //  자동운전 시, Transfer 동작 조건
             if (Equipment.AutoRunStatus &&
-
                 !Equipment.Loader_Transfer_Pause &&                                     //  Loader Transfer Cycle Pause 시 동작 안되도록
-
                 !Equipment.SocketStopped &&                                             //  Socket Stop 시 동작 안되도록
-
                 !Equipment.CycleStopped_LoaderTransfer &&                               //  Loader 가 Cycle Stop 으로 멈추면 동작 안되도록
-
                 !Equipment.MachineStop_byTimeout_Loader &&                              //  Loader 가 Time out 으로 멈추면 동작 안되도록
-
                 m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
                 m_nMAlign_Step == (int)MAlign_Step.None) 
             {
