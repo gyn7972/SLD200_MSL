@@ -997,7 +997,6 @@ namespace QMC.Common.Modules
 
         #region Variables
 
-
         public double FirstPositionX { set; get; }
         public double FirstPositionY { set; get; }
         public double SecondPositionX { set; get; }
@@ -1127,6 +1126,41 @@ namespace QMC.Common.Modules
         //public int m_nLCIMapData_EndIndex_X { get; set; }                           //  LCI Module 사용 시, Map Data 변경 위치 X Index (종료, Right)
         //public int m_nLCIMapData_StageStartIndex_Y { get; set; }                    //  LCI Module 사용 시, Map Data 변경 위치 Y Index (시작)
         //public int m_nLCIMapData_StageEndIndex_Y { get; set; }                      //  LCI Module 사용 시, Map Data 변경 위치 Y Index (종료)
+
+
+        // Process Status
+        public string CurrentLayerName { get; private set; }
+        public int CurrentSocketNumber { get; private set; }
+        public string ProcessStatus { get; private set; }
+        public bool IsProcessing { get; private set; }
+
+        // Layer 설정
+        public void SetProcess_Layer(string layerName)
+        {
+            CurrentLayerName = layerName;
+        }
+
+        // Socket 번호 설정
+        public void SetProcess_SocketNumber(int socketIndex)
+        {
+            CurrentSocketNumber = socketIndex;
+        }
+
+        // 가공 상태 설정 ("가공중"으로)
+        public void SetProcessRunning()
+        {
+            IsProcessing = true;
+            ProcessStatus = "가공중";
+        }
+
+        // 가공 완료 시 상태 설정
+        public void SetProcessCompleted()
+        {
+            CurrentLayerName = "";
+            CurrentSocketNumber = -1;
+            IsProcessing = false;
+            ProcessStatus = "가공완료";
+        }
 
         #endregion
 
@@ -7886,7 +7920,7 @@ namespace QMC.Common.Modules
             {
                 _isProductAlign = true;
 
-                if (!m_MotionHome_Start)
+                if (!m_ProductAlign_Start)
                 {
                     //Console.WriteLine("MotionHome is not started.");
                     //timer_ScannerCalibration.Stop(); // 타이머 중지
@@ -9258,8 +9292,10 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "완료");
 
-                    //  RTC 보드 초기화
+                    //제품 가공 유/무 정보
+                    ProcessManager.Init();
 
+                    //  RTC 보드 초기화
                     //  카메라는 여러번 초기화 할 수 있으니, 이 조건을 걸어서 스캐너 초기화를 1회만 하도록 한다.
                     if (Equipment.ScannerMode_Change_byUser != (int)RtcMode.RTC_RTC6_COMPLETE)
                     {
@@ -13976,9 +14012,6 @@ namespace QMC.Common.Modules
             }
         }
 
-
-
-
         private int Run_LaserDrilling_Main_Cycle()
         {
             m_nLaserDrilling_MainStep_Recovery = -1;
@@ -15804,7 +15837,21 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align Process 시작.");
 
-                    //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataChange_FineCamMap;             //  임시 주석 
+                    if(IsProcessing) //가공중
+                    {
+                        //CurrentLayer;
+                        //CurrentSocketNumber;
+                        //위의 정보 넘겨서 스탭 시작. 
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataFlagCheck_FineCamMap;
+
+                    }
+                    else //가공완료
+                    {
+                        // 완료 시 배출 스탭으로 이동
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataFlagCheck_FineCamMap;
+                    }
+
+                    //  임시 주석 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.MapDataFlagCheck_FineCamMap;            //  Socket Align 함수에서 맵데이터를 변경하므로, 여기에서는 변경할 필요 없다.
 
                     //  임시 코드 : 얼라인 없이 가공하도록 한다.
