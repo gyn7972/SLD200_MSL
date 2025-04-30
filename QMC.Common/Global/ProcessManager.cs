@@ -9,7 +9,7 @@ namespace QMC.Common
     public static class ProcessManager
     {
         public static List<LayerInfo> Layers { get; private set; } = new List<LayerInfo>();
-        public static string StateFilePath = "process_state.txt"; // 저장 경로
+        public static string StateFilePath = "D:\\process_state.txt"; // 저장 경로
 
         public static void Init()
         {
@@ -29,6 +29,11 @@ namespace QMC.Common
                 layer.ResetSockets();
         }
 
+        public static LayerInfo GetLayer(string layerName)
+        {
+            return Layers.FirstOrDefault(l => l.LayerName == layerName);
+        }
+
         public static LayerInfo GetLayer(int layerNumber)
         {
             return Layers.FirstOrDefault(l => l.LayerNumber == layerNumber);
@@ -36,15 +41,14 @@ namespace QMC.Common
 
         // 특정 Layer의 소켓 결과 설정 || 
         //추가: 아직 가공되지 않은 첫 위치 반환
-        public static (int layerIndex, int socketIndex)? GetFirstUnprocessedPosition()
+        public static (string layerName, int socketIndex)? GetFirstUnprocessedPosition()
         {
-            for (int i = 0; i < Layers.Count; i++)
+            foreach (var layer in Layers)
             {
-                var layer = Layers[i];
                 for (int j = 0; j < layer.Sockets.Count; j++)
                 {
                     if (!layer.Sockets[j].InspectionResult)
-                        return (i, j);
+                        return (layer.LayerName, j);
                 }
             }
             return null;
@@ -55,65 +59,58 @@ namespace QMC.Common
         {
             return Layers.Sum(layer => layer.Sockets.Count(s => !s.InspectionResult));
         }
+        //public static int GetAllUnprocessedCount() =>
+        //Layers.Sum(layer => layer.Sockets.Count(s => !s.InspectionResult));
 
         //특정 Layer 가공률(%) 계산
-        public static double GetLayerProgress(int layerNumber)
+        public static double GetLayerProgress(string layerName)
         {
-            var layer = GetLayer(layerNumber);
+            var layer = GetLayer(layerName);
             if (layer == null || layer.Sockets.Count == 0)
                 return 0;
 
-            int total = layer.Sockets.Count;
             int done = layer.Sockets.Count(s => s.InspectionResult);
-            return (done / (double)total) * 100.0;
+            return (done / (double)layer.Sockets.Count) * 100.0;
         }
 
         //상태 저장
         public static void SaveStateToFile()
         {
             var sb = new StringBuilder();
-
             foreach (var layer in Layers)
             {
-                sb.AppendLine($"[Layer_{layer.LayerNumber}]");
+                sb.AppendLine($"[Layer:{layer.LayerName}]");
                 foreach (var socket in layer.Sockets)
-                {
                     sb.AppendLine($"Socket_{socket.SocketNumber} = {socket.InspectionResult.ToString().ToLower()}");
-                }
                 sb.AppendLine();
             }
-
             File.WriteAllText(StateFilePath, sb.ToString());
         }
 
-        //상태 복원
         public static void LoadStateFromFile()
         {
             if (!File.Exists(StateFilePath))
                 return;
 
-            var lines = File.ReadAllLines(StateFilePath);
-            LayerInfo currentLayer = null;
-
-            foreach (var line in lines)
+            string currentLayerName = null;
+            foreach (var line in File.ReadAllLines(StateFilePath))
             {
-                if (string.IsNullOrWhiteSpace(line))
-                    continue;
+                if (string.IsNullOrWhiteSpace(line)) continue;
 
-                if (line.StartsWith("[Layer_"))
+                if (line.StartsWith("[Layer:"))
                 {
-                    int num = int.Parse(line.Replace("[Layer_", "").Replace("]", ""));
-                    currentLayer = GetLayer(num);
+                    currentLayerName = line.Replace("[Layer:", "").Replace("]", "").Trim();
                 }
-                else if (line.StartsWith("Socket_") && currentLayer != null)
+                else if (currentLayerName != null && line.StartsWith("Socket_"))
                 {
                     var parts = line.Split('=');
-                    var socketNum = int.Parse(parts[0].Trim().Replace("Socket_", ""));
-                    bool value = parts[1].Trim().ToLower() == "true";
+                    int socketNum = int.Parse(parts[0].Trim().Replace("Socket_", ""));
+                    bool result = parts[1].Trim().ToLower() == "true";
 
-                    var socket = currentLayer.Sockets.FirstOrDefault(s => s.SocketNumber == socketNum);
+                    var layer = GetLayer(currentLayerName);
+                    var socket = layer?.Sockets.FirstOrDefault(s => s.SocketNumber == socketNum);
                     if (socket != null)
-                        socket.InspectionResult = value;
+                        socket.InspectionResult = result;
                 }
             }
         }
