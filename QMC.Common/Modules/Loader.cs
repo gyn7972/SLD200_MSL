@@ -6385,7 +6385,7 @@ namespace QMC.Common.Modules
                         //  복원 지점 체크용 (Work Stage 에 Module Put Down 완료)
                         //////////////////////////////////////////////////////////////////////////////////////////
                         //To do: stage 압력 스펙 제어 부분 성부장님 파라미터로 빼!!!
-                        if(workStage.workStageParameter.DI_Stage_Vacuum_Check() && (workStage.m_dEPRO_Value < -20.0))       //  Stage Vacuum 센서와 Regulator 값을 함께 본다.
+                        if(workStage.workStageParameter.DI_Stage_Vacuum_Check() && (workStage.m_dEPRO_Value < Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel))       //  Stage Vacuum 센서와 Regulator 값을 함께 본다.
                         {
                             m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_ReadyPos2_1stStep;
 
@@ -7548,12 +7548,9 @@ namespace QMC.Common.Modules
         {
             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "WorkStage, Module Vacuum On");
 
-            //Blow Off후에 Vacuum 실행
-            workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
-            Thread.Sleep(1);
             workStage.workStageParameter.DO_Stage_Vacuum(true);
-           
-            workStage.DustCollector_SetFrequence(20);
+            workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
+            workStage.DustCollector_SetFrequence(Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);
             Thread.Sleep(1000);
             workStage.DustCollector_On((int)nDustCollector.DustCollector_Lower);
 
@@ -9079,34 +9076,34 @@ namespace QMC.Common.Modules
 
                 //  LD Transfer X
                 NativeMethods.GetPrivateProfileString(strTemp, "LDTransferX", "0", temp, 255, strFIle);
-                stLDULTeachingPos[i].LD_Transfer_X = Convert.ToDouble(temp.ToString());
+                stLDULTeachingPos[i].LD_Transfer_X = Equipment.ToDouble(temp.ToString());
                 //  LD Transfer Z
                 NativeMethods.GetPrivateProfileString(strTemp, "LDTransferZ", "0", temp, 255, strFIle);
-                stLDULTeachingPos[i].LD_Transfer_Z = Convert.ToDouble(temp.ToString());
+                stLDULTeachingPos[i].LD_Transfer_Z = Equipment.ToDouble(temp.ToString());
                 //  LD Stacker Z0
                 NativeMethods.GetPrivateProfileString(strTemp, "LDStackerZ0", "0", temp, 255, strFIle);
-                stLDULTeachingPos[i].LD_Stacker_Z0 = Convert.ToDouble(temp.ToString());
+                stLDULTeachingPos[i].LD_Stacker_Z0 = Equipment.ToDouble(temp.ToString());
                 //  LD Stacker Z1
                 NativeMethods.GetPrivateProfileString(strTemp, "LDStackerZ1", "0", temp, 255, strFIle);
-                stLDULTeachingPos[i].LD_Stacker_Z1 = Convert.ToDouble(temp.ToString());
+                stLDULTeachingPos[i].LD_Stacker_Z1 = Equipment.ToDouble(temp.ToString());
                 //  M-Aligner X
                 NativeMethods.GetPrivateProfileString(strTemp, "MAlignerX", "0", temp, 255, strFIle);
-                stLDULTeachingPos[i].MAligner_X = Convert.ToDouble(temp.ToString());
+                stLDULTeachingPos[i].MAligner_X = Equipment.ToDouble(temp.ToString());
                 //  M-Aligner Y
                 NativeMethods.GetPrivateProfileString(strTemp, "MAlignerY", "0", temp, 255, strFIle);
-                stLDULTeachingPos[i].MAligner_Y = Convert.ToDouble(temp.ToString());
+                stLDULTeachingPos[i].MAligner_Y = Equipment.ToDouble(temp.ToString());
                 //  UL Transfer X
                 NativeMethods.GetPrivateProfileString(strTemp, "ULTransferX", "0", temp, 255, strFIle);
-                stLDULTeachingPos[i].UL_Transfer_X = Convert.ToDouble(temp.ToString());
+                stLDULTeachingPos[i].UL_Transfer_X = Equipment.ToDouble(temp.ToString());
                 //  UL Transfer Z
                 NativeMethods.GetPrivateProfileString(strTemp, "ULTransferZ", "0", temp, 255, strFIle);
-                stLDULTeachingPos[i].UL_Transfer_Z = Convert.ToDouble(temp.ToString());
+                stLDULTeachingPos[i].UL_Transfer_Z = Equipment.ToDouble(temp.ToString());
                 //  UL Stacker Z0
                 NativeMethods.GetPrivateProfileString(strTemp, "ULStackerZ0", "0", temp, 255, strFIle);
-                stLDULTeachingPos[i].UL_Stacker_Z0 = Convert.ToDouble(temp.ToString());
+                stLDULTeachingPos[i].UL_Stacker_Z0 = Equipment.ToDouble(temp.ToString());
                 //  UL Stacker Z1
                 NativeMethods.GetPrivateProfileString(strTemp, "ULStackerZ1", "0", temp, 255, strFIle);
-                stLDULTeachingPos[i].UL_Stacker_Z1 = Convert.ToDouble(temp.ToString());
+                stLDULTeachingPos[i].UL_Stacker_Z1 = Equipment.ToDouble(temp.ToString());
             }
 
             return m_bRet;
@@ -9185,16 +9182,16 @@ namespace QMC.Common.Modules
 
                 //  Fine Accel
                 NativeMethods.GetPrivateProfileString(strTemp, "Fine_Accel", "20", temp, 255, strFIle);
-                stLDULPosMoveProperties[i].Fine_Accel = Convert.ToInt16(temp.ToString());
+                stLDULPosMoveProperties[i].Fine_Accel = Equipment.ToInt(temp.ToString());
                 //  Fine Settle Delay
                 NativeMethods.GetPrivateProfileString(strTemp, "Fine_SettleDelay", "200", temp, 255, strFIle);
-                stLDULPosMoveProperties[i].Fine_SettleDelay = Convert.ToInt16(temp.ToString());
+                stLDULPosMoveProperties[i].Fine_SettleDelay = Equipment.ToInt(temp.ToString());
                 //  Coarse Accel
                 NativeMethods.GetPrivateProfileString(strTemp, "Coarse_Accel", "200", temp, 255, strFIle);
-                stLDULPosMoveProperties[i].Coarse_Accel = Convert.ToInt16(temp.ToString());
+                stLDULPosMoveProperties[i].Coarse_Accel = Equipment.ToInt(temp.ToString());
                 //  Coarse Settle Delay
                 NativeMethods.GetPrivateProfileString(strTemp, "Coarse_SettleDelay", "20", temp, 255, strFIle);
-                stLDULPosMoveProperties[i].Coarse_SettleDelay = Convert.ToInt16(temp.ToString());
+                stLDULPosMoveProperties[i].Coarse_SettleDelay = Equipment.ToInt(temp.ToString());
             }
 
             return m_bRet;

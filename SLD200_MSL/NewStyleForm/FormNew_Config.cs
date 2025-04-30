@@ -615,7 +615,7 @@ namespace SLD200_MSL
                         }
 
                         if (((dioPoint.Address >= 0) && (dioPoint.Address <= 10)) ||                                    //  WorkStage Input (0 ~ 10)
-                            ((dioPoint.Address >= 13) && (dioPoint.Address <= 19)) ||                                   //  WorkStage Input (13 ~ 19)
+                            ((dioPoint.Address >= 13) && (dioPoint.Address <= 20)) ||                                   //  WorkStage Input (13 ~ 20)       //  13 ~ 19 였는데, Chiller 알람 신호가 추가되면서 20번 까지 사용한다.
                             ((dioPoint.Address >= 24) && (dioPoint.Address <= 29)))                                     //  WorkStage Input (24 ~ 29)
                         {
                             if (dioPoint.GetValue() == DioValue.On)
@@ -631,7 +631,7 @@ namespace SLD200_MSL
                         }
 
                         if ((dioPoint.Address == 11) || (dioPoint.Address == 12) ||                                     //  Laser Input (11, 12)
-                            (dioPoint.Address == 20) || (dioPoint.Address == 30))                                       //  Laser Input (20, 30)
+                            (dioPoint.Address == 30))                                                                   //  Laser Input (30)                //  20번은 Chiller 알람으로 사용
                         {
                             if (dioPoint.GetValue() == DioValue.On)
                             {
@@ -670,7 +670,7 @@ namespace SLD200_MSL
                         }
 
                         if (((dioPoint.Address >= 0) && (dioPoint.Address <= 6)) ||                                     //  WorkStage Output (0 ~ 6)
-                            ((dioPoint.Address >= 21) && (dioPoint.Address <= 24)) ||                                   //  WorkStage Output (21 ~ 24)
+                            ((dioPoint.Address >= 21) && (dioPoint.Address <= 25)) ||                                   //  WorkStage Output (21 ~ 25)          //  21 ~ 24 까지였다가 Chiller Run 신호가 추가되면서 25번까지 사용
                             ((dioPoint.Address >= 26) && (dioPoint.Address <= 27)))                                     //  WorkStage Output (26 ~ 27)
                         {
                             if (dioPoint.GetValue() == DioValue.On)
@@ -688,8 +688,7 @@ namespace SLD200_MSL
                         if ((dioPoint.Address == 7) || (dioPoint.Address == 8) ||                                       //  Laser Output (7, 8)
                             ((dioPoint.Address >= 11) && (dioPoint.Address <= 14)) ||                                   //  Laser Output (11 ~ 14)
                             ((dioPoint.Address >= 18) && (dioPoint.Address <= 20)) ||                                   //  Laser Output (18 ~ 20)
-                            (dioPoint.Address == 25) ||                                                                 //  Laser Output (25)
-                            (dioPoint.Address == 28))                                                                   //  Laser Output (28)
+                            (dioPoint.Address == 28))                                                                   //  Laser Output (28)               //  25번은 Chiller Run 신호로 사용 
                         {
                             if (dioPoint.GetValue() == DioValue.On)
                             {
@@ -1495,8 +1494,9 @@ namespace SLD200_MSL
             //  8 (22) : Laser Cal - Sheet Vacuum On
             //  9 (23) : Work Stage Air Blow On
             //  10 (24) : Laser Cal - Sheet Air Blow On
-            //  11 (26) : Dust Collector 0 Air Pulse Run
-            //  12 (27) : Dust Collector 1 Air Pulse Run
+            //  11 (25) : Chiller Run
+            //  12 (26) : Dust Collector 0 Air Pulse Run
+            //  13 (27) : Dust Collector 1 Air Pulse Run
 
             DioPoint dioPoint;
 
@@ -1546,7 +1546,7 @@ namespace SLD200_MSL
                     }
                 }
             }
-            else if ((m_nIndex >= 11) && (m_nIndex <= 12))                                                   //  Work Stage Output (26 ~ 27)
+            else if ((m_nIndex >= 11) && (m_nIndex <= 13))                                                   //  Work Stage Output (26 ~ 27)
             {
                 foreach (DioPoint point in Equipment.GetAllDioPointList())
                 {
@@ -1555,8 +1555,8 @@ namespace SLD200_MSL
                     if (dioPoint == null)
                         return;
 
-                    //  26번부터 시작하므로 변환하여 사용 (11일 때 26과 같음)
-                    m_nOutputChannel = m_nIndex + 15;
+                    //  25번부터 시작하므로 변환하여 사용 (11일 때 25과 같음)
+                    m_nOutputChannel = m_nIndex + 14;
 
                     if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
                     {
@@ -1593,8 +1593,7 @@ namespace SLD200_MSL
             //  6 (18) : Laser Purge
             //  7 (19) : Scanner Purge
             //  8 (20) : Varioscan Purge
-            //  9 (25) : Laser Shutter Command
-            //  10 (28) : Laser Enable
+            //  9 (28) : Laser Enable
 
             DioPoint dioPoint;
 
@@ -1667,7 +1666,7 @@ namespace SLD200_MSL
                     }
                 }
             }
-            else if (m_nIndex == 9)                                                                         //  Laser & Scanner Output (25)
+            else if (m_nIndex == 9)                                                                         //  Laser & Scanner Output (28)
             {
                 foreach (DioPoint point in Equipment.GetAllDioPointList())
                 {
@@ -1676,31 +1675,8 @@ namespace SLD200_MSL
                     if (dioPoint == null)
                         return;
 
-                    //  25번부터 시작하므로 변환하여 사용 (9일 때 25와 같음)
-                    m_nOutputChannel = m_nIndex + 16;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-            else if (m_nIndex == 10)                                                                         //  Laser & Scanner Output (28)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  28번부터 시작하므로 변환하여 사용 (10일 때 28와 같음)
-                    m_nOutputChannel = m_nIndex + 18;
+                    //  28번부터 시작하므로 변환하여 사용 (9일 때 28와 같음)
+                    m_nOutputChannel = m_nIndex + 19;
 
                     if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
                     {
@@ -2482,7 +2458,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -2551,7 +2527,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -2620,7 +2596,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -2689,7 +2665,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -2758,7 +2734,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -2827,7 +2803,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -2896,7 +2872,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -2965,7 +2941,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3040,7 +3016,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3092,7 +3068,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3144,7 +3120,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3196,7 +3172,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3483,7 +3459,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3529,7 +3505,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3575,7 +3551,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3621,7 +3597,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3667,7 +3643,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3713,7 +3689,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -4000,7 +3976,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -4046,7 +4022,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -4092,7 +4068,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -4138,7 +4114,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -4184,7 +4160,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -4230,7 +4206,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -4360,19 +4336,19 @@ namespace SLD200_MSL
             {
                 if (m_nIndex <= 11)                 //  Loader
                 {
-                    loader.stLDULTeachingPos[m_nIndex].LD_Transfer_X = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_TransferX.Text);
-                    loader.stLDULTeachingPos[m_nIndex].LD_Transfer_Z = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_TransferZ.Text);
-                    loader.stLDULTeachingPos[m_nIndex].LD_Stacker_Z0 = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_RPortZ.Text);
-                    loader.stLDULTeachingPos[m_nIndex].LD_Stacker_Z1 = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_LPortZ.Text);
-                    loader.stLDULTeachingPos[m_nIndex].MAligner_X = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_MAlignerX.Text);
-                    loader.stLDULTeachingPos[m_nIndex].MAligner_Y = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_MAlignerY.Text);
+                    loader.stLDULTeachingPos[m_nIndex].LD_Transfer_X = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_TransferX.Text);
+                    loader.stLDULTeachingPos[m_nIndex].LD_Transfer_Z = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_TransferZ.Text);
+                    loader.stLDULTeachingPos[m_nIndex].LD_Stacker_Z0 = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_RPortZ.Text);
+                    loader.stLDULTeachingPos[m_nIndex].LD_Stacker_Z1 = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_LPortZ.Text);
+                    loader.stLDULTeachingPos[m_nIndex].MAligner_X = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_MAlignerX.Text);
+                    loader.stLDULTeachingPos[m_nIndex].MAligner_Y = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_MAlignerY.Text);
                 }
                 else                                //  Unloader
                 {
-                    loader.stLDULTeachingPos[m_nIndex].UL_Transfer_X = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_TransferX.Text);
-                    loader.stLDULTeachingPos[m_nIndex].UL_Transfer_Z = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_TransferZ.Text);
-                    loader.stLDULTeachingPos[m_nIndex].UL_Stacker_Z0 = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_RPortZ.Text);
-                    loader.stLDULTeachingPos[m_nIndex].UL_Stacker_Z1 = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_LPortZ.Text);
+                    loader.stLDULTeachingPos[m_nIndex].UL_Transfer_X = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_TransferX.Text);
+                    loader.stLDULTeachingPos[m_nIndex].UL_Transfer_Z = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_TransferZ.Text);
+                    loader.stLDULTeachingPos[m_nIndex].UL_Stacker_Z0 = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_RPortZ.Text);
+                    loader.stLDULTeachingPos[m_nIndex].UL_Stacker_Z1 = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_LPortZ.Text);
                 }
             }
 
@@ -4459,8 +4435,8 @@ namespace SLD200_MSL
 
             if (m_nIndex >= 0)
             {
-                workStage.stWorkStageTeachingPos[m_nIndex].Stage_X = Convert.ToDouble(textBox_Config_WorkStage_TeachingPos_StageX.Text);
-                workStage.stWorkStageTeachingPos[m_nIndex].Stage_Y = Convert.ToDouble(textBox_Config_WorkStage_TeachingPos_StageY.Text);
+                workStage.stWorkStageTeachingPos[m_nIndex].Stage_X = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageX.Text);
+                workStage.stWorkStageTeachingPos[m_nIndex].Stage_Y = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageY.Text);
             }
 
             //  리스트 전체 저장
@@ -4488,7 +4464,7 @@ namespace SLD200_MSL
 
             if (m_nIndex >= 0)
             {
-                vision.stVisionTeachingPos[m_nIndex].Vision_Z = Convert.ToDouble(textBox_Config_Vision_TeachingPos_VisionZ.Text);
+                vision.stVisionTeachingPos[m_nIndex].Vision_Z = Equipment.ToDouble(textBox_Config_Vision_TeachingPos_VisionZ.Text);
             }
 
             //  리스트 전체 저장
@@ -4515,7 +4491,7 @@ namespace SLD200_MSL
 
             if (m_nIndex >= 0)
             {
-                bds.stBDSTeachingPos[m_nIndex].Mask_Y = Convert.ToDouble(textBox_Config_BDS_TeachingPos_MaskY.Text);
+                bds.stBDSTeachingPos[m_nIndex].Mask_Y = Equipment.ToDouble(textBox_Config_BDS_TeachingPos_MaskY.Text);
             }
 
             //  리스트 전체 저장
@@ -4782,7 +4758,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_BDS_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_BDS_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -4831,7 +4807,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_BDS_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_BDS_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -5527,7 +5503,7 @@ namespace SLD200_MSL
             //    return;
             //}
 
-            if (Convert.ToDouble(textBox_Config_WorkStage_TempPos1_StageX.Text) == 0.0 && Convert.ToDouble(textBox_Config_WorkStage_TempPos1_StageY.Text) == 0.0)
+            if (Equipment.ToDouble(textBox_Config_WorkStage_TempPos1_StageX.Text) == 0.0 && Equipment.ToDouble(textBox_Config_WorkStage_TempPos1_StageY.Text) == 0.0)
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Warning !", "Temp1 위치가 설정되어 있지 않습니다.");
@@ -5570,8 +5546,8 @@ namespace SLD200_MSL
 
 
             //  Target 위치
-            lfTargetX = Convert.ToDouble(textBox_Config_WorkStage_TempPos1_StageX.Text);
-            lfTargetY = Convert.ToDouble(textBox_Config_WorkStage_TempPos1_StageY.Text);
+            lfTargetX = Equipment.ToDouble(textBox_Config_WorkStage_TempPos1_StageX.Text);
+            lfTargetY = Equipment.ToDouble(textBox_Config_WorkStage_TempPos1_StageY.Text);
 
             //  속도 설정
             if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
@@ -5611,7 +5587,7 @@ namespace SLD200_MSL
             //    return;
             //}
 
-            if (Convert.ToDouble(textBox_Config_WorkStage_TempPos2_StageX.Text) == 0.0 && Convert.ToDouble(textBox_Config_WorkStage_TempPos2_StageY.Text) == 0.0)
+            if (Equipment.ToDouble(textBox_Config_WorkStage_TempPos2_StageX.Text) == 0.0 && Equipment.ToDouble(textBox_Config_WorkStage_TempPos2_StageY.Text) == 0.0)
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Warning !", "Temp2 위치가 설정되어 있지 않습니다.");
@@ -5654,8 +5630,8 @@ namespace SLD200_MSL
 
 
             //  Target 위치
-            lfTargetX = Convert.ToDouble(textBox_Config_WorkStage_TempPos2_StageX.Text);
-            lfTargetY = Convert.ToDouble(textBox_Config_WorkStage_TempPos2_StageY.Text);
+            lfTargetX = Equipment.ToDouble(textBox_Config_WorkStage_TempPos2_StageX.Text);
+            lfTargetY = Equipment.ToDouble(textBox_Config_WorkStage_TempPos2_StageY.Text);
 
             //  속도 설정
             if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
@@ -5695,7 +5671,7 @@ namespace SLD200_MSL
             //    return;
             //}
 
-            if (Convert.ToDouble(textBox_Config_WorkStage_TempPos3_StageX.Text) == 0.0 && Convert.ToDouble(textBox_Config_WorkStage_TempPos3_StageY.Text) == 0.0)
+            if (Equipment.ToDouble(textBox_Config_WorkStage_TempPos3_StageX.Text) == 0.0 && Equipment.ToDouble(textBox_Config_WorkStage_TempPos3_StageY.Text) == 0.0)
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Warning !", "Temp3 위치가 설정되어 있지 않습니다.");
@@ -5738,8 +5714,8 @@ namespace SLD200_MSL
 
 
             //  Target 위치
-            lfTargetX = Convert.ToDouble(textBox_Config_WorkStage_TempPos3_StageX.Text);
-            lfTargetY = Convert.ToDouble(textBox_Config_WorkStage_TempPos3_StageY.Text);
+            lfTargetX = Equipment.ToDouble(textBox_Config_WorkStage_TempPos3_StageX.Text);
+            lfTargetY = Equipment.ToDouble(textBox_Config_WorkStage_TempPos3_StageY.Text);
 
             //  속도 설정
             if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
@@ -6090,7 +6066,7 @@ namespace SLD200_MSL
         {
             //  Amplifier RepRate Setting
 
-            double m_dAmplifierRR = Convert.ToDouble(textBox_Config_TabLaser_Amplifier.Text);
+            double m_dAmplifierRR = Equipment.ToDouble(textBox_Config_TabLaser_Amplifier.Text);
 
             if (workStage.m_rapidLxLaser_Comm.IsOpen)
             {
@@ -6107,7 +6083,7 @@ namespace SLD200_MSL
         {
             //  Energy Percentage Setting
 
-            double m_dEnergyPercent = Convert.ToDouble(textBox_Config_TabLaser_PercentOfEnergy.Text);
+            double m_dEnergyPercent = Equipment.ToDouble(textBox_Config_TabLaser_PercentOfEnergy.Text);
 
             if (workStage.m_rapidLxLaser_Comm.IsOpen)
             {
@@ -6127,9 +6103,9 @@ namespace SLD200_MSL
             double m_dkPa = 0.0;
 
             //  음압이므로 양수가 들어와도 음수로 변경
-            m_dkPa = Math.Abs(Convert.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text));
+            m_dkPa = Math.Abs(Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text));
 
-            //if ((Convert.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) > -1.3) || (Convert.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) < -80.0))
+            //if ((Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) > -1.3) || (Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) < -80.0))
 
             if (m_dkPa == 0.0)
             {
@@ -6221,7 +6197,7 @@ namespace SLD200_MSL
         {
             //  집진기0 주파수 세팅
 
-            double m_dFreq = Convert.ToDouble(textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Text);
+            double m_dFreq = Equipment.ToDouble(textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Text);
 
             //  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
             double m_dRet_Freq = GetClosestValue_DustCollector(m_dFreq);
@@ -6261,7 +6237,7 @@ namespace SLD200_MSL
         {
             //  집진기1 주파수 세팅
 
-            double dFreq = Convert.ToDouble(textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Text);
+            double dFreq = Equipment.ToDouble(textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Text);
 
             //  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
             double dRet_Freq = GetClosestValue_DustCollector(dFreq);
@@ -6595,14 +6571,15 @@ namespace SLD200_MSL
                 double m_dModuleWidth = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width;
                 double m_dModuleHeight = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height;
 
+                //  Recipe 의 모듈 사이즈가 없으면 Seq. Test 에서 입력한 값을 사용
                 if ((m_dModuleWidth <= 0.0) || (m_dModuleHeight <= 0.0))
                 {
-                    m_dModuleWidth = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
-                    m_dModuleHeight = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
+                    m_dModuleWidth = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
+                    m_dModuleHeight = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
                 }
 
-                //m_dModuleWidth = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
-                //m_dModuleHeight = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
+                //m_dModuleWidth = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
+                //m_dModuleHeight = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
 
                 if ((m_dModuleWidth <= 0.0) || (m_dModuleHeight <= 0.0))
                 {
@@ -7267,11 +7244,13 @@ namespace SLD200_MSL
         {
             //  Module Mechanical Alignment Cycle
 
+            string m_strTemp = "";
+
             double m_dModuleWidth = 0.0;
             double m_dModuleHeight = 0.0;
 
-            m_dModuleWidth = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
-            m_dModuleHeight = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
+            m_dModuleWidth = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
+            m_dModuleHeight = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
 
             if (!Equipment.AjinBoard_Opened)
             {
@@ -7282,8 +7261,22 @@ namespace SLD200_MSL
 
             if ((m_dModuleWidth <= 0.0) || (m_dModuleHeight <= 0.0))
             {
+                m_strTemp = string.Format("Module Size 가 설정되어 있지 않습니다.\r\nRecipe 에 설정된 Module Size 로 진행하시겠습니까?\r\n\r\n[Width: {0:0.000}, Height: {1:0.000}]",
+                                        Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width, Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height);
+
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", m_strTemp))
+                    return;
+
+                m_dModuleWidth = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width;
+                m_dModuleHeight = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height;
+            }
+
+            //  모듈 사이즈가 없으면 경고 메시지 출력
+            if ((m_dModuleWidth <= 0.0) || (m_dModuleHeight <= 0.0))
+            {
                 var mb1 = new MessageBoxOk();
-                mb1.ShowDialog("Warning !", "Module Size 가 설정되어 있지 않습니다.");
+                mb1.ShowDialog("Information !", "Mechanical Align 을 위한 Module Size 를 입력해야 합니다.");
                 return;
             }
 

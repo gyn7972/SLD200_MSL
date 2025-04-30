@@ -1249,8 +1249,8 @@ namespace SLD200_MSL
             checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Checked = Equipment.Machine_LoaderStacker_LiftUp_Enable;
             textBox_Setup_Option_LoaderStacker_LiftUpStep.Text = Equipment.Machine_LoaderStacker_LiftUpStep.ToString();
             textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Text = Equipment.Machine_LoaderStacker_LiftUp_StableTime.ToString();
-
-
+            textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Text = Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel.ToString();
+            
 
             if (Equipment.Machine_FiducialImageSave_Always)
             {
@@ -1665,7 +1665,8 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_Step", textBox_Setup_Option_LoaderStacker_LiftUpStep.Text.ToString(), strFIle);
             Equipment.Machine_LoaderStacker_LiftUp_StableTime = Equipment.ToInt(textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_StableTime", textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Text.ToString(), strFIle);
-
+            Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel = Equipment.ToDouble(textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "WorkStage_ModuleAbsorption_JudgeLevel", textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Text.ToString(), strFIle);
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);
@@ -2665,24 +2666,24 @@ namespace SLD200_MSL
             }
 
             //  Flatness 측정 위치 데이터 저장
-            Equipment.stFlatMeasurePos[nIndex].StagePos[0].X = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos1_StageX.Text);
-            Equipment.stFlatMeasurePos[nIndex].StagePos[0].Y = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos1_StageY.Text);
-            Equipment.stFlatMeasurePos[nIndex].StagePos[1].X = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos2_StageX.Text);
-            Equipment.stFlatMeasurePos[nIndex].StagePos[1].Y = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos2_StageY.Text);
-            Equipment.stFlatMeasurePos[nIndex].StagePos[2].X = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos3_StageX.Text);
-            Equipment.stFlatMeasurePos[nIndex].StagePos[2].Y = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos3_StageY.Text);
-            Equipment.stFlatMeasurePos[nIndex].StagePos[3].X = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos4_StageX.Text);
-            Equipment.stFlatMeasurePos[nIndex].StagePos[3].Y = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos4_StageY.Text);
-            Equipment.stFlatMeasurePos[nIndex].StagePos[4].X = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos5_StageX.Text);
-            Equipment.stFlatMeasurePos[nIndex].StagePos[4].Y = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos5_StageY.Text);
-            Equipment.stFlatMeasurePos[nIndex].StagePos[5].X = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos6_StageX.Text);
-            Equipment.stFlatMeasurePos[nIndex].StagePos[5].Y = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos6_StageY.Text);
-            Equipment.stFlatMeasurePos[nIndex].StagePos[6].X = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos7_StageX.Text);
-            Equipment.stFlatMeasurePos[nIndex].StagePos[6].Y = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos7_StageY.Text);
-            Equipment.stFlatMeasurePos[nIndex].StagePos[7].X = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos8_StageX.Text);
-            Equipment.stFlatMeasurePos[nIndex].StagePos[7].Y = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos8_StageY.Text);
-            Equipment.stFlatMeasurePos[nIndex].StagePos[8].X = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos9_StageX.Text);
-            Equipment.stFlatMeasurePos[nIndex].StagePos[8].Y = Convert.ToDouble(textBox_Setup_Flatness_TeachingPos9_StageY.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[0].X = Equipment.ToDouble(textBox_Setup_Flatness_TeachingPos1_StageX.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[0].Y = Equipment.ToDouble(textBox_Setup_Flatness_TeachingPos1_StageY.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[1].X = Equipment.ToDouble(textBox_Setup_Flatness_TeachingPos2_StageX.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[1].Y = Equipment.ToDouble(textBox_Setup_Flatness_TeachingPos2_StageY.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[2].X = Equipment.ToDouble(textBox_Setup_Flatness_TeachingPos3_StageX.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[2].Y = Equipment.ToDouble(textBox_Setup_Flatness_TeachingPos3_StageY.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[3].X = Equipment.ToDouble(textBox_Setup_Flatness_TeachingPos4_StageX.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[3].Y = Equipment.ToDouble(textBox_Setup_Flatness_TeachingPos4_StageY.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[4].X = Equipment.ToDouble(textBox_Setup_Flatness_TeachingPos5_StageX.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[4].Y = Equipment.ToDouble(textBox_Setup_Flatness_TeachingPos5_StageY.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[5].X = Equipment.ToDouble(textBox_Setup_Flatness_TeachingPos6_StageX.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[5].Y = Equipment.ToDouble(textBox_Setup_Flatness_TeachingPos6_StageY.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[6].X = Equipment.ToDouble(textBox_Setup_Flatness_TeachingPos7_StageX.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[6].Y = Equipment.ToDouble(textBox_Setup_Flatness_TeachingPos7_StageY.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[7].X = Equipment.ToDouble(textBox_Setup_Flatness_TeachingPos8_StageX.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[7].Y = Equipment.ToDouble(textBox_Setup_Flatness_TeachingPos8_StageY.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[8].X = Equipment.ToDouble(textBox_Setup_Flatness_TeachingPos9_StageX.Text);
+            Equipment.stFlatMeasurePos[nIndex].StagePos[8].Y = Equipment.ToDouble(textBox_Setup_Flatness_TeachingPos9_StageY.Text);
 
 
             FlatMeasurePos_Data_Save();

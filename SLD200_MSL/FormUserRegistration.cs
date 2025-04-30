@@ -137,7 +137,7 @@ namespace SLD200_MSL
 
                 //  등록 인원 수
                 NativeMethods.GetPrivateProfileString("Operator", "Total_Count", "0", temp, 255, strFIle);
-                m_nOperator_Count = Convert.ToInt16(temp.ToString());
+                m_nOperator_Count = Equipment.ToInt(temp.ToString());
                 
                 for ( int i = 0; i < m_nOperator_Count; i++ )
                 {

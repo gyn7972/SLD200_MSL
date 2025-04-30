@@ -114,10 +114,10 @@ namespace QMC.Common.Parts
             Input_Water_In_Leak_Check,          //  X018
 
             //  TOP Frame
-            Input_Water_Box_Leak_Check,         //  X019
+            Input_Chiller_Run,                  //  X019                //  Input_Water_Box_Leak_Check --> Chiller Run 으로 변경
 
             //  LASER Base
-            Input_Laser_Leak_Check,             //  X020
+            Input_Chiller_Alarm,                //  X020                //  Input_Laser_Leak_Check --> Chiller Alarm 으로 변경
 
             //  BDS
             Input_Mask_Leak_Check,              //  X021
@@ -179,7 +179,7 @@ namespace QMC.Common.Parts
             Output_Laser_CalSheet_Blow,         //  Y024
 
             //  LASER
-            Output_Laser_Shutter_Command,       //  Y025
+            Output_Chiller_Run,                 //  Y025            //  Laser Shutter Command (예비용) 를 Chiller Run 으로 사용함.
 
             //  Dust Collector
             Output_DustCollector0_AirPulse_Run, //  Y026
@@ -604,31 +604,31 @@ namespace QMC.Common.Parts
                 {
 #if true        //  요렇게 하던지.... 아니면...
 
-                    //m_stLaserPosParam.dTarget[nPosCnt++] = m_dPos[nPosCnt] = Convert.ToDouble(parameters[i++].Value);       //  X
-                    //m_stLaserPosParam.dTarget[nPosCnt++] = m_dPos[nPosCnt] = Convert.ToDouble(parameters[i++].Value);       //  Y
-                    //m_stLaserPosParam.dTarget[nPosCnt++] = m_dPos[nPosCnt] = Convert.ToDouble(parameters[i++].Value);       //  T
-                    //m_stLaserPosParam.dTarget[nPosCnt] = m_dPos[nPosCnt] = Convert.ToDouble(parameters[i++].Value);         //  Z
+                    //m_stLaserPosParam.dTarget[nPosCnt++] = m_dPos[nPosCnt] = Equipment.ToDouble(parameters[i++].Value);       //  X
+                    //m_stLaserPosParam.dTarget[nPosCnt++] = m_dPos[nPosCnt] = Equipment.ToDouble(parameters[i++].Value);       //  Y
+                    //m_stLaserPosParam.dTarget[nPosCnt++] = m_dPos[nPosCnt] = Equipment.ToDouble(parameters[i++].Value);       //  T
+                    //m_stLaserPosParam.dTarget[nPosCnt] = m_dPos[nPosCnt] = Equipment.ToDouble(parameters[i++].Value);         //  Z
 
                     ////  Offset 값도 가져오자.
                     //nPosCnt = 0;
-                    //m_stLaserPosParam.dOffset[nPosCnt++] = Convert.ToDouble(parameters[i++].Value);                         //  X
-                    //m_stLaserPosParam.dOffset[nPosCnt++] = Convert.ToDouble(parameters[i++].Value);                         //  Y
-                    //m_stLaserPosParam.dOffset[nPosCnt++] = Convert.ToDouble(parameters[i++].Value);                         //  T
-                    //m_stLaserPosParam.dOffset[nPosCnt] = Convert.ToDouble(parameters[i++].Value);                           //  Z
+                    //m_stLaserPosParam.dOffset[nPosCnt++] = Equipment.ToDouble(parameters[i++].Value);                         //  X
+                    //m_stLaserPosParam.dOffset[nPosCnt++] = Equipment.ToDouble(parameters[i++].Value);                         //  Y
+                    //m_stLaserPosParam.dOffset[nPosCnt++] = Equipment.ToDouble(parameters[i++].Value);                         //  T
+                    //m_stLaserPosParam.dOffset[nPosCnt] = Equipment.ToDouble(parameters[i++].Value);                           //  Z
 
 
                     //  다른 좋은 방법이 있겠지만 시간이 없으니 일단 이렇게 슥삭...
-                    m_stLaserPosParam.dTarget[0] = m_dPos[0] = Convert.ToDouble(parameters[i++].Value);       //  X
-                    m_stLaserPosParam.dTarget[1] = m_dPos[1] = Convert.ToDouble(parameters[i++].Value);       //  Y
-                    m_stLaserPosParam.dTarget[2] = m_dPos[2] = Convert.ToDouble(parameters[i++].Value);       //  Z
-                    m_stLaserPosParam.dTarget[3] = m_dPos[3] = Convert.ToDouble(parameters[i++].Value);       //  MASK_Y
+                    m_stLaserPosParam.dTarget[0] = m_dPos[0] = Equipment.ToDouble(parameters[i++].Value);       //  X
+                    m_stLaserPosParam.dTarget[1] = m_dPos[1] = Equipment.ToDouble(parameters[i++].Value);       //  Y
+                    m_stLaserPosParam.dTarget[2] = m_dPos[2] = Equipment.ToDouble(parameters[i++].Value);       //  Z
+                    m_stLaserPosParam.dTarget[3] = m_dPos[3] = Equipment.ToDouble(parameters[i++].Value);       //  MASK_Y
 
                     //  Offset 값도 가져오자.
                     nPosCnt = 0;
-                    m_stLaserPosParam.dOffset[0] = Convert.ToDouble(parameters[i++].Value);                   //  X
-                    m_stLaserPosParam.dOffset[1] = Convert.ToDouble(parameters[i++].Value);                   //  Y
-                    m_stLaserPosParam.dOffset[2] = Convert.ToDouble(parameters[i++].Value);                   //  Z
-                    m_stLaserPosParam.dOffset[3] = Convert.ToDouble(parameters[i++].Value);                   //  MASK_Y
+                    m_stLaserPosParam.dOffset[0] = Equipment.ToDouble(parameters[i++].Value);                   //  X
+                    m_stLaserPosParam.dOffset[1] = Equipment.ToDouble(parameters[i++].Value);                   //  Y
+                    m_stLaserPosParam.dOffset[2] = Equipment.ToDouble(parameters[i++].Value);                   //  Z
+                    m_stLaserPosParam.dOffset[3] = Equipment.ToDouble(parameters[i++].Value);                   //  MASK_Y
 
 
                     break;
@@ -637,25 +637,25 @@ namespace QMC.Common.Parts
 
                     if (parameters[i].Tag == "X")
                     {
-                        m_stDispParam.dTarget[0] = m_dPos[0] = Convert.ToDouble(parameters[i].Value);      //  X
+                        m_stDispParam.dTarget[0] = m_dPos[0] = Equipment.ToDouble(parameters[i].Value);      //  X
                         nPosCnt++;
                     }
 
                     if (parameters[i].Tag == "Y")
                     {
-                        m_stDispParam.dTarget[1] = m_dPos[1] = Convert.ToDouble(parameters[i].Value);      //  Y
+                        m_stDispParam.dTarget[1] = m_dPos[1] = Equipment.ToDouble(parameters[i].Value);      //  Y
                         nPosCnt++;
                     }
 
                     if (parameters[i].Tag == "T")
                     {
-                        m_stDispParam.dTarget[2] = m_dPos[2] = Convert.ToDouble(parameters[i].Value);      //  T
+                        m_stDispParam.dTarget[2] = m_dPos[2] = Equipment.ToDouble(parameters[i].Value);      //  T
                         nPosCnt++;
                     }
 
                     if (parameters[i].Tag == "Z")
                     {
-                        m_stDispParam.dTarget[3] = m_dPos[3] = Convert.ToDouble(parameters[i].Value);      //  Z
+                        m_stDispParam.dTarget[3] = m_dPos[3] = Equipment.ToDouble(parameters[i].Value);      //  Z
                         nPosCnt++;
                     }
 
@@ -664,22 +664,22 @@ namespace QMC.Common.Parts
                         //  Offset 값도 가져오자.
                         if (parameters[i + 1].Tag == "X")
                         {
-                            m_stDispParam.dOffset[0] = Convert.ToDouble(parameters[i + 1].Value);      //  X
+                            m_stDispParam.dOffset[0] = Equipment.ToDouble(parameters[i + 1].Value);      //  X
                         }
 
                         if (parameters[i + 2].Tag == "Y")
                         {
-                            m_stDispParam.dOffset[1] = Convert.ToDouble(parameters[i + 2].Value);      //  Y
+                            m_stDispParam.dOffset[1] = Equipment.ToDouble(parameters[i + 2].Value);      //  Y
                         }
 
                         if (parameters[i + 3].Tag == "T")
                         {
-                            m_stDispParam.dOffset[2] = Convert.ToDouble(parameters[i + 3].Value);      //  T
+                            m_stDispParam.dOffset[2] = Equipment.ToDouble(parameters[i + 3].Value);      //  T
                         }
 
                         if (parameters[i + 4].Tag == "Z")
                         {
-                            m_stDispParam.dOffset[3] = Convert.ToDouble(parameters[i + 4].Value);      //  Z
+                            m_stDispParam.dOffset[3] = Equipment.ToDouble(parameters[i + 4].Value);      //  Z
                         }
 
                         break;
@@ -1029,14 +1029,14 @@ namespace QMC.Common.Parts
             return bRet;
         }
 
-        public bool DI_Water_Box_Leak_Check()
+        public bool DI_Chiller_Run()
         {
             bool bRet = false;
 
             DioPoint dioString = null;
 
             //  해당 채널 상태 리턴
-            dioString = m_dicDioPoints[DioPointKey.Input_Water_Box_Leak_Check.ToString()];
+            dioString = m_dicDioPoints[DioPointKey.Input_Chiller_Run.ToString()];
 
             if (dioString == null)
                 return bRet;
@@ -1049,14 +1049,14 @@ namespace QMC.Common.Parts
             return bRet;
         }
 
-        public bool DI_Laser_Leak_Check()
+        public bool DI_Chiller_Alarm_Check()
         {
             bool bRet = false;
 
             DioPoint dioString = null;
 
             //  해당 채널 상태 리턴
-            dioString = m_dicDioPoints[DioPointKey.Input_Laser_Leak_Check.ToString()];
+            dioString = m_dicDioPoints[DioPointKey.Input_Chiller_Alarm.ToString()];
 
             if (dioString == null)
                 return bRet;
@@ -1640,14 +1640,14 @@ namespace QMC.Common.Parts
             return nRet;
         }
 
-        public int DO_Laser_Shutter_Command(bool m_bOnOff)
+        public int DO_Chiller_Run(bool m_bOnOff)
         {
             int nRet = 0;
 
             DioPoint dioString = null;
 
             //  해당 채널 출력 성공 여부 리턴
-            dioString = m_dicDioPoints[DioPointKey.Output_Laser_Shutter_Command.ToString()];
+            dioString = m_dicDioPoints[DioPointKey.Output_Chiller_Run.ToString()];
 
             if (dioString == null) return -1;
 
@@ -2131,14 +2131,14 @@ namespace QMC.Common.Parts
             return bRet;
         }
 
-        public bool IsDO_Laser_Shutter_Command()
+        public bool IsDO_Chiller_Run()
         {
             bool bRet = false;
 
             DioPoint dioString = null;
 
             //  해당 출력 채널 상태 리턴
-            dioString = m_dicDioPoints[DioPointKey.Output_Laser_Shutter_Command.ToString()];
+            dioString = m_dicDioPoints[DioPointKey.Output_Chiller_Run.ToString()];
 
             if (dioString == null)
                 return bRet;

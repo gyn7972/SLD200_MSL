@@ -11,8 +11,13 @@ namespace QMC.Common
         public static List<LayerInfo> Layers { get; private set; } = new List<LayerInfo>();
         public static string StateFilePath = "D:\\process_state.txt"; // 저장 경로
 
+        public static int nHole1Layer_Index = 0;
+
+        // 초기화 (초기 생성)
         public static void Init()
         {
+            nHole1Layer_Index = 0;
+
             Layers.Clear();
         }
 

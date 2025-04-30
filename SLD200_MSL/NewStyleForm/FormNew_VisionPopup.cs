@@ -853,7 +853,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_VisionPopup_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_VisionPopup_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -900,7 +900,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_VisionPopup_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_VisionPopup_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -947,7 +947,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_VisionPopup_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_VisionPopup_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -994,7 +994,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_VisionPopup_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_VisionPopup_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -1041,7 +1041,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_VisionPopup_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_VisionPopup_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -1088,7 +1088,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_VisionPopup_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_VisionPopup_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -1557,9 +1557,9 @@ namespace SLD200_MSL
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "현재 Z축 높이를 Fine Camera, Laser, Laser Height Sensor Focus 로 설정하시겠습니까?"))
                 return;
 
-            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_FocusPos].Vision_Z = Convert.ToDouble(string.Format("{0:0.000}", vision.MC_Func.MC_GetEncPos((int)Vision.nAxis.Z).ToString()));
-            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z = Convert.ToDouble(string.Format("{0:0.000}", vision.MC_Func.MC_GetEncPos((int)Vision.nAxis.Z).ToString()));
-            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos].Vision_Z = Convert.ToDouble(string.Format("{0:0.000}", vision.MC_Func.MC_GetEncPos((int)Vision.nAxis.Z).ToString()));
+            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_FocusPos].Vision_Z = Equipment.ToDouble(string.Format("{0:0.000}", vision.MC_Func.MC_GetEncPos((int)Vision.nAxis.Z).ToString()));
+            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z = Equipment.ToDouble(string.Format("{0:0.000}", vision.MC_Func.MC_GetEncPos((int)Vision.nAxis.Z).ToString()));
+            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos].Vision_Z = Equipment.ToDouble(string.Format("{0:0.000}", vision.MC_Func.MC_GetEncPos((int)Vision.nAxis.Z).ToString()));
 
             //  리스트 전체 저장
             vision.Teaching_Position_Save();
@@ -1571,7 +1571,7 @@ namespace SLD200_MSL
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "현재 Z축 높이를 Laser Focus 로 설정하시겠습니까?"))
                 return;
 
-            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z = Convert.ToDouble(string.Format("{0:0.000}", vision.MC_Func.MC_GetEncPos((int)Vision.nAxis.Z).ToString()));
+            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z = Equipment.ToDouble(string.Format("{0:0.000}", vision.MC_Func.MC_GetEncPos((int)Vision.nAxis.Z).ToString()));
 
             //  리스트 전체 저장
             vision.Teaching_Position_Save();
@@ -1767,7 +1767,7 @@ namespace SLD200_MSL
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
             
-            int m_nSocketIndex = Convert.ToInt16(comboBox_Config_VisionPopup_AlignTest_SocketList.Text);
+            int m_nSocketIndex = Equipment.ToInt(comboBox_Config_VisionPopup_AlignTest_SocketList.Text);
             if (m_nSocketIndex < 0)
             {
                 MessageBox.Show("소켓 리스트를 선택해야 합니다.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -2605,7 +2605,7 @@ namespace SLD200_MSL
             double lfAccDec = 0.0f;
             bool m_bCorrected = true;
 
-            int m_nSocketIndex = Convert.ToInt16(comboBox_Config_VisionPopup_AlignTest_SocketList.Text);
+            int m_nSocketIndex = Equipment.ToInt(comboBox_Config_VisionPopup_AlignTest_SocketList.Text);
             if (m_nSocketIndex < 0)
             {
                 MessageBox.Show("소켓 리스트를 선택해야 합니다.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);

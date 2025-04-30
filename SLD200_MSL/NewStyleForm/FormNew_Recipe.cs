@@ -636,16 +636,16 @@ namespace SLD200_MSL
 
                 //  Laser Pulse Width (us)
                 NativeMethods.GetPrivateProfileString(strTemp, "Pulse_Width", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].LaserParam_PulseWidth = Convert.ToInt32(temp.ToString());
+                Equipment.stLayerRecipeSet[i].LaserParam_PulseWidth = Equipment.ToInt(temp.ToString());
                 //  Laser Pulse Period (us)
                 NativeMethods.GetPrivateProfileString(strTemp, "Pulse_Period", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].LaserParam_PulsePeriod = Convert.ToInt32(temp.ToString());
+                Equipment.stLayerRecipeSet[i].LaserParam_PulsePeriod = Equipment.ToInt(temp.ToString());
                 //  Laser Frequency (Hz)
                 NativeMethods.GetPrivateProfileString(strTemp, "Frequency", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].LaserParam_Frequency = Convert.ToInt32(temp.ToString());
+                Equipment.stLayerRecipeSet[i].LaserParam_Frequency = Equipment.ToInt(temp.ToString());
                 //  Laser DutyCycle (%)
                 NativeMethods.GetPrivateProfileString(strTemp, "Duty_Cycle", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].LaserParam_DutyCycle = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].LaserParam_DutyCycle = Equipment.ToDouble(temp.ToString());
 
                 //  Laser Trigger Mode (true: External, false: Internal)
                 NativeMethods.GetPrivateProfileString(strTemp, "Trigger_Mode_External", "false", temp, 255, strFIle);
@@ -660,67 +660,67 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].Miscellaneous_ReferenceLayer = temp.ToString();
                 //  Defocusing Distance (mm)
                 NativeMethods.GetPrivateProfileString(strTemp, "Defocusing_Distance", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance = Equipment.ToDouble(temp.ToString());
                 //  Resizing (mm)
                 NativeMethods.GetPrivateProfileString(strTemp, "Resizing", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing = Equipment.ToDouble(temp.ToString());
                 //  Hole Drilling Start Position Division (등분)
                 NativeMethods.GetPrivateProfileString(strTemp, "HoleDrilling_StartPosDivision", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision = Convert.ToInt32(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision = Equipment.ToInt(temp.ToString());
                 //  Group Split Size (mm)
                 NativeMethods.GetPrivateProfileString(strTemp, "GroupSplitSize", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize = Equipment.ToDouble(temp.ToString());
                 //  Scanner Drilling Speed (mm/s)
                 NativeMethods.GetPrivateProfileString(strTemp, "ScannerDrillingSpeed", "10", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerDrillingSpeed = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerDrillingSpeed = Equipment.ToDouble(temp.ToString());
                 //  Scanner Jump Speed (mm/s)
                 NativeMethods.GetPrivateProfileString(strTemp, "ScannerJumpSpeed", "100", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerJumpSpeed = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerJumpSpeed = Equipment.ToDouble(temp.ToString());
                 //  Laser On Delay (us)
                 NativeMethods.GetPrivateProfileString(strTemp, "LaserOnDelay", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_LaserOnDelay = Convert.ToInt32(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_LaserOnDelay = Equipment.ToInt(temp.ToString());
                 //  Laser Off Delay (us)
                 NativeMethods.GetPrivateProfileString(strTemp, "LaserOffDelay", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_LaserOffDelay = Convert.ToInt32(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_LaserOffDelay = Equipment.ToInt(temp.ToString());
                 //  Mark Delay (us)
                 NativeMethods.GetPrivateProfileString(strTemp, "MarkDelay", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_MarkDelay = Convert.ToInt32(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_MarkDelay = Equipment.ToInt(temp.ToString());
                 //  Jump Delay (us)
                 NativeMethods.GetPrivateProfileString(strTemp, "JumpDelay", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_JumpDelay = Convert.ToInt32(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_JumpDelay = Equipment.ToInt(temp.ToString());
                 //  Polygon Delay (us)
                 NativeMethods.GetPrivateProfileString(strTemp, "PolygonDelay", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_PolygonDelay = Convert.ToInt32(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_PolygonDelay = Equipment.ToInt(temp.ToString());
                 //  Drilling Power (%)
                 NativeMethods.GetPrivateProfileString(strTemp, "DrillingPower", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_Drilling_Power = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_Drilling_Power = Equipment.ToDouble(temp.ToString());
                 //  Space of P2P Distance (mm)
                 NativeMethods.GetPrivateProfileString(strTemp, "P2PDistance", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_P2PDistance = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_P2PDistance = Equipment.ToDouble(temp.ToString());
                 //  Drilling Repetation
                 NativeMethods.GetPrivateProfileString(strTemp, "DrillingRepetation", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetition = Convert.ToInt16(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetition = Equipment.ToInt(temp.ToString());
                 //  Drilling Repetition bundle
                 NativeMethods.GetPrivateProfileString(strTemp, "DrillingRepetitionBundle", "50", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle = Convert.ToInt16(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle = Equipment.ToInt(temp.ToString());
                 //  Rotation Angle when Arc
                 NativeMethods.GetPrivateProfileString(strTemp, "RotationAngleArc", "360.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_RotationAngleArc = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_RotationAngleArc = Equipment.ToDouble(temp.ToString());
                 //  Mask Index (0:None, 1:Mask1, 2:Mask2, 3:Mask3, 4:Mask4)
                 NativeMethods.GetPrivateProfileString(strTemp, "MaskIndex", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_MaskIndex = Convert.ToInt32(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_MaskIndex = Equipment.ToInt(temp.ToString());
                 //  BET Position Index (0:0.1X, 1:0.5X, 2:1.0X, 3:1.5X, 4:2.0X)
                 NativeMethods.GetPrivateProfileString(strTemp, "BETPositionIndex", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_BETPositionIndex = Convert.ToInt32(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_BETPositionIndex = Equipment.ToInt(temp.ToString());
                 //  Hole Processing Type (0:Circle, 1:Spiral)
                 NativeMethods.GetPrivateProfileString(strTemp, "HoleProcessingType", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = Convert.ToInt32(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = Equipment.ToInt(temp.ToString());
                 //  Fiducial Align Type (0:Circle Find, 1:Pattern Matching)
                 NativeMethods.GetPrivateProfileString(strTemp, "FiducialAlignType", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = Convert.ToInt32(temp.ToString());
+                Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = Equipment.ToInt(temp.ToString());
                 //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
                 NativeMethods.GetPrivateProfileString(strTemp, "FiducialMarkType", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialMarkType = Convert.ToInt32(temp.ToString());                
+                Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialMarkType = Equipment.ToInt(temp.ToString());                
 
                 //  Process Options
                 NativeMethods.GetPrivateProfileString(strTemp, "Socket_Align_Use", "false", temp, 255, strFIle);
@@ -730,21 +730,21 @@ namespace SLD200_MSL
 
                 //  Module Information
                 NativeMethods.GetPrivateProfileString(strTemp, "Module_Width", "125.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Width = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Width = Equipment.ToDouble(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "Module_Height", "120.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Height = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Height = Equipment.ToDouble(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "Module_SiliconThickness", "0.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness = Equipment.ToDouble(temp.ToString());
 
                 //  Spiral Parameter
                 NativeMethods.GetPrivateProfileString(strTemp, "Spiral_OuterDiameter", "0.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].SpiralParam_OuterDiameter = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].SpiralParam_OuterDiameter = Equipment.ToDouble(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "Spiral_InnerDiameter", "0.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].SpiralParam_InnerDiameter = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].SpiralParam_InnerDiameter = Equipment.ToDouble(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "Spiral_Revolutions", "10", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].SpiralParam_Revolutions = Convert.ToInt32(temp.ToString());
+                Equipment.stLayerRecipeSet[i].SpiralParam_Revolutions = Equipment.ToInt(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "Spiral_AngleFactor", "10.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].SpiralParam_AngleFactor = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].SpiralParam_AngleFactor = Equipment.ToDouble(temp.ToString());
 
                 //  M-Aligner Vacuum Use
                 NativeMethods.GetPrivateProfileString(strTemp, "MAlignerVacuumUse_Center", "true", temp, 255, strFIle);
@@ -756,21 +756,21 @@ namespace SLD200_MSL
 
                 //  Fine Cam. Red
                 NativeMethods.GetPrivateProfileString(strTemp, "FineCam_Red", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed = Convert.ToInt32(temp.ToString());
+                Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed = Equipment.ToInt(temp.ToString());
                 //  Fine Cam. IR
                 NativeMethods.GetPrivateProfileString(strTemp, "FineCam_IR", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR = Convert.ToInt32(temp.ToString());
+                Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR = Equipment.ToInt(temp.ToString());
                 //  Coarse Cam. IR
                 NativeMethods.GetPrivateProfileString(strTemp, "CoarseCam_IR", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR = Convert.ToInt32(temp.ToString());
+                Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR = Equipment.ToInt(temp.ToString());
 
                 //  Dust Collector
                 NativeMethods.GetPrivateProfileString(strTemp, "DustCollector_RemoteMode_Use", "false", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].DustCollectorRemoteMode_Use = Convert.ToBoolean(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "DustCollector_Frequency_Upper", "20.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper = Equipment.ToDouble(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "DustCollector_Frequency_Lower", "20.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower = Convert.ToDouble(temp.ToString());
+                Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower = Equipment.ToDouble(temp.ToString());
 
                 // Pre Align
                 NativeMethods.GetPrivateProfileString(strTemp, "PreAlignPosX1", "0.0", temp, 255, strFIle);
@@ -1267,7 +1267,7 @@ namespace SLD200_MSL
 
                 if (IsNumeric(m_strHoleLayer_Number))
                 {
-                    int m_nHoleLayer_Index = Convert.ToInt16(m_strHoleLayer_Number);
+                    int m_nHoleLayer_Index = Equipment.ToInt(m_strHoleLayer_Number);
                     if ((m_nHoleLayer_Index >= 1) && (m_nHoleLayer_Index <= 50))
                     {
                         m_nLayerIndex = m_nHoleLayer_Index - 1;             //  Hole Layer 의 Index 는 0부터 시작
@@ -1345,10 +1345,10 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[0].DrawingFile = richTextBox_Recipe_TabRecipe_DrawingFile.Text;                  //  Drawing File 은 0번 Layer 에만 저장한다.
 
             //  Laser Parameter
-            Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_PulseWidth = textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text.Length > 0 ? Convert.ToInt32(textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_PulsePeriod = textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Convert.ToInt32(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_Frequency = textBox_Recipe_TabRecipe_LaserParam_Frequency.Text.Length > 0 ? Convert.ToInt32(textBox_Recipe_TabRecipe_LaserParam_Frequency.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_DutyCycle = textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_PulseWidth = textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_PulsePeriod = textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_Frequency = textBox_Recipe_TabRecipe_LaserParam_Frequency.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_LaserParam_Frequency.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_DutyCycle = textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 0;
 
             Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_TriggerMode_External = radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Checked;
 
@@ -1357,22 +1357,22 @@ namespace SLD200_MSL
 
             //  Miscellaneous
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_ReferenceLayer = textBox_Recipe_TabRecipe_Miscellaneous_ReferenceLayer.Text;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_DefocusingDistance = Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text);
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_Resizing = Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text);
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_HoleDrilling_StartPosDivision = comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text.Length > 0 ? Convert.ToInt32(comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_GroupSplitSize = textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_ScannerDrillingSpeed = textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_ScannerJumpSpeed = textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_LaserOnDelay = textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_LaserOffDelay = textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_MarkDelay = textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_JumpDelay = textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_PolygonDelay = textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_Drilling_Power = textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_DrillingRepetition = textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text.Length > 0 ? Convert.ToInt16(textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_DrillingRepetitionBundle = textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text.Length > 0 ? Convert.ToInt16(textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text) : 50;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_RotationAngleArc = textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text) : 360.0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_P2PDistance = textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_DefocusingDistance = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text);
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_Resizing = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text);
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_HoleDrilling_StartPosDivision = comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text.Length > 0 ? Equipment.ToInt(comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_GroupSplitSize = textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_ScannerDrillingSpeed = textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_ScannerJumpSpeed = textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_LaserOnDelay = textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_LaserOffDelay = textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_LaserOffDelay.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_MarkDelay = textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_MarkDelay.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_JumpDelay = textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_JumpDelay.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_PolygonDelay = textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_Drilling_Power = textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_DrillingRepetition = textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_DrillingRepetitionBundle = textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text) : 50;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_RotationAngleArc = textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text) : 360.0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_P2PDistance = textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text) : 0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_MaskIndex = comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_BETPositionIndex = comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_HoleProcessingType = comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex;
@@ -1384,15 +1384,15 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use = checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck.Checked;             //  Socket Height Check 기능 사용 여부
 
             //  Module Information
-            Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width = textBox_Recipe_TabRecipe_ModuleInformation_Width.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_Width.Text) : 125.0;
-            Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height = textBox_Recipe_TabRecipe_ModuleInformation_Height.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_Height.Text) : 120.0;
-            Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness = textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text) : 0.0;
+            Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width = textBox_Recipe_TabRecipe_ModuleInformation_Width.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_Width.Text) : 125.0;
+            Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height = textBox_Recipe_TabRecipe_ModuleInformation_Height.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_Height.Text) : 120.0;
+            Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness = textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_SiliconThickness.Text) : 0.0;
 
             //  Spiral Parameter
-            Equipment.stLayerRecipeSet[m_nLayerIndex].SpiralParam_OuterDiameter = textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text) : 0.0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].SpiralParam_InnerDiameter = textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text) : 0.0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].SpiralParam_Revolutions = textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text.Length > 0 ? Convert.ToInt32(textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text) : 10;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].SpiralParam_AngleFactor = textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text) : 10.0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].SpiralParam_OuterDiameter = textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter.Text) : 0.0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].SpiralParam_InnerDiameter = textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_InnerDiameter.Text) : 0.0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].SpiralParam_Revolutions = textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text) : 10;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].SpiralParam_AngleFactor = textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text) : 10.0;
 
             //  M-Aligner Vacuum Use
             Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center = checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked;     //  Center
@@ -1400,24 +1400,24 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer = checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked;       //  Outer
 
             //  조명값 (Fiducial Layer 의 것만 사용한다)
-            Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed = textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text.Length > 0 ? Convert.ToInt32(textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text) : 0;
-            Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR = textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text.Length > 0 ? Convert.ToInt32(textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text) : 0;
-            Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR = textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text.Length > 0 ? Convert.ToInt32(textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text) : 0;
+            Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed = textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text) : 0;
+            Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR = textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text) : 0;
+            Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR = textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text) : 0;
 
             //  집진기 주파수
             Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use = checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked;                         //  집진기 Remote Mode 사용 여부
-            Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper = textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text) : 20.0;
-            Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower = textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text) : 20.0;
+            Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper = textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text) : 20.0;
+            Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower = textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text) : 20.0;
 
             //PreAlign
             Equipment.stLayerRecipeSet[0].PreAlignPos1.X =
-                textBox_Recipe_TabRecipe_PreAlignPosX1.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosX1.Text) : 0.0;
+                textBox_Recipe_TabRecipe_PreAlignPosX1.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosX1.Text) : 0.0;
             Equipment.stLayerRecipeSet[0].PreAlignPos1.Y =
-                textBox_Recipe_TabRecipe_PreAlignPosY1.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosY1.Text) : 0.0;
+                textBox_Recipe_TabRecipe_PreAlignPosY1.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosY1.Text) : 0.0;
             Equipment.stLayerRecipeSet[0].PreAlignPos2.X =
-                textBox_Recipe_TabRecipe_PreAlignPosX2.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosX2.Text) : 0.0;
+                textBox_Recipe_TabRecipe_PreAlignPosX2.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosX2.Text) : 0.0;
             Equipment.stLayerRecipeSet[0].PreAlignPos2.Y =
-                textBox_Recipe_TabRecipe_PreAlignPosY2.Text.Length > 0 ? Convert.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosY2.Text) : 0.0;
+                textBox_Recipe_TabRecipe_PreAlignPosY2.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosY2.Text) : 0.0;
 
 
             //  도면 데이터를 가공용 Document 에 적용
@@ -1520,11 +1520,11 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_P2PDistance.ToString();
                 //comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString();
                 //comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString();
-                comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString());
-                comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString());
-                comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_HoleProcessingType.ToString());
-                comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialAlignType.ToString());
-                comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType.ToString());
+                comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString());
+                comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString());
+                comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_HoleProcessingType.ToString());
+                comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialAlignType.ToString());
+                comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType.ToString());
 
                 //  process Options
                 checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부
@@ -1629,7 +1629,7 @@ namespace SLD200_MSL
 
                 if (IsNumeric(m_strHoleLayer_Number))
                 {
-                    int m_nHoleLayer_Index = Convert.ToInt16(m_strHoleLayer_Number);
+                    int m_nHoleLayer_Index = Equipment.ToInt(m_strHoleLayer_Number);
                     if ((m_nHoleLayer_Index >= 1) && (m_nHoleLayer_Index <= 50))
                     {
                         m_nIndex = m_nHoleLayer_Index - 1;             //  Hole Layer 의 Index 는 0부터 시작
@@ -1744,11 +1744,11 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_P2PDistance.ToString();
             //comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_MaskIndex.ToString();
             //comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_BETPositionIndex.ToString();
-            comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_MaskIndex.ToString());
-            comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_BETPositionIndex.ToString());
-            comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_HoleProcessingType.ToString());
-            comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialAlignType.ToString());
-            comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialMarkType.ToString());
+            comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_MaskIndex.ToString());
+            comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_BETPositionIndex.ToString());
+            comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_HoleProcessingType.ToString());
+            comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialAlignType.ToString());
+            comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialMarkType.ToString());
 
             //  process Options
             checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부
@@ -1853,11 +1853,11 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_P2PDistance.ToString();
             //comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString();
             //comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString();
-            comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString());
-            comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString());
-            comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_HoleProcessingType.ToString());
-            comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialAlignType.ToString());
-            comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Convert.ToInt16(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType.ToString());
+            comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString());
+            comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString());
+            comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_HoleProcessingType.ToString());
+            comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialAlignType.ToString());
+            comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType.ToString());
 
             //  process Options
             checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부

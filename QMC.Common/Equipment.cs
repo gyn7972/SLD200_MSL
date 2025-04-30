@@ -461,6 +461,7 @@ namespace QMC.Common
         public static bool Machine_LoaderStacker_LiftUp_Enable { set; get; } = true;                        //  Loader Stacker Lift Up Enable
         public static int Machine_LoaderStacker_LiftUpStep { set; get; } = 7;                               //  Loader Stacker Lift Up Step
         public static int Machine_LoaderStacker_LiftUp_StableTime { set; get; } = 1000;                     //  Loader Stacker Lift Up Stable Time
+        public static double Machine_WorkStage_ModuleAbsorption_JudgeLevel { set; get; } = -40.0;           //  Work Stage 에 Module Loading 시, 전자식 진공 레귤레이터 판정값
 
 
         //  Offset Distance
@@ -2364,112 +2365,112 @@ namespace QMC.Common
                 strTemp = string.Format("Axis_{0}_Limit", i);
                 //  Limit Sensor 설치 여부 (Not Installed, Installed)
                 NativeMethods.GetPrivateProfileString(strTemp, "Install", "1", temp, 255, strFIle);
-                Equipment.stAxisParam[i].LimitSensor_Installed = Convert.ToInt16(temp.ToString());
+                Equipment.stAxisParam[i].LimitSensor_Installed = Equipment.ToInt(temp.ToString());
                 //  Limit Sensor 동작 레벨 (Low, High)
                 NativeMethods.GetPrivateProfileString(strTemp, "ActiveLevel", "1", temp, 255, strFIle);
-                Equipment.stAxisParam[i].LimitSensor_ActiveLevel = Convert.ToInt16(temp.ToString());
+                Equipment.stAxisParam[i].LimitSensor_ActiveLevel = Equipment.ToInt(temp.ToString());
 
                 strTemp = string.Format("Axis_{0}_Home", i);
                 //  Home Sensor 형태 (Home, -Limit, +Limit)
                 NativeMethods.GetPrivateProfileString(strTemp, "SensingType", "1", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Sensing = Convert.ToInt16(temp.ToString());
+                Equipment.stAxisParam[i].Home_Sensing = Equipment.ToInt(temp.ToString());
                 //  Home Sensor 설치 여부 (Not Installed, Installed)
                 NativeMethods.GetPrivateProfileString(strTemp, "Install", "0", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Installed = Convert.ToInt16(temp.ToString());
+                Equipment.stAxisParam[i].Home_Installed = Equipment.ToInt(temp.ToString());
                 //  Home Sensor 동작 레벨 (Low, High)
                 NativeMethods.GetPrivateProfileString(strTemp, "ActiveLevel", "1", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_ActiveLevel = Convert.ToInt16(temp.ToString());
+                Equipment.stAxisParam[i].Home_ActiveLevel = Equipment.ToInt(temp.ToString());
                 //  Home Sensor 동작 방향 (Negative, Positive)
                 NativeMethods.GetPrivateProfileString(strTemp, "Direction", "0", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Direction = Convert.ToInt16(temp.ToString());
+                Equipment.stAxisParam[i].Home_Direction = Equipment.ToInt(temp.ToString());
                 //  Home 1st Speed
                 NativeMethods.GetPrivateProfileString(strTemp, "1stSpeed", "30", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Speed_1st = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Home_Speed_1st = Equipment.ToDouble(temp.ToString());
                 //  Home 2nd Speed
                 NativeMethods.GetPrivateProfileString(strTemp, "2ndSpeed", "10", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Speed_2nd = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Home_Speed_2nd = Equipment.ToDouble(temp.ToString());
                 //  Home 3rd Speed
                 NativeMethods.GetPrivateProfileString(strTemp, "3rdSpeed", "5", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Speed_3rd = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Home_Speed_3rd = Equipment.ToDouble(temp.ToString());
                 //  Home Last Speed
                 NativeMethods.GetPrivateProfileString(strTemp, "LastSpeed", "1", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Speed_Last = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Home_Speed_Last = Equipment.ToDouble(temp.ToString());
                 //  Home Clear Time
                 NativeMethods.GetPrivateProfileString(strTemp, "ClearTime", "0", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Clear_Time = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Home_Clear_Time = Equipment.ToDouble(temp.ToString());
                 //  Home ZPhase Use (Disable, Dir CW, Dir CCW)
                 NativeMethods.GetPrivateProfileString(strTemp, "ZPhase", "0", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_ZPhase_Use = Convert.ToInt16(temp.ToString());
+                Equipment.stAxisParam[i].Home_ZPhase_Use = Equipment.ToInt(temp.ToString());
                 //  Home Offset
                 NativeMethods.GetPrivateProfileString(strTemp, "Offset", "0", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Offset = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Home_Offset = Equipment.ToDouble(temp.ToString());
                 //  Home 1st Acceleration
                 NativeMethods.GetPrivateProfileString(strTemp, "1stAccel", "300", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Acceleration_1st = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Home_Acceleration_1st = Equipment.ToDouble(temp.ToString());
                 //  Home 2nd Acceleration
                 NativeMethods.GetPrivateProfileString(strTemp, "2ndAccel", "100", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Home_Acceleration_2nd = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Home_Acceleration_2nd = Equipment.ToDouble(temp.ToString());
 
                 strTemp = string.Format("Axis_{0}_Common", i);
                 //  Unit Per Pulse (Unit)
                 NativeMethods.GetPrivateProfileString(strTemp, "Unit", "1.0", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_UnitPerPulse_Unit = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Common_UnitPerPulse_Unit = Equipment.ToDouble(temp.ToString());
                 //  Unit Per Pulse (Pulse)
                 NativeMethods.GetPrivateProfileString(strTemp, "Pulse", "1000", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_UnitPerPulse_Pulse = Convert.ToInt16(temp.ToString());
+                Equipment.stAxisParam[i].Common_UnitPerPulse_Pulse = Equipment.ToInt(temp.ToString());
                 //  Acceleration Min
                 NativeMethods.GetPrivateProfileString(strTemp, "MinAcc", "10", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Acceleration_Min = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Common_Acceleration_Min = Equipment.ToDouble(temp.ToString());
                 //  Acceleration Max
                 NativeMethods.GetPrivateProfileString(strTemp, "MaxAcc", "10000", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Acceleration_Max = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Common_Acceleration_Max = Equipment.ToDouble(temp.ToString());
                 //  Acceleration Fine
                 NativeMethods.GetPrivateProfileString(strTemp, "FineAcc", "100", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Acceleration_Fine = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Common_Acceleration_Fine = Equipment.ToDouble(temp.ToString());
                 //  Acceleration Coarse
                 NativeMethods.GetPrivateProfileString(strTemp, "CoarseAcc", "1000", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Acceleration_Coarse = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Common_Acceleration_Coarse = Equipment.ToDouble(temp.ToString());
                 //  Speed Min
                 NativeMethods.GetPrivateProfileString(strTemp, "MinSpeed", "10", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Speed_Min = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Common_Speed_Min = Equipment.ToDouble(temp.ToString());
                 //  Speed Max
                 NativeMethods.GetPrivateProfileString(strTemp, "MaxSpeed", "1000", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Speed_Max = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Common_Speed_Max = Equipment.ToDouble(temp.ToString());
                 //  Move Speed Fine
                 NativeMethods.GetPrivateProfileString(strTemp, "FineSpeed", "10", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Speed_Fine = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Common_Speed_Fine = Equipment.ToDouble(temp.ToString());
                 //  Move Speed Coarse
                 NativeMethods.GetPrivateProfileString(strTemp, "CoarseSpeed", "100", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Speed_Coarse = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Common_Speed_Coarse = Equipment.ToDouble(temp.ToString());
                 //  Position Min
                 NativeMethods.GetPrivateProfileString(strTemp, "MinPos", "-1.0", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Position_Min = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Common_Position_Min = Equipment.ToDouble(temp.ToString());
                 //  Position Max
                 NativeMethods.GetPrivateProfileString(strTemp, "MaxPos", "500.0", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Position_Max = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Common_Position_Max = Equipment.ToDouble(temp.ToString());
                 //  Settle Delay Time
                 NativeMethods.GetPrivateProfileString(strTemp, "SettleDelay", "30", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Common_Settle_Delay = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Common_Settle_Delay = Equipment.ToDouble(temp.ToString());
 
                 strTemp = string.Format("Axis_{0}_Jog", i);
                 //  Jog Speed, Fine
                 NativeMethods.GetPrivateProfileString(strTemp, "FineSpeed", "10", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Jog_Speed_Fine = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Jog_Speed_Fine = Equipment.ToDouble(temp.ToString());
                 //  Jog Speed, Coarse
                 NativeMethods.GetPrivateProfileString(strTemp, "CoarseSpeed", "100", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Jog_Speed_Coarse = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Jog_Speed_Coarse = Equipment.ToDouble(temp.ToString());
                 //  Jog StepSize, Min
                 NativeMethods.GetPrivateProfileString(strTemp, "MinStepSize", "0.0001", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Jog_StepSize_Min = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Jog_StepSize_Min = Equipment.ToDouble(temp.ToString());
                 //  Jog StepSize, Max
                 NativeMethods.GetPrivateProfileString(strTemp, "MaxStepSize", "500.0", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Jog_StepSize_Max = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Jog_StepSize_Max = Equipment.ToDouble(temp.ToString());
                 //  Jog StepSize, Fine
                 NativeMethods.GetPrivateProfileString(strTemp, "FineStepSize", "0.001", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Jog_StepSize_Fine = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Jog_StepSize_Fine = Equipment.ToDouble(temp.ToString());
                 //  Jog StepSize, Coarse
                 NativeMethods.GetPrivateProfileString(strTemp, "CoarseStepSize", "0.1", temp, 255, strFIle);
-                Equipment.stAxisParam[i].Jog_StepSize_Coarse = Convert.ToDouble(temp.ToString());
+                Equipment.stAxisParam[i].Jog_StepSize_Coarse = Equipment.ToDouble(temp.ToString());
             }
 
             return m_bRet;
@@ -2499,7 +2500,7 @@ namespace QMC.Common
 
                 //  TCP/IP, RS232                                                                                   //  0 : TCP/IP,         1 : RS232
                 NativeMethods.GetPrivateProfileString(strTemp, "CommType", "1", temp, 255, strFIle);
-                Equipment.stCommunicationSet[i].Comm_Type = Convert.ToInt16(temp.ToString());
+                Equipment.stCommunicationSet[i].Comm_Type = Equipment.ToInt(temp.ToString());
 
 
                 //  Not Connect, Connect                                                                            //  0 : Not Connect,    1 : Connect
@@ -2509,39 +2510,39 @@ namespace QMC.Common
 
                 //  TCP/IP 의 포트 형식 (Server, Client)                                                            //  0 : Server,         1 : Client
                 NativeMethods.GetPrivateProfileString(strTemp, "TCPIP_PortType", "1", temp, 255, strFIle);
-                Equipment.stCommunicationSet[i].TCPIP_PortType = Convert.ToInt16(temp.ToString());
+                Equipment.stCommunicationSet[i].TCPIP_PortType = Equipment.ToInt(temp.ToString());
                 //  TCP/IP 의 IP 주소
                 NativeMethods.GetPrivateProfileString(strTemp, "TCPIP_IPAddress", "127.0.0.1", temp, 255, strFIle);
                 Equipment.stCommunicationSet[i].TCPIP_IPAddress = temp.ToString();
                 //  TCP/IP 의 Port 번호
                 NativeMethods.GetPrivateProfileString(strTemp, "TCPIP_PortNum", "5000", temp, 255, strFIle);
-                Equipment.stCommunicationSet[i].TCPIP_PortNum = Convert.ToInt16(temp.ToString());
+                Equipment.stCommunicationSet[i].TCPIP_PortNum = Equipment.ToInt(temp.ToString());
 
 
                 //  Timeout (ms)
                 NativeMethods.GetPrivateProfileString(strTemp, "RS232_Timeout", "500", temp, 255, strFIle);
-                Equipment.stCommunicationSet[i].Serial_CommTimeout = Convert.ToInt16(temp.ToString());
+                Equipment.stCommunicationSet[i].Serial_CommTimeout = Equipment.ToInt(temp.ToString());
                 //  Spacing Delay (ms)
                 NativeMethods.GetPrivateProfileString(strTemp, "RS232_SpacingDelay", "20", temp, 255, strFIle);
-                Equipment.stCommunicationSet[i].Serial_CommSpacingDelay = Convert.ToInt16(temp.ToString());
+                Equipment.stCommunicationSet[i].Serial_CommSpacingDelay = Equipment.ToInt(temp.ToString());
                 //  COM Port                                                                                        //  0 : COM1,           1 : COM2,       2 : COM3,       3 : COM4 ....
                 NativeMethods.GetPrivateProfileString(strTemp, "RS232_Port", "0", temp, 255, strFIle);
-                Equipment.stCommunicationSet[i].Serial_CommPort = Convert.ToInt16(temp.ToString());
+                Equipment.stCommunicationSet[i].Serial_CommPort = Equipment.ToInt(temp.ToString());
                 //  Baud Rate                                                                                       //  0 : 1200,           1 : 2400,       2 : 4800,       3 : 9600,           4 : 19200,      5 : 38400,      6 : 57600,      7 : 115200
                 NativeMethods.GetPrivateProfileString(strTemp, "RS232_BaudRate", "0", temp, 255, strFIle);
-                Equipment.stCommunicationSet[i].Serial_CommBaudRate = Convert.ToInt16(temp.ToString());
+                Equipment.stCommunicationSet[i].Serial_CommBaudRate = Equipment.ToInt(temp.ToString());
                 //  Data Bits                                                                                       //  0 : 5,              1 : 6,          2 : 7,          3 : 8
                 NativeMethods.GetPrivateProfileString(strTemp, "RS232_DataBit", "3", temp, 255, strFIle);
-                Equipment.stCommunicationSet[i].Serial_CommDataBits = Convert.ToInt16(temp.ToString());
+                Equipment.stCommunicationSet[i].Serial_CommDataBits = Equipment.ToInt(temp.ToString());
                 //  Stop Bits                                                                                       //  0 : 1,              1 : 1.5,        2 : 2
                 NativeMethods.GetPrivateProfileString(strTemp, "RS232_StopBit", "0", temp, 255, strFIle);
-                Equipment.stCommunicationSet[i].Serial_CommStopBits = Convert.ToInt16(temp.ToString());
+                Equipment.stCommunicationSet[i].Serial_CommStopBits = Equipment.ToInt(temp.ToString());
                 //  Parity                                                                                          //  0 : None,           1 : Odd,        2 : Even
                 NativeMethods.GetPrivateProfileString(strTemp, "RS232_Parity", "0", temp, 255, strFIle);
-                Equipment.stCommunicationSet[i].Serial_CommParity = Convert.ToInt16(temp.ToString());
+                Equipment.stCommunicationSet[i].Serial_CommParity = Equipment.ToInt(temp.ToString());
                 //  Flow Control                                                                                    //  0 : None,           1 : Xon/Xoff,   2 : RTS/CTS
                 NativeMethods.GetPrivateProfileString(strTemp, "RS232_FlowControl", "0", temp, 255, strFIle);
-                Equipment.stCommunicationSet[i].Serial_CommFlowControl = Convert.ToInt16(temp.ToString());
+                Equipment.stCommunicationSet[i].Serial_CommFlowControl = Equipment.ToInt(temp.ToString());
             }
 
             return m_bRet;
@@ -2563,56 +2564,56 @@ namespace QMC.Common
 
             //  Scanner Calibration parameter
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Laser_Frequency", "5000.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_LaserFrequency = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_LaserFrequency = Equipment.ToDouble(temp.ToString());
             //Scanner_Calibration_LaserPulseWidth
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Laser_Pulse_Width", "1.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_LaserPulseWidth = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_LaserPulseWidth = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Laser_Energy", "1.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_LaserEnergy = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_LaserEnergy = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "CrossMark_Length", "0.5", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_CrossMarkLength = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_CrossMarkLength = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Marking_Speed", "500.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_LaserMarkSpeed = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_LaserMarkSpeed = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Jump_Speed", "500.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_LaserJumpSpeed = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_LaserJumpSpeed = Equipment.ToDouble(temp.ToString());
 
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "LaserOn_Delay", "10.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_LaserOnDelay = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_LaserOnDelay = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "LaserOff_Delay", "10.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_LaserOffDelay = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_LaserOffDelay = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Mark_Delay", "50.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_MarkDelay = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_MarkDelay = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Jump_Delay", "200.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_JumpDelay = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_JumpDelay = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Polygon_Delay", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_PolygonDelay = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_PolygonDelay = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Width", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_CalAreaWidth = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_CalAreaWidth = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Height", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_CalAreaHeight = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_CalAreaHeight = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Cal_Pitch", "2.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_CalPitch = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_CalPitch = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "PosX_Last", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_PosX_Last = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_PosX_Last = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "PosY_Last", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_PosY_Last = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_PosY_Last = Equipment.ToDouble(temp.ToString());
 
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiStartLocation_X", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_TrainRoiStartLocation_X = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_TrainRoiStartLocation_X = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiStartLocation_Y", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_TrainRoiStartLocation_Y = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_TrainRoiStartLocation_Y = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiEndLocation_X", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_TrainRoiEndLocation_X = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_TrainRoiEndLocation_X = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiEndLocation_Y", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_TrainRoiEndLocation_Y = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_TrainRoiEndLocation_Y = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "InspectionRoiStartLocation_X", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_InspectionRoiStartLocation_X = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_InspectionRoiStartLocation_X = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "InspectionRoiStartLocation_Y", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_InspectionRoiStartLocation_Y = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_InspectionRoiStartLocation_Y = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "InspectionRoiEndLocation_X", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_InspectionRoiEndLocation_X = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_InspectionRoiEndLocation_X = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "InspectionRoiEndLocation_Y", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_Calibration_InspectionRoiEndLocation_Y = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_Calibration_InspectionRoiEndLocation_Y = Equipment.ToDouble(temp.ToString());
 
             NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "AngleTolerance", "0.0", temp, 255, strFIle);
             Equipment.Scanner_Calibration_PatternMatchingParameters.MaxTolerance = Equipment.ToDouble(temp.ToString());
@@ -2705,89 +2706,91 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Machine_Option", "VacuumSensor_Enable", "True", temp, 255, strFIle);
             Equipment.Machine_VacuumSensor_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "VacuumSignalHoldTime", "500", temp, 255, strFIle);
-            Equipment.Machine_SignalHoldTime = Convert.ToInt16(temp.ToString());
+            Equipment.Machine_SignalHoldTime = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "MAligner_ReleaseType", "True", temp, 255, strFIle);
             Equipment.Machine_MAligner_ReleaseType = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "MAligner_NarrowingDistance", "0.5", temp, 255, strFIle);
-            Equipment.Machine_MAligner_NarrowingDistance = Convert.ToDouble(temp.ToString());
+            Equipment.Machine_MAligner_NarrowingDistance = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "MAligner_WidenDistance", "2.0", temp, 255, strFIle);
-            Equipment.Machine_MAligner_WidenDistance = Convert.ToDouble(temp.ToString());
+            Equipment.Machine_MAligner_WidenDistance = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "VacuumStableTime_Enable", "True", temp, 255, strFIle);
             Equipment.Machine_VacuumStableTime_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "VacuumStableTime", "500", temp, 255, strFIle);
-            Equipment.Machine_VacuumStableTime = Convert.ToInt16(temp.ToString());
+            Equipment.Machine_VacuumStableTime = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "LaserHeightCheckStableTime_Enable", "True", temp, 255, strFIle);
             Equipment.Machine_LaserHeightCheckStableTime_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "LaserHeightCheckStableTime", "500", temp, 255, strFIle);
-            Equipment.Machine_LaserHeightCheckStableTime = Convert.ToInt16(temp.ToString());
+            Equipment.Machine_LaserHeightCheckStableTime = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "FiducialMarkJudgementRange_Enable", "True", temp, 255, strFIle);
             Equipment.Machine_FiducialMarkJudgementRange_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "FiducialMarkJudgementRange", "0.1", temp, 255, strFIle);
-            Equipment.Machine_FiducialMarkJudgementRange = Convert.ToDouble(temp.ToString());
+            Equipment.Machine_FiducialMarkJudgementRange = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "FiducialImageSave_Always", "True", temp, 255, strFIle);
             Equipment.Machine_FiducialImageSave_Always = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "VacuumBlowTime_Enable", "True", temp, 255, strFIle);
             Equipment.Machine_VacuumBlowTime_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "VacuumBlowTime", "500", temp, 255, strFIle);
-            Equipment.Machine_VacuumBlowTime = Convert.ToInt16(temp.ToString());
+            Equipment.Machine_VacuumBlowTime = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderTransfer_Vibration_Enable", "False", temp, 255, strFIle);
             Equipment.Machine_LoaderTransfer_Vibration_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderTransfer_Vibration_AccDecSpeed_Ratio", "2.0", temp, 255, strFIle);
-            Equipment.Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio = Convert.ToDouble(temp.ToString());
+            Equipment.Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderTransfer_NumberOfVibrations", "2", temp, 255, strFIle);
-            Equipment.Machine_LoaderTransfer_NumberOfVibrations = Convert.ToInt16(temp.ToString());
+            Equipment.Machine_LoaderTransfer_NumberOfVibrations = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderTransfer_Vibration_MoveDistance", "2.0", temp, 255, strFIle);
-            Equipment.Machine_LoaderTransfer_Vibration_MoveDistance = Convert.ToDouble(temp.ToString());           
+            Equipment.Machine_LoaderTransfer_Vibration_MoveDistance = Equipment.ToDouble(temp.ToString());           
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_Enable", "True", temp, 255, strFIle);
             Equipment.Machine_LoaderStacker_LiftUp_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_Step", "7", temp, 255, strFIle);
-            Equipment.Machine_LoaderStacker_LiftUpStep = Convert.ToInt16(temp.ToString());
+            Equipment.Machine_LoaderStacker_LiftUpStep = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_StableTime", "1000", temp, 255, strFIle);
-            Equipment.Machine_LoaderStacker_LiftUp_StableTime = Convert.ToInt16(temp.ToString());
+            Equipment.Machine_LoaderStacker_LiftUp_StableTime = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "WorkStage_ModuleAbsorption_JudgeLevel", "-40.0", temp, 255, strFIle);
+            Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel = Equipment.ToDouble(temp.ToString());                        
 
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);
-            Equipment.stOffsetDistance.FromScannerToFineCam.X = Convert.ToDouble(temp.ToString());
+            Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_Y", "0.0", temp, 255, strFIle);
-            Equipment.stOffsetDistance.FromScannerToFineCam.Y = Convert.ToDouble(temp.ToString());
+            Equipment.stOffsetDistance.FromScannerToFineCam.Y = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_FineCam_To_CoarseCam_X", "0.0", temp, 255, strFIle);
-            Equipment.stOffsetDistance.FromFineCamToCoarseCam.X = Convert.ToDouble(temp.ToString());
+            Equipment.stOffsetDistance.FromFineCamToCoarseCam.X = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_FineCam_To_CoarseCam_Y", "0.0", temp, 255, strFIle);
-            Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y = Convert.ToDouble(temp.ToString());
+            Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_FineCam_To_LaserHeightSensor_X", "0.0", temp, 255, strFIle);
-            Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X = Convert.ToDouble(temp.ToString());
+            Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_FineCam_To_LaserHeightSensor_Y", "0.0", temp, 255, strFIle);
-            Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y = Convert.ToDouble(temp.ToString());
+            Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y = Equipment.ToDouble(temp.ToString());
 
             //  Scanner Head Offset
             NativeMethods.GetPrivateProfileString("ScannerHeadOffset", "Offset_X", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_HeadOffset_X = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_HeadOffset_X = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("ScannerHeadOffset", "Offset_Y", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_HeadOffset_Y = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_HeadOffset_Y = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("ScannerHeadOffset", "Offset_Angle", "0.0", temp, 255, strFIle);
-            Equipment.Scanner_HeadOffset_Angle = Convert.ToDouble(temp.ToString());
+            Equipment.Scanner_HeadOffset_Angle = Equipment.ToDouble(temp.ToString());
 
             //  Coordinate System Matching Offset
             NativeMethods.GetPrivateProfileString("MachineCoordinateOffset", "Offset_X", "0.0", temp, 255, strFIle);
-            Equipment.CoordinateMatchingOffset_X = Convert.ToDouble(temp.ToString());
+            Equipment.CoordinateMatchingOffset_X = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("MachineCoordinateOffset", "Offset_Y", "0.0", temp, 255, strFIle);
-            Equipment.CoordinateMatchingOffset_Y = Convert.ToDouble(temp.ToString());
+            Equipment.CoordinateMatchingOffset_Y = Equipment.ToDouble(temp.ToString());
 
             //  Offset Distance from Stage to Scanner
             NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_X", "0.0", temp, 255, strFIle);
-            Equipment.StageOffset_forDrilling_X = Convert.ToDouble(temp.ToString());
+            Equipment.StageOffset_forDrilling_X = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Offset_Distance_forDrilling", "From_Stage_To_Scanner_Y", "0.0", temp, 255, strFIle);
-            Equipment.StageOffset_forDrilling_Y = Convert.ToDouble(temp.ToString());
+            Equipment.StageOffset_forDrilling_Y = Equipment.ToDouble(temp.ToString());
 
             //  Keyence Laser Height Sensor 기준값 설정
             NativeMethods.GetPrivateProfileString("LaserHeightSensor_ReferenceValue", "at_Vision_Focus_Position", "0.0", temp, 255, strFIle);
-            Equipment.LaserHeightSensor_ReferenceValue_atVisionFocusPosition = Convert.ToDouble(temp.ToString());
+            Equipment.LaserHeightSensor_ReferenceValue_atVisionFocusPosition = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("LaserHeightSensor_ReferenceValue", "at_Scanner_Focus_Position", "0.0", temp, 255, strFIle);
-            Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition = Convert.ToDouble(temp.ToString());
+            Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition = Equipment.ToDouble(temp.ToString());
 
             //  집진기 동작 후 대기 시간
             NativeMethods.GetPrivateProfileString("Dust_Collector", "After_TurnOn_StableTime", "1000.0", temp, 255, strFIle);
-            Equipment.DustCollector_TurnOn_AfterStableTime = Convert.ToDouble(temp.ToString());
+            Equipment.DustCollector_TurnOn_AfterStableTime = Equipment.ToDouble(temp.ToString());
 
             //  저장 폴더 위치
             NativeMethods.GetPrivateProfileString("File_Path", "RecipeFile", "", temp, 255, strFIle);
@@ -2797,61 +2800,61 @@ namespace QMC.Common
 
             //  도면 렌더링 분해능
             NativeMethods.GetPrivateProfileString("Sirius_Drawing", "Rendering_Resolution", "50", temp, 255, strFIle);
-            Equipment.SiriusDrawing_Rendering_Resolution = Convert.ToInt16(temp.ToString());
+            Equipment.SiriusDrawing_Rendering_Resolution = Equipment.ToInt(temp.ToString());
 
 
             ////  Scanner Calibration parameter
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Laser_Frequency", "5000.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserFrequency = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_LaserFrequency = Equipment.ToDouble(temp.ToString());
             ////Scanner_Calibration_LaserPulseWidth
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Laser_Pulse_Width", "1.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserPulseWidth = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_LaserPulseWidth = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Laser_Energy", "1.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserEnergy = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_LaserEnergy = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "CrossMark_Length", "0.5", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_CrossMarkLength = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_CrossMarkLength = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Marking_Speed", "500.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserMarkSpeed = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_LaserMarkSpeed = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Jump_Speed", "500.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserJumpSpeed = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_LaserJumpSpeed = Equipment.ToDouble(temp.ToString());
 
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "LaserOn_Delay", "10.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserOnDelay = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_LaserOnDelay = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "LaserOff_Delay", "10.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_LaserOffDelay = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_LaserOffDelay = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Mark_Delay", "50.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_MarkDelay = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_MarkDelay = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Jump_Delay", "200.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_JumpDelay = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_JumpDelay = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Polygon_Delay", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PolygonDelay = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_PolygonDelay = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Width", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_CalAreaWidth = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_CalAreaWidth = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Height", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_CalAreaHeight = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_CalAreaHeight = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "Cal_Pitch", "2.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_CalPitch = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_CalPitch = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "PosX_Last", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PosX_Last = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_PosX_Last = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "PosY_Last", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_PosY_Last = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_PosY_Last = Equipment.ToDouble(temp.ToString());
 
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiStartLocation_X", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_TrainRoiStartLocation_X = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_TrainRoiStartLocation_X = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiStartLocation_Y", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_TrainRoiStartLocation_Y = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_TrainRoiStartLocation_Y = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiEndLocation_X", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_TrainRoiEndLocation_X = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_TrainRoiEndLocation_X = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "TrainRoiEndLocation_Y", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_TrainRoiEndLocation_Y = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_TrainRoiEndLocation_Y = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "InspectionRoiStartLocation_X", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_InspectionRoiStartLocation_X = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_InspectionRoiStartLocation_X = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "InspectionRoiStartLocation_Y", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_InspectionRoiStartLocation_Y = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_InspectionRoiStartLocation_Y = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "InspectionRoiEndLocation_X", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_InspectionRoiEndLocation_X = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_InspectionRoiEndLocation_X = Equipment.ToDouble(temp.ToString());
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "InspectionRoiEndLocation_Y", "0.0", temp, 255, strFIle);
-            //Equipment.Scanner_Calibration_InspectionRoiEndLocation_Y = Convert.ToDouble(temp.ToString());
+            //Equipment.Scanner_Calibration_InspectionRoiEndLocation_Y = Equipment.ToDouble(temp.ToString());
 
             //NativeMethods.GetPrivateProfileString("Scanner_Calibration_Parameter", "AngleTolerance", "0.0", temp, 255, strFIle);
             //Equipment.Scanner_Calibration_PatternMatchingParameters.MaxTolerance = Equipment.ToDouble(temp.ToString());
@@ -2952,12 +2955,12 @@ namespace QMC.Common
                     //  Position X
                     strTemp2 = string.Format("Position_{0}_X", j + 1);
                     NativeMethods.GetPrivateProfileString(strTemp, strTemp2, "0.0", temp, 255, strFIle);
-                    Equipment.stFlatMeasurePos[i].StagePos[j].X = Convert.ToDouble(temp.ToString());
+                    Equipment.stFlatMeasurePos[i].StagePos[j].X = Equipment.ToDouble(temp.ToString());
 
                     //  Position Y
                     strTemp2 = string.Format("Position_{0}_Y", j + 1);
                     NativeMethods.GetPrivateProfileString(strTemp, strTemp2, "0.0", temp, 255, strFIle);
-                    Equipment.stFlatMeasurePos[i].StagePos[j].Y = Convert.ToDouble(temp.ToString());
+                    Equipment.stFlatMeasurePos[i].StagePos[j].Y = Equipment.ToDouble(temp.ToString());
                 }
             }
 

@@ -609,7 +609,7 @@ namespace SLD200_MSL
         {
             //  압력 세팅
 
-            if ((Convert.ToDouble(textBox_ElectroPneumaticRegulator_SetValue.Text) > -1.3) || (Convert.ToDouble(textBox_ElectroPneumaticRegulator_SetValue.Text) < -80.0))
+            if ((Equipment.ToDouble(textBox_ElectroPneumaticRegulator_SetValue.Text) > -1.3) || (Equipment.ToDouble(textBox_ElectroPneumaticRegulator_SetValue.Text) < -80.0))
             {
                 MessageBox.Show("Electro Pneumatic Regulator out of range\r\n\r\n[Available Range : -1.3kPa ~ -80.0kPa]", "Information!!");
                 return;
@@ -617,7 +617,7 @@ namespace SLD200_MSL
 
             workStage.m_bElectroRegulator_CommData_Received = false;
 
-            workStage.ElectroPneumaticRegulatorComm_Pressure_Set(Convert.ToDouble(textBox_ElectroPneumaticRegulator_SetValue.Text));
+            workStage.ElectroPneumaticRegulatorComm_Pressure_Set(Equipment.ToDouble(textBox_ElectroPneumaticRegulator_SetValue.Text));
         }
 
         private void button_ElectroPneumaticRegulator_Pressure_Inc_Click(object sender, EventArgs e)

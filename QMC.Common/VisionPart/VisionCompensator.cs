@@ -665,7 +665,7 @@ namespace QMC.Common.VisionPart
             //        mode.ToString(),
             //        i + 1,
             //        this.GridPathGenerator.Paths.Count,
-            //        ((Convert.ToDouble(i + 1) / Convert.ToDouble(this.GridPathGenerator.Paths.Count)) * 100D).ToString("0.000"),
+            //        ((Equipment.ToDouble(i + 1) / Equipment.ToDouble(this.GridPathGenerator.Paths.Count)) * 100D).ToString("0.000"),
             //        this.PathGeneratorParameter.StartCoordinate,
             //        this.GridPathGenerator.Paths[i],
             //        currentPosition,

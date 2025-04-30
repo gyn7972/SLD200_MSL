@@ -600,6 +600,15 @@ namespace SLD200_MSL
                     (int rows, int columns) = workStage.GetRowColumnFromPosition(workStage.Main_SocketPositions, workStage.Main_SocketPositions_CurrentSocketPosition);
                     Update_SocketStatus(rows, columns, workStage.Main_SocketPositions_ProcessingStatus);
                 }
+
+                //  완료된 소켓 상태 표시
+                if (workStage.Main_SocketPositions_SetCompleteStatus)
+                {
+                    workStage.Main_SocketPositions_SetCompleteStatus = false;
+
+                    (int rows, int columns) = workStage.GetRowColumnFromPosition(workStage.Main_SocketPositions, workStage.Main_SocketPositions_SocketCompletePosition);
+                    Update_SocketStatus(rows, columns, workStage.Main_SocketPositions_CompleteStatus);
+                }
             }
 
                 //  계속 진행 버튼 활성화
@@ -898,6 +907,30 @@ namespace SLD200_MSL
             //  Main Work Start
             Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Start 버튼");
 
+            //  Chiller 상태 체크 - Run 신호를 내보내는지
+            if (!workStage.workStageParameter.IsDO_Chiller_Run())
+            {
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "Chiller 가 [[ OFF ]] 상태입니다.\r\n\r\nChiller 를 [[ ON ]] 상태로 변경 후 다시 시도 바랍니다.");
+                return;
+            }
+
+            //  Chiller 상태 체크 - Run 신호를 내보내고 있는데 Run, 신호가 들어오지 않는 경우
+            if (workStage.workStageParameter.IsDO_Chiller_Run() && !workStage.workStageParameter.DI_Chiller_Run())
+            {
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "Chiller 가 동작하지 않습니다.\r\n\r\nChiller 상태를 확인 후 다시 시도 바랍니다.");
+                return;
+            }
+
+            //  Chiller 상태 체크 - Run 신호를 내보내고 있는데, 알람 신호가 들어오는 경우
+            if (workStage.workStageParameter.IsDO_Chiller_Run() && !workStage.workStageParameter.DI_Chiller_Alarm_Check())
+            {
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "Chiller 가 Alarm 상태입니다.\r\n\r\nChiller 상태를 확인 후 다시 시도 바랍니다.");
+                return;
+            }
+
             if (Equipment.AutoRunStatus)
             {
                 var mb = new MessageBoxOk();
@@ -916,7 +949,7 @@ namespace SLD200_MSL
             {
                 workStage.m_bMainWorkCycle_DryRun = true;
                 var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "[[DryRyn]]을 시작하시겠습니까?\r\n\r\n[Dry Run]"))
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "[[ Dry Run ]] 을 시작하시겠습니까?\r\n\r\n[Dry Run]"))
                     return;
             }
             else
@@ -955,20 +988,144 @@ namespace SLD200_MSL
             //    }
             //}
 
-            // Process Status
-            var pos = ProcessManager.GetFirstUnprocessedPosition();
-            if (pos.HasValue)
-            {
-                string layerName = pos.Value.layerName;
-                int socketIndex = pos.Value.socketIndex;
 
-                workStage.SetProcess_Layer(layerName);
-                workStage.SetProcess_SocketNumber(socketIndex);
-                workStage.SetProcessRunning(); //"가공중";
-            }
-            else
+
+            //// Process Status
+            //var pos = ProcessManager.GetFirstUnprocessedPosition();
+            //if (pos.HasValue)
+            //{
+            //    string layerName = pos.Value.layerName;
+            //    int socketIndex = pos.Value.socketIndex;
+
+            //    workStage.SetProcess_Layer(layerName);
+            //    workStage.SetProcess_SocketNumber(socketIndex);
+            //    workStage.SetProcessRunning(); //"가공중";
+            //}
+            //else
+            //{
+            //    workStage.SetProcessCompleted(); //"모든 소켓 가공 완료";
+            //}
+
+
+
+            //  여기서 정지 후 재시작시 상태 및 소켓 정보 확인 후 구동
+            if (workStage.m_nLaserDrilling_MainStep_Recovery == (int)LaserDrilling_Step.DrillingData_PreAlign_Start)
             {
-                workStage.SetProcessCompleted(); //"모든 소켓 가공 완료";
+                //  Pre Align 중이었으니 그대로 시작
+
+                workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
+            }
+            else if (workStage.m_nLaserDrilling_MainStep_Recovery == (int)LaserDrilling_Step.DrillingData_SocketAlign_Start)
+            {
+                //  Socket Align 중이었으니 그대로 시작
+
+                workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+            }
+            else if (((workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.ThruHole_DrillingWork_Start) &&
+                    (workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck)) ||
+
+                    ((workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.OutLine_DrillingWork_Start) &&
+                    (workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck)) ||
+
+                    ((workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.Marking_DrillingWork_Start) &&
+                    (workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.Marking_DrillingWork_CompleteCheck)) ||
+
+                    ((workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start) &&
+                    (workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.DrillingWork_CompleteCheck)))
+            {
+                //  가공중이었으니, 다음 소켓 Index 부터 소켓 얼라인 시작
+
+                //  현재 소켓의 모든 Layer 상태 확인. (하나라도 true 인 게 있으면 다음 소켓 인덱스로 시작)
+
+                // Process Status
+                var pos = ProcessManager.GetFirstUnprocessedPosition();
+                if (pos.HasValue)
+                {
+                    string layerName = pos.Value.layerName;
+                    int socketIndex = pos.Value.socketIndex;
+
+                    workStage.SetProcess_Layer(layerName);
+                    workStage.SetProcess_SocketNumber(socketIndex);
+                    workStage.SetProcessRunning(); //"가공중";
+                }
+                else
+                {
+                    workStage.SetProcessCompleted(); //"모든 소켓 가공 완료";
+                }
+
+
+                //  Drilling 시작 파라미터 설정
+                if (!workStage.IsProcessing)
+                {
+                    //  가공할 것이 없음. --> 강제 종료처럼 밖으로 빼내기
+
+                    workStage.m_bLaserDrilling_Complete = true;
+                    workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
+                    workStage.m_nSocketAlign_MainStep = (int)WorkStage.SocketAlign_Step.None;
+                }
+                else
+                {
+                    //  가공할 것이 있음.
+
+                    if (workStage.CurrentLayerName == "Hole1")
+                    {
+                        for ( int i = 0; i < workStage.m_stLayerType.m_nLayerCount; i++)
+                        {
+                            if (workStage.m_stLayerType.m_nLayerIndex[i] == (int)LayerList.Hole1)
+                            {
+                                workStage.m_nLaserDrilling_LayerCount = i;                              //  Layer 이름이 "Hole1" 인 Layer 의 Index 를 넣어줌
+
+                                break;
+                            }
+                        }
+
+                        workStage.m_nDrillingWork_Group_Count = workStage.CurrentSocketNumber;          //  소켓 번호 설정 (다음 소켓 ???)
+                    }
+                    else if (workStage.CurrentLayerName == "Thruhole")
+                    {
+                        for (int i = 0; i < workStage.m_stLayerType.m_nLayerCount; i++)
+                        {
+                            if (workStage.m_stLayerType.m_nLayerIndex[i] == (int)LayerList.Thruhole)
+                            {
+                                workStage.m_nLaserDrilling_LayerCount = i;                              //  Layer 이름이 "Thruhole" 인 Layer 의 Index 를 넣어줌
+
+                                break;
+                            }
+                        }
+
+                        workStage.m_nDrillingWork_Group_Count = workStage.CurrentSocketNumber;          //  소켓 번호 설정 (다음 소켓 ???)
+                    }
+                    else if (workStage.CurrentLayerName == "Outline")
+                    {
+                        for (int i = 0; i < workStage.m_stLayerType.m_nLayerCount; i++)
+                        {
+                            if (workStage.m_stLayerType.m_nLayerIndex[i] == (int)LayerList.Outline)
+                            {
+                                workStage.m_nLaserDrilling_LayerCount = i;                              //  Layer 이름이 "Outline" 인 Layer 의 Index 를 넣어줌
+
+                                break;
+                            }
+                        }
+
+                        workStage.m_nDrillingWork_Group_Count = workStage.CurrentSocketNumber;          //  소켓 번호 설정 (다음 소켓 ???)
+                    }
+                    else if (workStage.CurrentLayerName == "Marking")
+                    {
+                        for (int i = 0; i < workStage.m_stLayerType.m_nLayerCount; i++)
+                        {
+                            if (workStage.m_stLayerType.m_nLayerIndex[i] == (int)LayerList.Marking)
+                            {
+                                workStage.m_nLaserDrilling_LayerCount = i;                              //  Layer 이름이 "Marking" 인 Layer 의 Index 를 넣어줌
+
+                                break;
+                            }
+                        }
+
+                        workStage.m_nDrillingWork_Group_Count = workStage.CurrentSocketNumber;          //  소켓 번호 설정 (다음 소켓 ???)
+                    }
+                }
+
+                workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
             }
 
 
@@ -1414,7 +1571,7 @@ namespace SLD200_MSL
 
             //  테스트 : 강제로 Dry Run
             //workStage.m_bMainWorkCycle_DryRun = true;
-            Equipment.DryRun_ProcessingTime = Convert.ToInt16(baseTextBox_DryRun_ProcessingTime.Text);
+            Equipment.DryRun_ProcessingTime = Equipment.ToInt(baseTextBox_DryRun_ProcessingTime.Text);
 
             if (!workStage.m_bMainWorkCycle_DryRun && (Equipment.RecipeOpen_DrawingFilePath.Length <= 0))
             {
@@ -1459,11 +1616,27 @@ namespace SLD200_MSL
         private void button_Main_AutoRun_Click(object sender, EventArgs e)
         {
             //  자동 운전 시작
-            if(AlarmManager.Instance.IsAlarm)
+            if (AlarmManager.Instance.IsAlarm)
             {
                 // 알람을 클리어 해주세요 메세지
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !", "알람 해제 바랍니다.");
+                return;
+            }
+
+            //  Chiller 가 알람 상태인지 체크
+            if (!workStage.workStageParameter.DI_Chiller_Alarm_Check())
+            {
+                workStage.AlarmPost(WorkStage.AlarmKey.Chiller_Alarm);
+                return;
+            }
+
+            //  Chiller 동작 신호가 On 인데 Chiller 가 동작하지 않을경우
+            if (workStage.workStageParameter.IsDO_Chiller_Run() &&
+                !workStage.workStageParameter.DI_Chiller_Run())
+            {
+                //  Chiller Stop 메세지
+                workStage.AlarmPost(WorkStage.AlarmKey.Chiller_Stop);
                 return;
             }
 
@@ -1490,7 +1663,7 @@ namespace SLD200_MSL
 
             //  테스트 : 강제로 Dry Run
             //workStage.m_bMainWorkCycle_DryRun = true;
-            Equipment.DryRun_ProcessingTime = Convert.ToInt16(baseTextBox_DryRun_ProcessingTime.Text);
+            Equipment.DryRun_ProcessingTime = Equipment.ToInt(baseTextBox_DryRun_ProcessingTime.Text);
 
             if (!workStage.m_bMainWorkCycle_DryRun && (Equipment.RecipeOpen_DrawingFilePath.Length <= 0))
             {
@@ -1518,6 +1691,12 @@ namespace SLD200_MSL
             checkBox_Main_Loader_LPort_Pause.Checked = false;
             checkBox_Main_Loader_RPort_Pause.Checked = false;
 
+
+            //  Loader L, R Port 바로 시작
+            loader.m_bStacker0_Run_byUser = true;
+            loader.m_bStacker1_Run_byUser = true;
+
+
             //  선택 가공 인덱스를 전체 가공으로 변경
             workStage.m_nSelectedSocket_Index = -1;
 
@@ -1533,6 +1712,9 @@ namespace SLD200_MSL
         private void button_Main_Stop_Click(object sender, EventArgs e)
         {
             //  자동 운전 중지
+
+            Log.Write("SLD-200", Equipment.User_Name, "Button Click", "자동 운전 Stop 버튼");
+
             var mb = new MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 중지하시겠습니까?"))
                 return;
@@ -1780,6 +1962,9 @@ namespace SLD200_MSL
             Equipment.m_bMainProcessStatus_WorkStage_Module_Process_Complete = false;       //  Work Stage Process 완료
             Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete = false;      //  Unloader Work Stage 에서 Module Pick Up 완료
             Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete = false;          //  Unloader Port 에 Module Put Down 완료
+
+            //  Layer Info List 초기화
+            ProcessManager.Init();
 
             //  Loader 파츠 사용 변수 초기화
             loader.m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_None; //  Transfer Move Type
