@@ -1397,7 +1397,7 @@ namespace QMC.Common.Modules
                 bResult =  alarmList.Any();
             }catch(Exception ex)
             {
-
+                Log.Write(ex);
             }
             return bResult;
 
@@ -1806,7 +1806,6 @@ namespace QMC.Common.Modules
             double m_dSpeed_Stacker_MoreSlow = 0.0;
             double m_dSpeedMag_forAccDec = 0.0;
 
-
             //  운전 중 Door 를 열면 장비 Stop
             if (m_nStacker0_ModulePickupWaitingPos_Step >= (int)StackerModulePickupWaitingPos_Step.Start)
             {
@@ -1853,23 +1852,17 @@ namespace QMC.Common.Modules
                 //}
             }
 
-
             if (!loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))
             {
                 Equipment.Loader_RPort_Pause = true;
             }
 
-
             //  자동운전 시, Stacker0 동작 조건 : TR Cycle (None), Stacker0 Cycle (None), TR 이 Module 을 집어갔을 때
             if (Equipment.AutoRunStatus &&
-
                 !Equipment.Loader_RPort_Pause &&
-
                 m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
                 m_nStacker0_ModulePickupWaitingPos_Step == (int)StackerModulePickupWaitingPos_Step.None &&
-
                 m_bStacker0_Run_byUser &&
-
                 !m_bStacker0_Complete)                                                //  Stacker0 동작 완료되지 않은 상태 (TR 이 Module 을 집어간 후 false 로 변경됨)
             {
                 Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "시작 Flag");
@@ -2229,7 +2222,6 @@ namespace QMC.Common.Modules
                             Equipment.Loader_RPort_Pause = true;            //  자재는 감지되지만 Full 센서가 인식되지 않음. 
 
                             return AlarmPost(AlarmKey.LD_Stacker0_FullSensor_Off_MoveFail);
-                            MessageBox.Show("LD Stacker0 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -6430,11 +6422,14 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
+                            //이 부분에서 자주 발생. 
                             workStage.workStageParameter.DO_Stage_Vacuum(true);
+                            Thread.Sleep(100);  //너무 신호 빠른거 아닌지?
                             workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
 
                             //  Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
                             workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);            //  임시로 -30 고정
+                            Thread.Sleep(100); //너무 신호 빠른거 아닌지?
                         }
 
                     }
@@ -7566,7 +7561,7 @@ namespace QMC.Common.Modules
 
             //  Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
             workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);            //  임시로 -30 고정
-
+            Thread.Sleep(100);
             //TickCount_Start((int)TickType.TICK_LDTR);
         }
 
@@ -8696,10 +8691,7 @@ namespace QMC.Common.Modules
                         if(nNextStep != 0)
                         {
                             m_nMAlign_Step = nNextStep;
-
                         }
-                        
-
                     }
 
                     break;
@@ -8972,9 +8964,10 @@ namespace QMC.Common.Modules
             return ret;
         }
 
-        protected int AlarmPost(AlarmKey AlarmCode)
+        //TEST 위해서 publc으로 
+        //protected int AlarmPost(AlarmKey AlarmCode)
+        public int AlarmPost(AlarmKey AlarmCode)
         {
-            
             Alarm alarm = GetAlarm((int)AlarmCode);
             if (alarm.Grade.Equals("Error"))
             {
@@ -9616,10 +9609,10 @@ namespace QMC.Common.Modules
             {
                 m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_ReadyPos2_2ndStep;
             }
-            else if (Step <= (int)Loader_Transfer_Step.WorkStagePutDown_WorkStage_VacuumCheck)
-            {
-                m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.WorkStagePutDown_WorkStage_Vacuum_On;
-            }
+            //else if (Step <= (int)Loader_Transfer_Step.WorkStagePutDown_WorkStage_VacuumCheck)
+            //{
+            //    m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.WorkStagePutDown_WorkStage_Vacuum_On;
+            //}
             else if (Step <= (int)Loader_Transfer_Step.MAligner_ModulePutdown_Condition_Check)
             {
                 m_nLoader_Transfer_Step_Recovery = Step;

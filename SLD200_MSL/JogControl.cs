@@ -130,7 +130,8 @@ namespace SLD200_MSL
                             m_axis[0].Configuration.DisplayAxisType = DisplayAxisType.CombinationHorizontal;
                             m_axis[1].Configuration.DisplayAxisType = DisplayAxisType.CombinationVertical;
                             m_axis[2].Configuration.DisplayAxisType = DisplayAxisType.Vertical;
-                            m_axis[3].Configuration.DisplayAxisType = DisplayAxisType.Vertical2;
+                            if(Equipment.Machine_LaserType_CO2)
+                                m_axis[3].Configuration.DisplayAxisType = DisplayAxisType.Vertical2;
                         }
                     }
                     else if (part == loader.Stage)
@@ -150,9 +151,9 @@ namespace SLD200_MSL
                         m_axis[3].Configuration.DisplayAxisType = DisplayAxisType.CombinationPicker;
                     }
                 }
-                catch(Exception)
+                catch(Exception ex)
                 {
-
+                    Log.Write(ex);
                 }
             }
 

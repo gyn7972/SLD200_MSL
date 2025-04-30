@@ -480,7 +480,7 @@ namespace SLD200_MSL
                     workStage.Stage.Config.Use2DMap = false;
                 }catch(Exception ex)
                 {
-                    //Log.Write(ex);
+                    Log.Write(ex);
                 }
             }
 
@@ -2492,6 +2492,7 @@ namespace SLD200_MSL
                 }
                 catch(Exception ex)
                 {
+                    Log.Write(ex);
                     Equipment.Scanner_Calibration_Convert = -1; // 실패
                 }
             }

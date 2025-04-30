@@ -92,7 +92,7 @@ namespace QMC.Common
             }
             catch(Exception ex)
             {
-               
+                Log.Write(ex);
                 return default(T);
             }
             finally

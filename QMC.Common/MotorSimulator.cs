@@ -46,7 +46,7 @@ namespace QMC.Common
                 }
                 catch(Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Log.Write(ex);
                 }
                 
             });

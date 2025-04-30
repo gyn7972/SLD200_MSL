@@ -46,13 +46,47 @@ namespace QMC.Common
                 return m_Alarms.Where(t=>t.Grade.Equals("Error")).Count()> 0;
             }
         }
+
+        // 알람 동시 발생으로 프로그램 다운 발생.
+        // _lock을 사용하여 알람 리스트에 안전하게 추가하고,
+        // PostAlarm 이벤트를 UI 스레드에서 실행하도록 수정.
+        private readonly object _lock = new object();
+
         public void ShowAlarm(Alarm alarm)
         {
-            m_Alarms.Add(alarm);
+            lock (_lock)
+            {
+                // 1. 알람 리스트에 안전하게 추가
+                m_Alarms.Add(alarm);
+            }
+
+            // 2. PostAlarm 이벤트 (UI 스레드에서 실행)
             if (PostAlarm != null)
             {
-                PostAlarm(alarm);
+                if (Application.OpenForms.Count > 0)
+                {
+                    var form = Application.OpenForms[0];
+                    if (form.InvokeRequired)
+                    {
+                        form.BeginInvoke(new Action(() => PostAlarm?.Invoke(alarm)));
+                    }
+                    else
+                    {
+                        PostAlarm?.Invoke(alarm);
+                    }
+                }
+                else
+                {
+                    // UI 폼이 없으면 그냥 호출 (예: 콘솔 앱)
+                    PostAlarm?.Invoke(alarm);
+                }
             }
+
+            //m_Alarms.Add(alarm);
+            //if (PostAlarm != null)
+            //{
+            //    PostAlarm(alarm);
+            //}
         }
 
 

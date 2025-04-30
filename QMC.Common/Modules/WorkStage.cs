@@ -36,6 +36,7 @@ using LaserVirtual = SpiralLab.Sirius.LaserVirtual;
 using static QMC.Common.Modules.Loader;
 using System.Security.Policy;
 
+
 using System.Linq;
 //using SpiralLab.Sirius2.Vision.Camera;
 using System.ServiceModel.Syndication;
@@ -1699,7 +1700,6 @@ namespace QMC.Common.Modules
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
-
         }
 
         #region 집진기 유량 제어 가능 데이터 (임시)
@@ -6340,7 +6340,6 @@ namespace QMC.Common.Modules
 
             if ((m_nLaserCommRecvData_LF_Count == 1) && m_bDataOK)
             {
-                //m_nPressureStep = Convert.ToInt32(m_strReceivedData);
                 m_nPressureStep = Equipment.ToInt(m_strReceivedData);
                 m_dRet = m_dMinPressure + ((double)m_nPressureStep / m_dPressureTotalStep) * (m_dMaxPressure - m_dMinPressure);
             }
@@ -7927,6 +7926,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Timer_ScannerCalibration_Elapsed: {ex.Message}");
             }
             finally
@@ -8399,18 +8399,21 @@ namespace QMC.Common.Modules
                     //Display_Event("홈 실행 루틴 : 시작.");
 
                     Log.Write("SLD-200", Equipment.User_Name, "Pre Align Mark", "마크 찾기 시작");
-
                     Equipment.MachineStop_byAlarm = false;
-
                     m_bFindAlignMark_OK = false;
                     m_bFindUpperAlignMark_OK = false;
                     m_bFindLowerAlignMark_OK = false;
-
                     m_bFindAlignMark_Complete = false;
-
                     m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
 
+                    //  라이브 상태가 아니면 라이브로 변경
+                    if (jigAligner_LowRes.Camera.IsLiveOn == false)
+                    {
+                        jigAligner_LowRes.Camera.StartLive();
+                    }
+
                     //  어느 쪽 마크를 찾을 것인지... 1번 마크인지 2번 마크인지...
+                    m_nFindAlignMarkType = 0; //무조건 2개 다 찾어.
                     if ((m_nFindAlignMarkType == (int)AlignMarkType.ALIGN_2POINT) || (m_nFindAlignMarkType == (int)AlignMarkType.ALIGN_1STMARK))        //  2 Point 찾기나, 1번 마크 찾기일 경우
                     {
                         m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_1STMARK;
@@ -8426,82 +8429,33 @@ namespace QMC.Common.Modules
 
                 case (int)FindAlignMark_Step.FindMark_Start:                                           //  Align Start
                     //if (!m_bLowerVision_Align)
-                    if (m_nVisionAligner_Type == (int)Aligner_Type.Aligner_PAK)
-                    {
-                        Log.Write("CWA150SA", Equipment.User_Name, "Find Align Mark", "PAK 카메라 마크 찾기 시작");
-
-                        //  라이브 상태가 아니면 라이브로 변경
-                        if (jigAligner_HighRes.Camera.IsLiveOn == false)
-                        {
-                            jigAligner_HighRes.Camera.StartLive();
-                        }
-
-                        jigAligner_HighRes.Work();
-                    }
-                    else if (m_nVisionAligner_Type == (int)Aligner_Type.Aligner_Wafer)
-                    {
-                        Log.Write("CWA150SA", Equipment.User_Name, "Find Align Mark", "Wafer 카메라 마크 찾기 시작");
-
-                        //  라이브 상태가 아니면 라이브로 변경
-                        if (jigAligner_LowRes.Camera.IsLiveOn == false)
-                        {
-                            jigAligner_LowRes.Camera.StartLive();
-                        }
-
-                        jigAligner_LowRes.Work();
-                    }
-                    else if (m_nVisionAligner_Type == (int)Aligner_Type.Aligner_Reticle_Upper)
-                    {
-                        Log.Write("CWA150SA", Equipment.User_Name, "Find Align Mark", "PAK 카메라 Reticle 마크 찾기 시작");
-
-                        //  라이브 상태가 아니면 라이브로 변경
-                        if (jigAligner_HighRes.Camera.IsLiveOn == false)
-                        {
-                            jigAligner_HighRes.Camera.StartLive();
-                        }
-
-                        jigAligner_HighRes.Work();
-                    }
-                    else if (m_nVisionAligner_Type == (int)Aligner_Type.Aligner_Reticle_Lower)
-                    {
-                        Log.Write("CWA150SA", Equipment.User_Name, "Find Align Mark", "Wafer 카메라 Reticle 마크 찾기 시작");
-
-                        //  라이브 상태가 아니면 라이브로 변경
-                        if (jigAligner_LowRes.Camera.IsLiveOn == false)
-                        {
-                            jigAligner_LowRes.Camera.StartLive();
-                        }
-
-                        jigAligner_LowRes.Work();
-                    }
-                    else if (m_nVisionAligner_Type == (int)Aligner_Type.Aligner_PreAlign_Lower)
+                    m_nVisionAligner_Type = 7;
+                    if (m_nVisionAligner_Type == (int)Aligner_Type.Aligner_PreAlign_Lower)
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Pre Align Mark", "Rows 카메라 Circle 마크 찾기 시작");
-
                         //  라이브 상태가 아니면 라이브로 변경
                         if (jigAligner_LowRes.Camera.IsLiveOn == false)
                         {
                             jigAligner_LowRes.Camera.StartLive();
                         }
 
-                        jigAligner_LowRes.Work();
+                        try
+                        {
+                            jigAligner_LowRes.Work();
+                        }
+                        catch(Exception ex)
+                        {
+                            Log.Write(ex);
+                        }
+                        
                     }
                     else
                     {
-                        Log.Write("CWA150SA", Equipment.User_Name, "Find Align Mark", "지정되지 않은 얼라이너");
+                        Log.Write("SLD-200", Equipment.User_Name, "Pre Align Mark", "지정되지 않은 얼라이너");
 
                         m_bFindUpperAlignMark_OK = false;
                         m_bFindLowerAlignMark_OK = false;
                     }
-
-                    //if ((m_nVisionAligner_Type >= (int)Aligner_Type.Aligner_Wafer) && (m_nVisionAligner_Type <= (int)Aligner_Type.Aligner_Reticle_Upper))
-                    //{
-                    //    m_nFindAlignMark_Step = (int)FindAlignMark_Step.FindMark_ResultCheck;
-                    //}
-                    //else
-                    //{
-                    //    m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
-                    //}
 
                     m_nFindAlignMark_Step = (int)FindAlignMark_Step.FindMark_ResultCheck;
 
@@ -8518,60 +8472,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "마크 찾기 완료");
 
-                    //if (!m_bLowerVision_Align)
-                    if (m_nVisionAligner_Type == (int)Aligner_Type.Aligner_PAK)
-                    {
-                        Log.Write("CWA150SA", Equipment.User_Name, "Find Align Mark", "PAK 카메라 마크 찾기 완료");
-
-                        if ((jigAligner_HighRes.FirstPosition.X == 0.0) || (jigAligner_HighRes.FirstPosition.Y == 0.0))
-                        {
-                            m_bFindUpperAlignMark_OK = false;
-                        }
-                        else
-                        {
-                            m_bFindUpperAlignMark_OK = true;
-                        }
-                    }
-                    else if (m_nVisionAligner_Type == (int)Aligner_Type.Aligner_Wafer)
-                    {
-                        Log.Write("CWA150SA", Equipment.User_Name, "Find Align Mark", "Wafer 카메라 마크 찾기 완료");
-
-                        if ((jigAligner_LowRes.FirstPosition.X == 0.0) || (jigAligner_LowRes.FirstPosition.Y == 0.0))
-                        {
-                            m_bFindLowerAlignMark_OK = false;
-                        }
-                        else
-                        {
-                            m_bFindLowerAlignMark_OK = true;
-                        }
-                    }
-                    else if (m_nVisionAligner_Type == (int)Aligner_Type.Aligner_Reticle_Upper)
-                    {
-                        Log.Write("CWA150SA", Equipment.User_Name, "Find Align Mark", "PAK 카메라 Reticle 마크 찾기 완료");
-
-                        if ((reticleAligner_HighRes.FirstPosition.X == 0.0) || (reticleAligner_HighRes.FirstPosition.Y == 0.0))
-                        {
-                            m_bFindUpperAlignMark_OK = false;
-                        }
-                        else
-                        {
-                            m_bFindUpperAlignMark_OK = true;
-                        }
-                    }
-                    else if (m_nVisionAligner_Type == (int)Aligner_Type.Aligner_Reticle_Lower)
-                    {
-                        Log.Write("CWA150SA", Equipment.User_Name, "Find Align Mark", "Wafer 카메라 Reticle 마크 찾기 완료");
-
-                        if ((reticleAligner_LowRes.FirstPosition.X == 0.0) || (reticleAligner_LowRes.FirstPosition.Y == 0.0))
-                        {
-                            m_bFindLowerAlignMark_OK = false;
-                        }
-                        else
-                        {
-                            m_bFindLowerAlignMark_OK = true;
-                        }
-                    }
-                    else if (m_nVisionAligner_Type == (int)Aligner_Type.Aligner_PreAlign_Lower)
+                    if (m_nVisionAligner_Type == (int)Aligner_Type.Aligner_PreAlign_Lower)
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Pre Align Mark", "카메라 circle 마크 찾기 완료");
 
@@ -8591,8 +8492,6 @@ namespace QMC.Common.Modules
             }
         }
         #endregion
-
-
 
         #region Home Function
         protected bool IsAlarm()
@@ -13111,10 +13010,6 @@ namespace QMC.Common.Modules
                             XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
                             xyCoordinateAlign = xyInterpolatedCoordinate + offset;
                             xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionLast.X, xyCoordinateAlignPositionLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
-
-                            
-
-
                         }
                     }
                     xyCoordinateAlignPositionOrgLast = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
@@ -17249,11 +17144,13 @@ namespace QMC.Common.Modules
                     Equipment.stLayerRecipeSet[0].PreAlignPos1 = leftPoint;
                     Equipment.stLayerRecipeSet[0].PreAlignPos2 = rightPoint;
 
+                    //너무 Data를 빨리 던져서 문제가 아닌지 Test
+                    Thread.Sleep(500);
+
                     m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
                     m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
                     m_nFindAlignMark_Step = (int)FindAlignMark_Step.Start;
                     m_bFindAlignMark_Complete = false;
-                    //timer_VisionAlign.Enabled = true;
 
                     TickCount_Start((int)TickType.TICK_MAIN);
 
@@ -17275,10 +17172,7 @@ namespace QMC.Common.Modules
 
 
                             XyzCoordinate positionFirst = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
-
-
                             positionFirst = this.ConvertPointFineCam(positionFirst);
-
                             xyCoordinateAlignPositionLast= new XyCoordinate( positionFirst.X, positionFirst.Y);
 
                             positionFirst.X -= dfx;
@@ -17297,8 +17191,7 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000)               //  60 sec * 5
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align 시간 초과.");
-
+                        //Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align 시간 초과.");
                         m_bPreAlignCompleted = false;
                         return AlarmPost(AlarmKey.PreAlignFail);
                     }
@@ -22432,6 +22325,7 @@ namespace QMC.Common.Modules
             TickCount_Start((int)TickType.TICK_MAIN);
         }
 
+        // 소켓 갯수 파악 및 가공 완료 여부 판단 함수
         private int LaserDrilling_StepDrillingData_SocketRemainedCheck()
         {
             int nextStep;
@@ -33425,6 +33319,39 @@ namespace QMC.Common.Modules
             {
                 Equipment.EqpSiriusViewer.Document.Action.ActEntitySelect(list);
             }
+        }
+
+        public void ProcssMager()
+        {
+            //Test == 
+            //ProcessManager sdf = new ProcessManager();
+            ProcessManager.Init();
+
+            // Layer 추가
+            ProcessManager.AddLayer("hole1", 1);
+            ProcessManager.AddLayer("thruhole", 2);
+            ProcessManager.AddLayer("outline", 3);
+            ProcessManager.AddLayer("marking", 4);
+            // -- 있으면 계속 추가 사용.
+
+            // Socket 추가
+            var layer = ProcessManager.GetLayer(1);
+            for(int i = 0; i < 10; i++)
+            {
+                layer?.AddSocket(i);
+            }
+            
+            // 결과 저장
+            layer?.SetSocketResult(1, true, "검사 통과");
+            layer?.SetSocketResult(1, false, "검사 통과");
+
+            // 전체 리셋
+            ProcessManager.Reset();
+
+            ProcessManager.GetLayer(1).SetSocketResult(0, true);
+            ProcessManager.GetLayer(1).SetSocketResult(1, false);
+            //요라고 사용하자.
+            
         }
     }
 }

@@ -127,7 +127,7 @@ namespace QMC.Common
                 }
             }catch(Exception ex)
             {
-
+                Log.Write(ex);
             }
             
         }

@@ -1742,7 +1742,6 @@ namespace SLD200_MSL
                 return;
 
             //  가공 Sequence Index 초기화 (Loading 부터 시작)
-
             Equipment.m_bMainProcessStatus_LD_LPort_Complete = false;                       //  Loader LPort 투입 완료
             Equipment.m_bMainProcessStatus_LD_RPort_Complete = false;                       //  Loader RPort 투입 완료
             Equipment.m_bMainProcessStatus_LD_Module_PortPickUp_Complete = false;           //  Loader Port 에서 Module Pick Up 완료
@@ -2054,6 +2053,16 @@ namespace SLD200_MSL
         private void button_Test12_Click(object sender, EventArgs e)
         {
             workStage.AlarmPost(QMC.Common.Modules.WorkStage.AlarmKey.PreAlignFail);
+        }
+
+        private void button_TEST12_Click(object sender, EventArgs e)
+        {
+            loader.AlarmPost(Loader.AlarmKey.eMAligner_Wide_Fail);
+
+            loader.AlarmPost(Loader.AlarmKey.LD_TransferX_Move_StackerPos_Timeout);
+
+            workStage.AlarmPost(WorkStage.AlarmKey.PreAlignFail);
+
         }
     }
 }
