@@ -1138,15 +1138,15 @@ namespace QMC.Common.Modules
 
 
         // Process Status
-        public int CurrentLayer { get; private set; }
+        public string CurrentLayerName { get; private set; }
         public int CurrentSocketNumber { get; private set; }
         public string ProcessStatus { get; private set; }
         public bool IsProcessing { get; private set; }
 
         // Layer 설정
-        public void SetProcess_Layer(int layerIndex)
+        public void SetProcess_Layer(string layerName)
         {
-            CurrentLayer = layerIndex;
+            CurrentLayerName = layerName;
         }
 
         // Socket 번호 설정
@@ -1165,7 +1165,7 @@ namespace QMC.Common.Modules
         // 가공 완료 시 상태 설정
         public void SetProcessCompleted()
         {
-            CurrentLayer = -1;
+            CurrentLayerName = "";
             CurrentSocketNumber = -1;
             IsProcessing = false;
             ProcessStatus = "가공완료";

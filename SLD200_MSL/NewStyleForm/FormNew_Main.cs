@@ -968,10 +968,10 @@ namespace SLD200_MSL
             var pos = ProcessManager.GetFirstUnprocessedPosition();
             if (pos.HasValue)
             {
-                int layerIndex = pos.Value.layerIndex;
+                string layerName = pos.Value.layerName;
                 int socketIndex = pos.Value.socketIndex;
 
-                workStage.SetProcess_Layer(layerIndex);
+                workStage.SetProcess_Layer(layerName);
                 workStage.SetProcess_SocketNumber(socketIndex);
                 workStage.SetProcessRunning(); //"가공중";
             }
