@@ -949,7 +949,7 @@ namespace SLD200_MSL
             {
                 workStage.m_bMainWorkCycle_DryRun = true;
                 var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "[[ DryRun ]] 을 시작하시겠습니까?\r\n\r\n[Dry Run]"))
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "[[ Dry Run ]] 을 시작하시겠습니까?\r\n\r\n[Dry Run]"))
                     return;
             }
             else
