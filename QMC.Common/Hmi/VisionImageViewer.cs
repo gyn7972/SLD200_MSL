@@ -1647,6 +1647,7 @@ namespace QMC.Common.Hmi
                                 }
                                 catch (Exception ex)
                                 {
+                                    Log.Write(ex);
                                     Console.WriteLine(ex.Message);
                                 }
 
@@ -1680,6 +1681,7 @@ namespace QMC.Common.Hmi
                                     }
                                     catch (Exception ex)
                                     {
+                                        Log.Write(ex);
                                         Console.WriteLine(ex.Message);
                                     }
                                 }
@@ -1694,6 +1696,7 @@ namespace QMC.Common.Hmi
                                         }
                                         catch (Exception ex)
                                         {
+                                            Log.Write(ex);
                                             Console.WriteLine(ex.Message);
                                         }
                                         
@@ -1707,6 +1710,7 @@ namespace QMC.Common.Hmi
                     }
                     catch (Exception ex)
                     {
+                        Log.Write(ex);
                         //Log.Write(VisionImageViewer.LogName, ex.Message);
                         Console.WriteLine(ex.Message);
                     }
@@ -1714,6 +1718,7 @@ namespace QMC.Common.Hmi
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 //Log.Write(VisionImageViewer.LogName, ex.Message);
                 Console.WriteLine(ex.Message);
             }
@@ -2056,7 +2061,7 @@ namespace QMC.Common.Hmi
                     }
                     catch (Exception ex)
                     {
-
+                        Log.Write(ex);
                     }
 
 

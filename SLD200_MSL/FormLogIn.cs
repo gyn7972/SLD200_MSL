@@ -213,6 +213,7 @@ namespace SLD200_MSL
                     }
                     catch (Exception ex1)
                     {
+                        Log.Write(ex1);
                         baseTextBoxExplain.Text = "PW 를 확인해 주세요.";
                     }
                 }

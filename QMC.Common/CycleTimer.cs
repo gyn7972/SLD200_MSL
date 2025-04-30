@@ -83,8 +83,9 @@ namespace QMC.Common
                     else
                         return CycleTime.MinValue;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Log.Write(ex);
                     return CycleTime.MinValue;
                 }
             }

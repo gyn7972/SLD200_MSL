@@ -385,14 +385,11 @@ namespace QMC.Common.Parts
                         //도면 좌표 불러옴 
                         position = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
 
-
-
                         //  속도 설정
                         lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
                         lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
 
                         position = workstage.ConvertPointCoarseCam(position);
-
 
                         xyInterpolatedCoordinate.X = position.X;
                         xyInterpolatedCoordinate.Y = position.Y;

@@ -113,6 +113,7 @@ namespace SLD200_MSL
             }
             catch(Exception ex)
             {
+                Log.Write(ex);
                 Log.Write("DataGridView Error", string.Format($"{ex.Message}"));
             }
         }

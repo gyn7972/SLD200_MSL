@@ -63,6 +63,7 @@ namespace QMC.Common.Motion.ACS.Motions
             }
             catch(Exception ex)
             {
+                Log.Write(ex);
                 Log.Write(this.Name, String.Format($"{ex.Message}"));
             }
 

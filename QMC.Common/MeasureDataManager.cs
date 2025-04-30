@@ -38,6 +38,7 @@ namespace QMC.Common
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Log.Write("UnitInfoManager", String.Format("Exception : {0}", ex.Message));
             }
 
@@ -73,6 +74,7 @@ namespace QMC.Common
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Log.Write("MeasureDataManager", String.Format("Exception : {0}, SQL : {1} ", ex.Message, strSql));
             }
         }
@@ -91,6 +93,7 @@ namespace QMC.Common
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Log.Write("MeasureDataManager", String.Format("Exception : {0}, SQL : {1} ", ex.Message, strSql));
             }
         }
@@ -136,6 +139,7 @@ namespace QMC.Common
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Log.Write("UnitInfoManager", String.Format("Exception : {0}, SQL : {1} ", ex.Message, strSql));
             }
 

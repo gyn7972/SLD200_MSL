@@ -4682,6 +4682,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Timer_ScannerCalibration_Elapsed: {ex.Message}");
             }
             finally
@@ -6355,9 +6356,9 @@ namespace QMC.Common.Modules
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Log.Write(ex);
             }
         }
 

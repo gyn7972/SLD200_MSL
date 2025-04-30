@@ -122,6 +122,7 @@ namespace QMC.Common
             }
             catch(Exception ex)
             {
+                Log.Write(ex);
                 Log.Write("UnitInfoManager", String.Format("Exception : {0}, SQL : {1} ", ex.Message, strSql));
             }
             

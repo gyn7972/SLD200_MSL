@@ -7553,8 +7553,11 @@ namespace QMC.Common.Modules
         {
             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "WorkStage, Module Vacuum On");
 
-            workStage.workStageParameter.DO_Stage_Vacuum(true);
+            //Blow Off후에 Vacuum 실행
             workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
+            Thread.Sleep(1);
+            workStage.workStageParameter.DO_Stage_Vacuum(true);
+           
             workStage.DustCollector_SetFrequence(20);
             Thread.Sleep(1000);
             workStage.DustCollector_On((int)nDustCollector.DustCollector_Lower);
@@ -9282,8 +9285,6 @@ namespace QMC.Common.Modules
                 //    return;
                 //}
 
-
-
                 //  홈 실행이 완료된 후 부터 Loader Ionizer 는 상시 체크
                 if (workStage != null)
                 {
@@ -9362,6 +9363,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Timer_ScannerCalibration_Elapsed: {ex.Message}");
             }
             finally

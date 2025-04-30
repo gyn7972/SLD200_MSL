@@ -844,10 +844,11 @@ namespace QMC.Common.Parts
                         avgValue.X = task.Result.Results.Values.Average(t => t.X);
                         avgValue.Y = task.Result.Results.Values.Average(t => t.Y);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         avgValue.X = 0;
                         avgValue.Y = 0;
+                        Log.Write(ex);
                     }
                     //Log.Write("ScannerCompensator", string.Format($"PatternX : {avgValue.X}, PatternY : {avgValue.Y}"));
 
@@ -901,7 +902,7 @@ namespace QMC.Common.Parts
                 }
                 catch (Exception ex)
                 {
-                    ;
+                    Log.Write(ex);
                 }
             }
         }

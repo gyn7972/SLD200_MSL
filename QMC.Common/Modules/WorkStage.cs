@@ -63,6 +63,7 @@ using Cognex.VisionPro.ImageProcessing;
 using QMC.Process.WorkStage.Parts;
 using QMC.Common;
 
+
 namespace QMC.Common.Modules
 {
     [Serializable]
@@ -1495,6 +1496,11 @@ namespace QMC.Common.Modules
             SocketAlignXYMoveFail,
             SocketAlignMovePositionCalcFail,
             PreAlignFail,
+            MainStage_Vacuum_Off_Fail,
+            Home_MainStage_Vacuum_Off_Fail,
+            Home_LoaderPicker_Vacuum_Off_Fail,
+            Home_UnloaderPicker_Vacuum_Off_Fail,
+            Home_Loader_Aligner_Vacuum_Off_Fail,
             LastAlarm = 3999
         }
         protected override void InitAlarm()
@@ -1690,6 +1696,47 @@ namespace QMC.Common.Modules
             alarm.Code = (int)AlarmKey.PreAlignFail;
             alarm.Title = "PRE Align";
             alarm.Cause = "PRE ALIGN 데이터 계산에 실패 하였습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.MainStage_Vacuum_Off_Fail;
+            alarm.Title = "MainStage Vacuum";
+            alarm.Cause = "MainStage Vacuum이 Off 되지 않았습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            //
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Home_MainStage_Vacuum_Off_Fail;
+            alarm.Title = "Stage Vacuum";
+            alarm.Cause = "[[초기화]] 제품 제거 및 Stage Vacuum Off 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+            //,
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Home_LoaderPicker_Vacuum_Off_Fail;
+            alarm.Title = "LoaderPicker Vacuum";
+            alarm.Cause = "[[초기화]] 제품 제거 및 LoaderPicker Vacuum Off 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+            //,
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Home_UnloaderPicker_Vacuum_Off_Fail;
+            alarm.Title = "UnloaderPicker Vacuum";
+            alarm.Cause = "[[초기화]] 제품 제거 및 UnloaderPicker Vacuum Off 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+            //,
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Home_Loader_Aligner_Vacuum_Off_Fail;
+            alarm.Title = "Loader_Aligner Vacuum";
+            alarm.Cause = "[[초기화]] 제품 제거 및 Loader_Aligner Vacuum Off 바랍니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -1935,6 +1982,9 @@ namespace QMC.Common.Modules
             None = 0,
             Start,                                                          //  시작
 
+            // 여기서 장비 내부 자재 유/무 확인 후 처리.
+            HomeStep_Vacuum_Check,
+
             //  알람이 발생한 축이 있을 경우, Servo Off --> Reset --> Servo On 해야 한다.
             AxisAlarmCheck,                                                 //  서보 축 알람 체크
             AlarmAxisServoOff,                                              //  알람 축 서보 Off
@@ -1968,6 +2018,7 @@ namespace QMC.Common.Modules
             All_StackerZ_Move_ReadyPos,                                     //  전체 Stacker 축 모듈 PickUp, PutDown 높이로 이동 
             All_StackerZ_Move_ReadyPos_DoneCheck,                           //  전체 Stacker 축 모듈 PickUp, PutDown 높이로 이동 완료 확인
 
+            Fail,                                                           //  실패
             Complete                                                        //  완료
         }
 
@@ -4125,21 +4176,16 @@ namespace QMC.Common.Modules
             //spiralLabScanner._owner.SpiralLab = this;
             Parts.Add(spiralLabScanner);
 
-
             Recipe = new WorkStageRecipe(this);
 
-
+            //장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
             m_taskTimer_Comm_Tick = Task.Factory.StartNew(()=>
             {
-
-                
                 Thread.CurrentThread.Name = "m_taskTimer_Comm_Tick";
-                
-
                 while (true)
                 {
-
                     Thread.Sleep(1);
+                    //Alarm 발생해도 계속 돌아야 함. 
                     //if (IsAlarm())
                     //{
                     //    continue;
@@ -4149,24 +4195,22 @@ namespace QMC.Common.Modules
                         break;
                     }
                     Timer_Comm_Tick(null, null);
-                    
                 }
-            }); ;
+            });
 
-
+            //장비 RUN 진행 시 프로그램 죽을때까지 돌아야함.
             m_taskTimer_MainWork_Tick = Task.Factory.StartNew(() =>
             {
-
-
                 Thread.CurrentThread.Name = "m_taskTimer_MainWork_Tick";
 
                 while (true)
                 {
                     Thread.Sleep(1);
-                    if (IsAlarm())
-                    {
-                        continue;
-                    }
+                    //Alarm 발생해도 계속 돌아야 함. 
+                    //if (IsAlarm())
+                    //{
+                    //    continue;
+                    //}
                     if (m_IsModuleClose)
                     {
                         break;
@@ -4174,10 +4218,10 @@ namespace QMC.Common.Modules
                     Timer_MainWork_Tick(null, null);
                 }
             }); ; ;
+
+
             m_taskTimer_LaserDrillingWork_Tick =  Task.Factory.StartNew(() =>
             {
-
-
                 Thread.CurrentThread.Name = "m_taskTimer_LaserDrillingWork_Tick";
 
                 while (true)
@@ -4214,11 +4258,9 @@ namespace QMC.Common.Modules
                     Timer_SubWork_Tick(null, null);
 
                 }
-            }); ; ;
-
+            });
             m_taskTimer_ProductAlign_tick =  Task.Factory.StartNew(() =>
             {
-
                 Thread.CurrentThread.Name = "m_taskTimer_ProductAlign_tick";
 
                 while (true)
@@ -4235,8 +4277,7 @@ namespace QMC.Common.Modules
                     Timer_ProductAlign_tick(null, null);
 
                 }
-            }); ; ;
-
+            });
             m_taskTimer_VerifyScannerCamOffset_Tick =  Task.Factory.StartNew(() =>
             {
 
@@ -4256,12 +4297,9 @@ namespace QMC.Common.Modules
                     Timer_VerifyScannerCamOffset_Tick(null, null);
 
                 }
-            }); ; ;
-
+            });
             m_taskTimer_ScannerCalibration_Tick  = Task.Factory.StartNew(() =>
             {
-
-
                 Thread.CurrentThread.Name = "m_taskTimer_ScannerCalibration_Tick";
 
                 while (true)
@@ -4283,6 +4321,7 @@ namespace QMC.Common.Modules
             
             listTask.Add(m_taskTimer_MainWork_Tick);
             listTask.Add(m_taskTimer_Comm_Tick);
+
             listTask.Add(m_taskTimer_LaserDrillingWork_Tick);
             listTask.Add(m_taskTimer_SubWork_Tick);
             listTask.Add(m_taskTimer_ProductAlign_tick);
@@ -7363,9 +7402,7 @@ namespace QMC.Common.Modules
             {
                 _isMainWorkRunning = true;
 
-
                 //  타워램프 상태 갱신
-
                 //  Alarm 상태
                 if (AlarmManager.Instance.IsAlarm)
                 {
@@ -7442,15 +7479,12 @@ namespace QMC.Common.Modules
                     CommonModule.Instance.OperationButtons.ResetLamp(false);
                 }
 
-
                 // Scanner Calibration이 활성화되지 않은 경우 종료
                 if (!m_MainWork_Start)
                 {
-                    
                     //timer_ScannerCalibration.Stop(); // 타이머 중지
                     return;
                 }
-
                 // 현재 단계가 None이면 타이머 중지
                 //if (m_nMainWork_Step == (int)MainWork_Step.None)
                 //{
@@ -7464,6 +7498,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Timer_Main Work_Elapsed: {ex.Message}");
             }
             finally
@@ -7703,6 +7738,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Timer_WorkStage_Elapsed: {ex.Message}");
             }
             finally
@@ -7755,6 +7791,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Timer_WorkStage_Elapsed: {ex.Message}");
             }
             finally
@@ -7872,7 +7909,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in Timer_MotionHome_Tick: {ex.Message}");
+                Log.Write(ex);
             }
             finally
             {
@@ -7917,7 +7954,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in Timer_MotionHome_Tick: {ex.Message}");
+                Log.Write(ex);
             }
             finally
             {
@@ -7977,6 +8014,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Timer_ScannerCalibration_Elapsed: {ex.Message}");
             }
             finally
@@ -8033,6 +8071,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Timer_ScannerCalibration_Elapsed: {ex.Message}");
             }
             finally
@@ -8395,16 +8434,23 @@ namespace QMC.Common.Modules
         #region Home Function
         protected bool IsAlarm()
         {
-            var v = AlarmManager.Instance.Alarms;
-            //var alarmList = v.Where(t => t.Code >= (int)AlarmKey.FirstAlarm && t.Code <= (int)AlarmKey.LastAlarm && t.Grade.Equals("Error"));
-            var alarmList = v.Where(t => t.Code >= (int)AlarmKey.FirstAlarm );
-            return alarmList.Any();
+            bool bResult = false;
+            try
+            {
+                var v = AlarmManager.Instance.Alarms;
+                var alarmList = v.Where(t => t.Code >= (int)AlarmKey.FirstAlarm && t.Code <= (int)AlarmKey.LastAlarm);
+                return alarmList.Any();
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+            return bResult;
         }
         void Run_Home_Func()
         {
             bool m_bRet = false;
             string m_strTemp;
-
 
             //  운전 중 Door 를 열면 장비 Stop
             if (m_nHomeStep >= (int)Home_Step.Start)
@@ -8452,7 +8498,6 @@ namespace QMC.Common.Modules
                 //}
             }
 
-
             switch (m_nHomeStep)
             {
                 case (int)Home_Step.Start:
@@ -8490,7 +8535,10 @@ namespace QMC.Common.Modules
                     MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.X, 2000);
                     MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.Y, 2000);
                     MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.Z, 2000);
-
+                    if (Equipment.Machine_LaserType_CO2)
+                    {
+                        MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.MASK_Y, 2000);
+                    }
 
                     //  Loader 파츠 사용 변수 초기화
                     loader.m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_None; //  Transfer Move Type
@@ -8545,7 +8593,6 @@ namespace QMC.Common.Modules
                     loader.m_bLD_TR_ModulePickUp_MAligner_Complete = false;                                         //  M-Aligner Module Pick Up 동작 완료 여부
                     loader.m_bLD_WorkStage_LoadingComplete = false;                                                 //  Work Stage 로 Module Loading 완료 여부
 
-
                     //  Unloader 파츠 사용 변수 초기화
                     unloader.m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
                     unloader.m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
@@ -8585,23 +8632,57 @@ namespace QMC.Common.Modules
                     m_nMainWorkCycleType = (int)MainWorkCycleType.Cycle_None;                   //  자동 운전 시 사용하는 변수
                     m_bMainWorkCycle_DryRun = false;
 
-
                     //  홈 실행할 때 로더 쪽 이오나이저를 켜준다. (끄지 않음. 상시 On)
                     loader.loaderParameter.DO_Loader_Ionizer(true);
 
-
                     loader.timer_LoaderWork.Enabled = false;
 
-
-
-                    if (Equipment.Machine_LaserType_CO2)
-                    {
-                        MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.MASK_Y, 2000);
-                    }
-
-                    m_nHomeStep = (int)Home_Step.AxisAlarmCheck;
+                    m_nHomeStep = (int)Home_Step.HomeStep_Vacuum_Check;
                     break;
 
+                case (int)Home_Step.HomeStep_Vacuum_Check:
+
+                    //Loader 진공 체크
+                    //DI_Loader_Aligner_VacuumCheck()
+                    if (loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner) ||
+                        loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer) ||
+                        loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center))
+                    {
+                        AlarmPost(AlarmKey.Home_Loader_Aligner_Vacuum_Off_Fail);
+                        Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Initialize Loader Aligner Vacuum Off Fail");
+
+                        m_nHomeStep = (int)Home_Step.Fail;
+                    }
+                    else if (loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
+                            loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+                    {
+                        AlarmPost(AlarmKey.Home_LoaderPicker_Vacuum_Off_Fail);
+                        Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Initialize Loader Picker Vacuum Off Fail");
+
+                        m_nHomeStep = (int)Home_Step.Fail;
+                    }
+                    //Stage 진공 체크
+                    else if (workStageParameter.DI_Stage_Vacuum_Check())
+                    {
+                        AlarmPost(AlarmKey.Home_MainStage_Vacuum_Off_Fail);
+                        Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Initialize Stage Vacuum Off Fail");
+
+                        m_nHomeStep = (int)Home_Step.Fail;
+                    }
+                    //Unloader 진공 체크    
+                    else if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Inner) ||
+                            unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Outer))
+                    {
+                        AlarmPost(AlarmKey.Home_UnloaderPicker_Vacuum_Off_Fail);
+                        Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Initialize Unloader Picker Vacuum Off Fail");
+
+                        m_nHomeStep = (int)Home_Step.Fail;
+                    }
+                    else
+                    {
+                        m_nHomeStep = (int)Home_Step.AxisAlarmCheck;
+                    }
+                    break;
 
                 case (int)Home_Step.AxisAlarmCheck:                                         //  서보 축 알람 체크
 
@@ -9209,8 +9290,6 @@ namespace QMC.Common.Modules
 
                     MessageBox.Show(m_strTemp, "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-
-
                     ////  장비 초기화 완료 후 카메라 초기화
                     //Task<int> task = Task.Factory.StartNew<int>(() =>
                     //{
@@ -9224,6 +9303,9 @@ namespace QMC.Common.Modules
                     //Camera_HighRes.Initialize();
                     //Camera_LowRes.Initialize();
 
+                    break;
+
+                case (int)Home_Step.Fail:
                     break;
             }
         }
@@ -10173,6 +10255,7 @@ namespace QMC.Common.Modules
                                     }
                                     catch (Exception ex)
                                     {
+                                        Log.Write(ex);
                                         Log.Write("SLD-200", Equipment.User_Name, "Power Meter BDS Comm", "Convert Error : " + ex.Message);
                                         m_dPowerMeterBDS_Value = 0.0;
                                     }
@@ -10203,6 +10286,7 @@ namespace QMC.Common.Modules
                                 }
                                 catch (Exception ex)
                                 {
+                                    Log.Write(ex);
                                     Log.Write("SLD-200", Equipment.User_Name, "Power Meter BDS Comm", "Convert Error : " + ex.Message);
                                     m_dPowerMeterBDS_Value = 0.0;
                                 }
@@ -10303,6 +10387,7 @@ namespace QMC.Common.Modules
                                     }
                                     catch (Exception ex)
                                     {
+                                        Log.Write(ex);
                                         Log.Write("SLD-200", Equipment.User_Name, "Power Meter Stage Comm", "Convert Error : " + ex.Message);
                                         m_dPowerMeterStage_Value = 0.0;
                                     }
@@ -10333,6 +10418,7 @@ namespace QMC.Common.Modules
                                 }
                                 catch (Exception ex)
                                 {
+                                    Log.Write(ex);
                                     Log.Write("SLD-200", Equipment.User_Name, "Power Meter Stage Comm", "Convert Error : " + ex.Message);
                                     m_dPowerMeterStage_Value = 0.0;
                                 }
@@ -12438,7 +12524,6 @@ namespace QMC.Common.Modules
                 }
             }
 
-
             switch (m_nMainWork_Step)
             {
                 case (int)MainWork_Step.Start:
@@ -12476,8 +12561,6 @@ namespace QMC.Common.Modules
                             break;
                     }
                     break;
-
-
 
                 /// <summary>
                 /// Dry Run - 시작
@@ -12561,8 +12644,6 @@ namespace QMC.Common.Modules
                 /// </summary>
                 ///
 
-
-
                 /// <summary>
                 /// Laser Drilling - 시작
                 /// </summary>
@@ -12617,7 +12698,6 @@ namespace QMC.Common.Modules
                     m_nMainWork_Step = (int)MainWork_Step.LaserDrilling_Cycle_CompleteCheck;
                     break;
 
-
                 case (int)MainWork_Step.LaserDrilling_Cycle_CompleteCheck:                         //  Laser Drilling Cycle 완료 확인
 
                     if ((m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None) &&
@@ -12646,8 +12726,6 @@ namespace QMC.Common.Modules
                 /// Laser Drilling - 완료
                 /// </summary>
                 ///
-
-
 
                 case (int)MainWork_Step.Complete:
 
@@ -12706,7 +12784,6 @@ namespace QMC.Common.Modules
 
                     m_nMainWork_Step = (int)MainWork_Step.None;
 
-
                     //  Cycle Stop 이면?              --> Main Work 에게 Cycle Stop 은, Dry Run 이나 Drilling Cycle 이 끝났을 때 Stop 시킴.
                     if (Equipment.CycleStop)
                     {
@@ -12717,7 +12794,6 @@ namespace QMC.Common.Modules
                             Equipment.CycleStopped_MainWork = true;
                         }
                     }
-
 
                     //  Seq. Test 일 경우
                     if (!Equipment.AutoRunStatus && Equipment.SeqTestMode)
@@ -13729,8 +13805,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
-
-                //Log.Write(ex);
+                Log.Write(ex);
             }
             return ret;
         }
@@ -15650,6 +15725,7 @@ namespace QMC.Common.Modules
                     }
                     catch (Exception ex)
                     {
+                        Log.Write(ex);
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "레이저 Off 실패 : " + ex.Message);
                     }
 
@@ -22549,9 +22625,9 @@ namespace QMC.Common.Modules
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Log.Write(ex);
             }
         }
 

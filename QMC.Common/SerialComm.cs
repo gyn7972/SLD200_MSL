@@ -124,7 +124,8 @@ namespace QMC.Common
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.Message);
+                Log.Write(ex);
+                MessageBox.Show(ex.Message);
 			}
 		}
 
