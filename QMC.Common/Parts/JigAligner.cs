@@ -319,7 +319,6 @@ namespace QMC.Common.Parts
 
                 if (m_AlignPositions == null) return -1;
 
-                //XyCoordinate center = (m_AlignPositions[0] + m_AlignPositions[1]) / 2;
                 XyzCoordinate position = new XyzCoordinate();
                 #region 주석
                 //List<PatternMatchingResult> listResults = new List<PatternMatchingResult>();
@@ -490,7 +489,7 @@ namespace QMC.Common.Parts
                         }
                         Thread.Sleep(1);
                         nWait++;
-                        if (nWait == 1000)
+                        if (nWait == 2000)
                         {
                             break;
                         }
@@ -505,7 +504,7 @@ namespace QMC.Common.Parts
                         }
                         Thread.Sleep(1);
                         nWait++;
-                        if (nWait == 1000)
+                        if (nWait == 2000)
                         {
                             break;
                         }

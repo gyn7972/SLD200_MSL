@@ -180,6 +180,7 @@ namespace QMC.Common.Vision.Cognex
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Tool.Run(): {ex.Message}");
                 throw;
             }

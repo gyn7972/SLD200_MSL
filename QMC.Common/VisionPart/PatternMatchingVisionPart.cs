@@ -106,7 +106,8 @@ namespace QMC.Common.VisionPart
                 {
                     if ((ret = OnSetIllumination(illuminationData, true)) != 0) return ret;
                 }
-                Camera.StopLive();
+                //Camera.StopLive();
+                Camera.StartLive();
                 if ((ret = Camera.GrabSync(Purpose.Processing, out image)) != 0) return ret;
             }
 

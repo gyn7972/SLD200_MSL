@@ -65,6 +65,7 @@ namespace QMC.Common
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Debug.WriteLine(ex.Message);
             }
             return nValue;

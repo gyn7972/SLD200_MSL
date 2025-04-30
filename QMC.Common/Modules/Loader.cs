@@ -6423,10 +6423,12 @@ namespace QMC.Common.Modules
                         else
                         {
                             workStage.workStageParameter.DO_Stage_Vacuum(true);
+                            Thread.Sleep(100);
                             workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
 
                             //  Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
                             workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);            //  임시로 -30 고정
+                            Thread.Sleep(100);
                         }
 
                     }
@@ -7558,7 +7560,7 @@ namespace QMC.Common.Modules
 
             //  Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
             workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);            //  임시로 -30 고정
-
+            Thread.Sleep(100);
             //TickCount_Start((int)TickType.TICK_LDTR);
         }
 
@@ -9606,10 +9608,10 @@ namespace QMC.Common.Modules
             {
                 m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_ReadyPos2_2ndStep;
             }
-            else if (Step <= (int)Loader_Transfer_Step.WorkStagePutDown_WorkStage_VacuumCheck)
-            {
-                m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.WorkStagePutDown_WorkStage_Vacuum_On;
-            }
+            //else if (Step <= (int)Loader_Transfer_Step.WorkStagePutDown_WorkStage_VacuumCheck)
+            //{
+            //    m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.WorkStagePutDown_WorkStage_Vacuum_On;
+            //}
             else if (Step <= (int)Loader_Transfer_Step.MAligner_ModulePutdown_Condition_Check)
             {
                 m_nLoader_Transfer_Step_Recovery = Step;

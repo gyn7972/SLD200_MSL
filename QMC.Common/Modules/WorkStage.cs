@@ -6239,7 +6239,7 @@ namespace QMC.Common.Modules
 
             if ((m_nLaserCommRecvData_LF_Count == 1) && m_bDataOK)
             {
-                m_nPressureStep = Convert.ToInt32(m_strReceivedData);
+                m_nPressureStep = Equipment.ToInt(m_strReceivedData);
                 m_dRet = m_dMinPressure + ((double)m_nPressureStep / m_dPressureTotalStep) * (m_dMaxPressure - m_dMinPressure);
             }
             else
@@ -7825,6 +7825,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Timer_ScannerCalibration_Elapsed: {ex.Message}");
             }
             finally
@@ -8304,6 +8305,12 @@ namespace QMC.Common.Modules
                     m_bFindAlignMark_Complete = false;
                     m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
 
+                    //  라이브 상태가 아니면 라이브로 변경
+                    if (jigAligner_LowRes.Camera.IsLiveOn == false)
+                    {
+                        jigAligner_LowRes.Camera.StartLive();
+                    }
+
                     //  어느 쪽 마크를 찾을 것인지... 1번 마크인지 2번 마크인지...
                     m_nFindAlignMarkType = 0; //무조건 2개 다 찾어.
                     if ((m_nFindAlignMarkType == (int)AlignMarkType.ALIGN_2POINT) || (m_nFindAlignMarkType == (int)AlignMarkType.ALIGN_1STMARK))        //  2 Point 찾기나, 1번 마크 찾기일 경우
@@ -8331,7 +8338,15 @@ namespace QMC.Common.Modules
                             jigAligner_LowRes.Camera.StartLive();
                         }
 
-                        jigAligner_LowRes.Work();
+                        try
+                        {
+                            jigAligner_LowRes.Work();
+                        }
+                        catch(Exception ex)
+                        {
+                            Log.Write(ex);
+                        }
+                        
                     }
                     else
                     {
@@ -15982,6 +15997,9 @@ namespace QMC.Common.Modules
 
                     Equipment.stLayerRecipeSet[0].PreAlignPos1 = leftPoint;
                     Equipment.stLayerRecipeSet[0].PreAlignPos2 = rightPoint;
+
+                    //너무 Data를 빨리 던져서 문제가 아닌지 Test
+                    Thread.Sleep(500);
 
                     m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
                     m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
