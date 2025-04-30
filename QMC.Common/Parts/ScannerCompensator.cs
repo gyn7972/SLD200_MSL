@@ -846,6 +846,7 @@ namespace QMC.Common.Parts
                     }
                     catch (Exception ex)
                     {
+                        Log.Write(ex);
                         avgValue.X = 0;
                         avgValue.Y = 0;
                         Log.Write(ex);

@@ -7910,6 +7910,7 @@ namespace QMC.Common.Modules
             catch (Exception ex)
             {
                 Log.Write(ex);
+                Console.WriteLine($"Error in Timer_MotionHome_Tick: {ex.Message}");
             }
             finally
             {
@@ -7955,6 +7956,7 @@ namespace QMC.Common.Modules
             catch (Exception ex)
             {
                 Log.Write(ex);
+                Console.WriteLine($"Error in Timer_MotionHome_Tick: {ex.Message}");
             }
             finally
             {
@@ -8380,6 +8382,7 @@ namespace QMC.Common.Modules
                         try
                         {
                             jigAligner_LowRes.Work();
+                            Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "Work() 완료");
                         }
                         catch(Exception ex)
                         {
@@ -13806,6 +13809,7 @@ namespace QMC.Common.Modules
             catch (Exception ex)
             {
                 Log.Write(ex);
+                //Log.Write(ex);
             }
             return ret;
         }

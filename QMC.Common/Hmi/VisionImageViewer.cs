@@ -1953,24 +1953,32 @@ namespace QMC.Common.Hmi
 
         }
         #endregion
-
+        private static object objLock = new object();
         private Task m_task;
         private bool m_bStop;
         private CancellationTokenSource cts = null;
-
+        private static int TaskNO = 0;
         public void StartUpdateTask()
         {
+
+
             ResumeDisplay();
             if (m_task != null)
             {
                 return;
             }
-
+            
 
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
             m_task = Task.Factory.StartNew(() =>
             {
+                lock (objLock)
+                {
+                    TaskNO++;
+                    Thread.CurrentThread.Name = "VisionImageViewer StartUpdateTask" + TaskNO.ToString();
+
+                }
                 while (true)
                 {
                     if (m_bStop)
