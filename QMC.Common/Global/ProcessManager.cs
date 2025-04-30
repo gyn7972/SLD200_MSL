@@ -46,6 +46,7 @@ namespace QMC.Common
             for (int i = 0; i < Layers.Count; i++)
             {
                 var layer = Layers[i];
+
                 for (int j = 0; j < layer.Sockets.Count; j++)
                 {
                     if (!layer.Sockets[j].InspectionResult)
