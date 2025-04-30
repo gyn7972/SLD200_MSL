@@ -150,6 +150,7 @@ namespace QMC.Aux
                 }
                 catch (System.Exception ex)
                 {
+                    //Log.Write(ex);
                     return false;
                 }
             }
@@ -176,6 +177,7 @@ namespace QMC.Aux
             }
             catch (System.Exception ex)
             {
+                //Log.Write(ex);
                 return false;
             }
 

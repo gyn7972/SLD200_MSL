@@ -107,7 +107,8 @@ namespace QMC.Common
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message);
+                Log.Write(ex);
+                Console.WriteLine(ex.Message);
 				return -1;
 			}
 		}
@@ -129,7 +130,8 @@ namespace QMC.Common
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message);
+                Log.Write(ex);
+                Console.WriteLine(ex.Message);
 				return -1;
 			}
 		}

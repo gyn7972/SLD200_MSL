@@ -421,6 +421,7 @@ namespace QMC.Common
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in MoveToCenter: {ex.Message}");
             }
         }

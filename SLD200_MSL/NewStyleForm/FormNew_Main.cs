@@ -814,7 +814,6 @@ namespace SLD200_MSL
                 workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.X, 2000);
                 workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.Y, 2000);
                 workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.Z, 2000);
-
                 if (Equipment.Machine_LaserType_CO2)
                 {
                     workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.MASK_Y, 2000);
@@ -831,7 +830,6 @@ namespace SLD200_MSL
                 //  Motion 홈 실행 타이머
                 workStage.m_btimer_Motion_Home_Stop = false;
                 workStage.timer_Motion_Home.Enabled = true;
-                workStage.timer_Motion_Home.Start();
                 workStage.m_MotionHome_Start = true;
 
                 workStage.m_bHomeProgressForm_Close = false;
@@ -966,10 +964,21 @@ namespace SLD200_MSL
             //    }
             //}
 
+            // Process Status
+            var pos = ProcessManager.GetFirstUnprocessedPosition();
+            if (pos.HasValue)
+            {
+                int layerIndex = pos.Value.layerIndex;
+                int socketIndex = pos.Value.socketIndex;
 
-
-
-
+                workStage.SetProcess_Layer(layerIndex);
+                workStage.SetProcess_SocketNumber(socketIndex);
+                workStage.SetProcessRunning(); //"가공중";
+            }
+            else
+            {
+                workStage.SetProcessCompleted(); //"모든 소켓 가공 완료";
+            }
 
             // 아래 변수가 자동운전 Tick 돌리는 변수임.
             workStage.m_MainWork_Start = true;
@@ -1807,6 +1816,9 @@ namespace SLD200_MSL
             var mb = new MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "모든 데이터를 리셋 하시겠습니까?\r\n\r\n[Loader 부터 다시 시작]"))
                 return;
+
+            // 가공 Data 초기화
+            ProcessManager.Reset();
 
             //  가공 Sequence Index 초기화 (Loading 부터 시작)
             Equipment.m_bMainProcessStatus_LD_LPort_Complete = false;                       //  Loader LPort 투입 완료

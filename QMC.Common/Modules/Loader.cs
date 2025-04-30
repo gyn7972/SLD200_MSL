@@ -9282,8 +9282,6 @@ namespace QMC.Common.Modules
                 //    return;
                 //}
 
-
-
                 //  홈 실행이 완료된 후 부터 Loader Ionizer 는 상시 체크
                 if (workStage != null)
                 {
@@ -9362,6 +9360,7 @@ namespace QMC.Common.Modules
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine($"Error in Timer_ScannerCalibration_Elapsed: {ex.Message}");
             }
             finally

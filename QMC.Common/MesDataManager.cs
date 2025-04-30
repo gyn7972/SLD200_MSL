@@ -52,6 +52,7 @@ namespace QMC.Common
             }
             catch(Exception ex)
             {
+                Log.Write(ex);
                 Log.Write("MesDataManager", String.Format("Open Failed. Exception : {0}", ex.Message));
             }
 
@@ -108,6 +109,7 @@ namespace QMC.Common
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 ret = -1;
                 Log.Write("MesDataManager", String.Format("Exception : {0}, SQL : {1} ", ex.Message, strSql));
             }
@@ -154,6 +156,7 @@ namespace QMC.Common
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Log.Write("MesDataManager", String.Format("Exception : {0}, SQL : {1} ", ex.Message, strSql));
                 ret = -1;
             }
@@ -194,6 +197,7 @@ namespace QMC.Common
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Log.Write("MesDataManager", String.Format("Exception : {0}, SQL : {1} ", ex.Message, strSql));
                 ret = -1;
             }
@@ -222,6 +226,7 @@ namespace QMC.Common
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 ret = -1;
                 Log.Write("MesDataManager", String.Format("Exception : {0}, SQL : {1} ", ex.Message, strSql));
 

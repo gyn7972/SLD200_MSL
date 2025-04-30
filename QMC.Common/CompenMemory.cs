@@ -188,9 +188,10 @@ namespace QMC.Common
                                 
                 return compen;
             }
-            catch
+            catch (Exception ex)
             {
                 //MessageBox.Show("config 경로 위치에서 맵 데이터 파일을 찾을 수 없습니다. \r\n\r\n[config\\gridStagecompen.json]");
+                Log.Write(ex);
                 MessageBox.Show("config 경로 위치에서 맵 데이터 파일을 찾을 수 없습니다. \r\n\r\n[ D:\\CWA-150SA_Parameter\\gridStagecompen.json ]", "Information!!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return new CompenMemory();
             }

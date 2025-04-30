@@ -151,6 +151,7 @@ namespace SLD200_MSL
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 Console.WriteLine(ex.Message.ToString());
                 return false;
             }
@@ -173,6 +174,7 @@ namespace SLD200_MSL
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 return "0";
             }
 
@@ -193,6 +195,7 @@ namespace SLD200_MSL
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 return false;
             }
 

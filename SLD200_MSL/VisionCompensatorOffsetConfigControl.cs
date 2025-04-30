@@ -215,7 +215,7 @@ namespace SLD200_MSL
             }
             catch (Exception ex)
             {
-
+                Log.Write(ex);
             }
         }
         private StringBuilder FileLoad(string path)
@@ -228,7 +228,7 @@ namespace SLD200_MSL
             }
             catch (Exception ex)
             {
-
+                Log.Write(ex);
             }
 
             return builder;
