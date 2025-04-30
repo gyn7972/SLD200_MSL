@@ -379,6 +379,7 @@ namespace QMC.Common.Modules
             LAYER_THRUHOLE = 2,
             LAYER_MARKING = 3,
             LAYER_FIDUCIAL = 4,
+            LAYER_RECTANGLE = 5
         }
 
         public enum ObjectType : int
@@ -982,6 +983,7 @@ namespace QMC.Common.Modules
         public bool m_bScannerLib_Success { set; get; }
 
 
+
         //public enum EntityType : int
         //{
         //    ETypePoint = 2,
@@ -1502,6 +1504,8 @@ namespace QMC.Common.Modules
             SocketAlignXYMoveFail,
             SocketAlignMovePositionCalcFail,
             PreAlignFail,
+            Chiller_Stop,
+            Chiller_Alarm,                      //  IO Off : Chiller alarm
             LastAlarm = 3999
         }
         protected override void InitAlarm()
@@ -1697,6 +1701,22 @@ namespace QMC.Common.Modules
             alarm.Code = (int)AlarmKey.PreAlignFail;
             alarm.Title = "PRE Align";
             alarm.Cause = "PRE ALIGN 데이터 계산에 실패 하였습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Chiller_Stop;
+            alarm.Title = "Chiller";
+            alarm.Cause = "Chiller 가 Run 상태가 아닙니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.Chiller_Alarm;
+            alarm.Title = "Chiller";
+            alarm.Cause = "Chiller 가 알람 상태 입니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -7541,6 +7561,24 @@ namespace QMC.Common.Modules
                     CommonModule.Instance.OperationButtons.StartLamp(false);
                     CommonModule.Instance.OperationButtons.StopLamp(true);
                     CommonModule.Instance.OperationButtons.ResetLamp(false);
+                }
+                
+
+                //  Auto Run 모드일 때 칠러가 동작하지 않으면 알람
+                if (Equipment.AutoManualStatus)
+                {
+                    //  Chiller 상태 체크
+                    if (!workStageParameter.DI_Chiller_Alarm_Check())
+                    {
+                        AlarmPost(AlarmKey.Chiller_Alarm);
+                        return;
+                    }
+
+                    if (!workStageParameter.DI_Chiller_Run())
+                    {
+                        AlarmPost(AlarmKey.Chiller_Stop);
+                        return;
+                    }
                 }
 
 
@@ -14417,8 +14455,10 @@ namespace QMC.Common.Modules
                     {
                         case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 데이터 Parsing 성공");
-
                             {
+                                //  최초 Data Parsing 후 해당 가공 데이터에 대한 상태 데이터를 초기화 한다. (가공중인 소켓 번호, 소켓 OK NG 여부 등)
+                                GlobalSocketStatus_Init();
+
                                 m_nLaserDrilling_LayerCount = 0;
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingWork_Start;                 //  단일 Job File 작업일 경우
                             }
@@ -15122,6 +15162,7 @@ namespace QMC.Common.Modules
                     {
                         Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                         Main_SocketPositions_SetStatus = true;                                                      //  상태 변경
+                        GlobalSocketStatus_Set(m_nDrillingWork_Group_Count, true, "Drilling_Thruhole 가공 완료");
 
                         Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                         Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
@@ -15565,6 +15606,7 @@ namespace QMC.Common.Modules
 
                     Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                     Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+                    GlobalSocketStatus_Set(m_nDrillingWork_Group_Count, true, "Drilling_Thruhole_Outline 가공 완료");
 
                     Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                     Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
@@ -17287,6 +17329,7 @@ namespace QMC.Common.Modules
 
                             Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
                             Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+                            GlobalSocketStatus_Set(m_nDrillingWork_Group_Count, false, "소켓 얼라인 실패");
 
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
@@ -17585,6 +17628,7 @@ namespace QMC.Common.Modules
                         //  소켓 가공이 끝나서 다음 소켓 확인하러 가야 하므로, 현재 상태를 갱신한다.
                         Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                         Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+                        GlobalSocketStatus_Set(m_nDrillingWork_Group_Count, true, "Drilling 가공 완료");
 
                         Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                         Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
@@ -22123,6 +22167,7 @@ namespace QMC.Common.Modules
                                 //  다음 소켓으로 넘어가기 전에 현재 소켓의 가공 상태를 갱신한다.
                                 Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                                 Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+                                GlobalSocketStatus_Set(m_nDrillingWork_Group_Count, true, "Drilling 가공 완료");
 
                                 Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                                 Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
@@ -24830,6 +24875,64 @@ namespace QMC.Common.Modules
             return entity;
         }
 
+        public bool GlobalSocketStatus_Init()
+        {
+            bool m_bRet = true;
+
+            //  Layer Info List 초기화
+            ProcessManager.Init();
+
+            //  Layer Info 추가
+            if (m_stLayerType.m_nLayerCount > 0)
+            {
+                for (int i = 0; i < m_stLayerType.m_nLayerCount; i++)
+                {
+                    LayerList m_Layer = (LayerList)m_stLayerType.m_nLayerIndex[i];
+
+                    ProcessManager.AddLayer(m_Layer.ToString(), i + 1);
+
+                    //  "Hole1" Layer 인 경우 Socket 데이터를 저장해야 한다.
+                    if (m_Layer.ToString() == "Hole1")
+                    {
+                        //  Hole1 Layer 의 Index (소켓 데이터 상태 변경은 이 Layer 만 참조한다.)
+                        ProcessManager.nHole1Layer_Index = i;
+
+                        for (int nSocket = 0; nSocket < m_stDividedRegion_GroupData[0].nGroup_Num; nSocket++)
+                        {
+                            ProcessManager.GetLayer(i).AddSocket(nSocket);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                //  Parsing 된 데이터 없음
+
+                m_bRet = false;
+            }
+
+            return m_bRet;
+        }
+
+        public bool GlobalSocketStatus_Reset()
+        {
+            bool m_bRet = true;
+
+            //  Layer Info List Reset
+            ProcessManager.Reset();
+
+            return m_bRet;
+        }
+
+        public bool GlobalSocketStatus_Set(int m_nSocketNumber, bool m_bSocketResult, string m_strComment = "")
+        {
+            bool m_bRet = true;
+
+            //  Socket 상태 세팅
+            ProcessManager.GetLayer(ProcessManager.nHole1Layer_Index).SetSocketResult(m_nSocketNumber, m_bSocketResult, m_strComment);
+
+            return m_bRet;
+        }
 
         public int GetDrillingData()
         {
@@ -27273,7 +27376,7 @@ namespace QMC.Common.Modules
                     #endregion
                     else if (layer.Name == "Rect")                                                                      //  Rect 가공
                     {
-                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_THRUHOLE;
+                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_RECTANGLE;
                         m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Rect;                   //  Layer Parameter 변경을 위한 Index
                     }
                     //else if (layer.Name == "Outline")                                                                   //  Outline 가공
@@ -27515,6 +27618,7 @@ namespace QMC.Common.Modules
                         m_nThruholeSocket_Count = 0;
 
                         m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_THRUHOLE;
+                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Thruhole;
 
                         //  Item 이 Group 인지 아닌지 확인 (Group 이면 아래에서 데이터 변수 할당, Group 이 아니면 여기서 할당)
                         int m_nCount = 0;
@@ -28001,8 +28105,6 @@ namespace QMC.Common.Modules
                             if (!success)
                                 break;
                         }
-
-                        m_nLayerCount++;
                     }
                     ///////////////////////
                     ///                 ///
@@ -28503,8 +28605,6 @@ namespace QMC.Common.Modules
                             if (!success)
                                 break;
                         }
-
-                        m_nLayerCount++;
                     }
                     ///////////////////////
                     ///                 ///
@@ -28517,6 +28617,7 @@ namespace QMC.Common.Modules
                         m_ptLast.Y = 0.0;
 
                         m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_MARKING;
+                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.Marking;
 
                         //  Item 이 Group 인지 아닌지 확인 (Group 이면 아래에서 데이터 변수 할당, Group 이 아니면 여기서 할당)
                         int m_nCount = 0;
@@ -29422,9 +29523,6 @@ namespace QMC.Common.Modules
                             if (!success)
                                 break;
                         }
-
-                        m_nLayerCount++;
-                        m_nLayerOutline_Count++;                   //  Thruhole Layer 카운트 +1
                     }
                     else
                     {
@@ -33324,7 +33422,6 @@ namespace QMC.Common.Modules
         public void ProcssMager()
         {
             //Test == 
-            //ProcessManager sdf = new ProcessManager();
             ProcessManager.Init();
 
             // Layer 추가
@@ -33336,22 +33433,25 @@ namespace QMC.Common.Modules
 
             // Socket 추가
             var layer = ProcessManager.GetLayer(1);
-            for(int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; i++)
             {
                 layer?.AddSocket(i);
+                ProcessManager.GetLayer(1).AddSocket(i);
+
             }
-            
+
             // 결과 저장
             layer?.SetSocketResult(1, true, "검사 통과");
             layer?.SetSocketResult(1, false, "검사 통과");
+
+            ProcessManager.GetLayer(1).SetSocketResult(0, true, "이유: 등등 찾기 싫어서");
 
             // 전체 리셋
             ProcessManager.Reset();
 
             ProcessManager.GetLayer(1).SetSocketResult(0, true);
             ProcessManager.GetLayer(1).SetSocketResult(1, false);
-            //요라고 사용하자.
-            
+            //요라고 사용하자.            
         }
     }
 }

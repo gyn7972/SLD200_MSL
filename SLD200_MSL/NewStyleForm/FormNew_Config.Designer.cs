@@ -482,11 +482,23 @@
             this.listBox_Config_BDS_TeachingPositions = new System.Windows.Forms.ListBox();
             this.tabPage_Config_SeqTest = new System.Windows.Forms.TabPage();
             this.groupBox_Config_SeqTest_SeqStatus = new System.Windows.Forms.GroupBox();
+            this.label60 = new System.Windows.Forms.Label();
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign = new System.Windows.Forms.Label();
+            this.label65 = new System.Windows.Forms.Label();
+            this.label67 = new System.Windows.Forms.Label();
             this.label_Config_SeqTest_SeqStatus_UnLoader = new System.Windows.Forms.Label();
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort = new System.Windows.Forms.Label();
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort = new System.Windows.Forms.Label();
             this.label_Config_SeqTest_SeqStatus_Disp_UnLoader = new System.Windows.Forms.Label();
             this.label_Config_SeqTest_SeqStatus_WorkStage = new System.Windows.Forms.Label();
             this.label_Config_SeqTest_SeqStatus_Disp_workStage = new System.Windows.Forms.Label();
+            this.label63 = new System.Windows.Forms.Label();
+            this.label58 = new System.Windows.Forms.Label();
+            this.label50 = new System.Windows.Forms.Label();
             this.label_Config_SeqTest_SeqStatus_Loader = new System.Windows.Forms.Label();
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign = new System.Windows.Forms.Label();
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort = new System.Windows.Forms.Label();
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport = new System.Windows.Forms.Label();
             this.label_Config_SeqTest_SeqStatus_Disp_Loader = new System.Windows.Forms.Label();
             this.groupBox29 = new System.Windows.Forms.GroupBox();
             this.button_Test_Scanner_AxisZ_SafetyPos = new System.Windows.Forms.Button();
@@ -565,18 +577,6 @@
             this.groupBox30 = new System.Windows.Forms.GroupBox();
             this.labelStagePressure = new System.Windows.Forms.Label();
             this.label51 = new System.Windows.Forms.Label();
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport = new System.Windows.Forms.Label();
-            this.label50 = new System.Windows.Forms.Label();
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort = new System.Windows.Forms.Label();
-            this.label58 = new System.Windows.Forms.Label();
-            this.label60 = new System.Windows.Forms.Label();
-            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign = new System.Windows.Forms.Label();
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign = new System.Windows.Forms.Label();
-            this.label63 = new System.Windows.Forms.Label();
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort = new System.Windows.Forms.Label();
-            this.label65 = new System.Windows.Forms.Label();
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort = new System.Windows.Forms.Label();
-            this.label67 = new System.Windows.Forms.Label();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -3121,6 +3121,7 @@
             "Laser Cal-Sheet Vacuum On",
             "Work Stage Air Blow On",
             "Laser Cal-Sheet Air Blow On",
+            "Chiller Run",
             "Dust Collector 0 AirPulse Run",
             "Dust Collector 1 AirPulse Run"});
             this.checkedListBox_Config_WorkStage_DIO_Output.Location = new System.Drawing.Point(10, 25);
@@ -3168,7 +3169,8 @@
             "Rear Door Open",
             "Right Door Open",
             "Water In Leak Check",
-            "Water Box Leak Check",
+            "Chiller Run",
+            "Chiller Alarm",
             "Work Stage Vacuum",
             "Laser Cal-Sheet Vacuum",
             "Dust Collector 0 Fan Running",
@@ -6722,6 +6724,53 @@
             this.groupBox_Config_SeqTest_SeqStatus.TabStop = false;
             this.groupBox_Config_SeqTest_SeqStatus.Text = "Seq Status";
             // 
+            // label60
+            // 
+            this.label60.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label60.Location = new System.Drawing.Point(13, 175);
+            this.label60.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label60.Name = "label60";
+            this.label60.Size = new System.Drawing.Size(189, 31);
+            this.label60.TabIndex = 48;
+            this.label60.Text = "Socket Align:";
+            this.label60.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign
+            // 
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.ForeColor = System.Drawing.Color.Lime;
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.Location = new System.Drawing.Point(210, 177);
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.Name = "label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign";
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.Size = new System.Drawing.Size(611, 29);
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.TabIndex = 49;
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.Text = "Seq: --";
+            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label65
+            // 
+            this.label65.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label65.Location = new System.Drawing.Point(13, 269);
+            this.label65.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label65.Name = "label65";
+            this.label65.Size = new System.Drawing.Size(189, 39);
+            this.label65.TabIndex = 46;
+            this.label65.Text = "UnLoader R-Port:";
+            this.label65.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label67
+            // 
+            this.label67.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label67.Location = new System.Drawing.Point(13, 238);
+            this.label67.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label67.Name = "label67";
+            this.label67.Size = new System.Drawing.Size(189, 31);
+            this.label67.TabIndex = 46;
+            this.label67.Text = "UnLoader L-Port:";
+            this.label67.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // label_Config_SeqTest_SeqStatus_UnLoader
             // 
             this.label_Config_SeqTest_SeqStatus_UnLoader.Font = new System.Drawing.Font("Tahoma", 10F);
@@ -6732,6 +6781,34 @@
             this.label_Config_SeqTest_SeqStatus_UnLoader.TabIndex = 46;
             this.label_Config_SeqTest_SeqStatus_UnLoader.Text = "UnLoader Transfer:";
             this.label_Config_SeqTest_SeqStatus_UnLoader.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort
+            // 
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.ForeColor = System.Drawing.Color.Lime;
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.Location = new System.Drawing.Point(210, 271);
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.Name = "label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort";
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.Size = new System.Drawing.Size(611, 28);
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.TabIndex = 47;
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.Text = "Seq: --";
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort
+            // 
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.ForeColor = System.Drawing.Color.Lime;
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.Location = new System.Drawing.Point(210, 240);
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.Name = "label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort";
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.Size = new System.Drawing.Size(611, 29);
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.TabIndex = 47;
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.Text = "Seq: --";
+            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label_Config_SeqTest_SeqStatus_Disp_UnLoader
             // 
@@ -6772,6 +6849,39 @@
             this.label_Config_SeqTest_SeqStatus_Disp_workStage.Text = "Seq: --";
             this.label_Config_SeqTest_SeqStatus_Disp_workStage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // label63
+            // 
+            this.label63.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label63.Location = new System.Drawing.Point(13, 110);
+            this.label63.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label63.Name = "label63";
+            this.label63.Size = new System.Drawing.Size(189, 31);
+            this.label63.TabIndex = 42;
+            this.label63.Text = "Loader M- Align:";
+            this.label63.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label58
+            // 
+            this.label58.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label58.Location = new System.Drawing.Point(13, 79);
+            this.label58.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label58.Name = "label58";
+            this.label58.Size = new System.Drawing.Size(189, 31);
+            this.label58.TabIndex = 42;
+            this.label58.Text = "Loader R-Port:";
+            this.label58.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label50
+            // 
+            this.label50.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label50.Location = new System.Drawing.Point(13, 48);
+            this.label50.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label50.Name = "label50";
+            this.label50.Size = new System.Drawing.Size(189, 31);
+            this.label50.TabIndex = 42;
+            this.label50.Text = "Loader L-Port :";
+            this.label50.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // label_Config_SeqTest_SeqStatus_Loader
             // 
             this.label_Config_SeqTest_SeqStatus_Loader.Font = new System.Drawing.Font("Tahoma", 10F);
@@ -6782,6 +6892,48 @@
             this.label_Config_SeqTest_SeqStatus_Loader.TabIndex = 42;
             this.label_Config_SeqTest_SeqStatus_Loader.Text = "Loader Transfer:";
             this.label_Config_SeqTest_SeqStatus_Loader.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign
+            // 
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.ForeColor = System.Drawing.Color.Lime;
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.Location = new System.Drawing.Point(210, 112);
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.Name = "Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign";
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.Size = new System.Drawing.Size(611, 29);
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.TabIndex = 43;
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.Text = "Seq: --";
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort
+            // 
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.ForeColor = System.Drawing.Color.Lime;
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.Location = new System.Drawing.Point(210, 81);
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.Name = "Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort";
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.Size = new System.Drawing.Size(611, 29);
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.TabIndex = 43;
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.Text = "Seq: --";
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport
+            // 
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.ForeColor = System.Drawing.Color.Lime;
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.Location = new System.Drawing.Point(210, 50);
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.Name = "Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport";
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.Size = new System.Drawing.Size(611, 29);
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.TabIndex = 43;
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.Text = "Seq: --";
+            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label_Config_SeqTest_SeqStatus_Disp_Loader
             // 
@@ -7805,156 +7957,6 @@
             this.label51.TabIndex = 49;
             this.label51.Text = "Pressure(kPa) : ";
             this.label51.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport
-            // 
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.ForeColor = System.Drawing.Color.Lime;
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.Location = new System.Drawing.Point(210, 50);
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.Name = "Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport";
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.Size = new System.Drawing.Size(611, 29);
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.TabIndex = 43;
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.Text = "Seq: --";
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label50
-            // 
-            this.label50.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label50.Location = new System.Drawing.Point(13, 48);
-            this.label50.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label50.Name = "label50";
-            this.label50.Size = new System.Drawing.Size(189, 31);
-            this.label50.TabIndex = 42;
-            this.label50.Text = "Loader L-Port :";
-            this.label50.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort
-            // 
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.ForeColor = System.Drawing.Color.Lime;
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.Location = new System.Drawing.Point(210, 81);
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.Name = "Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort";
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.Size = new System.Drawing.Size(611, 29);
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.TabIndex = 43;
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.Text = "Seq: --";
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_RPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label58
-            // 
-            this.label58.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label58.Location = new System.Drawing.Point(13, 79);
-            this.label58.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label58.Name = "label58";
-            this.label58.Size = new System.Drawing.Size(189, 31);
-            this.label58.TabIndex = 42;
-            this.label58.Text = "Loader R-Port:";
-            this.label58.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label60
-            // 
-            this.label60.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label60.Location = new System.Drawing.Point(13, 175);
-            this.label60.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label60.Name = "label60";
-            this.label60.Size = new System.Drawing.Size(189, 31);
-            this.label60.TabIndex = 48;
-            this.label60.Text = "Socket Align:";
-            this.label60.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign
-            // 
-            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.ForeColor = System.Drawing.Color.Lime;
-            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.Location = new System.Drawing.Point(210, 177);
-            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.Name = "label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign";
-            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.Size = new System.Drawing.Size(611, 29);
-            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.TabIndex = 49;
-            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.Text = "Seq: --";
-            this.label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign
-            // 
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.ForeColor = System.Drawing.Color.Lime;
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.Location = new System.Drawing.Point(210, 112);
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.Name = "Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign";
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.Size = new System.Drawing.Size(611, 29);
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.TabIndex = 43;
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.Text = "Seq: --";
-            this.Label_Config_SeqTest_SeqStatus_Disp_Loader_MAlign.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label63
-            // 
-            this.label63.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label63.Location = new System.Drawing.Point(13, 110);
-            this.label63.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(189, 31);
-            this.label63.TabIndex = 42;
-            this.label63.Text = "Loader M- Align:";
-            this.label63.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort
-            // 
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.ForeColor = System.Drawing.Color.Lime;
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.Location = new System.Drawing.Point(210, 271);
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.Name = "label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort";
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.Size = new System.Drawing.Size(611, 28);
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.TabIndex = 47;
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.Text = "Seq: --";
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_RPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label65
-            // 
-            this.label65.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label65.Location = new System.Drawing.Point(13, 269);
-            this.label65.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label65.Name = "label65";
-            this.label65.Size = new System.Drawing.Size(189, 39);
-            this.label65.TabIndex = 46;
-            this.label65.Text = "UnLoader R-Port:";
-            this.label65.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort
-            // 
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.ForeColor = System.Drawing.Color.Lime;
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.Location = new System.Drawing.Point(210, 240);
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.Name = "label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort";
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.Size = new System.Drawing.Size(611, 29);
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.TabIndex = 47;
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.Text = "Seq: --";
-            this.label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label67
-            // 
-            this.label67.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label67.Location = new System.Drawing.Point(13, 238);
-            this.label67.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.label67.Name = "label67";
-            this.label67.Size = new System.Drawing.Size(189, 31);
-            this.label67.TabIndex = 46;
-            this.label67.Text = "UnLoader L-Port:";
-            this.label67.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FormNew_Config
             // 

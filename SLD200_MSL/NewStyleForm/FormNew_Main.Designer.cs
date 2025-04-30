@@ -1320,7 +1320,7 @@
             this.ControlBox = false;
             this.Controls.Add(this.groupBox_CoarseCam);
             this.Controls.Add(this.groupBox_FineCam);
-            this.Controls.Add(this.button_Test12);
+            this.Controls.Add(this.button_TEST12);
             this.Controls.Add(this.checkBox_Main_AutoRun);
             this.Controls.Add(this.buttonForceMaterialOut);
             this.Controls.Add(this.button_Main_RecipeOpen);

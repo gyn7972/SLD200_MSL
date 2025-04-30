@@ -615,7 +615,7 @@ namespace SLD200_MSL
                         }
 
                         if (((dioPoint.Address >= 0) && (dioPoint.Address <= 10)) ||                                    //  WorkStage Input (0 ~ 10)
-                            ((dioPoint.Address >= 13) && (dioPoint.Address <= 19)) ||                                   //  WorkStage Input (13 ~ 19)
+                            ((dioPoint.Address >= 13) && (dioPoint.Address <= 20)) ||                                   //  WorkStage Input (13 ~ 20)       //  13 ~ 19 였는데, Chiller 알람 신호가 추가되면서 20번 까지 사용한다.
                             ((dioPoint.Address >= 24) && (dioPoint.Address <= 29)))                                     //  WorkStage Input (24 ~ 29)
                         {
                             if (dioPoint.GetValue() == DioValue.On)
@@ -631,7 +631,7 @@ namespace SLD200_MSL
                         }
 
                         if ((dioPoint.Address == 11) || (dioPoint.Address == 12) ||                                     //  Laser Input (11, 12)
-                            (dioPoint.Address == 20) || (dioPoint.Address == 30))                                       //  Laser Input (20, 30)
+                            (dioPoint.Address == 30))                                                                   //  Laser Input (30)                //  20번은 Chiller 알람으로 사용
                         {
                             if (dioPoint.GetValue() == DioValue.On)
                             {
@@ -670,7 +670,7 @@ namespace SLD200_MSL
                         }
 
                         if (((dioPoint.Address >= 0) && (dioPoint.Address <= 6)) ||                                     //  WorkStage Output (0 ~ 6)
-                            ((dioPoint.Address >= 21) && (dioPoint.Address <= 24)) ||                                   //  WorkStage Output (21 ~ 24)
+                            ((dioPoint.Address >= 21) && (dioPoint.Address <= 25)) ||                                   //  WorkStage Output (21 ~ 25)          //  21 ~ 24 까지였다가 Chiller Run 신호가 추가되면서 25번까지 사용
                             ((dioPoint.Address >= 26) && (dioPoint.Address <= 27)))                                     //  WorkStage Output (26 ~ 27)
                         {
                             if (dioPoint.GetValue() == DioValue.On)
@@ -688,8 +688,7 @@ namespace SLD200_MSL
                         if ((dioPoint.Address == 7) || (dioPoint.Address == 8) ||                                       //  Laser Output (7, 8)
                             ((dioPoint.Address >= 11) && (dioPoint.Address <= 14)) ||                                   //  Laser Output (11 ~ 14)
                             ((dioPoint.Address >= 18) && (dioPoint.Address <= 20)) ||                                   //  Laser Output (18 ~ 20)
-                            (dioPoint.Address == 25) ||                                                                 //  Laser Output (25)
-                            (dioPoint.Address == 28))                                                                   //  Laser Output (28)
+                            (dioPoint.Address == 28))                                                                   //  Laser Output (28)               //  25번은 Chiller Run 신호로 사용 
                         {
                             if (dioPoint.GetValue() == DioValue.On)
                             {
@@ -1495,8 +1494,9 @@ namespace SLD200_MSL
             //  8 (22) : Laser Cal - Sheet Vacuum On
             //  9 (23) : Work Stage Air Blow On
             //  10 (24) : Laser Cal - Sheet Air Blow On
-            //  11 (26) : Dust Collector 0 Air Pulse Run
-            //  12 (27) : Dust Collector 1 Air Pulse Run
+            //  11 (25) : Chiller Run
+            //  12 (26) : Dust Collector 0 Air Pulse Run
+            //  13 (27) : Dust Collector 1 Air Pulse Run
 
             DioPoint dioPoint;
 
@@ -1546,7 +1546,7 @@ namespace SLD200_MSL
                     }
                 }
             }
-            else if ((m_nIndex >= 11) && (m_nIndex <= 12))                                                   //  Work Stage Output (26 ~ 27)
+            else if ((m_nIndex >= 11) && (m_nIndex <= 13))                                                   //  Work Stage Output (26 ~ 27)
             {
                 foreach (DioPoint point in Equipment.GetAllDioPointList())
                 {
@@ -1555,8 +1555,8 @@ namespace SLD200_MSL
                     if (dioPoint == null)
                         return;
 
-                    //  26번부터 시작하므로 변환하여 사용 (11일 때 26과 같음)
-                    m_nOutputChannel = m_nIndex + 15;
+                    //  25번부터 시작하므로 변환하여 사용 (11일 때 25과 같음)
+                    m_nOutputChannel = m_nIndex + 14;
 
                     if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
                     {
@@ -1593,8 +1593,7 @@ namespace SLD200_MSL
             //  6 (18) : Laser Purge
             //  7 (19) : Scanner Purge
             //  8 (20) : Varioscan Purge
-            //  9 (25) : Laser Shutter Command
-            //  10 (28) : Laser Enable
+            //  9 (28) : Laser Enable
 
             DioPoint dioPoint;
 
@@ -1667,7 +1666,7 @@ namespace SLD200_MSL
                     }
                 }
             }
-            else if (m_nIndex == 9)                                                                         //  Laser & Scanner Output (25)
+            else if (m_nIndex == 9)                                                                         //  Laser & Scanner Output (28)
             {
                 foreach (DioPoint point in Equipment.GetAllDioPointList())
                 {
@@ -1676,31 +1675,8 @@ namespace SLD200_MSL
                     if (dioPoint == null)
                         return;
 
-                    //  25번부터 시작하므로 변환하여 사용 (9일 때 25와 같음)
-                    m_nOutputChannel = m_nIndex + 16;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-            else if (m_nIndex == 10)                                                                         //  Laser & Scanner Output (28)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  28번부터 시작하므로 변환하여 사용 (10일 때 28와 같음)
-                    m_nOutputChannel = m_nIndex + 18;
+                    //  28번부터 시작하므로 변환하여 사용 (9일 때 28와 같음)
+                    m_nOutputChannel = m_nIndex + 19;
 
                     if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
                     {

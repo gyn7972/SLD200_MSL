@@ -114,10 +114,10 @@ namespace QMC.Common.Parts
             Input_Water_In_Leak_Check,          //  X018
 
             //  TOP Frame
-            Input_Water_Box_Leak_Check,         //  X019
+            Input_Chiller_Run,                  //  X019                //  Input_Water_Box_Leak_Check --> Chiller Run 으로 변경
 
             //  LASER Base
-            Input_Laser_Leak_Check,             //  X020
+            Input_Chiller_Alarm,                //  X020                //  Input_Laser_Leak_Check --> Chiller Alarm 으로 변경
 
             //  BDS
             Input_Mask_Leak_Check,              //  X021
@@ -179,7 +179,7 @@ namespace QMC.Common.Parts
             Output_Laser_CalSheet_Blow,         //  Y024
 
             //  LASER
-            Output_Laser_Shutter_Command,       //  Y025
+            Output_Chiller_Run,                 //  Y025            //  Laser Shutter Command (예비용) 를 Chiller Run 으로 사용함.
 
             //  Dust Collector
             Output_DustCollector0_AirPulse_Run, //  Y026
@@ -1029,14 +1029,14 @@ namespace QMC.Common.Parts
             return bRet;
         }
 
-        public bool DI_Water_Box_Leak_Check()
+        public bool DI_Chiller_Run()
         {
             bool bRet = false;
 
             DioPoint dioString = null;
 
             //  해당 채널 상태 리턴
-            dioString = m_dicDioPoints[DioPointKey.Input_Water_Box_Leak_Check.ToString()];
+            dioString = m_dicDioPoints[DioPointKey.Input_Chiller_Run.ToString()];
 
             if (dioString == null)
                 return bRet;
@@ -1049,14 +1049,14 @@ namespace QMC.Common.Parts
             return bRet;
         }
 
-        public bool DI_Laser_Leak_Check()
+        public bool DI_Chiller_Alarm_Check()
         {
             bool bRet = false;
 
             DioPoint dioString = null;
 
             //  해당 채널 상태 리턴
-            dioString = m_dicDioPoints[DioPointKey.Input_Laser_Leak_Check.ToString()];
+            dioString = m_dicDioPoints[DioPointKey.Input_Chiller_Alarm.ToString()];
 
             if (dioString == null)
                 return bRet;
@@ -1640,14 +1640,14 @@ namespace QMC.Common.Parts
             return nRet;
         }
 
-        public int DO_Laser_Shutter_Command(bool m_bOnOff)
+        public int DO_Chiller_Run(bool m_bOnOff)
         {
             int nRet = 0;
 
             DioPoint dioString = null;
 
             //  해당 채널 출력 성공 여부 리턴
-            dioString = m_dicDioPoints[DioPointKey.Output_Laser_Shutter_Command.ToString()];
+            dioString = m_dicDioPoints[DioPointKey.Output_Chiller_Run.ToString()];
 
             if (dioString == null) return -1;
 
@@ -2131,14 +2131,14 @@ namespace QMC.Common.Parts
             return bRet;
         }
 
-        public bool IsDO_Laser_Shutter_Command()
+        public bool IsDO_Chiller_Run()
         {
             bool bRet = false;
 
             DioPoint dioString = null;
 
             //  해당 출력 채널 상태 리턴
-            dioString = m_dicDioPoints[DioPointKey.Output_Laser_Shutter_Command.ToString()];
+            dioString = m_dicDioPoints[DioPointKey.Output_Chiller_Run.ToString()];
 
             if (dioString == null)
                 return bRet;
