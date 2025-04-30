@@ -16140,10 +16140,10 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 보정 시작.");
 
-                    result = jigAligner_LowRes.GetResult();
-                    dx = result.Values[0].X;
-                    dy = result.Values[0].Y;
-                    dr = result.Values[0].R;
+                    //result = jigAligner_LowRes.GetResult();
+                    //dx = result.Values[0].X;
+                    //dy = result.Values[0].Y;
+                    //dr = result.Values[0].R;
 
                     TickCount_Start((int)TickType.TICK_MAIN);
 
@@ -16442,10 +16442,8 @@ namespace QMC.Common.Modules
                 /// <summary>
                 /// 소켓 얼라인 완료
                 /// </summary>
+                ///
                 /// 
-
-
-
                 //////////////////////////////////////////////////////////////////////////////////////////////
                 ///                                                                                        ///
                 ///     Divide Drilling Loop (Group (소켓) 영역을 분할하여 Scanner Only 방식으로 가공)     ///
@@ -16560,7 +16558,6 @@ namespace QMC.Common.Modules
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck;
                     break;
-
 
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck:
                     {
@@ -16713,6 +16710,8 @@ namespace QMC.Common.Modules
                         MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 가공할 Region 의 Center 위치로 Stage 이동 완료 확인");
+
+                        //Thread.Sleep(100);
 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
                     }
@@ -17927,6 +17926,7 @@ namespace QMC.Common.Modules
                                         entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
                                         m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+                                        Log.Write("Circle Center", "Arc StatPos X : " + entity_Position_Rot.X.ToString() + ", Y : " + entity_Position_Rot.Y);
                                     }
 
                                     //  Arc 구동 
@@ -17950,6 +17950,7 @@ namespace QMC.Common.Modules
                                         m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), 360.0f);
 
 
+                                        Log.Write("Circle Center", "Arc CenterPso X : " + entity_Position_Rot.X.ToString() + ", Y : " + entity_Position_Rot.Y);
 
                                         //  Test
                                         m_strTemp = string.Format("Circle 원 Center 좌표, X : {0:0.000}, Y : {1:0.000}", entity_Position_Rot.X, entity_Position_Rot.Y);
