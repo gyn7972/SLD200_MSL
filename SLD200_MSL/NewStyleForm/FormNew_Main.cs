@@ -938,6 +938,39 @@ namespace SLD200_MSL
                     return;
             }
 
+            //LaserDrilling_MainStep
+            //여기서 정지 후 재시작시 상태 및 소켓 정보 확인 후 구동
+            //for (int i = 0; i < ProcessManager.GetLayer().Maxcount; i++)
+            //{
+            //    var layer = ProcessManager.GetLayer(i);
+
+            //    for (int j = 0; ProcessManager.GetLayer().GetSorket().Maxcount; j++)
+            //    {
+            //        var socket = ProcessManager.GetLayer(i).GetSorket(j);
+            //        if (socket.GetResult())
+            //        {
+            //            //true
+            //            workStage.ProcessStatus = " 가공완료"; true
+            //            workStage.setSsorketnumber(); < -소켓넘버는 - 1;
+            //        }
+            //        else
+            //        {
+            //            //false
+
+            //            //true
+            //            workStage.ProcessStatus = " 가공중"; false
+            //                workStage.setLayer(1);
+            //            workStage.setSsorketnumber(3); 0;
+            //            break;
+            //        }
+            //    }
+            //}
+
+
+
+
+
+
             // 아래 변수가 자동운전 Tick 돌리는 변수임.
             workStage.m_MainWork_Start = true;
             workStage.m_LaserDrillingWork_Start = true;
@@ -1372,6 +1405,40 @@ namespace SLD200_MSL
                 return bRtn = false;
             }
 
+
+            //  여기서 정지 후 재시작시 상태 및 소켓 정보 확인 후 구동
+            if (workStage.m_nLaserDrilling_MainStep_Recovery == (int)LaserDrilling_Step.DrillingData_PreAlign_Start)
+            {
+                //  Pre Align 중이었으니 그대로 시작
+
+
+            }
+            else if (workStage.m_nLaserDrilling_MainStep_Recovery == (int)LaserDrilling_Step.DrillingData_SocketAlign_Start)
+            {
+                //  Socket Align 중이었으니 그대로 시작
+
+
+            }
+            else if (((workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.ThruHole_DrillingWork_Start) &&
+                    (workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck)) ||
+
+                    ((workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.OutLine_DrillingWork_Start) &&
+                    (workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck)) ||
+
+                    ((workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.Marking_DrillingWork_Start) &&
+                    (workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.Marking_DrillingWork_CompleteCheck)) ||
+
+                    ((workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start) &&
+                    (workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.DrillingWork_CompleteCheck)) )
+            {
+                //  가공중이었으니, 다음 소켓 Index 부터 소켓 얼라인 시작
+
+                //  현재 소켓의 모든 Layer 상태 확인. (하나라도 true 인 게 있으면 다음 소켓 인덱스로 시작)
+
+
+            }
+
+
             workStage.SetRecoveryLaserDrilling_MainStep(workStage.m_nLaserDrilling_MainStep);
             workStage.m_nLaserDrilling_MainStep = workStage.m_nLaserDrilling_MainStep_Recovery;
 
@@ -1752,6 +1819,9 @@ namespace SLD200_MSL
             Equipment.m_bMainProcessStatus_WorkStage_Module_Process_Complete = false;       //  Work Stage Process 완료
             Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete = false;      //  Unloader Work Stage 에서 Module Pick Up 완료
             Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete = false;          //  Unloader Port 에 Module Put Down 완료
+
+            //  Layer Info List 초기화
+            ProcessManager.Init();
 
             //  Loader 파츠 사용 변수 초기화
             loader.m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_None; //  Transfer Move Type

@@ -29,6 +29,8 @@ namespace QMC.Common
             return layer;
         }
 
+
+
         // 전체 리셋 (모든 소켓 초기화)
         public static void Reset()
         {

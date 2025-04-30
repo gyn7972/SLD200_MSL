@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPage_Setup_Communication = new System.Windows.Forms.TabPage();
             this.groupBox86 = new System.Windows.Forms.GroupBox();
             this.button_Test_SocketConnect = new System.Windows.Forms.Button();
@@ -1190,14 +1190,14 @@
             this.Output_Active,
             this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn2});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView3.Location = new System.Drawing.Point(10, 28);
             this.dataGridView3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView3.Name = "dataGridView3";
@@ -1250,14 +1250,14 @@
             this.Active,
             this.Column4,
             this.Column5});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridView2.Location = new System.Drawing.Point(10, 28);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView2.Name = "dataGridView2";
@@ -5450,7 +5450,7 @@
             // label72
             // 
             this.label72.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label72.Location = new System.Drawing.Point(739, 138);
+            this.label72.Location = new System.Drawing.Point(739, 137);
             this.label72.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label72.Name = "label72";
             this.label72.Size = new System.Drawing.Size(207, 33);
@@ -5461,7 +5461,7 @@
             // textBox_Setup_Option_EPRO_ModuleAbsorptionLevel
             // 
             this.textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Location = new System.Drawing.Point(949, 139);
+            this.textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Location = new System.Drawing.Point(949, 138);
             this.textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Name = "textBox_Setup_Option_EPRO_ModuleAbsorptionLevel";
             this.textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Size = new System.Drawing.Size(50, 24);
@@ -5471,7 +5471,7 @@
             // label71
             // 
             this.label71.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label71.Location = new System.Drawing.Point(321, 400);
+            this.label71.Location = new System.Drawing.Point(321, 397);
             this.label71.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label71.Name = "label71";
             this.label71.Size = new System.Drawing.Size(243, 17);
@@ -5482,7 +5482,7 @@
             // label70
             // 
             this.label70.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label70.Location = new System.Drawing.Point(333, 380);
+            this.label70.Location = new System.Drawing.Point(333, 377);
             this.label70.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label70.Name = "label70";
             this.label70.Size = new System.Drawing.Size(241, 20);
@@ -5493,7 +5493,7 @@
             // textBox_Setup_Option_VibrationMoveDistance
             // 
             this.textBox_Setup_Option_VibrationMoveDistance.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_VibrationMoveDistance.Location = new System.Drawing.Point(574, 379);
+            this.textBox_Setup_Option_VibrationMoveDistance.Location = new System.Drawing.Point(574, 376);
             this.textBox_Setup_Option_VibrationMoveDistance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_VibrationMoveDistance.Name = "textBox_Setup_Option_VibrationMoveDistance";
             this.textBox_Setup_Option_VibrationMoveDistance.Size = new System.Drawing.Size(50, 24);
@@ -5557,7 +5557,7 @@
             // label62
             // 
             this.label62.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label62.Location = new System.Drawing.Point(354, 355);
+            this.label62.Location = new System.Drawing.Point(354, 352);
             this.label62.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label62.Name = "label62";
             this.label62.Size = new System.Drawing.Size(220, 20);
@@ -5568,7 +5568,7 @@
             // textBox_Setup_Option_NumberOfVibrations
             // 
             this.textBox_Setup_Option_NumberOfVibrations.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_NumberOfVibrations.Location = new System.Drawing.Point(574, 354);
+            this.textBox_Setup_Option_NumberOfVibrations.Location = new System.Drawing.Point(574, 351);
             this.textBox_Setup_Option_NumberOfVibrations.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_NumberOfVibrations.Name = "textBox_Setup_Option_NumberOfVibrations";
             this.textBox_Setup_Option_NumberOfVibrations.Size = new System.Drawing.Size(50, 24);
@@ -5578,7 +5578,7 @@
             // label61
             // 
             this.label61.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label61.Location = new System.Drawing.Point(354, 330);
+            this.label61.Location = new System.Drawing.Point(354, 327);
             this.label61.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label61.Name = "label61";
             this.label61.Size = new System.Drawing.Size(220, 20);
@@ -5589,7 +5589,7 @@
             // textBox_Setup_Option_Vibration_AccDec_Ratio
             // 
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_Vibration_AccDec_Ratio.Location = new System.Drawing.Point(574, 329);
+            this.textBox_Setup_Option_Vibration_AccDec_Ratio.Location = new System.Drawing.Point(574, 326);
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Name = "textBox_Setup_Option_Vibration_AccDec_Ratio";
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Size = new System.Drawing.Size(50, 24);
@@ -5599,7 +5599,7 @@
             // label66
             // 
             this.label66.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label66.Location = new System.Drawing.Point(367, 309);
+            this.label66.Location = new System.Drawing.Point(367, 306);
             this.label66.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label66.Name = "label66";
             this.label66.Size = new System.Drawing.Size(243, 17);
@@ -5610,7 +5610,7 @@
             // checkBox_Setup_Option_Loader_Transfer_Vibration_Enable
             // 
             this.checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.AutoSize = true;
-            this.checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Location = new System.Drawing.Point(369, 290);
+            this.checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Location = new System.Drawing.Point(369, 287);
             this.checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Name = "checkBox_Setup_Option_Loader_Transfer_Vibration_Enable";
             this.checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Size = new System.Drawing.Size(243, 20);
             this.checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.TabIndex = 91;

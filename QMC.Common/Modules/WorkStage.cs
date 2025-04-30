@@ -7636,7 +7636,8 @@ namespace QMC.Common.Modules
             if (LaserDrilling_MainStep < (int)LaserDrilling_Step.Start)
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
-            }else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.StageZ_MoveProcessingPos_DoneCheck)
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.StageZ_MoveProcessingPos_DoneCheck)
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.Start;
             }
@@ -7715,6 +7716,9 @@ namespace QMC.Common.Modules
             }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_SocketAlign_CompleteCheck)
             {
+                //여기서 정지 후 재시작시 상태 및 소켓 정보 확인 후 구동
+
+
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
             }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move)
@@ -9320,6 +9324,9 @@ namespace QMC.Common.Modules
                     {
                         Equipment.ScannerMode_Change_byUser = (int)RtcMode.RTC_RTC6;
                     }
+
+                    //  Layer Info List 초기화
+                    ProcessManager.Init();
 
                     //  카메라 초기화
                     Camera_HighRes.SetRunStatus(Part.RunStatus.Run);
@@ -13260,8 +13267,6 @@ namespace QMC.Common.Modules
                         m_st4PointAlign_Result_LastSuccess.dRotationCenterY = m_st4PointAlign_Result.dRotationCenterY;
                         m_st4PointAlign_Result_LastSuccess.dRotationCenterX = m_st4PointAlign_Result.dRotationCenterX;
                         m_st4PointAlign_Result_LastSuccess.dRotationCenterY = m_st4PointAlign_Result.dRotationCenterY;
-
-
                     }
 
                     //  찾은 마크의 크기 및 좌표 데이터를 확인하여 얼라인 성공 여부를 결정한다.
@@ -17272,6 +17277,10 @@ namespace QMC.Common.Modules
                     m_bSocketAlign_OK = false;
 
                     m_bAlignCompleted = false;
+
+
+
+
 
                     //  얼라인 하려는 소켓 번호
                     m_nSocketNum_forAlign = m_nDrillingWork_Group_Count;                        //  Group 이 Socket 이다. (Group 번호가 Socket 번호)
@@ -24879,6 +24888,8 @@ namespace QMC.Common.Modules
         {
             bool m_bRet = true;
 
+            int m_nLayerCount = 0;
+
             //  Layer Info List 초기화
             ProcessManager.Init();
 
@@ -24889,18 +24900,19 @@ namespace QMC.Common.Modules
                 {
                     LayerList m_Layer = (LayerList)m_stLayerType.m_nLayerIndex[i];
 
-                    ProcessManager.AddLayer(m_Layer.ToString(), i + 1);
-
-                    //  "Hole1" Layer 인 경우 Socket 데이터를 저장해야 한다.
-                    if (m_Layer.ToString() == "Hole1")
+                    //  "Hole1", "Thruhole", "Outline", "Marking" Layer 만 저장한다.
+                    if ((m_Layer.ToString() == "Hole1") || (m_Layer.ToString() == "Thruhole") ||
+                        (m_Layer.ToString() == "Outline") || (m_Layer.ToString() == "Marking"))
                     {
-                        //  Hole1 Layer 의 Index (소켓 데이터 상태 변경은 이 Layer 만 참조한다.)
-                        ProcessManager.nHole1Layer_Index = i;
+                        //  Layer 추가
+                        ProcessManager.AddLayer(m_Layer.ToString(), m_nLayerCount);
 
                         for (int nSocket = 0; nSocket < m_stDividedRegion_GroupData[0].nGroup_Num; nSocket++)
                         {
-                            ProcessManager.GetLayer(i).AddSocket(nSocket);
+                            ProcessManager.GetLayer(m_nLayerCount).AddSocket(nSocket);
                         }
+
+                        m_nLayerCount++;
                     }
                 }
             }
