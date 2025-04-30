@@ -1766,6 +1766,9 @@ namespace SLD200_MSL
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "모든 데이터를 리셋 하시겠습니까?\r\n\r\n[Loader 부터 다시 시작]"))
                 return;
 
+            // 가공 Data 초기화
+            ProcessManager.Reset();
+
             //  가공 Sequence Index 초기화 (Loading 부터 시작)
             Equipment.m_bMainProcessStatus_LD_LPort_Complete = false;                       //  Loader LPort 투입 완료
             Equipment.m_bMainProcessStatus_LD_RPort_Complete = false;                       //  Loader RPort 투입 완료
