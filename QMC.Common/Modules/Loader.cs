@@ -6422,11 +6422,14 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
+                            //이 부분에서 자주 발생. 
                             workStage.workStageParameter.DO_Stage_Vacuum(true);
+                            Thread.Sleep(100);  //너무 신호 빠른거 아닌지?
                             workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
 
                             //  Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
                             workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);            //  임시로 -30 고정
+                            Thread.Sleep(100); //너무 신호 빠른거 아닌지?
                         }
 
                     }
