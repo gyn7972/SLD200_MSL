@@ -1740,6 +1740,9 @@ namespace QMC.Common.Modules
         public PointD Main_SocketPositions_CurrentSocketPosition = new PointD(0, 0);    //  현재 가공중인 소켓 좌표값
         public int Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Ready;
 
+        public PointD Main_SocketPositions_SocketCompletePosition = new PointD(0, 0);           //  완료 소켓 좌표값 (가공중인 소켓 갱신할 때 인덱스가 겹쳐서 완료 표시가 안되는 듯)
+        public int Main_SocketPositions_CompleteStatus = (int)Socket_Process_Status.Ready;      //  완료된 소켓의 상태 (OK, NG)
+        public bool Main_SocketPositions_SetCompleteStatus = false;                             //  완료 소켓 상태 세팅
         #endregion
 
 
@@ -6120,7 +6123,8 @@ namespace QMC.Common.Modules
         public string ConvertDecimalToHex(string m_strDecimalNumber)
         {
             int decimalNumber = 0;
-            decimalNumber = Convert.ToInt32(m_strDecimalNumber);
+            //decimalNumber = Convert.ToInt32(m_strDecimalNumber);
+            decimalNumber = Equipment.ToInt(m_strDecimalNumber);
 
             if (decimalNumber < 0 || decimalNumber > 9999)
             {
@@ -6336,7 +6340,8 @@ namespace QMC.Common.Modules
 
             if ((m_nLaserCommRecvData_LF_Count == 1) && m_bDataOK)
             {
-                m_nPressureStep = Convert.ToInt32(m_strReceivedData);
+                //m_nPressureStep = Convert.ToInt32(m_strReceivedData);
+                m_nPressureStep = Equipment.ToInt(m_strReceivedData);
                 m_dRet = m_dMinPressure + ((double)m_nPressureStep / m_dPressureTotalStep) * (m_dMaxPressure - m_dMinPressure);
             }
             else
@@ -7260,10 +7265,10 @@ namespace QMC.Common.Modules
 
                 //  Transfer X
                 NativeMethods.GetPrivateProfileString(strTemp, "StageX", "0", temp, 255, strFIle);
-                stWorkStageTeachingPos[i].Stage_X = Convert.ToDouble(temp.ToString());
+                stWorkStageTeachingPos[i].Stage_X = Equipment.ToDouble(temp.ToString());
                 //  Transfer Z
                 NativeMethods.GetPrivateProfileString(strTemp, "StageY", "0", temp, 255, strFIle);
-                stWorkStageTeachingPos[i].Stage_Y = Convert.ToDouble(temp.ToString());
+                stWorkStageTeachingPos[i].Stage_Y = Equipment.ToDouble(temp.ToString());
             }
 
             return m_bRet;
@@ -7326,16 +7331,16 @@ namespace QMC.Common.Modules
 
                 //  Fine Accel
                 NativeMethods.GetPrivateProfileString(strTemp, "Fine_Accel", "20", temp, 255, strFIle);
-                stWorkStagePosMoveProperties[i].Fine_Accel = Convert.ToInt16(temp.ToString());
+                stWorkStagePosMoveProperties[i].Fine_Accel = Equipment.ToInt(temp.ToString());
                 //  Fine Settle Delay
                 NativeMethods.GetPrivateProfileString(strTemp, "Fine_SettleDelay", "200", temp, 255, strFIle);
-                stWorkStagePosMoveProperties[i].Fine_SettleDelay = Convert.ToInt16(temp.ToString());
+                stWorkStagePosMoveProperties[i].Fine_SettleDelay = Equipment.ToInt(temp.ToString());
                 //  Coarse Accel
                 NativeMethods.GetPrivateProfileString(strTemp, "Coarse_Accel", "200", temp, 255, strFIle);
-                stWorkStagePosMoveProperties[i].Coarse_Accel = Convert.ToInt16(temp.ToString());
+                stWorkStagePosMoveProperties[i].Coarse_Accel = Equipment.ToInt(temp.ToString());
                 //  Coarse Settle Delay
                 NativeMethods.GetPrivateProfileString(strTemp, "Coarse_SettleDelay", "20", temp, 255, strFIle);
-                stWorkStagePosMoveProperties[i].Coarse_SettleDelay = Convert.ToInt16(temp.ToString());
+                stWorkStagePosMoveProperties[i].Coarse_SettleDelay = Equipment.ToInt(temp.ToString());
             }
 
             //  0
@@ -10366,7 +10371,7 @@ namespace QMC.Common.Modules
                                 {
                                     try
                                     {
-                                        m_dPowerMeterBDS_Value = Convert.ToDouble(m_strPowerMeterBDS_PowerValue);
+                                        m_dPowerMeterBDS_Value = Equipment.ToDouble(m_strPowerMeterBDS_PowerValue);
                                     }
                                     catch (Exception ex)
                                     {
@@ -10396,7 +10401,7 @@ namespace QMC.Common.Modules
                             {
                                 try
                                 {
-                                    m_dPowerMeterBDS_Value = Convert.ToDouble(m_strPowerMeterBDS_PowerValue);
+                                    m_dPowerMeterBDS_Value = Equipment.ToDouble(m_strPowerMeterBDS_PowerValue);
                                 }
                                 catch (Exception ex)
                                 {
@@ -10496,7 +10501,7 @@ namespace QMC.Common.Modules
                                 {
                                     try
                                     {
-                                        m_dPowerMeterStage_Value = Convert.ToDouble(m_strPowerMeterStage_PowerValue);
+                                        m_dPowerMeterStage_Value = Equipment.ToDouble(m_strPowerMeterStage_PowerValue);
                                     }
                                     catch (Exception ex)
                                     {
@@ -10526,7 +10531,7 @@ namespace QMC.Common.Modules
                             {
                                 try
                                 {
-                                    m_dPowerMeterStage_Value = Convert.ToDouble(m_strPowerMeterStage_PowerValue);
+                                    m_dPowerMeterStage_Value = Equipment.ToDouble(m_strPowerMeterStage_PowerValue);
                                 }
                                 catch (Exception ex)
                                 {
@@ -11101,7 +11106,7 @@ namespace QMC.Common.Modules
                             if (LaserSensorData.Length > 1)
                             {
                                 //  값을 읽었을 때
-                                m_dLaserHeightSensorSocket_Value = Convert.ToDouble(LaserSensorData[1]);
+                                m_dLaserHeightSensorSocket_Value = Equipment.ToDouble(LaserSensorData[1]);
 
                                 //label_CommunicationTerminal_ReceivedData.Text = string.Format("Laser Height Sensor Value : {0}", );
                                 m_strLaserSensorSocket_ReceivedData = "";
@@ -11777,8 +11782,8 @@ namespace QMC.Common.Modules
 
                             if (words.Length >= 2)
                             {
-                                //m_nLaser_SystemStatus = Convert.ToInt16(m_strRapidLxLaser_Comm_ReceivedData.Substring(0, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
-                                m_nLaser_SystemStatus = Convert.ToInt16(words[1]);
+                                //m_nLaser_SystemStatus = Equipment.ToInt(m_strRapidLxLaser_Comm_ReceivedData.Substring(0, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
+                                m_nLaser_SystemStatus = Equipment.ToInt(words[1]);
 
                                 //  데이터를 사용했으니 초기화
                                 m_bRapidLxLaser_CommData_Received = false;
@@ -11865,8 +11870,8 @@ namespace QMC.Common.Modules
 
                             if (words.Length >= 2)
                             {
-                                //m_nLaser_PulseMode = Convert.ToInt16(m_strRapidLxLaser_Comm_ReceivedData.Substring(0, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
-                                m_nLaser_PulseMode = Convert.ToInt16(words[1]);
+                                //m_nLaser_PulseMode = Equipment.ToInt(m_strRapidLxLaser_Comm_ReceivedData.Substring(0, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
+                                m_nLaser_PulseMode = Equipment.ToInt(words[1]);
                                 m_nLaserComm_ReadSetValue_PulseMode_Index = m_nLaser_PulseMode;
 
                                 //  데이터를 사용했으니 초기화
@@ -11954,8 +11959,8 @@ namespace QMC.Common.Modules
 
                             if (words.Length >= 2)
                             {
-                                //m_dLaser_AmplifierRR = Convert.ToDouble(m_strRapidLxLaser_Comm_ReceivedData.Substring(0, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
-                                m_dLaser_AmplifierRR = Convert.ToDouble(words[1]);
+                                //m_dLaser_AmplifierRR = Equipment.ToDouble(m_strRapidLxLaser_Comm_ReceivedData.Substring(0, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
+                                m_dLaser_AmplifierRR = Equipment.ToDouble(words[1]);
                                 m_dLaserComm_ReadSetValue_Amplifier = m_dLaser_AmplifierRR;
 
                                 //  데이터를 사용했으니 초기화
@@ -12043,8 +12048,8 @@ namespace QMC.Common.Modules
 
                             if (words.Length >= 2)
                             {
-                                //m_dLaser_OutputRR = Convert.ToDouble(m_strRapidLxLaser_Comm_ReceivedData.Substring(3, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
-                                m_dLaser_OutputRR = Convert.ToDouble(words[1]);
+                                //m_dLaser_OutputRR = Equipment.ToDouble(m_strRapidLxLaser_Comm_ReceivedData.Substring(3, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
+                                m_dLaser_OutputRR = Equipment.ToDouble(words[1]);
 
                                 //  데이터를 사용했으니 초기화
                                 m_bRapidLxLaser_CommData_Received = false;
@@ -12131,8 +12136,8 @@ namespace QMC.Common.Modules
 
                             if (words.Length >= 2)
                             {
-                                //m_dLaser_OutputEnergy = Convert.ToDouble(m_strRapidLxLaser_Comm_ReceivedData.Substring(0, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
-                                m_dLaser_OutputEnergy = Convert.ToDouble(words[1]);
+                                //m_dLaser_OutputEnergy = Equipment.ToDouble(m_strRapidLxLaser_Comm_ReceivedData.Substring(0, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
+                                m_dLaser_OutputEnergy = Equipment.ToDouble(words[1]);
                                 m_dLaserComm_ReadSetValue_EnergyPercent = m_dLaser_OutputEnergy;
 
                                 if (m_nLaserComm_SetValue_Get_Process == 0)
@@ -12228,8 +12233,8 @@ namespace QMC.Common.Modules
 
                             if (words.Length >= 2)
                             {
-                                //m_dLaser_OutputRR = Convert.ToDouble(m_strRapidLxLaser_Comm_ReceivedData.Substring(3, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
-                                m_dLaser_OperatingHours = Convert.ToDouble(words[1]);
+                                //m_dLaser_OutputRR = Equipment.ToDouble(m_strRapidLxLaser_Comm_ReceivedData.Substring(3, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
+                                m_dLaser_OperatingHours = Equipment.ToDouble(words[1]);
 
                                 //  데이터를 사용했으니 초기화
                                 m_bRapidLxLaser_CommData_Received = false;
@@ -12316,8 +12321,8 @@ namespace QMC.Common.Modules
 
                             if (words.Length >= 2)
                             {
-                                //m_dLaser_OutputRR = Convert.ToDouble(m_strRapidLxLaser_Comm_ReceivedData.Substring(3, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
-                                m_dLaser_WaterTemperature = Convert.ToDouble(words[1]);
+                                //m_dLaser_OutputRR = Equipment.ToDouble(m_strRapidLxLaser_Comm_ReceivedData.Substring(3, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
+                                m_dLaser_WaterTemperature = Equipment.ToDouble(words[1]);
 
                                 //  데이터를 사용했으니 초기화
                                 m_bRapidLxLaser_CommData_Received = false;
@@ -12404,8 +12409,8 @@ namespace QMC.Common.Modules
 
                             if (words.Length >= 2)
                             {
-                                //m_dLaser_OutputRR = Convert.ToDouble(m_strRapidLxLaser_Comm_ReceivedData.Substring(3, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
-                                m_dLaser_SHGTemperature = Convert.ToDouble(words[1]);
+                                //m_dLaser_OutputRR = Equipment.ToDouble(m_strRapidLxLaser_Comm_ReceivedData.Substring(3, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
+                                m_dLaser_SHGTemperature = Equipment.ToDouble(words[1]);
 
                                 //  데이터를 사용했으니 초기화
                                 m_bRapidLxLaser_CommData_Received = false;
@@ -12492,8 +12497,8 @@ namespace QMC.Common.Modules
 
                             if (words.Length >= 2)
                             {
-                                //m_dLaser_OutputRR = Convert.ToDouble(m_strRapidLxLaser_Comm_ReceivedData.Substring(3, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
-                                m_dLaser_THGTemperature = Convert.ToDouble(words[1]);
+                                //m_dLaser_OutputRR = Equipment.ToDouble(m_strRapidLxLaser_Comm_ReceivedData.Substring(3, m_strRapidLxLaser_Comm_ReceivedData.Length - 1));
+                                m_dLaser_THGTemperature = Equipment.ToDouble(words[1]);
 
                                 //  데이터를 사용했으니 초기화
                                 m_bRapidLxLaser_CommData_Received = false;
@@ -14864,7 +14869,7 @@ namespace QMC.Common.Modules
                     //    Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, 가공 레이저 파라미터 RepRate 변경 시도 (QSwitch)");
 
                     //    m_strLaser_QSW_forUserSet = Config.ParamConfig.Drilling_RepRate_QSwitch.ToString();
-                    //    SpectraPhysicsLaserComm_QSW_Set(Convert.ToInt32(m_strLaser_QSW_forUserSet));
+                    //    SpectraPhysicsLaserComm_QSW_Set(Equipment.ToInt(m_strLaser_QSW_forUserSet));
 
                     //    m_nLaserParamChangeDelayCount = 0;
                     //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forCO2_Check;
@@ -15221,8 +15226,11 @@ namespace QMC.Common.Modules
                     else                                                //  Outline Layer 가 없으므로 다음 소켓 체크하러
                     {
                         Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
-                        Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+                        Main_SocketPositions_SetStatus = true;                                                      //  상태 변경
 
+                        Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
+                        Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
+                        Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
 
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
@@ -15663,6 +15671,9 @@ namespace QMC.Common.Modules
                     Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                     Main_SocketPositions_SetStatus = true;                                              //  상태 변경
 
+                    Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
+                    Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
+                    Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
 
                     m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
@@ -17383,6 +17394,7 @@ namespace QMC.Common.Modules
 
                             Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
                             Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
 
@@ -17681,6 +17693,9 @@ namespace QMC.Common.Modules
                         Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                         Main_SocketPositions_SetStatus = true;                                              //  상태 변경
 
+                        Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
+                        Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
+                        Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
 
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
 
@@ -22216,7 +22231,9 @@ namespace QMC.Common.Modules
                                 Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                                 Main_SocketPositions_SetStatus = true;                                              //  상태 변경
 
-
+                                Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
+                                Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
+                                Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
 
                                 m_bDrillingWork_Thruhole_Exist = false;
                                 m_bDrillingWork_Outline_Exist = false;
@@ -23770,7 +23787,7 @@ namespace QMC.Common.Modules
 
             //    //  구동 제한 - Wafer Align 시, Elevator Z 축이 올라갈 수 있는 최대 높이 위치
             //    NativeMethods.GetPrivateProfileString("Drive_Limit", "Elev_Z", "58.0", temp, 255, strFIle);
-            //    Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign = Equipment.ToDouble(temp.ToString());
 
             //    //  비전 스케일 - Manual Scale Usage
             //    NativeMethods.GetPrivateProfileString("Vision_Scale", "Manual_Scale_Use", "True", temp, 255, strFIle);
@@ -23829,11 +23846,11 @@ namespace QMC.Common.Modules
 
             //    //  PAK 카메라 Width
             //    NativeMethods.GetPrivateProfileString("Upper_Camera", "Width", "2448", temp, 255, strFile);
-            //    stCameraSet.Upper_Width = Convert.ToInt16(temp.ToString());
+            //    stCameraSet.Upper_Width = Equipment.ToInt(temp.ToString());
 
             //    //  PAK 카메라 Height
             //    NativeMethods.GetPrivateProfileString("Upper_Camera", "Height", "2048", temp, 255, strFile);
-            //    stCameraSet.Upper_Height = Convert.ToInt16(temp.ToString());
+            //    stCameraSet.Upper_Height = Equipment.ToInt(temp.ToString());
 
             return stCameraSet;
         }
@@ -25194,7 +25211,7 @@ namespace QMC.Common.Modules
                     if (m_strLayer == "Hole")                   //  Layer 가 Hole 이면?
                     {
                         //  Hole 로 시작하는 Layer 이면, 뒤에 숫자를 가져온다.
-                        int m_nHoleLayer_Num = Convert.ToInt16(layer.Name.Substring(4));
+                        int m_nHoleLayer_Num = Equipment.ToInt(layer.Name.Substring(4));
 
                         if (m_nHoleLayer_Num == 1)              //  Hole1 이면?
                         {

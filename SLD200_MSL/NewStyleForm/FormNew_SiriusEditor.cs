@@ -1226,7 +1226,7 @@ namespace SLD200_MSL
             //  입력한 소켓 관련 데이터 Select
 
             int m_nSocketIndex = 0;
-            m_nSocketIndex = Convert.ToInt16(tb_SelectSocketNumber.Text);
+            m_nSocketIndex = Equipment.ToInt(tb_SelectSocketNumber.Text);
 
             if (m_nSocketIndex < 0)
             {
@@ -1298,7 +1298,7 @@ namespace SLD200_MSL
             double m_dOffsetY = 0.0;
 
             int m_nSocketIndex = 0;
-            m_nSocketIndex = Convert.ToInt16(tb_SelectSocketNumber.Text);
+            m_nSocketIndex = Equipment.ToInt(tb_SelectSocketNumber.Text);
 
             if (m_nSocketIndex < 0)
             {
@@ -1312,9 +1312,9 @@ namespace SLD200_MSL
                 return;
             }
 
-            m_dOffsetX = Convert.ToDouble(tb_ScannerOffset_X.Text);
-            m_dOffsetY = Convert.ToDouble(tb_ScannerOffset_Y.Text);
-            m_dAngle = Convert.ToDouble(tb_ScannerOffset_Angle.Text);
+            m_dOffsetX = Equipment.ToDouble(tb_ScannerOffset_X.Text);
+            m_dOffsetY = Equipment.ToDouble(tb_ScannerOffset_Y.Text);
+            m_dAngle = Equipment.ToDouble(tb_ScannerOffset_Angle.Text);
 
             //m_dRotCenter_X = workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dGroupCenter.X;
             //m_dRotCenter_Y = workStage.m_stDividedRegion_GroupData[m_nSocketIndex].dGroupCenter.Y;
@@ -1366,9 +1366,9 @@ namespace SLD200_MSL
                 return;
 
 
-            ScannerOffset.X = (float)Convert.ToDouble(tb_ScannerOffset_X.Text);
-            ScannerOffset.Y = (float)Convert.ToDouble(tb_ScannerOffset_Y.Text);
-            ScannerOffset.Z = (float)Convert.ToDouble(tb_ScannerOffset_Angle.Text);
+            ScannerOffset.X = (float)Equipment.ToDouble(tb_ScannerOffset_X.Text);
+            ScannerOffset.Y = (float)Equipment.ToDouble(tb_ScannerOffset_Y.Text);
+            ScannerOffset.Z = (float)Equipment.ToDouble(tb_ScannerOffset_Angle.Text);
 
             workStage.rtc.PrimaryHeadBaseOffset = ScannerOffset;
         }

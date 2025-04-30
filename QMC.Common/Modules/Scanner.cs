@@ -575,35 +575,35 @@ namespace QMC.Common.Modules
                                 
             //    //  구동 제한 - Wafer Align 시, Elevator Z 축이 올라갈 수 있는 최대 높이 위치
             //    NativeMethods.GetPrivateProfileString("Drive_Limit", "Elev_Z", "58.0", temp, 255, strFIle);
-            //    Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.DriveLimit_ElevZ_when_WaferAlign = Equipment.ToDouble(temp.ToString());
 
             //    //  구동 제한 - Vision Y 축이, Elevator Z 축과 충돌하지 않는 최대 위치
             //    NativeMethods.GetPrivateProfileString("Drive_Limit", "Vision_Y", "20.0", temp, 255, strFIle);
-            //    Config.ParamConfig.DriveLimit_VisionY_NotConflictWithElevZ = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.DriveLimit_VisionY_NotConflictWithElevZ = Equipment.ToDouble(temp.ToString());
 
             //    //  구동 제한 - UVW 스테이지, U 축 얼라인 제한 위치 (마이너스 방향)
             //    NativeMethods.GetPrivateProfileString("Align_Limit", "UVW_U_Minus", "-1.915", temp, 255, strFIle);
-            //    Config.ParamConfig.AlignLimit_UVW_U_Minus = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.AlignLimit_UVW_U_Minus = Equipment.ToDouble(temp.ToString());
 
             //    //  구동 제한 - UVW 스테이지, U 축 얼라인 제한 위치 (플러스 방향)
             //    NativeMethods.GetPrivateProfileString("Align_Limit", "UVW_U_Plus", "0.085", temp, 255, strFIle);
-            //    Config.ParamConfig.AlignLimit_UVW_U_Plus = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.AlignLimit_UVW_U_Plus = Equipment.ToDouble(temp.ToString());
 
             //    //  구동 제한 - UVW 스테이지, V 축 얼라인 제한 위치 (마이너스 방향)
             //    NativeMethods.GetPrivateProfileString("Align_Limit", "UVW_V_Minus", "-0.805", temp, 255, strFIle);
-            //    Config.ParamConfig.AlignLimit_UVW_V_Minus = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.AlignLimit_UVW_V_Minus = Equipment.ToDouble(temp.ToString());
 
             //    //  구동 제한 - UVW 스테이지, V 축 얼라인 제한 위치 (플러스 방향)
             //    NativeMethods.GetPrivateProfileString("Align_Limit", "UVW_V_Plus", "1.195", temp, 255, strFIle);
-            //    Config.ParamConfig.AlignLimit_UVW_V_Plus = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.AlignLimit_UVW_V_Plus = Equipment.ToDouble(temp.ToString());
 
             //    //  구동 제한 - UVW 스테이지, W 축 얼라인 제한 위치 (마이너스 방향)
             //    NativeMethods.GetPrivateProfileString("Align_Limit", "UVW_W_Minus", "-0.075", temp, 255, strFIle);
-            //    Config.ParamConfig.AlignLimit_UVW_W_Minus = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.AlignLimit_UVW_W_Minus = Equipment.ToDouble(temp.ToString());
 
             //    //  구동 제한 - UVW 스테이지, W 축 얼라인 제한 위치 (플러스 방향)
             //    NativeMethods.GetPrivateProfileString("Align_Limit", "UVW_W_Plus", "1.925", temp, 255, strFIle);
-            //    Config.ParamConfig.AlignLimit_UVW_W_Plus = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.AlignLimit_UVW_W_Plus = Equipment.ToDouble(temp.ToString());
 
             //    //  비전 스케일 - Manual Scale Usage
             //    NativeMethods.GetPrivateProfileString("Vision_Scale", "Manual_Scale_Use", "True", temp, 255, strFIle);
@@ -611,11 +611,11 @@ namespace QMC.Common.Modules
 
             //    //  비전 스케일 - Lower Vision Scale X (mm)
             //    NativeMethods.GetPrivateProfileString("Vision_Scale", "Lower_Scale_X", "0.001726468", temp, 255, strFIle);
-            //    Config.ParamConfig.LowerVision_Scale_X = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.LowerVision_Scale_X = Equipment.ToDouble(temp.ToString());
 
             //    //  비전 스케일 - Lower Vision Scale Y (mm)
             //    NativeMethods.GetPrivateProfileString("Vision_Scale", "Lower_Scale_Y", "0.001726468", temp, 255, strFIle);
-            //    Config.ParamConfig.LowerVision_Scale_Y = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.LowerVision_Scale_Y = Equipment.ToDouble(temp.ToString());
 
             //    //  비전 스케일 - Lower Vision Scale Invert X
             //    NativeMethods.GetPrivateProfileString("Vision_Scale", "Lower_Scale_X_Invert", "False", temp, 255, strFIle);
@@ -627,11 +627,11 @@ namespace QMC.Common.Modules
 
             //    //  비전 스케일 - Upper Vision Scale X (mm)
             //    NativeMethods.GetPrivateProfileString("Vision_Scale", "Upper_Scale_X", "0.001726468", temp, 255, strFIle);
-            //    Config.ParamConfig.UpperVision_Scale_X = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.UpperVision_Scale_X = Equipment.ToDouble(temp.ToString());
 
             //    //  비전 스케일 - Upper Vision Scale Y (mm)
             //    NativeMethods.GetPrivateProfileString("Vision_Scale", "Upper_Scale_Y", "0.001726468", temp, 255, strFIle);
-            //    Config.ParamConfig.UpperVision_Scale_Y = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.UpperVision_Scale_Y = Equipment.ToDouble(temp.ToString());
 
             //    //  비전 스케일 - Upper Vision Scale Invert X
             //    NativeMethods.GetPrivateProfileString("Vision_Scale", "Upper_Scale_X_Invert", "False", temp, 255, strFIle);
@@ -643,27 +643,27 @@ namespace QMC.Common.Modules
 
             //    //  레티클 글래스 - 얼라인 조명 밝기값 (상부 카메라)
             //    NativeMethods.GetPrivateProfileString("Reticle_Glass", "Upper_Vision_LightValue", "602", temp, 255, strFIle);
-            //    Config.ParamConfig.ReticleAlign_UpperVision_LightValue = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.ReticleAlign_UpperVision_LightValue = Equipment.ToInt(temp.ToString());
 
             //    //  레티클 글래스 - 얼라인 조명 밝기값 (하부 카메라)
             //    NativeMethods.GetPrivateProfileString("Reticle_Glass", "Lower_Vision_LightValue", "964", temp, 255, strFIle);
-            //    Config.ParamConfig.ReticleAlign_LowerVision_LightValue = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.ReticleAlign_LowerVision_LightValue = Equipment.ToInt(temp.ToString());
 
             //    //  얼라인 - 얼라인 시 Theta 축 회전 속도 (mm/s)
             //    NativeMethods.GetPrivateProfileString("Vision_Align", "Theta_Rotation_Speed", "5.0", temp, 255, strFIle);
-            //    Config.ParamConfig.Align_Theta_Velocity = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.Align_Theta_Velocity = Equipment.ToDouble(temp.ToString());
 
             //    //  얼라인 - 얼라인 시 Theta 축 회전 가속도 (mm/s²)
             //    NativeMethods.GetPrivateProfileString("Vision_Align", "Theta_Rotation_Accel", "100.0", temp, 255, strFIle);
-            //    Config.ParamConfig.Align_Theta_Accel = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.Align_Theta_Accel = Equipment.ToDouble(temp.ToString());
 
             //    //  얼라인 - 얼라인 시 Theta 축 회전 감속도 (mm/s²)
             //    NativeMethods.GetPrivateProfileString("Vision_Align", "Theta_Rotation_Decel", "100.0", temp, 255, strFIle);
-            //    Config.ParamConfig.Align_Theta_Decel = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.Align_Theta_Decel = Equipment.ToDouble(temp.ToString());
 
             //    //  얼라인 - 얼라인 재시도 회수
             //    NativeMethods.GetPrivateProfileString("Vision_Align", "Align_Retry", "10", temp, 255, strFIle);
-            //    Config.ParamConfig.Align_Retries = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.Align_Retries = Equipment.ToInt(temp.ToString());
 
             //    //  얼라인 - 얼라인 각도 Invert
             //    NativeMethods.GetPrivateProfileString("Vision_Scale", "Align_Angle_Invert", "True", temp, 255, strFIle);
@@ -675,11 +675,11 @@ namespace QMC.Common.Modules
 
             //    //  얼라인 스테이지 - Theta 회전 반경 (mm)
             //    NativeMethods.GetPrivateProfileString("Align_Stage", "Turning_Radius", "70.0", temp, 255, strFIle);
-            //    Config.ParamConfig.Align_Theta_From_RotCenter_To_UVW_Distance = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.Align_Theta_From_RotCenter_To_UVW_Distance = Equipment.ToDouble(temp.ToString());
 
             //    //  얼라인 스테이지 - Theta 1˚ 회전을 위한 UVW 각 축 이동량 (mm)
             //    NativeMethods.GetPrivateProfileString("Align_Stage", "Movement_Amount_1Deg_Rotation", "1.221668451", temp, 255, strFIle);
-            //    Config.ParamConfig.Align_Theta_Movement_MM_Per_1Deg = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.Align_Theta_Movement_MM_Per_1Deg = Equipment.ToDouble(temp.ToString());
 
             //    //  얼라인 이미지 저장 여부
             //    NativeMethods.GetPrivateProfileString("Align_Image", "Image_Save_Use", "True", temp, 255, strFIle);
@@ -687,11 +687,11 @@ namespace QMC.Common.Modules
 
             //    //  얼라인 이미지 저장 위치 용량 부족 경고 기준치 (GB)
             //    NativeMethods.GetPrivateProfileString("Align_Image", "Image_Save_DriveSpace_Warning_Value", "10", temp, 255, strFIle);
-            //    Config.ParamConfig.AlignImageSaveFolder_WarningSpace = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.AlignImageSaveFolder_WarningSpace = Equipment.ToDouble(temp.ToString());
 
             //    //  프로브 카드 클램프 타입 1 일 경우, 업다운 실린더 동작 대기 시간
             //    NativeMethods.GetPrivateProfileString("Machine_Type", "ProbeCard_ClampTypeB_CylUpDown_StableTime", "1000", temp, 255, strFIle);
-            //    Config.ParamConfig.ProbeCard_ClampTypeB_CylUpDown_StableTime = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.ProbeCard_ClampTypeB_CylUpDown_StableTime = Equipment.ToInt(temp.ToString());
 
             //    //  레티클 글래스 - 레시피 변경 시, 레티클 글래스 센터를 확인해야 작업 진행 가능
             //    NativeMethods.GetPrivateProfileString("Reticle_Glass", "ReticleGlass_CenterCheck_forAlign", "False", temp, 255, strFIle);
@@ -699,15 +699,15 @@ namespace QMC.Common.Modules
 
             //    //  레티클 글래스 - 레티클 글래스를 확인 시 비전 카메라와 엘리베이터의 충돌 방지를 위한 Vision Y 축 이동 한계 위치. (mm, 대부분 90.0 이내)
             //    NativeMethods.GetPrivateProfileString("Reticle_Glass", "ReticleGlass_Vision_Y_Limit", "90", temp, 255, strFIle);
-            //    Config.ParamConfig.ReticleGlass_Vision_Y_Limit = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.ReticleGlass_Vision_Y_Limit = Equipment.ToDouble(temp.ToString());
 
             //    //  PAK, 웨이퍼 Gate - Center 가 일치할 때의 Offset X
             //    NativeMethods.GetPrivateProfileString("PAK_Gate_Center", "PAK_WaferGate_Centering_Offset_X", "0", temp, 255, strFIle);
-            //    Config.ParamConfig.PAK_WaferGate_Centering_Offset_X = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.PAK_WaferGate_Centering_Offset_X = Equipment.ToDouble(temp.ToString());
 
             //    //  PAK, 웨이퍼 Gate - Center 가 일치할 때의 Offset Y
             //    NativeMethods.GetPrivateProfileString("PAK_Gate_Center", "PAK_WaferGate_Centering_Offset_Y", "0", temp, 255, strFIle);
-            //    Config.ParamConfig.PAK_WaferGate_Centering_Offset_Y = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.PAK_WaferGate_Centering_Offset_Y = Equipment.ToDouble(temp.ToString());
 
             //    //  자동 로그아웃 기능 사용 여부
             //    NativeMethods.GetPrivateProfileString("Auto_LogOut", "Auto_LogOut_Usage", "False", temp, 255, strFIle);
@@ -715,7 +715,7 @@ namespace QMC.Common.Modules
 
             //    //  자동 로그아웃 설정 시간
             //    NativeMethods.GetPrivateProfileString("Auto_LogOut", "Auto_LogOut_Time", "10", temp, 255, strFIle);
-            //    Config.ParamConfig.Auto_LogOut_Time = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.Auto_LogOut_Time = Equipment.ToDouble(temp.ToString());
 
             //    //  얼라인 작업 시작 시 & 패킹 작업 완료시 Leak Check 기능 사용 여부
             //    NativeMethods.GetPrivateProfileString("Packing_LeakCheck", "AlignPacking_LeakCheck_Usage", "False", temp, 255, strFIle);
@@ -723,11 +723,11 @@ namespace QMC.Common.Modules
 
             //    //  패킹 작업 완료시 Leak Check 설정 시간 (sec)
             //    NativeMethods.GetPrivateProfileString("Packing_LeakCheck", "Packing_LeakCheck_Time", "30", temp, 255, strFIle);
-            //    Config.ParamConfig.Packing_OP_LeakCheck_Time = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.Packing_OP_LeakCheck_Time = Equipment.ToDouble(temp.ToString());
 
             //    //  패킹 작업 완료 후, 제품 언로딩을 위해 엘리베이터를 내리는 거리 (mm)
             //    NativeMethods.GetPrivateProfileString("ElevatorZ", "DownDistance_AfterPacking", "20", temp, 255, strFIle);
-            //    Config.ParamConfig.Wafer_ProbeCard_Down_Distance_After_Packing = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.Wafer_ProbeCard_Down_Distance_After_Packing = Equipment.ToDouble(temp.ToString());
 
             //    //  전면 안전센서 사용 여부
             //    NativeMethods.GetPrivateProfileString("Interlock", "Area_Sensor_Usage", "False", temp, 255, strFIle);
@@ -739,7 +739,7 @@ namespace QMC.Common.Modules
 
             //    ////  전면 안전센서 해제 후 다시 동작시키기 위해 대기하는 시간 (sec)
             //    //NativeMethods.GetPrivateProfileString("Interlock", "Area_Sensor_Release_Pause_Time", "3", temp, 255, strFIle);
-            //    //Config.ParamConfig.AreaSensor_Off_Pause_Time = Convert.ToDouble(temp.ToString());
+            //    //Config.ParamConfig.AreaSensor_Off_Pause_Time = Equipment.ToDouble(temp.ToString());
 
             //    //  수동패킹 모드 사용 권한 설정
             //    NativeMethods.GetPrivateProfileString("Manual_Packing", "Enable_Admin_Only", "True", temp, 255, strFIle);
@@ -755,7 +755,7 @@ namespace QMC.Common.Modules
 
             //    //  사용 옵션 - 웨이퍼 얼라인 시작 전 PAK 공압 라인 막힘 검사 시간 (ms)
             //    NativeMethods.GetPrivateProfileString("Operation_Options", "Pak_AirLineCheck_Time", "2000", temp, 255, strFIle);
-            //    Config.ParamConfig.Pak_AirLineCheck_Time = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.Pak_AirLineCheck_Time = Equipment.ToInt(temp.ToString());
 
             //    //  사용 옵션 - Packing 공압 신호 사용 여부
             //    NativeMethods.GetPrivateProfileString("Operation_Options", "Packing_VacuumSignal_Usage", "False", temp, 255, strFIle);
@@ -763,11 +763,11 @@ namespace QMC.Common.Modules
 
             //    //  사용 옵션 - Packing 공압 신호를 사용하지 않을 경우, 대기 시간 (ms)
             //    NativeMethods.GetPrivateProfileString("Operation_Options", "Packing_VacuumSignal_Time", "5000", temp, 255, strFIle);
-            //    Config.ParamConfig.Packing_VacuumSignal_Time = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.Packing_VacuumSignal_Time = Equipment.ToInt(temp.ToString());
 
             //    //  사용 옵션 - Packing 공압 신호를 사용할 경우, 추가 가압 시간 (ms)
             //    NativeMethods.GetPrivateProfileString("Operation_Options", "Packing_VacuumSignal_AfterTime", "5000", temp, 255, strFIle);
-            //    Config.ParamConfig.Packing_VacuumSignal_AfterTime = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.Packing_VacuumSignal_AfterTime = Equipment.ToInt(temp.ToString());
 
             //    //  사용 옵션 - Wafer 공압 체크 사용 여부
             //    NativeMethods.GetPrivateProfileString("Operation_Options", "Wafer_VacuumSignal_Usage", "False", temp, 255, strFIle);
@@ -775,7 +775,7 @@ namespace QMC.Common.Modules
 
             //    //  사용 옵션 - Wafer 공압을 사용하지 않을 경우, 대기 시간 (ms)
             //    NativeMethods.GetPrivateProfileString("Operation_Options", "Wafer_VacuumSignal_Time", "1000", temp, 255, strFIle);
-            //    Config.ParamConfig.Wafer_VacuumSignal_Time = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.Wafer_VacuumSignal_Time = Equipment.ToInt(temp.ToString());
 
             //    //  사용 옵션 - Thin-Chuck 감지 센서 사용 여부
             //    NativeMethods.GetPrivateProfileString("Operation_Options", "ThinChuck_DetectSignal_Usage", "True", temp, 255, strFIle);
@@ -787,7 +787,7 @@ namespace QMC.Common.Modules
 
             //    //  사용 옵션 - Thin-Chuck 공압을 사용하지 않을 경우, 대기 시간 (ms)
             //    NativeMethods.GetPrivateProfileString("Operation_Options", "ThinChuck_VacuumSignal_Time", "1000", temp, 255, strFIle);
-            //    Config.ParamConfig.ThinChuck_VacuumSignal_Time = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.ThinChuck_VacuumSignal_Time = Equipment.ToInt(temp.ToString());
 
             //    //  사용 옵션 - Wafer 얼라인 동작 중, 비전 사용 여부. (false : 사용 안함)
             //    NativeMethods.GetPrivateProfileString("Operation_Options", "Wafer_Align_Cam_Usage", "True", temp, 255, strFIle);
@@ -809,57 +809,57 @@ namespace QMC.Common.Modules
 
             //    //  안정화 시간 - Packing 공압 신호 On 후 대기 시간 (ms)
             //    NativeMethods.GetPrivateProfileString("Stable_Time", "StableTime_after_PackingSignal_On", "4000", temp, 255, strFIle);
-            //    Config.ParamConfig.StableTime_after_PackingSignal_On = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.StableTime_after_PackingSignal_On = Equipment.ToInt(temp.ToString());
 
             //    //  안정화 시간 - Packing 공압 신호 On 후 Thin-Chuck 공압을 해제하기 위해 대기하는 시간 (ms)
             //    NativeMethods.GetPrivateProfileString("Stable_Time", "StableTime_after_PackingSignal_On_before_ThinChuck_Vacuum_Off", "100", temp, 255, strFIle);
-            //    Config.ParamConfig.StableTime_after_PackingSignal_On_before_ThinChuck_Vacuum_Off = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.StableTime_after_PackingSignal_On_before_ThinChuck_Vacuum_Off = Equipment.ToInt(temp.ToString());
 
             //    //  안정화 시간 - Packing 공압 신호 On 후 Wafer 공압을 해제하기 위해 대기하는 시간 (ms)
             //    NativeMethods.GetPrivateProfileString("Stable_Time", "StableTime_after_PackingSignal_On_before_Wafer_Vacuum_Off", "0", temp, 255, strFIle);
-            //    Config.ParamConfig.StableTime_after_PackingSignal_On_before_Wafer_Vacuum_Off = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.StableTime_after_PackingSignal_On_before_Wafer_Vacuum_Off = Equipment.ToInt(temp.ToString());
 
             //    //  안정화 시간 - Packing 작업 중, Wafer 공압 해제 후 안정화(대기) 시간 (ms)
             //    NativeMethods.GetPrivateProfileString("Stable_Time", "StableTime_after_WaferVacuumSignal_Off", "300", temp, 255, strFIle);
-            //    Config.ParamConfig.StableTime_after_WaferVacuumSignal_Off = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.StableTime_after_WaferVacuumSignal_Off = Equipment.ToInt(temp.ToString());
 
             //    //  안정화 시간 - Packing 을 위해 Elev. Z 축이 프로브 카드 위치까지 이동한 후 안정화 시간 (ms)
             //    NativeMethods.GetPrivateProfileString("Stable_Time", "StableTime_before_PackingSignal_On", "100", temp, 255, strFIle);
-            //    Config.ParamConfig.StableTime_before_PackingSignal_On = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.StableTime_before_PackingSignal_On = Equipment.ToInt(temp.ToString());
 
             //    //  안정화 시간 - Packing 작업 중, Thin-Chuck 공압 해제 후 안정화(대기) 시간 (ms)
             //    NativeMethods.GetPrivateProfileString("Stable_Time", "StableTime_after_ThinChuckVacuumSignal_Off", "300", temp, 255, strFIle);
-            //    Config.ParamConfig.StableTime_after_ThinChuckVacuumSignal_Off = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.StableTime_after_ThinChuckVacuumSignal_Off = Equipment.ToInt(temp.ToString());
 
             //    //  안정화 시간 - Wafer 얼라인 시, 마크 위치 이동 후 안정화 시간 (ms)
             //    NativeMethods.GetPrivateProfileString("Stable_Time", "WaferAlign_Move_StableTime", "500", temp, 255, strFIle);
-            //    Config.ParamConfig.WaferAlign_Move_StableTime = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.WaferAlign_Move_StableTime = Equipment.ToInt(temp.ToString());
 
             //    //  안정화 시간 - Unpacking 작업 중, Unpacking 공압 신호 On 후 Elev. Z 축을 내리기 시작할 때까지 대기 시간 (ms)
             //    NativeMethods.GetPrivateProfileString("Stable_Time", "StableTime_after_UnpackingSignal_On", "100", temp, 255, strFIle);
-            //    Config.ParamConfig.StableTime_after_UnpackingSignal_On = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.StableTime_after_UnpackingSignal_On = Equipment.ToInt(temp.ToString());
 
 
 
             //    //  Offset && Delay - 웨이퍼 && 프로브카드 Packing 시, 저속 이동 거리 (mm)
             //    NativeMethods.GetPrivateProfileString("Offset_Delay", "Wafer_ProbeCard_PackingOffset_Distance", "10", temp, 255, strFIle);
-            //    Config.ParamConfig.Wafer_ProbeCard_PackingOffset_Distance = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.Wafer_ProbeCard_PackingOffset_Distance = Equipment.ToDouble(temp.ToString());
 
             //    //  Offset && Delay - 웨이퍼 && 프로브카드 Unpacking 시, 저속 이동 거리 (mm)
             //    NativeMethods.GetPrivateProfileString("Offset_Delay", "Wafer_ProbeCard_UnpackingOffset_Distance", "10", temp, 255, strFIle);
-            //    Config.ParamConfig.Wafer_ProbeCard_UnpackingOffset_Distance = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.Wafer_ProbeCard_UnpackingOffset_Distance = Equipment.ToDouble(temp.ToString());
 
             //    //  Offset && Delay - 웨이퍼 && 프로브카드 UnPacking 시, UnPacking 신호 인가 후 이동하는 거리 (mm)
             //    NativeMethods.GetPrivateProfileString("Offset_Delay", "Wafer_ProbeCard_UnPackingOffset_Distance", "5", temp, 255, strFIle);
-            //    Config.ParamConfig.Wafer_ProbeCard_UnPackingOffset_Distance = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.Wafer_ProbeCard_UnPackingOffset_Distance = Equipment.ToDouble(temp.ToString());
 
             //    //  Offset && Delay - 웨이퍼 && 프로브카드 UnPacking 시, UnPacking 을 위한 Elevator Z 축 이동 거리 (기준 높이 : Packing 위치) (mm)
             //    NativeMethods.GetPrivateProfileString("Offset_Delay", "Wafer_ProbeCard_UnPackingStartOffset_Distance", "-1.5", temp, 255, strFIle);
-            //    Config.ParamConfig.Wafer_ProbeCard_UnPackingStartOffset_Distance = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.Wafer_ProbeCard_UnPackingStartOffset_Distance = Equipment.ToDouble(temp.ToString());
 
             //    //  Offset && Delay - 웨이퍼 && 프로브카드 Manual Packing 시, 엘리베이터 Z 축의 1단계 Offset 거리 (mm, > 0)
             //    NativeMethods.GetPrivateProfileString("Offset_Delay", "Wafer_ProbeCard_ManualPacking_ElevZ_Offset_Distance", "30", temp, 255, strFIle);
-            //    Config.ParamConfig.Wafer_ProbeCard_ManualPacking_ElevZ_Offset_Distance = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.Wafer_ProbeCard_ManualPacking_ElevZ_Offset_Distance = Equipment.ToDouble(temp.ToString());
 
             //    //  Offset && Delay - 웨이퍼 && 프로브카드 Manual Packing 시, 엘리베이터 Z 축의 1단계 Offset 이동 방법 (2 Step 이동 or 이동 후 대기)
             //    NativeMethods.GetPrivateProfileString("Offset_Delay", "Wafer_ProbeCard_ManualPacking_ElevZ_OffsetMove_Concept", "False", temp, 255, strFIle);
@@ -867,7 +867,7 @@ namespace QMC.Common.Modules
 
             //    //  Offset && Delay - 웨이퍼 && 프로브카드 안전 분리 동작 시, 씬-척 낙하 방지를 위해 엘리베이터 Z 축을 올리는 위치. (Packing 위치 대비 Offset 거리 (mm, > 0)
             //    NativeMethods.GetPrivateProfileString("Offset_Delay", "Wafer_ProbeCard_SafelyUnpacking_ElevZ_Offset_Distance", "30", temp, 255, strFIle);
-            //    Config.ParamConfig.Wafer_ProbeCard_SafelyUnpacking_ElevZ_Offset_Distance = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.Wafer_ProbeCard_SafelyUnpacking_ElevZ_Offset_Distance = Equipment.ToDouble(temp.ToString());
 
 
 
@@ -887,31 +887,31 @@ namespace QMC.Common.Modules
 
             //    //  레티클 글래스 - 레티클 글래스 확인 위치 (VIsion X)                  ## 임의 변경 금지 ##
             //    NativeMethods.GetPrivateProfileString("Reticle_Glass", "ReticleGlass_Vision_X_Pos", "164", temp, 255, strFIle);
-            //    Config.ParamConfig.ReticleGlass_Vision_X_Pos = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.ReticleGlass_Vision_X_Pos = Equipment.ToDouble(temp.ToString());
 
             //    //  레티클 글래스 - 레티클 글래스 확인 위치 (VIsion Y)                  ## 임의 변경 금지 ##
             //    NativeMethods.GetPrivateProfileString("Reticle_Glass", "ReticleGlass_Vision_Y_Pos", "87", temp, 255, strFIle);
-            //    Config.ParamConfig.ReticleGlass_Vision_Y_Pos = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.ReticleGlass_Vision_Y_Pos = Equipment.ToDouble(temp.ToString());
 
             //    //  레티클 글래스 - 레티클 글래스 확인 위치 (VIsion Z)                  ## 임의 변경 금지 ##
             //    NativeMethods.GetPrivateProfileString("Reticle_Glass", "ReticleGlass_Vision_Z_Pos", "2.73", temp, 255, strFIle);
-            //    Config.ParamConfig.ReticleGlass_Vision_Z_Pos = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.ReticleGlass_Vision_Z_Pos = Equipment.ToDouble(temp.ToString());
 
             //    //  레티클 글래스 - 레티클 글래스 확인 위치 (Elev. Z - PAK 카메라)      ## 임의 변경 금지 ##
             //    NativeMethods.GetPrivateProfileString("Reticle_Glass", "ReticleGlass_Elev_Z_PAK_Pos", "0.0", temp, 255, strFIle);
-            //    Config.ParamConfig.ReticleGlass_Elev_Z_PAK_Pos = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.ReticleGlass_Elev_Z_PAK_Pos = Equipment.ToDouble(temp.ToString());
 
             //    //  레티클 글래스 - 레티클 글래스 확인 위치 (Elev. Z - Wafer 카메라)    ## 임의 변경 금지 ##
             //    NativeMethods.GetPrivateProfileString("Reticle_Glass", "ReticleGlass_Elev_Z_Wafer_Pos", "0.0", temp, 255, strFIle);
-            //    Config.ParamConfig.ReticleGlass_Elev_Z_Wafer_Pos = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.ReticleGlass_Elev_Z_Wafer_Pos = Equipment.ToDouble(temp.ToString());
 
             //    //  레티클 글래스 - 레티클 글래스 Wafer 이미지 Offset X        ## 임의 변경 금지 ##
             //    NativeMethods.GetPrivateProfileString("Reticle_Glass", "ReticleGlass_WaferVision_Offset_X", "0", temp, 255, strFIle);
-            //    Config.ParamConfig.ReticleGlass_WaferVision_Offset_X = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.ReticleGlass_WaferVision_Offset_X = Equipment.ToInt(temp.ToString());
 
             //    //  레티클 글래스 - 레티클 글래스 Wafer 이미지 Offset Y        ## 임의 변경 금지 ##
             //    NativeMethods.GetPrivateProfileString("Reticle_Glass", "ReticleGlass_WaferVision_Offset_Y", "0", temp, 255, strFIle);
-            //    Config.ParamConfig.ReticleGlass_WaferVision_Offset_Y = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.ReticleGlass_WaferVision_Offset_Y = Equipment.ToInt(temp.ToString());
 
 
 
@@ -921,37 +921,37 @@ namespace QMC.Common.Modules
 
             //    //  레티클 글래스 자동 보정 - 상부 비전 허용 오차 (XY, mm)
             //    NativeMethods.GetPrivateProfileString("Reticle_Glass_AutoCal", "ReticleAutoCal_UpperVision_Allowable_XY", "0.005", temp, 255, strFIle);
-            //    Config.ParamConfig.ReticleAutoCal_UpperVision_Allowable_XY = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.ReticleAutoCal_UpperVision_Allowable_XY = Equipment.ToDouble(temp.ToString());
 
             //    //  레티클 글래스 자동 보정 - 하부 비전 허용 오차 (XY, mm)
             //    NativeMethods.GetPrivateProfileString("Reticle_Glass_AutoCal", "ReticleAutoCal_LowerVision_Allowable_XY", "0.008", temp, 255, strFIle);
-            //    Config.ParamConfig.ReticleAutoCal_LowerVision_Allowable_XY = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.ReticleAutoCal_LowerVision_Allowable_XY = Equipment.ToDouble(temp.ToString());
 
             //    //  레티클 글래스 자동 보정 - 상부 카메라 얼라인 마크의 위치 평균을 계산하기 위한 측정 회수
             //    NativeMethods.GetPrivateProfileString("Reticle_Glass_AutoCal", "ReticleAutoCal_Upper_AlignMarkCount_forAverage", "1", temp, 255, strFIle);
-            //    Config.ParamConfig.ReticleAutoCal_Upper_AlignMarkCount_forAverage = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.ReticleAutoCal_Upper_AlignMarkCount_forAverage = Equipment.ToInt(temp.ToString());
 
             //    //  레티클 글래스 자동 보정 - 하부 카메라 얼라인 마크의 위치 평균을 계산하기 위한 측정 회수
             //    NativeMethods.GetPrivateProfileString("Reticle_Glass_AutoCal", "ReticleAutoCal_Lower_AlignMarkCount_forAverage", "1", temp, 255, strFIle);
-            //    Config.ParamConfig.ReticleAutoCal_Lower_AlignMarkCount_forAverage = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.ReticleAutoCal_Lower_AlignMarkCount_forAverage = Equipment.ToInt(temp.ToString());
 
             //    //  레티클 글래스 자동 보정 - 마크 위치 평균값 신뢰 공차 (mm)
             //    NativeMethods.GetPrivateProfileString("Reticle_Glass_AutoCal", "ReticleAutoCal_Vision_AverageCheck_Range", "0.05", temp, 255, strFIle);
-            //    Config.ParamConfig.ReticleAutoCal_Vision_AverageCheck_Range = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.ReticleAutoCal_Vision_AverageCheck_Range = Equipment.ToDouble(temp.ToString());
 
             //    //  레티클 글래스 자동 보정 - 얼라인 재시도 회수
             //    NativeMethods.GetPrivateProfileString("Reticle_Glass_AutoCal", "ReticleAutoCal_Align_Retries", "10", temp, 255, strFIle);
-            //    Config.ParamConfig.ReticleAutoCal_Align_Retries = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.ReticleAutoCal_Align_Retries = Equipment.ToInt(temp.ToString());
 
 
 
             //    //  PAK 얼라인 - 조명값 조정 크기 1단계
             //    NativeMethods.GetPrivateProfileString("PAK_Align", "PAKAlign_LightValue_Step1", "30", temp, 255, strFIle);
-            //    Config.ParamConfig.PAKAlign_LightValue_Step1 = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.PAKAlign_LightValue_Step1 = Equipment.ToInt(temp.ToString());
 
             //    //  PAK 얼라인 - 조명값 조정 크기 2단계
             //    NativeMethods.GetPrivateProfileString("PAK_Align", "PAKAlign_LightValue_Step2", "10", temp, 255, strFIle);
-            //    Config.ParamConfig.PAKAlign_LightValue_Step2 = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.PAKAlign_LightValue_Step2 = Equipment.ToInt(temp.ToString());
 
 
 
@@ -961,7 +961,7 @@ namespace QMC.Common.Modules
 
             //    //  인터락 - Z-Slip 기능 - 엘리베이터 Z 축을 긴급정지시키기 위한 Torque 기준값
             //    NativeMethods.GetPrivateProfileString("Interlock", "ElevZ_ESTOP_Torque_Value", "300", temp, 255, strFIle);
-            //    Config.ParamConfig.ElevZ_ESTOP_Torque_Value = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.ElevZ_ESTOP_Torque_Value = Equipment.ToDouble(temp.ToString());
 
 
 
@@ -971,7 +971,7 @@ namespace QMC.Common.Modules
 
             //    //  사용 옵션 - Wafer 얼라인 후 얼라인 위치 정확성 검증 시 Wafer TOP, MID, BOTTOM 위치별 허용 오차 범위 (mm)
             //    NativeMethods.GetPrivateProfileString("Operation_Options", "Wafer_Gate_PosMarginErrorRange_After_Wafer_Align", "0.05", temp, 255, strFIle);
-            //    Config.ParamConfig.Wafer_Gate_PosMarginErrorRange_After_Wafer_Align = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.Wafer_Gate_PosMarginErrorRange_After_Wafer_Align = Equipment.ToDouble(temp.ToString());
 
 
 
@@ -981,11 +981,11 @@ namespace QMC.Common.Modules
 
             //    //  오프셋 - 웨이퍼 && 프로브카드 Packing 시, Latch 상태 검사를 위한 Offset 거리. (mm, 기준 : Packing 위치)
             //    NativeMethods.GetPrivateProfileString("Offset_Delay", "ProbeCard_LatchStatusCheck_OffsetDistance_from_PackingPos", "20", temp, 255, strFIle);
-            //    Config.ParamConfig.ProbeCard_LatchStatusCheck_OffsetDistance_from_PackingPos = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.ProbeCard_LatchStatusCheck_OffsetDistance_from_PackingPos = Equipment.ToDouble(temp.ToString());
 
             //    //  오프셋 - 웨이퍼 && 프로브카드 Packing 시, Latch 상태 검사를 위한 Offset 거리 이동 후 대기시간. (ms)
             //    NativeMethods.GetPrivateProfileString("Offset_Delay", "ProbeCard_LatchStatusCheck_OffsetDistance_StableTime", "1000", temp, 255, strFIle);
-            //    Config.ParamConfig.ProbeCard_LatchStatusCheck_OffsetDistance_StableTime = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.ProbeCard_LatchStatusCheck_OffsetDistance_StableTime = Equipment.ToInt(temp.ToString());
 
 
 
@@ -999,7 +999,7 @@ namespace QMC.Common.Modules
 
             //    //  Dummy Wafer Packing 검증 - 패킹 작업 누적 회수. (메세지 팝업 주기를 \"False\" 로 할 경우, 이 회수만큼 패킹을 진행하면 검증 요청 메세지창 팝업)
             //    NativeMethods.GetPrivateProfileString("Dummy_Wafer_Packing", "DummyWaferPacking_MessagePopup_Count", "100", temp, 255, strFIle);
-            //    Config.ParamConfig.DummyWaferPacking_MessagePopup_Count = Convert.ToInt16(temp.ToString());
+            //    Config.ParamConfig.DummyWaferPacking_MessagePopup_Count = Equipment.ToInt(temp.ToString());
 
 
 
@@ -1009,19 +1009,19 @@ namespace QMC.Common.Modules
 
             //    //  패킹 방법 - 패킹 모드 True 선택 시, 패킹 시작 오프셋. (mm, 패킹 높이에서 이 값만큼 떨어진 위치까지 Elev. Z 를 올린 후 시작)
             //    NativeMethods.GetPrivateProfileString("Wafer_Packing_Mode", "PackingConcept_StepMode_StartOffset", "5", temp, 255, strFIle);
-            //    Config.ParamConfig.PackingConcept_StepMode_StartOffset = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.PackingConcept_StepMode_StartOffset = Equipment.ToDouble(temp.ToString());
 
             //    //  패킹 방법 - 패킹 모드 True 선택 시, Elev. Z 축을 상숭 시키는 단위 거리. (mm)
             //    NativeMethods.GetPrivateProfileString("Wafer_Packing_Mode", "PackingConcept_StepMode_MoveOffset", "0.1", temp, 255, strFIle);
-            //    Config.ParamConfig.PackingConcept_StepMode_MoveOffset = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.PackingConcept_StepMode_MoveOffset = Equipment.ToDouble(temp.ToString());
 
             //    //  패킹 방법 - 패킹 모드 True 선택 시, Elev. Z 축을 Step 만큼 올린 후 패킹 공압을 체크하기 위해 대기하는 시간 (ms)
             //    NativeMethods.GetPrivateProfileString("Wafer_Packing_Mode", "PackingConcept_StepMode_PackingPressure_CheckTime", "500", temp, 255, strFIle);
-            //    Config.ParamConfig.PackingConcept_StepMode_PackingPressure_CheckTime = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.PackingConcept_StepMode_PackingPressure_CheckTime = Equipment.ToDouble(temp.ToString());
 
             //    //  패킹 방법 - 패킹 모드 True 선택 시, Elev. Z 축에 설정된 패킹 높이보다 추가로 더 올리는 거리. (mm)
             //    NativeMethods.GetPrivateProfileString("Wafer_Packing_Mode", "PackingConcept_StepMode_PackingPos_AddOffset", "0.1", temp, 255, strFIle);
-            //    Config.ParamConfig.PackingConcept_StepMode_PackingPos_AddOffset = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.PackingConcept_StepMode_PackingPos_AddOffset = Equipment.ToDouble(temp.ToString());
 
             //    //  패킹 방법 - 패킹 방법 - 패킹 모드 True 선택 시, Elev. Z 축을 상승 시키는 방법 선택. (True : 저속으로 연속 이동, False : 상승 단위 거리만큼 이동)
             //    NativeMethods.GetPrivateProfileString("Wafer_Packing_Mode", "PackingConcept_StepMode_StepUpMethod_Continuous", "False", temp, 255, strFIle);
@@ -1029,7 +1029,7 @@ namespace QMC.Common.Modules
 
             //    //  패킹 방법 - 패킹 모드 True 선택 시, Elev. Z 축을 저속으로 상승 시키면서 패킹 공압을 확인하는 모드일 경우 저속 이동 속도 (mm/s)
             //    NativeMethods.GetPrivateProfileString("Wafer_Packing_Mode", "PackingConcept_StepMode_StepUpMethod_Continuous_MoveSpeed", "0.5", temp, 255, strFIle);
-            //    Config.ParamConfig.PackingConcept_StepMode_StepUpMethod_Continuous_MoveSpeed = Convert.ToDouble(temp.ToString());
+            //    Config.ParamConfig.PackingConcept_StepMode_StepUpMethod_Continuous_MoveSpeed = Equipment.ToDouble(temp.ToString());
 
             //    //  패킹 방법 - 패킹 모드 True 선택 시, Elev. Z 축을 상승 시키면서 패킹 공압을 체크할 때 별도의 공압센서를 사용할 것인지 여부 선택. (True : 사용, False : 사용하지 않음)
             //    NativeMethods.GetPrivateProfileString("Wafer_Packing_Mode", "PackingConcept_StepMode_PackingVacuumSensor_2EA_Usage", "False", temp, 255, strFIle);
@@ -1142,76 +1142,76 @@ namespace QMC.Common.Modules
             //    if (m_nIndex_Ready != -1)
             //    {
             //        NativeMethods.GetPrivateProfileString("PositionData_Ready", "Ready_U", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Ready].U = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Ready].U = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_Ready", "Ready_V", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Ready].V = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Ready].V = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_Ready", "Ready_W", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Ready].W = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Ready].W = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_Ready", "Ready_EZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Ready].EZ = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Ready].EZ = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_Ready", "Ready_X", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Ready].X = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Ready].X = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_Ready", "Ready_Y", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Ready].Y = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Ready].Y = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_Ready", "Ready_VZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Ready].VZ = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Ready].VZ = Equipment.ToDouble(temp.ToString());
             //    }
 
             //    //  Load 좌표 로드
             //    if (m_nIndex_Load != -1)
             //    {
             //        NativeMethods.GetPrivateProfileString("PositionData_Load", "Load_U", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Load].U = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Load].U = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_Load", "Load_V", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Load].V = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Load].V = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_Load", "Load_W", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Load].W = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Load].W = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_Load", "Load_EZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Load].EZ = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Load].EZ = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_Load", "Load_X", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Load].X = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Load].X = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_Load", "Load_Y", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Load].Y = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Load].Y = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_Load", "Load_VZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Load].VZ = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Load].VZ = Equipment.ToDouble(temp.ToString());
             //    }
 
             //    //  UnLoad 좌표 로드
             //    if (m_nIndex_UnLoad != -1)
             //    {
             //        NativeMethods.GetPrivateProfileString("PositionData_UnLoad", "UnLoad_U", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_UnLoad].U = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_UnLoad].U = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_UnLoad", "UnLoad_V", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_UnLoad].V = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_UnLoad].V = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_UnLoad", "UnLoad_W", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_UnLoad].W = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_UnLoad].W = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_UnLoad", "UnLoad_EZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_UnLoad].EZ = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_UnLoad].EZ = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_UnLoad", "UnLoad_X", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_UnLoad].X = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_UnLoad].X = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_UnLoad", "UnLoad_Y", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_UnLoad].Y = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_UnLoad].Y = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_UnLoad", "UnLoad_VZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_UnLoad].VZ = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_UnLoad].VZ = Equipment.ToDouble(temp.ToString());
             //    }
 
             //    //  Upper Cam 좌표 로드
             //    if (m_nIndex_Reticle_UpperCam != -1)
             //    {
             //        NativeMethods.GetPrivateProfileString("PositionData_ReticleGlass", "UpperCam_U", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Reticle_UpperCam].U = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Reticle_UpperCam].U = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_ReticleGlass", "UpperCam_V", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Reticle_UpperCam].V = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Reticle_UpperCam].V = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_ReticleGlass", "UpperCam_W", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Reticle_UpperCam].W = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Reticle_UpperCam].W = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_ReticleGlass", "UpperCam_EZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Reticle_UpperCam].EZ = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Reticle_UpperCam].EZ = Equipment.ToDouble(temp.ToString());
             //        //NativeMethods.GetPrivateProfileString("PositionData_ReticleGlass", "UpperCam_X", "0.0", temp, 255, strFIle);
-            //        //Config.Positions[m_nIndex_Reticle_UpperCam].X = Convert.ToDouble(temp.ToString());
+            //        //Config.Positions[m_nIndex_Reticle_UpperCam].X = Equipment.ToDouble(temp.ToString());
             //        //NativeMethods.GetPrivateProfileString("PositionData_ReticleGlass", "UpperCam_Y", "0.0", temp, 255, strFIle);
-            //        //Config.Positions[m_nIndex_Reticle_UpperCam].Y = Convert.ToDouble(temp.ToString());
+            //        //Config.Positions[m_nIndex_Reticle_UpperCam].Y = Equipment.ToDouble(temp.ToString());
             //        //NativeMethods.GetPrivateProfileString("PositionData_ReticleGlass", "UpperCam_VZ", "0.0", temp, 255, strFIle);
-            //        //Config.Positions[m_nIndex_Reticle_UpperCam].VZ = Convert.ToDouble(temp.ToString());
+            //        //Config.Positions[m_nIndex_Reticle_UpperCam].VZ = Equipment.ToDouble(temp.ToString());
 
             //        Config.Positions[m_nIndex_Reticle_UpperCam].X = Config.ParamConfig.ReticleGlass_Vision_X_Pos;
             //        Config.Positions[m_nIndex_Reticle_UpperCam].Y = Config.ParamConfig.ReticleGlass_Vision_Y_Pos;
@@ -1222,19 +1222,19 @@ namespace QMC.Common.Modules
             //    if (m_nIndex_Reticle_LowerCam != -1)
             //    {
             //        NativeMethods.GetPrivateProfileString("PositionData_ReticleGlass", "LowerCam_U", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Reticle_LowerCam].U = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Reticle_LowerCam].U = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_ReticleGlass", "LowerCam_V", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Reticle_LowerCam].V = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Reticle_LowerCam].V = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_ReticleGlass", "LowerCam_W", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Reticle_LowerCam].W = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Reticle_LowerCam].W = Equipment.ToDouble(temp.ToString());
             //        NativeMethods.GetPrivateProfileString("PositionData_ReticleGlass", "LowerCam_EZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_Reticle_LowerCam].EZ = Convert.ToDouble(temp.ToString());
+            //        Config.Positions[m_nIndex_Reticle_LowerCam].EZ = Equipment.ToDouble(temp.ToString());
             //        //NativeMethods.GetPrivateProfileString("PositionData_ReticleGlass", "LowerCam_X", "0.0", temp, 255, strFIle);
-            //        //Config.Positions[m_nIndex_Reticle_LowerCam].X = Convert.ToDouble(temp.ToString());
+            //        //Config.Positions[m_nIndex_Reticle_LowerCam].X = Equipment.ToDouble(temp.ToString());
             //        //NativeMethods.GetPrivateProfileString("PositionData_ReticleGlass", "LowerCam_Y", "0.0", temp, 255, strFIle);
-            //        //Config.Positions[m_nIndex_Reticle_LowerCam].Y = Convert.ToDouble(temp.ToString());
+            //        //Config.Positions[m_nIndex_Reticle_LowerCam].Y = Equipment.ToDouble(temp.ToString());
             //        //NativeMethods.GetPrivateProfileString("PositionData_ReticleGlass", "LowerCam_VZ", "0.0", temp, 255, strFIle);
-            //        //Config.Positions[m_nIndex_Reticle_LowerCam].VZ = Convert.ToDouble(temp.ToString());
+            //        //Config.Positions[m_nIndex_Reticle_LowerCam].VZ = Equipment.ToDouble(temp.ToString());
 
             //        Config.Positions[m_nIndex_Reticle_LowerCam].X = Config.ParamConfig.ReticleGlass_Vision_X_Pos;
             //        Config.Positions[m_nIndex_Reticle_LowerCam].Y = Config.ParamConfig.ReticleGlass_Vision_Y_Pos;
@@ -1246,61 +1246,61 @@ namespace QMC.Common.Modules
             //    if (m_nIndex_AlignPos_Top != -1)
             //    {
             //        NativeMethods.GetPrivateProfileString("PositionData_Align", "ElevZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_AlignPos_Top].EZ = Convert.ToDouble(temp.ToString()) != 0.0 ? Convert.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Top].EZ;
+            //        Config.Positions[m_nIndex_AlignPos_Top].EZ = Equipment.ToDouble(temp.ToString()) != 0.0 ? Equipment.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Top].EZ;
             //        NativeMethods.GetPrivateProfileString("PositionData_Align", "VisionZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_AlignPos_Top].VZ = Convert.ToDouble(temp.ToString()) != 0.0 ? Convert.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Top].VZ;
+            //        Config.Positions[m_nIndex_AlignPos_Top].VZ = Equipment.ToDouble(temp.ToString()) != 0.0 ? Equipment.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Top].VZ;
             //    }
 
             //    //  Mid 위치의 ElevZ 좌표, VisionZ 좌표 로드
             //    if (m_nIndex_AlignPos_Mid != -1)
             //    {
             //        NativeMethods.GetPrivateProfileString("PositionData_Align", "ElevZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_AlignPos_Mid].EZ = Convert.ToDouble(temp.ToString()) != 0.0 ? Convert.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Mid].EZ;
+            //        Config.Positions[m_nIndex_AlignPos_Mid].EZ = Equipment.ToDouble(temp.ToString()) != 0.0 ? Equipment.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Mid].EZ;
             //        NativeMethods.GetPrivateProfileString("PositionData_Align", "VisionZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_AlignPos_Mid].VZ = Convert.ToDouble(temp.ToString()) != 0.0 ? Convert.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Mid].VZ;
+            //        Config.Positions[m_nIndex_AlignPos_Mid].VZ = Equipment.ToDouble(temp.ToString()) != 0.0 ? Equipment.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Mid].VZ;
             //    }
 
             //    //  Bottom 위치의 ElevZ 좌표, VisionZ 좌표 로드
             //    if (m_nIndex_AlignPos_Bottom != -1)
             //    {
             //        NativeMethods.GetPrivateProfileString("PositionData_Align", "ElevZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_AlignPos_Bottom].EZ = Convert.ToDouble(temp.ToString()) != 0.0 ? Convert.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Bottom].EZ;
+            //        Config.Positions[m_nIndex_AlignPos_Bottom].EZ = Equipment.ToDouble(temp.ToString()) != 0.0 ? Equipment.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Bottom].EZ;
             //        NativeMethods.GetPrivateProfileString("PositionData_Align", "VisionZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_AlignPos_Bottom].VZ = Convert.ToDouble(temp.ToString()) != 0.0 ? Convert.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Bottom].VZ;
+            //        Config.Positions[m_nIndex_AlignPos_Bottom].VZ = Equipment.ToDouble(temp.ToString()) != 0.0 ? Equipment.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Bottom].VZ;
             //    }
 
             //    //  Left 위치의 ElevZ 좌표, VisionZ 좌표 로드
             //    if (m_nIndex_AlignPos_Left != -1)
             //    {
             //        NativeMethods.GetPrivateProfileString("PositionData_Align", "ElevZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_AlignPos_Left].EZ = Convert.ToDouble(temp.ToString()) != 0.0 ? Convert.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Left].EZ;
+            //        Config.Positions[m_nIndex_AlignPos_Left].EZ = Equipment.ToDouble(temp.ToString()) != 0.0 ? Equipment.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Left].EZ;
             //        NativeMethods.GetPrivateProfileString("PositionData_Align", "VisionZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_AlignPos_Left].VZ = Convert.ToDouble(temp.ToString()) != 0.0 ? Convert.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Left].VZ;
+            //        Config.Positions[m_nIndex_AlignPos_Left].VZ = Equipment.ToDouble(temp.ToString()) != 0.0 ? Equipment.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Left].VZ;
             //    }
 
             //    //  Center 위치의 ElevZ 좌표, VisionZ 좌표 로드
             //    if (m_nIndex_AlignPos_Center != -1)
             //    {
             //        NativeMethods.GetPrivateProfileString("PositionData_Align", "ElevZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_AlignPos_Center].EZ = Convert.ToDouble(temp.ToString()) != 0.0 ? Convert.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Center].EZ;
+            //        Config.Positions[m_nIndex_AlignPos_Center].EZ = Equipment.ToDouble(temp.ToString()) != 0.0 ? Equipment.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Center].EZ;
             //        NativeMethods.GetPrivateProfileString("PositionData_Align", "VisionZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_AlignPos_Center].VZ = Convert.ToDouble(temp.ToString()) != 0.0 ? Convert.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Center].VZ;
+            //        Config.Positions[m_nIndex_AlignPos_Center].VZ = Equipment.ToDouble(temp.ToString()) != 0.0 ? Equipment.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Center].VZ;
             //    }
 
             //    //  Right 위치의 ElevZ 좌표, VisionZ 좌표 로드
             //    if (m_nIndex_AlignPos_Right != -1)
             //    {
             //        NativeMethods.GetPrivateProfileString("PositionData_Align", "ElevZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_AlignPos_Right].EZ = Convert.ToDouble(temp.ToString()) != 0.0 ? Convert.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Right].EZ;
+            //        Config.Positions[m_nIndex_AlignPos_Right].EZ = Equipment.ToDouble(temp.ToString()) != 0.0 ? Equipment.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Right].EZ;
             //        NativeMethods.GetPrivateProfileString("PositionData_Align", "VisionZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_AlignPos_Right].VZ = Convert.ToDouble(temp.ToString()) != 0.0 ? Convert.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Right].VZ;
+            //        Config.Positions[m_nIndex_AlignPos_Right].VZ = Equipment.ToDouble(temp.ToString()) != 0.0 ? Equipment.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_AlignPos_Right].VZ;
             //    }
 
             //    //  Packing 시 ElevZ 좌표 로드
             //    if (m_nIndex_PackingPos_ElevZ != -1)
             //    {
             //        NativeMethods.GetPrivateProfileString("PositionData_Packing", "ElevZ", "0.0", temp, 255, strFIle);
-            //        Config.Positions[m_nIndex_PackingPos_ElevZ].EZ = Convert.ToDouble(temp.ToString()) != 0.0 ? Convert.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_PackingPos_ElevZ].EZ;
+            //        Config.Positions[m_nIndex_PackingPos_ElevZ].EZ = Equipment.ToDouble(temp.ToString()) != 0.0 ? Equipment.ToDouble(temp.ToString()) : Config.Positions[m_nIndex_PackingPos_ElevZ].EZ;
             //    }
 
 

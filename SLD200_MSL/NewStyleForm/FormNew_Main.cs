@@ -600,6 +600,15 @@ namespace SLD200_MSL
                     (int rows, int columns) = workStage.GetRowColumnFromPosition(workStage.Main_SocketPositions, workStage.Main_SocketPositions_CurrentSocketPosition);
                     Update_SocketStatus(rows, columns, workStage.Main_SocketPositions_ProcessingStatus);
                 }
+
+                //  완료된 소켓 상태 표시
+                if (workStage.Main_SocketPositions_SetCompleteStatus)
+                {
+                    workStage.Main_SocketPositions_SetCompleteStatus = false;
+
+                    (int rows, int columns) = workStage.GetRowColumnFromPosition(workStage.Main_SocketPositions, workStage.Main_SocketPositions_SocketCompletePosition);
+                    Update_SocketStatus(rows, columns, workStage.Main_SocketPositions_CompleteStatus);
+                }
             }
 
                 //  계속 진행 버튼 활성화
@@ -1371,7 +1380,7 @@ namespace SLD200_MSL
 
             //  테스트 : 강제로 Dry Run
             //workStage.m_bMainWorkCycle_DryRun = true;
-            Equipment.DryRun_ProcessingTime = Convert.ToInt16(baseTextBox_DryRun_ProcessingTime.Text);
+            Equipment.DryRun_ProcessingTime = Equipment.ToInt(baseTextBox_DryRun_ProcessingTime.Text);
 
             if (!workStage.m_bMainWorkCycle_DryRun && (Equipment.RecipeOpen_DrawingFilePath.Length <= 0))
             {
@@ -1447,7 +1456,7 @@ namespace SLD200_MSL
 
             //  테스트 : 강제로 Dry Run
             //workStage.m_bMainWorkCycle_DryRun = true;
-            Equipment.DryRun_ProcessingTime = Convert.ToInt16(baseTextBox_DryRun_ProcessingTime.Text);
+            Equipment.DryRun_ProcessingTime = Equipment.ToInt(baseTextBox_DryRun_ProcessingTime.Text);
 
             if (!workStage.m_bMainWorkCycle_DryRun && (Equipment.RecipeOpen_DrawingFilePath.Length <= 0))
             {

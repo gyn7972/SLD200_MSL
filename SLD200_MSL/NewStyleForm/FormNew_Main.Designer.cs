@@ -31,6 +31,10 @@
             this.components = new System.ComponentModel.Container();
             this.SiriusViewer_Main = new SpiralLab.Sirius.SiriusViewerForm();
             this.groupBoxMain_ModuleProcessingStatus = new System.Windows.Forms.GroupBox();
+            this.baseLabel_SocketStatus_NG = new SLD200_MSL.BaseLabel();
+            this.baseLabel_SocketStatus_OK = new SLD200_MSL.BaseLabel();
+            this.baseLabel_SocketStatus_Processing = new SLD200_MSL.BaseLabel();
+            this.baseLabel_SocketStatus_Ready = new SLD200_MSL.BaseLabel();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -63,6 +67,10 @@
             this.groupBox18 = new System.Windows.Forms.GroupBox();
             this.listView_Main_FiducialAlignData = new System.Windows.Forms.ListView();
             this.groupBoxMain_MaterialInformation = new System.Windows.Forms.GroupBox();
+            this.baseTextBox_Socket_Index = new SLD200_MSL.BaseTextBox();
+            this.baseTextBox_SocketCountPerModule = new SLD200_MSL.BaseTextBox();
+            this.baseLabel_SocketPerModule = new SLD200_MSL.BaseLabel();
+            this.baseLabel1 = new SLD200_MSL.BaseLabel();
             this.button_Main_Stop = new System.Windows.Forms.Button();
             this.button_Main_Pause = new System.Windows.Forms.Button();
             this.button_Main_Start = new System.Windows.Forms.Button();
@@ -95,10 +103,10 @@
             this.button_Main_WorkStage_Continue = new System.Windows.Forms.Button();
             this.buttonForceMaterialOut = new System.Windows.Forms.Button();
             this.groupBox_FineCam = new System.Windows.Forms.GroupBox();
-            this.groupBox_CoarseCam = new System.Windows.Forms.GroupBox();
-            this.checkBox_Main_AutoRun = new System.Windows.Forms.CheckBox();
-            this.ImageViewer_Main_Rows = new QMC.Common.Hmi.VisionImageViewer();
             this.ImageViewer_Main_highs = new QMC.Common.Hmi.VisionImageViewer();
+            this.groupBox_CoarseCam = new System.Windows.Forms.GroupBox();
+            this.ImageViewer_Main_Rows = new QMC.Common.Hmi.VisionImageViewer();
+            this.checkBox_Main_AutoRun = new System.Windows.Forms.CheckBox();
             this.baseTextBox_DryRun_ProcessingTime = new SLD200_MSL.BaseTextBox();
             this.baseLabel5 = new SLD200_MSL.BaseLabel();
             this.button_Test12 = new System.Windows.Forms.Button();
@@ -117,12 +125,9 @@
             this.groupBox_ProcessingData.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox_FineCam.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).BeginInit();
             this.groupBox_CoarseCam.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Rows)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).BeginInit();
-            this.baseGroupBox_Progress.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Module_TargetCount)).BeginInit();
-            this.baseGroupBox_WorkingTime.SuspendLayout();
             this.SuspendLayout();
             // 
             // SiriusViewer_Main
@@ -159,6 +164,46 @@
             this.groupBoxMain_ModuleProcessingStatus.TabIndex = 0;
             this.groupBoxMain_ModuleProcessingStatus.TabStop = false;
             this.groupBoxMain_ModuleProcessingStatus.Text = " Module Status ";
+            // 
+            // baseLabel_SocketStatus_NG
+            // 
+            this.baseLabel_SocketStatus_NG.Font = new System.Drawing.Font("Tahoma", 11.25F);
+            this.baseLabel_SocketStatus_NG.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_SocketStatus_NG.Location = new System.Drawing.Point(281, 128);
+            this.baseLabel_SocketStatus_NG.Name = "baseLabel_SocketStatus_NG";
+            this.baseLabel_SocketStatus_NG.Size = new System.Drawing.Size(79, 20);
+            this.baseLabel_SocketStatus_NG.TabIndex = 0;
+            this.baseLabel_SocketStatus_NG.Text = "NG";
+            // 
+            // baseLabel_SocketStatus_OK
+            // 
+            this.baseLabel_SocketStatus_OK.Font = new System.Drawing.Font("Tahoma", 11.25F);
+            this.baseLabel_SocketStatus_OK.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_SocketStatus_OK.Location = new System.Drawing.Point(281, 98);
+            this.baseLabel_SocketStatus_OK.Name = "baseLabel_SocketStatus_OK";
+            this.baseLabel_SocketStatus_OK.Size = new System.Drawing.Size(79, 20);
+            this.baseLabel_SocketStatus_OK.TabIndex = 1;
+            this.baseLabel_SocketStatus_OK.Text = "Complete";
+            // 
+            // baseLabel_SocketStatus_Processing
+            // 
+            this.baseLabel_SocketStatus_Processing.Font = new System.Drawing.Font("Tahoma", 11.25F);
+            this.baseLabel_SocketStatus_Processing.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_SocketStatus_Processing.Location = new System.Drawing.Point(281, 68);
+            this.baseLabel_SocketStatus_Processing.Name = "baseLabel_SocketStatus_Processing";
+            this.baseLabel_SocketStatus_Processing.Size = new System.Drawing.Size(79, 20);
+            this.baseLabel_SocketStatus_Processing.TabIndex = 2;
+            this.baseLabel_SocketStatus_Processing.Text = "Processing";
+            // 
+            // baseLabel_SocketStatus_Ready
+            // 
+            this.baseLabel_SocketStatus_Ready.Font = new System.Drawing.Font("Tahoma", 11.25F);
+            this.baseLabel_SocketStatus_Ready.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_SocketStatus_Ready.Location = new System.Drawing.Point(281, 38);
+            this.baseLabel_SocketStatus_Ready.Name = "baseLabel_SocketStatus_Ready";
+            this.baseLabel_SocketStatus_Ready.Size = new System.Drawing.Size(79, 20);
+            this.baseLabel_SocketStatus_Ready.TabIndex = 3;
+            this.baseLabel_SocketStatus_Ready.Text = "Ready";
             // 
             // pictureBox3
             // 
@@ -572,6 +617,60 @@
             this.groupBoxMain_MaterialInformation.TabIndex = 2;
             this.groupBoxMain_MaterialInformation.TabStop = false;
             this.groupBoxMain_MaterialInformation.Text = " Material Information ";
+            // 
+            // baseTextBox_Socket_Index
+            // 
+            this.baseTextBox_Socket_Index.BackColor = System.Drawing.Color.White;
+            this.baseTextBox_Socket_Index.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.baseTextBox_Socket_Index.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.baseTextBox_Socket_Index.ForeColor = System.Drawing.Color.Black;
+            this.baseTextBox_Socket_Index.Location = new System.Drawing.Point(208, 86);
+            this.baseTextBox_Socket_Index.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.baseTextBox_Socket_Index.Name = "baseTextBox_Socket_Index";
+            this.baseTextBox_Socket_Index.ReadOnly = true;
+            this.baseTextBox_Socket_Index.Size = new System.Drawing.Size(98, 26);
+            this.baseTextBox_Socket_Index.TabIndex = 140;
+            this.baseTextBox_Socket_Index.Text = "0";
+            this.baseTextBox_Socket_Index.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // baseTextBox_SocketCountPerModule
+            // 
+            this.baseTextBox_SocketCountPerModule.BackColor = System.Drawing.Color.White;
+            this.baseTextBox_SocketCountPerModule.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.baseTextBox_SocketCountPerModule.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.baseTextBox_SocketCountPerModule.ForeColor = System.Drawing.Color.Black;
+            this.baseTextBox_SocketCountPerModule.Location = new System.Drawing.Point(208, 38);
+            this.baseTextBox_SocketCountPerModule.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.baseTextBox_SocketCountPerModule.Name = "baseTextBox_SocketCountPerModule";
+            this.baseTextBox_SocketCountPerModule.ReadOnly = true;
+            this.baseTextBox_SocketCountPerModule.Size = new System.Drawing.Size(98, 26);
+            this.baseTextBox_SocketCountPerModule.TabIndex = 124;
+            this.baseTextBox_SocketCountPerModule.Text = "0";
+            this.baseTextBox_SocketCountPerModule.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // baseLabel_SocketPerModule
+            // 
+            this.baseLabel_SocketPerModule.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.baseLabel_SocketPerModule.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_SocketPerModule.Location = new System.Drawing.Point(15, 37);
+            this.baseLabel_SocketPerModule.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.baseLabel_SocketPerModule.Name = "baseLabel_SocketPerModule";
+            this.baseLabel_SocketPerModule.Size = new System.Drawing.Size(185, 26);
+            this.baseLabel_SocketPerModule.TabIndex = 123;
+            this.baseLabel_SocketPerModule.Text = "Socket count per Module";
+            this.baseLabel_SocketPerModule.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // baseLabel1
+            // 
+            this.baseLabel1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.baseLabel1.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel1.Location = new System.Drawing.Point(15, 85);
+            this.baseLabel1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.baseLabel1.Name = "baseLabel1";
+            this.baseLabel1.Size = new System.Drawing.Size(185, 26);
+            this.baseLabel1.TabIndex = 139;
+            this.baseLabel1.Text = "Selected Socket Index :";
+            this.baseLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // button_Main_Stop
             // 
@@ -1054,8 +1153,27 @@
             this.groupBox_FineCam.TabStop = false;
             this.groupBox_FineCam.Text = " Fine Camera ";
             // 
+            // ImageViewer_Main_highs
+            // 
+            this.ImageViewer_Main_highs.BackColor = System.Drawing.Color.Black;
+            this.ImageViewer_Main_highs.Camera = null;
+            this.ImageViewer_Main_highs.CameraSwitch = null;
+            this.ImageViewer_Main_highs.FrameRate = 1D;
+            this.ImageViewer_Main_highs.InputImage = null;
+            this.ImageViewer_Main_highs.IsViewCustomizedImage = false;
+            this.ImageViewer_Main_highs.Location = new System.Drawing.Point(10, 28);
+            this.ImageViewer_Main_highs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ImageViewer_Main_highs.Name = "ImageViewer_Main_highs";
+            this.ImageViewer_Main_highs.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.ImageViewer_Main_highs.Simulated = false;
+            this.ImageViewer_Main_highs.Size = new System.Drawing.Size(295, 247);
+            this.ImageViewer_Main_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ImageViewer_Main_highs.TabIndex = 189;
+            this.ImageViewer_Main_highs.TabStop = false;
+            this.ImageViewer_Main_highs.UpdateDelayTime = 160;
+            this.ImageViewer_Main_highs.VisibleCrossLine = true;
+            // 
             // groupBox_CoarseCam
-            // checkBox_Main_AutoRun
             // 
             this.groupBox_CoarseCam.Controls.Add(this.ImageViewer_Main_Rows);
             this.groupBox_CoarseCam.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1065,18 +1183,6 @@
             this.groupBox_CoarseCam.TabIndex = 192;
             this.groupBox_CoarseCam.TabStop = false;
             this.groupBox_CoarseCam.Text = " Coarse Camera ";
-            this.checkBox_Main_AutoRun.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_Main_AutoRun.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBox_Main_AutoRun.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_AutoRun.Location = new System.Drawing.Point(1726, 297);
-            this.checkBox_Main_AutoRun.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox_Main_AutoRun.Name = "checkBox_Main_AutoRun";
-            this.checkBox_Main_AutoRun.Size = new System.Drawing.Size(178, 55);
-            this.checkBox_Main_AutoRun.TabIndex = 191;
-            this.checkBox_Main_AutoRun.Text = "AutoRun";
-            this.checkBox_Main_AutoRun.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_Main_AutoRun.UseVisualStyleBackColor = false;
-            this.checkBox_Main_AutoRun.CheckedChanged += new System.EventHandler(this.checkBox_Main_AutoRun_CheckedChanged);
             // 
             // ImageViewer_Main_Rows
             // 
@@ -1098,25 +1204,20 @@
             this.ImageViewer_Main_Rows.UpdateDelayTime = 160;
             this.ImageViewer_Main_Rows.VisibleCrossLine = true;
             // 
-            // ImageViewer_Main_highs
+            // checkBox_Main_AutoRun
             // 
-            this.ImageViewer_Main_highs.BackColor = System.Drawing.Color.Black;
-            this.ImageViewer_Main_highs.Camera = null;
-            this.ImageViewer_Main_highs.CameraSwitch = null;
-            this.ImageViewer_Main_highs.FrameRate = 1D;
-            this.ImageViewer_Main_highs.InputImage = null;
-            this.ImageViewer_Main_highs.IsViewCustomizedImage = false;
-            this.ImageViewer_Main_highs.Location = new System.Drawing.Point(10, 28);
-            this.ImageViewer_Main_highs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.ImageViewer_Main_highs.Name = "ImageViewer_Main_highs";
-            this.ImageViewer_Main_highs.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
-            this.ImageViewer_Main_highs.Simulated = false;
-            this.ImageViewer_Main_highs.Size = new System.Drawing.Size(295, 247);
-            this.ImageViewer_Main_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.ImageViewer_Main_highs.TabIndex = 189;
-            this.ImageViewer_Main_highs.TabStop = false;
-            this.ImageViewer_Main_highs.UpdateDelayTime = 160;
-            this.ImageViewer_Main_highs.VisibleCrossLine = true;
+            this.checkBox_Main_AutoRun.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_Main_AutoRun.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.checkBox_Main_AutoRun.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.checkBox_Main_AutoRun.Location = new System.Drawing.Point(1726, 297);
+            this.checkBox_Main_AutoRun.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.checkBox_Main_AutoRun.Name = "checkBox_Main_AutoRun";
+            this.checkBox_Main_AutoRun.Size = new System.Drawing.Size(178, 55);
+            this.checkBox_Main_AutoRun.TabIndex = 191;
+            this.checkBox_Main_AutoRun.Text = "AutoRun";
+            this.checkBox_Main_AutoRun.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_Main_AutoRun.UseVisualStyleBackColor = false;
+            this.checkBox_Main_AutoRun.CheckedChanged += new System.EventHandler(this.checkBox_Main_AutoRun_CheckedChanged);
             // 
             // baseTextBox_DryRun_ProcessingTime
             // 
@@ -1168,11 +1269,8 @@
             this.ControlBox = false;
             this.Controls.Add(this.groupBox_CoarseCam);
             this.Controls.Add(this.groupBox_FineCam);
-            this.Controls.Add(this.groupBox18);
             this.Controls.Add(this.button_Test12);
             this.Controls.Add(this.checkBox_Main_AutoRun);
-            this.Controls.Add(this.ImageViewer_Main_Rows);
-            this.Controls.Add(this.ImageViewer_Main_highs);
             this.Controls.Add(this.buttonForceMaterialOut);
             this.Controls.Add(this.button_Main_RecipeOpen);
             this.Controls.Add(this.button_Main_WorkStage_Continue);
@@ -1208,7 +1306,6 @@
             this.Text = "FormNew_Main";
             this.Shown += new System.EventHandler(this.FormNew_Main_Shown);
             this.groupBoxMain_ModuleProcessingStatus.ResumeLayout(false);
-            this.groupBoxMain_ModuleProcessingStatus.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -1226,14 +1323,9 @@
             this.groupBox_ProcessingData.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox_FineCam.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).EndInit();
             this.groupBox_CoarseCam.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Rows)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).EndInit();
-            this.baseGroupBox_Progress.ResumeLayout(false);
-            this.baseGroupBox_Progress.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Module_TargetCount)).EndInit();
-            this.baseGroupBox_WorkingTime.ResumeLayout(false);
-            this.baseGroupBox_WorkingTime.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

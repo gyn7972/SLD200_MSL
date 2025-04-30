@@ -2482,7 +2482,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -2551,7 +2551,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -2620,7 +2620,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -2689,7 +2689,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -2758,7 +2758,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -2827,7 +2827,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -2896,7 +2896,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -2965,7 +2965,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3040,7 +3040,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3092,7 +3092,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3144,7 +3144,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3196,7 +3196,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3483,7 +3483,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3529,7 +3529,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3575,7 +3575,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3621,7 +3621,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3667,7 +3667,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -3713,7 +3713,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -4000,7 +4000,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -4046,7 +4046,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -4092,7 +4092,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -4138,7 +4138,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -4184,7 +4184,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -4230,7 +4230,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -4360,19 +4360,19 @@ namespace SLD200_MSL
             {
                 if (m_nIndex <= 11)                 //  Loader
                 {
-                    loader.stLDULTeachingPos[m_nIndex].LD_Transfer_X = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_TransferX.Text);
-                    loader.stLDULTeachingPos[m_nIndex].LD_Transfer_Z = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_TransferZ.Text);
-                    loader.stLDULTeachingPos[m_nIndex].LD_Stacker_Z0 = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_RPortZ.Text);
-                    loader.stLDULTeachingPos[m_nIndex].LD_Stacker_Z1 = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_LPortZ.Text);
-                    loader.stLDULTeachingPos[m_nIndex].MAligner_X = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_MAlignerX.Text);
-                    loader.stLDULTeachingPos[m_nIndex].MAligner_Y = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_MAlignerY.Text);
+                    loader.stLDULTeachingPos[m_nIndex].LD_Transfer_X = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_TransferX.Text);
+                    loader.stLDULTeachingPos[m_nIndex].LD_Transfer_Z = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_TransferZ.Text);
+                    loader.stLDULTeachingPos[m_nIndex].LD_Stacker_Z0 = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_RPortZ.Text);
+                    loader.stLDULTeachingPos[m_nIndex].LD_Stacker_Z1 = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_LPortZ.Text);
+                    loader.stLDULTeachingPos[m_nIndex].MAligner_X = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_MAlignerX.Text);
+                    loader.stLDULTeachingPos[m_nIndex].MAligner_Y = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_MAlignerY.Text);
                 }
                 else                                //  Unloader
                 {
-                    loader.stLDULTeachingPos[m_nIndex].UL_Transfer_X = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_TransferX.Text);
-                    loader.stLDULTeachingPos[m_nIndex].UL_Transfer_Z = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_TransferZ.Text);
-                    loader.stLDULTeachingPos[m_nIndex].UL_Stacker_Z0 = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_RPortZ.Text);
-                    loader.stLDULTeachingPos[m_nIndex].UL_Stacker_Z1 = Convert.ToDouble(textBox_Config_LDUL_TeachingPos_LPortZ.Text);
+                    loader.stLDULTeachingPos[m_nIndex].UL_Transfer_X = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_TransferX.Text);
+                    loader.stLDULTeachingPos[m_nIndex].UL_Transfer_Z = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_TransferZ.Text);
+                    loader.stLDULTeachingPos[m_nIndex].UL_Stacker_Z0 = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_RPortZ.Text);
+                    loader.stLDULTeachingPos[m_nIndex].UL_Stacker_Z1 = Equipment.ToDouble(textBox_Config_LDUL_TeachingPos_LPortZ.Text);
                 }
             }
 
@@ -4459,8 +4459,8 @@ namespace SLD200_MSL
 
             if (m_nIndex >= 0)
             {
-                workStage.stWorkStageTeachingPos[m_nIndex].Stage_X = Convert.ToDouble(textBox_Config_WorkStage_TeachingPos_StageX.Text);
-                workStage.stWorkStageTeachingPos[m_nIndex].Stage_Y = Convert.ToDouble(textBox_Config_WorkStage_TeachingPos_StageY.Text);
+                workStage.stWorkStageTeachingPos[m_nIndex].Stage_X = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageX.Text);
+                workStage.stWorkStageTeachingPos[m_nIndex].Stage_Y = Equipment.ToDouble(textBox_Config_WorkStage_TeachingPos_StageY.Text);
             }
 
             //  리스트 전체 저장
@@ -4488,7 +4488,7 @@ namespace SLD200_MSL
 
             if (m_nIndex >= 0)
             {
-                vision.stVisionTeachingPos[m_nIndex].Vision_Z = Convert.ToDouble(textBox_Config_Vision_TeachingPos_VisionZ.Text);
+                vision.stVisionTeachingPos[m_nIndex].Vision_Z = Equipment.ToDouble(textBox_Config_Vision_TeachingPos_VisionZ.Text);
             }
 
             //  리스트 전체 저장
@@ -4515,7 +4515,7 @@ namespace SLD200_MSL
 
             if (m_nIndex >= 0)
             {
-                bds.stBDSTeachingPos[m_nIndex].Mask_Y = Convert.ToDouble(textBox_Config_BDS_TeachingPos_MaskY.Text);
+                bds.stBDSTeachingPos[m_nIndex].Mask_Y = Equipment.ToDouble(textBox_Config_BDS_TeachingPos_MaskY.Text);
             }
 
             //  리스트 전체 저장
@@ -4782,7 +4782,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_BDS_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_BDS_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -4831,7 +4831,7 @@ namespace SLD200_MSL
 
             double lfVelocity = 0.0f;
             double lfAccDec = 0.0f;
-            double dDistance = Convert.ToDouble(textBox_Config_BDS_JogMove_StepSize.Text);
+            double dDistance = Equipment.ToDouble(textBox_Config_BDS_JogMove_StepSize.Text);
             int nDirection = 1;
             double dVelocity = 0;
 
@@ -5527,7 +5527,7 @@ namespace SLD200_MSL
             //    return;
             //}
 
-            if (Convert.ToDouble(textBox_Config_WorkStage_TempPos1_StageX.Text) == 0.0 && Convert.ToDouble(textBox_Config_WorkStage_TempPos1_StageY.Text) == 0.0)
+            if (Equipment.ToDouble(textBox_Config_WorkStage_TempPos1_StageX.Text) == 0.0 && Equipment.ToDouble(textBox_Config_WorkStage_TempPos1_StageY.Text) == 0.0)
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Warning !", "Temp1 위치가 설정되어 있지 않습니다.");
@@ -5570,8 +5570,8 @@ namespace SLD200_MSL
 
 
             //  Target 위치
-            lfTargetX = Convert.ToDouble(textBox_Config_WorkStage_TempPos1_StageX.Text);
-            lfTargetY = Convert.ToDouble(textBox_Config_WorkStage_TempPos1_StageY.Text);
+            lfTargetX = Equipment.ToDouble(textBox_Config_WorkStage_TempPos1_StageX.Text);
+            lfTargetY = Equipment.ToDouble(textBox_Config_WorkStage_TempPos1_StageY.Text);
 
             //  속도 설정
             if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
@@ -5611,7 +5611,7 @@ namespace SLD200_MSL
             //    return;
             //}
 
-            if (Convert.ToDouble(textBox_Config_WorkStage_TempPos2_StageX.Text) == 0.0 && Convert.ToDouble(textBox_Config_WorkStage_TempPos2_StageY.Text) == 0.0)
+            if (Equipment.ToDouble(textBox_Config_WorkStage_TempPos2_StageX.Text) == 0.0 && Equipment.ToDouble(textBox_Config_WorkStage_TempPos2_StageY.Text) == 0.0)
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Warning !", "Temp2 위치가 설정되어 있지 않습니다.");
@@ -5654,8 +5654,8 @@ namespace SLD200_MSL
 
 
             //  Target 위치
-            lfTargetX = Convert.ToDouble(textBox_Config_WorkStage_TempPos2_StageX.Text);
-            lfTargetY = Convert.ToDouble(textBox_Config_WorkStage_TempPos2_StageY.Text);
+            lfTargetX = Equipment.ToDouble(textBox_Config_WorkStage_TempPos2_StageX.Text);
+            lfTargetY = Equipment.ToDouble(textBox_Config_WorkStage_TempPos2_StageY.Text);
 
             //  속도 설정
             if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
@@ -5695,7 +5695,7 @@ namespace SLD200_MSL
             //    return;
             //}
 
-            if (Convert.ToDouble(textBox_Config_WorkStage_TempPos3_StageX.Text) == 0.0 && Convert.ToDouble(textBox_Config_WorkStage_TempPos3_StageY.Text) == 0.0)
+            if (Equipment.ToDouble(textBox_Config_WorkStage_TempPos3_StageX.Text) == 0.0 && Equipment.ToDouble(textBox_Config_WorkStage_TempPos3_StageY.Text) == 0.0)
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Warning !", "Temp3 위치가 설정되어 있지 않습니다.");
@@ -5738,8 +5738,8 @@ namespace SLD200_MSL
 
 
             //  Target 위치
-            lfTargetX = Convert.ToDouble(textBox_Config_WorkStage_TempPos3_StageX.Text);
-            lfTargetY = Convert.ToDouble(textBox_Config_WorkStage_TempPos3_StageY.Text);
+            lfTargetX = Equipment.ToDouble(textBox_Config_WorkStage_TempPos3_StageX.Text);
+            lfTargetY = Equipment.ToDouble(textBox_Config_WorkStage_TempPos3_StageY.Text);
 
             //  속도 설정
             if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
@@ -6090,7 +6090,7 @@ namespace SLD200_MSL
         {
             //  Amplifier RepRate Setting
 
-            double m_dAmplifierRR = Convert.ToDouble(textBox_Config_TabLaser_Amplifier.Text);
+            double m_dAmplifierRR = Equipment.ToDouble(textBox_Config_TabLaser_Amplifier.Text);
 
             if (workStage.m_rapidLxLaser_Comm.IsOpen)
             {
@@ -6107,7 +6107,7 @@ namespace SLD200_MSL
         {
             //  Energy Percentage Setting
 
-            double m_dEnergyPercent = Convert.ToDouble(textBox_Config_TabLaser_PercentOfEnergy.Text);
+            double m_dEnergyPercent = Equipment.ToDouble(textBox_Config_TabLaser_PercentOfEnergy.Text);
 
             if (workStage.m_rapidLxLaser_Comm.IsOpen)
             {
@@ -6127,9 +6127,9 @@ namespace SLD200_MSL
             double m_dkPa = 0.0;
 
             //  음압이므로 양수가 들어와도 음수로 변경
-            m_dkPa = Math.Abs(Convert.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text));
+            m_dkPa = Math.Abs(Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text));
 
-            //if ((Convert.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) > -1.3) || (Convert.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) < -80.0))
+            //if ((Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) > -1.3) || (Equipment.ToDouble(textBox_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text) < -80.0))
 
             if (m_dkPa == 0.0)
             {
@@ -6221,7 +6221,7 @@ namespace SLD200_MSL
         {
             //  집진기0 주파수 세팅
 
-            double m_dFreq = Convert.ToDouble(textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Text);
+            double m_dFreq = Equipment.ToDouble(textBox_Config_TabWorkStage_DustCollector0_Freq_SetValue.Text);
 
             //  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
             double m_dRet_Freq = GetClosestValue_DustCollector(m_dFreq);
@@ -6261,7 +6261,7 @@ namespace SLD200_MSL
         {
             //  집진기1 주파수 세팅
 
-            double dFreq = Convert.ToDouble(textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Text);
+            double dFreq = Equipment.ToDouble(textBox_Config_TabWorkStage_DustCollector1_Freq_SetValue.Text);
 
             //  입력한 주파수와 가장 가까운 데이터를 찾는다. (일일히 테스트 했음. ㅡㅡ)
             double dRet_Freq = GetClosestValue_DustCollector(dFreq);
@@ -6598,12 +6598,12 @@ namespace SLD200_MSL
                 //  Recipe 의 모듈 사이즈가 없으면 Seq. Test 에서 입력한 값을 사용
                 if ((m_dModuleWidth <= 0.0) || (m_dModuleHeight <= 0.0))
                 {
-                    m_dModuleWidth = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
-                    m_dModuleHeight = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
+                    m_dModuleWidth = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
+                    m_dModuleHeight = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
                 }
 
-                //m_dModuleWidth = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
-                //m_dModuleHeight = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
+                //m_dModuleWidth = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
+                //m_dModuleHeight = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
 
                 if ((m_dModuleWidth <= 0.0) || (m_dModuleHeight <= 0.0))
                 {
@@ -7273,8 +7273,8 @@ namespace SLD200_MSL
             double m_dModuleWidth = 0.0;
             double m_dModuleHeight = 0.0;
 
-            m_dModuleWidth = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
-            m_dModuleHeight = Convert.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
+            m_dModuleWidth = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Width.Text);
+            m_dModuleHeight = Equipment.ToDouble(textBox_Config_SeqTest_ModuleSize_Height.Text);
 
             if (!Equipment.AjinBoard_Opened)
             {

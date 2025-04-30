@@ -174,10 +174,10 @@ namespace QMC.Common.Parts
             float m_fMarkSpeed = 0;
             float m_fJumpSpeed = 0;
 
-            m_fLaserOnDelay = (float)Convert.ToDouble(Config.LaserParameter.LaserOnTime.ToString().Trim());
-            m_fLaserOffDelay = (float)Convert.ToDouble(Config.LaserParameter.LaserOffTime.ToString().Trim());
-            m_fMarkSpeed = (float)Convert.ToDouble(Config.LaserParameter.MarkSpeed.ToString().Trim());
-            m_fJumpSpeed = (float)Convert.ToDouble(Config.LaserParameter.JumpSpeed.ToString().Trim());
+            m_fLaserOnDelay = (float)Equipment.ToDouble(Config.LaserParameter.LaserOnTime.ToString().Trim());
+            m_fLaserOffDelay = (float)Equipment.ToDouble(Config.LaserParameter.LaserOffTime.ToString().Trim());
+            m_fMarkSpeed = (float)Equipment.ToDouble(Config.LaserParameter.MarkSpeed.ToString().Trim());
+            m_fJumpSpeed = (float)Equipment.ToDouble(Config.LaserParameter.JumpSpeed.ToString().Trim());
 
             var rtcMode = rtc as IRtc;                                      //  RTC6
 
@@ -224,10 +224,10 @@ namespace QMC.Common.Parts
             float m_fMarkSpeed = 0;
             float m_fJumpSpeed = 0;
 
-            m_fLaserOnDelay = (float)Convert.ToDouble(Config.LaserParameter.LaserOnTime.ToString().Trim());
-            m_fLaserOffDelay = (float)Convert.ToDouble(Config.LaserParameter.LaserOffTime.ToString().Trim());
-            m_fMarkSpeed = (float)Convert.ToDouble(Config.LaserParameter.MarkSpeed.ToString().Trim());
-            m_fJumpSpeed = (float)Convert.ToDouble(Config.LaserParameter.JumpSpeed.ToString().Trim());
+            m_fLaserOnDelay = (float)Equipment.ToDouble(Config.LaserParameter.LaserOnTime.ToString().Trim());
+            m_fLaserOffDelay = (float)Equipment.ToDouble(Config.LaserParameter.LaserOffTime.ToString().Trim());
+            m_fMarkSpeed = (float)Equipment.ToDouble(Config.LaserParameter.MarkSpeed.ToString().Trim());
+            m_fJumpSpeed = (float)Equipment.ToDouble(Config.LaserParameter.JumpSpeed.ToString().Trim());
 
             var rtcMode = rtc as IRtc;                                      //  RTC6
 
@@ -273,10 +273,10 @@ namespace QMC.Common.Parts
             float m_fMarkSpeed = 0;
             float m_fJumpSpeed = 0;
 
-            m_fLaserOnDelay = (float)Convert.ToDouble(Config.LaserParameter.LaserOnTime.ToString().Trim());
-            m_fLaserOffDelay = (float)Convert.ToDouble(Config.LaserParameter.LaserOffTime.ToString().Trim());
-            m_fMarkSpeed = (float)Convert.ToDouble(Config.LaserParameter.MarkSpeed.ToString().Trim());
-            m_fJumpSpeed = (float)Convert.ToDouble(Config.LaserParameter.JumpSpeed.ToString().Trim());
+            m_fLaserOnDelay = (float)Equipment.ToDouble(Config.LaserParameter.LaserOnTime.ToString().Trim());
+            m_fLaserOffDelay = (float)Equipment.ToDouble(Config.LaserParameter.LaserOffTime.ToString().Trim());
+            m_fMarkSpeed = (float)Equipment.ToDouble(Config.LaserParameter.MarkSpeed.ToString().Trim());
+            m_fJumpSpeed = (float)Equipment.ToDouble(Config.LaserParameter.JumpSpeed.ToString().Trim());
 
             var rtcMode = rtc as IRtc;                                      //  RTC6
 
@@ -324,10 +324,10 @@ namespace QMC.Common.Parts
             float m_fMarkSpeed = 0;
             float m_fJumpSpeed = 0;
 
-            m_fLaserOnDelay = (float)Convert.ToDouble(Config.LaserParameter.LaserOnTime.ToString().Trim());
-            m_fLaserOffDelay = (float)Convert.ToDouble(Config.LaserParameter.LaserOffTime.ToString().Trim());
-            m_fMarkSpeed = (float)Convert.ToDouble(Config.LaserParameter.MarkSpeed.ToString().Trim());
-            m_fJumpSpeed = (float)Convert.ToDouble(Config.LaserParameter.JumpSpeed.ToString().Trim());
+            m_fLaserOnDelay = (float)Equipment.ToDouble(Config.LaserParameter.LaserOnTime.ToString().Trim());
+            m_fLaserOffDelay = (float)Equipment.ToDouble(Config.LaserParameter.LaserOffTime.ToString().Trim());
+            m_fMarkSpeed = (float)Equipment.ToDouble(Config.LaserParameter.MarkSpeed.ToString().Trim());
+            m_fJumpSpeed = (float)Equipment.ToDouble(Config.LaserParameter.JumpSpeed.ToString().Trim());
 
             var rtcMode = rtc as IRtc;                                      //  RTC6
 

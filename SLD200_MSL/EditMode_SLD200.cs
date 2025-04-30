@@ -792,9 +792,9 @@ namespace SLD200_MSL
         {
             Vector3 ScannerOffset = new Vector3(0, 0, 0);
 
-            ScannerOffset.X = (float)Convert.ToDouble(tb_ScannerOffset_X.Text);
-            ScannerOffset.Y = (float)Convert.ToDouble(tb_ScannerOffset_Y.Text);
-            ScannerOffset.Z = (float)Convert.ToDouble(tb_ScannerOffset_Angle.Text);
+            ScannerOffset.X = (float)Equipment.ToDouble(tb_ScannerOffset_X.Text);
+            ScannerOffset.Y = (float)Equipment.ToDouble(tb_ScannerOffset_Y.Text);
+            ScannerOffset.Z = (float)Equipment.ToDouble(tb_ScannerOffset_Angle.Text);
 
             //if ( Equipment.RtcMode_syncAxis != (int)Equipment.RtcMode.RTC_RTC6)
             //{

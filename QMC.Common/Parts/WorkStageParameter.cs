@@ -604,31 +604,31 @@ namespace QMC.Common.Parts
                 {
 #if true        //  요렇게 하던지.... 아니면...
 
-                    //m_stLaserPosParam.dTarget[nPosCnt++] = m_dPos[nPosCnt] = Convert.ToDouble(parameters[i++].Value);       //  X
-                    //m_stLaserPosParam.dTarget[nPosCnt++] = m_dPos[nPosCnt] = Convert.ToDouble(parameters[i++].Value);       //  Y
-                    //m_stLaserPosParam.dTarget[nPosCnt++] = m_dPos[nPosCnt] = Convert.ToDouble(parameters[i++].Value);       //  T
-                    //m_stLaserPosParam.dTarget[nPosCnt] = m_dPos[nPosCnt] = Convert.ToDouble(parameters[i++].Value);         //  Z
+                    //m_stLaserPosParam.dTarget[nPosCnt++] = m_dPos[nPosCnt] = Equipment.ToDouble(parameters[i++].Value);       //  X
+                    //m_stLaserPosParam.dTarget[nPosCnt++] = m_dPos[nPosCnt] = Equipment.ToDouble(parameters[i++].Value);       //  Y
+                    //m_stLaserPosParam.dTarget[nPosCnt++] = m_dPos[nPosCnt] = Equipment.ToDouble(parameters[i++].Value);       //  T
+                    //m_stLaserPosParam.dTarget[nPosCnt] = m_dPos[nPosCnt] = Equipment.ToDouble(parameters[i++].Value);         //  Z
 
                     ////  Offset 값도 가져오자.
                     //nPosCnt = 0;
-                    //m_stLaserPosParam.dOffset[nPosCnt++] = Convert.ToDouble(parameters[i++].Value);                         //  X
-                    //m_stLaserPosParam.dOffset[nPosCnt++] = Convert.ToDouble(parameters[i++].Value);                         //  Y
-                    //m_stLaserPosParam.dOffset[nPosCnt++] = Convert.ToDouble(parameters[i++].Value);                         //  T
-                    //m_stLaserPosParam.dOffset[nPosCnt] = Convert.ToDouble(parameters[i++].Value);                           //  Z
+                    //m_stLaserPosParam.dOffset[nPosCnt++] = Equipment.ToDouble(parameters[i++].Value);                         //  X
+                    //m_stLaserPosParam.dOffset[nPosCnt++] = Equipment.ToDouble(parameters[i++].Value);                         //  Y
+                    //m_stLaserPosParam.dOffset[nPosCnt++] = Equipment.ToDouble(parameters[i++].Value);                         //  T
+                    //m_stLaserPosParam.dOffset[nPosCnt] = Equipment.ToDouble(parameters[i++].Value);                           //  Z
 
 
                     //  다른 좋은 방법이 있겠지만 시간이 없으니 일단 이렇게 슥삭...
-                    m_stLaserPosParam.dTarget[0] = m_dPos[0] = Convert.ToDouble(parameters[i++].Value);       //  X
-                    m_stLaserPosParam.dTarget[1] = m_dPos[1] = Convert.ToDouble(parameters[i++].Value);       //  Y
-                    m_stLaserPosParam.dTarget[2] = m_dPos[2] = Convert.ToDouble(parameters[i++].Value);       //  Z
-                    m_stLaserPosParam.dTarget[3] = m_dPos[3] = Convert.ToDouble(parameters[i++].Value);       //  MASK_Y
+                    m_stLaserPosParam.dTarget[0] = m_dPos[0] = Equipment.ToDouble(parameters[i++].Value);       //  X
+                    m_stLaserPosParam.dTarget[1] = m_dPos[1] = Equipment.ToDouble(parameters[i++].Value);       //  Y
+                    m_stLaserPosParam.dTarget[2] = m_dPos[2] = Equipment.ToDouble(parameters[i++].Value);       //  Z
+                    m_stLaserPosParam.dTarget[3] = m_dPos[3] = Equipment.ToDouble(parameters[i++].Value);       //  MASK_Y
 
                     //  Offset 값도 가져오자.
                     nPosCnt = 0;
-                    m_stLaserPosParam.dOffset[0] = Convert.ToDouble(parameters[i++].Value);                   //  X
-                    m_stLaserPosParam.dOffset[1] = Convert.ToDouble(parameters[i++].Value);                   //  Y
-                    m_stLaserPosParam.dOffset[2] = Convert.ToDouble(parameters[i++].Value);                   //  Z
-                    m_stLaserPosParam.dOffset[3] = Convert.ToDouble(parameters[i++].Value);                   //  MASK_Y
+                    m_stLaserPosParam.dOffset[0] = Equipment.ToDouble(parameters[i++].Value);                   //  X
+                    m_stLaserPosParam.dOffset[1] = Equipment.ToDouble(parameters[i++].Value);                   //  Y
+                    m_stLaserPosParam.dOffset[2] = Equipment.ToDouble(parameters[i++].Value);                   //  Z
+                    m_stLaserPosParam.dOffset[3] = Equipment.ToDouble(parameters[i++].Value);                   //  MASK_Y
 
 
                     break;
@@ -637,25 +637,25 @@ namespace QMC.Common.Parts
 
                     if (parameters[i].Tag == "X")
                     {
-                        m_stDispParam.dTarget[0] = m_dPos[0] = Convert.ToDouble(parameters[i].Value);      //  X
+                        m_stDispParam.dTarget[0] = m_dPos[0] = Equipment.ToDouble(parameters[i].Value);      //  X
                         nPosCnt++;
                     }
 
                     if (parameters[i].Tag == "Y")
                     {
-                        m_stDispParam.dTarget[1] = m_dPos[1] = Convert.ToDouble(parameters[i].Value);      //  Y
+                        m_stDispParam.dTarget[1] = m_dPos[1] = Equipment.ToDouble(parameters[i].Value);      //  Y
                         nPosCnt++;
                     }
 
                     if (parameters[i].Tag == "T")
                     {
-                        m_stDispParam.dTarget[2] = m_dPos[2] = Convert.ToDouble(parameters[i].Value);      //  T
+                        m_stDispParam.dTarget[2] = m_dPos[2] = Equipment.ToDouble(parameters[i].Value);      //  T
                         nPosCnt++;
                     }
 
                     if (parameters[i].Tag == "Z")
                     {
-                        m_stDispParam.dTarget[3] = m_dPos[3] = Convert.ToDouble(parameters[i].Value);      //  Z
+                        m_stDispParam.dTarget[3] = m_dPos[3] = Equipment.ToDouble(parameters[i].Value);      //  Z
                         nPosCnt++;
                     }
 
@@ -664,22 +664,22 @@ namespace QMC.Common.Parts
                         //  Offset 값도 가져오자.
                         if (parameters[i + 1].Tag == "X")
                         {
-                            m_stDispParam.dOffset[0] = Convert.ToDouble(parameters[i + 1].Value);      //  X
+                            m_stDispParam.dOffset[0] = Equipment.ToDouble(parameters[i + 1].Value);      //  X
                         }
 
                         if (parameters[i + 2].Tag == "Y")
                         {
-                            m_stDispParam.dOffset[1] = Convert.ToDouble(parameters[i + 2].Value);      //  Y
+                            m_stDispParam.dOffset[1] = Equipment.ToDouble(parameters[i + 2].Value);      //  Y
                         }
 
                         if (parameters[i + 3].Tag == "T")
                         {
-                            m_stDispParam.dOffset[2] = Convert.ToDouble(parameters[i + 3].Value);      //  T
+                            m_stDispParam.dOffset[2] = Equipment.ToDouble(parameters[i + 3].Value);      //  T
                         }
 
                         if (parameters[i + 4].Tag == "Z")
                         {
-                            m_stDispParam.dOffset[3] = Convert.ToDouble(parameters[i + 4].Value);      //  Z
+                            m_stDispParam.dOffset[3] = Equipment.ToDouble(parameters[i + 4].Value);      //  Z
                         }
 
                         break;
