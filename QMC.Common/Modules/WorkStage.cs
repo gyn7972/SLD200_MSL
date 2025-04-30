@@ -8647,17 +8647,17 @@ namespace QMC.Common.Modules
 
                     //Loader 진공 체크
                     //DI_Loader_Aligner_VacuumCheck()
-                    if (loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner) ||
-                        loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer) ||
-                        loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center))
+                    if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner) ||
+                        loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer) ||
+                        loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center))
                     {
                         AlarmPost(AlarmKey.Home_Loader_Aligner_Vacuum_Off_Fail);
                         Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Initialize Loader Aligner Vacuum Off Fail");
 
                         m_nHomeStep = (int)Home_Step.Fail;
                     }
-                    else if (loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
-                            loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+                    else if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
+                            loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
                     {
                         AlarmPost(AlarmKey.Home_LoaderPicker_Vacuum_Off_Fail);
                         Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Initialize Loader Picker Vacuum Off Fail");
@@ -9309,6 +9309,11 @@ namespace QMC.Common.Modules
                     break;
 
                 case (int)Home_Step.Fail:
+
+                    m_bHomeOK = false;
+                    m_bHomeProgressForm_Close = true;
+                    m_nHomeStep = (int)Home_Step.None;
+
                     break;
             }
         }

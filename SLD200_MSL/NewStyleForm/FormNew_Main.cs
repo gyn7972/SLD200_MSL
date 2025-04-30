@@ -821,7 +821,6 @@ namespace SLD200_MSL
                 //  Motion 홈 실행 타이머
                 workStage.m_btimer_Motion_Home_Stop = false;
                 workStage.timer_Motion_Home.Enabled = true;
-                workStage.timer_Motion_Home.Start();
                 workStage.m_MotionHome_Start = true;
 
                 workStage.m_bHomeProgressForm_Close = false;
