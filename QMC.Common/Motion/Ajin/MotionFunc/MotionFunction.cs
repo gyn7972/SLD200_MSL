@@ -210,7 +210,7 @@ namespace QMC.Common.Motion.Ajin.Motions
         {
             bool m_bRet = false;
             double m_dCurPos = 0.0;
-            double m_dTol = 0.5;            //  Tolerance : +- 0.02mm
+            double m_dTol = 0.007;            //  Tolerance : +- 0.02mm
 
             m_dCurPos = MC_GetEncPos(nAxis);
 
