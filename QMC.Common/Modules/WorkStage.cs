@@ -997,7 +997,6 @@ namespace QMC.Common.Modules
 
         #region Variables
 
-
         public double FirstPositionX { set; get; }
         public double FirstPositionY { set; get; }
         public double SecondPositionX { set; get; }
@@ -1127,6 +1126,41 @@ namespace QMC.Common.Modules
         //public int m_nLCIMapData_EndIndex_X { get; set; }                           //  LCI Module 사용 시, Map Data 변경 위치 X Index (종료, Right)
         //public int m_nLCIMapData_StageStartIndex_Y { get; set; }                    //  LCI Module 사용 시, Map Data 변경 위치 Y Index (시작)
         //public int m_nLCIMapData_StageEndIndex_Y { get; set; }                      //  LCI Module 사용 시, Map Data 변경 위치 Y Index (종료)
+
+
+        // Process Status
+        public int CurrentLayer { get; private set; }
+        public int CurrentSocketNumber { get; private set; }
+        public string ProcessStatus { get; private set; }
+        public bool IsProcessing { get; private set; }
+
+        // Layer 설정
+        public void SetProcess_Layer(int layerIndex)
+        {
+            CurrentLayer = layerIndex;
+        }
+
+        // Socket 번호 설정
+        public void SetProcess_SocketNumber(int socketIndex)
+        {
+            CurrentSocketNumber = socketIndex;
+        }
+
+        // 가공 상태 설정 ("가공중"으로)
+        public void SetProcessRunning()
+        {
+            IsProcessing = true;
+            ProcessStatus = "가공중";
+        }
+
+        // 가공 완료 시 상태 설정
+        public void SetProcessCompleted()
+        {
+            CurrentLayer = -1;
+            CurrentSocketNumber = -1;
+            IsProcessing = false;
+            ProcessStatus = "가공완료";
+        }
 
         #endregion
 
@@ -13978,6 +14012,7 @@ namespace QMC.Common.Modules
 
 
 
+        
 
         private int Run_LaserDrilling_Main_Cycle()
         {

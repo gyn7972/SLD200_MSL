@@ -927,6 +927,51 @@ namespace SLD200_MSL
                     return;
             }
 
+            //LaserDrilling_MainStep
+            //여기서 정지 후 재시작시 상태 및 소켓 정보 확인 후 구동
+            //for (int i = 0; i < ProcessManager.GetLayer().Maxcount; i++)
+            //{
+            //    var layer = ProcessManager.GetLayer(i);
+
+            //    for (int j = 0; ProcessManager.GetLayer().GetSorket().Maxcount; j++)
+            //    {
+            //        var socket = ProcessManager.GetLayer(i).GetSorket(j);
+            //        if (socket.GetResult())
+            //        {
+            //            //true
+            //            workStage.ProcessStatus = " 가공완료"; true
+            //            workStage.setSsorketnumber(); < -소켓넘버는 - 1;
+            //        }
+            //        else
+            //        {
+            //            //false
+
+            //            //true
+            //            workStage.ProcessStatus = " 가공중"; false
+            //                workStage.setLayer(1);
+            //            workStage.setSsorketnumber(3); 0;
+            //            break;
+            //        }
+            //    }
+            //}
+
+            // Process Status
+            var pos = ProcessManager.GetFirstUnprocessedPosition();
+            if (pos.HasValue)
+            {
+                int layerIndex = pos.Value.layerIndex;
+                int socketIndex = pos.Value.socketIndex;
+
+                workStage.SetProcess_Layer(layerIndex);
+                workStage.SetProcess_SocketNumber(socketIndex);
+                workStage.SetProcessRunning(); //"가공중";
+            }
+            else
+            {
+                workStage.SetProcessCompleted(); //"모든 소켓 가공 완료";
+            }
+
+
             // 아래 변수가 자동운전 Tick 돌리는 변수임.
             workStage.m_MainWork_Start = true;
             workStage.m_LaserDrillingWork_Start = true;
