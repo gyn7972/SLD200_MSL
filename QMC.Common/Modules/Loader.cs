@@ -9270,6 +9270,13 @@ namespace QMC.Common.Modules
                     return;
                 }
 
+                ret = Run_MAlign_Cycle_Func();
+                if (ret != 0)
+                {
+                    SetRecoveryMAlign_Cycle(m_nMAlign_Step);
+                    return;
+                }
+
                 //ret = Run_Transfer_Cycle_Func();
                 //if (ret != 0)
                 //{
@@ -9338,7 +9345,7 @@ namespace QMC.Common.Modules
                 }
                 //  자동운전 시, M-Align 동작 조건 : TR Cycle (None), M-Aligner Module Exist, M-Aligner Cycle (None)
                 ret = Run_MAlign_Cycle_Func();
-                if(ret != 0)
+                if (ret != 0)
                 {
                     SetRecoveryMAlign_Cycle(m_nMAlign_Step);
                     return;

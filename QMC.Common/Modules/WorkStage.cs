@@ -13810,6 +13810,7 @@ namespace QMC.Common.Modules
             m_nSocketAlign_Retry_Max = 3;
             m_nSocketAlign_Retry_Count = 0;
 
+            //Todo: 성부장님. 엎드려.
             m_nSocketAlign_FiducialCount_Total = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos.Length;
             m_nSocketAlign_FiducialCount = 0;
 
@@ -15217,6 +15218,8 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List 실행 (Execute)");
 
+                    GlobalSocketStatus_Set("Thruhole", m_nDrillingWork_Group_Count, true, "Thruhole 가공 시작");
+
                     TickCount_Start((int)TickType.TICK_MAIN);
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_LaserBusyCheck;
@@ -15690,6 +15693,8 @@ namespace QMC.Common.Modules
                     m_bDivRegionList_Success &= rtc.ListExecute(Config.ParamConfig.BusyWait_MarkingComplete);
 
                     Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, Buffer List 실행 (Execute)");
+
+                    GlobalSocketStatus_Set("Outline", m_nDrillingWork_Group_Count, true, "Outline 가공 시작");
 
                     TickCount_Start((int)TickType.TICK_MAIN);
 
@@ -19246,16 +19251,32 @@ namespace QMC.Common.Modules
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "변환된 Spiral 데이터 List 추가 시작");
 
+                                    ////  객체 Edge 좌표 데이터 저장
+                                    //for (int n_pl = 0; n_pl < lwPolyLineSpiral.Count; n_pl++)
+                                    //{
+                                    //    if (n_pl == 0)          //  처음에 Jump 이동
+                                    //    {
+                                    //        m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)lwPolyLineSpiral.Items[n_pl].X, (float)lwPolyLineSpiral.Items[n_pl].Y));
+                                    //    }
+                                    //    else                    //  두번째부터 Mark 이동
+                                    //    {
+                                    //        m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)lwPolyLineSpiral.Items[n_pl].X, (float)lwPolyLineSpiral.Items[n_pl].Y));
+                                    //    }
+                                    //}
+
+
+
+                                    var spiralData = lwPolyLineSpiral.Items;
                                     //  객체 Edge 좌표 데이터 저장
                                     for (int n_pl = 0; n_pl < lwPolyLineSpiral.Count; n_pl++)
                                     {
                                         if (n_pl == 0)          //  처음에 Jump 이동
                                         {
-                                            m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)lwPolyLineSpiral.Items[n_pl].X, (float)lwPolyLineSpiral.Items[n_pl].Y));
+                                            m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
                                         }
                                         else                    //  두번째부터 Mark 이동
                                         {
-                                            m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)lwPolyLineSpiral.Items[n_pl].X, (float)lwPolyLineSpiral.Items[n_pl].Y));
+                                            m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
                                         }
                                     }
 
@@ -19391,16 +19412,17 @@ namespace QMC.Common.Modules
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "변환된 Spiral 데이터 List 추가 시작");
 
+                                    var spiralData = lwPolyLineSpiral.Items;
                                     //  객체 Edge 좌표 데이터 저장
                                     for (int n_pl = 0; n_pl < lwPolyLineSpiral.Count; n_pl++)
                                     {
                                         if (n_pl == 0)          //  처음에 Jump 이동
                                         {
-                                            m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)lwPolyLineSpiral.Items[n_pl].X, (float)lwPolyLineSpiral.Items[n_pl].Y));
+                                            m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
                                         }
                                         else                    //  두번째부터 Mark 이동
                                         {
-                                            m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)lwPolyLineSpiral.Items[n_pl].X, (float)lwPolyLineSpiral.Items[n_pl].Y));
+                                            m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
                                         }
                                     }
 
@@ -19903,6 +19925,8 @@ namespace QMC.Common.Modules
                         m_bDivRegionList_Success &= rtc.ListExecute(Config.ParamConfig.BusyWait_MarkingComplete);
 
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer List 실행 (Execute)");
+
+                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, true, "Drilling 가공 시작");
                     }
 
                     TickCount_Start((int)TickType.TICK_MAIN);
@@ -20258,6 +20282,8 @@ namespace QMC.Common.Modules
                         m_bDivRegionList_Success &= rtc.ListExecute(Config.ParamConfig.BusyWait_MarkingComplete);
 
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Region 영역 내 Object 별 가공, Buffer List 실행 (Execute)");
+
+                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, true, "Drilling 가공 시작");
 
                         TickCount_Start((int)TickType.TICK_MAIN);
 

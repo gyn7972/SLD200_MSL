@@ -589,27 +589,27 @@ namespace SLD200_MSL
 
                 workStage.Main_SocketPositions_Drawed = true;
             }
-
+                
             //  Socket 가공 진행 상태 다시 그리기
-            if (workStage.Main_SocketPositions_Drawed)
-            {
-                if (workStage.Main_SocketPositions_SetStatus)
-                {
-                    workStage.Main_SocketPositions_SetStatus = false;
+            //if (workStage.Main_SocketPositions_Drawed)
+            //{
+            //    if (workStage.Main_SocketPositions_SetStatus)
+            //    {
+            //        workStage.Main_SocketPositions_SetStatus = false;
 
-                    (int rows, int columns) = workStage.GetRowColumnFromPosition(workStage.Main_SocketPositions, workStage.Main_SocketPositions_CurrentSocketPosition);
-                    Update_SocketStatus(rows, columns, workStage.Main_SocketPositions_ProcessingStatus);
-                }
+            //        (int rows, int columns) = workStage.GetRowColumnFromPosition(workStage.Main_SocketPositions, workStage.Main_SocketPositions_CurrentSocketPosition);
+            //        Update_SocketStatus(rows, columns, workStage.Main_SocketPositions_ProcessingStatus);
+            //    }
 
-                //  완료된 소켓 상태 표시
-                if (workStage.Main_SocketPositions_SetCompleteStatus)
-                {
-                    workStage.Main_SocketPositions_SetCompleteStatus = false;
+            //    //  완료된 소켓 상태 표시
+            //    if (workStage.Main_SocketPositions_SetCompleteStatus)
+            //    {
+            //        workStage.Main_SocketPositions_SetCompleteStatus = false;
 
-                    (int rows, int columns) = workStage.GetRowColumnFromPosition(workStage.Main_SocketPositions, workStage.Main_SocketPositions_SocketCompletePosition);
-                    Update_SocketStatus(rows, columns, workStage.Main_SocketPositions_CompleteStatus);
-                }
-            }
+            //        (int rows, int columns) = workStage.GetRowColumnFromPosition(workStage.Main_SocketPositions, workStage.Main_SocketPositions_SocketCompletePosition);
+            //        Update_SocketStatus(rows, columns, workStage.Main_SocketPositions_CompleteStatus);
+            //    }
+            //}
 
                 //  계속 진행 버튼 활성화
                 if (Equipment.MachineStop_byTimeout_Loader)
@@ -960,52 +960,22 @@ namespace SLD200_MSL
                     return;
             }
 
-            //LaserDrilling_MainStep
-            //여기서 정지 후 재시작시 상태 및 소켓 정보 확인 후 구동
-            //for (int i = 0; i < ProcessManager.GetLayer().Maxcount; i++)
-            //{
-            //    var layer = ProcessManager.GetLayer(i);
 
-            //    for (int j = 0; ProcessManager.GetLayer().GetSorket().Maxcount; j++)
-            //    {
-            //        var socket = ProcessManager.GetLayer(i).GetSorket(j);
-            //        if (socket.GetResult())
-            //        {
-            //            //true
-            //            workStage.ProcessStatus = " 가공완료"; true
-            //            workStage.setSsorketnumber(); < -소켓넘버는 - 1;
-            //        }
-            //        else
-            //        {
-            //            //false
+            // Process Status
+            var pos = ProcessManager.GetFirstUnprocessedPosition();
+            if (pos.HasValue)
+            {
+                string layerName = pos.Value.layerName;
+                int socketIndex = pos.Value.socketIndex;
 
-            //            //true
-            //            workStage.ProcessStatus = " 가공중"; false
-            //                workStage.setLayer(1);
-            //            workStage.setSsorketnumber(3); 0;
-            //            break;
-            //        }
-            //    }
-            //}
-
-
-
-            //// Process Status
-            //var pos = ProcessManager.GetFirstUnprocessedPosition();
-            //if (pos.HasValue)
-            //{
-            //    string layerName = pos.Value.layerName;
-            //    int socketIndex = pos.Value.socketIndex;
-
-            //    workStage.SetProcess_Layer(layerName);
-            //    workStage.SetProcess_SocketNumber(socketIndex);
-            //    workStage.SetProcessRunning(); //"가공중";
-            //}
-            //else
-            //{
-            //    workStage.SetProcessCompleted(); //"모든 소켓 가공 완료";
-            //}
-
+                workStage.SetProcess_Layer(layerName);
+                workStage.SetProcess_SocketNumber(socketIndex);
+                workStage.SetProcessRunning(); //"가공중";
+            }
+            else
+            {
+                workStage.SetProcessCompleted(); //"모든 소켓 가공 완료";
+            }
 
 
             //  여기서 정지 후 재시작시 상태 및 소켓 정보 확인 후 구동
@@ -1013,11 +983,15 @@ namespace SLD200_MSL
             {
                 //  Pre Align 중이었으니 그대로 시작
 
+                Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Pre Align 부터 다시 시작");
+
                 workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
             }
             else if (workStage.m_nLaserDrilling_MainStep_Recovery == (int)LaserDrilling_Step.DrillingData_SocketAlign_Start)
             {
                 //  Socket Align 중이었으니 그대로 시작
+
+                Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket Align 부터 다시 시작");
 
                 workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
             }
@@ -1035,29 +1009,16 @@ namespace SLD200_MSL
             {
                 //  가공중이었으니, 다음 소켓 Index 부터 소켓 얼라인 시작
 
+                Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket 가공 진행하던 부분 다시 시작");
+
                 //  현재 소켓의 모든 Layer 상태 확인. (하나라도 true 인 게 있으면 다음 소켓 인덱스로 시작)
-
-                // Process Status
-                var pos = ProcessManager.GetFirstUnprocessedPosition();
-                if (pos.HasValue)
-                {
-                    string layerName = pos.Value.layerName;
-                    int socketIndex = pos.Value.socketIndex;
-
-                    workStage.SetProcess_Layer(layerName);
-                    workStage.SetProcess_SocketNumber(socketIndex);
-                    workStage.SetProcessRunning(); //"가공중";
-                }
-                else
-                {
-                    workStage.SetProcessCompleted(); //"모든 소켓 가공 완료";
-                }
-
 
                 //  Drilling 시작 파라미터 설정
                 if (!workStage.IsProcessing)
                 {
                     //  가공할 것이 없음. --> 강제 종료처럼 밖으로 빼내기
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket 가공 진행할 것이 없으므로 Out");
 
                     workStage.m_bLaserDrilling_Complete = true;
                     workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
@@ -1066,6 +1027,8 @@ namespace SLD200_MSL
                 else
                 {
                     //  가공할 것이 있음.
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket 가공 진행할 것이 있음");
 
                     if (workStage.CurrentLayerName == "Hole1")
                     {
@@ -1123,9 +1086,28 @@ namespace SLD200_MSL
 
                         workStage.m_nDrillingWork_Group_Count = workStage.CurrentSocketNumber;          //  소켓 번호 설정 (다음 소켓 ???)
                     }
-                }
 
-                workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                    workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                }
+            }
+            else
+            {
+                if (!workStage.IsProcessing)
+                {
+                    //  가공할 것이 없음.
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket 가공 완료 상태. 진행할 Socket 없음.");
+
+                    workStage.m_bLaserDrilling_Complete = true;
+                    workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
+                    workStage.m_nSocketAlign_MainStep = (int)WorkStage.SocketAlign_Step.None;
+                }
+                else
+                {
+                    //  가공은 이미 끝난 상태에서는 여기에 들어오지 않아야 함..
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Button Click", "가공은 이미 끝난 상태에서는 여기에 들어오지 않아야 함.");
+                }    
             }
 
 
