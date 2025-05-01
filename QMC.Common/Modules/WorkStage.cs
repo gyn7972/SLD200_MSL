@@ -1540,6 +1540,7 @@ namespace QMC.Common.Modules
             eGetdata_Drildata_not_closed ,    //  "Drilling Data 가 닫힌 도형이 아닙니다."
             eGetdata_Drildata_not_group ,     //  "Drilling Data 가 Group 이 아닙니다."
             eGetdata_Rtcinit ,                //  "RTC 보드가 초기화 되지 않았습니다."
+            eGetdata_Drildata_No_group,     //  "Drilling Data 가 Group 이 아닙니다."
             DryRunFail,
             DataNotValidation,
             SocketAlignZMoveFail,
@@ -1705,6 +1706,16 @@ namespace QMC.Common.Modules
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
+
+            //
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.eGetdata_Drildata_No_group;
+            alarm.Title = "Data Type";
+            alarm.Cause = "Drilling Data 가 Group이 없습니다. 데이터를 확인하여 주십시요.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.DryRunFail;
@@ -14100,7 +14111,42 @@ namespace QMC.Common.Modules
                 m_nDrillingWork_Group_Count = m_nLaserDrilling_SocketStopped_SocketIndex;           //  Socket Stop 시 진행중이던 Socket 번호
             }
         }
+        public static List<stDividedRegion_ObjectData> SortByDistance(List<stDividedRegion_ObjectData> listObj, double minDistance)
+        {
+            List<stDividedRegion_ObjectData> sortedList = new List<stDividedRegion_ObjectData>();
+            HashSet<stDividedRegion_ObjectData> remainingItems = new HashSet<stDividedRegion_ObjectData>(listObj);
 
+            // 첫 번째 기준점은 referencePoint와 가장 가까운 점
+            stDividedRegion_ObjectData current = listObj.First();
+            sortedList.Add(current);
+            remainingItems.Remove(current);
+
+            // 나머지 정렬
+            while (remainingItems.Count > 0)
+            {
+                var list =  remainingItems
+                    .Where(obj => GetDistance(obj.dEdgePoint[0], sortedList.Last().dEdgePoint[0]) >= minDistance)
+                    .OrderBy(obj => GetDistance(obj.dEdgePoint[0], sortedList.Last().dEdgePoint[0]));
+                if(list.Count() ==0)
+                {
+                    break;
+                }
+                current = list.First();
+                
+                sortedList.Add(current);
+                remainingItems.Remove(current);
+            }
+
+            // 남은 항목 추가 (조건을 만족하지 않는 항목들)
+            sortedList.AddRange(remainingItems);
+            
+            return sortedList;
+        }
+
+        private static double GetDistance(PointD p1, PointD p2)
+        {
+            return Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
+        }
         private int Run_LaserDrilling_Main_Cycle()
         {
             m_nLaserDrilling_MainStep_Recovery = -1;
@@ -14643,6 +14689,18 @@ namespace QMC.Common.Modules
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
 
                             MessageBox.Show("RTC 보드가 초기화 되지 않았습니다.", "Information !");
+                            break;
+                        //
+                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_GROUP:
+                            Log.Write("SLD-200", "Auto Run", "Layer Group이 없습니다.");
+
+                            //timer_LaserDrillingWork.Enabled = false;
+                            //m_bExit = true;
+                            return AlarmPost(AlarmKey.eGetdata_Drildata_No_group);
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                            MessageBox.Show("Layer Group이 없습니다.", "Information !");
+                            break;
                             break;
                     }
                     break;
@@ -16245,7 +16303,7 @@ namespace QMC.Common.Modules
 
                 //            //Thread.Sleep(Config.ParamConfig.ThreadSleep_beforeListBegin);
 
-                //            m_bMarkingList_Success &= rtcMode.ListBegin(laser, ListType.Single);
+                //            m_bMarkingList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
 
                 //            Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, Buffer List Open");
 
@@ -17934,8 +17992,8 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos_DoneCheck:                 //  가공 할 Region Center 위치로 이동 완료 확인
 
                     //todo : 김영남 속도 개선중 
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
-                    break;
+                    //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
+                    //break;
 
 
 
@@ -18020,6 +18078,16 @@ namespace QMC.Common.Modules
                             {
                                 m_nDrillingWork_Repeat_Count_Backup = m_nDrillingWork_Repeat_Count;
                                 m_nDrillingWork_RepeatBundle_Count_Backup = m_nDrillingWork_RepeatBundle_Count;
+
+                                stDividedRegion_RegionData data =  m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag];
+                                List<stDividedRegion_ObjectData> listObj = data.m_stDividedRegion_ObjectData.ToList();
+                                
+                                //Todo : 성충현 부장님. SortByDistance 상수로 들어가있는 0.5 레시피 변수로 작업 바랍니다.
+
+                                var sortedObj = SortByDistance(listObj, 0.5);
+                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData = sortedObj.ToArray();
+                                sortedObj.Clear();
+                                sortedObj = null;
 
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_1Rect;        //  모든 Hole 을 1번씩 가공해서 전체 가공
                             }
@@ -20251,7 +20319,7 @@ namespace QMC.Common.Modules
 
                         var rtcMode = rtc as IRtc;                                  //  RTC6
 
-                        m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Single);
+                        m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
 
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Buffer List Open");
                         //  테스트
@@ -21970,7 +22038,7 @@ namespace QMC.Common.Modules
                 var rtcMode = rtc as IRtc;                                  //  RTC6
 
 
-                m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Single);
+                m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
 
 
 
@@ -22937,7 +23005,7 @@ namespace QMC.Common.Modules
 
                 var rtcMode = rtc as IRtc;                                  //  RTC6
 
-                m_bOutLineList_Success &= rtcMode.ListBegin(laser, ListType.Single);
+                m_bOutLineList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
 
                 Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, Buffer List Open");
 
@@ -23388,7 +23456,7 @@ namespace QMC.Common.Modules
 
 
             // Tobo: 구영남 =
-            m_bThruHoleList_Success &= rtcMode.ListBegin(laser, ListType.Single);
+            m_bThruHoleList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
 
             Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List Open");
 
@@ -30200,11 +30268,7 @@ namespace QMC.Common.Modules
         }
 
         // 두 좌표 간의 거리를 계산하는 메서드
-        private double GetDistance(PointD p1, PointD p2)
-        {
-            return Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
-        }
-
+        
         private void SortFastPath(ref stDrilling_GroupData paths, bool bSortDir_HorVer, double dStepSize)
         {
             List<stDrilling_ObjectData> pathFast = new List<stDrilling_ObjectData>();
@@ -33024,7 +33088,7 @@ namespace QMC.Common.Modules
                 return false;
             }
 
-            rtc.ListBegin(laser, ListType.Single);
+            rtc.ListBegin(laser, ListType.Auto);
             // 중심 기준 좌표로 시작점 계산
             float startX = -((cols - 1) * pitchX) / 2.0f;
             float startY = -((rows - 1) * pitchY) / 2.0f;
@@ -33209,7 +33273,7 @@ namespace QMC.Common.Modules
                 return false;
             }
 
-            rtc.ListBegin(laser, ListType.Single);
+            rtc.ListBegin(laser, ListType.Auto);
             // 중심 기준 좌표로 시작점 계산
             float startX = -((cols - 1) * pitchX) / 2.0f;
             float startY = -((rows - 1) * pitchY) / 2.0f;
@@ -33308,7 +33372,7 @@ namespace QMC.Common.Modules
                 return false;
             }
 
-            rtc.ListBegin(laser, ListType.Single);
+            rtc.ListBegin(laser, ListType.Auto);
 
             float startX = -((cols - 1) * pitchX) / 2.0f;
             float startY = -((rows - 1) * pitchY) / 2.0f;
