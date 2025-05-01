@@ -23,6 +23,7 @@ using static QMC.Common.Modules.Loader;
 using static QMC.Common.Modules.Unloader;
 using Point = System.Drawing.Point;
 using System.Runtime.CompilerServices;
+using System.Net.Sockets;
 
 namespace SLD200_MSL
 {
@@ -48,10 +49,12 @@ namespace SLD200_MSL
         private int CellSize_Width = 50; // 각 셀의 크기 (가로)
         private int CellSize_Height = 50; // 각 셀의 크기 (세로)
 
-
         // 작업 상태를 저장하는 배열 (0: 미작업, 1: 진행 중, 2: 완료)
         private int[,] pcbStatus; // 작업 상태 배열
 
+        // 선택 변수 
+        private int selectedRow = -1;
+        private int selectedColumn = -1;
 
 
         private System.Windows.Forms.Timer timer_Main_Status;
@@ -299,19 +302,79 @@ namespace SLD200_MSL
                             break;
                     }
 
-                    // 셀 그리기
+                    System.Drawing.Rectangle rect = new System.Drawing.Rectangle(j * CellSize_Width, i * CellSize_Height, CellSize_Width, CellSize_Height);
+
+                    // 셀 채우기
                     using (Brush brush = new SolidBrush(cellColor))
+                        g.FillRectangle(brush, rect);
+
+                    // 테두리
+                    using (Pen pen = new Pen(Color.Black))
+                        g.DrawRectangle(pen, rect);
+
+                    // 선택된 셀은 파란색 테두리로 강조
+                    if (i == selectedRow && j == selectedColumn)
                     {
-                        g.FillRectangle(brush, j * CellSize_Width, i * CellSize_Height, CellSize_Width, CellSize_Height);
+                        using (Pen highlightPen = new Pen(Color.Blue, 2))
+                            g.DrawRectangle(highlightPen, rect);
                     }
 
-                    // 셀 테두리 그리기
-                    using (Pen pen = new Pen(Color.Black))
-                    {
-                        g.DrawRectangle(pen, j * CellSize_Width, i * CellSize_Height, CellSize_Width, CellSize_Height);
-                    }
+                    //// 셀 그리기
+                    //using (Brush brush = new SolidBrush(cellColor))
+                    //{
+                    //    g.FillRectangle(brush, j * CellSize_Width, i * CellSize_Height, CellSize_Width, CellSize_Height);
+                    //}
+                    //// 셀 테두리 그리기
+                    //using (Pen pen = new Pen(Color.Black))
+                    //{
+                    //    g.DrawRectangle(pen, j * CellSize_Width, i * CellSize_Height, CellSize_Width, CellSize_Height);
+                    //}
                 }
             }
+        }
+
+        private void PictureBox_ModuleProcessingStatus_MouseClick(object sender, MouseEventArgs e)
+        {
+            int clickedCol = e.X / CellSize_Width;
+            int clickedRow = e.Y / CellSize_Height;
+
+            if (clickedRow >= 0 && clickedRow < Rows && clickedCol >= 0 && clickedCol < Columns)
+            {
+                // 같은 셀을 클릭하면 선택 해제
+                if (clickedRow == selectedRow && clickedCol == selectedColumn)
+                {
+                    selectedRow = -1;
+                    selectedColumn = -1;
+                }
+                else
+                {
+                    selectedRow = clickedRow;
+                    selectedColumn = clickedCol;
+                }
+
+                pictureBox_ModuleProcessingStatus.Invalidate(); // 다시 그리기
+            }
+        }
+
+        private (LayerInfo layer, SocketInfo socket)? GetSelectedLayerAndSocket()
+        {
+            //전제 조건
+            //Layer 수 == Rows
+            //각 Layer당 Socket 수 == Columns
+            //즉, pcbStatus[row, col] ←→ ProcessManager.Layers[row].Sockets[col]
+
+            if (selectedRow < 0 || selectedColumn < 0)
+                return null;
+
+            if (selectedRow >= ProcessManager.Layers.Count)
+                return null;
+
+            var layer = ProcessManager.Layers[selectedRow];
+            if (selectedColumn >= layer.Sockets.Count)
+                return null;
+
+            var socket = layer.Sockets[selectedColumn];
+            return (layer, socket);
         }
 
         // 작업 상태 업데이트 메서드
@@ -323,6 +386,8 @@ namespace SLD200_MSL
                 pictureBox_ModuleProcessingStatus.Invalidate(); // PictureBox 다시 그리기
             }
         }
+
+
 
         #endregion
 
@@ -2245,12 +2310,9 @@ namespace SLD200_MSL
 
         private void button_TEST12_Click(object sender, EventArgs e)
         {
-            loader.AlarmPost(Loader.AlarmKey.eMAligner_Wide_Fail);
-
-            loader.AlarmPost(Loader.AlarmKey.LD_TransferX_Move_StackerPos_Timeout);
-
-            workStage.AlarmPost(WorkStage.AlarmKey.PreAlignFail);
-
+            int nCol = workStage.Main_SocketPositions_ColumnCount = 5;
+            int nRow = workStage.Main_SocketPositions_RowCount = 5;
+            Change_SocketArraySize(nCol, nRow);
         }
 
         private void checkBox_Main_Loader_LPort_Pause_CheckedChanged(object sender, EventArgs e)
@@ -2279,5 +2341,7 @@ namespace SLD200_MSL
                 return;
             }
         }
+
+        
     }
 }

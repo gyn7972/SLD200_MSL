@@ -624,7 +624,9 @@ namespace QMC.Common.Parts
                     int nWait = 0;
                     while (true)
                     {
-                        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) == true)
+                        if (MC_Func.MC_GetDone((int)nAxis.X) 
+                            && MC_Func.MC_PosTolerance((int)nAxis.X, xyInterpolatedCoordinate.X))
+                            //if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) == true)
                         {
                             break;
                         }
@@ -640,7 +642,9 @@ namespace QMC.Common.Parts
                     nWait = 0;
                     while (true)
                     {
-                        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == true)
+                        //if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == true)
+                        if (MC_Func.MC_GetDone((int)nAxis.Y)
+                            && MC_Func.MC_PosTolerance((int)nAxis.X, xyInterpolatedCoordinate.Y))
                         {
                             break;
                         }
@@ -650,7 +654,6 @@ namespace QMC.Common.Parts
                         {
                             break;
                         }
-
                     }
                     //Thread.Sleep(Config.MoveToDelay);
                     Thread.Sleep(500);
@@ -688,7 +691,6 @@ namespace QMC.Common.Parts
 
                             foreach (VisionImage imageGrabed in visionImages)
                             {
-                                
                                 int r = this.OnSearch(imageGrabed, Recipe.InspectRoiStartLocation
                                     , Recipe.InspectRoiEndLocation
                                     , Recipe.PatternMatchingParameter
