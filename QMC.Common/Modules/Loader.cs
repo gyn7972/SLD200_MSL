@@ -9296,7 +9296,6 @@ namespace QMC.Common.Modules
                 if (!m_LoaderWork_Start)
                 {
                     //Console.WriteLine("LoaderWork is not started.");
-                    //timer_ScannerCalibration.Stop(); // 타이머 중지
                     return;  
                 }
 
@@ -9304,7 +9303,6 @@ namespace QMC.Common.Modules
                 //if (m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None)
                 //{
                 //    Console.WriteLine("LoaderWork completed.");
-                //    //timer_ScannerCalibration.Stop(); // 타이머 중지
                 //    return;
                 //}
 
@@ -9356,7 +9354,6 @@ namespace QMC.Common.Modules
             catch (Exception ex)
             {
                 Log.Write(ex);
-                Console.WriteLine($"Error in Timer_ScannerCalibration_Elapsed: {ex.Message}");
             }
             finally
             {

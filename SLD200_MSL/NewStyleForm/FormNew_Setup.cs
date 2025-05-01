@@ -2356,40 +2356,38 @@ namespace SLD200_MSL
 
             if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)
             {
-                workStage.timer_ScannerCalibration.Enabled = true;
-                workStage.timer_ScannerCalibration.Start();
+                //workStage.timer_ScannerCalibration.Enabled = true;
+                //workStage.timer_ScannerCalibration.Start();
 
-                workStage._isCalibrationRunning = false;
+                //Equipment.AutoRunStatus = true;
+
+                //workStage._isCalibrationRunning = false;
                 workStage.m_ScannerCalibration_Start = true;
-                
                 Equipment.Scanner_Vision_Offset_Setting_Use = false;
-                workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Run);
                 workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.Start;
+                workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Run); //<-구동 중 정지할려면 필요. 
+
             }
         }
 
         private void btnCalStop_Click(object sender, EventArgs e)
         {
-            Equipment.AutoRunStatus = false;
+            //Equipment.AutoRunStatus = false;
+            //workStage.timer_ScannerCalibration.Enabled = false; //이거 해야하나..
+            //workStage.timer_ScannerCalibration.Stop();
 
-            workStage.m_ScannerCalibration_Start = false;
-            workStage.timer_ScannerCalibration.Enabled = false; //이거 해야하나..
-            workStage.timer_ScannerCalibration.Stop();
             workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
+            workStage.m_ScannerCalibration_Start = false;
             workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.None;
-
         }
 
         private void btnCalStart_Vision_Click(object sender, EventArgs e)
         {
-            string m_strTemp = "";
-
             var mb = new QMC.Common.UI.MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "Scanner Calibration - Vision부터 시작합니다.\n\n시작하시겠습니까?"))
             {
                 return;
             }
-
             var mb1 = new QMC.Common.UI.MessageBoxYesNo();
             if (DialogResult.Yes != mb1.ShowDialog("Question ?", "Mark가 Center에 위치해 있는지 확인 바랍니다.\n\n시작하시겠습니까?"))
             {
@@ -2421,15 +2419,19 @@ namespace SLD200_MSL
             if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)
             {
                 workStage.timer_ScannerCalibration.Enabled = true;
-                workStage.timer_ScannerCalibration.Start();
 
-                workStage._isCalibrationRunning = false;
                 workStage.m_ScannerCalibration_Start = true;
 
                 Equipment.Scanner_Vision_Offset_Setting_Use = false;
                 workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Run);
                 //workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.StageXY_Move_CrossMarkCenterPos; //고민 필요. 
                 workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.ScannerCompensation_StartPosition_Set;
+            }
+            else
+            {
+                var mb2 = new MessageBoxOk();
+                mb2.ShowDialog("Information !", "캘리브레이션이 진행중입니다.");
+                return;
             }
         }
 

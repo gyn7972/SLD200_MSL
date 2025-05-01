@@ -266,6 +266,7 @@
             this.pictureBox_ModuleProcessingStatus.Size = new System.Drawing.Size(237, 198);
             this.pictureBox_ModuleProcessingStatus.TabIndex = 0;
             this.pictureBox_ModuleProcessingStatus.TabStop = false;
+            this.pictureBox_ModuleProcessingStatus.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PictureBox_ModuleProcessingStatus_MouseClick);
             // 
             // groupBoxMain_ProcessingStatus
             // 
