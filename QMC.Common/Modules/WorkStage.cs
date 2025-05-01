@@ -62,7 +62,6 @@ using System.Timers;
 using Cognex.VisionPro.ImageProcessing;
 using QMC.Process.WorkStage.Parts;
 using QMC.Common;
-using QMC.Common.SpiralLab;
 
 
 namespace QMC.Common.Modules

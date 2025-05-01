@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QMC.Common.SpiralLab
+namespace QMC.Common.Parts
 {
     public class SpiralDataCollector
     {
@@ -28,6 +28,7 @@ namespace QMC.Common.SpiralLab
             }
             spialData.SpiralData_Create(spialData.GetOuterDiameter(), spialData.GetInnerDiameter(), spialData.GetRevolutions(), spialData.GetAngleFactor(), 0, 0);
             spialDataList.Add(spialData);
+            return spialData;
         }
 
         // SpialData ªË¡¶

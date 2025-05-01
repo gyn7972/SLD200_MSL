@@ -2,7 +2,7 @@
 using System;
 using System.Numerics;
 
-namespace QMC.Common.SpiralLab
+namespace QMC.Common.Parts
 {
     public class SpialData
     {
