@@ -14093,7 +14093,42 @@ namespace QMC.Common.Modules
                 m_nDrillingWork_Group_Count = m_nLaserDrilling_SocketStopped_SocketIndex;           //  Socket Stop 시 진행중이던 Socket 번호
             }
         }
+        public static List<stDividedRegion_ObjectData> SortByDistance(List<stDividedRegion_ObjectData> listObj, double minDistance)
+        {
+            List<stDividedRegion_ObjectData> sortedList = new List<stDividedRegion_ObjectData>();
+            HashSet<stDividedRegion_ObjectData> remainingItems = new HashSet<stDividedRegion_ObjectData>(listObj);
 
+            // 첫 번째 기준점은 referencePoint와 가장 가까운 점
+            stDividedRegion_ObjectData current = listObj.First();
+            sortedList.Add(current);
+            remainingItems.Remove(current);
+
+            // 나머지 정렬
+            while (remainingItems.Count > 0)
+            {
+                var list =  remainingItems
+                    .Where(obj => GetDistance(obj.dEdgePoint[0], sortedList.Last().dEdgePoint[0]) >= minDistance)
+                    .OrderBy(obj => GetDistance(obj.dEdgePoint[0], sortedList.Last().dEdgePoint[0]));
+                if(list.Count() ==0)
+                {
+                    break;
+                }
+                current = list.First();
+                
+                sortedList.Add(current);
+                remainingItems.Remove(current);
+            }
+
+            // 남은 항목 추가 (조건을 만족하지 않는 항목들)
+            sortedList.AddRange(remainingItems);
+            
+            return sortedList;
+        }
+
+        private static double GetDistance(PointD p1, PointD p2)
+        {
+            return Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
+        }
         private int Run_LaserDrilling_Main_Cycle()
         {
             m_nLaserDrilling_MainStep_Recovery = -1;
@@ -17986,6 +18021,16 @@ namespace QMC.Common.Modules
                             {
                                 m_nDrillingWork_Repeat_Count_Backup = m_nDrillingWork_Repeat_Count;
                                 m_nDrillingWork_RepeatBundle_Count_Backup = m_nDrillingWork_RepeatBundle_Count;
+
+                                stDividedRegion_RegionData data =  m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag];
+                                List<stDividedRegion_ObjectData> listObj = data.m_stDividedRegion_ObjectData.ToList();
+                                
+                                //Todo : 성충현 부장님. SortByDistance 상수로 들어가있는 0.5 레시피 변수로 작업 바랍니다.
+
+                                var sortedObj = SortByDistance(listObj, 0.5);
+                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData = sortedObj.ToArray();
+                                sortedObj.Clear();
+                                sortedObj = null;
 
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_1Rect;        //  모든 Hole 을 1번씩 가공해서 전체 가공
                             }
