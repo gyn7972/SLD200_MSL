@@ -50,6 +50,14 @@ namespace QMC.Common.Parts
         public static bool operator ==(SpialData left, SpialData right)
         {
             
+            if(right is null)
+            {
+                return false;
+            }
+            if(left is null)
+            {
+                return false;
+            }
             return left.m_dOuterDiameter == right.m_dOuterDiameter &&
                    left.m_dInnerDiameter == right.m_dInnerDiameter &&
                    left.m_dRevolutions == right.m_dRevolutions &&
