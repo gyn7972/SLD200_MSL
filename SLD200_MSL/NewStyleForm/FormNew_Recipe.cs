@@ -668,8 +668,11 @@ namespace SLD200_MSL
                 NativeMethods.GetPrivateProfileString(strTemp, "HoleDrilling_StartPosDivision", "0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision = Equipment.ToInt(temp.ToString());
                 //  Group Split Size (mm)
-                NativeMethods.GetPrivateProfileString(strTemp, "GroupSplitSize", "0", temp, 255, strFIle);
+                NativeMethods.GetPrivateProfileString(strTemp, "GroupSplitSize", "3.0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize = Equipment.ToDouble(temp.ToString());
+                //  Group Split Size - Height (mm)
+                NativeMethods.GetPrivateProfileString(strTemp, "GroupSplitSize_Height", "3.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize_Height = Equipment.ToDouble(temp.ToString());
                 //  Scanner Drilling Speed (mm/s)
                 NativeMethods.GetPrivateProfileString(strTemp, "ScannerDrillingSpeed", "10", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerDrillingSpeed = Equipment.ToDouble(temp.ToString());
@@ -701,7 +704,7 @@ namespace SLD200_MSL
                 NativeMethods.GetPrivateProfileString(strTemp, "DrillingRepetation", "0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetition = Equipment.ToInt(temp.ToString());
                 //  Drilling Repetition bundle
-                NativeMethods.GetPrivateProfileString(strTemp, "DrillingRepetitionBundle", "50", temp, 255, strFIle);
+                NativeMethods.GetPrivateProfileString(strTemp, "DrillingRepetitionBundle", "100", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle = Equipment.ToInt(temp.ToString());
                 //  Rotation Angle when Arc
                 NativeMethods.GetPrivateProfileString(strTemp, "RotationAngleArc", "360.0", temp, 255, strFIle);
@@ -844,6 +847,7 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing = ReadDouble(data, "Resizing", 0.0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision = ReadInt(data, "HoleDrilling_StartPosDivision", 0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize = ReadDouble(data, "GroupSplitSize", 0.0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize_Height = ReadDouble(data, "GroupSplitSize_Height", 0.0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerDrillingSpeed = ReadDouble(data, "ScannerDrillingSpeed", 10.0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerJumpSpeed = ReadDouble(data, "ScannerJumpSpeed", 100.0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_LaserOnDelay = ReadInt(data, "LaserOnDelay", 0);
@@ -854,7 +858,7 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].Miscellaneous_Drilling_Power = ReadDouble(data, "DrillingPower", 0.0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_P2PDistance = ReadDouble(data, "P2PDistance", 0.0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetition = (short)ReadInt(data, "DrillingRepetation", 0);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle = (short)ReadInt(data, "DrillingRepetitionBundle", 50);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle = (short)ReadInt(data, "DrillingRepetitionBundle", 100);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_RotationAngleArc = ReadDouble(data, "RotationAngleArc", 360.0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_MaskIndex = ReadInt(data, "MaskIndex", 0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_BETPositionIndex = ReadInt(data, "BETPositionIndex", 0);
@@ -966,6 +970,8 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "HoleDrilling_StartPosDivision", Equipment.stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision.ToString(), strFIle);
                 //  Group Split Size (mm)
                 NativeMethods.WritePrivateProfileString(strTemp, "GroupSplitSize", Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize.ToString(), strFIle);
+                //  Group Split Size - Height (mm)
+                NativeMethods.WritePrivateProfileString(strTemp, "GroupSplitSize_Height", Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize_Height.ToString(), strFIle);
                 //  Scanner Drilling Speed (mm/s)
                 NativeMethods.WritePrivateProfileString(strTemp, "ScannerDrillingSpeed", Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerDrillingSpeed.ToString(), strFIle);
                 //  Scanner Jump Speed (mm/s)
@@ -1078,6 +1084,7 @@ namespace SLD200_MSL
                 layerDict["Resizing"] = Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing.ToString();
                 layerDict["HoleDrilling_StartPosDivision"] = Equipment.stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision.ToString();
                 layerDict["GroupSplitSize"] = Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize.ToString();
+                layerDict["GroupSplitSize_Height"] = Equipment.stLayerRecipeSet[i].Miscellaneous_GroupSplitSize_Height.ToString();
                 layerDict["ScannerDrillingSpeed"] = Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerDrillingSpeed.ToString();
                 layerDict["ScannerJumpSpeed"] = Equipment.stLayerRecipeSet[i].Miscellaneous_ScannerJumpSpeed.ToString();
                 layerDict["LaserOnDelay"] = Equipment.stLayerRecipeSet[i].Miscellaneous_LaserOnDelay.ToString();
@@ -1360,7 +1367,8 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_DefocusingDistance = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_DefocusingDistance.Text);
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_Resizing = Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text);
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_HoleDrilling_StartPosDivision = comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text.Length > 0 ? Equipment.ToInt(comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_GroupSplitSize = textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_GroupSplitSize = textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text) : 4.0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_GroupSplitSize_Height = textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text) : 4.0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_ScannerDrillingSpeed = textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text) : 0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_ScannerJumpSpeed = textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text) : 0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_LaserOnDelay = textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text) : 0;
@@ -1370,7 +1378,7 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_PolygonDelay = textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_PolygonDelay.Text) : 0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_Drilling_Power = textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Text) : 0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_DrillingRepetition = textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_DrillingRepetitionBundle = textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text) : 50;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_DrillingRepetitionBundle = textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text) : 100;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_RotationAngleArc = textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text) : 360.0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_P2PDistance = textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text) : 0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_MaskIndex = comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex;
@@ -1506,6 +1514,7 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_Resizing.ToString();
                 comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleDrilling_StartPosDivision.ToString();
                 textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize.ToString();
+                textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize_Height.ToString();
                 textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_ScannerDrillingSpeed.ToString();
                 textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_ScannerJumpSpeed.ToString();
                 textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_LaserOnDelay.ToString();
@@ -1730,6 +1739,7 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_Resizing.ToString();
             comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_HoleDrilling_StartPosDivision.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_GroupSplitSize.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_GroupSplitSize_Height.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_ScannerDrillingSpeed.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_ScannerJumpSpeed.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_LaserOnDelay.ToString();
@@ -1839,6 +1849,7 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_Miscellaneous_Resizing.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_Resizing.ToString();
             comboBox_Recipe_TabRecipe_Miscellaneous_HoleDrilling_StartPosDivision.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleDrilling_StartPosDivision.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize_Height.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_ScannerDrillingSpeed.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_ScannerDrillingSpeed.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_ScannerJumpSpeed.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_ScannerJumpSpeed.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_LaserOnDelay.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_LaserOnDelay.ToString();
