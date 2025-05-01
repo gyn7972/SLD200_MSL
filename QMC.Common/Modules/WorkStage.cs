@@ -13888,10 +13888,6 @@ namespace QMC.Common.Modules
 
                             currentPosition.Y += dYoffset;
                             double dSpec = 0.1;
-                            //if (dXoffset < dSpec && dYoffset < dSpec)
-                            //{
-                            //    return 0;
-                            //}
                             bFound = true;
                             continue;
 
