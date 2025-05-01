@@ -1864,6 +1864,10 @@ namespace QMC.Common.Modules
         public bool Main_SocketPositions_Draw = false;                                  //  소켓 위치 그리기 여부
         public bool Main_SocketPositions_Drawed = false;                                //  소켓 위치 그리기 성공 여부
         public bool Main_SocketPositions_SetStatus = false;                             //  소켓 상태 세팅
+
+        public int Main_SocketPositions_CompleteSocket = -1;                            //  완료된 소켓의 인덱스
+        public int Main_SocketPositions_ProcessingSocket = -1;                          //  가공중인 소켓의 인덱스
+
         public PointD Main_SocketPositions_CurrentSocketPosition = new PointD(0, 0);    //  현재 가공중인 소켓 좌표값
         public int Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Ready;
 
@@ -2975,6 +2979,9 @@ namespace QMC.Common.Modules
 
         //  선택 가공을 위한 변수
         public int m_nSelectedSocket_Index { set; get; }                        //  선택 가공할 Socket 총 개수
+
+        //  Socket Align 시작할 Index
+        public int m_nSocketAlign_StartIndex { set; get; }                      //  Socket Align 시작할 Index
 
 
         //  소켓 높이 측정 후 Z축 Offset 이동을 위한 이동량
@@ -14655,10 +14662,19 @@ namespace QMC.Common.Modules
                             Main_SocketPositions.Add(new PointD(m_stDividedRegion_GroupData[i].dGroupCenter.X, m_stDividedRegion_GroupData[i].dGroupCenter.Y));
                         }
 
-                        //  메인 화면에 그려지는 가공위치의 개수
-                        (Main_SocketPositions_RowCount, Main_SocketPositions_ColumnCount) = CalculateArraySize(Main_SocketPositions);
+                        if (Main_SocketPositions.Count > 0)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 있음.");
 
-                        Main_SocketPositions_Draw = true;
+                            //  메인 화면에 그려지는 가공위치의 개수
+                            (Main_SocketPositions_RowCount, Main_SocketPositions_ColumnCount) = CalculateArraySize(Main_SocketPositions);
+
+                            Main_SocketPositions_Draw = true;
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 없음. (Data Parsing 이 정상적으로 이루어졌으면 여기 들어오면 안됨)");
+                        }
                     }
 
                     m_nDrillingData_SocketAlign_NGCount = 0;
@@ -15164,7 +15180,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List 실행 (Execute)");
 
-                    GlobalSocketStatus_Set("Thruhole", m_nDrillingWork_Group_Count, true, "Thruhole 가공 시작");
+                    GlobalSocketStatus_Set("Thruhole", m_nDrillingWork_Group_Count, 0, "Thruhole 가공 시작");
 
                     TickCount_Start((int)TickType.TICK_MAIN);
 
@@ -15235,10 +15251,12 @@ namespace QMC.Common.Modules
                     {
                         Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                         Main_SocketPositions_SetStatus = true;                                                      //  상태 변경
-                        GlobalSocketStatus_Set("Thruhole", m_nDrillingWork_Group_Count, true, "Thruhole 가공 완료");
+
+                        GlobalSocketStatus_Set("Thruhole", m_nDrillingWork_Group_Count, 0, "Thruhole 가공 완료");
 
                         Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                         Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
+                        Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
                         Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
 
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
@@ -15641,7 +15659,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, Buffer List 실행 (Execute)");
 
-                    GlobalSocketStatus_Set("Outline", m_nDrillingWork_Group_Count, true, "Outline 가공 시작");
+                    GlobalSocketStatus_Set("Outline", m_nDrillingWork_Group_Count, 0, "Outline 가공 시작");
 
                     TickCount_Start((int)TickType.TICK_MAIN);
 
@@ -15682,10 +15700,11 @@ namespace QMC.Common.Modules
 
                     Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                     Main_SocketPositions_SetStatus = true;                                              //  상태 변경
-                    GlobalSocketStatus_Set("Outline", m_nDrillingWork_Group_Count, true, "Outline 가공 완료");
+                    GlobalSocketStatus_Set("Outline", m_nDrillingWork_Group_Count, 0, "Outline 가공 완료");
 
                     Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                     Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
+                    Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
                     Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
 
                     m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
@@ -17424,8 +17443,9 @@ namespace QMC.Common.Modules
                             m_nDrillingData_SocketAlign_NGCount++;                                              //  소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
 
                             Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
+                            Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
                             Main_SocketPositions_SetStatus = true;                                              //  상태 변경
-                            GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, false, "소켓 얼라인 실패");
+                            GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
 
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
@@ -17722,10 +17742,11 @@ namespace QMC.Common.Modules
                         //  소켓 가공이 끝나서 다음 소켓 확인하러 가야 하므로, 현재 상태를 갱신한다.
                         Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                         Main_SocketPositions_SetStatus = true;                                              //  상태 변경
-                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, true, "Drilling 가공 완료");
+                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, m_nDividedRegion_Region_CurrentIndex, "Drilling 가공 완료");
 
                         Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                         Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
+                        Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
                         Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
 
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
@@ -19912,7 +19933,7 @@ namespace QMC.Common.Modules
 
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer List 실행 (Execute)");
 
-                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, true, "Drilling 가공 시작");
+                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, m_nDividedRegion_Region_CurrentIndex_forZigZag, "Drilling 가공 시작");
                     }
 
                     TickCount_Start((int)TickType.TICK_MAIN);
@@ -20269,7 +20290,7 @@ namespace QMC.Common.Modules
 
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Region 영역 내 Object 별 가공, Buffer List 실행 (Execute)");
 
-                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, true, "Drilling 가공 시작");
+                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, m_nDividedRegion_Region_CurrentIndex_forZigZag, "Drilling 가공 시작");
 
                         TickCount_Start((int)TickType.TICK_MAIN);
 
@@ -22324,10 +22345,11 @@ namespace QMC.Common.Modules
                                 //  다음 소켓으로 넘어가기 전에 현재 소켓의 가공 상태를 갱신한다.
                                 Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                                 Main_SocketPositions_SetStatus = true;                                              //  상태 변경
-                                GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, true, "Drilling 가공 완료");
+                                GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, m_nDividedRegion_Region_CurrentIndex_forZigZag, "Drilling 가공 완료");
 
                                 Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                                 Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
+                                Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
                                 Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
 
                                 m_bDrillingWork_Thruhole_Exist = false;
@@ -22543,6 +22565,7 @@ namespace QMC.Common.Modules
                 Main_SocketPositions_CurrentSocketPosition.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.X;
                 Main_SocketPositions_CurrentSocketPosition.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.Y;
                 Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Processing;
+                Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  진행중인 소켓 번호
                 Main_SocketPositions_SetStatus = true;                                              //  상태 변경
 
 
@@ -24989,7 +25012,7 @@ namespace QMC.Common.Modules
             {
                 int layerCount = m_stLayerType.m_nLayerCount;
                 int socketCount = m_stDividedRegion_GroupData[0].nGroup_Num;
-                int AreaCount = m_stDividedRegion_GroupData[0].nGroup_Num;
+                int AreaCount = 1;
 
                 for (int nSocket = 0; nSocket < socketCount; nSocket++)
                 {
@@ -25005,11 +25028,11 @@ namespace QMC.Common.Modules
                         // 레이어 추가
                         socket.AddLayer(layerName, i);
 
-                        //Area 영역 넣어줘요!!
+                        //Area 영역 넣어줘요!! --> ㅇㅋ염
                         // 예시: Area 0~4번 추가 (5개 영역)
                         // 실제 필요한 area 개수가 있다면 해당 로직으로 대체
                         var layer = socket.GetLayer(layerName);
-                        for (int area = 0; area < 1; area++)    //AreaCount //우선 무조건 Area 1개로 설정 중.
+                        for (int area = 0; area < m_stDividedRegion_GroupData[i].m_stDividedRegion_RegionData[0].nRegion_Num; area++)
                         {
                             layer.AddArea(area);
                         }
@@ -25058,14 +25081,14 @@ namespace QMC.Common.Modules
             return m_bRet;
         }
 
-        public bool GlobalSocketStatus_Set(string m_strLayerName, int m_nSocketNumber, bool m_bSocketResult, string m_strComment = "")
+        public bool GlobalSocketStatus_Set(string m_strLayerName, int m_nSocketNumber, int m_nAreaNumber_inSocket, string m_strComment = "")
         {
             bool m_bRet = true;
 
             // 공정 완료 처리
             //bool result = ProcessManager.MarkAreaProcessed(1, "hole1", 3); // 3: 마지막은 Area 영역 넣어줘야함.
             //시작 index 0 부터 시작.
-            bool result = ProcessManager.MarkAreaProcessed(m_nSocketNumber, m_strLayerName, 0, m_strComment);
+            bool result = ProcessManager.MarkAreaProcessed(m_nSocketNumber, m_strLayerName, m_nAreaNumber_inSocket, m_strComment);
 
             if (result)
                 Console.WriteLine("새로 가공 처리 완료!");
@@ -33431,6 +33454,31 @@ namespace QMC.Common.Modules
 
             return (row, column);
         }
+
+
+        /// <summary>
+        /// 1차원 배열의 인덱스를 주어진 row, column 크기의 2차원 배열에서 몇 번째 row와 column인지 계산합니다.
+        /// </summary>
+        /// <param name="index">1차원 배열의 인덱스</param>
+        /// <param name="columns">배열의 column(열) 개수</param>
+        /// <returns>row와 column 위치</returns>
+        public (int Row, int Column) GetRowColumnFromIndex(int index, int columns)
+        {
+            int row = 1;    // 몇 번째 행인지 계산
+            int column = 1; // 몇 번째 열인지 계산
+
+            if (columns <= 0)
+            {
+                //throw new ArgumentException("열의 개수는 0보다 커야 합니다.", nameof(columns));
+            }
+            else
+            {
+                row = index / columns;    // 몇 번째 행인지 계산
+                column = index % columns; // 몇 번째 열인지 계산
+            }
+            return (row, column);
+        }
+
 
         public void ResetRecovery()
         {
