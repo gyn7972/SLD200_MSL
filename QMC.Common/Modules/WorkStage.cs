@@ -1140,6 +1140,7 @@ namespace QMC.Common.Modules
         // Process Status
         public string CurrentLayerName { get; private set; }
         public int CurrentSocketNumber { get; private set; }
+        public int CurrentAreaNumber { get; private set; }
         public string ProcessStatus { get; private set; }
         public bool IsProcessing { get; private set; }
 
@@ -1153,6 +1154,11 @@ namespace QMC.Common.Modules
         public void SetProcess_SocketNumber(int socketIndex)
         {
             CurrentSocketNumber = socketIndex;
+        }
+
+        public void SetProcess_AreaIndex(int AreaIndex)
+        {
+            CurrentAreaNumber = AreaIndex;
         }
 
         // 가공 상태 설정 ("가공중"으로)
@@ -24976,32 +24982,68 @@ namespace QMC.Common.Modules
         public bool GlobalSocketStatus_Init()
         {
             bool m_bRet = true;
-            
-            //  Layer Info List 초기화
-            ProcessManager.Init();
 
-            //  Layer Info 추가
+            // Socket → Layer → Area 기반 초기화
+            ProcessManager.Init();
+            // Layer 개수 확인
             if (m_stLayerType.m_nLayerCount > 0)
             {
-                for (int i = 0; i < m_stLayerType.m_nLayerCount; i++)
+                int layerCount = m_stLayerType.m_nLayerCount;
+                int socketCount = m_stDividedRegion_GroupData[0].nGroup_Num;
+
+                for (int nSocket = 0; nSocket < socketCount; nSocket++)
                 {
-                    LayerList m_Layer = (LayerList)m_stLayerType.m_nLayerIndex[i];
+                    // 소켓 생성 또는 가져오기
+                    var socket = ProcessManager.GetSocket(nSocket);
 
-                    //  Layer 추가
-                    ProcessManager.AddLayer(m_Layer.ToString(), i);
-
-                    for (int nSocket = 0; nSocket < m_stDividedRegion_GroupData[0].nGroup_Num; nSocket++)
+                    for (int i = 0; i < layerCount; i++)
                     {
-                        ProcessManager.GetLayer(i).AddSocket(nSocket);
+                        // 레이어 이름 및 번호 설정
+                        LayerList m_Layer = (LayerList)m_stLayerType.m_nLayerIndex[i];
+                        string layerName = m_Layer.ToString();
+
+                        // 레이어 추가
+                        socket.AddLayer(layerName, i);
+
+                        //Area 영역 넣어줘요!!
+                        // 예시: Area 0~4번 추가 (5개 영역)
+                        // 실제 필요한 area 개수가 있다면 해당 로직으로 대체
+                        var layer = socket.GetLayer(layerName);
+                        for (int area = 0; area < 5; area++)
+                        {
+                            layer.AddArea(area);
+                        }
                     }
                 }
             }
             else
             {
-                //  Parsing 된 데이터 없음
-
+                // Parsing된 Layer 데이터 없음
                 m_bRet = false;
             }
+
+            //  Layer Info 추가
+            //if (m_stLayerType.m_nLayerCount > 0)
+            //{
+            //    for (int i = 0; i < m_stLayerType.m_nLayerCount; i++)
+            //    {
+            //        LayerList m_Layer = (LayerList)m_stLayerType.m_nLayerIndex[i];
+
+            //        Layer 추가
+            //        ProcessManager.AddLayer(m_Layer.ToString(), i);
+
+            //        for (int nSocket = 0; nSocket < m_stDividedRegion_GroupData[0].nGroup_Num; nSocket++)
+            //        {
+            //            ProcessManager.GetLayer(i).AddSocket(nSocket);
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    Parsing 된 데이터 없음
+
+            //    m_bRet = false;
+            //}
 
             return m_bRet;
         }
@@ -25011,7 +25053,7 @@ namespace QMC.Common.Modules
             bool m_bRet = true;
 
             //  Layer Info List Reset
-            ProcessManager.Reset();
+            //ProcessManager.Reset();
 
             return m_bRet;
         }
@@ -25020,8 +25062,17 @@ namespace QMC.Common.Modules
         {
             bool m_bRet = true;
 
+            // 공정 완료 처리
+            //bool result = ProcessManager.MarkAreaProcessed(1, "hole1", 3); // 마지막은 Area 영역 넣어줘야함.
+            bool result = ProcessManager.MarkAreaProcessed(m_nSocketNumber, m_strLayerName, 3);
+
+            if (result)
+                Console.WriteLine("새로 가공 처리 완료!");
+            else
+                Console.WriteLine("이미 가공된 영역이거나 처리 실패.");
+
             //  Socket 상태 세팅
-            ProcessManager.GetLayer(m_strLayerName).SetSocketResult(m_nSocketNumber, m_bSocketResult, m_strComment);
+            //ProcessManager.GetLayer(m_strLayerName).SetSocketResult(m_nSocketNumber, m_bSocketResult, m_strComment);
 
             return m_bRet;
         }
@@ -33447,39 +33498,6 @@ namespace QMC.Common.Modules
             }
         }
 
-        public void ProcssMager()
-        {
-            //Test == 
-            ProcessManager.Init();
-
-            // Layer 추가
-            ProcessManager.AddLayer("hole1", 1);
-            ProcessManager.AddLayer("thruhole", 2);
-            ProcessManager.AddLayer("outline", 3);
-            ProcessManager.AddLayer("marking", 4);
-            // -- 있으면 계속 추가 사용.
-
-            // Socket 추가
-            var layer = ProcessManager.GetLayer(1);
-            for (int i = 0; i < 10; i++)
-            {
-                layer?.AddSocket(i);
-                ProcessManager.GetLayer(1).AddSocket(i);
-
-            }
-
-            // 결과 저장
-            layer?.SetSocketResult(1, true, "검사 통과");
-            layer?.SetSocketResult(1, false, "검사 통과");
-
-            ProcessManager.GetLayer(1).SetSocketResult(0, true, "이유: 등등 찾기 싫어서");
-
-            // 전체 리셋
-            ProcessManager.Reset();
-
-            ProcessManager.GetLayer(1).SetSocketResult(0, true);
-            ProcessManager.GetLayer(1).SetSocketResult(1, false);
-            //요라고 사용하자.            
-        }
+        
     }
 }

@@ -356,25 +356,27 @@ namespace SLD200_MSL
             }
         }
 
-        private (LayerInfo layer, SocketInfo socket)? GetSelectedLayerAndSocket()
+        private bool? IsSelectedAreaProcessed(int selectedRow, int selectedColumn, int selectedAreaIndex)
         {
-            //전제 조건
-            //Layer 수 == Rows
-            //각 Layer당 Socket 수 == Columns
-            //즉, pcbStatus[row, col] ←→ ProcessManager.Layers[row].Sockets[col]
-
-            if (selectedRow < 0 || selectedColumn < 0)
+            // 유효성 검사
+            if (selectedRow < 0 || selectedColumn < 0 || selectedAreaIndex < 0)
                 return null;
 
-            if (selectedRow >= ProcessManager.Layers.Count)
+            if (selectedRow >= ProcessManager.Sockets.Count)
                 return null;
 
-            var layer = ProcessManager.Layers[selectedRow];
-            if (selectedColumn >= layer.Sockets.Count)
+            var socket = ProcessManager.Sockets[selectedRow];
+
+            if (selectedColumn >= socket.Layers.Count)
                 return null;
 
-            var socket = layer.Sockets[selectedColumn];
-            return (layer, socket);
+            var layer = socket.Layers[selectedColumn];
+
+            var area = layer.Areas.FirstOrDefault(a => a.AreaIndex == selectedAreaIndex);
+            if (area == null)
+                return null;
+
+            return area.IsProcessed;
         }
 
         // 작업 상태 업데이트 메서드
@@ -1030,16 +1032,18 @@ namespace SLD200_MSL
             var pos = ProcessManager.GetFirstUnprocessedPosition();
             if (pos.HasValue)
             {
-                string layerName = pos.Value.layerName;
                 int socketIndex = pos.Value.socketIndex;
+                string layerName = pos.Value.layerName;
+                int areaIndex = pos.Value.areaIndex;
 
-                workStage.SetProcess_Layer(layerName);
                 workStage.SetProcess_SocketNumber(socketIndex);
-                workStage.SetProcessRunning(); //"가공중";
+                workStage.SetProcess_Layer(layerName);
+                //workStage.SetProcess_AreaIndex(areaIndex);  // <- 필요시 추가
+                workStage.SetProcessRunning();              // "가공중"
             }
             else
             {
-                workStage.SetProcessCompleted(); //"모든 소켓 가공 완료";
+                workStage.SetProcessCompleted();            // "모든 소켓 가공 완료"
             }
 
 

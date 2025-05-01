@@ -1,48 +1,42 @@
-﻿using System.Collections.Generic;
+﻿using QMC.Common;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace QMC.Common
 {
     public class LayerInfo
     {
-        private List<SocketInfo> sockets;
-
         public string LayerName { get; set; }
         public int LayerNumber { get; set; }
-        public List<SocketInfo> Sockets { get => sockets; set => sockets = value; }
+        public List<AreaInfo> Areas { get; set; }
 
         public LayerInfo(string name, int number)
         {
             LayerName = name;
             LayerNumber = number;
-            Sockets = new List<SocketInfo>();
+            Areas = new List<AreaInfo>();
         }
 
-        public void AddSocket(int socketNumber)
+        public void AddArea(int areaIndex)
         {
-            if (!Sockets.Any(s => s.SocketNumber == socketNumber))
-                Sockets.Add(new SocketInfo(socketNumber));
+            if (!Areas.Any(a => a.AreaIndex == areaIndex))
+                Areas.Add(new AreaInfo(areaIndex));
         }
 
-        public void SetSocketResult(int socketNumber, bool result, string info = "")
+        public void SetAreaProcessed(int areaIndex, bool result, string note = "")
         {
-            var socket = Sockets.FirstOrDefault(s => s.SocketNumber == socketNumber);
-            if (socket != null)
+            var area = Areas.FirstOrDefault(a => a.AreaIndex == areaIndex);
+            if (area != null)
             {
-                socket.InspectionResult = result;
-                socket.AdditionalInfo = info;
-
-                // 자동 저장 트리거
-                ProcessManager.SaveStateToFile();
+                area.IsProcessed = result;
+                area.Note = note;
             }
         }
 
-        public void ResetSockets()
+        public void ResetAreas()
         {
-            foreach (var socket in Sockets)
-            {
-                socket.Reset();
-            }
+            foreach (var area in Areas)
+                area.Reset();
         }
     }
 }
