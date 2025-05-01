@@ -8508,7 +8508,7 @@ namespace QMC.Common.Modules
                         //  라이브 상태가 아니면 라이브로 변경
                         if (jigAligner_LowRes.Camera.IsLiveOn == false)
                         {
-                            jigAligner_LowRes.Camera.StartLive();
+                            jigAligner_LowRes.Camera.StopLive();
                         }
 
                         try
@@ -14973,7 +14973,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.ThruHole_LayerParameter_LaserPower_Change:                        //  Thruhole 가공 Laser Power 변경
 
-                    double m_dLaserPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
+                    double m_dLaserPower = Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power;
 
                     if ((m_rapidLxLaser_Comm != null) && (m_dLaserPower > 0.0))
                     {
@@ -15005,8 +15005,8 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.ThruHole_LayerParameter_LaserPower_Change_DoneCheck:                     //  Thruhole 가공 Laser Power 변경 완료 확인
 
-                    if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power - 0.5)) &&
-                        (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power + 0.5)))
+                    if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power - 0.5)) &&
+                        (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power + 0.5)))
                     {
                         m_strTemp = string.Format("Thruhole Layer 가공 Laser Power 변경 성공, Laser Power ({0})", m_dLaser_OutputEnergy);
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
@@ -15452,7 +15452,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.OutLine_LayerParameter_LaserPower_Change:                        //  Outline 가공 Laser Power 변경
 
-                    m_dLaserPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
+                    m_dLaserPower = Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_Drilling_Power;
 
                     if ((m_rapidLxLaser_Comm != null) && (m_dLaserPower > 0.0))
                     {
@@ -15484,8 +15484,8 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.OutLine_LayerParameter_LaserPower_Change_DoneCheck:                     //  Outline 가공 Laser Power 변경 완료 확인
 
-                    if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power - 0.5)) &&
-                        (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power + 0.5)))
+                    if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_Drilling_Power - 0.5)) &&
+                        (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_Drilling_Power + 0.5)))
                     {
                         m_strTemp = string.Format("Outline Layer 가공을 위한 Laser Power 변경 성공, Laser Power ({0})", m_dLaser_OutputEnergy);
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
@@ -17373,10 +17373,13 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align 완료");
 
-                            double dfx = jigAligner_LowRes.FirstPosition.X;
-                            double dfy = jigAligner_LowRes.FirstPosition.Y;
-                            double dft = jigAligner_LowRes.GetJigAlignResult();
+                            //double dfx = jigAligner_LowRes.FirstPosition.X;
+                            //double dfy = jigAligner_LowRes.FirstPosition.Y;
+                            //double dft = jigAligner_LowRes.GetJigAlignResult();
 
+                            double dfx = 0;
+                            double dfy = 0;
+                            double dft = 0;
 
                             XyzCoordinate positionFirst = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
                             positionFirst = this.ConvertPointFineCam(positionFirst);
@@ -17386,7 +17389,8 @@ namespace QMC.Common.Modules
                             positionFirst.Y += dfy;
 
                             xyCoordinateAlignPositionOrgLast  = new XyCoordinate(positionFirst.X, positionFirst.Y);
-                            
+
+                            m_st4PointAlign_Result_LastSuccess.dRotationAngle = dft;
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Correction;
                         }
                         else
@@ -25091,7 +25095,7 @@ namespace QMC.Common.Modules
                         LayerList m_Layer = (LayerList)m_stLayerType.m_nLayerIndex[i];
                         string layerName = m_Layer.ToString();
 
-                        if ((layerName == "Hole1") || (layerName == "Thruhole") || (layerName == "Outline") || (layerName == "Marking"))
+                        if (layerName == "Hole1")
                         {
                             // 레이어 추가
                             socket.AddLayer(layerName, nLayerAddCount++);
@@ -25104,6 +25108,17 @@ namespace QMC.Common.Modules
                             {
                                 layer.AddArea(area);
                             }
+                        }
+                        else if ((layerName == "Thruhole") || (layerName == "Outline") || (layerName == "Marking"))
+                        {
+                            // 레이어 추가
+                            socket.AddLayer(layerName, nLayerAddCount++);
+
+                            //Area 영역 넣어줘요!! --> ㅇㅋ염
+                            // 예시: Area 0~4번 추가 (5개 영역)
+                            // 실제 필요한 area 개수가 있다면 해당 로직으로 대체
+                            var layer = socket.GetLayer(layerName);
+                            layer.AddArea(0);
                         }
                     }
                 }

@@ -332,8 +332,8 @@ namespace QMC.Common.VisionPart
                     int nMaxCircleFirst = (int)(radius * (1 + dFirstSpec));
                     int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
 
-                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, nMinCircleFirst, nMaxCircleFirst, 1, 10);
-                    //polygon = FindCircleBoundary(pixelData, w, h, 540, 1150, 50, 1000, 1);
+                    //polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, nMinCircleFirst, nMaxCircleFirst, 1, 10);
+                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, 100, 1000, 1);
                     points = polygon;
                     circlesResult.Clear();
                     FindCircleFitter(circlesResult, points, out dRadius, 5);
