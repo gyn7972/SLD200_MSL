@@ -1038,7 +1038,7 @@ namespace SLD200_MSL
 
                 workStage.SetProcess_SocketNumber(socketIndex);
                 workStage.SetProcess_Layer(layerName);
-                //workStage.SetProcess_AreaIndex(areaIndex);  // <- 필요시 추가
+                workStage.SetProcess_AreaIndex(areaIndex);  // <- 필요시 추가
                 workStage.SetProcessRunning();              // "가공중"
             }
             else

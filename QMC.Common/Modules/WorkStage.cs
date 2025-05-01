@@ -24936,6 +24936,7 @@ namespace QMC.Common.Modules
             {
                 int layerCount = m_stLayerType.m_nLayerCount;
                 int socketCount = m_stDividedRegion_GroupData[0].nGroup_Num;
+                int AreaCount = m_stDividedRegion_GroupData[0].nGroup_Num;
 
                 for (int nSocket = 0; nSocket < socketCount; nSocket++)
                 {
@@ -24955,7 +24956,7 @@ namespace QMC.Common.Modules
                         // 예시: Area 0~4번 추가 (5개 영역)
                         // 실제 필요한 area 개수가 있다면 해당 로직으로 대체
                         var layer = socket.GetLayer(layerName);
-                        for (int area = 0; area < 5; area++)
+                        for (int area = 0; area < 1; area++)    //AreaCount //우선 무조건 Area 1개로 설정 중.
                         {
                             layer.AddArea(area);
                         }
@@ -24999,7 +25000,7 @@ namespace QMC.Common.Modules
             bool m_bRet = true;
 
             //  Layer Info List Reset
-            //ProcessManager.Reset();
+            ProcessManager.Reset();
 
             return m_bRet;
         }
@@ -25009,8 +25010,9 @@ namespace QMC.Common.Modules
             bool m_bRet = true;
 
             // 공정 완료 처리
-            //bool result = ProcessManager.MarkAreaProcessed(1, "hole1", 3); // 마지막은 Area 영역 넣어줘야함.
-            bool result = ProcessManager.MarkAreaProcessed(m_nSocketNumber, m_strLayerName, 3);
+            //bool result = ProcessManager.MarkAreaProcessed(1, "hole1", 3); // 3: 마지막은 Area 영역 넣어줘야함.
+            //시작 index 0 부터 시작.
+            bool result = ProcessManager.MarkAreaProcessed(m_nSocketNumber, m_strLayerName, 0, m_strComment);
 
             if (result)
                 Console.WriteLine("새로 가공 처리 완료!");
