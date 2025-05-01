@@ -16271,7 +16271,7 @@ namespace QMC.Common.Modules
 
                 //            //Thread.Sleep(Config.ParamConfig.ThreadSleep_beforeListBegin);
 
-                //            m_bMarkingList_Success &= rtcMode.ListBegin(laser, ListType.Single);
+                //            m_bMarkingList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
 
                 //            Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, Buffer List Open");
 
@@ -20285,7 +20285,7 @@ namespace QMC.Common.Modules
 
                         var rtcMode = rtc as IRtc;                                  //  RTC6
 
-                        m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Single);
+                        m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
 
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Buffer List Open");
                         //  테스트
@@ -22004,7 +22004,7 @@ namespace QMC.Common.Modules
                 var rtcMode = rtc as IRtc;                                  //  RTC6
 
 
-                m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Single);
+                m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
 
 
 
@@ -22969,7 +22969,7 @@ namespace QMC.Common.Modules
 
                 var rtcMode = rtc as IRtc;                                  //  RTC6
 
-                m_bOutLineList_Success &= rtcMode.ListBegin(laser, ListType.Single);
+                m_bOutLineList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
 
                 Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, Buffer List Open");
 
@@ -23420,7 +23420,7 @@ namespace QMC.Common.Modules
 
 
             // Tobo: 구영남 =
-            m_bThruHoleList_Success &= rtcMode.ListBegin(laser, ListType.Single);
+            m_bThruHoleList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
 
             Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List Open");
 
@@ -30224,11 +30224,7 @@ namespace QMC.Common.Modules
         }
 
         // 두 좌표 간의 거리를 계산하는 메서드
-        private double GetDistance(PointD p1, PointD p2)
-        {
-            return Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
-        }
-
+        
         private void SortFastPath(ref stDrilling_GroupData paths, bool bSortDir_HorVer, double dStepSize)
         {
             List<stDrilling_ObjectData> pathFast = new List<stDrilling_ObjectData>();
@@ -33048,7 +33044,7 @@ namespace QMC.Common.Modules
                 return false;
             }
 
-            rtc.ListBegin(laser, ListType.Single);
+            rtc.ListBegin(laser, ListType.Auto);
             // 중심 기준 좌표로 시작점 계산
             float startX = -((cols - 1) * pitchX) / 2.0f;
             float startY = -((rows - 1) * pitchY) / 2.0f;
@@ -33233,7 +33229,7 @@ namespace QMC.Common.Modules
                 return false;
             }
 
-            rtc.ListBegin(laser, ListType.Single);
+            rtc.ListBegin(laser, ListType.Auto);
             // 중심 기준 좌표로 시작점 계산
             float startX = -((cols - 1) * pitchX) / 2.0f;
             float startY = -((rows - 1) * pitchY) / 2.0f;
@@ -33332,7 +33328,7 @@ namespace QMC.Common.Modules
                 return false;
             }
 
-            rtc.ListBegin(laser, ListType.Single);
+            rtc.ListBegin(laser, ListType.Auto);
 
             float startX = -((cols - 1) * pitchX) / 2.0f;
             float startY = -((rows - 1) * pitchY) / 2.0f;
