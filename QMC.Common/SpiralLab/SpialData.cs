@@ -43,7 +43,7 @@ namespace QMC.Common.SpiralLab
             {
                 lwPolyLineVertices = SpiralData_Create(m_dOuterDiameter, m_dInnerDiameter, m_dRevolutions, m_dAngleFactor, 0, 0);
             }
-            return lwPolyLineVertices;
+            return (LwPolyline)lwPolyLineVertices.Clone();
         }
 
         // == 연산자 재정의

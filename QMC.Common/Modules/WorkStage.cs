@@ -24914,9 +24914,10 @@ namespace QMC.Common.Modules
         {
 
             SpialData sd = SpiralDatas.AddSpialData(new SpialData(m_dOuterDiameter, m_dInnerDiameter, m_nRevolutions, m_nAngleFactor));
-            
 
-            return sd.GetLwPolyLineVertices(); 
+            LwPolyline entity = sd.GetLwPolyLineVertices();
+            entity.Transit(new Vector2((float)m_dHoleCenter_X, (float)m_dHoleCenter_Y));
+            return entity; 
         }
 
         public bool GlobalSocketStatus_Init()
