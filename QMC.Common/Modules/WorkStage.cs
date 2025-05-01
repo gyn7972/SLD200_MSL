@@ -62,6 +62,7 @@ using System.Timers;
 using Cognex.VisionPro.ImageProcessing;
 using QMC.Process.WorkStage.Parts;
 using QMC.Common;
+using QMC.Common.SpiralLab;
 
 
 namespace QMC.Common.Modules
@@ -1336,6 +1337,7 @@ namespace QMC.Common.Modules
         public BaseInterpolator interpolator_CalPos_Scanner { set; get; }                   //  Stage의 Calibration 위치가 가공 위치일 때
         public BaseInterpolator interpolator_CalPos_FineCam { set; get; }                   //  Stage의 Calibration 위치가 Fine Camera 위치일 때
 
+        public SpiralDataCollector SpiralDatas { set; get; } = new SpiralDataCollector();
         //public XyzyStage Stage_forMap_Scanner { set; get; }                                 //  MSL SLD-200C, SLD-200U 
         //public XyzyStage Stage_forMap_FineCam { set; get; }                                 //  MSL SLD-200C, SLD-200U
         //public XyzyStage Stage_forMap_CalPos_Scanner { set; get; }                          //  MSL SLD-200C, SLD-200U
@@ -24984,66 +24986,10 @@ namespace QMC.Common.Modules
         public LwPolyline SpiralData_Create(double m_dOuterDiameter, double m_dInnerDiameter, double m_nRevolutions, double m_nAngleFactor, double m_dHoleCenter_X, double m_dHoleCenter_Y)
         {
 
-            var entity = new LwPolyline();
+            SpialData sd = SpiralDatas.AddSpialData(new SpialData(m_dOuterDiameter, m_dInnerDiameter, m_nRevolutions, m_nAngleFactor));
+            
 
-            //  entity.Color2 = this.color;
-
-            //  Outer Diameter : Spiral 시작 위치
-            //  Inner Diameter : Spiral 종료 위치
-
-            //  Outer > Inner : 밖에서 안으로 나선형 데이터 생성
-            //  Outer < Inner : 안에서 밖으로 나선형 데이터 생성
-
-            //  AngleFactor : 각도 단위 (값이 작아질수록 부드러워짐. default : 10)
-
-            //  HoleCenter : Hole1 Layer 의 Circle 이나 Arc 데이터를 Spiral 데이터로 변경하게 되는데, 이때 Circle 이나 Arc 의 Center 좌표
-
-            double radialPitch = (m_dOuterDiameter - m_dInnerDiameter) / 2.0 / (double)m_nRevolutions;
-            double x = m_dInnerDiameter / 2.0;
-            double y = 0;
-            double angle = 0;
-            double degInRad;
-            double d;
-
-            if (m_nAngleFactor <= 0)
-            {
-                m_nAngleFactor = 10;                        //  렌더링 최소 각도값이 0 이하일 경우, default로 10을준다.
-            }
-
-            for (int i = 0; i < m_nRevolutions; i++)
-            {
-                for (double t = 0; t < 360; t += /*SpiralLab.Sirius.Config.AngleFactor*/m_nAngleFactor)
-                {
-                    angle = t + 360.0 * (double)i;
-                    degInRad = angle * MathHelper.DegToRad;
-                    d = m_dInnerDiameter / 2.0 + radialPitch * (double)i + radialPitch * t / 360.0;
-                    x = d * Math.Cos(degInRad);
-                    y = d * Math.Sin(degInRad);
-
-                    entity.Add(new LwPolyLineVertex((float)x, (float)y, 0));
-                }
-            }
-
-            if (true)              //  닫힌 도형처럼 해야할듯? -> 이거 안하면 외곽 동그라미가 안됨
-            {
-                for (double t = 0; t < 360; t += /*SpiralLab.Sirius.Config.AngleFactor*/m_nAngleFactor)
-                {
-                    angle = t;
-                    degInRad = angle * MathHelper.DegToRad;
-                    d = m_dOuterDiameter / 2.0;
-                    x = d * Math.Cos(degInRad);
-                    y = d * Math.Sin(degInRad);
-                    entity.Add(new LwPolyLineVertex((float)x, (float)y, 0));
-                }
-            }
-
-            entity.Add(new LwPolyLineVertex((float)(m_dOuterDiameter / 2.0), 0, 0));
-            //entity.Owner = this;
-            entity.Regen();
-            entity.Rotate((float)angle);
-            entity.Transit(new Vector2((float)m_dHoleCenter_X, (float)m_dHoleCenter_Y));
-
-            return entity;
+            return sd.GetLwPolyLineVertices(); 
         }
 
         public bool GlobalSocketStatus_Init()
