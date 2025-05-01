@@ -25082,6 +25082,8 @@ namespace QMC.Common.Modules
                 int socketCount = m_stDividedRegion_GroupData[0].nGroup_Num;
                 int AreaCount = 1;
 
+                int nLayerAddCount = 0;
+
                 for (int nSocket = 0; nSocket < socketCount; nSocket++)
                 {
                     // 소켓 생성 또는 가져오기
@@ -25093,16 +25095,19 @@ namespace QMC.Common.Modules
                         LayerList m_Layer = (LayerList)m_stLayerType.m_nLayerIndex[i];
                         string layerName = m_Layer.ToString();
 
-                        // 레이어 추가
-                        socket.AddLayer(layerName, i);
-
-                        //Area 영역 넣어줘요!! --> ㅇㅋ염
-                        // 예시: Area 0~4번 추가 (5개 영역)
-                        // 실제 필요한 area 개수가 있다면 해당 로직으로 대체
-                        var layer = socket.GetLayer(layerName);
-                        for (int area = 0; area < m_stDividedRegion_GroupData[i].m_stDividedRegion_RegionData[0].nRegion_Num; area++)
+                        if ((layerName == "Hole1") || (layerName == "Thruhole") || (layerName == "Outline") || (layerName == "Marking"))
                         {
-                            layer.AddArea(area);
+                            // 레이어 추가
+                            socket.AddLayer(layerName, nLayerAddCount++);
+
+                            //Area 영역 넣어줘요!! --> ㅇㅋ염
+                            // 예시: Area 0~4번 추가 (5개 영역)
+                            // 실제 필요한 area 개수가 있다면 해당 로직으로 대체
+                            var layer = socket.GetLayer(layerName);
+                            for (int area = 0; area < m_stDividedRegion_GroupData[i].m_stDividedRegion_RegionData[0].nRegion_Num; area++)
+                            {
+                                layer.AddArea(area);
+                            }
                         }
                     }
                 }

@@ -1225,6 +1225,8 @@ namespace SLD200_MSL
                             {
                                 workStage.m_nDrillingWork_Group_Count = workStage.m_nSocketAlign_StartIndex;        //  선택한 소켓 번호로 변경
                             }
+
+                            checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
                         }
                     }
                     else if (workStage.CurrentLayerName == "Thruhole")
@@ -1250,6 +1252,8 @@ namespace SLD200_MSL
                             {
                                 workStage.m_nDrillingWork_Group_Count = workStage.m_nSocketAlign_StartIndex;        //  선택한 소켓 번호로 변경
                             }
+
+                            checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
                         }
                     }
                     else if (workStage.CurrentLayerName == "Outline")
@@ -1275,6 +1279,8 @@ namespace SLD200_MSL
                             {
                                 workStage.m_nDrillingWork_Group_Count = workStage.m_nSocketAlign_StartIndex;        //  선택한 소켓 번호로 변경
                             }
+
+                            checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
                         }
                     }
                     else if (workStage.CurrentLayerName == "Marking")
@@ -1300,6 +1306,8 @@ namespace SLD200_MSL
                             {
                                 workStage.m_nDrillingWork_Group_Count = workStage.m_nSocketAlign_StartIndex;        //  선택한 소켓 번호로 변경
                             }
+
+                            checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
                         }
                     }
 
