@@ -678,6 +678,7 @@ namespace SLD200_MSL
                     workStage.timer_LaserDrillingWork.Stop();
                     //workStage.timer_LaserDrillingWork.Enabled = false;
                     workStage.m_LaserDrillingWork_Start = false;
+                    Equipment.LaserDrillingCycStop_Reservation = false;
                     //workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
 
                     unloader.timer_UnloaderWork.Stop();
@@ -786,6 +787,7 @@ namespace SLD200_MSL
                 workStage.timer_LaserDrillingWork.Stop();
                 workStage.timer_LaserDrillingWork.Enabled = false;
                 workStage.m_LaserDrillingWork_Start = false;
+                Equipment.LaserDrillingCycStop_Reservation = false;
                 //workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
                 unloader.timer_UnloaderWork.Stop();
                 unloader.timer_UnloaderWork.Enabled = false;
@@ -1132,7 +1134,10 @@ namespace SLD200_MSL
 
             // 아래 변수가 자동운전 Tick 돌리는 변수임.
             workStage.m_MainWork_Start = true;
+
             workStage.m_LaserDrillingWork_Start = true;
+            Equipment.LaserDrillingCycStop_Reservation = false;
+
             workStage.m_ProductAlign_Start = true;
             workStage.m_SubWork_Start = true;
             loader.m_LoaderWork_Start = true;
@@ -1730,7 +1735,8 @@ namespace SLD200_MSL
 
             // 아래 변수가 자동운전 Tick 돌리는 변수임.
             workStage.m_MainWork_Start = false;
-            workStage.m_LaserDrillingWork_Start = false;
+            //workStage.m_LaserDrillingWork_Start = false;              //  Laser Drilling Cycle 은 바로 Stop 하지 않고, 가공중이던 영역이 완료되면 Stop 하도록 예약을 걸어둔다.
+            Equipment.LaserDrillingCycStop_Reservation = true;          //  Stop 예약
             workStage.m_ProductAlign_Start = false;
             workStage.m_SubWork_Start = false;
             loader.m_LoaderWork_Start = false;

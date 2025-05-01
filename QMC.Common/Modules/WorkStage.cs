@@ -14221,7 +14221,20 @@ namespace QMC.Common.Modules
                 TickCount_MainCycle_Start = TickCount_MainCycle_Current;
             }
 
-           
+
+            //  Stop 할 때 바로 Stop 하지 않고, 가공중이던 분할영역이 있을 경우 Laser 가공이 끝나고 난 후 Stop 하도록 한다.
+            if (Equipment.LaserDrillingCycStop_Reservation)
+            {
+                //  Stop 예약일 경우, 가공이 완료되었으면 false 로 변경
+                if (!((m_nLaserDrilling_MainStep >= (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck) && (m_nLaserDrilling_MainStep <= (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionLaserBusyCheck)) &&
+                    !((m_nLaserDrilling_MainStep >= (int)LaserDrilling_Step.ThruHole_ScannerOnly_ObjectData_RemainedCheck) && (m_nLaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_ScannerOnly_LaserBusyCheck)) &&
+                    !((m_nLaserDrilling_MainStep >= (int)LaserDrilling_Step.OutLine_ScannerOnly_ObjectData_RemainedCheck) && (m_nLaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_ScannerOnly_LaserBusyCheck)))
+                {
+                    m_LaserDrillingWork_Start = false;
+                    return 0;
+                }
+            }
+
 
             //  자동운전 중 Socket Stop 처리
             if (Equipment.SocketStopped)
@@ -15272,7 +15285,7 @@ namespace QMC.Common.Modules
 
                             //  Layer 별로 다르게 해야 하는 파라미터
                             m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-                            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+                            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
 
                             i = m_stLayerType.m_nLayerCount;
                         }
@@ -22101,7 +22114,7 @@ namespace QMC.Common.Modules
 
             //  Layer 별로 다르게 해야 하는 파라미터
             m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
 
             m_strTemp = string.Format("Stage Z 축, Layer{0} Z Offset 이동 시작, Dofocusing Distance ({1:0.000}), Resizing ({2:0.000})",
                                                 m_nHoleLayer_ProcessIndex, m_dHoleLayer_Defocusing, m_dHoleLayer_Resizing);
@@ -22269,7 +22282,7 @@ namespace QMC.Common.Modules
 
                                 //  Layer 별로 다르게 해야 하는 파라미터
                                 m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-                                m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+                                m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
 
                                 i = m_stLayerType.m_nLayerCount;
                             }
@@ -22297,7 +22310,7 @@ namespace QMC.Common.Modules
 
                                     //  Layer 별로 다르게 해야 하는 파라미터
                                     m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-                                    m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+                                    m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
 
                                     i = m_stLayerType.m_nLayerCount;
                                 }
@@ -23531,7 +23544,7 @@ namespace QMC.Common.Modules
 
             //  Layer 별로 다르게 해야 하는 파라미터
             m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
 
             //  Layer 별로 다르게 해야 하는 파라미터
             if ((Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision == 2) ||
@@ -23566,7 +23579,7 @@ namespace QMC.Common.Modules
 
             //  Layer 별로 다르게 해야 하는 파라미터
             m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
         }
 
         private void LaserDrillingStepSetThruholeParam()
@@ -23580,7 +23593,7 @@ namespace QMC.Common.Modules
 
             //  Layer 별로 다르게 해야 하는 파라미터
             m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
         }
 
         //protected int AlarmPost(AlarmKey AlarmCode)
@@ -23596,6 +23609,7 @@ namespace QMC.Common.Modules
                     this.m_ProductAlign_Start = false;
                     this.m_SubWork_Start = false;
                     this.m_LaserDrillingWork_Start = false;
+                    Equipment.LaserDrillingCycStop_Reservation = false;
                     this.m_MainWork_Start = false;
 
                 }
@@ -23803,7 +23817,7 @@ namespace QMC.Common.Modules
 
             //  Layer 별로 다르게 해야 하는 파라미터
             m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
 
             //  Layer 별로 다르게 해야 하는 파라미터
             if ((Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_HoleDrilling_StartPosDivision == 2) ||

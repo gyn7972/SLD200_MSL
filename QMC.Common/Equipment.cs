@@ -610,6 +610,10 @@ namespace QMC.Common
         // 위와 같이 구분하여 장비 관리 할것!
         public static bool AutoRunStatus { set; get; } // 장비 상태: Auto / Manul 상태 표시 
 
+        // Drilling Cycle Stop 예약 변수 : 장비 Stop 시 가공중이던 부분은 완료 되고 Stop 하도록 하기 위함
+        // true : Stop 예약
+        // _isLaserDrillingWorkRunning 을 false 로 만드는 경우(Stop 하는 경우), 곧바로 false 로 변경하지 않고 Laser 가공이 완료된 후에 false 로 변경
+        public static bool LaserDrillingCycStop_Reservation { set; get; } // 장비 Stop 예약
 
 
         public static int DryRun_ProcessingTime { set; get; } = 5;
@@ -957,7 +961,7 @@ namespace QMC.Common
                 stLayerRecipeSet[i].Miscellaneous_Drilling_Power = 1;                               //  Drilling Power (w)
                 stLayerRecipeSet[i].Miscellaneous_P2PDistance = 0.1;                                //  P2P Distance (mm)
                 stLayerRecipeSet[i].Miscellaneous_DrillingRepetition = 1;                           //  Drilling 반복 횟수
-                stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle = 50;                    //  Drilling 반복 묶음 횟수
+                stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle = 100;                    //  Drilling 반복 묶음 횟수
                 stLayerRecipeSet[i].Miscellaneous_RotationAngleArc = 360.0;                         //  Rotation Angle Arc (degree)
                 stLayerRecipeSet[i].Miscellaneous_MaskIndex = 0;                                    //  Mask Index  
                 stLayerRecipeSet[i].Miscellaneous_BETPositionIndex = 0;                             //  BET Index  
