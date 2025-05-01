@@ -1540,6 +1540,7 @@ namespace QMC.Common.Modules
             eGetdata_Drildata_not_closed ,    //  "Drilling Data 가 닫힌 도형이 아닙니다."
             eGetdata_Drildata_not_group ,     //  "Drilling Data 가 Group 이 아닙니다."
             eGetdata_Rtcinit ,                //  "RTC 보드가 초기화 되지 않았습니다."
+            eGetdata_Drildata_No_group,     //  "Drilling Data 가 Group 이 아닙니다."
             DryRunFail,
             DataNotValidation,
             SocketAlignZMoveFail,
@@ -1705,6 +1706,16 @@ namespace QMC.Common.Modules
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
+
+            //
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.eGetdata_Drildata_No_group;
+            alarm.Title = "Data Type";
+            alarm.Cause = "Drilling Data 가 Group이 없습니다. 데이터를 확인하여 주십시요.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.DryRunFail;
@@ -14623,6 +14634,18 @@ namespace QMC.Common.Modules
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
 
                             MessageBox.Show("RTC 보드가 초기화 되지 않았습니다.", "Information !");
+                            break;
+                        //
+                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_GROUP:
+                            Log.Write("SLD-200", "Auto Run", "Layer Group이 없습니다.");
+
+                            //timer_LaserDrillingWork.Enabled = false;
+                            //m_bExit = true;
+                            return AlarmPost(AlarmKey.eGetdata_Drildata_No_group);
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                            MessageBox.Show("Layer Group이 없습니다.", "Information !");
+                            break;
                             break;
                     }
                     break;
