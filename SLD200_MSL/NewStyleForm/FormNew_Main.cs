@@ -1865,13 +1865,6 @@ namespace SLD200_MSL
             }
         }
 
-        private void checkBox_Main_Loader_LPort_Pause_CheckedChanged(object sender, EventArgs e)
-        {
-            //  Loader L-Port Pause 체크박스
-
-            Equipment.Loader_LPort_Pause = checkBox_Main_Loader_LPort_Pause.Checked;
-        }
-
         private void checkBox_Main_Loader_RPort_Pause_CheckedChanged(object sender, EventArgs e)
         {
             //  Loader R-Port Pause 체크박스
@@ -2258,6 +2251,33 @@ namespace SLD200_MSL
 
             workStage.AlarmPost(WorkStage.AlarmKey.PreAlignFail);
 
+        }
+
+        private void checkBox_Main_Loader_LPort_Pause_CheckedChanged(object sender, EventArgs e)
+        {
+            // To do: Test code임. - 아래의 조건을 시컨스에 맞춰 넣어야함!!!!
+            //  Loader L-Port Pause 체크박스
+            Equipment.Loader_LPort_Pause = checkBox_Main_Loader_LPort_Pause.Checked;
+        }
+
+        private void button_TestbyUser_LPort_Start_Click(object sender, EventArgs e)
+        {
+            // To do: Test code임. - 아래의 조건을 시컨스에 맞춰 넣어야함!!!!
+            if (Equipment.AutoRunStatus)
+            {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader Transfer 시작 하시겠습니까?"))
+                    return;
+
+                loader.m_bStacker1_Run_byUser = true;
+                loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
+            }
+            else
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "Auto Run 상태가 아닙니다.");
+                return;
+            }
         }
     }
 }
