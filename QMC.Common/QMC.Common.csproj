@@ -186,6 +186,7 @@
     <Compile Include="CircularButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Global\AreaInfo.cs" />
     <Compile Include="Global\LayerInfo.cs" />
     <Compile Include="Global\ProcessManager.cs" />
     <Compile Include="Global\SocketInfo.cs" />

@@ -8,85 +8,106 @@ namespace QMC.Common
 {
     public static class ProcessManager
     {
-        public static List<LayerInfo> Layers { get; private set; } = new List<LayerInfo>();
-        public static string StateFilePath = "D:\\process_state.txt"; // 저장 경로
+        public static List<SocketInfo> Sockets { get; private set; } = new List<SocketInfo>();
+        public static string StateFilePath = "D:\\process_state.txt";
 
-        public static int nHole1Layer_Index = 0;
-
-        // 초기화 (초기 생성)
         public static void Init()
         {
-            nHole1Layer_Index = 0;
-
-            Layers.Clear();
-        }
-
-        public static LayerInfo AddLayer(string layerName, int layerNumber)
-        {
-            var layer = new LayerInfo(layerName, layerNumber);
-            Layers.Add(layer);
-            return layer;
+            Sockets.Clear();
         }
 
         public static void Reset()
         {
-            foreach (var layer in Layers)
-                layer.ResetSockets();
-        }
-
-        public static LayerInfo GetLayer(string layerName)
-        {
-            return Layers.FirstOrDefault(l => l.LayerName == layerName);
-        }
-
-        public static LayerInfo GetLayer(int layerNumber)
-        {
-            return Layers.FirstOrDefault(l => l.LayerNumber == layerNumber);
-        }
-
-        // 특정 Layer의 소켓 결과 설정 || 
-        //추가: 아직 가공되지 않은 첫 위치 반환
-        public static (string layerName, int socketIndex)? GetFirstUnprocessedPosition()
-        {
-            foreach (var layer in Layers)
+            foreach (var socket in Sockets)
             {
-                for (int j = 0; j < layer.Sockets.Count; j++)
+                socket.InspectionResult = false;
+                socket.AdditionalInfo = string.Empty;
+
+                foreach (var layer in socket.Layers)
                 {
-                    if (!layer.Sockets[j].InspectionResult)
-                        return (layer.LayerName, j);
+                    foreach (var area in layer.Areas)
+                    {
+                        area.IsProcessed = false;
+                        area.Note = string.Empty;
+                    }
                 }
             }
+
+            SaveStateToFile(); // 상태 초기화 후 파일 저장도 포함하면 좋음
+        }
+
+        public static SocketInfo GetSocket(int socketNumber)
+        {
+            var socket = Sockets.FirstOrDefault(s => s.SocketNumber == socketNumber);
+            if (socket == null)
+            {
+                socket = new SocketInfo(socketNumber);
+                Sockets.Add(socket);
+            }
+            return socket;
+        }
+
+        public static bool MarkAreaProcessed(int socketNumber, string layerName, int areaIndex, string note = "")
+        {
+            var socket = GetSocket(socketNumber);
+            var layer = socket.GetLayer(layerName);
+
+            if (layer == null)
+            {
+                layer = new LayerInfo(layerName, socket.Layers.Count + 1);
+                socket.Layers.Add(layer);
+            }
+
+            layer.AddArea(areaIndex);
+            var area = layer.Areas.FirstOrDefault(a => a.AreaIndex == areaIndex);
+
+            if (area == null)
+                return false;
+
+            if (area.IsProcessed)
+                return false; // 이미 처리됨
+
+            area.IsProcessed = true;
+            area.Note = note;
+
+            SaveStateToFile();
+            return true; // 이번에 새로 처리함
+        }
+
+
+
+
+        public static (int socketIndex, string layerName, int areaIndex)? GetFirstUnprocessedPosition()
+        {
+            foreach (var socket in Sockets)
+            {
+                foreach (var layer in socket.Layers)
+                {
+                    foreach (var area in layer.Areas)
+                    {
+                        if (!area.IsProcessed)
+                        {
+                            return (socket.SocketNumber, layer.LayerName, area.AreaIndex);
+                        }
+                    }
+                }
+            }
+
             return null;
         }
 
-        //전체 미가공 소켓 수 계산
-        public static int GetAllUnprocessedCount()
-        {
-            return Layers.Sum(layer => layer.Sockets.Count(s => !s.InspectionResult));
-        }
-        //public static int GetAllUnprocessedCount() =>
-        //Layers.Sum(layer => layer.Sockets.Count(s => !s.InspectionResult));
-
-        //특정 Layer 가공률(%) 계산
-        public static double GetLayerProgress(string layerName)
-        {
-            var layer = GetLayer(layerName);
-            if (layer == null || layer.Sockets.Count == 0)
-                return 0;
-
-            int done = layer.Sockets.Count(s => s.InspectionResult);
-            return (done / (double)layer.Sockets.Count) * 100.0;
-        }
-
-        //상태 저장
         public static void SaveStateToFile()
         {
             var sb = new StringBuilder();
-            foreach (var layer in Layers)
+            foreach (var socket in Sockets)
             {
-                sb.AppendLine($"[Layer:{layer.LayerName}]");
-                foreach (var socket in layer.Sockets)
-                    sb.AppendLine($"Socket_{socket.SocketNumber} = {socket.InspectionResult.ToString().ToLower()}");
+                sb.AppendLine($"[Socket:{socket.SocketNumber}]");
+                foreach (var layer in socket.Layers)
+                {
+                    sb.AppendLine($"  [Layer:{layer.LayerName}]");
+                    foreach (var area in layer.Areas)
+                        sb.AppendLine($"    Area_{area.AreaIndex} = {area.IsProcessed.ToString().ToLower()} // {area.Note}");
+                }
                 sb.AppendLine();
             }
             File.WriteAllText(StateFilePath, sb.ToString());
@@ -97,25 +118,31 @@ namespace QMC.Common
             if (!File.Exists(StateFilePath))
                 return;
 
-            string currentLayerName = null;
+            SocketInfo currentSocket = null;
+            LayerInfo currentLayer = null;
+
             foreach (var line in File.ReadAllLines(StateFilePath))
             {
                 if (string.IsNullOrWhiteSpace(line)) continue;
 
-                if (line.StartsWith("[Layer:"))
+                if (line.StartsWith("[Socket:"))
                 {
-                    currentLayerName = line.Replace("[Layer:", "").Replace("]", "").Trim();
+                    int socketNum = int.Parse(line.Replace("[Socket:", "").Replace("]", "").Trim());
+                    currentSocket = GetSocket(socketNum);
                 }
-                else if (currentLayerName != null && line.StartsWith("Socket_"))
+                else if (line.Trim().StartsWith("[Layer:"))
                 {
-                    var parts = line.Split('=');
-                    int socketNum = int.Parse(parts[0].Trim().Replace("Socket_", ""));
-                    bool result = parts[1].Trim().ToLower() == "true";
-
-                    var layer = GetLayer(currentLayerName);
-                    var socket = layer?.Sockets.FirstOrDefault(s => s.SocketNumber == socketNum);
-                    if (socket != null)
-                        socket.InspectionResult = result;
+                    string layerName = line.Trim().Replace("[Layer:", "").Replace("]", "").Trim();
+                    currentLayer = new LayerInfo(layerName, currentSocket.Layers.Count + 1);
+                    currentSocket.Layers.Add(currentLayer);
+                }
+                else if (line.Trim().StartsWith("Area_"))
+                {
+                    var parts = line.Trim().Split('=');
+                    int areaIdx = int.Parse(parts[0].Replace("Area_", "").Trim());
+                    bool isDone = parts[1].Trim().ToLower().StartsWith("true");
+                    currentLayer.AddArea(areaIdx);
+                    currentLayer.SetAreaProcessed(areaIdx, isDone);
                 }
             }
         }

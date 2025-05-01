@@ -9,21 +9,37 @@ namespace QMC.Common
 {
     public class SocketInfo
     {
-        public int SocketNumber { get; set; }            // 소켓 번호
-        public bool InspectionResult { get; set; }        // 검사 결과 (OK/NG)
-        public string AdditionalInfo { get; set; }        // 추가 설명
+        public int SocketNumber { get; set; }
+        public bool InspectionResult { get; set; }
+        public string AdditionalInfo { get; set; }
+
+        public List<LayerInfo> Layers { get; set; }
 
         public SocketInfo(int socketNumber)
         {
             SocketNumber = socketNumber;
             InspectionResult = false;
             AdditionalInfo = string.Empty;
+            Layers = new List<LayerInfo>();
+        }
+
+        public void AddLayer(string name, int number)
+        {
+            if (!Layers.Any(l => l.LayerNumber == number))
+                Layers.Add(new LayerInfo(name, number));
+        }
+
+        public LayerInfo GetLayer(string name)
+        {
+            return Layers.FirstOrDefault(l => l.LayerName == name);
         }
 
         public void Reset()
         {
             InspectionResult = false;
             AdditionalInfo = string.Empty;
+            foreach (var layer in Layers)
+                layer.ResetAreas();
         }
     }
 }
