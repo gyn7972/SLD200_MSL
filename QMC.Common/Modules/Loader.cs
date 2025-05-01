@@ -3625,15 +3625,10 @@ namespace QMC.Common.Modules
 
             //  자동운전 시, Transfer 동작 조건
             if (Equipment.AutoRunStatus &&
-
                 !Equipment.Loader_Transfer_Pause &&                                     //  Loader Transfer Cycle Pause 시 동작 안되도록
-
                 !Equipment.SocketStopped &&                                             //  Socket Stop 시 동작 안되도록
-
                 !Equipment.CycleStopped_LoaderTransfer &&                               //  Loader 가 Cycle Stop 으로 멈추면 동작 안되도록
-
                 !Equipment.MachineStop_byTimeout_Loader &&                              //  Loader 가 Time out 으로 멈추면 동작 안되도록
-
                 m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None &&
                 m_nMAlign_Step == (int)MAlign_Step.None) 
             {
@@ -9275,6 +9270,13 @@ namespace QMC.Common.Modules
                     return;
                 }
 
+                ret = Run_MAlign_Cycle_Func();
+                if (ret != 0)
+                {
+                    SetRecoveryMAlign_Cycle(m_nMAlign_Step);
+                    return;
+                }
+
                 //ret = Run_Transfer_Cycle_Func();
                 //if (ret != 0)
                 //{
@@ -9301,7 +9303,6 @@ namespace QMC.Common.Modules
                 if (!m_LoaderWork_Start)
                 {
                     //Console.WriteLine("LoaderWork is not started.");
-                    //timer_ScannerCalibration.Stop(); // 타이머 중지
                     return;  
                 }
 
@@ -9309,7 +9310,6 @@ namespace QMC.Common.Modules
                 //if (m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None)
                 //{
                 //    Console.WriteLine("LoaderWork completed.");
-                //    //timer_ScannerCalibration.Stop(); // 타이머 중지
                 //    return;
                 //}
 
@@ -9343,7 +9343,7 @@ namespace QMC.Common.Modules
                 }
                 //  자동운전 시, M-Align 동작 조건 : TR Cycle (None), M-Aligner Module Exist, M-Aligner Cycle (None)
                 ret = Run_MAlign_Cycle_Func();
-                if(ret != 0)
+                if (ret != 0)
                 {
                     SetRecoveryMAlign_Cycle(m_nMAlign_Step);
                     return;
@@ -9361,7 +9361,6 @@ namespace QMC.Common.Modules
             catch (Exception ex)
             {
                 Log.Write(ex);
-                Console.WriteLine($"Error in Timer_ScannerCalibration_Elapsed: {ex.Message}");
             }
             finally
             {

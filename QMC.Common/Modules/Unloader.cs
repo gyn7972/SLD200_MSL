@@ -4813,7 +4813,6 @@ namespace QMC.Common.Modules
                 if (!m_UnloaderWork_Start)
                 {
                     //Console.WriteLine("UnloadTransfer is not started.");
-                    //timer_ScannerCalibration.Stop(); // 타이머 중지
                     return;
                 }
 
@@ -4849,7 +4848,6 @@ namespace QMC.Common.Modules
             catch (Exception ex)
             {
                 Log.Write(ex);
-                Console.WriteLine($"Error in Timer_ScannerCalibration_Elapsed: {ex.Message}");
             }
             finally
             {

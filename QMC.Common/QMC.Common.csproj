@@ -186,6 +186,7 @@
     <Compile Include="CircularButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Global\AreaInfo.cs" />
     <Compile Include="Global\LayerInfo.cs" />
     <Compile Include="Global\ProcessManager.cs" />
     <Compile Include="Global\SocketInfo.cs" />
@@ -197,6 +198,8 @@
     <Compile Include="Modules\Scanner.cs" />
     <Compile Include="Modules\LaserConfig.cs" />
     <Compile Include="Modules\LaserRecipe.cs" />
+    <Compile Include="SpiralLab\SpialData.cs" />
+    <Compile Include="SpiralLab\SpiralDataCollector.cs" />
     <Compile Include="SpiralLab\SpiralLabScanner.cs" />
     <Compile Include="Modules\Unloader.cs" />
     <Compile Include="Modules\Loader.cs" />
