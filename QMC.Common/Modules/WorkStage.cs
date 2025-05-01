@@ -17886,11 +17886,19 @@ namespace QMC.Common.Modules
 
                     LaserDrilling_StepDividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos(out lfVelocity, out lfAccDec);
 
+                    //todo : 김영남 속도 개선중 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos_DoneCheck;
                     break;
 
 
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos_DoneCheck:                 //  가공 할 Region Center 위치로 이동 완료 확인
+
+                    //todo : 김영남 속도 개선중 
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
+                    break;
+
+
+
 
                     if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
                         MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
@@ -17899,6 +17907,7 @@ namespace QMC.Common.Modules
 
                         //Thread.Sleep(100);
 
+                        //todo : 김영남 속도 개선중 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
@@ -18408,7 +18417,7 @@ namespace QMC.Common.Modules
 
 
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_1Rect:                                  //  List 에 데이터 추가
-
+                    //todo : 김영남 속도 개선중 
                     for (int nObject = 0; nObject < m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].nRegion_ObjectTotalNum; nObject++)
                     {
                         switch (m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].nObjectType)
@@ -19171,6 +19180,8 @@ namespace QMC.Common.Modules
                                     
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Circle 원 데이터를 Spiral 데이터로 변환 생성 시작");
 
+
+                                    //todo : 김영남 속도 개선중 
                                     //  Spiral 데이터 파라미터 (외경 크기, 내경 크기, Spiral 회전 횟수, Spiral 회전 각도, Hole Center X, Hole Center Y)
                                     lwPolyLineSpiral = SpiralData_Create(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot.X, entity_Position_Rot.Y);
 
@@ -19332,6 +19343,7 @@ namespace QMC.Common.Modules
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Arc 원 데이터를 Spiral 데이터로 변환 생성 시작");
 
+                                    //todo : 김영남 속도 개선중 
                                     //  Spiral 데이터 파라미터 (외경 크기, 내경 크기, Spiral 회전 횟수, Spiral 회전 각도, Hole Center X, Hole Center Y)
                                     lwPolyLineSpiral = SpiralData_Create(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot.X, entity_Position_Rot.Y);
 
@@ -19746,7 +19758,7 @@ namespace QMC.Common.Modules
                                     {
                                         m_nDrillingWork_Repeat_Count_Backup = m_nDrillingWork_Repeat_Count;
                                         m_nListBeginRetry_Count = 0;
-
+                                        //todo : 김영남 속도 개선중 
                                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Execute;
                                     }
                                 }
@@ -19825,7 +19837,7 @@ namespace QMC.Common.Modules
                                     //m_nDrillingWork_Repeat_Count = 0;
                                     m_nDrillingWork_Repeat_Count_Backup = m_nDrillingWork_Repeat_Count;
                                     m_nListBeginRetry_Count = 0;
-
+                                    //todo : 김영남 속도 개선중 
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Execute;
                                 }
                             }
@@ -19841,6 +19853,7 @@ namespace QMC.Common.Modules
 
                             m_bDivRegionList_Success &= rtc.ListEnd();
 
+                            //todo : 김영남 속도 개선중 
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Execute;
                         }
                     }
@@ -19848,6 +19861,32 @@ namespace QMC.Common.Modules
 
 
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Execute:                              //  List 실행
+
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
+                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                    {
+                        
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 가공할 Region 의 Center 위치로 Stage 이동 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        //timer_LaserDrillingWork.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+                        return AlarmPost(AlarmKey.eStageMoveFail);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                        MessageBox.Show("Stage XY 축, 가공할 Region 의 Center 위치로 Stage 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                        
+
                     //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
                     {
                         m_bDivRegionList_Success &= rtc.ListExecute(Config.ParamConfig.BusyWait_MarkingComplete);
