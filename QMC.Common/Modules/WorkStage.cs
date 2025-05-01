@@ -19106,7 +19106,7 @@ namespace QMC.Common.Modules
                                                 m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
                                             }
                                         }
-
+                                        
                                         ////  데이터 검증용 코드 (Center 좌표 저장)
                                         //if (Config.ParamConfig.DrillingData_SaveToLogFile)
                                         //{
@@ -20515,7 +20515,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.Complete:
                     Log.Write("SLD-200", "Auto Run", "전체 가공 완료");
-
+                    
                     m_bLaserDrilling_Complete = true;
 
                     //timer_LaserDrillingWork.Enabled = false;
@@ -25116,7 +25116,8 @@ namespace QMC.Common.Modules
             int m_nGroupData_Count = 0;
             double m_dGroupSize_Width = 0.0;
             double m_dGroupSize_Height = 0.0;
-            double m_dDrilling_FOV = 0.0;
+            double m_dDrilling_FOV = 0.0;               //  Height 안붙어 있는 건 Width
+            double m_dDrilling_FOV_Height = 0.0;
             int m_nGroupIndex_TotalX = 0;
             int m_nGroupIndex_TotalY = 0;
             double m_dGroupStartPos_X = 0.0;            //  Group 시작 X 위치. (이 위치를 기준으로 Divide 영역 계산하기 위함)
@@ -25352,10 +25353,16 @@ namespace QMC.Common.Modules
                         if (m_nHoleLayer_Num == 1)              //  Hole1 이면?
                         {
                             //  Divide 크기는 Layer 별로 다르게 한다. (Recipe 에서 설정)
-                            if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize <= 0.0)                //  default : 3mm
+                            if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize <= 0.0)                     //  default : 3mm
                                 m_dDrilling_FOV = 3.0;
                             else
                                 m_dDrilling_FOV = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize;
+
+                            //  Divide 크기는 Layer 별로 다르게 한다. (Recipe 에서 설정) - Height 를 다르게 할 수 있도록 하기 위해 추가됨
+                            if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize_Height <= 0.0)                //  default : 3mm
+                                m_dDrilling_FOV_Height = 3.0;
+                            else
+                                m_dDrilling_FOV_Height = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize_Height;
 
                             if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_NONE)
                             {
@@ -25465,7 +25472,7 @@ namespace QMC.Common.Modules
                                             //if (((double)group.Width > Config.ParamConfig.Drilling_DivideSize) ||
                                             //    ((double)group.Height > Config.ParamConfig.Drilling_DivideSize))            //  2023. 11. 24.  SCH : Group 이 가로가 얇고 세로로 길게 되어 있는 도면이 있어서, 세로 크기도 함께 보도록 한다.
                                             if (((double)group.Width > Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize) ||
-                                                ((double)group.Height > Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize))            //  2023. 11. 24.  SCH : Group 이 가로가 얇고 세로로 길게 되어 있는 도면이 있어서, 세로 크기도 함께 보도록 한다.
+                                                ((double)group.Height > Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize_Height))            //  2023. 11. 24.  SCH : Group 이 가로가 얇고 세로로 길게 되어 있는 도면이 있어서, 세로 크기도 함께 보도록 한다.
                                             {
                                                 //  요건 조건 보고 살리자
                                                 m_bGroupExist_LargerThanDivideSize = true;
@@ -26580,8 +26587,8 @@ namespace QMC.Common.Modules
                                                 if ((m_dGroupSize_Width % m_dDrilling_FOV) > 0.0)
                                                     m_nGroupIndex_TotalX++;
 
-                                                m_nGroupIndex_TotalY = (int)(m_dGroupSize_Height / m_dDrilling_FOV);
-                                                if ((m_dGroupSize_Height % m_dDrilling_FOV) > 0.0)
+                                                m_nGroupIndex_TotalY = (int)(m_dGroupSize_Height / m_dDrilling_FOV_Height);
+                                                if ((m_dGroupSize_Height % m_dDrilling_FOV_Height) > 0.0)
                                                     m_nGroupIndex_TotalY++;
 
                                                 //  전체 영역 시작 위치 (2사분면에서 시작)
@@ -26595,7 +26602,7 @@ namespace QMC.Common.Modules
                                                 //           │
 
                                                 m_dGroupStartPos_X = (double)group.Location.X - (((double)m_nGroupIndex_TotalX * m_dDrilling_FOV) / 2.0);
-                                                m_dGroupStartPos_Y = (double)group.Location.Y + (((double)m_nGroupIndex_TotalY * m_dDrilling_FOV) / 2.0);
+                                                m_dGroupStartPos_Y = (double)group.Location.Y + (((double)m_nGroupIndex_TotalY * m_dDrilling_FOV_Height) / 2.0);
 
                                                 m_stGroupDataForDivide = new stGroupDataForDivide[m_nGroupData_TotalCount];
 
@@ -26714,8 +26721,8 @@ namespace QMC.Common.Modules
                                                             }
                                                             for (int y = 0; y < m_nGroupIndex_TotalY; y++)
                                                             {
-                                                                if ((m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y <= (m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)y))) &&
-                                                                    (m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y > (m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)y) - m_dDrilling_FOV)))
+                                                                if ((m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y <= (m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * (double)y))) &&
+                                                                    (m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y > (m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * (double)y) - m_dDrilling_FOV_Height)))
                                                                 {
                                                                     m_nDivCount_Y = y;
                                                                     y = m_nGroupIndex_TotalY;
@@ -26741,8 +26748,8 @@ namespace QMC.Common.Modules
                                                         }
                                                         for (int y = 0; y < m_nGroupIndex_TotalY; y++)
                                                         {
-                                                            if ((m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y <= (m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)y))) &&
-                                                                (m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y > (m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)y) - m_dDrilling_FOV)))
+                                                            if ((m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y <= (m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * (double)y))) &&
+                                                                (m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y > (m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * (double)y) - m_dDrilling_FOV_Height)))
                                                             {
                                                                 m_nDivCount_Y = y;
                                                                 y = m_nGroupIndex_TotalY;
@@ -26781,7 +26788,7 @@ namespace QMC.Common.Modules
                                                         //m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalY) + m_X].dRegionCenter.X = m_dGroupStartPos_X + (m_dDrilling_FOV * (double)m_X) + (m_dDrilling_FOV / 2.0);
                                                         //m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalY) + m_X].dRegionCenter.Y = m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)m_Y) - (m_dDrilling_FOV / 2.0);
                                                         m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalX) + m_X].dRegionCenter.X = m_dGroupStartPos_X + (m_dDrilling_FOV * (double)m_X) + (m_dDrilling_FOV / 2.0);
-                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalX) + m_X].dRegionCenter.Y = m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)m_Y) - (m_dDrilling_FOV / 2.0);
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalX) + m_X].dRegionCenter.Y = m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * (double)m_Y) - (m_dDrilling_FOV_Height / 2.0);
                                                     }
                                                 }
 
@@ -29801,7 +29808,7 @@ namespace QMC.Common.Modules
             //        Equipment.WorkTotalTime_Drilling += (m_dTotal_DrillingDataLength / Config.ParamConfig.PreDrilling_Mark_Speed) * (Config.ParamConfig.PreDrilling_Repeat_Count == 0 ? 1.0 : Config.ParamConfig.PreDrilling_Repeat_Count);
             //    }
             //}
-
+                
             ////  Marking Jump, 가공 이동 시간
             //if (m_dTotal_MarkingJumpLength > 0.0)
             //{

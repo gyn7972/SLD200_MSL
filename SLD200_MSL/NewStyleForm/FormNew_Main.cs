@@ -23,6 +23,7 @@ using static QMC.Common.Modules.Loader;
 using static QMC.Common.Modules.Unloader;
 using Point = System.Drawing.Point;
 using System.Runtime.CompilerServices;
+using System.Numerics;
 
 namespace SLD200_MSL
 {
