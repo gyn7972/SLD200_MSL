@@ -1317,7 +1317,7 @@
             this.label_Title_Stacker_LPort.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.label_Title_Stacker_LPort.Size = new System.Drawing.Size(322, 40);
             this.label_Title_Stacker_LPort.TabIndex = 205;
-            this.label_Title_Stacker_LPort.Text = "OP Recipe";
+            this.label_Title_Stacker_LPort.Text = "R Stacker 자재 유/무";
             this.label_Title_Stacker_LPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label_Title_Stacker_RPort
@@ -1331,7 +1331,7 @@
             this.label_Title_Stacker_RPort.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.label_Title_Stacker_RPort.Size = new System.Drawing.Size(322, 40);
             this.label_Title_Stacker_RPort.TabIndex = 206;
-            this.label_Title_Stacker_RPort.Text = "OP Recipe";
+            this.label_Title_Stacker_RPort.Text = "L Stacker 자재 유/무";
             this.label_Title_Stacker_RPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FormNew_Main
@@ -1346,6 +1346,7 @@
             this.Controls.Add(this.groupBox_CoarseCam);
             this.Controls.Add(this.groupBox_FineCam);
             this.Controls.Add(this.button_TEST12);
+            this.Controls.Add(this.button_Main_RecipeOpen);
             this.Controls.Add(this.checkBox_Main_AutoRun);
             this.Controls.Add(this.buttonForceMaterialOut);
             this.Controls.Add(this.button_Main_WorkStage_Continue);

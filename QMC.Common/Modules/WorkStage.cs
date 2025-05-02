@@ -7894,27 +7894,15 @@ namespace QMC.Common.Modules
             try
             {
                 _isLaserDrillingWorkRunning = true;
-                //if(m_nLaserDrilling_MainStep_Recovery != -1)
-                //{
-                //    m_nLaserDrilling_MainStep = m_nLaserDrilling_MainStep_Recovery;
-                //}
-                // Scanner Calibration이 활성화되지 않은 경우 종료
+                
                 if (!m_LaserDrillingWork_Start)
                 {
                     SetRecoveryLaserDrilling_MainStep(m_nLaserDrilling_MainStep);
                     return;
                 }
                 
-                // 현재 단계가 None이면 타이머 중지
-                //if (m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None)
-                //{
-                //    Console.WriteLine("Laser Drilling completed.");
-                //    return;
-                //}
-
-                // 단계별 실행
-                //Console.WriteLine($"Scanner Calibration running at {DateTime.Now}, Step: {m_nScanner_Calibration_Step}");
                 Func_DryRun_Cycle();
+
                 int ret = Run_LaserDrilling_Main_Cycle();
                 if(ret !=0)
                 {
@@ -14257,7 +14245,6 @@ namespace QMC.Common.Modules
                 TickCount_MainCycle_Start = TickCount_MainCycle_Current;
             }
 
-
             //  Stop 할 때 바로 Stop 하지 않고, 가공중이던 분할영역이 있을 경우 Laser 가공이 끝나고 난 후 Stop 하도록 한다.
             if (Equipment.LaserDrillingCycStop_Reservation)
             {
@@ -14405,7 +14392,6 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", "Auto Run", "출사구 셔터 Open 실패");
 
-
                         return AlarmPost(AlarmKey.eBeamShutterOpenFail);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
 
@@ -14451,7 +14437,6 @@ namespace QMC.Common.Modules
                     break;
 
                 case (int)LaserDrilling_Step.DustCollector_Chiller_Status_Check:                      //  집진기, Chiller 상태 확인 (Alarm Check)
-
 
                     if (Equipment.Machine_LaserType_CO2)
                     {
@@ -14544,8 +14529,10 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.StageXY_MoveCenterPos_DoneCheck:                 //  XY 축, Stage Center 위치로 이동 완료 체크           
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y))
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X) &&
+                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Stage Center 위치로 이동 완료 확인");
 
