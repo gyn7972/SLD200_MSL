@@ -2643,9 +2643,21 @@ namespace QMC.Common.Modules
                     //  우측 Port (Stacker0) 에 내려놔야 하는데 Full 상태이면? 좌측 Port 에 내려놓도록
                     if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 가 Full 상태이므로 Stacker1 에 Put Down 합니다.");
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 이 Full 상태이므로 Stacker1 에 Put Down 시도합니다.");
 
-                        workStage.m_bMainWorkCycle_ResultOK_toRPort = false;
+                        if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0, Stacker1 모두 Full 상태이므로 알람.");
+
+                            //  알람 정지 (LED Bar - Red Blink)
+                            Equipment.MachineStop_byAlarm = true;
+
+                            return AlarmPost(AlarmKey.UL_Staker0_Too_Many_Module);
+                        }
+                        else
+                        {
+                            workStage.m_bMainWorkCycle_ResultOK_toRPort = false;
+                        }
                     }
                     else
                     {
@@ -2667,9 +2679,21 @@ namespace QMC.Common.Modules
                     //  좌측 Port (Stacker1) 에 내려놔야 하는데 Full 상태이면? 우측 Port 에 내려놓도록
                     if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker1 가 Full 상태이므로 Stacker0 에 Put Down 합니다.");
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker1 이 Full 상태이므로 Stacker0 에 Put Down 시도합니다.");
 
-                        workStage.m_bMainWorkCycle_ResultOK_toRPort = true;
+                        if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0, Stacker1 모두 Full 상태이므로 알람.");
+
+                            //  알람 정지 (LED Bar - Red Blink)
+                            Equipment.MachineStop_byAlarm = true;
+
+                            return AlarmPost(AlarmKey.UL_Staker1_Too_Many_Module);
+                        }
+                        else
+                        {
+                            workStage.m_bMainWorkCycle_ResultOK_toRPort = true;
+                        }
                     }
                     else
                     {
