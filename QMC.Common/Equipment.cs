@@ -387,6 +387,8 @@ namespace QMC.Common
             public int Miscellaneous_HoleProcessingType;                //  Hole Processing Type (0:Circle, 1:Spiral)
             public int Miscellaneous_FiducialAlignType;                 //  Fiducial Align Type (0:Circle Find, 2:Pattern Matching)
             public int Miscellaneous_FiducialMarkType;                  //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
+            public bool Miscellaneous_HoleSortByDistance_Use;               //  Sort By Distance Use (true: Use, false: Not Use)
+            public double Miscellaneous_HoleSortingDistance;            //  Hole Sorting Distance (mm)
 
             public bool ProcessOption_SocketAlign_Use;                  //  Socket Align Use (true: Use, false: Not Use)
             public bool ProcessOption_SocketHeightCheck_Use;            //  Socket Height Check Use Offset (true: Use, false: Not Use)
@@ -425,10 +427,8 @@ namespace QMC.Common
         }
 
 
-
-
-            //  Machine Name
-            public static string Machine_Name { set; get; } = "SLD-200";
+        //  Machine Name
+        public static string Machine_Name { set; get; } = "SLD-200";
 
 
         //  Laser Type
@@ -969,6 +969,8 @@ namespace QMC.Common
                 stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = 0;                           //  Hole Processing Type (0:Circle, 1:Spiral)
                 stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = 0;                            //  Fiducial Align Type (0:Circle Find, 1:Pattern Matching)
                 stLayerRecipeSet[i].Miscellaneous_FiducialMarkType = 0;                             //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
+                stLayerRecipeSet[i].Miscellaneous_HoleSortByDistance_Use = false;                   //  Hole Sort By Distance Use (true: Use, false: Not Use)
+                stLayerRecipeSet[i].Miscellaneous_HoleSortingDistance = 0.5;                        //  Hole Data Sorting Distance (mm)
 
                 //  Process Options
                 stLayerRecipeSet[i].ProcessOption_SocketAlign_Use = false;                          //  Socket Align Use (true: Use, false: Not Use)
