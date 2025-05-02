@@ -17354,9 +17354,9 @@ namespace QMC.Common.Modules
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
                     CommonModule.Instance.Illuminator.SetVolume(4000, 3);
-                    CommonModule.Instance.Illuminator.TurnOnOff(false, 1);       //  Fine Cam Red 조명
-                    CommonModule.Instance.Illuminator.TurnOnOff(false, 2);       //  Fine Cam IR 조명
-                    CommonModule.Instance.Illuminator.TurnOnOff(true, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
+                    CommonModule.Instance.Illuminator.TurnOnOff(false, 1);          //  Fine Cam Red 조명
+                    CommonModule.Instance.Illuminator.TurnOnOff(false, 2);          //  Fine Cam IR 조명
+                    CommonModule.Instance.Illuminator.TurnOnOff(true, 3);           //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
 
                     //Align Mark Pos - 도면에서 추출하여 전달.
                     stDividedRegion_GroupData[] inputGroupData = m_stDividedRegion_GroupData;
