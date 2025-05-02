@@ -655,6 +655,9 @@ namespace QMC.Common.Modules
             public int nGroup_RegionNum;                //  Group 별 영역 개수
             public int nGroup_RegionCount;              //  영역 카운트
 
+            public int nGroup_Region_Divided_X;         //  Group 영역 X 방향 분할 개수
+            public int nGroup_Region_Divided_Y;         //  Group 영역 Y 방향 분할 개수
+
             public PointD[] dFiducialPos;               //  Fiducial 마크 위치 (1~4번 마크)
             public double[] dFiducialWidth;             //  Fiducial 마크 가로 크기
             public double[] dFiducialHeight;            //  Fiducial 마크 세로 크기
@@ -1870,21 +1873,29 @@ namespace QMC.Common.Modules
 
         //  소켓 좌표값
         public List<PointD> Main_SocketPositions = new List<PointD>();
-        public int Main_SocketPositions_ColumnCount = 0;                                //  소켓 좌표값의 열 개수
-        public int Main_SocketPositions_RowCount = 0;                                   //  소켓 좌표값의 행 개수
-        public bool Main_SocketPositions_Draw = false;                                  //  소켓 위치 그리기 여부
-        public bool Main_SocketPositions_Drawed = false;                                //  소켓 위치 그리기 성공 여부
-        public bool Main_SocketPositions_SetStatus = false;                             //  소켓 상태 세팅
+        public int Main_SocketPositions_ColumnCount = 0;                                                    //  소켓 좌표값의 열 개수
+        public int Main_SocketPositions_RowCount = 0;                                                       //  소켓 좌표값의 행 개수
+        public int Main_SocketPositions_SubColumnCount = 0;                                                 //  소켓 좌표값의 서브 열 개수
+        public int Main_SocketPositions_SubRowCount = 0;                                                    //  소켓 좌표값의 서브 행 개수
+        public bool Main_SocketPositions_Draw = false;                                                      //  소켓 위치 그리기 여부
+        public bool Main_SocketPositions_Drawed = false;                                                    //  소켓 위치 그리기 성공 여부
+        public bool Main_SocketPositions_SetStatus = false;                                                 //  소켓 상태 세팅
 
-        public int Main_SocketPositions_CompleteSocket = -1;                            //  완료된 소켓의 인덱스
-        public int Main_SocketPositions_ProcessingSocket = -1;                          //  가공중인 소켓의 인덱스
+        public int Main_SocketPositions_CompleteSocket = -1;                                                //  완료된 소켓의 인덱스
+        public int Main_SocketPositions_ProcessingSocket = -1;                                              //  가공중인 소켓의 인덱스
 
-        public PointD Main_SocketPositions_CurrentSocketPosition = new PointD(0, 0);    //  현재 가공중인 소켓 좌표값
-        public int Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Ready;
+        public int Main_SocketPositions_CompleteSocket_Region = -1;                                         //  완료된 소켓의 작업 영역 인덱스
+        public int Main_SocketPositions_ProcessingSocket_Region = -1;                                       //  가공중인 소켓의 작업 영역 인덱스
 
-        public PointD Main_SocketPositions_SocketCompletePosition = new PointD(0, 0);           //  완료 소켓 좌표값 (가공중인 소켓 갱신할 때 인덱스가 겹쳐서 완료 표시가 안되는 듯)
-        public int Main_SocketPositions_CompleteStatus = (int)Socket_Process_Status.Ready;      //  완료된 소켓의 상태 (OK, NG)
-        public bool Main_SocketPositions_SetCompleteStatus = false;                             //  완료 소켓 상태 세팅
+        public PointD Main_SocketPositions_CurrentSocketPosition = new PointD(0, 0);                        //  현재 가공중인 소켓 좌표값
+        public int Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Ready;                //  소켓의 Processing 상태
+        public int Main_SocketPositions_ProcessingStatus_Region = (int)Socket_Process_Status.Ready;         //  소켓의 분할 영역의 Processing 상태
+
+        public PointD Main_SocketPositions_SocketCompletePosition = new PointD(0, 0);                       //  완료 소켓 좌표값 (가공중인 소켓 갱신할 때 인덱스가 겹쳐서 완료 표시가 안되는 듯)
+        public int Main_SocketPositions_CompleteStatus = (int)Socket_Process_Status.Ready;                  //  완료된 소켓의 상태 (OK, NG)
+        public int Main_SocketPositions_CompleteStatus_Region = (int)Socket_Process_Status.Ready;           //  완료된 소켓의 상태 (OK, NG)
+
+        public bool Main_SocketPositions_SetCompleteStatus = false;                                         //  완료 소켓 상태 세팅
         #endregion
 
 
@@ -12632,7 +12643,7 @@ namespace QMC.Common.Modules
                 //}
             }
 
-            //  자동운전 시, Transfer 동작 조건
+            //  자동운전 시, Main Work 동작 조건
             if (Equipment.AutoRunStatus &&
                 !Equipment.CycleStopped_MainWork &&
                 m_nMainWork_Step == (int)MainWork_Step.None)
@@ -14722,6 +14733,10 @@ namespace QMC.Common.Modules
 
                             //  메인 화면에 그려지는 가공위치의 개수
                             (Main_SocketPositions_RowCount, Main_SocketPositions_ColumnCount) = CalculateArraySize(Main_SocketPositions);
+
+                            //  가공 소켓이 몇개의 영역으로 나눠지는지
+                            Main_SocketPositions_SubRowCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y : 1;
+                            Main_SocketPositions_SubColumnCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X : 1;
 
                             Main_SocketPositions_Draw = true;
                         }
@@ -17339,9 +17354,9 @@ namespace QMC.Common.Modules
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
                     CommonModule.Instance.Illuminator.SetVolume(4000, 3);
-                    CommonModule.Instance.Illuminator.TurnOnOff(false, 1);       //  Fine Cam Red 조명
-                    CommonModule.Instance.Illuminator.TurnOnOff(false, 2);       //  Fine Cam IR 조명
-                    CommonModule.Instance.Illuminator.TurnOnOff(true, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
+                    CommonModule.Instance.Illuminator.TurnOnOff(false, 1);          //  Fine Cam Red 조명
+                    CommonModule.Instance.Illuminator.TurnOnOff(false, 2);          //  Fine Cam IR 조명
+                    CommonModule.Instance.Illuminator.TurnOnOff(true, 3);           //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
 
                     //Align Mark Pos - 도면에서 추출하여 전달.
                     stDividedRegion_GroupData[] inputGroupData = m_stDividedRegion_GroupData;
@@ -18079,15 +18094,24 @@ namespace QMC.Common.Modules
                                 m_nDrillingWork_Repeat_Count_Backup = m_nDrillingWork_Repeat_Count;
                                 m_nDrillingWork_RepeatBundle_Count_Backup = m_nDrillingWork_RepeatBundle_Count;
 
-                                stDividedRegion_RegionData data =  m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag];
-                                List<stDividedRegion_ObjectData> listObj = data.m_stDividedRegion_ObjectData.ToList();
-                                
-                                //Todo : 성충현 부장님. SortByDistance 상수로 들어가있는 0.5 레시피 변수로 작업 바랍니다.
+                                //  특정 Distance 거리로 Hole 데이터를 정렬할 경우
+                                if (Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortByDistance_Use)
+                                {
+                                    stDividedRegion_RegionData data = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag];
+                                    List<stDividedRegion_ObjectData> listObj = data.m_stDividedRegion_ObjectData.ToList();
 
-                                var sortedObj = SortByDistance(listObj, 0.1);
-                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData = sortedObj.ToArray();
-                                sortedObj.Clear();
-                                sortedObj = null;
+                                    double m_dSortingDistance = 0.5;
+                                    m_dSortingDistance = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortingDistance > 0 ? Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortingDistance : 0.5;           //  정렬 거리
+
+                                    m_strTemp = string.Format("Socket 가공 중 Hole Data 순서 정렬. (Hole 간 기준 거리 : {0:0.000}mm)", m_dSortingDistance);
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                                    var sortedObj = SortByDistance(listObj, m_dSortingDistance);
+
+                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData = sortedObj.ToArray();
+                                    sortedObj.Clear();
+                                    sortedObj = null;
+                                }
 
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_1Rect;        //  모든 Hole 을 1번씩 가공해서 전체 가공
                             }
@@ -26878,6 +26902,10 @@ namespace QMC.Common.Modules
                                                 m_stDividedRegion_GroupData[m_nGroupCount].dFiducialWidth = new double[4];
                                                 m_stDividedRegion_GroupData[m_nGroupCount].dFiducialHeight = new double[4];
 
+                                                //  Divide 영역 개수 저장
+                                                m_stDividedRegion_GroupData[m_nGroupCount].nGroup_Region_Divided_X = m_nGroupIndex_TotalX;
+                                                m_stDividedRegion_GroupData[m_nGroupCount].nGroup_Region_Divided_Y = m_nGroupIndex_TotalY;
+
                                                 //  Divided 영역별 데이터 개수 카운트
                                                 m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData = new WorkStage.stDividedRegion_RegionData[m_nGroupIndex_TotalX * m_nGroupIndex_TotalY];
                                                 foreach (var eachObject in m_stGroupDataForDivide)
@@ -33557,6 +33585,23 @@ namespace QMC.Common.Modules
                 column = index % columns; // 몇 번째 열인지 계산
             }
             return (row, column);
+        }
+
+        public (int Row, int Column) GetRegionRowColumnFromIndex(int index, int region_columns)
+        {
+            int region_row = 1;    // 몇 번째 행인지 계산
+            int region_column = 1; // 몇 번째 열인지 계산
+
+            if (region_columns <= 0)
+            {
+                //throw new ArgumentException("열의 개수는 0보다 커야 합니다.", nameof(columns));
+            }
+            else
+            {
+                region_row = index / region_columns;    // 몇 번째 행인지 계산
+                region_column = index % region_columns; // 몇 번째 열인지 계산
+            }
+            return (region_row, region_column);
         }
 
 

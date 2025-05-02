@@ -150,6 +150,9 @@
             this.button135 = new System.Windows.Forms.Button();
             this.richTextBox8 = new System.Windows.Forms.RichTextBox();
             this.groupBox163 = new System.Windows.Forms.GroupBox();
+            this.button19 = new System.Windows.Forms.Button();
+            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height = new System.Windows.Forms.RichTextBox();
+            this.label84 = new System.Windows.Forms.Label();
             this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType = new System.Windows.Forms.ComboBox();
             this.label83 = new System.Windows.Forms.Label();
             this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType = new System.Windows.Forms.ComboBox();
@@ -299,9 +302,10 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
-            this.button19 = new System.Windows.Forms.Button();
-            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height = new System.Windows.Forms.RichTextBox();
-            this.label84 = new System.Windows.Forms.Label();
+            this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance = new System.Windows.Forms.CheckBox();
+            this.button21 = new System.Windows.Forms.Button();
+            this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance = new System.Windows.Forms.RichTextBox();
+            this.label85 = new System.Windows.Forms.Label();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox_Recipe_TabRecipe_PreAlignPos.SuspendLayout();
@@ -1811,6 +1815,10 @@
             // 
             // groupBox163
             // 
+            this.groupBox163.Controls.Add(this.label85);
+            this.groupBox163.Controls.Add(this.button21);
+            this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance);
+            this.groupBox163.Controls.Add(this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance);
             this.groupBox163.Controls.Add(this.button19);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height);
             this.groupBox163.Controls.Add(this.label84);
@@ -1882,10 +1890,43 @@
             this.groupBox163.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox163.Name = "groupBox163";
             this.groupBox163.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox163.Size = new System.Drawing.Size(503, 715);
+            this.groupBox163.Size = new System.Drawing.Size(503, 738);
             this.groupBox163.TabIndex = 81;
             this.groupBox163.TabStop = false;
             this.groupBox163.Text = " Miscellaneous ";
+            // 
+            // button19
+            // 
+            this.button19.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button19.Location = new System.Drawing.Point(349, 155);
+            this.button19.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button19.Name = "button19";
+            this.button19.Size = new System.Drawing.Size(35, 25);
+            this.button19.TabIndex = 149;
+            this.button19.Text = "#";
+            this.button19.UseVisualStyleBackColor = true;
+            // 
+            // textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height
+            // 
+            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Location = new System.Drawing.Point(198, 155);
+            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Multiline = false;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Name = "textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height";
+            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Size = new System.Drawing.Size(147, 25);
+            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.TabIndex = 150;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text = "3";
+            // 
+            // label84
+            // 
+            this.label84.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label84.Location = new System.Drawing.Point(8, 153);
+            this.label84.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label84.Name = "label84";
+            this.label84.Size = new System.Drawing.Size(186, 25);
+            this.label84.TabIndex = 148;
+            this.label84.Text = "Scan Field - Height (mm) :";
+            this.label84.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType
             // 
@@ -3685,38 +3726,49 @@
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
             // 
-            // button19
+            // checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance
             // 
-            this.button19.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button19.Location = new System.Drawing.Point(349, 155);
-            this.button19.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button19.Name = "button19";
-            this.button19.Size = new System.Drawing.Size(35, 25);
-            this.button19.TabIndex = 149;
-            this.button19.Text = "#";
-            this.button19.UseVisualStyleBackColor = true;
+            this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Location = new System.Drawing.Point(14, 701);
+            this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Name = "checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance";
+            this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Size = new System.Drawing.Size(183, 21);
+            this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.TabIndex = 151;
+            this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Text = "Sort by Distance (mm) :";
+            this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.UseVisualStyleBackColor = true;
             // 
-            // textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height
+            // button21
             // 
-            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Location = new System.Drawing.Point(198, 155);
-            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Multiline = false;
-            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Name = "textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height";
-            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Size = new System.Drawing.Size(147, 25);
-            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.TabIndex = 150;
-            this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height.Text = "3";
+            this.button21.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button21.Location = new System.Drawing.Point(349, 700);
+            this.button21.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button21.Name = "button21";
+            this.button21.Size = new System.Drawing.Size(35, 25);
+            this.button21.TabIndex = 152;
+            this.button21.Text = "#";
+            this.button21.UseVisualStyleBackColor = true;
             // 
-            // label84
+            // textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance
             // 
-            this.label84.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label84.Location = new System.Drawing.Point(8, 153);
-            this.label84.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.label84.Name = "label84";
-            this.label84.Size = new System.Drawing.Size(186, 25);
-            this.label84.TabIndex = 148;
-            this.label84.Text = "Scan Field - Height (mm) :";
-            this.label84.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Location = new System.Drawing.Point(198, 700);
+            this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Multiline = false;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Name = "textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance";
+            this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Size = new System.Drawing.Size(147, 25);
+            this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.TabIndex = 153;
+            this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text = "0.5";
+            // 
+            // label85
+            // 
+            this.label85.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label85.Location = new System.Drawing.Point(388, 701);
+            this.label85.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label85.Name = "label85";
+            this.label85.Size = new System.Drawing.Size(108, 19);
+            this.label85.TabIndex = 154;
+            this.label85.Text = "(Hole Data)";
+            this.label85.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FormNew_Recipe
             // 
@@ -4062,5 +4114,9 @@
         private System.Windows.Forms.Button button19;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height;
         private System.Windows.Forms.Label label84;
+        private System.Windows.Forms.Button button21;
+        private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance;
+        private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance;
+        private System.Windows.Forms.Label label85;
     }
 }

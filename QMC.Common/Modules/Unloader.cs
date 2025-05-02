@@ -1402,9 +1402,10 @@ namespace QMC.Common.Modules
 
                     if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))            //  감지 시 Off
                     {
-                        MC_Func.MC_MotorStop((int)nAxis.Z0, 2000);
+                        MC_Func.MC_MotorStop((int)nAxis.Z0, 1000);
 
-                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_Slow3Up;
+                        //m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_Slow3Up;
+                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;                           //  다시 올리지 않고 완료. (Full 센서가 감지되지 않는 위치에서 Unloading 하도록 한다.)
                     }
                     else if (MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_PosTolerance((int)nAxis.Z0, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0]))
                     {
@@ -1421,7 +1422,7 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_Slow3Up;
+                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
                         }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ0) > 60000)
@@ -1574,9 +1575,10 @@ namespace QMC.Common.Modules
 
                     if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))            //  감지 시 Off
                     {
-                        MC_Func.MC_MotorStop((int)nAxis.Z0, 2000);
+                        MC_Func.MC_MotorStop((int)nAxis.Z0, 1000);
 
-                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType2_Slow3Up;
+                        //m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType2_Slow3Up;
+                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;                           //  다시 올리지 않고 완료. (Full 센서가 감지되지 않는 위치에서 Unloading 하도록 한다.)
                     }
                     else if (MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_PosTolerance((int)nAxis.Z0, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0]))
                     {
@@ -1593,7 +1595,7 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType2_Slow3Up;
+                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
                         }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ0) > 60000)
@@ -2105,9 +2107,10 @@ namespace QMC.Common.Modules
 
                     if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))            //  감지 시 Off
                     {
-                        MC_Func.MC_MotorStop((int)nAxis.Z1, 2000);
+                        MC_Func.MC_MotorStop((int)nAxis.Z1, 1000);
 
-                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_Slow3Up;
+                        //m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_Slow3Up;
+                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;                           //  다시 올리지 않고 완료. (Full 센서가 감지되지 않는 위치에서 Unloading 하도록 한다.)
                     }
                     else if (MC_Func.MC_GetDone((int)nAxis.Z1) && MC_Func.MC_PosTolerance((int)nAxis.Z1, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1]))
                     {
@@ -2124,7 +2127,7 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_Slow3Up;
+                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
                         }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ1) > 60000)
@@ -2351,9 +2354,10 @@ namespace QMC.Common.Modules
 
                     if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))            //  감지 시 Off
                     {
-                        MC_Func.MC_MotorStop((int)nAxis.Z1, 2000);
+                        MC_Func.MC_MotorStop((int)nAxis.Z1, 1000);
 
-                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType2_Slow3Up;
+                        //m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType2_Slow3Up;
+                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;                           //  다시 올리지 않고 완료. (Full 센서가 감지되지 않는 위치에서 Unloading 하도록 한다.)
                     }
                     else if (MC_Func.MC_GetDone((int)nAxis.Z1) && MC_Func.MC_PosTolerance((int)nAxis.Z1, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1]))
                     {
@@ -2370,7 +2374,7 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType2_Slow3Up;
+                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
                         }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ1) > 60000)
@@ -2636,8 +2640,18 @@ namespace QMC.Common.Modules
 
                     m_bStacker0_Complete)
                 {
-                    m_nUnloaderTransferMoveType = (int)UnloaderTransferMoveType.Cycle_Stacker0_PutDown;            //  Stacker0 에 Module Put Down Cycle
-                    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
+                    //  우측 Port (Stacker0) 에 내려놔야 하는데 Full 상태이면? 좌측 Port 에 내려놓도록
+                    if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 가 Full 상태이므로 Stacker1 에 Put Down 합니다.");
+
+                        workStage.m_bMainWorkCycle_ResultOK_toRPort = false;
+                    }
+                    else
+                    {
+                        m_nUnloaderTransferMoveType = (int)UnloaderTransferMoveType.Cycle_Stacker0_PutDown;            //  Stacker0 에 Module Put Down Cycle
+                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
+                    }
                 }
                 //  Stacker1 에 Module 을 Put Down 하기 위한 조건
                 else if (m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete &&
@@ -2650,8 +2664,18 @@ namespace QMC.Common.Modules
 
                     m_bStacker1_Complete)
                 {
-                    m_nUnloaderTransferMoveType = (int)UnloaderTransferMoveType.Cycle_Stacker1_PutDown;            //  Stacker1 에 Module Put Down Cycle
-                    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
+                    //  좌측 Port (Stacker1) 에 내려놔야 하는데 Full 상태이면? 우측 Port 에 내려놓도록
+                    if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker1 가 Full 상태이므로 Stacker0 에 Put Down 합니다.");
+
+                        workStage.m_bMainWorkCycle_ResultOK_toRPort = true;
+                    }
+                    else
+                    {
+                        m_nUnloaderTransferMoveType = (int)UnloaderTransferMoveType.Cycle_Stacker1_PutDown;            //  Stacker1 에 Module Put Down Cycle
+                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
+                    }
                 }
                 //  NG-Port 에 Module 을 Drop 하기 위한 조건
                 else if (m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete &&
@@ -2663,6 +2687,7 @@ namespace QMC.Common.Modules
                     m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
                 }
             }
+
             switch (m_nUnloader_Transfer_Step)
             {
                 case (int)Unloader_Transfer_Step.Start:

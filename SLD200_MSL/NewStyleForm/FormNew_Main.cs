@@ -46,11 +46,14 @@ namespace SLD200_MSL
         //  모듈 진행 상태 표시용 변수 
         private int Rows = 1; // 세로 개수 (기본값)
         private int Columns = 1; // 가로 개수 (기본값)
+        private int SubRows = 1; // 내부 영역 세로 개수 (기본값)
+        private int SubColumns = 1; // 내부 영역 가로 개수 (기본값)
         private int CellSize_Width = 50; // 각 셀의 크기 (가로)
         private int CellSize_Height = 50; // 각 셀의 크기 (세로)
 
         // 작업 상태를 저장하는 배열 (0: 미작업, 1: 진행 중, 2: 완료)
-        private int[,] pcbStatus; // 작업 상태 배열
+        private int[,] SocketStatus;            // 소켓 작업 상태 배열
+        private int[,] SocketRegionStatus;      // 소켓 내부 영역 작업 상태 배열 (0: 미작업, 1: 진행 중, 2: 완료)
 
         // 선택 변수 
         private int selectedRow = -1;
@@ -142,7 +145,7 @@ namespace SLD200_MSL
 
 
             //  Module Socket Processing 상태를 보여주는 Picture Box
-            Initialize_SocketStatus(Columns, Rows); // 초기화
+            Initialize_SocketStatus(Columns, Rows, SubColumns, SubRows); // 초기화
             pictureBox_ModuleProcessingStatus.Paint += PictureBox_ModuleProcessingStatus_Paint;
 
             //  마크 이미지
@@ -228,18 +231,29 @@ namespace SLD200_MSL
         #region Socket 작업 상황 Display
 
         // 작업 상태 배열 초기화
-        private void Initialize_SocketStatus(int columns, int rows)
+        private void Initialize_SocketStatus(int columns, int rows, int subcolumns, int subrows)
         {
             Columns = columns;
             Rows = rows;
-            pcbStatus = new int[Rows, Columns];
+            SubColumns = subcolumns;
+            SubRows = subrows;
+            SocketStatus = new int[Rows, Columns];
+            SocketRegionStatus = new int[SubRows, SubColumns];
 
             // 모든 상태를 초기화 (0: 미작업)
             for (int i = 0; i < Rows; i++)
             {
                 for (int j = 0; j < Columns; j++)
                 {
-                    pcbStatus[i, j] = 0;
+                    SocketStatus[i, j] = 0;
+                }
+            }
+
+            for (int i = 0; i < SubRows; i++)
+            {
+                for (int j = 0; j < SubColumns; j++)
+                {
+                    SocketRegionStatus[i, j] = 0;
                 }
             }
 
@@ -262,27 +276,29 @@ namespace SLD200_MSL
         }
 
         // 작업 상태 업데이트 메서드
-        public void Update_SocketStatus(int row, int column, int status)
+        public void Update_SocketStatus(int row, int column, int status, int region_row, int region_column, int region_status)
         {
-            if (row >= 0 && row < Rows && column >= 0 && column < Columns)
+            if (row >= 0 && row < Rows && column >= 0 && column < Columns &&
+                region_row >= 0 && region_row < SubRows && region_column >= 0 && region_column < SubColumns)
             {
-                pcbStatus[row, column] = status;
+                SocketStatus[row, column] = status;
+                SocketRegionStatus[region_row, region_column] = region_status;
+
                 pictureBox_ModuleProcessingStatus.Invalidate(); // PictureBox 다시 그리기
             }
         }
 
+        
+
         // 가로, 세로 배열 크기 변경 메서드
-        public void Change_SocketArraySize(int columns, int rows)
+        public void Change_SocketArraySize(int columns, int rows, int subcolumns, int subrows)
         {
-            Initialize_SocketStatus(columns, rows);
+            Initialize_SocketStatus(columns, rows, subcolumns, subrows);
         }
 
         private void PictureBox_ModuleProcessingStatus_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
-
-            // 셀 내부를 나눌 개수 (가로, 세로)
-            int subDivisions = 3; // 예: 3x3으로 나눔
 
             bool m_bSocketSelected = false;           
 
@@ -291,7 +307,7 @@ namespace SLD200_MSL
                 for (int j = 0; j < Columns; j++)
                 {
                     // 큰 영역 색상 결정
-                    Color cellColor = GetCellColor(pcbStatus[i, j]);
+                    Color cellColor = GetCellColor(SocketStatus[i, j]);
 
                     // 선택된 셀의 색상을 다르게 설정
                     if (i == selectedRow && j == selectedColumn)
@@ -307,14 +323,14 @@ namespace SLD200_MSL
                         }
                         else
                         {
-                            cellColor = GetCellColor(pcbStatus[i, j]); // 기본 색상
+                            cellColor = GetCellColor(SocketStatus[i, j]); // 기본 색상
 
                             workStage.m_nSocketAlign_StartIndex = -1;
                         }
                     }
                     else
                     {
-                        cellColor = GetCellColor(pcbStatus[i, j]); // 기본 색상
+                        cellColor = GetCellColor(SocketStatus[i, j]); // 기본 색상
                     }
 
                     System.Drawing.Rectangle rect = new System.Drawing.Rectangle(j * CellSize_Width, i * CellSize_Height, CellSize_Width, CellSize_Height);
@@ -324,12 +340,12 @@ namespace SLD200_MSL
                         g.FillRectangle(brush, rect);
 
                     // 테두리
-                    using (Pen pen = new Pen(Color.Black))
+                    using (Pen pen = new Pen(Color.Black, 2))
                         g.DrawRectangle(pen, rect);
-
+                    
                     // 인덱스 텍스트 추가
                     string indexText = (i * Columns + j).ToString(); // 인덱스 계산
-                    using (Font font = new Font("Arial", 10)) // 폰트 설정
+                    using (Font font = new Font("Tahoma", 10)) // 폰트 설정
                     using (Brush textBrush = new SolidBrush(Color.Black)) // 텍스트 색상
                     {
                         g.DrawString(indexText, font, textBrush, rect.X + 4, rect.Y + 4); // 왼쪽 상단에 텍스트 그리기
@@ -342,29 +358,37 @@ namespace SLD200_MSL
                             g.DrawRectangle(highlightPen, rect);
                     }
 
-                    //// 셀 내부를 나누어 작은 영역 그리기
-                    //int subCellWidth = CellSize_Width / subDivisions;
-                    //int subCellHeight = CellSize_Height / subDivisions;
-
-                    //for (int subRow = 0; subRow < subDivisions; subRow++)
+                    ////  가공중인 소켓 영역의 분할영역만 그리기     --> 이거는 나중에 필요할 때 다시 사용
+                    //if (SocketStatus[i, j] == 1)
                     //{
-                    //    for (int subCol = 0; subCol < subDivisions; subCol++)
+                    //    // 셀 내부를 나누어 작은 영역 그리기
+                    //    int subCellWidth = CellSize_Width / SubColumns;
+                    //    int subCellHeight = CellSize_Height / SubRows;
+
+                    //    for (int subRow = 0; subRow < SubRows; subRow++)
                     //    {
-                    //        int subX = rect.X + subCol * subCellWidth;
-                    //        int subY = rect.Y + subRow * subCellHeight;
+                    //        for (int subCol = 0; subCol < SubColumns; subCol++)
+                    //        {
+                    //            int subX = rect.X + subCol * subCellWidth;
+                    //            int subY = rect.Y + subRow * subCellHeight;
 
-                    //        System.Drawing.Rectangle subRect = new System.Drawing.Rectangle(subX, subY, subCellWidth, subCellHeight);
+                    //            System.Drawing.Rectangle subRect = new System.Drawing.Rectangle(subX, subY, subCellWidth, subCellHeight);
 
-                    //        // 작은 영역 색상 결정
-                    //        Color subCellColor = GetSubCellColor(pcbStatus[i, j], subRow, subCol);
+                    //            // 작은 영역 색상 결정
+                    //            //Color subCellColor = GetSubCellColor(SocketRegionStatus[i, j], subRow, subCol);
+                    //            Color subCellColor = GetSubCellColor(SocketRegionStatus[subRow, subCol]);
 
-                    //        // 작은 영역 채우기
-                    //        using (Brush subBrush = new SolidBrush(subCellColor))
-                    //            g.FillRectangle(subBrush, subRect);
+                    //            // 작은 영역 채우기
+                    //            using (Brush subBrush = new SolidBrush(subCellColor))
+                    //                g.FillRectangle(subBrush, subRect);
 
-                    //        // 작은 영역 테두리 그리기
-                    //        using (Pen subPen = new Pen(Color.Gray))
-                    //            g.DrawRectangle(subPen, subRect);
+                    //            // 작은 영역 테두리 그리기
+                    //            using (Pen subPen = new Pen(Color.Gray))
+                    //            {
+                    //                subPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot; // 점선 스타일
+                    //                g.DrawRectangle(subPen, subRect);
+                    //            }
+                    //        }
                     //    }
                     //}
                 }
@@ -393,20 +417,32 @@ namespace SLD200_MSL
         }
 
         // 작은 영역 색상 결정 메서드
-        private Color GetSubCellColor(int status, int subRow, int subCol)
+        private Color GetSubCellColor(int status)
         {
-            if (status == 1) // 진행 중인 셀의 작은 영역
+            switch (status)
             {
-                return (subRow + subCol) % 2 == 0 ? Color.LightYellow : Color.Orange;
+                case 0:
+                    return Color.LightGray; // 미작업
+                case 1:
+                    return Color.Yellow;   // 진행 중
+                case 2:
+                    return Color.Green;    // 완료
+                default:
+                    return Color.Red;      // 오류
             }
-            else if (status == 2) // 완료된 셀의 작은 영역
-            {
-                return (subRow + subCol) % 2 == 0 ? Color.LightGreen : Color.DarkGreen;
-            }
-            else
-            {
-                return Color.White; // 기본 색상
-            }
+
+            //if (status == 1) // 진행 중인 셀의 작은 영역
+            //{
+            //    return (subRow + subCol) % 2 == 0 ? Color.LightYellow : Color.Orange;
+            //}
+            //else if (status == 2) // 완료된 셀의 작은 영역
+            //{
+            //    return (subRow + subCol) % 2 == 0 ? Color.LightGreen : Color.DarkGreen;
+            //}
+            //else
+            //{
+            //    return Color.White; // 기본 색상
+            //}
         }
 
         private void PictureBox_ModuleProcessingStatus_MouseClick(object sender, MouseEventArgs e)
@@ -460,7 +496,7 @@ namespace SLD200_MSL
         {
             if (row >= 0 && row < Rows && column >= 0 && column < Columns)
             {
-                pcbStatus[row, column] = status;
+                SocketStatus[row, column] = status;
                 pictureBox_ModuleProcessingStatus.Invalidate(); // PictureBox 다시 그리기
             }
         }
@@ -721,14 +757,17 @@ namespace SLD200_MSL
                 checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Checked = Equipment.m_bMainProcessStatus_WorkStage_Module_Process_Complete;
                 checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete;
                 checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete;
+                checkBox_Main_Loader_Transfer_Pause.Checked = Equipment.Loader_Transfer_Pause;
+                checkBox_Main_Loader_LPort_Pause.Checked = Equipment.Loader_LPort_Pause;
+                checkBox_Main_Loader_RPort_Pause.Checked = Equipment.Loader_RPort_Pause;
 
 
-		        //  Socket 가공 진행 상태 표시
+                //  Socket 가공 진행 상태 표시
                 if (workStage.Main_SocketPositions_Draw)
                 {
                     workStage.Main_SocketPositions_Draw = false;
 
-                    Change_SocketArraySize(workStage.Main_SocketPositions_ColumnCount, workStage.Main_SocketPositions_RowCount);
+                    Change_SocketArraySize(workStage.Main_SocketPositions_ColumnCount, workStage.Main_SocketPositions_RowCount, workStage.Main_SocketPositions_SubColumnCount, workStage.Main_SocketPositions_SubRowCount);
 
                     workStage.Main_SocketPositions_Drawed = true;
                 }
@@ -741,8 +780,11 @@ namespace SLD200_MSL
 
                     //  가공중인 소켓 번호 : Main_SocketPositions_ProcessingSocket                    
                     //(int rows, int columns) = workStage.GetRowColumnFromPosition(workStage.Main_SocketPositions, workStage.Main_SocketPositions_CurrentSocketPosition);           //  좌표값으로 Row, Column 계산
-                    (int rows, int columns) = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_ProcessingSocket, workStage.Main_SocketPositions_ColumnCount);         //  Index 로 Row, Column 계산
-                    Update_SocketStatus(rows, columns, workStage.Main_SocketPositions_ProcessingStatus);
+
+                    (int rows, int columns) = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_ProcessingSocket, workStage.Main_SocketPositions_ColumnCount);                                 //  Index 로 Row, Column 계산
+                    (int region_rows, int region_columns) = workStage.GetRegionRowColumnFromIndex(workStage.Main_SocketPositions_ProcessingSocket_Region, workStage.Main_SocketPositions_SubColumnCount);   //  Index 로 Row, Column 계산
+
+                    Update_SocketStatus(rows, columns, workStage.Main_SocketPositions_ProcessingStatus, region_rows, region_columns, workStage.Main_SocketPositions_ProcessingStatus_Region);
                 }
 
                 //  완료된 소켓 상태 표시
@@ -752,58 +794,41 @@ namespace SLD200_MSL
 
                     //  완료된 소켓 번호 : Main_SocketPositions_CompleteSocket
                     //(int rows, int columns) = workStage.GetRowColumnFromPosition(workStage.Main_SocketPositions, workStage.Main_SocketPositions_SocketCompletePosition);
-                    (int rows, int columns) = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_CompleteSocket, workStage.Main_SocketPositions_ColumnCount);         //  Index 로 Row, Column 계산
-                    Update_SocketStatus(rows, columns, workStage.Main_SocketPositions_CompleteStatus);
+
+                    (int rows, int columns) = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_CompleteSocket, workStage.Main_SocketPositions_ColumnCount);                                   //  Index 로 Row, Column 계산
+                    (int region_rows, int region_columns) = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_CompleteSocket_Region, workStage.Main_SocketPositions_SubColumnCount);           //  Index 로 Row, Column 계산
+
+                    Update_SocketStatus(rows, columns, workStage.Main_SocketPositions_CompleteStatus, region_rows, region_columns, workStage.Main_SocketPositions_CompleteStatus_Region);
                 }
 
 
-                //if (workStage.Main_SocketPositions_Drawed)
-                //{
-                //    if (workStage.Main_SocketPositions_SetStatus)
-                //    {
-                //        workStage.Main_SocketPositions_SetStatus = false;
-
-                //        (int rows, int columns) = workStage.GetRowColumnFromPosition(workStage.Main_SocketPositions, workStage.Main_SocketPositions_CurrentSocketPosition);
-                //        Update_SocketStatus(rows, columns, workStage.Main_SocketPositions_ProcessingStatus);
-                //    }
-
-                //    //  완료된 소켓 상태 표시
-                //    if (workStage.Main_SocketPositions_SetCompleteStatus)
-                //    {
-                //        workStage.Main_SocketPositions_SetCompleteStatus = false;
-
-                //        (int rows, int columns) = workStage.GetRowColumnFromPosition(workStage.Main_SocketPositions, workStage.Main_SocketPositions_SocketCompletePosition);
-                //        Update_SocketStatus(rows, columns, workStage.Main_SocketPositions_CompleteStatus);
-                //    }
-                //}
-
                 //  계속 진행 버튼 활성화
-                //if (Equipment.MachineStop_byTimeout_Loader)
-                //{ 
-                //    button_Main_Loader_Continue.Enabled = true;
-                //}
-                //else
-                //{
-                //    button_Main_Loader_Continue.Enabled = false;
-                //}
+                if (Equipment.MachineStop_byTimeout_Loader)
+                {
+                    button_Main_Loader_Continue.Enabled = true;
+                }
+                else
+                {
+                    button_Main_Loader_Continue.Enabled = false;
+                }
 
-                //if (Equipment.MachineStop_byTimeout_Unloader)
-                //{
-                //    button_Main_Unloader_Continue.Enabled = true;
-                //}
-                //else
-                //{
-                //    button_Main_Unloader_Continue.Enabled = false;
-                //}
+                if (Equipment.MachineStop_byTimeout_Unloader)
+                {
+                    button_Main_Unloader_Continue.Enabled = true;
+                }
+                else
+                {
+                    button_Main_Unloader_Continue.Enabled = false;
+                }
 
-                //if (Equipment.SocketStopped)
-                //{
-                //    button_Main_WorkStage_Continue.Enabled = true;
-                //}
-                //else
-                //{
-                //    button_Main_WorkStage_Continue.Enabled = false;
-                //}
+                if (Equipment.SocketStopped)
+                {
+                    button_Main_WorkStage_Continue.Enabled = true;
+                }
+                else
+                {
+                    button_Main_WorkStage_Continue.Enabled = false;
+                }
 
 
                 //  Cycle Stop 으로 Loader, Unloader, Main Work 가 Stop 되면 자동운전을 종료한다.
@@ -1131,6 +1156,15 @@ namespace SLD200_MSL
             }
 
 
+            //  Loader Port 에 자재가 없으면 메세지 창 Pop up
+            if (!loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
+            {
+                m_strTemp = string.Format("Loader 좌측 Port 에 자재가 없으므로 Loader Pause 상태로 시작합니다.\r\n\r\n[자재 투입 후 Pause 해제 요망]");
+
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", m_strTemp);
+            }
+
             // Process Status
             var pos = ProcessManager.GetFirstUnprocessedPosition();
             if (pos.HasValue)
@@ -1348,6 +1382,16 @@ namespace SLD200_MSL
 
             button_Main_Start.BackColor = Color.LightGreen;
             button_Main_Start.ForeColor = Color.Black;
+
+            //  Loader Stacker 동작
+            //loader.m_bStacker0_Complete = false;              //  임시 주석 : 왼쪽 Port 만 사용
+            loader.m_bStacker1_Complete = false;
+
+            //  Loader Stacker 에 자재가 있으면 Pause 를 풀어 준다.
+            if (loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
+            {
+                Equipment.Loader_LPort_Pause = false;
+            }
 
             Equipment.AutoRunStatus = true;
 
@@ -2306,8 +2350,9 @@ namespace SLD200_MSL
 
         private void button_Main_Loader_Continue_Click(object sender, EventArgs e)
         {
-            workStage.m_bPreAlignCompleted = true;
-            return;
+            //  테스트용 코드
+            //workStage.m_bPreAlignCompleted = true;
+            //return;
 
 
             //  Loader Cycle Continue
@@ -2326,11 +2371,25 @@ namespace SLD200_MSL
 
         private void button_Main_Unloader_Continue_Click(object sender, EventArgs e)
         {
-            string m_strTemp = "";
-            m_strTemp = string.Format("선택한 소켓 번호 : {0}", workStage.m_nSocketAlign_StartIndex);
-            MessageBox.Show(m_strTemp);
+            //  테스트용 코드
+            ////string m_strTemp = "";
+            ////m_strTemp = string.Format("선택한 소켓 번호 : {0}", workStage.m_nSocketAlign_StartIndex);
+            ////MessageBox.Show(m_strTemp);
 
-            return;
+            //workStage.Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Processing;            
+            //workStage.Main_SocketPositions_ProcessingSocket = 1;                          //  완료된 소켓 번호
+
+            //workStage.Main_SocketPositions_ProcessingStatus_Region = (int)Socket_Process_Status.Processing;
+            //workStage.Main_SocketPositions_ProcessingSocket_Region = 1;
+
+
+            //workStage.Main_SocketPositions_SetStatus = true;                                                      //  상태 변경
+
+            ////workStage.Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
+            ////workStage.Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
+            ////workStage.Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
+
+            //return;
 
             //  Unloader Cycle Continue
 
@@ -2348,36 +2407,36 @@ namespace SLD200_MSL
 
         private void button_Main_WorkStage_Continue_Click(object sender, EventArgs e)
         {
-            if (workStage.m_stDividedRegion_GroupData != null)
-            {
-                //  메인 화면에 가공위치 표시용
-                workStage.Main_SocketPositions = new List<PointD>();
+            //  테스트용 코드
+            //if (workStage.m_stDividedRegion_GroupData != null)
+            //{
+            //    //  메인 화면에 가공위치 표시용
+            //    workStage.Main_SocketPositions = new List<PointD>();
 
-                for (int i = 0; i < workStage.m_stDividedRegion_GroupData[0].nGroup_Num; i++)
-                {
-                    workStage.Main_SocketPositions.Add(new PointD(workStage.m_stDividedRegion_GroupData[i].dGroupCenter.X, workStage.m_stDividedRegion_GroupData[i].dGroupCenter.Y));
-                }
+            //    for (int i = 0; i < workStage.m_stDividedRegion_GroupData[0].nGroup_Num; i++)
+            //    {
+            //        workStage.Main_SocketPositions.Add(new PointD(workStage.m_stDividedRegion_GroupData[i].dGroupCenter.X, workStage.m_stDividedRegion_GroupData[i].dGroupCenter.Y));
+            //    }
 
-                if (workStage.Main_SocketPositions.Count > 0)
-                {
-                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 있음.");
+            //    if (workStage.Main_SocketPositions.Count > 0)
+            //    {
+            //        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 있음.");
 
-                    //  메인 화면에 그려지는 가공위치의 개수
-                    (workStage.Main_SocketPositions_RowCount, workStage.Main_SocketPositions_ColumnCount) = workStage.CalculateArraySize(workStage.Main_SocketPositions);
+            //        //  메인 화면에 그려지는 가공위치의 개수
+            //        (workStage.Main_SocketPositions_RowCount, workStage.Main_SocketPositions_ColumnCount) = workStage.CalculateArraySize(workStage.Main_SocketPositions);
 
-                    workStage.Main_SocketPositions_Draw = true;
-                }
-                else
-                {
-                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 없음. (Data Parsing 이 정상적으로 이루어졌으면 여기 들어오면 안됨)");
-                }
-            }
-            return;
+            //        //  가공 소켓이 몇개의 영역으로 나눠지는지
+            //        workStage.Main_SocketPositions_SubRowCount = workStage.m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y > 0 ? workStage.m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y : 1;
+            //        workStage.Main_SocketPositions_SubColumnCount = workStage.m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X > 0 ? workStage.m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X : 1;
 
-
-
-
-
+            //        workStage.Main_SocketPositions_Draw = true;
+            //    }
+            //    else
+            //    {
+            //        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 없음. (Data Parsing 이 정상적으로 이루어졌으면 여기 들어오면 안됨)");
+            //    }
+            //}
+            //return;
 
 
 
@@ -2518,7 +2577,7 @@ namespace SLD200_MSL
         {
             int nCol = workStage.Main_SocketPositions_ColumnCount = 5;
             int nRow = workStage.Main_SocketPositions_RowCount = 5;
-            Change_SocketArraySize(nCol, nRow);
+            Change_SocketArraySize(nCol, nRow, 3, 3);
         }
 
         private void checkBox_Main_Loader_LPort_Pause_CheckedChanged(object sender, EventArgs e)
