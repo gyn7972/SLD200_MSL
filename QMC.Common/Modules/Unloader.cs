@@ -87,6 +87,9 @@ namespace QMC.Common.Modules
             UL_Transfer_X_Move_To_WorkStage_Pos,
             UL_WorkStage_Vacuum_Off,
             UL_Transfer_Picker_Vacuum_On_Check,
+
+            WorkStage_DustCollector_Off_Fail,
+
             LastAlarm = 5999,
         }
         #region Variables
@@ -324,7 +327,15 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더 NG 포트가 가득 차 있습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.WorkStage_DustCollector_Off_Fail;
+            alarm.Title = "Unloader";
+            alarm.Cause = "집진기가 Off 되지 않았습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
         }
+
         public override void SetModuleScale(double dScaleX, double dScaleY, double dXaxisT, double dYaxisT, bool bInvertedX, bool bInvertedY)
         {
             //  요거 주석처리하면 안되는데... 이유가 뭘까
@@ -1805,8 +1816,8 @@ namespace QMC.Common.Modules
             {
                 this.m_UnloaderWork_Start = false;
             }
-            MessageBox.Show(alarm.Cause);
-            //AlarmManager.Instance.ShowAlarm(alarm);
+            //MessageBox.Show(alarm.Cause);
+            AlarmManager.Instance.ShowAlarm(alarm);
             return alarm.Code;
         }
         int  Run_Stacker1Module_PutdownWaitingPos_Func()
@@ -2456,9 +2467,21 @@ namespace QMC.Common.Modules
                     //  우측 Port (Stacker0) 에 내려놔야 하는데 Full 상태이면? 좌측 Port 에 내려놓도록
                     if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 가 Full 상태이므로 Stacker1 에 Put Down 합니다.");
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 이 Full 상태이므로 Stacker1 에 Put Down 시도합니다.");
 
-                        workStage.m_bMainWorkCycle_ResultOK_toRPort = false;
+                        if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0, Stacker1 모두 Full 상태이므로 알람.");
+
+                            //  알람 정지 (LED Bar - Red Blink)
+                            Equipment.MachineStop_byAlarm = true;
+
+                            return AlarmPost(AlarmKey.UL_Staker0_Too_Many_Module);
+                        }
+                        else
+                        {
+                            workStage.m_bMainWorkCycle_ResultOK_toRPort = false;
+                        }
                     }
                     else
                     {
@@ -2477,9 +2500,21 @@ namespace QMC.Common.Modules
                     //  좌측 Port (Stacker1) 에 내려놔야 하는데 Full 상태이면? 우측 Port 에 내려놓도록
                     if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker1 가 Full 상태이므로 Stacker0 에 Put Down 합니다.");
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker1 이 Full 상태이므로 Stacker0 에 Put Down 시도합니다.");
 
-                        workStage.m_bMainWorkCycle_ResultOK_toRPort = true;
+                        if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0, Stacker1 모두 Full 상태이므로 알람.");
+
+                            //  알람 정지 (LED Bar - Red Blink)
+                            Equipment.MachineStop_byAlarm = true;
+
+                            return AlarmPost(AlarmKey.UL_Staker1_Too_Many_Module);
+                        }
+                        else
+                        {
+                            workStage.m_bMainWorkCycle_ResultOK_toRPort = true;
+                        }
                     }
                     else
                     {
@@ -2754,9 +2789,33 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer X 축, Work Stage 위치로 이동 완료");
 
-                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_PickUpPos_1stStep;
+
+                        //  집진기가 Off 되었는지 확인한 후 다음 Step 을 진행한다.
+                        if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
+                        {
+                            if (!workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) &&
+                                !workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower))
+                            {
+                                Log.Write("SLD-200", "Auto Run", "집진기 Remote Mode, Off 완료");
+
+                                m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_PickUpPos_1stStep;
+                            }
+                            else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000 * 2)
+                            {
+                                Log.Write("SLD-200", "Auto Run", "집진기 Off 실패 (Timeout)");
+
+                                //  알람 정지 (LED Bar - Red Blink)
+                                Equipment.MachineStop_byAlarm = true;
+
+                                return AlarmPost(AlarmKey.WorkStage_DustCollector_Off_Fail);
+                            }
+                        }
+                        else
+                        {
+                            m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_PickUpPos_1stStep;
+                        }
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
+                    else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000 * 2)
                     {
                         m_strTemp = "Transfer X 축, Work Stage 위치로 이동 실패. (Timeout)";
                         Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
@@ -6382,13 +6441,13 @@ namespace QMC.Common.Modules
 
         public void SetRecovery()
         {
-            SetRecoveryStaker0(m_nStacker0_ModulePutdownWaitingPos_Step_Recovery);
+            SetRecoveryStaker0(m_nStacker0_ModulePutdownWaitingPos_Step);
             m_nStacker0_ModulePutdownWaitingPos_Step = m_nStacker0_ModulePutdownWaitingPos_Step_Recovery;
 
-            SetRecoveryStaker1(m_nStacker1_ModulePutdownWaitingPos_Step_Recovery);
+            SetRecoveryStaker1(m_nStacker1_ModulePutdownWaitingPos_Step);
             m_nStacker1_ModulePutdownWaitingPos_Step = m_nStacker1_ModulePutdownWaitingPos_Step_Recovery;
 
-            SetRecoveryTransfer(m_nUnloader_Transfer_Step_Recovery);
+            SetRecoveryTransfer(m_nUnloader_Transfer_Step);
             m_nUnloader_Transfer_Step = m_nUnloader_Transfer_Step_Recovery;
         }
 

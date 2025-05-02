@@ -1250,7 +1250,9 @@ namespace SLD200_MSL
             textBox_Setup_Option_LoaderStacker_LiftUpStep.Text = Equipment.Machine_LoaderStacker_LiftUpStep.ToString();
             textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Text = Equipment.Machine_LoaderStacker_LiftUp_StableTime.ToString();
             textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Text = Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel.ToString();
-            
+            checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Checked = Equipment.Machine_LoaderStacker_Down_afterLoaderPickUp_Enable;
+            textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Text = Equipment.Machine_LoaderStacker_DownDistance_afterLoaderPickUp.ToString();
+
 
             if (Equipment.Machine_FiducialImageSave_Always)
             {
@@ -1667,6 +1669,11 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_StableTime", textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Text.ToString(), strFIle);
             Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel = Equipment.ToDouble(textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "WorkStage_ModuleAbsorption_JudgeLevel", textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Text.ToString(), strFIle);
+            Equipment.Machine_LoaderStacker_Down_afterLoaderPickUp_Enable = checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_Down_afterLDPickUp_Enable", checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Checked.ToString(), strFIle);
+            Equipment.Machine_LoaderStacker_DownDistance_afterLoaderPickUp = Equipment.ToDouble(textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_DownDistance_afterLDPickUp", textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Text.ToString(), strFIle);
+
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);
@@ -2194,6 +2201,17 @@ namespace SLD200_MSL
                 checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Checked = false;
                 textBox_Setup_Option_LoaderStacker_LiftUpStep.Enabled = false;
                 textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Enabled = false;
+            }
+
+            if (Equipment.Machine_LoaderStacker_Down_afterLoaderPickUp_Enable)
+            {
+                checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Checked = true;
+                textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Enabled = true;
+            }
+            else
+            {
+                checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Checked = false;
+                textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Enabled = false;
             }
         }
 
@@ -3897,6 +3915,20 @@ namespace SLD200_MSL
                 Equipment.Machine_LoaderStacker_LiftUp_Enable = false;
                 textBox_Setup_Option_LoaderStacker_LiftUpStep.Enabled = false;
                 textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Enabled = false;
+            }
+        }
+
+        private void checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Checked)
+            {
+                Equipment.Machine_LoaderStacker_Down_afterLoaderPickUp_Enable = true;
+                textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Enabled = true;
+            }
+            else
+            {
+                Equipment.Machine_LoaderStacker_Down_afterLoaderPickUp_Enable = false;
+                textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Enabled = false;
             }
         }
     }

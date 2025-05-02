@@ -1376,6 +1376,8 @@ namespace SLD200_MSL
             workStage.m_LaserDrillingWork_Start = true;
             Equipment.LaserDrillingCycStop_Reservation = false;
 
+            Equipment.ProcessingData_Parsing_byLoader = false;              //  Module Loading 시 가공 데이터 Parsing
+
             workStage.m_ProductAlign_Start = true;
             workStage.m_SubWork_Start = true;
             loader.m_LoaderWork_Start = true;
@@ -1980,6 +1982,8 @@ namespace SLD200_MSL
             Equipment.AutoRunStatus = false;        // 자동운전중
             Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
 
+            Equipment.ProcessingData_Parsing_byLoader = false;
+
             workStage._isMainWorkRunning = false;
             workStage._isLaserDrillingWorkRunning = false;
             loader._isLoaderWorkRunning = false;
@@ -2217,6 +2221,8 @@ namespace SLD200_MSL
 
             //  Layer Info List 초기화
             ProcessManager.Init();
+
+            Equipment.ProcessingData_Parsing_byLoader = false;
 
             //  Loader 파츠 사용 변수 초기화
             loader.m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_None; //  Transfer Move Type

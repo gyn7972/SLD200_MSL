@@ -328,6 +328,14 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
+            //
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.LD_Transfer_Error;
+            alarm.Title = "Loader Trasfer";
+            alarm.Cause = "Loader Trasfer Error. 확인 후 알람명 삽입";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_Transfer_StackerIsWorking;
@@ -3753,6 +3761,18 @@ namespace QMC.Common.Modules
                     m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_WorkStage_PutDown;        //  Work Stage 에 Module Put Down Cycle
                     m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Start;
                 }
+                else
+                {
+                    //Log.Write("SLD-200", Equipment.User_Name, "m_nLoader_Transfer_Step", "Cycle_WorkStage_PutDown");
+                    if(m_bMLoader_LogOnce == false)
+                    {
+                        m_strTemp = "Cycle_WorkStage_PutDown";
+                        Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
+                        m_bMLoader_LogOnce = true;
+                    }
+                    //return AlarmPost(AlarmKey.LD_Transfer_Error);
+
+                }
             }
 
             switch (m_nLoader_Transfer_Step)
@@ -4299,9 +4319,11 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Move_ReadyPos2_1stStep_DoneCheck:                       //  Transfer Z 축, 대기 위치로 이동 완료 확인 (1단계, 현재 위치에서 위로 10 mm)
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z]))
+                    //if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z]) &&
+                        MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_PosTolerance((int)nAxis.Z0, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0]))
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 1단계 이동 완료");
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 1단계 이동 완료. (Z0 Stacker 하강 이동 완료.)");
 
                         if (Equipment.Machine_LoaderTransfer_Vibration_Enable)
                         {
@@ -4971,10 +4993,11 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_1stStep_DoneCheck:                       //  Transfer Z 축, 대기 위치로 이동 완료 확인 (1단계, 현재 위치에서 위로 10 mm)
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && 
-                        MC_Func.MC_PosTolerance((int)nAxis.TR_Z, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z]))
+                    //if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z]) &&
+                        MC_Func.MC_GetDone((int)nAxis.Z1) && MC_Func.MC_PosTolerance((int)nAxis.Z1, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z1]))
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 1단계 이동 완료");
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 1단계 이동 완료. (Z1 Stacker 하강 이동 완료.)");
 
                         if (Equipment.Machine_LoaderTransfer_Vibration_Enable)
                         {
@@ -5148,6 +5171,13 @@ namespace QMC.Common.Modules
                                 //////////////////////////////////////////////////////////////////////////////////////////
 
                                 Loader_CurrentStatus_Save_StopedByTimeout();
+
+                                m_strTemp = "Transfer Z 축, Module Picker 공압이 형성되지 않음";
+                                Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
+                                return AlarmPost(AlarmKey.LD_TransferZ_Move_VibrationPos_Timeout);
+
+                                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, Module Picker 공압이 형성되지 않음");
+
 
                                 m_strTemp = "Transfer Z 축, Module Picker 공압이 형성되지 않음";
                                 Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
@@ -6584,7 +6614,7 @@ namespace QMC.Common.Modules
                         //
                         //  복원 지점 체크용 (Work Stage 에 Module Put Down 완료)
                         //////////////////////////////////////////////////////////////////////////////////////////
-                        //To do: stage 압력 스펙 제어 부분 성부장님 파라미터로 빼!!!
+                        //To do: stage 압력 스펙 제어 부분 성부장님 파라미터로 빼!!!  --> ㅇㅋ염
                         if(workStage.workStageParameter.DI_Stage_Vacuum_Check() && (workStage.m_dEPRO_Value < Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel))       //  Stage Vacuum 센서와 Regulator 값을 함께 본다.
                         {
                             m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_ReadyPos2_1stStep;
@@ -7468,11 +7498,14 @@ namespace QMC.Common.Modules
                             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage 에 Module Put Down 완료");
                             m_strTemp = "LD Transfer, Work Stage 에 Module Put Down 완료";
 
-                            //  Work Stage 에 모듈을 내려놨으니 도면을 다시 로드해야 한다. (DryRun 이면 안함)
-                            if (!workStage.m_bMainWorkCycle_DryRun)
-                            {
-                                workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
-                            }
+                            //  Work Stage 에 모듈을 내려놨으니 도면을 다시 로드해야 한다. (DryRun 이면 안함)       --> Work Stage 에 Module 을 Loading 하기 시작할 때 Parsing 하도록
+                            //if (!workStage.m_bMainWorkCycle_DryRun)
+                            //{
+                            //    workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
+                            //}
+
+                            //  WorkStage 의 MainWork 에서 Parsing 진행
+                            Equipment.ProcessingData_Parsing_byLoader = true;
 
                             m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = true;
                             m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;
@@ -8363,10 +8396,21 @@ namespace QMC.Common.Modules
         {
             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 시작. (1단계, 현재 위치에서 10mm 위)");
 
+            double m_dDownDistance = 5.0;
+
             loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Transfer_To_L_Port");
 
             //  Target Position 변경 : 대기 위치 1단계
             loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_LPortPos].LD_Transfer_Z + 10.0;
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z1] = MC_Func.MC_GetEncPos((int)nAxis.Z1);
+
+            //  LoaderZ 축을 올리면서 Stacker 축을 내릴 경우
+            if (Equipment.Machine_LoaderStacker_Down_afterLoaderPickUp_Enable)
+            {
+                m_dDownDistance = Equipment.Machine_LoaderStacker_DownDistance_afterLoaderPickUp < 0.0 ? 5.0 : Equipment.Machine_LoaderStacker_DownDistance_afterLoaderPickUp;
+
+                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z1] -= m_dDownDistance;
+            }
 
             //  Dry Run 모드이면 10mm 더 위로
             if (workStage.m_bMainWorkCycle_DryRun)
@@ -8387,6 +8431,12 @@ namespace QMC.Common.Modules
 
             MC_Func.MC_MovePosition((int)nAxis.TR_Z,
                                 loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z],
+                                m_dSpeed,
+                                m_dAccDec,
+                                m_dAccDec);
+
+            MC_Func.MC_MovePosition((int)nAxis.Z1,
+                                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z1],
                                 m_dSpeed,
                                 m_dAccDec,
                                 m_dAccDec);
@@ -8551,10 +8601,21 @@ namespace QMC.Common.Modules
         {
             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 시작. (1단계, 현재 위치에서 10mm 위)");
 
+            double m_dDownDistance = 0.0;
+
             loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Transfer_To_R_Port");
 
             //  Target Position 변경 : 대기 위치 1단계
             loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_RPortPos].LD_Transfer_Z + 10.0;
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0] = MC_Func.MC_GetEncPos((int)nAxis.Z0);
+
+            //  LoaderZ 축을 올리면서 Stacker 축을 내릴 경우
+            if (Equipment.Machine_LoaderStacker_Down_afterLoaderPickUp_Enable)
+            {
+                m_dDownDistance = Equipment.Machine_LoaderStacker_DownDistance_afterLoaderPickUp < 0.0 ? 5.0 : Equipment.Machine_LoaderStacker_DownDistance_afterLoaderPickUp;
+
+                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0] -= m_dDownDistance;
+            }
 
             //  Dry Run 모드이면 10mm 더 위로
             if (workStage.m_bMainWorkCycle_DryRun)
@@ -8575,6 +8636,12 @@ namespace QMC.Common.Modules
 
             MC_Func.MC_MovePosition((int)nAxis.TR_Z,
                                 loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z],
+                                m_dSpeed,
+                                m_dAccDec,
+                                m_dAccDec);
+
+            MC_Func.MC_MovePosition((int)nAxis.Z0,
+                                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0],
                                 m_dSpeed,
                                 m_dAccDec,
                                 m_dAccDec);
@@ -9571,6 +9638,7 @@ namespace QMC.Common.Modules
                 if (ret != 0)
                 {
                     SetRecoveryStaker1(m_nStacker1_ModulePickupWaitingPos_Step);
+                    
                     return;
                 }
 
@@ -9612,13 +9680,13 @@ namespace QMC.Common.Modules
         }
         public void SetRecovery()
         {
-            SetRecoveryStaker0(m_nStacker0_ModulePickupWaitingPos_Step_Recovery);
+            SetRecoveryStaker0(m_nStacker0_ModulePickupWaitingPos_Step);
             m_nStacker0_ModulePickupWaitingPos_Step = m_nStacker0_ModulePickupWaitingPos_Step_Recovery;
-            SetRecoveryStaker1(m_nStacker1_ModulePickupWaitingPos_Step_Recovery);
+            SetRecoveryStaker1(m_nStacker1_ModulePickupWaitingPos_Step);
             m_nStacker1_ModulePickupWaitingPos_Step = m_nStacker1_ModulePickupWaitingPos_Step_Recovery;
-            SetRecoveryTransfer_Cycle(m_nLoader_Transfer_Step_Recovery);
+            SetRecoveryTransfer_Cycle(m_nLoader_Transfer_Step);
             m_nLoader_Transfer_Step = m_nLoader_Transfer_Step_Recovery;
-            SetRecoveryMAlign_Cycle(m_nMAlign_Step_Recovery);
+            SetRecoveryMAlign_Cycle(m_nMAlign_Step);
             m_nMAlign_Step = m_nMAlign_Step_Recovery;
         }
 
@@ -9664,7 +9732,8 @@ namespace QMC.Common.Modules
             else if(Step <= (int)Loader_Transfer_Step.Process_Type_Check)
             {
                 m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.None;
-            }else if(Step <= (int)Loader_Transfer_Step.Transfer_Move_Condition_Check)
+            }
+            else if(Step <= (int)Loader_Transfer_Step.Transfer_Move_Condition_Check)
             {
                 m_nLoader_Transfer_Step_Recovery = Step;
             }
@@ -9902,15 +9971,40 @@ namespace QMC.Common.Modules
         }
         private void SetRecoveryMAlign_Cycle(int Step)
         {
-            if(Step ==(int) MAlign_Step.None)
+            if (Step == (int)Loader_Transfer_Step.None)
+            {
+                m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.None;
+            }
+            else if (Step <= (int)Loader_Transfer_Step.Process_Type_Check)
+            {
+                m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.None;
+            }
+
+            if (Step ==(int) MAlign_Step.None)
             {
                 m_nMAlign_Step_Recovery = (int)MAlign_Step.None;
             }
-            else
+            else if(Step <= (int)MAlign_Step.Process_Condition_Check)
             {
                 m_nMAlign_Step_Recovery = (int)MAlign_Step.Start;
-
             }
+            else if (Step <= (int)MAlign_Step.MAligner_MoveXY_Widely_DoneCheck)
+            {
+                m_nMAlign_Step_Recovery = (int)MAlign_Step.MAligner_MoveXY_Widely;
+            }
+            else if (Step <= (int)MAlign_Step.MAligner_ModuleVacuum_OnCheck)
+            {
+                m_nMAlign_Step_Recovery = (int)MAlign_Step.MAligner_ModuleVacuum_On;
+            }
+            else if (Step <= (int)MAlign_Step.MAligner_MoveXY_Narrowly_DoneCheck)
+            {
+                m_nMAlign_Step_Recovery = (int)MAlign_Step.MAligner_MoveXY_Narrowly;
+            }
+            else if (Step <= (int)MAlign_Step.MAligner_MoveXY_LittleWidely_DoneCheck)
+            {
+                m_nMAlign_Step_Recovery = (int)MAlign_Step.MAligner_MoveXY_LittleWidely;
+            }
+
         }
 
         private void Timer_LoaderWork_Func(object sender, EventArgs e)

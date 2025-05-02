@@ -463,6 +463,8 @@ namespace QMC.Common
         public static int Machine_LoaderStacker_LiftUpStep { set; get; } = 7;                               //  Loader Stacker Lift Up Step
         public static int Machine_LoaderStacker_LiftUp_StableTime { set; get; } = 1000;                     //  Loader Stacker Lift Up Stable Time
         public static double Machine_WorkStage_ModuleAbsorption_JudgeLevel { set; get; } = -40.0;           //  Work Stage 에 Module Loading 시, 전자식 진공 레귤레이터 판정값
+        public static bool Machine_LoaderStacker_Down_afterLoaderPickUp_Enable { set; get; } = true;        //  Loader Stacker Down after Loader Module Pick Up Enable
+        public static double Machine_LoaderStacker_DownDistance_afterLoaderPickUp { set; get; } = 5.0;      //  Loader 가 Module Pick Up 후 Stacker 를 내리는 거리
 
 
         //  Offset Distance
@@ -599,6 +601,10 @@ namespace QMC.Common
         //  메인 화면에서 Open 하려는 Recipe 이름
         public static bool RecipeOpen_fromMainForm { set; get; }
         public static string RecipeName_fromMainForm { set; get; }
+
+
+        //  Loader 에서 Stage 로 Module 을 Loading 할 때 가공 데이터를 Parsing 하기 위한 변수
+        public static bool ProcessingData_Parsing_byLoader { set; get; } = false;            //  가공 데이터 Parsing 여부
 
 
         //  Auto/Manual 상태 확인
@@ -2757,7 +2763,11 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_StableTime", "1000", temp, 255, strFIle);
             Equipment.Machine_LoaderStacker_LiftUp_StableTime = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "WorkStage_ModuleAbsorption_JudgeLevel", "-40.0", temp, 255, strFIle);
-            Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel = Equipment.ToDouble(temp.ToString());                        
+            Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_Down_afterLDPickUp_Enable", "True", temp, 255, strFIle);
+            Equipment.Machine_LoaderStacker_Down_afterLoaderPickUp_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_DownDistance_afterLDPickUp", "5.0", temp, 255, strFIle);
+            Equipment.Machine_LoaderStacker_DownDistance_afterLoaderPickUp = Equipment.ToDouble(temp.ToString());
 
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);

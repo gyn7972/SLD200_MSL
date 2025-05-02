@@ -768,7 +768,7 @@
             this.button_Main_RecipeOpen.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_RecipeOpen.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Main_RecipeOpen.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_Main_RecipeOpen.Location = new System.Drawing.Point(1504, 248);
+            this.button_Main_RecipeOpen.Location = new System.Drawing.Point(-58, -21);
             this.button_Main_RecipeOpen.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_RecipeOpen.Name = "button_Main_RecipeOpen";
             this.button_Main_RecipeOpen.Size = new System.Drawing.Size(167, 44);
@@ -899,6 +899,7 @@
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete);
+            this.groupBox1.Controls.Add(this.button_Main_RecipeOpen);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_RPort_Complete);
