@@ -768,7 +768,7 @@
             this.button_Main_RecipeOpen.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_RecipeOpen.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Main_RecipeOpen.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_Main_RecipeOpen.Location = new System.Drawing.Point(-58, -21);
+            this.button_Main_RecipeOpen.Location = new System.Drawing.Point(1504, 248);
             this.button_Main_RecipeOpen.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_RecipeOpen.Name = "button_Main_RecipeOpen";
             this.button_Main_RecipeOpen.Size = new System.Drawing.Size(167, 44);
@@ -899,7 +899,6 @@
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete);
-            this.groupBox1.Controls.Add(this.button_Main_RecipeOpen);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_RPort_Complete);
@@ -1317,7 +1316,7 @@
             this.label_Title_Stacker_LPort.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.label_Title_Stacker_LPort.Size = new System.Drawing.Size(322, 40);
             this.label_Title_Stacker_LPort.TabIndex = 205;
-            this.label_Title_Stacker_LPort.Text = "OP Recipe";
+            this.label_Title_Stacker_LPort.Text = "R Stacker 자재 유/무";
             this.label_Title_Stacker_LPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label_Title_Stacker_RPort
@@ -1331,7 +1330,7 @@
             this.label_Title_Stacker_RPort.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.label_Title_Stacker_RPort.Size = new System.Drawing.Size(322, 40);
             this.label_Title_Stacker_RPort.TabIndex = 206;
-            this.label_Title_Stacker_RPort.Text = "OP Recipe";
+            this.label_Title_Stacker_RPort.Text = "L Stacker 자재 유/무";
             this.label_Title_Stacker_RPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FormNew_Main
@@ -1346,6 +1345,7 @@
             this.Controls.Add(this.groupBox_CoarseCam);
             this.Controls.Add(this.groupBox_FineCam);
             this.Controls.Add(this.button_TEST12);
+            this.Controls.Add(this.button_Main_RecipeOpen);
             this.Controls.Add(this.checkBox_Main_AutoRun);
             this.Controls.Add(this.buttonForceMaterialOut);
             this.Controls.Add(this.button_Main_WorkStage_Continue);
