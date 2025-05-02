@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.SiriusViewer_Main = new SpiralLab.Sirius.SiriusViewerForm();
             this.groupBoxMain_ModuleProcessingStatus = new System.Windows.Forms.GroupBox();
+            this.checkBox_Main_AlignStartSocket_SelectMode = new System.Windows.Forms.CheckBox();
             this.baseLabel_SocketStatus_NG = new SLD200_MSL.BaseLabel();
             this.baseLabel_SocketStatus_OK = new SLD200_MSL.BaseLabel();
             this.baseLabel_SocketStatus_Processing = new SLD200_MSL.BaseLabel();
@@ -49,7 +50,7 @@
             this.baseLabel_ModuleCount_Target = new SLD200_MSL.BaseLabel();
             this.button_PNLCount_Clear = new System.Windows.Forms.Button();
             this.baseLabel_PNLCount_NG = new SLD200_MSL.BaseLabel();
-            this.baseTextBox1 = new SLD200_MSL.BaseTextBox();
+            this.baseTextBox_Module_NGCount = new SLD200_MSL.BaseTextBox();
             this.baseTextBox_Module_TotalCount = new SLD200_MSL.BaseTextBox();
             this.baseLabel_ModuleCount = new SLD200_MSL.BaseLabel();
             this.baseLabel_PNLCount_Total = new SLD200_MSL.BaseLabel();
@@ -107,10 +108,10 @@
             this.groupBox_CoarseCam = new System.Windows.Forms.GroupBox();
             this.ImageViewer_Main_Rows = new QMC.Common.Hmi.VisionImageViewer();
             this.checkBox_Main_AutoRun = new System.Windows.Forms.CheckBox();
-            this.baseTextBox_DryRun_ProcessingTime = new SLD200_MSL.BaseTextBox();
-            this.baseLabel5 = new SLD200_MSL.BaseLabel();
             this.button_TEST12 = new System.Windows.Forms.Button();
             this.button_TestbyUser_LPort_Start = new System.Windows.Forms.Button();
+            this.baseTextBox_DryRun_ProcessingTime = new SLD200_MSL.BaseTextBox();
+            this.baseLabel5 = new SLD200_MSL.BaseLabel();
             this.label_Title_Stacker_LPort = new System.Windows.Forms.Label();
             this.label_Title_Stacker_RPort = new System.Windows.Forms.Label();
             this.groupBoxMain_ModuleProcessingStatus.SuspendLayout();
@@ -151,6 +152,7 @@
             // 
             // groupBoxMain_ModuleProcessingStatus
             // 
+            this.groupBoxMain_ModuleProcessingStatus.Controls.Add(this.checkBox_Main_AlignStartSocket_SelectMode);
             this.groupBoxMain_ModuleProcessingStatus.Controls.Add(this.baseLabel_SocketStatus_NG);
             this.groupBoxMain_ModuleProcessingStatus.Controls.Add(this.baseLabel_SocketStatus_OK);
             this.groupBoxMain_ModuleProcessingStatus.Controls.Add(this.baseLabel_SocketStatus_Processing);
@@ -168,12 +170,26 @@
             this.groupBoxMain_ModuleProcessingStatus.TabStop = false;
             this.groupBoxMain_ModuleProcessingStatus.Text = " Module Status ";
             // 
+            // checkBox_Main_AlignStartSocket_SelectMode
+            // 
+            this.checkBox_Main_AlignStartSocket_SelectMode.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.checkBox_Main_AlignStartSocket_SelectMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.checkBox_Main_AlignStartSocket_SelectMode.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox_Main_AlignStartSocket_SelectMode.Location = new System.Drawing.Point(256, 137);
+            this.checkBox_Main_AlignStartSocket_SelectMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.checkBox_Main_AlignStartSocket_SelectMode.Name = "checkBox_Main_AlignStartSocket_SelectMode";
+            this.checkBox_Main_AlignStartSocket_SelectMode.Size = new System.Drawing.Size(97, 53);
+            this.checkBox_Main_AlignStartSocket_SelectMode.TabIndex = 148;
+            this.checkBox_Main_AlignStartSocket_SelectMode.Text = "Align Start Socket Select";
+            this.checkBox_Main_AlignStartSocket_SelectMode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_Main_AlignStartSocket_SelectMode.UseVisualStyleBackColor = false;
+            // 
             // baseLabel_SocketStatus_NG
             // 
             this.baseLabel_SocketStatus_NG.AutoSize = true;
             this.baseLabel_SocketStatus_NG.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_SocketStatus_NG.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_SocketStatus_NG.Location = new System.Drawing.Point(281, 129);
+            this.baseLabel_SocketStatus_NG.Location = new System.Drawing.Point(281, 108);
             this.baseLabel_SocketStatus_NG.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_SocketStatus_NG.Name = "baseLabel_SocketStatus_NG";
             this.baseLabel_SocketStatus_NG.Size = new System.Drawing.Size(28, 18);
@@ -186,7 +202,7 @@
             this.baseLabel_SocketStatus_OK.AutoSize = true;
             this.baseLabel_SocketStatus_OK.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_SocketStatus_OK.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_SocketStatus_OK.Location = new System.Drawing.Point(281, 99);
+            this.baseLabel_SocketStatus_OK.Location = new System.Drawing.Point(281, 85);
             this.baseLabel_SocketStatus_OK.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_SocketStatus_OK.Name = "baseLabel_SocketStatus_OK";
             this.baseLabel_SocketStatus_OK.Size = new System.Drawing.Size(69, 18);
@@ -199,7 +215,7 @@
             this.baseLabel_SocketStatus_Processing.AutoSize = true;
             this.baseLabel_SocketStatus_Processing.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_SocketStatus_Processing.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_SocketStatus_Processing.Location = new System.Drawing.Point(281, 69);
+            this.baseLabel_SocketStatus_Processing.Location = new System.Drawing.Point(281, 62);
             this.baseLabel_SocketStatus_Processing.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_SocketStatus_Processing.Name = "baseLabel_SocketStatus_Processing";
             this.baseLabel_SocketStatus_Processing.Size = new System.Drawing.Size(76, 18);
@@ -224,7 +240,7 @@
             // 
             this.pictureBox3.BackColor = System.Drawing.Color.Red;
             this.pictureBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox3.Location = new System.Drawing.Point(254, 128);
+            this.pictureBox3.Location = new System.Drawing.Point(254, 107);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(24, 20);
             this.pictureBox3.TabIndex = 4;
@@ -234,7 +250,7 @@
             // 
             this.pictureBox2.BackColor = System.Drawing.Color.Green;
             this.pictureBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox2.Location = new System.Drawing.Point(254, 98);
+            this.pictureBox2.Location = new System.Drawing.Point(254, 84);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(24, 20);
             this.pictureBox2.TabIndex = 3;
@@ -244,7 +260,7 @@
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.Yellow;
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox1.Location = new System.Drawing.Point(254, 68);
+            this.pictureBox1.Location = new System.Drawing.Point(254, 61);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(24, 20);
             this.pictureBox1.TabIndex = 2;
@@ -293,7 +309,7 @@
             this.baseGroupBox_Progress.Controls.Add(this.baseLabel_ModuleCount_Target);
             this.baseGroupBox_Progress.Controls.Add(this.button_PNLCount_Clear);
             this.baseGroupBox_Progress.Controls.Add(this.baseLabel_PNLCount_NG);
-            this.baseGroupBox_Progress.Controls.Add(this.baseTextBox1);
+            this.baseGroupBox_Progress.Controls.Add(this.baseTextBox_Module_NGCount);
             this.baseGroupBox_Progress.Controls.Add(this.baseTextBox_Module_TotalCount);
             this.baseGroupBox_Progress.Controls.Add(this.baseLabel_ModuleCount);
             this.baseGroupBox_Progress.Controls.Add(this.baseLabel_PNLCount_Total);
@@ -401,20 +417,20 @@
             this.baseLabel_PNLCount_NG.TabIndex = 121;
             this.baseLabel_PNLCount_NG.Text = "NG";
             // 
-            // baseTextBox1
+            // baseTextBox_Module_NGCount
             // 
-            this.baseTextBox1.BackColor = System.Drawing.Color.White;
-            this.baseTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.baseTextBox1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.baseTextBox1.ForeColor = System.Drawing.Color.Black;
-            this.baseTextBox1.Location = new System.Drawing.Point(277, 45);
-            this.baseTextBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.baseTextBox1.Name = "baseTextBox1";
-            this.baseTextBox1.ReadOnly = true;
-            this.baseTextBox1.Size = new System.Drawing.Size(77, 26);
-            this.baseTextBox1.TabIndex = 120;
-            this.baseTextBox1.Text = "0";
-            this.baseTextBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.baseTextBox_Module_NGCount.BackColor = System.Drawing.Color.White;
+            this.baseTextBox_Module_NGCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.baseTextBox_Module_NGCount.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.baseTextBox_Module_NGCount.ForeColor = System.Drawing.Color.Black;
+            this.baseTextBox_Module_NGCount.Location = new System.Drawing.Point(277, 45);
+            this.baseTextBox_Module_NGCount.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.baseTextBox_Module_NGCount.Name = "baseTextBox_Module_NGCount";
+            this.baseTextBox_Module_NGCount.ReadOnly = true;
+            this.baseTextBox_Module_NGCount.Size = new System.Drawing.Size(77, 26);
+            this.baseTextBox_Module_NGCount.TabIndex = 120;
+            this.baseTextBox_Module_NGCount.Text = "0";
+            this.baseTextBox_Module_NGCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // baseTextBox_Module_TotalCount
             // 
@@ -1236,32 +1252,6 @@
             this.checkBox_Main_AutoRun.UseVisualStyleBackColor = false;
             this.checkBox_Main_AutoRun.CheckedChanged += new System.EventHandler(this.checkBox_Main_AutoRun_CheckedChanged);
             // 
-            // baseTextBox_DryRun_ProcessingTime
-            // 
-            this.baseTextBox_DryRun_ProcessingTime.BackColor = System.Drawing.Color.White;
-            this.baseTextBox_DryRun_ProcessingTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.baseTextBox_DryRun_ProcessingTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.baseTextBox_DryRun_ProcessingTime.ForeColor = System.Drawing.Color.Black;
-            this.baseTextBox_DryRun_ProcessingTime.Location = new System.Drawing.Point(1857, 271);
-            this.baseTextBox_DryRun_ProcessingTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.baseTextBox_DryRun_ProcessingTime.Name = "baseTextBox_DryRun_ProcessingTime";
-            this.baseTextBox_DryRun_ProcessingTime.Size = new System.Drawing.Size(45, 24);
-            this.baseTextBox_DryRun_ProcessingTime.TabIndex = 151;
-            this.baseTextBox_DryRun_ProcessingTime.Text = "5";
-            this.baseTextBox_DryRun_ProcessingTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // baseLabel5
-            // 
-            this.baseLabel5.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.baseLabel5.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel5.Location = new System.Drawing.Point(1659, 269);
-            this.baseLabel5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.baseLabel5.Name = "baseLabel5";
-            this.baseLabel5.Size = new System.Drawing.Size(193, 26);
-            this.baseLabel5.TabIndex = 150;
-            this.baseLabel5.Text = "(Dry Run Processing Time (sec) :";
-            this.baseLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // button_TEST12
             // 
             this.button_TEST12.BackColor = System.Drawing.SystemColors.ButtonHighlight;
@@ -1289,6 +1279,32 @@
             this.button_TestbyUser_LPort_Start.Text = "LD L-Port Start\r\n(by User)";
             this.button_TestbyUser_LPort_Start.UseVisualStyleBackColor = false;
             this.button_TestbyUser_LPort_Start.Click += new System.EventHandler(this.button_TestbyUser_LPort_Start_Click);
+            // 
+            // baseTextBox_DryRun_ProcessingTime
+            // 
+            this.baseTextBox_DryRun_ProcessingTime.BackColor = System.Drawing.Color.White;
+            this.baseTextBox_DryRun_ProcessingTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.baseTextBox_DryRun_ProcessingTime.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseTextBox_DryRun_ProcessingTime.ForeColor = System.Drawing.Color.Black;
+            this.baseTextBox_DryRun_ProcessingTime.Location = new System.Drawing.Point(1857, 271);
+            this.baseTextBox_DryRun_ProcessingTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.baseTextBox_DryRun_ProcessingTime.Name = "baseTextBox_DryRun_ProcessingTime";
+            this.baseTextBox_DryRun_ProcessingTime.Size = new System.Drawing.Size(45, 24);
+            this.baseTextBox_DryRun_ProcessingTime.TabIndex = 151;
+            this.baseTextBox_DryRun_ProcessingTime.Text = "5";
+            this.baseTextBox_DryRun_ProcessingTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // baseLabel5
+            // 
+            this.baseLabel5.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.baseLabel5.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel5.Location = new System.Drawing.Point(1659, 269);
+            this.baseLabel5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.baseLabel5.Name = "baseLabel5";
+            this.baseLabel5.Size = new System.Drawing.Size(193, 26);
+            this.baseLabel5.TabIndex = 150;
+            this.baseLabel5.Text = "(Dry Run Processing Time (sec) :";
+            this.baseLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label_Title_Stacker_LPort
             // 
@@ -1406,7 +1422,7 @@
         private BaseLabel baseLabel_ModuleCount_Target;
         private System.Windows.Forms.Button button_PNLCount_Clear;
         private BaseLabel baseLabel_PNLCount_NG;
-        private BaseTextBox baseTextBox1;
+        private BaseTextBox baseTextBox_Module_NGCount;
         private BaseTextBox baseTextBox_Module_TotalCount;
         private BaseLabel baseLabel_ModuleCount;
         private BaseLabel baseLabel_PNLCount_Total;
@@ -1475,6 +1491,7 @@
         private System.Windows.Forms.CheckBox checkBox_Main_AutoRun;
         private System.Windows.Forms.Button button_TEST12;
         private System.Windows.Forms.Button button_TestbyUser_LPort_Start;
+        private System.Windows.Forms.CheckBox checkBox_Main_AlignStartSocket_SelectMode;
         private System.Windows.Forms.Label label_Title_Stacker_LPort;
         private System.Windows.Forms.Label label_Title_Stacker_RPort;
     }

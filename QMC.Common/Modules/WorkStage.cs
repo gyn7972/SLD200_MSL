@@ -656,6 +656,9 @@ namespace QMC.Common.Modules
             public int nGroup_RegionNum;                //  Group 별 영역 개수
             public int nGroup_RegionCount;              //  영역 카운트
 
+            public int nGroup_Region_Divided_X;         //  Group 영역 X 방향 분할 개수
+            public int nGroup_Region_Divided_Y;         //  Group 영역 Y 방향 분할 개수
+
             public PointD[] dFiducialPos;               //  Fiducial 마크 위치 (1~4번 마크)
             public double[] dFiducialWidth;             //  Fiducial 마크 가로 크기
             public double[] dFiducialHeight;            //  Fiducial 마크 세로 크기
@@ -1541,6 +1544,7 @@ namespace QMC.Common.Modules
             eGetdata_Drildata_not_closed ,    //  "Drilling Data 가 닫힌 도형이 아닙니다."
             eGetdata_Drildata_not_group ,     //  "Drilling Data 가 Group 이 아닙니다."
             eGetdata_Rtcinit ,                //  "RTC 보드가 초기화 되지 않았습니다."
+            eGetdata_Drildata_No_group,     //  "Drilling Data 가 Group 이 아닙니다."
             DryRunFail,
             DataNotValidation,
             SocketAlignZMoveFail,
@@ -1707,6 +1711,16 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
+            //
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.eGetdata_Drildata_No_group;
+            alarm.Title = "Data Type";
+            alarm.Cause = "Drilling Data 가 Group이 없습니다. 데이터를 확인하여 주십시요.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.DryRunFail;
             alarm.Title = "Dry Run Fail";
@@ -1860,17 +1874,29 @@ namespace QMC.Common.Modules
 
         //  소켓 좌표값
         public List<PointD> Main_SocketPositions = new List<PointD>();
-        public int Main_SocketPositions_ColumnCount = 0;                                //  소켓 좌표값의 열 개수
-        public int Main_SocketPositions_RowCount = 0;                                   //  소켓 좌표값의 행 개수
-        public bool Main_SocketPositions_Draw = false;                                  //  소켓 위치 그리기 여부
-        public bool Main_SocketPositions_Drawed = false;                                //  소켓 위치 그리기 성공 여부
-        public bool Main_SocketPositions_SetStatus = false;                             //  소켓 상태 세팅
-        public PointD Main_SocketPositions_CurrentSocketPosition = new PointD(0, 0);    //  현재 가공중인 소켓 좌표값
-        public int Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Ready;
+        public int Main_SocketPositions_ColumnCount = 0;                                                    //  소켓 좌표값의 열 개수
+        public int Main_SocketPositions_RowCount = 0;                                                       //  소켓 좌표값의 행 개수
+        public int Main_SocketPositions_SubColumnCount = 0;                                                 //  소켓 좌표값의 서브 열 개수
+        public int Main_SocketPositions_SubRowCount = 0;                                                    //  소켓 좌표값의 서브 행 개수
+        public bool Main_SocketPositions_Draw = false;                                                      //  소켓 위치 그리기 여부
+        public bool Main_SocketPositions_Drawed = false;                                                    //  소켓 위치 그리기 성공 여부
+        public bool Main_SocketPositions_SetStatus = false;                                                 //  소켓 상태 세팅
 
-        public PointD Main_SocketPositions_SocketCompletePosition = new PointD(0, 0);           //  완료 소켓 좌표값 (가공중인 소켓 갱신할 때 인덱스가 겹쳐서 완료 표시가 안되는 듯)
-        public int Main_SocketPositions_CompleteStatus = (int)Socket_Process_Status.Ready;      //  완료된 소켓의 상태 (OK, NG)
-        public bool Main_SocketPositions_SetCompleteStatus = false;                             //  완료 소켓 상태 세팅
+        public int Main_SocketPositions_CompleteSocket = -1;                                                //  완료된 소켓의 인덱스
+        public int Main_SocketPositions_ProcessingSocket = -1;                                              //  가공중인 소켓의 인덱스
+
+        public int Main_SocketPositions_CompleteSocket_Region = -1;                                         //  완료된 소켓의 작업 영역 인덱스
+        public int Main_SocketPositions_ProcessingSocket_Region = -1;                                       //  가공중인 소켓의 작업 영역 인덱스
+
+        public PointD Main_SocketPositions_CurrentSocketPosition = new PointD(0, 0);                        //  현재 가공중인 소켓 좌표값
+        public int Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Ready;                //  소켓의 Processing 상태
+        public int Main_SocketPositions_ProcessingStatus_Region = (int)Socket_Process_Status.Ready;         //  소켓의 분할 영역의 Processing 상태
+
+        public PointD Main_SocketPositions_SocketCompletePosition = new PointD(0, 0);                       //  완료 소켓 좌표값 (가공중인 소켓 갱신할 때 인덱스가 겹쳐서 완료 표시가 안되는 듯)
+        public int Main_SocketPositions_CompleteStatus = (int)Socket_Process_Status.Ready;                  //  완료된 소켓의 상태 (OK, NG)
+        public int Main_SocketPositions_CompleteStatus_Region = (int)Socket_Process_Status.Ready;           //  완료된 소켓의 상태 (OK, NG)
+
+        public bool Main_SocketPositions_SetCompleteStatus = false;                                         //  완료 소켓 상태 세팅
         #endregion
 
 
@@ -2976,6 +3002,9 @@ namespace QMC.Common.Modules
 
         //  선택 가공을 위한 변수
         public int m_nSelectedSocket_Index { set; get; }                        //  선택 가공할 Socket 총 개수
+
+        //  Socket Align 시작할 Index
+        public int m_nSocketAlign_StartIndex { set; get; }                      //  Socket Align 시작할 Index
 
 
         //  소켓 높이 측정 후 Z축 Offset 이동을 위한 이동량
@@ -4340,7 +4369,7 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Thread.Sleep(1);
+                    Thread.Sleep(0);
                     if (IsAlarm())
                     {
                         continue;
@@ -8491,7 +8520,7 @@ namespace QMC.Common.Modules
                         //  라이브 상태가 아니면 라이브로 변경
                         if (jigAligner_LowRes.Camera.IsLiveOn == false)
                         {
-                            jigAligner_LowRes.Camera.StartLive();
+                            jigAligner_LowRes.Camera.StopLive();
                         }
 
                         try
@@ -12615,7 +12644,7 @@ namespace QMC.Common.Modules
                 //}
             }
 
-            //  자동운전 시, Transfer 동작 조건
+            //  자동운전 시, Main Work 동작 조건
             if (Equipment.AutoRunStatus &&
                 !Equipment.CycleStopped_MainWork &&
                 m_nMainWork_Step == (int)MainWork_Step.None)
@@ -13888,10 +13917,6 @@ namespace QMC.Common.Modules
 
                             currentPosition.Y += dYoffset;
                             double dSpec = 0.1;
-                            //if (dXoffset < dSpec && dYoffset < dSpec)
-                            //{
-                            //    return 0;
-                            //}
                             bFound = true;
                             continue;
 
@@ -14093,7 +14118,42 @@ namespace QMC.Common.Modules
                 m_nDrillingWork_Group_Count = m_nLaserDrilling_SocketStopped_SocketIndex;           //  Socket Stop 시 진행중이던 Socket 번호
             }
         }
+        public static List<stDividedRegion_ObjectData> SortByDistance(List<stDividedRegion_ObjectData> listObj, double minDistance)
+        {
+            List<stDividedRegion_ObjectData> sortedList = new List<stDividedRegion_ObjectData>();
+            HashSet<stDividedRegion_ObjectData> remainingItems = new HashSet<stDividedRegion_ObjectData>(listObj);
 
+            // 첫 번째 기준점은 referencePoint와 가장 가까운 점
+            stDividedRegion_ObjectData current = listObj.First();
+            sortedList.Add(current);
+            remainingItems.Remove(current);
+
+            // 나머지 정렬
+            while (remainingItems.Count > 0)
+            {
+                var list =  remainingItems
+                    .Where(obj => GetDistance(obj.dEdgePoint[0], sortedList.Last().dEdgePoint[0]) >= minDistance)
+                    .OrderBy(obj => GetDistance(obj.dEdgePoint[0], sortedList.Last().dEdgePoint[0]));
+                if(list.Count() ==0)
+                {
+                    break;
+                }
+                current = list.First();
+                
+                sortedList.Add(current);
+                remainingItems.Remove(current);
+            }
+
+            // 남은 항목 추가 (조건을 만족하지 않는 항목들)
+            sortedList.AddRange(remainingItems);
+            
+            return sortedList;
+        }
+
+        private static double GetDistance(PointD p1, PointD p2)
+        {
+            return Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
+        }
         private int Run_LaserDrilling_Main_Cycle()
         {
             m_nLaserDrilling_MainStep_Recovery = -1;
@@ -14155,7 +14215,20 @@ namespace QMC.Common.Modules
                 TickCount_MainCycle_Start = TickCount_MainCycle_Current;
             }
 
-           
+
+            //  Stop 할 때 바로 Stop 하지 않고, 가공중이던 분할영역이 있을 경우 Laser 가공이 끝나고 난 후 Stop 하도록 한다.
+            if (Equipment.LaserDrillingCycStop_Reservation)
+            {
+                //  Stop 예약일 경우, 가공이 완료되었으면 false 로 변경
+                if (!((m_nLaserDrilling_MainStep >= (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck) && (m_nLaserDrilling_MainStep <= (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionLaserBusyCheck)) &&
+                    !((m_nLaserDrilling_MainStep >= (int)LaserDrilling_Step.ThruHole_ScannerOnly_ObjectData_RemainedCheck) && (m_nLaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_ScannerOnly_LaserBusyCheck)) &&
+                    !((m_nLaserDrilling_MainStep >= (int)LaserDrilling_Step.OutLine_ScannerOnly_ObjectData_RemainedCheck) && (m_nLaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_ScannerOnly_LaserBusyCheck)))
+                {
+                    m_LaserDrillingWork_Start = false;
+                    return 0;
+                }
+            }
+
 
             //  자동운전 중 Socket Stop 처리
             if (Equipment.SocketStopped)
@@ -14624,6 +14697,18 @@ namespace QMC.Common.Modules
 
                             MessageBox.Show("RTC 보드가 초기화 되지 않았습니다.", "Information !");
                             break;
+                        //
+                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_GROUP:
+                            Log.Write("SLD-200", "Auto Run", "Layer Group이 없습니다.");
+
+                            //timer_LaserDrillingWork.Enabled = false;
+                            //m_bExit = true;
+                            return AlarmPost(AlarmKey.eGetdata_Drildata_No_group);
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                            MessageBox.Show("Layer Group이 없습니다.", "Information !");
+                            break;
+                            break;
                     }
                     break;
 
@@ -14642,10 +14727,23 @@ namespace QMC.Common.Modules
                             Main_SocketPositions.Add(new PointD(m_stDividedRegion_GroupData[i].dGroupCenter.X, m_stDividedRegion_GroupData[i].dGroupCenter.Y));
                         }
 
-                        //  메인 화면에 그려지는 가공위치의 개수
-                        (Main_SocketPositions_RowCount, Main_SocketPositions_ColumnCount) = CalculateArraySize(Main_SocketPositions);
+                        if (Main_SocketPositions.Count > 0)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 있음.");
 
-                        Main_SocketPositions_Draw = true;
+                            //  메인 화면에 그려지는 가공위치의 개수
+                            (Main_SocketPositions_RowCount, Main_SocketPositions_ColumnCount) = CalculateArraySize(Main_SocketPositions);
+
+                            //  가공 소켓이 몇개의 영역으로 나눠지는지
+                            Main_SocketPositions_SubRowCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y : 1;
+                            Main_SocketPositions_SubColumnCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X : 1;
+
+                            Main_SocketPositions_Draw = true;
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 없음. (Data Parsing 이 정상적으로 이루어졌으면 여기 들어오면 안됨)");
+                        }
                     }
 
                     m_nDrillingData_SocketAlign_NGCount = 0;
@@ -14890,7 +14988,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.ThruHole_LayerParameter_LaserPower_Change:                        //  Thruhole 가공 Laser Power 변경
 
-                    double m_dLaserPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
+                    double m_dLaserPower = Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power;
 
                     if ((m_rapidLxLaser_Comm != null) && (m_dLaserPower > 0.0))
                     {
@@ -14922,8 +15020,8 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.ThruHole_LayerParameter_LaserPower_Change_DoneCheck:                     //  Thruhole 가공 Laser Power 변경 완료 확인
 
-                    if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power - 0.5)) &&
-                        (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power + 0.5)))
+                    if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power - 0.5)) &&
+                        (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power + 0.5)))
                     {
                         m_strTemp = string.Format("Thruhole Layer 가공 Laser Power 변경 성공, Laser Power ({0})", m_dLaser_OutputEnergy);
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
@@ -15151,7 +15249,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List 실행 (Execute)");
 
-                    GlobalSocketStatus_Set("Thruhole", m_nDrillingWork_Group_Count, true, "Thruhole 가공 시작");
+                    GlobalSocketStatus_Set("Thruhole", m_nDrillingWork_Group_Count, 0, "Thruhole 가공 시작");
 
                     TickCount_Start((int)TickType.TICK_MAIN);
 
@@ -15208,7 +15306,7 @@ namespace QMC.Common.Modules
 
                             //  Layer 별로 다르게 해야 하는 파라미터
                             m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-                            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+                            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
 
                             i = m_stLayerType.m_nLayerCount;
                         }
@@ -15222,10 +15320,12 @@ namespace QMC.Common.Modules
                     {
                         Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                         Main_SocketPositions_SetStatus = true;                                                      //  상태 변경
-                        GlobalSocketStatus_Set("Thruhole", m_nDrillingWork_Group_Count, true, "Thruhole 가공 완료");
+
+                        GlobalSocketStatus_Set("Thruhole", m_nDrillingWork_Group_Count, 0, "Thruhole 가공 완료");
 
                         Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                         Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
+                        Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
                         Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
 
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
@@ -15367,7 +15467,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.OutLine_LayerParameter_LaserPower_Change:                        //  Outline 가공 Laser Power 변경
 
-                    m_dLaserPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
+                    m_dLaserPower = Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_Drilling_Power;
 
                     if ((m_rapidLxLaser_Comm != null) && (m_dLaserPower > 0.0))
                     {
@@ -15399,8 +15499,8 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.OutLine_LayerParameter_LaserPower_Change_DoneCheck:                     //  Outline 가공 Laser Power 변경 완료 확인
 
-                    if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power - 0.5)) &&
-                        (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power + 0.5)))
+                    if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_Drilling_Power - 0.5)) &&
+                        (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[(int)LayerList.Outline].Miscellaneous_Drilling_Power + 0.5)))
                     {
                         m_strTemp = string.Format("Outline Layer 가공을 위한 Laser Power 변경 성공, Laser Power ({0})", m_dLaser_OutputEnergy);
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
@@ -15628,7 +15728,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, Buffer List 실행 (Execute)");
 
-                    GlobalSocketStatus_Set("Outline", m_nDrillingWork_Group_Count, true, "Outline 가공 시작");
+                    GlobalSocketStatus_Set("Outline", m_nDrillingWork_Group_Count, 0, "Outline 가공 시작");
 
                     TickCount_Start((int)TickType.TICK_MAIN);
 
@@ -15669,10 +15769,11 @@ namespace QMC.Common.Modules
 
                     Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                     Main_SocketPositions_SetStatus = true;                                              //  상태 변경
-                    GlobalSocketStatus_Set("Outline", m_nDrillingWork_Group_Count, true, "Outline 가공 완료");
+                    GlobalSocketStatus_Set("Outline", m_nDrillingWork_Group_Count, 0, "Outline 가공 완료");
 
                     Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                     Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
+                    Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
                     Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
 
                     m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
@@ -16213,7 +16314,7 @@ namespace QMC.Common.Modules
 
                 //            //Thread.Sleep(Config.ParamConfig.ThreadSleep_beforeListBegin);
 
-                //            m_bMarkingList_Success &= rtcMode.ListBegin(laser, ListType.Single);
+                //            m_bMarkingList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
 
                 //            Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, Buffer List Open");
 
@@ -17253,9 +17354,9 @@ namespace QMC.Common.Modules
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
                     CommonModule.Instance.Illuminator.SetVolume(4000, 3);
-                    CommonModule.Instance.Illuminator.TurnOnOff(false, 1);       //  Fine Cam Red 조명
-                    CommonModule.Instance.Illuminator.TurnOnOff(false, 2);       //  Fine Cam IR 조명
-                    CommonModule.Instance.Illuminator.TurnOnOff(true, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
+                    CommonModule.Instance.Illuminator.TurnOnOff(false, 1);          //  Fine Cam Red 조명
+                    CommonModule.Instance.Illuminator.TurnOnOff(false, 2);          //  Fine Cam IR 조명
+                    CommonModule.Instance.Illuminator.TurnOnOff(true, 3);           //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
 
                     //Align Mark Pos - 도면에서 추출하여 전달.
                     stDividedRegion_GroupData[] inputGroupData = m_stDividedRegion_GroupData;
@@ -17287,10 +17388,13 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align 완료");
 
-                            double dfx = jigAligner_LowRes.FirstPosition.X;
-                            double dfy = jigAligner_LowRes.FirstPosition.Y;
-                            double dft = jigAligner_LowRes.GetJigAlignResult();
+                            //double dfx = jigAligner_LowRes.FirstPosition.X;
+                            //double dfy = jigAligner_LowRes.FirstPosition.Y;
+                            //double dft = jigAligner_LowRes.GetJigAlignResult();
 
+                            double dfx = 0;
+                            double dfy = 0;
+                            double dft = 0;
 
                             XyzCoordinate positionFirst = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
                             positionFirst = this.ConvertPointFineCam(positionFirst);
@@ -17300,7 +17404,8 @@ namespace QMC.Common.Modules
                             positionFirst.Y += dfy;
 
                             xyCoordinateAlignPositionOrgLast  = new XyCoordinate(positionFirst.X, positionFirst.Y);
-                            
+
+                            m_st4PointAlign_Result_LastSuccess.dRotationAngle = dft;
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Correction;
                         }
                         else
@@ -17405,8 +17510,9 @@ namespace QMC.Common.Modules
                             m_nDrillingData_SocketAlign_NGCount++;                                              //  소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
 
                             Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
+                            Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
                             Main_SocketPositions_SetStatus = true;                                              //  상태 변경
-                            GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, false, "소켓 얼라인 실패");
+                            GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
 
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
@@ -17703,10 +17809,11 @@ namespace QMC.Common.Modules
                         //  소켓 가공이 끝나서 다음 소켓 확인하러 가야 하므로, 현재 상태를 갱신한다.
                         Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                         Main_SocketPositions_SetStatus = true;                                              //  상태 변경
-                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, true, "Drilling 가공 완료");
+                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, m_nDividedRegion_Region_CurrentIndex, "Drilling 가공 완료");
 
                         Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                         Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
+                        Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
                         Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
 
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
@@ -17980,6 +18087,25 @@ namespace QMC.Common.Modules
                             {
                                 m_nDrillingWork_Repeat_Count_Backup = m_nDrillingWork_Repeat_Count;
                                 m_nDrillingWork_RepeatBundle_Count_Backup = m_nDrillingWork_RepeatBundle_Count;
+
+                                //  특정 Distance 거리로 Hole 데이터를 정렬할 경우
+                                if (Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortByDistance_Use)
+                                {
+                                    stDividedRegion_RegionData data = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag];
+                                    List<stDividedRegion_ObjectData> listObj = data.m_stDividedRegion_ObjectData.ToList();
+
+                                    double m_dSortingDistance = 0.5;
+                                    m_dSortingDistance = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortingDistance > 0 ? Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortingDistance : 0.5;           //  정렬 거리
+
+                                    m_strTemp = string.Format("Socket 가공 중 Hole Data 순서 정렬. (Hole 간 기준 거리 : {0:0.000}mm)", m_dSortingDistance);
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                                    var sortedObj = SortByDistance(listObj, m_dSortingDistance);
+
+                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData = sortedObj.ToArray();
+                                    sortedObj.Clear();
+                                    sortedObj = null;
+                                }
 
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_Add_WorkUnit_1Rect;        //  모든 Hole 을 1번씩 가공해서 전체 가공
                             }
@@ -19048,7 +19174,7 @@ namespace QMC.Common.Modules
                                                 m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
                                             }
                                         }
-
+                                        
                                         ////  데이터 검증용 코드 (Center 좌표 저장)
                                         //if (Config.ParamConfig.DrillingData_SaveToLogFile)
                                         //{
@@ -19865,7 +19991,7 @@ namespace QMC.Common.Modules
                     if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
                         MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
                     {
-                        
+
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
                     {
@@ -19885,7 +20011,7 @@ namespace QMC.Common.Modules
                     {
                         break;
                     }
-                        
+
 
                     //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
                     {
@@ -19893,7 +20019,7 @@ namespace QMC.Common.Modules
 
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer List 실행 (Execute)");
 
-                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, true, "Drilling 가공 시작");
+                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, m_nDividedRegion_Region_CurrentIndex_forZigZag, "Drilling 가공 시작");
                     }
 
                     TickCount_Start((int)TickType.TICK_MAIN);
@@ -20250,7 +20376,7 @@ namespace QMC.Common.Modules
 
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Region 영역 내 Object 별 가공, Buffer List 실행 (Execute)");
 
-                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, true, "Drilling 가공 시작");
+                        GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, m_nDividedRegion_Region_CurrentIndex_forZigZag, "Drilling 가공 시작");
 
                         TickCount_Start((int)TickType.TICK_MAIN);
 
@@ -20508,7 +20634,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.Complete:
                     Log.Write("SLD-200", "Auto Run", "전체 가공 완료");
-
+                    
                     m_bLaserDrilling_Complete = true;
 
                     //timer_LaserDrillingWork.Enabled = false;
@@ -22094,7 +22220,7 @@ namespace QMC.Common.Modules
 
             //  Layer 별로 다르게 해야 하는 파라미터
             m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
 
             m_strTemp = string.Format("Stage Z 축, Layer{0} Z Offset 이동 시작, Dofocusing Distance ({1:0.000}), Resizing ({2:0.000})",
                                                 m_nHoleLayer_ProcessIndex, m_dHoleLayer_Defocusing, m_dHoleLayer_Resizing);
@@ -22262,7 +22388,7 @@ namespace QMC.Common.Modules
 
                                 //  Layer 별로 다르게 해야 하는 파라미터
                                 m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-                                m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+                                m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
 
                                 i = m_stLayerType.m_nLayerCount;
                             }
@@ -22290,7 +22416,7 @@ namespace QMC.Common.Modules
 
                                     //  Layer 별로 다르게 해야 하는 파라미터
                                     m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-                                    m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+                                    m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
 
                                     i = m_stLayerType.m_nLayerCount;
                                 }
@@ -22305,10 +22431,11 @@ namespace QMC.Common.Modules
                                 //  다음 소켓으로 넘어가기 전에 현재 소켓의 가공 상태를 갱신한다.
                                 Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                                 Main_SocketPositions_SetStatus = true;                                              //  상태 변경
-                                GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, true, "Drilling 가공 완료");
+                                GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, m_nDividedRegion_Region_CurrentIndex_forZigZag, "Drilling 가공 완료");
 
                                 Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                                 Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
+                                Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
                                 Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
 
                                 m_bDrillingWork_Thruhole_Exist = false;
@@ -22524,6 +22651,7 @@ namespace QMC.Common.Modules
                 Main_SocketPositions_CurrentSocketPosition.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.X;
                 Main_SocketPositions_CurrentSocketPosition.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].dGroupCenter.Y;
                 Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Processing;
+                Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  진행중인 소켓 번호
                 Main_SocketPositions_SetStatus = true;                                              //  상태 변경
 
 
@@ -23524,7 +23652,7 @@ namespace QMC.Common.Modules
 
             //  Layer 별로 다르게 해야 하는 파라미터
             m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
 
             //  Layer 별로 다르게 해야 하는 파라미터
             if ((Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_HoleDrilling_StartPosDivision == 2) ||
@@ -23559,7 +23687,7 @@ namespace QMC.Common.Modules
 
             //  Layer 별로 다르게 해야 하는 파라미터
             m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
         }
 
         private void LaserDrillingStepSetThruholeParam()
@@ -23573,7 +23701,7 @@ namespace QMC.Common.Modules
 
             //  Layer 별로 다르게 해야 하는 파라미터
             m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
         }
 
         //protected int AlarmPost(AlarmKey AlarmCode)
@@ -23589,6 +23717,7 @@ namespace QMC.Common.Modules
                     this.m_ProductAlign_Start = false;
                     this.m_SubWork_Start = false;
                     this.m_LaserDrillingWork_Start = false;
+                    Equipment.LaserDrillingCycStop_Reservation = false;
                     this.m_MainWork_Start = false;
 
                 }
@@ -23796,7 +23925,7 @@ namespace QMC.Common.Modules
 
             //  Layer 별로 다르게 해야 하는 파라미터
             m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetition;            //  총 반복 회수
-            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetitionBundle <= 0 ? 50 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
+            m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
 
             //  Layer 별로 다르게 해야 하는 파라미터
             if ((Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_HoleDrilling_StartPosDivision == 2) ||
@@ -24969,7 +25098,9 @@ namespace QMC.Common.Modules
             {
                 int layerCount = m_stLayerType.m_nLayerCount;
                 int socketCount = m_stDividedRegion_GroupData[0].nGroup_Num;
-                int AreaCount = m_stDividedRegion_GroupData[0].nGroup_Num;
+                int AreaCount = 1;
+
+                int nLayerAddCount = 0;
 
                 for (int nSocket = 0; nSocket < socketCount; nSocket++)
                 {
@@ -24982,16 +25113,30 @@ namespace QMC.Common.Modules
                         LayerList m_Layer = (LayerList)m_stLayerType.m_nLayerIndex[i];
                         string layerName = m_Layer.ToString();
 
-                        // 레이어 추가
-                        socket.AddLayer(layerName, i);
-
-                        //Area 영역 넣어줘요!!
-                        // 예시: Area 0~4번 추가 (5개 영역)
-                        // 실제 필요한 area 개수가 있다면 해당 로직으로 대체
-                        var layer = socket.GetLayer(layerName);
-                        for (int area = 0; area < 1; area++)    //AreaCount //우선 무조건 Area 1개로 설정 중.
+                        if (layerName == "Hole1")
                         {
-                            layer.AddArea(area);
+                            // 레이어 추가
+                            socket.AddLayer(layerName, nLayerAddCount++);
+
+                            //Area 영역 넣어줘요!! --> ㅇㅋ염
+                            // 예시: Area 0~4번 추가 (5개 영역)
+                            // 실제 필요한 area 개수가 있다면 해당 로직으로 대체
+                            var layer = socket.GetLayer(layerName);
+                            for (int area = 0; area < m_stDividedRegion_GroupData[i].m_stDividedRegion_RegionData[0].nRegion_Num; area++)
+                            {
+                                layer.AddArea(area);
+                            }
+                        }
+                        else if ((layerName == "Thruhole") || (layerName == "Outline") || (layerName == "Marking"))
+                        {
+                            // 레이어 추가
+                            socket.AddLayer(layerName, nLayerAddCount++);
+
+                            //Area 영역 넣어줘요!! --> ㅇㅋ염
+                            // 예시: Area 0~4번 추가 (5개 영역)
+                            // 실제 필요한 area 개수가 있다면 해당 로직으로 대체
+                            var layer = socket.GetLayer(layerName);
+                            layer.AddArea(0);
                         }
                     }
                 }
@@ -25038,14 +25183,14 @@ namespace QMC.Common.Modules
             return m_bRet;
         }
 
-        public bool GlobalSocketStatus_Set(string m_strLayerName, int m_nSocketNumber, bool m_bSocketResult, string m_strComment = "")
+        public bool GlobalSocketStatus_Set(string m_strLayerName, int m_nSocketNumber, int m_nAreaNumber_inSocket, string m_strComment = "")
         {
             bool m_bRet = true;
 
             // 공정 완료 처리
             //bool result = ProcessManager.MarkAreaProcessed(1, "hole1", 3); // 3: 마지막은 Area 영역 넣어줘야함.
             //시작 index 0 부터 시작.
-            bool result = ProcessManager.MarkAreaProcessed(m_nSocketNumber, m_strLayerName, 0, m_strComment);
+            bool result = ProcessManager.MarkAreaProcessed(m_nSocketNumber, m_strLayerName, m_nAreaNumber_inSocket, m_strComment);
 
             if (result)
                 Console.WriteLine("새로 가공 처리 완료!");
@@ -25101,7 +25246,8 @@ namespace QMC.Common.Modules
             int m_nGroupData_Count = 0;
             double m_dGroupSize_Width = 0.0;
             double m_dGroupSize_Height = 0.0;
-            double m_dDrilling_FOV = 0.0;
+            double m_dDrilling_FOV = 0.0;               //  Height 안붙어 있는 건 Width
+            double m_dDrilling_FOV_Height = 0.0;
             int m_nGroupIndex_TotalX = 0;
             int m_nGroupIndex_TotalY = 0;
             double m_dGroupStartPos_X = 0.0;            //  Group 시작 X 위치. (이 위치를 기준으로 Divide 영역 계산하기 위함)
@@ -25337,10 +25483,16 @@ namespace QMC.Common.Modules
                         if (m_nHoleLayer_Num == 1)              //  Hole1 이면?
                         {
                             //  Divide 크기는 Layer 별로 다르게 한다. (Recipe 에서 설정)
-                            if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize <= 0.0)                //  default : 3mm
+                            if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize <= 0.0)                     //  default : 3mm
                                 m_dDrilling_FOV = 3.0;
                             else
                                 m_dDrilling_FOV = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize;
+
+                            //  Divide 크기는 Layer 별로 다르게 한다. (Recipe 에서 설정) - Height 를 다르게 할 수 있도록 하기 위해 추가됨
+                            if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize_Height <= 0.0)                //  default : 3mm
+                                m_dDrilling_FOV_Height = 3.0;
+                            else
+                                m_dDrilling_FOV_Height = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize_Height;
 
                             if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_NONE)
                             {
@@ -25450,7 +25602,7 @@ namespace QMC.Common.Modules
                                             //if (((double)group.Width > Config.ParamConfig.Drilling_DivideSize) ||
                                             //    ((double)group.Height > Config.ParamConfig.Drilling_DivideSize))            //  2023. 11. 24.  SCH : Group 이 가로가 얇고 세로로 길게 되어 있는 도면이 있어서, 세로 크기도 함께 보도록 한다.
                                             if (((double)group.Width > Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize) ||
-                                                ((double)group.Height > Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize))            //  2023. 11. 24.  SCH : Group 이 가로가 얇고 세로로 길게 되어 있는 도면이 있어서, 세로 크기도 함께 보도록 한다.
+                                                ((double)group.Height > Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_GroupSplitSize_Height))            //  2023. 11. 24.  SCH : Group 이 가로가 얇고 세로로 길게 되어 있는 도면이 있어서, 세로 크기도 함께 보도록 한다.
                                             {
                                                 //  요건 조건 보고 살리자
                                                 m_bGroupExist_LargerThanDivideSize = true;
@@ -26565,8 +26717,8 @@ namespace QMC.Common.Modules
                                                 if ((m_dGroupSize_Width % m_dDrilling_FOV) > 0.0)
                                                     m_nGroupIndex_TotalX++;
 
-                                                m_nGroupIndex_TotalY = (int)(m_dGroupSize_Height / m_dDrilling_FOV);
-                                                if ((m_dGroupSize_Height % m_dDrilling_FOV) > 0.0)
+                                                m_nGroupIndex_TotalY = (int)(m_dGroupSize_Height / m_dDrilling_FOV_Height);
+                                                if ((m_dGroupSize_Height % m_dDrilling_FOV_Height) > 0.0)
                                                     m_nGroupIndex_TotalY++;
 
                                                 //  전체 영역 시작 위치 (2사분면에서 시작)
@@ -26580,7 +26732,7 @@ namespace QMC.Common.Modules
                                                 //           │
 
                                                 m_dGroupStartPos_X = (double)group.Location.X - (((double)m_nGroupIndex_TotalX * m_dDrilling_FOV) / 2.0);
-                                                m_dGroupStartPos_Y = (double)group.Location.Y + (((double)m_nGroupIndex_TotalY * m_dDrilling_FOV) / 2.0);
+                                                m_dGroupStartPos_Y = (double)group.Location.Y + (((double)m_nGroupIndex_TotalY * m_dDrilling_FOV_Height) / 2.0);
 
                                                 m_stGroupDataForDivide = new stGroupDataForDivide[m_nGroupData_TotalCount];
 
@@ -26699,8 +26851,8 @@ namespace QMC.Common.Modules
                                                             }
                                                             for (int y = 0; y < m_nGroupIndex_TotalY; y++)
                                                             {
-                                                                if ((m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y <= (m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)y))) &&
-                                                                    (m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y > (m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)y) - m_dDrilling_FOV)))
+                                                                if ((m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y <= (m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * (double)y))) &&
+                                                                    (m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y > (m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * (double)y) - m_dDrilling_FOV_Height)))
                                                                 {
                                                                     m_nDivCount_Y = y;
                                                                     y = m_nGroupIndex_TotalY;
@@ -26726,8 +26878,8 @@ namespace QMC.Common.Modules
                                                         }
                                                         for (int y = 0; y < m_nGroupIndex_TotalY; y++)
                                                         {
-                                                            if ((m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y <= (m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)y))) &&
-                                                                (m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y > (m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)y) - m_dDrilling_FOV)))
+                                                            if ((m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y <= (m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * (double)y))) &&
+                                                                (m_stGroupDataForDivide[m_nGroupData_Count].dCenter.Y > (m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * (double)y) - m_dDrilling_FOV_Height)))
                                                             {
                                                                 m_nDivCount_Y = y;
                                                                 y = m_nGroupIndex_TotalY;
@@ -26743,6 +26895,10 @@ namespace QMC.Common.Modules
                                                 m_stDividedRegion_GroupData[m_nGroupCount].dFiducialPos = new PointD[4];
                                                 m_stDividedRegion_GroupData[m_nGroupCount].dFiducialWidth = new double[4];
                                                 m_stDividedRegion_GroupData[m_nGroupCount].dFiducialHeight = new double[4];
+
+                                                //  Divide 영역 개수 저장
+                                                m_stDividedRegion_GroupData[m_nGroupCount].nGroup_Region_Divided_X = m_nGroupIndex_TotalX;
+                                                m_stDividedRegion_GroupData[m_nGroupCount].nGroup_Region_Divided_Y = m_nGroupIndex_TotalY;
 
                                                 //  Divided 영역별 데이터 개수 카운트
                                                 m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData = new WorkStage.stDividedRegion_RegionData[m_nGroupIndex_TotalX * m_nGroupIndex_TotalY];
@@ -26766,7 +26922,7 @@ namespace QMC.Common.Modules
                                                         //m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalY) + m_X].dRegionCenter.X = m_dGroupStartPos_X + (m_dDrilling_FOV * (double)m_X) + (m_dDrilling_FOV / 2.0);
                                                         //m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalY) + m_X].dRegionCenter.Y = m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)m_Y) - (m_dDrilling_FOV / 2.0);
                                                         m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalX) + m_X].dRegionCenter.X = m_dGroupStartPos_X + (m_dDrilling_FOV * (double)m_X) + (m_dDrilling_FOV / 2.0);
-                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalX) + m_X].dRegionCenter.Y = m_dGroupStartPos_Y - (m_dDrilling_FOV * (double)m_Y) - (m_dDrilling_FOV / 2.0);
+                                                        m_stDividedRegion_GroupData[m_nGroupCount].m_stDividedRegion_RegionData[(m_Y * m_nGroupIndex_TotalX) + m_X].dRegionCenter.Y = m_dGroupStartPos_Y - (m_dDrilling_FOV_Height * (double)m_Y) - (m_dDrilling_FOV_Height / 2.0);
                                                     }
                                                 }
 
@@ -29786,7 +29942,7 @@ namespace QMC.Common.Modules
             //        Equipment.WorkTotalTime_Drilling += (m_dTotal_DrillingDataLength / Config.ParamConfig.PreDrilling_Mark_Speed) * (Config.ParamConfig.PreDrilling_Repeat_Count == 0 ? 1.0 : Config.ParamConfig.PreDrilling_Repeat_Count);
             //    }
             //}
-
+                
             ////  Marking Jump, 가공 이동 시간
             //if (m_dTotal_MarkingJumpLength > 0.0)
             //{
@@ -30150,11 +30306,7 @@ namespace QMC.Common.Modules
         }
 
         // 두 좌표 간의 거리를 계산하는 메서드
-        private double GetDistance(PointD p1, PointD p2)
-        {
-            return Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
-        }
-
+        
         private void SortFastPath(ref stDrilling_GroupData paths, bool bSortDir_HorVer, double dStepSize)
         {
             List<stDrilling_ObjectData> pathFast = new List<stDrilling_ObjectData>();
@@ -33351,6 +33503,48 @@ namespace QMC.Common.Modules
 
             return (row, column);
         }
+
+
+        /// <summary>
+        /// 1차원 배열의 인덱스를 주어진 row, column 크기의 2차원 배열에서 몇 번째 row와 column인지 계산합니다.
+        /// </summary>
+        /// <param name="index">1차원 배열의 인덱스</param>
+        /// <param name="columns">배열의 column(열) 개수</param>
+        /// <returns>row와 column 위치</returns>
+        public (int Row, int Column) GetRowColumnFromIndex(int index, int columns)
+        {
+            int row = 1;    // 몇 번째 행인지 계산
+            int column = 1; // 몇 번째 열인지 계산
+
+            if (columns <= 0)
+            {
+                //throw new ArgumentException("열의 개수는 0보다 커야 합니다.", nameof(columns));
+            }
+            else
+            {
+                row = index / columns;    // 몇 번째 행인지 계산
+                column = index % columns; // 몇 번째 열인지 계산
+            }
+            return (row, column);
+        }
+
+        public (int Row, int Column) GetRegionRowColumnFromIndex(int index, int region_columns)
+        {
+            int region_row = 1;    // 몇 번째 행인지 계산
+            int region_column = 1; // 몇 번째 열인지 계산
+
+            if (region_columns <= 0)
+            {
+                //throw new ArgumentException("열의 개수는 0보다 커야 합니다.", nameof(columns));
+            }
+            else
+            {
+                region_row = index / region_columns;    // 몇 번째 행인지 계산
+                region_column = index % region_columns; // 몇 번째 열인지 계산
+            }
+            return (region_row, region_column);
+        }
+
 
         public void ResetRecovery()
         {

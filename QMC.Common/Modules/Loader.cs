@@ -4455,6 +4455,9 @@ namespace QMC.Common.Modules
                             if (loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
                                 loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
                             {
+                                //  우측 Port 에서 Module PickUp 완료.
+                                Equipment.AUTORUN_Loader_PickUpPort = (int)Equipment.LoaderPortList.R_Port;
+
                                 m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
                             }
                             else
@@ -5129,6 +5132,9 @@ namespace QMC.Common.Modules
                             if (loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
                                 loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
                             {
+                                //  좌측 Port 에서 Module PickUp 완료.
+                                Equipment.AUTORUN_Loader_PickUpPort = (int)Equipment.LoaderPortList.L_Port;
+
                                 m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
                             }
                             else
