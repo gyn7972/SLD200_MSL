@@ -636,6 +636,9 @@ namespace QMC.Common
         public static bool Loader_LPort_Pause { set; get; } = false;
         public static bool Loader_RPort_Pause { set; get; } = false;
 
+        // Loader 자재 상태
+        public static bool Loader_LPort_Empty { set; get; } = false;
+        public static bool Loader_RPort_Empty { set; get; } = false;
 
         //  Cycle Stop
         public static bool SocketStop { set; get; } = false;

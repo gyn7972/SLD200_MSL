@@ -175,10 +175,12 @@ namespace SLD200_MSL
                 }
             }
 
-            //InitImageViewer();
-
             m_SiriusViewerRefresy = false;
             workStage.ActionSiriusViewerRefresy += OnSiriusViewerRefresy;
+
+
+            label_Title_Stacker_LPort.Text = "Loader_Stacker Left:";
+            label_Title_Stacker_RPort.Text = "Loader_Stacker Right:";
 
         }
 
@@ -647,15 +649,15 @@ namespace SLD200_MSL
                 checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete;
 
 
-		    //  Socket 가공 진행 상태 표시
-            if (workStage.Main_SocketPositions_Draw)
-            {
-                workStage.Main_SocketPositions_Draw = false;
+		        //  Socket 가공 진행 상태 표시
+                if (workStage.Main_SocketPositions_Draw)
+                {
+                    workStage.Main_SocketPositions_Draw = false;
 
-                Change_SocketArraySize(workStage.Main_SocketPositions_ColumnCount, workStage.Main_SocketPositions_RowCount);
+                    Change_SocketArraySize(workStage.Main_SocketPositions_ColumnCount, workStage.Main_SocketPositions_RowCount);
 
-                workStage.Main_SocketPositions_Drawed = true;
-            }
+                    workStage.Main_SocketPositions_Drawed = true;
+                }
                 
             //  Socket 가공 진행 상태 다시 그리기
             //if (workStage.Main_SocketPositions_Drawed)
@@ -706,50 +708,20 @@ namespace SLD200_MSL
                     button_Main_WorkStage_Continue.Enabled = false;
                 }
 
-
                 //  Cycle Stop 으로 Loader, Unloader, Main Work 가 Stop 되면 자동운전을 종료한다.
+                //  아래는 동작 하나?
                 if (Equipment.AutoRunStatus &&
-
                     Equipment.CycleStop &&
                     Equipment.CycleStopped_LoaderTransfer &&
                     Equipment.CycleStopped_UnloaderTransfer &&
                     Equipment.CycleStopped_MainWork)
                 {
-                    //Equipment.AutoRunStatus = false;
-                    ////  Main Work Timer Stop
-                    //workStage.m_btimer_MainWork_Stop = true;
-                    //workStage.timer_MainWork.Enabled = false;
-                    ////  Laser Drilling Timer Stop
-                    //workStage.m_btimer_LaserDrillingWork_Stop = true;
-                    //workStage.timer_LaserDrillingWork.Enabled = false;
-                    ////  Loader Work Timer Stop
-                    //loader.m_btimer_LoaderWork_Stop = true;
-                    //loader.timer_LoaderWork.Enabled = false;
-                    ////  Unloader Work Timer Stop
-                    //unloader.m_btimer_UnloaderWork_Stop = true;
-                    //unloader.timer_UnloaderWork.Enabled = false;
-
                     Equipment.AutoRunStatus = false;
-
                     workStage.timer_MainWork.Stop();
-                    //workStage.timer_MainWork.Enabled = false;
                     workStage.m_MainWork_Start = false;
-                    //workStage.m_nMainWork_Step = (int)WorkStage.MainWork_Step.None;
-
-                    loader.timer_LoaderWork.Stop();
-                    //loader.timer_LoaderWork.Enabled = false;
                     loader.m_LoaderWork_Start = false;
-                    //loader.m_nLoader_Transfer_Step = (int)Loader.Loader_Transfer_Step.None;
-
-                    workStage.timer_LaserDrillingWork.Stop();
-                    //workStage.timer_LaserDrillingWork.Enabled = false;
                     workStage.m_LaserDrillingWork_Start = false;
-                    //workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
-
-                    unloader.timer_UnloaderWork.Stop();
-                    //unloader.timer_UnloaderWork.Enabled = false;
                     unloader.m_UnloaderWork_Start = false;
-                    //unloader.m_nUnloader_Transfer_Step = (int)Unloader.Unloader_Transfer_Step.None;
 
                     MessageBox.Show("자동 운전 종료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -764,10 +736,35 @@ namespace SLD200_MSL
                     ImageViewer_Main_Rows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
                 }
 
-                //if (!m_btimer_MainWork_Stop)
-                //{
+                // label_Title_MESMessage
+                // 여기에 자재 유/무에 대한 메세지 표시
+                if (Equipment.Loader_LPort_Empty)
+                {
+                    label_Title_Stacker_LPort.Text = "Loader_Stacker Left: 자재 없음.";
+                    label_Title_Stacker_LPort.BackColor = Color.Red;
+                    label_Title_Stacker_LPort.ForeColor = Color.White;
+                }
+                else
+                {
+                    label_Title_Stacker_LPort.Text = "Loader_Stacker Left: 자재 있음.";
+                    label_Title_Stacker_LPort.BackColor = Color.Black;
+                    label_Title_Stacker_LPort.ForeColor = Color.Green;
+                }
+
+                if (Equipment.Loader_RPort_Empty)
+                {
+                    label_Title_Stacker_RPort.Text = "Loader_Stacker Right: 자재 없음.";
+                    label_Title_Stacker_RPort.BackColor = Color.Red;
+                    label_Title_Stacker_RPort.ForeColor = Color.White;
+                }
+                else
+                {
+                    label_Title_Stacker_RPort.Text = "Loader_Stacker Right: 자재 있음.";
+                    label_Title_Stacker_RPort.BackColor = Color.Black;
+                    label_Title_Stacker_RPort.ForeColor = Color.Green;
+                }
+
                 timer_Main_Status.Enabled = true;
-                //}
             }
             catch (Exception ex)
             {
