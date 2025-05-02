@@ -4357,7 +4357,7 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Thread.Sleep(1);
+                    Thread.Sleep(0);
                     if (IsAlarm())
                     {
                         continue;
@@ -17992,8 +17992,8 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_StageXY_MoveRegionCenterPos_DoneCheck:                 //  가공 할 Region Center 위치로 이동 완료 확인
 
                     //todo : 김영남 속도 개선중 
-                    //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
-                    //break;
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionListData_RemainedCheck;
+                    break;
 
 
 
@@ -18084,7 +18084,7 @@ namespace QMC.Common.Modules
                                 
                                 //Todo : 성충현 부장님. SortByDistance 상수로 들어가있는 0.5 레시피 변수로 작업 바랍니다.
 
-                                var sortedObj = SortByDistance(listObj, 0.5);
+                                var sortedObj = SortByDistance(listObj, 0.1);
                                 m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData = sortedObj.ToArray();
                                 sortedObj.Clear();
                                 sortedObj = null;
@@ -19973,7 +19973,7 @@ namespace QMC.Common.Modules
                     if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
                         MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
                     {
-                        
+
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
                     {
@@ -19993,7 +19993,7 @@ namespace QMC.Common.Modules
                     {
                         break;
                     }
-                        
+
 
                     //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
                     {
@@ -20319,7 +20319,7 @@ namespace QMC.Common.Modules
 
                         var rtcMode = rtc as IRtc;                                  //  RTC6
 
-                        m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
+                        m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Single);
 
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Buffer List Open");
                         //  테스트
@@ -22038,7 +22038,7 @@ namespace QMC.Common.Modules
                 var rtcMode = rtc as IRtc;                                  //  RTC6
 
 
-                m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
+                m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Single);
 
 
 
@@ -23005,7 +23005,7 @@ namespace QMC.Common.Modules
 
                 var rtcMode = rtc as IRtc;                                  //  RTC6
 
-                m_bOutLineList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
+                m_bOutLineList_Success &= rtcMode.ListBegin(laser, ListType.Single);
 
                 Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, ScannerOnly Mode, Buffer List Open");
 
@@ -23456,7 +23456,7 @@ namespace QMC.Common.Modules
 
 
             // Tobo: 구영남 =
-            m_bThruHoleList_Success &= rtcMode.ListBegin(laser, ListType.Auto);
+            m_bThruHoleList_Success &= rtcMode.ListBegin(laser, ListType.Single);
 
             Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, ScannerOnly Mode, Buffer List Open");
 
@@ -33104,7 +33104,7 @@ namespace QMC.Common.Modules
                 return false;
             }
 
-            rtc.ListBegin(laser, ListType.Auto);
+            rtc.ListBegin(laser, ListType.Single);
             // 중심 기준 좌표로 시작점 계산
             float startX = -((cols - 1) * pitchX) / 2.0f;
             float startY = -((rows - 1) * pitchY) / 2.0f;
@@ -33289,7 +33289,7 @@ namespace QMC.Common.Modules
                 return false;
             }
 
-            rtc.ListBegin(laser, ListType.Auto);
+            rtc.ListBegin(laser, ListType.Single);
             // 중심 기준 좌표로 시작점 계산
             float startX = -((cols - 1) * pitchX) / 2.0f;
             float startY = -((rows - 1) * pitchY) / 2.0f;
@@ -33388,7 +33388,7 @@ namespace QMC.Common.Modules
                 return false;
             }
 
-            rtc.ListBegin(laser, ListType.Auto);
+            rtc.ListBegin(laser, ListType.Single);
 
             float startX = -((cols - 1) * pitchX) / 2.0f;
             float startY = -((rows - 1) * pitchY) / 2.0f;
