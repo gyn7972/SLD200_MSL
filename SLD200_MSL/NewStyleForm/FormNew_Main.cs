@@ -1390,6 +1390,10 @@ namespace SLD200_MSL
             //  Loader Stacker 에 자재가 있으면 Pause 를 풀어 준다.
             if (loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
             {
+                if (loader.m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_None)
+                {
+                    loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
+                }
                 Equipment.Loader_LPort_Pause = false;
             }
 
@@ -2216,6 +2220,7 @@ namespace SLD200_MSL
             //  Loader 파츠 사용 변수 초기화
             loader.m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_None; //  Transfer Move Type
             loader.m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
+            loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_None;
             loader.m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
             loader.m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
             loader.m_nMAlign_Step = (int)MAlign_Step.None;

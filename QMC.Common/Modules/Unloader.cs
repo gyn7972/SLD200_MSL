@@ -2641,7 +2641,7 @@ namespace QMC.Common.Modules
                     m_bStacker0_Complete)
                 {
                     //  우측 Port (Stacker0) 에 내려놔야 하는데 Full 상태이면? 좌측 Port 에 내려놓도록
-                    if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))
+                    if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 가 Full 상태이므로 Stacker1 에 Put Down 합니다.");
 
@@ -2665,7 +2665,7 @@ namespace QMC.Common.Modules
                     m_bStacker1_Complete)
                 {
                     //  좌측 Port (Stacker1) 에 내려놔야 하는데 Full 상태이면? 우측 Port 에 내려놓도록
-                    if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))
+                    if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker1 가 Full 상태이므로 Stacker0 에 Put Down 합니다.");
 
@@ -3324,19 +3324,19 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "TR 축, Stacker0 에 Module PutDown 조건 체크");
 
-                    if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))            //  감지 시 Off
+                    if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))            //  감지 시 Off
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 의 Full 감지 센서에 Module 이 감지되지 않음.");
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 의 Full 감지 센서에 Module 이 감지됨.");
 
                         if (m_bStacker0_Complete)
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 의 Full 감지 센서는 감지되지 않음. Module PutDown 조건은 OK");
+                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 의 Full 감지 센서는 감지됨. Module PutDown 조건은 OK");
 
                             m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Stacker0PutDown_TransferZ_Move_ReadyPos;
                         }
                         else
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 의 Full 감지 센서에 Module 이 감지되지 않고, Module PutDown 조건도 NG.");
+                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 의 Full 감지 센서에 Module 이 감지되고, Module PutDown 조건도 NG.");
 
                             //  Out.
                             m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
@@ -3749,19 +3749,19 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "TR 축, Stacker1 에 Module PutDown 조건 체크");
 
-                    if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))            //  감지 시 Off
+                    if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))            //  감지 시 Off
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker1 의 Full 감지 센서에 Module 이 감지되지 않음.");
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker1 의 Full 감지 센서에 Module 이 감지됨.");
 
                         if (m_bStacker1_Complete)
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker1 의 Full 감지 센서는 감지되지 않음. Module PutDown 조건은 OK");
+                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker1 의 Full 감지 센서는 감지됨. Module PutDown 조건은 OK");
 
                             m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Stacker1PutDown_TransferZ_Move_ReadyPos;
                         }
                         else
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker1 의 Full 감지 센서에 Module 이 감지되지 않고, Module PutDown 조건도 NG.");
+                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker1 의 Full 감지 센서에 Module 이 감지되고, Module PutDown 조건도 NG.");
 
                             //  Out.
                             m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
