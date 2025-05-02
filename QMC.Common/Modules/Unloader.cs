@@ -86,6 +86,9 @@ namespace QMC.Common.Modules
             UL_Transfer_X_Move_To_WorkStage_Pos,
             UL_WorkStage_Vacuum_Off,
             UL_Transfer_Picker_Vacuum_On_Check,
+
+            WorkStage_DustCollector_Off_Fail,
+
             LastAlarm = 5999,
         }
         #region Variables
@@ -315,7 +318,15 @@ namespace QMC.Common.Modules
             alarm.Cause = "언로더 NG 포트가 가득 차 있습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.WorkStage_DustCollector_Off_Fail;
+            alarm.Title = "Unloader";
+            alarm.Cause = "집진기가 Off 되지 않았습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
         }
+
         public override void SetModuleScale(double dScaleX, double dScaleY, double dXaxisT, double dYaxisT, bool bInvertedX, bool bInvertedY)
         {
             //  요거 주석처리하면 안되는데... 이유가 뭘까
@@ -3037,9 +3048,33 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer X 축, Work Stage 위치로 이동 완료");
 
-                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_PickUpPos_1stStep;
+
+                        //  집진기가 Off 되었는지 확인한 후 다음 Step 을 진행한다.
+                        if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
+                        {
+                            if (!workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) &&
+                                !workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower))
+                            {
+                                Log.Write("SLD-200", "Auto Run", "집진기 Remote Mode, Off 완료");
+
+                                m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_PickUpPos_1stStep;
+                            }
+                            else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000 * 2)
+                            {
+                                Log.Write("SLD-200", "Auto Run", "집진기 Off 실패 (Timeout)");
+
+                                //  알람 정지 (LED Bar - Red Blink)
+                                Equipment.MachineStop_byAlarm = true;
+
+                                return AlarmPost(AlarmKey.WorkStage_DustCollector_Off_Fail);
+                            }
+                        }
+                        else
+                        {
+                            m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_PickUpPos_1stStep;
+                        }
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
+                    else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000 * 2)
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer X 축, Work Stage 위치로 이동 실패. (Timeout)");
 

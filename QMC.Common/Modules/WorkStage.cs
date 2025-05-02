@@ -7650,6 +7650,33 @@ namespace QMC.Common.Modules
                 //    return;
                 //}
 
+
+                //  Loader 에서 WorkStage 로 모듈을 Loading 할 때, Loading 시작과 동시에 가공 데이터 Parsing 하기 위함
+                if (Equipment.ProcessingData_Parsing_byLoader)
+                {
+                    Equipment.ProcessingData_Parsing_byLoader = false;
+
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Main Tick, Loader Transfer 의 Loading 에 의한 가공 데이터 Parsing 시도");
+
+                    if (!m_bMainWorkCycle_DryRun)
+                    {
+                        Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
+
+                        if (GetDrillingData() == (int)WorkStage.nGetDataResult.GETDATA_SUCCESS)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Main Tick, Loader Transfer, WorkStage 로 Loading 중 가공 데이터 Parsing 성공");
+
+                            //  최초 Data Parsing 후 해당 가공 데이터에 대한 상태 데이터를 초기화 한다. (가공중인 소켓 번호, 소켓 OK NG 여부 등)
+                            GlobalSocketStatus_Init();
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Main Tick, Loader Transfer, WorkStage 로 Loading 중 가공 데이터 Parsing 실패");
+                        }
+                    }
+                }
+
+
                 // 단계별 실행
                 Run_MainWork_Cycle_Func();
             }
@@ -8654,6 +8681,8 @@ namespace QMC.Common.Modules
                     m_nHomeAxisCount = 0;
                     m_bHomeOK = false;
                     m_bHomeProgressForm_Close = false;
+
+                    Equipment.ProcessingData_Parsing_byLoader = false;
 
                     m_nTotalAxisCount = (int)LoaderParameter.MotionKey.Max + (int)UnloaderParameter.MotionKey.Max + (int)WorkStageParameter.MotionKey.Max;
 
@@ -20583,10 +20612,11 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.StageXY_MoveUnloadingPos_DoneCheck:                 //  XY 축 Unloading 위치로 이동 완료 체크
 
                     if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y) &&
+                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_Y))// &&
 
-                        ((!workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) && !workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower)) ||
-                        (TickCount_Elapsed((int)TickType.TICK_MAIN) > DustCollector_TurnOn_AfterStableTime)))
+                        //  Unloader 가 Module 을 Unloading 할 때 집진기의 Off 상태를 체크하도록 변경한다.
+                        //((!workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) && !workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower)) ||
+                        //(TickCount_Elapsed((int)TickType.TICK_MAIN) > DustCollector_TurnOn_AfterStableTime)))
                     {
                         Log.Write("SLD-200", "Auto Run", "Stage Unloading 위치로 이동 완료");
 
@@ -20610,31 +20640,33 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DustCollector_Off_Check:                               //  집진기 Off 확인
                                                                                                     //if (!laserDrillingParameter.DI_DustCollector_On() && laserDrillingParameter.DI_DustCollector_Off())
-                    
-                    if (!Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
-                    {
-                        Log.Write("SLD-200", "Auto Run", "집진기 Local Mode, Off 완료");
 
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Complete;
-                    }
-                    else if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use &&
-                            !workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) &&
-                            !workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower))
-                    {
-                        Log.Write("SLD-200", "Auto Run", "집진기 Remote Mode, Off 완료");
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Complete;
 
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Complete;
-                    }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 2.0)
-                    {
-                        Log.Write("SLD-200", "Auto Run", "집진기 Off 실패 (Timeout)");
+                    //if (!Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
+                    //{
+                    //    Log.Write("SLD-200", "Auto Run", "집진기 Local Mode, Off 완료");
 
-                        timer_LaserDrillingWork.Enabled = false;
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Complete;
+                    //}
+                    //else if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use &&
+                    //        !workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) &&
+                    //        !workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower))
+                    //{
+                    //    Log.Write("SLD-200", "Auto Run", "집진기 Remote Mode, Off 완료");
 
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Complete;
+                    //}
+                    //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000 * 2.0)
+                    //{
+                    //    Log.Write("SLD-200", "Auto Run", "집진기 Off 실패 (Timeout)");
 
-                        MessageBox.Show("Dust Collector Off 실패", "Error");
-                    }
+                    //    timer_LaserDrillingWork.Enabled = false;
+
+                    //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                    //    MessageBox.Show("Dust Collector Off 실패", "Error");
+                    //}
                     break;
 
 

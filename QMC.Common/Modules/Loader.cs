@@ -6394,7 +6394,7 @@ namespace QMC.Common.Modules
                         //
                         //  복원 지점 체크용 (Work Stage 에 Module Put Down 완료)
                         //////////////////////////////////////////////////////////////////////////////////////////
-                        //To do: stage 압력 스펙 제어 부분 성부장님 파라미터로 빼!!!
+                        //To do: stage 압력 스펙 제어 부분 성부장님 파라미터로 빼!!!  --> ㅇㅋ염
                         if(workStage.workStageParameter.DI_Stage_Vacuum_Check() && (workStage.m_dEPRO_Value < Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel))       //  Stage Vacuum 센서와 Regulator 값을 함께 본다.
                         {
                             m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_ReadyPos2_1stStep;
@@ -7248,11 +7248,14 @@ namespace QMC.Common.Modules
                             Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage 에 Module Put Down 완료");
                             m_strTemp = "LD Transfer, Work Stage 에 Module Put Down 완료";
 
-                            //  Work Stage 에 모듈을 내려놨으니 도면을 다시 로드해야 한다. (DryRun 이면 안함)
-                            if (!workStage.m_bMainWorkCycle_DryRun)
-                            {
-                                workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
-                            }
+                            //  Work Stage 에 모듈을 내려놨으니 도면을 다시 로드해야 한다. (DryRun 이면 안함)       --> Work Stage 에 Module 을 Loading 하기 시작할 때 Parsing 하도록
+                            //if (!workStage.m_bMainWorkCycle_DryRun)
+                            //{
+                            //    workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
+                            //}
+
+                            //  WorkStage 의 MainWork 에서 Parsing 진행
+                            Equipment.ProcessingData_Parsing_byLoader = true;
 
                             m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = true;
                             m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;
