@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
 using static QMC.Common.Equipment;
+using QMC.Common.Parts;
 
 namespace SLD200_MSL
 {
@@ -271,10 +272,9 @@ namespace SLD200_MSL
                 label_Title_Recipe.Text = "Recipe not loaded.";
             }
 
-
+            
             //  System Message
             if (Equipment.CycleStop && 
-
                 Equipment.CycleStopped_LoaderTransfer &&
                 Equipment.CycleStopped_UnloaderTransfer && 
                 Equipment.CycleStopped_MainWork)

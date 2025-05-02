@@ -2299,6 +2299,8 @@ namespace SLD200_MSL
             //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, lfTargetX, lfVelocity, lfAccDec, lfAccDec);
             //workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, lfTargetY, lfVelocity, lfAccDec, lfAccDec);
 
+
+            //여기 이상하잖아? 걍 현재 위치에서 + 해서 FineCam으로 가는거지
             xyInterpolatedCoordinate.X = lfTargetX;
             xyInterpolatedCoordinate.Y = lfTargetY;
             workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
