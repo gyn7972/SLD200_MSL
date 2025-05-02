@@ -603,6 +603,10 @@ namespace QMC.Common
         public static string RecipeName_fromMainForm { set; get; }
 
 
+        //  Loader 에서 Stage 로 Module 을 Loading 할 때 가공 데이터를 Parsing 하기 위한 변수
+        public static bool ProcessingData_Parsing_byLoader { set; get; } = false;            //  가공 데이터 Parsing 여부
+
+
         //  Auto/Manual 상태 확인
         // 현재 장비의 준비 상태를 관리 할것.! " Auto인 경우에만 시컨스와 같은 동작 가능 하도록 "
         public static bool AutoManualStatus { set; get; }
