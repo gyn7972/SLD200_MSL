@@ -298,9 +298,6 @@ namespace QMC.Common.VisionPart
             float cy = 0;
             double dErrorRatio = 0.1;
 
-
-
-
             for (int y = 0; y < nDivideCount; y++)
             {
                 if (bFindCircle)
@@ -327,8 +324,16 @@ namespace QMC.Common.VisionPart
                     int nMaxCircle = (int)(radius * (1 + dSpec));
                     int nMinCircle = (int)(radius * (1 - dSpec));
 
-                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, 100, 1200, 1, 10);
-                    //polygon = FindCircleBoundary(pixelData, w, h, 540, 1150, 50, 1000, 1);
+                    double dFirstSpec = dSpec * 3;
+                    if(dFirstSpec > 0.5 )
+                    {
+                        dFirstSpec = 0.5;
+                    }
+                    int nMaxCircleFirst = (int)(radius * (1 + dFirstSpec));
+                    int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
+
+                    //polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, nMinCircleFirst, nMaxCircleFirst, 1, 10);
+                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, 100, 1000, 1);
                     points = polygon;
                     circlesResult.Clear();
                     FindCircleFitter(circlesResult, points, out dRadius, 5);
@@ -584,36 +589,43 @@ namespace QMC.Common.VisionPart
         {
 
             maxRadius = Math.Min(Math.Min(width, height) / 2, maxRadius);
-
-
             int pixelAverageCount = 20;
-
-            PointF boundaryPoint = new PointF(cx, cy);
+            
             List<PointF> boundaryPoints = new List<PointF>();
+            
             for (double angle = 0; angle < 360; angle += angleStep)
             {
                 double radian = angle * Math.PI / 180;
                 double maxDifference = 0;
+                double dSin = Math.Sin(radian);
+                double dCos = Math.Cos(radian);
+                PointF boundaryPoint = new PointF(cx, cy);
+                
 
-                for (double r = initialRadius; r < maxRadius; r += step)
+                // 병렬 처리
+                object lockObject = new object();
+                Parallel.For((int)initialRadius, (int)maxRadius, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, r =>
                 {
-                    float x = cx + (int)(r * Math.Cos(radian));
-                    float y = cy + (int)(r * Math.Sin(radian));
+                    float x = cx + (int)(r * dCos);
+                    float y = cy + (int)(r * dSin);
 
                     if (x < 0 || x >= width || y < 0 || y >= height)
-                        break;
+                        return;
 
                     double currentAverage = GetPixelAverage(pixelData, width, height, x, y, pixelAverageCount, radian, true);
                     double nextAverage = GetPixelAverage(pixelData, width, height, x, y, pixelAverageCount, radian, false);
 
                     double difference = (nextAverage - currentAverage) / currentAverage;
 
-                    if (difference > maxDifference)
+                    lock (lockObject)
                     {
-                        maxDifference = difference;
-                        boundaryPoint = new PointF(x, y);
+                        if (difference > maxDifference)
+                        {
+                            maxDifference = difference;
+                            boundaryPoint = new PointF(x, y);
+                        }
                     }
-                }
+                });
                 boundaryPoints.Add(boundaryPoint);
             }
 
@@ -625,10 +637,12 @@ namespace QMC.Common.VisionPart
             int sum = 0;
             int step = isCurrent ? -1 : 1;
 
+            double dSin = Math.Sin(radian);
+            double dCos = Math.Cos(radian);
             for (int i = 0; i < count; i++)
             {
-                int newX =  (int)(x + i * step * Math.Cos(radian));
-                int newY = (int)(y + i * step * Math.Sin(radian));
+                int newX =  (int)(x + i * step * dCos);
+                int newY = (int)(y + i * step * dSin);
 
                 if (newX < 0 || newX >= width || newY < 0 || newY >= height)
                     continue;

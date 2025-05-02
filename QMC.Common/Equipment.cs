@@ -368,7 +368,8 @@ namespace QMC.Common
             public double Miscellaneous_DefocusingDistance;             //  Defocusing Distance (mm)
             public double Miscellaneous_Resizing;                       //  Resizing (mm)
             public int Miscellaneous_HoleDrilling_StartPosDivision;     //  Hole Drilling Start Position Division(등분)
-            public double Miscellaneous_GroupSplitSize;                 //  Group Split Size (mm)
+            public double Miscellaneous_GroupSplitSize;                 //  Group Split Size - Width (mm)
+            public double Miscellaneous_GroupSplitSize_Height;          //  Group Split Size - Height (mm)
             public double Miscellaneous_ScannerDrillingSpeed;           //  Scanner Drilling Speed (mm/s)
             public double Miscellaneous_ScannerJumpSpeed;               //  Scanner Jump Speed (mm/s)
             public double Miscellaneous_LaserOnDelay;                   //  Laser On Delay (us)
@@ -386,6 +387,8 @@ namespace QMC.Common
             public int Miscellaneous_HoleProcessingType;                //  Hole Processing Type (0:Circle, 1:Spiral)
             public int Miscellaneous_FiducialAlignType;                 //  Fiducial Align Type (0:Circle Find, 2:Pattern Matching)
             public int Miscellaneous_FiducialMarkType;                  //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
+            public bool Miscellaneous_HoleSortByDistance_Use;               //  Sort By Distance Use (true: Use, false: Not Use)
+            public double Miscellaneous_HoleSortingDistance;            //  Hole Sorting Distance (mm)
 
             public bool ProcessOption_SocketAlign_Use;                  //  Socket Align Use (true: Use, false: Not Use)
             public bool ProcessOption_SocketHeightCheck_Use;            //  Socket Height Check Use Offset (true: Use, false: Not Use)
@@ -424,10 +427,8 @@ namespace QMC.Common
         }
 
 
-
-
-            //  Machine Name
-            public static string Machine_Name { set; get; } = "SLD-200";
+        //  Machine Name
+        public static string Machine_Name { set; get; } = "SLD-200";
 
 
         //  Laser Type
@@ -462,6 +463,8 @@ namespace QMC.Common
         public static int Machine_LoaderStacker_LiftUpStep { set; get; } = 7;                               //  Loader Stacker Lift Up Step
         public static int Machine_LoaderStacker_LiftUp_StableTime { set; get; } = 1000;                     //  Loader Stacker Lift Up Stable Time
         public static double Machine_WorkStage_ModuleAbsorption_JudgeLevel { set; get; } = -40.0;           //  Work Stage 에 Module Loading 시, 전자식 진공 레귤레이터 판정값
+        public static bool Machine_LoaderStacker_Down_afterLoaderPickUp_Enable { set; get; } = true;        //  Loader Stacker Down after Loader Module Pick Up Enable
+        public static double Machine_LoaderStacker_DownDistance_afterLoaderPickUp { set; get; } = 5.0;      //  Loader 가 Module Pick Up 후 Stacker 를 내리는 거리
 
 
         //  Offset Distance
@@ -600,6 +603,10 @@ namespace QMC.Common
         public static string RecipeName_fromMainForm { set; get; }
 
 
+        //  Loader 에서 Stage 로 Module 을 Loading 할 때 가공 데이터를 Parsing 하기 위한 변수
+        public static bool ProcessingData_Parsing_byLoader { set; get; } = false;            //  가공 데이터 Parsing 여부
+
+
         //  Auto/Manual 상태 확인
         // 현재 장비의 준비 상태를 관리 할것.! " Auto인 경우에만 시컨스와 같은 동작 가능 하도록 "
         public static bool AutoManualStatus { set; get; }
@@ -609,6 +616,10 @@ namespace QMC.Common
         // 위와 같이 구분하여 장비 관리 할것!
         public static bool AutoRunStatus { set; get; } // 장비 상태: Auto / Manul 상태 표시 
 
+        // Drilling Cycle Stop 예약 변수 : 장비 Stop 시 가공중이던 부분은 완료 되고 Stop 하도록 하기 위함
+        // true : Stop 예약
+        // _isLaserDrillingWorkRunning 을 false 로 만드는 경우(Stop 하는 경우), 곧바로 false 로 변경하지 않고 Laser 가공이 완료된 후에 false 로 변경
+        public static bool LaserDrillingCycStop_Reservation { set; get; } // 장비 Stop 예약
 
 
         public static int DryRun_ProcessingTime { set; get; } = 5;
@@ -947,7 +958,8 @@ namespace QMC.Common
                 stLayerRecipeSet[i].Miscellaneous_DefocusingDistance = 0.0;                         //  가공 시 초점 위치에서 얼마나 이동해서 가공할 것인지
                 stLayerRecipeSet[i].Miscellaneous_Resizing = 0.0;                                   //  가공 시 데이터를 얼마나 확대/축소할 것인지 (전체 길이를 입력하면 2등분 하여 양방향으로 크기 조정)
                 stLayerRecipeSet[i].Miscellaneous_HoleDrilling_StartPosDivision = 1;                //  Hole Drilling 가공 시 시작 위치를 몇개로 나눌 것인지 (Only 1, 2, 3, 4, 5, 6, 8, 9, 10, 12)
-                stLayerRecipeSet[i].Miscellaneous_GroupSplitSize = 4.0;                             //  Group 분할 크기 (mm, default : 4mm)
+                stLayerRecipeSet[i].Miscellaneous_GroupSplitSize = 3.0;                             //  Group 분할 크기 Width (mm, default : 4mm)
+                stLayerRecipeSet[i].Miscellaneous_GroupSplitSize_Height = 3.0;                      //  Group 분할 크기 Height (mm, default : 4mm)
                 stLayerRecipeSet[i].Miscellaneous_ScannerDrillingSpeed = 10;                        //  Hole Drilling 속도 (mm/s)
                 stLayerRecipeSet[i].Miscellaneous_ScannerJumpSpeed = 100;                           //  Jump 속도 (mm/s)  
                 stLayerRecipeSet[i].Miscellaneous_LaserOnDelay = 0;                                 //  Laser On Delay (us)
@@ -958,7 +970,7 @@ namespace QMC.Common
                 stLayerRecipeSet[i].Miscellaneous_Drilling_Power = 1;                               //  Drilling Power (w)
                 stLayerRecipeSet[i].Miscellaneous_P2PDistance = 0.1;                                //  P2P Distance (mm)
                 stLayerRecipeSet[i].Miscellaneous_DrillingRepetition = 1;                           //  Drilling 반복 횟수
-                stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle = 50;                    //  Drilling 반복 묶음 횟수
+                stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle = 100;                    //  Drilling 반복 묶음 횟수
                 stLayerRecipeSet[i].Miscellaneous_RotationAngleArc = 360.0;                         //  Rotation Angle Arc (degree)
                 stLayerRecipeSet[i].Miscellaneous_MaskIndex = 0;                                    //  Mask Index  
                 stLayerRecipeSet[i].Miscellaneous_BETPositionIndex = 0;                             //  BET Index  
@@ -966,6 +978,8 @@ namespace QMC.Common
                 stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = 0;                           //  Hole Processing Type (0:Circle, 1:Spiral)
                 stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = 0;                            //  Fiducial Align Type (0:Circle Find, 1:Pattern Matching)
                 stLayerRecipeSet[i].Miscellaneous_FiducialMarkType = 0;                             //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
+                stLayerRecipeSet[i].Miscellaneous_HoleSortByDistance_Use = false;                   //  Hole Sort By Distance Use (true: Use, false: Not Use)
+                stLayerRecipeSet[i].Miscellaneous_HoleSortingDistance = 0.5;                        //  Hole Data Sorting Distance (mm)
 
                 //  Process Options
                 stLayerRecipeSet[i].ProcessOption_SocketAlign_Use = false;                          //  Socket Align Use (true: Use, false: Not Use)
@@ -2749,7 +2763,11 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_StableTime", "1000", temp, 255, strFIle);
             Equipment.Machine_LoaderStacker_LiftUp_StableTime = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "WorkStage_ModuleAbsorption_JudgeLevel", "-40.0", temp, 255, strFIle);
-            Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel = Equipment.ToDouble(temp.ToString());                        
+            Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_Down_afterLDPickUp_Enable", "True", temp, 255, strFIle);
+            Equipment.Machine_LoaderStacker_Down_afterLoaderPickUp_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_DownDistance_afterLDPickUp", "5.0", temp, 255, strFIle);
+            Equipment.Machine_LoaderStacker_DownDistance_afterLoaderPickUp = Equipment.ToDouble(temp.ToString());
 
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);

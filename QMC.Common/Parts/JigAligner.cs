@@ -544,15 +544,13 @@ namespace QMC.Common.Parts
 
                     if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
 
-                    Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"firstPointSearchResultX{firstPointSearchResult.Values[0].X}, firstPointSearchResultY{firstPointSearchResult.Values[0].Y}"));
-                    Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"firstPointSearchResultX{secondPointSearchResult.Values[0].X}, firstPointSearchResultY{secondPointSearchResult.Values[0].Y}"));
-
                     if ((firstPointSearchResult != null) && (secondPointSearchResult != null))
                     {
                         finalFirstPosition = firstPointCoordinate + GetCoordinate(firstPointSearchResult.Values[0].X, firstPointSearchResult.Values[0].Y);
                         finalSecondPosition = secondPointCoordinate + GetCoordinate(secondPointSearchResult.Values[0].X, secondPointSearchResult.Values[0].Y);
 
-
+                        Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"firstPointSearchResultX:{firstPointSearchResult.Values[0].X}, firstPointSearchResultY:{firstPointSearchResult.Values[0].Y}"));
+                        Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"firstPointSearchResultX:{secondPointSearchResult.Values[0].X}, firstPointSearchResultY:{secondPointSearchResult.Values[0].Y}"));
 
                         if (((WorkStage)this.Owner).Config.ParamConfig.Align_ThetaCalcFunction_Atan)
                         {
