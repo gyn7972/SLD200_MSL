@@ -19306,7 +19306,10 @@ namespace QMC.Common.Modules
                                     
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Circle 원 데이터를 Spiral 데이터로 변환 생성 시작");
 
-
+                                    if(m_dTemp_AngleFactor < 18)
+                                    {
+                                        m_dTemp_AngleFactor = 18;
+                                    }
                                     //todo : 김영남 속도 개선중 
                                     //  Spiral 데이터 파라미터 (외경 크기, 내경 크기, Spiral 회전 횟수, Spiral 회전 각도, Hole Center X, Hole Center Y)
                                     lwPolyLineSpiral = SpiralData_Create(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot.X, entity_Position_Rot.Y);
@@ -19339,8 +19342,12 @@ namespace QMC.Common.Modules
                                         {
                                             m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
                                         }
+
                                         else                    //  두번째부터 Mark 이동
                                         {
+                                            m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y) , (float)m_dTemp_AngleFactor*2/3) ;
+                                            
+                                            //m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
                                             m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
                                         }
                                     }

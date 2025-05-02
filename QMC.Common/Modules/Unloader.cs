@@ -1805,8 +1805,8 @@ namespace QMC.Common.Modules
             {
                 this.m_UnloaderWork_Start = false;
             }
-            MessageBox.Show(alarm.Cause);
-            //AlarmManager.Instance.ShowAlarm(alarm);
+            //MessageBox.Show(alarm.Cause);
+            AlarmManager.Instance.ShowAlarm(alarm);
             return alarm.Code;
         }
         int  Run_Stacker1Module_PutdownWaitingPos_Func()
