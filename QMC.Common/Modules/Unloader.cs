@@ -78,7 +78,8 @@ namespace QMC.Common.Modules
             UL_Staker1_Z_Full_Sensor_On_Fail,
             UL_Staker1_Z_Full_Sensor_On_Z_Move_Fail,
             UL_Staker1_Z_Full_Sensor_On_Z_Move_ToBottom_Fail,
-            
+
+            UL_Transfer_Error,
             UL_Transfer_Z_Move_To_Ready_Pos_Fail,
             UL_Transfer_X_Move_To_Ready_Pos,
             UL_Transfer_Z_Move_To_WorkStage_PickUp_Pos,
@@ -211,6 +212,14 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
+            //
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.UL_Transfer_Error;
+            alarm.Title = "Unloader Transfer";
+            alarm.Cause = "언로더에 트랜스퍼 Error (로그 확인 후 알람 생성 및 추가 바람)";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.UL_Transfer_Z_Move_To_Ready_Pos_Fail;
@@ -1164,8 +1173,6 @@ namespace QMC.Common.Modules
 
         #endregion
 
-
-
         #region Stacker Move Function (Module PickUp & PutDown 높이로 이동 -> 이건 Loader Unloader 에서 하도록 해야 할듯???)
 
         int Run_Stacker0Module_PutdownWaitingPos_Func()
@@ -1226,7 +1233,6 @@ namespace QMC.Common.Modules
                 //}
             }
 
-
             //  자동운전 시, Stacker0 동작 조건 : TR Cycle (None), Stacker0 Cycle (None), TR 이 Module 을 내려놨을 때
             if (Equipment.AutoRunStatus &&
 
@@ -1238,7 +1244,6 @@ namespace QMC.Common.Modules
                 m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Start;
             }
 
-
             switch (m_nStacker0_ModulePutdownWaitingPos_Step)
             {
                 case (int)StackerModulePutdownWaitingPos_Step.Start:
@@ -1246,17 +1251,10 @@ namespace QMC.Common.Modules
 
                     Equipment.MachineStop_byAlarm = false;
 
-                    //  Laoder Stacker Z 축 모터 전체 Stop
-                    //MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z0, 2000);
-                    //MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z1, 2000);
-
                     //  Unlaoder Stacker Z 축 모터 전체 Stop
                     MC_Func.MC_MotorStop((int)UnloaderParameter.AxisAjinEnum.Z0, 2000);
-                    //MC_Func.MC_MotorStop((int)UnloaderParameter.AxisAjinEnum.Z1, 2000);
-
                     m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Process_Condition_Check;
                     break;
-
 
                 case (int)StackerModulePutdownWaitingPos_Step.Process_Condition_Check:
                     Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "동작 조건 확인");
@@ -1271,7 +1269,6 @@ namespace QMC.Common.Modules
                     else //if (unloaderParameter.DI_Unloader_Stacker_MaterialCheck((int)UnloaderParameter.StackerTable.Stacker_0))               //  우측 Port 에 Module 이 감지되어 있을 때만 진행
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker_0 Module Exist 센서 감지됨");
-
                         if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))             //  감지 시 Off
                         {
                             //  Full Sensor 감지 상태일 경우 (Off 될 때 까지 내림 -> Off 되면 Stop -> 느리게 Up -> On 되면 Stop -> 느리게 Down -> Off 되면 Stop -> 더 느리게 Up -> On 되면 Stop -> 완료)
@@ -1292,10 +1289,8 @@ namespace QMC.Common.Modules
                 case (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_FastDown:                            //  Stacker Z 축, 빠르게 내림 (최 하단까지)
 
                     StackerModulePutdownWaitingPos_Step_StackerZ_MoveType1_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
-
                     m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_FastDown_DoneCheck;
                     break;
-
 
                 case (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_FastDown_DoneCheck:                       //  Stacker Z 축, 빠르게 내림, 이동 완료 확인
 
@@ -1305,18 +1300,16 @@ namespace QMC.Common.Modules
 
                         m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_SlowUp;
                     }
-                    else if (MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_PosTolerance((int)nAxis.Z0, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0]))
+                    else if (MC_Func.MC_GetDone((int)nAxis.Z0) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.Z0, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Bottom 위치까지 이동 완료");
 
                         if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))         //  감지 시 Off
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Bottom 위치까지 이동했으나 Full 센서 On 상태");
-
+                            m_strTemp = "Stacker0 Z 축, Bottom 위치까지 이동했으나 Full 센서 On 상태";
+                            Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                             return AlarmPost(AlarmKey.UL_Staker0_Too_Many_Module);
-                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                            MessageBox.Show("UL Stacker0 Z 축, 자재가 너무 많거나 Full 수위 감지 센서 점검이 필요합니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -1325,18 +1318,9 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ0) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Full 센서가 Off 되는 위치까지 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
+                        m_strTemp = "Stacker0 Z 축, Full 센서가 Off 되는 위치까지 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Staker0_Too_Many_Module);
-
-                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                        MessageBox.Show("UL Stacker0 Z 축, Full 센서가 Off 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -1360,18 +1344,16 @@ namespace QMC.Common.Modules
 
                         m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_Slow2Down;
                     }
-                    else if (MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_PosTolerance((int)nAxis.Z0, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0]))
+                    else if (MC_Func.MC_GetDone((int)nAxis.Z0) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.Z0, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Top 위치까지 이동 완료");
 
                         if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))            //  감지 시 Off
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태");
-
+                            m_strTemp = "Stacker0 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태";
+                            Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                             return AlarmPost(AlarmKey.UL_Staker0_Too_Many_Module);
-                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                           // MessageBox.Show("UL Stacker0 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -1380,18 +1362,9 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ0) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
+                        m_strTemp = "Stacker0 Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Staker0_Z_Full_Sensor_On_Fail);
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
-                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                        MessageBox.Show("UL Stacker0 Z 축, Full 센서가 On 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -1408,7 +1381,6 @@ namespace QMC.Common.Modules
                     }
                     break;
 
-
                 case (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_Slow2Down_DoneCheck:                       //  Stacker Z 축, 더 느리게 내림, 이동 완료 확인
 
                     if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))            //  감지 시 Off
@@ -1424,12 +1396,9 @@ namespace QMC.Common.Modules
 
                         if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))         //  감지 시 Off
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Bottom 위치까지 이동했으나 Full 센서 On 상태");
-
+                            m_strTemp = "Stacker0 Z 축, Bottom 위치까지 이동했으나 Full 센서 On 상태";
+                            Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                             return AlarmPost(AlarmKey.UL_Staker0_Too_Many_Module);
-                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                            MessageBox.Show("UL Stacker0 Z 축, 자재가 너무 많거나 Full 수위 감지 센서 점검이 필요합니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -1438,17 +1407,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ0) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Full 센서가 Off 되는 위치까지 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
+                        m_strTemp = "Stacker0 Z 축, Full 센서가 Off 되는 위치까지 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Staker0_Too_Many_Module);
-                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
 
-                        MessageBox.Show("UL Stacker0 Z 축, Full 센서가 Off 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -1472,18 +1434,16 @@ namespace QMC.Common.Modules
 
                         m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
                     }
-                    else if (MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_PosTolerance((int)nAxis.Z0, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0]))
+                    else if (MC_Func.MC_GetDone((int)nAxis.Z0) 
+                        && MC_Func.MC_PosTolerance((int)nAxis.Z0, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Top 위치까지 이동 완료");
 
                         if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))            //  감지 시 Off
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태");
-
+                            m_strTemp = "Stacker0 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태";
+                            Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                             return AlarmPost(AlarmKey.UL_Staker0_Too_Many_Module);
-                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                            //MessageBox.Show("UL Stacker0 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -1492,18 +1452,9 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ0) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
+                        m_strTemp = "Stacker0 Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Staker0_Too_Many_Module);
-
-                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                        MessageBox.Show("UL Stacker0 Z 축, Full 센서가 On 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
                 /// <summary>
@@ -1534,18 +1485,16 @@ namespace QMC.Common.Modules
 
                         m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType2_Slow2Down;
                     }
-                    else if (MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_PosTolerance((int)nAxis.Z0, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0]))
+                    else if (MC_Func.MC_GetDone((int)nAxis.Z0) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.Z0, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Top 위치까지 이동 완료");
 
                         if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))            //  감지 시 Off
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태");
-
+                            m_strTemp = "Stacker0 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태";
+                            Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                             return AlarmPost(AlarmKey.UL_Staker0_Z_Full_Sensor_On_Fail);
-                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                            //MessageBox.Show("UL Stacker0 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -1554,19 +1503,9 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ0) > 60000)
                     {
+                        m_strTemp = "Stacker0 Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Staker0_Z_Full_Sensor_On_Fail);
-
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-                        
-                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                        MessageBox.Show("UL Stacker0 Z 축, Full 센서가 On 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -1597,12 +1536,9 @@ namespace QMC.Common.Modules
 
                         if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))         //  감지 시 Off
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Bottom 위치까지 이동했으나 Full 센서 On 상태");
-
+                            m_strTemp = "Stacker0 Z 축, Bottom 위치까지 이동했으나 Full 센서 On 상태";
+                            Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                             return AlarmPost(AlarmKey.UL_Staker0_Too_Many_Module);
-                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                            MessageBox.Show("UL Stacker0 Z 축, 자재가 너무 많거나 Full 수위 감지 센서 점검이 필요합니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -1611,18 +1547,9 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ0) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Full 센서가 Off 되는 위치까지 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
+                        m_strTemp = "Stacker0 Z 축, Full 센서가 Off 되는 위치까지 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Staker0_Too_Many_Module);
-                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                        MessageBox.Show("UL Stacker0 Z 축, Full 센서가 Off 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -1648,19 +1575,16 @@ namespace QMC.Common.Modules
 
                         m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
                     }
-                    else if (MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_PosTolerance((int)nAxis.Z0, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0]))
+                    else if (MC_Func.MC_GetDone((int)nAxis.Z0) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.Z0, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Top 위치까지 이동 완료");
 
                         if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_0))            //  감지 시 Off
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태");
-
+                            m_strTemp = "Stacker0 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태";
+                            Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                             return AlarmPost(AlarmKey.UL_Staker0_Z_Full_Sensor_On_Fail);
-
-                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                            //MessageBox.Show("UL Stacker0 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -1669,18 +1593,9 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ0) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
+                        m_strTemp = "Stacker0 Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Staker0_Z_Full_Sensor_On_Z_Move_Fail);
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
-                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                        MessageBox.Show("UL Stacker0 Z 축, Full 센서가 On 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
                 /// <summary>
@@ -1690,20 +1605,11 @@ namespace QMC.Common.Modules
 
                 case (int)StackerModulePutdownWaitingPos_Step.Complete:
 
-                    Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "완료");
+                    m_strTemp = "===  UL Stacker0 작업위치 이동 완료  ===";
+                    Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
 
                     m_bStacker0_Complete = true;
-
-                    //  m_bHomeOK = true;
-
-                    //timer_Motion_Home.Enabled = false;
-                    //m_btimer_Motion_Home_Stop = true;
-
-                    m_strTemp = "===  UL Stacker0 작업위치 이동 완료  ===";
-
                     m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                    //MessageBox.Show(m_strTemp, "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
             }
             return 0;
@@ -1910,8 +1816,8 @@ namespace QMC.Common.Modules
             {
                 this.m_UnloaderWork_Start = false;
             }
-            MessageBox.Show(alarm.Cause);
-            //AlarmManager.Instance.ShowAlarm(alarm);
+            //MessageBox.Show(alarm.Cause);
+            AlarmManager.Instance.ShowAlarm(alarm);
             return alarm.Code;
         }
         int  Run_Stacker1Module_PutdownWaitingPos_Func()
@@ -1953,7 +1859,6 @@ namespace QMC.Common.Modules
                     Equipment.MachineStop_byAlarm = false;
                     
                     MC_Func.MC_MotorStop((int)UnloaderParameter.AxisAjinEnum.Z1, 2000);
-                    
                     m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Process_Condition_Check;
                     break;
 
@@ -1994,8 +1899,6 @@ namespace QMC.Common.Modules
                     if (MC_Func.MC_GetDone((int)nAxis.Z1))
                     {
                         StackerModulePutdownWaitingPos_Step_tackerZ_MoveType1_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
-
-
                         m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_FastDown_DoneCheck;
                     }
                     break;
@@ -2009,18 +1912,16 @@ namespace QMC.Common.Modules
 
                         m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_SlowUp;
                     }
-                    else if (MC_Func.MC_GetDone((int)nAxis.Z1) && MC_Func.MC_PosTolerance((int)nAxis.Z1, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1]))
+                    else if (MC_Func.MC_GetDone((int)nAxis.Z1) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.Z1, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Bottom 위치까지 이동 완료");
 
                         if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))         //  감지 시 Off
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Bottom 위치까지 이동했으나 Full 센서 On 상태");
-
+                            m_strTemp = "Stacker1 Z 축, Bottom 위치까지 이동했으나 Full 센서 On 상태";
+                            Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                             return AlarmPost(AlarmKey.UL_Staker1_Too_Many_Module);
-                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                            MessageBox.Show("UL Stacker1 Z 축, 자재가 너무 많거나 Full 수위 감지 센서 점검이 필요합니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -2029,18 +1930,9 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ1) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Full 센서가 Off 되는 위치까지 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
+                        m_strTemp = "Stacker1 Z 축, Full 센서가 Off 되는 위치까지 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Staker1_Z_Full_Sensor_On_Z_Move_Fail);
-                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                        MessageBox.Show("UL Stacker1 Z 축, Full 센서가 Off 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -2050,10 +1942,7 @@ namespace QMC.Common.Modules
                     if (MC_Func.MC_GetDone((int)nAxis.Z1))
                     {
                         StackerModulePutdownWaitingPosStepStackerZMoveType1SlowUp(out m_dSpeed_Stacker_Slow, out m_dSpeedMag_forAccDec);
-
                         TickCount_Start((int)TickType.TICK_ULSZ1);
-
-
                         m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_SlowUp_DoneCheck;
                     }
                     break;
@@ -2073,12 +1962,9 @@ namespace QMC.Common.Modules
 
                         if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))            //  감지 시 Off
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태");
-
+                            m_strTemp = "Stacker1 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태)";
+                            Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                             return AlarmPost(AlarmKey.UL_Staker1_Z_Full_Sensor_On_Z_Move_Fail);
-                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                            //MessageBox.Show("UL Stacker1 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -2087,18 +1973,9 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ1) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
+                        m_strTemp = "Stacker1 Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Staker1_Z_Full_Sensor_On_Z_Move_Fail);
-                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                        MessageBox.Show("UL Stacker1 Z 축, Full 센서가 On 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -2123,18 +2000,16 @@ namespace QMC.Common.Modules
                         //m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_Slow3Up;
                         m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;                           //  다시 올리지 않고 완료. (Full 센서가 감지되지 않는 위치에서 Unloading 하도록 한다.)
                     }
-                    else if (MC_Func.MC_GetDone((int)nAxis.Z1) && MC_Func.MC_PosTolerance((int)nAxis.Z1, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1]))
+                    else if (MC_Func.MC_GetDone((int)nAxis.Z1) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.Z1, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Bottom 위치까지 이동 완료");
 
                         if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))         //  감지 시 Off
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Bottom 위치까지 이동했으나 Full 센서 On 상태");
-
+                            m_strTemp = "Stacker1 Z 축, Bottom 위치까지 이동했으나 Full 센서 On 상태";
+                            Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                             return AlarmPost(AlarmKey.UL_Staker1_Z_Full_Sensor_On_Z_Move_Fail);
-                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                            MessageBox.Show("UL Stacker1 Z 축, 자재가 너무 많거나 Full 수위 감지 센서 점검이 필요합니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -2143,17 +2018,9 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ1) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Full 센서가 Off 되는 위치까지 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
+                        m_strTemp = "Stacker1 Z 축, Full 센서가 Off 되는 위치까지 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Staker1_Z_Full_Sensor_On_Z_Move_Fail);
-                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                        MessageBox.Show("UL Stacker1 Z 축, Full 센서가 Off 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -2203,18 +2070,16 @@ namespace QMC.Common.Modules
 
                         m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
                     }
-                    else if (MC_Func.MC_GetDone((int)nAxis.Z1) && MC_Func.MC_PosTolerance((int)nAxis.Z1, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1]))
+                    else if (MC_Func.MC_GetDone((int)nAxis.Z1) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.Z1, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Top 위치까지 이동 완료");
 
                         if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))            //  감지 시 Off
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태");
-
+                            m_strTemp = "Stacker1 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태";
+                            Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                             return AlarmPost(AlarmKey.UL_Staker1_Z_Full_Sensor_On_Fail);
-                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                           // MessageBox.Show("UL Stacker1 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -2223,17 +2088,9 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ1) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
+                        m_strTemp = "Stacker1 Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Staker1_Z_Full_Sensor_On_Z_Move_Fail);
-                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                        MessageBox.Show("UL Stacker1 Z 축, Full 센서가 On 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
                 /// <summary>
@@ -2289,18 +2146,16 @@ namespace QMC.Common.Modules
 
                         m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType2_Slow2Down;
                     }
-                    else if (MC_Func.MC_GetDone((int)nAxis.Z1) && MC_Func.MC_PosTolerance((int)nAxis.Z1, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1]))
+                    else if (MC_Func.MC_GetDone((int)nAxis.Z1) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.Z1, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Top 위치까지 이동 완료");
 
                         if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))            //  감지 시 Off
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태");
-
+                            m_strTemp = "Stacker1 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태";
+                            Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                             return AlarmPost(AlarmKey.UL_Staker1_Z_Full_Sensor_On_Fail);
-                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                           // MessageBox.Show("UL Stacker1 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -2309,17 +2164,9 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ1) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
+                        m_strTemp = "Stacker1 Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Staker0_Z_Full_Sensor_On_Z_Move_Fail);
-                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                        MessageBox.Show("UL Stacker1 Z 축, Full 센서가 On 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -2376,12 +2223,9 @@ namespace QMC.Common.Modules
 
                         if (!unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))         //  감지 시 Off
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Bottom 위치까지 이동했으나 Full 센서 On 상태");
-
+                            m_strTemp = "Stacker1 Z 축, Bottom 위치까지 이동했으나 Full 센서 On 상태";
+                            Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                             return AlarmPost(AlarmKey.UL_Staker1_Too_Many_Module);
-                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                            MessageBox.Show("UL Stacker1 Z 축, 자재가 너무 많거나 Full 수위 감지 센서 점검이 필요합니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -2390,18 +2234,9 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ1) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Full 센서가 Off 되는 위치까지 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
+                        m_strTemp = "Stacker1 Z 축, Full 센서가 Off 되는 위치까지 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Staker1_Z_Full_Sensor_On_Z_Move_ToBottom_Fail);
-                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                        MessageBox.Show("UL Stacker1 Z 축, Full 센서가 Off 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -2451,18 +2286,16 @@ namespace QMC.Common.Modules
 
                         m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
                     }
-                    else if (MC_Func.MC_GetDone((int)nAxis.Z1) && MC_Func.MC_PosTolerance((int)nAxis.Z1, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1]))
+                    else if (MC_Func.MC_GetDone((int)nAxis.Z1) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.Z1, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Top 위치까지 이동 완료");
 
                         if (unloaderParameter.DI_Unloader_Stacker_FullCheck((int)UnloaderParameter.StackerTable.Stacker_1))            //  감지 시 Off
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태");
-
+                            m_strTemp = "Stacker1 Z 축, Top 위치까지 이동했으나 Full 센서 Off 상태";
+                            Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                             return AlarmPost(AlarmKey.UL_Staker1_Z_Full_Sensor_On_Fail);
-                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                            //MessageBox.Show("UL Stacker1 Z 축, 자재가 없습니다.", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -2471,17 +2304,9 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ1) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
+                        m_strTemp = "Stacker1 Z 축, Full 센서가 On 되는 위치까지 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Staker1_Z_Full_Sensor_On_Z_Move_Fail);
-                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                        MessageBox.Show("UL Stacker1 Z 축, Full 센서가 On 되는 위치까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
                 /// <summary>
@@ -2491,20 +2316,12 @@ namespace QMC.Common.Modules
 
                 case (int)StackerModulePutdownWaitingPos_Step.Complete:
 
-                    Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "완료");
+                    m_strTemp = "===  UL Stacker1 작업위치 이동 완료  ===";
+                    Log.Write("SLD-200", Equipment.User_Name, "Unload_StackerModulePutdownWaitingPos_Step", m_strTemp);
 
                     m_bStacker1_Complete = true;
 
-                    //  m_bHomeOK = true;
-
-                    //timer_Motion_Home.Enabled = false;
-                    //m_btimer_Motion_Home_Stop = true;
-
-                    m_strTemp = "===  UL Stacker1 작업위치 이동 완료  ===";
-
                     m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
-
-                    //MessageBox.Show(m_strTemp, "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
             }
             return 0;
@@ -2594,8 +2411,6 @@ namespace QMC.Common.Modules
         }
         #endregion
 
-
-
         #region Transfer Cycle Function (Module PickUp & PutDown 위치로 이동)
 
         
@@ -2615,8 +2430,12 @@ namespace QMC.Common.Modules
                
             }
 
-
             //  자동운전 시, Transfer 동작 조건
+            //1. Work Stage 에서 Module Pick Up Cycle
+            //2. Stacker0 에 Module Put Down Cycle
+            //3. Stacker1 에 Module Put Down Cycle
+            //4. NG-Port 에 Module Drop Cycle
+
             if (Equipment.AutoRunStatus &&
 
                 !Equipment.SocketStopped &&                                             //  Socket Stop 시 동작 안되도록
@@ -2629,12 +2448,9 @@ namespace QMC.Common.Modules
             {
                 //  Work Stage 에서 Module 을 Pick Up 하기 위한 조건
                 if (!m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete &&
-
                     (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) &&
                     (workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
-
                     loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete &&
-
                     workStage.m_bMainWorkCycle_Complete)                                                //  Laser Drilling Main Cycle 이 완료되었을 경우
                 {
                     m_nUnloaderTransferMoveType = (int)UnloaderTransferMoveType.Cycle_WorkStage_PickUp;            //  Work Stage 에서 Module Pick Up Cycle
@@ -2642,13 +2458,10 @@ namespace QMC.Common.Modules
                 }
                 //  Stacker0 에 Module 을 Put Down 하기 위한 조건
                 else if (m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete &&
-
                     (m_nStacker0_ModulePutdownWaitingPos_Step == (int)StackerModulePutdownWaitingPos_Step.None) &&
-
                     //workStage.m_bMainWorkCycle_ResultOK &&
                     (workStage.m_nMainWorkCycle_ResultOKNG == (int)WorkStage.MainCycle_Result.OK) &&
                     workStage.m_bMainWorkCycle_ResultOK_toRPort &&
-
                     m_bStacker0_Complete)
                 {
                     //  우측 Port (Stacker0) 에 내려놔야 하는데 Full 상태이면? 좌측 Port 에 내려놓도록
@@ -2678,13 +2491,10 @@ namespace QMC.Common.Modules
                 }
                 //  Stacker1 에 Module 을 Put Down 하기 위한 조건
                 else if (m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete &&
-
                     (m_nStacker1_ModulePutdownWaitingPos_Step == (int)StackerModulePutdownWaitingPos_Step.None) &&
-
                     //workStage.m_bMainWorkCycle_ResultOK &&
                     (workStage.m_nMainWorkCycle_ResultOKNG == (int)WorkStage.MainCycle_Result.OK) &&
                     !workStage.m_bMainWorkCycle_ResultOK_toRPort &&
-
                     m_bStacker1_Complete)
                 {
                     //  좌측 Port (Stacker1) 에 내려놔야 하는데 Full 상태이면? 우측 Port 에 내려놓도록
@@ -2768,9 +2578,12 @@ namespace QMC.Common.Modules
                             m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.NgStacker_ModuleDrop_Condition_Check;
                             break;
 
-                        default:            //  Error
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "동작 타입 목록에 없음");
-                            m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Complete;
+                        default:  //  Error
+                            m_strTemp = "동작 타입 목록에 없음";
+                            Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                            return AlarmPost(AlarmKey.UL_Transfer_Error);
+                            //Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "동작 타입 목록에 없음");
+                            //m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Complete;
                             break;
                     }
                     break;
@@ -2781,12 +2594,8 @@ namespace QMC.Common.Modules
                 case (int)Unloader_Transfer_Step.Transfer_Move_Condition_Check:                            //  Stacker0 에서 Module Pick Up 조건 체크 (Stacker0 Module Exist Sensor On, Stacker0 Module Full Sensor On, Transfer Picker Vacuum Off Check, Stacker0 Cycle : None)
 
                     Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "TR 축, Ready Position Move 조건 체크");
-
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "TR 축, Ready Position Move 조건 OK");
-
-                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.TransferZ_Move_ReadyPos;
-                    }
+                    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.TransferZ_Move_ReadyPos;
+             
                     break;
 
 
@@ -2808,21 +2617,11 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
+                        m_strTemp = "Transfer Z 축, 대기 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Transfer_Z_Move_To_Ready_Pos_Fail);
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
-                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
-
-                        MessageBox.Show("Transfer Z 축, 대기 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
-
 
                 case (int)Unloader_Transfer_Step.TransferX_Move_ReadyPos:                            //  Transfer X 축, 대기 위치로 이동
 
@@ -2834,7 +2633,8 @@ namespace QMC.Common.Modules
 
                 case (int)Unloader_Transfer_Step.TransferX_Move_ReadyPos_DoneCheck:                       //  Transfer X 축, Stacker 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_X) && MC_Func.MC_PosTolerance((int)nAxis.TR_X, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_X) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.TR_X, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer X 축, 대기 위치로 이동 완료");
 
@@ -2842,25 +2642,14 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer X 축, 대기 위치로 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
+                        m_strTemp = "Transfer X 축, 대기 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Transfer_X_Move_To_Ready_Pos);
-                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
-
-                        MessageBox.Show("Transfer X 축, 대기 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
                 /// <summary>
                 /// Transfer 대기 위치로 이동 - 완료
                 /// </summary>
-
-
 
                 /// <summary>
                 /// Work Stage 에서 Module Pick Up - 시작
@@ -2871,64 +2660,32 @@ namespace QMC.Common.Modules
 
                     if (workStage.m_nLaserDrilling_MainStep > (int)WorkStage.LaserDrilling_Step.None)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Laser Drilling 중.");
-
-                        //  Out.
-
-                        //////////////////////////////////////////////////////////////////////////////////////////
-                        //  재시작 위치 저장용
-                        //
-                        Equipment.MachineStop_byTimeout_Unloader = true;
                         Unloader_CurrentStatus_Save_StopedByTimeout();
-                        //
-                        //  재시작 위치 저장용
-                        //////////////////////////////////////////////////////////////////////////////////////////
 
+                        m_strTemp = "Laser Drilling 중.";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.Drilling_NotCompleted);
-                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
                     }
                     else if (unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Inner) ||
                             unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Outer))
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "TR Picker 에 자재 있음.");
-
-                        //  Out.
-
-                        //////////////////////////////////////////////////////////////////////////////////////////
-                        //  재시작 위치 저장용
-                        //
-                        Equipment.MachineStop_byTimeout_Unloader = true;
                         Unloader_CurrentStatus_Save_StopedByTimeout();
-                        //
-                        //  재시작 위치 저장용
-                        //////////////////////////////////////////////////////////////////////////////////////////
 
+                        m_strTemp = "TR Picker 에 자재 있음.";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Transfer_Picker_Module_Exist);
-                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
                     }
                     else if (Equipment.Machine_VacuumSensor_Enable && !workStage.workStageParameter.DI_Stage_Vacuum_Check() && 
                         !m_bUnloader_WorkStage_PickUp_Retry)                                                                        //  Work Stage 에서 Module Pick Up 실패 시 재시도 할 경우, Stage Vacuum 이 파기된 상태이므로 체크하지 않는다.
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage 에 자재 없음.");
-
-                        //  Out.
-
-                        //////////////////////////////////////////////////////////////////////////////////////////
-                        //  재시작 위치 저장용
-                        //
-                        Equipment.MachineStop_byTimeout_Unloader = true;
                         Unloader_CurrentStatus_Save_StopedByTimeout();
-                        //
-                        //  재시작 위치 저장용
-                        //////////////////////////////////////////////////////////////////////////////////////////
 
+                        m_strTemp = "Work Stage 에 자재 없음.";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.WorkStage_Module_NotExist);
-                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
                     }
                     else
                     {
-                        //Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage Module Pick Up 조건 OK");
-
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_ReadyPos;
                     }
                     break;
@@ -2944,7 +2701,8 @@ namespace QMC.Common.Modules
 
                 case (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_ReadyPos_DoneCheck:                       //  Transfer Z 축, 대기 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 완료");
 
@@ -2952,22 +2710,12 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
+                        m_strTemp = "대기 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Transfer_Z_Move_To_WorkStage_PickUp_Pos);
-                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
 
-                        MessageBox.Show("Transfer Z 축, 대기 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
-
-
                 case (int)Unloader_Transfer_Step.WorkStagePickUp_WorkStageCycle_UnloadingPos_Start:                            //  Work Stage, Unloading 위치로 이동 Cycle 시작
 
                     //if (!workStage.m_bWorkStageMove_Complete)
@@ -3018,18 +2766,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage, Module Unloading 위치로 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
+                        m_strTemp = "Work Stage, Module Unloading 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_WorkStage_Move_To_Unloading_Pos);
-                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
 
-                        MessageBox.Show("Work Stage, Module Unloading 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -3044,7 +2784,8 @@ namespace QMC.Common.Modules
 
                 case (int)Unloader_Transfer_Step.WorkStagePickUp_TransferX_Move_WorkStagePos_DoneCheck:                       //  Transfer X 축, Work Stage 위치로 이동 완료 확인 (Work Stage Unloading 위치로 이동 Cycle 완료 확인 후, Transfer X 이동 완료 확인)
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_X) && MC_Func.MC_PosTolerance((int)nAxis.TR_X, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_X) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.TR_X, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer X 축, Work Stage 위치로 이동 완료");
 
@@ -3076,18 +2817,9 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000 * 2)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer X 축, Work Stage 위치로 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
+                        m_strTemp = "Transfer X 축, Work Stage 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Transfer_X_Move_To_WorkStage_Pos);
-                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
-
-                        MessageBox.Show("Transfer X 축, Work Stage 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -3102,7 +2834,8 @@ namespace QMC.Common.Modules
 
                 case (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_PickUpPos_1stStep_DoneCheck:                       //  Transfer Z 축, Module Pick Up 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, Module Pickup 대기 위치로 이동 완료");
 
@@ -3110,19 +2843,9 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, Module Pickup 대기 위치로 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
-
-                        return AlarmPost(AlarmKey.UL_Transfer_Z_Move_To_WorkStage_PickUp_Pos);  
-                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
-
-                        MessageBox.Show("Transfer Z 축, Module Pickup 대기 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        m_strTemp = "Transfer Z 축, Module Pickup 대기 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Z_Move_To_WorkStage_PickUp_Pos);
                     }
                     break;
 
@@ -3137,7 +2860,8 @@ namespace QMC.Common.Modules
 
                 case (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_PickUpPos_2ndStep_DoneCheck:                       //  Transfer Z 축, Module Pick Up 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, Module Pickup 위치로 이동 완료");
 
@@ -3145,18 +2869,9 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, Module Pickup 위치로 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
+                        m_strTemp = "Transfer Z 축, Module Pickup 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Transfer_Z_Move_To_WorkStage_PickUp_Pos);
-                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
-
-                        MessageBox.Show("Transfer Z 축, Module Pickup 위치로 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -3178,8 +2893,10 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage, Module Vacuum Off");
 
                     workStage.workStageParameter.DO_Stage_Vacuum(false);
+                    Thread.Sleep(10); //  진공이 동작하는 경우가 있어서, Off 코드 추가
                     workStage.workStageParameter.DO_Stage_Blow(true);                   //  Blow On
 
+                    // Todo : 수정 필요
                     //  Stage Vacuum Off 시, 진공레귤레이터도 함께 동작시켜야 한다.
                     workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
 
@@ -3193,6 +2910,7 @@ namespace QMC.Common.Modules
 
                     //  Stage Vacuum 을 Off 했는데, 진공이 동작하는 경우가 있어서, Off 코드 추가
                     workStage.workStageParameter.DO_Stage_Vacuum(false);
+                    Thread.Sleep(10); //  진공이 동작하는 경우가 있어서, Off 코드 추가
                     workStage.workStageParameter.DO_Stage_Blow(true);                   //  Blow On
 
                     if (((!Equipment.Machine_VacuumSensor_Enable && (TickCount_Elapsed((int)TickType.TICK_ULTR) > Equipment.Machine_SignalHoldTime)) ||
@@ -3214,7 +2932,6 @@ namespace QMC.Common.Modules
                         //  Stage Vacuum Off 시, 진공레귤레이터도 함께 동작시켜야 한다. (안꺼질 때가 있어서 한번 더)
                         workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
 
-
                         //////////////////////////////////////////////////////////////////////////////////////////
                         //  복원 지점 체크용 (Work Stage 에서 Module Pick Up 완료)
                         //
@@ -3223,22 +2940,13 @@ namespace QMC.Common.Modules
                         //  복원 지점 체크용 (Work Stage 에서 Module Pick Up 완료)
                         //////////////////////////////////////////////////////////////////////////////////////////
 
-
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_ReadyPos2_1stStep;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 10000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage, Module Vacuum Off 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
+                        m_strTemp = "Work Stage, Module Vacuum Off 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_WorkStage_Vacuum_Off);
-                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
-
-                        MessageBox.Show("Work Stage, Module Vacuum Off 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -3248,6 +2956,7 @@ namespace QMC.Common.Modules
 
                     //  Stage Vacuum 을 Off 했는데, 진공이 동작하는 경우가 있어서, Off 코드 추가
                     workStage.workStageParameter.DO_Stage_Vacuum(false);
+                    Thread.Sleep(10); //  진공이 동작하는 경우가 있어서, Off 코드 추가
                     workStage.workStageParameter.DO_Stage_Blow(true);                   //  Blow On
 
                     m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_ReadyPos2_1stStep_DoneCheck;
@@ -3256,30 +2965,23 @@ namespace QMC.Common.Modules
 
                 case (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_ReadyPos2_1stStep_DoneCheck:                       //  Transfer Z 축, 대기 위치로 이동 완료 확인 (여기서 Transfer Picker 의 Vacuum On 과 Work Stage 의 Vacuum Off 를 동시에 확인)
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 1단계 이동 완료");
 
                         //  Stage Vacuum 을 Off 했는데, 진공이 동작하는 경우가 있어서, Off 코드 추가
                         workStage.workStageParameter.DO_Stage_Vacuum(false);
+                        Thread.Sleep(10); //  진공이 동작하는 경우가 있어서, Off 코드 추가
                         workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
 
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_ReadyPos2_2ndStep;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 1단계 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
+                        m_strTemp = "Transfer Z 축, 대기 위치로 1단계 이동 실패. (Timeout))";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.UL_Transfer_Z_Move_To_Ready_Pos_Fail);
-
-                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
-
-                        MessageBox.Show("Transfer Z 축, 대기 위치로 1단계 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -3294,17 +2996,16 @@ namespace QMC.Common.Modules
 
                 case (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_ReadyPos2_2ndStep_DoneCheck:                       //  Transfer Z 축, 대기 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 2단계 이동 완료");
 
                         workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
 
-
                         if (Equipment.Machine_VacuumSensor_Enable)
                         {
                             //  여기서 Module 을 정상적으로 들어올렸는지 다시 체크
-
                             if (unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Inner) ||
                                 unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Outer))
                             {
@@ -3314,9 +3015,6 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer 축, Module Picker Vacuum On 확인 실패");
-
-
                                 //////////////////////////////////////////////////////////////////////////////////////////
                                 //  복원 지점 체크용 (Work Stage 에서 Module Pick Up 실패) - Picker 공압이 형성되지  않음
                                 //
@@ -3325,27 +3023,36 @@ namespace QMC.Common.Modules
                                 //  복원 지점 체크용 (Work Stage 에서 Module Pick Up 실패)
                                 //////////////////////////////////////////////////////////////////////////////////////////
 
+                                m_bUnloader_WorkStage_PickUp_Retry = true;
 
+                                Unloader_CurrentStatus_Save_StopedByTimeout();
+
+                                m_strTemp = "Transfer 축, Module Picker Vacuum On 확인 실패)";
+                                Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                                return AlarmPost(AlarmKey.UL_Transfer_Picker_Vacuum_On_Check);
+
+
+                                Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer 축, Module Picker Vacuum On 확인 실패");
+                                //////////////////////////////////////////////////////////////////////////////////////////
+                                //  복원 지점 체크용 (Work Stage 에서 Module Pick Up 실패) - Picker 공압이 형성되지  않음
+                                //
+                                m_bUL_Transfer_fromWorkStage_Module_PickUp_Complete_Flag = false;
+                                //
+                                //  복원 지점 체크용 (Work Stage 에서 Module Pick Up 실패)
+                                //////////////////////////////////////////////////////////////////////////////////////////
                                 //  알람 정지 (LED Bar - Red Blink)
                                 Equipment.MachineStop_byAlarm = true;
-
-
                                 //////////////////////////////////////////////////////////////////////////////////////////
                                 //  재시작 위치 저장용
                                 //
-
                                 m_bUnloader_WorkStage_PickUp_Retry = true;
-
                                 Equipment.MachineStop_byTimeout_Unloader = true;
                                 Unloader_CurrentStatus_Save_StopedByTimeout();
                                 //
                                 //  재시작 위치 저장용
                                 //////////////////////////////////////////////////////////////////////////////////////////
-
                                 return AlarmPost(AlarmKey.UL_Transfer_Picker_Vacuum_On_Check);
-
                                 m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
-
                                 MessageBox.Show("Module Picker Vacuum On 확인 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                         }
@@ -3356,6 +3063,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
+                        m_strTemp = "Transfer Z 축, 대기 위치로 2단계 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Z_Move_To_Ready_Pos_Fail);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 2단계 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
@@ -3395,8 +3106,11 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 의 Full 감지 센서에 Module 이 감지되고, Module PutDown 조건도 NG.");
+                            m_strTemp = "Stacker0 의 Full 감지 센서에 Module 이 감지되지 않고, Module PutDown 조건도 NG.";
+                            Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                            return AlarmPost(AlarmKey.UL_Transfer_Error);
 
+                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 의 Full 감지 센서에 Module 이 감지되지 않고, Module PutDown 조건도 NG.");
                             //  Out.
                             m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
                         }
@@ -3404,6 +3118,12 @@ namespace QMC.Common.Modules
                     else if (Equipment.Machine_VacuumSensor_Enable && !unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Inner) &&
                                                                     !unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Outer))
                     {
+                        Unloader_CurrentStatus_Save_StopedByTimeout();
+
+                        m_strTemp = "Picker 에 자재가 감지되지 않음.";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Picker_Module_NotExist);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Picker 에 자재가 감지되지 않음.");
 
                         //  Out.
@@ -3422,10 +3142,15 @@ namespace QMC.Common.Modules
                     }
                     else if (m_nStacker0_ModulePutdownWaitingPos_Step > (int)StackerModulePutdownWaitingPos_Step.None)                                                       //  Stacker0 이 동작중
                     {
+                        Unloader_CurrentStatus_Save_StopedByTimeout();
+
+                        m_strTemp = "Stacker0 이 동작중이므로 Module PutDown 동작 중지.";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Stacker0_Running);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 이 동작중이므로 Module PutDown 동작 중지.");
 
                         //  Out. (Stacker 동작이 완료되면 진행하도록 대기할 것인지는 테스트 하면서 결정하기로 함)
-
                         //////////////////////////////////////////////////////////////////////////////////////////
                         //  재시작 위치 저장용
                         //
@@ -3441,7 +3166,6 @@ namespace QMC.Common.Modules
                     else
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker0 Module PutDown 조건 OK");
-
                         m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Stacker0PutDown_TransferZ_Move_ReadyPos;
                     }
                     break;
@@ -3483,6 +3207,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
+                        m_strTemp = "Transfer Z 축, 대기 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
@@ -3534,6 +3262,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
+                        m_strTemp = "Transfer X 축, Stacker0 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer X 축, Stacker0 위치로 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
@@ -3585,6 +3317,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
+                        m_strTemp = "Transfer Z 축, Module Put Down 대기 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, Module Put Down 대기 위치로 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
@@ -3636,6 +3372,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
+                        m_strTemp = "Transfer Z 축, Module Put Down 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, Module Put Down 위치로 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
@@ -3678,6 +3418,12 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 10000)
                     {
+                        unloaderParameter.DO_Unloader_Picker_Blow(false);
+
+                        m_strTemp = "Transfer 축, Module Picker Vacuum Off 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer 축, Module Picker Vacuum Off 실패. (Timeout)");
 
                         unloaderParameter.DO_Unloader_Picker_Blow(false);
@@ -3723,7 +3469,8 @@ namespace QMC.Common.Modules
 
                 case (int)Unloader_Transfer_Step.Stacker0PutDown_TransferZ_Move_ReadyPos2_1stStep_DoneCheck:                       //  Transfer Z 축, 대기 위치로 이동 완료 확인 (then Picker Blow Off)
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 1단계 이동 완료");
 
@@ -3731,6 +3478,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
+                        m_strTemp = "Transfer Z 축, 대기 위치로 1단계 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 1단계 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
@@ -3782,6 +3533,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
+                        m_strTemp = "Transfer Z 축, 대기 위치로 2단계 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 2단계 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
@@ -3820,8 +3575,11 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker1 의 Full 감지 센서에 Module 이 감지되고, Module PutDown 조건도 NG.");
+                            m_strTemp = "Stacker1 의 Full 감지 센서에 Module 이 감지되지 않고, Module PutDown 조건도 NG.";
+                            Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                            return AlarmPost(AlarmKey.UL_Transfer_Error);
 
+                            Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker1 의 Full 감지 센서에 Module 이 감지되지 않고, Module PutDown 조건도 NG.");
                             //  Out.
                             m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
                         }
@@ -3829,6 +3587,12 @@ namespace QMC.Common.Modules
                     else if (Equipment.Machine_VacuumSensor_Enable && !unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Inner) &&
                                                                     !unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Outer))
                     {
+                        Unloader_CurrentStatus_Save_StopedByTimeout();
+
+                        m_strTemp = "Picker 에 자재가 감지되지 않음.";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Picker_Module_NotExist);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Picker 에 자재가 감지되지 않음.");
 
                         //  Out.
@@ -3847,6 +3611,12 @@ namespace QMC.Common.Modules
                     }
                     else if (m_nStacker1_ModulePutdownWaitingPos_Step > (int)StackerModulePutdownWaitingPos_Step.None)                                                       //  Stacker1 이 동작중
                     {
+                        Unloader_CurrentStatus_Save_StopedByTimeout();
+
+                        m_strTemp = "Stacker1 이 동작중이므로 Module PutDown 동작 중지.";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Stacker1 이 동작중이므로 Module PutDown 동작 중지.");
 
                         //  Out. (Stacker 동작이 완료되면 진행하도록 대기할 것인지는 테스트 하면서 결정하기로 함)
@@ -3900,7 +3670,8 @@ namespace QMC.Common.Modules
 
                 case (int)Unloader_Transfer_Step.Stacker1PutDown_TransferZ_Move_ReadyPos_DoneCheck:                       //  Transfer Z 축, 대기 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 완료");
 
@@ -3908,6 +3679,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
+                        m_strTemp = "Transfer Z 축, 대기 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
@@ -3951,7 +3726,8 @@ namespace QMC.Common.Modules
 
                 case (int)Unloader_Transfer_Step.Stacker1PutDown_TransferX_Move_StackerPos_DoneCheck:                       //  Transfer X 축, Stacker 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_X) && MC_Func.MC_PosTolerance((int)nAxis.TR_X, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_X) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.TR_X, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer X 축, Stacker1 위치로 이동 완료");
 
@@ -3959,6 +3735,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
+                        m_strTemp = "Transfer X 축, Stacker1 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer X 축, Stacker1 위치로 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
@@ -4010,6 +3790,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
+                        m_strTemp = "Transfer Z 축, Module Put Down 대기 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, Module Put Down 대기 위치로 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
@@ -4061,6 +3845,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
+                        m_strTemp = "Transfer Z 축, Module Put Down 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, Module Put Down 위치로 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
@@ -4103,6 +3891,12 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 10000)
                     {
+                        unloaderParameter.DO_Unloader_Picker_Blow(false);
+
+                        m_strTemp = "Transfer 축, Module Picker Vacuum Off 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer 축, Module Picker Vacuum Off 실패. (Timeout)");
 
                         unloaderParameter.DO_Unloader_Picker_Blow(false);
@@ -4148,7 +3942,8 @@ namespace QMC.Common.Modules
 
                 case (int)Unloader_Transfer_Step.Stacker1PutDown_TransferZ_Move_ReadyPos2_1stStep_DoneCheck:                       //  Transfer Z 축, 대기 위치로 이동 완료 확인 (then Picker Blow Off)
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 1단계 이동 완료");
 
@@ -4156,6 +3951,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
+                        m_strTemp = "Transfer Z 축, 대기 위치로 1단계 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 1단계 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
@@ -4207,6 +4006,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
+                        m_strTemp = "Transfer Z 축, 대기 위치로 2단계 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 2단계 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
@@ -4236,6 +4039,12 @@ namespace QMC.Common.Modules
                     if (!workStage.m_bMainWorkCycle_DryRun && Equipment.Machine_VacuumSensor_Enable && !unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Inner) && 
                                                                                                         !unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)UnloaderParameter.PickerVacuumPos.Outer))
                     {
+                        Unloader_CurrentStatus_Save_StopedByTimeout();
+
+                        m_strTemp = "Picker 에 Module 이 감지되지 않음.";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Picker_Module_NotExist);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Picker 에 Module 이 감지되지 않음.");
 
                         //  Out.
@@ -4254,6 +4063,12 @@ namespace QMC.Common.Modules
                     }
                     else if (!unloaderParameter.DI_Unloader_NG_Stacker_FullCheck())              //  감지 시 Off
                     {
+                        Unloader_CurrentStatus_Save_StopedByTimeout();
+
+                        m_strTemp = "NG-Port Full.";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Picker_Module_NotExist);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "NG-Port Full.");
 
                         //  Out.
@@ -4308,7 +4123,8 @@ namespace QMC.Common.Modules
 
                 case (int)Unloader_Transfer_Step.NgStackerDrop_TransferZ_Move_ReadyPos_DoneCheck:                       //  Transfer Z 축, 대기 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 완료");
 
@@ -4316,6 +4132,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
+                        m_strTemp = "Transfer Z 축, 대기 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Picker_Module_NotExist);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
@@ -4360,7 +4180,8 @@ namespace QMC.Common.Modules
 
                 case (int)Unloader_Transfer_Step.NgStackerDrop_TransferX_Move_NgStackerPos_DoneCheck:                       //  Transfer X 축, NG-Stacker 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_X) && MC_Func.MC_PosTolerance((int)nAxis.TR_X, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_X) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.TR_X, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer X 축, NG-Port Module Drop 위치로 이동 완료");
 
@@ -4368,6 +4189,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
+                        m_strTemp = "Transfer X 축, NG-Port Module Drop 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer X 축, NG-Port Module Drop 위치로 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
@@ -4420,6 +4245,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
+                        m_strTemp = "Transfer Z 축, Module Drop 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, Module Drop 위치로 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
@@ -4462,6 +4291,12 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 10000)
                     {
+                        unloaderParameter.DO_Unloader_Picker_Blow(false);
+
+                        m_strTemp = "Transfer 축, Module Picker Vacuum Off 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer 축, Module Picker Vacuum Off 실패. (Timeout)");
 
                         unloaderParameter.DO_Unloader_Picker_Blow(false);
@@ -4508,7 +4343,8 @@ namespace QMC.Common.Modules
 
                 case (int)Unloader_Transfer_Step.NgStackerDrop_TransferZ_Move_ReadyPos2_DoneCheck:                       //  Transfer Z 축, 대기 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
+                    if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && 
+                        MC_Func.MC_PosTolerance((int)nAxis.TR_Z, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 완료");
 
@@ -4516,6 +4352,10 @@ namespace QMC.Common.Modules
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
+                        m_strTemp = "Transfer Z 축, 대기 위치로 이동 실패. (Timeout)";
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 실패. (Timeout)");
 
                         //  알람 정지 (LED Bar - Red Blink)
@@ -4538,11 +4378,6 @@ namespace QMC.Common.Modules
                 case (int)Unloader_Transfer_Step.Complete:
 
                     Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "완료");
-
-                    //  m_bHomeOK = true;
-
-                    //timer_Motion_Home.Enabled = false;
-                    //m_btimer_Motion_Home_Stop = true;
 
                     switch (m_nUnloaderTransferMoveType)
                     {
@@ -4568,8 +4403,6 @@ namespace QMC.Common.Modules
                             workStage.m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.None;       //  모듈을 Unloading 했으니 결과데이터 초기화
                             m_bStacker0_Complete = false;                                                       //  Module 내려놨으면 Stacker 높이 재조정해야 함.
 
-
-
                             //  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
                             if (Equipment.CycleStop)
                             {
@@ -4590,8 +4423,6 @@ namespace QMC.Common.Modules
 
                             workStage.m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.None;       //  모듈을 Unloading 했으니 결과데이터 초기화
                             m_bStacker1_Complete = false;                                                       //  Module 내려놨으면 Stacker 높이 재조정해야 함.
-
-
 
                             //  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
                             if (Equipment.CycleStop)
@@ -4628,15 +4459,18 @@ namespace QMC.Common.Modules
                             break;
 
                         default:            //  Error
+                            m_strTemp = "동작 타입 목록에 없음";
+                            Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                            return AlarmPost(AlarmKey.UL_Transfer_Error);
+
                             Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "동작 타입 목록에 없음");
                             break;
                     }
 
                     m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
-
-                    //MessageBox.Show(m_strTemp, "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
             }
+
             return 0;
         }
 
@@ -4865,10 +4699,6 @@ namespace QMC.Common.Modules
 
         #endregion
 
-
-
-
-
         #region Event Handler
 
 
@@ -4914,20 +4744,19 @@ namespace QMC.Common.Modules
                 {
                     m_nStacker0_ModulePutdownWaitingPos_Step_Recovery = SetRecoveryStaker0(m_nStacker0_ModulePutdownWaitingPos_Step);
                 }
+
                 ret = Run_Stacker1Module_PutdownWaitingPos_Func();
                 if (ret != 0)
                 {
                     m_nStacker1_ModulePutdownWaitingPos_Step_Recovery = SetRecoveryStaker1(m_nStacker1_ModulePutdownWaitingPos_Step);
                 }
+
                 ret = Run_Transfer_Cycle_Func();
                 if (ret != 0)
                 {
                     m_nUnloader_Transfer_Step_Recovery = SetRecoveryTransfer(m_nUnloader_Transfer_Step);
                 }
                 
-
-
-                //Console.WriteLine($"UnLoaderWork Running at {DateTime.Now}, Step: {m_nUnloader_Transfer_Step}");
             }
             catch (Exception ex)
             {
@@ -6612,13 +6441,13 @@ namespace QMC.Common.Modules
 
         public void SetRecovery()
         {
-            SetRecoveryStaker0(m_nStacker0_ModulePutdownWaitingPos_Step_Recovery);
+            SetRecoveryStaker0(m_nStacker0_ModulePutdownWaitingPos_Step);
             m_nStacker0_ModulePutdownWaitingPos_Step = m_nStacker0_ModulePutdownWaitingPos_Step_Recovery;
 
-            SetRecoveryStaker1(m_nStacker1_ModulePutdownWaitingPos_Step_Recovery);
+            SetRecoveryStaker1(m_nStacker1_ModulePutdownWaitingPos_Step);
             m_nStacker1_ModulePutdownWaitingPos_Step = m_nStacker1_ModulePutdownWaitingPos_Step_Recovery;
 
-            SetRecoveryTransfer(m_nUnloader_Transfer_Step_Recovery);
+            SetRecoveryTransfer(m_nUnloader_Transfer_Step);
             m_nUnloader_Transfer_Step = m_nUnloader_Transfer_Step_Recovery;
         }
 

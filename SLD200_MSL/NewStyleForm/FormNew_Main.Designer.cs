@@ -112,6 +112,8 @@
             this.button_TestbyUser_LPort_Start = new System.Windows.Forms.Button();
             this.baseTextBox_DryRun_ProcessingTime = new SLD200_MSL.BaseTextBox();
             this.baseLabel5 = new SLD200_MSL.BaseLabel();
+            this.label_Title_Stacker_LPort = new System.Windows.Forms.Label();
+            this.label_Title_Stacker_RPort = new System.Windows.Forms.Label();
             this.groupBoxMain_ModuleProcessingStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -766,7 +768,7 @@
             this.button_Main_RecipeOpen.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_RecipeOpen.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Main_RecipeOpen.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_Main_RecipeOpen.Location = new System.Drawing.Point(1504, 163);
+            this.button_Main_RecipeOpen.Location = new System.Drawing.Point(-58, -21);
             this.button_Main_RecipeOpen.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_RecipeOpen.Name = "button_Main_RecipeOpen";
             this.button_Main_RecipeOpen.Size = new System.Drawing.Size(167, 44);
@@ -897,6 +899,7 @@
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete);
+            this.groupBox1.Controls.Add(this.button_Main_RecipeOpen);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_RPort_Complete);
@@ -1303,19 +1306,48 @@
             this.baseLabel5.Text = "(Dry Run Processing Time (sec) :";
             this.baseLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // label_Title_Stacker_LPort
+            // 
+            this.label_Title_Stacker_LPort.BackColor = System.Drawing.Color.Black;
+            this.label_Title_Stacker_LPort.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Title_Stacker_LPort.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Title_Stacker_LPort.ForeColor = System.Drawing.Color.Lime;
+            this.label_Title_Stacker_LPort.Location = new System.Drawing.Point(1348, 144);
+            this.label_Title_Stacker_LPort.Name = "label_Title_Stacker_LPort";
+            this.label_Title_Stacker_LPort.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.label_Title_Stacker_LPort.Size = new System.Drawing.Size(322, 40);
+            this.label_Title_Stacker_LPort.TabIndex = 205;
+            this.label_Title_Stacker_LPort.Text = "OP Recipe";
+            this.label_Title_Stacker_LPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label_Title_Stacker_RPort
+            // 
+            this.label_Title_Stacker_RPort.BackColor = System.Drawing.Color.Black;
+            this.label_Title_Stacker_RPort.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Title_Stacker_RPort.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            this.label_Title_Stacker_RPort.ForeColor = System.Drawing.Color.Lime;
+            this.label_Title_Stacker_RPort.Location = new System.Drawing.Point(1347, 194);
+            this.label_Title_Stacker_RPort.Name = "label_Title_Stacker_RPort";
+            this.label_Title_Stacker_RPort.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.label_Title_Stacker_RPort.Size = new System.Drawing.Size(322, 40);
+            this.label_Title_Stacker_RPort.TabIndex = 206;
+            this.label_Title_Stacker_RPort.Text = "OP Recipe";
+            this.label_Title_Stacker_RPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // FormNew_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 877);
             this.ControlBox = false;
+            this.Controls.Add(this.label_Title_Stacker_RPort);
+            this.Controls.Add(this.label_Title_Stacker_LPort);
             this.Controls.Add(this.button_TestbyUser_LPort_Start);
             this.Controls.Add(this.groupBox_CoarseCam);
             this.Controls.Add(this.groupBox_FineCam);
             this.Controls.Add(this.button_TEST12);
             this.Controls.Add(this.checkBox_Main_AutoRun);
             this.Controls.Add(this.buttonForceMaterialOut);
-            this.Controls.Add(this.button_Main_RecipeOpen);
             this.Controls.Add(this.button_Main_WorkStage_Continue);
             this.Controls.Add(this.button_Main_Unloader_Continue);
             this.Controls.Add(this.button_Main_Loader_Continue);
@@ -1460,5 +1492,7 @@
         private System.Windows.Forms.Button button_TEST12;
         private System.Windows.Forms.Button button_TestbyUser_LPort_Start;
         private System.Windows.Forms.CheckBox checkBox_Main_AlignStartSocket_SelectMode;
+        private System.Windows.Forms.Label label_Title_Stacker_LPort;
+        private System.Windows.Forms.Label label_Title_Stacker_RPort;
     }
 }

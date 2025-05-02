@@ -848,12 +848,10 @@ namespace QMC.Common.Parts
                     }
                     catch (Exception ex)
                     {
-                        Log.Write(ex);
                         avgValue.X = 0;
                         avgValue.Y = 0;
                         Log.Write(ex);
                     }
-                    //Log.Write("ScannerCompensator", string.Format($"PatternX : {avgValue.X}, PatternY : {avgValue.Y}"));
 
                     if (((WorkStage)this.Owner).Config.ParamConfig.ManualScale_Usage)
                     {
@@ -863,18 +861,15 @@ namespace QMC.Common.Parts
                         m_TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
                         m_TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
                         VisionScale.ConvertPosition<XyCoordinate>(m_TempScale, Camera.Resolution, avgValue, out resultPosition);
-                        //Log.Write("ScannerCompensator", string.Format($"PatternX : {avgValue.X}, PatternY : {avgValue.Y}"));
                     }
                     else
                     {
                         VisionScale.ConvertPosition<XyCoordinate>(m_Owner.Scale, Camera.Resolution, avgValue, out resultPosition);
-                        //Log.Write("ScannerCompensator", string.Format($"PatternX : {avgValue.X}, PatternY : {avgValue.Y}"));
                     }
 
                     result = new PositionOffset((XyCoordinate)task.Result.CommandPosition, resultPosition);
                     results.Add(result);
 
-                    //double xIndex = defaultXIndex - this.Config.PitchDistanceX * x;
                     double xIndex = defaultXIndex - this.Config.PitchDistanceX * task.Result.x;
                     double yIndex = defaultYIndex + this.Config.PitchDistanceY * task.Result.y;
 
@@ -892,7 +887,7 @@ namespace QMC.Common.Parts
                     //LogManager.Instance.WriteTxt(fileName, string.Format($"{x}, {y} : {xIndex.ToString("0.000")}, {yIndex.ToString("0.000")}, {resultX.ToString("0.000")}, {resultY.ToString("0.000")}"));
 
                     //Motor <-> Scanner 좌표에 따른 x, y -> y, x 반전.
-                    int x = task.Result.x;// TruncateTo3DecimalPlaces()
+                    int x = task.Result.x;  // TruncateTo3DecimalPlaces()
                     int y = task.Result.y;
                     double dX = TruncateTo3DecimalPlacesAndZeroRest(yIndex);
                     double dY = TruncateTo3DecimalPlacesAndZeroRest(xIndex);
@@ -900,8 +895,6 @@ namespace QMC.Common.Parts
                     double dMeasureY = TruncateTo3DecimalPlacesAndZeroRest(resultX);
 
                     findLenzCenter.AddSLDMeasureData(new SLDMeasureData(x, y, dX, dY, dMeasureX, dMeasureY));
-                    //findLenzCenter.AddSLDMeasureData(new SLDMeasureData(task.Result.x, task.Result.y, yIndex, xIndex, resultY, resultX));
-                    //findLenzCenter.AddSLDMeasureData(new SLDMeasureData(x, y, yIndex, xIndex, offset.Y, offset.X));
                 }
                 catch (Exception ex)
                 {
