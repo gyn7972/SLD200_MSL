@@ -386,7 +386,6 @@ namespace QMC.Common.Parts
                         position = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
                         Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"positionX1{position.X}, positionY1{position.Y}"));
 
-
                         //  속도 설정
                         lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
                         lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
@@ -562,18 +561,14 @@ namespace QMC.Common.Parts
 
                             XyzCoordinate position2 = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
 
-
-
                             //currentPosition.X -= dXoffset;
-
                             //currentPosition.Y += dYoffset;
 
-
                             double dRefAngle = GetAngle(new XyCoordinate(position1.X,position1.Y), new XyCoordinate(position2.X, position2.Y));
-                            position1.X -= finalFirstPosition.X;
+                            position1.X += finalFirstPosition.X;
                             position1.Y += finalFirstPosition.Y;
 
-                            position2.X -= finalSecondPosition.X;
+                            position2.X += finalSecondPosition.X;
                             position2.Y += finalSecondPosition.Y;
 
                             dAngle = GetAngle(new XyCoordinate(position1.X, position1.Y), new XyCoordinate(position2.X, position2.Y));
