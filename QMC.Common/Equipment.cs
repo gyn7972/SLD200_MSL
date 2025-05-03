@@ -35,6 +35,7 @@ using MessageBox = System.Windows.Forms.MessageBox;
 using QMC.Core;
 using static QMC.Common.Modules.Loader;
 using QMC.Common.Vision.Tools;
+using static System.Collections.Specialized.BitVector32;
 
 
 

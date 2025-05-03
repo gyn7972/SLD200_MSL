@@ -1361,6 +1361,15 @@ namespace SLD200_MSL
 
                     Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket 가공 진행할 것이 없으므로 Out");
 
+                    //  강제배출처럼 배출할 때는 집진기도 꺼준다.
+                    if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Button Click", "집진기 Off");
+
+                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
+                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                    }
+
                     workStage.m_bLaserDrilling_Complete = true;
                     workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
                     workStage.m_nSocketAlign_MainStep = (int)WorkStage.SocketAlign_Step.None;
@@ -1491,6 +1500,15 @@ namespace SLD200_MSL
 
                     Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket 가공 완료 상태. 진행할 Socket 없음.");
 
+                    //  강제배출처럼 배출할 때는 집진기도 꺼준다.
+                    if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Button Click", "집진기 Off");
+
+                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
+                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                    }
+
                     workStage.m_bLaserDrilling_Complete = true;
                     workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
                     workStage.m_nSocketAlign_MainStep = (int)WorkStage.SocketAlign_Step.None;
@@ -1501,6 +1519,19 @@ namespace SLD200_MSL
 
                     Log.Write("SLD-200", Equipment.User_Name, "Button Click", "가공은 이미 끝난 상태에서는 여기에 들어오지 않아야 함.");
                 }    
+            }
+
+
+            //  강제 배출일 경우, 집진기도 Off
+            if (workStage.m_bLaserDrilling_Complete && (workStage.m_nLaserDrilling_MainStep == 0) && (workStage.m_nSocketAlign_MainStep == 0))
+            {
+                if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
+                {
+                    Log.Write("SLD-200", Equipment.User_Name, "Button Click", "강제 배출, 집진기 Off");
+
+                    workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
+                    workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                }
             }
 
 

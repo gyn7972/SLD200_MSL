@@ -977,7 +977,7 @@
             // pictureBox_Main_DiviceStatus_Illuminator
             // 
             this.pictureBox_Main_DiviceStatus_Illuminator.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_Illuminator.Location = new System.Drawing.Point(361, 155);
+            this.pictureBox_Main_DiviceStatus_Illuminator.Location = new System.Drawing.Point(370, 155);
             this.pictureBox_Main_DiviceStatus_Illuminator.Name = "pictureBox_Main_DiviceStatus_Illuminator";
             this.pictureBox_Main_DiviceStatus_Illuminator.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_Illuminator.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -987,7 +987,7 @@
             // pictureBox_Main_DiviceStatus_CameraPre
             // 
             this.pictureBox_Main_DiviceStatus_CameraPre.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_CameraPre.Location = new System.Drawing.Point(361, 124);
+            this.pictureBox_Main_DiviceStatus_CameraPre.Location = new System.Drawing.Point(370, 124);
             this.pictureBox_Main_DiviceStatus_CameraPre.Name = "pictureBox_Main_DiviceStatus_CameraPre";
             this.pictureBox_Main_DiviceStatus_CameraPre.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_CameraPre.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -997,7 +997,7 @@
             // pictureBox_Main_DiviceStatus_CameraFine
             // 
             this.pictureBox_Main_DiviceStatus_CameraFine.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_CameraFine.Location = new System.Drawing.Point(361, 93);
+            this.pictureBox_Main_DiviceStatus_CameraFine.Location = new System.Drawing.Point(370, 93);
             this.pictureBox_Main_DiviceStatus_CameraFine.Name = "pictureBox_Main_DiviceStatus_CameraFine";
             this.pictureBox_Main_DiviceStatus_CameraFine.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_CameraFine.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -1007,7 +1007,7 @@
             // pictureBox_Main_DiviceStatus_HeightSensor
             // 
             this.pictureBox_Main_DiviceStatus_HeightSensor.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_HeightSensor.Location = new System.Drawing.Point(361, 62);
+            this.pictureBox_Main_DiviceStatus_HeightSensor.Location = new System.Drawing.Point(370, 62);
             this.pictureBox_Main_DiviceStatus_HeightSensor.Name = "pictureBox_Main_DiviceStatus_HeightSensor";
             this.pictureBox_Main_DiviceStatus_HeightSensor.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_HeightSensor.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -1017,7 +1017,7 @@
             // pictureBox_Main_DiviceStatus_ElectroRegulator
             // 
             this.pictureBox_Main_DiviceStatus_ElectroRegulator.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_ElectroRegulator.Location = new System.Drawing.Point(361, 31);
+            this.pictureBox_Main_DiviceStatus_ElectroRegulator.Location = new System.Drawing.Point(370, 31);
             this.pictureBox_Main_DiviceStatus_ElectroRegulator.Name = "pictureBox_Main_DiviceStatus_ElectroRegulator";
             this.pictureBox_Main_DiviceStatus_ElectroRegulator.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_ElectroRegulator.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -1027,7 +1027,7 @@
             // pictureBox_Main_DiviceStatus_BeamExpander
             // 
             this.pictureBox_Main_DiviceStatus_BeamExpander.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_BeamExpander.Location = new System.Drawing.Point(147, 155);
+            this.pictureBox_Main_DiviceStatus_BeamExpander.Location = new System.Drawing.Point(154, 155);
             this.pictureBox_Main_DiviceStatus_BeamExpander.Name = "pictureBox_Main_DiviceStatus_BeamExpander";
             this.pictureBox_Main_DiviceStatus_BeamExpander.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_BeamExpander.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -1037,7 +1037,7 @@
             // pictureBox_Main_DiviceStatus_Chiller
             // 
             this.pictureBox_Main_DiviceStatus_Chiller.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_Chiller.Location = new System.Drawing.Point(6, 155);
+            this.pictureBox_Main_DiviceStatus_Chiller.Location = new System.Drawing.Point(10, 155);
             this.pictureBox_Main_DiviceStatus_Chiller.Name = "pictureBox_Main_DiviceStatus_Chiller";
             this.pictureBox_Main_DiviceStatus_Chiller.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_Chiller.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -1047,7 +1047,7 @@
             // pictureBox_Main_DiviceStatus_Powermeter_Stage
             // 
             this.pictureBox_Main_DiviceStatus_Powermeter_Stage.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_Powermeter_Stage.Location = new System.Drawing.Point(147, 124);
+            this.pictureBox_Main_DiviceStatus_Powermeter_Stage.Location = new System.Drawing.Point(154, 124);
             this.pictureBox_Main_DiviceStatus_Powermeter_Stage.Name = "pictureBox_Main_DiviceStatus_Powermeter_Stage";
             this.pictureBox_Main_DiviceStatus_Powermeter_Stage.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_Powermeter_Stage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -1057,7 +1057,7 @@
             // pictureBox_Main_DiviceStatus_Powermeter_bds
             // 
             this.pictureBox_Main_DiviceStatus_Powermeter_bds.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_Powermeter_bds.Location = new System.Drawing.Point(147, 93);
+            this.pictureBox_Main_DiviceStatus_Powermeter_bds.Location = new System.Drawing.Point(154, 93);
             this.pictureBox_Main_DiviceStatus_Powermeter_bds.Name = "pictureBox_Main_DiviceStatus_Powermeter_bds";
             this.pictureBox_Main_DiviceStatus_Powermeter_bds.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_Powermeter_bds.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -1067,7 +1067,7 @@
             // pictureBox_Main_DiviceStatus_DustCollector_Lower
             // 
             this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Location = new System.Drawing.Point(147, 62);
+            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Location = new System.Drawing.Point(154, 62);
             this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Name = "pictureBox_Main_DiviceStatus_DustCollector_Lower";
             this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_DustCollector_Lower.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -1077,7 +1077,7 @@
             // pictureBox_Main_DiviceStatus_DustCollector_Upper
             // 
             this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Location = new System.Drawing.Point(147, 31);
+            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Location = new System.Drawing.Point(154, 31);
             this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Name = "pictureBox_Main_DiviceStatus_DustCollector_Upper";
             this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_DustCollector_Upper.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -1087,7 +1087,7 @@
             // pictureBox_Main_DiviceStatus_Scanner
             // 
             this.pictureBox_Main_DiviceStatus_Scanner.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_Scanner.Location = new System.Drawing.Point(6, 124);
+            this.pictureBox_Main_DiviceStatus_Scanner.Location = new System.Drawing.Point(10, 124);
             this.pictureBox_Main_DiviceStatus_Scanner.Name = "pictureBox_Main_DiviceStatus_Scanner";
             this.pictureBox_Main_DiviceStatus_Scanner.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_Scanner.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -1097,7 +1097,7 @@
             // pictureBox_Main_DiviceStatus_Motion
             // 
             this.pictureBox_Main_DiviceStatus_Motion.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_Motion.Location = new System.Drawing.Point(6, 31);
+            this.pictureBox_Main_DiviceStatus_Motion.Location = new System.Drawing.Point(10, 31);
             this.pictureBox_Main_DiviceStatus_Motion.Name = "pictureBox_Main_DiviceStatus_Motion";
             this.pictureBox_Main_DiviceStatus_Motion.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_Motion.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -1107,7 +1107,7 @@
             // pictureBox_Main_DiviceStatus_IO
             // 
             this.pictureBox_Main_DiviceStatus_IO.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_IO.Location = new System.Drawing.Point(6, 62);
+            this.pictureBox_Main_DiviceStatus_IO.Location = new System.Drawing.Point(10, 62);
             this.pictureBox_Main_DiviceStatus_IO.Name = "pictureBox_Main_DiviceStatus_IO";
             this.pictureBox_Main_DiviceStatus_IO.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_IO.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -1117,7 +1117,7 @@
             // pictureBox_Main_DiviceStatus_Laser
             // 
             this.pictureBox_Main_DiviceStatus_Laser.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_Laser.Location = new System.Drawing.Point(6, 93);
+            this.pictureBox_Main_DiviceStatus_Laser.Location = new System.Drawing.Point(10, 93);
             this.pictureBox_Main_DiviceStatus_Laser.Name = "pictureBox_Main_DiviceStatus_Laser";
             this.pictureBox_Main_DiviceStatus_Laser.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_Laser.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -1129,7 +1129,7 @@
             this.baseLabel_Main_Divice_Status_Illuminator.AutoSize = true;
             this.baseLabel_Main_Divice_Status_Illuminator.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_Illuminator.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_Illuminator.Location = new System.Drawing.Point(392, 158);
+            this.baseLabel_Main_Divice_Status_Illuminator.Location = new System.Drawing.Point(401, 158);
             this.baseLabel_Main_Divice_Status_Illuminator.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_Illuminator.Name = "baseLabel_Main_Divice_Status_Illuminator";
             this.baseLabel_Main_Divice_Status_Illuminator.Size = new System.Drawing.Size(75, 18);
@@ -1141,7 +1141,7 @@
             this.baseLabel_Main_Divice_Status_CameraPre.AutoSize = true;
             this.baseLabel_Main_Divice_Status_CameraPre.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_CameraPre.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_CameraPre.Location = new System.Drawing.Point(392, 127);
+            this.baseLabel_Main_Divice_Status_CameraPre.Location = new System.Drawing.Point(401, 127);
             this.baseLabel_Main_Divice_Status_CameraPre.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_CameraPre.Name = "baseLabel_Main_Divice_Status_CameraPre";
             this.baseLabel_Main_Divice_Status_CameraPre.Size = new System.Drawing.Size(80, 18);
@@ -1153,7 +1153,7 @@
             this.baseLabel_Main_Divice_Status_CameraFine.AutoSize = true;
             this.baseLabel_Main_Divice_Status_CameraFine.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_CameraFine.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_CameraFine.Location = new System.Drawing.Point(392, 96);
+            this.baseLabel_Main_Divice_Status_CameraFine.Location = new System.Drawing.Point(401, 96);
             this.baseLabel_Main_Divice_Status_CameraFine.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_CameraFine.Name = "baseLabel_Main_Divice_Status_CameraFine";
             this.baseLabel_Main_Divice_Status_CameraFine.Size = new System.Drawing.Size(85, 18);
@@ -1165,7 +1165,7 @@
             this.baseLabel_Main_Divice_Status_heightsensor.AutoSize = true;
             this.baseLabel_Main_Divice_Status_heightsensor.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_heightsensor.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_heightsensor.Location = new System.Drawing.Point(392, 65);
+            this.baseLabel_Main_Divice_Status_heightsensor.Location = new System.Drawing.Point(401, 65);
             this.baseLabel_Main_Divice_Status_heightsensor.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_heightsensor.Name = "baseLabel_Main_Divice_Status_heightsensor";
             this.baseLabel_Main_Divice_Status_heightsensor.Size = new System.Drawing.Size(93, 18);
@@ -1177,7 +1177,7 @@
             this.baseLabel_Main_Divice_Status_ElectroRequlator.AutoSize = true;
             this.baseLabel_Main_Divice_Status_ElectroRequlator.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_ElectroRequlator.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_ElectroRequlator.Location = new System.Drawing.Point(392, 34);
+            this.baseLabel_Main_Divice_Status_ElectroRequlator.Location = new System.Drawing.Point(401, 34);
             this.baseLabel_Main_Divice_Status_ElectroRequlator.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_ElectroRequlator.Name = "baseLabel_Main_Divice_Status_ElectroRequlator";
             this.baseLabel_Main_Divice_Status_ElectroRequlator.Size = new System.Drawing.Size(112, 18);
@@ -1189,7 +1189,7 @@
             this.baseLabel_Main_Divice_Status_BeamExpander.AutoSize = true;
             this.baseLabel_Main_Divice_Status_BeamExpander.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_BeamExpander.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_BeamExpander.Location = new System.Drawing.Point(178, 158);
+            this.baseLabel_Main_Divice_Status_BeamExpander.Location = new System.Drawing.Point(185, 158);
             this.baseLabel_Main_Divice_Status_BeamExpander.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_BeamExpander.Name = "baseLabel_Main_Divice_Status_BeamExpander";
             this.baseLabel_Main_Divice_Status_BeamExpander.Size = new System.Drawing.Size(107, 18);
@@ -1201,7 +1201,7 @@
             this.baseLabel_Main_Divice_Status_Chiller.AutoSize = true;
             this.baseLabel_Main_Divice_Status_Chiller.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_Chiller.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_Chiller.Location = new System.Drawing.Point(37, 158);
+            this.baseLabel_Main_Divice_Status_Chiller.Location = new System.Drawing.Point(41, 158);
             this.baseLabel_Main_Divice_Status_Chiller.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_Chiller.Name = "baseLabel_Main_Divice_Status_Chiller";
             this.baseLabel_Main_Divice_Status_Chiller.Size = new System.Drawing.Size(44, 18);
@@ -1213,7 +1213,7 @@
             this.baseLabel_Main_Divice_Status_Stage.AutoSize = true;
             this.baseLabel_Main_Divice_Status_Stage.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_Stage.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_Stage.Location = new System.Drawing.Point(178, 127);
+            this.baseLabel_Main_Divice_Status_Stage.Location = new System.Drawing.Point(185, 127);
             this.baseLabel_Main_Divice_Status_Stage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_Stage.Name = "baseLabel_Main_Divice_Status_Stage";
             this.baseLabel_Main_Divice_Status_Stage.Size = new System.Drawing.Size(130, 18);
@@ -1225,7 +1225,7 @@
             this.baseLabel_Main_Divice_Status_PowermeterBds.AutoSize = true;
             this.baseLabel_Main_Divice_Status_PowermeterBds.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_PowermeterBds.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_PowermeterBds.Location = new System.Drawing.Point(178, 96);
+            this.baseLabel_Main_Divice_Status_PowermeterBds.Location = new System.Drawing.Point(185, 96);
             this.baseLabel_Main_Divice_Status_PowermeterBds.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_PowermeterBds.Name = "baseLabel_Main_Divice_Status_PowermeterBds";
             this.baseLabel_Main_Divice_Status_PowermeterBds.Size = new System.Drawing.Size(117, 18);
@@ -1237,7 +1237,7 @@
             this.baseLabel_Main_Divice_Status_DustcollectorLower.AutoSize = true;
             this.baseLabel_Main_Divice_Status_DustcollectorLower.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_DustcollectorLower.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_DustcollectorLower.Location = new System.Drawing.Point(178, 65);
+            this.baseLabel_Main_Divice_Status_DustcollectorLower.Location = new System.Drawing.Point(185, 65);
             this.baseLabel_Main_Divice_Status_DustcollectorLower.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_DustcollectorLower.Name = "baseLabel_Main_Divice_Status_DustcollectorLower";
             this.baseLabel_Main_Divice_Status_DustcollectorLower.Size = new System.Drawing.Size(128, 18);
@@ -1249,7 +1249,7 @@
             this.baseLabel_Main_Divice_Status_DustcollectorUpper.AutoSize = true;
             this.baseLabel_Main_Divice_Status_DustcollectorUpper.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_DustcollectorUpper.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_DustcollectorUpper.Location = new System.Drawing.Point(178, 34);
+            this.baseLabel_Main_Divice_Status_DustcollectorUpper.Location = new System.Drawing.Point(185, 34);
             this.baseLabel_Main_Divice_Status_DustcollectorUpper.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_DustcollectorUpper.Name = "baseLabel_Main_Divice_Status_DustcollectorUpper";
             this.baseLabel_Main_Divice_Status_DustcollectorUpper.Size = new System.Drawing.Size(129, 18);
@@ -1261,7 +1261,7 @@
             this.baseLabel_Main_Divice_Status_Scanner.AutoSize = true;
             this.baseLabel_Main_Divice_Status_Scanner.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_Scanner.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_Scanner.Location = new System.Drawing.Point(37, 127);
+            this.baseLabel_Main_Divice_Status_Scanner.Location = new System.Drawing.Point(41, 127);
             this.baseLabel_Main_Divice_Status_Scanner.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_Scanner.Name = "baseLabel_Main_Divice_Status_Scanner";
             this.baseLabel_Main_Divice_Status_Scanner.Size = new System.Drawing.Size(60, 18);
@@ -1273,7 +1273,7 @@
             this.baseLabel_Main_Divice_Status_Motion.AutoSize = true;
             this.baseLabel_Main_Divice_Status_Motion.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_Motion.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_Motion.Location = new System.Drawing.Point(37, 34);
+            this.baseLabel_Main_Divice_Status_Motion.Location = new System.Drawing.Point(41, 34);
             this.baseLabel_Main_Divice_Status_Motion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_Motion.Name = "baseLabel_Main_Divice_Status_Motion";
             this.baseLabel_Main_Divice_Status_Motion.Size = new System.Drawing.Size(51, 18);
@@ -1285,7 +1285,7 @@
             this.baseLabel_Main_Divice_Status_IO.AutoSize = true;
             this.baseLabel_Main_Divice_Status_IO.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_IO.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_IO.Location = new System.Drawing.Point(37, 65);
+            this.baseLabel_Main_Divice_Status_IO.Location = new System.Drawing.Point(41, 65);
             this.baseLabel_Main_Divice_Status_IO.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_IO.Name = "baseLabel_Main_Divice_Status_IO";
             this.baseLabel_Main_Divice_Status_IO.Size = new System.Drawing.Size(25, 18);
@@ -1297,7 +1297,7 @@
             this.baseLabel_Main_Divice_Status_Laser.AutoSize = true;
             this.baseLabel_Main_Divice_Status_Laser.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_Laser.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_Laser.Location = new System.Drawing.Point(37, 96);
+            this.baseLabel_Main_Divice_Status_Laser.Location = new System.Drawing.Point(41, 96);
             this.baseLabel_Main_Divice_Status_Laser.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_Laser.Name = "baseLabel_Main_Divice_Status_Laser";
             this.baseLabel_Main_Divice_Status_Laser.Size = new System.Drawing.Size(43, 18);
