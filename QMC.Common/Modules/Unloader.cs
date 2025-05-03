@@ -2800,8 +2800,15 @@ namespace QMC.Common.Modules
 
                                 m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_PickUpPos_1stStep;
                             }
-                            //else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000 * 2)
-                            else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
+                            else if (workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) ||
+                                    workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower))
+                            {
+                                //  집진기가 Off 되기를 기다리고 있는데 Off 되지 않는 경우, 집진기 Off Command 를 다시 보낸다.
+                                Thread.Sleep(200);
+                                workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);           //  사실 상부 집진은 끌 필요가 없긴 한데... 걍 끄지 뭐
+                                workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                            }
+                            else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000 * 2)
                             {
                                 Log.Write("SLD-200", "Auto Run", "집진기 Off 실패 (Timeout)");
 
@@ -2815,6 +2822,15 @@ namespace QMC.Common.Modules
                         {
                             m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_PickUpPos_1stStep;
                         }
+                    }
+                    else if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use &&
+                            (workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) ||
+                            workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower)))
+                    {
+                        //  집진기가 Off 되기를 기다리고 있는데 Off 되지 않는 경우, 집진기 Off Command 를 다시 보낸다.
+                        Thread.Sleep(200);
+                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);           //  사실 상부 집진은 끌 필요가 없긴 한데... 걍 끄지 뭐
+                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000 * 2)
                     {
@@ -2899,6 +2915,7 @@ namespace QMC.Common.Modules
 
                     // Todo : 수정 필요
                     //  Stage Vacuum Off 시, 진공레귤레이터도 함께 동작시켜야 한다.
+                    Thread.Sleep(10);
                     workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
 
                     TickCount_Start((int)TickType.TICK_ULTR);
@@ -2931,6 +2948,7 @@ namespace QMC.Common.Modules
                         Thread.Sleep(10); //  진공이 동작하는 경우가 있어서, Off 코드 추가
                         workStage.workStageParameter.DO_Stage_Blow(true);                   //  Blow On
 
+                        Thread.Sleep(10);
                         //  Stage Vacuum Off 시, 진공레귤레이터도 함께 동작시켜야 한다. (안꺼질 때가 있어서 한번 더)
                         Thread.Sleep(10); //  진공이 동작하는 경우가 있어서, Off 코드 추가
                         workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);

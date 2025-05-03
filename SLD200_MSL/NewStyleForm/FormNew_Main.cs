@@ -189,9 +189,9 @@ namespace SLD200_MSL
             workStage.ActionSiriusViewerRefresy += OnSiriusViewerRefresy;
 
 
+
             label_Title_Stacker_LPort.Text = "Loader_Stacker Left:";
             label_Title_Stacker_RPort.Text = "Loader_Stacker Right:";
-
         }
 
         #region Action
@@ -697,13 +697,13 @@ namespace SLD200_MSL
 
             bOn = Equipment.AjinBoard_Opened && workStage.m_bHomeOK;
             _InitDeviceStatus.MotionIo = bOn;
-            if (!_InitDeviceStatus.MotionIo)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Motion);
+            //if (!_InitDeviceStatus.MotionIo)
+            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Motion);
 
             bOn = workStage.m_rapidLxLaser_Comm != null && workStage.m_rapidLxLaser_Comm.IsOpen;
             _InitDeviceStatus.Laser = bOn;
-            if (!_InitDeviceStatus.Laser)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Laser);
+            //if (!_InitDeviceStatus.Laser)
+            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Laser);
 
             //RTC에서 초기화할때 선언함.
             //bOn = workStage.rtc != null && workStage.rtc.;
@@ -1028,18 +1028,24 @@ namespace SLD200_MSL
             }
 
             if (workStage.Camera_HighRes.Opened)
+            {
                 ImageViewer_Main_highs.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
+            }
 
             if (workStage.jigAligner_LowRes.Camera.Opened)
+            {
                 ImageViewer_Main_Rows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
+            }
 
-            label_Title_Stacker_LPort.Text = Equipment.Loader_LPort_Empty ? "Loader_Stacker Left: 자재 없음." : "Loader_Stacker Left: 자재 있음.";
+            // label_Title_MESMessage
+            // 여기에 자재 유/무에 대한 메세지 표시
+            label_Title_Stacker_LPort.Text = Equipment.Loader_LPort_Empty ? "Loader_Stacker Left : 자재 없음." : "Loader_Stacker Left: 자재 있음.";
             label_Title_Stacker_LPort.BackColor = Equipment.Loader_LPort_Empty ? Color.Red : Color.Black;
-            label_Title_Stacker_LPort.ForeColor = Equipment.Loader_LPort_Empty ? Color.White : Color.Green;
+            label_Title_Stacker_LPort.ForeColor = Equipment.Loader_LPort_Empty ? Color.White : Color.Lime;
 
             label_Title_Stacker_RPort.Text = Equipment.Loader_RPort_Empty ? "Loader_Stacker Right: 자재 없음." : "Loader_Stacker Right: 자재 있음.";
             label_Title_Stacker_RPort.BackColor = Equipment.Loader_RPort_Empty ? Color.Red : Color.Black;
-            label_Title_Stacker_RPort.ForeColor = Equipment.Loader_RPort_Empty ? Color.White : Color.Green;
+            label_Title_Stacker_RPort.ForeColor = Equipment.Loader_RPort_Empty ? Color.White : Color.Lime;
 
             // 장비 상태 UI에 반영
             UpdateDeviceStatusImages();
@@ -1365,6 +1371,15 @@ namespace SLD200_MSL
 
                     Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket 가공 진행할 것이 없으므로 Out");
 
+                    //  강제배출처럼 배출할 때는 집진기도 꺼준다.
+                    if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Button Click", "집진기 Off");
+
+                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
+                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                    }
+
                     workStage.m_bLaserDrilling_Complete = true;
                     workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
                     workStage.m_nSocketAlign_MainStep = (int)WorkStage.SocketAlign_Step.None;
@@ -1495,6 +1510,15 @@ namespace SLD200_MSL
 
                     Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket 가공 완료 상태. 진행할 Socket 없음.");
 
+                    //  강제배출처럼 배출할 때는 집진기도 꺼준다.
+                    if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Button Click", "집진기 Off");
+
+                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
+                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                    }
+
                     workStage.m_bLaserDrilling_Complete = true;
                     workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
                     workStage.m_nSocketAlign_MainStep = (int)WorkStage.SocketAlign_Step.None;
@@ -1505,6 +1529,19 @@ namespace SLD200_MSL
 
                     Log.Write("SLD-200", Equipment.User_Name, "Button Click", "가공은 이미 끝난 상태에서는 여기에 들어오지 않아야 함.");
                 }    
+            }
+
+
+            //  강제 배출일 경우, 집진기도 Off
+            if (workStage.m_bLaserDrilling_Complete && (workStage.m_nLaserDrilling_MainStep == 0) && (workStage.m_nSocketAlign_MainStep == 0))
+            {
+                if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
+                {
+                    Log.Write("SLD-200", Equipment.User_Name, "Button Click", "강제 배출, 집진기 Off");
+
+                    workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
+                    workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                }
             }
 
 
@@ -2713,13 +2750,13 @@ namespace SLD200_MSL
                     //checkBox_Main_AutoRun.ForeColor = Color.Black;
                     //Equipment.AutoManualStatus = false;
                 }
-                //else
-                //{
-                //    checkBox_Main_AutoRun.Text = "MANUAL";
-                //    checkBox_Main_AutoRun.BackColor = Color.LightGray;
-                //    checkBox_Main_AutoRun.ForeColor = Color.Black;
-                //    Equipment.AutoManualStatus = false;
-                //}
+                else
+                {
+                    checkBox_Main_AutoRun.Text = "MANUAL";
+                    checkBox_Main_AutoRun.BackColor = Color.LightGray;
+                    checkBox_Main_AutoRun.ForeColor = Color.Black;
+                    Equipment.AutoManualStatus = false;
+                }
             }
         }
 

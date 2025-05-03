@@ -53,6 +53,7 @@ namespace SLD200_MSL
             this.textBoxCorY = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.textboxCorX = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.groupBox167.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -89,7 +90,7 @@ namespace SLD200_MSL
             // button_DataParsing
             // 
             this.button_DataParsing.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_DataParsing.Location = new System.Drawing.Point(1336, 209);
+            this.button_DataParsing.Location = new System.Drawing.Point(1336, 219);
             this.button_DataParsing.Name = "button_DataParsing";
             this.button_DataParsing.Size = new System.Drawing.Size(141, 60);
             this.button_DataParsing.TabIndex = 2;
@@ -110,6 +111,7 @@ namespace SLD200_MSL
             // 
             // groupBox167
             // 
+            this.groupBox167.Controls.Add(this.label8);
             this.groupBox167.Controls.Add(this.label3);
             this.groupBox167.Controls.Add(this.label2);
             this.groupBox167.Controls.Add(this.label1);
@@ -119,7 +121,7 @@ namespace SLD200_MSL
             this.groupBox167.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox167.Name = "groupBox167";
             this.groupBox167.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox167.Size = new System.Drawing.Size(141, 153);
+            this.groupBox167.Size = new System.Drawing.Size(141, 158);
             this.groupBox167.TabIndex = 84;
             this.groupBox167.TabStop = false;
             this.groupBox167.Text = " Available Layer ";
@@ -165,7 +167,7 @@ namespace SLD200_MSL
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(109, 24);
             this.label21.TabIndex = 7;
-            this.label21.Text = "- Hole1 ~ 4";
+            this.label21.Text = "- Hole1 ~ 50";
             this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // button_Test_OffsetAngle_Calc
@@ -309,6 +311,17 @@ namespace SLD200_MSL
             this.textboxCorX.TabIndex = 89;
             this.textboxCorX.Text = "0";
             // 
+            // label8
+            // 
+            this.label8.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label8.Location = new System.Drawing.Point(11, 125);
+            this.label8.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(109, 24);
+            this.label8.TabIndex = 11;
+            this.label8.Text = "- Thruhole";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // FormNew_SiriusEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
@@ -371,5 +384,6 @@ namespace SLD200_MSL
         private TextBox textBoxCorY;
         private Label label7;
         private TextBox textboxCorX;
+        private Label label8;
     }
 }
