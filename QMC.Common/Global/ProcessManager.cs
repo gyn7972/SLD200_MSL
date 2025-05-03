@@ -11,6 +11,15 @@ namespace QMC.Common
         public static List<SocketInfo> Sockets { get; private set; } = new List<SocketInfo>();
         public static string StateFilePath = "D:\\process_state.txt";
 
+        public class AreaResult
+        {
+            public int SocketNumber { get; set; }
+            public string LayerName { get; set; }
+            public int AreaIndex { get; set; }
+            public bool IsProcessed { get; set; }
+            public string Note { get; set; }
+        }
+
         public static void Init()
         {
             Sockets.Clear();
@@ -47,6 +56,24 @@ namespace QMC.Common
             return socket;
         }
 
+        public static int GetSocketCount()
+        {
+            return Sockets.Count;
+        }
+
+        public static int GetLayerCount(int socketNumber)
+        {
+            var socket = Sockets.FirstOrDefault(s => s.SocketNumber == socketNumber);
+            return socket?.Layers.Count ?? 0;
+        }
+
+        public static int GetAreaCount(int socketNumber, string layerName)
+        {
+            var socket = Sockets.FirstOrDefault(s => s.SocketNumber == socketNumber);
+            var layer = socket?.Layers.FirstOrDefault(l => l.LayerName == layerName);
+            return layer?.Areas.Count ?? 0;
+        }
+
         public static bool MarkAreaProcessed(int socketNumber, string layerName, int areaIndex, string note = "")
         {
             var socket = GetSocket(socketNumber);
@@ -74,8 +101,29 @@ namespace QMC.Common
             return true; // 이번에 새로 처리함
         }
 
+        public static AreaResult GetAreaResult(int socketNumber, string layerName, int areaIndex)
+        {
+            var socket = Sockets.FirstOrDefault(s => s.SocketNumber == socketNumber);
+            if (socket == null)
+                return null;
 
+            var layer = socket.Layers.FirstOrDefault(l => l.LayerName == layerName);
+            if (layer == null)
+                return null;
 
+            var area = layer.Areas.FirstOrDefault(a => a.AreaIndex == areaIndex);
+            if (area == null)
+                return null;
+
+            return new AreaResult
+            {
+                SocketNumber = socketNumber,
+                LayerName = layerName,
+                AreaIndex = areaIndex,
+                IsProcessed = area.IsProcessed,
+                Note = area.Note
+            };
+        }
 
         public static (int socketIndex, string layerName, int areaIndex)? GetFirstUnprocessedPosition()
         {
