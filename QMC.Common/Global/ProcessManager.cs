@@ -77,7 +77,7 @@ namespace QMC.Common
 
 
 
-        public static (int socketIndex, string layerName, int areaIndex)? GetFirstUnprocessedPosition()
+        public static (int socketIndex, string layerName, int areaIndex, bool bResult)? GetFirstUnprocessedPosition()
         {
             foreach (var socket in Sockets)
             {
@@ -85,10 +85,7 @@ namespace QMC.Common
                 {
                     foreach (var area in layer.Areas)
                     {
-                        if (!area.IsProcessed)
-                        {
-                            return (socket.SocketNumber, layer.LayerName, area.AreaIndex);
-                        }
+                        return (socket.SocketNumber, layer.LayerName, area.AreaIndex, area.IsProcessed);
                     }
                 }
             }

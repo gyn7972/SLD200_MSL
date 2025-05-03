@@ -936,17 +936,23 @@ namespace SLD200_MSL
                 var pos = ProcessManager.GetFirstUnprocessedPosition();
                 if (pos.HasValue)                                   //  가공 중 (Processing)
                 {
-                    workStage.Main_SocketPositions_ProcessingSocket = pos.Value.socketIndex;
-                    workStage.Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Processing;
-
-                    workStage.Main_SocketPositions_SetStatus = true;
+                    if(pos.Value.bResult == false)
+                    {
+                        workStage.Main_SocketPositions_ProcessingSocket = pos.Value.socketIndex;
+                        workStage.Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Processing;
+                        workStage.Main_SocketPositions_SetStatus = true;
+                    }
+                    
                 }
                 else                                               //  Complete
                 {
-                    workStage.Main_SocketPositions_CompleteSocket = pos.Value.socketIndex;
-                    workStage.Main_SocketPositions_CompleteStatus = (int)Socket_Process_Status.Complete;
+                    if (pos.Value.bResult == true)
+                    {
+                        workStage.Main_SocketPositions_CompleteSocket = pos.Value.socketIndex;
+                        workStage.Main_SocketPositions_CompleteStatus = (int)Socket_Process_Status.Complete;
 
-                    workStage.Main_SocketPositions_SetCompleteStatus = true;
+                        workStage.Main_SocketPositions_SetCompleteStatus = true;
+                    }
                 }
             }
 
@@ -1356,18 +1362,25 @@ namespace SLD200_MSL
             var pos = ProcessManager.GetFirstUnprocessedPosition();
             if (pos.HasValue)
             {
-                int socketIndex = pos.Value.socketIndex;
-                string layerName = pos.Value.layerName;
-                int areaIndex = pos.Value.areaIndex;
+                if(pos.Value.bResult == false)
+                {
+                    int socketIndex = pos.Value.socketIndex;
+                    string layerName = pos.Value.layerName;
+                    int areaIndex = pos.Value.areaIndex;
 
-                workStage.SetProcess_SocketNumber(socketIndex);
-                workStage.SetProcess_Layer(layerName);
-                workStage.SetProcess_AreaIndex(areaIndex);  // <- 필요시 추가
-                workStage.SetProcessRunning();              // "가공중"
+                    workStage.SetProcess_SocketNumber(socketIndex);
+                    workStage.SetProcess_Layer(layerName);
+                    workStage.SetProcess_AreaIndex(areaIndex);  // <- 필요시 추가
+                    workStage.SetProcessRunning();              // "가공중"
+                }
+                else
+                {
+                    workStage.SetProcessCompleted();            // "모든 소켓 가공 완료"
+                }
             }
             else
             {
-                workStage.SetProcessCompleted();            // "모든 소켓 가공 완료"
+                //workStage.SetProcessCompleted();            // "모든 소켓 가공 완료"
             }
 
 
