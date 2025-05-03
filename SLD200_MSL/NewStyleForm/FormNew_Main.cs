@@ -683,7 +683,7 @@ namespace SLD200_MSL
             bOn = Equipment.AjinBoard_Opened;
             _InitDeviceStatus.MotionIo = bOn;
 
-            bOn = workStage.m_SocketLaser != null && workStage.m_SocketLaser.isConnected;
+            bOn = workStage.m_rapidLxLaser_Comm != null && workStage.m_rapidLxLaser_Comm.IsOpen;
             _InitDeviceStatus.Laser = bOn;
             
             //RTC에서 초기화할때 선언함.
