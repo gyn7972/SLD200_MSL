@@ -49,6 +49,9 @@ namespace SLD200_MSL
         private string m_strRecipeName_Now;
         private string m_strRecipeName_Before;
 
+        private string m_strDrawingFileName_Now;
+        private string m_strDrawingFileName_Before;
+
 
         public FormTop()
         {
@@ -91,6 +94,7 @@ namespace SLD200_MSL
             m_Timer.Start();
 
             m_strRecipeName_Before = "";
+            m_strDrawingFileName_Before = "";
         }
 
 
@@ -272,31 +276,27 @@ namespace SLD200_MSL
                 label_Title_Recipe.Text = "Recipe not loaded.";
             }
 
-            
-            //  System Message
-            if (Equipment.CycleStop && 
-                Equipment.CycleStopped_LoaderTransfer &&
-                Equipment.CycleStopped_UnloaderTransfer && 
-                Equipment.CycleStopped_MainWork)
+
+            //  Drawing File
+            if (Equipment.Current_DrawingFileName.Length > 0)
             {
-                label_Title_SystemMessage.Text = "Cycle Stopped";
+                m_strDrawingFileName_Now = System.IO.Path.GetFileName(Equipment.Current_DrawingFileName);
+
+                if (m_strDrawingFileName_Before != m_strDrawingFileName_Now)
+                {
+                    label_Title_DrawingFile.Text = m_strDrawingFileName_Now;
+                }
+
+                m_strDrawingFileName_Before = m_strDrawingFileName_Now;
             }
-            else if (Equipment.CycleStop && 
-                
-                (!Equipment.CycleStopped_LoaderTransfer ||
-                !Equipment.CycleStopped_UnloaderTransfer ||
-                !Equipment.CycleStopped_MainWork))
+            else
             {
-                label_Title_SystemMessage.Text = "Cycle Stop in Progress...";
+                label_Title_DrawingFile.Text = "Drawing File not loaded.";
             }
-            else if (Equipment.AutoRunStatus)
-            {
-                label_Title_SystemMessage.Text = "Auto Run";
-            }
-            else if (!Equipment.AutoRunStatus)
-            {
-                label_Title_SystemMessage.Text = "Ready";
-            }
+
+
+
+            Equipment.Current_DrawingFileName = System.IO.Path.GetFileName(Equipment.stLayerRecipeSet[0].DrawingFile);
         }
 
         public void LogInInfo()

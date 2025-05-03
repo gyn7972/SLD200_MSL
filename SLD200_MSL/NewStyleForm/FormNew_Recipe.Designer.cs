@@ -141,14 +141,6 @@
             this.groupBox167 = new System.Windows.Forms.GroupBox();
             this.radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod = new System.Windows.Forms.RadioButton();
             this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P = new System.Windows.Forms.RadioButton();
-            this.groupBox147 = new System.Windows.Forms.GroupBox();
-            this.button_Recipe_TabRecipe_PreAlign_search = new System.Windows.Forms.Button();
-            this.button_Recipe_TabRecipe_PreAlign_ROI = new System.Windows.Forms.Button();
-            this.button_Recipe_TabRecipe_PreAlign_Train = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.groupBox149 = new System.Windows.Forms.GroupBox();
-            this.button135 = new System.Windows.Forms.Button();
-            this.richTextBox8 = new System.Windows.Forms.RichTextBox();
             this.groupBox163 = new System.Windows.Forms.GroupBox();
             this.button21 = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance = new System.Windows.Forms.RichTextBox();
@@ -319,9 +311,6 @@
             this.groupBox7.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox167.SuspendLayout();
-            this.groupBox147.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.groupBox149.SuspendLayout();
             this.groupBox163.SuspendLayout();
             this.groupBox136.SuspendLayout();
             this.groupBox18.SuspendLayout();
@@ -420,7 +409,6 @@
             this.tabPage_Recipe.Controls.Add(this.groupBox7);
             this.tabPage_Recipe.Controls.Add(this.groupBox6);
             this.tabPage_Recipe.Controls.Add(this.groupBox167);
-            this.tabPage_Recipe.Controls.Add(this.groupBox147);
             this.tabPage_Recipe.Controls.Add(this.groupBox163);
             this.tabPage_Recipe.Controls.Add(this.groupBox136);
             this.tabPage_Recipe.Location = new System.Drawing.Point(4, 44);
@@ -449,7 +437,7 @@
             this.groupBox_Recipe_TabRecipe_PreAlignPos.Size = new System.Drawing.Size(286, 179);
             this.groupBox_Recipe_TabRecipe_PreAlignPos.TabIndex = 100;
             this.groupBox_Recipe_TabRecipe_PreAlignPos.TabStop = false;
-            this.groupBox_Recipe_TabRecipe_PreAlignPos.Text = "groupBox15";
+            this.groupBox_Recipe_TabRecipe_PreAlignPos.Text = "PreAlign Pos";
             // 
             // label_Recipe_TabRecipe_PreAlignPosX1
             // 
@@ -1274,7 +1262,7 @@
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(153, 24);
             this.label36.TabIndex = 27;
-            this.label36.Text = "Silicon thickness (mm) :";
+            this.label36.Text = "Fiducial Height (mm) :";
             this.label36.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // button10
@@ -1716,101 +1704,6 @@
             this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P.TabStop = true;
             this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Text = "Space of P2P";
             this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P.UseVisualStyleBackColor = true;
-            // 
-            // groupBox147
-            // 
-            this.groupBox147.Controls.Add(this.button_Recipe_TabRecipe_PreAlign_search);
-            this.groupBox147.Controls.Add(this.button_Recipe_TabRecipe_PreAlign_ROI);
-            this.groupBox147.Controls.Add(this.button_Recipe_TabRecipe_PreAlign_Train);
-            this.groupBox147.Controls.Add(this.pictureBox1);
-            this.groupBox147.Controls.Add(this.groupBox149);
-            this.groupBox147.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox147.Location = new System.Drawing.Point(694, 577);
-            this.groupBox147.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox147.Name = "groupBox147";
-            this.groupBox147.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox147.Size = new System.Drawing.Size(506, 171);
-            this.groupBox147.TabIndex = 77;
-            this.groupBox147.TabStop = false;
-            this.groupBox147.Text = "PreAlign Mark ";
-            // 
-            // button_Recipe_TabRecipe_PreAlign_search
-            // 
-            this.button_Recipe_TabRecipe_PreAlign_search.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_Recipe_TabRecipe_PreAlign_search.Location = new System.Drawing.Point(277, 118);
-            this.button_Recipe_TabRecipe_PreAlign_search.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.button_Recipe_TabRecipe_PreAlign_search.Name = "button_Recipe_TabRecipe_PreAlign_search";
-            this.button_Recipe_TabRecipe_PreAlign_search.Size = new System.Drawing.Size(92, 33);
-            this.button_Recipe_TabRecipe_PreAlign_search.TabIndex = 102;
-            this.button_Recipe_TabRecipe_PreAlign_search.Text = "search";
-            this.button_Recipe_TabRecipe_PreAlign_search.UseVisualStyleBackColor = true;
-            // 
-            // button_Recipe_TabRecipe_PreAlign_ROI
-            // 
-            this.button_Recipe_TabRecipe_PreAlign_ROI.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_Recipe_TabRecipe_PreAlign_ROI.Location = new System.Drawing.Point(277, 77);
-            this.button_Recipe_TabRecipe_PreAlign_ROI.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.button_Recipe_TabRecipe_PreAlign_ROI.Name = "button_Recipe_TabRecipe_PreAlign_ROI";
-            this.button_Recipe_TabRecipe_PreAlign_ROI.Size = new System.Drawing.Size(92, 33);
-            this.button_Recipe_TabRecipe_PreAlign_ROI.TabIndex = 101;
-            this.button_Recipe_TabRecipe_PreAlign_ROI.Text = "Roi Set";
-            this.button_Recipe_TabRecipe_PreAlign_ROI.UseVisualStyleBackColor = true;
-            // 
-            // button_Recipe_TabRecipe_PreAlign_Train
-            // 
-            this.button_Recipe_TabRecipe_PreAlign_Train.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_Recipe_TabRecipe_PreAlign_Train.Location = new System.Drawing.Point(277, 35);
-            this.button_Recipe_TabRecipe_PreAlign_Train.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.button_Recipe_TabRecipe_PreAlign_Train.Name = "button_Recipe_TabRecipe_PreAlign_Train";
-            this.button_Recipe_TabRecipe_PreAlign_Train.Size = new System.Drawing.Size(92, 33);
-            this.button_Recipe_TabRecipe_PreAlign_Train.TabIndex = 100;
-            this.button_Recipe_TabRecipe_PreAlign_Train.Text = "Train";
-            this.button_Recipe_TabRecipe_PreAlign_Train.UseVisualStyleBackColor = true;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.Color.Black;
-            this.pictureBox1.Location = new System.Drawing.Point(375, 35);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(120, 120);
-            this.pictureBox1.TabIndex = 60;
-            this.pictureBox1.TabStop = false;
-            // 
-            // groupBox149
-            // 
-            this.groupBox149.Controls.Add(this.button135);
-            this.groupBox149.Controls.Add(this.richTextBox8);
-            this.groupBox149.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.groupBox149.Location = new System.Drawing.Point(9, 30);
-            this.groupBox149.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox149.Name = "groupBox149";
-            this.groupBox149.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox149.Size = new System.Drawing.Size(128, 31);
-            this.groupBox149.TabIndex = 63;
-            this.groupBox149.TabStop = false;
-            this.groupBox149.Text = " Image File ";
-            // 
-            // button135
-            // 
-            this.button135.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button135.Location = new System.Drawing.Point(10, 52);
-            this.button135.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button135.Name = "button135";
-            this.button135.Size = new System.Drawing.Size(105, 46);
-            this.button135.TabIndex = 77;
-            this.button135.Text = "File Open";
-            this.button135.UseVisualStyleBackColor = true;
-            // 
-            // richTextBox8
-            // 
-            this.richTextBox8.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBox8.Location = new System.Drawing.Point(10, 25);
-            this.richTextBox8.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.richTextBox8.Name = "richTextBox8";
-            this.richTextBox8.Size = new System.Drawing.Size(105, 20);
-            this.richTextBox8.TabIndex = 76;
-            this.richTextBox8.Text = "";
             // 
             // groupBox163
             // 
@@ -3801,9 +3694,6 @@
             this.groupBox7.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox167.ResumeLayout(false);
-            this.groupBox147.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.groupBox149.ResumeLayout(false);
             this.groupBox163.ResumeLayout(false);
             this.groupBox136.ResumeLayout(false);
             this.groupBox18.ResumeLayout(false);
@@ -3841,11 +3731,6 @@
         private System.Windows.Forms.GroupBox groupBox167;
         private System.Windows.Forms.RadioButton radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod;
         private System.Windows.Forms.RadioButton radioButton_Recipe_TabRecipe_ProcessPriority_P2P;
-        private System.Windows.Forms.GroupBox groupBox147;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.GroupBox groupBox149;
-        private System.Windows.Forms.Button button135;
-        private System.Windows.Forms.RichTextBox richTextBox8;
         private System.Windows.Forms.GroupBox groupBox163;
         private System.Windows.Forms.Label label324;
         private System.Windows.Forms.Label label325;
@@ -4093,9 +3978,6 @@
         private System.Windows.Forms.Label label_Recipe_TabRecipe_PreAlignPosX2;
         private System.Windows.Forms.Label label_Recipe_TabRecipe_PreAlignPosY1;
         private System.Windows.Forms.Label label_Recipe_TabRecipe_PreAlignPosX1;
-        private System.Windows.Forms.Button button_Recipe_TabRecipe_PreAlign_Train;
-        private System.Windows.Forms.Button button_Recipe_TabRecipe_PreAlign_search;
-        private System.Windows.Forms.Button button_Recipe_TabRecipe_PreAlign_ROI;
         private System.Windows.Forms.GroupBox groupBox_Recipe_TabRecipe_PreAlignPos;
         private System.Windows.Forms.TabPage tabPage_RecipeVision;
         private System.Windows.Forms.Button button19;

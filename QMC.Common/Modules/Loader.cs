@@ -1916,6 +1916,10 @@ namespace QMC.Common.Modules
                 Equipment.Loader_RPort_Pause = true;
                 Equipment.Loader_RPort_Empty = true;    // 자재 없음 알림.
             }
+            else
+            {
+                Equipment.Loader_RPort_Empty = false;   // 자재 있음 알림.
+            }
 
             //  자동운전 시, Stacker0 동작 조건 : TR Cycle (None), Stacker0 Cycle (None), TR 이 Module 을 집어갔을 때
             if (Equipment.AutoRunStatus &&
@@ -2714,6 +2718,10 @@ namespace QMC.Common.Modules
             {
                 Equipment.Loader_LPort_Pause = true;
                 Equipment.Loader_LPort_Empty = true;    // 자재 없음 알림.
+            }
+            else
+            {
+                Equipment.Loader_LPort_Empty = false;    // 자재 있음 알림.
             }
 
 

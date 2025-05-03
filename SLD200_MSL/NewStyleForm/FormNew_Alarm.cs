@@ -273,7 +273,8 @@ namespace SLD200_MSL
 
         private void button_Alarm_Buzz_Off_Click(object sender, EventArgs e)
         {
-            CommonModule.Instance.TowerLamp.Buzzer_Off();
+            //CommonModule.Instance.TowerLamp.Buzzer_Off();
+            CommonModule.Instance.TowerLamp_BuzzerStop = true;
         }
     }
 }

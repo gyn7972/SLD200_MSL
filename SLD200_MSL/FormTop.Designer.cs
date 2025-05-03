@@ -32,10 +32,10 @@
             this.pictureBox_QMC_Logo = new System.Windows.Forms.PictureBox();
             this.label_Title = new System.Windows.Forms.Label();
             this.label_TitleBar_MESMsg = new System.Windows.Forms.Label();
-            this.label_TitleBar_System = new System.Windows.Forms.Label();
+            this.label_TitleBar_DrawingFile = new System.Windows.Forms.Label();
             this.label_TitleBar_OPRecipe = new System.Windows.Forms.Label();
             this.label_Title_MESMessage = new System.Windows.Forms.Label();
-            this.label_Title_SystemMessage = new System.Windows.Forms.Label();
+            this.label_Title_DrawingFile = new System.Windows.Forms.Label();
             this.label_Title_Recipe = new System.Windows.Forms.Label();
             this.buttonAlarmClear = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -66,7 +66,7 @@
             this.label_Title.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Title.Location = new System.Drawing.Point(24, 61);
             this.label_Title.Name = "label_Title";
-            this.label_Title.Size = new System.Drawing.Size(191, 29);
+            this.label_Title.Size = new System.Drawing.Size(128, 19);
             this.label_Title.TabIndex = 200;
             this.label_Title.Text = "SLD-200 (CO₂)";
             // 
@@ -81,16 +81,16 @@
             this.label_TitleBar_MESMsg.Text = "MES MSG.";
             this.label_TitleBar_MESMsg.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label_TitleBar_System
+            // label_TitleBar_DrawingFile
             // 
-            this.label_TitleBar_System.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label_TitleBar_System.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_TitleBar_System.Location = new System.Drawing.Point(215, 34);
-            this.label_TitleBar_System.Name = "label_TitleBar_System";
-            this.label_TitleBar_System.Size = new System.Drawing.Size(132, 25);
-            this.label_TitleBar_System.TabIndex = 202;
-            this.label_TitleBar_System.Text = "SYSTEM MSG.";
-            this.label_TitleBar_System.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label_TitleBar_DrawingFile.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_TitleBar_DrawingFile.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_TitleBar_DrawingFile.Location = new System.Drawing.Point(215, 34);
+            this.label_TitleBar_DrawingFile.Name = "label_TitleBar_DrawingFile";
+            this.label_TitleBar_DrawingFile.Size = new System.Drawing.Size(132, 25);
+            this.label_TitleBar_DrawingFile.TabIndex = 202;
+            this.label_TitleBar_DrawingFile.Text = "Drawing File";
+            this.label_TitleBar_DrawingFile.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label_TitleBar_OPRecipe
             // 
@@ -117,19 +117,19 @@
             this.label_Title_MESMessage.Text = "OP Recipe";
             this.label_Title_MESMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // label_Title_SystemMessage
+            // label_Title_DrawingFile
             // 
-            this.label_Title_SystemMessage.BackColor = System.Drawing.Color.Black;
-            this.label_Title_SystemMessage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label_Title_SystemMessage.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Title_SystemMessage.ForeColor = System.Drawing.Color.Lime;
-            this.label_Title_SystemMessage.Location = new System.Drawing.Point(352, 34);
-            this.label_Title_SystemMessage.Name = "label_Title_SystemMessage";
-            this.label_Title_SystemMessage.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.label_Title_SystemMessage.Size = new System.Drawing.Size(868, 25);
-            this.label_Title_SystemMessage.TabIndex = 204;
-            this.label_Title_SystemMessage.Text = "OP Recipe";
-            this.label_Title_SystemMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label_Title_DrawingFile.BackColor = System.Drawing.Color.Black;
+            this.label_Title_DrawingFile.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Title_DrawingFile.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Title_DrawingFile.ForeColor = System.Drawing.Color.Lime;
+            this.label_Title_DrawingFile.Location = new System.Drawing.Point(352, 34);
+            this.label_Title_DrawingFile.Name = "label_Title_DrawingFile";
+            this.label_Title_DrawingFile.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.label_Title_DrawingFile.Size = new System.Drawing.Size(868, 25);
+            this.label_Title_DrawingFile.TabIndex = 204;
+            this.label_Title_DrawingFile.Text = "OP Recipe";
+            this.label_Title_DrawingFile.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label_Title_Recipe
             // 
@@ -187,7 +187,7 @@
             this.label_DateTime.Font = new System.Drawing.Font("Tahoma", 11.25F);
             this.label_DateTime.Location = new System.Drawing.Point(1737, 6);
             this.label_DateTime.Name = "label_DateTime";
-            this.label_DateTime.Size = new System.Drawing.Size(132, 56);
+            this.label_DateTime.Size = new System.Drawing.Size(82, 36);
             this.label_DateTime.TabIndex = 207;
             this.label_DateTime.Text = "2024-02-01\r\n12:01:01";
             this.label_DateTime.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -198,7 +198,7 @@
             this.label_Ver.Font = new System.Drawing.Font("Tahoma", 9.75F);
             this.label_Ver.Location = new System.Drawing.Point(1737, 71);
             this.label_Ver.Name = "label_Ver";
-            this.label_Ver.Size = new System.Drawing.Size(108, 24);
+            this.label_Ver.Size = new System.Drawing.Size(71, 16);
             this.label_Ver.TabIndex = 208;
             this.label_Ver.Text = "Ver 1.0.0.1";
             this.label_Ver.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -260,10 +260,10 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.buttonAlarmClear);
             this.Controls.Add(this.label_Title_Recipe);
-            this.Controls.Add(this.label_Title_SystemMessage);
+            this.Controls.Add(this.label_Title_DrawingFile);
             this.Controls.Add(this.label_Title_MESMessage);
             this.Controls.Add(this.label_TitleBar_OPRecipe);
-            this.Controls.Add(this.label_TitleBar_System);
+            this.Controls.Add(this.label_TitleBar_DrawingFile);
             this.Controls.Add(this.label_TitleBar_MESMsg);
             this.Controls.Add(this.label_Title);
             this.Controls.Add(this.pictureBox_QMC_Logo);
@@ -287,10 +287,10 @@
         private System.Windows.Forms.PictureBox pictureBox_QMC_Logo;
         private System.Windows.Forms.Label label_Title;
         private System.Windows.Forms.Label label_TitleBar_MESMsg;
-        private System.Windows.Forms.Label label_TitleBar_System;
+        private System.Windows.Forms.Label label_TitleBar_DrawingFile;
         private System.Windows.Forms.Label label_TitleBar_OPRecipe;
         private System.Windows.Forms.Label label_Title_MESMessage;
-        private System.Windows.Forms.Label label_Title_SystemMessage;
+        private System.Windows.Forms.Label label_Title_DrawingFile;
         private System.Windows.Forms.Label label_Title_Recipe;
         private System.Windows.Forms.Button buttonAlarmClear;
         private System.Windows.Forms.GroupBox groupBox1;

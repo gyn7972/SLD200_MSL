@@ -17,6 +17,8 @@ namespace SLD200_MSL
 {
     public partial class FormNew_Logout : Form
     {
+        private bool m_bFormVisible = false; // 실제 Show 상태 여부
+
         static WorkStage workStage;
 
         //private Monitoring_CWA150SA m_Monitoring_CWA150SA;
@@ -40,6 +42,25 @@ namespace SLD200_MSL
 
             m_formLogIn = new FormLogIn();
             m_formLogIn.bLogin = false;
+        }
+
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+
+            if (!this.Created)
+                return;
+
+            if (this.Visible && !m_bFormVisible)
+            {
+                m_bFormVisible = true;
+                // OnShowRecipeForm();
+            }
+            else if (!this.Visible && m_bFormVisible)
+            {
+                m_bFormVisible = false;
+                //OnHideRecipeForm();
+            }
         }
 
         private void button_Exit_Click(object sender, EventArgs e)
