@@ -406,10 +406,12 @@ namespace SLD200_MSL
                 if (workStage.m_strLaser_HostName.Length > 0)
                 {
                     pictureBox_Config_TabLaser_Connection_to_Laser.Image = global::SLD200.Properties.Resources.DioEllipseOn;
+                    Equipment._InitDeviceStatus.Laser = true;
                 }
                 else
                 {
                     pictureBox_Config_TabLaser_Connection_to_Laser.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+                    Equipment._InitDeviceStatus.Laser = false;
                 }
 
                 //  System Faults
@@ -521,6 +523,7 @@ namespace SLD200_MSL
             else
             {
                 pictureBox_Config_TabLaser_Connection_to_Laser.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+                Equipment._InitDeviceStatus.Laser = false;
                 pictureBox_Config_TabLaser_SystemFaults.Image = global::SLD200.Properties.Resources.DioEllipseOff;
                 pictureBox_Config_TabLaser_SystemStatus.Image = global::SLD200.Properties.Resources.DioEllipseOff;
 

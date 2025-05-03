@@ -42,6 +42,24 @@ namespace QMC.Common
 {
     public static class Equipment
     {
+        public class InitDeviceStatus
+        {
+            public bool MotionIo { get; set; }
+            public bool Laser { get; set; }
+            public bool Scanner { get; set; }
+            public bool PowerMeter_Bds { get; set; }
+            public bool PowerMeter_Stage { get; set; }
+            public bool BeamExpander { get; set; }
+            public bool DustCollector_Upper { get; set; }
+            public bool DustCollector_Lower { get; set; }
+            public bool Chiller { get; set; }
+            public bool ElectroRegulator { get; set; }
+            public bool HeightSensor { get; set; }
+            public bool CameraFine { get; set; }
+            public bool CameraPre { get; set; }
+            public bool Illuminator { get; set; }
+        }
+
         public static double ToDouble(string str)
         {
             double dValue = 0.0;            
@@ -83,21 +101,14 @@ namespace QMC.Common
         public static string Name { set; get; }
         public static List<MotionBoard> MotionBoards { set; get; }
         public static List<IOBoard> IOBoards { set; get; }
-
         public static List<IOModule> IOModules { set; get; }
-
         public static List<IOPoint> IOPoints { set; get; }
         public static ModuleCollection Modules { set; get; }
-
         public static InitializeSequenceCollection InitializeSequence { set; get; }
-
         public static LoadingQueue LoadingQueue { set; get; }
         //public static RecipeInfoCollection Recipes { set; get; }
-
         public static ProductionData ProductData { set; get; }
-
         public static int RtcMode_syncAxis { set; get; }           //  0 : None     1 : syncAxis    2 : RTC6
-
         public static string XmlFile_forSyncAxis { set; get; }
         public static Form formMain;
         public enum RtcMode : int
@@ -111,13 +122,18 @@ namespace QMC.Common
 
         public static bool Mode_DryRun { set; get; }
         private static bool Machine_Run;
-        public static bool AjinBoard_Opened { set; get; }
         public static bool m_bRedraw_FormWorkStageParameterConfig { set; get; }
         public static bool m_bRedraw_FormLoaderParameterConfig { set; get; }
         public static bool m_bRedraw_FormUnloaderParameterConfig { set; get; }
         public static bool m_bRedraw_FormBdsParameterConfig { set; get; }
         public static bool m_bRedraw_FormUpperCameraConfig { set; get; }
         public static bool m_bRedraw_FormLowerCameraConfig { set; get; }
+
+        public static bool AjinBoard_Opened { set; get; }
+
+        //Device 초기화 변수 선언
+        public static InitDeviceStatus _InitDeviceStatus = new InitDeviceStatus();
+        
         public static bool GetMachineRunStatus()
         {
             return Machine_Run;

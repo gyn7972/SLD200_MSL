@@ -24,6 +24,7 @@ using static QMC.Common.Modules.Unloader;
 using Point = System.Drawing.Point;
 using System.Runtime.CompilerServices;
 using System.Net.Sockets;
+using OpenCvSharp.Aruco;
 
 namespace SLD200_MSL
 {
@@ -70,9 +71,15 @@ namespace SLD200_MSL
         bool m_SiriusViewerRefresy;
         #endregion
 
+        // 장비 초기화 상태 확인
+        private Dictionary<string, Func<bool>> deviceStatusGetters;
+        private Dictionary<string, PictureBox> devicePictureBoxes;
+        
         public FormNew_Main()
         {
             InitializeComponent();
+
+            InitializeDeviceStatusBindings();
 
             this.Load += FormNew_Main_Load;
 
@@ -669,6 +676,144 @@ namespace SLD200_MSL
             }
         }
 
+        private void UpdateInitStatusFromComm()
+        {
+            bool bOn = false;
+            
+            bOn = Equipment.AjinBoard_Opened;
+            _InitDeviceStatus.MotionIo = bOn;
+
+            bOn = workStage.m_SocketLaser != null && workStage.m_SocketLaser.isConnected;
+            _InitDeviceStatus.Laser = bOn;
+            
+            //RTC에서 초기화할때 선언함.
+            //bOn = workStage.rtc != null && workStage.rtc.;
+            //_InitDeviceStatus.Scanner = bOn;
+
+            bOn = workStage.m_powerMeter_ExitPos_Comm != null && workStage.m_powerMeter_ExitPos_Comm.IsOpen;
+            _InitDeviceStatus.PowerMeter_Bds = bOn;
+
+            bOn = workStage.m_powerMeter_TargetPos_Comm != null && workStage.m_powerMeter_TargetPos_Comm.IsOpen;
+            _InitDeviceStatus.PowerMeter_Stage = bOn;
+
+            bOn = workStage.m_beamExpander_Comm != null && workStage.m_beamExpander_Comm.IsOpen;
+            _InitDeviceStatus.BeamExpander = bOn;
+
+            bOn = workStage.m_dustCollector_UpperPos_Comm != null && workStage.m_dustCollector_UpperPos_Comm.IsOpen;
+            _InitDeviceStatus.DustCollector_Upper = bOn;
+
+            bOn = workStage.m_dustCollector_LowerPos_Comm != null && workStage.m_dustCollector_LowerPos_Comm.IsOpen;
+            _InitDeviceStatus.DustCollector_Lower = bOn;
+
+            bOn = workStage.workStageParameter.DI_Chiller_Run();
+            _InitDeviceStatus.Chiller = bOn;
+
+            bOn = workStage.m_electroRegulator_Comm != null && workStage.m_electroRegulator_Comm.IsOpen;
+            _InitDeviceStatus.ElectroRegulator = bOn;
+
+            bOn = workStage.m_SocketLaserHeightSensor != null && workStage.m_SocketLaserHeightSensor.isConnected;
+            _InitDeviceStatus.HeightSensor = bOn;
+
+            bOn = workStage.Camera_HighRes != null && workStage.Camera_HighRes.Opened;
+            _InitDeviceStatus.CameraFine = bOn;
+
+            bOn = workStage.Camera_LowRes != null && workStage.Camera_LowRes.Opened;
+            _InitDeviceStatus.CameraPre = bOn;
+
+            bOn = CommonModule.Instance.Illuminator.m_bIsOpen;
+            _InitDeviceStatus.Illuminator = bOn;
+
+        }
+
+        //초기화 상태 함수 확인 
+        private void InitializeDeviceStatusBindings()
+        { 
+            deviceStatusGetters = new Dictionary<string, Func<bool>>
+            {
+                { "Motion", () => Equipment._InitDeviceStatus.MotionIo },
+                { "IO", () => Equipment._InitDeviceStatus.MotionIo },
+                { "Laser", () => Equipment._InitDeviceStatus.Laser },
+                { "Scanner", () => Equipment._InitDeviceStatus.Scanner },
+                { "PowerMeter_Bds", () => Equipment._InitDeviceStatus.PowerMeter_Bds },
+                { "PowerMeter_Stage", () => Equipment._InitDeviceStatus.PowerMeter_Stage },
+                { "BeamExpander", () => Equipment._InitDeviceStatus.BeamExpander },
+                { "DustCollector_Upper", () => Equipment._InitDeviceStatus.DustCollector_Upper },
+                { "DustCollector_Lower", () => Equipment._InitDeviceStatus.DustCollector_Lower },
+                { "Chiller", () => Equipment._InitDeviceStatus.Chiller },
+                { "ElectroRegulator", () => Equipment._InitDeviceStatus.ElectroRegulator },
+                { "HeightSensor", () => Equipment._InitDeviceStatus.HeightSensor },
+                { "CameraFine", () => Equipment._InitDeviceStatus.CameraFine },
+                { "CameraPre", () => Equipment._InitDeviceStatus.CameraPre },
+                { "Illuminator", () => Equipment._InitDeviceStatus.Illuminator },
+            };
+
+            devicePictureBoxes = new Dictionary<string, PictureBox>
+            {
+                { "Motion", pictureBox_Main_DiviceStatus_Motion },
+                { "IO", pictureBox_Main_DiviceStatus_IO },
+                { "Laser", pictureBox_Main_DiviceStatus_Laser },
+                { "Scanner", pictureBox_Main_DiviceStatus_Scanner },
+                { "PowerMeter_Bds", pictureBox_Main_DiviceStatus_Powermeter_bds },
+                { "PowerMeter_Stage", pictureBox_Main_DiviceStatus_Powermeter_Stage },
+                { "BeamExpander", pictureBox_Main_DiviceStatus_BeamExpander },
+                { "DustCollector_Upper", pictureBox_Main_DiviceStatus_DustCollector_Upper },
+                { "DustCollector_Lower", pictureBox_Main_DiviceStatus_DustCollector_Lower },
+                { "Chiller", pictureBox_Main_DiviceStatus_Chiller },
+                { "ElectroRegulator", pictureBox_Main_DiviceStatus_ElectroRegulator },
+                { "HeightSensor", pictureBox_Main_DiviceStatus_HeightSensor },
+                { "CameraFine", pictureBox_Main_DiviceStatus_CameraFine },
+                { "CameraPre", pictureBox_Main_DiviceStatus_CameraPre },
+                { "Illuminator", pictureBox_Main_DiviceStatus_Illuminator },
+            };
+        }
+        private void UpdateDeviceStatusImages()
+        {
+            foreach (var kv in devicePictureBoxes)
+            {
+                string key = kv.Key;
+                PictureBox pic = kv.Value;
+
+                bool isInit = deviceStatusGetters.ContainsKey(key) && deviceStatusGetters[key]?.Invoke() == true;
+
+                pic.Image = isInit
+                    ? global::SLD200.Properties.Resources.DioEllipseOn
+                    : global::SLD200.Properties.Resources.DioEllipseOff;
+            }
+
+            // 주석   
+            //if (m_bLaserConnected)
+            //{
+            //    pictureBox_Main_DiviceStatus_Laser.Image = global::SLD200.Properties.Resources.DioEllipseOn;
+            //}
+            //else
+            //{
+            //    pictureBox_Main_DiviceStatus_Laser.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            //}
+
+            //if (Equipment.AjinBoard_Opened) //변수 변경 필.
+            //{
+            //    pictureBox_Main_DiviceStatus_Motion.Image = global::SLD200.Properties.Resources.DioEllipseOn;
+            //    pictureBox_Main_DiviceStatus_IO.Image = global::SLD200.Properties.Resources.DioEllipseOn;
+            //}
+            //else
+            //{
+            //    pictureBox_Main_DiviceStatus_Motion.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            //    pictureBox_Main_DiviceStatus_IO.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            //}
+
+            //pictureBox_Main_DiviceStatus_Scanner.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            //pictureBox_Main_DiviceStatus_Powermeter_bds.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            //pictureBox_Main_DiviceStatus_Powermeter_Stage.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            //pictureBox_Main_DiviceStatus_BeamExpander.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            //pictureBox_Main_DiviceStatus_DustCollector_Upper.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            //pictureBox_Main_DiviceStatus_DustCollector_Lower.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            //pictureBox_Main_DiviceStatus_Chiller.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            //pictureBox_Main_DiviceStatus_ElectroRegulator.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            //pictureBox_Main_DiviceStatus_HeightSensor.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            //pictureBox_Main_DiviceStatus_CameraFine.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            //pictureBox_Main_DiviceStatus_CameraPre.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            //pictureBox_Main_DiviceStatus_Illuminator.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+        }
 
         // -----------------------
         // 멤버 변수 정의 (Form 클래스 내부)
@@ -687,8 +832,6 @@ namespace SLD200_MSL
 
         private (int, int) m_CompSocketRowCol, m_CompRegionRowCol;
         private int m_CompSocketStatus, m_CompRegionStatus;
-
-        private bool m_bLaserConnected = false;
 
         private async void Timer_MainStatus_Func(object sender, EventArgs e)
         {
@@ -788,15 +931,7 @@ namespace SLD200_MSL
                 m_bNeedAutoRunStop = true;
             }
 
-            if ((workStage.m_rapidLxLaser_Comm != null) && (workStage.m_rapidLxLaser_Comm.IsOpen))
-            {
-                m_bLaserConnected = true;
-            }
-            else
-            {
-                m_bLaserConnected = false;
-            }
-
+            UpdateInitStatusFromComm();
         }
 
         // -----------------------
@@ -896,14 +1031,9 @@ namespace SLD200_MSL
             label_Title_Stacker_RPort.BackColor = Equipment.Loader_RPort_Empty ? Color.Red : Color.Black;
             label_Title_Stacker_RPort.ForeColor = Equipment.Loader_RPort_Empty ? Color.White : Color.Green;
 
-            if(m_bLaserConnected)
-            {
-                pictureBox_Main_DiviceStatus_Laser.Image = global::SLD200.Properties.Resources.DioEllipseOn;
-            }
-            else
-            {
-                pictureBox_Main_DiviceStatus_Laser.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            }
+            // 장비 상태 UI에 반영
+            UpdateDeviceStatusImages();
+            
         }
 
 
@@ -2527,6 +2657,7 @@ namespace SLD200_MSL
         private void FormNew_Main_Load(object sender, EventArgs e)
         {
             InitImageViewer();
+            InitializeDeviceStatusBindings();
         }
 
         private void checkBox_Main_AutoRun_CheckedChanged(object sender, EventArgs e)

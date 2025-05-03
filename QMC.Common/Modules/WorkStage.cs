@@ -4782,7 +4782,10 @@ namespace QMC.Common.Modules
             }
 
             if (!Equipment.stCommunicationSet[(int)Equipment.CommList.Illuminator].Connect)
+            {
+                Equipment._InitDeviceStatus.Illuminator = false;
                 return;
+            }
 
             CommonModule.Instance.Illuminator.Config.PortName = m_strPortName;
             CommonModule.Instance.Illuminator.Config.BaudRate = m_nBaudRate;
@@ -4793,9 +4796,13 @@ namespace QMC.Common.Modules
 
             if (CommonModule.Instance.Illuminator.Initialize() != 0)
             {
+                Equipment._InitDeviceStatus.Illuminator = false;
                 string text = string.Format("{0} Port Open Failed! (Illuminator)", m_strPortName);
                 MessageBox.Show(text);
             }
+
+            Equipment._InitDeviceStatus.Illuminator = true;
+
         }
         #endregion
 
@@ -4867,18 +4874,24 @@ namespace QMC.Common.Modules
             }
 
             if (!Equipment.stCommunicationSet[(int)Equipment.CommList.PowerMeter_BDS].Connect)
+            {
+
+                Equipment._InitDeviceStatus.PowerMeter_Bds = false;
                 return;
 
+            }
             m_powerMeter_ExitPos_Comm = new SerialCommPowerMeter1Port();
             m_powerMeter_ExitPos_Comm.DataReceivedHandler = PowerMeter_ExitPos_DataReceivedHandler;
             m_powerMeter_ExitPos_Comm.DisconnectedHandler = PowerMeter_ExitPos_DisconnectedHandler;
             if (!m_powerMeter_ExitPos_Comm.OpenComm(m_strPortName, m_nBaudRate, m_nDataBits, m_stopBits, m_parity, m_handshake))
             {
+                Equipment._InitDeviceStatus.PowerMeter_Bds = false;
                 string text = string.Format("{0} Port Open Failed! (Power Meter, Exit Pos.)", m_strPortName);
                 MessageBox.Show(text);
                 return;
             }
 
+            Equipment._InitDeviceStatus.PowerMeter_Bds = true;
             m_nPowerMeterBDSCommStep = (int)PowerMeterBDSComm_Step.Start;
         }
 
@@ -4975,18 +4988,25 @@ namespace QMC.Common.Modules
             }
 
             if (!Equipment.stCommunicationSet[(int)Equipment.CommList.PowerMeter_Stage].Connect)
+            {
+                Equipment._InitDeviceStatus.PowerMeter_Stage = false;
+
                 return;
+            }
 
             m_powerMeter_TargetPos_Comm = new SerialCommPowerMeter2Port();
             m_powerMeter_TargetPos_Comm.DataReceivedHandler = PowerMeter_TargetPos_DataReceivedHandler;
             m_powerMeter_TargetPos_Comm.DisconnectedHandler = PowerMeter_TargetPos_DisconnectedHandler;
             if (!m_powerMeter_TargetPos_Comm.OpenComm(m_strPortName, m_nBaudRate, m_nDataBits, m_stopBits, m_parity, m_handshake))
             {
+                Equipment._InitDeviceStatus.PowerMeter_Stage = false;
                 string text = string.Format("{0} Port Open Failed! (Power Meter, Target Pos.)", m_strPortName);
                 MessageBox.Show(text);
+
                 return;
             }
 
+            Equipment._InitDeviceStatus.PowerMeter_Stage = true;
             m_nPowerMeterStageCommStep = (int)PowerMeterStageComm_Step.Start;
         }
 
@@ -5130,16 +5150,23 @@ namespace QMC.Common.Modules
             }
 
             if (!Equipment.stCommunicationSet[(int)Equipment.CommList.MotorizedBeamExpander].Connect)
+            {
+                Equipment._InitDeviceStatus.BeamExpander = false;
                 return;
+
+            }
 
             m_beamExpander_Comm = new SerialCommBeamExpanderPort();
             m_beamExpander_Comm.DataReceivedHandler = BeamExpander_DataReceivedHandler;
             m_beamExpander_Comm.DisconnectedHandler = BeamExpander_DisconnectedHandler;
             if (!m_beamExpander_Comm.OpenComm(m_strPortName, m_nBaudRate, m_nDataBits, m_stopBits, m_parity, m_handshake))
             {
+                Equipment._InitDeviceStatus.BeamExpander = false;
                 string text = string.Format("{0} Port Open Failed! (Beam Expander)", m_strPortName);
                 MessageBox.Show(text);
             }
+
+            Equipment._InitDeviceStatus.BeamExpander = true;
         }
 
         private void BeamExpander_DataReceivedHandler(byte[] receiveData)
@@ -20357,7 +20384,7 @@ namespace QMC.Common.Modules
                         m_bDivRegionList_Success = true;
 
                         var rtcMode = rtc as IRtc;                                  //  RTC6
-
+                        
                         m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Single);
 
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Buffer List Open");
