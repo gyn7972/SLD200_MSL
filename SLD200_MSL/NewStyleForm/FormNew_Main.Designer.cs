@@ -114,6 +114,9 @@
             this.baseLabel5 = new SLD200_MSL.BaseLabel();
             this.label_Title_Stacker_LPort = new System.Windows.Forms.Label();
             this.label_Title_Stacker_RPort = new System.Windows.Forms.Label();
+            this.groupBox_Main_DiviceStatus = new System.Windows.Forms.GroupBox();
+            this.pictureBox_Main_DiviceStatus_Laser = new System.Windows.Forms.PictureBox();
+            this.baseLabel_Main_Divice_Status_Laser = new SLD200_MSL.BaseLabel();
             this.groupBoxMain_ModuleProcessingStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -132,6 +135,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).BeginInit();
             this.groupBox_CoarseCam.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Rows)).BeginInit();
+            this.groupBox_Main_DiviceStatus.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Laser)).BeginInit();
             this.SuspendLayout();
             // 
             // SiriusViewer_Main
@@ -899,7 +904,6 @@
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete);
-            this.groupBox1.Controls.Add(this.button_Main_RecipeOpen);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete);
             this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_RPort_Complete);
@@ -907,7 +911,7 @@
             this.groupBox1.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(1116, 285);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(555, 291);
+            this.groupBox1.Size = new System.Drawing.Size(555, 109);
             this.groupBox1.TabIndex = 149;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = " Processing Status (Parts) ";
@@ -919,10 +923,10 @@
             this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
             this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.Location = new System.Drawing.Point(191, 94);
+            this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.Location = new System.Drawing.Point(191, 56);
             this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.Name = "checkBox_Main_ProcessStatus_LD_MAlign_Complete";
-            this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.Size = new System.Drawing.Size(172, 46);
+            this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.Size = new System.Drawing.Size(162, 12);
             this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.TabIndex = 157;
             this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.Text = "Module Center Align\r\n[by M-Aligner]";
             this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -935,10 +939,10 @@
             this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
             this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Location = new System.Drawing.Point(14, 176);
+            this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Location = new System.Drawing.Point(14, 73);
             this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Name = "checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete";
-            this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Size = new System.Drawing.Size(162, 46);
+            this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Size = new System.Drawing.Size(162, 12);
             this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.TabIndex = 156;
             this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Text = "Module Pick-Up\r\n[from Work Stage]";
             this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -951,10 +955,10 @@
             this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
             this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Location = new System.Drawing.Point(14, 230);
+            this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Location = new System.Drawing.Point(14, 91);
             this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Name = "checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete";
-            this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Size = new System.Drawing.Size(162, 46);
+            this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Size = new System.Drawing.Size(162, 12);
             this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.TabIndex = 155;
             this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Text = "Module Put-Down\r\n[to UL Port]";
             this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -970,7 +974,7 @@
             this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Location = new System.Drawing.Point(14, 40);
             this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Name = "checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete";
-            this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Size = new System.Drawing.Size(162, 46);
+            this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Size = new System.Drawing.Size(162, 12);
             this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.TabIndex = 154;
             this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Text = "Module Processing\r\n[Laser Drilling]";
             this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -983,10 +987,10 @@
             this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
             this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Location = new System.Drawing.Point(14, 94);
+            this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Location = new System.Drawing.Point(14, 56);
             this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Name = "checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete";
-            this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Size = new System.Drawing.Size(162, 46);
+            this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Size = new System.Drawing.Size(162, 12);
             this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.TabIndex = 153;
             this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Text = "Module Put-Down\r\n[to Work Stage]";
             this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1002,7 +1006,7 @@
             this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Location = new System.Drawing.Point(191, 40);
             this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Name = "checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete";
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Size = new System.Drawing.Size(172, 46);
+            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Size = new System.Drawing.Size(162, 12);
             this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.TabIndex = 152;
             this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Text = "Module Pick-Up\r\n[from M-Aligner]";
             this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1015,10 +1019,10 @@
             this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
             this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Location = new System.Drawing.Point(191, 148);
+            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Location = new System.Drawing.Point(191, 73);
             this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Name = "checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete";
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Size = new System.Drawing.Size(172, 46);
+            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Size = new System.Drawing.Size(162, 12);
             this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.TabIndex = 151;
             this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Text = "Module Put-Down\r\n[to M-Aligner]";
             this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1034,7 +1038,7 @@
             this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Location = new System.Drawing.Point(379, 40);
             this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Name = "checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete";
-            this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Size = new System.Drawing.Size(162, 46);
+            this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Size = new System.Drawing.Size(162, 12);
             this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.TabIndex = 151;
             this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Text = "Module Pick-Up\r\n[from LD Port]";
             this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1047,10 +1051,10 @@
             this.checkBox_Main_ProcessStatus_LD_RPort_Complete.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
             this.checkBox_Main_ProcessStatus_LD_RPort_Complete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBox_Main_ProcessStatus_LD_RPort_Complete.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_ProcessStatus_LD_RPort_Complete.Location = new System.Drawing.Point(463, 94);
+            this.checkBox_Main_ProcessStatus_LD_RPort_Complete.Location = new System.Drawing.Point(463, 56);
             this.checkBox_Main_ProcessStatus_LD_RPort_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_ProcessStatus_LD_RPort_Complete.Name = "checkBox_Main_ProcessStatus_LD_RPort_Complete";
-            this.checkBox_Main_ProcessStatus_LD_RPort_Complete.Size = new System.Drawing.Size(78, 46);
+            this.checkBox_Main_ProcessStatus_LD_RPort_Complete.Size = new System.Drawing.Size(162, 12);
             this.checkBox_Main_ProcessStatus_LD_RPort_Complete.TabIndex = 150;
             this.checkBox_Main_ProcessStatus_LD_RPort_Complete.Text = "Loader R-Port\r\n";
             this.checkBox_Main_ProcessStatus_LD_RPort_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1063,10 +1067,10 @@
             this.checkBox_Main_ProcessStatus_LD_LPort_Complete.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
             this.checkBox_Main_ProcessStatus_LD_LPort_Complete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBox_Main_ProcessStatus_LD_LPort_Complete.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_ProcessStatus_LD_LPort_Complete.Location = new System.Drawing.Point(379, 94);
+            this.checkBox_Main_ProcessStatus_LD_LPort_Complete.Location = new System.Drawing.Point(379, 56);
             this.checkBox_Main_ProcessStatus_LD_LPort_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_ProcessStatus_LD_LPort_Complete.Name = "checkBox_Main_ProcessStatus_LD_LPort_Complete";
-            this.checkBox_Main_ProcessStatus_LD_LPort_Complete.Size = new System.Drawing.Size(78, 46);
+            this.checkBox_Main_ProcessStatus_LD_LPort_Complete.Size = new System.Drawing.Size(162, 12);
             this.checkBox_Main_ProcessStatus_LD_LPort_Complete.TabIndex = 149;
             this.checkBox_Main_ProcessStatus_LD_LPort_Complete.Text = "Loader L-Port\r\n";
             this.checkBox_Main_ProcessStatus_LD_LPort_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1334,12 +1338,47 @@
             this.label_Title_Stacker_RPort.Text = "L Stacker 자재 유/무";
             this.label_Title_Stacker_RPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // groupBox_Main_DiviceStatus
+            // 
+            this.groupBox_Main_DiviceStatus.Controls.Add(this.baseLabel_Main_Divice_Status_Laser);
+            this.groupBox_Main_DiviceStatus.Controls.Add(this.pictureBox_Main_DiviceStatus_Laser);
+            this.groupBox_Main_DiviceStatus.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            this.groupBox_Main_DiviceStatus.Location = new System.Drawing.Point(1116, 409);
+            this.groupBox_Main_DiviceStatus.Name = "groupBox_Main_DiviceStatus";
+            this.groupBox_Main_DiviceStatus.Size = new System.Drawing.Size(553, 100);
+            this.groupBox_Main_DiviceStatus.TabIndex = 207;
+            this.groupBox_Main_DiviceStatus.TabStop = false;
+            this.groupBox_Main_DiviceStatus.Text = "Divice Status";
+            // 
+            // pictureBox_Main_DiviceStatus_Laser
+            // 
+            this.pictureBox_Main_DiviceStatus_Laser.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_Laser.Location = new System.Drawing.Point(6, 29);
+            this.pictureBox_Main_DiviceStatus_Laser.Name = "pictureBox_Main_DiviceStatus_Laser";
+            this.pictureBox_Main_DiviceStatus_Laser.Size = new System.Drawing.Size(25, 25);
+            this.pictureBox_Main_DiviceStatus_Laser.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_Laser.TabIndex = 212;
+            this.pictureBox_Main_DiviceStatus_Laser.TabStop = false;
+            // 
+            // baseLabel_Main_Divice_Status_Laser
+            // 
+            this.baseLabel_Main_Divice_Status_Laser.AutoSize = true;
+            this.baseLabel_Main_Divice_Status_Laser.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.baseLabel_Main_Divice_Status_Laser.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_Main_Divice_Status_Laser.Location = new System.Drawing.Point(37, 36);
+            this.baseLabel_Main_Divice_Status_Laser.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.baseLabel_Main_Divice_Status_Laser.Name = "baseLabel_Main_Divice_Status_Laser";
+            this.baseLabel_Main_Divice_Status_Laser.Size = new System.Drawing.Size(43, 18);
+            this.baseLabel_Main_Divice_Status_Laser.TabIndex = 130;
+            this.baseLabel_Main_Divice_Status_Laser.Text = "Laser";
+            // 
             // FormNew_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 877);
             this.ControlBox = false;
+            this.Controls.Add(this.groupBox_Main_DiviceStatus);
             this.Controls.Add(this.label_Title_Stacker_RPort);
             this.Controls.Add(this.label_Title_Stacker_LPort);
             this.Controls.Add(this.button_TestbyUser_LPort_Start);
@@ -1403,6 +1442,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).EndInit();
             this.groupBox_CoarseCam.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Rows)).EndInit();
+            this.groupBox_Main_DiviceStatus.ResumeLayout(false);
+            this.groupBox_Main_DiviceStatus.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Laser)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1495,5 +1537,8 @@
         private System.Windows.Forms.CheckBox checkBox_Main_AlignStartSocket_SelectMode;
         private System.Windows.Forms.Label label_Title_Stacker_LPort;
         private System.Windows.Forms.Label label_Title_Stacker_RPort;
+        private System.Windows.Forms.GroupBox groupBox_Main_DiviceStatus;
+        private BaseLabel baseLabel_Main_Divice_Status_Laser;
+        private System.Windows.Forms.PictureBox pictureBox_Main_DiviceStatus_Laser;
     }
 }

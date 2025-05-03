@@ -205,7 +205,6 @@ namespace SLD200_MSL
 
                 //Fine은 Workstage Camera와 연동
                 this.ImageViewer_Main_highs.Camera = workStage.Camera_HighRes;
-
                 this.ImageViewer_Main_highs.ResumeDisplay();
                 this.ImageViewer_Main_highs.StartUpdateTask();
             }
@@ -215,10 +214,8 @@ namespace SLD200_MSL
                 this.ImageViewer_Main_Rows.SizeMode = PictureBoxSizeMode.CenterImage;
                 this.ImageViewer_Main_Rows.SuspendDisplay();
                 this.ImageViewer_Main_Rows.StopUpdateTask();
-
                 //Prealign은 jigAligner와 연동
                 this.ImageViewer_Main_Rows.Camera = workStage.jigAligner_LowRes.Camera;
-
                 this.ImageViewer_Main_Rows.ResumeDisplay();
                 this.ImageViewer_Main_Rows.StartUpdateTask();
             }
@@ -691,6 +688,8 @@ namespace SLD200_MSL
         private (int, int) m_CompSocketRowCol, m_CompRegionRowCol;
         private int m_CompSocketStatus, m_CompRegionStatus;
 
+        private bool m_bLaserConnected = false;
+
         private async void Timer_MainStatus_Func(object sender, EventArgs e)
         {
             //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
@@ -788,6 +787,16 @@ namespace SLD200_MSL
             {
                 m_bNeedAutoRunStop = true;
             }
+
+            if ((workStage.m_rapidLxLaser_Comm != null) && (workStage.m_rapidLxLaser_Comm.IsOpen))
+            {
+                m_bLaserConnected = true;
+            }
+            else
+            {
+                m_bLaserConnected = false;
+            }
+
         }
 
         // -----------------------
@@ -886,6 +895,15 @@ namespace SLD200_MSL
             label_Title_Stacker_RPort.Text = Equipment.Loader_RPort_Empty ? "Loader_Stacker Right: 자재 없음." : "Loader_Stacker Right: 자재 있음.";
             label_Title_Stacker_RPort.BackColor = Equipment.Loader_RPort_Empty ? Color.Red : Color.Black;
             label_Title_Stacker_RPort.ForeColor = Equipment.Loader_RPort_Empty ? Color.White : Color.Green;
+
+            if(m_bLaserConnected)
+            {
+                pictureBox_Main_DiviceStatus_Laser.Image = global::SLD200.Properties.Resources.DioEllipseOn;
+            }
+            else
+            {
+                pictureBox_Main_DiviceStatus_Laser.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            }
         }
 
 

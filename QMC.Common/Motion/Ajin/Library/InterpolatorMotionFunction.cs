@@ -18,7 +18,6 @@ namespace QMC.Common.Motion.Ajin.Motions
         {
         }
 
-
         public override double MC_GetCmdPos(int nAxis)
         {
             //if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart &&(workStage.Stage.Interpolator != null))
@@ -171,7 +170,6 @@ namespace QMC.Common.Motion.Ajin.Motions
 
             return dPos;
         }
-
 
         public override bool MC_MoveRelPosition(int Axis, double position, double vel, double accel, double decel)
         {
