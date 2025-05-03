@@ -57,7 +57,7 @@ namespace SLD200_MSL
         protected XyzyStage m_Stage;
         private _2DMappingDataControl m_2DMappingDataControl;
         private _2DMappingFileControl m_2DMappingFileControl;
-
+        
         // Scanner Calibration
         // 현재 스캐너 보정 파일
         private string m_srcFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "correction", "cor_1to1.ct5");
@@ -381,7 +381,7 @@ namespace SLD200_MSL
             this.Refresh();
 
         }
-
+        
         // ActionSaveDone 이벤트 핸들러
         private void OnSaveDone(string message)
         {

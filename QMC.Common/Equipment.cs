@@ -35,6 +35,7 @@ using MessageBox = System.Windows.Forms.MessageBox;
 using QMC.Core;
 using static QMC.Common.Modules.Loader;
 using QMC.Common.Vision.Tools;
+using static System.Collections.Specialized.BitVector32;
 
 
 
@@ -636,6 +637,10 @@ namespace QMC.Common
         // true : Stop 예약
         // _isLaserDrillingWorkRunning 을 false 로 만드는 경우(Stop 하는 경우), 곧바로 false 로 변경하지 않고 Laser 가공이 완료된 후에 false 로 변경
         public static bool LaserDrillingCycStop_Reservation { set; get; } // 장비 Stop 예약
+
+        //  Loading 에 사용하던 Port 를 기억하기 위한 변수
+        //  Pick Up 하던 Port 에서만 계속 진행하기 위한 Port Index
+        public static int Loader_ActivatePort { set; get; } = 0;            //  Loader Port Activate (0: RPort, 1: LPort)
 
 
         public static int DryRun_ProcessingTime { set; get; } = 5;

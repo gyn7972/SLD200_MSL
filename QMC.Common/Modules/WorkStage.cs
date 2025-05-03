@@ -7002,6 +7002,35 @@ namespace QMC.Common.Modules
             return m_bRet;
         }
 
+        public bool RapidLxLaserComm_Laser_FaultCode_Clear()
+        {
+            bool m_bRet = false;
+
+            string m_strSendData = "";
+            byte[] m_cSendCmd = null;
+
+            m_cSendCmd = new byte[8];            //  5 : 'FACK=1' + CR + LF
+
+            m_cSendCmd[0] = (byte)'F';
+            m_cSendCmd[1] = (byte)'A';
+            m_cSendCmd[2] = (byte)'C';
+            m_cSendCmd[3] = (byte)'K';
+            m_cSendCmd[4] = (byte)'=';
+            m_cSendCmd[5] = (byte)'1';
+            m_cSendCmd[6] = chrCR;
+            m_cSendCmd[7] = chrLF;
+
+            m_strSendData = Encoding.Default.GetString(m_cSendCmd);
+
+            if (m_rapidLxLaser_Comm.IsOpen)
+            {
+                m_rapidLxLaser_Comm.Send(m_strSendData);
+                m_bRet = true;
+            }
+
+            return m_bRet;
+        }
+
         public bool RapidLxLaserComm_Laser_PulseMode_Read()
         {
             bool m_bRet = false;
@@ -11921,7 +11950,15 @@ namespace QMC.Common.Modules
 
                             m_strLaser_SystemFaults = "";
 
+                            //  정상일 땐 3개 : "?F", "SYSTEM", "OK"
                             if (words.Length >= 3)
+                            {
+                                for (int i = 1; i < words.Length; i++)
+                                {
+                                    m_strLaser_SystemFaults += words[i] + ' ';
+                                }
+                            }
+                            else        //  알람 하나 뜨면 2개로 온다. (알람 코드 번호로 오는데, 2개 이상이면 "코드+코드+코드 ..." 이렇게 오는 듯. 일단 코드 번호를 보여주도록 한다)
                             {
                                 for (int i = 1; i < words.Length; i++)
                                 {

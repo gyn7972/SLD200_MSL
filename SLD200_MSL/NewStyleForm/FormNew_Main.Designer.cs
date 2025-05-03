@@ -692,7 +692,7 @@
             this.groupBoxMain_MaterialInformation.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBoxMain_MaterialInformation.Location = new System.Drawing.Point(1347, 9);
             this.groupBoxMain_MaterialInformation.Name = "groupBoxMain_MaterialInformation";
-            this.groupBoxMain_MaterialInformation.Size = new System.Drawing.Size(323, 132);
+            this.groupBoxMain_MaterialInformation.Size = new System.Drawing.Size(323, 112);
             this.groupBoxMain_MaterialInformation.TabIndex = 2;
             this.groupBoxMain_MaterialInformation.TabStop = false;
             this.groupBoxMain_MaterialInformation.Text = " Material Information ";
@@ -1332,7 +1332,7 @@
             this.label_Title_Stacker_LPort.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_Title_Stacker_LPort.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Title_Stacker_LPort.ForeColor = System.Drawing.Color.Lime;
-            this.label_Title_Stacker_LPort.Location = new System.Drawing.Point(1348, 144);
+            this.label_Title_Stacker_LPort.Location = new System.Drawing.Point(1347, 144);
             this.label_Title_Stacker_LPort.Name = "label_Title_Stacker_LPort";
             this.label_Title_Stacker_LPort.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.label_Title_Stacker_LPort.Size = new System.Drawing.Size(322, 40);
@@ -1344,7 +1344,7 @@
             // 
             this.label_Title_Stacker_RPort.BackColor = System.Drawing.Color.Black;
             this.label_Title_Stacker_RPort.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label_Title_Stacker_RPort.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            this.label_Title_Stacker_RPort.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Title_Stacker_RPort.ForeColor = System.Drawing.Color.Lime;
             this.label_Title_Stacker_RPort.Location = new System.Drawing.Point(1347, 194);
             this.label_Title_Stacker_RPort.Name = "label_Title_Stacker_RPort";
