@@ -29,6 +29,8 @@ namespace SLD200_MSL
 {
     public partial class FormNew_Recipe : Form
     {
+        private bool m_bFormVisible = false; // 실제 Show 상태 여부
+
         static WorkStage workStage;
 
         FormNew_SiriusEditor m_formSiriusEditor = null;
@@ -90,13 +92,6 @@ namespace SLD200_MSL
 
             //LoadSubForm();
         }
-
-        //protected override void OnCreateControl()
-        //{
-        //    base.OnCreateControl(); // 반드시 호출
-        //                            // 추가 초기화 코드
-        //}
-
         private void LoadSubForm()
         {
             //OnCreateControl();
@@ -106,17 +101,109 @@ namespace SLD200_MSL
                 userform_RecipeVision = new FormNewSub_Recipe_Vision();
                 userform_RecipeVision.Dock = DockStyle.Fill;
                 tabPage_RecipeVision.Controls.Add(userform_RecipeVision);
-                //userform_RecipeVision.Initialize(); // 필요하면 초기화
-                // OnCreateControl 강제 호출
-                //userform_RecipeVision.CreateControl();
 
             }
         }
 
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+
+            if (!this.Created)
+                return;
+
+            if (this.Visible && !m_bFormVisible)
+            {
+                m_bFormVisible = true;
+                OnShowRecipeForm();
+            }
+            else if (!this.Visible && m_bFormVisible)
+            {
+                m_bFormVisible = false;
+                OnHideRecipeForm();
+            }
+        }
+
+        /// <summary>
+        /// 화면이 활성화(Show)될 때 실행할 로직
+        /// </summary>
+        private void OnShowRecipeForm()
+        {
+            // 예시: 레시피 데이터 새로고침
+            Console.WriteLine("FormNew_Recipe 활성화됨 (Show)");
+
+            // 실제 구현 로직 여기에
+            // e.g., RefreshRecipeUI(), UpdateDeviceStatus(), etc.
+            if (Equipment.AutoManualStatus)
+            {
+                button_Recipe_New.Enabled = false;
+                button_Recipe_Open.Enabled = false;
+                button_Recipe_Apply.Enabled = false;
+                button_Recipe_Save.Enabled = false;
+                button_Recipe_SaveAs.Enabled = false;
+                button_Recipe_TabRecipe_OpenEditor.Enabled = false;
+                button_Recipe_TabRecipe_OpenDwg.Enabled = false;
+                button_Recipe_TabRecipe_LayerImport.Enabled = false;
+            }
+            else
+            {
+                button_Recipe_New.Enabled = true;
+                button_Recipe_Open.Enabled = true;
+                button_Recipe_Apply.Enabled = true;
+                button_Recipe_Save.Enabled = true;
+                button_Recipe_SaveAs.Enabled = true;
+                button_Recipe_TabRecipe_OpenEditor.Enabled = true;
+                button_Recipe_TabRecipe_OpenDwg.Enabled = true;
+                button_Recipe_TabRecipe_LayerImport.Enabled = true;
+            }
+
+        }
+
+        /// <summary>
+        /// 화면이 비활성화(Hide)될 때 실행할 로직
+        /// </summary>
+        private void OnHideRecipeForm()
+        {
+            Console.WriteLine("FormNew_Recipe 비활성화됨 (Hide)");
+
+            // 예시: 타이머 멈춤, 리소스 일시 해제 등
+            // StopRecipePreviewTimer();
+
+            //if (Equipment.AutoRunStatus)
+            if (Equipment.AutoManualStatus)
+            {
+                button_Recipe_New.Enabled = false;
+                button_Recipe_Open.Enabled = false;
+                button_Recipe_Apply.Enabled = false;
+                button_Recipe_Save.Enabled = false;
+                button_Recipe_SaveAs.Enabled = false;
+                button_Recipe_TabRecipe_OpenEditor.Enabled = false;
+                button_Recipe_TabRecipe_OpenDwg.Enabled = false;
+                button_Recipe_TabRecipe_LayerImport.Enabled = false;
+            }
+            else
+            {
+                button_Recipe_New.Enabled = true;
+                button_Recipe_Open.Enabled = true;
+                button_Recipe_Apply.Enabled = true;
+                button_Recipe_Save.Enabled = true;
+                button_Recipe_SaveAs.Enabled = true;
+                button_Recipe_TabRecipe_OpenEditor.Enabled = true;
+                button_Recipe_TabRecipe_OpenDwg.Enabled = true;
+                button_Recipe_TabRecipe_LayerImport.Enabled = true;
+            }
+
+        }
+
+        //protected override void OnCreateControl()
+        //{
+        //    base.OnCreateControl(); // 반드시 호출
+        //                            // 추가 초기화 코드
+        //}
+
+        
         private void Timer_RecipeOpen_Func(object sender, EventArgs e)
         {
-            //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
-
             timer_Recipe_Open.Enabled = false;
 
             if (RecipeOpen_fromMainForm && (Equipment.RecipeName_fromMainForm.Length != 0))

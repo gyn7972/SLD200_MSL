@@ -194,6 +194,26 @@ namespace SLD200_MSL
             label_Title_Stacker_RPort.Text = "Loader_Stacker Right:";
         }
 
+        private bool m_bFormVisible = false; // 실제 Show 상태 여부
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+
+            if (!this.Created)
+                return;
+
+            if (this.Visible && !m_bFormVisible)
+            {
+                m_bFormVisible = true;
+                // OnShowRecipeForm();
+            }
+            else if (!this.Visible && m_bFormVisible)
+            {
+                m_bFormVisible = false;
+                //OnHideRecipeForm();
+            }
+        }
+
         #region Action
         public void OnSiriusViewerRefresy(bool bRtn)
         {
@@ -2767,6 +2787,8 @@ namespace SLD200_MSL
 
         private void button_TEST12_Click(object sender, EventArgs e)
         {
+            Equipment.AutoManualStatus = false;
+
             int nCol = workStage.Main_SocketPositions_ColumnCount = 5;
             int nRow = workStage.Main_SocketPositions_RowCount = 5;
             Change_SocketArraySize(nCol, nRow, 3, 3);
