@@ -2800,7 +2800,8 @@ namespace QMC.Common.Modules
 
                                 m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_PickUpPos_1stStep;
                             }
-                            else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000 * 2)
+                            //else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000 * 2)
+                            else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                             {
                                 Log.Write("SLD-200", "Auto Run", "집진기 Off 실패 (Timeout)");
 

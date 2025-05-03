@@ -270,5 +270,10 @@ namespace SLD200_MSL
                 baseTextBoxSource.Text = "";
             }
         }
+
+        private void button_Alarm_Buzz_Off_Click(object sender, EventArgs e)
+        {
+            CommonModule.Instance.TowerLamp.Buzzer_Off();
+        }
     }
 }
