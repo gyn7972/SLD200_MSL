@@ -7877,6 +7877,35 @@ namespace QMC.Common.Modules
 
                             //  최초 Data Parsing 후 해당 가공 데이터에 대한 상태 데이터를 초기화 한다. (가공중인 소켓 번호, 소켓 OK NG 여부 등)
                             GlobalSocketStatus_Init();
+
+                            if (m_stDividedRegion_GroupData != null)
+                            {
+                                //  메인 화면에 가공위치 표시용
+                                Main_SocketPositions = new List<PointD>();
+
+                                for (int i = 0; i < m_stDividedRegion_GroupData[0].nGroup_Num; i++)
+                                {
+                                    Main_SocketPositions.Add(new PointD(m_stDividedRegion_GroupData[i].dGroupCenter.X, m_stDividedRegion_GroupData[i].dGroupCenter.Y));
+                                }
+
+                                if (Main_SocketPositions.Count > 0)
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 있음.");
+
+                                    //  메인 화면에 그려지는 가공위치의 개수
+                                    (Main_SocketPositions_RowCount, Main_SocketPositions_ColumnCount) = CalculateArraySize(Main_SocketPositions);
+
+                                    //  가공 소켓이 몇개의 영역으로 나눠지는지
+                                    Main_SocketPositions_SubRowCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y : 1;
+                                    Main_SocketPositions_SubColumnCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X : 1;
+
+                                    Main_SocketPositions_Draw = true;
+                                }
+                                else
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 없음. (Data Parsing 이 정상적으로 이루어졌으면 여기 들어오면 안됨)");
+                                }
+                            }
                         }
                         else
                         {
@@ -14946,34 +14975,34 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 Process 시작");
 
 
-                    if (m_stDividedRegion_GroupData != null)
-                    {
-                        //  메인 화면에 가공위치 표시용
-                        Main_SocketPositions = new List<PointD>();
+                    //if (m_stDividedRegion_GroupData != null)
+                    //{
+                    //    //  메인 화면에 가공위치 표시용
+                    //    Main_SocketPositions = new List<PointD>();
 
-                        for (int i = 0; i < m_stDividedRegion_GroupData[0].nGroup_Num; i++)
-                        {
-                            Main_SocketPositions.Add(new PointD(m_stDividedRegion_GroupData[i].dGroupCenter.X, m_stDividedRegion_GroupData[i].dGroupCenter.Y));
-                        }
+                    //    for (int i = 0; i < m_stDividedRegion_GroupData[0].nGroup_Num; i++)
+                    //    {
+                    //        Main_SocketPositions.Add(new PointD(m_stDividedRegion_GroupData[i].dGroupCenter.X, m_stDividedRegion_GroupData[i].dGroupCenter.Y));
+                    //    }
 
-                        if (Main_SocketPositions.Count > 0)
-                        {
-                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 있음.");
+                    //    if (Main_SocketPositions.Count > 0)
+                    //    {
+                    //        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 있음.");
 
-                            //  메인 화면에 그려지는 가공위치의 개수
-                            (Main_SocketPositions_RowCount, Main_SocketPositions_ColumnCount) = CalculateArraySize(Main_SocketPositions);
+                    //        //  메인 화면에 그려지는 가공위치의 개수
+                    //        (Main_SocketPositions_RowCount, Main_SocketPositions_ColumnCount) = CalculateArraySize(Main_SocketPositions);
 
-                            //  가공 소켓이 몇개의 영역으로 나눠지는지
-                            Main_SocketPositions_SubRowCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y : 1;
-                            Main_SocketPositions_SubColumnCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X : 1;
+                    //        //  가공 소켓이 몇개의 영역으로 나눠지는지
+                    //        Main_SocketPositions_SubRowCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y : 1;
+                    //        Main_SocketPositions_SubColumnCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X : 1;
 
-                            Main_SocketPositions_Draw = true;
-                        }
-                        else
-                        {
-                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 없음. (Data Parsing 이 정상적으로 이루어졌으면 여기 들어오면 안됨)");
-                        }
-                    }
+                    //        Main_SocketPositions_Draw = true;
+                    //    }
+                    //    else
+                    //    {
+                    //        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 없음. (Data Parsing 이 정상적으로 이루어졌으면 여기 들어오면 안됨)");
+                    //    }
+                    //}
 
                     m_nDrillingData_SocketAlign_NGCount = 0;
 
