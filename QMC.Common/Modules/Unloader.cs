@@ -71,10 +71,12 @@ namespace QMC.Common.Modules
             UL_Stacker1_Running,                            //  언로더 스태커1 가동중입니다.
             UL_NGPort_Full,                                 //  언로더 NG 포트가 가득 차 있습니다.
 
-            UL_Staker0_Too_Many_Module,            
+            UL_Staker0_Too_Many_Module,
+            UL_Staker0_MoveZ_Timeout,
             UL_Staker0_Z_Full_Sensor_On_Fail,
             UL_Staker0_Z_Full_Sensor_On_Z_Move_Fail,
             UL_Staker1_Too_Many_Module,
+            UL_Staker1_MoveZ_Timeout,
             UL_Staker1_Z_Full_Sensor_On_Fail,
             UL_Staker1_Z_Full_Sensor_On_Z_Move_Fail,
             UL_Staker1_Z_Full_Sensor_On_Z_Move_ToBottom_Fail,
@@ -162,6 +164,21 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.UL_Staker0_MoveZ_Timeout;
+            alarm.Title = "Unloader";
+            alarm.Cause = "Unloader Right stacker 동작 시 타임아웃 발생하였습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.UL_Staker1_MoveZ_Timeout;
+            alarm.Title = "Unloader";
+            alarm.Cause = "Unloader Left stacker 동작 시 타임아웃 발생하였습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.UL_Staker0_Z_Full_Sensor_On_Fail;
@@ -475,6 +492,11 @@ namespace QMC.Common.Modules
 
             StackerZ_MoveType2_Slow3Up,                                     //  Stacker Z 축, 더더 느리게 올림 (최 상단까지)
             StackerZ_MoveType2_Slow3Up_DoneCheck,                           //  Stacker Z 축, 더더 느리게 올림, 이동 완료 확인
+
+
+            //  마지막 위치 이동 후 추가 이동
+            StackerZ_Move_OverDistance,                                     //  Stacker Z 축, 최종 위치에서 추가로 이동 (아래로 5mm 더 내림)
+            StackerZ_Move_OverDistance_DoneCheck,                           //  Stacker Z 축, 최종 위치에서 추가로 이동 완료 확인
 
 
             Complete                                                        //  완료
@@ -1392,7 +1414,8 @@ namespace QMC.Common.Modules
                         MC_Func.MC_MotorStop((int)nAxis.Z0, 1000);
 
                         //m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_Slow3Up;
-                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;                           //  다시 올리지 않고 완료. (Full 센서가 감지되지 않는 위치에서 Unloading 하도록 한다.)
+                        //m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;                           //  다시 올리지 않고 완료. (Full 센서가 감지되지 않는 위치에서 Unloading 하도록 한다.)
+                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance;
                     }
                     else if (MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_PosTolerance((int)nAxis.Z0, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0]))
                     {
@@ -1406,7 +1429,8 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                            //m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance;
                         }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ0) > 60000)
@@ -1436,7 +1460,8 @@ namespace QMC.Common.Modules
                     {
                         MC_Func.MC_MotorStop((int)nAxis.Z0, 2000);
 
-                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                        //m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance;
                     }
                     else if (MC_Func.MC_GetDone((int)nAxis.Z0) 
                         && MC_Func.MC_PosTolerance((int)nAxis.Z0, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0]))
@@ -1451,7 +1476,8 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                            //m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance;
                         }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ0) > 60000)
@@ -1532,7 +1558,8 @@ namespace QMC.Common.Modules
                         MC_Func.MC_MotorStop((int)nAxis.Z0, 1000);
 
                         //m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType2_Slow3Up;
-                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;                           //  다시 올리지 않고 완료. (Full 센서가 감지되지 않는 위치에서 Unloading 하도록 한다.)
+                        //m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;                           //  다시 올리지 않고 완료. (Full 센서가 감지되지 않는 위치에서 Unloading 하도록 한다.)
+                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance;
                     }
                     else if (MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_PosTolerance((int)nAxis.Z0, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0]))
                     {
@@ -1546,7 +1573,8 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                            //m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance;
                         }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ0) > 60000)
@@ -1577,7 +1605,8 @@ namespace QMC.Common.Modules
                     {
                         MC_Func.MC_MotorStop((int)nAxis.Z0, 2000);
 
-                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                        //m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance;
                     }
                     else if (MC_Func.MC_GetDone((int)nAxis.Z0) && 
                         MC_Func.MC_PosTolerance((int)nAxis.Z0, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0]))
@@ -1592,7 +1621,8 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                            //m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                            m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance;
                         }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ0) > 60000)
@@ -1604,6 +1634,74 @@ namespace QMC.Common.Modules
                     break;
                 /// <summary>
                 /// Full Sensor 감지되지 않는 상태일 경우 - 완료
+                /// </summary>
+                /// 
+
+
+                /// <summary>
+                /// 최종 위치 이동 후 추가 이동 - 시작
+                /// </summary>
+                case (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance:                               //  Stacker Z 축, 최종 감지 위치에서 추가로 이동
+
+                    if (MC_Func.MC_GetDone((int)nAxis.Z0))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, 최종 위치에서 추가 이동 시작. (아래로 3mm)");
+
+                        unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Stacker0_Top");
+
+                        //  Target Position 변경 : 현재 위치에서 추가 이동
+                        unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0] = MC_Func.MC_GetEncPos((int)nAxis.Z0) - 3.0;
+
+                        if (unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0] < loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_RPort_ReadyPos].UL_Stacker_Z0)
+                        {
+                            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_RPort_ReadyPos].UL_Stacker_Z0;
+                        }
+
+                        //  속도 (기본 속도 / 4)
+                        //m_dSpeed_Stacker_MoreSlow = Equipment.stAxisParam[(int)nAxis.Z0].Common_MoveSpeed / 4.0;
+                        m_dSpeed_Stacker_MoreSlow = Equipment.stAxisParam[(int)nAxis.Z0].Common_Speed_Fine / 4.0;
+
+                        //  가감속 배율
+                        m_dSpeedMag_forAccDec = 2.0;
+
+                        MC_Func.MC_MovePosition((int)nAxis.Z0,
+                                            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z0],
+                                            m_dSpeed_Stacker_MoreSlow,
+                                            m_dSpeed_Stacker_MoreSlow * m_dSpeedMag_forAccDec,
+                                            m_dSpeed_Stacker_MoreSlow * m_dSpeedMag_forAccDec);
+
+                        TickCount_Start((int)TickType.TICK_ULSZ0);
+
+                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance_DoneCheck;
+                    }
+                    break;
+
+
+                case (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance_DoneCheck:                          //  Stacker Z 축, 최종 감지 위치에서 추가로 이동 완료 확인
+
+                    //if (MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_PosTolerance((int)nAxis.Z0, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0]))
+                    if (MC_Func.MC_GetDone((int)nAxis.Z0))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Top 위치 아래 3mm 까지 이동 완료");
+
+                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_ULSZ0) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker0 Work Pos. Set", "Stacker0 Z 축, Top 위치 아래 3mm 까지 이동 실패. (Timeout)");
+
+                        return AlarmPost(AlarmKey.UL_Staker0_MoveZ_Timeout);
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+                        //return AlarmPost(AlarmKey.UL_Stacker0_FullSensor_Off_MoveFail);
+                        m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
+
+                        MessageBox.Show("LD Stacker0 Z 축, Top 위치 Over 까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    break;
+                /// <summary>
+                /// 최종 위치 이동 후 추가 이동 - 완료
                 /// </summary>
 
 
@@ -2002,7 +2100,8 @@ namespace QMC.Common.Modules
                         MC_Func.MC_MotorStop((int)nAxis.Z1, 1000);
 
                         //m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType1_Slow3Up;
-                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;                           //  다시 올리지 않고 완료. (Full 센서가 감지되지 않는 위치에서 Unloading 하도록 한다.)
+                        //m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;                           //  다시 올리지 않고 완료. (Full 센서가 감지되지 않는 위치에서 Unloading 하도록 한다.)
+                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance;
                     }
                     else if (MC_Func.MC_GetDone((int)nAxis.Z1) && 
                         MC_Func.MC_PosTolerance((int)nAxis.Z1, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1]))
@@ -2017,7 +2116,8 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                            //m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance;
                         }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ1) > 60000)
@@ -2072,7 +2172,8 @@ namespace QMC.Common.Modules
                     {
                         MC_Func.MC_MotorStop((int)nAxis.Z1, 2000);
 
-                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                        //m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance;
                     }
                     else if (MC_Func.MC_GetDone((int)nAxis.Z1) && 
                         MC_Func.MC_PosTolerance((int)nAxis.Z1, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1]))
@@ -2087,7 +2188,8 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                            //m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance;
                         }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ1) > 60000)
@@ -2219,7 +2321,8 @@ namespace QMC.Common.Modules
                         MC_Func.MC_MotorStop((int)nAxis.Z1, 1000);
 
                         //m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_MoveType2_Slow3Up;
-                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;                           //  다시 올리지 않고 완료. (Full 센서가 감지되지 않는 위치에서 Unloading 하도록 한다.)
+                        //m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;                           //  다시 올리지 않고 완료. (Full 센서가 감지되지 않는 위치에서 Unloading 하도록 한다.)
+                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance;
                     }
                     else if (MC_Func.MC_GetDone((int)nAxis.Z1) && MC_Func.MC_PosTolerance((int)nAxis.Z1, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1]))
                     {
@@ -2233,7 +2336,8 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                            //m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance;
                         }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ1) > 60000)
@@ -2288,7 +2392,8 @@ namespace QMC.Common.Modules
                     {
                         MC_Func.MC_MotorStop((int)nAxis.Z1, 2000);
 
-                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                        //m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance;
                     }
                     else if (MC_Func.MC_GetDone((int)nAxis.Z1) && 
                         MC_Func.MC_PosTolerance((int)nAxis.Z1, unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1]))
@@ -2303,7 +2408,8 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                            //m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                            m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance;
                         }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULSZ1) > 60000)
@@ -2315,6 +2421,74 @@ namespace QMC.Common.Modules
                     break;
                 /// <summary>
                 /// Full Sensor 감지되지 않는 상태일 경우 - 완료
+                /// </summary>
+                /// 
+
+
+                /// <summary>
+                /// 최종 위치 이동 후 추가 이동 - 시작
+                /// </summary>
+                case (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance:                               //  Stacker Z 축, 최종 감지 위치에서 추가로 이동
+
+                    if (MC_Func.MC_GetDone((int)nAxis.Z1))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, 최종 위치에서 추가 이동 시작. (아래로 3mm)");
+
+                        unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Stacker1_Top");
+
+                        //  Target Position 변경 : 현재 위치에서 추가 이동
+                        unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1] = MC_Func.MC_GetEncPos((int)nAxis.Z1) - 3.0;
+
+                        if (unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1] < loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_RPort_ReadyPos].UL_Stacker_Z1)
+                        {
+                            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_RPort_ReadyPos].UL_Stacker_Z1;
+                        }
+
+                        //  속도 (기본 속도 / 4)
+                        //m_dSpeed_Stacker_MoreSlow = Equipment.stAxisParam[(int)nAxis.Z0].Common_MoveSpeed / 4.0;
+                        m_dSpeed_Stacker_MoreSlow = Equipment.stAxisParam[(int)nAxis.Z1].Common_Speed_Fine / 4.0;
+
+                        //  가감속 배율
+                        m_dSpeedMag_forAccDec = 2.0;
+
+                        MC_Func.MC_MovePosition((int)nAxis.Z1,
+                                            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1],
+                                            m_dSpeed_Stacker_MoreSlow,
+                                            m_dSpeed_Stacker_MoreSlow * m_dSpeedMag_forAccDec,
+                                            m_dSpeed_Stacker_MoreSlow * m_dSpeedMag_forAccDec);
+
+                        TickCount_Start((int)TickType.TICK_ULSZ1);
+
+                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance_DoneCheck;
+                    }
+                    break;
+
+
+                case (int)StackerModulePutdownWaitingPos_Step.StackerZ_Move_OverDistance_DoneCheck:                          //  Stacker Z 축, 최종 감지 위치에서 추가로 이동 완료 확인
+
+                    //if (MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_PosTolerance((int)nAxis.Z0, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0]))
+                    if (MC_Func.MC_GetDone((int)nAxis.Z1))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker0 Z 축, Top 위치 아래 3mm 까지 이동 완료");
+
+                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_ULSZ1) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Top 위치 아래 3mm 까지 이동 실패. (Timeout)");
+
+                        return AlarmPost(AlarmKey.UL_Staker1_MoveZ_Timeout);
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+                        //return AlarmPost(AlarmKey.UL_Stacker0_FullSensor_Off_MoveFail);
+                        m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
+
+                        MessageBox.Show("LD Stacker0 Z 축, Top 위치 Over 까지 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    break;
+                /// <summary>
+                /// 최종 위치 이동 후 추가 이동 - 완료
                 /// </summary>
 
 
