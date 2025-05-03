@@ -25539,7 +25539,8 @@ namespace QMC.Common.Modules
             // 공정 완료 처리
             //bool result = ProcessManager.MarkAreaProcessed(1, "hole1", 3); // 3: 마지막은 Area 영역 넣어줘야함.
             //시작 index 0 부터 시작.
-            bool result = ProcessManager.MarkAreaProcessed(m_nSocketNumber, m_strLayerName, m_nAreaNumber_inSocket, m_strComment);
+            //2: 결과값 넣는 곳인데.. 밖에서 넣어줄수있도록 수정 필요
+            bool result = ProcessManager.MarkAreaProcessed(m_nSocketNumber, m_strLayerName, m_nAreaNumber_inSocket, 2, m_strComment);
 
             if (result)
                 Console.WriteLine("새로 가공 처리 완료!");

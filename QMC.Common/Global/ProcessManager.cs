@@ -16,7 +16,7 @@ namespace QMC.Common
             public int SocketNumber { get; set; }
             public string LayerName { get; set; }
             public int AreaIndex { get; set; }
-            public bool IsProcessed { get; set; }
+            public int ProcessStatus { get; set; }
             public string Note { get; set; }
         }
 
@@ -36,7 +36,7 @@ namespace QMC.Common
                 {
                     foreach (var area in layer.Areas)
                     {
-                        area.IsProcessed = false;
+                        area.ProcessStatus = 0;
                         area.Note = string.Empty;
                     }
                 }
@@ -74,7 +74,7 @@ namespace QMC.Common
             return layer?.Areas.Count ?? 0;
         }
 
-        public static bool MarkAreaProcessed(int socketNumber, string layerName, int areaIndex, string note = "")
+        public static bool MarkAreaProcessed(int socketNumber, string layerName, int areaIndex, int status, string note = "")
         {
             var socket = GetSocket(socketNumber);
             var layer = socket.GetLayer(layerName);
@@ -91,27 +91,22 @@ namespace QMC.Common
             if (area == null)
                 return false;
 
-            if (area.IsProcessed)
-                return false; // 이미 처리됨
+            if (area.ProcessStatus == status)
+                return false;
 
-            area.IsProcessed = true;
+            area.ProcessStatus = status;
             area.Note = note;
 
             SaveStateToFile();
-            return true; // 이번에 새로 처리함
+            return true;
         }
 
         public static AreaResult GetAreaResult(int socketNumber, string layerName, int areaIndex)
         {
             var socket = Sockets.FirstOrDefault(s => s.SocketNumber == socketNumber);
-            if (socket == null)
-                return null;
+            var layer = socket?.Layers.FirstOrDefault(l => l.LayerName == layerName);
+            var area = layer?.Areas.FirstOrDefault(a => a.AreaIndex == areaIndex);
 
-            var layer = socket.Layers.FirstOrDefault(l => l.LayerName == layerName);
-            if (layer == null)
-                return null;
-
-            var area = layer.Areas.FirstOrDefault(a => a.AreaIndex == areaIndex);
             if (area == null)
                 return null;
 
@@ -120,7 +115,7 @@ namespace QMC.Common
                 SocketNumber = socketNumber,
                 LayerName = layerName,
                 AreaIndex = areaIndex,
-                IsProcessed = area.IsProcessed,
+                ProcessStatus = area.ProcessStatus,
                 Note = area.Note
             };
         }
@@ -154,7 +149,7 @@ namespace QMC.Common
                 {
                     sb.AppendLine($"  [Layer:{layer.LayerName}]");
                     foreach (var area in layer.Areas)
-                        sb.AppendLine($"    Area_{area.AreaIndex} = {area.IsProcessed.ToString().ToLower()} // {area.Note}");
+                        sb.AppendLine($"    Area_{area.AreaIndex} = {area.ProcessStatus} // {area.Note}");
                 }
                 sb.AppendLine();
             }
@@ -188,9 +183,12 @@ namespace QMC.Common
                 {
                     var parts = line.Trim().Split('=');
                     int areaIdx = int.Parse(parts[0].Replace("Area_", "").Trim());
-                    bool isDone = parts[1].Trim().ToLower().StartsWith("true");
+                    string[] valParts = parts[1].Split(new[] { "//" }, StringSplitOptions.None);
+                    int status = int.Parse(valParts[0].Trim());
+                    string note = valParts.Length > 1 ? valParts[1].Trim() : "";
+
                     currentLayer.AddArea(areaIdx);
-                    currentLayer.SetAreaProcessed(areaIdx, isDone);
+                    currentLayer.SetAreaProcessed(areaIdx, status, note);
                 }
             }
         }

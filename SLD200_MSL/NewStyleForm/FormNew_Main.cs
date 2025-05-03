@@ -952,21 +952,7 @@ namespace SLD200_MSL
                                 continue;
 
                             m_ProcSocketRowCol = workStage.GetRowColumnFromIndex(socket.SocketNumber, workStage.Main_SocketPositions_ColumnCount);
-                            int status = 0;
-                            if (result.IsProcessed == true)
-                            {
-                                status = 2;
-                            }
-                            else if (result.IsProcessed == false)
-                            {
-                                status = 1;
-                            }
-                            else
-                            {
-                                status = 0;
-                            }
-
-                            Update_SocketStatus(m_ProcSocketRowCol.Item1, m_ProcSocketRowCol.Item2, status, 0, 0, 0);
+                            Update_SocketStatus(m_ProcSocketRowCol.Item1, m_ProcSocketRowCol.Item2, result.ProcessStatus, 0, 0, 0);
                         }
                     }
                 }
