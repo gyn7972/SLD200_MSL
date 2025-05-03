@@ -2758,7 +2758,8 @@ namespace QMC.Common.Modules
                 case (int)Unloader_Transfer_Step.WorkStagePickUp_WorkStageCycle_UnloadingPos_CompleteCheck:                       //  Work Stage, Unloading 위치로 이동 Cycle 완료 체크
 
                     if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) &&
-                        (workStage.m_nWorkStagePosition == (int)WorkStage.WorkStagePosition.WorkStage_UnloadingZone) && (workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None))
+                        (workStage.m_nWorkStagePosition == (int)WorkStage.WorkStagePosition.WorkStage_UnloadingZone) && 
+                        (workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Work Stage, Module Unloading 위치로 이동 완료");
 
