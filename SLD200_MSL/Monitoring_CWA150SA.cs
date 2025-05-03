@@ -2494,7 +2494,7 @@ namespace SLD200_MSL
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                    //System.Diagnostics.Debug.WriteLine(ex.Message);
                 }
             }
         }

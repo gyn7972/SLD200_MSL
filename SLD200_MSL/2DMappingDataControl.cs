@@ -3,22 +3,10 @@ using QMC.Common.Interpolator;
 using QMC.Common.Modules;
 using QMC.Common.Parts;
 using QMC.Common.UI;
-using QMC.Common.Motion.Ajin.Motions;
-using QMC.Common.Motion.ACS.Motions;
-using QMC.Common.VisionPart;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using ACS.SPiiPlusNET;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using PositionOffset = QMC.Common.VisionPart.PositionOffset;
 
 namespace QMC.Vision
