@@ -7806,6 +7806,8 @@ namespace QMC.Common.Modules
                     CommonModule.Instance.OperationButtons.StartLamp(true);
                     CommonModule.Instance.OperationButtons.StopLamp(false);
                     CommonModule.Instance.OperationButtons.ResetLamp(false);
+
+                    CommonModule.Instance.TowerLamp_BuzzerStop = false;
                 }
                 //  Stop
                 else
@@ -7831,6 +7833,8 @@ namespace QMC.Common.Modules
                     CommonModule.Instance.OperationButtons.StartLamp(false);
                     CommonModule.Instance.OperationButtons.StopLamp(true);
                     CommonModule.Instance.OperationButtons.ResetLamp(false);
+
+                    CommonModule.Instance.TowerLamp_BuzzerStop = false;
                 }
                 
 
