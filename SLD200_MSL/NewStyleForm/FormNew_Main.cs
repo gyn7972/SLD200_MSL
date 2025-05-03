@@ -1381,18 +1381,25 @@ namespace SLD200_MSL
             var pos = ProcessManager.GetFirstUnprocessedPosition();
             if (pos.HasValue)
             {
-                int socketIndex = pos.Value.socketIndex;
-                string layerName = pos.Value.layerName;
-                int areaIndex = pos.Value.areaIndex;
+                if(pos.Value.bResult == false)
+                {
+                    int socketIndex = pos.Value.socketIndex;
+                    string layerName = pos.Value.layerName;
+                    int areaIndex = pos.Value.areaIndex;
 
-                workStage.SetProcess_SocketNumber(socketIndex);
-                workStage.SetProcess_Layer(layerName);
-                workStage.SetProcess_AreaIndex(areaIndex);  // <- 필요시 추가
-                workStage.SetProcessRunning();              // "가공중"
+                    workStage.SetProcess_SocketNumber(socketIndex);
+                    workStage.SetProcess_Layer(layerName);
+                    workStage.SetProcess_AreaIndex(areaIndex);  // <- 필요시 추가
+                    workStage.SetProcessRunning();              // "가공중"
+                }
+                else
+                {
+                    workStage.SetProcessCompleted();            // "모든 소켓 가공 완료"
+                }
             }
             else
             {
-                workStage.SetProcessCompleted();            // "모든 소켓 가공 완료"
+                //workStage.SetProcessCompleted();            // "모든 소켓 가공 완료"
             }
 
 
