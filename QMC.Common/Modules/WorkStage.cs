@@ -7837,6 +7837,11 @@ namespace QMC.Common.Modules
                     CommonModule.Instance.TowerLamp_BuzzerStop = false;
                 }
                 
+                // Scanner Calibration이 활성화되지 않은 경우 종료 ??
+                if (!m_MainWork_Start)
+                {
+                    return;
+                }
 
                 //  Auto Run 모드일 때 칠러가 동작하지 않으면 알람
                 if (Equipment.AutoRunStatus)
@@ -7854,20 +7859,6 @@ namespace QMC.Common.Modules
                         return;
                     }
                 }
-
-
-                // Scanner Calibration이 활성화되지 않은 경우 종료 ??
-                if (!m_MainWork_Start)
-                {
-                    return;
-                }
-                // 현재 단계가 None이면 타이머 중지
-                //if (m_nMainWork_Step == (int)MainWork_Step.None)
-                //{
-                //    Console.WriteLine("Main Work completed.");
-                //    return;
-                //}
-
 
                 //  Loader 에서 WorkStage 로 모듈을 Loading 할 때, Loading 시작과 동시에 가공 데이터 Parsing 하기 위함
                 if (Equipment.ProcessingData_Parsing_byLoader)

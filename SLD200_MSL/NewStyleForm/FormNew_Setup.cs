@@ -381,7 +381,27 @@ namespace SLD200_MSL
             this.Refresh();
 
         }
-        
+
+        private bool m_bFormVisible = false; // 실제 Show 상태 여부
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+
+            if (!this.Created)
+                return;
+
+            if (this.Visible && !m_bFormVisible)
+            {
+                m_bFormVisible = true;
+                // OnShowRecipeForm();
+            }
+            else if (!this.Visible && m_bFormVisible)
+            {
+                m_bFormVisible = false;
+                //OnHideRecipeForm();
+            }
+        }
+
         // ActionSaveDone 이벤트 핸들러
         private void OnSaveDone(string message)
         {

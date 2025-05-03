@@ -49,6 +49,7 @@ namespace SLD200_MSL
         private FormNew_Alarm m_FormNew_Alarm;
         private FormNew_AlarmLog m_FormNew_AlarmLog;
 
+        private Form currentVisibleForm = null;
 
         private Monitoring_CWA150SA m_Monitoring_CWA150SA;
         //private SingleMode_LPM100 m_SingleMode_LPM100;
@@ -582,13 +583,34 @@ namespace SLD200_MSL
             }
          }
 
+
+
         public void ShowForm(Form form)
         {
-            this.panelContent.Controls.Clear();
-            form.TopLevel = false;
-            panelContent.Controls.Add(form);            
+            if (currentVisibleForm == form)
+                return;
+
+            if (currentVisibleForm != null)
+                currentVisibleForm.Hide();
+
+            currentVisibleForm = form;
+
+            if (!panelContent.Controls.Contains(form))
+            {
+                form.TopLevel = false;
+                form.FormBorderStyle = FormBorderStyle.None;
+                form.Dock = DockStyle.Fill;
+                panelContent.Controls.Add(form);
+            }
+
             form.BringToFront();
             form.Show();
+
+            //this.panelContent.Controls.Clear();
+            //form.TopLevel = false;
+            //panelContent.Controls.Add(form);            
+            //form.BringToFront();
+            //form.Show();
         }
         public void ShowButtonForm(Form form)
         {
