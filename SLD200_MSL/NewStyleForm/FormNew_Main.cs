@@ -663,6 +663,17 @@ namespace SLD200_MSL
                     workStage.ElectroPneumaticRegulator_Comm_Init();
             }
 
+            // Laser m_rapidLxLaser_Comm
+            if (workStage.m_rapidLxLaser_Comm == null)
+            {
+                workStage.RapidLxLaser_Comm_Init();
+            }
+            else
+            {
+                if (!workStage.m_rapidLxLaser_Comm.IsOpen)
+                    workStage.RapidLxLaser_Comm_Init();
+            }
+            
             //  Laser
             if (workStage.m_SocketLaser == null)
             {
@@ -679,49 +690,81 @@ namespace SLD200_MSL
         private void UpdateInitStatusFromComm()
         {
             bool bOn = false;
-            
-            bOn = Equipment.AjinBoard_Opened;
-            _InitDeviceStatus.MotionIo = bOn;
 
-            bOn = workStage.m_SocketLaser != null && workStage.m_SocketLaser.isConnected;
+            //장비 확인 필요
+            if (workStage.IsAlarm())
+                return;
+
+            bOn = Equipment.AjinBoard_Opened && workStage.m_bHomeOK;
+            _InitDeviceStatus.MotionIo = bOn;
+            //if (!_InitDeviceStatus.MotionIo)
+            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Motion);
+
+            bOn = workStage.m_rapidLxLaser_Comm != null && workStage.m_rapidLxLaser_Comm.IsOpen;
             _InitDeviceStatus.Laser = bOn;
-            
+            //if (!_InitDeviceStatus.Laser)
+            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Laser);
+
             //RTC에서 초기화할때 선언함.
             //bOn = workStage.rtc != null && workStage.rtc.;
             //_InitDeviceStatus.Scanner = bOn;
 
             bOn = workStage.m_powerMeter_ExitPos_Comm != null && workStage.m_powerMeter_ExitPos_Comm.IsOpen;
             _InitDeviceStatus.PowerMeter_Bds = bOn;
+            if (!_InitDeviceStatus.PowerMeter_Bds)
+                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Powermeter_bds);
 
             bOn = workStage.m_powerMeter_TargetPos_Comm != null && workStage.m_powerMeter_TargetPos_Comm.IsOpen;
             _InitDeviceStatus.PowerMeter_Stage = bOn;
+            if (!_InitDeviceStatus.PowerMeter_Stage)
+                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Powermeter_Stage);
 
-            bOn = workStage.m_beamExpander_Comm != null && workStage.m_beamExpander_Comm.IsOpen;
-            _InitDeviceStatus.BeamExpander = bOn;
+            // 미 연결 상태 - 연결되면 장착.
+            //bOn = workStage.m_beamExpander_Comm != null && workStage.m_beamExpander_Comm.IsOpen;
+            //_InitDeviceStatus.BeamExpander = bOn;
+            //if (!_InitDeviceStatus.BeamExpander)
+            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_BeamExpander);
 
             bOn = workStage.m_dustCollector_UpperPos_Comm != null && workStage.m_dustCollector_UpperPos_Comm.IsOpen;
             _InitDeviceStatus.DustCollector_Upper = bOn;
+            if (!_InitDeviceStatus.DustCollector_Upper)
+                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_DustCollector_Upper);
 
             bOn = workStage.m_dustCollector_LowerPos_Comm != null && workStage.m_dustCollector_LowerPos_Comm.IsOpen;
             _InitDeviceStatus.DustCollector_Lower = bOn;
+            if (!_InitDeviceStatus.DustCollector_Lower)
+                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_DustCollector_Lower);
 
             bOn = workStage.workStageParameter.DI_Chiller_Run();
             _InitDeviceStatus.Chiller = bOn;
+            if (!_InitDeviceStatus.Chiller)
+                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Chiller);
 
             bOn = workStage.m_electroRegulator_Comm != null && workStage.m_electroRegulator_Comm.IsOpen;
             _InitDeviceStatus.ElectroRegulator = bOn;
+            if (!_InitDeviceStatus.ElectroRegulator)
+                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_ElectroRegulator);
 
             bOn = workStage.m_SocketLaserHeightSensor != null && workStage.m_SocketLaserHeightSensor.isConnected;
             _InitDeviceStatus.HeightSensor = bOn;
+            if (!_InitDeviceStatus.HeightSensor)
+                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_HeightSensor);
 
             bOn = workStage.Camera_HighRes != null && workStage.Camera_HighRes.Opened;
             _InitDeviceStatus.CameraFine = bOn;
+            if (!_InitDeviceStatus.HeightSensor)
+                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_CameraFine);
 
             bOn = workStage.Camera_LowRes != null && workStage.Camera_LowRes.Opened;
             _InitDeviceStatus.CameraPre = bOn;
+            if (!_InitDeviceStatus.HeightSensor)
+                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_CameraPre);
 
             bOn = CommonModule.Instance.Illuminator.m_bIsOpen;
             _InitDeviceStatus.Illuminator = bOn;
+            if (!_InitDeviceStatus.HeightSensor)
+                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Illuminator);
+
 
         }
 
@@ -780,39 +823,6 @@ namespace SLD200_MSL
                     : global::SLD200.Properties.Resources.DioEllipseOff;
             }
 
-            // 주석   
-            //if (m_bLaserConnected)
-            //{
-            //    pictureBox_Main_DiviceStatus_Laser.Image = global::SLD200.Properties.Resources.DioEllipseOn;
-            //}
-            //else
-            //{
-            //    pictureBox_Main_DiviceStatus_Laser.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            //}
-
-            //if (Equipment.AjinBoard_Opened) //변수 변경 필.
-            //{
-            //    pictureBox_Main_DiviceStatus_Motion.Image = global::SLD200.Properties.Resources.DioEllipseOn;
-            //    pictureBox_Main_DiviceStatus_IO.Image = global::SLD200.Properties.Resources.DioEllipseOn;
-            //}
-            //else
-            //{
-            //    pictureBox_Main_DiviceStatus_Motion.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            //    pictureBox_Main_DiviceStatus_IO.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            //}
-
-            //pictureBox_Main_DiviceStatus_Scanner.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            //pictureBox_Main_DiviceStatus_Powermeter_bds.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            //pictureBox_Main_DiviceStatus_Powermeter_Stage.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            //pictureBox_Main_DiviceStatus_BeamExpander.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            //pictureBox_Main_DiviceStatus_DustCollector_Upper.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            //pictureBox_Main_DiviceStatus_DustCollector_Lower.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            //pictureBox_Main_DiviceStatus_Chiller.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            //pictureBox_Main_DiviceStatus_ElectroRegulator.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            //pictureBox_Main_DiviceStatus_HeightSensor.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            //pictureBox_Main_DiviceStatus_CameraFine.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            //pictureBox_Main_DiviceStatus_CameraPre.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            //pictureBox_Main_DiviceStatus_Illuminator.Image = global::SLD200.Properties.Resources.DioEllipseOff;
         }
 
         // -----------------------
@@ -835,7 +845,7 @@ namespace SLD200_MSL
 
         private async void Timer_MainStatus_Func(object sender, EventArgs e)
         {
-            //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
+            // 동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
             // 중복 실행 방지
              if (_isMainStatusRunning)
                 return;
@@ -1215,7 +1225,7 @@ namespace SLD200_MSL
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                    //System.Diagnostics.Debug.WriteLine(ex.Message);
                 }
             }
         }
@@ -2369,6 +2379,9 @@ namespace SLD200_MSL
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "모든 데이터를 리셋 하시겠습니까?\r\n\r\n[Loader 부터 다시 시작]"))
                 return;
 
+            var mb1 = new MessageBoxOk();
+            mb1.ShowDialog("Reset", "모터 초기화 (대기위치 이동) 후 시작 바랍니다.");
+
             // 가공 Data 초기화
             ProcessManager.Reset();
 
@@ -2725,22 +2738,23 @@ namespace SLD200_MSL
             {
                 if (Equipment.AutoRunStatus) // 장비가 정상적으로 구동 중일때는 변경되면 안되는데.
                 {
-                    var mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "정지 하시겠습니까?"))
-                        return ;
+                    var mb = new MessageBoxOk();
+                    mb.ShowDialog("Informaiton", "정지 후 변경 가능합니다.");
+                        return;
 
-                    checkBox_Main_AutoRun.Text = "MANUAL";
-                    checkBox_Main_AutoRun.BackColor = Color.LightGray;
-                    checkBox_Main_AutoRun.ForeColor = Color.Black;
-
-                    Equipment.AutoManualStatus = false;
+                    //var mb = new MessageBoxYesNo();
+                    //if (DialogResult.Yes != mb.ShowDialog("Question ?", "정지 하시겠습니까?"))
+                    //    return ;
+                    //checkBox_Main_AutoRun.Text = "MANUAL";
+                    //checkBox_Main_AutoRun.BackColor = Color.LightGray;
+                    //checkBox_Main_AutoRun.ForeColor = Color.Black;
+                    //Equipment.AutoManualStatus = false;
                 }
                 else
                 {
                     checkBox_Main_AutoRun.Text = "MANUAL";
                     checkBox_Main_AutoRun.BackColor = Color.LightGray;
                     checkBox_Main_AutoRun.ForeColor = Color.Black;
-
                     Equipment.AutoManualStatus = false;
                 }
             }

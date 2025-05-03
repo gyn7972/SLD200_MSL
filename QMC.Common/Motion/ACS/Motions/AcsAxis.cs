@@ -126,7 +126,7 @@ namespace QMC.Common.Motion.ACS.Motion
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+                //System.Diagnostics.Debug.WriteLine(ex.Message);
                 ret = -1;
             }
             return ret;
@@ -189,7 +189,7 @@ namespace QMC.Common.Motion.ACS.Motion
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+                //System.Diagnostics.Debug.WriteLine(ex.Message);
             }
 
             return ret;
@@ -222,7 +222,7 @@ namespace QMC.Common.Motion.ACS.Motion
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+                //System.Diagnostics.Debug.WriteLine(ex.Message);
                 ret = -1;
             }
             return ret;
@@ -299,7 +299,7 @@ namespace QMC.Common.Motion.ACS.Motion
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+                //System.Diagnostics.Debug.WriteLine(ex.Message);
                 ret = -1;
             }
             return ret;

@@ -2915,6 +2915,7 @@ namespace QMC.Common.Modules
 
                     // Todo : 수정 필요
                     //  Stage Vacuum Off 시, 진공레귤레이터도 함께 동작시켜야 한다.
+                    Thread.Sleep(10);
                     workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
 
                     TickCount_Start((int)TickType.TICK_ULTR);
@@ -2944,9 +2945,12 @@ namespace QMC.Common.Modules
 
                         //  Stage Vacuum 을 Off 했는데, 진공이 동작하는 경우가 있어서, Off 코드 추가
                         workStage.workStageParameter.DO_Stage_Vacuum(false);
+                        Thread.Sleep(10); //  진공이 동작하는 경우가 있어서, Off 코드 추가
                         workStage.workStageParameter.DO_Stage_Blow(true);                   //  Blow On
 
+                        Thread.Sleep(10);
                         //  Stage Vacuum Off 시, 진공레귤레이터도 함께 동작시켜야 한다. (안꺼질 때가 있어서 한번 더)
+                        Thread.Sleep(10); //  진공이 동작하는 경우가 있어서, Off 코드 추가
                         workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
 
                         //////////////////////////////////////////////////////////////////////////////////////////
