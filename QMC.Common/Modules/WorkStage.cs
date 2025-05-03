@@ -20936,8 +20936,8 @@ namespace QMC.Common.Modules
             r1 /= 2;
             r2 /= 2;
 
-            int startAngle = 0;
-            int sweepAngle =(int) m_dTemp_AngleFactor; // 각 아크의 각도 (작게 설정하여 부드럽게 연결)
+            double startAngle = 0;
+            double sweepAngle = m_dTemp_AngleFactor; // 각 아크의 각도 (작게 설정하여 부드럽게 연결)
             double dFirstAngle = 0;
             double currentRadius = r1; // 초기 반지름
             if(turn <1)
@@ -20978,19 +20978,22 @@ namespace QMC.Common.Modules
                 int x = (int)(centerX - currentRadius);
                 int y = (int)(centerY - currentRadius);
 
-                rtc.ListArc(new Vector2((float)(centerX), (float)(centerY + dshiftY)), sweepAngle);
+                rtc.ListArc(new Vector2((float)(centerX), (float)(centerY + dshiftY)), (float)sweepAngle);
 
 
                 int width = (int)(currentRadius * 2);
                 int height = (int)(currentRadius * 2);
 
-                sweepAngle = rnd.Next(6, 180);
-                startAngle += sweepAngle; // 시작 각도 증가
                 dLastX = currentRadius * Math.Cos((i + sweepAngle) * Math.PI / 180);
                 dLastY = currentRadius * Math.Sin((i + sweepAngle) / 180 * Math.PI);
                 dLastCenterX = centerX;
                 dLastCenterY = centerY;
 
+                if(m_dTemp_AngleFactor > 2.1)
+                {
+                    sweepAngle = (rnd.Next(1, 1000) * 15.0 /1000) + 3;
+                }
+                startAngle += sweepAngle; // 시작 각도 증가
                 currentRadius += rStep; // 반지름 증가
             }
 
