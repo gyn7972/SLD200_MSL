@@ -869,28 +869,44 @@ namespace SLD200_MSL
                 // 여기에 자재 유/무에 대한 메세지 표시
                 if (Equipment.Loader_LPort_Empty)
                 {
-                    label_Title_Stacker_LPort.Text = "Loader_Stacker Left: 자재 없음.";
+                    label_Title_Stacker_LPort.Text = "Loader_Port Left : 자재 없음. [Pause]";
                     label_Title_Stacker_LPort.BackColor = Color.Red;
                     label_Title_Stacker_LPort.ForeColor = Color.White;
                 }
                 else
                 {
-                    label_Title_Stacker_LPort.Text = "Loader_Stacker Left: 자재 있음.";
+                    if (Equipment.Loader_LPort_Pause)
+                    {
+                        label_Title_Stacker_LPort.Text = "Loader_Port Left : 자재 있음. [Pause]";
+                    }
+                    else
+                    {
+                        label_Title_Stacker_LPort.Text = "Loader_Port Left : 자재 있음.";
+                    }
+
                     label_Title_Stacker_LPort.BackColor = Color.Black;
-                    label_Title_Stacker_LPort.ForeColor = Color.Green;
+                    label_Title_Stacker_LPort.ForeColor = Color.Lime;
                 }
 
-                if (Equipment.Loader_RPort_Empty)
+                if (!Equipment.Loader_RPort_Empty)
                 {
-                    label_Title_Stacker_RPort.Text = "Loader_Stacker Right: 자재 없음.";
+                    label_Title_Stacker_RPort.Text = "Loader_Port Right : 자재 없음. [Pause]";
                     label_Title_Stacker_RPort.BackColor = Color.Red;
                     label_Title_Stacker_RPort.ForeColor = Color.White;
                 }
                 else
                 {
-                    label_Title_Stacker_RPort.Text = "Loader_Stacker Right: 자재 있음.";
+                    if (Equipment.Loader_LPort_Pause)
+                    {
+                        label_Title_Stacker_LPort.Text = "Loader_Port Right : 자재 있음. [Pause]";
+                    }
+                    else
+                    {
+                        label_Title_Stacker_RPort.Text = "Loader_Port Right : 자재 있음.";
+                    }
+                    
                     label_Title_Stacker_RPort.BackColor = Color.Black;
-                    label_Title_Stacker_RPort.ForeColor = Color.Green;
+                    label_Title_Stacker_RPort.ForeColor = Color.Lime;
                 }
 
                 timer_Main_Status.Enabled = true;

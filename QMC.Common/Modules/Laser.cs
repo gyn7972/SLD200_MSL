@@ -67,6 +67,150 @@ namespace QMC.Common.Modules
         public const byte laserErrCode_CommandNACK = 255;                   //  Command Not Acknowledged
         #endregion
 
+
+        #region MSL SLD-200U 를 위한 에러 코드
+        // 알람 데이터를 저장할 클래스
+        public class AlarmData
+        {
+            public string Name { get; private set; }
+            public string Description { get; private set; }
+
+            public AlarmData(string name, string description)
+            {
+                Name = name;
+                Description = description;
+            }
+        }
+
+        // 알람 데이터를 저장할 Dictionary
+        private readonly Dictionary<int, AlarmData> _alarmDictionary = new Dictionary<int, AlarmData>();
+
+//  레이저 알람 데이터 초기화
+        private void Initialize_LaserAlarmData()
+        {
+            _alarmDictionary.Add(1, new AlarmData("HEAD_INT_FAULT",                          "EmissionLampInterlockFault"));
+            _alarmDictionary.Add(2, new AlarmData("EXT_INT_FAULT",                           "ExternalInterlockFault"));
+            _alarmDictionary.Add(4, new AlarmData("INT0_INT_FAULT",                          "FPGAFault"));
+            _alarmDictionary.Add(5, new AlarmData("BUS_COMMUNICATION_FAULT",                 "InternalBusCommunicationFault"));
+            _alarmDictionary.Add(7, new AlarmData("SYS_CONF_NOT_PARSED_FAULT",               "Systemsconfigurationfilemissingorinvalidfault"));
+            _alarmDictionary.Add(8, new AlarmData("SYS_CONF_NOT_VERIFIED_FAULT",             "Systemsconfigurationinvalidfault"));
+            _alarmDictionary.Add(9, new AlarmData("TEC1_TEMP_FAULT",                         "TEC1Temperaturefault"));
+            _alarmDictionary.Add(10, new AlarmData("SHG_TEMP_FAULT",                         "SHGTemperatureFault"));
+            _alarmDictionary.Add(11, new AlarmData("THG_TEMP_FAULT",                         "THGTemperatureFault"));
+            _alarmDictionary.Add(13, new AlarmData("DIODE1_TEMP_FAULT",                      "D1TemperatureFault"));
+            _alarmDictionary.Add(14, new AlarmData("DIODE2_TEMP_FAULT",                      "D2TemperatureFault"));
+            _alarmDictionary.Add(15, new AlarmData("DIODE3_TEMP_FAULT",                      "D3TemperatureFault"));
+            _alarmDictionary.Add(18, new AlarmData("SPE_INT_FAULT",                          "SeederpulseerrorFault"));
+            _alarmDictionary.Add(20, new AlarmData("DIODE1_FIBERBROKEN_FAULT",               "D1Fiberbrokenfaul"));
+            _alarmDictionary.Add(24, new AlarmData("AOM_24V_FAULT",                          "SetRFdrivervoltagefault"));
+            _alarmDictionary.Add(28, new AlarmData("PPE_INT_FAULT",                          "PPEFault"));
+            _alarmDictionary.Add(32, new AlarmData("DIODE1_OVER_CURRENT_FAULT",              "Diode1overcurrentFault"));
+            _alarmDictionary.Add(33, new AlarmData("DIODE2_OVER_CURRENT_FAULT",              "Diode2overcurrentFault"));
+            _alarmDictionary.Add(34, new AlarmData("DIODE3_OVER_CURRENT_FAULT",              "Diode3overcurrentFault"));
+            _alarmDictionary.Add(36, new AlarmData("DIODE1_CURRENT_LOW_FAULT",               "Diode1undercurrentFault"));
+            _alarmDictionary.Add(37, new AlarmData("DIODE2_CURRENT_LOW_FAULT",               "Diode2undercurrentFault"));
+            _alarmDictionary.Add(38, new AlarmData("DIODE3_CURRENT_LOW_FAULT",               "Diode3undercurrentFault"));
+            _alarmDictionary.Add(39, new AlarmData("DIODE1_CURRENT_OUTOFRANGE_FAULT",        "Diode1currentoutofrangefault"));
+            _alarmDictionary.Add(40, new AlarmData("DIODE2_CURRENT_OUTOFRANGE_FAULT",        "Diode2currentoutofrangefault"));
+            _alarmDictionary.Add(41, new AlarmData("DIODE3_CURRENT_OUTOFRANGE_FAULT",        "Diode3currentoutofrangefault"));
+            _alarmDictionary.Add(42, new AlarmData("DIODE1_INITIALIZATION_FAULT",            "Diode1initializationfault"));
+            _alarmDictionary.Add(43, new AlarmData("DIODE2_INITIALIZATION_FAULT",            "Diode2initializationfault"));
+            _alarmDictionary.Add(44, new AlarmData("DIODE3_INITIALIZATION_FAULT",            "Diode3initializationfault"));
+            _alarmDictionary.Add(46, new AlarmData("SEEDER_OPENCOMPORT_FAULT",               "SeederopenCOMportfault"));
+            _alarmDictionary.Add(47, new AlarmData("SEEDER_INITIALIZATION_FAULT",            "Seederinitializationfault"));
+            _alarmDictionary.Add(48, new AlarmData("RECIRCULATOR_INITIALIZATION_FAULT",      "Recirculatorinitializationfault"));
+            _alarmDictionary.Add(50, new AlarmData("WATER_FLOW_LOW_FAULT",                   "WatermonitorWaterFlowLowFault"));
+            _alarmDictionary.Add(52, new AlarmData("WATER_TEMPERATURE_LOW_FAULT",            "WatermonitorWaterTemperatureLowFault"));
+            _alarmDictionary.Add(53, new AlarmData("WATER_TEMPERATURE_HIGH_FAULT",           "WatermonitorWaterTemperatureHighFault"));
+            _alarmDictionary.Add(58, new AlarmData("WATER_FLOW_INITIALIZATION_FAULT",        "Waterflowmonitorinitializationfault"));
+            _alarmDictionary.Add(60, new AlarmData("THREAD_EXCEPTION_FAULT",                 "ThreadExceptionFault"));
+            _alarmDictionary.Add(61, new AlarmData("SYS_SEQUENCE_NOT_LOADED_FAULT",          "Sequencenotloaded"));
+            _alarmDictionary.Add(62, new AlarmData("SYS_SEQUENCE_NOT_EXECUTED_FAULT",        "Sequenceexecutionerror"));
+            _alarmDictionary.Add(63, new AlarmData("SYS_SEQUENCE_WRONG_INDEXING_FAULT",      "Sequenceindexingfailed"));
+            _alarmDictionary.Add(64, new AlarmData("SYS_SEQUENCE_WRONG_COMMAND",             "Commandinsequencenotsupported"));
+            _alarmDictionary.Add(65, new AlarmData("SYS_SEQUENCE_FILE_MISSING",              "Filewithsequenceismissing"));
+            _alarmDictionary.Add(66, new AlarmData("SYS_SEQUENCE_NO_VALID_STEPS_DETECTED",   "Sequencedoesnotcontainvalidsteps"));
+            _alarmDictionary.Add(70, new AlarmData("HEAD_HUMIDITY_0_VERY_HIGH_FAULT",        "H0ToohighhumidityFault"));
+            _alarmDictionary.Add(71, new AlarmData("HEAD_HUMIDITY_1_VERY_HIGH_FAULT",        "H1ToohighhumidityFault"));
+            _alarmDictionary.Add(72, new AlarmData("HEAD_HUMIDITY_2_VERY_HIGH_FAULT",        "H2ToohighhumidityFault"));
+            _alarmDictionary.Add(73, new AlarmData("HEAD_HUMIDITY_3_VERY_HIGH_FAULT",        "H3ToohighhumidityFault"));
+            _alarmDictionary.Add(74, new AlarmData("HUMIDITY1_INITIALIZATION_FAULT",         "Humiditysensor1initializationfault"));
+            _alarmDictionary.Add(75, new AlarmData("HUMIDITY2_INITIALIZATION_FAULT",         "Humiditysensor2initializationfault"));
+            _alarmDictionary.Add(76, new AlarmData("HUMIDITY3_INITIALIZATION_FAULT",         "Humiditysensor3initializationfault"));
+            _alarmDictionary.Add(77, new AlarmData("PD1_INITIALIZATION_FAULT",               "Photodiode1initializationfault"));
+            _alarmDictionary.Add(78, new AlarmData("PD2_INITIALIZATION_FAULT",               "Photodiode2initializationfault"));
+            _alarmDictionary.Add(79, new AlarmData("PD3_INITIALIZATION_FAULT",               "Photodiode3initializationfault"));
+            _alarmDictionary.Add(80, new AlarmData("PD4_INITIALIZATION_FAULT",               "Photodiode4initializationfault"));
+            _alarmDictionary.Add(81, new AlarmData("PD5_INITIALIZATION_FAULT",               "Photodiode5initializationfault"));
+            _alarmDictionary.Add(82, new AlarmData("PD6_INITIALIZATION_FAULT",               "Photodiode6initializationfault"));
+            _alarmDictionary.Add(83, new AlarmData("PD7_INITIALIZATION_FAULT",               "Photodiode7initializationfault"));
+            _alarmDictionary.Add(84, new AlarmData("PD8_INITIALIZATION_FAULT",               "Photodiode8initializationfault"));
+            _alarmDictionary.Add(85, new AlarmData("PD9_INITIALIZATION_FAULT",               "Photodiode9initializationfault"));
+            _alarmDictionary.Add(86, new AlarmData("PD10_INITIALIZATION_FAULT",              "Photodiode10initializationfault"));
+            _alarmDictionary.Add(87, new AlarmData("PD11_INITIALIZATION_FAULT",              "Photodiode11initializationfault"));
+            _alarmDictionary.Add(88, new AlarmData("PD12_INITIALIZATION_FAULT",              "Photodiode12initializationfault"));
+            _alarmDictionary.Add(89, new AlarmData("PD13_INITIALIZATION_FAULT",              "Photodiode13initializationfault"));
+            _alarmDictionary.Add(90, new AlarmData("PD14_INITIALIZATION_FAULT",              "Photodiode14initializationfault"));
+            _alarmDictionary.Add(91, new AlarmData("AXIS_X1_INITIALIZATION_FAULT",           "AxisX1initializationfault"));
+            _alarmDictionary.Add(92, new AlarmData("AXIS_X2_INITIALIZATION_FAULT",           "AxisX2initializationfault"));
+            _alarmDictionary.Add(93, new AlarmData("AXIS_X3_INITIALIZATION_FAULT",           "AxisX3initializationfault"));
+            _alarmDictionary.Add(94, new AlarmData("LIFETIMECOUNTER_INITIALIZATION_FAULT",   "Lifetimecounterinitializationfault"));
+            _alarmDictionary.Add(96, new AlarmData("SHG_INITIALIZATION_FAULT",               "SHGdriverinitializationfault"));
+            _alarmDictionary.Add(97, new AlarmData("THG_INITIALIZATION_FAULT",               "THGdriverinitializationfault"));
+            _alarmDictionary.Add(100, new AlarmData("AMPCURRENT_INITIALIZATION_FAULT",       "AmpCurrentinitializationfault"));
+            _alarmDictionary.Add(101, new AlarmData("DELAYGENERATOR_INITIALIZATION_FAULT",   "Delaygeernatorinitializationfault"));
+            _alarmDictionary.Add(102, new AlarmData("SHGOVEN_INITIALIZATION_FAULT",          "SHGoveninitializationfault"));
+            _alarmDictionary.Add(103, new AlarmData("THGOVEN_INITIALIZATION_FAULT",          "THGoveninitializationfault"));
+            _alarmDictionary.Add(105, new AlarmData("SHG_SERVO_STUCK_FAULT",                 "SHGdriverstuckfault"));
+            _alarmDictionary.Add(106, new AlarmData("SHG_LOW_DRIVE_FAULT",                   "SHGdriverlowdrivefault"));
+            _alarmDictionary.Add(107, new AlarmData("SHG_MAX_TEMP_DIFF_FAULT",               "SHGdrivermaximumtemperaturedifference"));
+            _alarmDictionary.Add(110, new AlarmData("THG_SERVO_STUCK_FAULT",                 "THGdriverstuckfault"));
+            _alarmDictionary.Add(111, new AlarmData("THG_LOW_DRIVE_FAULT",                   "THGdriverlowdrivefault"));
+            _alarmDictionary.Add(112, new AlarmData("THG_MAX_TEMP_DIFF_FAULT",               "THGdrivermaximumtemperaturedifference"));
+            _alarmDictionary.Add(115, new AlarmData("TEC1_OPEN_PORT_FAULT",                  "TEC1openportfault"));
+            _alarmDictionary.Add(116, new AlarmData("TEC1_MAX_TEMP_DIFF_FAULT",              "TEC1drivermaximumtemperaturedifference"));
+            _alarmDictionary.Add(120, new AlarmData("DIODEDRIVER_START_FAULT",               "Diodedriverstartfault"));
+            _alarmDictionary.Add(121, new AlarmData("EMERGENCYSTOP_FAULT",                   "Emergencystopfault"));
+            _alarmDictionary.Add(123, new AlarmData("WATCHDOG_TIMEOUT_FAULT",                "Watchdogtimeoutfault(microcontrollerinternalsignal)"));
+            _alarmDictionary.Add(125, new AlarmData("HEAD_DEWPOINT_0_VERY_HIGH_FAULT",       "H0ToohighdewpointFault"));
+            _alarmDictionary.Add(126, new AlarmData("HEAD_DEWPOINT_1_VERY_HIGH_FAULT",       "H1ToohighdewpointFault"));
+            _alarmDictionary.Add(127, new AlarmData("HEAD_DEWPOINT_2_VERY_HIGH_FAULT",       "H2ToohighdewpointFault"));
+            _alarmDictionary.Add(128, new AlarmData("HEAD_DEWPOINT_3_VERY_HIGH_FAULT",       "H3ToohighdewpointFault"));
+            _alarmDictionary.Add(129, new AlarmData("EE_SERIAL_MISMATCH_FAULT",              "FAULT:TheHSNonEEPROMisnotrecognizedbythislaser"));
+            _alarmDictionary.Add(130, new AlarmData("MAINTENANCE_REQUIRED_FAULT",            "\"FAULT:Maintenanceoverdue.Use\"\"MAINT\"\"command\""));
+            _alarmDictionary.Add(131, new AlarmData("CONFIGURATION_FAULT",                   "FAULT:Configuration"));
+            _alarmDictionary.Add(140, new AlarmData("TEMPERATURE_INTERLOCK_FAULT",           "FAULT:Temperatureinterlock"));
+            _alarmDictionary.Add(143, new AlarmData("POR_INTERLOCK_FAULT",                   "FAULT:Power-on-Reset"));
+            _alarmDictionary.Add(144, new AlarmData("SEED_INTERLOCK_FAULT",                  "FAULT:SeedfrequencyOOB"));
+            _alarmDictionary.Add(145, new AlarmData("TRANSFER_DATA_FAULT",                   "FAULT:FPGAdatatransferfault"));
+            _alarmDictionary.Add(146, new AlarmData("ADC0_RANGE_INTERLOCK_FAULT",            "FAULT:ADC0pulseamplitudeOOB"));
+            _alarmDictionary.Add(147, new AlarmData("ADC1_RANGE_INTERLOCK_FAULT",            "FAULT:ADC1pulseamplitudeOOB"));
+            _alarmDictionary.Add(300, new AlarmData("THREAD_STALLED_FAULT",                  "ThreadStalledFault"));
+            _alarmDictionary.Add(301, new AlarmData("HEARTBEAT_FAULT",                       "Timeoutorcommunicationconnectionterminated"));
+            _alarmDictionary.Add(302, new AlarmData("FPGA_READ_FAULT",                       "FPGAReadFault"));
+            _alarmDictionary.Add(303, new AlarmData("FPGA_INSTALLED_FAULT",                  "WrongFPGAInstalledFault"));
+            _alarmDictionary.Add(304, new AlarmData("POST_FAULT",                            "PowerOnSelfTestFault"));
+            _alarmDictionary.Add(305, new AlarmData("FPGA_WRITE_FAULT",                      "FPGAWriteFault"));
+            _alarmDictionary.Add(306, new AlarmData("DC_GOOD_FAULT",                         "FAULT:DCGOODsignalisbad"));
+            _alarmDictionary.Add(307, new AlarmData("GUI_VERSION_FAULT",                     "FAULT:GUIisoutofdate"));
+            _alarmDictionary.Add(308, new AlarmData("UNAPPROVED_CHILLER_FAULT",              "FAULT:Unapprovedchiller"));
+            _alarmDictionary.Add(309, new AlarmData("I2C_FAULT",                             "FAULT:I2Cfailure"));
+            _alarmDictionary.Add(310, new AlarmData("STORAGE_FAULT",                         "FAULT:Illegalstoragevalue"));
+        }
+
+        // 알람 코드로 알람 정보를 가져오는 메서드
+        public string Get_LaserAlarmMessage(int alarmCode)
+        {
+            if (_alarmDictionary.TryGetValue(alarmCode, out var alarmData))
+            {
+                return $"[코드: {alarmCode}] {alarmData.Name} - {alarmData.Description}";
+            }
+            return $"알 수 없는 알람 코드: {alarmCode}";
+        }
+
+        #endregion
+
+
         #region Laser Command Codes
         //  Diamond J-5V-HD Series (CO₂레이져 명령 코드)
         public const byte laserCmdCode_LongStatusRequest = 0;               //  Get detailed diagnostic data from RFPM
@@ -287,21 +431,12 @@ namespace QMC.Common.Modules
 
             //Cepheus_laser = new MyCepheusLaser();
 
-            m_nHomeStep = (int)Home_Step.None;
-
             m_bAlignVisionThread_Use = true;                                            //  Align Vision 을 Thread 로 할지 말지?
 
             m_bInManualMoving_SafetySensor_Detected = false;
             m_bInCycleMoving_SafetySensor_Detected = false;
 
             //  타이머를 쓰레드로 변경 --> 다시 타이머 사용하기로...
-
-            //  Main Work 타이머
-            timer_MainWork = new System.Windows.Forms.Timer();
-            timer_MainWork.Interval = 1;                                               //  50 이었는데 10으로 변경. (50은 너무 느린 감이 없지 않아 있음. 근데 10에서 잘 될란가...?)
-            timer_MainWork.Tick += new System.EventHandler(Timer_MainWork_Func);
-
-            m_btimer_MainWork_Stop = false;
 
             m_bLog_1time = false;
             m_bLog_1time2 = false;
@@ -315,6 +450,8 @@ namespace QMC.Common.Modules
             //    m_dCmdPos[i] = 0.0;
             //    m_dActPos[i] = 0.0;
             //}
+
+            Initialize_LaserAlarmData();                //  SLD-200U 레이저 알람 데이터 초기화
         }                                                   
         #endregion
 
@@ -454,44 +591,6 @@ namespace QMC.Common.Modules
 
 
         #region Event Handler
-
-        private void Timer_MainWork_Func(object sender, EventArgs e)
-        {
-            //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
-
-            m_btimer_MainWork_Stop = false;
-            timer_MainWork.Enabled = false; 
-
-            if (!m_btimer_MainWork_Stop)
-            {
-                timer_MainWork.Enabled = true;
-            }
-        }
-
-        private void Timer_ProductAlign_Func(object sender, EventArgs e)
-        {
-            if (!m_bAlignVisionThread_Use)
-            {
-                
-            }
-        }
-
-        public void forThread_MainWorkCycle()
-        {
-            //  Main-Work Cycle
-
-        }
-
-        public void forThread_SubWorkCycle()
-        {
-            //  Sub-Work Cycle
-
-        }
-
-        public void forThread_AlignVisionCycle()
-        {
-            //Run_ProductAlign_Func();            
-        }
 
 
         #endregion

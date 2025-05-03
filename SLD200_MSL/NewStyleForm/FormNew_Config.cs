@@ -6001,6 +6001,10 @@ namespace SLD200_MSL
             if (workStage.m_rapidLxLaser_Comm.IsOpen)
             {
                 workStage.RapidLxLaserComm_Laser_SystemFaults_Clear();
+
+                Thread.Sleep(500);
+
+                workStage.RapidLxLaserComm_Laser_FaultCode_Clear();
             }
             else
             {
