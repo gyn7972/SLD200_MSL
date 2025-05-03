@@ -25,6 +25,7 @@ using Point = System.Drawing.Point;
 using System.Runtime.CompilerServices;
 using System.Net.Sockets;
 using OpenCvSharp.Aruco;
+using System.Data.Common;
 
 namespace SLD200_MSL
 {
@@ -933,53 +934,85 @@ namespace SLD200_MSL
             if (workStage.Main_SocketPositions_StatusCheck_Flag)
             {
                 workStage.Main_SocketPositions_StatusCheck_Flag = false;
-                var pos = ProcessManager.GetFirstUnprocessedPosition();
-                if (pos.HasValue)                                   //  가공 중 (Processing)
+
+                for (int s = 0; s < ProcessManager.GetSocketCount(); s++)
                 {
-                    if(pos.Value.bResult == false)
+                    var socket = ProcessManager.Sockets[s];
+
+                    for (int l = 0; l < ProcessManager.GetLayerCount(socket.SocketNumber); l++)
                     {
-                        workStage.Main_SocketPositions_ProcessingSocket = pos.Value.socketIndex;
-                        workStage.Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Processing;
-                        workStage.Main_SocketPositions_SetStatus = true;
+                        var layer = socket.Layers[l];
+
+                        for (int a = 0; a < ProcessManager.GetAreaCount(socket.SocketNumber, layer.LayerName); a++)
+                        {
+                            var area = layer.Areas[a];
+                            var result = ProcessManager.GetAreaResult(socket.SocketNumber, layer.LayerName, area.AreaIndex);
+
+                            if (result == null)
+                                continue;
+
+                            m_ProcSocketRowCol = workStage.GetRowColumnFromIndex(socket.SocketNumber, workStage.Main_SocketPositions_ColumnCount);
+                            int status = 0;
+                            if (result.IsProcessed == true)
+                            {
+                                status = 2;
+                            }
+                            else if (result.IsProcessed == false)
+                            {
+                                status = 1;
+                            }
+                            else
+                            {
+                                status = 0;
+                            }
+
+                            Update_SocketStatus(m_ProcSocketRowCol.Item1, m_ProcSocketRowCol.Item2, status, 0, 0, 0);
+                        }
                     }
-                    
-                }
-                else                                               //  Complete
-                {
-                    if (pos.Value.bResult == true)
-                    {
-                        workStage.Main_SocketPositions_CompleteSocket = pos.Value.socketIndex;
-                        workStage.Main_SocketPositions_CompleteStatus = (int)Socket_Process_Status.Complete;
-
-                        workStage.Main_SocketPositions_SetCompleteStatus = true;
-                    }
                 }
             }
 
-            //그리는 부분
-            if (workStage.Main_SocketPositions_SetStatus)
-            {
-                workStage.Main_SocketPositions_SetStatus = false;
+            //    var pos = ProcessManager.GetFirstUnprocessedPosition();
+            //    if (pos.HasValue)                                   //  가공 중 (Processing)
+            //    {
+            //        workStage.Main_SocketPositions_ProcessingSocket = pos.Value.socketIndex;
+            //        workStage.Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Processing;
 
-                m_ProcSocketRowCol = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_ProcessingSocket, workStage.Main_SocketPositions_ColumnCount);
-                m_ProcRegionRowCol = workStage.GetRegionRowColumnFromIndex(workStage.Main_SocketPositions_ProcessingSocket_Region, workStage.Main_SocketPositions_SubColumnCount);
-                m_ProcSocketStatus = workStage.Main_SocketPositions_ProcessingStatus;
-                m_ProcRegionStatus = workStage.Main_SocketPositions_ProcessingStatus_Region;
+            //        workStage.Main_SocketPositions_SetStatus = true;
+            //    }
+            //    else                                               //  Complete
+            //    {
+            //        workStage.Main_SocketPositions_CompleteSocket = pos.Value.socketIndex;
+            //        workStage.Main_SocketPositions_CompleteStatus = (int)Socket_Process_Status.Complete;
 
-                m_bNeedProcStatusUpdate = true;
-            }
+            //        workStage.Main_SocketPositions_SetCompleteStatus = true;
+            //    }
+            //}
 
-            if (workStage.Main_SocketPositions_SetCompleteStatus)
-            {
-                workStage.Main_SocketPositions_SetCompleteStatus = false;
+            ////그리는 부분
+            //if (workStage.Main_SocketPositions_SetStatus)
+            //{
+            //    workStage.Main_SocketPositions_SetStatus = false;
 
-                m_CompSocketRowCol = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_CompleteSocket, workStage.Main_SocketPositions_ColumnCount);
-                m_CompRegionRowCol = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_CompleteSocket_Region, workStage.Main_SocketPositions_SubColumnCount);
-                m_CompSocketStatus = workStage.Main_SocketPositions_CompleteStatus;
-                m_CompRegionStatus = workStage.Main_SocketPositions_CompleteStatus_Region;
+            //    m_ProcSocketRowCol = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_ProcessingSocket, workStage.Main_SocketPositions_ColumnCount);
+            //    m_ProcRegionRowCol = workStage.GetRegionRowColumnFromIndex(workStage.Main_SocketPositions_ProcessingSocket_Region, workStage.Main_SocketPositions_SubColumnCount);
+            //    m_ProcSocketStatus = workStage.Main_SocketPositions_ProcessingStatus;
+            //    m_ProcRegionStatus = workStage.Main_SocketPositions_ProcessingStatus_Region;
 
-                m_bNeedCompStatusUpdate = true;
-            }
+            //    m_bNeedProcStatusUpdate = true;
+            //}
+
+            //if (workStage.Main_SocketPositions_SetCompleteStatus)
+            //{
+            //    workStage.Main_SocketPositions_SetCompleteStatus = false;
+
+            //    m_CompSocketRowCol = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_CompleteSocket, workStage.Main_SocketPositions_ColumnCount);
+            //    m_CompRegionRowCol = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_CompleteSocket_Region, workStage.Main_SocketPositions_SubColumnCount);
+            //    m_CompSocketStatus = workStage.Main_SocketPositions_CompleteStatus;
+            //    m_CompRegionStatus = workStage.Main_SocketPositions_CompleteStatus_Region;
+
+            //    m_bNeedCompStatusUpdate = true;
+            //}
 
             if (Equipment.AutoRunStatus &&
                 Equipment.CycleStop &&
@@ -1046,15 +1079,15 @@ namespace SLD200_MSL
                     m_ProcRegionStatus);
             }
 
-            if (m_bNeedCompStatusUpdate)
-            {
-                m_bNeedCompStatusUpdate = false;
-                Update_SocketStatus(
-                    m_CompSocketRowCol.Item1, m_CompSocketRowCol.Item2,
-                    m_CompSocketStatus,
-                    m_CompRegionRowCol.Item1, m_CompRegionRowCol.Item2,
-                    m_CompRegionStatus);
-            }
+            //if (m_bNeedCompStatusUpdate)
+            //{
+            //    m_bNeedCompStatusUpdate = false;
+            //    Update_SocketStatus(
+            //        m_CompSocketRowCol.Item1, m_CompSocketRowCol.Item2,
+            //        m_CompSocketStatus,
+            //        m_CompRegionRowCol.Item1, m_CompRegionRowCol.Item2,
+            //        m_CompRegionStatus);
+            //}
 
             button_Main_Loader_Continue.Enabled = Equipment.MachineStop_byTimeout_Loader;
             button_Main_Unloader_Continue.Enabled = Equipment.MachineStop_byTimeout_Unloader;
