@@ -284,17 +284,17 @@ namespace SLD200_MSL
         // 작업 상태 업데이트 메서드
         public void Update_SocketStatus(int row, int column, int status, int region_row, int region_column, int region_status)
         {
-            if (row >= 0 && row < Rows && column >= 0 && column < Columns &&
-                region_row >= 0 && region_row < SubRows && region_column >= 0 && region_column < SubColumns)
+            //if (row >= 0 && row < Rows && column >= 0 && column < Columns &&
+            //    region_row >= 0 && region_row < SubRows && region_column >= 0 && region_column < SubColumns)
+            if (row >= 0 && row < Rows && column >= 0 && column < Columns)
             {
                 SocketStatus[row, column] = status;
-                SocketRegionStatus[region_row, region_column] = region_status;
+                //SocketRegionStatus[region_row, region_column] = region_status;
 
                 pictureBox_ModuleProcessingStatus.Invalidate(); // PictureBox 다시 그리기
             }
         }
-
-        
+                
 
         // 가로, 세로 배열 크기 변경 메서드
         public void Change_SocketArraySize(int columns, int rows, int subcolumns, int subrows)
@@ -908,6 +908,31 @@ namespace SLD200_MSL
                 m_bNeedSocketArrayChange = true;
             }
 
+
+            //  소켓 상태 업데이트
+            if (workStage.Main_SocketPositions_StatusCheck_Flag)
+            {
+                workStage.Main_SocketPositions_StatusCheck_Flag = false;
+
+
+                var pos = ProcessManager.GetFirstUnprocessedPosition();
+                if (pos.HasValue)                                   //  가공 중 (Processing)
+                {
+                    workStage.Main_SocketPositions_ProcessingSocket = pos.Value.socketIndex;
+                    workStage.Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Processing;
+
+                    workStage.Main_SocketPositions_SetStatus = true;
+                }
+                else                                               //  Complete
+                {
+                    workStage.Main_SocketPositions_CompleteSocket = pos.Value.socketIndex;
+                    workStage.Main_SocketPositions_CompleteStatus = (int)Socket_Process_Status.Complete;
+
+                    workStage.Main_SocketPositions_SetCompleteStatus = true;
+                }
+            }
+
+
             if (workStage.Main_SocketPositions_SetStatus)
             {
                 workStage.Main_SocketPositions_SetStatus = false;
@@ -1049,7 +1074,6 @@ namespace SLD200_MSL
 
             // 장비 상태 UI에 반영
             UpdateDeviceStatusImages();
-            
         }
 
 
@@ -2578,8 +2602,16 @@ namespace SLD200_MSL
             ////workStage.Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
             ////workStage.Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
             ////workStage.Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
+            ///
 
-            //return;
+            //workStage.GlobalSocketStatus_Set("Hole1", 0, 1, "Hole1 가공 시작");
+            //workStage.GlobalSocketStatus_Set("Thruhole", 0, 0, "Hole1 가공 시작");
+
+
+            return;
+
+
+
 
             //  Unloader Cycle Continue
 
@@ -2597,7 +2629,7 @@ namespace SLD200_MSL
 
         private void button_Main_WorkStage_Continue_Click(object sender, EventArgs e)
         {
-            //  테스트용 코드
+            ////  테스트용 코드
             //if (workStage.m_stDividedRegion_GroupData != null)
             //{
             //    //  메인 화면에 가공위치 표시용
@@ -2625,6 +2657,10 @@ namespace SLD200_MSL
             //    {
             //        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 없음. (Data Parsing 이 정상적으로 이루어졌으면 여기 들어오면 안됨)");
             //    }
+
+
+            //    //  최초 Data Parsing 후 해당 가공 데이터에 대한 상태 데이터를 초기화 한다. (가공중인 소켓 번호, 소켓 OK NG 여부 등)
+            //    workStage.GlobalSocketStatus_Init();
             //}
             //return;
 

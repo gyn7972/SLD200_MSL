@@ -2008,6 +2008,8 @@ namespace QMC.Common.Modules
         }
 
         //  소켓 좌표값
+        public bool Main_SocketPositions_StatusCheck_Flag = false;                                          //  이 Flag 가 true 가 될 때 Socket 의 상태를 확인하여 메인 화면 상태를 갱신한다.
+
         public List<PointD> Main_SocketPositions = new List<PointD>();
         public int Main_SocketPositions_ColumnCount = 0;                                                    //  소켓 좌표값의 열 개수
         public int Main_SocketPositions_RowCount = 0;                                                       //  소켓 좌표값의 행 개수
@@ -7759,9 +7761,20 @@ namespace QMC.Common.Modules
                     {
                         CommonModule.Instance.TowerLamp.Red_On();
                     }
-                    if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() == 0)
+
+                    if (CommonModule.Instance.TowerLamp_BuzzerStop)
                     {
-                        CommonModule.Instance.TowerLamp.Buzzer_On();
+                        if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() != 0)
+                        {
+                            CommonModule.Instance.TowerLamp.Buzzer_Off();
+                        }
+                    }
+                    else
+                    {
+                        if (CommonModule.Instance.TowerLamp.Is_Buzzer_On() == 0)
+                        {
+                            CommonModule.Instance.TowerLamp.Buzzer_On();
+                        }
                     }
 
                     //  버튼 색깔 변경
@@ -15472,6 +15485,9 @@ namespace QMC.Common.Modules
 
                     GlobalSocketStatus_Set("Thruhole", m_nDrillingWork_Group_Count, 0, "Thruhole 가공 시작");
 
+                    Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                    Thread.Sleep(200);
+
                     TickCount_Start((int)TickType.TICK_MAIN);
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_LaserBusyCheck;
@@ -15540,14 +15556,17 @@ namespace QMC.Common.Modules
                     else                                                //  Outline Layer 가 없으므로 다음 소켓 체크하러
                     {
                         Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
-                        Main_SocketPositions_SetStatus = true;                                                      //  상태 변경
+                        //Main_SocketPositions_SetStatus = true;                                                      //  상태 변경
 
                         GlobalSocketStatus_Set("Thruhole", m_nDrillingWork_Group_Count, 0, "Thruhole 가공 완료");
 
                         Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                         Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
                         Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
-                        Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
+                        //Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
+
+                        Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                        Thread.Sleep(200);
 
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
@@ -15951,6 +15970,9 @@ namespace QMC.Common.Modules
 
                     GlobalSocketStatus_Set("Outline", m_nDrillingWork_Group_Count, 0, "Outline 가공 시작");
 
+                    Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                    Thread.Sleep(200);
+
                     TickCount_Start((int)TickType.TICK_MAIN);
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_LaserBusyCheck;
@@ -15989,13 +16011,17 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, Outline 반복 가공 완료, 가공할 소켓이 남아 있는지 확인");
 
                     Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
-                    Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+                    //Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+
                     GlobalSocketStatus_Set("Outline", m_nDrillingWork_Group_Count, 0, "Outline 가공 완료");
 
                     Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                     Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
                     Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
-                    Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
+                    //Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
+
+                    Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                    Thread.Sleep(200);
 
                     m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
@@ -17732,8 +17758,12 @@ namespace QMC.Common.Modules
 
                             Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
                             Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
-                            Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+                            //Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+
                             GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
+
+                            Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                            Thread.Sleep(200);
 
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
@@ -18029,13 +18059,17 @@ namespace QMC.Common.Modules
 
                         //  소켓 가공이 끝나서 다음 소켓 확인하러 가야 하므로, 현재 상태를 갱신한다.
                         Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
-                        Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+                        //Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+
                         GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, m_nDividedRegion_Region_CurrentIndex, "Drilling 가공 완료");
 
                         Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                         Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
                         Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
-                        Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
+                        //Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
+
+                        Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                        Thread.Sleep(200);
 
                         m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
 
@@ -20233,6 +20267,9 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Buffer List 실행 (Execute)");
 
                         GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, m_nDividedRegion_Region_CurrentIndex_forZigZag, "Drilling 가공 시작");
+
+                        Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                        Thread.Sleep(200);
                     }
 
                     TickCount_Start((int)TickType.TICK_MAIN);
@@ -20590,6 +20627,9 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Region 영역 내 Object 별 가공, Buffer List 실행 (Execute)");
 
                         GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, m_nDividedRegion_Region_CurrentIndex_forZigZag, "Drilling 가공 시작");
+
+                        Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                        Thread.Sleep(200);
 
                         TickCount_Start((int)TickType.TICK_MAIN);
 
@@ -22709,13 +22749,17 @@ namespace QMC.Common.Modules
                             {
                                 //  다음 소켓으로 넘어가기 전에 현재 소켓의 가공 상태를 갱신한다.
                                 Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
-                                Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+                                //Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+
                                 GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, m_nDividedRegion_Region_CurrentIndex_forZigZag, "Drilling 가공 완료");
 
                                 Main_SocketPositions_SocketCompletePosition = Main_SocketPositions_CurrentSocketPosition;
                                 Main_SocketPositions_CompleteStatus = Main_SocketPositions_ProcessingStatus;
                                 Main_SocketPositions_CompleteSocket = m_nDrillingWork_Group_Count;                          //  완료된 소켓 번호
-                                Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
+                                //Main_SocketPositions_SetCompleteStatus = true;                                              //  완료 상태 변경
+
+                                Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                                Thread.Sleep(200);
 
                                 m_bDrillingWork_Thruhole_Exist = false;
                                 m_bDrillingWork_Outline_Exist = false;

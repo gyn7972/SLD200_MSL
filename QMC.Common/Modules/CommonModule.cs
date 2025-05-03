@@ -31,6 +31,7 @@ namespace QMC.Common.Modules
         public MCW400A100GaugeCommunicator ColletGaugeCommunicator2 { set; get; }
 
         public TowerLamp TowerLamp { set; get; }
+        public bool TowerLamp_BuzzerStop { set; get; } = false;
 
         public CommonConfig Config { set; get; }
 

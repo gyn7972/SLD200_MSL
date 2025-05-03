@@ -1274,7 +1274,7 @@
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(153, 24);
             this.label36.TabIndex = 27;
-            this.label36.Text = "Silicon thickness (mm) :";
+            this.label36.Text = "Fiducial Height (mm) :";
             this.label36.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // button10

@@ -615,6 +615,10 @@ namespace QMC.Common
         public static string Current_Recipe { set; get; }
 
 
+        //  로드된 도면 파일
+        public static string Current_DrawingFileName { set; get; } = "";            //  현재 로드된 도면 파일 이름
+
+
         //  메인 화면에서 Open 하려는 Recipe 이름
         public static bool RecipeOpen_fromMainForm { set; get; }
         public static string RecipeName_fromMainForm { set; get; }
@@ -1106,6 +1110,7 @@ namespace QMC.Common
             m_bVisionFormOpenMode_ScannerFineCamOffsetChange = false;
 
             Current_Recipe = "";
+            Current_DrawingFileName = "";
 
             RecipeOpen_fromMainForm = false;
             RecipeName_fromMainForm = "";

@@ -1488,7 +1488,7 @@ namespace SLD200_MSL
                 //Recipe_Data_Load(fileName);
                 Recipe_Data_Load_Refactory(fileName);
                 Equipment.Current_Recipe = fileName;
-
+                Equipment.Current_DrawingFileName = System.IO.Path.GetFileName(Equipment.stLayerRecipeSet[0].DrawingFile);
 
                 //  Recipe 명 표시
                 label_Recipe_FileName.Text = System.IO.Path.GetFileName(fileName);
@@ -1834,6 +1834,7 @@ namespace SLD200_MSL
             //Recipe_Data_Load(fileName);
             Recipe_Data_Load_Refactory(fileName);
             Equipment.Current_Recipe = fileName;
+            Equipment.Current_DrawingFileName = System.IO.Path.GetFileName(Equipment.stLayerRecipeSet[0].DrawingFile);
 
 
             //  Recipe 명 표시
