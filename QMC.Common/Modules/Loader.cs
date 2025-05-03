@@ -1835,6 +1835,11 @@ namespace QMC.Common.Modules
                         m_bMAlignZone_ModuleExist = false;
 
                         workStage.workStageParameter.DO_Stage_Vacuum(false);
+                        Thread.Sleep(10); //  진공이 동작하는 경우가 있어서, Off 코드 추가
+                        //workStage.workStageParameter.DO_Stage_Blow(true);                   //  Blow On
+
+                        // Todo : 수정 필요
+                        //  Stage Vacuum Off 시, 진공레귤레이터도 함께 동작시켜야 한다.
                         workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
                     }
                 }
