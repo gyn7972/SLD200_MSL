@@ -490,7 +490,7 @@ namespace SLD200_MSL
                 {
                     //
                     Equipment._InitDeviceStatus.Scanner = true;
-                    MessageBox.Show("Scanner Board 초기화 완료", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //MessageBox.Show("Scanner Board 초기화 완료", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {

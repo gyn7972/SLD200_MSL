@@ -1,29 +1,11 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows;
-using System.Numerics;
 using QMC.Core;
 using QMC.Common;
-using QMC.Common.Parts;
 using QMC.Common.Modules;
 using QMC.Common.Motion.Ajin.Motions;
-using ACS.SPiiPlusNET;
-using System.Security.Permissions;
-using QMC.Common.Motion.ACS.Motions;
-using static QMC.Common.Modules.WorkStage;
-using static QMC.Common.Equipment;
-using OpenCvSharp;
-using System.Xml;
-using System.Drawing.Drawing2D;
-using static System.Windows.Forms.AxHost;
 //using netDxf.Entities;
 
 //  Sirius1

@@ -94,7 +94,7 @@ namespace QMC.Common.Motion.ACS.Motion
 			catch (Exception ex)
 			{
 				MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				System.Diagnostics.Debug.WriteLine(ex.Message);
+				//System.Diagnostics.Debug.WriteLine(ex.Message);
 			}
 			//catch (COMException comex)
 			//{
@@ -157,7 +157,7 @@ namespace QMC.Common.Motion.ACS.Motion
 			catch (Exception ex)
 			{
 				MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				System.Diagnostics.Debug.WriteLine(ex.Message);
+				//System.Diagnostics.Debug.WriteLine(ex.Message);
 			}
 			//catch (COMException comex)
 			//{

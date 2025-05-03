@@ -70,7 +70,7 @@ namespace QMC.Common
             catch (Exception ex)
             {
                 Log.Write(ex);
-                Debug.WriteLine(ex.Message);
+                //Debug.WriteLine(ex.Message);
             }
             return dValue;
         }
@@ -85,7 +85,7 @@ namespace QMC.Common
             catch (Exception ex)
             {
                 Log.Write(ex);
-                Debug.WriteLine(ex.Message);
+                //Debug.WriteLine(ex.Message);
             }
             return nValue;
         }

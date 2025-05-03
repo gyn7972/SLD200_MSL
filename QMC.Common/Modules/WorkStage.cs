@@ -1530,6 +1530,26 @@ namespace QMC.Common.Modules
             eDustCollectorFail,
             eBeamShutterOpenFail,
             eChillerOpenFail,
+            Chiller_Stop,
+            Chiller_Alarm,                      //  IO Off : Chiller alarm
+
+            //Device 알람 정의
+            InitFail_Motion,
+            InitFail_IO,
+            InitFail_Laser,
+            InitFail_Scanner,       //eRTC_FAIL
+            InitFail_Powermeter_bds,
+            InitFail_Powermeter_Stage,
+            InitFail_BeamExpander,
+            InitFail_DustCollector_Upper,
+            InitFail_DustCollector_Lower,
+            InitFail_Chiller,       //eChillerOpenFail
+            InitFail_ElectroRegulator,
+            InitFail_HeightSensor,
+            InitFail_CameraFine,
+            InitFail_CameraPre,
+            InitFail_Illuminator,
+
             eDrillingDataloadFail,
             eStageMoveFail,
             eZAxisFail,
@@ -1556,8 +1576,6 @@ namespace QMC.Common.Modules
             Home_LoaderPicker_Vacuum_Off_Fail,
             Home_UnloaderPicker_Vacuum_Off_Fail,
             Home_Loader_Aligner_Vacuum_Off_Fail,
-            Chiller_Stop,
-            Chiller_Alarm,                      //  IO Off : Chiller alarm
             ScannerCalibration_Timeout,
             ScannerCalibration_Fail,
             LastAlarm = 3999
@@ -1568,6 +1586,14 @@ namespace QMC.Common.Modules
             alarm.Code = (int)AlarmKey.eRTC_FAIL;
             alarm.Title = "RTC FAIL";
             alarm.Cause = "RTC 보드가 응답 하지 않습니다. ";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.eGetdata_Rtcinit;
+            alarm.Title = "RTC";
+            alarm.Cause = "RTC 보드가 초기화 되지 않았습니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -1595,6 +1621,119 @@ namespace QMC.Common.Modules
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.InitFail_Motion;
+            alarm.Title = "Motion";
+            alarm.Cause = "모션이 초기화 되지 않았습니다. 모션 초기화 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.InitFail_IO;
+            alarm.Title = "IO";
+            alarm.Cause = "IO가 초기화 되지 않았습니다. 모션 초기화 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.InitFail_Laser;
+            alarm.Title = "Laser";
+            alarm.Cause = "Laser가 초기화 되지 않았습니다. 초기화 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.InitFail_Scanner;
+            alarm.Title = "Scanner";
+            alarm.Cause = "Scanner가 초기화 되지 않았습니다. 초기화 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.InitFail_Powermeter_bds;
+            alarm.Title = "Powermeter BDS";
+            alarm.Cause = "Powermeter BDS가 초기화 되지 않았습니다. 초기화 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.InitFail_Powermeter_Stage;
+            alarm.Title = "Powermeter STAGE";
+            alarm.Cause = "Powermeter STAGE가 초기화 되지 않았습니다. 초기화 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.InitFail_BeamExpander;
+            alarm.Title = "BeamExpander";
+            alarm.Cause = "BeamExpander가 초기화 되지 않았습니다. 초기화 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.InitFail_DustCollector_Upper;
+            alarm.Title = "DustCollector_Upper";
+            alarm.Cause = "DustCollector_Upper가 초기화 되지 않았습니다. 초기화 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.InitFail_DustCollector_Lower;
+            alarm.Title = "DustCollector_Lower";
+            alarm.Cause = "DustCollector_Lower가 초기화 되지 않았습니다. 초기화 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.InitFail_ElectroRegulator;
+            alarm.Title = "ElectroRegulator";
+            alarm.Cause = "ElectroRegulator가 초기화 되지 않았습니다. 통신 연결 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.InitFail_HeightSensor;
+            alarm.Title = "HeightSensor";
+            alarm.Cause = "HeightSensor가 초기화 되지 않았습니다. 통신 연결 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.InitFail_CameraFine;
+            alarm.Title = "CameraFine";
+            alarm.Cause = "CameraFine가 초기화 되지 않았습니다. 통신 연결 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.InitFail_CameraPre;
+            alarm.Title = "CameraPre";
+            alarm.Cause = "CameraPre가 초기화 되지 않았습니다. 통신 연결 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.InitFail_Illuminator;
+            alarm.Title = "Illuminator";
+            alarm.Cause = "Illuminator가 초기화 되지 않았습니다. 통신 연결 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.eDrillingDataloadFail;
@@ -1703,13 +1842,7 @@ namespace QMC.Common.Modules
 
 
 
-            alarm = new Alarm();
-            alarm.Code = (int)AlarmKey.eGetdata_Rtcinit;
-            alarm.Title = "RTC";
-            alarm.Cause = "RTC 보드가 초기화 되지 않았습니다.";
-            alarm.Source = Name;
-            alarm.Grade = "Error";
-            m_dicAlarms.Add(alarm.Code, alarm);
+
 
             //
             alarm = new Alarm();
@@ -4369,7 +4502,7 @@ namespace QMC.Common.Modules
 
                 while (true)
                 {
-                    Thread.Sleep(0);
+                    Thread.Sleep(1);
                     if (IsAlarm())
                     {
                         continue;
@@ -4490,6 +4623,13 @@ namespace QMC.Common.Modules
                 Camera_LowRes.Close();
             }
 
+            // m_rapidLxLaser_Comm
+            if (m_rapidLxLaser_Comm != null)
+            {
+                m_rapidLxLaser_Comm.CloseComm();
+                m_rapidLxLaser_Comm.Close();
+            }
+
             if (m_powerMeter_ExitPos_Comm != null)
             {
                 m_powerMeter_ExitPos_Comm.CloseComm();
@@ -4533,6 +4673,8 @@ namespace QMC.Common.Modules
                     m_SocketLaserHeightSensor.Close();
                 }
             }
+
+            // m_rapidLxLaser_Comm
         }
 
         public override void SetConfigData(object configData)
@@ -8622,7 +8764,8 @@ namespace QMC.Common.Modules
         #endregion
 
         #region Home Function
-        protected bool IsAlarm()
+        //protected bool IsAlarm()
+        public bool IsAlarm()
         {
             bool bResult = false;
             try
@@ -9458,8 +9601,6 @@ namespace QMC.Common.Modules
 
                 case (int)Home_Step.Complete:
 
-                    Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "완료");
-
                     //제품 가공 유/무 정보
                     ProcessManager.Init();
 
@@ -9491,25 +9632,10 @@ namespace QMC.Common.Modules
                     timer_Comm.Enabled = true;
                     timer_Comm.Start();
 
-                    m_strTemp = "===  장비 초기화 완료  ===";
-
                     m_nHomeStep = (int)Home_Step.None;
 
-                    MessageBox.Show(m_strTemp, "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    ////  장비 초기화 완료 후 카메라 초기화
-                    //Task<int> task = Task.Factory.StartNew<int>(() =>
-                    //{
-                    //    Camera_HighRes.SetRunStatus(Part.RunStatus.Run);
-                    //    Camera_LowRes.SetRunStatus(Part.RunStatus.Run);
-                    //    Camera_HighRes.Initialize();
-                    //    Camera_LowRes.Initialize();
-                    //    return 0;
-                    //});
-
-                    //Camera_HighRes.Initialize();
-                    //Camera_LowRes.Initialize();
-
+                    Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "완료");
+                    //MessageBox.Show(m_strTemp, "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
 
                 case (int)Home_Step.Fail:
@@ -33662,7 +33788,7 @@ namespace QMC.Common.Modules
 
         public void ResetRecovery()
         {
-            //m_nLaserDrilling_MainStep_Recovery = 0;
+            m_nLaserDrilling_MainStep_Recovery = 0;
         }
 
         public XyzCoordinate ConvertPointFineCam(XyzCoordinate position)
