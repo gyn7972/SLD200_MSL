@@ -128,8 +128,10 @@ namespace QMC.Common.Modules
 
         public enum nDustCollector
         {
-            DustCollector_Upper = 0,
-            DustCollector_Lower = 1,
+            DustCollector_Lower = 0,
+            DustCollector_Upper = 1,
+
+            DustCollector_Max
         }
 
         public enum nPowerMeter
@@ -20942,7 +20944,7 @@ namespace QMC.Common.Modules
 
                 //  Unloading 위치로 이동하면서 집진기 Off
 
-                DustCollector_Off((int)nDustCollector.DustCollector_Upper);
+                //DustCollector_Off((int)nDustCollector.DustCollector_Upper);
                 DustCollector_Off((int)nDustCollector.DustCollector_Lower);
             }
 

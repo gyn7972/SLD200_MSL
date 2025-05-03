@@ -583,6 +583,10 @@ namespace QMC.Common.Modules
             WorkStagePickUp_WorkStageCycle_UnloadingPos_CompleteCheck,      //  Work Stage, Unloading 위치로 이동 Cycle 완료 체크
 
             WorkStagePickUp_TransferX_Move_WorkStagePos,                    //  Transfer X 축, Work Stage 위치로 이동
+
+            WorkStagePickUp_DustCol_Off,
+            WorkStagePickUp_DustCol_Off_check,
+
             WorkStagePickUp_TransferX_Move_WorkStagePos_DoneCheck,          //  Transfer X 축, Work Stage 위치로 이동 완료 확인 (Work Stage Unloading 위치로 이동 Cycle 완료 확인 후, Transfer X 이동 완료 확인)
 
             WorkStagePickUp_TransferZ_Move_PickUpPos_1stStep,               //  Transfer Z 축, Module Pick Up 위치로 이동 (1단계, 최종 위치에서 위로 10 mm)
@@ -2779,7 +2783,38 @@ namespace QMC.Common.Modules
 
                     Unloader_Transfer_Step_WorkStagePickUp_TransferX_Move_WorkStagePos(out m_dSpeed, out m_dAccDec);
 
-                    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferX_Move_WorkStagePos_DoneCheck;
+                    //m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferX_Move_WorkStagePos_DoneCheck;
+                    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_DustCol_Off;
+                    break;
+
+                    //WorkStagePickUp_DustCol_Off,
+                    //WorkStagePickUp_DustCol_Off_check,
+                case (int)Unloader_Transfer_Step.WorkStagePickUp_DustCol_Off:
+
+                    workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                    Thread.Sleep(200);
+
+                    TickCount_Start((int)TickType.TICK_ULTR);
+                    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_DustCol_Off_check;
+
+                    break;
+
+                case (int)Unloader_Transfer_Step.WorkStagePickUp_DustCol_Off_check:
+
+                    if (!workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower))
+                    {
+                        Log.Write("SLD-200", "Auto Run", "집진기 Remote Mode, Off 완료");
+
+                        TickCount_Start((int)TickType.TICK_ULTR);
+                        m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferX_Move_WorkStagePos_DoneCheck;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000 * 2)
+                    {
+                        Log.Write("SLD-200", "Auto Run", "집진기 Off 실패 (Timeout)");
+
+                        return AlarmPost(AlarmKey.WorkStage_DustCollector_Off_Fail);
+                    }
+
                     break;
 
 
@@ -2794,22 +2829,21 @@ namespace QMC.Common.Modules
                         //  집진기가 Off 되었는지 확인한 후 다음 Step 을 진행한다.
                         if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
                         {
-                            if (!workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) &&
-                                !workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower))
+                            if (!workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower))
                             {
                                 Log.Write("SLD-200", "Auto Run", "집진기 Remote Mode, Off 완료");
 
                                 m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_TransferZ_Move_PickUpPos_1stStep;
                             }
-                            else if (workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) ||
-                                    workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower))
+                            else if (workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower))
                             {
                                 //  집진기가 Off 되기를 기다리고 있는데 Off 되지 않는 경우, 집진기 Off Command 를 다시 보낸다.
-                                Thread.Sleep(200);
-                                workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);           //  사실 상부 집진은 끌 필요가 없긴 한데... 걍 끄지 뭐
+                                
                                 workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                                Thread.Sleep(200);
+
                             }
-                            else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000 * 2)
+                            else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                             {
                                 Log.Write("SLD-200", "Auto Run", "집진기 Off 실패 (Timeout)");
 
@@ -2825,12 +2859,11 @@ namespace QMC.Common.Modules
                         }
                     }
                     else if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use &&
-                            (workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) ||
-                            workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower)))
+                            workStage.workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower))
                     {
                         //  집진기가 Off 되기를 기다리고 있는데 Off 되지 않는 경우, 집진기 Off Command 를 다시 보낸다.
                         Thread.Sleep(200);
-                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);           //  사실 상부 집진은 끌 필요가 없긴 한데... 걍 끄지 뭐
+                        //workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);           //  사실 상부 집진은 끌 필요가 없긴 한데... 걍 끄지 뭐
                         workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000 * 2)

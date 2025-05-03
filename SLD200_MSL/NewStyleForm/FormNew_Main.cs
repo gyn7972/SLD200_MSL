@@ -1376,7 +1376,7 @@ namespace SLD200_MSL
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Button Click", "집진기 Off");
 
-                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
+                        //workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
                         workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
                     }
 
@@ -1515,7 +1515,7 @@ namespace SLD200_MSL
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Button Click", "집진기 Off");
 
-                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
+                        //workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
                         workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
                     }
 
@@ -1539,7 +1539,7 @@ namespace SLD200_MSL
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "Button Click", "강제 배출, 집진기 Off");
 
-                    workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
+                    //workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
                     workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
                 }
             }
