@@ -20901,7 +20901,7 @@ namespace QMC.Common.Modules
 
             return 0;
         }
-
+        
         private void MarkSpiral(double r1, double r2,int turn,  double m_dTemp_AngleFactor, PointD center)
         {
             r1 /= 2;
@@ -20909,59 +20909,88 @@ namespace QMC.Common.Modules
 
             int startAngle = 0;
             int sweepAngle =(int) m_dTemp_AngleFactor; // 각 아크의 각도 (작게 설정하여 부드럽게 연결)
-            //if(sweepAngle < 18)
-            //{
-            //    sweepAngle = 18;
-            //}
+            double dFirstAngle = 0;
             double currentRadius = r1; // 초기 반지름
             if(turn <1)
             {
                 turn = 1;
             }
             double rStep = (r2 - r1) / (360.0 * turn / sweepAngle); // 반지름 증가량 계산
-            for (int i = 0; i < 360 * turn; i += sweepAngle) // 360도 회전
+
+            double dLastX = 0;
+            double dLastY = 0;
+            double centerX = center.X;
+            double centerY = center.Y;
+            double dLastCenterX = center.X;
+            double dLastCenterY = center.Y;
+
+            Random rnd = new Random((int)DateTime.Now.Ticks);
+
+            for (double i = dFirstAngle; i <= 360 * turn + dFirstAngle; i += sweepAngle) // 360도 회전
             {
 
+                double StartX = currentRadius * Math.Cos(i / 180 * Math.PI);
+                double StartY = currentRadius * Math.Sin(i / 180 * Math.PI);
+
+                if (i == dFirstAngle)
+                {
+                    dLastX = StartX;
+                    dLastY = StartY;
+
+                    rtc.ListJump(new Vector2((float)(center.X + StartX), (float)(center.Y + StartY))); 
+                }
+                double dShiftX = (dLastX - StartX);
+                double dshiftY = dLastY - StartY;
+
+                centerX += dShiftX;
+                centerY += dshiftY;
+
                 // 아크의 사각형 영역 계산
-                int x = (int)(center.X - currentRadius);
-                int y = (int)(center.Y - currentRadius);
+                int x = (int)(centerX - currentRadius);
+                int y = (int)(centerY - currentRadius);
+
+                rtc.ListArc(new Vector2((float)(centerX), (float)(centerY + dshiftY)), sweepAngle);
+
+
                 int width = (int)(currentRadius * 2);
                 int height = (int)(currentRadius * 2);
 
-                double dShiftX = Math.Cos(i / 180.0 * Math.PI) * rStep / 2;
-                double dshiftY = Math.Sin(i / 180.0 * Math.PI) * rStep / 2;
-                if (i==0)
-                {
-                    rtc.ListJump(new Vector2((float)center.X, (float)(center.Y + r1)));
-                }
-                else
-                {
-                    rtc.ListArc(new Vector2((float)(center.X+dShiftX), (float)(center.Y + dshiftY)), sweepAngle);
-                }
-                // 아크 그리기
-                
-
-                // 다음 아크를 위한 값 업데이트
+                sweepAngle = rnd.Next(6, 180);
                 startAngle += sweepAngle; // 시작 각도 증가
+                dLastX = currentRadius * Math.Cos((i + sweepAngle) * Math.PI / 180);
+                dLastY = currentRadius * Math.Sin((i + sweepAngle) / 180 * Math.PI);
+                dLastCenterX = centerX;
+                dLastCenterY = centerY;
+
                 currentRadius += rStep; // 반지름 증가
             }
 
 
-            //  객체 Edge 좌표 데이터 저장
-            //for (int n_pl = 0; n_pl < lwPolyLineSpiral.Count; n_pl++)
+            //for (int i = 0; i < 360 * turn; i += sweepAngle) // 360도 회전
             //{
-            //    if (n_pl == 0)          //  처음에 Jump 이동
-            //    {
-            //        m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
-            //    }
 
-            //    else                    //  두번째부터 Mark 이동
-            //    {
-            //        m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), (float)m_dTemp_AngleFactor * 2 / 3);
+            //    // 아크의 사각형 영역 계산
+            //    int x = (int)(center.X - currentRadius);
+            //    int y = (int)(center.Y - currentRadius);
+            //    int width = (int)(currentRadius * 2);
+            //    int height = (int)(currentRadius * 2);
 
-            //        //m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
-            //        m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
+            //    double dShiftX = Math.Cos(i / 180.0 * Math.PI) * rStep / 2;
+            //    double dshiftY = Math.Sin(i / 180.0 * Math.PI) * rStep / 2;
+            //    if (i==0)
+            //    {
+            //        rtc.ListJump(new Vector2((float)center.X, (float)(center.Y + r1)));
             //    }
+            //    else
+            //    {
+            //        rtc.ListArc(new Vector2((float)(center.X+dShiftX), (float)(center.Y + dshiftY)), sweepAngle);
+            //    }
+            //    // 아크 그리기
+
+
+            //    // 다음 아크를 위한 값 업데이트
+            //    startAngle += sweepAngle; // 시작 각도 증가
+            //    currentRadius += rStep; // 반지름 증가
             //}
         }
 
