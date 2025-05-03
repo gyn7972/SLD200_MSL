@@ -189,9 +189,9 @@ namespace SLD200_MSL
             workStage.ActionSiriusViewerRefresy += OnSiriusViewerRefresy;
 
 
+
             label_Title_Stacker_LPort.Text = "Loader_Stacker Left:";
             label_Title_Stacker_RPort.Text = "Loader_Stacker Right:";
-
         }
 
         #region Action
@@ -1018,64 +1018,24 @@ namespace SLD200_MSL
             }
 
             if (workStage.Camera_HighRes.Opened)
+            {
                 ImageViewer_Main_highs.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
+            }
 
-                if (workStage.jigAligner_LowRes.Camera.Opened)
-                {
-                    ImageViewer_Main_Rows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
-                }
+            if (workStage.jigAligner_LowRes.Camera.Opened)
+            {
+                ImageViewer_Main_Rows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
+            }
 
-                // label_Title_MESMessage
-                // 여기에 자재 유/무에 대한 메세지 표시
-                if (Equipment.Loader_LPort_Empty)
-                {
-                    label_Title_Stacker_LPort.Text = "Loader_Port Left : 자재 없음. [Pause]";
-                    label_Title_Stacker_LPort.BackColor = Color.Red;
-                    label_Title_Stacker_LPort.ForeColor = Color.White;
-                }
-                else
-                {
-                    if (Equipment.Loader_LPort_Pause)
-                    {
-                        label_Title_Stacker_LPort.Text = "Loader_Port Left : 자재 있음. [Pause]";
-                    }
-                    else
-                    {
-                        label_Title_Stacker_LPort.Text = "Loader_Port Left : 자재 있음.";
-                    }
-
-                    label_Title_Stacker_LPort.BackColor = Color.Black;
-                    label_Title_Stacker_LPort.ForeColor = Color.Lime;
-                }
-
-                if (!Equipment.Loader_RPort_Empty)
-                {
-                    label_Title_Stacker_RPort.Text = "Loader_Port Right : 자재 없음. [Pause]";
-                    label_Title_Stacker_RPort.BackColor = Color.Red;
-                    label_Title_Stacker_RPort.ForeColor = Color.White;
-                }
-                else
-                {
-                    if (Equipment.Loader_LPort_Pause)
-                    {
-                        label_Title_Stacker_LPort.Text = "Loader_Port Right : 자재 있음. [Pause]";
-                    }
-                    else
-                    {
-                        label_Title_Stacker_RPort.Text = "Loader_Port Right : 자재 있음.";
-                    }
-                    
-                    label_Title_Stacker_RPort.BackColor = Color.Black;
-                    label_Title_Stacker_RPort.ForeColor = Color.Lime;
-                }
-
-            label_Title_Stacker_LPort.Text = Equipment.Loader_LPort_Empty ? "Loader_Stacker Left: 자재 없음." : "Loader_Stacker Left: 자재 있음.";
+            // label_Title_MESMessage
+            // 여기에 자재 유/무에 대한 메세지 표시
+            label_Title_Stacker_LPort.Text = Equipment.Loader_LPort_Empty ? "Loader_Stacker Left : 자재 없음." : "Loader_Stacker Left: 자재 있음.";
             label_Title_Stacker_LPort.BackColor = Equipment.Loader_LPort_Empty ? Color.Red : Color.Black;
-            label_Title_Stacker_LPort.ForeColor = Equipment.Loader_LPort_Empty ? Color.White : Color.Green;
+            label_Title_Stacker_LPort.ForeColor = Equipment.Loader_LPort_Empty ? Color.White : Color.Lime;
 
             label_Title_Stacker_RPort.Text = Equipment.Loader_RPort_Empty ? "Loader_Stacker Right: 자재 없음." : "Loader_Stacker Right: 자재 있음.";
             label_Title_Stacker_RPort.BackColor = Equipment.Loader_RPort_Empty ? Color.Red : Color.Black;
-            label_Title_Stacker_RPort.ForeColor = Equipment.Loader_RPort_Empty ? Color.White : Color.Green;
+            label_Title_Stacker_RPort.ForeColor = Equipment.Loader_RPort_Empty ? Color.White : Color.Lime;
 
             // 장비 상태 UI에 반영
             UpdateDeviceStatusImages();
