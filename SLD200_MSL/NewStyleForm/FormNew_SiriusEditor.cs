@@ -488,10 +488,13 @@ namespace SLD200_MSL
                 Log.Write("SLD-200", "RTC_Initialize", "Sirius Editor 초기화");
                 if (Rtc_Init())
                 {
+                    //
+                    Equipment._InitDeviceStatus.Scanner = true;
                     MessageBox.Show("Scanner Board 초기화 완료", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
+                    Equipment._InitDeviceStatus.Scanner = false;
                     MessageBox.Show("Scanner Board 초기화 실패", "Information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
 

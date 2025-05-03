@@ -151,7 +151,6 @@ namespace SLD200_MSL
 
             AlarmGroupBoxLocation = new Size(ContentLocation.X , 0);
 
-
             RecipeTreeViewSize = new Size(500, 700);
             RecipeTreeViewLocation = new Size(10, 200);
 
@@ -168,7 +167,7 @@ namespace SLD200_MSL
 
             RecipePropertySize = new Size(250,540);
             //MaintMinImageViewSize = new Size(450, 400);
-            MaintMinImageViewSize = new Size(450, 376);                     //  0.8366 비율로 바꿔봄
+            MaintMinImageViewSize = new Size(450, 376);             //  0.8366 비율로 바꿔봄
             MonitorMainVisionImageViewerSize = new Size(800,580);
             MonitorSubVisionImageViewerSize = new Size(210, 150);
             MotorStatusControlFlowPanelSize = new Size(175, 500);   // (190, 500);
@@ -178,7 +177,7 @@ namespace SLD200_MSL
             AxisConfigPropertySize = new Size(400, 639);
 
             IOGridSize = new Size(625, 800);
-    }
+        }
 
     }
 }

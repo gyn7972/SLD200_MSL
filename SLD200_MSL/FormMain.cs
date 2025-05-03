@@ -98,7 +98,6 @@ namespace SLD200_MSL
             //this.SingleMode_LPM100 = new SingleMode_LPM100();
             this.m_FormSelectIO = new FormSelectIO();
 
-
             //  2025. 02. 04.  SCH : 새로운 Form 추가
             this.FormNew_Main = new FormNew_Main();
             this.FormNew_Recipe = new FormNew_Recipe();
@@ -117,6 +116,7 @@ namespace SLD200_MSL
             FormNewMainShow();
 
             AlarmManager.Instance.PostAlarm += AlarmManager_PostAlarm;
+            
             // PostAlarm 이벤트 구독
             //AlarmManager.Instance.PostAlarm += alarm =>
             //{
@@ -131,7 +131,6 @@ namespace SLD200_MSL
             //        $"Source={alarm.Source}," +
             //        $"Grade={alarm.Grade}," +
             //        $"Cause={alarm.Cause},");
-
 
             //    //MessageBox.Show($"알람 발생: {alarm.Title}\n원인: {alarm.Cause}", "알람", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             //};

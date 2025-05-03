@@ -191,6 +191,7 @@
     <Compile Include="Global\ProcessManager.cs" />
     <Compile Include="Global\SocketInfo.cs" />
     <Compile Include="ListParam.cs" />
+    <Compile Include="Modules\DeviceConnectionModule.cs" />
     <Compile Include="Modules\Laser.cs" />
     <Compile Include="Modules\Bds.cs" />
     <Compile Include="Modules\BdsConfig.cs" />

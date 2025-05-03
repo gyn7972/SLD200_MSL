@@ -4782,7 +4782,10 @@ namespace QMC.Common.Modules
             }
 
             if (!Equipment.stCommunicationSet[(int)Equipment.CommList.Illuminator].Connect)
+            {
+                Equipment._InitDeviceStatus.Illuminator = false;
                 return;
+            }
 
             CommonModule.Instance.Illuminator.Config.PortName = m_strPortName;
             CommonModule.Instance.Illuminator.Config.BaudRate = m_nBaudRate;
@@ -4793,9 +4796,13 @@ namespace QMC.Common.Modules
 
             if (CommonModule.Instance.Illuminator.Initialize() != 0)
             {
+                Equipment._InitDeviceStatus.Illuminator = false;
                 string text = string.Format("{0} Port Open Failed! (Illuminator)", m_strPortName);
                 MessageBox.Show(text);
             }
+
+            Equipment._InitDeviceStatus.Illuminator = true;
+
         }
         #endregion
 
@@ -4867,18 +4874,24 @@ namespace QMC.Common.Modules
             }
 
             if (!Equipment.stCommunicationSet[(int)Equipment.CommList.PowerMeter_BDS].Connect)
+            {
+
+                Equipment._InitDeviceStatus.PowerMeter_Bds = false;
                 return;
 
+            }
             m_powerMeter_ExitPos_Comm = new SerialCommPowerMeter1Port();
             m_powerMeter_ExitPos_Comm.DataReceivedHandler = PowerMeter_ExitPos_DataReceivedHandler;
             m_powerMeter_ExitPos_Comm.DisconnectedHandler = PowerMeter_ExitPos_DisconnectedHandler;
             if (!m_powerMeter_ExitPos_Comm.OpenComm(m_strPortName, m_nBaudRate, m_nDataBits, m_stopBits, m_parity, m_handshake))
             {
+                Equipment._InitDeviceStatus.PowerMeter_Bds = false;
                 string text = string.Format("{0} Port Open Failed! (Power Meter, Exit Pos.)", m_strPortName);
                 MessageBox.Show(text);
                 return;
             }
 
+            Equipment._InitDeviceStatus.PowerMeter_Bds = true;
             m_nPowerMeterBDSCommStep = (int)PowerMeterBDSComm_Step.Start;
         }
 
@@ -4975,18 +4988,25 @@ namespace QMC.Common.Modules
             }
 
             if (!Equipment.stCommunicationSet[(int)Equipment.CommList.PowerMeter_Stage].Connect)
+            {
+                Equipment._InitDeviceStatus.PowerMeter_Stage = false;
+
                 return;
+            }
 
             m_powerMeter_TargetPos_Comm = new SerialCommPowerMeter2Port();
             m_powerMeter_TargetPos_Comm.DataReceivedHandler = PowerMeter_TargetPos_DataReceivedHandler;
             m_powerMeter_TargetPos_Comm.DisconnectedHandler = PowerMeter_TargetPos_DisconnectedHandler;
             if (!m_powerMeter_TargetPos_Comm.OpenComm(m_strPortName, m_nBaudRate, m_nDataBits, m_stopBits, m_parity, m_handshake))
             {
+                Equipment._InitDeviceStatus.PowerMeter_Stage = false;
                 string text = string.Format("{0} Port Open Failed! (Power Meter, Target Pos.)", m_strPortName);
                 MessageBox.Show(text);
+
                 return;
             }
 
+            Equipment._InitDeviceStatus.PowerMeter_Stage = true;
             m_nPowerMeterStageCommStep = (int)PowerMeterStageComm_Step.Start;
         }
 
@@ -5130,16 +5150,23 @@ namespace QMC.Common.Modules
             }
 
             if (!Equipment.stCommunicationSet[(int)Equipment.CommList.MotorizedBeamExpander].Connect)
+            {
+                Equipment._InitDeviceStatus.BeamExpander = false;
                 return;
+
+            }
 
             m_beamExpander_Comm = new SerialCommBeamExpanderPort();
             m_beamExpander_Comm.DataReceivedHandler = BeamExpander_DataReceivedHandler;
             m_beamExpander_Comm.DisconnectedHandler = BeamExpander_DisconnectedHandler;
             if (!m_beamExpander_Comm.OpenComm(m_strPortName, m_nBaudRate, m_nDataBits, m_stopBits, m_parity, m_handshake))
             {
+                Equipment._InitDeviceStatus.BeamExpander = false;
                 string text = string.Format("{0} Port Open Failed! (Beam Expander)", m_strPortName);
                 MessageBox.Show(text);
             }
+
+            Equipment._InitDeviceStatus.BeamExpander = true;
         }
 
         private void BeamExpander_DataReceivedHandler(byte[] receiveData)
@@ -7828,8 +7855,9 @@ namespace QMC.Common.Modules
             {
                 //여기서 정지 후 재시작시 상태 및 소켓 정보 확인 후 구동
 
-
+                //꼭 수정Test
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                //m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
             }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move)
             {
@@ -7922,27 +7950,15 @@ namespace QMC.Common.Modules
             try
             {
                 _isLaserDrillingWorkRunning = true;
-                //if(m_nLaserDrilling_MainStep_Recovery != -1)
-                //{
-                //    m_nLaserDrilling_MainStep = m_nLaserDrilling_MainStep_Recovery;
-                //}
-                // Scanner Calibration이 활성화되지 않은 경우 종료
+                
                 if (!m_LaserDrillingWork_Start)
                 {
                     SetRecoveryLaserDrilling_MainStep(m_nLaserDrilling_MainStep);
                     return;
                 }
                 
-                // 현재 단계가 None이면 타이머 중지
-                //if (m_nLaserDrilling_MainStep == (int)LaserDrilling_Step.None)
-                //{
-                //    Console.WriteLine("Laser Drilling completed.");
-                //    return;
-                //}
-
-                // 단계별 실행
-                //Console.WriteLine($"Scanner Calibration running at {DateTime.Now}, Step: {m_nScanner_Calibration_Step}");
                 Func_DryRun_Cycle();
+
                 int ret = Run_LaserDrilling_Main_Cycle();
                 if(ret !=0)
                 {
@@ -8842,6 +8858,16 @@ namespace QMC.Common.Modules
 
                     //  홈 실행할 때 로더 쪽 이오나이저를 켜준다. (끄지 않음. 상시 On)
                     loader.loaderParameter.DO_Loader_Ionizer(true);
+
+                    //  홈 실행할 때 냉각수 밸브를 열어준다. (닫지 않음. 상시 Open)
+                    workStageParameter.DO_BeamDump_Coolant_Supply(true);                    //  Laser Cooling Valve Open
+                    workStageParameter.DO_Scanner_Coolant_Supply(true);                     //  Scanner Cooling Valve Open
+
+                    if (Equipment.Machine_LaserType_CO2)
+                    {
+                        workStageParameter.DO_Mask_Coolant_Supply(true);                    //  Beam Mask 
+                        workStageParameter.DO_VarioScan_Coolant_Supply(true);
+                    }
 
                     loader.timer_LoaderWork.Enabled = false;
 
@@ -13240,6 +13266,8 @@ namespace QMC.Common.Modules
                         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                         //m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveInspPos;
+
+                        //꼭수정 TEST
                         m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_toVision_AlignStart;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ALIGN) > 60000)
@@ -14281,7 +14309,6 @@ namespace QMC.Common.Modules
                 TickCount_MainCycle_Start = TickCount_MainCycle_Current;
             }
 
-
             //  Stop 할 때 바로 Stop 하지 않고, 가공중이던 분할영역이 있을 경우 Laser 가공이 끝나고 난 후 Stop 하도록 한다.
             if (Equipment.LaserDrillingCycStop_Reservation)
             {
@@ -14429,7 +14456,6 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", "Auto Run", "출사구 셔터 Open 실패");
 
-
                         return AlarmPost(AlarmKey.eBeamShutterOpenFail);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
 
@@ -14475,7 +14501,6 @@ namespace QMC.Common.Modules
                     break;
 
                 case (int)LaserDrilling_Step.DustCollector_Chiller_Status_Check:                      //  집진기, Chiller 상태 확인 (Alarm Check)
-
 
                     if (Equipment.Machine_LaserType_CO2)
                     {
@@ -14568,8 +14593,10 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.StageXY_MoveCenterPos_DoneCheck:                 //  XY 축, Stage Center 위치로 이동 완료 체크           
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y))
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X) &&
+                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY 축, Stage Center 위치로 이동 완료 확인");
 
@@ -17467,11 +17494,11 @@ namespace QMC.Common.Modules
                             xyCoordinateAlignPositionLast= new XyCoordinate( positionFirst.X, positionFirst.Y);
 
                             positionFirst.X -= dfx;
-                            positionFirst.Y += dfy;
+                            positionFirst.Y -= dfy;
 
                             xyCoordinateAlignPositionOrgLast  = new XyCoordinate(positionFirst.X, positionFirst.Y);
 
-                            m_st4PointAlign_Result_LastSuccess.dRotationAngle = dft;
+                            //m_st4PointAlign_Result_LastSuccess.dRotationAngle = dft;
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Correction;
                         }
                         else
@@ -19369,16 +19396,16 @@ namespace QMC.Common.Modules
 
                                     entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
-                                    
+
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Circle 원 데이터를 Spiral 데이터로 변환 생성 시작");
 
-                                    if(m_dTemp_AngleFactor < 18)
+                                    if (m_dTemp_AngleFactor < 18)
                                     {
                                         m_dTemp_AngleFactor = 18;
                                     }
                                     //todo : 김영남 속도 개선중 
                                     //  Spiral 데이터 파라미터 (외경 크기, 내경 크기, Spiral 회전 횟수, Spiral 회전 각도, Hole Center X, Hole Center Y)
-                                    lwPolyLineSpiral = SpiralData_Create(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot.X, entity_Position_Rot.Y);
+                                    //lwPolyLineSpiral = SpiralData_Create(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot.X, entity_Position_Rot.Y);
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Circle 원 데이터를 Spiral 데이터로 변환 생성 완료");
 
@@ -19401,22 +19428,7 @@ namespace QMC.Common.Modules
 
 
                                     var spiralData = lwPolyLineSpiral.Items;
-                                    //  객체 Edge 좌표 데이터 저장
-                                    for (int n_pl = 0; n_pl < lwPolyLineSpiral.Count; n_pl++)
-                                    {
-                                        if (n_pl == 0)          //  처음에 Jump 이동
-                                        {
-                                            m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
-                                        }
-
-                                        else                    //  두번째부터 Mark 이동
-                                        {
-                                            m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y) , (float)m_dTemp_AngleFactor*2/3) ;
-                                            
-                                            //m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
-                                            m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
-                                        }
-                                    }
+                                    MarkSpiral(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "변환된 Spiral 데이터 List 추가 완료");
 
@@ -20409,7 +20421,7 @@ namespace QMC.Common.Modules
                         m_bDivRegionList_Success = true;
 
                         var rtcMode = rtc as IRtc;                                  //  RTC6
-
+                        
                         m_bDivRegionList_Success &= rtcMode.ListBegin(laser, ListType.Single);
 
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, ScannerOnly Mode, Buffer List Open");
@@ -20725,6 +20737,67 @@ namespace QMC.Common.Modules
             }
 
             return 0;
+        }
+
+        private void MarkSpiral(double r1, double r2,int turn,  double m_dTemp_AngleFactor, PointD center)
+        {
+
+            int startAngle = 0;
+            int sweepAngle =(int) m_dTemp_AngleFactor; // 각 아크의 각도 (작게 설정하여 부드럽게 연결)
+            if(sweepAngle < 18)
+            {
+                sweepAngle = 18;
+            }
+            double currentRadius = r1; // 초기 반지름
+            if(turn <1)
+            {
+                turn = 1;
+            }
+            double rStep = (r2 - r1) / (360.0 * turn / sweepAngle); // 반지름 증가량 계산
+            for (int i = 0; i < 360 * turn; i += sweepAngle) // 360도 회전
+            {
+
+                // 아크의 사각형 영역 계산
+                int x = (int)(center.X - currentRadius);
+                int y = (int)(center.Y - currentRadius);
+                int width = (int)(currentRadius * 2);
+                int height = (int)(currentRadius * 2);
+
+                double dShiftX = Math.Cos(i / 180.0 * Math.PI) * rStep / 2;
+                double dshiftY = Math.Sin(i / 180.0 * Math.PI) * rStep / 2;
+                if (i==0)
+                {
+                    rtc.ListJump(new Vector2((float)center.X, (float)(center.Y + r1)));
+                }
+                else
+                {
+                    rtc.ListArc(new Vector2((float)(center.X+dShiftX), (float)(center.Y + dshiftY)), sweepAngle);
+                }
+                // 아크 그리기
+                
+
+                // 다음 아크를 위한 값 업데이트
+                startAngle += sweepAngle; // 시작 각도 증가
+                currentRadius += rStep; // 반지름 증가
+            }
+
+
+            //  객체 Edge 좌표 데이터 저장
+            //for (int n_pl = 0; n_pl < lwPolyLineSpiral.Count; n_pl++)
+            //{
+            //    if (n_pl == 0)          //  처음에 Jump 이동
+            //    {
+            //        m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
+            //    }
+
+            //    else                    //  두번째부터 Mark 이동
+            //    {
+            //        m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), (float)m_dTemp_AngleFactor * 2 / 3);
+
+            //        //m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
+            //        m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
+            //    }
+            //}
         }
 
         private void LaserDrilling_StepStageXY_MoveUnloadingPos(out double lfVelocity, out double lfAccDec)

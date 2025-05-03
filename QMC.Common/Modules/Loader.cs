@@ -5180,6 +5180,13 @@ namespace QMC.Common.Modules
                                 Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, Module Picker 공압이 형성되지 않음");
 
 
+                                m_strTemp = "Transfer Z 축, Module Picker 공압이 형성되지 않음";
+                                Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
+                                return AlarmPost(AlarmKey.LD_TransferZ_Move_VibrationPos_Timeout);
+
+                                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, Module Picker 공압이 형성되지 않음");
+
+
                                 //  알람 정지 (LED Bar - Red Blink)
                                 Equipment.MachineStop_byAlarm = true;
                                 //////////////////////////////////////////////////////////////////////////////////////////
