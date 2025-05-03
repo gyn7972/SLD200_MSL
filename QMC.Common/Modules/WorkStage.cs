@@ -19488,10 +19488,10 @@ namespace QMC.Common.Modules
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Circle 원 데이터를 Spiral 데이터로 변환 생성 시작");
 
-                                    if (m_dTemp_AngleFactor < 18)
-                                    {
-                                        m_dTemp_AngleFactor = 18;
-                                    }
+                                    //if (m_dTemp_AngleFactor < 18)
+                                    //{
+                                    //    m_dTemp_AngleFactor = 18;
+                                    //}
                                     //todo : 김영남 속도 개선중 
                                     //  Spiral 데이터 파라미터 (외경 크기, 내경 크기, Spiral 회전 횟수, Spiral 회전 각도, Hole Center X, Hole Center Y)
                                     //lwPolyLineSpiral = SpiralData_Create(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot.X, entity_Position_Rot.Y);
@@ -20830,13 +20830,15 @@ namespace QMC.Common.Modules
 
         private void MarkSpiral(double r1, double r2,int turn,  double m_dTemp_AngleFactor, PointD center)
         {
+            r1 /= 2;
+            r2 /= 2;
 
             int startAngle = 0;
             int sweepAngle =(int) m_dTemp_AngleFactor; // 각 아크의 각도 (작게 설정하여 부드럽게 연결)
-            if(sweepAngle < 18)
-            {
-                sweepAngle = 18;
-            }
+            //if(sweepAngle < 18)
+            //{
+            //    sweepAngle = 18;
+            //}
             double currentRadius = r1; // 초기 반지름
             if(turn <1)
             {

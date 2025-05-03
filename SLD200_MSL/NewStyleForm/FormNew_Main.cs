@@ -700,7 +700,7 @@ namespace SLD200_MSL
             if (!_InitDeviceStatus.MotionIo)
                 workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Motion);
 
-            bOn = workStage.m_SocketLaser != null && workStage.m_SocketLaser.isConnected && workStage.m_nLaser_SystemStatus == 1;
+            bOn = workStage.m_rapidLxLaser_Comm != null && workStage.m_rapidLxLaser_Comm.IsOpen;
             _InitDeviceStatus.Laser = bOn;
             if (!_InitDeviceStatus.Laser)
                 workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Laser);
