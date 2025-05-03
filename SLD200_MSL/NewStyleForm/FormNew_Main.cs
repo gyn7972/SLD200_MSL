@@ -672,240 +672,220 @@ namespace SLD200_MSL
             }
         }
 
-        public bool _isMainStatusRunning = false; // 중복 실행 방지 플래그
-        private void Timer_MainStatus_Func(object sender, EventArgs e)
+
+        // -----------------------
+        // 멤버 변수 정의 (Form 클래스 내부)
+        // -----------------------
+        private bool _isMainStatusRunning = false;
+
+        private bool m_bNeedHideProgressForm = false;
+        private bool m_NeedDocumentSync = false;
+        private bool m_bNeedSocketArrayChange = false;
+        private bool m_bNeedProcStatusUpdate = false;
+        private bool m_bNeedCompStatusUpdate = false;
+        private bool m_bNeedAutoRunStop = false;
+
+        private (int, int) m_ProcSocketRowCol, m_ProcRegionRowCol;
+        private int m_ProcSocketStatus, m_ProcRegionStatus;
+
+        private (int, int) m_CompSocketRowCol, m_CompRegionRowCol;
+        private int m_CompSocketStatus, m_CompRegionStatus;
+
+        private async void Timer_MainStatus_Func(object sender, EventArgs e)
         {
             //  동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
             // 중복 실행 방지
              if (_isMainStatusRunning)
-            {
-                //Console.WriteLine("Scanner Calibration is already running. Skipping this call.");
                 return;
-            }
 
             try
             {
-                _isMainStatusRunning = true;
-
-                timer_Main_Status.Enabled = false;
-
-                //  Home Progress 창 닫기
-                if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
+                await Task.Run(() =>
                 {
-                    workStage.m_bHomeProgressForm_Close = false;
-                    m_bHomeProgress_Show = false;
-
-                    m_FormProgress.Hide();
-                }
-
-                //  메인 화면 도면 갱신 (요상스럽도다... 메인 화면에 도면을 불러온 후 다른 화면으로 넘어갔다가 돌아오면, 메인 화면의 Viewer 에 도면이 사라진다. 보이기만 안보이는 게 아니라 데이터도 사라진다. 
-                //                      그래서 Equipment 에 SiriusView 를 하나 임시로 두고, 서로 데이터가 다를 경우(로드된 파일명) 임시 Viewer 의 데이터를 메인 화면의 Viewer 로 가져온다.
-                if ((SiriusViewer_Main.Document != null) && (Equipment.EqpSiriusViewer.Document != null))
-                {
-                    //if ((SiriusViewer_Main.Document.FileName != Equipment.EqpSiriusViewer.Document.FileName) &&
-                    //    (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))            //  자동운전이 아닐 때만 데이터를 Copy 하도록
-
-                    //m_SiriusViewerRefresy
-                    if ((SiriusViewer_Main.Document != Equipment.EqpSiriusViewer.Document) &&
-
-                        ((workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) ||
-                        m_SiriusViewerRefresy))            //  자동운전이 아닐 때만 데이터를 Copy 하도록
+                    try
                     {
-                        if (m_SiriusViewerRefresy)
-                        {
-                            m_SiriusViewerRefresy = false;
-                        }
-                        while (true)
-                        {
-                            try
-                            {
-                                if (this.InvokeRequired)
-                                {
-                                    this.Invoke(new System.Action(() => {
-                                        SiriusViewer_Main.Document = Equipment.EqpSiriusViewer.Document;
-
-                                    }));
-                                }
-                                else
-                                {
-                                    if(SiriusViewer_Main.Document != Equipment.EqpSiriusViewer.Document)
-                                    {
-                                        SiriusViewer_Main.Document = (IDocument)Equipment.EqpSiriusViewer.Document;
-
-                                    }
-                                }
-                                break;
-                            }
-                            catch (Exception ex)
-                            {
-                                Log.Write(ex);
-                            }
-                        }
-
-                        //workStage.SiriusEditor.Document = Equipment.EqpSiriusViewer.Document;
-                        //workStage.MainSiriusEditor.Document = Equipment.EqpSiriusViewer.Document;
+                        DoHeavyLogicPart();
                     }
-                }
-                //m_btimer_MainWork_Stop = false;
+                    catch (Exception ex)
+                    {
+                        Log.Write(ex);
+                    }
+                });
 
-                //  Main Processing Status 표시
-                checkBox_Main_ProcessStatus_LD_LPort_Complete.Checked = Equipment.m_bMainProcessStatus_LD_LPort_Complete;
-                checkBox_Main_ProcessStatus_LD_RPort_Complete.Checked = Equipment.m_bMainProcessStatus_LD_RPort_Complete;
-                checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_PortPickUp_Complete;
-                checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_MAlignerPutDown_Complete;
-                checkBox_Main_ProcessStatus_LD_MAlign_Complete.Checked = Equipment.m_bMainProcessStatus_LD_M_Aligner_Align_Complete;
-                checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_MAlignerPickUp_Complete;
-                checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_WorkStagePutDown_Complete;
-                checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Checked = Equipment.m_bMainProcessStatus_WorkStage_Module_Process_Complete;
-                checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete;
-                checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete;
-                checkBox_Main_Loader_Transfer_Pause.Checked = Equipment.Loader_Transfer_Pause;
-                checkBox_Main_Loader_LPort_Pause.Checked = Equipment.Loader_LPort_Pause;
-                checkBox_Main_Loader_RPort_Pause.Checked = Equipment.Loader_RPort_Pause;
-
-
-                //  Socket 가공 진행 상태 표시
-                if (workStage.Main_SocketPositions_Draw)
+                if (this.IsHandleCreated && !this.IsDisposed)
                 {
-                    workStage.Main_SocketPositions_Draw = false;
-
-                    Change_SocketArraySize(workStage.Main_SocketPositions_ColumnCount, workStage.Main_SocketPositions_RowCount, workStage.Main_SocketPositions_SubColumnCount, workStage.Main_SocketPositions_SubRowCount);
-
-                    workStage.Main_SocketPositions_Drawed = true;
+                    this.Invoke((System.Action)(() => UpdateUIControls()));
                 }
-
-
-                //  Socket 가공 진행 상태 다시 그리기 (소켓 좌표값으로 Row, Column 위치 계산하던 것을 Index 로 처리하도록 변경)
-                if (workStage.Main_SocketPositions_SetStatus)
-                {
-                    workStage.Main_SocketPositions_SetStatus = false;
-
-                    //  가공중인 소켓 번호 : Main_SocketPositions_ProcessingSocket                    
-                    //(int rows, int columns) = workStage.GetRowColumnFromPosition(workStage.Main_SocketPositions, workStage.Main_SocketPositions_CurrentSocketPosition);           //  좌표값으로 Row, Column 계산
-
-                    (int rows, int columns) = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_ProcessingSocket, workStage.Main_SocketPositions_ColumnCount);                                 //  Index 로 Row, Column 계산
-                    (int region_rows, int region_columns) = workStage.GetRegionRowColumnFromIndex(workStage.Main_SocketPositions_ProcessingSocket_Region, workStage.Main_SocketPositions_SubColumnCount);   //  Index 로 Row, Column 계산
-
-                    Update_SocketStatus(rows, columns, workStage.Main_SocketPositions_ProcessingStatus, region_rows, region_columns, workStage.Main_SocketPositions_ProcessingStatus_Region);
-                }
-
-                //  완료된 소켓 상태 표시
-                if (workStage.Main_SocketPositions_SetCompleteStatus)
-                {
-                    workStage.Main_SocketPositions_SetCompleteStatus = false;
-
-                    //  완료된 소켓 번호 : Main_SocketPositions_CompleteSocket
-                    //(int rows, int columns) = workStage.GetRowColumnFromPosition(workStage.Main_SocketPositions, workStage.Main_SocketPositions_SocketCompletePosition);
-
-                    (int rows, int columns) = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_CompleteSocket, workStage.Main_SocketPositions_ColumnCount);                                   //  Index 로 Row, Column 계산
-                    (int region_rows, int region_columns) = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_CompleteSocket_Region, workStage.Main_SocketPositions_SubColumnCount);           //  Index 로 Row, Column 계산
-
-                    Update_SocketStatus(rows, columns, workStage.Main_SocketPositions_CompleteStatus, region_rows, region_columns, workStage.Main_SocketPositions_CompleteStatus_Region);
-                }
-
-
-                //  계속 진행 버튼 활성화
-                if (Equipment.MachineStop_byTimeout_Loader)
-                {
-                    button_Main_Loader_Continue.Enabled = true;
-                }
-                else
-                {
-                    button_Main_Loader_Continue.Enabled = false;
-                }
-
-                if (Equipment.MachineStop_byTimeout_Unloader)
-                {
-                    button_Main_Unloader_Continue.Enabled = true;
-                }
-                else
-                {
-                    button_Main_Unloader_Continue.Enabled = false;
-                }
-
-                if (Equipment.SocketStopped)
-                {
-                    button_Main_WorkStage_Continue.Enabled = true;
-                }
-                else
-                {
-                    button_Main_WorkStage_Continue.Enabled = false;
-                }
-
-                //  Cycle Stop 으로 Loader, Unloader, Main Work 가 Stop 되면 자동운전을 종료한다.
-                //  아래는 동작 하나?
-                if (Equipment.AutoRunStatus &&
-                    Equipment.CycleStop &&
-                    Equipment.CycleStopped_LoaderTransfer &&
-                    Equipment.CycleStopped_UnloaderTransfer &&
-                    Equipment.CycleStopped_MainWork)
-                {
-                    Equipment.AutoRunStatus = false;
-                    workStage.timer_MainWork.Stop();
-                    workStage.m_MainWork_Start = false;
-                    loader.m_LoaderWork_Start = false;
-                    workStage.m_LaserDrillingWork_Start = false;
-                    Equipment.LaserDrillingCycStop_Reservation = false;
-                    //workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
-
-                    unloader.timer_UnloaderWork.Stop();
-                    //unloader.timer_UnloaderWork.Enabled = false;
-                    unloader.m_UnloaderWork_Start = false;
-
-                    MessageBox.Show("자동 운전 종료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-
-                if (workStage.Camera_HighRes.Opened)
-                {
-                    ImageViewer_Main_highs.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
-                }
-
-                if (workStage.jigAligner_LowRes.Camera.Opened)
-                {
-                    ImageViewer_Main_Rows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
-                }
-
-                // label_Title_MESMessage
-                // 여기에 자재 유/무에 대한 메세지 표시
-                if (Equipment.Loader_LPort_Empty)
-                {
-                    label_Title_Stacker_LPort.Text = "Loader_Stacker Left: 자재 없음.";
-                    label_Title_Stacker_LPort.BackColor = Color.Red;
-                    label_Title_Stacker_LPort.ForeColor = Color.White;
-                }
-                else
-                {
-                    label_Title_Stacker_LPort.Text = "Loader_Stacker Left: 자재 있음.";
-                    label_Title_Stacker_LPort.BackColor = Color.Black;
-                    label_Title_Stacker_LPort.ForeColor = Color.Green;
-                }
-
-                if (Equipment.Loader_RPort_Empty)
-                {
-                    label_Title_Stacker_RPort.Text = "Loader_Stacker Right: 자재 없음.";
-                    label_Title_Stacker_RPort.BackColor = Color.Red;
-                    label_Title_Stacker_RPort.ForeColor = Color.White;
-                }
-                else
-                {
-                    label_Title_Stacker_RPort.Text = "Loader_Stacker Right: 자재 있음.";
-                    label_Title_Stacker_RPort.BackColor = Color.Black;
-                    label_Title_Stacker_RPort.ForeColor = Color.Green;
-                }
-
-                timer_Main_Status.Enabled = true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in Timer_Main Status_Elapsed: {ex.Message}");
+                Log.Write(ex);
             }
             finally
             {
-                _isMainStatusRunning = false; // 플래그 해제
+                _isMainStatusRunning = false;
+                timer_Main_Status.Enabled = true;
+            }
+        }
+
+        // -----------------------
+        // 무거운 작업 로직 분리
+        // -----------------------
+        private void DoHeavyLogicPart()
+        {
+            if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
+            {
+                workStage.m_bHomeProgressForm_Close = false;
+                m_bHomeProgress_Show = false;
+                m_bNeedHideProgressForm = true;
             }
 
+            if ((SiriusViewer_Main.Document != null) && (Equipment.EqpSiriusViewer.Document != null))
+            {
+                if ((SiriusViewer_Main.Document != Equipment.EqpSiriusViewer.Document) &&
+                    ((workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) || m_SiriusViewerRefresy))
+                {
+                    m_NeedDocumentSync = true;
+                    m_SiriusViewerRefresy = false;
+                }
+            }
 
+            if (workStage.Main_SocketPositions_Draw)
+            {
+                workStage.Main_SocketPositions_Draw = false;
+                m_bNeedSocketArrayChange = true;
+            }
 
+            if (workStage.Main_SocketPositions_SetStatus)
+            {
+                workStage.Main_SocketPositions_SetStatus = false;
+
+                m_ProcSocketRowCol = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_ProcessingSocket, workStage.Main_SocketPositions_ColumnCount);
+                m_ProcRegionRowCol = workStage.GetRegionRowColumnFromIndex(workStage.Main_SocketPositions_ProcessingSocket_Region, workStage.Main_SocketPositions_SubColumnCount);
+                m_ProcSocketStatus = workStage.Main_SocketPositions_ProcessingStatus;
+                m_ProcRegionStatus = workStage.Main_SocketPositions_ProcessingStatus_Region;
+
+                m_bNeedProcStatusUpdate = true;
+            }
+
+            if (workStage.Main_SocketPositions_SetCompleteStatus)
+            {
+                workStage.Main_SocketPositions_SetCompleteStatus = false;
+
+                m_CompSocketRowCol = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_CompleteSocket, workStage.Main_SocketPositions_ColumnCount);
+                m_CompRegionRowCol = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_CompleteSocket_Region, workStage.Main_SocketPositions_SubColumnCount);
+                m_CompSocketStatus = workStage.Main_SocketPositions_CompleteStatus;
+                m_CompRegionStatus = workStage.Main_SocketPositions_CompleteStatus_Region;
+
+                m_bNeedCompStatusUpdate = true;
+            }
+
+            if (Equipment.AutoRunStatus &&
+                Equipment.CycleStop &&
+                Equipment.CycleStopped_LoaderTransfer &&
+                Equipment.CycleStopped_UnloaderTransfer &&
+                Equipment.CycleStopped_MainWork)
+            {
+                m_bNeedAutoRunStop = true;
+            }
+        }
+
+        // -----------------------
+        // UI 갱신 로직
+        // -----------------------
+        private void UpdateUIControls()
+        {
+            if (m_bNeedHideProgressForm)
+            {
+                m_bNeedHideProgressForm = false;
+                m_FormProgress.Hide();
+            }
+
+            if (m_NeedDocumentSync)
+            {
+                m_NeedDocumentSync = false;
+                SiriusViewer_Main.Document = Equipment.EqpSiriusViewer.Document;
+            }
+
+            // 상태 표시 CheckBox
+            checkBox_Main_ProcessStatus_LD_LPort_Complete.Checked = Equipment.m_bMainProcessStatus_LD_LPort_Complete;
+            checkBox_Main_ProcessStatus_LD_RPort_Complete.Checked = Equipment.m_bMainProcessStatus_LD_RPort_Complete;
+            checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_PortPickUp_Complete;
+            checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_MAlignerPutDown_Complete;
+            checkBox_Main_ProcessStatus_LD_MAlign_Complete.Checked = Equipment.m_bMainProcessStatus_LD_M_Aligner_Align_Complete;
+            checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_MAlignerPickUp_Complete;
+            checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_WorkStagePutDown_Complete;
+            checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Checked = Equipment.m_bMainProcessStatus_WorkStage_Module_Process_Complete;
+            checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete;
+            checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete;
+            checkBox_Main_Loader_Transfer_Pause.Checked = Equipment.Loader_Transfer_Pause;
+            checkBox_Main_Loader_LPort_Pause.Checked = Equipment.Loader_LPort_Pause;
+            checkBox_Main_Loader_RPort_Pause.Checked = Equipment.Loader_RPort_Pause;
+
+            if (m_bNeedSocketArrayChange)
+            {
+                m_bNeedSocketArrayChange = false;
+                Change_SocketArraySize(
+                    workStage.Main_SocketPositions_ColumnCount,
+                    workStage.Main_SocketPositions_RowCount,
+                    workStage.Main_SocketPositions_SubColumnCount,
+                    workStage.Main_SocketPositions_SubRowCount);
+                workStage.Main_SocketPositions_Drawed = true;
+            }
+
+            if (m_bNeedProcStatusUpdate)
+            {
+                m_bNeedProcStatusUpdate = false;
+                Update_SocketStatus(
+                    m_ProcSocketRowCol.Item1, m_ProcSocketRowCol.Item2,
+                    m_ProcSocketStatus,
+                    m_ProcRegionRowCol.Item1, m_ProcRegionRowCol.Item2,
+                    m_ProcRegionStatus);
+            }
+
+            if (m_bNeedCompStatusUpdate)
+            {
+                m_bNeedCompStatusUpdate = false;
+                Update_SocketStatus(
+                    m_CompSocketRowCol.Item1, m_CompSocketRowCol.Item2,
+                    m_CompSocketStatus,
+                    m_CompRegionRowCol.Item1, m_CompRegionRowCol.Item2,
+                    m_CompRegionStatus);
+            }
+
+            button_Main_Loader_Continue.Enabled = Equipment.MachineStop_byTimeout_Loader;
+            button_Main_Unloader_Continue.Enabled = Equipment.MachineStop_byTimeout_Unloader;
+            button_Main_WorkStage_Continue.Enabled = Equipment.SocketStopped;
+
+            if (m_bNeedAutoRunStop)
+            {
+                m_bNeedAutoRunStop = false;
+
+                Equipment.AutoRunStatus = false;
+                workStage.timer_MainWork.Stop();
+                workStage.m_MainWork_Start = false;
+                loader.m_LoaderWork_Start = false;
+                workStage.m_LaserDrillingWork_Start = false;
+                Equipment.LaserDrillingCycStop_Reservation = false;
+                unloader.timer_UnloaderWork.Stop();
+                unloader.m_UnloaderWork_Start = false;
+
+                MessageBox.Show("자동 운전 종료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
+            if (workStage.Camera_HighRes.Opened)
+                ImageViewer_Main_highs.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
+
+            if (workStage.jigAligner_LowRes.Camera.Opened)
+                ImageViewer_Main_Rows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
+
+            label_Title_Stacker_LPort.Text = Equipment.Loader_LPort_Empty ? "Loader_Stacker Left: 자재 없음." : "Loader_Stacker Left: 자재 있음.";
+            label_Title_Stacker_LPort.BackColor = Equipment.Loader_LPort_Empty ? Color.Red : Color.Black;
+            label_Title_Stacker_LPort.ForeColor = Equipment.Loader_LPort_Empty ? Color.White : Color.Green;
+
+            label_Title_Stacker_RPort.Text = Equipment.Loader_RPort_Empty ? "Loader_Stacker Right: 자재 없음." : "Loader_Stacker Right: 자재 있음.";
+            label_Title_Stacker_RPort.BackColor = Equipment.Loader_RPort_Empty ? Color.Red : Color.Black;
+            label_Title_Stacker_RPort.ForeColor = Equipment.Loader_RPort_Empty ? Color.White : Color.Green;
         }
 
 
