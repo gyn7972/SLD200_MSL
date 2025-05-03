@@ -697,13 +697,13 @@ namespace SLD200_MSL
 
             bOn = Equipment.AjinBoard_Opened && workStage.m_bHomeOK;
             _InitDeviceStatus.MotionIo = bOn;
-            if (!_InitDeviceStatus.MotionIo)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Motion);
+            //if (!_InitDeviceStatus.MotionIo)
+            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Motion);
 
             bOn = workStage.m_rapidLxLaser_Comm != null && workStage.m_rapidLxLaser_Comm.IsOpen;
             _InitDeviceStatus.Laser = bOn;
-            if (!_InitDeviceStatus.Laser)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Laser);
+            //if (!_InitDeviceStatus.Laser)
+            //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Laser);
 
             //RTC에서 초기화할때 선언함.
             //bOn = workStage.rtc != null && workStage.rtc.;
@@ -2713,13 +2713,13 @@ namespace SLD200_MSL
                     //checkBox_Main_AutoRun.ForeColor = Color.Black;
                     //Equipment.AutoManualStatus = false;
                 }
-                //else
-                //{
-                //    checkBox_Main_AutoRun.Text = "MANUAL";
-                //    checkBox_Main_AutoRun.BackColor = Color.LightGray;
-                //    checkBox_Main_AutoRun.ForeColor = Color.Black;
-                //    Equipment.AutoManualStatus = false;
-                //}
+                else
+                {
+                    checkBox_Main_AutoRun.Text = "MANUAL";
+                    checkBox_Main_AutoRun.BackColor = Color.LightGray;
+                    checkBox_Main_AutoRun.ForeColor = Color.Black;
+                    Equipment.AutoManualStatus = false;
+                }
             }
         }
 

@@ -1835,6 +1835,7 @@ namespace QMC.Common.Modules
                         m_bMAlignZone_ModuleExist = false;
 
                         workStage.workStageParameter.DO_Stage_Vacuum(false);
+                        Thread.Sleep(10);
                         workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);
                     }
                 }
