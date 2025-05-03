@@ -169,8 +169,7 @@ namespace SLD200_MSL
             // 예시: 타이머 멈춤, 리소스 일시 해제 등
             // StopRecipePreviewTimer();
 
-            //if (Equipment.AutoRunStatus)
-            if (Equipment.AutoManualStatus)
+            if (Equipment.AutoRunStatus)
             {
                 button_Recipe_New.Enabled = false;
                 button_Recipe_Open.Enabled = false;
