@@ -112,38 +112,17 @@ namespace SLD200_MSL
 
             FormTopShow();
             FormBottomShow();
-
             //FormMonitoringShow();
             FormNewMainShow();
 
             AlarmManager.Instance.PostAlarm += AlarmManager_PostAlarm;
-            
-            // PostAlarm 이벤트 구독
-            //AlarmManager.Instance.PostAlarm += alarm =>
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog($"Error", $"알람 발생:{alarm.Title}," +
-            //        $"\r\n알람 코드: {alarm.Code}" +
-            //        $"\r\n알람 명: {alarm.Cause}");
 
-            //    Log.Write("SLD-200", "ALARM", 
-            //        $"Title={alarm.Title}," +
-            //        $"Code={alarm.Code}," +
-            //        $"Source={alarm.Source}," +
-            //        $"Grade={alarm.Grade}," +
-            //        $"Cause={alarm.Cause},");
-
-            //    //MessageBox.Show($"알람 발생: {alarm.Title}\n원인: {alarm.Cause}", "알람", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //};
-            //m_Form1.ShowDialog();
         }
         
         private void AlarmManager_PostAlarm(Alarm alarm)
         {
             BeginInvoke(new Action(() =>
             {
-                //this.FormAlarm.Alarms = AlarmManager.Instance.Alarms;
-                //this.ShowAlarmForm(FormAlarm);
                 this.FormNew_Alarm.Alarms = AlarmManager.Instance.Alarms;
                 this.ShowAlarmForm(FormNew_Alarm);
             }));
@@ -297,16 +276,7 @@ namespace SLD200_MSL
         #region Method
         public void HideShowAlarm()
         {
-            //if(this.FormAlarm.Visible)
-            //{
-            //    this.FormAlarm.Hide();
-            //    this.FormAlarm.Visible = false;
-            //}
-            //else
-            //{
-            //    this.ShowAlarmForm(FormAlarm);
-            //}
-
+            
             //  2025. 02. 04.  SCH : 새로운 Alarm Form 추가
             if (this.FormNew_Alarm.Visible)
             {
@@ -321,16 +291,7 @@ namespace SLD200_MSL
 
         public void HideShowAlarmLog()
         {
-            //if (this.FormAlarmLog.Visible)
-            //{
-            //    this.FormAlarmLog.Hide();
-            //    this.FormAlarmLog.Visible = false;
-            //}
-            //else
-            //{
-            //    this.ShowAlarmForm(FormAlarmLog);
-            //}
-
+           
             //  2025. 02. 04.  SCH : 새로운 Alarm Form 추가
             if (this.FormNew_AlarmLog.Visible)
             {
@@ -411,41 +372,11 @@ namespace SLD200_MSL
             {
                 case TopButtons.Alarm:
                     HideShowAlarm();
-
                     break;
-
 
                 case TopButtons.AlarmLog:
                     HideShowAlarmLog();
-
                     break;
-
-                    //form = null;
-                    //foreach (Form openForm in Application.OpenForms)
-                    //{
-                    //    if (openForm.Name == FormAlarmLog.Name)
-                    //    {
-                    //        if (openForm.Visible == false)
-                    //        {
-                    //            form = openForm;
-
-                    //            this.ShowAlarmForm(FormAlarmLog);
-                    //            return;
-                    //        }
-                    //        form = openForm;
-                    //        form.Hide();
-
-                    //        return;
-
-                    //    }
-
-                    //}
-                    //if (form == null)
-                    //{
-                    //    this.ShowAlarmForm(FormAlarmLog);
-
-                    //}
-                    //break;
             }
             return;
 

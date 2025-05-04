@@ -23,12 +23,12 @@ namespace QMC.Common
                 Areas.Add(new AreaInfo(areaIndex));
         }
 
-        public void SetAreaProcessed(int areaIndex, bool result, string note = "")
+        public void SetAreaProcessed(int areaIndex, int status, string note = "")
         {
             var area = Areas.FirstOrDefault(a => a.AreaIndex == areaIndex);
             if (area != null)
             {
-                area.IsProcessed = result;
+                area.ProcessStatus = status;
                 area.Note = note;
             }
         }

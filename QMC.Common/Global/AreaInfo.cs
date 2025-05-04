@@ -9,20 +9,27 @@ namespace QMC.Common
     public class AreaInfo
     {
         public int AreaIndex { get; set; }
-        public bool IsProcessed { get; set; }
-        public string Note { get; set; }
+
+        /// <summary>
+        /// 0: 자재 있음, 1: 작업 중, 2: 완료
+        /// </summary>
+        public int ProcessStatus { get; set; } = 0;
+
+        public string Note { get; set; } = string.Empty;
 
         public AreaInfo(int areaIndex)
         {
             AreaIndex = areaIndex;
-            IsProcessed = false;
+            ProcessStatus = 0;
             Note = string.Empty;
         }
 
         public void Reset()
         {
-            IsProcessed = false;
+            ProcessStatus = 0;
             Note = string.Empty;
         }
+
+        public bool IsProcessed => ProcessStatus == 2;
     }
 }

@@ -32,6 +32,11 @@ namespace SLD200_MSL
     public partial class FormNew_Config : Form
     {
         FormNew_VisionPopup m_formVisionPopup = new FormNew_VisionPopup();
+        public FormNew_VisionPopup FormVisionPopup
+        {
+            get { return m_formVisionPopup; }
+            set { m_formVisionPopup = value; }
+        }
 
         static WorkStage workStage;
         static Loader loader;

@@ -81,27 +81,11 @@
             this.button_Main_Reset = new System.Windows.Forms.Button();
             this.button_Main_Home = new System.Windows.Forms.Button();
             this.button_Main_RtcInit = new System.Windows.Forms.Button();
-            this.button_Main_AutoRun = new System.Windows.Forms.Button();
             this.checkBox_Test_DryRun = new System.Windows.Forms.CheckBox();
             this.checkBox_Main_Loader_LPort_Pause = new System.Windows.Forms.CheckBox();
             this.checkBox_Main_Loader_RPort_Pause = new System.Windows.Forms.CheckBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.checkBox_Main_ProcessStatus_LD_MAlign_Complete = new System.Windows.Forms.CheckBox();
-            this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete = new System.Windows.Forms.CheckBox();
-            this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete = new System.Windows.Forms.CheckBox();
-            this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete = new System.Windows.Forms.CheckBox();
-            this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete = new System.Windows.Forms.CheckBox();
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete = new System.Windows.Forms.CheckBox();
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete = new System.Windows.Forms.CheckBox();
-            this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete = new System.Windows.Forms.CheckBox();
-            this.checkBox_Main_ProcessStatus_LD_RPort_Complete = new System.Windows.Forms.CheckBox();
-            this.checkBox_Main_ProcessStatus_LD_LPort_Complete = new System.Windows.Forms.CheckBox();
-            this.checkBox_Main_Loader_Transfer_Pause = new System.Windows.Forms.CheckBox();
             this.button_Main_CameraInit = new System.Windows.Forms.Button();
             this.checkBox_Main_SocketStop = new System.Windows.Forms.CheckBox();
-            this.button_Main_Loader_Continue = new System.Windows.Forms.Button();
-            this.button_Main_Unloader_Continue = new System.Windows.Forms.Button();
-            this.button_Main_WorkStage_Continue = new System.Windows.Forms.Button();
             this.buttonForceMaterialOut = new System.Windows.Forms.Button();
             this.groupBox_FineCam = new System.Windows.Forms.GroupBox();
             this.ImageViewer_Main_highs = new QMC.Common.Hmi.VisionImageViewer();
@@ -158,7 +142,6 @@
             this.groupBox18.SuspendLayout();
             this.groupBoxMain_MaterialInformation.SuspendLayout();
             this.groupBox_ProcessingData.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.groupBox_FineCam.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).BeginInit();
             this.groupBox_CoarseCam.SuspendLayout();
@@ -757,7 +740,7 @@
             this.button_Main_Stop.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_Stop.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Main_Stop.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_Main_Stop.Location = new System.Drawing.Point(1726, 778);
+            this.button_Main_Stop.Location = new System.Drawing.Point(1726, 449);
             this.button_Main_Stop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_Stop.Name = "button_Main_Stop";
             this.button_Main_Stop.Size = new System.Drawing.Size(178, 73);
@@ -772,7 +755,7 @@
             this.button_Main_Pause.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_Pause.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Main_Pause.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_Main_Pause.Location = new System.Drawing.Point(1726, 535);
+            this.button_Main_Pause.Location = new System.Drawing.Point(1726, 599);
             this.button_Main_Pause.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_Pause.Name = "button_Main_Pause";
             this.button_Main_Pause.Size = new System.Drawing.Size(178, 73);
@@ -815,7 +798,7 @@
             this.button_Main_RecipeOpen.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_RecipeOpen.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Main_RecipeOpen.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_Main_RecipeOpen.Location = new System.Drawing.Point(-58, -21);
+            this.button_Main_RecipeOpen.Location = new System.Drawing.Point(1503, 124);
             this.button_Main_RecipeOpen.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_RecipeOpen.Name = "button_Main_RecipeOpen";
             this.button_Main_RecipeOpen.Size = new System.Drawing.Size(167, 44);
@@ -828,10 +811,10 @@
             // 
             this.checkBox_Main_CycleStop.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBox_Main_CycleStop.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_CycleStop.Location = new System.Drawing.Point(1726, 697);
+            this.checkBox_Main_CycleStop.Location = new System.Drawing.Point(1726, 816);
             this.checkBox_Main_CycleStop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_CycleStop.Name = "checkBox_Main_CycleStop";
-            this.checkBox_Main_CycleStop.Size = new System.Drawing.Size(178, 73);
+            this.checkBox_Main_CycleStop.Size = new System.Drawing.Size(178, 50);
             this.checkBox_Main_CycleStop.TabIndex = 55;
             this.checkBox_Main_CycleStop.Text = "Cycle Stop";
             this.checkBox_Main_CycleStop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -844,7 +827,7 @@
             this.button_Main_Reset.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_Reset.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Main_Reset.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_Main_Reset.Location = new System.Drawing.Point(1726, 454);
+            this.button_Main_Reset.Location = new System.Drawing.Point(1726, 676);
             this.button_Main_Reset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_Reset.Name = "button_Main_Reset";
             this.button_Main_Reset.Size = new System.Drawing.Size(178, 73);
@@ -874,7 +857,7 @@
             this.button_Main_RtcInit.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_RtcInit.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Main_RtcInit.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_Main_RtcInit.Location = new System.Drawing.Point(1726, 106);
+            this.button_Main_RtcInit.Location = new System.Drawing.Point(1726, 100);
             this.button_Main_RtcInit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_RtcInit.Name = "button_Main_RtcInit";
             this.button_Main_RtcInit.Size = new System.Drawing.Size(178, 63);
@@ -882,23 +865,6 @@
             this.button_Main_RtcInit.Text = "Scanner Board\r\nOpen";
             this.button_Main_RtcInit.UseVisualStyleBackColor = false;
             this.button_Main_RtcInit.Click += new System.EventHandler(this.button_Main_RtcInit_Click);
-            // 
-            // button_Main_AutoRun
-            // 
-            this.button_Main_AutoRun.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button_Main_AutoRun.Enabled = false;
-            this.button_Main_AutoRun.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.button_Main_AutoRun.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button_Main_AutoRun.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_Main_AutoRun.Location = new System.Drawing.Point(1726, 356);
-            this.button_Main_AutoRun.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button_Main_AutoRun.Name = "button_Main_AutoRun";
-            this.button_Main_AutoRun.Size = new System.Drawing.Size(178, 15);
-            this.button_Main_AutoRun.TabIndex = 58;
-            this.button_Main_AutoRun.Text = "Auto Run";
-            this.button_Main_AutoRun.UseVisualStyleBackColor = false;
-            this.button_Main_AutoRun.Visible = false;
-            this.button_Main_AutoRun.Click += new System.EventHandler(this.button_Main_AutoRun_Click);
             // 
             // checkBox_Test_DryRun
             // 
@@ -914,7 +880,7 @@
             // 
             this.checkBox_Main_Loader_LPort_Pause.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBox_Main_Loader_LPort_Pause.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_Loader_LPort_Pause.Location = new System.Drawing.Point(1477, 685);
+            this.checkBox_Main_Loader_LPort_Pause.Location = new System.Drawing.Point(1476, 297);
             this.checkBox_Main_Loader_LPort_Pause.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_Loader_LPort_Pause.Name = "checkBox_Main_Loader_LPort_Pause";
             this.checkBox_Main_Loader_LPort_Pause.Size = new System.Drawing.Size(94, 62);
@@ -928,7 +894,7 @@
             // 
             this.checkBox_Main_Loader_RPort_Pause.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBox_Main_Loader_RPort_Pause.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_Loader_RPort_Pause.Location = new System.Drawing.Point(1577, 685);
+            this.checkBox_Main_Loader_RPort_Pause.Location = new System.Drawing.Point(1576, 297);
             this.checkBox_Main_Loader_RPort_Pause.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_Loader_RPort_Pause.Name = "checkBox_Main_Loader_RPort_Pause";
             this.checkBox_Main_Loader_RPort_Pause.Size = new System.Drawing.Size(94, 62);
@@ -938,207 +904,13 @@
             this.checkBox_Main_Loader_RPort_Pause.UseVisualStyleBackColor = false;
             this.checkBox_Main_Loader_RPort_Pause.CheckedChanged += new System.EventHandler(this.checkBox_Main_Loader_RPort_Pause_CheckedChanged);
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_MAlign_Complete);
-            this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete);
-            this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete);
-            this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete);
-            this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete);
-            this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete);
-            this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete);
-            this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete);
-            this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_RPort_Complete);
-            this.groupBox1.Controls.Add(this.checkBox_Main_ProcessStatus_LD_LPort_Complete);
-            this.groupBox1.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(1116, 285);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(555, 109);
-            this.groupBox1.TabIndex = 149;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = " Processing Status (Parts) ";
-            // 
-            // checkBox_Main_ProcessStatus_LD_MAlign_Complete
-            // 
-            this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.FlatAppearance.BorderSize = 3;
-            this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
-            this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.Location = new System.Drawing.Point(191, 56);
-            this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.Name = "checkBox_Main_ProcessStatus_LD_MAlign_Complete";
-            this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.Size = new System.Drawing.Size(162, 12);
-            this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.TabIndex = 157;
-            this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.Text = "Module Center Align\r\n[by M-Aligner]";
-            this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_Main_ProcessStatus_LD_MAlign_Complete.UseVisualStyleBackColor = false;
-            // 
-            // checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete
-            // 
-            this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.FlatAppearance.BorderSize = 3;
-            this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
-            this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Location = new System.Drawing.Point(14, 73);
-            this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Name = "checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete";
-            this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Size = new System.Drawing.Size(162, 12);
-            this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.TabIndex = 156;
-            this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Text = "Module Pick-Up\r\n[from Work Stage]";
-            this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.UseVisualStyleBackColor = false;
-            // 
-            // checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete
-            // 
-            this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.FlatAppearance.BorderSize = 3;
-            this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
-            this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Location = new System.Drawing.Point(14, 91);
-            this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Name = "checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete";
-            this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Size = new System.Drawing.Size(162, 12);
-            this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.TabIndex = 155;
-            this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Text = "Module Put-Down\r\n[to UL Port]";
-            this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.UseVisualStyleBackColor = false;
-            // 
-            // checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete
-            // 
-            this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.FlatAppearance.BorderSize = 3;
-            this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
-            this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Location = new System.Drawing.Point(14, 40);
-            this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Name = "checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete";
-            this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Size = new System.Drawing.Size(162, 12);
-            this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.TabIndex = 154;
-            this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Text = "Module Processing\r\n[Laser Drilling]";
-            this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.UseVisualStyleBackColor = false;
-            // 
-            // checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete
-            // 
-            this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.FlatAppearance.BorderSize = 3;
-            this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
-            this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Location = new System.Drawing.Point(14, 56);
-            this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Name = "checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete";
-            this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Size = new System.Drawing.Size(162, 12);
-            this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.TabIndex = 153;
-            this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Text = "Module Put-Down\r\n[to Work Stage]";
-            this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.UseVisualStyleBackColor = false;
-            // 
-            // checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete
-            // 
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.FlatAppearance.BorderSize = 3;
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Location = new System.Drawing.Point(191, 40);
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Name = "checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete";
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Size = new System.Drawing.Size(162, 12);
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.TabIndex = 152;
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Text = "Module Pick-Up\r\n[from M-Aligner]";
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.UseVisualStyleBackColor = false;
-            // 
-            // checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete
-            // 
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.FlatAppearance.BorderSize = 3;
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Location = new System.Drawing.Point(191, 73);
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Name = "checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete";
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Size = new System.Drawing.Size(162, 12);
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.TabIndex = 151;
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Text = "Module Put-Down\r\n[to M-Aligner]";
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.UseVisualStyleBackColor = false;
-            // 
-            // checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete
-            // 
-            this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.FlatAppearance.BorderSize = 3;
-            this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
-            this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Location = new System.Drawing.Point(379, 40);
-            this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Name = "checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete";
-            this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Size = new System.Drawing.Size(162, 12);
-            this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.TabIndex = 151;
-            this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Text = "Module Pick-Up\r\n[from LD Port]";
-            this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.UseVisualStyleBackColor = false;
-            // 
-            // checkBox_Main_ProcessStatus_LD_RPort_Complete
-            // 
-            this.checkBox_Main_ProcessStatus_LD_RPort_Complete.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBox_Main_ProcessStatus_LD_RPort_Complete.FlatAppearance.BorderSize = 3;
-            this.checkBox_Main_ProcessStatus_LD_RPort_Complete.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
-            this.checkBox_Main_ProcessStatus_LD_RPort_Complete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkBox_Main_ProcessStatus_LD_RPort_Complete.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_ProcessStatus_LD_RPort_Complete.Location = new System.Drawing.Point(463, 56);
-            this.checkBox_Main_ProcessStatus_LD_RPort_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox_Main_ProcessStatus_LD_RPort_Complete.Name = "checkBox_Main_ProcessStatus_LD_RPort_Complete";
-            this.checkBox_Main_ProcessStatus_LD_RPort_Complete.Size = new System.Drawing.Size(162, 12);
-            this.checkBox_Main_ProcessStatus_LD_RPort_Complete.TabIndex = 150;
-            this.checkBox_Main_ProcessStatus_LD_RPort_Complete.Text = "Loader R-Port\r\n";
-            this.checkBox_Main_ProcessStatus_LD_RPort_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_Main_ProcessStatus_LD_RPort_Complete.UseVisualStyleBackColor = false;
-            // 
-            // checkBox_Main_ProcessStatus_LD_LPort_Complete
-            // 
-            this.checkBox_Main_ProcessStatus_LD_LPort_Complete.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBox_Main_ProcessStatus_LD_LPort_Complete.FlatAppearance.BorderSize = 3;
-            this.checkBox_Main_ProcessStatus_LD_LPort_Complete.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
-            this.checkBox_Main_ProcessStatus_LD_LPort_Complete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkBox_Main_ProcessStatus_LD_LPort_Complete.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_ProcessStatus_LD_LPort_Complete.Location = new System.Drawing.Point(379, 56);
-            this.checkBox_Main_ProcessStatus_LD_LPort_Complete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox_Main_ProcessStatus_LD_LPort_Complete.Name = "checkBox_Main_ProcessStatus_LD_LPort_Complete";
-            this.checkBox_Main_ProcessStatus_LD_LPort_Complete.Size = new System.Drawing.Size(162, 12);
-            this.checkBox_Main_ProcessStatus_LD_LPort_Complete.TabIndex = 149;
-            this.checkBox_Main_ProcessStatus_LD_LPort_Complete.Text = "Loader L-Port\r\n";
-            this.checkBox_Main_ProcessStatus_LD_LPort_Complete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_Main_ProcessStatus_LD_LPort_Complete.UseVisualStyleBackColor = false;
-            // 
-            // checkBox_Main_Loader_Transfer_Pause
-            // 
-            this.checkBox_Main_Loader_Transfer_Pause.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBox_Main_Loader_Transfer_Pause.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_Loader_Transfer_Pause.Location = new System.Drawing.Point(1477, 616);
-            this.checkBox_Main_Loader_Transfer_Pause.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox_Main_Loader_Transfer_Pause.Name = "checkBox_Main_Loader_Transfer_Pause";
-            this.checkBox_Main_Loader_Transfer_Pause.Size = new System.Drawing.Size(194, 62);
-            this.checkBox_Main_Loader_Transfer_Pause.TabIndex = 152;
-            this.checkBox_Main_Loader_Transfer_Pause.Text = "Loader   Transfer     Pause";
-            this.checkBox_Main_Loader_Transfer_Pause.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_Main_Loader_Transfer_Pause.UseVisualStyleBackColor = false;
-            this.checkBox_Main_Loader_Transfer_Pause.CheckedChanged += new System.EventHandler(this.checkBox_Main_Loader_Transfer_Pause_CheckedChanged);
-            // 
             // button_Main_CameraInit
             // 
             this.button_Main_CameraInit.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.button_Main_CameraInit.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_CameraInit.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Main_CameraInit.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_Main_CameraInit.Location = new System.Drawing.Point(1726, 171);
+            this.button_Main_CameraInit.Location = new System.Drawing.Point(1726, 170);
             this.button_Main_CameraInit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_CameraInit.Name = "button_Main_CameraInit";
             this.button_Main_CameraInit.Size = new System.Drawing.Size(178, 63);
@@ -1151,60 +923,15 @@
             // 
             this.checkBox_Main_SocketStop.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBox_Main_SocketStop.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_SocketStop.Location = new System.Drawing.Point(1726, 616);
+            this.checkBox_Main_SocketStop.Location = new System.Drawing.Point(1726, 755);
             this.checkBox_Main_SocketStop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_SocketStop.Name = "checkBox_Main_SocketStop";
-            this.checkBox_Main_SocketStop.Size = new System.Drawing.Size(178, 73);
+            this.checkBox_Main_SocketStop.Size = new System.Drawing.Size(178, 50);
             this.checkBox_Main_SocketStop.TabIndex = 154;
             this.checkBox_Main_SocketStop.Text = "Socket Stop";
             this.checkBox_Main_SocketStop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_Main_SocketStop.UseVisualStyleBackColor = false;
             this.checkBox_Main_SocketStop.CheckedChanged += new System.EventHandler(this.checkBox_Main_SocketStop_CheckedChanged);
-            // 
-            // button_Main_Loader_Continue
-            // 
-            this.button_Main_Loader_Continue.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button_Main_Loader_Continue.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.button_Main_Loader_Continue.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button_Main_Loader_Continue.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.button_Main_Loader_Continue.Location = new System.Drawing.Point(1253, 685);
-            this.button_Main_Loader_Continue.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button_Main_Loader_Continue.Name = "button_Main_Loader_Continue";
-            this.button_Main_Loader_Continue.Size = new System.Drawing.Size(118, 64);
-            this.button_Main_Loader_Continue.TabIndex = 155;
-            this.button_Main_Loader_Continue.Text = "Loader\r\nContinue";
-            this.button_Main_Loader_Continue.UseVisualStyleBackColor = false;
-            this.button_Main_Loader_Continue.Click += new System.EventHandler(this.button_Main_Loader_Continue_Click);
-            // 
-            // button_Main_Unloader_Continue
-            // 
-            this.button_Main_Unloader_Continue.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button_Main_Unloader_Continue.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.button_Main_Unloader_Continue.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button_Main_Unloader_Continue.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.button_Main_Unloader_Continue.Location = new System.Drawing.Point(1116, 685);
-            this.button_Main_Unloader_Continue.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button_Main_Unloader_Continue.Name = "button_Main_Unloader_Continue";
-            this.button_Main_Unloader_Continue.Size = new System.Drawing.Size(118, 64);
-            this.button_Main_Unloader_Continue.TabIndex = 156;
-            this.button_Main_Unloader_Continue.Text = "Unloader\r\nContinue";
-            this.button_Main_Unloader_Continue.UseVisualStyleBackColor = false;
-            this.button_Main_Unloader_Continue.Click += new System.EventHandler(this.button_Main_Unloader_Continue_Click);
-            // 
-            // button_Main_WorkStage_Continue
-            // 
-            this.button_Main_WorkStage_Continue.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button_Main_WorkStage_Continue.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.button_Main_WorkStage_Continue.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button_Main_WorkStage_Continue.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.button_Main_WorkStage_Continue.Location = new System.Drawing.Point(1116, 616);
-            this.button_Main_WorkStage_Continue.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button_Main_WorkStage_Continue.Name = "button_Main_WorkStage_Continue";
-            this.button_Main_WorkStage_Continue.Size = new System.Drawing.Size(255, 64);
-            this.button_Main_WorkStage_Continue.TabIndex = 157;
-            this.button_Main_WorkStage_Continue.Text = "WorkStage    Continue\r\n(Stopped by Socket Stop)";
-            this.button_Main_WorkStage_Continue.UseVisualStyleBackColor = false;
-            this.button_Main_WorkStage_Continue.Click += new System.EventHandler(this.button_Main_WorkStage_Continue_Click);
             // 
             // buttonForceMaterialOut
             // 
@@ -1212,10 +939,10 @@
             this.buttonForceMaterialOut.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.buttonForceMaterialOut.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.buttonForceMaterialOut.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.buttonForceMaterialOut.Location = new System.Drawing.Point(1493, 778);
+            this.buttonForceMaterialOut.Location = new System.Drawing.Point(1576, 366);
             this.buttonForceMaterialOut.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonForceMaterialOut.Name = "buttonForceMaterialOut";
-            this.buttonForceMaterialOut.Size = new System.Drawing.Size(178, 73);
+            this.buttonForceMaterialOut.Size = new System.Drawing.Size(94, 62);
             this.buttonForceMaterialOut.TabIndex = 158;
             this.buttonForceMaterialOut.Text = "강제배출";
             this.buttonForceMaterialOut.UseVisualStyleBackColor = false;
@@ -1291,7 +1018,7 @@
             this.checkBox_Main_AutoRun.Location = new System.Drawing.Point(1726, 297);
             this.checkBox_Main_AutoRun.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_AutoRun.Name = "checkBox_Main_AutoRun";
-            this.checkBox_Main_AutoRun.Size = new System.Drawing.Size(178, 55);
+            this.checkBox_Main_AutoRun.Size = new System.Drawing.Size(178, 73);
             this.checkBox_Main_AutoRun.TabIndex = 191;
             this.checkBox_Main_AutoRun.Text = "AutoRun";
             this.checkBox_Main_AutoRun.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1317,10 +1044,10 @@
             // 
             this.button_TestbyUser_LPort_Start.BackColor = System.Drawing.Color.DarkGray;
             this.button_TestbyUser_LPort_Start.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_TestbyUser_LPort_Start.Location = new System.Drawing.Point(1348, 778);
+            this.button_TestbyUser_LPort_Start.Location = new System.Drawing.Point(1476, 366);
             this.button_TestbyUser_LPort_Start.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_TestbyUser_LPort_Start.Name = "button_TestbyUser_LPort_Start";
-            this.button_TestbyUser_LPort_Start.Size = new System.Drawing.Size(137, 73);
+            this.button_TestbyUser_LPort_Start.Size = new System.Drawing.Size(94, 62);
             this.button_TestbyUser_LPort_Start.TabIndex = 193;
             this.button_TestbyUser_LPort_Start.Text = "LD L-Port Start\r\n(by User)";
             this.button_TestbyUser_LPort_Start.UseVisualStyleBackColor = false;
@@ -1332,7 +1059,7 @@
             this.label_Title_Stacker_LPort.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_Title_Stacker_LPort.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Title_Stacker_LPort.ForeColor = System.Drawing.Color.Lime;
-            this.label_Title_Stacker_LPort.Location = new System.Drawing.Point(1347, 144);
+            this.label_Title_Stacker_LPort.Location = new System.Drawing.Point(1348, 170);
             this.label_Title_Stacker_LPort.Name = "label_Title_Stacker_LPort";
             this.label_Title_Stacker_LPort.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.label_Title_Stacker_LPort.Size = new System.Drawing.Size(322, 40);
@@ -1346,7 +1073,7 @@
             this.label_Title_Stacker_RPort.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_Title_Stacker_RPort.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Title_Stacker_RPort.ForeColor = System.Drawing.Color.Lime;
-            this.label_Title_Stacker_RPort.Location = new System.Drawing.Point(1347, 194);
+            this.label_Title_Stacker_RPort.Location = new System.Drawing.Point(1348, 219);
             this.label_Title_Stacker_RPort.Name = "label_Title_Stacker_RPort";
             this.label_Title_Stacker_RPort.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.label_Title_Stacker_RPort.Size = new System.Drawing.Size(322, 40);
@@ -1387,7 +1114,7 @@
             this.groupBox_Main_DiviceStatus.Controls.Add(this.baseLabel_Main_Divice_Status_Laser);
             this.groupBox_Main_DiviceStatus.Controls.Add(this.pictureBox_Main_DiviceStatus_Laser);
             this.groupBox_Main_DiviceStatus.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.groupBox_Main_DiviceStatus.Location = new System.Drawing.Point(1116, 409);
+            this.groupBox_Main_DiviceStatus.Location = new System.Drawing.Point(1119, 676);
             this.groupBox_Main_DiviceStatus.Name = "groupBox_Main_DiviceStatus";
             this.groupBox_Main_DiviceStatus.Size = new System.Drawing.Size(553, 190);
             this.groupBox_Main_DiviceStatus.TabIndex = 207;
@@ -1732,10 +1459,10 @@
             this.baseTextBox_DryRun_ProcessingTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.baseTextBox_DryRun_ProcessingTime.Font = new System.Drawing.Font("Tahoma", 10F);
             this.baseTextBox_DryRun_ProcessingTime.ForeColor = System.Drawing.Color.Black;
-            this.baseTextBox_DryRun_ProcessingTime.Location = new System.Drawing.Point(1857, 271);
+            this.baseTextBox_DryRun_ProcessingTime.Location = new System.Drawing.Point(1876, 271);
             this.baseTextBox_DryRun_ProcessingTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseTextBox_DryRun_ProcessingTime.Name = "baseTextBox_DryRun_ProcessingTime";
-            this.baseTextBox_DryRun_ProcessingTime.Size = new System.Drawing.Size(45, 24);
+            this.baseTextBox_DryRun_ProcessingTime.Size = new System.Drawing.Size(26, 24);
             this.baseTextBox_DryRun_ProcessingTime.TabIndex = 151;
             this.baseTextBox_DryRun_ProcessingTime.Text = "5";
             this.baseTextBox_DryRun_ProcessingTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1744,10 +1471,10 @@
             // 
             this.baseLabel5.Font = new System.Drawing.Font("Tahoma", 9F);
             this.baseLabel5.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel5.Location = new System.Drawing.Point(1659, 269);
+            this.baseLabel5.Location = new System.Drawing.Point(1689, 269);
             this.baseLabel5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel5.Name = "baseLabel5";
-            this.baseLabel5.Size = new System.Drawing.Size(193, 26);
+            this.baseLabel5.Size = new System.Drawing.Size(188, 26);
             this.baseLabel5.TabIndex = 150;
             this.baseLabel5.Text = "(Dry Run Processing Time (sec) :";
             this.baseLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1768,19 +1495,13 @@
             this.Controls.Add(this.button_Main_RecipeOpen);
             this.Controls.Add(this.checkBox_Main_AutoRun);
             this.Controls.Add(this.buttonForceMaterialOut);
-            this.Controls.Add(this.button_Main_WorkStage_Continue);
-            this.Controls.Add(this.button_Main_Unloader_Continue);
-            this.Controls.Add(this.button_Main_Loader_Continue);
             this.Controls.Add(this.checkBox_Main_SocketStop);
             this.Controls.Add(this.button_Main_CameraInit);
-            this.Controls.Add(this.checkBox_Main_Loader_Transfer_Pause);
             this.Controls.Add(this.baseTextBox_DryRun_ProcessingTime);
             this.Controls.Add(this.baseLabel5);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.checkBox_Main_Loader_RPort_Pause);
             this.Controls.Add(this.checkBox_Main_Loader_LPort_Pause);
             this.Controls.Add(this.checkBox_Test_DryRun);
-            this.Controls.Add(this.button_Main_AutoRun);
             this.Controls.Add(this.button_Main_RtcInit);
             this.Controls.Add(this.button_Main_Home);
             this.Controls.Add(this.checkBox_Main_CycleStop);
@@ -1817,7 +1538,6 @@
             this.groupBoxMain_MaterialInformation.ResumeLayout(false);
             this.groupBoxMain_MaterialInformation.PerformLayout();
             this.groupBox_ProcessingData.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
             this.groupBox_FineCam.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).EndInit();
             this.groupBox_CoarseCam.ResumeLayout(false);
@@ -1886,29 +1606,13 @@
         private System.Windows.Forms.Button button_Main_RtcInit;
         private BaseTextBox baseTextBox_Socket_Index;
         private BaseLabel baseLabel1;
-        private System.Windows.Forms.Button button_Main_AutoRun;
         private System.Windows.Forms.CheckBox checkBox_Test_DryRun;
         private System.Windows.Forms.CheckBox checkBox_Main_Loader_LPort_Pause;
         private System.Windows.Forms.CheckBox checkBox_Main_Loader_RPort_Pause;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.CheckBox checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete;
-        private System.Windows.Forms.CheckBox checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete;
-        private System.Windows.Forms.CheckBox checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete;
-        private System.Windows.Forms.CheckBox checkBox_Main_ProcessStatus_LD_RPort_Complete;
-        private System.Windows.Forms.CheckBox checkBox_Main_ProcessStatus_LD_LPort_Complete;
-        private System.Windows.Forms.CheckBox checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete;
-        private System.Windows.Forms.CheckBox checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete;
-        private System.Windows.Forms.CheckBox checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete;
-        private System.Windows.Forms.CheckBox checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete;
-        private System.Windows.Forms.CheckBox checkBox_Main_ProcessStatus_LD_MAlign_Complete;
         private BaseTextBox baseTextBox_DryRun_ProcessingTime;
         private BaseLabel baseLabel5;
-        private System.Windows.Forms.CheckBox checkBox_Main_Loader_Transfer_Pause;
         private System.Windows.Forms.Button button_Main_CameraInit;
         private System.Windows.Forms.CheckBox checkBox_Main_SocketStop;
-        private System.Windows.Forms.Button button_Main_Loader_Continue;
-        private System.Windows.Forms.Button button_Main_Unloader_Continue;
-        private System.Windows.Forms.Button button_Main_WorkStage_Continue;
         private System.Windows.Forms.GroupBox groupBox18;
         private System.Windows.Forms.ListView listView_Main_FiducialAlignData;
         private System.Windows.Forms.PictureBox pictureBox_ModuleProcessingStatus;
