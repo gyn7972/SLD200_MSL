@@ -934,7 +934,6 @@ namespace SLD200_MSL
                 m_bNeedLaserProcessingMessage = true;
             }
 
-
             if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
             {
                 workStage.m_bHomeProgressForm_Close = false;
@@ -2682,7 +2681,8 @@ namespace SLD200_MSL
 
         private void button_TEST12_Click(object sender, EventArgs e)
         {
-            Equipment.AutoManualStatus = false;
+            //Equipment.AutoRunStatus = true;
+            Equipment.AutoManualStatus = true;
 
             int nCol = workStage.Main_SocketPositions_ColumnCount = 5;
             int nRow = workStage.Main_SocketPositions_RowCount = 5;

@@ -292,7 +292,6 @@ namespace SLD200_MSL
             }
         }
 
-
         private void Button_Click(object sender, EventArgs e)
         {
             Button button = sender as Button;
@@ -321,7 +320,6 @@ namespace SLD200_MSL
                 }
             }
         }
-
         private void ButtonExt_Click(object sender, EventArgs e)
         {
             Button button = sender as Button;
@@ -494,6 +492,29 @@ namespace SLD200_MSL
         //}
         #endregion
 
+        public void updateAutoRun()
+        {
+            //run 상태시에 Main 및 Recipe 
+            //Equipment.AutoManualStatus //AutoRunStatus
+            if (!Equipment.AutoManualStatus)
+            {
+                control[0].Enabled = true;                  //  Operation 버튼
+                control[1].Enabled = true;                  //  Configuration 버튼
+                control[2].Enabled = true;                  //  Maint 버튼
+                control[3].Enabled = true;                  //  Recipe 버튼
+                control[4].Enabled = true;                  //  Setup 버튼
+                control[5].Enabled = true;                  //  IO 버튼
+            }
+            else
+            {
+                control[0].Enabled = true;                  //  Operation 버튼
+                control[1].Enabled = true;                  //  Configuration 버튼
+                control[2].Enabled = false;                 //  Maint 버튼
+                control[3].Enabled = false;                 //  Recipe 버튼
+                control[4].Enabled = false;                 //  Setup 버튼
+                control[5].Enabled = false;                 //  IO 버튼
+            }
+        }
         public void UpdateLogInInfo()
         {
             //if (m_formLogIn.bLogin == true)
@@ -609,6 +630,7 @@ namespace SLD200_MSL
 
             //UpdateLogInInfo();                                                            //  OP 와 관리자에 따라 버튼을 다르게 할 경우에 수정해서 사용
 
+            updateAutoRun();    //장비 AutoRun 상태 시 버튼 제한.
 
             //  로그인 모드에 따라 보이는 버튼을 다르게
             if (Equipment.User_LoginMode == (int)UserMode.USER_ENGINEER)                    //  엔지니어 모드일 경우 기존 버튼도 보이기
@@ -657,9 +679,6 @@ namespace SLD200_MSL
                 control_Ext[(int)ButtonBottomType_Ext.Maint].Visible = false;
                 control_Ext[(int)ButtonBottomType_Ext.IO].Visible = false;
             }
-
-
-
             m_Timer.Start();
         }
         private void UpdateStartStopButton()
