@@ -867,6 +867,12 @@ namespace SLD200_MSL
         private (int, int) m_CompSocketRowCol, m_CompRegionRowCol;
         private int m_CompSocketStatus, m_CompRegionStatus;
 
+
+        //stageWork Onecycle Time.
+        private int m_OneCycleTimeMs = -1;         // 전달받은 가공 시간 (ms)
+        private bool m_bNeedUpdateCycleTime = false;
+        private int m_CycleExpectedTimeMs = 90000; // 예상 시간 (예: 90초)
+
         private async void Timer_MainStatus_Func(object sender, EventArgs e)
         {
             // 동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
@@ -932,6 +938,23 @@ namespace SLD200_MSL
             {
                 m_bLaserIsProcessing = false;
                 m_bNeedLaserProcessingMessage = true;
+            }
+
+            //private int m_OneCycleTimeMs = -1;         // 전달받은 가공 시간 (ms)
+            //private bool m_bNeedUpdateCycleTime = false;
+
+            if (!m_bNeedUpdateCycleTime)
+            {
+                if(workStage.m_OneCycleTimeMs == -1)
+                {
+                    m_OneCycleTimeMs = 0;
+                }
+                else
+                {
+                    m_OneCycleTimeMs = workStage.m_OneCycleTimeMs;
+                    m_bNeedUpdateCycleTime = true;
+                }
+                
             }
 
             if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
@@ -1045,6 +1068,16 @@ namespace SLD200_MSL
         // -----------------------
         private void UpdateUIControls()
         {
+            // 가공 시간 ProgressBar 표시
+            if (m_bNeedUpdateCycleTime)
+            {
+                int progress = Math.Min(100, m_OneCycleTimeMs * 100 / m_CycleExpectedTimeMs);
+                progressBar_OneCycle_Time.Value = progress;
+                baseLabel_CurrentOneCycle_ElapsedTime.Text = $"{m_OneCycleTimeMs / 1000.0:F1}s / {m_CycleExpectedTimeMs / 1000.0:F1}s";
+
+                m_bNeedUpdateCycleTime = false;
+            }
+
             if (m_bNeedLaserProcessingMessage)
             {
                 m_bNeedLaserProcessingMessage = false;
@@ -2681,6 +2714,8 @@ namespace SLD200_MSL
 
         private void button_TEST12_Click(object sender, EventArgs e)
         {
+            return;
+
             //Equipment.AutoRunStatus = true;
             Equipment.AutoManualStatus = true;
 

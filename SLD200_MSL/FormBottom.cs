@@ -496,7 +496,7 @@ namespace SLD200_MSL
         {
             //run 상태시에 Main 및 Recipe 
             //Equipment.AutoManualStatus //AutoRunStatus
-            if (!Equipment.AutoManualStatus)
+            if (!Equipment.AutoRunStatus)
             {
                 control[0].Enabled = true;                  //  Operation 버튼
                 control[1].Enabled = true;                  //  Configuration 버튼

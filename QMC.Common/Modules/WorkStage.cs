@@ -2091,6 +2091,8 @@ namespace QMC.Common.Modules
         public int TickCount_MainCycle_Current { set; get; }
         public int TickCount_MainCycle_Interval { set; get; }
 
+        public int m_OneCycleTimeMs {  set; get; }
+
         //System.Diagnostics.Stopwatch sw_DispenserMainCyc = new System.Diagnostics.Stopwatch();
         //System.Diagnostics.Stopwatch sw_DispenserSubCyc = new System.Diagnostics.Stopwatch();
 
@@ -2100,7 +2102,7 @@ namespace QMC.Common.Modules
             TICK_MAIN,                  //  1 : Main Cycle
             TICK_SUB,                   //  2 : Sub Cycle
             TICK_PAUSE,                 //  3 : Pause
-            TICK_CHECK,                 //  4 : 체크용            
+            TICK_CHECK,                 //  4 : 체크용 
 
             TICK_POWERMETER_COMM_BDS,   //  5 : PowerMeter Comm (BDS)
             TICK_POWERMETER_COMM_STAGE, //  6 : PowerMeter Comm (Stage)
@@ -2125,6 +2127,8 @@ namespace QMC.Common.Modules
 
             //Laser & Scanner Auto Calibration을 위한 Tick 선언
             TICK_LASER_SCANNER_CAL, //  18
+
+            TICK_MAIN_CYCLE_CHECK,  //19 : 1 Cycle Tacktime 계산 
         }
 
         public int[,] TickCount_Cycle = new int[System.Enum.GetValues(typeof(TickType)).Length, 2];
@@ -12928,9 +12932,7 @@ namespace QMC.Common.Modules
                 //  Laser Drilling 을 위한 조건
                 else if (!m_bMainWorkCycle_Complete &&
                     loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete &&
-
                     !m_bMainWorkCycle_DryRun &&
-
                     !m_bLaserDrilling_Complete &&
 
                     (loader.m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None) &&               //  테스트 후 주석 처리 가능
@@ -12946,6 +12948,10 @@ namespace QMC.Common.Modules
 
             switch (m_nMainWork_Step)
             {
+                case (int)MainWork_Step.None:
+                    m_OneCycleTimeMs = -1;
+                    break;
+
                 case (int)MainWork_Step.Start:
                     Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "시작");
 
@@ -12971,6 +12977,7 @@ namespace QMC.Common.Modules
                             break;
 
                         case (int)MainWorkCycleType.Cycle_LaserDrilling:
+                            m_OneCycleTimeMs = -1;
                             Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "Laser Drilling Cycle");
                             m_nMainWork_Step = (int)MainWork_Step.LaserDrilling_Condition_Check;
                             break;
@@ -13109,11 +13116,14 @@ namespace QMC.Common.Modules
                     m_bLaserDrilling_SocketStopped = false;
                     Equipment.SocketStopped = false;
 
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Start;   //X
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Start;   // 여기서 시작.
 
                     timer_LaserDrillingWork.Enabled = true;
 
                     //TickCount_Start((int)TickType.TICK_MAIN);
+
+                    TickCount_Start((int)TickType.TICK_MAIN_CYCLE_CHECK);
+
 
                     m_nMainWork_Step = (int)MainWork_Step.LaserDrilling_Cycle_CompleteCheck;
                     break;
@@ -13126,6 +13136,14 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "Laser Drilling 완료");
 
                         m_nMainWork_Step = (int)MainWork_Step.Complete;
+                    }
+                    else
+                    {
+                        int nCycleTime = TickCount_Elapsed((int)TickType.TICK_MAIN_CYCLE_CHECK);
+                        //MainForm으로 Time 전달
+                        m_OneCycleTimeMs = nCycleTime; //tick == ms
+
+
                     }
                     //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
                     //{
@@ -13167,11 +13185,13 @@ namespace QMC.Common.Modules
                         case (int)MainWorkCycleType.Cycle_LaserDrilling:
                             Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "Laser Drilling Cycle 완료");
 
+                            int nCycleTime = TickCount_Elapsed((int)TickType.TICK_MAIN_CYCLE_CHECK);
+                            //MainForm으로 Time 전달
+
                             m_bMainWorkCycle_Complete = true;
 
                             //m_bMainWorkCycle_ResultOK = true;
                             //  Laser Drilling 결과에 따라 OK/NG 다르게 해야 함.
-
                             //  소켓 얼라인 결과가 NG 이면 NG 로 (설정 개수 이상 NG 일 경우에)
                             //m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.OK;
 
@@ -14373,8 +14393,6 @@ namespace QMC.Common.Modules
 
         #region Laser Drilling Cycle Function
 
-
-
         public void WorkStage_Restart_Check()
         {
             if (Equipment.SocketStopped)
@@ -14419,6 +14437,9 @@ namespace QMC.Common.Modules
         {
             return Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
         }
+
+
+        //Todo: 공정시컨스닷!
         private int Run_LaserDrilling_Main_Cycle()
         {
             m_nLaserDrilling_MainStep_Recovery = -1;
@@ -14492,7 +14513,6 @@ namespace QMC.Common.Modules
                     return 0;
                 }
             }
-
 
             //  자동운전 중 Socket Stop 처리
             if (Equipment.SocketStopped)
@@ -24443,7 +24463,6 @@ namespace QMC.Common.Modules
             m_nDrillingData_SocketAlign_Count = 0;              //  소켓 Align 개수
             m_nDrillingData_SocketAlign_NGCount = 0;            //  소켓 Align 실패 개수
 
-
             //  Layer 별로 다르게 해야 하는 파라미터
             m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetition;            //  총 반복 회수
             m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
@@ -24468,11 +24487,8 @@ namespace QMC.Common.Modules
             }
             m_nCircleDrilling_CurrentRotStep = 0;
 
-
-
             //  현재 Z 축 값을 가공 Z 위치값으로 한다. (카메라로 초점 확인한 Z 축 값)    --> 보류
             m_dBase_AxisZ_LaserFocus = MC_Func.MC_GetEncPos((int)nAxis.Z);
-
 
             m_nDrillingData_SocketTotal = 0;                        //  진행해야하는 Socket 총 개수 (제품 단위 : Module, 하나의 Module 은 n 개의 Socket 으로 구성된다)
             m_nDrillingData_SocketCount = 0;                        //  진행하는 Socket Count
