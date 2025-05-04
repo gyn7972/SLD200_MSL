@@ -15252,7 +15252,7 @@ namespace QMC.Common.Modules
                     {
                         if (m_rapidLxLaser_Comm.IsOpen)
                         {
-                            m_strTemp = string.Format("Thruhole Layer Laser Power 변경 시작, Laser Power ({1:0.000})", m_dLaserPower);
+                            m_strTemp = string.Format("Thruhole Layer Laser Power 변경 시작, Laser Power ({0:0.000})", m_dLaserPower);
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
                             TickCount_Start((int)TickType.TICK_MAIN);
@@ -21006,7 +21006,7 @@ namespace QMC.Common.Modules
                 {
                     sweepAngle = (rnd.Next(1, 1000) * 15.0 /1000) + 3;
                 }
-                startAngle += sweepAngle; // 시작 각도 증가
+                rStep = (r2 - r1) / (360.0 * turn / sweepAngle); // 반지름 증가량 계산
                 currentRadius += rStep; // 반지름 증가
             }
 
