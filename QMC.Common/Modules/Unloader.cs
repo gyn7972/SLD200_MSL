@@ -3105,9 +3105,9 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Transfer 축, Module Picker Vacuum On");
 
+                    unloaderParameter.DO_Unloader_Picker_Blow(false);
                     unloaderParameter.DO_Unloader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
                     unloaderParameter.DO_Unloader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, true);
-                    unloaderParameter.DO_Unloader_Picker_Blow(false);
 
                     m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.WorkStagePickUp_WorkStage_Vacuum_Off;
                     break;

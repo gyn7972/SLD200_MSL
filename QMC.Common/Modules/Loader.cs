@@ -5880,9 +5880,9 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum On");
 
+                    loaderParameter.DO_Loader_Picker_Blow(false);
                     loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
                     loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, true);
-                    loaderParameter.DO_Loader_Picker_Blow(false);
 
                     TickCount_Start((int)TickType.TICK_LDTR);
 
