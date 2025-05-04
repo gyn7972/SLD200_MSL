@@ -3746,14 +3746,11 @@ namespace QMC.Common.Modules
                     (m_nMAlign_Step == (int)MAlign_Step.None) &&
                     (m_bMAlign_Complete || m_bMAlign_Retry) &&
 
-                    !workStage.m_bMainWorkCycle_Complete &&                                                   //  Work Stage 의 완료 상태가 False 일 때 얼라인 완료된 모듈을 픽업 한다. 
-                    //!m_bLoader_Transfer_ModulePutDowntoWorkStage_Complete &&                                //  Unloader 가 Work Stage 의 모듈을 가져가면, M-Aligner 에서 얼라인 완료된 모듈을 픽업 한다. 
-                    //  Laser Drilling Cycle 이 완료되면 그때 Pick Up 하도록 한다.
-                    //((workStage.m_bMainWorkCycle_DryRun && workStage.m_bDryRun_Complete) ||                 //  Dry Run 이면?? Dry Run 완료 확인
-                    //(!workStage.m_bMainWorkCycle_DryRun && workStage.m_bLaserDrilling_Complete)) &&         //  Drilling Run 이면?? Drilling 완료 확인
+                    //  Module 을 미리 들고 있게 하기 위해 주석 처리 --> 아래 5번째 단계로 옮김
+                    //!workStage.m_bMainWorkCycle_Complete &&                                                   //  Work Stage 의 완료 상태가 False 일 때 얼라인 완료된 모듈을 픽업 한다. 
+                    //((workStage.m_bMainWorkCycle_DryRun && (workStage.m_nDryRun_Step == (int)WorkStage.DryRun_Step.None)) ||                        //  Dry Run 이면?? Dry Run Step None 확인
+                    //(!workStage.m_bMainWorkCycle_DryRun && (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))) &&     //  Drilling Run 이면?? Drilling Step None 확인
 
-                    ((workStage.m_bMainWorkCycle_DryRun && (workStage.m_nDryRun_Step == (int)WorkStage.DryRun_Step.None)) ||                        //  Dry Run 이면?? Dry Run Step None 확인
-                    (!workStage.m_bMainWorkCycle_DryRun && (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))) &&     //  Drilling Run 이면?? Drilling Step None 확인
                     (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePickUp_MAligner) &&
                     m_bMAlignZone_ModuleExist)
                 {
@@ -3767,6 +3764,12 @@ namespace QMC.Common.Modules
                     !m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete &&
                     (unloader.m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None) &&
                     (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_Stage) &&
+
+                    //  Module 을 미리 들고 있게 하기 위해 코드 이동 --> 위 4번째 단계의 조건을 5번째 단계로 옮김
+                    !workStage.m_bMainWorkCycle_Complete &&                                                                                         //  Work Stage 의 완료 상태가 False 일 때 얼라인 완료된 모듈을 픽업 한다. 
+                    ((workStage.m_bMainWorkCycle_DryRun && (workStage.m_nDryRun_Step == (int)WorkStage.DryRun_Step.None)) ||                        //  Dry Run 이면?? Dry Run Step None 확인
+                    (!workStage.m_bMainWorkCycle_DryRun && (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))) &&     //  Drilling Run 이면?? Drilling Step None 확인
+
                     (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) &&      //  Work Stage 에서 아무것도 하지 않을 때
                     (workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None))
                 {
