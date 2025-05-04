@@ -15292,6 +15292,17 @@ namespace QMC.Common.Modules
 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_forUV_Check;
                     }
+                    else if (!((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power - 0.5)) &&
+                        (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power + 0.5))))
+                    {
+                        m_strTemp = string.Format("Thruhole Layer 가공 Laser Power 변경 실패, 재시도");
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                        m_dLaserPower = Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power;
+                        RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
+
+                        Thread.Sleep(200);
+                    }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
                     {
                         m_strTemp = string.Format("Thruhole Layer 가공 Laser Power 변경 실패, 현재 Laser Power ({0})", m_dLaser_OutputEnergy);
@@ -21062,8 +21073,8 @@ namespace QMC.Common.Modules
             r1 /= 2;
             r2 /= 2;
 
-            int startAngle = 0;
-            int sweepAngle =(int) m_dTemp_AngleFactor; // 각 아크의 각도 (작게 설정하여 부드럽게 연결)
+            double startAngle = 0;
+            double sweepAngle = m_dTemp_AngleFactor; // 각 아크의 각도 (작게 설정하여 부드럽게 연결)
             double dFirstAngle = 0;
             double currentRadius = r1; // 초기 반지름
             if(turn <1)
@@ -21081,7 +21092,7 @@ namespace QMC.Common.Modules
 
             Random rnd = new Random((int)DateTime.Now.Ticks);
 
-            for (double i = dFirstAngle; i <= 360 * turn + dFirstAngle; i += sweepAngle) // 360도 회전
+            for (double i = dFirstAngle; i <= 360 * (turn) + dFirstAngle; i += sweepAngle) // 360도 회전
             {
 
                 double StartX = currentRadius * Math.Cos(i / 180 * Math.PI);
@@ -21094,6 +21105,8 @@ namespace QMC.Common.Modules
 
                     rtc.ListJump(new Vector2((float)(center.X + StartX), (float)(center.Y + StartY))); 
                 }
+
+                
                 double dShiftX = (dLastX - StartX);
                 double dshiftY = dLastY - StartY;
 
@@ -21104,22 +21117,28 @@ namespace QMC.Common.Modules
                 int x = (int)(centerX - currentRadius);
                 int y = (int)(centerY - currentRadius);
 
-                rtc.ListArc(new Vector2((float)(centerX), (float)(centerY + dshiftY)), sweepAngle);
+                rtc.ListArc(new Vector2((float)(centerX), (float)(centerY + dshiftY)), (float)sweepAngle);
 
 
                 int width = (int)(currentRadius * 2);
                 int height = (int)(currentRadius * 2);
 
-                sweepAngle = rnd.Next(6, 180);
-                startAngle += sweepAngle; // 시작 각도 증가
                 dLastX = currentRadius * Math.Cos((i + sweepAngle) * Math.PI / 180);
                 dLastY = currentRadius * Math.Sin((i + sweepAngle) / 180 * Math.PI);
                 dLastCenterX = centerX;
                 dLastCenterY = centerY;
 
+                if(m_dTemp_AngleFactor > 2.1)
+                {
+                    sweepAngle = (rnd.Next(1, 1000) * 15.0 /1000) + 3;
+                }
+                rStep = (r2 - r1) / (360.0 * turn / sweepAngle); // 반지름 증가량 계산
                 currentRadius += rStep; // 반지름 증가
             }
 
+            rtc.ListArc(new Vector2((float)(center.X), (float)(center.Y )), (float)360);
+            
+            
 
             //for (int i = 0; i < 360 * turn; i += sweepAngle) // 360도 회전
             //{
