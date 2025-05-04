@@ -1431,20 +1431,19 @@ namespace SLD200_MSL
 
                 workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
             }
-            else if (((workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.ThruHole_DrillingWork_Start) &&
+            else if (((workStage.m_nLaserDrilling_MainStep_Recovery <= (int)LaserDrilling_Step.ThruHole_DrillingWork_Start) &&
                     (workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck)) ||
 
-                    ((workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.OutLine_DrillingWork_Start) &&
+                    ((workStage.m_nLaserDrilling_MainStep_Recovery <= (int)LaserDrilling_Step.OutLine_DrillingWork_Start) &&
                     (workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck)) ||
 
-                    ((workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.Marking_DrillingWork_Start) &&
+                    ((workStage.m_nLaserDrilling_MainStep_Recovery <= (int)LaserDrilling_Step.Marking_DrillingWork_Start) &&
                     (workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.Marking_DrillingWork_CompleteCheck)) ||
 
-                    ((workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start) &&
+                    ((workStage.m_nLaserDrilling_MainStep_Recovery <= (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start) &&
                     (workStage.m_nLaserDrilling_MainStep_Recovery >= (int)LaserDrilling_Step.DrillingWork_CompleteCheck)))
             {
                 //  가공중이었으니, 다음 소켓 Index 부터 소켓 얼라인 시작
-
                 Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket 가공 진행하던 부분 다시 시작");
 
                 //  현재 소켓의 모든 Layer 상태 확인. (하나라도 true 인 게 있으면 다음 소켓 인덱스로 시작)
@@ -1453,7 +1452,6 @@ namespace SLD200_MSL
                 if (!workStage.IsProcessing)
                 {
                     //  가공할 것이 없음. --> 강제 종료처럼 밖으로 빼내기
-
                     Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket 가공 진행할 것이 없으므로 Out");
 
                     //  강제배출처럼 배출할 때는 집진기도 꺼준다.
@@ -1472,7 +1470,6 @@ namespace SLD200_MSL
                 else
                 {
                     //  가공할 것이 있음.
-
                     Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket 가공 진행할 것이 있음");
 
                     if (workStage.CurrentLayerName == "Hole1")
@@ -1482,7 +1479,6 @@ namespace SLD200_MSL
                             if (workStage.m_stLayerType.m_nLayerIndex[i] == (int)LayerList.Hole1)
                             {
                                 workStage.m_nLaserDrilling_LayerCount = i;                              //  Layer 이름이 "Hole1" 인 Layer 의 Index 를 넣어줌
-
                                 break;
                             }
                         }
@@ -1515,7 +1511,6 @@ namespace SLD200_MSL
                         }
 
                         workStage.m_nDrillingWork_Group_Count = workStage.CurrentSocketNumber;          //  소켓 번호 설정 (다음 소켓 ???)
-
                         if (checkBox_Main_AlignStartSocket_SelectMode.Checked && (workStage.m_nSocketAlign_StartIndex >= 0))                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
                         {
                             m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\nNo : {1}번 소켓 Align Start", workStage.m_nSocketAlign_StartIndex, workStage.m_nDrillingWork_Group_Count);
@@ -1589,42 +1584,41 @@ namespace SLD200_MSL
             }
             else
             {
-                if (!workStage.IsProcessing)
-                {
-                    //  가공할 것이 없음.
+                //if (!workStage.IsProcessing)
+                //{
+                //    //  가공할 것이 없음.
+                //    Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket 가공 완료 상태. 진행할 Socket 없음.");
 
-                    Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket 가공 완료 상태. 진행할 Socket 없음.");
+                //    //  강제배출처럼 배출할 때는 집진기도 꺼준다.
+                //    if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
+                //    {
+                //        Log.Write("SLD-200", Equipment.User_Name, "Button Click", "집진기 Off");
 
-                    //  강제배출처럼 배출할 때는 집진기도 꺼준다.
-                    if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Button Click", "집진기 Off");
+                //        //workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
+                //        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                //    }
 
-                        //workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
-                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
-                    }
+                //    workStage.m_bLaserDrilling_Complete = true;
+                //    workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
+                //    workStage.m_nSocketAlign_MainStep = (int)WorkStage.SocketAlign_Step.None;
+                //}
+                //else
+                //{
+                //    //  가공은 이미 끝난 상태에서는 여기에 들어오지 않아야 함..
 
-                    workStage.m_bLaserDrilling_Complete = true;
-                    workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
-                    workStage.m_nSocketAlign_MainStep = (int)WorkStage.SocketAlign_Step.None;
-                }
-                else
-                {
-                    //  가공은 이미 끝난 상태에서는 여기에 들어오지 않아야 함..
-
-                    Log.Write("SLD-200", Equipment.User_Name, "Button Click", "가공은 이미 끝난 상태에서는 여기에 들어오지 않아야 함.");
-                }    
+                //    Log.Write("SLD-200", Equipment.User_Name, "Button Click", "가공은 이미 끝난 상태에서는 여기에 들어오지 않아야 함.");
+                //}    
             }
 
 
             //  강제 배출일 경우, 집진기도 Off
-            if (workStage.m_bLaserDrilling_Complete && (workStage.m_nLaserDrilling_MainStep == 0) && (workStage.m_nSocketAlign_MainStep == 0))
+            if (workStage.m_bLaserDrilling_Complete && 
+                (workStage.m_nLaserDrilling_MainStep == 0) && (workStage.m_nSocketAlign_MainStep == 0))
             {
                 if (Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use)
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "Button Click", "강제 배출, 집진기 Off");
 
-                    //workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
                     workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
                 }
             }
@@ -1632,10 +1626,8 @@ namespace SLD200_MSL
 
             // 아래 변수가 자동운전 Tick 돌리는 변수임.
             workStage.m_MainWork_Start = true;
-
             workStage.m_LaserDrillingWork_Start = true;
             Equipment.LaserDrillingCycStop_Reservation = false;
-
             Equipment.ProcessingData_Parsing_byLoader = false;              //  Module Loading 시 가공 데이터 Parsing
 
             workStage.m_ProductAlign_Start = true;
@@ -1660,10 +1652,10 @@ namespace SLD200_MSL
                 Equipment.Loader_LPort_Pause = false;
             }
 
+
             Equipment.AutoRunStatus = true;
 
             return;
-
         }
 
         private void button_Main_RtcInit_Click(object sender, EventArgs e)
