@@ -15286,6 +15286,17 @@ namespace QMC.Common.Modules
 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_forUV_Check;
                     }
+                    else if (!((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power - 0.5)) &&
+                        (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power + 0.5))))
+                    {
+                        m_strTemp = string.Format("Thruhole Layer 가공 Laser Power 변경 실패, 재시도");
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                        m_dLaserPower = Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].Miscellaneous_Drilling_Power;
+                        RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
+
+                        Thread.Sleep(200);
+                    }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
                     {
                         m_strTemp = string.Format("Thruhole Layer 가공 Laser Power 변경 실패, 현재 Laser Power ({0})", m_dLaser_OutputEnergy);
@@ -20936,8 +20947,8 @@ namespace QMC.Common.Modules
             r1 /= 2;
             r2 /= 2;
 
-            int startAngle = 0;
-            int sweepAngle =(int) m_dTemp_AngleFactor; // 각 아크의 각도 (작게 설정하여 부드럽게 연결)
+            double startAngle = 0;
+            double sweepAngle = m_dTemp_AngleFactor; // 각 아크의 각도 (작게 설정하여 부드럽게 연결)
             double dFirstAngle = 0;
             double currentRadius = r1; // 초기 반지름
             if(turn <1)
@@ -20955,7 +20966,7 @@ namespace QMC.Common.Modules
 
             Random rnd = new Random((int)DateTime.Now.Ticks);
 
-            for (double i = dFirstAngle; i <= 360 * turn + dFirstAngle; i += sweepAngle) // 360도 회전
+            for (double i = dFirstAngle; i <= 360 * (turn) + dFirstAngle; i += sweepAngle) // 360도 회전
             {
 
                 double StartX = currentRadius * Math.Cos(i / 180 * Math.PI);
@@ -20968,6 +20979,8 @@ namespace QMC.Common.Modules
 
                     rtc.ListJump(new Vector2((float)(center.X + StartX), (float)(center.Y + StartY))); 
                 }
+
+                
                 double dShiftX = (dLastX - StartX);
                 double dshiftY = dLastY - StartY;
 
@@ -20978,22 +20991,28 @@ namespace QMC.Common.Modules
                 int x = (int)(centerX - currentRadius);
                 int y = (int)(centerY - currentRadius);
 
-                rtc.ListArc(new Vector2((float)(centerX), (float)(centerY + dshiftY)), sweepAngle);
+                rtc.ListArc(new Vector2((float)(centerX), (float)(centerY + dshiftY)), (float)sweepAngle);
 
 
                 int width = (int)(currentRadius * 2);
                 int height = (int)(currentRadius * 2);
 
-                sweepAngle = rnd.Next(6, 180);
-                startAngle += sweepAngle; // 시작 각도 증가
                 dLastX = currentRadius * Math.Cos((i + sweepAngle) * Math.PI / 180);
                 dLastY = currentRadius * Math.Sin((i + sweepAngle) / 180 * Math.PI);
                 dLastCenterX = centerX;
                 dLastCenterY = centerY;
 
+                if(m_dTemp_AngleFactor > 2.1)
+                {
+                    sweepAngle = (rnd.Next(1, 1000) * 15.0 /1000) + 3;
+                }
+                startAngle += sweepAngle; // 시작 각도 증가
                 currentRadius += rStep; // 반지름 증가
             }
 
+            rtc.ListArc(new Vector2((float)(center.X), (float)(center.Y )), (float)360);
+            
+            
 
             //for (int i = 0; i < 360 * turn; i += sweepAngle) // 360도 회전
             //{
@@ -25122,6 +25141,365 @@ namespace QMC.Common.Modules
             int m_nTotalCount = 0;
 
 
+            //  List 를 몇개를 만들어야 할지
+            int m_nListCount = 0;
+
+            //  Layer 종류별 Count
+            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            {
+                if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
+                {
+                    if (layer.Name == "Hole1")
+                    {
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    //point.Location 
+                                    //point.DwellTime
+                                    //success &= point.Mark(markerArg);
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as SpiralLab.Sirius.Points;
+                                    //foreach (var vertex in points)
+                                    //{
+                                    //    //vertex.X
+                                    //    //vertex.Y
+                                    //}
+                                    //points.DwellTime
+                                    //success &= points.Mark(markerArg);
+                                    break;
+
+                                case EType.Line:
+                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
+
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
+                                    break;
+
+                                case EType.Rectangle:
+                                    //var rectangle = entity as SpiralLab.Sirius2.Winforms.Entity.EntityRectangle;
+
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterX = (double)rectangle.ModelTranslate.X;
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterY = (double)rectangle.ModelTranslate.Y;
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)rectangle.Width;
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)rectangle.Height;
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    if (m_nHole1_ObjectCount++ == m_nSocketNum)
+                                    {
+                                        m_nListCount++;
+                                        break;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "Rect")
+                    {
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    //point.Location 
+                                    //point.DwellTime
+                                    //success &= point.Mark(markerArg);
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as SpiralLab.Sirius.Points;
+                                    //foreach (var vertex in points)
+                                    //{
+                                    //    //vertex.X
+                                    //    //vertex.Y
+                                    //}
+                                    //points.DwellTime
+                                    //success &= points.Mark(markerArg);
+                                    break;
+
+                                case EType.Line:
+                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
+
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
+                                    break;
+
+                                case EType.Rectangle:
+                                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
+
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterX = (double)rectangle.Center.X;
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterY = (double)rectangle.Center.Y;
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)rectangle.Width;
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)rectangle.Height;
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    if (m_nRect_ObjectCount++ == m_nSocketNum)
+                                    {
+                                        m_nListCount++;
+                                        break;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "Thruhole")
+                    {
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    //point.Location 
+                                    //point.DwellTime
+                                    //success &= point.Mark(markerArg);
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as SpiralLab.Sirius.Points;
+                                    //foreach (var vertex in points)
+                                    //{
+                                    //    //vertex.X
+                                    //    //vertex.Y
+                                    //}
+                                    //points.DwellTime
+                                    //success &= points.Mark(markerArg);
+                                    break;
+
+                                case EType.Line:
+                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
+
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
+                                    break;
+
+                                case EType.Rectangle:
+                                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
+
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)rectangle.Center.X;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    if (m_nThruhole_ObjectCount++ == m_nSocketNum)
+                                    {
+                                        m_nListCount++;
+                                        break;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "Outline")
+                    {
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    //point.Location 
+                                    //point.DwellTime
+                                    //success &= point.Mark(markerArg);
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as SpiralLab.Sirius.Points;
+                                    //foreach (var vertex in points)
+                                    //{
+                                    //    //vertex.X
+                                    //    //vertex.Y
+                                    //}
+                                    //points.DwellTime
+                                    //success &= points.Mark(markerArg);
+                                    break;
+
+                                case EType.Line:
+                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
+
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
+                                    break;
+
+                                case EType.Rectangle:
+                                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
+
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)rectangle.Center.X;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    if (m_nOutline_ObjectCount++ == m_nSocketNum)
+                                    {
+                                        m_nListCount++;
+                                        break;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "Fiducial")
+                    {
+                        m_nDrawing_FiducialCount = layer.Count;
+                        m_stDrawing_Fiducial = new stDrawingFiducialParam[m_nDrawing_FiducialCount];                   //  Fiducial 데이터
+
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    //point.Location 
+                                    //point.DwellTime
+                                    //success &= point.Mark(markerArg);
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as SpiralLab.Sirius.Points;
+                                    //foreach (var vertex in points)
+                                    //{
+                                    //    //vertex.X
+                                    //    //vertex.Y
+                                    //}
+                                    //points.DwellTime
+                                    //success &= points.Mark(markerArg);
+                                    break;
+
+                                case EType.Line:
+                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
+
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+
+                                    //m_stDrawing_Fiducial[m_nFiducial_ObjectCount].CenterX = (double)arc.Center.X;
+                                    //m_stDrawing_Fiducial[m_nFiducial_ObjectCount].CenterY = (double)arc.Center.Y;
+                                    //m_stDrawing_Fiducial[m_nFiducial_ObjectCount++].radius = (double)arc.Radius;
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+
+                                    //m_stDrawing_Fiducial[m_nFiducial_ObjectCount].CenterX = (double)circle.Center.X;
+                                    //m_stDrawing_Fiducial[m_nFiducial_ObjectCount].CenterY = (double)circle.Center.Y;
+                                    //m_stDrawing_Fiducial[m_nFiducial_ObjectCount++].radius = (double)circle.Radius;
+                                    break;
+
+                                case EType.Rectangle:
+                                    //var rectangle = entity as SpiralLab.Sirius2.Winforms.Entity.EntityRectangle;
+
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterX = (double)rectangle.ModelTranslate.X;
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterY = (double)rectangle.ModelTranslate.Y;
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)rectangle.Width;
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)rectangle.Height;
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            //  선택해야 할 List 초기화
+            var list = new List<IEntity>(m_nListCount);
+
+            //  도면 데이터 개수 초기화
+            m_nHole1_ObjectCount = 0;                                       //  Hole1 데이터 개수
+            m_nHole2_ObjectCount = 0;                                       //  Hole2 데이터 개수
+            m_nHole3_ObjectCount = 0;                                       //  Hole3 데이터 개수
+            m_nHole4_ObjectCount = 0;                                       //  Hole4 데이터 개수
+            m_nHole5_ObjectCount = 0;                                       //  Hole5 데이터 개수
+            m_nHole6_ObjectCount = 0;                                       //  Hole6 데이터 개수
+            m_nHole7_ObjectCount = 0;                                       //  Hole7 데이터 개수
+            m_nHole8_ObjectCount = 0;                                       //  Hole8 데이터 개수
+            m_nHole9_ObjectCount = 0;                                       //  Hole9 데이터 개수
+            m_nHole10_ObjectCount = 0;                                      //  Hole10 데이터 개수
+            m_nRect_ObjectCount = 0;                                        //  Rect 데이터 개수
+            m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
+            m_nFiducial_ObjectCount = 0;                                    //  Fiducial 마크 데이터 개수
+            m_nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
+
+
             //  Layer 종류별 Count
             foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
             {
@@ -25188,25 +25566,10 @@ namespace QMC.Common.Modules
                                 case EType.Group:
                                     var group = entity as Group;
 
-                                    //m_nDrawing_Hole1Count = group.Count;
-                                    //m_stDrawing_Hole1 = new stDrawingHoleParam[m_nDrawing_Hole1Count];                          //  Hole1 데이터
-
                                     if (m_nHole1_ObjectCount++ == m_nSocketNum)
                                     {
-                                        //m_nTotalCount = group.Count;
-                                        m_nTotalCount = 1;                                      //  소켓 1개만 회전시키기 때문에
-
                                         //  선택한 소켓의 가공 객체를 List 로 등록
-                                        var list = new List<IEntity>(m_nTotalCount);
                                         list.Add(group);
-
-                                        if (list.Count > 0)
-                                        {
-                                            //1차로 죽어서 수정. 2차 시 에러코드 확인 요망.
-                                            //  List 에 등록된 가공 객체 Select
-                                            SiriusViewObjectEntitySelect(list);
-                                            m_bSelected = true;
-                                        }
                                     }
                                     break;
                             }
@@ -25269,6 +25632,16 @@ namespace QMC.Common.Modules
                                     //m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)rectangle.Width;
                                     //m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)rectangle.Height;
                                     break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    if (m_nRect_ObjectCount++ == m_nSocketNum)
+                                    {
+                                        //  선택한 소켓의 가공 객체를 List 로 등록
+                                        list.Add(group);
+                                    }
+                                    break;
                             }
                         }
                     }
@@ -25328,6 +25701,86 @@ namespace QMC.Common.Modules
                                     //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
                                     //m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
                                     //m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    if (m_nOutline_ObjectCount++ == m_nSocketNum)
+                                    {
+                                        //  선택한 소켓의 가공 객체를 List 로 등록
+                                        list.Add(group);
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "Thruhole")
+                    {
+                        m_nDrawing_OutlineCount = layer.Count;
+                        m_stDrawing_Outline = new stDrawingOutlineParam[m_nDrawing_OutlineCount];                   //  Outline 데이터
+
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    //point.Location 
+                                    //point.DwellTime
+                                    //success &= point.Mark(markerArg);
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as SpiralLab.Sirius.Points;
+                                    //foreach (var vertex in points)
+                                    //{
+                                    //    //vertex.X
+                                    //    //vertex.Y
+                                    //}
+                                    //points.DwellTime
+                                    //success &= points.Mark(markerArg);
+                                    break;
+
+                                case EType.Line:
+                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
+
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
+                                    break;
+
+                                case EType.Rectangle:
+                                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
+
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)rectangle.Center.X;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    if (m_nThruhole_ObjectCount++ == m_nSocketNum)
+                                    {
+                                        //  선택한 소켓의 가공 객체를 List 로 등록
+                                        list.Add(group);
+                                    }
                                     break;
                             }
                         }
@@ -25393,6 +25846,15 @@ namespace QMC.Common.Modules
                         }
                     }
                 }
+            }
+
+
+            if (list.Count > 0)
+            {
+                //1차로 죽어서 수정. 2차 시 에러코드 확인 요망.
+                //  List 에 등록된 가공 객체 Select
+                SiriusViewObjectEntitySelect(list);
+                m_bSelected = true;
             }
 
 
