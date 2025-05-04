@@ -2439,9 +2439,9 @@ namespace QMC.Common.Modules
                         //  Target Position 변경 : 현재 위치에서 추가 이동
                         unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1] = MC_Func.MC_GetEncPos((int)nAxis.Z1) - 3.0;
 
-                        if (unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1] < loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_RPort_ReadyPos].UL_Stacker_Z1)
+                        if (unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1] < loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_LPort_ReadyPos].UL_Stacker_Z1)
                         {
-                            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_RPort_ReadyPos].UL_Stacker_Z1;
+                            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.Z1] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_LPort_ReadyPos].UL_Stacker_Z1;
                         }
 
                         //  속도 (기본 속도 / 4)
@@ -2469,7 +2469,7 @@ namespace QMC.Common.Modules
                     //if (MC_Func.MC_GetDone((int)nAxis.Z0) && MC_Func.MC_PosTolerance((int)nAxis.Z0, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0]))
                     if (MC_Func.MC_GetDone((int)nAxis.Z1))
                     {
-                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker0 Z 축, Top 위치 아래 3mm 까지 이동 완료");
+                        Log.Write("SLD-200", Equipment.User_Name, "UL Stacker1 Work Pos. Set", "Stacker1 Z 축, Top 위치 아래 3mm 까지 이동 완료");
 
                         m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Complete;
                     }
