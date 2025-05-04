@@ -690,6 +690,7 @@ namespace SLD200_MSL
             // Laser m_rapidLxLaser_Comm
             if (workStage.m_rapidLxLaser_Comm == null)
             {
+                workStage.m_bRapidLxLaser_UserConnect = true;
                 workStage.RapidLxLaser_Comm_Init();
             }
             else
@@ -2705,11 +2706,6 @@ namespace SLD200_MSL
                     Equipment.AutoManualStatus = false;
                 }
             }
-        }
-
-        private void button_Test12_Click(object sender, EventArgs e)
-        {
-            workStage.AlarmPost(QMC.Common.Modules.WorkStage.AlarmKey.PreAlignFail);
         }
 
         private void button_TEST12_Click(object sender, EventArgs e)
