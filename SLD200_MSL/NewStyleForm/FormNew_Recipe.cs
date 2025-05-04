@@ -95,13 +95,11 @@ namespace SLD200_MSL
         private void LoadSubForm()
         {
             //OnCreateControl();
-
             if (userform_RecipeVision == null)
             {
                 userform_RecipeVision = new FormNewSub_Recipe_Vision();
                 userform_RecipeVision.Dock = DockStyle.Fill;
                 tabPage_RecipeVision.Controls.Add(userform_RecipeVision);
-
             }
         }
 
@@ -116,11 +114,22 @@ namespace SLD200_MSL
             {
                 m_bFormVisible = true;
                 OnShowRecipeForm();
+
+                var selectedTab = tabControl_Recipe.SelectedTab;
+                if (selectedTab == tabPage_RecipeVision)
+                {
+                    if (userform_RecipeVision != null)
+                        userform_RecipeVision.OnShow();
+                }
             }
             else if (!this.Visible && m_bFormVisible)
             {
                 m_bFormVisible = false;
                 OnHideRecipeForm();
+
+                // 다른 폼으로 이동할때도 탭을 숨김
+                if (userform_RecipeVision != null)
+                    userform_RecipeVision.OnHide();
             }
         }
 
@@ -409,7 +418,17 @@ namespace SLD200_MSL
         {
             if (tabControl_Recipe.SelectedTab == tabPage_RecipeVision) // "RecipeVision" 탭을 선택했을 때
             {
-                LoadSubForm();
+                LoadSubForm(); //한 번만 로딩 함.
+
+                // RecipeVision 탭일 때만 표시
+                if (userform_RecipeVision != null)
+                    userform_RecipeVision.OnShow();
+            }
+            else
+            {
+                // 다른 탭으로 이동하면 숨김
+                if (userform_RecipeVision != null)
+                    userform_RecipeVision.OnHide();
             }
         }
 

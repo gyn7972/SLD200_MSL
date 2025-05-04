@@ -120,7 +120,7 @@ namespace QMC.Common
             };
         }
 
-        public static (int socketIndex, string layerName, int areaIndex, bool bResult)? GetFirstUnprocessedPosition()
+        public static (int socketIndex, string layerName, int areaIndex, int nResult)? GetFirstUnprocessedPosition()
         {
             foreach (var socket in Sockets)
             {
@@ -128,7 +128,7 @@ namespace QMC.Common
                 {
                     foreach (var area in layer.Areas)
                     {
-                        return (socket.SocketNumber, layer.LayerName, area.AreaIndex, area.IsProcessed);
+                        return (socket.SocketNumber, layer.LayerName, area.AreaIndex, area.ProcessStatus);
                     }
                 }
             }

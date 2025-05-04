@@ -29,18 +29,21 @@ using QMC.Common.VisionPart;
 using static OpenCvSharp.LineIterator;
 using static QMC.Common.Vision.Tools.PatternMatchingResult;
 using Cognex.VisionPro.Exceptions;
+using System.Windows.Controls.Primitives;
 //using OpenCvSharp;
 
 namespace SLD200_MSL
 {
     public partial class FormNew_Setup : Form
     {
+        private bool m_bFormVisible = false; // 실제 Show 상태 여부
+
         static WorkStage workStage;
         static Loader loader;
         static Unloader unloader;
         static Bds Bds;
 
-        FormNew_VisionPopup m_formVisionPopup = new FormNew_VisionPopup();
+        //FormNew_VisionPopup m_formVisionPopup = new FormNew_VisionPopup();
         FormNew_CommunicationTerminal m_formCommTerminal = new FormNew_CommunicationTerminal();
 
         //  IO
@@ -382,7 +385,6 @@ namespace SLD200_MSL
 
         }
 
-        private bool m_bFormVisible = false; // 실제 Show 상태 여부
         protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
@@ -393,12 +395,16 @@ namespace SLD200_MSL
             if (this.Visible && !m_bFormVisible)
             {
                 m_bFormVisible = true;
-                // OnShowRecipeForm();
+                timer_Status.Enabled = true;
+                this.Box_Setup_ScannerCal_ImageViewer.ResumeDisplay();
+                this.Box_Setup_ScannerCal_ImageViewer.StartUpdateTask();
             }
             else if (!this.Visible && m_bFormVisible)
             {
                 m_bFormVisible = false;
-                //OnHideRecipeForm();
+                timer_Status.Enabled = false;
+                this.Box_Setup_ScannerCal_ImageViewer.SuspendDisplay();
+                this.Box_Setup_ScannerCal_ImageViewer.StopUpdateTask();
             }
         }
 
@@ -467,49 +473,55 @@ namespace SLD200_MSL
             }
         }
 
+        //0504. 화면 전환 시 안해도 됨.
         private void Timer_Status_Func(object sender, EventArgs e)
         {
-            timer_Status.Enabled = false;
-
-            //DIO_Status();
-            Motor_Position();
-
-            //m_btimer_MainWork_Stop = false;
-            //timer_MainWork.Enabled = false;
-
-            //if (!m_btimer_MainWork_Stop)
-            //{
-            //    timer_MainWork.Enabled = true;
-            //}
-
-            //  MapData Status
-            if (Equipment.MapDataStatus_Activate)
+            try
             {
-                button_Setup_2DMapData_Apply.Text = "Map Data Activated";
-                button_Setup_2DMapData_Apply.BackColor = Color.Lime;
-
-                workStage.Stage.Config.Use2DMap = true;
-            }
-            else
-            {
-                button_Setup_2DMapData_Apply.Text = "Map Data Deactivated";
-                button_Setup_2DMapData_Apply.BackColor = Color.LightGray;
-                try
+                if (m_bFormVisible == false)
                 {
-
-                    workStage.Stage.Config.Use2DMap = false;
-                }catch(Exception ex)
-                {
-                    Log.Write(ex);
+                    timer_Status.Enabled = false;
+                    return;
                 }
+
+                timer_Status.Enabled = false;
+
+                //DIO_Status();
+                //0504. motor position 받아서 뿌려줌. 화면 전환 시 안해도 됨.
+                Motor_Position();
+
+                //  MapData Status //0504. 화면 전환 시 안해도 됨.
+                if (Equipment.MapDataStatus_Activate)
+                {
+                    button_Setup_2DMapData_Apply.Text = "Map Data Activated";
+                    button_Setup_2DMapData_Apply.BackColor = Color.Lime;
+
+                    workStage.Stage.Config.Use2DMap = true;
+                }
+                else
+                {
+                    button_Setup_2DMapData_Apply.Text = "Map Data Deactivated";
+                    button_Setup_2DMapData_Apply.BackColor = Color.LightGray;
+                    try
+                    {
+                        workStage.Stage.Config.Use2DMap = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Write(ex);
+                    }
+                }
+
+                // Scanner Calibration //0504. 화면 전환 시 안해도 됨.
+                label_Setup_ScannerCal_LastPosX.Text = Equipment.Scanner_Calibration_PosX_Last.ToString();
+                label_Setup_ScannerCal_LastPosY.Text = Equipment.Scanner_Calibration_PosY_Last.ToString();
+
+                timer_Status.Enabled = true;
             }
-
-
-            //  Scanner Calibration
-            label_Setup_ScannerCal_LastPosX.Text = Equipment.Scanner_Calibration_PosX_Last.ToString();
-            label_Setup_ScannerCal_LastPosY.Text = Equipment.Scanner_Calibration_PosY_Last.ToString();
-
-            timer_Status.Enabled = true;
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
         }
 
         private void Motor_Position()
@@ -1371,7 +1383,6 @@ namespace SLD200_MSL
             richTextBox_Setup_Tab2DMap_StageCalPos_FineCameraPosition.Text = Equipment.MappingData_FilePath_StageCal_FineCam;
         }
 
-
         public void Comm_Parameter_Save()
         {
             string strTemp = "";
@@ -2053,27 +2064,40 @@ namespace SLD200_MSL
         }
 
         private void button_Setup_ScannerFineCamOffsetChange_ImageDisplay_Show_Click(object sender, EventArgs e)
-        {           
+        {
+            FormMain formMain = (FormMain)Application.OpenForms["FormMain"];
+            if (formMain == null)
+                return;
+
+            FormNew_VisionPopup formVisionPopup = formMain.FormNew_Config.FormVisionPopup;
+            if (!formVisionPopup.Visible)
+            {
+                formVisionPopup.Show();
+                formVisionPopup.Activate();
+            }
+
+            // 여기서 VisionPopup을 생성하는 이유는?
+            // 생성하지말고 가져와서 키자.
+
             //  Scanner 와 Fine Camera 간의 Offset 값을 변경한다.
+            //Equipment.m_bVisionFormOpenMode_ScannerFineCamOffsetChange = true;
 
-            Equipment.m_bVisionFormOpenMode_ScannerFineCamOffsetChange = true;
+            //if (m_formVisionPopup == null)
+            //{
+            //    m_formVisionPopup.CreateSiriusEditor();
+            //}
 
-            if (m_formVisionPopup == null)
-            {
-                m_formVisionPopup.CreateSiriusEditor();
-            }
+            //foreach (Form openForm in System.Windows.Forms.Application.OpenForms)
+            //{
+            //    if (openForm.Name == m_formVisionPopup.Name)
+            //    {
+            //        openForm.BringToFront();
+            //        openForm.Show();
+            //        return;
+            //    }
+            //}
 
-            foreach (Form openForm in System.Windows.Forms.Application.OpenForms)
-            {
-                if (openForm.Name == m_formVisionPopup.Name)
-                {
-                    openForm.BringToFront();
-                    openForm.Show();
-                    return;
-                }
-            }
-
-            m_formVisionPopup.Show();
+            //m_formVisionPopup.Show();
         }
 
         private void button_Setup_2DMapData_Apply_Click(object sender, EventArgs e)
@@ -3195,9 +3219,6 @@ namespace SLD200_MSL
             MessageBox.Show("Offset Distance 가 적용되었습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         }
-
-
-        
 
         private void button_Setup_ScannerCal_Train_Click(object sender, EventArgs e)
         {
