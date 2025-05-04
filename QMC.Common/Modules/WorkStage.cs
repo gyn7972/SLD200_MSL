@@ -8788,6 +8788,7 @@ namespace QMC.Common.Modules
 
                         try
                         {
+                            //Todo: PreAlign 확인!!!
                             jigAligner_LowRes.Work();
                             Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "Work() 완료");
                         }
@@ -17786,15 +17787,22 @@ namespace QMC.Common.Modules
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 3);           //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
 
                     //Align Mark Pos - 도면에서 추출하여 전달.
-                    stDividedRegion_GroupData[] inputGroupData = m_stDividedRegion_GroupData;
-                    PointD leftPoint, rightPoint;
-                    FindEdgePoints(inputGroupData, out leftPoint, out rightPoint);
 
-                    Equipment.stLayerRecipeSet[0].PreAlignPos1 = leftPoint;
-                    Equipment.stLayerRecipeSet[0].PreAlignPos2 = rightPoint;
+                    // 소켓 1번과 동일한 얼라인 좌표로 얼라인 하기 위하여 아래와 같이 수정.
+                    //stDividedRegion_GroupData[] inputGroupData = m_stDividedRegion_GroupData;
+                    //PointD leftPoint, rightPoint;
+                    //FindEdgePoints(inputGroupData, out leftPoint, out rightPoint);
+                    //Equipment.stLayerRecipeSet[0].PreAlignPos1 = leftPoint;
+                    //Equipment.stLayerRecipeSet[0].PreAlignPos2 = rightPoint;
 
-                    //너무 Data를 빨리 던져서 문제가 아닌지 Test
-                    Thread.Sleep(500);
+                    //m_nDrillingWork_Group_Count 이거 0이여야 한다.
+                    Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[0].dFiducialPos[0].X;
+                    Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[0].dFiducialPos[0].Y;
+                    Equipment.stLayerRecipeSet[0].PreAlignPos2.X = m_stDividedRegion_GroupData[0].dFiducialPos[1].X;
+                    Equipment.stLayerRecipeSet[0].PreAlignPos2.Y = m_stDividedRegion_GroupData[0].dFiducialPos[1].Y;
+
+                    //너무 Data를 빨리 던져서 문제가 아닌지 Test.
+                    Thread.Sleep(100);
 
                     m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
                     m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
@@ -17815,24 +17823,32 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align 완료");
 
-                            //double dfx = jigAligner_LowRes.FirstPosition.X;
-                            //double dfy = jigAligner_LowRes.FirstPosition.Y;
-                            //double dft = jigAligner_LowRes.GetJigAlignResult();
 
-                            double dfx = 0;
-                            double dfy = 0;
-                            double dft = 0;
+                            double dfx = jigAligner_LowRes.FirstPosition.X;
+                            double dfy = jigAligner_LowRes.FirstPosition.Y;
+                            double dft = 0; //jigAligner_LowRes.GetJigAlignResult(); //각도 던지는거 재 확인하자. // 맨 처음에는 각도 안했는데.
+                            //double dfx = 0;
+                            //double dfy = 0;
+                            //double dft = 0;
 
+                            //Todo : PreAlign 확인 필요 구문.!
                             XyzCoordinate positionFirst = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
                             positionFirst = this.ConvertPointFineCam(positionFirst);
                             xyCoordinateAlignPositionLast= new XyCoordinate( positionFirst.X, positionFirst.Y);
 
+                            // 여기 부호 재확인 필요.
                             positionFirst.X -= dfx;
                             positionFirst.Y -= dfy;
 
                             xyCoordinateAlignPositionOrgLast  = new XyCoordinate(positionFirst.X, positionFirst.Y);
 
-                            //m_st4PointAlign_Result_LastSuccess.dRotationAngle = dft;
+                            m_st4PointAlign_Result_LastSuccess.dRotationAngle = dft;
+
+                            //Log Data 남기자.
+                            //m_strTemp = string.Format("");
+                            m_strTemp = string.Format("PreAlign좌표, X : {0:0.000}, Y : {1:0.000}", positionFirst.X, positionFirst.Y);
+                            Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
+
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Correction;
                         }
                         else
@@ -17853,11 +17869,6 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.DrillingData_PreAlign_Correction:                      //  가공 할 Socket Align 시작
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 보정 시작.");
-
-                    //result = jigAligner_LowRes.GetResult();
-                    //dx = result.Values[0].X;
-                    //dy = result.Values[0].Y;
-                    //dr = result.Values[0].R;
 
                     TickCount_Start((int)TickType.TICK_MAIN);
 
