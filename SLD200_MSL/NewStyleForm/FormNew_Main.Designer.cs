@@ -129,6 +129,7 @@
             this.pictureBox_Main_DiviceStatus_Laser = new System.Windows.Forms.PictureBox();
             this.baseTextBox_DryRun_ProcessingTime = new SLD200_MSL.BaseTextBox();
             this.baseLabel5 = new SLD200_MSL.BaseLabel();
+            this.label_Main_LaserStatus = new System.Windows.Forms.Label();
             this.groupBoxMain_ModuleProcessingStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -740,7 +741,7 @@
             this.button_Main_Stop.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_Stop.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Main_Stop.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_Main_Stop.Location = new System.Drawing.Point(1726, 449);
+            this.button_Main_Stop.Location = new System.Drawing.Point(1726, 520);
             this.button_Main_Stop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_Stop.Name = "button_Main_Stop";
             this.button_Main_Stop.Size = new System.Drawing.Size(178, 73);
@@ -770,7 +771,7 @@
             this.button_Main_Start.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_Start.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Main_Start.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_Main_Start.Location = new System.Drawing.Point(1726, 373);
+            this.button_Main_Start.Location = new System.Drawing.Point(1726, 444);
             this.button_Main_Start.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_Start.Name = "button_Main_Start";
             this.button_Main_Start.Size = new System.Drawing.Size(178, 73);
@@ -1015,7 +1016,7 @@
             this.checkBox_Main_AutoRun.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_Main_AutoRun.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBox_Main_AutoRun.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_AutoRun.Location = new System.Drawing.Point(1726, 297);
+            this.checkBox_Main_AutoRun.Location = new System.Drawing.Point(1726, 368);
             this.checkBox_Main_AutoRun.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_AutoRun.Name = "checkBox_Main_AutoRun";
             this.checkBox_Main_AutoRun.Size = new System.Drawing.Size(178, 73);
@@ -1479,12 +1480,27 @@
             this.baseLabel5.Text = "(Dry Run Processing Time (sec) :";
             this.baseLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // label_Main_LaserStatus
+            // 
+            this.label_Main_LaserStatus.BackColor = System.Drawing.Color.Black;
+            this.label_Main_LaserStatus.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_LaserStatus.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Main_LaserStatus.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_LaserStatus.Location = new System.Drawing.Point(1726, 298);
+            this.label_Main_LaserStatus.Name = "label_Main_LaserStatus";
+            this.label_Main_LaserStatus.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.label_Main_LaserStatus.Size = new System.Drawing.Size(178, 68);
+            this.label_Main_LaserStatus.TabIndex = 208;
+            this.label_Main_LaserStatus.Text = "레이저 상태";
+            this.label_Main_LaserStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // FormNew_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 877);
             this.ControlBox = false;
+            this.Controls.Add(this.label_Main_LaserStatus);
             this.Controls.Add(this.groupBox_Main_DiviceStatus);
             this.Controls.Add(this.label_Title_Stacker_RPort);
             this.Controls.Add(this.label_Title_Stacker_LPort);
@@ -1666,5 +1682,6 @@
         private System.Windows.Forms.PictureBox pictureBox_Main_DiviceStatus_HeightSensor;
         private BaseLabel baseLabel_Main_Divice_Status_ElectroRequlator;
         private System.Windows.Forms.PictureBox pictureBox_Main_DiviceStatus_ElectroRegulator;
+        private System.Windows.Forms.Label label_Main_LaserStatus;
     }
 }

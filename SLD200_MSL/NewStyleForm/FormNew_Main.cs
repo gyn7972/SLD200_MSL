@@ -64,6 +64,9 @@ namespace SLD200_MSL
 
         private System.Windows.Forms.Timer timer_Main_Status;
 
+        private bool m_bLaserIsProcessing = false;  //레이저 가공 중인지 확인하는 변수
+        private bool m_bNeedLaserProcessingMessage = false; //레이저 가공 중 UI 갱신을 위해 플래그 설정
+
         private Thread m_MainStatusThread;
         private bool m_bMainStatusCycleExit;
 
@@ -906,6 +909,32 @@ namespace SLD200_MSL
         // -----------------------
         private void DoHeavyLogicPart()
         {
+            //레이저 가공 중 상태 체크
+            bool isLaserBusy = false;
+            try
+            {
+                if(workStage.rtc != null)
+                {
+                    isLaserBusy = workStage.rtc.CtlGetStatus(RtcStatus.Busy);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+            if (isLaserBusy && !m_bLaserIsProcessing)
+            {
+                m_bLaserIsProcessing = true;
+                m_bNeedLaserProcessingMessage = true;  //UI 갱신을 위해 플래그 설정
+            }
+            else if (!isLaserBusy && m_bLaserIsProcessing)
+            {
+                m_bLaserIsProcessing = false;
+                m_bNeedLaserProcessingMessage = true;
+            }
+
+
             if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
             {
                 workStage.m_bHomeProgressForm_Close = false;
@@ -1017,6 +1046,15 @@ namespace SLD200_MSL
         // -----------------------
         private void UpdateUIControls()
         {
+            if (m_bNeedLaserProcessingMessage)
+            {
+                m_bNeedLaserProcessingMessage = false;
+
+                label_Main_LaserStatus.Text = m_bLaserIsProcessing ? "⚠ 레이저 가공 중" : "레이저 대기 중";
+                label_Main_LaserStatus.BackColor = m_bLaserIsProcessing ? Color.Red : Color.Black;
+                label_Main_LaserStatus.ForeColor = m_bLaserIsProcessing ? Color.White : Color.Lime;
+            }
+
             if (m_bNeedHideProgressForm)
             {
                 m_bNeedHideProgressForm = false;
@@ -2099,6 +2137,7 @@ namespace SLD200_MSL
 
         private void button_TEST_RTCInit_Click(object sender, EventArgs e)
         {
+            return;
             //SiriusViewer_Main.Document = Equipment.EqpSiriusViewer_Origin.Document;
             //workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
             //m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
