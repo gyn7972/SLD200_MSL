@@ -24,6 +24,8 @@ namespace SLD200.NewStyleForm.NewSubForm
 {
     public partial class FormNewSub_Recipe_Vision : UserControl
     {
+        private bool m_bFormVisible = false; // 실제 Show 상태 여부
+
         static WorkStage workStage;
         static JigAligner Owner;
 
@@ -113,9 +115,35 @@ namespace SLD200.NewStyleForm.NewSubForm
             IsPixel = true;
 
             InitPatternMatchingParameter();
-            
         }
 
+        public void OnShow()
+        {
+            if (m_bFormVisible)
+                return;
+
+            m_bFormVisible = true;
+
+            this.ImageViewer_RecipeVision_highs.ResumeDisplay();
+            this.ImageViewer_RecipeVision_highs.StartUpdateTask();
+
+            this.ImageViewer_RecipeVision_Rows.ResumeDisplay();
+            this.ImageViewer_RecipeVision_Rows.StartUpdateTask();
+        }
+
+        public void OnHide()
+        {
+            if (!m_bFormVisible)
+                return;
+
+            m_bFormVisible = false;
+
+            this.ImageViewer_RecipeVision_highs.SuspendDisplay();
+            this.ImageViewer_RecipeVision_highs.StopUpdateTask();
+
+            this.ImageViewer_RecipeVision_Rows.SuspendDisplay();
+            this.ImageViewer_RecipeVision_Rows.StopUpdateTask();
+        }
 
         private void InitPatternMatchingParameter()
         {

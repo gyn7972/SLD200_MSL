@@ -1030,17 +1030,17 @@ namespace SLD200_MSL
             }
 
             // 상태 표시 CheckBox
-            checkBox_Main_ProcessStatus_LD_LPort_Complete.Checked = Equipment.m_bMainProcessStatus_LD_LPort_Complete;
-            checkBox_Main_ProcessStatus_LD_RPort_Complete.Checked = Equipment.m_bMainProcessStatus_LD_RPort_Complete;
-            checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_PortPickUp_Complete;
-            checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_MAlignerPutDown_Complete;
-            checkBox_Main_ProcessStatus_LD_MAlign_Complete.Checked = Equipment.m_bMainProcessStatus_LD_M_Aligner_Align_Complete;
-            checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_MAlignerPickUp_Complete;
-            checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_WorkStagePutDown_Complete;
-            checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Checked = Equipment.m_bMainProcessStatus_WorkStage_Module_Process_Complete;
-            checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete;
-            checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete;
-            checkBox_Main_Loader_Transfer_Pause.Checked = Equipment.Loader_Transfer_Pause;
+            //checkBox_Main_ProcessStatus_LD_LPort_Complete.Checked = Equipment.m_bMainProcessStatus_LD_LPort_Complete;
+            //checkBox_Main_ProcessStatus_LD_RPort_Complete.Checked = Equipment.m_bMainProcessStatus_LD_RPort_Complete;
+            //checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_PortPickUp_Complete;
+            //checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_MAlignerPutDown_Complete;
+            //checkBox_Main_ProcessStatus_LD_MAlign_Complete.Checked = Equipment.m_bMainProcessStatus_LD_M_Aligner_Align_Complete;
+            //checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_MAlignerPickUp_Complete;
+            //checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_WorkStagePutDown_Complete;
+            //checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Checked = Equipment.m_bMainProcessStatus_WorkStage_Module_Process_Complete;
+            //checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete;
+            //checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete;
+            //checkBox_Main_Loader_Transfer_Pause.Checked = Equipment.Loader_Transfer_Pause;
             checkBox_Main_Loader_LPort_Pause.Checked = Equipment.Loader_LPort_Pause;
             checkBox_Main_Loader_RPort_Pause.Checked = Equipment.Loader_RPort_Pause;
 
@@ -1075,9 +1075,21 @@ namespace SLD200_MSL
             //        m_CompRegionStatus);
             //}
 
-            button_Main_Loader_Continue.Enabled = Equipment.MachineStop_byTimeout_Loader;
-            button_Main_Unloader_Continue.Enabled = Equipment.MachineStop_byTimeout_Unloader;
-            button_Main_WorkStage_Continue.Enabled = Equipment.SocketStopped;
+            if(Equipment.AutoRunStatus)
+            {
+                button_Main_Start.BackColor = Color.Lime;
+                button_Main_Start.ForeColor = Color.Black;
+            }
+            else
+            {
+                button_Main_Start.BackColor = Color.LightGray;
+                button_Main_Start.ForeColor = Color.Black;
+            }
+
+
+            //button_Main_Loader_Continue.Enabled = Equipment.MachineStop_byTimeout_Loader;
+            //button_Main_Unloader_Continue.Enabled = Equipment.MachineStop_byTimeout_Unloader;
+            //button_Main_WorkStage_Continue.Enabled = Equipment.SocketStopped;
 
             if (m_bNeedAutoRunStop)
             {
@@ -1381,7 +1393,8 @@ namespace SLD200_MSL
             var pos = ProcessManager.GetFirstUnprocessedPosition();
             if (pos.HasValue)
             {
-                if(pos.Value.bResult == false)
+                //가공중 (Processing) or 가공전 (PreProcessing)
+                if (pos.Value.nResult == 1 || pos.Value.nResult == 0)
                 {
                     int socketIndex = pos.Value.socketIndex;
                     string layerName = pos.Value.layerName;
@@ -1392,22 +1405,20 @@ namespace SLD200_MSL
                     workStage.SetProcess_AreaIndex(areaIndex);  // <- 필요시 추가
                     workStage.SetProcessRunning();              // "가공중"
                 }
-                else
+                else if (pos.Value.nResult == 2) //가공완료 (Complete) 전부
                 {
                     workStage.SetProcessCompleted();            // "모든 소켓 가공 완료"
                 }
             }
             else
             {
-                //workStage.SetProcessCompleted();            // "모든 소켓 가공 완료"
+                // null 이면 가공할 것이 없음    
             }
-
 
             //  여기서 정지 후 재시작시 상태 및 소켓 정보 확인 후 구동
             if (workStage.m_nLaserDrilling_MainStep_Recovery == (int)LaserDrilling_Step.DrillingData_PreAlign_Start)
             {
                 //  Pre Align 중이었으니 그대로 시작
-
                 Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Pre Align 부터 다시 시작");
 
                 workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
@@ -1891,7 +1902,7 @@ namespace SLD200_MSL
 
             checkBox_Main_SocketStop.Checked = false;
             checkBox_Main_CycleStop.Checked = false;
-            checkBox_Main_Loader_Transfer_Pause.Checked = false;
+            //checkBox_Main_Loader_Transfer_Pause.Checked = false;
             checkBox_Main_Loader_LPort_Pause.Checked = false;
             checkBox_Main_Loader_RPort_Pause.Checked = false;
 
@@ -1983,7 +1994,7 @@ namespace SLD200_MSL
 
             checkBox_Main_SocketStop.Checked = false;
             checkBox_Main_CycleStop.Checked = false;
-            checkBox_Main_Loader_Transfer_Pause.Checked = false;
+            //checkBox_Main_Loader_Transfer_Pause.Checked = false;
             checkBox_Main_Loader_LPort_Pause.Checked = false;
             checkBox_Main_Loader_RPort_Pause.Checked = false;
 
@@ -2370,7 +2381,7 @@ namespace SLD200_MSL
 
         private void checkBox_Main_Loader_Transfer_Pause_CheckedChanged(object sender, EventArgs e)
         {
-            Equipment.Loader_Transfer_Pause = checkBox_Main_Loader_Transfer_Pause.Checked;
+            //Equipment.Loader_Transfer_Pause = checkBox_Main_Loader_Transfer_Pause.Checked;
         }
 
         private void button_Main_Pause_Click(object sender, EventArgs e)

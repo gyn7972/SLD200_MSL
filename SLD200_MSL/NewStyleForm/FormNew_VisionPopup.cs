@@ -70,10 +70,10 @@ namespace SLD200_MSL
 
             this.m_visionImageViewer_HighRes.SizeMode = PictureBoxSizeMode.CenterImage;
             this.m_visionImageViewer_HighRes.SuspendDisplay();
+            this.m_visionImageViewer_HighRes.Camera = workStage.Camera_HighRes;
+
             this.m_visionImageViewer_LowRes.SizeMode = PictureBoxSizeMode.CenterImage;
             this.m_visionImageViewer_LowRes.SuspendDisplay();
-
-            this.m_visionImageViewer_HighRes.Camera = workStage.Camera_HighRes;
             this.m_visionImageViewer_LowRes.Camera = workStage.Camera_LowRes;
 
             this.hScrollBarIlluminator.ValueChanged += new System.EventHandler(this.hScrollBarIlluminator_ValueChanged); 
