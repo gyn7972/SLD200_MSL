@@ -3258,6 +3258,9 @@ namespace QMC.Common.Modules
             ThruHole_ScannerOnly_LaserBusyCheck,                            //  가공 완료되었는지 확인
             ThruHole_ScannerOnly_RepeatComplete,                            //  가공 반복 완료
 
+            ThruHole_ScannerOnly_Hole1_LaserPower_Change,                   //  Outline 가공이 없을 경우 Hole1 의 Laser Power 로 변경 
+            ThruHole_ScannerOnly_Hole1_LaserPower_Change_DoneCheck,         //  Outline 가공이 없을 경우 Hole1 의 Laser Power 로 변경 완료 확인
+
             ThruHole_DrillingWork_CompleteCheck,                            //  쓰루홀 가공 작업 완료 확인
             /// 
             /// <summary>
@@ -3325,6 +3328,9 @@ namespace QMC.Common.Modules
             OutLine_ScannerOnly_ListData_ExecuteCheck,                      //  List 실행 되었는지 확인
             OutLine_ScannerOnly_LaserBusyCheck,                             //  가공 완료되었는지 확인
             OutLine_ScannerOnly_RepeatComplete,                             //  가공 반복 완료
+
+            OutLine_ScannerOnly_Hole1_LaserPower_Change,                    //  다음 가공이 없을 경우 Hole1 의 Laser Power 로 변경 
+            OutLine_ScannerOnly_Hole1_LaserPower_Change_DoneCheck,          //  다음 가공이 없을 경우 Hole1 의 Laser Power 로 변경 완료 확인
 
             OutLine_DrillingWork_CompleteCheck,                             //  Outline 가공 작업 완료 확인
             /// 
@@ -15252,7 +15258,7 @@ namespace QMC.Common.Modules
                     {
                         if (m_rapidLxLaser_Comm.IsOpen)
                         {
-                            m_strTemp = string.Format("Thruhole Layer Laser Power 변경 시작, Laser Power ({1:0.000})", m_dLaserPower);
+                            m_strTemp = string.Format("Thruhole Layer Laser Power 변경 시작, Laser Power ({0:0.000})", m_dLaserPower);
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
                             TickCount_Start((int)TickType.TICK_MAIN);
@@ -15541,14 +15547,8 @@ namespace QMC.Common.Modules
 
 
                 case (int)LaserDrilling_Step.ThruHole_ScannerOnly_RepeatComplete:                          //  ScannerOny Mode 쓰루홀 가공 완료
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck;
-                    break;
-
-
-                case (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck:              //  쓰루홀 Drilling 작업 완료 확인
 
                     Log.Write("SLD-200", "Auto Run", "Thruhole 가공 Loop, Thruhole 반복 가공 완료, 가공할 Outline Layer 가 남아 있는지 확인");
-
 
                     m_bDrillingWork_Outline_Exist = false;
 
@@ -15562,8 +15562,8 @@ namespace QMC.Common.Modules
 
                             m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
 
-                            m_dThruholeLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DefocusingDistance;
-                            m_dThruholeLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_Resizing;
+                            m_dOutlineLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DefocusingDistance;
+                            m_dOutlineLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_Resizing;
 
                             //  Layer 별로 다르게 해야 하는 파라미터
                             m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
@@ -15579,6 +15579,9 @@ namespace QMC.Common.Modules
                     }
                     else                                                //  Outline Layer 가 없으므로 다음 소켓 체크하러
                     {
+                        m_strTemp = string.Format("다음 소켓 가공하러 가기 전, Hole1 Laser Power 로 변경");
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
                         Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Complete;
                         //Main_SocketPositions_SetStatus = true;                                                      //  상태 변경
 
@@ -15592,9 +15595,73 @@ namespace QMC.Common.Modules
                         Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
                         Thread.Sleep(200);
 
-                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                        //  이건가?
+                        m_nHoleLayer_ProcessIndex = 0;
+                        m_nHoleLayer_ProcessIndex_Count = 0;
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change;
+                    }                    
+                    break;
+
+
+                case (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change:                        //  Outline 가공이 없을 경우 Hole1 의 Laser Power 로 변경 
+
+                    m_dLaserPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
+
+                    if ((m_rapidLxLaser_Comm != null) && (m_dLaserPower > 0.0))
+                    {
+                        if (m_rapidLxLaser_Comm.IsOpen)
+                        {
+                            m_strTemp = string.Format("Thruhole 가공 후 Hole{0} Layer Laser Power 변경 시작, Laser Power ({1:0.000})", m_nHoleLayer_ProcessIndex + 1, m_dLaserPower);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                            TickCount_Start((int)TickType.TICK_MAIN);
+
+                            RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change_DoneCheck;
+                        }
+                        else
+                        {
+                            m_strTemp = string.Format("Thruhole 가공 후 Hole{0} Layer Laser Power 변경 실패. (Laser Comm 열리지 않음)", m_nHoleLayer_ProcessIndex + 1);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck;
+                        }
                     }
+                    else
+                    {
+                        m_strTemp = string.Format("Thruhole 가공 후 Hole{0} Layer Laser Power 변경 실패. (Laser Comm 준비되지 않았거나, 변경 출력이 0)", m_nHoleLayer_ProcessIndex + 1);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change_DoneCheck:                     //  Outline 가공이 없을 경우 Hole1 의 Laser Power 로 변경 확인 완료
+
+                    if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power - 0.5)) &&
+                        (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power + 0.5)))
+                    {
+                        m_strTemp = string.Format("Thruhole 가공 후 Hole{0} Layer Laser Power 변경 성공, Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
+                    {
+                        m_strTemp = string.Format("Thruhole 가공 후 Hole{0} Layer Laser Power 변경 실패, 현재 Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck:              //  쓰루홀 Drilling 작업 완료 확인
+
+                    m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                     break;
 
                 #endregion
@@ -16026,11 +16093,6 @@ namespace QMC.Common.Modules
 
 
                 case (int)LaserDrilling_Step.OutLine_ScannerOnly_RepeatComplete:                          //  ScannerOny Mode 아웃 라인 (라우터) 가공 완료
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck;
-                    break;
-
-
-                case (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck:              //  아웃 라인 (라우터) Drilling 작업 완료 확인
 
                     Log.Write("SLD-200", "Auto Run", "Outline 가공 Loop, Outline 반복 가공 완료, 가공할 소켓이 남아 있는지 확인");
 
@@ -16047,9 +16109,72 @@ namespace QMC.Common.Modules
                     Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
                     Thread.Sleep(200);
 
+                    //  이건가?
+                    m_nHoleLayer_ProcessIndex = 0;
+                    m_nHoleLayer_ProcessIndex_Count = 0;
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_Hole1_LaserPower_Change;
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_Hole1_LaserPower_Change:                        //  다음 가공이 없을 경우 Hole1 의 Laser Power 로 변경 
+
+                    m_dLaserPower = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power;
+
+                    if ((m_rapidLxLaser_Comm != null) && (m_dLaserPower > 0.0))
+                    {
+                        if (m_rapidLxLaser_Comm.IsOpen)
+                        {
+                            m_strTemp = string.Format("Outline 가공 후 Hole{0} Layer Laser Power 변경 시작, Laser Power ({1:0.000})", m_nHoleLayer_ProcessIndex + 1, m_dLaserPower);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                            TickCount_Start((int)TickType.TICK_MAIN);
+
+                            RapidLxLaserComm_Laser_OutputEnergy_Set(m_dLaserPower);
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_ScannerOnly_Hole1_LaserPower_Change_DoneCheck;
+                        }
+                        else
+                        {
+                            m_strTemp = string.Format("Outline 가공 후 Hole{0} Layer Laser Power 변경 실패. (Laser Comm 열리지 않음)", m_nHoleLayer_ProcessIndex + 1);
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck;
+                        }
+                    }
+                    else
+                    {
+                        m_strTemp = string.Format("Outline 가공 후 Hole{0} Layer Laser Power 변경 실패. (Laser Comm 준비되지 않았거나, 변경 출력이 0)", m_nHoleLayer_ProcessIndex + 1);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_ScannerOnly_Hole1_LaserPower_Change_DoneCheck:                     //  Outline 가공이 없을 경우 Hole1 의 Laser Power 로 변경 확인 완료
+
+                    if ((m_dLaser_OutputEnergy > (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power - 0.5)) &&
+                        (m_dLaser_OutputEnergy < (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Drilling_Power + 0.5)))
+                    {
+                        m_strTemp = string.Format("Outline 가공 후 Hole{0} Layer Laser Power 변경 성공, Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
+                    {
+                        m_strTemp = string.Format("Outline 가공 후 Hole{0} Layer Laser Power 변경 실패, 현재 Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck:              //  아웃 라인 (라우터) Drilling 작업 완료 확인
+
                     m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
-
                     break;
 
                 #endregion
@@ -18130,6 +18255,7 @@ namespace QMC.Common.Modules
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck;
                     break;
+
 
                 case (int)LaserDrilling_Step.DividedRegion_ScannerOnly_RegionRemainedCheck:
                     {
@@ -22783,8 +22909,8 @@ namespace QMC.Common.Modules
 
                                     m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
 
-                                    m_dThruholeLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DefocusingDistance;
-                                    m_dThruholeLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_Resizing;
+                                    m_dOutlineLayer_Defocusing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DefocusingDistance;
+                                    m_dOutlineLayer_Resizing = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_Resizing;
 
                                     //  Layer 별로 다르게 해야 하는 파라미터
                                     m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].Miscellaneous_DrillingRepetition;            //  총 반복 회수
@@ -23321,7 +23447,7 @@ namespace QMC.Common.Modules
 
                 //  첫 번째 Edge Point 로 Jump 이동. (원 모양이므로 반지름 만큼 왼쪽으로)
                 entity_Position.X = m_stOutLine_SocketData[m_nOutLine_SocketCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[0].X + m_stOutLine_SocketData[m_nOutLine_SocketCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[1].X -
-                                    m_stOutLine_SocketData[m_nOutLine_SocketCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X - (m_dOutlineLayer_Resizing / 2.0);
+                                    m_stOutLine_SocketData[m_nOutLine_SocketCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.X + (m_dOutlineLayer_Resizing / 2.0);
                 entity_Position.Y = m_stOutLine_SocketData[m_nOutLine_SocketCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dEdgePoint[0].Y -
                                     m_stOutLine_SocketData[m_nOutLine_SocketCount].m_stOutLine_ObjectData[m_nOutLine_ObjectDataCount].dObjectCenter.Y;
             }
@@ -23783,7 +23909,7 @@ namespace QMC.Common.Modules
 
                 //  첫 번째 Edge Point 로 Jump 이동. (원 모양이므로 반지름 만큼 왼쪽으로)
                 entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].X + m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[1].X -
-                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X - (m_dThruholeLayer_Resizing / 2.0);
+                                    m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X + (m_dThruholeLayer_Resizing / 2.0);
                 entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].Y -
                                     m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
             }
