@@ -1074,8 +1074,10 @@ namespace SLD200_MSL
             {
                 int progress = Math.Min(100, m_OneCycleTimeMs * 100 / m_CycleExpectedTimeMs);
                 progressBar_OneCycle_Time.Value = progress;
-                baseLabel_CurrentOneCycle_ElapsedTime.Text = $"{m_OneCycleTimeMs / 1000.0:F1}s / {m_CycleExpectedTimeMs / 1000.0:F1}s";
-
+                //baseLabel_CurrentOneCycle_ElapsedTime.Text = $"{m_OneCycleTimeMs / 1000.0:F1}s / {m_CycleExpectedTimeMs / 1000.0:F1}s";
+                TimeSpan ts = TimeSpan.FromMilliseconds(m_OneCycleTimeMs);
+                baseLabel_CurrentOneCycle_ElapsedTime.Text = ts.ToString(@"hh\:mm\:ss");
+                //baseLabel_CurrentOneCycle_ElapsedTime.Text = $"{m_OneCycleTimeMs / 1000.0:F1}s";
                 m_bNeedUpdateCycleTime = false;
             }
 
