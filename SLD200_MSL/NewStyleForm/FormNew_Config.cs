@@ -150,6 +150,12 @@ namespace SLD200_MSL
             //loader.ActionLoaderTransferStep += OnLoaderStep;
             //unloader.ActionUnloaderTransferStep += OnUnLoaderStep;
 
+            radioButton_Config_LDUL_Move_MoveMode_Fine.Checked = false;
+            radioButton_Config_LDUL_Move_MoveMode_Coarse.Checked = true;
+
+            radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked = false;
+            radioButton_Config_WorkStage_Move_MoveMode_Coarse.Checked = true;
+
         }
 
         

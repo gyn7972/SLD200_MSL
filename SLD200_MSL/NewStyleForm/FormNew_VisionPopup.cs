@@ -88,6 +88,9 @@ namespace SLD200_MSL
             detectedCircles = new List<Rectangle>(); // 사각형을 저장할 필드
 
             m_nStageSwitchingMove_Index = 0;            //  시작은 Low Mag Camera
+
+            radioButton_VisionPopup_Move_MoveMode_Fine.Checked = false;
+            radioButton_VisionPopup_Move_MoveMode_Coarse.Checked = true;
         }
 
         public FormNew_VisionPopup CreateSiriusEditor()

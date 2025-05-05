@@ -897,7 +897,6 @@ namespace SLD200_MSL
                     ? global::SLD200.Properties.Resources.DioEllipseOn
                     : global::SLD200.Properties.Resources.DioEllipseOff;
             }
-
         }
 
         // -----------------------
