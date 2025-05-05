@@ -429,7 +429,7 @@ namespace QMC.Common.Parts
 
                         }
                         //Thread.Sleep(Config.MoveToDelay);
-                        Thread.Sleep(500);
+                        Thread.Sleep(200);
 
                         m_AlignPositions[0].X = xyInterpolatedCoordinate.X;
                         m_AlignPositions[0].Y = xyInterpolatedCoordinate.Y;
@@ -559,9 +559,9 @@ namespace QMC.Common.Parts
                         {
                             // 꼭확인
                             // 1, 2번 마크 위치가.. 좌우 바뀌었는데...
-                            XyzCoordinate position1 = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos2.X, Equipment.stLayerRecipeSet[0].PreAlignPos2.Y, 0.0);
+                            XyzCoordinate position1 = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
 
-                            XyzCoordinate position2 = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
+                            XyzCoordinate position2 = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos2.X, Equipment.stLayerRecipeSet[0].PreAlignPos2.Y, 0.0);
 
                             double dRefAngle = GetAngle(new XyCoordinate(position1.X,position1.Y), new XyCoordinate(position2.X, position2.Y));
                             position1.X += finalFirstPosition.X;
