@@ -644,7 +644,7 @@ namespace QMC.Common.Parts
                     {
                         //if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == true)
                         if (MC_Func.MC_GetDone((int)nAxis.Y)
-                            && MC_Func.MC_PosTolerance((int)nAxis.X, xyInterpolatedCoordinate.Y))
+                            && MC_Func.MC_PosTolerance((int)nAxis.Y, xyInterpolatedCoordinate.Y))
                         {
                             break;
                         }
@@ -667,9 +667,11 @@ namespace QMC.Common.Parts
                         List<VisionImage> images = new List<VisionImage>();
                         DateTime dt = DateTime.Now;
 
+                        this.Camera.StopLive();
                         for (int iter = 0; iter < 5; iter++)
                         {
                             VisionImage image = null;
+                            
                             this.Camera.GrabSync(Vision.Cameras.Purpose.Processing, out image);
                             images.Add(image);
                         }

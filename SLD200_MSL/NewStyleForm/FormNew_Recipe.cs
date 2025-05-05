@@ -741,10 +741,10 @@ namespace SLD200_MSL
 
                 //  Laser Pulse Width (us)
                 NativeMethods.GetPrivateProfileString(strTemp, "Pulse_Width", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].LaserParam_PulseWidth = Equipment.ToInt(temp.ToString());
+                Equipment.stLayerRecipeSet[i].LaserParam_PulseWidth = Equipment.ToDouble(temp.ToString());
                 //  Laser Pulse Period (us)
                 NativeMethods.GetPrivateProfileString(strTemp, "Pulse_Period", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].LaserParam_PulsePeriod = Equipment.ToInt(temp.ToString());
+                Equipment.stLayerRecipeSet[i].LaserParam_PulsePeriod = Equipment.ToDouble(temp.ToString());
                 //  Laser Frequency (Hz)
                 NativeMethods.GetPrivateProfileString(strTemp, "Frequency", "0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].LaserParam_Frequency = Equipment.ToInt(temp.ToString());
@@ -945,8 +945,8 @@ namespace SLD200_MSL
 
                 Equipment.stLayerRecipeSet[i].DrawingFile = ReadValue(data, "Drawing_File_Name", "");
 
-                Equipment.stLayerRecipeSet[i].LaserParam_PulseWidth = ReadInt(data, "Pulse_Width", 0);
-                Equipment.stLayerRecipeSet[i].LaserParam_PulsePeriod = ReadInt(data, "Pulse_Period", 0);
+                Equipment.stLayerRecipeSet[i].LaserParam_PulseWidth = ReadDouble(data, "Pulse_Width", 0);
+                Equipment.stLayerRecipeSet[i].LaserParam_PulsePeriod = ReadDouble(data, "Pulse_Period", 0);
                 Equipment.stLayerRecipeSet[i].LaserParam_Frequency = ReadInt(data, "Frequency", 0);
                 Equipment.stLayerRecipeSet[i].LaserParam_DutyCycle = ReadDouble(data, "Duty_Cycle", 0.0);
 
@@ -1471,8 +1471,8 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[0].DrawingFile = richTextBox_Recipe_TabRecipe_DrawingFile.Text;                  //  Drawing File 은 0번 Layer 에만 저장한다.
 
             //  Laser Parameter
-            Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_PulseWidth = textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text) : 0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_PulsePeriod = textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_PulseWidth = textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text) : 0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_PulsePeriod = textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_Frequency = textBox_Recipe_TabRecipe_LaserParam_Frequency.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_LaserParam_Frequency.Text) : 0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_DutyCycle = textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 0;
 
