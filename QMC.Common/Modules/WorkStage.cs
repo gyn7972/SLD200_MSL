@@ -17927,7 +17927,7 @@ namespace QMC.Common.Modules
                             positionFirst = this.ConvertPointFineCam(positionFirst);
                             xyCoordinateAlignPositionLast= new XyCoordinate( positionFirst.X, positionFirst.Y);
 
-                            positionFirst.X += dfx;
+                            positionFirst.X -= dfx;
                             positionFirst.Y -= dfy;
 
                             xyCoordinateAlignPositionOrgLast  = new XyCoordinate(positionFirst.X, positionFirst.Y);
@@ -23528,6 +23528,8 @@ namespace QMC.Common.Modules
                 m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
 
                 m_nThruHole_ObjectDataCount = 0;
+
+                m_nThruHole_SocketCount = m_nDrillingWork_Group_Count;
 
 
                 nextStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_ObjectData_RemainedCheck;

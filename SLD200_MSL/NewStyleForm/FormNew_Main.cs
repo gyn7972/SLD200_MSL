@@ -2322,6 +2322,7 @@ namespace SLD200_MSL
 
             //  Unloader 파츠 사용 변수 초기화
             unloader.m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
+            unloader.m_nUnloaderTransferMoveType = (int)UnloaderTransferMoveType.Cycle_None;
             unloader.m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
             unloader.m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
 
@@ -2576,9 +2577,18 @@ namespace SLD200_MSL
 
         private void buttonForceMaterialOut_Click(object sender, EventArgs e)
         {
-            workStage.m_bLaserDrilling_Complete = true;
-            workStage.m_nLaserDrilling_MainStep = 0;
-            workStage.m_nSocketAlign_MainStep = 0;
+            if (!Equipment.AutoRunStatus)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "Button Click", "강제배출 버튼 Click");
+
+                workStage.m_bLaserDrilling_Complete = true;
+                workStage.m_nLaserDrilling_MainStep = 0;
+                workStage.m_nSocketAlign_MainStep = 0;
+            }
+            else
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "Button Click", "AutoRun 중 강제배출 버튼 Click");
+            }
         }
         private void FormNew_Main_Load(object sender, EventArgs e)
         {
