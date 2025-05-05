@@ -31,9 +31,9 @@ namespace SLD200_MSL
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.groupBoxSelectedAlarmDetails = new System.Windows.Forms.GroupBox();
             this.baseTextBoxAlarmTitle = new QMC.Common.UI.BaseTextBox();
             this.baseTextBoxCode = new QMC.Common.UI.BaseTextBox();
@@ -45,13 +45,13 @@ namespace SLD200_MSL
             this.radioButtonLastCell = new System.Windows.Forms.RadioButton();
             this.radioButtonUserSelectedCell = new System.Windows.Forms.RadioButton();
             this.groupBoxRecovery = new System.Windows.Forms.GroupBox();
+            this.button_Alarm_Buzz_Off = new System.Windows.Forms.Button();
             this.panelComfirm = new System.Windows.Forms.Panel();
             this.baseLabelCause = new QMC.Common.UI.BaseLabel();
             this.baseLabelSource = new QMC.Common.UI.BaseLabel();
             this.baseLabelGrade = new QMC.Common.UI.BaseLabel();
             this.baseLabelAlarmTitle = new QMC.Common.UI.BaseLabel();
             this.baseDataGridViewAlarm = new QMC.Common.UI.BaseDataGridView();
-            this.button_Alarm_Buzz_Off = new System.Windows.Forms.Button();
             this.groupBoxSelectedAlarmDetails.SuspendLayout();
             this.groupBoxCellFocusOption.SuspendLayout();
             this.groupBoxRecovery.SuspendLayout();
@@ -226,12 +226,23 @@ namespace SLD200_MSL
             this.groupBoxRecovery.TabStop = false;
             this.groupBoxRecovery.Text = " Recovery ";
             // 
+            // button_Alarm_Buzz_Off
+            // 
+            this.button_Alarm_Buzz_Off.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.button_Alarm_Buzz_Off.Location = new System.Drawing.Point(21, 158);
+            this.button_Alarm_Buzz_Off.Name = "button_Alarm_Buzz_Off";
+            this.button_Alarm_Buzz_Off.Size = new System.Drawing.Size(241, 55);
+            this.button_Alarm_Buzz_Off.TabIndex = 1;
+            this.button_Alarm_Buzz_Off.Text = "부저 정지";
+            this.button_Alarm_Buzz_Off.UseVisualStyleBackColor = true;
+            this.button_Alarm_Buzz_Off.Click += new System.EventHandler(this.button_Alarm_Buzz_Off_Click);
+            // 
             // panelComfirm
             // 
             this.panelComfirm.Location = new System.Drawing.Point(21, 48);
             this.panelComfirm.Margin = new System.Windows.Forms.Padding(4);
             this.panelComfirm.Name = "panelComfirm";
-            this.panelComfirm.Size = new System.Drawing.Size(241, 82);
+            this.panelComfirm.Size = new System.Drawing.Size(241, 103);
             this.panelComfirm.TabIndex = 0;
             // 
             // baseLabelCause
@@ -300,37 +311,37 @@ namespace SLD200_MSL
             this.baseDataGridViewAlarm.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.baseDataGridViewAlarm.BackgroundColor = System.Drawing.Color.White;
             this.baseDataGridViewAlarm.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 12F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.baseDataGridViewAlarm.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 12F);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.baseDataGridViewAlarm.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.baseDataGridViewAlarm.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 12F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(3)))), ((int)(((byte)(3)))));
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.baseDataGridViewAlarm.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 12F);
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(3)))), ((int)(((byte)(3)))));
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.baseDataGridViewAlarm.DefaultCellStyle = dataGridViewCellStyle5;
             this.baseDataGridViewAlarm.Font = new System.Drawing.Font("Tahoma", 12F);
             this.baseDataGridViewAlarm.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(3)))), ((int)(((byte)(3)))));
             this.baseDataGridViewAlarm.Location = new System.Drawing.Point(27, 493);
             this.baseDataGridViewAlarm.Margin = new System.Windows.Forms.Padding(4);
             this.baseDataGridViewAlarm.Name = "baseDataGridViewAlarm";
             this.baseDataGridViewAlarm.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 12F);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.baseDataGridViewAlarm.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 12F);
+            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(78)))), ((int)(((byte)(78)))));
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.baseDataGridViewAlarm.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             this.baseDataGridViewAlarm.RowHeadersVisible = false;
             this.baseDataGridViewAlarm.RowHeadersWidth = 62;
             this.baseDataGridViewAlarm.RowTemplate.Height = 23;
@@ -340,16 +351,6 @@ namespace SLD200_MSL
             this.baseDataGridViewAlarm.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.baseDataGridViewAlarm_CellContentClick);
             this.baseDataGridViewAlarm.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.baseDataGridViewAlarm_RowsAdded);
             this.baseDataGridViewAlarm.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.baseDataGridViewAlarm_RowsRemoved);
-            // 
-            // button_Alarm_Buzz_Off
-            // 
-            this.button_Alarm_Buzz_Off.Location = new System.Drawing.Point(21, 148);
-            this.button_Alarm_Buzz_Off.Name = "button_Alarm_Buzz_Off";
-            this.button_Alarm_Buzz_Off.Size = new System.Drawing.Size(241, 66);
-            this.button_Alarm_Buzz_Off.TabIndex = 1;
-            this.button_Alarm_Buzz_Off.Text = "부저 끄기";
-            this.button_Alarm_Buzz_Off.UseVisualStyleBackColor = true;
-            this.button_Alarm_Buzz_Off.Click += new System.EventHandler(this.button_Alarm_Buzz_Off_Click);
             // 
             // FormNew_Alarm
             // 

@@ -53,12 +53,10 @@ namespace QMC.Common.Modules
 
             Illuminator.Config = Config.IlluminatorConfig;
 
-
             TowerLamp = new TowerLamp("TowerLamp");
             TowerLamp.Create();
             TowerLamp.Owner = this;
             Parts.Add(TowerLamp);
-
 
             OperationButtons = new OperationButtons("OperationButtons");
             OperationButtons.Create();
@@ -69,7 +67,6 @@ namespace QMC.Common.Modules
             BarcodeReader.Create();
             BarcodeReader.Owner = this;
             Parts.Add(BarcodeReader);
-
             BarcodeReader.Config = Config.BarcodeReaderConfig;*/
 
             return ret;

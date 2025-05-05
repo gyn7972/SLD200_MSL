@@ -248,7 +248,6 @@ namespace QMC.Common.Parts
             }
             return ret;
         }
-
         public int StopLamp(bool bOn)
         {
             int ret = 0;
@@ -271,7 +270,6 @@ namespace QMC.Common.Parts
             }
             return ret;
         }
-
         public bool IsStop()
         {
             bool bRet = false;
@@ -311,7 +309,6 @@ namespace QMC.Common.Parts
             }
             return ret;
         }
-
         public int ResetLamp(bool bOn)
         {
             int ret = 0;

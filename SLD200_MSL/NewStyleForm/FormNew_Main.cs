@@ -64,6 +64,9 @@ namespace SLD200_MSL
 
         private System.Windows.Forms.Timer timer_Main_Status;
 
+        private bool m_bLaserIsProcessing = false;  //레이저 가공 중인지 확인하는 변수
+        private bool m_bNeedLaserProcessingMessage = false; //레이저 가공 중 UI 갱신을 위해 플래그 설정
+
         private Thread m_MainStatusThread;
         private bool m_bMainStatusCycleExit;
 
@@ -687,6 +690,7 @@ namespace SLD200_MSL
             // Laser m_rapidLxLaser_Comm
             if (workStage.m_rapidLxLaser_Comm == null)
             {
+                workStage.m_bRapidLxLaser_UserConnect = true;
                 workStage.RapidLxLaser_Comm_Init();
             }
             else
@@ -863,6 +867,12 @@ namespace SLD200_MSL
         private (int, int) m_CompSocketRowCol, m_CompRegionRowCol;
         private int m_CompSocketStatus, m_CompRegionStatus;
 
+
+        //stageWork Onecycle Time.
+        private int m_OneCycleTimeMs = -1;         // 전달받은 가공 시간 (ms)
+        private bool m_bNeedUpdateCycleTime = false;
+        private int m_CycleExpectedTimeMs = 90000; // 예상 시간 (예: 90초)
+
         private async void Timer_MainStatus_Func(object sender, EventArgs e)
         {
             // 동시에 진행되지 않는 함수들만 동일한 타이머로 한다.
@@ -905,6 +915,48 @@ namespace SLD200_MSL
         // -----------------------
         private void DoHeavyLogicPart()
         {
+            //레이저 가공 중 상태 체크
+            bool isLaserBusy = false;
+            try
+            {
+                if(workStage.rtc != null)
+                {
+                    isLaserBusy = workStage.rtc.CtlGetStatus(RtcStatus.Busy);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+            if (isLaserBusy && !m_bLaserIsProcessing)
+            {
+                m_bLaserIsProcessing = true;
+                m_bNeedLaserProcessingMessage = true;  //UI 갱신을 위해 플래그 설정
+            }
+            else if (!isLaserBusy && m_bLaserIsProcessing)
+            {
+                m_bLaserIsProcessing = false;
+                m_bNeedLaserProcessingMessage = true;
+            }
+
+            //private int m_OneCycleTimeMs = -1;         // 전달받은 가공 시간 (ms)
+            //private bool m_bNeedUpdateCycleTime = false;
+
+            if (!m_bNeedUpdateCycleTime)
+            {
+                if(workStage.m_OneCycleTimeMs == -1)
+                {
+                    m_OneCycleTimeMs = 0;
+                }
+                else
+                {
+                    m_OneCycleTimeMs = workStage.m_OneCycleTimeMs;
+                    m_bNeedUpdateCycleTime = true;
+                }
+                
+            }
+
             if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
             {
                 workStage.m_bHomeProgressForm_Close = false;
@@ -1016,6 +1068,27 @@ namespace SLD200_MSL
         // -----------------------
         private void UpdateUIControls()
         {
+            // 가공 시간 ProgressBar 표시
+            if (m_bNeedUpdateCycleTime)
+            {
+                int progress = Math.Min(100, m_OneCycleTimeMs * 100 / m_CycleExpectedTimeMs);
+                progressBar_OneCycle_Time.Value = progress;
+                //baseLabel_CurrentOneCycle_ElapsedTime.Text = $"{m_OneCycleTimeMs / 1000.0:F1}s / {m_CycleExpectedTimeMs / 1000.0:F1}s";
+                TimeSpan ts = TimeSpan.FromMilliseconds(m_OneCycleTimeMs);
+                baseLabel_CurrentOneCycle_ElapsedTime.Text = ts.ToString(@"hh\:mm\:ss");
+                //baseLabel_CurrentOneCycle_ElapsedTime.Text = $"{m_OneCycleTimeMs / 1000.0:F1}s";
+                m_bNeedUpdateCycleTime = false;
+            }
+
+            if (m_bNeedLaserProcessingMessage)
+            {
+                m_bNeedLaserProcessingMessage = false;
+
+                label_Main_LaserStatus.Text = m_bLaserIsProcessing ? "⚠ 레이저 가공 중" : "레이저 대기 중";
+                label_Main_LaserStatus.BackColor = m_bLaserIsProcessing ? Color.Red : Color.Black;
+                label_Main_LaserStatus.ForeColor = m_bLaserIsProcessing ? Color.White : Color.Lime;
+            }
+
             if (m_bNeedHideProgressForm)
             {
                 m_bNeedHideProgressForm = false;
@@ -2098,6 +2171,7 @@ namespace SLD200_MSL
 
         private void button_TEST_RTCInit_Click(object sender, EventArgs e)
         {
+            return;
             //SiriusViewer_Main.Document = Equipment.EqpSiriusViewer_Origin.Document;
             //workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
             //m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
@@ -2635,14 +2709,12 @@ namespace SLD200_MSL
             }
         }
 
-        private void button_Test12_Click(object sender, EventArgs e)
-        {
-            workStage.AlarmPost(QMC.Common.Modules.WorkStage.AlarmKey.PreAlignFail);
-        }
-
         private void button_TEST12_Click(object sender, EventArgs e)
         {
-            Equipment.AutoManualStatus = false;
+            return;
+
+            //Equipment.AutoRunStatus = true;
+            Equipment.AutoManualStatus = true;
 
             int nCol = workStage.Main_SocketPositions_ColumnCount = 5;
             int nRow = workStage.Main_SocketPositions_RowCount = 5;

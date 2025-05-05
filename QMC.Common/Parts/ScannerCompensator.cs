@@ -644,7 +644,7 @@ namespace QMC.Common.Parts
                     {
                         //if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == true)
                         if (MC_Func.MC_GetDone((int)nAxis.Y)
-                            && MC_Func.MC_PosTolerance((int)nAxis.X, xyInterpolatedCoordinate.Y))
+                            && MC_Func.MC_PosTolerance((int)nAxis.Y, xyInterpolatedCoordinate.Y))
                         {
                             break;
                         }

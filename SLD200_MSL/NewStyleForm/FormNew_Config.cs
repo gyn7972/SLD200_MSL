@@ -31,6 +31,8 @@ namespace SLD200_MSL
 {
     public partial class FormNew_Config : Form
     {
+        private bool m_bFormVisible = false; // 실제 Show 상태 여부
+
         FormNew_VisionPopup m_formVisionPopup = new FormNew_VisionPopup();
         public FormNew_VisionPopup FormVisionPopup
         {
@@ -64,7 +66,6 @@ namespace SLD200_MSL
         private int m_nBDSAddrCount = 0;
 
         XyCoordinate xyInterpolatedCoordinate = new XyCoordinate();
-
         public FormNew_Config()
         {
             InitializeComponent();
@@ -149,9 +150,15 @@ namespace SLD200_MSL
             //loader.ActionLoaderTransferStep += OnLoaderStep;
             //unloader.ActionUnloaderTransferStep += OnUnLoaderStep;
 
+            radioButton_Config_LDUL_Move_MoveMode_Fine.Checked = false;
+            radioButton_Config_LDUL_Move_MoveMode_Coarse.Checked = true;
+
+            radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked = false;
+            radioButton_Config_WorkStage_Move_MoveMode_Coarse.Checked = true;
+
         }
 
-        private bool m_bFormVisible = false; // 실제 Show 상태 여부
+        
         protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
@@ -162,7 +169,7 @@ namespace SLD200_MSL
             if (this.Visible && !m_bFormVisible)
             {
                 m_bFormVisible = true;
-                // OnShowRecipeForm();
+                timer_Status.Enabled = true;
             }
             else if (!this.Visible && m_bFormVisible)
             {
@@ -340,13 +347,8 @@ namespace SLD200_MSL
         {
             timer_Status.Enabled = false;
 
-            DIO_Status();
-            Motor_Position();
-            AIO_Status();
-            UpdateSeqStatus();
             ///////////////////////////////////////////////////////////////////////////////////////
             //  비상 정지 시
-            //
             if (CommonModule.Instance.OperationButtons.IsEMG())
             {
                 //  Main Work 타이머
@@ -368,9 +370,7 @@ namespace SLD200_MSL
                 workStage.m_nReticleCheck_LowResCam_Step = (int)WorkStage.ReticleCheck_LowResCam_Step.None;
                 workStage.m_nSafetyPos_Move_Step = (int)WorkStage.SafetyPos_Move_Step.None;
 
-
                 Equipment.MachineStop_byUser = true;
-
 
                 loader.MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z0, 2000);
                 loader.MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z1, 2000);
@@ -391,9 +391,7 @@ namespace SLD200_MSL
                     workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.MASK_Y, 2000);
                 }
 
-
                 workStage.m_bHomeOK = false;
-
 
                 if (m_bEmgBtn_Clicked == false)
                 {
@@ -408,9 +406,18 @@ namespace SLD200_MSL
                 m_bEmgBtn_Clicked = false;
             }
 
-            /////////////////////////////////////////////////////////////////////////////////////
-            ///
+            if (m_bFormVisible == false)
+            {
+                timer_Status.Enabled = false;
+                return;
+            }
 
+            DIO_Status();
+            Motor_Position();
+            AIO_Status();
+            UpdateSeqStatus();
+
+            /////////////////////////////////////////////////////////////////////////////////////
             //  PowerMeter
             label_Config_Laser_PowerMeterValue_BDS.Text = string.Format("{0:0.00000}", workStage.m_dPowerMeterBDS_Value);
             label_Config_Laser_PowerMeterValue_Stage.Text = string.Format("{0:0.00000}", workStage.m_dPowerMeterStage_Value);
@@ -420,10 +427,7 @@ namespace SLD200_MSL
             label_Config_WorkStage_LaserHeightSensorValue.Text = string.Format("{0:0.00000}", workStage.m_dLaserHeightSensorSocket_Value);
 
             /////////////////////////////////////////////////////////////////////////////////////
-            ///
-
             //  Laser Status
-
             if ((workStage.m_rapidLxLaser_Comm != null) && (workStage.m_rapidLxLaser_Comm.IsOpen))
             {
                 //  Host Name
@@ -533,8 +537,6 @@ namespace SLD200_MSL
                 //  THG Temperature
                 baseLabel_Config_TabLaser_THGTemperature.Text = string.Format("{0}", workStage.m_dLaser_THGTemperature);
 
-
-
                 //  Laser Comm 최초 연결 시 세팅된 값을 읽기 위함. (User 세팅 파라미터를 현재 세팅값으로 표시하기 위해서), (0 : Get, 1 : Get Complete, 2 : Set Complete)
                 if (workStage.m_nLaserComm_SetValue_Get_Process == 1)
                 {
@@ -561,18 +563,12 @@ namespace SLD200_MSL
                 baseLabel_Config_TabLaser_PercentOfEnergy.Text = "";
             }
 
-
             /////////////////////////////////////////////////////////////////////////////
-            ///
-
             //  ElectroPneumaticRetulator
             label_Config_TabWorkStage_ElectroPneumaticRegulator_CurrentPressure.Text = workStage.m_dEPRO_Value.ToString("0.0000");
             label_Config_TabWorkStage_ElectroPneumaticRegulator_SetValue.Text = workStage.m_dEPRO_SetValue.ToString("0.0000");
 
-
             /////////////////////////////////////////////////////////////////////////////
-            ///
-
             //  Laser Connect Button Caption
             if (workStage.m_rapidLxLaser_Comm != null)
             {
@@ -587,13 +583,6 @@ namespace SLD200_MSL
             }
 
 
-            //m_btimer_MainWork_Stop = false;
-            //timer_MainWork.Enabled = false;
-
-            //if (!m_btimer_MainWork_Stop)
-            //{
-            //    timer_MainWork.Enabled = true;
-            //}
 
             timer_Status.Enabled = true;
         }
