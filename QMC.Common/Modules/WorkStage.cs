@@ -17847,7 +17847,7 @@ namespace QMC.Common.Modules
                             positionFirst = this.ConvertPointFineCam(positionFirst);
                             xyCoordinateAlignPositionLast= new XyCoordinate( positionFirst.X, positionFirst.Y);
 
-                            positionFirst.X += dfx;
+                            positionFirst.X -= dfx;
                             positionFirst.Y -= dfy;
 
                             xyCoordinateAlignPositionOrgLast  = new XyCoordinate(positionFirst.X, positionFirst.Y);
@@ -19770,7 +19770,7 @@ namespace QMC.Common.Modules
                                     //todo : 김영남 속도 개선중 
                                     //Spiral 데이터 파라미터(외경 크기, 내경 크기, Spiral 회전 횟수, Spiral 회전 각도, Hole Center X, Hole Center Y)
 
-                                    bool bIsPolyLine = false;
+                                    bool bIsPolyLine = true;
                                     if(bIsPolyLine)
                                     {
                                         lwPolyLineSpiral = SpiralData_Create(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot.X, entity_Position_Rot.Y);
@@ -19928,7 +19928,7 @@ namespace QMC.Common.Modules
 
                                     //todo : 김영남 속도 개선중 
                                     //  Spiral 데이터 파라미터 (외경 크기, 내경 크기, Spiral 회전 횟수, Spiral 회전 각도, Hole Center X, Hole Center Y)
-                                    bool bIsPolyLine = false;
+                                    bool bIsPolyLine = true;
                                     if(bIsPolyLine)
                                     {
                                         lwPolyLineSpiral = SpiralData_Create(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot.X, entity_Position_Rot.Y);
