@@ -1573,6 +1573,8 @@ namespace QMC.Common.Modules
             SocketAlignXYMoveFail,
             SocketAlignMovePositionCalcFail,
             PreAlignFail,
+            eLaserComm_NotOpen,
+            eLaserPowerChange_Fail,
             MainStage_Vacuum_Off_Fail,
             Home_MainStage_Vacuum_Off_Fail,
             Home_LoaderPicker_Vacuum_Off_Fail,
@@ -1900,6 +1902,22 @@ namespace QMC.Common.Modules
             alarm.Code = (int)AlarmKey.PreAlignFail;
             alarm.Title = "PRE Align";
             alarm.Cause = "PRE ALIGN 데이터 계산에 실패 하였습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.eLaserComm_NotOpen;
+            alarm.Title = "Laser";
+            alarm.Cause = "Laser Comm. Port 가 열리지 않았습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.eLaserPowerChange_Fail;
+            alarm.Title = "Laser";
+            alarm.Cause = "Laser 가공 Power 변경에 실패하였습니다. (Comm. Not Open or Power Value 0) ";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -7981,6 +7999,14 @@ namespace QMC.Common.Modules
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.ThruHole_StageZ_MoveStartPos;
             }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_LayerParameter_LaserPower_Change_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.ThruHole_LayerParameter_LaserPower_Change;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change;
+            }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck)
             {
                 m_nLaserDrilling_MainStep_Recovery = LaserDrilling_MainStep;
@@ -7989,9 +8015,21 @@ namespace QMC.Common.Modules
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.OutLine_StageZ_MoveStartPos;
             }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_LayerParameter_LaserPower_Change_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.OutLine_LayerParameter_LaserPower_Change;
+            }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_LayerParameter_Change_Complete)
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_MainStep;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_ScannerOnly_Hole1_LaserPower_Change_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.OutLine_ScannerOnly_Hole1_LaserPower_Change;
+            }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = LaserDrilling_MainStep;
             }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.Drilling_LayerParameter_ZOffset_Move_DoneCheck)
             {
@@ -15298,6 +15336,7 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole Layer Laser Power 변경 실패. (Laser Comm 열리지 않음)");
 
+                            return AlarmPost(AlarmKey.eLaserComm_NotOpen); 
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_forUV_Check;
                         }
                     }
@@ -15305,6 +15344,7 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole Layer Laser Power 변경 실패. (Laser Comm 준비되지 않았거나, 변경 출력이 0)");
 
+                        return AlarmPost(AlarmKey.eLaserPowerChange_Fail); 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_forUV_Check;
                     }
                     break;
@@ -15331,11 +15371,12 @@ namespace QMC.Common.Modules
 
                         Thread.Sleep(200);
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000)         //  Laser Power 변경 확인하는데 5초면 충분... 이것도 많다.
                     {
                         m_strTemp = string.Format("Thruhole Layer 가공 Laser Power 변경 실패, 현재 Laser Power ({0})", m_dLaser_OutputEnergy);
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
+                        return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_forUV_Check;
                     }
                     break;
@@ -15664,6 +15705,7 @@ namespace QMC.Common.Modules
                             m_strTemp = string.Format("Thruhole 가공 후 Hole{0} Layer Laser Power 변경 실패. (Laser Comm 열리지 않음)", m_nHoleLayer_ProcessIndex + 1);
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
+                            return AlarmPost(AlarmKey.eLaserComm_NotOpen);
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck;
                         }
                     }
@@ -15672,6 +15714,7 @@ namespace QMC.Common.Modules
                         m_strTemp = string.Format("Thruhole 가공 후 Hole{0} Layer Laser Power 변경 실패. (Laser Comm 준비되지 않았거나, 변경 출력이 0)", m_nHoleLayer_ProcessIndex + 1);
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
+                        return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck;
                     }
                     break;
@@ -15692,6 +15735,7 @@ namespace QMC.Common.Modules
                         m_strTemp = string.Format("Thruhole 가공 후 Hole{0} Layer Laser Power 변경 실패, 현재 Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
+                        return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_CompleteCheck;
                     }
                     break;
@@ -15855,6 +15899,7 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline Layer 가공 Laser Power 변경 실패. (Laser Comm 열리지 않음)");
 
+                            return AlarmPost(AlarmKey.eLaserComm_NotOpen);
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_forUV_Check;
                         }
                     }
@@ -15862,6 +15907,7 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Outline Layer 가공 Laser Power 변경 실패. (Laser Comm 준비되지 않았거나, 변경 출력이 0)");
 
+                        return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_forUV_Check;
                     }
                     break;
@@ -15877,11 +15923,12 @@ namespace QMC.Common.Modules
 
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_forUV_Check;
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 10000)
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000)
                     {
                         m_strTemp = string.Format("Outline Layer 가공을 위한 Laser Power 변경 실패, 현재 Laser Power ({0})", m_dLaser_OutputEnergy);
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
+                        return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_LayerParameter_forUV_Check;
                     }
                     break;
@@ -16177,6 +16224,7 @@ namespace QMC.Common.Modules
                             m_strTemp = string.Format("Outline 가공 후 Hole{0} Layer Laser Power 변경 실패. (Laser Comm 열리지 않음)", m_nHoleLayer_ProcessIndex + 1);
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
+                            return AlarmPost(AlarmKey.eLaserComm_NotOpen);
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck;
                         }
                     }
@@ -16185,6 +16233,7 @@ namespace QMC.Common.Modules
                         m_strTemp = string.Format("Outline 가공 후 Hole{0} Layer Laser Power 변경 실패. (Laser Comm 준비되지 않았거나, 변경 출력이 0)", m_nHoleLayer_ProcessIndex + 1);
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
+                        return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck;
                     }
                     break;
@@ -16205,6 +16254,7 @@ namespace QMC.Common.Modules
                         m_strTemp = string.Format("Outline 가공 후 Hole{0} Layer Laser Power 변경 실패, 현재 Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
+                        return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_CompleteCheck;
                     }
                     break;
@@ -17331,6 +17381,7 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Hole1 Layer Laser Power 변경 실패. (Laser Comm 열리지 않음)");
 
+                            return AlarmPost(AlarmKey.eLaserComm_NotOpen);
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
                         }
                     }
@@ -17338,6 +17389,7 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket 가공 중 Hole1 Layer Laser Power 변경 실패. (Laser Comm 준비되지 않았거나, 변경 출력이 0)");
 
+                        return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
                     }
                     break;
@@ -17358,6 +17410,7 @@ namespace QMC.Common.Modules
                         m_strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 실패, 현재 Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
+                        return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_forUV_Check;
                     }
                     break;
@@ -18391,6 +18444,7 @@ namespace QMC.Common.Modules
                             m_strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 실패. (Laser Comm 열리지 않음)", m_nHoleLayer_ProcessIndex + 1);
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
+                            return AlarmPost(AlarmKey.eLaserComm_NotOpen);
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ParameterChange_Complete;
                         }
                     }
@@ -18399,6 +18453,7 @@ namespace QMC.Common.Modules
                         m_strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 실패. (Laser Comm 준비되지 않았거나, 변경 출력이 0)", m_nHoleLayer_ProcessIndex + 1);
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
+                        return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ParameterChange_Complete;
                     }
                     break;
@@ -18419,6 +18474,7 @@ namespace QMC.Common.Modules
                         m_strTemp = string.Format("Socket 가공 중 Hole{0} Layer Laser Power 변경 실패, 현재 Laser Power ({1})", m_nHoleLayer_ProcessIndex + 1, m_dLaser_OutputEnergy);
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
+                        return AlarmPost(AlarmKey.eLaserPowerChange_Fail);
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_ScannerOnly_Hole2_4_Socket_ParameterChange_Complete;
                     }
                     break;

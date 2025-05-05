@@ -2059,9 +2059,50 @@ namespace SLD200_MSL
             MessageBox.Show("Recipe Data를 로드하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void richTextBox_Recipe_TabRecipe_DrawingFile_TextChanged(object sender, EventArgs e)
+        private void button_DutyCycle_Calc_Click(object sender, EventArgs e)
         {
+            try
+            {
+                // 입력값 가져오기
+                double frequency = double.Parse(textBox_Recipe_TabRecipe_LaserParam_Frequency.Text);
+                double pulseWidthUs = double.Parse(textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text);
 
+                // Period 계산
+                double periodSeconds = 1 / frequency;
+
+                // Duty Cycle 계산
+                double dutyCycle = (pulseWidthUs / (periodSeconds * 1_000_000)) * 100;
+
+                // 결과 출력
+                textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = dutyCycle.ToString(); //$"Duty Cycle: {dutyCycle:F2}%";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void button_PulseWidth_Calc_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // 입력값 가져오기
+                double frequency = double.Parse(textBox_Recipe_TabRecipe_LaserParam_Frequency.Text);
+                double dutyCycle = double.Parse(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text);
+
+                // Period 계산 (초 단위) 
+                double periodSeconds = 1 / frequency;
+
+                // Pulse Width 계산 (μs 단위)
+                double pulseWidthUs = (dutyCycle * periodSeconds / 100) * 1_000_000;
+
+                // 결과 출력
+                textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text = pulseWidthUs.ToString("F2"); // 소수점 2자리까지 표시
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
         }
     }
 }
