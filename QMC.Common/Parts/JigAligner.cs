@@ -448,7 +448,7 @@ namespace QMC.Common.Parts
                         {
                             FirstPosition_ImageCoord = GetCoordinate(firstPointSearchResult.Values[0].X, firstPointSearchResult.Values[0].Y);                            //  이미지 좌표
                                                                                                                                                                          //finalFirstPosition = firstPointCoordinate + GetCoordinate(firstPointSearchResult.Values[0].X, firstPointSearchResult.Values[0].Y);          //  이미지 좌표 + 모션 좌표
-                            finalFirstPosition = firstPointCoordinate + FirstPosition_ImageCoord;                                                                        //  이미지 좌표 + 모션 좌표
+                            finalFirstPosition = firstPointCoordinate - FirstPosition_ImageCoord;                                                                        //  이미지 좌표 + 모션 좌표
 
                             FirstPosition = finalFirstPosition;
                             this.Result = 0.0;
@@ -526,7 +526,7 @@ namespace QMC.Common.Parts
                         {
                             FirstPosition_ImageCoord = GetCoordinate(secondPointSearchResult.Values[0].X, secondPointSearchResult.Values[0].Y);                              //  이미지 좌표
                                                                                                                                                                              //finalSecondPosition = secondPointCoordinate + GetCoordinate(secondPointSearchResult.Values[0].X, secondPointSearchResult.Values[0].Y);          //  이미지 좌표 + 모션 좌표
-                            finalSecondPosition = secondPointCoordinate + FirstPosition_ImageCoord;                                                                          //  이미지 좌표 + 모션 좌표
+                            finalSecondPosition = secondPointCoordinate - FirstPosition_ImageCoord;                                                                          //  이미지 좌표 + 모션 좌표
 
                             FirstPosition = finalSecondPosition;
                             this.Result = 0.0;

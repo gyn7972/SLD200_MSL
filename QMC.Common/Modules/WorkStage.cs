@@ -17900,7 +17900,7 @@ namespace QMC.Common.Modules
                             positionFirst = this.ConvertPointFineCam(positionFirst);
                             xyCoordinateAlignPositionLast= new XyCoordinate( positionFirst.X, positionFirst.Y);
 
-                            positionFirst.X -= dfx;
+                            positionFirst.X += dfx;
                             positionFirst.Y -= dfy;
 
                             xyCoordinateAlignPositionOrgLast  = new XyCoordinate(positionFirst.X, positionFirst.Y);
