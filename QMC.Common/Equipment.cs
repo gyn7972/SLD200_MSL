@@ -373,8 +373,8 @@ namespace QMC.Common
         {
             public string DrawingFile;                                  //  Drawing File Path and Name
 
-            public int LaserParam_PulseWidth;                           //  Laser Pulse Width (us)
-            public int LaserParam_PulsePeriod;                          //  Laser Pulse Period (us)
+            public double LaserParam_PulseWidth;                        //  Laser Pulse Width (us)
+            public double LaserParam_PulsePeriod;                       //  Laser Pulse Period (us)
             public int LaserParam_Frequency;                            //  Laser Frequency (Hz)
             public double LaserParam_DutyCycle;                         //  Laser Duty Cycle (%)
             public bool LaserParam_TriggerMode_External;                //  Laser Trigger Mode (true: External, false: Internal)

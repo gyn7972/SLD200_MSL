@@ -2091,6 +2091,8 @@ namespace QMC.Common.Modules
         public int TickCount_MainCycle_Current { set; get; }
         public int TickCount_MainCycle_Interval { set; get; }
 
+        public int m_OneCycleTimeMs {  set; get; }
+
         //System.Diagnostics.Stopwatch sw_DispenserMainCyc = new System.Diagnostics.Stopwatch();
         //System.Diagnostics.Stopwatch sw_DispenserSubCyc = new System.Diagnostics.Stopwatch();
 
@@ -2100,7 +2102,7 @@ namespace QMC.Common.Modules
             TICK_MAIN,                  //  1 : Main Cycle
             TICK_SUB,                   //  2 : Sub Cycle
             TICK_PAUSE,                 //  3 : Pause
-            TICK_CHECK,                 //  4 : 체크용            
+            TICK_CHECK,                 //  4 : 체크용 
 
             TICK_POWERMETER_COMM_BDS,   //  5 : PowerMeter Comm (BDS)
             TICK_POWERMETER_COMM_STAGE, //  6 : PowerMeter Comm (Stage)
@@ -2125,6 +2127,8 @@ namespace QMC.Common.Modules
 
             //Laser & Scanner Auto Calibration을 위한 Tick 선언
             TICK_LASER_SCANNER_CAL, //  18
+
+            TICK_MAIN_CYCLE_CHECK,  //19 : 1 Cycle Tacktime 계산 
         }
 
         public int[,] TickCount_Cycle = new int[System.Enum.GetValues(typeof(TickType)).Length, 2];
@@ -6217,7 +6221,7 @@ namespace QMC.Common.Modules
             int m_DataNum = 0;
             int m_nCheckSum = 0;
             byte m_btTemp;
-            string m_strAddr = "000A";                            //  출력 주파수 Address
+            string m_strAddr = "000A";                            //  출력 주파수 Address            //  출력 주파수 0311 번지도 읽어보자
             int m_nAddrCount = 1;                                 //  번지 개수
             string m_strSendData = "";
             byte[] m_cSendCmd = null;
@@ -8784,6 +8788,7 @@ namespace QMC.Common.Modules
 
                         try
                         {
+                            //Todo: PreAlign 확인!!!
                             jigAligner_LowRes.Work();
                             Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "Work() 완료");
                         }
@@ -12928,9 +12933,7 @@ namespace QMC.Common.Modules
                 //  Laser Drilling 을 위한 조건
                 else if (!m_bMainWorkCycle_Complete &&
                     loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete &&
-
                     !m_bMainWorkCycle_DryRun &&
-
                     !m_bLaserDrilling_Complete &&
 
                     (loader.m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None) &&               //  테스트 후 주석 처리 가능
@@ -12946,6 +12949,10 @@ namespace QMC.Common.Modules
 
             switch (m_nMainWork_Step)
             {
+                case (int)MainWork_Step.None:
+                    m_OneCycleTimeMs = -1;
+                    break;
+
                 case (int)MainWork_Step.Start:
                     Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "시작");
 
@@ -12971,6 +12978,7 @@ namespace QMC.Common.Modules
                             break;
 
                         case (int)MainWorkCycleType.Cycle_LaserDrilling:
+                            m_OneCycleTimeMs = -1;
                             Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "Laser Drilling Cycle");
                             m_nMainWork_Step = (int)MainWork_Step.LaserDrilling_Condition_Check;
                             break;
@@ -13109,11 +13117,14 @@ namespace QMC.Common.Modules
                     m_bLaserDrilling_SocketStopped = false;
                     Equipment.SocketStopped = false;
 
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Start;   //X
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Start;   // 여기서 시작.
 
                     timer_LaserDrillingWork.Enabled = true;
 
                     //TickCount_Start((int)TickType.TICK_MAIN);
+
+                    TickCount_Start((int)TickType.TICK_MAIN_CYCLE_CHECK);
+
 
                     m_nMainWork_Step = (int)MainWork_Step.LaserDrilling_Cycle_CompleteCheck;
                     break;
@@ -13126,6 +13137,14 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "Laser Drilling 완료");
 
                         m_nMainWork_Step = (int)MainWork_Step.Complete;
+                    }
+                    else
+                    {
+                        int nCycleTime = TickCount_Elapsed((int)TickType.TICK_MAIN_CYCLE_CHECK);
+                        //MainForm으로 Time 전달
+                        m_OneCycleTimeMs = nCycleTime; //tick == ms
+
+
                     }
                     //else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
                     //{
@@ -13167,11 +13186,13 @@ namespace QMC.Common.Modules
                         case (int)MainWorkCycleType.Cycle_LaserDrilling:
                             Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "Laser Drilling Cycle 완료");
 
+                            int nCycleTime = TickCount_Elapsed((int)TickType.TICK_MAIN_CYCLE_CHECK);
+                            //MainForm으로 Time 전달
+
                             m_bMainWorkCycle_Complete = true;
 
                             //m_bMainWorkCycle_ResultOK = true;
                             //  Laser Drilling 결과에 따라 OK/NG 다르게 해야 함.
-
                             //  소켓 얼라인 결과가 NG 이면 NG 로 (설정 개수 이상 NG 일 경우에)
                             //m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.OK;
 
@@ -14380,8 +14401,6 @@ namespace QMC.Common.Modules
 
         #region Laser Drilling Cycle Function
 
-
-
         public void WorkStage_Restart_Check()
         {
             if (Equipment.SocketStopped)
@@ -14426,6 +14445,9 @@ namespace QMC.Common.Modules
         {
             return Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
         }
+
+
+        //Todo: 공정시컨스닷!
         private int Run_LaserDrilling_Main_Cycle()
         {
             m_nLaserDrilling_MainStep_Recovery = -1;
@@ -14499,7 +14521,6 @@ namespace QMC.Common.Modules
                     return 0;
                 }
             }
-
 
             //  자동운전 중 Socket Stop 처리
             if (Equipment.SocketStopped)
@@ -17773,15 +17794,22 @@ namespace QMC.Common.Modules
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 3);           //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
 
                     //Align Mark Pos - 도면에서 추출하여 전달.
-                    stDividedRegion_GroupData[] inputGroupData = m_stDividedRegion_GroupData;
-                    PointD leftPoint, rightPoint;
-                    FindEdgePoints(inputGroupData, out leftPoint, out rightPoint);
 
-                    Equipment.stLayerRecipeSet[0].PreAlignPos1 = leftPoint;
-                    Equipment.stLayerRecipeSet[0].PreAlignPos2 = rightPoint;
+                    // 소켓 1번과 동일한 얼라인 좌표로 얼라인 하기 위하여 아래와 같이 수정.
+                    //stDividedRegion_GroupData[] inputGroupData = m_stDividedRegion_GroupData;
+                    //PointD leftPoint, rightPoint;
+                    //FindEdgePoints(inputGroupData, out leftPoint, out rightPoint);
+                    //Equipment.stLayerRecipeSet[0].PreAlignPos1 = leftPoint;
+                    //Equipment.stLayerRecipeSet[0].PreAlignPos2 = rightPoint;
 
-                    //너무 Data를 빨리 던져서 문제가 아닌지 Test
-                    Thread.Sleep(500);
+                    //m_nDrillingWork_Group_Count 이거 0이여야 한다.
+                    Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[0].dFiducialPos[0].X;
+                    Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[0].dFiducialPos[0].Y;
+                    Equipment.stLayerRecipeSet[0].PreAlignPos2.X = m_stDividedRegion_GroupData[0].dFiducialPos[1].X;
+                    Equipment.stLayerRecipeSet[0].PreAlignPos2.Y = m_stDividedRegion_GroupData[0].dFiducialPos[1].Y;
+
+                    //너무 Data를 빨리 던져서 문제가 아닌지 Test.
+                    Thread.Sleep(100);
 
                     m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
                     m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
@@ -17803,9 +17831,12 @@ namespace QMC.Common.Modules
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align 완료");
 
 
-                            double dfx = 0;
-                            double dfy = 0;
-                            double dft = 0;
+                            double dfx = jigAligner_LowRes.FirstPosition.X;
+                            double dfy = jigAligner_LowRes.FirstPosition.Y;
+                            double dft = 0; //jigAligner_LowRes.GetJigAlignResult(); //각도 던지는거 재 확인하자. // 맨 처음에는 각도 안했는데.
+                            //double dfx = 0;
+                            //double dfy = 0;
+                            //double dft = 0;
 
                             dfx = jigAligner_LowRes.FirstPosition.X;
                             dfy = jigAligner_LowRes.FirstPosition.Y;
@@ -17822,6 +17853,12 @@ namespace QMC.Common.Modules
                             xyCoordinateAlignPositionOrgLast  = new XyCoordinate(positionFirst.X, positionFirst.Y);
 
                             m_st4PointAlign_Result_LastSuccess.dRotationAngle = dft;
+
+                            //Log Data 남기자.
+                            //m_strTemp = string.Format("");
+                            m_strTemp = string.Format("PreAlign좌표, X : {0:0.000}, Y : {1:0.000}", positionFirst.X, positionFirst.Y);
+                            Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
+
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Correction;
                         }
                         else
@@ -17842,11 +17879,6 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.DrillingData_PreAlign_Correction:                      //  가공 할 Socket Align 시작
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 보정 시작.");
-
-                    //result = jigAligner_LowRes.GetResult();
-                    //dx = result.Values[0].X;
-                    //dy = result.Values[0].Y;
-                    //dr = result.Values[0].R;
 
                     TickCount_Start((int)TickType.TICK_MAIN);
 
@@ -20775,8 +20807,8 @@ namespace QMC.Common.Modules
                                                                         (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_PolygonDelay);
 
                         //m_bDivRegionList_Success &= rtc.ListSpeed((float)Config.ParamConfig.Drilling_Jump_Speed, (float)Config.ParamConfig.Drilling_Mark_Speed);
-                        m_bDivRegionList_Success &= rtc.ListSpeed((float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_ScannerJumpSpeed, (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_ScannerDrillingSpeed);
-
+                        m_bDivRegionList_Success &= rtc.ListSpeed((float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_ScannerJumpSpeed, 
+                                                                  (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_ScannerDrillingSpeed);
 
                         Log.Write("SLD-200", "Auto Run", "Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Region 영역 내 Object 별 가공, Buffer List 에 데이터 추가");
 
@@ -24449,7 +24481,6 @@ namespace QMC.Common.Modules
             m_nDrillingData_SocketAlign_Count = 0;              //  소켓 Align 개수
             m_nDrillingData_SocketAlign_NGCount = 0;            //  소켓 Align 실패 개수
 
-
             //  Layer 별로 다르게 해야 하는 파라미터
             m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetition;            //  총 반복 회수
             m_nRepetation_Bundle = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetitionBundle <= 0 ? 100 : Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Hole1].Miscellaneous_DrillingRepetitionBundle;             //  총 반복 회수 묶음
@@ -24474,11 +24505,8 @@ namespace QMC.Common.Modules
             }
             m_nCircleDrilling_CurrentRotStep = 0;
 
-
-
             //  현재 Z 축 값을 가공 Z 위치값으로 한다. (카메라로 초점 확인한 Z 축 값)    --> 보류
             m_dBase_AxisZ_LaserFocus = MC_Func.MC_GetEncPos((int)nAxis.Z);
-
 
             m_nDrillingData_SocketTotal = 0;                        //  진행해야하는 Socket 총 개수 (제품 단위 : Module, 하나의 Module 은 n 개의 Socket 으로 구성된다)
             m_nDrillingData_SocketCount = 0;                        //  진행하는 Socket Count

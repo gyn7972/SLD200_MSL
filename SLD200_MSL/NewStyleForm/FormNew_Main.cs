@@ -64,6 +64,9 @@ namespace SLD200_MSL
 
         private System.Windows.Forms.Timer timer_Main_Status;
 
+        private bool m_bLaserIsProcessing = false;  //레이저 가공 중인지 확인하는 변수
+        private bool m_bNeedLaserProcessingMessage = false; //레이저 가공 중 UI 갱신을 위해 플래그 설정
+
         private Thread m_MainStatusThread;
         private bool m_bMainStatusCycleExit;
 
@@ -687,6 +690,7 @@ namespace SLD200_MSL
             // Laser m_rapidLxLaser_Comm
             if (workStage.m_rapidLxLaser_Comm == null)
             {
+                workStage.m_bRapidLxLaser_UserConnect = true;
                 workStage.RapidLxLaser_Comm_Init();
             }
             else
@@ -730,10 +734,14 @@ namespace SLD200_MSL
             //bOn = workStage.rtc != null && workStage.rtc.;
             //_InitDeviceStatus.Scanner = bOn;
 
-            bOn = workStage.m_powerMeter_ExitPos_Comm != null && workStage.m_powerMeter_ExitPos_Comm.IsOpen;
-            _InitDeviceStatus.PowerMeter_Bds = bOn;
-            if (!_InitDeviceStatus.PowerMeter_Bds)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Powermeter_bds);
+            if(!Equipment.Machine_LaserType_CO2)
+            {
+                bOn = workStage.m_powerMeter_ExitPos_Comm != null && workStage.m_powerMeter_ExitPos_Comm.IsOpen;
+                _InitDeviceStatus.PowerMeter_Bds = bOn;
+                if (!_InitDeviceStatus.PowerMeter_Bds)
+                    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Powermeter_bds);
+
+            }
 
             bOn = workStage.m_powerMeter_TargetPos_Comm != null && workStage.m_powerMeter_TargetPos_Comm.IsOpen;
             _InitDeviceStatus.PowerMeter_Stage = bOn;
@@ -792,43 +800,89 @@ namespace SLD200_MSL
         //초기화 상태 함수 확인 
         private void InitializeDeviceStatusBindings()
         { 
-            deviceStatusGetters = new Dictionary<string, Func<bool>>
+            if(!Equipment.Machine_LaserType_CO2)
             {
-                { "Motion", () => Equipment._InitDeviceStatus.MotionIo },
-                { "IO", () => Equipment._InitDeviceStatus.MotionIo },
-                { "Laser", () => Equipment._InitDeviceStatus.Laser },
-                { "Scanner", () => Equipment._InitDeviceStatus.Scanner },
-                { "PowerMeter_Bds", () => Equipment._InitDeviceStatus.PowerMeter_Bds },
-                { "PowerMeter_Stage", () => Equipment._InitDeviceStatus.PowerMeter_Stage },
-                { "BeamExpander", () => Equipment._InitDeviceStatus.BeamExpander },
-                { "DustCollector_Upper", () => Equipment._InitDeviceStatus.DustCollector_Upper },
-                { "DustCollector_Lower", () => Equipment._InitDeviceStatus.DustCollector_Lower },
-                { "Chiller", () => Equipment._InitDeviceStatus.Chiller },
-                { "ElectroRegulator", () => Equipment._InitDeviceStatus.ElectroRegulator },
-                { "HeightSensor", () => Equipment._InitDeviceStatus.HeightSensor },
-                { "CameraFine", () => Equipment._InitDeviceStatus.CameraFine },
-                { "CameraPre", () => Equipment._InitDeviceStatus.CameraPre },
-                { "Illuminator", () => Equipment._InitDeviceStatus.Illuminator },
-            };
+                deviceStatusGetters = new Dictionary<string, Func<bool>>
+                {
+                    { "Motion", () => Equipment._InitDeviceStatus.MotionIo },
+                    { "IO", () => Equipment._InitDeviceStatus.MotionIo },
+                    { "Laser", () => Equipment._InitDeviceStatus.Laser },
+                    { "Scanner", () => Equipment._InitDeviceStatus.Scanner },
+                    //{ "PowerMeter_Bds", () => Equipment._InitDeviceStatus.PowerMeter_Bds },
+                    { "PowerMeter_Stage", () => Equipment._InitDeviceStatus.PowerMeter_Stage },
+                    { "BeamExpander", () => Equipment._InitDeviceStatus.BeamExpander },
+                    { "DustCollector_Upper", () => Equipment._InitDeviceStatus.DustCollector_Upper },
+                    { "DustCollector_Lower", () => Equipment._InitDeviceStatus.DustCollector_Lower },
+                    { "Chiller", () => Equipment._InitDeviceStatus.Chiller },
+                    { "ElectroRegulator", () => Equipment._InitDeviceStatus.ElectroRegulator },
+                    { "HeightSensor", () => Equipment._InitDeviceStatus.HeightSensor },
+                    { "CameraFine", () => Equipment._InitDeviceStatus.CameraFine },
+                    { "CameraPre", () => Equipment._InitDeviceStatus.CameraPre },
+                    { "Illuminator", () => Equipment._InitDeviceStatus.Illuminator },
+                };
 
-            devicePictureBoxes = new Dictionary<string, PictureBox>
+                devicePictureBoxes = new Dictionary<string, PictureBox>
+                {
+                    { "Motion", pictureBox_Main_DiviceStatus_Motion },
+                    { "IO", pictureBox_Main_DiviceStatus_IO },
+                    { "Laser", pictureBox_Main_DiviceStatus_Laser },
+                    { "Scanner", pictureBox_Main_DiviceStatus_Scanner },
+                    //{ "PowerMeter_Bds", pictureBox_Main_DiviceStatus_Powermeter_bds },
+                    { "PowerMeter_Stage", pictureBox_Main_DiviceStatus_Powermeter_Stage },
+                    { "BeamExpander", pictureBox_Main_DiviceStatus_BeamExpander },
+                    { "DustCollector_Upper", pictureBox_Main_DiviceStatus_DustCollector_Upper },
+                    { "DustCollector_Lower", pictureBox_Main_DiviceStatus_DustCollector_Lower },
+                    { "Chiller", pictureBox_Main_DiviceStatus_Chiller },
+                    { "ElectroRegulator", pictureBox_Main_DiviceStatus_ElectroRegulator },
+                    { "HeightSensor", pictureBox_Main_DiviceStatus_HeightSensor },
+                    { "CameraFine", pictureBox_Main_DiviceStatus_CameraFine },
+                    { "CameraPre", pictureBox_Main_DiviceStatus_CameraPre },
+                    { "Illuminator", pictureBox_Main_DiviceStatus_Illuminator },
+                };
+
+            }
+            else
             {
-                { "Motion", pictureBox_Main_DiviceStatus_Motion },
-                { "IO", pictureBox_Main_DiviceStatus_IO },
-                { "Laser", pictureBox_Main_DiviceStatus_Laser },
-                { "Scanner", pictureBox_Main_DiviceStatus_Scanner },
-                { "PowerMeter_Bds", pictureBox_Main_DiviceStatus_Powermeter_bds },
-                { "PowerMeter_Stage", pictureBox_Main_DiviceStatus_Powermeter_Stage },
-                { "BeamExpander", pictureBox_Main_DiviceStatus_BeamExpander },
-                { "DustCollector_Upper", pictureBox_Main_DiviceStatus_DustCollector_Upper },
-                { "DustCollector_Lower", pictureBox_Main_DiviceStatus_DustCollector_Lower },
-                { "Chiller", pictureBox_Main_DiviceStatus_Chiller },
-                { "ElectroRegulator", pictureBox_Main_DiviceStatus_ElectroRegulator },
-                { "HeightSensor", pictureBox_Main_DiviceStatus_HeightSensor },
-                { "CameraFine", pictureBox_Main_DiviceStatus_CameraFine },
-                { "CameraPre", pictureBox_Main_DiviceStatus_CameraPre },
-                { "Illuminator", pictureBox_Main_DiviceStatus_Illuminator },
-            };
+                deviceStatusGetters = new Dictionary<string, Func<bool>>
+                {
+                    { "Motion", () => Equipment._InitDeviceStatus.MotionIo },
+                    { "IO", () => Equipment._InitDeviceStatus.MotionIo },
+                    { "Laser", () => Equipment._InitDeviceStatus.Laser },
+                    { "Scanner", () => Equipment._InitDeviceStatus.Scanner },
+                    { "PowerMeter_Bds", () => Equipment._InitDeviceStatus.PowerMeter_Bds },
+                    { "PowerMeter_Stage", () => Equipment._InitDeviceStatus.PowerMeter_Stage },
+                    { "BeamExpander", () => Equipment._InitDeviceStatus.BeamExpander },
+                    { "DustCollector_Upper", () => Equipment._InitDeviceStatus.DustCollector_Upper },
+                    { "DustCollector_Lower", () => Equipment._InitDeviceStatus.DustCollector_Lower },
+                    { "Chiller", () => Equipment._InitDeviceStatus.Chiller },
+                    { "ElectroRegulator", () => Equipment._InitDeviceStatus.ElectroRegulator },
+                    { "HeightSensor", () => Equipment._InitDeviceStatus.HeightSensor },
+                    { "CameraFine", () => Equipment._InitDeviceStatus.CameraFine },
+                    { "CameraPre", () => Equipment._InitDeviceStatus.CameraPre },
+                    { "Illuminator", () => Equipment._InitDeviceStatus.Illuminator },
+                };
+
+                devicePictureBoxes = new Dictionary<string, PictureBox>
+                {
+                    { "Motion", pictureBox_Main_DiviceStatus_Motion },
+                    { "IO", pictureBox_Main_DiviceStatus_IO },
+                    { "Laser", pictureBox_Main_DiviceStatus_Laser },
+                    { "Scanner", pictureBox_Main_DiviceStatus_Scanner },
+                    { "PowerMeter_Bds", pictureBox_Main_DiviceStatus_Powermeter_bds },
+                    { "PowerMeter_Stage", pictureBox_Main_DiviceStatus_Powermeter_Stage },
+                    { "BeamExpander", pictureBox_Main_DiviceStatus_BeamExpander },
+                    { "DustCollector_Upper", pictureBox_Main_DiviceStatus_DustCollector_Upper },
+                    { "DustCollector_Lower", pictureBox_Main_DiviceStatus_DustCollector_Lower },
+                    { "Chiller", pictureBox_Main_DiviceStatus_Chiller },
+                    { "ElectroRegulator", pictureBox_Main_DiviceStatus_ElectroRegulator },
+                    { "HeightSensor", pictureBox_Main_DiviceStatus_HeightSensor },
+                    { "CameraFine", pictureBox_Main_DiviceStatus_CameraFine },
+                    { "CameraPre", pictureBox_Main_DiviceStatus_CameraPre },
+                    { "Illuminator", pictureBox_Main_DiviceStatus_Illuminator },
+                };
+            }
+
+            
         }
         private void UpdateDeviceStatusImages()
         {
@@ -843,7 +897,6 @@ namespace SLD200_MSL
                     ? global::SLD200.Properties.Resources.DioEllipseOn
                     : global::SLD200.Properties.Resources.DioEllipseOff;
             }
-
         }
 
         // -----------------------
@@ -863,6 +916,12 @@ namespace SLD200_MSL
 
         private (int, int) m_CompSocketRowCol, m_CompRegionRowCol;
         private int m_CompSocketStatus, m_CompRegionStatus;
+
+
+        //stageWork Onecycle Time.
+        private int m_OneCycleTimeMs = -1;         // 전달받은 가공 시간 (ms)
+        private bool m_bNeedUpdateCycleTime = false;
+        private int m_CycleExpectedTimeMs = 90000; // 예상 시간 (예: 90초)
 
         private async void Timer_MainStatus_Func(object sender, EventArgs e)
         {
@@ -906,6 +965,48 @@ namespace SLD200_MSL
         // -----------------------
         private void DoHeavyLogicPart()
         {
+            //레이저 가공 중 상태 체크
+            bool isLaserBusy = false;
+            try
+            {
+                if((workStage.rtc != null) && Equipment._InitDeviceStatus.Scanner)      //  RTC 보드가 없는 상태에서 CtlGetStatus 를 하면 뻑이 남
+                {
+                    isLaserBusy = workStage.rtc.CtlGetStatus(RtcStatus.Busy);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+            if (isLaserBusy && !m_bLaserIsProcessing)
+            {
+                m_bLaserIsProcessing = true;
+                m_bNeedLaserProcessingMessage = true;  //UI 갱신을 위해 플래그 설정
+            }
+            else if (!isLaserBusy && m_bLaserIsProcessing)
+            {
+                m_bLaserIsProcessing = false;
+                m_bNeedLaserProcessingMessage = true;
+            }
+
+            //private int m_OneCycleTimeMs = -1;         // 전달받은 가공 시간 (ms)
+            //private bool m_bNeedUpdateCycleTime = false;
+
+            if (!m_bNeedUpdateCycleTime)
+            {
+                if(workStage.m_OneCycleTimeMs == -1)
+                {
+                    m_OneCycleTimeMs = 0;
+                }
+                else
+                {
+                    m_OneCycleTimeMs = workStage.m_OneCycleTimeMs;
+                    m_bNeedUpdateCycleTime = true;
+                }
+                
+            }
+
             if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
             {
                 workStage.m_bHomeProgressForm_Close = false;
@@ -1017,6 +1118,27 @@ namespace SLD200_MSL
         // -----------------------
         private void UpdateUIControls()
         {
+            // 가공 시간 ProgressBar 표시
+            if (m_bNeedUpdateCycleTime)
+            {
+                int progress = Math.Min(100, m_OneCycleTimeMs * 100 / m_CycleExpectedTimeMs);
+                progressBar_OneCycle_Time.Value = progress;
+                //baseLabel_CurrentOneCycle_ElapsedTime.Text = $"{m_OneCycleTimeMs / 1000.0:F1}s / {m_CycleExpectedTimeMs / 1000.0:F1}s";
+                TimeSpan ts = TimeSpan.FromMilliseconds(m_OneCycleTimeMs);
+                baseLabel_CurrentOneCycle_ElapsedTime.Text = ts.ToString(@"hh\:mm\:ss");
+                //baseLabel_CurrentOneCycle_ElapsedTime.Text = $"{m_OneCycleTimeMs / 1000.0:F1}s";
+                m_bNeedUpdateCycleTime = false;
+            }
+
+            if (m_bNeedLaserProcessingMessage)
+            {
+                m_bNeedLaserProcessingMessage = false;
+
+                label_Main_LaserStatus.Text = m_bLaserIsProcessing ? "⚠ 레이저 가공 중" : "레이저 대기 중";
+                label_Main_LaserStatus.BackColor = m_bLaserIsProcessing ? Color.Red : Color.Black;
+                label_Main_LaserStatus.ForeColor = m_bLaserIsProcessing ? Color.White : Color.Lime;
+            }
+
             if (m_bNeedHideProgressForm)
             {
                 m_bNeedHideProgressForm = false;
@@ -2099,6 +2221,7 @@ namespace SLD200_MSL
 
         private void button_TEST_RTCInit_Click(object sender, EventArgs e)
         {
+            return;
             //SiriusViewer_Main.Document = Equipment.EqpSiriusViewer_Origin.Document;
             //workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
             //m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
@@ -2636,14 +2759,12 @@ namespace SLD200_MSL
             }
         }
 
-        private void button_Test12_Click(object sender, EventArgs e)
-        {
-            workStage.AlarmPost(QMC.Common.Modules.WorkStage.AlarmKey.PreAlignFail);
-        }
-
         private void button_TEST12_Click(object sender, EventArgs e)
         {
-            Equipment.AutoManualStatus = false;
+            return;
+
+            //Equipment.AutoRunStatus = true;
+            Equipment.AutoManualStatus = true;
 
             int nCol = workStage.Main_SocketPositions_ColumnCount = 5;
             int nRow = workStage.Main_SocketPositions_RowCount = 5;

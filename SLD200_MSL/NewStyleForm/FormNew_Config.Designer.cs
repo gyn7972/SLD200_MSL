@@ -5653,7 +5653,6 @@
             "Laser Purge",
             "Scanner Purge",
             "Varioscan Purge",
-            "Laser Shutter Command",
             "Laser Enable"});
             this.checkedListBox_Config_Laser_DIO_Output.Location = new System.Drawing.Point(10, 25);
             this.checkedListBox_Config_Laser_DIO_Output.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
