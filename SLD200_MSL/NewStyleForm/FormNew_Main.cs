@@ -734,10 +734,14 @@ namespace SLD200_MSL
             //bOn = workStage.rtc != null && workStage.rtc.;
             //_InitDeviceStatus.Scanner = bOn;
 
-            bOn = workStage.m_powerMeter_ExitPos_Comm != null && workStage.m_powerMeter_ExitPos_Comm.IsOpen;
-            _InitDeviceStatus.PowerMeter_Bds = bOn;
-            if (!_InitDeviceStatus.PowerMeter_Bds)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Powermeter_bds);
+            if(!Equipment.Machine_LaserType_CO2)
+            {
+                bOn = workStage.m_powerMeter_ExitPos_Comm != null && workStage.m_powerMeter_ExitPos_Comm.IsOpen;
+                _InitDeviceStatus.PowerMeter_Bds = bOn;
+                if (!_InitDeviceStatus.PowerMeter_Bds)
+                    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Powermeter_bds);
+
+            }
 
             bOn = workStage.m_powerMeter_TargetPos_Comm != null && workStage.m_powerMeter_TargetPos_Comm.IsOpen;
             _InitDeviceStatus.PowerMeter_Stage = bOn;
@@ -796,43 +800,89 @@ namespace SLD200_MSL
         //초기화 상태 함수 확인 
         private void InitializeDeviceStatusBindings()
         { 
-            deviceStatusGetters = new Dictionary<string, Func<bool>>
+            if(!Equipment.Machine_LaserType_CO2)
             {
-                { "Motion", () => Equipment._InitDeviceStatus.MotionIo },
-                { "IO", () => Equipment._InitDeviceStatus.MotionIo },
-                { "Laser", () => Equipment._InitDeviceStatus.Laser },
-                { "Scanner", () => Equipment._InitDeviceStatus.Scanner },
-                { "PowerMeter_Bds", () => Equipment._InitDeviceStatus.PowerMeter_Bds },
-                { "PowerMeter_Stage", () => Equipment._InitDeviceStatus.PowerMeter_Stage },
-                { "BeamExpander", () => Equipment._InitDeviceStatus.BeamExpander },
-                { "DustCollector_Upper", () => Equipment._InitDeviceStatus.DustCollector_Upper },
-                { "DustCollector_Lower", () => Equipment._InitDeviceStatus.DustCollector_Lower },
-                { "Chiller", () => Equipment._InitDeviceStatus.Chiller },
-                { "ElectroRegulator", () => Equipment._InitDeviceStatus.ElectroRegulator },
-                { "HeightSensor", () => Equipment._InitDeviceStatus.HeightSensor },
-                { "CameraFine", () => Equipment._InitDeviceStatus.CameraFine },
-                { "CameraPre", () => Equipment._InitDeviceStatus.CameraPre },
-                { "Illuminator", () => Equipment._InitDeviceStatus.Illuminator },
-            };
+                deviceStatusGetters = new Dictionary<string, Func<bool>>
+                {
+                    { "Motion", () => Equipment._InitDeviceStatus.MotionIo },
+                    { "IO", () => Equipment._InitDeviceStatus.MotionIo },
+                    { "Laser", () => Equipment._InitDeviceStatus.Laser },
+                    { "Scanner", () => Equipment._InitDeviceStatus.Scanner },
+                    //{ "PowerMeter_Bds", () => Equipment._InitDeviceStatus.PowerMeter_Bds },
+                    { "PowerMeter_Stage", () => Equipment._InitDeviceStatus.PowerMeter_Stage },
+                    { "BeamExpander", () => Equipment._InitDeviceStatus.BeamExpander },
+                    { "DustCollector_Upper", () => Equipment._InitDeviceStatus.DustCollector_Upper },
+                    { "DustCollector_Lower", () => Equipment._InitDeviceStatus.DustCollector_Lower },
+                    { "Chiller", () => Equipment._InitDeviceStatus.Chiller },
+                    { "ElectroRegulator", () => Equipment._InitDeviceStatus.ElectroRegulator },
+                    { "HeightSensor", () => Equipment._InitDeviceStatus.HeightSensor },
+                    { "CameraFine", () => Equipment._InitDeviceStatus.CameraFine },
+                    { "CameraPre", () => Equipment._InitDeviceStatus.CameraPre },
+                    { "Illuminator", () => Equipment._InitDeviceStatus.Illuminator },
+                };
 
-            devicePictureBoxes = new Dictionary<string, PictureBox>
+                devicePictureBoxes = new Dictionary<string, PictureBox>
+                {
+                    { "Motion", pictureBox_Main_DiviceStatus_Motion },
+                    { "IO", pictureBox_Main_DiviceStatus_IO },
+                    { "Laser", pictureBox_Main_DiviceStatus_Laser },
+                    { "Scanner", pictureBox_Main_DiviceStatus_Scanner },
+                    //{ "PowerMeter_Bds", pictureBox_Main_DiviceStatus_Powermeter_bds },
+                    { "PowerMeter_Stage", pictureBox_Main_DiviceStatus_Powermeter_Stage },
+                    { "BeamExpander", pictureBox_Main_DiviceStatus_BeamExpander },
+                    { "DustCollector_Upper", pictureBox_Main_DiviceStatus_DustCollector_Upper },
+                    { "DustCollector_Lower", pictureBox_Main_DiviceStatus_DustCollector_Lower },
+                    { "Chiller", pictureBox_Main_DiviceStatus_Chiller },
+                    { "ElectroRegulator", pictureBox_Main_DiviceStatus_ElectroRegulator },
+                    { "HeightSensor", pictureBox_Main_DiviceStatus_HeightSensor },
+                    { "CameraFine", pictureBox_Main_DiviceStatus_CameraFine },
+                    { "CameraPre", pictureBox_Main_DiviceStatus_CameraPre },
+                    { "Illuminator", pictureBox_Main_DiviceStatus_Illuminator },
+                };
+
+            }
+            else
             {
-                { "Motion", pictureBox_Main_DiviceStatus_Motion },
-                { "IO", pictureBox_Main_DiviceStatus_IO },
-                { "Laser", pictureBox_Main_DiviceStatus_Laser },
-                { "Scanner", pictureBox_Main_DiviceStatus_Scanner },
-                { "PowerMeter_Bds", pictureBox_Main_DiviceStatus_Powermeter_bds },
-                { "PowerMeter_Stage", pictureBox_Main_DiviceStatus_Powermeter_Stage },
-                { "BeamExpander", pictureBox_Main_DiviceStatus_BeamExpander },
-                { "DustCollector_Upper", pictureBox_Main_DiviceStatus_DustCollector_Upper },
-                { "DustCollector_Lower", pictureBox_Main_DiviceStatus_DustCollector_Lower },
-                { "Chiller", pictureBox_Main_DiviceStatus_Chiller },
-                { "ElectroRegulator", pictureBox_Main_DiviceStatus_ElectroRegulator },
-                { "HeightSensor", pictureBox_Main_DiviceStatus_HeightSensor },
-                { "CameraFine", pictureBox_Main_DiviceStatus_CameraFine },
-                { "CameraPre", pictureBox_Main_DiviceStatus_CameraPre },
-                { "Illuminator", pictureBox_Main_DiviceStatus_Illuminator },
-            };
+                deviceStatusGetters = new Dictionary<string, Func<bool>>
+                {
+                    { "Motion", () => Equipment._InitDeviceStatus.MotionIo },
+                    { "IO", () => Equipment._InitDeviceStatus.MotionIo },
+                    { "Laser", () => Equipment._InitDeviceStatus.Laser },
+                    { "Scanner", () => Equipment._InitDeviceStatus.Scanner },
+                    { "PowerMeter_Bds", () => Equipment._InitDeviceStatus.PowerMeter_Bds },
+                    { "PowerMeter_Stage", () => Equipment._InitDeviceStatus.PowerMeter_Stage },
+                    { "BeamExpander", () => Equipment._InitDeviceStatus.BeamExpander },
+                    { "DustCollector_Upper", () => Equipment._InitDeviceStatus.DustCollector_Upper },
+                    { "DustCollector_Lower", () => Equipment._InitDeviceStatus.DustCollector_Lower },
+                    { "Chiller", () => Equipment._InitDeviceStatus.Chiller },
+                    { "ElectroRegulator", () => Equipment._InitDeviceStatus.ElectroRegulator },
+                    { "HeightSensor", () => Equipment._InitDeviceStatus.HeightSensor },
+                    { "CameraFine", () => Equipment._InitDeviceStatus.CameraFine },
+                    { "CameraPre", () => Equipment._InitDeviceStatus.CameraPre },
+                    { "Illuminator", () => Equipment._InitDeviceStatus.Illuminator },
+                };
+
+                devicePictureBoxes = new Dictionary<string, PictureBox>
+                {
+                    { "Motion", pictureBox_Main_DiviceStatus_Motion },
+                    { "IO", pictureBox_Main_DiviceStatus_IO },
+                    { "Laser", pictureBox_Main_DiviceStatus_Laser },
+                    { "Scanner", pictureBox_Main_DiviceStatus_Scanner },
+                    { "PowerMeter_Bds", pictureBox_Main_DiviceStatus_Powermeter_bds },
+                    { "PowerMeter_Stage", pictureBox_Main_DiviceStatus_Powermeter_Stage },
+                    { "BeamExpander", pictureBox_Main_DiviceStatus_BeamExpander },
+                    { "DustCollector_Upper", pictureBox_Main_DiviceStatus_DustCollector_Upper },
+                    { "DustCollector_Lower", pictureBox_Main_DiviceStatus_DustCollector_Lower },
+                    { "Chiller", pictureBox_Main_DiviceStatus_Chiller },
+                    { "ElectroRegulator", pictureBox_Main_DiviceStatus_ElectroRegulator },
+                    { "HeightSensor", pictureBox_Main_DiviceStatus_HeightSensor },
+                    { "CameraFine", pictureBox_Main_DiviceStatus_CameraFine },
+                    { "CameraPre", pictureBox_Main_DiviceStatus_CameraPre },
+                    { "Illuminator", pictureBox_Main_DiviceStatus_Illuminator },
+                };
+            }
+
+            
         }
         private void UpdateDeviceStatusImages()
         {

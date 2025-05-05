@@ -667,9 +667,11 @@ namespace QMC.Common.Parts
                         List<VisionImage> images = new List<VisionImage>();
                         DateTime dt = DateTime.Now;
 
+                        this.Camera.StopLive();
                         for (int iter = 0; iter < 5; iter++)
                         {
                             VisionImage image = null;
+                            
                             this.Camera.GrabSync(Vision.Cameras.Purpose.Processing, out image);
                             images.Add(image);
                         }
