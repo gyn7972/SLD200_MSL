@@ -6217,7 +6217,7 @@ namespace QMC.Common.Modules
             int m_DataNum = 0;
             int m_nCheckSum = 0;
             byte m_btTemp;
-            string m_strAddr = "000A";                            //  출력 주파수 Address
+            string m_strAddr = "000A";                            //  출력 주파수 Address            //  출력 주파수 0311 번지도 읽어보자
             int m_nAddrCount = 1;                                 //  번지 개수
             string m_strSendData = "";
             byte[] m_cSendCmd = null;
