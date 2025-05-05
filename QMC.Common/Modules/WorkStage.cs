@@ -19848,26 +19848,11 @@ namespace QMC.Common.Modules
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "변환된 Spiral Polyline 데이터 List 추가 완료");
 
-                                    ////  데이터 검증용 코드
-                                    //if (Config.ParamConfig.DrillingData_SaveToLogFile)
-                                    //{
-                                    //    m_strTemp = "Jump, X, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X.ToString() +
-                                    //                    ", Y, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y.ToString();
-                                    //    Log.Write("SLD100_Data", "Div. Drilling", m_strTemp);
-                                    //}
-                                    //if (Config.ParamConfig.ScannerData_SaveToLogFile)
-                                    //{
-                                    //    //  Scanner 가공 영역을 넘어가면 저장
-                                    //    if ((entity_Position.X < -Config.ParamConfig.Drilling_DivideSize /
                                 }
                                 //  Hole : Spiral Arc 타입으로 가공
                                 else if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Arc)
                                 {
-                                    //  Spiral 데이터
-                                    //double m_dTemp_OuterDiameter = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X + 
-                                    //                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameterResizing / 2.0);
-                                    //double m_dTemp_InnerDiameter = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X +
-                                    //                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameterResizing / 2.0);
+                                   
                                     double m_dTemp_OuterDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameter;
                                     double m_dTemp_InnerDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameter;
                                     double m_dTemp_Revolutions = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_Revolutions;
@@ -19884,22 +19869,10 @@ namespace QMC.Common.Modules
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 시작");
 
-                                    MarkSpiral(m_dTemp_InnerDiameter, m_dTemp_OuterDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+                                    MarkSpiralArc(m_dTemp_InnerDiameter, m_dTemp_OuterDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 완료");
 
-
-                                    ////  데이터 검증용 코드
-                                    //if (Config.ParamConfig.DrillingData_SaveToLogFile)
-                                    //{
-                                    //    m_strTemp = "Jump, X, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X.ToString() +
-                                    //                    ", Y, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y.ToString();
-                                    //    Log.Write("SLD100_Data", "Div. Drilling", m_strTemp);
-                                    //}
-                                    //if (Config.ParamConfig.ScannerData_SaveToLogFile)
-                                    //{
-                                    //    //  Scanner 가공 영역을 넘어가면 저장
-                                    //    if ((entity_Position.X < -Config.ParamConfig.Drilling_DivideSize /
                                 }
                                 //  Hole : Spiral Circle 타입으로 가공
                                 else if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Circle)
@@ -19925,21 +19898,10 @@ namespace QMC.Common.Modules
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 시작");
 
-                                    MarkSpiral(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+                                    MarkSpiralCircle(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 완료");
 
-                                    ////  데이터 검증용 코드
-                                    //if (Config.ParamConfig.DrillingData_SaveToLogFile)
-                                    //{
-                                    //    m_strTemp = "Jump, X, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X.ToString() +
-                                    //                    ", Y, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y.ToString();
-                                    //    Log.Write("SLD100_Data", "Div. Drilling", m_strTemp);
-                                    //}
-                                    //if (Config.ParamConfig.ScannerData_SaveToLogFile)
-                                    //{
-                                    //    //  Scanner 가공 영역을 넘어가면 저장
-                                    //    if ((entity_Position.X < -Config.ParamConfig.Drilling_DivideSize /
                                 }
                                 break;
 
@@ -20079,7 +20041,7 @@ namespace QMC.Common.Modules
                                     else
                                     {
                                         var spiralData = lwPolyLineSpiral.Items;
-                                        MarkSpiral(m_dTemp_InnerDiameter, m_dTemp_OuterDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+                                        MarkSpiralArc( m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
 
                                     }
                                 }
@@ -20107,7 +20069,7 @@ namespace QMC.Common.Modules
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 시작");
 
-                                    MarkSpiral(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+                                    MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 완료");
 
@@ -20147,7 +20109,7 @@ namespace QMC.Common.Modules
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 시작");
 
-                                    MarkSpiral(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+                                    MarkSpiralArc(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 완료");
 
@@ -21319,20 +21281,20 @@ namespace QMC.Common.Modules
             return 0;
         }
         
-        private void MarkSpiral(double r1, double r2,int turn,  double m_dTemp_AngleFactor, PointD center)
+        private void MarkSpiralArc(double outDia, double innerDia,int turn,  double m_dTemp_AngleFactor, PointD center)
         {
-            r1 /= 2;
-            r2 /= 2;
+            innerDia /= 2;
+            outDia /= 2;
 
             double startAngle = 0;
             double sweepAngle = m_dTemp_AngleFactor; // 각 아크의 각도 (작게 설정하여 부드럽게 연결)
             double dFirstAngle = 0;
-            double currentRadius = r1; // 초기 반지름
+            double currentRadius = innerDia; // 초기 반지름
             if(turn <1)
             {
                 turn = 1;
             }
-            double rStep = (r2 - r1) / (360.0 * turn / sweepAngle); // 반지름 증가량 계산
+            double rStep = (outDia - innerDia) / (360.0 * turn / sweepAngle); // 반지름 증가량 계산
 
             double dLastX = 0;
             double dLastY = 0;
@@ -21377,40 +21339,34 @@ namespace QMC.Common.Modules
                 {
                     sweepAngle = (rnd.Next(1, 1000) * 15.0 / 1000) + 4;
                 }
-                rStep = (r2 - r1) / (360.0 * turn / sweepAngle); // 반지름 증가량 계산
+                rStep = (outDia - innerDia) / (360.0 * turn / sweepAngle); // 반지름 증가량 계산
                 currentRadius += rStep; // 반지름 증가
             }
 
             rtc.ListArc(new Vector2((float)(center.X), (float)(center.Y )), (float)360);
             
             
+        }
 
-            //for (int i = 0; i < 360 * turn; i += sweepAngle) // 360도 회전
-            //{
+        private void MarkSpiralCircle(double outDia, double innerDia, int turn, double m_dTemp_AngleFactor, PointD center)
+        {
 
-            //    // 아크의 사각형 영역 계산
-            //    int x = (int)(center.X - currentRadius);
-            //    int y = (int)(center.Y - currentRadius);
-            //    int width = (int)(currentRadius * 2);
-            //    int height = (int)(currentRadius * 2);
+            innerDia /= 2;
+            outDia /= 2;
+            double centerX = center.X;
+            double centerY = center.Y;
+            double rStep = (outDia - innerDia) / (turn-1); // 반지름 증가량 계산
+            double dStartAngle = 360.0 / turn;
+            double currentRadius = innerDia;
+            for (double i = 0; i < turn; i++) // 360도 회전
+            {
 
-            //    double dShiftX = Math.Cos(i / 180.0 * Math.PI) * rStep / 2;
-            //    double dshiftY = Math.Sin(i / 180.0 * Math.PI) * rStep / 2;
-            //    if (i==0)
-            //    {
-            //        rtc.ListJump(new Vector2((float)center.X, (float)(center.Y + r1)));
-            //    }
-            //    else
-            //    {
-            //        rtc.ListArc(new Vector2((float)(center.X+dShiftX), (float)(center.Y + dshiftY)), sweepAngle);
-            //    }
-            //    // 아크 그리기
-
-
-            //    // 다음 아크를 위한 값 업데이트
-            //    startAngle += sweepAngle; // 시작 각도 증가
-            //    currentRadius += rStep; // 반지름 증가
-            //}
+                double StartX = currentRadius * Math.Cos((i* dStartAngle) / 180 * Math.PI);
+                double StartY = currentRadius * Math.Sin((i * dStartAngle) / 180 * Math.PI);
+                rtc.ListJump(new Vector2((float)(center.X + StartX), (float)(center.Y + StartY)));
+                rtc.ListArc(new Vector2((float)(centerX), (float)(centerY)), (float)360);
+                currentRadius += rStep;
+            }
         }
 
         private void LaserDrilling_StepStageXY_MoveUnloadingPos(out double lfVelocity, out double lfAccDec)
