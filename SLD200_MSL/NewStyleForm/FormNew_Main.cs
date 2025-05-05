@@ -919,7 +919,7 @@ namespace SLD200_MSL
             bool isLaserBusy = false;
             try
             {
-                if(workStage.rtc != null)
+                if((workStage.rtc != null) && Equipment._InitDeviceStatus.Scanner)      //  RTC 보드가 없는 상태에서 CtlGetStatus 를 하면 뻑이 남
                 {
                     isLaserBusy = workStage.rtc.CtlGetStatus(RtcStatus.Busy);
                 }
