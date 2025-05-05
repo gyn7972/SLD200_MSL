@@ -366,7 +366,9 @@ namespace QMC.Common
         public enum HoleProcessingType : int
         {
             Circle = 0,
-            Spiral,
+            Spiral_Polyline,
+            Spiral_Arc,
+            Spiral_Circle,
         }
 
         public struct stLayerRecipeParameter
@@ -401,7 +403,7 @@ namespace QMC.Common
             public double Miscellaneous_P2PDistance;                    //  P2P Distance (mm)
             public int Miscellaneous_MaskIndex;                         //  Mask Index (0:None, 1:Mask1, 2:Mask2, 3:Mask3, 4:Mask4)
             public int Miscellaneous_BETPositionIndex;                  //  BET Position Index (0:0.1X, 1:0.5X, 2:1.0X, 3:1.5X, 4:2.0X)
-            public int Miscellaneous_HoleProcessingType;                //  Hole Processing Type (0:Circle, 1:Spiral)
+            public int Miscellaneous_HoleProcessingType;                //  Hole Processing Type (0:Circle, 1:Spiral_Polyline, 2:Spiral_Arc, 3:Spiral_Circle)
             public int Miscellaneous_FiducialAlignType;                 //  Fiducial Align Type (0:Circle Find, 2:Pattern Matching)
             public int Miscellaneous_FiducialMarkType;                  //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
             public bool Miscellaneous_HoleSortByDistance_Use;               //  Sort By Distance Use (true: Use, false: Not Use)
@@ -1000,7 +1002,7 @@ namespace QMC.Common
                 stLayerRecipeSet[i].Miscellaneous_MaskIndex = 0;                                    //  Mask Index  
                 stLayerRecipeSet[i].Miscellaneous_BETPositionIndex = 0;                             //  BET Index  
                 stLayerRecipeSet[i].Miscellaneous_Drilling_Power = 10;                              //  Drilling Power              
-                stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = 0;                           //  Hole Processing Type (0:Circle, 1:Spiral)
+                stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = 0;                           //  Hole Processing Type (0:Circle, 1:Spiral_Polyline, 2:Spiral_Arc, 3:Spiral_Circle)
                 stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = 0;                            //  Fiducial Align Type (0:Circle Find, 1:Pattern Matching)
                 stLayerRecipeSet[i].Miscellaneous_FiducialMarkType = 0;                             //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
                 stLayerRecipeSet[i].Miscellaneous_HoleSortByDistance_Use = false;                   //  Hole Sort By Distance Use (true: Use, false: Not Use)

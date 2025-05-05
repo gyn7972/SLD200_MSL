@@ -19726,8 +19726,8 @@ namespace QMC.Common.Modules
                                         Log.Write("SLD_200_CIRCLE", "Auto Run", m_strTemp);
                                     }
                                 }
-                                //  Hole : Spiral 타입으로 가공
-                                else
+                                //  Hole : Spiral Polyline 타입으로 가공
+                                else if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Polyline)
                                 {
                                     //  Hole 데이터를 이용하여 Spiral 데이터 생성
                                     LwPolyline lwPolyLineSpiral = new LwPolyline();
@@ -19751,40 +19751,116 @@ namespace QMC.Common.Modules
                                     entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
 
-                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Circle 원 데이터를 Spiral 데이터로 변환 생성 시작");
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Circle 원 데이터를 Spiral Polyline 데이터로 변환 생성 시작");
 
                                     //if (m_dTemp_AngleFactor < 18)
                                     //{
                                     //    m_dTemp_AngleFactor = 18;
                                     //}
-                                    //todo : 김영남 속도 개선중 
+
                                     //  Spiral 데이터 파라미터 (외경 크기, 내경 크기, Spiral 회전 횟수, Spiral 회전 각도, Hole Center X, Hole Center Y)
-                                    //lwPolyLineSpiral = SpiralData_Create(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot.X, entity_Position_Rot.Y);
+                                    lwPolyLineSpiral = SpiralData_Create(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot.X, entity_Position_Rot.Y);
 
-                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Circle 원 데이터를 Spiral 데이터로 변환 생성 완료");
-
-
-                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "변환된 Spiral 데이터 List 추가 시작");
-
-                                    ////  객체 Edge 좌표 데이터 저장
-                                    //for (int n_pl = 0; n_pl < lwPolyLineSpiral.Count; n_pl++)
-                                    //{
-                                    //    if (n_pl == 0)          //  처음에 Jump 이동
-                                    //    {
-                                    //        m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)lwPolyLineSpiral.Items[n_pl].X, (float)lwPolyLineSpiral.Items[n_pl].Y));
-                                    //    }
-                                    //    else                    //  두번째부터 Mark 이동
-                                    //    {
-                                    //        m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)lwPolyLineSpiral.Items[n_pl].X, (float)lwPolyLineSpiral.Items[n_pl].Y));
-                                    //    }
-                                    //}
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Circle 원 데이터를 Spiral Polyline 데이터로 변환 생성 완료");
 
 
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "변환된 Spiral Polyline 데이터 List 추가 시작");
 
+                                    //  객체 Edge 좌표 데이터 저장
                                     var spiralData = lwPolyLineSpiral.Items;
+                                    for (int n_pl = 0; n_pl < lwPolyLineSpiral.Count; n_pl++)
+                                    {
+                                        if (n_pl == 0)          //  처음에 Jump 이동
+                                        {
+                                            m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
+                                        }
+                                        else                    //  두번째부터 Mark 이동
+                                        {
+                                            m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)spiralData[n_pl].X, (float)spiralData[n_pl].Y));
+                                        }
+                                    }
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "변환된 Spiral Polyline 데이터 List 추가 완료");
+
+                                    ////  데이터 검증용 코드
+                                    //if (Config.ParamConfig.DrillingData_SaveToLogFile)
+                                    //{
+                                    //    m_strTemp = "Jump, X, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X.ToString() +
+                                    //                    ", Y, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y.ToString();
+                                    //    Log.Write("SLD100_Data", "Div. Drilling", m_strTemp);
+                                    //}
+                                    //if (Config.ParamConfig.ScannerData_SaveToLogFile)
+                                    //{
+                                    //    //  Scanner 가공 영역을 넘어가면 저장
+                                    //    if ((entity_Position.X < -Config.ParamConfig.Drilling_DivideSize /
+                                }
+                                //  Hole : Spiral Arc 타입으로 가공
+                                else if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Arc)
+                                {
+                                    //  Spiral 데이터
+                                    //double m_dTemp_OuterDiameter = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X + 
+                                    //                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameterResizing / 2.0);
+                                    //double m_dTemp_InnerDiameter = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X +
+                                    //                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameterResizing / 2.0);
+                                    double m_dTemp_OuterDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameter;
+                                    double m_dTemp_InnerDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameter;
+                                    double m_dTemp_Revolutions = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_Revolutions;
+                                    double m_dTemp_AngleFactor = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_AngleFactor;
+
+                                    //  Hole Center
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                    entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 시작");
+
                                     MarkSpiral(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
 
-                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "변환된 Spiral 데이터 List 추가 완료");
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 완료");
+
+                                    ////  데이터 검증용 코드
+                                    //if (Config.ParamConfig.DrillingData_SaveToLogFile)
+                                    //{
+                                    //    m_strTemp = "Jump, X, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X.ToString() +
+                                    //                    ", Y, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y.ToString();
+                                    //    Log.Write("SLD100_Data", "Div. Drilling", m_strTemp);
+                                    //}
+                                    //if (Config.ParamConfig.ScannerData_SaveToLogFile)
+                                    //{
+                                    //    //  Scanner 가공 영역을 넘어가면 저장
+                                    //    if ((entity_Position.X < -Config.ParamConfig.Drilling_DivideSize /
+                                }
+                                //  Hole : Spiral Circle 타입으로 가공
+                                else if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Circle)
+                                {
+                                    //  Spiral 데이터
+                                    //double m_dTemp_OuterDiameter = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X + 
+                                    //                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameterResizing / 2.0);
+                                    //double m_dTemp_InnerDiameter = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X +
+                                    //                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameterResizing / 2.0);
+                                    double m_dTemp_OuterDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameter;
+                                    double m_dTemp_InnerDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameter;
+                                    double m_dTemp_Revolutions = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_Revolutions;
+                                    double m_dTemp_AngleFactor = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_AngleFactor;
+
+                                    //  Hole Center
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                    entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 시작");
+
+                                    MarkSpiral(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 완료");
 
                                     ////  데이터 검증용 코드
                                     //if (Config.ParamConfig.DrillingData_SaveToLogFile)
@@ -19885,8 +19961,8 @@ namespace QMC.Common.Modules
                                         m_bDivRegionList_Success &= rtc.ListArc(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y), (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_RotationAngleArc);
                                     }
                                 }
-                                //  Hole : Spiral 타입으로 가공
-                                else
+                                //  Hole : Spiral Polyline 타입으로 가공
+                                else if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Polyline)
                                 {
                                     //  Hole 데이터를 이용하여 Spiral 데이터 생성
                                     LwPolyline lwPolyLineSpiral = new LwPolyline();
@@ -19932,6 +20008,86 @@ namespace QMC.Common.Modules
                                     }
 
                                     Log.Write("SLD_200_CIRCLE", "Auto Run", "변환된 Spiral 데이터 List 추가 완료");
+
+                                    ////  데이터 검증용 코드
+                                    //if (Config.ParamConfig.DrillingData_SaveToLogFile)
+                                    //{
+                                    //    m_strTemp = "Jump, X, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X.ToString() +
+                                    //                    ", Y, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y.ToString();
+                                    //    Log.Write("SLD100_Data", "Div. Drilling", m_strTemp);
+                                    //}
+                                    //if (Config.ParamConfig.ScannerData_SaveToLogFile)
+                                    //{
+                                    //    //  Scanner 가공 영역을 넘어가면 저장
+                                    //    if ((entity_Position.X < -Config.ParamConfig.Drilling_DivideSize /
+                                }
+                                //  Hole : Spiral Arc 타입으로 가공
+                                else if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Arc)
+                                {
+                                    //  Spiral 데이터
+                                    //double m_dTemp_OuterDiameter = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X + 
+                                    //                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameterResizing / 2.0);
+                                    //double m_dTemp_InnerDiameter = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X +
+                                    //                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameterResizing / 2.0);
+                                    double m_dTemp_OuterDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameter;
+                                    double m_dTemp_InnerDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameter;
+                                    double m_dTemp_Revolutions = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_Revolutions;
+                                    double m_dTemp_AngleFactor = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_AngleFactor;
+
+                                    //  Hole Center
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                    entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 시작");
+
+                                    MarkSpiral(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Arc 데이터 List 추가 완료");
+
+                                    ////  데이터 검증용 코드
+                                    //if (Config.ParamConfig.DrillingData_SaveToLogFile)
+                                    //{
+                                    //    m_strTemp = "Jump, X, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X.ToString() +
+                                    //                    ", Y, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y.ToString();
+                                    //    Log.Write("SLD100_Data", "Div. Drilling", m_strTemp);
+                                    //}
+                                    //if (Config.ParamConfig.ScannerData_SaveToLogFile)
+                                    //{
+                                    //    //  Scanner 가공 영역을 넘어가면 저장
+                                    //    if ((entity_Position.X < -Config.ParamConfig.Drilling_DivideSize /
+                                }
+                                //  Hole : Spiral Circle 타입으로 가공
+                                else if (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Circle)
+                                {
+                                    //  Spiral 데이터
+                                    //double m_dTemp_OuterDiameter = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X + 
+                                    //                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameterResizing / 2.0);
+                                    //double m_dTemp_InnerDiameter = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X +
+                                    //                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameterResizing / 2.0);
+                                    double m_dTemp_OuterDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_OuterDiameter;
+                                    double m_dTemp_InnerDiameter = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_InnerDiameter;
+                                    double m_dTemp_Revolutions = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_Revolutions;
+                                    double m_dTemp_AngleFactor = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].SpiralParam_AngleFactor;
+
+                                    //  Hole Center
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                    entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 시작");
+
+                                    MarkSpiral(m_dTemp_OuterDiameter, m_dTemp_InnerDiameter, (int)m_dTemp_Revolutions, m_dTemp_AngleFactor, entity_Position_Rot);
+
+                                    Log.Write("SLD_200_CIRCLE", "Auto Run", "Spiral Circle 데이터 List 추가 완료");
 
                                     ////  데이터 검증용 코드
                                     //if (Config.ParamConfig.DrillingData_SaveToLogFile)
@@ -20408,7 +20564,9 @@ namespace QMC.Common.Modules
                             }
                         }
                         //  Hole : Spiral 타입으로 가공
-                        else
+                        else if ((Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Polyline) ||
+                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Arc) ||
+                                (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_HoleProcessingType == (int)HoleProcessingType.Spiral_Circle))
                         {
                             //  Spiral 은 Revolution 만큼 데이터를 집어넣기 때문에 반복 회수를 사용하지 않는다.
                             //  위에서 데이터를 다 넣었으므로 바로 Execute

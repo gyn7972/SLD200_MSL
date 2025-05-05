@@ -1908,7 +1908,9 @@
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.FormattingEnabled = true;
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Items.AddRange(new object[] {
             "Circle (Arc)",
-            "Spiral"});
+            "Spiral (Polyline)",
+            "Spiral (Arc)",
+            "Spiral (Circle)"});
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Location = new System.Drawing.Point(198, 588);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.Name = "comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType";

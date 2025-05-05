@@ -126,13 +126,10 @@ namespace SLD200_MSL
             this.radioButton_VisionPopup_DisplayMode_Live = new System.Windows.Forms.RadioButton();
             this.radioButton_VisionPopup_DisplayMode_Capture = new System.Windows.Forms.RadioButton();
             this.groupBox87 = new System.Windows.Forms.GroupBox();
-            this.radioButton_Light_Red = new System.Windows.Forms.RadioButton();
-            this.radioButton_Light_IR = new System.Windows.Forms.RadioButton();
-            this.baseLabelMax = new SLD200_MSL.BaseLabel();
-            this.baseLabelMin = new SLD200_MSL.BaseLabel();
-            this.hScrollBarIlluminator = new System.Windows.Forms.HScrollBar();
-            this.button76 = new System.Windows.Forms.Button();
-            this.textBox_IlluminationValue = new System.Windows.Forms.TextBox();
+            this.baseLabelMax_IR = new SLD200_MSL.BaseLabel();
+            this.baseLabelMin_IR = new SLD200_MSL.BaseLabel();
+            this.hScrollBarIlluminator_IR = new System.Windows.Forms.HScrollBar();
+            this.textBox_IlluminationValue_IR = new System.Windows.Forms.TextBox();
             this.groupBox83 = new System.Windows.Forms.GroupBox();
             this.radioButton_VisionPopup_CameraSelection_HighMag = new System.Windows.Forms.RadioButton();
             this.radioButton_VisionPopup_CameraSelection_LowMag = new System.Windows.Forms.RadioButton();
@@ -155,6 +152,12 @@ namespace SLD200_MSL
             this.button43 = new System.Windows.Forms.Button();
             this.button47 = new System.Windows.Forms.Button();
             this.button48 = new System.Windows.Forms.Button();
+            this.baseLabel_IR = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Red = new SLD200_MSL.BaseLabel();
+            this.baseLabelMax_Red = new SLD200_MSL.BaseLabel();
+            this.baseLabelMin_Red = new SLD200_MSL.BaseLabel();
+            this.hScrollBarIlluminator_Red = new System.Windows.Forms.HScrollBar();
+            this.textBox_IlluminationValue_Red = new System.Windows.Forms.TextBox();
             this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -380,7 +383,7 @@ namespace SLD200_MSL
             // listBox_VisionPopup_PM_Result
             // 
             this.listBox_VisionPopup_PM_Result.FormattingEnabled = true;
-            this.listBox_VisionPopup_PM_Result.ItemHeight = 24;
+            this.listBox_VisionPopup_PM_Result.ItemHeight = 16;
             this.listBox_VisionPopup_PM_Result.Location = new System.Drawing.Point(310, 108);
             this.listBox_VisionPopup_PM_Result.Name = "listBox_VisionPopup_PM_Result";
             this.listBox_VisionPopup_PM_Result.Size = new System.Drawing.Size(127, 100);
@@ -524,10 +527,10 @@ namespace SLD200_MSL
             // listBox_FindCircle_Result
             // 
             this.listBox_FindCircle_Result.FormattingEnabled = true;
-            this.listBox_FindCircle_Result.ItemHeight = 24;
+            this.listBox_FindCircle_Result.ItemHeight = 16;
             this.listBox_FindCircle_Result.Location = new System.Drawing.Point(252, 109);
             this.listBox_FindCircle_Result.Name = "listBox_FindCircle_Result";
-            this.listBox_FindCircle_Result.Size = new System.Drawing.Size(186, 124);
+            this.listBox_FindCircle_Result.Size = new System.Drawing.Size(186, 116);
             this.listBox_FindCircle_Result.TabIndex = 74;
             // 
             // button_VisionPopup_FindCircle_GrabImage
@@ -639,7 +642,7 @@ namespace SLD200_MSL
             this.comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList.Location = new System.Drawing.Point(10, 156);
             this.comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList.Name = "comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList";
-            this.comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList.Size = new System.Drawing.Size(80, 32);
+            this.comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList.Size = new System.Drawing.Size(80, 24);
             this.comboBox_Config_VisionPopup_AlignTest_SelectedSocket_FiducialList.TabIndex = 137;
             // 
             // label6
@@ -659,7 +662,7 @@ namespace SLD200_MSL
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterY.Location = new System.Drawing.Point(128, 71);
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterY.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterY.Name = "textBox_Config_VisionPopup_AlignTest_Socket_CenterY";
-            this.textBox_Config_VisionPopup_AlignTest_Socket_CenterY.Size = new System.Drawing.Size(72, 32);
+            this.textBox_Config_VisionPopup_AlignTest_Socket_CenterY.Size = new System.Drawing.Size(72, 24);
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterY.TabIndex = 135;
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterY.Text = "0.000";
             // 
@@ -669,7 +672,7 @@ namespace SLD200_MSL
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterX.Location = new System.Drawing.Point(128, 43);
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterX.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterX.Name = "textBox_Config_VisionPopup_AlignTest_Socket_CenterX";
-            this.textBox_Config_VisionPopup_AlignTest_Socket_CenterX.Size = new System.Drawing.Size(72, 32);
+            this.textBox_Config_VisionPopup_AlignTest_Socket_CenterX.Size = new System.Drawing.Size(72, 24);
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterX.TabIndex = 134;
             this.textBox_Config_VisionPopup_AlignTest_Socket_CenterX.Text = "0.000";
             // 
@@ -720,7 +723,7 @@ namespace SLD200_MSL
             this.comboBox_Config_VisionPopup_AlignTest_SocketList.Location = new System.Drawing.Point(105, 8);
             this.comboBox_Config_VisionPopup_AlignTest_SocketList.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Config_VisionPopup_AlignTest_SocketList.Name = "comboBox_Config_VisionPopup_AlignTest_SocketList";
-            this.comboBox_Config_VisionPopup_AlignTest_SocketList.Size = new System.Drawing.Size(95, 32);
+            this.comboBox_Config_VisionPopup_AlignTest_SocketList.Size = new System.Drawing.Size(95, 24);
             this.comboBox_Config_VisionPopup_AlignTest_SocketList.TabIndex = 118;
             this.comboBox_Config_VisionPopup_AlignTest_SocketList.SelectedIndexChanged += new System.EventHandler(this.comboBox_Config_VisionPopup_AlignTest_SocketList_SelectedIndexChanged);
             // 
@@ -890,7 +893,7 @@ namespace SLD200_MSL
             this.textBox_VisionPopup_JogMove_StepSize.Location = new System.Drawing.Point(162, 45);
             this.textBox_VisionPopup_JogMove_StepSize.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_VisionPopup_JogMove_StepSize.Name = "textBox_VisionPopup_JogMove_StepSize";
-            this.textBox_VisionPopup_JogMove_StepSize.Size = new System.Drawing.Size(71, 32);
+            this.textBox_VisionPopup_JogMove_StepSize.Size = new System.Drawing.Size(71, 24);
             this.textBox_VisionPopup_JogMove_StepSize.TabIndex = 75;
             this.textBox_VisionPopup_JogMove_StepSize.Text = "1.000";
             // 
@@ -907,25 +910,25 @@ namespace SLD200_MSL
             // 
             // radioButton_VisionPopup_JogMove_Step
             // 
+            this.radioButton_VisionPopup_JogMove_Step.Checked = true;
             this.radioButton_VisionPopup_JogMove_Step.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_VisionPopup_JogMove_Step.Location = new System.Drawing.Point(11, 44);
             this.radioButton_VisionPopup_JogMove_Step.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.radioButton_VisionPopup_JogMove_Step.Name = "radioButton_VisionPopup_JogMove_Step";
             this.radioButton_VisionPopup_JogMove_Step.Size = new System.Drawing.Size(59, 24);
             this.radioButton_VisionPopup_JogMove_Step.TabIndex = 6;
+            this.radioButton_VisionPopup_JogMove_Step.TabStop = true;
             this.radioButton_VisionPopup_JogMove_Step.Text = "Step";
             this.radioButton_VisionPopup_JogMove_Step.UseVisualStyleBackColor = true;
             // 
             // radioButton_VisionPopup_JogMove_Continuous
             // 
-            this.radioButton_VisionPopup_JogMove_Continuous.Checked = true;
             this.radioButton_VisionPopup_JogMove_Continuous.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_VisionPopup_JogMove_Continuous.Location = new System.Drawing.Point(11, 21);
             this.radioButton_VisionPopup_JogMove_Continuous.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.radioButton_VisionPopup_JogMove_Continuous.Name = "radioButton_VisionPopup_JogMove_Continuous";
             this.radioButton_VisionPopup_JogMove_Continuous.Size = new System.Drawing.Size(107, 24);
             this.radioButton_VisionPopup_JogMove_Continuous.TabIndex = 5;
-            this.radioButton_VisionPopup_JogMove_Continuous.TabStop = true;
             this.radioButton_VisionPopup_JogMove_Continuous.Text = "Continuous";
             this.radioButton_VisionPopup_JogMove_Continuous.UseVisualStyleBackColor = true;
             // 
@@ -945,25 +948,25 @@ namespace SLD200_MSL
             // 
             // radioButton_VisionPopup_Move_MoveMode_Coarse
             // 
+            this.radioButton_VisionPopup_Move_MoveMode_Coarse.Checked = true;
             this.radioButton_VisionPopup_Move_MoveMode_Coarse.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_VisionPopup_Move_MoveMode_Coarse.Location = new System.Drawing.Point(144, 20);
             this.radioButton_VisionPopup_Move_MoveMode_Coarse.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_VisionPopup_Move_MoveMode_Coarse.Name = "radioButton_VisionPopup_Move_MoveMode_Coarse";
             this.radioButton_VisionPopup_Move_MoveMode_Coarse.Size = new System.Drawing.Size(85, 24);
             this.radioButton_VisionPopup_Move_MoveMode_Coarse.TabIndex = 6;
+            this.radioButton_VisionPopup_Move_MoveMode_Coarse.TabStop = true;
             this.radioButton_VisionPopup_Move_MoveMode_Coarse.Text = "Coarse";
             this.radioButton_VisionPopup_Move_MoveMode_Coarse.UseVisualStyleBackColor = true;
             // 
             // radioButton_VisionPopup_Move_MoveMode_Fine
             // 
-            this.radioButton_VisionPopup_Move_MoveMode_Fine.Checked = true;
             this.radioButton_VisionPopup_Move_MoveMode_Fine.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_VisionPopup_Move_MoveMode_Fine.Location = new System.Drawing.Point(38, 20);
             this.radioButton_VisionPopup_Move_MoveMode_Fine.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_VisionPopup_Move_MoveMode_Fine.Name = "radioButton_VisionPopup_Move_MoveMode_Fine";
             this.radioButton_VisionPopup_Move_MoveMode_Fine.Size = new System.Drawing.Size(80, 24);
             this.radioButton_VisionPopup_Move_MoveMode_Fine.TabIndex = 5;
-            this.radioButton_VisionPopup_Move_MoveMode_Fine.TabStop = true;
             this.radioButton_VisionPopup_Move_MoveMode_Fine.Text = "Fine";
             this.radioButton_VisionPopup_Move_MoveMode_Fine.UseVisualStyleBackColor = true;
             // 
@@ -1335,7 +1338,7 @@ namespace SLD200_MSL
             this.checkBox1.Location = new System.Drawing.Point(247, 37);
             this.checkBox1.Margin = new System.Windows.Forms.Padding(6);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(183, 52);
+            this.checkBox1.Size = new System.Drawing.Size(125, 38);
             this.checkBox1.TabIndex = 7;
             this.checkBox1.Text = "with\r\nCamera Seletion";
             this.checkBox1.UseVisualStyleBackColor = true;
@@ -1426,96 +1429,64 @@ namespace SLD200_MSL
             // 
             // groupBox87
             // 
-            this.groupBox87.Controls.Add(this.radioButton_Light_Red);
-            this.groupBox87.Controls.Add(this.radioButton_Light_IR);
-            this.groupBox87.Controls.Add(this.baseLabelMax);
-            this.groupBox87.Controls.Add(this.baseLabelMin);
-            this.groupBox87.Controls.Add(this.hScrollBarIlluminator);
-            this.groupBox87.Controls.Add(this.button76);
-            this.groupBox87.Controls.Add(this.textBox_IlluminationValue);
+            this.groupBox87.Controls.Add(this.textBox_IlluminationValue_Red);
+            this.groupBox87.Controls.Add(this.baseLabelMax_Red);
+            this.groupBox87.Controls.Add(this.baseLabelMin_Red);
+            this.groupBox87.Controls.Add(this.hScrollBarIlluminator_Red);
+            this.groupBox87.Controls.Add(this.baseLabel_Red);
+            this.groupBox87.Controls.Add(this.baseLabel_IR);
+            this.groupBox87.Controls.Add(this.baseLabelMax_IR);
+            this.groupBox87.Controls.Add(this.baseLabelMin_IR);
+            this.groupBox87.Controls.Add(this.hScrollBarIlluminator_IR);
+            this.groupBox87.Controls.Add(this.textBox_IlluminationValue_IR);
             this.groupBox87.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox87.Location = new System.Drawing.Point(203, 533);
+            this.groupBox87.Location = new System.Drawing.Point(162, 533);
             this.groupBox87.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox87.Name = "groupBox87";
             this.groupBox87.Padding = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.groupBox87.Size = new System.Drawing.Size(287, 103);
+            this.groupBox87.Size = new System.Drawing.Size(328, 139);
             this.groupBox87.TabIndex = 61;
             this.groupBox87.TabStop = false;
             this.groupBox87.Text = " Illumination Brightness (%) ";
             // 
-            // radioButton_Light_Red
+            // baseLabelMax_IR
             // 
-            this.radioButton_Light_Red.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Light_Red.Location = new System.Drawing.Point(61, 26);
-            this.radioButton_Light_Red.Margin = new System.Windows.Forms.Padding(6);
-            this.radioButton_Light_Red.Name = "radioButton_Light_Red";
-            this.radioButton_Light_Red.Size = new System.Drawing.Size(56, 27);
-            this.radioButton_Light_Red.TabIndex = 34;
-            this.radioButton_Light_Red.Text = "Red";
-            this.radioButton_Light_Red.UseVisualStyleBackColor = true;
-            this.radioButton_Light_Red.CheckedChanged += new System.EventHandler(this.radioButton_Light_Red_CheckedChanged);
+            this.baseLabelMax_IR.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabelMax_IR.ForeColor = System.Drawing.Color.Black;
+            this.baseLabelMax_IR.Location = new System.Drawing.Point(225, 24);
+            this.baseLabelMax_IR.Name = "baseLabelMax_IR";
+            this.baseLabelMax_IR.Size = new System.Drawing.Size(45, 19);
+            this.baseLabelMax_IR.TabIndex = 32;
+            this.baseLabelMax_IR.Text = "255";
+            this.baseLabelMax_IR.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // radioButton_Light_IR
+            // baseLabelMin_IR
             // 
-            this.radioButton_Light_IR.Checked = true;
-            this.radioButton_Light_IR.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Light_IR.Location = new System.Drawing.Point(10, 26);
-            this.radioButton_Light_IR.Margin = new System.Windows.Forms.Padding(6);
-            this.radioButton_Light_IR.Name = "radioButton_Light_IR";
-            this.radioButton_Light_IR.Size = new System.Drawing.Size(44, 27);
-            this.radioButton_Light_IR.TabIndex = 33;
-            this.radioButton_Light_IR.TabStop = true;
-            this.radioButton_Light_IR.Text = "IR";
-            this.radioButton_Light_IR.UseVisualStyleBackColor = true;
-            this.radioButton_Light_IR.CheckedChanged += new System.EventHandler(this.radioButton_Light_IR_CheckedChanged);
+            this.baseLabelMin_IR.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabelMin_IR.ForeColor = System.Drawing.Color.Black;
+            this.baseLabelMin_IR.Location = new System.Drawing.Point(46, 24);
+            this.baseLabelMin_IR.Name = "baseLabelMin_IR";
+            this.baseLabelMin_IR.Size = new System.Drawing.Size(17, 19);
+            this.baseLabelMin_IR.TabIndex = 31;
+            this.baseLabelMin_IR.Text = "0";
+            this.baseLabelMin_IR.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // baseLabelMax
+            // hScrollBarIlluminator_IR
             // 
-            this.baseLabelMax.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabelMax.ForeColor = System.Drawing.Color.Black;
-            this.baseLabelMax.Location = new System.Drawing.Point(224, 67);
-            this.baseLabelMax.Name = "baseLabelMax";
-            this.baseLabelMax.Size = new System.Drawing.Size(55, 23);
-            this.baseLabelMax.TabIndex = 32;
-            this.baseLabelMax.Text = "255";
-            this.baseLabelMax.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.hScrollBarIlluminator_IR.Location = new System.Drawing.Point(46, 45);
+            this.hScrollBarIlluminator_IR.Name = "hScrollBarIlluminator_IR";
+            this.hScrollBarIlluminator_IR.Size = new System.Drawing.Size(223, 26);
+            this.hScrollBarIlluminator_IR.TabIndex = 30;
             // 
-            // baseLabelMin
+            // textBox_IlluminationValue_IR
             // 
-            this.baseLabelMin.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabelMin.ForeColor = System.Drawing.Color.Black;
-            this.baseLabelMin.Location = new System.Drawing.Point(16, 67);
-            this.baseLabelMin.Name = "baseLabelMin";
-            this.baseLabelMin.Size = new System.Drawing.Size(22, 23);
-            this.baseLabelMin.TabIndex = 31;
-            this.baseLabelMin.Text = "0";
-            // 
-            // hScrollBarIlluminator
-            // 
-            this.hScrollBarIlluminator.Location = new System.Drawing.Point(47, 63);
-            this.hScrollBarIlluminator.Name = "hScrollBarIlluminator";
-            this.hScrollBarIlluminator.Size = new System.Drawing.Size(180, 26);
-            this.hScrollBarIlluminator.TabIndex = 30;
-            // 
-            // button76
-            // 
-            this.button76.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button76.Location = new System.Drawing.Point(235, 25);
-            this.button76.Name = "button76";
-            this.button76.Size = new System.Drawing.Size(40, 27);
-            this.button76.TabIndex = 28;
-            this.button76.Text = "#";
-            this.button76.UseVisualStyleBackColor = true;
-            // 
-            // textBox_IlluminationValue
-            // 
-            this.textBox_IlluminationValue.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_IlluminationValue.Location = new System.Drawing.Point(129, 27);
-            this.textBox_IlluminationValue.Name = "textBox_IlluminationValue";
-            this.textBox_IlluminationValue.Size = new System.Drawing.Size(100, 32);
-            this.textBox_IlluminationValue.TabIndex = 27;
-            this.textBox_IlluminationValue.Text = "000";
-            this.textBox_IlluminationValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox_IlluminationValue_IR.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_IlluminationValue_IR.Location = new System.Drawing.Point(272, 45);
+            this.textBox_IlluminationValue_IR.Name = "textBox_IlluminationValue_IR";
+            this.textBox_IlluminationValue_IR.Size = new System.Drawing.Size(46, 24);
+            this.textBox_IlluminationValue_IR.TabIndex = 27;
+            this.textBox_IlluminationValue_IR.Text = "000";
+            this.textBox_IlluminationValue_IR.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // groupBox83
             // 
@@ -1533,26 +1504,26 @@ namespace SLD200_MSL
             // 
             // radioButton_VisionPopup_CameraSelection_HighMag
             // 
+            this.radioButton_VisionPopup_CameraSelection_HighMag.Checked = true;
             this.radioButton_VisionPopup_CameraSelection_HighMag.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_VisionPopup_CameraSelection_HighMag.Location = new System.Drawing.Point(13, 55);
             this.radioButton_VisionPopup_CameraSelection_HighMag.Margin = new System.Windows.Forms.Padding(6);
             this.radioButton_VisionPopup_CameraSelection_HighMag.Name = "radioButton_VisionPopup_CameraSelection_HighMag";
             this.radioButton_VisionPopup_CameraSelection_HighMag.Size = new System.Drawing.Size(86, 27);
             this.radioButton_VisionPopup_CameraSelection_HighMag.TabIndex = 6;
+            this.radioButton_VisionPopup_CameraSelection_HighMag.TabStop = true;
             this.radioButton_VisionPopup_CameraSelection_HighMag.Text = "High Mag.";
             this.radioButton_VisionPopup_CameraSelection_HighMag.UseVisualStyleBackColor = true;
             this.radioButton_VisionPopup_CameraSelection_HighMag.CheckedChanged += new System.EventHandler(this.radioButton_VisionPopup_CameraSelection_HighMag_CheckedChanged);
             // 
             // radioButton_VisionPopup_CameraSelection_LowMag
             // 
-            this.radioButton_VisionPopup_CameraSelection_LowMag.Checked = true;
             this.radioButton_VisionPopup_CameraSelection_LowMag.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_VisionPopup_CameraSelection_LowMag.Location = new System.Drawing.Point(13, 25);
             this.radioButton_VisionPopup_CameraSelection_LowMag.Margin = new System.Windows.Forms.Padding(6);
             this.radioButton_VisionPopup_CameraSelection_LowMag.Name = "radioButton_VisionPopup_CameraSelection_LowMag";
             this.radioButton_VisionPopup_CameraSelection_LowMag.Size = new System.Drawing.Size(86, 27);
             this.radioButton_VisionPopup_CameraSelection_LowMag.TabIndex = 5;
-            this.radioButton_VisionPopup_CameraSelection_LowMag.TabStop = true;
             this.radioButton_VisionPopup_CameraSelection_LowMag.Text = "Low Mag.";
             this.radioButton_VisionPopup_CameraSelection_LowMag.UseVisualStyleBackColor = true;
             this.radioButton_VisionPopup_CameraSelection_LowMag.CheckedChanged += new System.EventHandler(this.radioButton_VisionPopup_CameraSelection_LowMag_CheckedChanged);
@@ -1569,7 +1540,7 @@ namespace SLD200_MSL
             this.groupBox78.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox78.Name = "groupBox78";
             this.groupBox78.Padding = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.groupBox78.Size = new System.Drawing.Size(166, 213);
+            this.groupBox78.Size = new System.Drawing.Size(139, 213);
             this.groupBox78.TabIndex = 56;
             this.groupBox78.TabStop = false;
             this.groupBox78.Text = " Display Items ";
@@ -1646,10 +1617,10 @@ namespace SLD200_MSL
             this.groupBox36.Controls.Add(this.textBox17);
             this.groupBox36.Controls.Add(this.label71);
             this.groupBox36.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox36.Location = new System.Drawing.Point(203, 423);
+            this.groupBox36.Location = new System.Drawing.Point(176, 423);
             this.groupBox36.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox36.Name = "groupBox36";
-            this.groupBox36.Size = new System.Drawing.Size(287, 92);
+            this.groupBox36.Size = new System.Drawing.Size(314, 92);
             this.groupBox36.TabIndex = 58;
             this.groupBox36.TabStop = false;
             this.groupBox36.Text = " Vision Scale (um/pixel) ";
@@ -1657,7 +1628,7 @@ namespace SLD200_MSL
             // button46
             // 
             this.button46.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button46.Location = new System.Drawing.Point(235, 56);
+            this.button46.Location = new System.Drawing.Point(264, 56);
             this.button46.Name = "button46";
             this.button46.Size = new System.Drawing.Size(40, 27);
             this.button46.TabIndex = 26;
@@ -1667,7 +1638,7 @@ namespace SLD200_MSL
             // button49
             // 
             this.button49.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button49.Location = new System.Drawing.Point(235, 25);
+            this.button49.Location = new System.Drawing.Point(264, 25);
             this.button49.Name = "button49";
             this.button49.Size = new System.Drawing.Size(40, 27);
             this.button49.TabIndex = 25;
@@ -1677,16 +1648,16 @@ namespace SLD200_MSL
             // textBox16
             // 
             this.textBox16.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox16.Location = new System.Drawing.Point(129, 57);
+            this.textBox16.Location = new System.Drawing.Point(158, 57);
             this.textBox16.Name = "textBox16";
-            this.textBox16.Size = new System.Drawing.Size(100, 32);
+            this.textBox16.Size = new System.Drawing.Size(100, 24);
             this.textBox16.TabIndex = 24;
             this.textBox16.Text = "000.000";
             // 
             // label70
             // 
             this.label70.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label70.Location = new System.Drawing.Point(53, 56);
+            this.label70.Location = new System.Drawing.Point(82, 56);
             this.label70.Margin = new System.Windows.Forms.Padding(3);
             this.label70.Name = "label70";
             this.label70.Size = new System.Drawing.Size(70, 27);
@@ -1697,16 +1668,16 @@ namespace SLD200_MSL
             // textBox17
             // 
             this.textBox17.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox17.Location = new System.Drawing.Point(129, 27);
+            this.textBox17.Location = new System.Drawing.Point(158, 27);
             this.textBox17.Name = "textBox17";
-            this.textBox17.Size = new System.Drawing.Size(100, 32);
+            this.textBox17.Size = new System.Drawing.Size(100, 24);
             this.textBox17.TabIndex = 22;
             this.textBox17.Text = "000.000";
             // 
             // label71
             // 
             this.label71.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label71.Location = new System.Drawing.Point(53, 25);
+            this.label71.Location = new System.Drawing.Point(82, 25);
             this.label71.Margin = new System.Windows.Forms.Padding(3);
             this.label71.Name = "label71";
             this.label71.Size = new System.Drawing.Size(70, 27);
@@ -1803,9 +1774,70 @@ namespace SLD200_MSL
             this.button48.Text = "Apply";
             this.button48.UseVisualStyleBackColor = true;
             // 
+            // baseLabel_IR
+            // 
+            this.baseLabel_IR.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_IR.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_IR.Location = new System.Drawing.Point(7, 46);
+            this.baseLabel_IR.Name = "baseLabel_IR";
+            this.baseLabel_IR.Size = new System.Drawing.Size(35, 23);
+            this.baseLabel_IR.TabIndex = 35;
+            this.baseLabel_IR.Text = "IR";
+            this.baseLabel_IR.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // baseLabel_Red
+            // 
+            this.baseLabel_Red.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_Red.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_Red.Location = new System.Drawing.Point(7, 106);
+            this.baseLabel_Red.Name = "baseLabel_Red";
+            this.baseLabel_Red.Size = new System.Drawing.Size(35, 23);
+            this.baseLabel_Red.TabIndex = 36;
+            this.baseLabel_Red.Text = "Red";
+            this.baseLabel_Red.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // baseLabelMax_Red
+            // 
+            this.baseLabelMax_Red.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabelMax_Red.ForeColor = System.Drawing.Color.Black;
+            this.baseLabelMax_Red.Location = new System.Drawing.Point(225, 84);
+            this.baseLabelMax_Red.Name = "baseLabelMax_Red";
+            this.baseLabelMax_Red.Size = new System.Drawing.Size(45, 19);
+            this.baseLabelMax_Red.TabIndex = 39;
+            this.baseLabelMax_Red.Text = "255";
+            this.baseLabelMax_Red.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // baseLabelMin_Red
+            // 
+            this.baseLabelMin_Red.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabelMin_Red.ForeColor = System.Drawing.Color.Black;
+            this.baseLabelMin_Red.Location = new System.Drawing.Point(46, 84);
+            this.baseLabelMin_Red.Name = "baseLabelMin_Red";
+            this.baseLabelMin_Red.Size = new System.Drawing.Size(17, 19);
+            this.baseLabelMin_Red.TabIndex = 38;
+            this.baseLabelMin_Red.Text = "0";
+            this.baseLabelMin_Red.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // hScrollBarIlluminator_Red
+            // 
+            this.hScrollBarIlluminator_Red.Location = new System.Drawing.Point(46, 105);
+            this.hScrollBarIlluminator_Red.Name = "hScrollBarIlluminator_Red";
+            this.hScrollBarIlluminator_Red.Size = new System.Drawing.Size(223, 26);
+            this.hScrollBarIlluminator_Red.TabIndex = 37;
+            // 
+            // textBox_IlluminationValue_Red
+            // 
+            this.textBox_IlluminationValue_Red.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_IlluminationValue_Red.Location = new System.Drawing.Point(272, 105);
+            this.textBox_IlluminationValue_Red.Name = "textBox_IlluminationValue_Red";
+            this.textBox_IlluminationValue_Red.Size = new System.Drawing.Size(46, 24);
+            this.textBox_IlluminationValue_Red.TabIndex = 40;
+            this.textBox_IlluminationValue_Red.Text = "000";
+            this.textBox_IlluminationValue_Red.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // FormNew_VisionPopup
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1373, 729);
             this.Controls.Add(this.panel4);
@@ -1869,8 +1901,7 @@ namespace SLD200_MSL
         private RadioButton radioButton_VisionPopup_DisplayMode_Live;
         private RadioButton radioButton_VisionPopup_DisplayMode_Capture;
         private GroupBox groupBox87;
-        private Button button76;
-        private TextBox textBox_IlluminationValue;
+        private TextBox textBox_IlluminationValue_IR;
         private GroupBox groupBox83;
         private RadioButton radioButton_VisionPopup_CameraSelection_HighMag;
         private RadioButton radioButton_VisionPopup_CameraSelection_LowMag;
@@ -1893,9 +1924,9 @@ namespace SLD200_MSL
         private Button button48;
         private QMC.Common.Hmi.VisionImageViewer m_visionImageViewer_HighRes;
         private QMC.Common.Hmi.VisionImageViewer m_visionImageViewer_LowRes;
-        private BaseLabel baseLabelMax;
-        private BaseLabel baseLabelMin;
-        private HScrollBar hScrollBarIlluminator;
+        private BaseLabel baseLabelMax_IR;
+        private BaseLabel baseLabelMin_IR;
+        private HScrollBar hScrollBarIlluminator_IR;
         private GroupBox groupBox19;
         private GroupBox groupBox20;
         private Button button_KeypadCall_VisionPopup_JogMove_StepSize;
@@ -1922,8 +1953,6 @@ namespace SLD200_MSL
         private RadioButton radioButton_VisionPopup_Move_MoveMode_Fine;
         private Button btnCamera_StartLive;
         private Button btnCamera_Init;
-        private RadioButton radioButton_Light_Red;
-        private RadioButton radioButton_Light_IR;
         public Button button_Scanner_FineCam_OffsetCheck;
         public Button button_Scanner_FineCam_OffsetChange;
         private TabControl tabControl_MarkFindType;
@@ -1979,5 +2008,11 @@ namespace SLD200_MSL
         private Button button1;
         private ListBox listBox_VisionPopup_PM_Result;
         private Button button_VisionPopup_PM_Grab;
+        private BaseLabel baseLabel_Red;
+        private BaseLabel baseLabel_IR;
+        private BaseLabel baseLabelMax_Red;
+        private BaseLabel baseLabelMin_Red;
+        private HScrollBar hScrollBarIlluminator_Red;
+        private TextBox textBox_IlluminationValue_Red;
     }
 }
