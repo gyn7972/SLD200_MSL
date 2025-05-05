@@ -21293,7 +21293,10 @@ namespace QMC.Common.Modules
         }
 
         private void MarkSpiralCircle(double outDia, double innerDia, int turn, double m_dTemp_AngleFactor, PointD center)
-        {  
+        {
+
+            innerDia /= 2;
+            outDia /= 2;
             double centerX = center.X;
             double centerY = center.Y;
             double rStep = (outDia - innerDia) / (turn-1); // 반지름 증가량 계산
