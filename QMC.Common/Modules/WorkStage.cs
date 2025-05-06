@@ -13295,6 +13295,9 @@ namespace QMC.Common.Modules
 
         XyCoordinate xyCoordinateAlignPositionLast = new XyCoordinate();
         XyCoordinate xyCoordinateAlignPositionOrgLast = new XyCoordinate();
+
+        XyCoordinate xyCoordinateAlignPositionOrgLastTemp = new XyCoordinate();
+        
         XyCoordinate xyCoordinateAlign = new XyCoordinate();
 
         #region Socket Align
@@ -13480,7 +13483,7 @@ namespace QMC.Common.Modules
                             
                         }
                     }
-                    xyCoordinateAlignPositionOrgLast = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
+                    xyCoordinateAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
                     MC_Func.MovePosition(xyCoordinateAlign, lfVelocity, lfAccDec, lfAccDec);
                     // Todo :김영남  얼라인 위치 이동 계산. 해야되는 부분..
 
@@ -13622,6 +13625,8 @@ namespace QMC.Common.Modules
                         
                         xyCoordinateAlignPositionLast = new XyCoordinate(m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X,
                             m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y);
+
+                        xyCoordinateAlignPositionOrgLast = xyCoordinateAlignPositionOrgLastTemp;
 
 
                         //  데이터 위치를 Scanner 위치로 변경
