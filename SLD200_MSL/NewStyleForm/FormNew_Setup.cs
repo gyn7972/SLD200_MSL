@@ -1284,7 +1284,9 @@ namespace SLD200_MSL
             textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Text = Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel.ToString();
             checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Checked = Equipment.Machine_LoaderStacker_Down_afterLoaderPickUp_Enable;
             textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Text = Equipment.Machine_LoaderStacker_DownDistance_afterLoaderPickUp.ToString();
-
+            checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Checked = Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable;
+            textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Text = Equipment.Machine_LoaderStacker_NoMaterialDetectTime.ToString();
+            
 
             if (Equipment.Machine_FiducialImageSave_Always)
             {
@@ -1704,7 +1706,10 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_Down_afterLDPickUp_Enable", checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Checked.ToString(), strFIle);
             Equipment.Machine_LoaderStacker_DownDistance_afterLoaderPickUp = Equipment.ToDouble(textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_DownDistance_afterLDPickUp", textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Text.ToString(), strFIle);
-
+            Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable = checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Checked;
+            NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_NoMaterialDetectTime_Enable", checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Checked.ToString(), strFIle);
+            Equipment.Machine_LoaderStacker_NoMaterialDetectTime = Equipment.ToInt(textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_NoMaterialDetectTime", textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Text.ToString(), strFIle);
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);
@@ -2256,6 +2261,17 @@ namespace SLD200_MSL
             {
                 checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Checked = false;
                 textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Enabled = false;
+            }
+
+            if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable)
+            {
+                checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Checked = true;
+                textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Enabled = true;
+            }
+            else
+            {
+                checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Checked = false;
+                textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Enabled = false;
             }
         }
 
@@ -3970,6 +3986,20 @@ namespace SLD200_MSL
             {
                 Equipment.Machine_LoaderStacker_Down_afterLoaderPickUp_Enable = false;
                 textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Enabled = false;
+            }
+        }
+
+        private void checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Checked)
+            {
+                Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable = true;
+                textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Enabled = true;
+            }
+            else
+            {
+                Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable = false;
+                textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Enabled = false;
             }
         }
     }

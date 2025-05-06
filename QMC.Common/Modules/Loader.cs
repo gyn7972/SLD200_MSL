@@ -730,6 +730,9 @@ namespace QMC.Common.Modules
 
             TICK_ALIGN = 8,             //  8 : M-Align
 
+            TICK_LDSZ0_NOMATERIAL_DETECT = 9,             //  9 : Loader Stacker Z0 No Material Detect Time
+            TICK_LDSZ1_NOMATERIAL_DETECT = 10,            //  10 : Loader Stacker Z1 No Material Detect Time
+
             //TICK_LASER_INTERFACE = 3,   //  3 : Laser Interface Set
             //TICK_LASER_FOCUS = 4,       //  4 : Laser Focus Check Cycle
             //TICK_LASER_COMM = 5,        //  5 : Laser Comm. Cycle
@@ -1909,17 +1912,29 @@ namespace QMC.Common.Modules
                 //}
             }
 
-            // Stacker0 에서 Module 을 Pick Up 하기 위한 위치로 이동
-            // 제품 확인해서 없으면 멈춰서 대기 해야 함. 제품이 확인 안되면 GUI에 표시 필요.
+
+            //  Stacker0 에서 Module 을 Pick-Up 하는 도중에, 모든 Module 이 들려올라가면서 자재 감지 센서가 Off 되는 상황이 있음. 이것 때문에 Pause 상태로 변경됨을 확인.
+            //  자재 감지 센서가 설정된 시간 동안 감지되지 않을 경우에만 Pause 상태로 변경되도록 함.
             if (!loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))
             {
-                Equipment.Loader_RPort_Pause = true;
+                if (!Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable)
+                {
+                    Equipment.Loader_RPort_Pause = true;
+                }
+                else if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDSZ0_NOMATERIAL_DETECT) > Equipment.Machine_LoaderStacker_NoMaterialDetectTime))
+                {
+                    Equipment.Loader_RPort_Pause = true;
+                }
+
                 Equipment.Loader_RPort_Empty = true;    // 자재 없음 알림.
             }
             else
             {
-                Equipment.Loader_RPort_Empty = false;   // 자재 있음 알림.
+                TickCount_Start((int)TickType.TICK_LDSZ0_NOMATERIAL_DETECT);
+
+                Equipment.Loader_RPort_Empty = false;    // 자재 있음 알림.
             }
+
 
             //  자동운전 시, Stacker0 동작 조건 : TR Cycle (None), Stacker0 Cycle (None), TR 이 Module 을 집어갔을 때
             if (Equipment.AutoRunStatus &&
@@ -2714,13 +2729,25 @@ namespace QMC.Common.Modules
                 
             }
 
+            //  Stacker1 에서 Module 을 Pick-Up 하는 도중에, 모든 Module 이 들려올라가면서 자재 감지 센서가 Off 되는 상황이 있음. 이것 때문에 Pause 상태로 변경됨을 확인.
+            //  자재 감지 센서가 설정된 시간 동안 감지되지 않을 경우에만 Pause 상태로 변경되도록 함.
             if (!loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
             {
-                Equipment.Loader_LPort_Pause = true;
+                if (!Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable)
+                {
+                    Equipment.Loader_LPort_Pause = true;
+                }
+                else if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT) > Equipment.Machine_LoaderStacker_NoMaterialDetectTime))
+                {
+                    Equipment.Loader_LPort_Pause = true;
+                }
+
                 Equipment.Loader_LPort_Empty = true;    // 자재 없음 알림.
             }
             else
             {
+                TickCount_Start((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT);
+
                 Equipment.Loader_LPort_Empty = false;    // 자재 있음 알림.
             }
 
