@@ -317,7 +317,6 @@
             this.textBox_ScannerCal_LaserFrequency = new System.Windows.Forms.Panel();
             this.button_Setup_ScannerCal_RE_TEST = new System.Windows.Forms.Button();
             this.button_Setup_ScannerCal_Test = new System.Windows.Forms.Button();
-            this.Box_Setup_ScannerCal_ImageViewer = new QMC.Common.Hmi.VisionImageViewer();
             this.tabPage_Setup_FlatnessMeasurement = new System.Windows.Forms.TabPage();
             this.groupBox18 = new System.Windows.Forms.GroupBox();
             this.button_Setup_Flatness_MeasurementPosition_Stop = new System.Windows.Forms.Button();
@@ -391,6 +390,9 @@
             this.label64 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition = new System.Windows.Forms.TextBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.label73 = new System.Windows.Forms.Label();
+            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable = new System.Windows.Forms.CheckBox();
+            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp = new System.Windows.Forms.TextBox();
             this.label72 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_EPRO_ModuleAbsorptionLevel = new System.Windows.Forms.TextBox();
             this.label71 = new System.Windows.Forms.Label();
@@ -493,11 +495,9 @@
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
-            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable = new System.Windows.Forms.CheckBox();
-            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp = new System.Windows.Forms.TextBox();
-            this.label73 = new System.Windows.Forms.Label();
             this.baseLabel_Setup_ScannerCal_Max = new SLD200_MSL.BaseLabel();
             this.baseLabel_Setup_ScannerCal_Min = new SLD200_MSL.BaseLabel();
+            this.Box_Setup_ScannerCal_ImageViewer = new QMC.Common.Hmi.VisionImageViewer();
             this.groupBox_Setup_ScannerCal_SearchResult = new SLD200_MSL.WATGroupBox();
             this.tabControl_Setup_ScannerCal_SearchResult = new System.Windows.Forms.TabControl();
             this.Parameter = new System.Windows.Forms.TabPage();
@@ -523,6 +523,9 @@
             this.groupBox_Setup_ScannerCal_TrainImage = new SLD200_MSL.WATGroupBox();
             this.pictureBox_Setup_ScannerCal_TrainImage = new System.Windows.Forms.PictureBox();
             this.button_Setup_ScannerCal_Train_Set = new SLD200_MSL.BaseButton();
+            this.label74 = new System.Windows.Forms.Label();
+            this.checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable = new System.Windows.Forms.CheckBox();
+            this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime = new System.Windows.Forms.TextBox();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -565,7 +568,6 @@
             this.groupBox_Setup_ScannerCal_MarkType.SuspendLayout();
             this.groupBox_Setup_ScannerCal_Cross_Check.SuspendLayout();
             this.groupBox15.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Box_Setup_ScannerCal_ImageViewer)).BeginInit();
             this.tabPage_Setup_FlatnessMeasurement.SuspendLayout();
             this.groupBox18.SuspendLayout();
             this.tabPage_Setup_Option.SuspendLayout();
@@ -579,6 +581,7 @@
             this.groupBox7.SuspendLayout();
             this.groupBox_Offset.SuspendLayout();
             this.groupBox6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Box_Setup_ScannerCal_ImageViewer)).BeginInit();
             this.groupBox_Setup_ScannerCal_SearchResult.SuspendLayout();
             this.tabControl_Setup_ScannerCal_SearchResult.SuspendLayout();
             this.Parameter.SuspendLayout();
@@ -4144,26 +4147,6 @@
             this.button_Setup_ScannerCal_Test.Visible = false;
             this.button_Setup_ScannerCal_Test.Click += new System.EventHandler(this.button15_Click);
             // 
-            // Box_Setup_ScannerCal_ImageViewer
-            // 
-            this.Box_Setup_ScannerCal_ImageViewer.BackColor = System.Drawing.Color.Black;
-            this.Box_Setup_ScannerCal_ImageViewer.Camera = null;
-            this.Box_Setup_ScannerCal_ImageViewer.CameraSwitch = null;
-            this.Box_Setup_ScannerCal_ImageViewer.FrameRate = 1D;
-            this.Box_Setup_ScannerCal_ImageViewer.InputImage = null;
-            this.Box_Setup_ScannerCal_ImageViewer.IsViewCustomizedImage = false;
-            this.Box_Setup_ScannerCal_ImageViewer.Location = new System.Drawing.Point(4, 527);
-            this.Box_Setup_ScannerCal_ImageViewer.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.Box_Setup_ScannerCal_ImageViewer.Name = "Box_Setup_ScannerCal_ImageViewer";
-            this.Box_Setup_ScannerCal_ImageViewer.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
-            this.Box_Setup_ScannerCal_ImageViewer.Simulated = false;
-            this.Box_Setup_ScannerCal_ImageViewer.Size = new System.Drawing.Size(279, 267);
-            this.Box_Setup_ScannerCal_ImageViewer.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.Box_Setup_ScannerCal_ImageViewer.TabIndex = 159;
-            this.Box_Setup_ScannerCal_ImageViewer.TabStop = false;
-            this.Box_Setup_ScannerCal_ImageViewer.UpdateDelayTime = 160;
-            this.Box_Setup_ScannerCal_ImageViewer.VisibleCrossLine = true;
-            // 
             // tabPage_Setup_FlatnessMeasurement
             // 
             this.tabPage_Setup_FlatnessMeasurement.Controls.Add(this.groupBox18);
@@ -5061,6 +5044,9 @@
             // 
             // groupBox13
             // 
+            this.groupBox13.Controls.Add(this.label74);
+            this.groupBox13.Controls.Add(this.checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable);
+            this.groupBox13.Controls.Add(this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime);
             this.groupBox13.Controls.Add(this.label73);
             this.groupBox13.Controls.Add(this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable);
             this.groupBox13.Controls.Add(this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp);
@@ -5118,6 +5104,38 @@
             this.groupBox13.TabIndex = 63;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " Options ";
+            // 
+            // label73
+            // 
+            this.label73.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label73.Location = new System.Drawing.Point(762, 158);
+            this.label73.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label73.Name = "label73";
+            this.label73.Size = new System.Drawing.Size(138, 17);
+            this.label73.TabIndex = 109;
+            this.label73.Text = "(after loader pick-up)";
+            this.label73.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable
+            // 
+            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.AutoSize = true;
+            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Location = new System.Drawing.Point(727, 139);
+            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Name = "checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable";
+            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Size = new System.Drawing.Size(221, 20);
+            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.TabIndex = 108;
+            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Text = "Stacker down distance (mm) :";
+            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.UseVisualStyleBackColor = true;
+            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.CheckedChanged += new System.EventHandler(this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable_CheckedChanged);
+            // 
+            // textBox_Setup_Option_StackerDownDistance_afterLDPickUp
+            // 
+            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Location = new System.Drawing.Point(949, 137);
+            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Name = "textBox_Setup_Option_StackerDownDistance_afterLDPickUp";
+            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Size = new System.Drawing.Size(50, 24);
+            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.TabIndex = 107;
+            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Text = "500";
             // 
             // label72
             // 
@@ -6280,38 +6298,6 @@
             this.label96.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label96.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable
-            // 
-            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.AutoSize = true;
-            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Location = new System.Drawing.Point(727, 139);
-            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Name = "checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable";
-            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Size = new System.Drawing.Size(221, 20);
-            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.TabIndex = 108;
-            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Text = "Stacker down distance (mm) :";
-            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.UseVisualStyleBackColor = true;
-            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.CheckedChanged += new System.EventHandler(this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable_CheckedChanged);
-            // 
-            // textBox_Setup_Option_StackerDownDistance_afterLDPickUp
-            // 
-            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Location = new System.Drawing.Point(949, 137);
-            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Name = "textBox_Setup_Option_StackerDownDistance_afterLDPickUp";
-            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Size = new System.Drawing.Size(50, 24);
-            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.TabIndex = 107;
-            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Text = "500";
-            // 
-            // label73
-            // 
-            this.label73.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label73.Location = new System.Drawing.Point(762, 158);
-            this.label73.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label73.Name = "label73";
-            this.label73.Size = new System.Drawing.Size(138, 17);
-            this.label73.TabIndex = 109;
-            this.label73.Text = "(after loader pick-up)";
-            this.label73.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // baseLabel_Setup_ScannerCal_Max
             // 
             this.baseLabel_Setup_ScannerCal_Max.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -6332,6 +6318,26 @@
             this.baseLabel_Setup_ScannerCal_Min.Size = new System.Drawing.Size(22, 23);
             this.baseLabel_Setup_ScannerCal_Min.TabIndex = 31;
             this.baseLabel_Setup_ScannerCal_Min.Text = "0";
+            // 
+            // Box_Setup_ScannerCal_ImageViewer
+            // 
+            this.Box_Setup_ScannerCal_ImageViewer.BackColor = System.Drawing.Color.Black;
+            this.Box_Setup_ScannerCal_ImageViewer.Camera = null;
+            this.Box_Setup_ScannerCal_ImageViewer.CameraSwitch = null;
+            this.Box_Setup_ScannerCal_ImageViewer.FrameRate = 1D;
+            this.Box_Setup_ScannerCal_ImageViewer.InputImage = null;
+            this.Box_Setup_ScannerCal_ImageViewer.IsViewCustomizedImage = false;
+            this.Box_Setup_ScannerCal_ImageViewer.Location = new System.Drawing.Point(4, 527);
+            this.Box_Setup_ScannerCal_ImageViewer.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.Box_Setup_ScannerCal_ImageViewer.Name = "Box_Setup_ScannerCal_ImageViewer";
+            this.Box_Setup_ScannerCal_ImageViewer.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.Box_Setup_ScannerCal_ImageViewer.Simulated = false;
+            this.Box_Setup_ScannerCal_ImageViewer.Size = new System.Drawing.Size(279, 267);
+            this.Box_Setup_ScannerCal_ImageViewer.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.Box_Setup_ScannerCal_ImageViewer.TabIndex = 159;
+            this.Box_Setup_ScannerCal_ImageViewer.TabStop = false;
+            this.Box_Setup_ScannerCal_ImageViewer.UpdateDelayTime = 160;
+            this.Box_Setup_ScannerCal_ImageViewer.VisibleCrossLine = true;
             // 
             // groupBox_Setup_ScannerCal_SearchResult
             // 
@@ -6646,6 +6652,38 @@
             this.button_Setup_ScannerCal_Train_Set.UseVisualStyleBackColor = false;
             this.button_Setup_ScannerCal_Train_Set.Click += new System.EventHandler(this.button_Setup_ScannerCal_Train_Set_Click);
             // 
+            // label74
+            // 
+            this.label74.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label74.Location = new System.Drawing.Point(745, 298);
+            this.label74.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label74.Name = "label74";
+            this.label74.Size = new System.Drawing.Size(245, 31);
+            this.label74.TabIndex = 112;
+            this.label74.Text = "(If no material is detected during this time, it switches to Pause state.)";
+            this.label74.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable
+            // 
+            this.checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.AutoSize = true;
+            this.checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Location = new System.Drawing.Point(727, 264);
+            this.checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Name = "checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable";
+            this.checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Size = new System.Drawing.Size(206, 36);
+            this.checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.TabIndex = 111;
+            this.checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Text = " Loader Stacker No Material\r\n              Detect Time (sec) :";
+            this.checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.UseVisualStyleBackColor = true;
+            this.checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.CheckedChanged += new System.EventHandler(this.checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable_CheckedChanged);
+            // 
+            // textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime
+            // 
+            this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Location = new System.Drawing.Point(949, 266);
+            this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Name = "textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime";
+            this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Size = new System.Drawing.Size(50, 24);
+            this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.TabIndex = 110;
+            this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Text = "100";
+            // 
             // FormNew_Setup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -6715,7 +6753,6 @@
             this.groupBox_Setup_ScannerCal_Cross_Check.ResumeLayout(false);
             this.groupBox15.ResumeLayout(false);
             this.groupBox15.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Box_Setup_ScannerCal_ImageViewer)).EndInit();
             this.tabPage_Setup_FlatnessMeasurement.ResumeLayout(false);
             this.groupBox18.ResumeLayout(false);
             this.groupBox18.PerformLayout();
@@ -6737,6 +6774,7 @@
             this.groupBox_Offset.ResumeLayout(false);
             this.groupBox_Offset.PerformLayout();
             this.groupBox6.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.Box_Setup_ScannerCal_ImageViewer)).EndInit();
             this.groupBox_Setup_ScannerCal_SearchResult.ResumeLayout(false);
             this.tabControl_Setup_ScannerCal_SearchResult.ResumeLayout(false);
             this.Parameter.ResumeLayout(false);
@@ -7247,5 +7285,8 @@
         private System.Windows.Forms.CheckBox checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable;
         private System.Windows.Forms.TextBox textBox_Setup_Option_StackerDownDistance_afterLDPickUp;
         private System.Windows.Forms.Label label73;
+        private System.Windows.Forms.Label label74;
+        private System.Windows.Forms.CheckBox checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime;
     }
 }
