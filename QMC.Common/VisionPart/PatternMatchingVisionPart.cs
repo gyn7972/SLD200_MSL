@@ -108,7 +108,6 @@ namespace QMC.Common.VisionPart
                 }
                 if ((ret = Camera.GrabSync(Purpose.Processing, out image)) != 0) return ret;
             }
-
             m_PatternMatchingTool.Parameter.AngleTolerance = new RangeD(parameter.MinTolerance, parameter.MaxTolerance);            
             m_PatternMatchingTool.Parameter.DuplicateChecked = parameter.DuplicateChecked;
             m_PatternMatchingTool.Parameter.MaxInstance = parameter.MaxInstance;

@@ -458,7 +458,9 @@ namespace QMC.Common.Vision.Cognex
             }
             if ((ret = this.SetValue(image)) != 0) return ret;
             if ((ret = this.GetValue()) != 0) return ret;
-            image.Save("D:\\test.bmp", VisionImage.FileFilter.bmp);
+
+
+            image.Save("D:\\Pattern"  + this.Result.Values.Count . ToString() +"_"+ DateTime.Now.Ticks.ToString() + ".bmp", VisionImage.FileFilter.bmp);
             this.OutputImage = this.InputImage;
             return ret;
         }

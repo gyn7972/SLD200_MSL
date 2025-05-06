@@ -16,11 +16,11 @@ namespace QMC.Common.Interpolator
         {
             public XyCoordinate LeftTop { get; set; }
             public XyCoordinate RightBottom { get; set; }
-            public List<PositionOffset> Around4Point { get; set; }
+            public List<PositionOffset> Around4Point { get; set; } = new List<PositionOffset>();
             public void AddAroundData(List<PositionOffset> around4Point)
             {
                 Around4Point = around4Point;
-                if (around4Point.Count > 0)
+                if (around4Point.Count == 4)
                 {
                     LeftTop = around4Point[0].Position;
                     RightBottom = around4Point[2].Position;
