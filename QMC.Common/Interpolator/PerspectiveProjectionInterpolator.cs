@@ -46,7 +46,7 @@ namespace QMC.Common.Interpolator
                 list.Add(posLT);
             }
             PositionOffset posLB = GetMeasureLeftBottom(dest);
-            if (posLB.Position.X != 0 || posLB.Position.Y != 0)
+            if (posLB.Position.X != 0 || posLB.Position.Y != 0) 
             {
                 list.Add(posLB);
             }
