@@ -17914,10 +17914,18 @@ namespace QMC.Common.Modules
                     //Equipment.stLayerRecipeSet[0].PreAlignPos2 = rightPoint;
 
                     //m_nDrillingWork_Group_Count 이거 0이여야 한다.
-                    Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[0].dFiducialPos[0].X;
-                    Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[0].dFiducialPos[0].Y;
-                    Equipment.stLayerRecipeSet[0].PreAlignPos2.X = m_stDividedRegion_GroupData[0].dFiducialPos[1].X;
-                    Equipment.stLayerRecipeSet[0].PreAlignPos2.Y = m_stDividedRegion_GroupData[0].dFiducialPos[1].Y;
+                    try
+                    {
+                        Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[0].dFiducialPos[0].X;
+                        Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[0].dFiducialPos[0].Y;
+                        Equipment.stLayerRecipeSet[0].PreAlignPos2.X = m_stDividedRegion_GroupData[0].dFiducialPos[3].X;
+                        Equipment.stLayerRecipeSet[0].PreAlignPos2.Y = m_stDividedRegion_GroupData[0].dFiducialPos[3].Y;
+                    }
+                    catch(Exception ex)
+                    {
+
+                    }
+                    
 
                     //너무 Data를 빨리 던져서 문제가 아닌지 Test.
                     Thread.Sleep(100);
