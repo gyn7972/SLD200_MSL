@@ -371,7 +371,7 @@ namespace SLD200_MSL
                         g.DrawRectangle(pen, rect);
                     
                     // 인덱스 텍스트 추가
-                    string indexText = (i * Columns + j).ToString(); // 인덱스 계산
+                    string indexText = ((i * Columns + j) + 1).ToString(); // 인덱스 계산        //  0부터 하던 것을 1부터 표기하도록
                     using (Font font = new Font("Tahoma", 10)) // 폰트 설정
                     using (Brush textBrush = new SolidBrush(Color.Black)) // 텍스트 색상
                     {

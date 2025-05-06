@@ -74,6 +74,10 @@ namespace SLD200_MSL
                 //}
             }
 
+
+            MachineType_Component_Enable(Equipment.Machine_LaserType_CO2);
+
+
             m_formSiriusEditor = new FormNew_SiriusEditor();
 
             //  Layer Data 를 보여주는 ListView 설정
@@ -92,6 +96,21 @@ namespace SLD200_MSL
 
             //LoadSubForm();
         }
+
+        private void MachineType_Component_Enable(bool m_bLaserType)
+        {
+            //  Laser Type (true:CO2, false:UV)
+
+            label_Recipe_TabRecipe_Miscellaneous_DrillingPower.Enabled = !m_bLaserType;
+            textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Enabled = !m_bLaserType;
+            button_Recipe_TabRecipe_Miscellaneous_DrillingPower.Enabled = !m_bLaserType;
+
+            label_Recipe_TabRecipe_Miscellaneous_Mask.Enabled = m_bLaserType;
+            comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Enabled = m_bLaserType;
+            label_Recipe_TabRecipe_Miscellaneous_BETPosition.Enabled = m_bLaserType;
+            comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Enabled = m_bLaserType;            
+        }
+
         private void LoadSubForm()
         {
             //OnCreateControl();

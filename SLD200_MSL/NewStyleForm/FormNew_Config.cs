@@ -4383,25 +4383,67 @@ namespace SLD200_MSL
 
             if (m_nIndex >= 0)
             {
+                //  모두 비활성화 (선택 항목만 활성화 하도록)
+                textBox_Config_LDUL_TeachingPos_TransferX.Enabled = false;
+                textBox_Config_LDUL_TeachingPos_TransferZ.Enabled = false;
+                textBox_Config_LDUL_TeachingPos_RPortZ.Enabled = false;
+                textBox_Config_LDUL_TeachingPos_LPortZ.Enabled = false;
+                textBox_Config_LDUL_TeachingPos_MAlignerX.Enabled = false;
+                textBox_Config_LDUL_TeachingPos_MAlignerY.Enabled = false;
+                button_KeypadCall_Config_LDUL_TeachingPos_TransferX.Enabled = false;
+                button_KeypadCall_Config_LDUL_TeachingPos_TransferZ.Enabled = false;
+                button_KeypadCall_Config_LDUL_TeachingPos_RPortZ.Enabled = false;
+                button_KeypadCall_Config_LDUL_TeachingPos_LPortZ.Enabled = false;
+                button_KeypadCall_Config_LDUL_TeachingPos_MAlignerX.Enabled = false;
+                button_KeypadCall_Config_LDUL_TeachingPos_MAlignerY.Enabled = false;
+
                 if (m_nIndex <= 11)                 //  Loader
                 {
                     //  Jog 모드 변경
                     radioButton_Config_ActiveUnit_Loader.Checked = true;
 
                     //  활성/비활성
-                    textBox_Config_LDUL_TeachingPos_TransferX.Enabled = true;
-                    textBox_Config_LDUL_TeachingPos_TransferZ.Enabled = true;
-                    textBox_Config_LDUL_TeachingPos_RPortZ.Enabled = true;
-                    textBox_Config_LDUL_TeachingPos_LPortZ.Enabled = true;
-                    textBox_Config_LDUL_TeachingPos_MAlignerX.Enabled = true;
-                    textBox_Config_LDUL_TeachingPos_MAlignerY.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_TransferX.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_TransferZ.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_RPortZ.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_LPortZ.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_MAlignerX.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_MAlignerY.Enabled = true;
+                    switch(m_nIndex)
+                    {
+                        //  R-Port
+                        case 0:
+                        case 1:
+                            textBox_Config_LDUL_TeachingPos_RPortZ.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_RPortZ.Enabled = true;
+                            break;
 
+                        //  L-Port
+                        case 2:
+                        case 3:
+                            textBox_Config_LDUL_TeachingPos_LPortZ.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_LPortZ.Enabled = true;
+                            break;
+
+                        //  Transfer
+                        case 4:
+                        case 5:
+                        case 6:
+                        case 7:
+                        case 8:
+                            textBox_Config_LDUL_TeachingPos_TransferX.Enabled = true;
+                            textBox_Config_LDUL_TeachingPos_TransferZ.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_TransferX.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_TransferZ.Enabled = true;
+                            break;
+
+                        //  MAligner
+                        case 9:
+                        case 10:
+                        case 11:
+                            textBox_Config_LDUL_TeachingPos_MAlignerX.Enabled = true;
+                            textBox_Config_LDUL_TeachingPos_MAlignerY.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_MAlignerX.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_MAlignerY.Enabled = true;
+                            break;
+
+                        default:
+                            break;
+                    }
 
                     //  데이터 표시
                     textBox_Config_LDUL_TeachingPos_TransferX.Text = loader.stLDULTeachingPos[m_nIndex].LD_Transfer_X.ToString();
@@ -4417,18 +4459,37 @@ namespace SLD200_MSL
                     radioButton_Config_ActiveUnit_Unloader.Checked = true;
 
                     //  활성/비활성
-                    textBox_Config_LDUL_TeachingPos_TransferX.Enabled = true;
-                    textBox_Config_LDUL_TeachingPos_TransferZ.Enabled = true;
-                    textBox_Config_LDUL_TeachingPos_RPortZ.Enabled = true;
-                    textBox_Config_LDUL_TeachingPos_LPortZ.Enabled = true;
-                    textBox_Config_LDUL_TeachingPos_MAlignerX.Enabled = false;
-                    textBox_Config_LDUL_TeachingPos_MAlignerY.Enabled = false;
-                    button_KeypadCall_Config_LDUL_TeachingPos_TransferX.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_TransferZ.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_RPortZ.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_LPortZ.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_MAlignerX.Enabled = false;
-                    button_KeypadCall_Config_LDUL_TeachingPos_MAlignerY.Enabled = false;
+                    switch (m_nIndex)
+                    {
+                        //  R-Port
+                        case 12:
+                        case 13:
+                        case 14:
+                        case 15:
+                        case 16:
+                            textBox_Config_LDUL_TeachingPos_TransferX.Enabled = true;
+                            textBox_Config_LDUL_TeachingPos_TransferZ.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_TransferX.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_TransferZ.Enabled = true;                            
+                            break;
+
+                        //  R-Port
+                        case 17:
+                        case 18:
+                            textBox_Config_LDUL_TeachingPos_RPortZ.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_RPortZ.Enabled = true;
+                            break;
+
+                        //  L-Port
+                        case 19:
+                        case 20:
+                            textBox_Config_LDUL_TeachingPos_LPortZ.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_LPortZ.Enabled = true;
+                            break;
+
+                        default:
+                            break;
+                    }
 
                     //  데이터 표시
                     textBox_Config_LDUL_TeachingPos_TransferX.Text = loader.stLDULTeachingPos[m_nIndex].UL_Transfer_X.ToString();
@@ -4445,7 +4506,7 @@ namespace SLD200_MSL
         {
             //workStage.m_dPowerMeterBDS_Value = 123.0;
             //return;
-
+            
 
             //  선택된 축에 대한 데이터 갖다 넣기
             int m_nIndex = listBox_Config_WorkStage_TeachingPositions.SelectedIndex;

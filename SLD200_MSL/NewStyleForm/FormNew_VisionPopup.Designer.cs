@@ -126,6 +126,12 @@ namespace SLD200_MSL
             this.radioButton_VisionPopup_DisplayMode_Live = new System.Windows.Forms.RadioButton();
             this.radioButton_VisionPopup_DisplayMode_Capture = new System.Windows.Forms.RadioButton();
             this.groupBox87 = new System.Windows.Forms.GroupBox();
+            this.textBox_IlluminationValue_Red = new System.Windows.Forms.TextBox();
+            this.baseLabelMax_Red = new SLD200_MSL.BaseLabel();
+            this.baseLabelMin_Red = new SLD200_MSL.BaseLabel();
+            this.hScrollBarIlluminator_Red = new System.Windows.Forms.HScrollBar();
+            this.baseLabel_Red = new SLD200_MSL.BaseLabel();
+            this.baseLabel_IR = new SLD200_MSL.BaseLabel();
             this.baseLabelMax_IR = new SLD200_MSL.BaseLabel();
             this.baseLabelMin_IR = new SLD200_MSL.BaseLabel();
             this.hScrollBarIlluminator_IR = new System.Windows.Forms.HScrollBar();
@@ -152,12 +158,6 @@ namespace SLD200_MSL
             this.button43 = new System.Windows.Forms.Button();
             this.button47 = new System.Windows.Forms.Button();
             this.button48 = new System.Windows.Forms.Button();
-            this.baseLabel_IR = new SLD200_MSL.BaseLabel();
-            this.baseLabel_Red = new SLD200_MSL.BaseLabel();
-            this.baseLabelMax_Red = new SLD200_MSL.BaseLabel();
-            this.baseLabelMin_Red = new SLD200_MSL.BaseLabel();
-            this.hScrollBarIlluminator_Red = new System.Windows.Forms.HScrollBar();
-            this.textBox_IlluminationValue_Red = new System.Windows.Forms.TextBox();
             this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -1449,24 +1449,85 @@ namespace SLD200_MSL
             this.groupBox87.TabStop = false;
             this.groupBox87.Text = " Illumination Brightness (%) ";
             // 
+            // textBox_IlluminationValue_Red
+            // 
+            this.textBox_IlluminationValue_Red.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_IlluminationValue_Red.Location = new System.Drawing.Point(272, 105);
+            this.textBox_IlluminationValue_Red.Name = "textBox_IlluminationValue_Red";
+            this.textBox_IlluminationValue_Red.Size = new System.Drawing.Size(46, 24);
+            this.textBox_IlluminationValue_Red.TabIndex = 40;
+            this.textBox_IlluminationValue_Red.Text = "000";
+            this.textBox_IlluminationValue_Red.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // baseLabelMax_Red
+            // 
+            this.baseLabelMax_Red.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabelMax_Red.ForeColor = System.Drawing.Color.Black;
+            this.baseLabelMax_Red.Location = new System.Drawing.Point(225, 87);
+            this.baseLabelMax_Red.Name = "baseLabelMax_Red";
+            this.baseLabelMax_Red.Size = new System.Drawing.Size(45, 15);
+            this.baseLabelMax_Red.TabIndex = 39;
+            this.baseLabelMax_Red.Text = "255";
+            this.baseLabelMax_Red.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // baseLabelMin_Red
+            // 
+            this.baseLabelMin_Red.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.baseLabelMin_Red.ForeColor = System.Drawing.Color.Black;
+            this.baseLabelMin_Red.Location = new System.Drawing.Point(46, 87);
+            this.baseLabelMin_Red.Name = "baseLabelMin_Red";
+            this.baseLabelMin_Red.Size = new System.Drawing.Size(17, 15);
+            this.baseLabelMin_Red.TabIndex = 38;
+            this.baseLabelMin_Red.Text = "0";
+            this.baseLabelMin_Red.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // hScrollBarIlluminator_Red
+            // 
+            this.hScrollBarIlluminator_Red.Location = new System.Drawing.Point(46, 105);
+            this.hScrollBarIlluminator_Red.Name = "hScrollBarIlluminator_Red";
+            this.hScrollBarIlluminator_Red.Size = new System.Drawing.Size(223, 26);
+            this.hScrollBarIlluminator_Red.TabIndex = 37;
+            // 
+            // baseLabel_Red
+            // 
+            this.baseLabel_Red.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_Red.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_Red.Location = new System.Drawing.Point(7, 106);
+            this.baseLabel_Red.Name = "baseLabel_Red";
+            this.baseLabel_Red.Size = new System.Drawing.Size(35, 23);
+            this.baseLabel_Red.TabIndex = 36;
+            this.baseLabel_Red.Text = "Red";
+            this.baseLabel_Red.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // baseLabel_IR
+            // 
+            this.baseLabel_IR.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabel_IR.ForeColor = System.Drawing.Color.Black;
+            this.baseLabel_IR.Location = new System.Drawing.Point(7, 46);
+            this.baseLabel_IR.Name = "baseLabel_IR";
+            this.baseLabel_IR.Size = new System.Drawing.Size(35, 23);
+            this.baseLabel_IR.TabIndex = 35;
+            this.baseLabel_IR.Text = "IR";
+            this.baseLabel_IR.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // baseLabelMax_IR
             // 
-            this.baseLabelMax_IR.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabelMax_IR.Font = new System.Drawing.Font("Tahoma", 10F);
             this.baseLabelMax_IR.ForeColor = System.Drawing.Color.Black;
-            this.baseLabelMax_IR.Location = new System.Drawing.Point(225, 24);
+            this.baseLabelMax_IR.Location = new System.Drawing.Point(225, 27);
             this.baseLabelMax_IR.Name = "baseLabelMax_IR";
-            this.baseLabelMax_IR.Size = new System.Drawing.Size(45, 19);
+            this.baseLabelMax_IR.Size = new System.Drawing.Size(45, 15);
             this.baseLabelMax_IR.TabIndex = 32;
             this.baseLabelMax_IR.Text = "255";
             this.baseLabelMax_IR.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // baseLabelMin_IR
             // 
-            this.baseLabelMin_IR.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.baseLabelMin_IR.Font = new System.Drawing.Font("Tahoma", 10F);
             this.baseLabelMin_IR.ForeColor = System.Drawing.Color.Black;
-            this.baseLabelMin_IR.Location = new System.Drawing.Point(46, 24);
+            this.baseLabelMin_IR.Location = new System.Drawing.Point(46, 27);
             this.baseLabelMin_IR.Name = "baseLabelMin_IR";
-            this.baseLabelMin_IR.Size = new System.Drawing.Size(17, 19);
+            this.baseLabelMin_IR.Size = new System.Drawing.Size(17, 15);
             this.baseLabelMin_IR.TabIndex = 31;
             this.baseLabelMin_IR.Text = "0";
             this.baseLabelMin_IR.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1773,67 +1834,6 @@ namespace SLD200_MSL
             this.button48.TabIndex = 29;
             this.button48.Text = "Apply";
             this.button48.UseVisualStyleBackColor = true;
-            // 
-            // baseLabel_IR
-            // 
-            this.baseLabel_IR.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_IR.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_IR.Location = new System.Drawing.Point(7, 46);
-            this.baseLabel_IR.Name = "baseLabel_IR";
-            this.baseLabel_IR.Size = new System.Drawing.Size(35, 23);
-            this.baseLabel_IR.TabIndex = 35;
-            this.baseLabel_IR.Text = "IR";
-            this.baseLabel_IR.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // baseLabel_Red
-            // 
-            this.baseLabel_Red.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabel_Red.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Red.Location = new System.Drawing.Point(7, 106);
-            this.baseLabel_Red.Name = "baseLabel_Red";
-            this.baseLabel_Red.Size = new System.Drawing.Size(35, 23);
-            this.baseLabel_Red.TabIndex = 36;
-            this.baseLabel_Red.Text = "Red";
-            this.baseLabel_Red.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // baseLabelMax_Red
-            // 
-            this.baseLabelMax_Red.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabelMax_Red.ForeColor = System.Drawing.Color.Black;
-            this.baseLabelMax_Red.Location = new System.Drawing.Point(225, 84);
-            this.baseLabelMax_Red.Name = "baseLabelMax_Red";
-            this.baseLabelMax_Red.Size = new System.Drawing.Size(45, 19);
-            this.baseLabelMax_Red.TabIndex = 39;
-            this.baseLabelMax_Red.Text = "255";
-            this.baseLabelMax_Red.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // baseLabelMin_Red
-            // 
-            this.baseLabelMin_Red.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.baseLabelMin_Red.ForeColor = System.Drawing.Color.Black;
-            this.baseLabelMin_Red.Location = new System.Drawing.Point(46, 84);
-            this.baseLabelMin_Red.Name = "baseLabelMin_Red";
-            this.baseLabelMin_Red.Size = new System.Drawing.Size(17, 19);
-            this.baseLabelMin_Red.TabIndex = 38;
-            this.baseLabelMin_Red.Text = "0";
-            this.baseLabelMin_Red.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // hScrollBarIlluminator_Red
-            // 
-            this.hScrollBarIlluminator_Red.Location = new System.Drawing.Point(46, 105);
-            this.hScrollBarIlluminator_Red.Name = "hScrollBarIlluminator_Red";
-            this.hScrollBarIlluminator_Red.Size = new System.Drawing.Size(223, 26);
-            this.hScrollBarIlluminator_Red.TabIndex = 37;
-            // 
-            // textBox_IlluminationValue_Red
-            // 
-            this.textBox_IlluminationValue_Red.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_IlluminationValue_Red.Location = new System.Drawing.Point(272, 105);
-            this.textBox_IlluminationValue_Red.Name = "textBox_IlluminationValue_Red";
-            this.textBox_IlluminationValue_Red.Size = new System.Drawing.Size(46, 24);
-            this.textBox_IlluminationValue_Red.TabIndex = 40;
-            this.textBox_IlluminationValue_Red.Text = "000";
-            this.textBox_IlluminationValue_Red.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // FormNew_VisionPopup
             // 
