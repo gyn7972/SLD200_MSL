@@ -13475,7 +13475,7 @@ namespace QMC.Common.Modules
                             xyCoordinateAlign = xyInterpolatedCoordinate + offset;
                             Log.Write("Alaign Test", "xyCoordinateAlign before : ", xyCoordinateAlign.ToString());
                             xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionLast.X, xyCoordinateAlignPositionLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
-                            //xyCoordinateAlign = xyCoordinateAlign + offset;
+                           // xyCoordinateAlign = xyCoordinateAlign + offset;
                             Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
 
                             Log.Write("Alaign Test", "Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
@@ -17964,12 +17964,12 @@ namespace QMC.Common.Modules
 
                             //dfx = 0;
                             dfy = jigAligner_LowRes.FirstPosition.Y;
-                            dft = dft / 180 * Math.PI;
+                            dft = -dft / 180 * Math.PI;
                             XyzCoordinate positionFirst = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
                             positionFirst = this.ConvertPointFineCam(positionFirst);
                             xyCoordinateAlignPositionLast= new XyCoordinate( positionFirst.X, positionFirst.Y);
 
-                            positionFirst.X += dfx/2;
+                            positionFirst.X += dfx/3;
                             positionFirst.Y -= dfy;
 
                             xyCoordinateAlignPositionOrgLast  = new XyCoordinate(positionFirst.X, positionFirst.Y);
