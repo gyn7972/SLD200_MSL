@@ -13475,7 +13475,7 @@ namespace QMC.Common.Modules
                             xyCoordinateAlign = xyInterpolatedCoordinate + offset;
                             Log.Write("Alaign Test", "xyCoordinateAlign before : ", xyCoordinateAlign.ToString());
                             xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionLast.X, xyCoordinateAlignPositionLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
-                           // xyCoordinateAlign = xyCoordinateAlign + offset;
+                            //xyCoordinateAlign = xyCoordinateAlign + offset;
                             Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
 
                             Log.Write("Alaign Test", "Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
@@ -17900,7 +17900,7 @@ namespace QMC.Common.Modules
 
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
-                    CommonModule.Instance.Illuminator.SetVolume(4000, 3);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR, 3);
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 1);          //  Fine Cam Red 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 2);          //  Fine Cam IR 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 3);           //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
@@ -17917,8 +17917,9 @@ namespace QMC.Common.Modules
                     //m_nDrillingWork_Group_Count 이거 0이여야 한다.
                     try
                     {
-                        Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[0].dFiducialPos[0].X;
-                        Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[0].dFiducialPos[0].Y;
+
+                        Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[0].dFiducialPos[2].X;
+                        Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[0].dFiducialPos[2].Y;
                         Equipment.stLayerRecipeSet[0].PreAlignPos2.X = m_stDividedRegion_GroupData[0].dFiducialPos[3].X;
                         Equipment.stLayerRecipeSet[0].PreAlignPos2.Y = m_stDividedRegion_GroupData[0].dFiducialPos[3].Y;
                     }
@@ -17967,12 +17968,12 @@ namespace QMC.Common.Modules
                             dft = -dft / 180 * Math.PI;
                             XyzCoordinate positionFirst = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
                             positionFirst = this.ConvertPointFineCam(positionFirst);
-                            xyCoordinateAlignPositionLast= new XyCoordinate( positionFirst.X, positionFirst.Y);
+                            xyCoordinateAlignPositionOrgLast= new XyCoordinate( positionFirst.X, positionFirst.Y);
 
-                            positionFirst.X += dfx/3;
-                            positionFirst.Y -= dfy;
+                            positionFirst.X -= dfx;
+                            positionFirst.Y += dfy;
 
-                            xyCoordinateAlignPositionOrgLast  = new XyCoordinate(positionFirst.X, positionFirst.Y);
+                            xyCoordinateAlignPositionLast = new XyCoordinate(positionFirst.X, positionFirst.Y);
                            
                             m_st4PointAlign_Result_LastSuccess.dRotationAngle = dft;
 
@@ -17986,8 +17987,9 @@ namespace QMC.Common.Modules
                         else
                         {
                             m_bPreAlignCompleted = false;
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
                             //  Pre Align NG 이면, Alarm 발생
-                            return AlarmPost(AlarmKey.PreAlignFail);
+                            //return AlarmPost(AlarmKey.PreAlignFail);
                         }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000000)               //  60 sec * 5
@@ -34915,8 +34917,8 @@ namespace QMC.Common.Modules
             //바꿔보자
             //this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= position.X;
             //this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= position.Y;
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += position.X;
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += position.Y;
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= position.X;
+            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= position.Y;
 
             return new XyzCoordinate(this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]
                 , this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] , 0);
