@@ -61,6 +61,18 @@ namespace SLD200_MSL
         private Thread m_ConfigStatusThread;
         private bool m_bConfigStatusCycleExit;
 
+        private int m_nLDUL_ActiveUnit = 0;                     //  LDUL Active Part (0:LD R-Port, 1:LD_L-Port, 2:LD_Transfer, 3:LD_MAligner, 4:UL_Transfer, 5:UL_R-Port, 6:UL_L-Port)
+        private enum LDUL_Units
+        {
+            LD_RPort = 0,
+            LD_LPort,
+            LD_Transfer,
+            LD_MAligner,
+            UL_Transfer,
+            UL_RPort,
+            UL_LPort
+        };
+
         private int[] m_nModuleAddrCount;                               //  모듈 별 IO 카운트용 변수
         private int m_nLaserAddrCount = 0;
         private int m_nBDSAddrCount = 0;
@@ -6888,75 +6900,169 @@ namespace SLD200_MSL
                 }
             }
         }
-
+        
         private void Button_Config_LDUL_TeachingPositions_Move_Click(object sender, EventArgs e)
         {
             //  Loader Unloader Teaching Position 이동
 
-            var mb = new MessageBoxOk();
-            mb.ShowDialog("Information !", "미구현 기능.");
-            return;
+            //var mb = new MessageBoxOk();
+            //mb.ShowDialog("Information !", "미구현 기능.");
+            //return;
 
+            double lfVelocity = 0.0f;
+            double lfAccDec = 0.0f;
 
+            int m_nIndex = listBox_Config_LDUL_TeachingPositions.SelectedIndex;
 
-            //double lfVelocity = 0.0f;
-            //double lfAccDec = 0.0f;
+            if (m_nIndex < 0)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Warning !", "Teaching Position 이 선택되지 않았습니다.");
+                return;
+            }
 
-            //int m_nIndex = listBox_Config_LDUL_TeachingPositions.SelectedIndex;
-
-            //if (m_nIndex < 0)
+            //if (!workStage.m_bHomeOK)
             //{
             //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Teaching Position 이 선택되지 않았습니다.");
-            //    return;
-            //}
-
-            ////if (!workStage.m_bHomeOK)
-            ////{
-            ////    var mb1 = new MessageBoxOk();
-            ////    mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
-            ////    return;
-            ////}
-
-            //var mb = new MessageBoxYesNo();
-            //if (DialogResult.Yes != mb.ShowDialog("Question ?", "Stage 를 선택 위치로 보내시겠습니까?\r\n\r\n##  XY 방향 이동 시 Z축 충돌 주의!!!  ##"))
-            //    return;
-
-            //if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
-            //    !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Stage 가 이동중입니다.");
+            //    mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
             //    return;
             //}
 
 
-            //switch (m_nIndex)
-            //{
+            //  동작할 Unit 결정
+            switch (m_nIndex)
+            {
+                //  Loader R-Port
+                case 0:
+                case 1:
+                    m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_RPort;
+                    break;
 
-            //}
+                //  Loader L-Port
+                case 2:
+                case 3:
+                    m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_LPort;
+                    break;
+
+                //  Loader Transfer
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                    m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_Transfer;
+                    break;
+
+                //  Loader M-Aligner
+                case 9:
+                case 10:
+                case 11:
+                    m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_MAligner;
+                    break;
+
+                //  Unloader Transfer
+                case 12:
+                case 13:
+                case 14:
+                case 15:
+                case 16:
+                    m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_Transfer;
+                    break;
+
+                //  Unloader R-Port
+                case 17:
+                case 18:
+                    m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_RPort;
+                    break;
+
+                //  Unloader L-Port
+                case 19:
+                case 20:
+                    m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_LPort;
+                    break;
+
+                default:
+                    break;
+            }
 
 
-            ////  속도 설정
-            //if (radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine.Checked)
-            //{
-            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
-            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
-            //}
-            //else
-            //{
-            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
-            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-            //}
+            //  선택한 Unit 별로 이동 명령 다르게
+            if ( m_nLDUL_ActiveUnit == (int)LDUL_Units.LD_RPort)
+            {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader R-Port Z0 축을 선택 위치로 보내시겠습니까?"))
+                    return;
 
-            ////workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X,
-            ////                                lfVelocity, lfAccDec, lfAccDec);
-            ////workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y,
-            ////                               lfVelocity, lfAccDec, lfAccDec);
+                if (!loader.MC_Func.MC_GetDone((int)Loader.nAxis.Z0) || !loader.MC_Func.MC_GetInposition((int)Loader.nAxis.Z0))
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Warning !", "Loader R-Port Z0 축이 이동중입니다.");
+                    return;
+                }
 
-            //xyInterpolatedCoordinate.X = workStage.stWorkStageTeachingPos[m_nIndex].Stage_X;
-            //xyInterpolatedCoordinate.Y = workStage.stWorkStageTeachingPos[m_nIndex].Stage_Y;
-            //workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                //  속도 설정
+                if (radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.Checked)
+                {
+                    lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Jog_Speed_Fine;
+                    lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Common_Acceleration_Fine;
+                }
+                else
+                {
+                    lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Jog_Speed_Coarse;
+                    lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Common_Acceleration_Coarse;
+                }
+
+                loader.MC_Func.MC_MovePosition((int)Loader.nAxis.Z0, loader.stLDULTeachingPos[m_nIndex].LD_Stacker_Z0,
+                                                lfVelocity, lfAccDec, lfAccDec);
+            }
+            else if (m_nLDUL_ActiveUnit == (int)LDUL_Units.LD_LPort)
+            {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader L-Port Z1 축을 선택 위치로 보내시겠습니까?"))
+                    return;
+
+                if (!loader.MC_Func.MC_GetDone((int)Loader.nAxis.Z1) || !loader.MC_Func.MC_GetInposition((int)Loader.nAxis.Z1))
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Warning !", "Loader L-Port Z1 축이 이동중입니다.");
+                    return;
+                }
+
+                //  속도 설정
+                if (radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.Checked)
+                {
+                    lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Jog_Speed_Fine;
+                    lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Acceleration_Fine;
+                }
+                else
+                {
+                    lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Jog_Speed_Coarse;
+                    lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Acceleration_Coarse;
+                }
+
+                loader.MC_Func.MC_MovePosition((int)Loader.nAxis.Z1, loader.stLDULTeachingPos[m_nIndex].LD_Stacker_Z1,
+                                                lfVelocity, lfAccDec, lfAccDec);
+            }
+            else if (m_nLDUL_ActiveUnit == (int)LDUL_Units.LD_Transfer)
+            {
+
+            }
+            else if (m_nLDUL_ActiveUnit == (int)LDUL_Units.LD_MAligner)
+            {
+
+            }
+            else if (m_nLDUL_ActiveUnit == (int)LDUL_Units.UL_Transfer)
+            {
+
+            }
+            else if (m_nLDUL_ActiveUnit == (int)LDUL_Units.UL_RPort)
+            {
+
+            }
+            else if (m_nLDUL_ActiveUnit == (int)LDUL_Units.UL_LPort)
+            {
+
+            }            
         }
 
         private void Button_Config_Vision_TeachingPositions_Move_Click(object sender, EventArgs e)
