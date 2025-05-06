@@ -99,7 +99,7 @@ namespace QMC.Common.Vision.Cognex
             }
 
             if ((ret = this.SetValue(image)) != 0) return ret;
-
+            
             this.OutputImage = this.InputImage;
             return ret;
         }

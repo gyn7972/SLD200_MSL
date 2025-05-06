@@ -8091,8 +8091,8 @@ namespace QMC.Common.Modules
                 //여기서 정지 후 재시작시 상태 및 소켓 정보 확인 후 구동
 
                 //꼭 수정Test
-                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
-                //m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
+               //m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+               m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
             }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move)
             {
@@ -8878,7 +8878,7 @@ namespace QMC.Common.Modules
                             m_bFindLowerAlignMark_OK = true;
                         }
                     }
-
+                    jigAligner_LowRes.Camera.StartLive();
                     m_bFindAlignMark_Complete = true;
                     m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
                     break;
@@ -13475,7 +13475,7 @@ namespace QMC.Common.Modules
                             xyCoordinateAlign = xyInterpolatedCoordinate + offset;
                             Log.Write("Alaign Test", "xyCoordinateAlign before : ", xyCoordinateAlign.ToString());
                             xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionLast.X, xyCoordinateAlignPositionLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
-
+                           // xyCoordinateAlign = xyCoordinateAlign + offset;
                             Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
 
                             Log.Write("Alaign Test", "Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
@@ -13583,7 +13583,7 @@ namespace QMC.Common.Modules
                     this.jigAligner_HighRes.UsePatternMatchingTool = true;
                     //this.jigAligner_HighRes.Work();
                     ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width);
-
+                    jigAligner_HighRes.Camera.StartLive();
                     timer_VisionAlign.Enabled = true;
 
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_fromVision_ResultCheck;
@@ -14222,7 +14222,7 @@ namespace QMC.Common.Modules
 
                     // 이미지 Grab 및 원 검색
                     Camera_HighRes.Grab();
-                    int nWidthImageCount = (int)(dWidth / this.Config.ParamConfig.UpperVision_Scale_X);
+                    int nWidthImageCount = (int)(dWidth / this.Config.ParamConfig.UpperVision_Scale_X );
                     bm_AlignRawData = Camera_HighRes.LatestImage.RawData;
                     Fiducial_aligner = new QMC_ImageProcessFindAlign();
                     Fiducial_circlesResult = new List<RectangleF>();
@@ -14580,6 +14580,7 @@ namespace QMC.Common.Modules
             // Todo : Action으로 Enum값 전달.
             ActionLaserDrillingStep?.Invoke((LaserDrilling_Step)m_nLaserDrilling_MainStep);
 
+            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_CompleteCheck;
             switch (m_nLaserDrilling_MainStep)
             {
                 case (int)LaserDrilling_Step.Start:
@@ -17914,10 +17915,18 @@ namespace QMC.Common.Modules
                     //Equipment.stLayerRecipeSet[0].PreAlignPos2 = rightPoint;
 
                     //m_nDrillingWork_Group_Count 이거 0이여야 한다.
-                    Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[0].dFiducialPos[0].X;
-                    Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[0].dFiducialPos[0].Y;
-                    Equipment.stLayerRecipeSet[0].PreAlignPos2.X = m_stDividedRegion_GroupData[0].dFiducialPos[1].X;
-                    Equipment.stLayerRecipeSet[0].PreAlignPos2.Y = m_stDividedRegion_GroupData[0].dFiducialPos[1].Y;
+                    try
+                    {
+                        Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[0].dFiducialPos[0].X;
+                        Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[0].dFiducialPos[0].Y;
+                        Equipment.stLayerRecipeSet[0].PreAlignPos2.X = m_stDividedRegion_GroupData[0].dFiducialPos[3].X;
+                        Equipment.stLayerRecipeSet[0].PreAlignPos2.Y = m_stDividedRegion_GroupData[0].dFiducialPos[3].Y;
+                    }
+                    catch(Exception ex)
+                    {
+
+                    }
+                    
 
                     //너무 Data를 빨리 던져서 문제가 아닌지 Test.
                     Thread.Sleep(100);
@@ -17953,16 +17962,18 @@ namespace QMC.Common.Modules
                             dfy = jigAligner_LowRes.FirstPosition.Y;
                             dft = jigAligner_LowRes.GetJigAlignResult();
 
-                            dft = dft / 180 * Math.PI;
+                            //dfx = 0;
+                            dfy = jigAligner_LowRes.FirstPosition.Y;
+                            dft = -dft / 180 * Math.PI;
                             XyzCoordinate positionFirst = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
                             positionFirst = this.ConvertPointFineCam(positionFirst);
                             xyCoordinateAlignPositionLast= new XyCoordinate( positionFirst.X, positionFirst.Y);
 
-                            positionFirst.X -= dfx;
+                            positionFirst.X += dfx/3;
                             positionFirst.Y -= dfy;
 
                             xyCoordinateAlignPositionOrgLast  = new XyCoordinate(positionFirst.X, positionFirst.Y);
-
+                           
                             m_st4PointAlign_Result_LastSuccess.dRotationAngle = dft;
 
                             //Log Data 남기자.

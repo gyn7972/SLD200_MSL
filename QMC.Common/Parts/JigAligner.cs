@@ -429,7 +429,7 @@ namespace QMC.Common.Parts
 
                         }
                         //Thread.Sleep(Config.MoveToDelay);
-                        Thread.Sleep(200);
+                        Thread.Sleep(500);
 
                         m_AlignPositions[0].X = xyInterpolatedCoordinate.X;
                         m_AlignPositions[0].Y = xyInterpolatedCoordinate.Y;
@@ -510,7 +510,7 @@ namespace QMC.Common.Parts
                         }
                     }
                     //Thread.Sleep(Config.MoveToDelay);
-                    Thread.Sleep(100);
+                    Thread.Sleep(500);
 
                     m_AlignPositions[1].X = xyInterpolatedCoordinate.X;
                     m_AlignPositions[1].Y = xyInterpolatedCoordinate.Y;
