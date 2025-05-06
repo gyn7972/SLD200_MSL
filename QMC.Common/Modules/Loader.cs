@@ -1921,7 +1921,7 @@ namespace QMC.Common.Modules
                 {
                     Equipment.Loader_RPort_Pause = true;
                 }
-                else if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDSZ0_NOMATERIAL_DETECT) > Equipment.Machine_LoaderStacker_NoMaterialDetectTime))
+                else if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDSZ0_NOMATERIAL_DETECT) > (Equipment.Machine_LoaderStacker_NoMaterialDetectTime * 1000)))
                 {
                     Equipment.Loader_RPort_Pause = true;
                 }
@@ -2737,7 +2737,7 @@ namespace QMC.Common.Modules
                 {
                     Equipment.Loader_LPort_Pause = true;
                 }
-                else if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT) > Equipment.Machine_LoaderStacker_NoMaterialDetectTime))
+                else if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT) > (Equipment.Machine_LoaderStacker_NoMaterialDetectTime * 1000)))
                 {
                     Equipment.Loader_LPort_Pause = true;
                 }
