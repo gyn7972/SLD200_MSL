@@ -57,9 +57,7 @@
             this.checkBox_Main_SocketStop = new System.Windows.Forms.CheckBox();
             this.buttonForceMaterialOut = new System.Windows.Forms.Button();
             this.groupBox_FineCam = new System.Windows.Forms.GroupBox();
-            this.ImageViewer_Main_highs = new QMC.Common.Hmi.VisionImageViewer();
             this.groupBox_CoarseCam = new System.Windows.Forms.GroupBox();
-            this.ImageViewer_Main_Rows = new QMC.Common.Hmi.VisionImageViewer();
             this.checkBox_Main_AutoRun = new System.Windows.Forms.CheckBox();
             this.button_TEST12 = new System.Windows.Forms.Button();
             this.button_TestbyUser_LPort_Start = new System.Windows.Forms.Button();
@@ -82,6 +80,9 @@
             this.pictureBox_Main_DiviceStatus_IO = new System.Windows.Forms.PictureBox();
             this.pictureBox_Main_DiviceStatus_Laser = new System.Windows.Forms.PictureBox();
             this.label_Main_LaserStatus = new System.Windows.Forms.Label();
+            this.checkBox_Main_SocketDrilling_Pass = new System.Windows.Forms.CheckBox();
+            this.ImageViewer_Main_Rows = new QMC.Common.Hmi.VisionImageViewer();
+            this.ImageViewer_Main_highs = new QMC.Common.Hmi.VisionImageViewer();
             this.baseLabel_Main_Divice_Status_Illuminator = new SLD200_MSL.BaseLabel();
             this.baseLabel_Main_Divice_Status_CameraPre = new SLD200_MSL.BaseLabel();
             this.baseLabel_Main_Divice_Status_CameraFine = new SLD200_MSL.BaseLabel();
@@ -141,9 +142,7 @@
             this.groupBoxMain_MaterialInformation.SuspendLayout();
             this.groupBox_ProcessingData.SuspendLayout();
             this.groupBox_FineCam.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).BeginInit();
             this.groupBox_CoarseCam.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Rows)).BeginInit();
             this.groupBox_Main_DiviceStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Illuminator)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_CameraPre)).BeginInit();
@@ -160,6 +159,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Motion)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_IO)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Laser)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Rows)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).BeginInit();
             this.baseGroupBox_Progress.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Module_TargetCount)).BeginInit();
             this.baseGroupBox_WorkingTime.SuspendLayout();
@@ -540,26 +541,6 @@
             this.groupBox_FineCam.TabStop = false;
             this.groupBox_FineCam.Text = " Fine Camera ";
             // 
-            // ImageViewer_Main_highs
-            // 
-            this.ImageViewer_Main_highs.BackColor = System.Drawing.Color.Black;
-            this.ImageViewer_Main_highs.Camera = null;
-            this.ImageViewer_Main_highs.CameraSwitch = null;
-            this.ImageViewer_Main_highs.FrameRate = 1D;
-            this.ImageViewer_Main_highs.InputImage = null;
-            this.ImageViewer_Main_highs.IsViewCustomizedImage = false;
-            this.ImageViewer_Main_highs.Location = new System.Drawing.Point(10, 28);
-            this.ImageViewer_Main_highs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.ImageViewer_Main_highs.Name = "ImageViewer_Main_highs";
-            this.ImageViewer_Main_highs.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
-            this.ImageViewer_Main_highs.Simulated = false;
-            this.ImageViewer_Main_highs.Size = new System.Drawing.Size(295, 247);
-            this.ImageViewer_Main_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.ImageViewer_Main_highs.TabIndex = 189;
-            this.ImageViewer_Main_highs.TabStop = false;
-            this.ImageViewer_Main_highs.UpdateDelayTime = 160;
-            this.ImageViewer_Main_highs.VisibleCrossLine = true;
-            // 
             // groupBox_CoarseCam
             // 
             this.groupBox_CoarseCam.Controls.Add(this.ImageViewer_Main_Rows);
@@ -570,26 +551,6 @@
             this.groupBox_CoarseCam.TabIndex = 192;
             this.groupBox_CoarseCam.TabStop = false;
             this.groupBox_CoarseCam.Text = " Coarse Camera ";
-            // 
-            // ImageViewer_Main_Rows
-            // 
-            this.ImageViewer_Main_Rows.BackColor = System.Drawing.Color.Black;
-            this.ImageViewer_Main_Rows.Camera = null;
-            this.ImageViewer_Main_Rows.CameraSwitch = null;
-            this.ImageViewer_Main_Rows.FrameRate = 1D;
-            this.ImageViewer_Main_Rows.InputImage = null;
-            this.ImageViewer_Main_Rows.IsViewCustomizedImage = false;
-            this.ImageViewer_Main_Rows.Location = new System.Drawing.Point(10, 28);
-            this.ImageViewer_Main_Rows.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.ImageViewer_Main_Rows.Name = "ImageViewer_Main_Rows";
-            this.ImageViewer_Main_Rows.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
-            this.ImageViewer_Main_Rows.Simulated = false;
-            this.ImageViewer_Main_Rows.Size = new System.Drawing.Size(295, 247);
-            this.ImageViewer_Main_Rows.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.ImageViewer_Main_Rows.TabIndex = 190;
-            this.ImageViewer_Main_Rows.TabStop = false;
-            this.ImageViewer_Main_Rows.UpdateDelayTime = 160;
-            this.ImageViewer_Main_Rows.VisibleCrossLine = true;
             // 
             // checkBox_Main_AutoRun
             // 
@@ -866,6 +827,61 @@
             this.label_Main_LaserStatus.TabIndex = 208;
             this.label_Main_LaserStatus.Text = "레이저 상태";
             this.label_Main_LaserStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checkBox_Main_SocketDrilling_Pass
+            // 
+            this.checkBox_Main_SocketDrilling_Pass.BackColor = System.Drawing.Color.LightGreen;
+            this.checkBox_Main_SocketDrilling_Pass.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.checkBox_Main_SocketDrilling_Pass.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox_Main_SocketDrilling_Pass.Location = new System.Drawing.Point(1476, 444);
+            this.checkBox_Main_SocketDrilling_Pass.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.checkBox_Main_SocketDrilling_Pass.Name = "checkBox_Main_SocketDrilling_Pass";
+            this.checkBox_Main_SocketDrilling_Pass.Size = new System.Drawing.Size(194, 73);
+            this.checkBox_Main_SocketDrilling_Pass.TabIndex = 209;
+            this.checkBox_Main_SocketDrilling_Pass.Text = "소켓 가공 건너뛰기\r\n(얼라인 후 소켓을 제외한 나머지 Layer 가공)";
+            this.checkBox_Main_SocketDrilling_Pass.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_Main_SocketDrilling_Pass.UseVisualStyleBackColor = false;
+            this.checkBox_Main_SocketDrilling_Pass.CheckedChanged += new System.EventHandler(this.checkBox_Main_SocketDrilling_Pass_CheckedChanged);
+            // 
+            // ImageViewer_Main_Rows
+            // 
+            this.ImageViewer_Main_Rows.BackColor = System.Drawing.Color.Black;
+            this.ImageViewer_Main_Rows.Camera = null;
+            this.ImageViewer_Main_Rows.CameraSwitch = null;
+            this.ImageViewer_Main_Rows.FrameRate = 1D;
+            this.ImageViewer_Main_Rows.InputImage = null;
+            this.ImageViewer_Main_Rows.IsViewCustomizedImage = false;
+            this.ImageViewer_Main_Rows.Location = new System.Drawing.Point(10, 28);
+            this.ImageViewer_Main_Rows.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ImageViewer_Main_Rows.Name = "ImageViewer_Main_Rows";
+            this.ImageViewer_Main_Rows.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.ImageViewer_Main_Rows.Simulated = false;
+            this.ImageViewer_Main_Rows.Size = new System.Drawing.Size(295, 247);
+            this.ImageViewer_Main_Rows.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ImageViewer_Main_Rows.TabIndex = 190;
+            this.ImageViewer_Main_Rows.TabStop = false;
+            this.ImageViewer_Main_Rows.UpdateDelayTime = 160;
+            this.ImageViewer_Main_Rows.VisibleCrossLine = true;
+            // 
+            // ImageViewer_Main_highs
+            // 
+            this.ImageViewer_Main_highs.BackColor = System.Drawing.Color.Black;
+            this.ImageViewer_Main_highs.Camera = null;
+            this.ImageViewer_Main_highs.CameraSwitch = null;
+            this.ImageViewer_Main_highs.FrameRate = 1D;
+            this.ImageViewer_Main_highs.InputImage = null;
+            this.ImageViewer_Main_highs.IsViewCustomizedImage = false;
+            this.ImageViewer_Main_highs.Location = new System.Drawing.Point(10, 28);
+            this.ImageViewer_Main_highs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ImageViewer_Main_highs.Name = "ImageViewer_Main_highs";
+            this.ImageViewer_Main_highs.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.ImageViewer_Main_highs.Simulated = false;
+            this.ImageViewer_Main_highs.Size = new System.Drawing.Size(295, 247);
+            this.ImageViewer_Main_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ImageViewer_Main_highs.TabIndex = 189;
+            this.ImageViewer_Main_highs.TabStop = false;
+            this.ImageViewer_Main_highs.UpdateDelayTime = 160;
+            this.ImageViewer_Main_highs.VisibleCrossLine = true;
             // 
             // baseLabel_Main_Divice_Status_Illuminator
             // 
@@ -1500,6 +1516,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 877);
             this.ControlBox = false;
+            this.Controls.Add(this.checkBox_Main_SocketDrilling_Pass);
             this.Controls.Add(this.label_Main_LaserStatus);
             this.Controls.Add(this.groupBox_Main_DiviceStatus);
             this.Controls.Add(this.label_Title_Stacker_RPort);
@@ -1550,9 +1567,7 @@
             this.groupBoxMain_MaterialInformation.PerformLayout();
             this.groupBox_ProcessingData.ResumeLayout(false);
             this.groupBox_FineCam.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).EndInit();
             this.groupBox_CoarseCam.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Rows)).EndInit();
             this.groupBox_Main_DiviceStatus.ResumeLayout(false);
             this.groupBox_Main_DiviceStatus.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Illuminator)).EndInit();
@@ -1570,6 +1585,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Motion)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_IO)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Laser)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Rows)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).EndInit();
             this.baseGroupBox_Progress.ResumeLayout(false);
             this.baseGroupBox_Progress.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Module_TargetCount)).EndInit();
@@ -1683,5 +1700,6 @@
         private BaseLabel baseLabel_Main_Divice_Status_ElectroRequlator;
         private System.Windows.Forms.PictureBox pictureBox_Main_DiviceStatus_ElectroRegulator;
         private System.Windows.Forms.Label label_Main_LaserStatus;
+        private System.Windows.Forms.CheckBox checkBox_Main_SocketDrilling_Pass;
     }
 }

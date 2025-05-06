@@ -1127,6 +1127,9 @@ namespace SLD200_MSL
             label_Title_Stacker_RPort.BackColor = Equipment.Loader_RPort_Empty ? Color.Red : Color.Black;
             label_Title_Stacker_RPort.ForeColor = Equipment.Loader_RPort_Empty ? Color.White : Color.Lime;
 
+            //  소켓 가공 건너뛰기 (얼라인만 사용)
+            checkBox_Main_SocketDrilling_Pass.BackColor = Equipment.SocketDrilling_Skip ? Color.LightGreen : Color.White;
+
             // 장비 상태 UI에 반영
             UpdateDeviceStatusImages();
         }
@@ -1180,6 +1183,9 @@ namespace SLD200_MSL
 
                 Equipment.MachineStop_byUser = true;
 
+                //  소켓 가공 건너뛰기 취소
+                checkBox_Main_SocketDrilling_Pass.Checked = false;
+                Equipment.SocketDrilling_Skip = false;
 
                 //  Main Work 타이머
                 //workStage.m_btimer_MainWork_Stop = true;                
@@ -1377,6 +1383,22 @@ namespace SLD200_MSL
                 var mb = new MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 시작하시겠습니까?"))
                     return;
+            }
+
+
+            if (Equipment.SocketDrilling_Skip)
+            {
+                m_strTemp = string.Format("소켓 가공 건너뛰기.\r\n\r\n[얼라인까지 진행하고, 소켓은 가공되지 않습니다.]\r\n\r\n[Hole1 Layer 를 제외한 나머지 가공 진행]");
+
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", m_strTemp);
+            }
+            else
+            {
+                m_strTemp = string.Format("소켓 가공 정상 진행.\r\n\r\n[소켓얼라인 -> 소켓 가공 -> 나머지 Layer 가공 진행]");
+
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", m_strTemp);
             }
 
 
@@ -2291,6 +2313,9 @@ namespace SLD200_MSL
             //  Layer Info List 초기화
             ProcessManager.Init();
 
+            checkBox_Main_SocketDrilling_Pass.Checked = false;
+            Equipment.SocketDrilling_Skip = false;
+
             Equipment.ProcessingData_Parsing_byLoader = false;
 
             //  Loader 파츠 사용 변수 초기화
@@ -2670,6 +2695,20 @@ namespace SLD200_MSL
                     checkBox_Main_AutoRun.ForeColor = Color.Black;
                     Equipment.AutoManualStatus = false;
                 }
+            }
+        }
+
+        private void checkBox_Main_SocketDrilling_Pass_CheckedChanged(object sender, EventArgs e)
+        {
+            //  소켓 가공 건너뛰기 여부
+
+            if (checkBox_Main_SocketDrilling_Pass.Checked)
+            {
+                Equipment.SocketDrilling_Skip = true;               //  소켓 가공 건너뛰기 (얼라인만 사용)
+            }
+            else
+            {
+                Equipment.SocketDrilling_Skip = false;              //  소켓 가공 건너뛰지 않음 (정상 가공)
             }
         }
 

@@ -415,6 +415,7 @@
             this.tabPage_Recipe.Name = "tabPage_Recipe";
             this.tabPage_Recipe.Size = new System.Drawing.Size(1737, 756);
             this.tabPage_Recipe.TabIndex = 7;
+            this.tabPage_Recipe.Text = "Recipe";
             this.tabPage_Recipe.UseVisualStyleBackColor = true;
             // 
             // groupBox_Recipe_TabRecipe_PreAlignPos
@@ -2468,7 +2469,7 @@
             "1.0X BET Position",
             "1.5X BET Position",
             "2.0X BET Position"});
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Location = new System.Drawing.Point(200, 550);
+            this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Location = new System.Drawing.Point(198, 550);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Name = "comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex";
             this.comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Size = new System.Drawing.Size(186, 26);

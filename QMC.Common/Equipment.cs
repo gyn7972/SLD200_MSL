@@ -654,6 +654,10 @@ namespace QMC.Common
         public static int DryRun_ProcessingTime { set; get; } = 5;
 
 
+        public static bool SocketDrilling_Skip { set; get; } = false;            //  Socket Drilling Skip (true: Skip, false: Not Skip)
+
+
+
         public enum LoaderPortList : int
         {
             R_Port = 0,
