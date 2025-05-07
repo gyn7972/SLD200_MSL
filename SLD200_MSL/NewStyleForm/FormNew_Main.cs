@@ -730,10 +730,13 @@ namespace SLD200_MSL
             //bOn = workStage.rtc != null && workStage.rtc.;
             //_InitDeviceStatus.Scanner = bOn;
 
+            if (!Equipment.Machine_LaserType_CO2)
+            { 
             bOn = workStage.m_powerMeter_ExitPos_Comm != null && workStage.m_powerMeter_ExitPos_Comm.IsOpen;
             _InitDeviceStatus.PowerMeter_Bds = bOn;
             if (!_InitDeviceStatus.PowerMeter_Bds)
                 workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Powermeter_bds);
+            }
 
             bOn = workStage.m_powerMeter_TargetPos_Comm != null && workStage.m_powerMeter_TargetPos_Comm.IsOpen;
             _InitDeviceStatus.PowerMeter_Stage = bOn;
