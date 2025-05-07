@@ -147,7 +147,7 @@ namespace SLD200_MSL
 
             //  Status 타이머
             timer_Status = new System.Windows.Forms.Timer();
-            timer_Status.Interval = 100;
+            timer_Status.Interval = 200;
             timer_Status.Tick += new System.EventHandler(Timer_Status_Func);
             timer_Status.Enabled = true;
 
@@ -628,8 +628,9 @@ namespace SLD200_MSL
             int m_nLDUL_Output_Count = 0;
 
             DioPoint dioPoint;
-
-            foreach (DioPoint point in Equipment.GetAllDioPointList())
+            List<DioPoint> listPoints = Equipment.GetAllDioPointList();
+            var ioList = listPoints.OrderBy(t => t.ModuleNo).ThenBy(t => t.Address);
+            foreach (DioPoint point in ioList)
             {
                 dioPoint = point;
                 if (dioPoint != null)
@@ -758,6 +759,10 @@ namespace SLD200_MSL
                         {
                             if ((dioPoint.Address >= 0) && (dioPoint.Address <= 12))                                        //  Loader Input (0 ~ 10) --> 2개 추가하여 12까지
                             {
+                                if(m_nLDUL_Input_Count == 11)
+                                {
+
+                                }
                                 if (dioPoint.GetValue() == DioValue.On)
                                 {
                                     //checkedListBox_Config_LDUL_DIO_Input.SetItemChecked(m_nModuleAddrCount[dioPoint.ModuleNo], true);

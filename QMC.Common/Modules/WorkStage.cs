@@ -10077,8 +10077,10 @@ namespace QMC.Common.Modules
 
                 case (int)WorkStage_Move_Step.ToLoadingPos_StageXY_Move_LoadingPos_DoneCheck:                       //  Stage XY 축, Module Loading 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
+                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Work Stage Move Cycle", "Stage XY 축, Module Loading 위치로 이동 완료");
 
@@ -13884,13 +13886,10 @@ namespace QMC.Common.Modules
 
                     //m_dALIGN_FACTOR_RotationCenter_X = 0;                                 //  전체 가공 도면 회전 중심 X
                     //m_dALIGN_FACTOR_RotationCenter_Y = 0;                                 //  전체 가공 도면 회전 중심 Y
-                    //m_dALIGN_FACTOR_Offset_X = 1;                                           //  전체 가공 도면 이동 Offset X
-                    //m_dALIGN_FACTOR_Offset_Y = 1;                                           //  전체 가공 도면 이동 Offset Y
-                    //m_dALIGN_FACTOR_Theta = 90;                                             //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
-
-
-
-
+                    //m_dALIGN_FACTOR_Offset_X = 1;                                         //  전체 가공 도면 이동 Offset X
+                    //m_dALIGN_FACTOR_Offset_Y = 1;                                         //  전체 가공 도면 이동 Offset Y
+                    //m_dALIGN_FACTOR_Theta = 90;                                           //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
+                     
                     //  테스트용
                     //m_dALIGN_FACTOR_Offset_Y += 30.0;
 
@@ -17925,7 +17924,8 @@ namespace QMC.Common.Modules
 
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR, 3);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR, 3); //-> 안먹나?
+                    //CommonModule.Instance.Illuminator.SetVolume(3500, 3);
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 1);          //  Fine Cam Red 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 2);          //  Fine Cam IR 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 3);           //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
@@ -18041,6 +18041,7 @@ namespace QMC.Common.Modules
 
                     m_bPreAlignCompleted = true;
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
+                    //None으로 하고 Test 해야하고...
                     break;
 
 
