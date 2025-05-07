@@ -1585,17 +1585,6 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[m_nLayerIndex].DustCollectorFreq_Upper = textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text) : 20.0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].DustCollectorFreq_Lower = textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text) : 20.0;
 
-            //PreAlign
-            Equipment.stLayerRecipeSet[m_nLayerIndex].PreAlignPos1.X =
-                textBox_Recipe_TabRecipe_PreAlignPosX1.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosX1.Text) : 0.0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].PreAlignPos1.Y =
-                textBox_Recipe_TabRecipe_PreAlignPosY1.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosY1.Text) : 0.0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].PreAlignPos2.X =
-                textBox_Recipe_TabRecipe_PreAlignPosX2.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosX2.Text) : 0.0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].PreAlignPos2.Y =
-                textBox_Recipe_TabRecipe_PreAlignPosY2.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosY2.Text) : 0.0;
-
-
             //  도면 데이터를 가공용 Document 에 적용
             Equipment.EqpSiriusViewer.Document = m_formSiriusEditor.SiriusEditor.Document;
 
@@ -1753,12 +1742,6 @@ namespace SLD200_MSL
                 checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked = Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use;                         //  집진기 Remote Mode 사용 여부
                 textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper.ToString();
                 textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString();
-
-                // PreAlign
-                textBox_Recipe_TabRecipe_PreAlignPosX1.Text = Equipment.stLayerRecipeSet[0].PreAlignPos1.X.ToString();
-                textBox_Recipe_TabRecipe_PreAlignPosY1.Text = Equipment.stLayerRecipeSet[0].PreAlignPos1.Y.ToString();
-                textBox_Recipe_TabRecipe_PreAlignPosX2.Text = Equipment.stLayerRecipeSet[0].PreAlignPos2.X.ToString();
-                textBox_Recipe_TabRecipe_PreAlignPosY2.Text = Equipment.stLayerRecipeSet[0].PreAlignPos2.Y.ToString();
 
                 int m_nCount = 0;
 
@@ -1984,11 +1967,6 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper.ToString();
             textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString();
 
-            // PreAlign
-            textBox_Recipe_TabRecipe_PreAlignPosX1.Text = Equipment.stLayerRecipeSet[0].PreAlignPos1.X.ToString();
-            textBox_Recipe_TabRecipe_PreAlignPosY1.Text = Equipment.stLayerRecipeSet[0].PreAlignPos1.Y.ToString();
-            textBox_Recipe_TabRecipe_PreAlignPosX2.Text = Equipment.stLayerRecipeSet[0].PreAlignPos2.X.ToString();
-            textBox_Recipe_TabRecipe_PreAlignPosY2.Text = Equipment.stLayerRecipeSet[0].PreAlignPos2.Y.ToString();
         }
 
         public void Recipe_Open(string m_strRecipeFile)
@@ -2099,12 +2077,6 @@ namespace SLD200_MSL
             checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked = Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use;                         //  집진기 Remote Mode 사용 여부
             textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper.ToString();
             textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString();
-
-            // PreAlign
-            textBox_Recipe_TabRecipe_PreAlignPosX1.Text = Equipment.stLayerRecipeSet[0].PreAlignPos1.X.ToString();
-            textBox_Recipe_TabRecipe_PreAlignPosY1.Text = Equipment.stLayerRecipeSet[0].PreAlignPos1.Y.ToString();
-            textBox_Recipe_TabRecipe_PreAlignPosX2.Text = Equipment.stLayerRecipeSet[0].PreAlignPos2.X.ToString();
-            textBox_Recipe_TabRecipe_PreAlignPosY2.Text = Equipment.stLayerRecipeSet[0].PreAlignPos2.Y.ToString();
 
             //  도면 Import
             m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);

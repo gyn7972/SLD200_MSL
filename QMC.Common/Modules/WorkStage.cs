@@ -29,7 +29,6 @@ using SocketLaser;
 using SocketLaserHeightSensor;
 using System.IO.Ports;
 using MessageBox = System.Windows.Forms.MessageBox;
-using System;
 //  Sirius1
 using SpiralLab.Sirius;
 using LaserVirtual = SpiralLab.Sirius.LaserVirtual;
@@ -1556,6 +1555,7 @@ namespace QMC.Common.Modules
             InitFail_CameraFine,
             InitFail_CameraPre,
             InitFail_Illuminator,
+            LaserFail_External_Mode,
 
             eDrillingDataloadFail,
             eStageMoveFail,
@@ -1739,6 +1739,15 @@ namespace QMC.Common.Modules
             alarm.Code = (int)AlarmKey.InitFail_Illuminator;
             alarm.Title = "Illuminator";
             alarm.Cause = "Illuminator가 초기화 되지 않았습니다. 통신 연결 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            //LaserFail_External_Mode
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.LaserFail_External_Mode;
+            alarm.Title = "Laser";
+            alarm.Cause = "Laser Mode가 External_Mode 아닙니다. External_Mode로 변경 바랍니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -4549,6 +4558,14 @@ namespace QMC.Common.Modules
                 while (true)
                 {
                     Thread.Sleep(1);
+
+                    //if(!m_bLaserBusy)
+                    //{
+                    //    if (IsAlarm())
+                    //    {
+                    //        continue;
+                    //    }
+                    //}
                     if (IsAlarm())
                     {
                         continue;
@@ -4557,6 +4574,7 @@ namespace QMC.Common.Modules
                     {
                         break;
                     }
+
                     Timer_LaserDrillingWork_Tick(null, null);
 
                 }
@@ -7798,7 +7816,25 @@ namespace QMC.Common.Modules
 
         #region Event Handler
 
-        
+
+        private bool m_bLaserBusy = false;
+        public bool GetLaserBusyStatus()
+        {
+            return m_bLaserBusy;
+        }
+        public void UpdateLaserStatus()
+        {
+            try
+            {
+                m_bLaserBusy = rtc.CtlGetStatus(RtcStatus.Busy);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                //m_bLaserBusy = false;
+            }
+        }
+
         private async void Timer_MainWork_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -7903,8 +7939,13 @@ namespace QMC.Common.Modules
 
                     CommonModule.Instance.TowerLamp_BuzzerStop = false;
                 }
-                
-                // Scanner Calibration이 활성화되지 않은 경우 종료 ??
+
+
+                // Scanner signal로 레이저 발진 유/무 확인.
+                if(rtc != null)
+                    UpdateLaserStatus();
+
+                // Scanner Calibration이 활성화되지 않은 경우 종료??
                 if (!m_MainWork_Start)
                 {
                     return;
