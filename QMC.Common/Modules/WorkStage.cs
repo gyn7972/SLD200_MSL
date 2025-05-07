@@ -4676,14 +4676,18 @@ namespace QMC.Common.Modules
             {
                 try
                 {
-
-                    var v = new VisionImageViewer.OwnedOverlayCollection();
-                    foreach (var overay in result.ResultOverlays)
+                    if (result != null)
                     {
-                        v.Add(overay);
+                        var v = new VisionImageViewer.OwnedOverlayCollection();
+
+                        foreach (var overay in result.ResultOverlays)
+                        {
+                            v.Add(overay);
+                        }
+                        this.CoarseCamResultOveray = v;
+                        UpdateResultOveray?.Invoke(this.Camera_LowRes, null);
                     }
-                    this.CoarseCamResultOveray = v;
-                    UpdateResultOveray?.Invoke(this.Camera_LowRes,null);
+                    
                 }
                 catch (Exception ex)
                 {
@@ -7824,15 +7828,14 @@ namespace QMC.Common.Modules
         }
         public void UpdateLaserStatus()
         {
-            try
-            {
-                m_bLaserBusy = rtc.CtlGetStatus(RtcStatus.Busy);
-            }
-            catch (Exception ex)
-            {
-                Log.Write(ex);
-                //m_bLaserBusy = false;
-            }
+            //try
+            //{
+            //    m_bLaserBusy = rtc.CtlGetStatus(RtcStatus.Busy);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Write(ex);
+            //}
         }
 
         private async void Timer_MainWork_Tick(object sender, ElapsedEventArgs e)
@@ -8162,10 +8165,12 @@ namespace QMC.Common.Modules
             }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_PreAlign_Correction_Complete)
             {
+                m_nPreAlignRetryCount = 0; // PreAlign 처음 시작 시 변수 초기화 후 진행.
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
             }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.DrillingData_SocketAlign_CompleteCheck)
             {
+                m_nPreAlignRetryCount = 0; // PreAlign 처음 시작 시 변수 초기화 후 진행.
                 //여기서 정지 후 재시작시 상태 및 소켓 정보 확인 후 구동
 
                 //꼭 수정Test
@@ -13411,6 +13416,13 @@ namespace QMC.Common.Modules
                     //Display_Event("홈 실행 루틴 : 시작.");
                     SocketAlign_Step_Start(nSocketNum);
 
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR, 3);
+                    CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명
+                    CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
+                    CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
+
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.AlignSocketData_Load;
                     break;
 
@@ -13678,7 +13690,7 @@ namespace QMC.Common.Modules
                     int retryCount = 1;
                     
                     ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width, retryCount);
-                    jigAligner_HighRes.Camera.StartLive();
+                    //jigAligner_HighRes.Camera.StartLive();
                     timer_VisionAlign.Enabled = true;
 
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_fromVision_ResultCheck;
@@ -14347,7 +14359,7 @@ namespace QMC.Common.Modules
                                     FineCamResultOveray.Add(overayRect);
                                     var overayEl = new EllipseFrameVisionImageOverlay("Fine Align", ptStart, ptEnd);
                                     overayEl.Visible = true;
-                                    overayEl.Color = Color.Lime;
+                                    overayEl.Color = Color.Blue;
                                     overayEl.Thickness = 1;
                                     FineCamResultOveray.Add(overayEl);
                                 }
@@ -18109,6 +18121,7 @@ namespace QMC.Common.Modules
 
                         if(m_bPreAlignCompleted)
                         {
+                            m_nPreAlignRetryCount = 0; // PreAlign 처음 시작 시 변수 초기화 후 진행.
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
 
                         }
@@ -18219,10 +18232,10 @@ namespace QMC.Common.Modules
                             // 보정값이 기준 이상이면 NG 처리
                             double dInterlockOffsetX = 5.0;
                             double dInterlockOffsetY = 5.0;
-                            double dInterlockOffsetT = 8.0; // 각도 값으로 입력하여 라디안으로 계산.
+                            //double dInterlockOffsetT = 8.0; // 각도 값으로 입력하여 라디안으로 계산.
                             if (Math.Abs(dfx) > dInterlockOffsetX || 
-                                Math.Abs(dfy) > dInterlockOffsetY || 
-                                Math.Abs(dft) > (dInterlockOffsetT * Math.PI / 180.0))
+                                Math.Abs(dfy) > dInterlockOffsetY )//|| 
+                                //Math.Abs(dft) > (dInterlockOffsetT * Math.PI / 180.0))
                             {
                                 m_bFindLowerAlignMark_OK = false;
                                 m_bPreAlignCompleted = false;
@@ -20101,8 +20114,8 @@ namespace QMC.Common.Modules
                                     if ((Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DrillingRepetition == 1) &&
                                         (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_CircleStartAngleCircle1time != 0.0))
                                     {
-                                        m_strTemp = string.Format("Circle 원 가공 반복 회수 1회, Start Angle : {0:0.000}", Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_CircleStartAngleCircle1time);
-                                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                                        //m_strTemp = string.Format("Circle 원 가공 반복 회수 1회, Start Angle : {0:0.000}", Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_CircleStartAngleCircle1time);
+                                        //Log.Write("SLD-200", "Auto Run", m_strTemp);
 
                                         entity_Position_Center.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
                                                                     m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
@@ -20119,8 +20132,8 @@ namespace QMC.Common.Modules
                                         //  시작 위치 각도 분할을 사용할 경우 (매번 분할 각도만큼 이동하여 시작)
                                         if (m_nCircleDrilling_CurrentRotStep >= 1)
                                         {
-                                            m_strTemp = string.Format("Circle 원 가공 반복 회수 n회, 계산된 Start Angle : {0:0.000}", (double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree);
-                                            Log.Write("SLD-200", "Auto Run", m_strTemp);
+                                            //m_strTemp = string.Format("Circle 원 가공 반복 회수 n회, 계산된 Start Angle : {0:0.000}", (double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree);
+                                            //Log.Write("SLD-200", "Auto Run", m_strTemp);
 
                                             entity_Position_Center.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
                                                                         m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
@@ -20329,8 +20342,8 @@ namespace QMC.Common.Modules
                                     if ((Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DrillingRepetition == 1) &&
                                         (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_CircleStartAngleCircle1time != 0.0))
                                     {
-                                        m_strTemp = string.Format("Arc 원 가공 반복 회수 1회, Start Angle : {0:0.000}", Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_CircleStartAngleCircle1time);
-                                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                                        //m_strTemp = string.Format("Arc 원 가공 반복 회수 1회, Start Angle : {0:0.000}", Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_CircleStartAngleCircle1time);
+                                        //Log.Write("SLD-200", "Auto Run", m_strTemp);
 
                                         entity_Position_Center.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
                                                                     m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
@@ -20347,8 +20360,8 @@ namespace QMC.Common.Modules
                                         //  시작 위치 각도 분할을 사용할 경우 (매번 분할 각도만큼 이동하여 시작)
                                         if (m_nCircleDrilling_CurrentRotStep >= 1)
                                         {
-                                            m_strTemp = string.Format("Arc 원 가공 반복 회수 n회, 계산된 Start Angle : {0:0.000}", (double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree);
-                                            Log.Write("SLD-200", "Auto Run", m_strTemp);
+                                            //m_strTemp = string.Format("Arc 원 가공 반복 회수 n회, 계산된 Start Angle : {0:0.000}", (double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree);
+                                            //Log.Write("SLD-200", "Auto Run", m_strTemp);
 
                                             entity_Position_Center.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
                                                                         m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;

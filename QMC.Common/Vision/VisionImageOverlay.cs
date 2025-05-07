@@ -843,6 +843,9 @@ namespace QMC.Common.Vision
         #endregion
 
         #region Overlay Members
+
+
+        
         protected override void OnDraw(Point offset, SizeD? sourceSize, SizeD? destinateSize, Graphics graphics)
         {
             SizeD scale = SizeD.Empty;
@@ -865,7 +868,7 @@ namespace QMC.Common.Vision
             pen = new Pen(this.Color, this.Thickness);
             pen.DashStyle = this.DashStyle;
             location = new PointD((this.StartLocation.X + offset.X) * scale.Width, (this.StartLocation.Y + offset.Y) * scale.Height);
-            size = new SizeD(this.Width / size.Width, this.Height / size.Height);
+            size = new SizeD(this.Width / scale.Width, this.Height / scale.Height);
 
             rectange = new RectangleF(location, size);
 
@@ -876,11 +879,32 @@ namespace QMC.Common.Vision
 
         protected override void OnDraw(Point offset, SizeD? sourceSize, SizeD? destinateSize, BufferedGraphics graphics)
         {
+            //SizeD scale = SizeD.Empty;
+            //Pen pen = null;
+            //RectangleF rectange = RectangleF.Empty;
+            //PointD location = PointD.Empty;
+            //SizeD size = SizeD.Empty;
+            //double tempWidth = 0.0;
+            //double tempHeight = 0.0;
+
+            //if (sourceSize == null || destinateSize == null)
+            //    scale = new SizeD(1, 1);
+            //else
+            //{
+            //    tempWidth = destinateSize.Value.Width / sourceSize.Value.Width;
+            //    tempHeight = destinateSize.Value.Height / sourceSize.Value.Height;
+            //    scale = new SizeD(tempWidth, tempHeight);
+            //}
+
+            //pen = new Pen(this.Color, 3);
+            //pen.DashStyle = this.DashStyle;
+            //location = new PointD((this.StartLocation.X + offset.X) * scale.Width, (this.StartLocation.Y + offset.Y) * scale.Height);
+            //size = new SizeD(this.Width / scale.Width, this.Height / scale.Height);
+
             SizeD scale = SizeD.Empty;
-            Pen pen = null;
-            RectangleF rectange = RectangleF.Empty;
-            PointD location = PointD.Empty;
             SizeD size = SizeD.Empty;
+            Pen pen = null;
+            PointD point = PointD.Empty;
             double tempWidth = 0.0;
             double tempHeight = 0.0;
 
@@ -894,11 +918,11 @@ namespace QMC.Common.Vision
             }
 
             pen = new Pen(this.Color, this.Thickness);
-            pen.DashStyle = this.DashStyle;
-            location = new PointD((this.StartLocation.X + offset.X) * scale.Width, (this.StartLocation.Y + offset.Y) * scale.Height);
-            size = new SizeD(this.Width / size.Width, this.Height / size.Height);
+            point = new PointD((this.StartLocation.X - offset.X) * scale.Width, (this.StartLocation.Y - offset.Y) * scale.Height);
+            size = new SizeD(this.Size.Width * scale.Width, this.Size.Height * scale.Height);
 
-            rectange = new RectangleF(location, size);
+
+            RectangleF rectange = new RectangleF(point, size);
             if (graphics != null)
             {
                 if (graphics.Graphics != null)

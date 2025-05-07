@@ -357,7 +357,8 @@ namespace SLD200_MSL
                         m_bSocketSelected = true;
 
                         //  얼라인 할 소켓 선택 (조건 : Pre Align Complete
-                        if (!Equipment.AutoRunStatus && checkBox_Main_AlignStartSocket_SelectMode.Checked && workStage.m_bPreAlignCompleted)
+                        //if (!Equipment.AutoRunStatus && checkBox_Main_AlignStartSocket_SelectMode.Checked && workStage.m_bPreAlignCompleted)
+                        if (!Equipment.AutoRunStatus && (checkBox_Main_AlignStartSocket_SelectMode.Checked || checkBox_Main_AlignStartSocket_ContinueMode.Checked))
                         {
                             cellColor = Color.LightBlue; // 선택된 셀의 색상
 
@@ -367,7 +368,7 @@ namespace SLD200_MSL
                         {
                             cellColor = GetCellColor(SocketStatus[i, j]); // 기본 색상
 
-                            workStage.m_nSocketAlign_StartIndex = -1;
+                            //workStage.m_nSocketAlign_StartIndex = -1;
                         }
                     }
                     else
@@ -438,7 +439,7 @@ namespace SLD200_MSL
 
             if (!m_bSocketSelected)
             {
-                workStage.m_nSocketAlign_StartIndex = -1;
+                //workStage.m_nSocketAlign_StartIndex = -1;
             }
         }
 
@@ -973,17 +974,6 @@ namespace SLD200_MSL
                 }
             }
 
-            //workStage에서 진행.
-            //workStage.UpdateLaserStatus();
-            if (workStage.m_nLaser_PulseMode != 1)
-            {
-                //알람 발생 할것.!
-                workStage.AlarmPost(WorkStage.AlarmKey.LaserFail_External_Mode);
-
-                //var mb = new MessageBoxOk();
-                //mb.ShowDialog("Information !", "레이저 External 모드가 아닙니다.\r\n\r\n [[External]] 모드로 변경 후 다시 시도 바랍니다.");
-                //return;
-            }
 
             if (Equipment.AutoRunStatus &&
                 Equipment.CycleStop &&
@@ -1435,6 +1425,8 @@ namespace SLD200_MSL
                 //  Pre Align 중이었으니 그대로 시작
                 Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Pre Align 부터 다시 시작");
 
+                workStage.m_nPreAlignRetryCount = 0; // PreAlign 처음 시작 시 변수 초기화 후 진행.
+
                 if (workStage.m_nSocketAlign_StartIndex >= 0)                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
                 {
                     if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly)
@@ -1766,15 +1758,15 @@ namespace SLD200_MSL
 
 
             //  Loader Stacker Pause 해제는 수동으로. (자동으로 풀어주니 너무 계속 한다)
-            ////  Loader Stacker 에 자재가 있으면 Pause 를 풀어 준다.
-            //if (loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
-            //{
-            //    if (loader.m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_None)
-            //    {
-            //        loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
-            //    }
-            //    Equipment.Loader_LPort_Pause = false;
-            //}
+            //  Loader Stacker 에 자재가 있으면 Pause 를 풀어 준다.
+            if (loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
+            {
+                if (loader.m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_None)
+                {
+                    loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
+                }
+                //Equipment.Loader_LPort_Pause = false;
+            }
 
 
             Equipment.AutoRunStatus = true;
@@ -2019,8 +2011,8 @@ namespace SLD200_MSL
             checkBox_Main_SocketStop.Checked = false;
             checkBox_Main_CycleStop.Checked = false;
             //checkBox_Main_Loader_Transfer_Pause.Checked = false;
-            checkBox_Main_Loader_LPort_Pause.Checked = false;
-            checkBox_Main_Loader_RPort_Pause.Checked = false;
+            //checkBox_Main_Loader_LPort_Pause.Checked = false;
+            //checkBox_Main_Loader_RPort_Pause.Checked = false;
 
             //  선택 가공 인덱스를 전체 가공으로 변경
             workStage.m_nSelectedSocket_Index = -1;
@@ -2111,8 +2103,8 @@ namespace SLD200_MSL
             checkBox_Main_SocketStop.Checked = false;
             checkBox_Main_CycleStop.Checked = false;
             //checkBox_Main_Loader_Transfer_Pause.Checked = false;
-            checkBox_Main_Loader_LPort_Pause.Checked = false;
-            checkBox_Main_Loader_RPort_Pause.Checked = false;
+            //checkBox_Main_Loader_LPort_Pause.Checked = false;
+            //checkBox_Main_Loader_RPort_Pause.Checked = false;
 
 
             //  Loader L, R Port 바로 시작

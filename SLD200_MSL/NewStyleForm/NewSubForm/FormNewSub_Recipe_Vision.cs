@@ -229,6 +229,12 @@ namespace SLD200.NewStyleForm.NewSubForm
                 PatternMatchingParameter.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
                 Owner.Recipe.PatternMatchingParameter = PatternMatchingParameter;
 
+                RoiTrain.Parameter.StartLocation = Equipment.stVisionRecipeSet.TrainRoiStartLocation;
+                RoiTrain.Parameter.EndLocation = Equipment.stVisionRecipeSet.TrainRoiEndLocation;
+                RoiInspect.Parameter.StartLocation = Equipment.stVisionRecipeSet.InspectRoiStartLocation;
+                RoiInspect.Parameter.EndLocation = Equipment.stVisionRecipeSet.InspectRoiEndLocation;
+
+
                 Owner.Recipe.InspectRoiStartLocation = Equipment.stVisionRecipeSet.InspectRoiStartLocation; //RoiInspect.Parameter.StartLocation;
                 Owner.Recipe.InspectRoiEndLocation = Equipment.stVisionRecipeSet.InspectRoiEndLocation;     //RoiInspect.Parameter.EndLocation;
                 Owner.Recipe.TrainRoiStartLocation = Equipment.stVisionRecipeSet.TrainRoiStartLocation;     //RoiTrain.Parameter.StartLocation;
