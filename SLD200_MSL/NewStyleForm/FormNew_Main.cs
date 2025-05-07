@@ -730,10 +730,13 @@ namespace SLD200_MSL
             //bOn = workStage.rtc != null && workStage.rtc.;
             //_InitDeviceStatus.Scanner = bOn;
 
+            if (!Equipment.Machine_LaserType_CO2)
+            { 
             bOn = workStage.m_powerMeter_ExitPos_Comm != null && workStage.m_powerMeter_ExitPos_Comm.IsOpen;
             _InitDeviceStatus.PowerMeter_Bds = bOn;
             if (!_InitDeviceStatus.PowerMeter_Bds)
                 workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Powermeter_bds);
+            }
 
             bOn = workStage.m_powerMeter_TargetPos_Comm != null && workStage.m_powerMeter_TargetPos_Comm.IsOpen;
             _InitDeviceStatus.PowerMeter_Stage = bOn;
@@ -2648,8 +2651,302 @@ namespace SLD200_MSL
             InitializeDeviceStatusBindings();
         }
 
+        private void checkBox_Test_LaserDrillingCycle_CheckedChanged(object sender, EventArgs e)
+        {
+            Equipment.LaserDrillingCycleEnable_Manual = checkBox_Test_LaserDrillingCycle.Checked;
+        }
+
+        private void button_Main_ManualStart_Click(object sender, EventArgs e)
+        {
+            //  Main Work Start
+
+            Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Start 버튼");
+
+            string m_strTemp = "";
+
+            if (!workStage.m_bHomeOK)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
+                return;
+            }
+
+            if (Equipment.EqpSiriusViewer == null)
+            {
+                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                return;
+            }
+
+            if (workStage.rtc == null)
+            {
+                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                return;
+            }
+
+            if (Equipment.AutoRunStatus)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "자동 운전 중입니다.");
+                return;
+            }
+
+            if (Equipment.RecipeOpen_DrawingFilePath.Length == 0)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "도면(레시피)을 로드 하십시오.");
+                return;
+            }
+
+
+            for (int i = 0; i < 4; i++)
+            {
+                //  Laser Defocusing 양 체크 (너무 크면 안됨)
+                if (Math.Abs(Equipment.stLayerRecipeSet[i].Miscellaneous_DefocusingDistance) >= 3.0)
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "Laser Defocusing 양이 너무 큽니다.\r\n\r\n[-3.0mm < z < 3.0mm] 범위로 조정");
+                    i = 4;
+                    return;
+                }
+
+                //  Resizing 크기 체크
+                if (Math.Abs(Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing) >= 1.0)
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !", "가공 홀 크기 조정량이 너무 큽니다.\r\n\r\n[-1.0mm < z < 1.0mm] 범위로 조정");
+                    i = 4;
+                    return;
+                }
+            }
+
+            //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_NONE)
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Information !", "Scanner Mode 를 선택해야 합니다.");
+            //    return;
+            //}
+
+            //if (!laserDrilling.laserDrillingParameter.DI_Safety_Door())
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Warning !", "Safety Door 가 열려있습니다.");
+            //    return;
+            //}
+
+            //if (laserDrilling.laserDrillingParameter.IsDO_Door_Unlock())
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Warning !", "Safety Door Unlock 상태입니다.");
+            //    return;
+            //}
+
+            //if ((laserDrilling.Config.ParamConfig.nLaserSource_Type == (int)LaserDrillingParameterConfig.LaserSource.SpectraPhysics) &&
+            //    laserDrilling.laserDrillingParameter.DI_FrontDoor_Open())
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Warning !", "Front Door 가 열려있습니다.");
+            //    return;
+            //}
+
+
+            //if ((laserDrilling.Config.ParamConfig.Drilling_Repeat_Count > 0) && (laserDrilling.Config.ParamConfig.Drilling_Laser_Power_Percent <= 0))
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Information !", "미세홀 본 가공(1차) 가공 출력을 확인하십시오.\r\n\r\n[가공 출력 : 0 %]");
+            //    return;
+            //}
+
+            //if ((laserDrilling.Config.ParamConfig.Drilling_Repeat_Count_2nd > 0) && (laserDrilling.Config.ParamConfig.Drilling_Laser_Power_Percent_2nd <= 0))
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Information !", "미세홀 본 가공(2차) 가공 출력을 확인하십시오.\r\n\r\n[가공 출력 : 0 %]");
+            //    return;
+            //}
+
+            //if ((laserDrilling.Config.ParamConfig.PreDrilling_Repeat_Count > 0) && (laserDrilling.Config.ParamConfig.PreDrilling_Laser_Power_Percent <= 0))
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Information !", "미세홀 내부 가공(1차) 가공 출력을 확인하십시오.\r\n\r\n[가공 출력 : 0 %]");
+            //    return;
+            //}
+
+            //if ((laserDrilling.Config.ParamConfig.PreDrilling_Repeat_Count_2nd > 0) && (laserDrilling.Config.ParamConfig.PreDrilling_Laser_Power_Percent_2nd <= 0))
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Information !", "미세홀 내부 가공(2차) 가공 출력을 확인하십시오.\r\n\r\n[가공 출력 : 0 %]");
+            //    return;
+            //}
+
+            if (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None)
+            {
+                var mb = new MessageBoxYesNo();
+
+                ////////////////////////////////////////////////////////////////////////////
+                ////  Socket 선택 가공인지 확인용
+                ///
+
+                if (workStage.m_stDividedRegion_GroupData == null)              //  Parsing 해야 확인할 수 있는 데이터
+                {
+                    Log.Write("SLD-200", Equipment.User_Name, "Start Button Click", "Data Parsing 진행. (GetDrillingData)");
+
+                    workStage.GetDrillingData();
+                }
+
+                double m_dSelectedGroup_Center_X = 999.0;
+                double m_dSelectedGroup_Center_Y = 999.0;
+                foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+                {
+                    if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
+                    {
+                        if (layer.Name == "Hole1")
+                        {
+                            baseTextBox_SocketCountPerModule.Text = layer.Count.ToString();
+
+                            foreach (var entity in layer)
+                            {
+                                switch (entity.EntityType)
+                                {
+                                    case EType.Group:
+                                        var group = entity as Group;
+
+                                        if (group.IsSelected)
+                                        {
+                                            m_dSelectedGroup_Center_X = group.Location.X;
+                                            m_dSelectedGroup_Center_Y = group.Location.Y;
+                                        }
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                baseTextBox_Socket_Index.Text = "All";
+                workStage.m_nSelectedSocket_Index = -1;
+
+                if (workStage.m_stDividedRegion_GroupData != null)
+                {
+                    //  선택된 Socket 이 몇번 Socket 인지 확인
+                    for (int i = 0; i < workStage.m_stDividedRegion_GroupData.Length; i++)
+                    {
+                        if ((m_dSelectedGroup_Center_X == workStage.m_stDividedRegion_GroupData[i].dGroupCenter.X) &&
+                            (m_dSelectedGroup_Center_Y == workStage.m_stDividedRegion_GroupData[i].dGroupCenter.Y))
+                        {
+                            baseTextBox_Socket_Index.Text = i.ToString();
+                            workStage.m_nSelectedSocket_Index = i;
+                            break;
+                        }
+                    }
+                }
+                //  Socket 선택 가공인지 확인용
+                ////////////////////////////////////////////////////////////////////////////
+
+
+                //if (laserDrilling.m_nAutoCal_ScannerCamCenter_Step > (int)LaserDrilling.AutoCalScannerCameraCenter_Step.None)
+                //{
+                //    var mb1 = new MessageBoxOk();
+                //    mb1.ShowDialog("Warning !", "스캐너와 카메라 Offset 자동 보정 진행중입니다.");
+                //    return;
+                //}
+
+                //  도면 갱신 (Main 화면의 Sirius Document 를 가공할때 사용하는 Document 로 복사)
+                //workStage.SiriusEditor.Document = SiriusViewer_Main.Document;
+                Equipment.EqpSiriusViewer.Document = SiriusViewer_Main.Document;                            //  메인 화면에 보이는 도면을 가공하기 위함
+
+
+                if (workStage.m_nSelectedSocket_Index >= 0)
+                {
+                    m_strTemp = string.Format("선택 가공을 시작하시겠습니까?\r\n\r\n[소켓 번호 : {0}]", workStage.m_nSelectedSocket_Index);
+                }
+                else
+                {
+                    if (workStage.Config.ParamConfig.bProductAlign_Enable)
+                    {
+                        m_strTemp = "전체 가공을 시작하시겠습니까?";
+                    }
+                    else
+                    {
+                        m_strTemp = "전체 가공을 시작하시겠습니까?\r\n\r\n[소켓 얼라인 사용 안함]";
+                    }
+                }
+
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", m_strTemp))
+                    return;
+
+                if (!workStage.workStageParameter.IsDO_BeamDump_Coolant_Supply() || !workStage.workStageParameter.IsDO_Scanner_Coolant_Supply() ||
+                    (Equipment.Machine_LaserType_CO2 && (!workStage.workStageParameter.IsDO_Mask_Coolant_Supply() || !workStage.workStageParameter.IsDO_VarioScan_Coolant_Supply())))
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Warning !", "냉각수를 순환 시키고 작업을 진행해야 합니다.");
+                    return;
+                }
+
+                ////  StageZ 한계위치 설정되어 있는지 체크
+                //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos <= 0.0)
+                //{
+                //    var mb1 = new MessageBoxOk();
+                //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이가 설정되어 있지 않습니다.\r\n\r\n(Config -> [17] Interlock  확인)");
+                //    return;
+                //}
+
+                //laserDrilling.laserDrillingParameter.stLaserDrillingPosParam = laserDrilling.laserDrillingParameter.GetPositionInformation("WorkStage_WorkHeight");
+
+                ////  StageZ 한계위치를 초과하여 이동하는지 체크
+                //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos < laserDrilling.laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.Z])
+                //{
+                //    var mb1 = new MessageBoxOk();
+                //    mb1.ShowDialog("Warning !", "Laser 가공 높이가 Stage Z축 한계 높이를 초과합니다.\r\n\r\n[ Work Cancel ]");
+                //    return;
+                //}
+
+                ////  가공 시간 초기화
+                //Equipment.WorkElapsedTick = 0;
+                //Equipment.WorkElapsedTick_Outline = 0;
+                //Equipment.WorkElapsedTick_Thruhole = 0;
+                //Equipment.WorkElapsedTick_Drilling = 0;
+                //Equipment.WorkElapsedTick_Marking = 0;
+
+
+                workStage.m_bLaserDrilling_SocketStopped = false;
+                Equipment.SocketStopped = false;
+
+                workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
+                workStage.timer_LaserDrillingWork.Enabled = true;
+                //laserDrilling.StartThread();
+
+                WorkStartTick = Environment.TickCount;
+            }
+            else
+            {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "가공을 중지하시겠습니까?"))
+                    return;
+
+                Equipment.MachineStop_byUser = true;
+
+                WorkStartTick = 0;
+                WorkStartTick_Outline = 0;
+                WorkStartTick_Thruhole = 0;
+                WorkStartTick_Drilling = 0;
+
+                //workStage.timer_LaserDrillingWork.Enabled = false;
+                //laserDrilling.StopThread();
+                workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
+
+                workStage.laser.Rtc.CtlAbort();             //  실행중인 리스트 명령(busy 상태를)을 강제 종료
+                Thread.Sleep(2000);
+                workStage.laser.Rtc.CtlReset();             //  에러 해제
+            }
+        }
+
         private void checkBox_Main_AutoRun_CheckedChanged(object sender, EventArgs e)
         {
+            //  강제로 false
+            Equipment.LaserDrillingCycleEnable_Manual = false;
+            checkBox_Test_LaserDrillingCycle.Checked = false;
+
+
+
             if (checkBox_Main_AutoRun.Checked)
             {
                 if (Equipment.AutoRunStatus)
