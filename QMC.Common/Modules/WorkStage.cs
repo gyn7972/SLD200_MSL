@@ -63,6 +63,8 @@ using Cognex.VisionPro.ImageProcessing;
 using QMC.Process.WorkStage.Parts;
 using QMC.Common;
 using System.Runtime.InteropServices.WindowsRuntime;
+using QMC.Common.Hmi;
+using QMC.Common.Vision;
 
 
 namespace QMC.Common.Modules
@@ -285,7 +287,7 @@ namespace QMC.Common.Modules
             public double CenterY;              //  중심 Y 좌표
             public double radius;               //  반지름
         }
-
+        public EventHandler UpdateResultOveray;
         Task taskRunScannerConpensation;
         public stDrawingHoleParam[] m_stDrawing_Hole1;                          //  Hole1 데이터
         public stDrawingHoleParam[] m_stDrawing_Hole2;                          //  Hole2 데이터
@@ -4443,6 +4445,7 @@ namespace QMC.Common.Modules
             jigAligner_LowRes.XyzyStage = Stage;
             jigAligner_LowRes.Illuminator = CommonModule.Instance.Illuminator;
             Parts.Add(jigAligner_LowRes);
+            jigAligner_LowRes.UpdateResult += JigAligner_LowRes_UpdateResult;
 
             jigAligner_HighRes = new JigAligner("JigAligner (Fine)");
             jigAligner_HighRes.Create();
@@ -4645,6 +4648,30 @@ namespace QMC.Common.Modules
             listTask.Add(m_taskTimer_ScannerCalibration_Tick);
 
             return ret;
+        }
+
+        private void JigAligner_LowRes_UpdateResult(PatternMatchingResult result)
+        {
+            if(this.UpdateResultOveray!= null)
+            {
+                try
+                {
+
+                    var v = new VisionImageViewer.OwnedOverlayCollection();
+                    foreach (var overay in result.ResultOverlays)
+                    {
+                        v.Add(overay);
+                    }
+                    this.CoarseCamResultOveray = v;
+                }
+                catch (Exception ex)
+                {
+
+                    Log.Write(ex);
+                }
+            }
+            
+
         }
 
         public void Device_Close()
@@ -14146,6 +14173,10 @@ namespace QMC.Common.Modules
             }
 
         }
+
+        public VisionImageViewer.OwnedOverlayCollection FineCamResultOveray { get; set; } = new VisionImageViewer.OwnedOverlayCollection();
+        public VisionImageViewer.OwnedOverlayCollection CoarseCamResultOveray { get; set; } = new VisionImageViewer.OwnedOverlayCollection();
+
         private PointD CoordinateTransform(PointD xyCoordinate, double dRotationCenterX, double dRotationCenterY, double v)
         {
             XyCoordinate result = CoordinateTransform(new XyCoordinate(xyCoordinate.X, xyCoordinate.Y), dRotationCenterX, dRotationCenterY, v);
@@ -14243,6 +14274,30 @@ namespace QMC.Common.Modules
                     if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
                     {
                         Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, bm_AlignRawData, Camera_HighRes.Resolution.Width, Camera_HighRes.Resolution.Height, nWidthImageCount, 0.05, ref Fiducial_circleFound);
+                        if(UpdateResultOveray != null)
+                        {
+                            try
+                            {
+                                this.FineCamResultOveray = new VisionImageViewer.OwnedOverlayCollection();
+                                foreach (var v in Fiducial_circlesResult)
+                                {
+                                    Point ptStart = new Point((int)v.Left, (int)v.Top);
+                                    Point ptEnd = new Point((int)v.Right, (int)v.Bottom);
+                                    FineCamResultOveray.Add(new RectangleFrameVisionImageOverlay("Fine Align", ptStart, ptEnd));
+
+                                }
+                                UpdateResultOveray?.Invoke(this.Camera_HighRes, null);
+                            }
+
+                            catch (Exception ex)
+                            {
+
+                                Log.Write(ex);
+                            }
+                        }
+                        
+
+
                     }
                     else if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
                     {

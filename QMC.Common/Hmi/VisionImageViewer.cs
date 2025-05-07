@@ -71,6 +71,10 @@ namespace QMC.Common.Hmi
             {
 
             }
+            public OwnedOverlayCollection()
+            {
+
+            }
             #endregion
         }
 
@@ -698,7 +702,7 @@ namespace QMC.Common.Hmi
         public OwnedOverlayCollection ResultOverlays
         {
             get { return this.m_ResultOverlays; }
-            private set { this.m_ResultOverlays = value; }
+            set { this.m_ResultOverlays = value; }
         }
 
         public double FrameRate
@@ -1671,35 +1675,35 @@ namespace QMC.Common.Hmi
                             lock (bufferedGrphics)
                             {
                                 OwnedOverlayCollection resultNormal = this.NormalOverlays;
-                                for (int i = 0; i < resultNormal.Count; i++)
+                                try
                                 {
-
-                                    try
+                                    for (int i = 0; i < resultNormal.Count; i++)
                                     {
                                         if (resultNormal[i].Visible == true)
                                             resultNormal[i].Draw(this.Scale.GetOffset(), size, new SizeD(this.Size.Width, this.Size.Height), bufferedGrphics);
+                                    }
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    Log.Write(ex);
+                                    Console.WriteLine(ex.Message);
+                                }
+                                OwnedOverlayCollection resultOverlays = this.ResultOverlays;
+                                {
+                                    try
+                                    {
+                                        for (int i = 0; i < resultOverlays.Count; i++)
+                                        {
+
+                                            if (resultOverlays[i].Visible == true)
+                                                resultOverlays[i].Draw(this.Scale.GetOffset(), size, new SizeD(this.Size.Width, this.Size.Height), bufferedGrphics);
+                                        }
                                     }
                                     catch (Exception ex)
                                     {
                                         Log.Write(ex);
                                         Console.WriteLine(ex.Message);
-                                    }
-                                }
-                                OwnedOverlayCollection resultOverlays = this.ResultOverlays;
-                                {
-                                    for (int i = 0; i < resultOverlays.Count; i++)
-                                    {
-                                        try
-                                        {
-                                            if (resultOverlays[i].Visible == true)
-                                                resultOverlays[i].Draw(this.Scale.GetOffset(), size, new SizeD(this.Size.Width, this.Size.Height), bufferedGrphics);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            Log.Write(ex);
-                                            Console.WriteLine(ex.Message);
-                                        }
-                                        
                                     }
                                 }
 
@@ -1711,7 +1715,7 @@ namespace QMC.Common.Hmi
                     catch (Exception ex)
                     {
                         Log.Write(ex);
-                        //Log.Write(VisionImageViewer.LogName, ex.Message);
+                        
                         Console.WriteLine(ex.Message);
                     }
                 }
@@ -1719,7 +1723,7 @@ namespace QMC.Common.Hmi
             catch (Exception ex)
             {
                 Log.Write(ex);
-                //Log.Write(VisionImageViewer.LogName, ex.Message);
+                
                 Console.WriteLine(ex.Message);
             }
             finally
