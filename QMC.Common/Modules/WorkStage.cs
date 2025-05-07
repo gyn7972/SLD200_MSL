@@ -8142,7 +8142,8 @@ namespace QMC.Common.Modules
             {
                 _isLaserDrillingWorkRunning = true;
                 
-                if (!m_LaserDrillingWork_Start)
+                //if (!m_LaserDrillingWork_Start)               //  공정 테스트를 위한 조건 추가
+                if (!m_LaserDrillingWork_Start && !Equipment.LaserDrillingCycleEnable_Manual)
                 {
                     SetRecoveryLaserDrilling_MainStep(m_nLaserDrilling_MainStep);
                     return;

@@ -695,6 +695,10 @@ namespace QMC.Common
         public static bool MachineStop_byTimeout_WorkStage { set; get; } = false;
 
 
+        //  레이저 공정 테스트를 위한 변수
+        public static bool LaserDrillingCycleEnable_Manual { set; get; } = false;
+
+
 
 
         ////  Recipe Data
