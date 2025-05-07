@@ -19,6 +19,8 @@ using QMC.Common.UI;
 using SLD200_MSL;
 using static OpenCvSharp.LineIterator;
 using static QMC.Common.Vision.Tools.PatternMatchingResult;
+using System.Threading;
+using System.IO;
 
 namespace SLD200.NewStyleForm.NewSubForm
 {
@@ -28,6 +30,8 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         static WorkStage workStage;
         static JigAligner Owner;
+
+        static Vision vision;
 
         private int nMarkType = 0; //0:Cross, 1:Circle 등
         private int nSerchType = 0; //0:PatternMatching, 1:Blob, 2:CircleA 등
@@ -41,7 +45,9 @@ namespace SLD200.NewStyleForm.NewSubForm
         #endregion
 
         private SLD200_MSL.RoiListControl m_RoiListControl;
-       
+
+        private System.Windows.Forms.Timer RecipeVisionTimer;
+
         public FormNewSub_Recipe_Vision()
         {
             InitializeComponent();
@@ -71,7 +77,17 @@ namespace SLD200.NewStyleForm.NewSubForm
                     workStage = module as WorkStage;
                     Owner = workStage.jigAligner_LowRes;
                 }
+
+                if (module.Name == "Vision")
+                {
+                    vision = module as Vision;
+                }
             }
+
+            RecipeVisionTimer = new System.Windows.Forms.Timer();
+            RecipeVisionTimer.Interval = 200; // 200ms 간격으로 상태 확인
+            RecipeVisionTimer.Tick += RecipeVisionTimer_Tick;
+            RecipeVisionTimer.Start();
 
             if (this.ImageViewer_RecipeVision_highs.IsHandleCreated)
             {
@@ -115,6 +131,23 @@ namespace SLD200.NewStyleForm.NewSubForm
             IsPixel = true;
 
             InitPatternMatchingParameter();
+
+            InitializeJogButtons();
+
+            Temp_Position_Load();
+
+            radioButton_RecipeVision_Move_MoveMode_Fine.Checked = false;
+            radioButton_RecipeVision_Move_MoveMode_Coarse.Checked = true;
+            radioButton_RecipeVision_JogMove_Continuous.Checked = false;
+            radioButton_RecipeVision_JogMove_Step.Checked = true;
+
+            radioButton_RecipeVision_Circle.Checked = true;
+
+        }
+
+        private void RecipeVisionTimer_Tick(object sender, EventArgs e)
+        {
+            Motion_Status(); // 기존에 있던 리미트 감지 및 색상 갱신 함수 호출
         }
 
         public void OnShow()
@@ -129,6 +162,8 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             this.ImageViewer_RecipeVision_Rows.ResumeDisplay();
             this.ImageViewer_RecipeVision_Rows.StartUpdateTask();
+
+            this.RecipeVisionTimer.Start();
         }
 
         public void OnHide()
@@ -143,6 +178,8 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             this.ImageViewer_RecipeVision_Rows.SuspendDisplay();
             this.ImageViewer_RecipeVision_Rows.StopUpdateTask();
+
+            this.RecipeVisionTimer.Stop();
         }
 
         private void InitPatternMatchingParameter()
@@ -738,6 +775,10 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void button_RecipeVision_Vision_Save_Click(object sender, EventArgs e)
         {
+            UpdateOwnerRecipe(PatternMatchingParameter);
+
+            //workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter = PatternMatchingParameter;
+            //Equipment.SaveRecipe();
 
             //Equipment.Scanner_Calibration_BlobVisionToolParameter.RepeatCount = BlobParameter.RepeatCount;
             //Equipment.Scanner_Calibration_BlobVisionToolParameter.HasChanged = BlobParameter.HasChanged;
@@ -748,5 +789,370 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             //workStage.Scanner_Calibration_Vision_Save();
         }
+
+        //Jog Move
+        private void InitializeJogButtons()
+        {
+            // Tag 설정
+            button_RecipeVision_X_Pos.Tag = "X,+1";
+            button_RecipeVision_X_Neg.Tag = "X,-1";
+            button_RecipeVision_Y_Pos.Tag = "Y,+1";
+            button_RecipeVision_Y_Neg.Tag = "Y,-1";
+            button_RecipeVision_Z_Pos.Tag = "Z,+1";
+            button_RecipeVision_Z_Neg.Tag = "Z,-1";
+
+            // 공통 MouseDown 핸들러
+            button_RecipeVision_X_Pos.MouseDown += button_RecipeVision_Axis_MouseDown;
+            button_RecipeVision_X_Neg.MouseDown += button_RecipeVision_Axis_MouseDown;
+            button_RecipeVision_Y_Pos.MouseDown += button_RecipeVision_Axis_MouseDown;
+            button_RecipeVision_Y_Neg.MouseDown += button_RecipeVision_Axis_MouseDown;
+            button_RecipeVision_Z_Pos.MouseDown += button_RecipeVision_Axis_MouseDown;
+            button_RecipeVision_Z_Neg.MouseDown += button_RecipeVision_Axis_MouseDown;
+
+            // 공통 MouseUp 핸들러
+            button_RecipeVision_X_Pos.MouseUp += button_RecipeVision_Axis_MouseUp;
+            button_RecipeVision_X_Neg.MouseUp += button_RecipeVision_Axis_MouseUp;
+            button_RecipeVision_Y_Pos.MouseUp += button_RecipeVision_Axis_MouseUp;
+            button_RecipeVision_Y_Neg.MouseUp += button_RecipeVision_Axis_MouseUp;
+            button_RecipeVision_Z_Pos.MouseUp += button_RecipeVision_Axis_MouseUp;
+            button_RecipeVision_Z_Neg.MouseUp += button_RecipeVision_Axis_MouseUp;
+        }
+
+        private void Motion_Status()
+        {
+            //  Limit
+            if (Equipment.AjinBoard_Opened)
+            {
+                //  Vision
+                if (vision.MC_Func.MC_isLimit_Neg((int)Vision.nAxis.X))
+                {
+                    button_RecipeVision_X_Neg.BackColor = Color.Red;
+                    button_RecipeVision_X_Neg.ForeColor = Color.White;
+                }
+                else
+                {
+                    button_RecipeVision_X_Neg.BackColor = Color.White;
+                    button_RecipeVision_X_Neg.ForeColor = Color.Black;
+                }
+
+                if (vision.MC_Func.MC_isLimit_Pos((int)Vision.nAxis.X))
+                {
+                    button_RecipeVision_X_Pos.BackColor = Color.Red;
+                    button_RecipeVision_X_Pos.ForeColor = Color.White;
+                }
+                else
+                {
+                    button_RecipeVision_X_Pos.BackColor = Color.White;
+                    button_RecipeVision_X_Pos.ForeColor = Color.Black;
+                }
+
+                if (vision.MC_Func.MC_isLimit_Neg((int)Vision.nAxis.Y))
+                {
+                    button_RecipeVision_Y_Neg.BackColor = Color.Red;
+                    button_RecipeVision_Y_Neg.ForeColor = Color.White;
+                }
+                else
+                {
+                    button_RecipeVision_Y_Neg.BackColor = Color.White;
+                    button_RecipeVision_Y_Neg.ForeColor = Color.Black;
+                }
+
+                if (vision.MC_Func.MC_isLimit_Pos((int)Vision.nAxis.Y))
+                {
+                    button_RecipeVision_Y_Pos.BackColor = Color.Red;
+                    button_RecipeVision_Y_Pos.ForeColor = Color.White;
+                }
+                else
+                {
+                    button_RecipeVision_Y_Pos.BackColor = Color.White;
+                    button_RecipeVision_Y_Pos.ForeColor = Color.Black;
+                }
+
+                if (vision.MC_Func.MC_isLimit_Neg((int)Vision.nAxis.Z))
+                {
+                    button_RecipeVision_Z_Neg.BackColor = Color.Red;
+                    button_RecipeVision_Z_Neg.ForeColor = Color.White;
+                }
+                else
+                {
+                    button_RecipeVision_Z_Neg.BackColor = Color.White;
+                    button_RecipeVision_Z_Neg.ForeColor = Color.Black;
+                }
+
+                if (vision.MC_Func.MC_isLimit_Pos((int)Vision.nAxis.Z))
+                {
+                    button_RecipeVision_Z_Pos.BackColor = Color.Red;
+                    button_RecipeVision_Z_Pos.ForeColor = Color.White;
+                }
+                else
+                {
+                    button_RecipeVision_Z_Pos.BackColor = Color.White;
+                    button_RecipeVision_Z_Pos.ForeColor = Color.Black;
+                }
+            }
+        }
+
+        private void button_RecipeVision_Axis_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (!this.radioButton_RecipeVision_JogMove_Continuous.Checked)
+                return;
+
+            if (Equipment.AjinBoard_Opened)
+            {
+                vision.MC_Func.MC_JogStop((int)Vision.nAxis.X);
+                vision.MC_Func.MC_JogStop((int)Vision.nAxis.Y);
+                vision.MC_Func.MC_JogStop((int)Vision.nAxis.Z);
+            }
+        }
+
+        private void button_RecipeVision_Axis_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (sender is Button btn && Equipment.AjinBoard_Opened)
+            {
+                string[] tagParts = btn.Tag?.ToString()?.Split(',');
+                if (tagParts == null || tagParts.Length != 2)
+                    return;
+
+                string axisName = tagParts[0].ToUpper();   // "X", "Y", "Z"
+                double direction = Convert.ToDouble(tagParts[1]);  // +1.0 or -1.0
+
+                int axis = -1;
+                double velocity = 0.0;
+                double accdec = 0.0;
+                double distance = 0.0;
+
+                // 축 번호 결정
+                switch (axisName)
+                {
+                    case "X": axis = (int)Vision.nAxis.X; break;
+                    case "Y": axis = (int)Vision.nAxis.Y; break;
+                    case "Z": axis = (int)Vision.nAxis.Z; break;
+                    default: return;
+                }
+
+                // 속도/가감속 설정
+                if (radioButton_RecipeVision_Move_MoveMode_Fine.Checked)
+                {
+                    velocity = Equipment.stAxisParam[axis].Jog_Speed_Fine;
+                    accdec = Equipment.stAxisParam[axis].Common_Acceleration_Fine;
+                }
+                else
+                {
+                    velocity = Equipment.stAxisParam[axis].Jog_Speed_Coarse;
+                    accdec = Equipment.stAxisParam[axis].Common_Acceleration_Coarse;
+                }
+
+                velocity = Math.Abs(velocity);
+
+                try
+                {
+                    if (radioButton_RecipeVision_JogMove_Continuous.Checked)
+                    {
+                        vision.MC_Func.MC_JogMove(axis, velocity * direction, accdec, accdec);
+                    }
+                    else if (radioButton_RecipeVision_JogMove_Step.Checked)
+                    {
+                        string text = textBox_RecipeVision_JogMove_StepSize.Text;
+                        distance = Math.Abs(Equipment.ToDouble(text));
+                        vision.MC_Func.MC_MoveRelPosition(axis, distance * direction, velocity, accdec, accdec);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(ex);
+                    MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void button_RecipeVision_WorkStage_GetCurrentPos_ToTempPos1_Click(object sender, EventArgs e)
+        {
+            textBox_RecipeVision_WorkStage_TempPos1_StageX.Text = string.Format("{0:0.000}", vision.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X).ToString());
+            textBox_RecipeVision_WorkStage_TempPos1_StageY.Text = string.Format("{0:0.000}", vision.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y).ToString());
+
+            Temp_Position_Save();
+        }
+
+        private void button_RecipeVision_WorkStage_ToTempPos1_Move_Click(object sender, EventArgs e)
+        {
+            //  Temp1 위치로 이동
+            //  현재 Fine Camera Center 위치를 Scanner Center 위치로 이동
+            double lfTargetX = 0.0f;
+            double lfTargetY = 0.0f;
+            double lfVelocity = 0.0f;
+            double lfAccDec = 0.0f;
+
+            // 파일에 저장 해 놓자.
+            double X_Limit_Min = 5.0;
+            double X_Limit_Max = 800.0;
+            double Y_Limit_Min = 5.0;
+            double Y_Limit_Max = 500.0;
+
+
+            if (Equipment.ToDouble(textBox_RecipeVision_WorkStage_TempPos1_StageX.Text) == 0.0 && 
+                Equipment.ToDouble(textBox_RecipeVision_WorkStage_TempPos1_StageY.Text) == 0.0)
+            {
+                var mb1 = new QMC.Common.UI.MessageBoxOk();
+                mb1.ShowDialog("Warning !", "Temp1 위치가 설정되어 있지 않습니다.");
+                return;
+            }
+
+            var mb = new QMC.Common.UI.MessageBoxYesNo();
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Temp1 위치로 이동하시겠습니까?"))
+                return;
+
+            if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || 
+                !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || 
+                !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || 
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || 
+                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
+            {
+                var mb1 = new QMC.Common.UI.MessageBoxOk();
+                mb1.ShowDialog("Warning !", "Stage 가 이동중입니다.");
+                return;
+            }
+
+
+            //Todo: Z축 이동시 Interlock 체크 - 코드 삽입 할것.1!!!
+            ////  StageZ 한계위치 설정되어 있는지 체크
+            //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos <= 0.0)
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이가 설정되어 있지 않습니다.\r\n\r\n(Config -> [17] Interlock  확인)");
+            //    return;
+            //}
+            ////  StageZ 한계위치를 초과하여 이동하는지 체크
+            //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos < laserDrilling.laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.Z])
+            //{
+            //    var mb1 = new MessageBoxOk();
+            //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이를 초과하여 이동하려고 하였습니다.\r\n\r\n[ Cancel ]");
+            //    return;
+            //}
+            ////  맵 데이터를 이원화 할 경우
+            //if (laserDrilling.Config.ParamConfig.ScannerCamera_MapData_Div)
+            //{
+            //    laserDrilling.MapData_Change((int)LaserDrilling.MapDataType.MAPDATASTATUS_SCANNER);
+            //}
+
+            //  Target 위치
+            lfTargetX = Equipment.ToDouble(textBox_RecipeVision_WorkStage_TempPos1_StageX.Text);
+            lfTargetY = Equipment.ToDouble(textBox_RecipeVision_WorkStage_TempPos1_StageY.Text);
+
+            //  소프트웨어 리밋 체크
+            if (lfTargetX < X_Limit_Min || lfTargetX > X_Limit_Max ||
+                lfTargetY < Y_Limit_Min || lfTargetY > Y_Limit_Max)
+            {
+                string msg = $"이동하려는 위치가 소프트웨어 리밋을 벗어났습니다.\n\n" +
+                             $"X 범위: {X_Limit_Min} ~ {X_Limit_Max}, 현재: {lfTargetX}\n" +
+                             $"Y 범위: {Y_Limit_Min} ~ {Y_Limit_Max}, 현재: {lfTargetY}";
+                var mb1 = new QMC.Common.UI.MessageBoxOk();
+                mb1.ShowDialog("Software Limit", msg);
+                return;
+            }
+
+            //  속도 설정
+            if (radioButton_RecipeVision_Move_MoveMode_Fine.Checked)
+            {
+                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+            }
+            else
+            {
+                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+            }
+
+            XyCoordinate xyInterpolatedCoordinate = new XyCoordinate();
+            xyInterpolatedCoordinate.X = lfTargetX;
+            xyInterpolatedCoordinate.Y = lfTargetY;
+
+            workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+
+            int nWait = 0;
+            while (true)
+            {
+                if (workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X)
+                    && workStage.MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, xyInterpolatedCoordinate.X))
+                {
+                    break;
+                }
+                Thread.Sleep(1);
+                nWait++;
+                if (nWait == 1000)
+                {
+                    break;
+                }
+
+            }
+
+            nWait = 0;
+            while (true)
+            {
+                if (workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y)
+                    && workStage.MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y))
+                {
+                    break;
+                }
+                Thread.Sleep(1);
+                nWait++;
+                if (nWait == 1000)
+                {
+                    break;
+                }
+            }
+        }
+
+
+        public void Temp_Position_Save()
+        {
+            string strTemp = "";
+
+            string strFIle = "";
+            strFIle = ConfigManager.GetTeachingDataPath() + "\\RecipeVision_TempPosition.ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                File.Create(strFIle);
+
+                MessageBox.Show("RecipeVision Temp Position 파일을 생성하였습니다. 다시 시도하십시오.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //  Temp Position 저장
+
+            //  Temp1 Stage X
+            NativeMethods.WritePrivateProfileString("TempPos1", "StageX", textBox_RecipeVision_WorkStage_TempPos1_StageX.Text.ToString(), strFIle);
+            //  Temp1 Stage Y
+            NativeMethods.WritePrivateProfileString("TempPos1", "StageY", textBox_RecipeVision_WorkStage_TempPos1_StageY.Text.ToString(), strFIle);
+
+        }
+
+        public bool Temp_Position_Load()
+        {
+            string strTemp = "";
+
+            bool m_bRet = true;
+            string strFIle = "";
+            StringBuilder temp = new StringBuilder(255);
+            strFIle = ConfigManager.GetTeachingDataPath() + "\\RecipeVision_TempPosition.ini";
+
+            if (File.Exists(strFIle) == false)
+            {
+                MessageBox.Show("RecipeVision Temp Position 파일이 없습니다.\r\n\r\n[Default 값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return false;
+            }
+
+            //  Temp Position 데이터 로드
+            //  Temp1 Stage X
+            NativeMethods.GetPrivateProfileString("TempPos1", "StageX", "0", temp, 255, strFIle);
+            textBox_RecipeVision_WorkStage_TempPos1_StageX.Text = temp.ToString();
+            //  Temp1 Stage Y
+            NativeMethods.GetPrivateProfileString("TempPos1", "StageY", "0", temp, 255, strFIle);
+            textBox_RecipeVision_WorkStage_TempPos1_StageY.Text = temp.ToString();
+
+            return m_bRet;
+        }
+
     }
 }
