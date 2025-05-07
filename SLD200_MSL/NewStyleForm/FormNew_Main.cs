@@ -974,17 +974,6 @@ namespace SLD200_MSL
                 }
             }
 
-            //workStage에서 진행.
-            //workStage.UpdateLaserStatus();
-            if (workStage.m_nLaser_PulseMode != 1)
-            {
-                //알람 발생 할것.!
-                workStage.AlarmPost(WorkStage.AlarmKey.LaserFail_External_Mode);
-
-                //var mb = new MessageBoxOk();
-                //mb.ShowDialog("Information !", "레이저 External 모드가 아닙니다.\r\n\r\n [[External]] 모드로 변경 후 다시 시도 바랍니다.");
-                //return;
-            }
 
             if (Equipment.AutoRunStatus &&
                 Equipment.CycleStop &&

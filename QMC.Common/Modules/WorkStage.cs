@@ -7828,15 +7828,14 @@ namespace QMC.Common.Modules
         }
         public void UpdateLaserStatus()
         {
-            try
-            {
-                m_bLaserBusy = rtc.CtlGetStatus(RtcStatus.Busy);
-            }
-            catch (Exception ex)
-            {
-                Log.Write(ex);
-                //m_bLaserBusy = false;
-            }
+            //try
+            //{
+            //    m_bLaserBusy = rtc.CtlGetStatus(RtcStatus.Busy);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Write(ex);
+            //}
         }
 
         private async void Timer_MainWork_Tick(object sender, ElapsedEventArgs e)
@@ -13691,7 +13690,7 @@ namespace QMC.Common.Modules
                     int retryCount = 1;
                     
                     ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width, retryCount);
-                    jigAligner_HighRes.Camera.StartLive();
+                    //jigAligner_HighRes.Camera.StartLive();
                     timer_VisionAlign.Enabled = true;
 
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_fromVision_ResultCheck;
