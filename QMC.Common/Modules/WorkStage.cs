@@ -13713,10 +13713,10 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry 횟수 초과");
 
-                            //  알람 정지 (LED Bar - Red Blink)
-                            Equipment.MachineStop_byAlarm = true;
+                            ////  알람 정지 (LED Bar - Red Blink)
+                            //Equipment.MachineStop_byAlarm = true;
 
-                            timer_VisionAlign.Enabled = false;
+                            //timer_VisionAlign.Enabled = false;
 
                             m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
                         }
@@ -13785,7 +13785,6 @@ namespace QMC.Common.Modules
                             m_bSocketAlign_OK = false;
                         }
                     }
-
 
                     //if ((m_nLaserDrilling_MainStep != (int)LaserDrilling_Step.None) ||
                     //    (m_nAlignVerification_MainStep != (int)AlignVerification_Step.None))                            //  자동운전중이거나, 얼라인 Verification Cyc 일 경우, Cycle 완료
@@ -18303,6 +18302,11 @@ namespace QMC.Common.Modules
                                 //m_dALIGN_FACTOR_Theta += Equipment.m_dTest_SocketAlign_Theta;
 
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketData_RotAndOffset_Move;
+                            }
+                            else
+                            {
+
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
                             }
                         
                         }
