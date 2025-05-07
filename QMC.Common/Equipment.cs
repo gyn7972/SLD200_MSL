@@ -36,6 +36,9 @@ using QMC.Core;
 using static QMC.Common.Modules.Loader;
 using QMC.Common.Vision.Tools;
 using static System.Collections.Specialized.BitVector32;
+using System.Drawing;
+using QMC.Common.Vision;
+using Cognex.VisionPro;
 
 
 
@@ -89,6 +92,34 @@ namespace QMC.Common
                 //Debug.WriteLine(ex.Message);
             }
             return nValue;
+        }
+
+        public static bool ToBoolean(string str)
+        {
+            bool bValue = false;
+            try
+            {
+                bool.TryParse(str, out bValue);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+            return bValue;
+        }
+
+        public static float ToFloat(string str)
+        {
+            float fValue = 0.0f;
+            try
+            {
+                float.TryParse(str, out fValue);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+            return fValue;
         }
 
         private static uint m_nLastDioUID;
@@ -438,6 +469,136 @@ namespace QMC.Common
             public PointD PreAlignPos2;
         }
         public static stLayerRecipeParameter[] stLayerRecipeSet = new stLayerRecipeParameter[System.Enum.GetValues(typeof(LayerList)).Length];
+
+        //  Recipe 파라미터 - PreAlign 
+        public struct VisionRecipeData
+        {
+            public PatternMatchingParameters PatternMatching;
+            public System.Drawing.Point TrainRoiStartLocation;
+            public System.Drawing.Point TrainRoiEndLocation;
+            public System.Drawing.Point InspectRoiStartLocation;
+            public System.Drawing.Point InspectRoiEndLocation;
+            public int IlluminationIR;
+            public double TempPos1_X;
+            public double TempPos1_Y;
+            public string TrainImagePath;
+
+            public void SaveToIni(string path)
+            {
+                NativeMethods.WritePrivateProfileString("PatternMatching", "MinScore", PatternMatching.MinScore.ToString(), path);
+                NativeMethods.WritePrivateProfileString("PatternMatching", "MaxInstance", PatternMatching.MaxInstance.ToString(), path);
+                NativeMethods.WritePrivateProfileString("PatternMatching", "MaxTolerance", PatternMatching.MaxTolerance.ToString(), path);
+                NativeMethods.WritePrivateProfileString("PatternMatching", "DuplicateChecked", PatternMatching.DuplicateChecked.ToString(), path);
+                NativeMethods.WritePrivateProfileString("PatternMatching", "UseMaskImage", PatternMatching.UseMaskImage.ToString(), path);
+
+                NativeMethods.WritePrivateProfileString("TrainROI", "StartX", TrainRoiStartLocation.X.ToString(), path);
+                NativeMethods.WritePrivateProfileString("TrainROI", "StartY", TrainRoiStartLocation.Y.ToString(), path);
+                NativeMethods.WritePrivateProfileString("TrainROI", "EndX", TrainRoiEndLocation.X.ToString(), path);
+                NativeMethods.WritePrivateProfileString("TrainROI", "EndY", TrainRoiEndLocation.Y.ToString(), path);
+
+                NativeMethods.WritePrivateProfileString("InspectROI", "StartX", InspectRoiStartLocation.X.ToString(), path);
+                NativeMethods.WritePrivateProfileString("InspectROI", "StartY", InspectRoiStartLocation.Y.ToString(), path);
+                NativeMethods.WritePrivateProfileString("InspectROI", "EndX", InspectRoiEndLocation.X.ToString(), path);
+                NativeMethods.WritePrivateProfileString("InspectROI", "EndY", InspectRoiEndLocation.Y.ToString(), path);
+
+                NativeMethods.WritePrivateProfileString("Illumination", "IR", IlluminationIR.ToString(), path);
+
+                string folderName = Path.GetFileNameWithoutExtension(path);
+                string folderPath = Path.Combine(Path.GetDirectoryName(path), folderName);
+                Directory.CreateDirectory(folderPath); // 없으면 생성
+                string bmpPath = Path.Combine(folderPath, "PreAlign.bmp");  // BMP 저장
+                TrainImagePath = bmpPath;
+                if (!string.IsNullOrWhiteSpace(TrainImagePath))
+                    NativeMethods.WritePrivateProfileString("TrainImage", "Path", TrainImagePath, path);
+            }
+
+            public static VisionRecipeData LoadFromIni(string path)
+            {
+                VisionRecipeData data = new VisionRecipeData();
+                data.PatternMatching = new PatternMatchingParameters();
+                StringBuilder sb = new StringBuilder(255);
+
+                try
+                {
+                    NativeMethods.GetPrivateProfileString("PatternMatching", "MinScore", "0.7", sb, sb.Capacity, path);
+                    data.PatternMatching.MinScore = Equipment.ToDouble(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("PatternMatching", "MaxInstance", "1", sb, sb.Capacity, path);
+                    data.PatternMatching.MaxInstance = Equipment.ToInt(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("PatternMatching", "MaxTolerance", "45", sb, sb.Capacity, path);
+                    data.PatternMatching.MaxTolerance = Equipment.ToDouble(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("PatternMatching", "DuplicateChecked", "False", sb, sb.Capacity, path);
+                    data.PatternMatching.DuplicateChecked = Equipment.ToBoolean(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("PatternMatching", "UseMaskImage", "False", sb, sb.Capacity, path);
+                    data.PatternMatching.UseMaskImage = Equipment.ToBoolean(sb.ToString());
+
+                    // ROI
+                    NativeMethods.GetPrivateProfileString("TrainROI", "StartX", "0", sb, sb.Capacity, path); 
+                    data.TrainRoiStartLocation.X = Equipment.ToInt(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("TrainROI", "StartY", "0", sb, sb.Capacity, path); 
+                    data.TrainRoiStartLocation.Y = Equipment.ToInt(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("TrainROI", "EndX", "0", sb, sb.Capacity, path); 
+                    data.TrainRoiEndLocation.X = Equipment.ToInt(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("TrainROI", "EndY", "0", sb, sb.Capacity, path); 
+                    data.TrainRoiEndLocation.Y = Equipment.ToInt(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("InspectROI", "StartX", "0", sb, sb.Capacity, path); 
+                    data.InspectRoiStartLocation.X = Equipment.ToInt(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("InspectROI", "StartY", "0", sb, sb.Capacity, path); 
+                    data.InspectRoiStartLocation.Y = Equipment.ToInt(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("InspectROI", "EndX", "0", sb, sb.Capacity, path); 
+                    data.InspectRoiEndLocation.X = Equipment.ToInt(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("InspectROI", "EndY", "0", sb, sb.Capacity, path); 
+                    data.InspectRoiEndLocation.Y = Equipment.ToInt(sb.ToString());
+
+                    // 기타
+                    NativeMethods.GetPrivateProfileString("Illumination", "IR", "3500", sb, sb.Capacity, path);
+                    data.IlluminationIR = Equipment.ToInt(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("TrainImage", "Path", "", sb, sb.Capacity, path);
+                    data.TrainImagePath = sb.ToString();
+
+                    if(data.TrainImagePath == "")
+                    {
+                        string folderName = Path.GetFileNameWithoutExtension(path);
+                        string folderPath = Path.Combine(Path.GetDirectoryName(path), folderName);
+                        Directory.CreateDirectory(folderPath); // 없으면 생성
+                        string bmpPath = Path.Combine(folderPath, "PreAlign.bmp");  // BMP 저장
+                        data.TrainImagePath = bmpPath;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(ex);
+                }
+
+                return data;
+            }
+
+            public void SaveTrainImage(VisionImage image)
+            {
+                if (image == null || string.IsNullOrEmpty(TrainImagePath))
+                    return;
+
+                image.Save(TrainImagePath, QMC.Common.Vision.VisionImage.FileFilter.bmp);
+            }
+
+            public VisionImage LoadTrainImage()
+            {
+                if (!string.IsNullOrEmpty(TrainImagePath) && File.Exists(TrainImagePath))
+                {
+                    VisionImage img = new VisionImage();
+                    img.Load(TrainImagePath, VisionImage.FileFilter.bmp);
+                    return img;
+                }
+                return null;
+            }
+        }
+        public static VisionRecipeData stVisionRecipeSet = new VisionRecipeData();
 
         // Laser Process Result struct
         public struct stProcessResultStatus

@@ -369,6 +369,7 @@ namespace QMC.Common.Modules
         public bool m_bIsFirstAlign = true; // 첫번째 얼라인
         public bool m_bAlignCompleted;                                          //  얼라인 완료 되었는지?
         public bool m_bPreAlignCompleted;                                          //  얼라인 완료 되었는지?
+        public int m_nPreAlignRetryCount;
 
         public st4PointPosition_Data[] m_st2PointPosition_InspectedPos;         //  2-Point 의 측정된 위치 데이터
         public st4PointAlign_Result m_st2PointAlign_Result;                     //  Align 데이터
@@ -3666,8 +3667,9 @@ namespace QMC.Common.Modules
             Damper_Close,                                                                   //  Damper Close
             Damper_Close_Check,                                                             //  Damper Close 확인
 
-
+            Fail,
             Complete                                                                        //  완료
+
         }
 
         public double m_dMy1stMarkVisionPos_X { set; get; }
@@ -8841,6 +8843,13 @@ namespace QMC.Common.Modules
                         try
                         {
                             //Todo: PreAlign 확인!!!
+                            //Recipe Data 전달하기!
+                            jigAligner_LowRes.Recipe.PatternMatchingParameter = stVisionRecipeSet.PatternMatching;
+                            jigAligner_LowRes.Recipe.InspectRoiStartLocation = stVisionRecipeSet.InspectRoiStartLocation;
+                            jigAligner_LowRes.Recipe.InspectRoiEndLocation = stVisionRecipeSet.InspectRoiEndLocation;
+                            jigAligner_LowRes.Recipe.TrainRoiStartLocation = stVisionRecipeSet.TrainRoiStartLocation;
+                            jigAligner_LowRes.Recipe.TrainRoiEndLocation = stVisionRecipeSet.TrainRoiEndLocation;
+
                             jigAligner_LowRes.Work();
                             Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "Work() 완료");
                         }
@@ -13250,7 +13259,12 @@ namespace QMC.Common.Modules
                             //  소켓 얼라인 결과가 NG 이면 NG 로 (설정 개수 이상 NG 일 경우에)
                             //m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.OK;
 
-                            if (m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount)
+                            //m_bFindLowerAlignMark_OK = false;
+                            //m_bPreAlignCompleted = false;
+
+                            if ((m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount) ||
+                                !m_bFindLowerAlignMark_OK ||
+                                !m_bPreAlignCompleted)
                             {
                                 m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.NG;
                             }
@@ -17896,7 +17910,7 @@ namespace QMC.Common.Modules
                         }
                         else
                         {
-
+                            m_nPreAlignRetryCount = 0; // PreAlign 처음 시작 시 변수 초기화 후 진행.
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
                         }
 
@@ -17930,7 +17944,6 @@ namespace QMC.Common.Modules
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 3);           //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
 
                     //Align Mark Pos - 도면에서 추출하여 전달.
-
                     // 소켓 1번과 동일한 얼라인 좌표로 얼라인 하기 위하여 아래와 같이 수정.
                     //stDividedRegion_GroupData[] inputGroupData = m_stDividedRegion_GroupData;
                     //PointD leftPoint, rightPoint;
@@ -17941,7 +17954,6 @@ namespace QMC.Common.Modules
                     //m_nDrillingWork_Group_Count 이거 0이여야 한다.
                     try
                     {
-
                         Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[0].dFiducialPos[2].X;
                         Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[0].dFiducialPos[2].Y;
                         Equipment.stLayerRecipeSet[0].PreAlignPos2.X = m_stDividedRegion_GroupData[0].dFiducialPos[3].X;
@@ -17949,9 +17961,8 @@ namespace QMC.Common.Modules
                     }
                     catch(Exception ex)
                     {
-
+                        Log.Write(ex);
                     }
-                    
 
                     //너무 Data를 빨리 던져서 문제가 아닌지 Test.
                     Thread.Sleep(100);
@@ -17975,49 +17986,79 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align 완료");
 
-
                             double dfx = jigAligner_LowRes.FirstPosition.X;
                             double dfy = jigAligner_LowRes.FirstPosition.Y;
-                            double dft = 0; //jigAligner_LowRes.GetJigAlignResult(); //각도 던지는거 재 확인하자. // 맨 처음에는 각도 안했는데.
-                            //double dfx = 0;
-                            //double dfy = 0;
-                            //double dft = 0;
-
-                            dfx = jigAligner_LowRes.FirstPosition.X;
-                            dfy = jigAligner_LowRes.FirstPosition.Y;
-                            dft = jigAligner_LowRes.GetJigAlignResult();
-
-                            //dfx = 0;
-                            dfy = jigAligner_LowRes.FirstPosition.Y;
+                            double dft = jigAligner_LowRes.GetJigAlignResult();
                             dft = -dft / 180 * Math.PI;
+
                             XyzCoordinate positionFirst = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
                             positionFirst = this.ConvertPointFineCam(positionFirst);
                             xyCoordinateAlignPositionOrgLast= new XyCoordinate( positionFirst.X, positionFirst.Y);
 
-                            positionFirst.X -= dfx;
-                            positionFirst.Y += dfy;
+                            //무조건 +,-
+                            positionFirst.X += dfx;
+                            positionFirst.Y -= dfy;
 
                             xyCoordinateAlignPositionLast = new XyCoordinate(positionFirst.X, positionFirst.Y);
-                           
                             m_st4PointAlign_Result_LastSuccess.dRotationAngle = dft;
 
                             //Log Data 남기자.
-                            //m_strTemp = string.Format("");
                             m_strTemp = string.Format("PreAlign좌표, X : {0:0.000}, Y : {1:0.000}", positionFirst.X, positionFirst.Y);
                             Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
+
+                            // 보정값이 기준 이상이면 NG 처리
+                            double dInterlockOffsetX = 5.0;
+                            double dInterlockOffsetY = 5.0;
+                            double dInterlockOffsetT = 8.0; // 각도 값으로 입력하여 라디안으로 계산.
+                            if (Math.Abs(dfx) > dInterlockOffsetX || 
+                                Math.Abs(dfy) > dInterlockOffsetY || 
+                                Math.Abs(dft) > (dInterlockOffsetT * Math.PI / 180.0))
+                            {
+                                m_bFindLowerAlignMark_OK = false;
+                                m_bPreAlignCompleted = false;
+                                m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
+
+                                m_strTemp = string.Format("PreAlign InterLoack Fail!!!");
+                                Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                                break;
+                                //알람이 아니라 NG 시컨스로 진행하자.
+                                //return AlarmPost(AlarmKey.PreAlignOffsetTooLarge);
+                            }
+
+                            m_nPreAlignRetryCount = 0; // 성공 시 리트라이 카운트 초기화
 
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Correction;
                         }
                         else
                         {
-                            m_bPreAlignCompleted = false;
-                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
-                            //  Pre Align NG 이면, Alarm 발생
-                            //return AlarmPost(AlarmKey.PreAlignFail);
+                            m_nPreAlignRetryCount++;
+                            if (m_nPreAlignRetryCount >= 3)
+                            {
+                                m_bPreAlignCompleted = false;
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
+                               
+                            }
+                            else
+                            {
+                                
+
+                                m_strTemp = string.Format("PreAlign Retry Fail!!!");
+                                Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
+
+                                m_bFindLowerAlignMark_OK = false;
+                                m_bPreAlignCompleted = false;
+                                m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                                //return AlarmPost(AlarmKey.PreAlignRetryOver);
+                                //return AlarmPost(AlarmKey.PreAlignFail);
+                            }
                         }
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000000)               //  60 sec * 5
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > (60000*5))               //  60 sec * 5
                     {
+                        m_strTemp = string.Format("Pre Align 시간 초과.");
+                        Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
                         //Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align 시간 초과.");
                         m_bPreAlignCompleted = false;
                         return AlarmPost(AlarmKey.PreAlignFail);
@@ -18040,7 +18081,7 @@ namespace QMC.Common.Modules
 
                     m_bPreAlignCompleted = true;
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
-                    //None으로 하고 Test 해야하고...
+                    
                     break;
 
 
@@ -21257,6 +21298,16 @@ namespace QMC.Common.Modules
                     break;
 
 
+                    // 상 위 시컨스 동작 중 NG 발생 시 아래 fail 조건부터 시컨스 진행함.
+                case (int)LaserDrilling_Step.Fail:
+
+                    m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff2;
+
+                    break;
+
+
                 case (int)LaserDrilling_Step.LaserOff2:                                              //  레이저 Off
                                                                                                      //  Laser Trigger Change (RTC6 Mode)
                                                                                                      //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
@@ -21301,6 +21352,7 @@ namespace QMC.Common.Modules
                     //}
                     break;
 
+                
 
                 case (int)LaserDrilling_Step.StageXY_MoveUnloadingPos:                              //  XY 축 Unloading 위치로 이동
 
@@ -21328,7 +21380,6 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DustCollector_Off:                                     //  집진기 Off
 
-                   
                     //workStageParameter.DO_DustCollector_OnOff(false);
 
                     Log.Write("SLD-200", "Auto Run", "Unloading 위치 이동과 동시에 집진기 Off 시도");
@@ -21369,7 +21420,6 @@ namespace QMC.Common.Modules
                     //    MessageBox.Show("Dust Collector Off 실패", "Error");
                     //}
                     break;
-
 
                 case (int)LaserDrilling_Step.Complete:
                     Log.Write("SLD-200", "Auto Run", "전체 가공 완료");

@@ -3793,7 +3793,6 @@ namespace SLD200_MSL
             Equipment.Scanner_Calibration_Illumination_channel_02_Value = workStage.Config.ListIlluminationChannel[1].Value; //IR
 
             //workStage.scannerCompensator.IlluminationData
-
             //Equipment.Scanner_Calibration_AngleTolerance = Equipment.ToDouble(basetextBox_Setup_ScannerCal_AngleTolerance.Text);
             //Equipment.Scanner_Calibration_MaxInstance = Equipment.ToDouble(basetextBox_Setup_ScannerCal_MaxInstance.Text);
             //Equipment.Scanner_Calibration_MinScore = Equipment.ToDouble(basetextBox_Setup_ScannerCal_MinScore.Text);
