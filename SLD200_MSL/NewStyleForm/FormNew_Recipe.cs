@@ -1407,7 +1407,7 @@ namespace SLD200_MSL
             //  Recipe 창의 데이터를 Equipment Recipe Set에 적용
 
             //  Layer Index 확인
-            int m_nLayerIndex = -1;
+            int m_nLayerIndex = -1; 
             int m_nIndex = listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex;
             string m_strLayerName = "";
             
@@ -1423,6 +1423,13 @@ namespace SLD200_MSL
             else
             {
                 m_strLayerName = listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items[m_nIndex].ToString();
+            }
+
+            //  도면 확인
+            if (richTextBox_Recipe_TabRecipe_DrawingFile.Text.Length <= 0)
+            {
+                MessageBox.Show("도면 파일이 없습니다.", "Information!!"); 
+                return;
             }
 
             //  Layer Index 확인
@@ -1513,6 +1520,7 @@ namespace SLD200_MSL
 
             //  Drawing File
             Equipment.stLayerRecipeSet[m_nLayerIndex].DrawingFile = richTextBox_Recipe_TabRecipe_DrawingFile.Text;                  //  Drawing File 은 0번 Layer 에만 저장한다.
+            Equipment.RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
 
             //  Laser Parameter
             Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_PulseWidth = textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text) : 0;
@@ -1775,7 +1783,7 @@ namespace SLD200_MSL
                 //Equipment.EqpSiriusViewer_Origin.Document = m_formSiriusEditor.SiriusEditor.Document;
 
                 //  자동운전 중 모듈 가공 시 이 위치의 도면파일을 로드한다.
-                RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
+                Equipment.RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
 
                 workStage.DrillingData_Parsing();
 
