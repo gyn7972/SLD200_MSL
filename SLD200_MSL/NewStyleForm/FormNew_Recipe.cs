@@ -1922,8 +1922,8 @@ namespace SLD200_MSL
             comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_HoleProcessingType.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialAlignType.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialMarkType.ToString());
-            checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Checked = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_HoleSortByDistance_Use;
-            textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_HoleSortingDistance.ToString();
+            checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Checked = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortByDistance_Use;
+            textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortingDistance.ToString();
 
             //  process Options
             checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부
