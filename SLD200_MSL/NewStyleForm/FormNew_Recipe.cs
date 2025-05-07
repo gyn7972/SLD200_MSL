@@ -1213,6 +1213,10 @@ namespace SLD200_MSL
                 return;
             }
 
+            //PreAlign Param
+
+
+
             var iniData = new Dictionary<string, Dictionary<string, string>>();
             int layerCount = (int)System.Enum.GetValues(typeof(LayerList)).Length;
 
@@ -1384,6 +1388,10 @@ namespace SLD200_MSL
                 //Recipe_Data_Save(fileName);
                 Recipe_Data_Save_Refactory(fileName);
                 Equipment.Current_Recipe = fileName;
+
+                // Vision Data 저장
+                //visionData.SaveTrainImage(Owner.TrainImage);
+                stVisionRecipeSet.SaveToIni(fileName);
 
                 MessageBox.Show("Recipe Data를 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -1604,8 +1612,9 @@ namespace SLD200_MSL
 
         private void button_Recipe_Open_Click(object sender, EventArgs e)
         {
-            string fileName;
-
+            string filePath = "";
+            string fileName = "";
+            
             if (Equipment.EqpSiriusViewer == null)
             {
                 MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
@@ -1634,6 +1643,7 @@ namespace SLD200_MSL
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
+                //filePath = openFileDialog.filePath;
                 fileName = openFileDialog.FileName;
 
                 //  Recipe Data 로드
@@ -1645,9 +1655,16 @@ namespace SLD200_MSL
                 //  Recipe 명 표시
                 label_Recipe_FileName.Text = System.IO.Path.GetFileName(fileName);
 
+                // Recipe Vision Load
+                string iniPath = fileName;  //ConfigManager.GetRecipeDataPath() + "\\RecipeVisionData.ini";
+                stVisionRecipeSet = VisionRecipeData.LoadFromIni(iniPath);
+                if (workStage.jigAligner_LowRes != null)
+                {
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage = stVisionRecipeSet.LoadTrainImage(); //Bitmap.FromFile(m_strFile);
+                    workStage.jigAligner_LowRes.TrainImage = stVisionRecipeSet.LoadTrainImage(); //이거 사용중.
+                }
 
                 //  Recipe 창에 데이터 표시
-
                 //  Drawing File
                 richTextBox_Recipe_TabRecipe_DrawingFile.Text = Equipment.stLayerRecipeSet[0].DrawingFile;
 
