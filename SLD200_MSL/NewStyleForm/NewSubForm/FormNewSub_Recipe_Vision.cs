@@ -829,6 +829,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             Equipment.stVisionRecipeSet.InspectRoiStartLocation = RoiInspect.Parameter.StartLocation;
             Equipment.stVisionRecipeSet.InspectRoiEndLocation = RoiInspect.Parameter.EndLocation;
             Equipment.stVisionRecipeSet.IlluminationIR = hScrollBar_RecipeVision_Illuminator.Value;
+            //Equipment.stVisionRecipeSet.TrainImagePath = Equipment.stVisionRecipeSet.TrainImagePath;
             Equipment.stVisionRecipeSet.SaveTrainImage(pictureBox_RecipeVision_TrainImage.Image);
 
             Equipment.stVisionRecipeSet.SaveToIni(Equipment.Current_Recipe);

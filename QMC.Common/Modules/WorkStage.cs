@@ -18243,7 +18243,7 @@ namespace QMC.Common.Modules
                         else
                         {
                             m_nPreAlignRetryCount++;
-                            if (m_nPreAlignRetryCount >= 3)
+                            if (m_nPreAlignRetryCount < 3)
                             {
                                 m_bPreAlignCompleted = false;
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
@@ -18251,8 +18251,6 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-                                
-
                                 m_strTemp = string.Format("PreAlign Retry Fail!!!");
                                 Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
 
@@ -18260,8 +18258,6 @@ namespace QMC.Common.Modules
                                 m_bPreAlignCompleted = false;
                                 m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
-                                //return AlarmPost(AlarmKey.PreAlignRetryOver);
-                                //return AlarmPost(AlarmKey.PreAlignFail);
                             }
                         }
                     }
