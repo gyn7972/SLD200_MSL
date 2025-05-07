@@ -209,25 +209,28 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             if (PatternMatchingParameter != null)
             {
-                basetextBox_RecipeVision_AngleTolerance.Text = Equipment.stVisionRecipeSet.PatternMatching.MaxTolerance.ToString();
-                basetextBox_RecipeVision_MaxInstance.Text = Equipment.stVisionRecipeSet.PatternMatching.MaxInstance.ToString();
-                basetextBox_RecipeVision_MinScore.Text = Equipment.stVisionRecipeSet.PatternMatching.MinScore.ToString();
-                baseToggleButton_RecipeVision_DuplicateCheck.UpdateToggleStatus(Equipment.stVisionRecipeSet.PatternMatching.DuplicateChecked);
-                baseToggleButton_RecipeVision_UseMaskImage.UpdateToggleStatus(Equipment.stVisionRecipeSet.PatternMatching.UseMaskImage);
-                if (Equipment.stVisionRecipeSet.LoadTrainImage().GetImage() != null)
+                if(Equipment.stVisionRecipeSet.PatternMatching != null)
                 {
-                    pictureBox_RecipeVision_TrainImage.Image = Equipment.stVisionRecipeSet.LoadTrainImage().GetImage();
+                    basetextBox_RecipeVision_AngleTolerance.Text = Equipment.stVisionRecipeSet.PatternMatching.MaxTolerance.ToString();
+                    basetextBox_RecipeVision_MaxInstance.Text = Equipment.stVisionRecipeSet.PatternMatching.MaxInstance.ToString();
+                    basetextBox_RecipeVision_MinScore.Text = Equipment.stVisionRecipeSet.PatternMatching.MinScore.ToString();
+                    baseToggleButton_RecipeVision_DuplicateCheck.UpdateToggleStatus(Equipment.stVisionRecipeSet.PatternMatching.DuplicateChecked);
+                    baseToggleButton_RecipeVision_UseMaskImage.UpdateToggleStatus(Equipment.stVisionRecipeSet.PatternMatching.UseMaskImage);
+                    if (Equipment.stVisionRecipeSet.LoadTrainImage().GetImage() != null)
+                    {
+                        pictureBox_RecipeVision_TrainImage.Image = Equipment.stVisionRecipeSet.LoadTrainImage().GetImage();
+                    }
+
+                    PatternMatchingParameter.MaxTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text);
+                    PatternMatchingParameter.MaxInstance = Equipment.ToInt(basetextBox_RecipeVision_MaxInstance.Text);
+                    PatternMatchingParameter.MinTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text) * -1;
+                    PatternMatchingParameter.MinScore = Equipment.ToDouble(basetextBox_RecipeVision_MinScore.Text);
+                    PatternMatchingParameter.DuplicateChecked = baseToggleButton_RecipeVision_DuplicateCheck.GetButtonStatus();
+                    PatternMatchingParameter.UseMaskImage = baseToggleButton_RecipeVision_UseMaskImage.GetButtonStatus();
+                    PatternMatchingParameter.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
+                    Owner.Recipe.PatternMatchingParameter = PatternMatchingParameter;
                 }
                 
-
-                PatternMatchingParameter.MaxTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text);
-                PatternMatchingParameter.MaxInstance = Equipment.ToInt(basetextBox_RecipeVision_MaxInstance.Text);
-                PatternMatchingParameter.MinTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text) * -1;
-                PatternMatchingParameter.MinScore = Equipment.ToDouble(basetextBox_RecipeVision_MinScore.Text);
-                PatternMatchingParameter.DuplicateChecked = baseToggleButton_RecipeVision_DuplicateCheck.GetButtonStatus();
-                PatternMatchingParameter.UseMaskImage = baseToggleButton_RecipeVision_UseMaskImage.GetButtonStatus();
-                PatternMatchingParameter.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
-                Owner.Recipe.PatternMatchingParameter = PatternMatchingParameter;
 
                 RoiTrain.Parameter.StartLocation = Equipment.stVisionRecipeSet.TrainRoiStartLocation;
                 RoiTrain.Parameter.EndLocation = Equipment.stVisionRecipeSet.TrainRoiEndLocation;
