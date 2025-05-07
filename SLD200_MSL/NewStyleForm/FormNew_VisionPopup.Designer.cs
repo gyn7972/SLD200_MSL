@@ -1927,6 +1927,7 @@ namespace SLD200_MSL
         private BaseLabel baseLabelMax_IR;
         private BaseLabel baseLabelMin_IR;
         private HScrollBar hScrollBarIlluminator_IR;
+        private HScrollBar hScrollBarIlluminator_Red;
         private GroupBox groupBox19;
         private GroupBox groupBox20;
         private Button button_KeypadCall_VisionPopup_JogMove_StepSize;
@@ -2012,7 +2013,6 @@ namespace SLD200_MSL
         private BaseLabel baseLabel_IR;
         private BaseLabel baseLabelMax_Red;
         private BaseLabel baseLabelMin_Red;
-        private HScrollBar hScrollBarIlluminator_Red;
         private TextBox textBox_IlluminationValue_Red;
     }
 }
