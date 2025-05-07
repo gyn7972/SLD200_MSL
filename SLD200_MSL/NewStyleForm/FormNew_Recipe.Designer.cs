@@ -297,6 +297,10 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX = new System.Windows.Forms.TextBox();
+            this.label76 = new System.Windows.Forms.Label();
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY = new System.Windows.Forms.TextBox();
+            this.label85 = new System.Windows.Forms.Label();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox_Recipe_TabRecipe_PreAlignPos.SuspendLayout();
@@ -1041,7 +1045,7 @@
             this.groupBox11.Controls.Add(this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter);
             this.groupBox11.Controls.Add(this.label42);
             this.groupBox11.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox11.Location = new System.Drawing.Point(694, 434);
+            this.groupBox11.Location = new System.Drawing.Point(694, 526);
             this.groupBox11.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox11.Name = "groupBox11";
             this.groupBox11.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -1294,7 +1298,7 @@
             this.label35.Name = "label35";
             this.label35.Size = new System.Drawing.Size(153, 24);
             this.label35.TabIndex = 24;
-            this.label35.Text = "Module Height (mm) :";
+            this.label35.Text = "Module Y (mm) :";
             this.label35.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // button9
@@ -1326,11 +1330,15 @@
             this.label34.Name = "label34";
             this.label34.Size = new System.Drawing.Size(153, 24);
             this.label34.TabIndex = 21;
-            this.label34.Text = "Module Width (mm) :";
+            this.label34.Text = "Module X (mm) :";
             this.label34.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // groupBox9
             // 
+            this.groupBox9.Controls.Add(this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY);
+            this.groupBox9.Controls.Add(this.label85);
+            this.groupBox9.Controls.Add(this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX);
+            this.groupBox9.Controls.Add(this.label76);
             this.groupBox9.Controls.Add(this.checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck);
             this.groupBox9.Controls.Add(this.checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign);
             this.groupBox9.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -1338,7 +1346,7 @@
             this.groupBox9.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox9.Size = new System.Drawing.Size(231, 87);
+            this.groupBox9.Size = new System.Drawing.Size(231, 176);
             this.groupBox9.TabIndex = 87;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = " Process Options ";
@@ -1358,7 +1366,7 @@
             // 
             this.checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.AutoSize = true;
             this.checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Location = new System.Drawing.Point(17, 55);
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Location = new System.Drawing.Point(17, 144);
             this.checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Name = "checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign";
             this.checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Size = new System.Drawing.Size(101, 21);
             this.checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.TabIndex = 60;
@@ -3653,6 +3661,48 @@
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
             // 
+            // textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX
+            // 
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Location = new System.Drawing.Point(155, 57);
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Name = "textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX";
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Size = new System.Drawing.Size(45, 24);
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.TabIndex = 63;
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Text = "0.0";
+            // 
+            // label76
+            // 
+            this.label76.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label76.Location = new System.Drawing.Point(32, 50);
+            this.label76.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label76.Name = "label76";
+            this.label76.Size = new System.Drawing.Size(121, 37);
+            this.label76.TabIndex = 62;
+            this.label76.Text = "Height Check Pos. Offset X (mm) :";
+            this.label76.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY
+            // 
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Location = new System.Drawing.Point(155, 97);
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Name = "textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY";
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Size = new System.Drawing.Size(45, 24);
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.TabIndex = 65;
+            this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Text = "0.0";
+            // 
+            // label85
+            // 
+            this.label85.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label85.Location = new System.Drawing.Point(32, 90);
+            this.label85.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label85.Name = "label85";
+            this.label85.Size = new System.Drawing.Size(121, 37);
+            this.label85.TabIndex = 64;
+            this.label85.Text = "Height Check Pos. Offset Y (mm) :";
+            this.label85.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // FormNew_Recipe
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -3989,5 +4039,9 @@
         private System.Windows.Forms.Button button21;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance;
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance;
+        private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX;
+        private System.Windows.Forms.Label label76;
+        private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY;
+        private System.Windows.Forms.Label label85;
     }
 }

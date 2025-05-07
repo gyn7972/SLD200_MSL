@@ -411,6 +411,8 @@ namespace QMC.Common
 
             public bool ProcessOption_SocketAlign_Use;                  //  Socket Align Use (true: Use, false: Not Use)
             public bool ProcessOption_SocketHeightCheck_Use;            //  Socket Height Check Use Offset (true: Use, false: Not Use)
+            public double ProcessOption_SocketHeightCheckPos_OffsetX;   //  Socket Height Check Position Offset X (mm)
+            public double ProcessOption_SocketHeightCheckPos_OffsetY;   //  Socket Height Check Position Offset Y (mm)
 
             public double ModuleInformation_Module_Width;               //  Module Width (mm)
             public double ModuleInformation_Module_Height;              //  Module Height (mm)
@@ -701,6 +703,10 @@ namespace QMC.Common
         public static bool MachineStop_byTimeout_Loader { set; get; } = false;
         public static bool MachineStop_byTimeout_Unloader { set; get; } = false;
         public static bool MachineStop_byTimeout_WorkStage { set; get; } = false;
+
+
+        //  레이저 공정 테스트를 위한 변수
+        public static bool LaserDrillingCycleEnable_Manual { set; get; } = false;
 
 
 
@@ -1017,6 +1023,8 @@ namespace QMC.Common
                 //  Process Options
                 stLayerRecipeSet[i].ProcessOption_SocketAlign_Use = false;                          //  Socket Align Use (true: Use, false: Not Use)
                 stLayerRecipeSet[i].ProcessOption_SocketHeightCheck_Use = false;                    //  Socket Height Check Use Offset (true: Use, false: Not Use)
+                stLayerRecipeSet[i].ProcessOption_SocketHeightCheckPos_OffsetX = 0.0;               //  Socket Height Check Position Offset X (mm)
+                stLayerRecipeSet[i].ProcessOption_SocketHeightCheckPos_OffsetY = 0.0;               //  Socket Height Check Position Offset Y (mm)
 
                 //  Module Information
                 stLayerRecipeSet[i].ModuleInformation_Module_Width = 0.0;                           //  Module Width (mm)

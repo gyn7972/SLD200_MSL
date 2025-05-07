@@ -771,7 +771,7 @@
             this.checkedListBox_Config_LDUL_DIO_Output.Size = new System.Drawing.Size(279, 156);
             this.checkedListBox_Config_LDUL_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_LDUL_DIO_Output.ThreeDCheckBoxes = true;
-            this.checkedListBox_Config_LDUL_DIO_Output.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_LDUL_DIO_Output_MouseDoubleClick);
+            this.checkedListBox_Config_LDUL_DIO_Output.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_LDUL_DIO_Output_MouseClick);
             // 
             // groupBox_Config_LDUL_DIO_Input
             // 
@@ -3131,7 +3131,7 @@
             this.checkedListBox_Config_WorkStage_DIO_Output.Size = new System.Drawing.Size(279, 251);
             this.checkedListBox_Config_WorkStage_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_WorkStage_DIO_Output.ThreeDCheckBoxes = true;
-            this.checkedListBox_Config_WorkStage_DIO_Output.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_WorkStage_DIO_Output_MouseDoubleClick);
+            this.checkedListBox_Config_WorkStage_DIO_Output.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_WorkStage_DIO_Output_MouseClick);
             // 
             // groupBox53
             // 
@@ -5661,7 +5661,7 @@
             this.checkedListBox_Config_Laser_DIO_Output.Size = new System.Drawing.Size(279, 156);
             this.checkedListBox_Config_Laser_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_Laser_DIO_Output.ThreeDCheckBoxes = true;
-            this.checkedListBox_Config_Laser_DIO_Output.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_Laser_DIO_Output_MouseDoubleClick);
+            this.checkedListBox_Config_Laser_DIO_Output.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_Laser_DIO_Output_MouseClick);
             // 
             // groupBox64
             // 
@@ -6095,7 +6095,7 @@
             this.checkedListBox_Config_BDS_DIO_Output.Size = new System.Drawing.Size(279, 156);
             this.checkedListBox_Config_BDS_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_BDS_DIO_Output.ThreeDCheckBoxes = true;
-            this.checkedListBox_Config_BDS_DIO_Output.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_BDS_DIO_Output_MouseDoubleClick);
+            this.checkedListBox_Config_BDS_DIO_Output.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_BDS_DIO_Output_MouseClick);
             // 
             // groupBox61
             // 

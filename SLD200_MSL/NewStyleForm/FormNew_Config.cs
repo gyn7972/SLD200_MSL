@@ -1419,377 +1419,6 @@ namespace SLD200_MSL
             }
         }
 
-        private void checkedListBox_Config_LDUL_DIO_Output_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            //  LDUL Output IO 상태 변경
-
-            int m_nIndex = checkedListBox_Config_LDUL_DIO_Output.SelectedIndex;
-            bool m_bCurStatus = checkedListBox_Config_LDUL_DIO_Output.GetItemChecked(m_nIndex);
-            int m_nOutputChannel = 0;
-
-            if (m_nIndex < 0)
-                return;
-
-            //  LDUL Output IO List (괄호는 실제 IO 번호)
-
-            //  여기부터 Module 2
-            //  0 (0) : Loader Transfer Inner Vacuum On
-            //  1 (1) : Loader Transfer Outer Vacuum On
-            //  2 (2) : Loader Transfer Air Blow On
-            //  3 (3) : M - Aligner Center Vacuum On
-            //  4 (4) : M - Aligner Inner Vacuum On
-            //  5 (5) : M - Aligner Outer Vacuum On
-            //  6 (6) : M - Aligner Center Air Blow On
-            //  7 (7) : Loader Port Ionizer On
-            //  8 (8) : M - Aligner Inner Air Blow On
-            //  9 (9) : M - Aligner Outer Air Blow On
-
-            //  여기부터 Module 3
-            //  10 (16) : Unloader Tansfer Inner Vacuum On
-            //  11 (17) : Unloader Tansfer Outer Vacuum On
-            //  12 (18) : Unloader Tansfer Air Blow On
-
-            DioPoint dioPoint;
-
-            if ((m_nIndex >= 0) && (m_nIndex <= 9))                                                         //  Loader Output (0 ~ 7) --> 2개 추가하여 9까지
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  0번부터 시작하므로 그대로 사용
-                    m_nOutputChannel = m_nIndex;
-
-                    if ((dioPoint.IoType == IoType.Output) && (dioPoint.ModuleNo == 2) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-            else if ((m_nIndex >= 10) && (m_nIndex <= 12))                                                   //  Unloader Output (16 ~ 18) --> (0 ~ 2)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  0번부터 시작하므로 변환하여 사용 (10일 때0과 같음)
-                    m_nOutputChannel = m_nIndex - 10;
-
-                    if ((dioPoint.IoType == IoType.Output) && (dioPoint.ModuleNo == 3) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        private void checkedListBox_Config_WorkStage_DIO_Output_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            //  Work Stage Output IO 상태 변경
-
-            int m_nIndex = checkedListBox_Config_WorkStage_DIO_Output.SelectedIndex;
-            bool m_bCurStatus = checkedListBox_Config_WorkStage_DIO_Output.GetItemChecked(m_nIndex);
-            int m_nOutputChannel = 0;
-
-            if (m_nIndex < 0)
-                return;
-
-            //  WorkStage Output IO List (괄호는 실제 IO 번호)
-
-            //  0 (0) : Start Switch Lamp
-            //  1 (1) : Stop Switch Lamp
-            //  2 (2) : Reset Switch Lamp
-            //  3 (3) : TowerLamp Red
-            //  4 (4) : TowerLamp Yellow
-            //  5 (5) : TowerLamp Green
-            //  6 (6) : TowerLamp Buzzer
-            //  7 (21) : Work Stage Vacuum On
-            //  8 (22) : Laser Cal - Sheet Vacuum On
-            //  9 (23) : Work Stage Air Blow On
-            //  10 (24) : Laser Cal - Sheet Air Blow On
-            //  11 (25) : Chiller Run
-            //  12 (26) : Dust Collector 0 Air Pulse Run
-            //  13 (27) : Dust Collector 1 Air Pulse Run
-
-            DioPoint dioPoint;
-
-            if ((m_nIndex >= 0) && (m_nIndex <= 6))                                                         //  Work Stage Output (0 ~ 6)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  0번부터 시작하므로 그대로 사용
-                    m_nOutputChannel = m_nIndex;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-            else if ((m_nIndex >= 7) && (m_nIndex <= 10))                                                   //  Work Stage Output (21 ~ 24)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  21번부터 시작하므로 변환하여 사용 (7일 때 21과 같음)
-                    m_nOutputChannel = m_nIndex + 14;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-            else if ((m_nIndex >= 11) && (m_nIndex <= 13))                                                   //  Work Stage Output (26 ~ 27)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  25번부터 시작하므로 변환하여 사용 (11일 때 25과 같음)
-                    m_nOutputChannel = m_nIndex + 14;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        private void checkedListBox_Config_Laser_DIO_Output_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            //  Laser & Scanner Output IO 상태 변경
-
-            int m_nIndex = checkedListBox_Config_Laser_DIO_Output.SelectedIndex;
-            bool m_bCurStatus = checkedListBox_Config_Laser_DIO_Output.GetItemChecked(m_nIndex);
-            int m_nOutputChannel = 0;
-
-            if (m_nIndex < 0)
-                return;
-
-            //  Laser & Scanner Output IO List (괄호는 실제 IO 번호)
-
-            //  0 (7) : Laser Coolant Supply
-            //  1 (8) : Laser Coolant Return
-            //  2 (11) : Scanner Coolant Supply
-            //  3 (12) : Scanner Coolant Return
-            //  4 (13) : Varioscan Coolant Supply
-            //  5 (14) : Varioscan Coolant Return
-            //  6 (18) : Laser Purge
-            //  7 (19) : Scanner Purge
-            //  8 (20) : Varioscan Purge
-            //  9 (28) : Laser Enable
-
-            DioPoint dioPoint;
-
-            if ((m_nIndex >= 0) && (m_nIndex <= 1))                                                         //  Laser & Scanner Output (7 ~ 8)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  7번부터 시작하므로 변환하여 사용 (0일 때 7과 같음)
-                    m_nOutputChannel = m_nIndex + 7;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-            else if ((m_nIndex >= 2) && (m_nIndex <= 5))                                                    //  Laser & Scanner Output (11 ~ 14)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  11번부터 시작하므로 변환하여 사용 (2일 때 11과 같음)
-                    m_nOutputChannel = m_nIndex + 9;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-            else if ((m_nIndex >= 6) && (m_nIndex <= 8))                                                    //  Laser & Scanner Output (18 ~ 20)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  18번부터 시작하므로 변환하여 사용 (6일 때 18과 같음)
-                    m_nOutputChannel = m_nIndex + 12;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-            else if (m_nIndex == 9)                                                                         //  Laser & Scanner Output (28)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  28번부터 시작하므로 변환하여 사용 (9일 때 28와 같음)
-                    m_nOutputChannel = m_nIndex + 19;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        private void checkedListBox_Config_BDS_DIO_Output_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            //  BDS Output IO 상태 변경
-
-            int m_nIndex = checkedListBox_Config_BDS_DIO_Output.SelectedIndex;
-            bool m_bCurStatus = checkedListBox_Config_BDS_DIO_Output.GetItemChecked(m_nIndex);
-            int m_nOutputChannel = 0;
-
-            if (m_nIndex < 0)
-                return;
-
-            //  BDS Output IO List (괄호는 실제 IO 번호)
-
-            //  0 (9) : Mask Coolant Supply
-            //  1 (10) : Mask Coolant Return
-            //  2 (15) : BDS PowerMeter FW
-            //  3 (16) : BDS PowerMeter BW
-            //  4 (17) : BDS Purge
-
-
-            DioPoint dioPoint;
-
-            if ((m_nIndex >= 0) && (m_nIndex <= 1))                                                         //  BDS Output (9 ~ 10)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  9번부터 시작하므로 변환하여 사용 (0일 때 9와 같음)
-                    m_nOutputChannel = m_nIndex + 9;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-            else if ((m_nIndex >= 2) && (m_nIndex <= 4))                                                    //  BDS Output (15 ~ 17)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  15번부터 시작하므로 변환하여 사용 (2일 때 15와 같음)
-                    m_nOutputChannel = m_nIndex + 13;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-        }
-
         private void button_Config_LDUL_TRX_Neg_MouseDown(object sender, MouseEventArgs e)
         {
             double lfVelocity = 0.0f;
@@ -8040,6 +7669,377 @@ namespace SLD200_MSL
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "Work Stage 가 동작중입니다.");
                 return;
+            }
+        }
+
+        private void checkedListBox_Config_WorkStage_DIO_Output_MouseClick(object sender, MouseEventArgs e)
+        {
+            //  Work Stage Output IO 상태 변경
+
+            int m_nIndex = checkedListBox_Config_WorkStage_DIO_Output.SelectedIndex;
+            bool m_bCurStatus = checkedListBox_Config_WorkStage_DIO_Output.GetItemChecked(m_nIndex);
+            int m_nOutputChannel = 0;
+
+            if (m_nIndex < 0)
+                return;
+
+            //  WorkStage Output IO List (괄호는 실제 IO 번호)
+
+            //  0 (0) : Start Switch Lamp
+            //  1 (1) : Stop Switch Lamp
+            //  2 (2) : Reset Switch Lamp
+            //  3 (3) : TowerLamp Red
+            //  4 (4) : TowerLamp Yellow
+            //  5 (5) : TowerLamp Green
+            //  6 (6) : TowerLamp Buzzer
+            //  7 (21) : Work Stage Vacuum On
+            //  8 (22) : Laser Cal - Sheet Vacuum On
+            //  9 (23) : Work Stage Air Blow On
+            //  10 (24) : Laser Cal - Sheet Air Blow On
+            //  11 (25) : Chiller Run
+            //  12 (26) : Dust Collector 0 Air Pulse Run
+            //  13 (27) : Dust Collector 1 Air Pulse Run
+
+            DioPoint dioPoint;
+
+            if ((m_nIndex >= 0) && (m_nIndex <= 6))                                                         //  Work Stage Output (0 ~ 6)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  0번부터 시작하므로 그대로 사용
+                    m_nOutputChannel = m_nIndex;
+
+                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+            else if ((m_nIndex >= 7) && (m_nIndex <= 10))                                                   //  Work Stage Output (21 ~ 24)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  21번부터 시작하므로 변환하여 사용 (7일 때 21과 같음)
+                    m_nOutputChannel = m_nIndex + 14;
+
+                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+            else if ((m_nIndex >= 11) && (m_nIndex <= 13))                                                   //  Work Stage Output (26 ~ 27)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  25번부터 시작하므로 변환하여 사용 (11일 때 25과 같음)
+                    m_nOutputChannel = m_nIndex + 14;
+
+                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void checkedListBox_Config_LDUL_DIO_Output_MouseClick(object sender, MouseEventArgs e)
+        {
+            //  LDUL Output IO 상태 변경
+
+            int m_nIndex = checkedListBox_Config_LDUL_DIO_Output.SelectedIndex;
+            bool m_bCurStatus = checkedListBox_Config_LDUL_DIO_Output.GetItemChecked(m_nIndex);
+            int m_nOutputChannel = 0;
+
+            if (m_nIndex < 0)
+                return;
+
+            //  LDUL Output IO List (괄호는 실제 IO 번호)
+
+            //  여기부터 Module 2
+            //  0 (0) : Loader Transfer Inner Vacuum On
+            //  1 (1) : Loader Transfer Outer Vacuum On
+            //  2 (2) : Loader Transfer Air Blow On
+            //  3 (3) : M - Aligner Center Vacuum On
+            //  4 (4) : M - Aligner Inner Vacuum On
+            //  5 (5) : M - Aligner Outer Vacuum On
+            //  6 (6) : M - Aligner Center Air Blow On
+            //  7 (7) : Loader Port Ionizer On
+            //  8 (8) : M - Aligner Inner Air Blow On
+            //  9 (9) : M - Aligner Outer Air Blow On
+
+            //  여기부터 Module 3
+            //  10 (16) : Unloader Tansfer Inner Vacuum On
+            //  11 (17) : Unloader Tansfer Outer Vacuum On
+            //  12 (18) : Unloader Tansfer Air Blow On
+
+            DioPoint dioPoint;
+
+            if ((m_nIndex >= 0) && (m_nIndex <= 9))                                                         //  Loader Output (0 ~ 7) --> 2개 추가하여 9까지
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  0번부터 시작하므로 그대로 사용
+                    m_nOutputChannel = m_nIndex;
+
+                    if ((dioPoint.IoType == IoType.Output) && (dioPoint.ModuleNo == 2) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+            else if ((m_nIndex >= 10) && (m_nIndex <= 12))                                                   //  Unloader Output (16 ~ 18) --> (0 ~ 2)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  0번부터 시작하므로 변환하여 사용 (10일 때0과 같음)
+                    m_nOutputChannel = m_nIndex - 10;
+
+                    if ((dioPoint.IoType == IoType.Output) && (dioPoint.ModuleNo == 3) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void checkedListBox_Config_Laser_DIO_Output_MouseClick(object sender, MouseEventArgs e)
+        {
+            //  Laser & Scanner Output IO 상태 변경
+
+            int m_nIndex = checkedListBox_Config_Laser_DIO_Output.SelectedIndex;
+            bool m_bCurStatus = checkedListBox_Config_Laser_DIO_Output.GetItemChecked(m_nIndex);
+            int m_nOutputChannel = 0;
+
+            if (m_nIndex < 0)
+                return;
+
+            //  Laser & Scanner Output IO List (괄호는 실제 IO 번호)
+
+            //  0 (7) : Laser Coolant Supply
+            //  1 (8) : Laser Coolant Return
+            //  2 (11) : Scanner Coolant Supply
+            //  3 (12) : Scanner Coolant Return
+            //  4 (13) : Varioscan Coolant Supply
+            //  5 (14) : Varioscan Coolant Return
+            //  6 (18) : Laser Purge
+            //  7 (19) : Scanner Purge
+            //  8 (20) : Varioscan Purge
+            //  9 (28) : Laser Enable
+
+            DioPoint dioPoint;
+
+            if ((m_nIndex >= 0) && (m_nIndex <= 1))                                                         //  Laser & Scanner Output (7 ~ 8)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  7번부터 시작하므로 변환하여 사용 (0일 때 7과 같음)
+                    m_nOutputChannel = m_nIndex + 7;
+
+                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+            else if ((m_nIndex >= 2) && (m_nIndex <= 5))                                                    //  Laser & Scanner Output (11 ~ 14)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  11번부터 시작하므로 변환하여 사용 (2일 때 11과 같음)
+                    m_nOutputChannel = m_nIndex + 9;
+
+                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+            else if ((m_nIndex >= 6) && (m_nIndex <= 8))                                                    //  Laser & Scanner Output (18 ~ 20)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  18번부터 시작하므로 변환하여 사용 (6일 때 18과 같음)
+                    m_nOutputChannel = m_nIndex + 12;
+
+                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+            else if (m_nIndex == 9)                                                                         //  Laser & Scanner Output (28)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  28번부터 시작하므로 변환하여 사용 (9일 때 28와 같음)
+                    m_nOutputChannel = m_nIndex + 19;
+
+                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void checkedListBox_Config_BDS_DIO_Output_MouseClick(object sender, MouseEventArgs e)
+        {
+            //  BDS Output IO 상태 변경
+
+            int m_nIndex = checkedListBox_Config_BDS_DIO_Output.SelectedIndex;
+            bool m_bCurStatus = checkedListBox_Config_BDS_DIO_Output.GetItemChecked(m_nIndex);
+            int m_nOutputChannel = 0;
+
+            if (m_nIndex < 0)
+                return;
+
+            //  BDS Output IO List (괄호는 실제 IO 번호)
+
+            //  0 (9) : Mask Coolant Supply
+            //  1 (10) : Mask Coolant Return
+            //  2 (15) : BDS PowerMeter FW
+            //  3 (16) : BDS PowerMeter BW
+            //  4 (17) : BDS Purge
+
+
+            DioPoint dioPoint;
+
+            if ((m_nIndex >= 0) && (m_nIndex <= 1))                                                         //  BDS Output (9 ~ 10)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  9번부터 시작하므로 변환하여 사용 (0일 때 9와 같음)
+                    m_nOutputChannel = m_nIndex + 9;
+
+                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+            else if ((m_nIndex >= 2) && (m_nIndex <= 4))                                                    //  BDS Output (15 ~ 17)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  15번부터 시작하므로 변환하여 사용 (2일 때 15와 같음)
+                    m_nOutputChannel = m_nIndex + 13;
+
+                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
             }
         }
     }

@@ -818,6 +818,8 @@ namespace QMC.Common.Modules
 
             public PointD dSocketCenter;                //  Socket Group 의 Center 좌표
 
+            public double dLaserHeightValue;            //  레이저 높이 값
+
             public int nRegion_ObjectTotalNum;          //  객체 총 개수
             public int nRegion_ObjectCount;             //  객체 누적 카운트
         }
@@ -3246,8 +3248,6 @@ namespace QMC.Common.Modules
             /// </summary>
             /// 
             ThruHole_LayerParameter_Change_Start,                           //  Thruhole 가공 Layer 파라미터로 변경 시작
-            ThruHole_LayerParameter_ZOffset_Move,                           //  Thruhole 가공 Layer 파라미터, Z Offset 이동
-            ThruHole_LayerParameter_ZOffset_Move_DoneCheck,                 //  Thruhole 가공 Layer 파라미터, Z Offset 이동 완료 확인
             ThruHole_LayerParameter_forCO2_Set,                             //  Thruhole 가공 Layer 파라미터, CO2 용 세팅값 설정
             ThruHole_LayerParameter_forCO2_Check,                           //  Thruhole 가공 Layer 파라미터, CO2 용 세팅값 확인
             ThruHole_LayerParameter_forUV_Set,                              //  Thruhole 가공 Layer 파라미터, UV 용 세팅값 설정
@@ -3269,6 +3269,9 @@ namespace QMC.Common.Modules
 
             //  가공 할 Socket 이 남아있는지 체크
             ThruHole_SocketRemainedCheck,                                   //  가공 할 Socket 이 남아있는지 체크
+
+            ThruHole_LayerParameter_ZOffset_Move,                           //  Thruhole 가공 Layer 파라미터, Z Offset 이동
+            ThruHole_LayerParameter_ZOffset_Move_DoneCheck,                 //  Thruhole 가공 Layer 파라미터, Z Offset 이동 완료 확인
 
             ThruHole_ScannerOnly_ObjectData_RemainedCheck,                  //  가공 할 Object 가 남아있는지 체크
             ThruHole_ScannerOnly_StageXY_MoveObjectCenterPos,               //  가공 할 Object Center 위치로 이동
@@ -8009,6 +8012,10 @@ namespace QMC.Common.Modules
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.ThruHole_LayerParameter_LaserPower_Change;
             }
+            else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move_DoneCheck)
+            {
+                m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;
+            }
             else if (LaserDrilling_MainStep <= (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change_DoneCheck)
             {
                 m_nLaserDrilling_MainStep_Recovery = (int)LaserDrilling_Step.ThruHole_ScannerOnly_Hole1_LaserPower_Change;
@@ -8186,7 +8193,8 @@ namespace QMC.Common.Modules
             {
                 _isLaserDrillingWorkRunning = true;
                 
-                if (!m_LaserDrillingWork_Start)
+                //if (!m_LaserDrillingWork_Start)               //  공정 테스트를 위한 조건 추가
+                if (!m_LaserDrillingWork_Start && !Equipment.LaserDrillingCycleEnable_Manual)
                 {
                     SetRecoveryLaserDrilling_MainStep(m_nLaserDrilling_MainStep);
                     return;
@@ -13475,7 +13483,7 @@ namespace QMC.Common.Modules
                             xyCoordinateAlign = xyInterpolatedCoordinate + offset;
                             Log.Write("Alaign Test", "xyCoordinateAlign before : ", xyCoordinateAlign.ToString());
                             xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionLast.X, xyCoordinateAlignPositionLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
-                           // xyCoordinateAlign = xyCoordinateAlign + offset;
+                            //xyCoordinateAlign = xyCoordinateAlign + offset;
                             Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
 
                             Log.Write("Alaign Test", "Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
@@ -15244,26 +15252,6 @@ namespace QMC.Common.Modules
                         //m_nLaserParamChangeDelayCount = 0;
                         //m_nParamChange_RetryCount = 0;
 
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;
-                    }
-                    break;
-
-
-                case (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move:                              //  ThruHole 가공 Layer 파라미터, Z Offset 이동
-
-                    double m_dOffset;
-                    LaserDrillingStepSetThruHoleLayerParameterZOffsetMove(out lfVelocity, out lfAccDec);
-
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move_DoneCheck;
-                    break;
-
-
-                case (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move_DoneCheck:                 //  ThruHole 가공 Layer 파라미터, Z Offset 이동 완료 확인
-
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Thruhole Layer Z Offset 이동 완료 확인");
-
                         if (Equipment.Machine_LaserType_CO2)
                         {
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_forCO2_Set;                 //  CO2 일 경우
@@ -15272,20 +15260,6 @@ namespace QMC.Common.Modules
                         {
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_forUV_Set;                  //  UV 일 경우
                         }
-                    }
-                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
-                    {
-                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Thruhole Layer Z Offset 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_LaserDrillingWork.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
-
-                        MessageBox.Show("Stage Z 축, Thruhole Layer Z Offset 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -15472,7 +15446,41 @@ namespace QMC.Common.Modules
 
                         m_nLaserDrilling_MainStep = nextStep;
                     }
+                    break;
 
+
+                case (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move:                              //  ThruHole 가공 Layer 파라미터, Z Offset 이동
+
+                    double m_dOffset;
+                    LaserDrillingStepSetThruHoleLayerParameterZOffsetMove(out lfVelocity, out lfAccDec);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move_DoneCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move_DoneCheck:                 //  ThruHole 가공 Layer 파라미터, Z Offset 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Thruhole Layer Z Offset 이동 완료 확인");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_ObjectData_RemainedCheck;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Thruhole Layer Z Offset 이동 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        //timer_LaserDrillingWork.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+                        return AlarmPost(AlarmKey.eZAxisFail); 
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                        MessageBox.Show("Stage Z 축, Thruhole Layer Z Offset 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                     break;
 
 
@@ -17770,9 +17778,9 @@ namespace QMC.Common.Modules
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get;
                         }
                     }
-                    else //Enable ; false 시에 z축 보정 안함.
+                    else //Enable ; false 시에 안정화 시간 없이 값 읽어옴.
                     {
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightCheckProcess_Complete;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketHeightValue_Get;
                     }
                     break;
 
@@ -17791,6 +17799,23 @@ namespace QMC.Common.Modules
                     else
                     {
                         m_dZOffset_SocketHeightCheck = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
+                    }
+
+                    //  여기서 측정한 소켓 높이값을 Thruhole, Outline 등에서 사용하도록 한다.
+                    if (m_stThruHole_SocketData != null)
+                    {
+                        if (m_stThruHole_SocketData.Length == m_stDividedRegion_GroupData.Length)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Thruhole 소켓 데이터 개수 일치");
+
+                            m_stThruHole_SocketData[m_nDrillingWork_Group_Count].dLaserHeightValue = m_dZOffset_SocketHeightCheck;
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Drilling 소켓 데이터 개수와 Thruhole 소켓 데이터 개수 불일치");
+
+
+                        }
                     }
 
                     //  소켓 얼라인을 하지 않을 경우, 여기서 바로 가공 높이로 보정 이동
@@ -17900,7 +17925,7 @@ namespace QMC.Common.Modules
 
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
-                    CommonModule.Instance.Illuminator.SetVolume(4000, 3);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR, 3);
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 1);          //  Fine Cam Red 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 2);          //  Fine Cam IR 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 3);           //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
@@ -17917,8 +17942,9 @@ namespace QMC.Common.Modules
                     //m_nDrillingWork_Group_Count 이거 0이여야 한다.
                     try
                     {
-                        Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[0].dFiducialPos[0].X;
-                        Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[0].dFiducialPos[0].Y;
+
+                        Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[0].dFiducialPos[2].X;
+                        Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[0].dFiducialPos[2].Y;
                         Equipment.stLayerRecipeSet[0].PreAlignPos2.X = m_stDividedRegion_GroupData[0].dFiducialPos[3].X;
                         Equipment.stLayerRecipeSet[0].PreAlignPos2.Y = m_stDividedRegion_GroupData[0].dFiducialPos[3].Y;
                     }
@@ -17967,12 +17993,12 @@ namespace QMC.Common.Modules
                             dft = -dft / 180 * Math.PI;
                             XyzCoordinate positionFirst = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
                             positionFirst = this.ConvertPointFineCam(positionFirst);
-                            xyCoordinateAlignPositionLast= new XyCoordinate( positionFirst.X, positionFirst.Y);
+                            xyCoordinateAlignPositionOrgLast= new XyCoordinate( positionFirst.X, positionFirst.Y);
 
-                            positionFirst.X += dfx/3;
-                            positionFirst.Y -= dfy;
+                            positionFirst.X -= dfx;
+                            positionFirst.Y += dfy;
 
-                            xyCoordinateAlignPositionOrgLast  = new XyCoordinate(positionFirst.X, positionFirst.Y);
+                            xyCoordinateAlignPositionLast = new XyCoordinate(positionFirst.X, positionFirst.Y);
                            
                             m_st4PointAlign_Result_LastSuccess.dRotationAngle = dft;
 
@@ -17986,8 +18012,9 @@ namespace QMC.Common.Modules
                         else
                         {
                             m_bPreAlignCompleted = false;
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
                             //  Pre Align NG 이면, Alarm 발생
-                            return AlarmPost(AlarmKey.PreAlignFail);
+                            //return AlarmPost(AlarmKey.PreAlignFail);
                         }
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 5000000)               //  60 sec * 5
@@ -23375,6 +23402,10 @@ namespace QMC.Common.Modules
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.X;
             workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.stOffsetDistance.FromFineCamToLaserHeightSensor.Y;
 
+            //  좌표계 변환 (Laser Height Sensor 위치 --> 높이 측정 위치에 XY Offset 반영)
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetX;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetY;
+
             //  속도 설정
             lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
             lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
@@ -23587,7 +23618,8 @@ namespace QMC.Common.Modules
                 m_nThruHole_SocketCount = m_nDrillingWork_Group_Count;
 
 
-                nextStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_ObjectData_RemainedCheck;
+                //nextStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_ObjectData_RemainedCheck;
+                nextStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;
             }
             else
             {
@@ -24476,13 +24508,18 @@ namespace QMC.Common.Modules
             //  임시로 0 설정 --> Recipe 에서 값 가져오도록 --> Layer 별로 Defocusing 거리 다르게 설정하도록 해야 함
             double m_dOffset = m_dThruholeLayer_Defocusing;
 
-            double m_dZOffset_ThruholeSocketHeight = m_dZOffset_SocketHeightCheck;
-            if ((m_dZOffset_SocketHeightCheck < -5.0) || (m_dZOffset_SocketHeightCheck > 5.0))
+            double m_dZOffset_ThruholeSocketHeight = m_stThruHole_SocketData[m_nThruHole_SocketCount].dLaserHeightValue;
+            if ((m_stThruHole_SocketData[m_nThruHole_SocketCount].dLaserHeightValue < -5.0) || (m_stThruHole_SocketData[m_nThruHole_SocketCount].dLaserHeightValue > 5.0))
             {
-                string m_strTemp = string.Format("Thruhole 가공을 위한 Z Offset 이동, Laser Height Check 값 이상. 범위 밖이므로 0으로 재설정(-5 < x < 5). Laser Height Check ({0:0.000})", m_dZOffset_SocketHeightCheck);
+                string m_strTemp = string.Format("Thruhole 가공을 위한 Z Offset 이동, Laser Height Check 값 이상. 범위 밖이므로 0으로 재설정(-5 < x < 5). Laser Height Check ({0:0.000})", m_stThruHole_SocketData[m_nThruHole_SocketCount].dLaserHeightValue);
                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
 
                 m_dZOffset_ThruholeSocketHeight = 0.0;
+            }
+            else
+            {
+                string m_strTemp = string.Format("Thruhole 가공을 위한 Z Offset 이동, Laser Height Check 값 정상. Laser Height Check ({0:0.000})", m_stThruHole_SocketData[m_nThruHole_SocketCount].dLaserHeightValue);
+                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
             }
 
             //  좌표계 (기존)
@@ -31262,7 +31299,7 @@ namespace QMC.Common.Modules
             //        Equipment.WorkTotalTime_Drilling += (m_dTotal_DrillingDataLength / Config.ParamConfig.PreDrilling_Mark_Speed) * (Config.ParamConfig.PreDrilling_Repeat_Count == 0 ? 1.0 : Config.ParamConfig.PreDrilling_Repeat_Count);
             //    }
             //}
-                
+
             ////  Marking Jump, 가공 이동 시간
             //if (m_dTotal_MarkingJumpLength > 0.0)
             //{
