@@ -147,7 +147,15 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void RecipeVisionTimer_Tick(object sender, EventArgs e)
         {
+            //  Work Stage Position
+            label_RecipeVision_EncPosition_STAGE_X.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X));
+            label_RecipeVision_EncPosition_STAGE_Y.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y));
+            
+            //  Scanner & Camera Position
+            label_RecipeVision_EncPosition_SCANNER_Z.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z));
+
             Motion_Status(); // 기존에 있던 리미트 감지 및 색상 갱신 함수 호출
+
         }
 
         public void OnShow()
