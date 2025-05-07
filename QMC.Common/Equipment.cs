@@ -366,7 +366,9 @@ namespace QMC.Common
         public enum HoleProcessingType : int
         {
             Circle = 0,
-            Spiral,
+            Spiral_Polyline,
+            Spiral_Arc,
+            Spiral_Circle,
         }
 
         public struct stLayerRecipeParameter
@@ -401,7 +403,7 @@ namespace QMC.Common
             public double Miscellaneous_P2PDistance;                    //  P2P Distance (mm)
             public int Miscellaneous_MaskIndex;                         //  Mask Index (0:None, 1:Mask1, 2:Mask2, 3:Mask3, 4:Mask4)
             public int Miscellaneous_BETPositionIndex;                  //  BET Position Index (0:0.1X, 1:0.5X, 2:1.0X, 3:1.5X, 4:2.0X)
-            public int Miscellaneous_HoleProcessingType;                //  Hole Processing Type (0:Circle, 1:Spiral)
+            public int Miscellaneous_HoleProcessingType;                //  Hole Processing Type (0:Circle, 1:Spiral_Polyline, 2:Spiral_Arc, 3:Spiral_Circle)
             public int Miscellaneous_FiducialAlignType;                 //  Fiducial Align Type (0:Circle Find, 2:Pattern Matching)
             public int Miscellaneous_FiducialMarkType;                  //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
             public bool Miscellaneous_HoleSortByDistance_Use;               //  Sort By Distance Use (true: Use, false: Not Use)
@@ -409,6 +411,8 @@ namespace QMC.Common
 
             public bool ProcessOption_SocketAlign_Use;                  //  Socket Align Use (true: Use, false: Not Use)
             public bool ProcessOption_SocketHeightCheck_Use;            //  Socket Height Check Use Offset (true: Use, false: Not Use)
+            public double ProcessOption_SocketHeightCheckPos_OffsetX;   //  Socket Height Check Position Offset X (mm)
+            public double ProcessOption_SocketHeightCheckPos_OffsetY;   //  Socket Height Check Position Offset Y (mm)
 
             public double ModuleInformation_Module_Width;               //  Module Width (mm)
             public double ModuleInformation_Module_Height;              //  Module Height (mm)
@@ -482,6 +486,8 @@ namespace QMC.Common
         public static double Machine_WorkStage_ModuleAbsorption_JudgeLevel { set; get; } = -40.0;           //  Work Stage 에 Module Loading 시, 전자식 진공 레귤레이터 판정값
         public static bool Machine_LoaderStacker_Down_afterLoaderPickUp_Enable { set; get; } = true;        //  Loader Stacker Down after Loader Module Pick Up Enable
         public static double Machine_LoaderStacker_DownDistance_afterLoaderPickUp { set; get; } = 5.0;      //  Loader 가 Module Pick Up 후 Stacker 를 내리는 거리
+        public static bool Machine_LoaderStacker_NoMaterialDetectTime_Enable { set; get; } = true;          //  Loader Stacker No Material Detect Time Enable
+        public static int Machine_LoaderStacker_NoMaterialDetectTime { set; get; } = 10;                    //  Loader Stacker No Material Detect Time
 
 
         //  Offset Distance
@@ -648,6 +654,10 @@ namespace QMC.Common
 
 
         public static int DryRun_ProcessingTime { set; get; } = 5;
+
+
+        public static bool SocketDrilling_Skip { set; get; } = false;            //  Socket Drilling Skip (true: Skip, false: Not Skip)
+
 
 
         public enum LoaderPortList : int
@@ -1004,7 +1014,7 @@ namespace QMC.Common
                 stLayerRecipeSet[i].Miscellaneous_MaskIndex = 0;                                    //  Mask Index  
                 stLayerRecipeSet[i].Miscellaneous_BETPositionIndex = 0;                             //  BET Index  
                 stLayerRecipeSet[i].Miscellaneous_Drilling_Power = 10;                              //  Drilling Power              
-                stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = 0;                           //  Hole Processing Type (0:Circle, 1:Spiral)
+                stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = 0;                           //  Hole Processing Type (0:Circle, 1:Spiral_Polyline, 2:Spiral_Arc, 3:Spiral_Circle)
                 stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = 0;                            //  Fiducial Align Type (0:Circle Find, 1:Pattern Matching)
                 stLayerRecipeSet[i].Miscellaneous_FiducialMarkType = 0;                             //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
                 stLayerRecipeSet[i].Miscellaneous_HoleSortByDistance_Use = false;                   //  Hole Sort By Distance Use (true: Use, false: Not Use)
@@ -1013,6 +1023,8 @@ namespace QMC.Common
                 //  Process Options
                 stLayerRecipeSet[i].ProcessOption_SocketAlign_Use = false;                          //  Socket Align Use (true: Use, false: Not Use)
                 stLayerRecipeSet[i].ProcessOption_SocketHeightCheck_Use = false;                    //  Socket Height Check Use Offset (true: Use, false: Not Use)
+                stLayerRecipeSet[i].ProcessOption_SocketHeightCheckPos_OffsetX = 0.0;               //  Socket Height Check Position Offset X (mm)
+                stLayerRecipeSet[i].ProcessOption_SocketHeightCheckPos_OffsetY = 0.0;               //  Socket Height Check Position Offset Y (mm)
 
                 //  Module Information
                 stLayerRecipeSet[i].ModuleInformation_Module_Width = 0.0;                           //  Module Width (mm)
@@ -2798,6 +2810,10 @@ namespace QMC.Common
             Equipment.Machine_LoaderStacker_Down_afterLoaderPickUp_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_DownDistance_afterLDPickUp", "5.0", temp, 255, strFIle);
             Equipment.Machine_LoaderStacker_DownDistance_afterLoaderPickUp = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_NoMaterialDetectTime_Enable", "True", temp, 255, strFIle);
+            Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable = temp.ToString() == "False" ? false : true;
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_NoMaterialDetectTime", "10", temp, 255, strFIle);
+            Equipment.Machine_LoaderStacker_NoMaterialDetectTime = Equipment.ToInt(temp.ToString());                        
 
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);

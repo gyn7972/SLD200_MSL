@@ -64,9 +64,6 @@ namespace SLD200_MSL
 
         private System.Windows.Forms.Timer timer_Main_Status;
 
-        private bool m_bLaserIsProcessing = false;  //레이저 가공 중인지 확인하는 변수
-        private bool m_bNeedLaserProcessingMessage = false; //레이저 가공 중 UI 갱신을 위해 플래그 설정
-
         private Thread m_MainStatusThread;
         private bool m_bMainStatusCycleExit;
 
@@ -374,7 +371,7 @@ namespace SLD200_MSL
                         g.DrawRectangle(pen, rect);
                     
                     // 인덱스 텍스트 추가
-                    string indexText = (i * Columns + j).ToString(); // 인덱스 계산
+                    string indexText = ((i * Columns + j) + 1).ToString(); // 인덱스 계산        //  0부터 하던 것을 1부터 표기하도록
                     using (Font font = new Font("Tahoma", 10)) // 폰트 설정
                     using (Brush textBrush = new SolidBrush(Color.Black)) // 텍스트 색상
                     {
@@ -690,7 +687,6 @@ namespace SLD200_MSL
             // Laser m_rapidLxLaser_Comm
             if (workStage.m_rapidLxLaser_Comm == null)
             {
-                workStage.m_bRapidLxLaser_UserConnect = true;
                 workStage.RapidLxLaser_Comm_Init();
             }
             else
@@ -734,14 +730,10 @@ namespace SLD200_MSL
             //bOn = workStage.rtc != null && workStage.rtc.;
             //_InitDeviceStatus.Scanner = bOn;
 
-            if(!Equipment.Machine_LaserType_CO2)
-            {
-                bOn = workStage.m_powerMeter_ExitPos_Comm != null && workStage.m_powerMeter_ExitPos_Comm.IsOpen;
-                _InitDeviceStatus.PowerMeter_Bds = bOn;
-                if (!_InitDeviceStatus.PowerMeter_Bds)
-                    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Powermeter_bds);
-
-            }
+            bOn = workStage.m_powerMeter_ExitPos_Comm != null && workStage.m_powerMeter_ExitPos_Comm.IsOpen;
+            _InitDeviceStatus.PowerMeter_Bds = bOn;
+            if (!_InitDeviceStatus.PowerMeter_Bds)
+                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Powermeter_bds);
 
             bOn = workStage.m_powerMeter_TargetPos_Comm != null && workStage.m_powerMeter_TargetPos_Comm.IsOpen;
             _InitDeviceStatus.PowerMeter_Stage = bOn;
@@ -800,89 +792,43 @@ namespace SLD200_MSL
         //초기화 상태 함수 확인 
         private void InitializeDeviceStatusBindings()
         { 
-            if(!Equipment.Machine_LaserType_CO2)
+            deviceStatusGetters = new Dictionary<string, Func<bool>>
             {
-                deviceStatusGetters = new Dictionary<string, Func<bool>>
-                {
-                    { "Motion", () => Equipment._InitDeviceStatus.MotionIo },
-                    { "IO", () => Equipment._InitDeviceStatus.MotionIo },
-                    { "Laser", () => Equipment._InitDeviceStatus.Laser },
-                    { "Scanner", () => Equipment._InitDeviceStatus.Scanner },
-                    //{ "PowerMeter_Bds", () => Equipment._InitDeviceStatus.PowerMeter_Bds },
-                    { "PowerMeter_Stage", () => Equipment._InitDeviceStatus.PowerMeter_Stage },
-                    { "BeamExpander", () => Equipment._InitDeviceStatus.BeamExpander },
-                    { "DustCollector_Upper", () => Equipment._InitDeviceStatus.DustCollector_Upper },
-                    { "DustCollector_Lower", () => Equipment._InitDeviceStatus.DustCollector_Lower },
-                    { "Chiller", () => Equipment._InitDeviceStatus.Chiller },
-                    { "ElectroRegulator", () => Equipment._InitDeviceStatus.ElectroRegulator },
-                    { "HeightSensor", () => Equipment._InitDeviceStatus.HeightSensor },
-                    { "CameraFine", () => Equipment._InitDeviceStatus.CameraFine },
-                    { "CameraPre", () => Equipment._InitDeviceStatus.CameraPre },
-                    { "Illuminator", () => Equipment._InitDeviceStatus.Illuminator },
-                };
+                { "Motion", () => Equipment._InitDeviceStatus.MotionIo },
+                { "IO", () => Equipment._InitDeviceStatus.MotionIo },
+                { "Laser", () => Equipment._InitDeviceStatus.Laser },
+                { "Scanner", () => Equipment._InitDeviceStatus.Scanner },
+                { "PowerMeter_Bds", () => Equipment._InitDeviceStatus.PowerMeter_Bds },
+                { "PowerMeter_Stage", () => Equipment._InitDeviceStatus.PowerMeter_Stage },
+                { "BeamExpander", () => Equipment._InitDeviceStatus.BeamExpander },
+                { "DustCollector_Upper", () => Equipment._InitDeviceStatus.DustCollector_Upper },
+                { "DustCollector_Lower", () => Equipment._InitDeviceStatus.DustCollector_Lower },
+                { "Chiller", () => Equipment._InitDeviceStatus.Chiller },
+                { "ElectroRegulator", () => Equipment._InitDeviceStatus.ElectroRegulator },
+                { "HeightSensor", () => Equipment._InitDeviceStatus.HeightSensor },
+                { "CameraFine", () => Equipment._InitDeviceStatus.CameraFine },
+                { "CameraPre", () => Equipment._InitDeviceStatus.CameraPre },
+                { "Illuminator", () => Equipment._InitDeviceStatus.Illuminator },
+            };
 
-                devicePictureBoxes = new Dictionary<string, PictureBox>
-                {
-                    { "Motion", pictureBox_Main_DiviceStatus_Motion },
-                    { "IO", pictureBox_Main_DiviceStatus_IO },
-                    { "Laser", pictureBox_Main_DiviceStatus_Laser },
-                    { "Scanner", pictureBox_Main_DiviceStatus_Scanner },
-                    //{ "PowerMeter_Bds", pictureBox_Main_DiviceStatus_Powermeter_bds },
-                    { "PowerMeter_Stage", pictureBox_Main_DiviceStatus_Powermeter_Stage },
-                    { "BeamExpander", pictureBox_Main_DiviceStatus_BeamExpander },
-                    { "DustCollector_Upper", pictureBox_Main_DiviceStatus_DustCollector_Upper },
-                    { "DustCollector_Lower", pictureBox_Main_DiviceStatus_DustCollector_Lower },
-                    { "Chiller", pictureBox_Main_DiviceStatus_Chiller },
-                    { "ElectroRegulator", pictureBox_Main_DiviceStatus_ElectroRegulator },
-                    { "HeightSensor", pictureBox_Main_DiviceStatus_HeightSensor },
-                    { "CameraFine", pictureBox_Main_DiviceStatus_CameraFine },
-                    { "CameraPre", pictureBox_Main_DiviceStatus_CameraPre },
-                    { "Illuminator", pictureBox_Main_DiviceStatus_Illuminator },
-                };
-
-            }
-            else
+            devicePictureBoxes = new Dictionary<string, PictureBox>
             {
-                deviceStatusGetters = new Dictionary<string, Func<bool>>
-                {
-                    { "Motion", () => Equipment._InitDeviceStatus.MotionIo },
-                    { "IO", () => Equipment._InitDeviceStatus.MotionIo },
-                    { "Laser", () => Equipment._InitDeviceStatus.Laser },
-                    { "Scanner", () => Equipment._InitDeviceStatus.Scanner },
-                    { "PowerMeter_Bds", () => Equipment._InitDeviceStatus.PowerMeter_Bds },
-                    { "PowerMeter_Stage", () => Equipment._InitDeviceStatus.PowerMeter_Stage },
-                    { "BeamExpander", () => Equipment._InitDeviceStatus.BeamExpander },
-                    { "DustCollector_Upper", () => Equipment._InitDeviceStatus.DustCollector_Upper },
-                    { "DustCollector_Lower", () => Equipment._InitDeviceStatus.DustCollector_Lower },
-                    { "Chiller", () => Equipment._InitDeviceStatus.Chiller },
-                    { "ElectroRegulator", () => Equipment._InitDeviceStatus.ElectroRegulator },
-                    { "HeightSensor", () => Equipment._InitDeviceStatus.HeightSensor },
-                    { "CameraFine", () => Equipment._InitDeviceStatus.CameraFine },
-                    { "CameraPre", () => Equipment._InitDeviceStatus.CameraPre },
-                    { "Illuminator", () => Equipment._InitDeviceStatus.Illuminator },
-                };
-
-                devicePictureBoxes = new Dictionary<string, PictureBox>
-                {
-                    { "Motion", pictureBox_Main_DiviceStatus_Motion },
-                    { "IO", pictureBox_Main_DiviceStatus_IO },
-                    { "Laser", pictureBox_Main_DiviceStatus_Laser },
-                    { "Scanner", pictureBox_Main_DiviceStatus_Scanner },
-                    { "PowerMeter_Bds", pictureBox_Main_DiviceStatus_Powermeter_bds },
-                    { "PowerMeter_Stage", pictureBox_Main_DiviceStatus_Powermeter_Stage },
-                    { "BeamExpander", pictureBox_Main_DiviceStatus_BeamExpander },
-                    { "DustCollector_Upper", pictureBox_Main_DiviceStatus_DustCollector_Upper },
-                    { "DustCollector_Lower", pictureBox_Main_DiviceStatus_DustCollector_Lower },
-                    { "Chiller", pictureBox_Main_DiviceStatus_Chiller },
-                    { "ElectroRegulator", pictureBox_Main_DiviceStatus_ElectroRegulator },
-                    { "HeightSensor", pictureBox_Main_DiviceStatus_HeightSensor },
-                    { "CameraFine", pictureBox_Main_DiviceStatus_CameraFine },
-                    { "CameraPre", pictureBox_Main_DiviceStatus_CameraPre },
-                    { "Illuminator", pictureBox_Main_DiviceStatus_Illuminator },
-                };
-            }
-
-            
+                { "Motion", pictureBox_Main_DiviceStatus_Motion },
+                { "IO", pictureBox_Main_DiviceStatus_IO },
+                { "Laser", pictureBox_Main_DiviceStatus_Laser },
+                { "Scanner", pictureBox_Main_DiviceStatus_Scanner },
+                { "PowerMeter_Bds", pictureBox_Main_DiviceStatus_Powermeter_bds },
+                { "PowerMeter_Stage", pictureBox_Main_DiviceStatus_Powermeter_Stage },
+                { "BeamExpander", pictureBox_Main_DiviceStatus_BeamExpander },
+                { "DustCollector_Upper", pictureBox_Main_DiviceStatus_DustCollector_Upper },
+                { "DustCollector_Lower", pictureBox_Main_DiviceStatus_DustCollector_Lower },
+                { "Chiller", pictureBox_Main_DiviceStatus_Chiller },
+                { "ElectroRegulator", pictureBox_Main_DiviceStatus_ElectroRegulator },
+                { "HeightSensor", pictureBox_Main_DiviceStatus_HeightSensor },
+                { "CameraFine", pictureBox_Main_DiviceStatus_CameraFine },
+                { "CameraPre", pictureBox_Main_DiviceStatus_CameraPre },
+                { "Illuminator", pictureBox_Main_DiviceStatus_Illuminator },
+            };
         }
         private void UpdateDeviceStatusImages()
         {
@@ -897,6 +843,7 @@ namespace SLD200_MSL
                     ? global::SLD200.Properties.Resources.DioEllipseOn
                     : global::SLD200.Properties.Resources.DioEllipseOff;
             }
+
         }
 
         // -----------------------
@@ -916,12 +863,6 @@ namespace SLD200_MSL
 
         private (int, int) m_CompSocketRowCol, m_CompRegionRowCol;
         private int m_CompSocketStatus, m_CompRegionStatus;
-
-
-        //stageWork Onecycle Time.
-        private int m_OneCycleTimeMs = -1;         // 전달받은 가공 시간 (ms)
-        private bool m_bNeedUpdateCycleTime = false;
-        private int m_CycleExpectedTimeMs = 90000; // 예상 시간 (예: 90초)
 
         private async void Timer_MainStatus_Func(object sender, EventArgs e)
         {
@@ -965,48 +906,6 @@ namespace SLD200_MSL
         // -----------------------
         private void DoHeavyLogicPart()
         {
-            //레이저 가공 중 상태 체크
-            bool isLaserBusy = false;
-            try
-            {
-                if(workStage.rtc != null)
-                {
-                    isLaserBusy = workStage.rtc.CtlGetStatus(RtcStatus.Busy);
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Write(ex);
-            }
-
-            if (isLaserBusy && !m_bLaserIsProcessing)
-            {
-                m_bLaserIsProcessing = true;
-                m_bNeedLaserProcessingMessage = true;  //UI 갱신을 위해 플래그 설정
-            }
-            else if (!isLaserBusy && m_bLaserIsProcessing)
-            {
-                m_bLaserIsProcessing = false;
-                m_bNeedLaserProcessingMessage = true;
-            }
-
-            //private int m_OneCycleTimeMs = -1;         // 전달받은 가공 시간 (ms)
-            //private bool m_bNeedUpdateCycleTime = false;
-
-            if (!m_bNeedUpdateCycleTime)
-            {
-                if(workStage.m_OneCycleTimeMs == -1)
-                {
-                    m_OneCycleTimeMs = 0;
-                }
-                else
-                {
-                    m_OneCycleTimeMs = workStage.m_OneCycleTimeMs;
-                    m_bNeedUpdateCycleTime = true;
-                }
-                
-            }
-
             if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
             {
                 workStage.m_bHomeProgressForm_Close = false;
@@ -1118,27 +1017,6 @@ namespace SLD200_MSL
         // -----------------------
         private void UpdateUIControls()
         {
-            // 가공 시간 ProgressBar 표시
-            if (m_bNeedUpdateCycleTime)
-            {
-                int progress = Math.Min(100, m_OneCycleTimeMs * 100 / m_CycleExpectedTimeMs);
-                progressBar_OneCycle_Time.Value = progress;
-                //baseLabel_CurrentOneCycle_ElapsedTime.Text = $"{m_OneCycleTimeMs / 1000.0:F1}s / {m_CycleExpectedTimeMs / 1000.0:F1}s";
-                TimeSpan ts = TimeSpan.FromMilliseconds(m_OneCycleTimeMs);
-                baseLabel_CurrentOneCycle_ElapsedTime.Text = ts.ToString(@"hh\:mm\:ss");
-                //baseLabel_CurrentOneCycle_ElapsedTime.Text = $"{m_OneCycleTimeMs / 1000.0:F1}s";
-                m_bNeedUpdateCycleTime = false;
-            }
-
-            if (m_bNeedLaserProcessingMessage)
-            {
-                m_bNeedLaserProcessingMessage = false;
-
-                label_Main_LaserStatus.Text = m_bLaserIsProcessing ? "⚠ 레이저 가공 중" : "레이저 대기 중";
-                label_Main_LaserStatus.BackColor = m_bLaserIsProcessing ? Color.Red : Color.Black;
-                label_Main_LaserStatus.ForeColor = m_bLaserIsProcessing ? Color.White : Color.Lime;
-            }
-
             if (m_bNeedHideProgressForm)
             {
                 m_bNeedHideProgressForm = false;
@@ -1249,6 +1127,9 @@ namespace SLD200_MSL
             label_Title_Stacker_RPort.BackColor = Equipment.Loader_RPort_Empty ? Color.Red : Color.Black;
             label_Title_Stacker_RPort.ForeColor = Equipment.Loader_RPort_Empty ? Color.White : Color.Lime;
 
+            //  소켓 가공 건너뛰기 (얼라인만 사용)
+            checkBox_Main_SocketDrilling_Pass.BackColor = Equipment.SocketDrilling_Skip ? Color.LightGreen : Color.White;
+
             // 장비 상태 UI에 반영
             UpdateDeviceStatusImages();
         }
@@ -1302,6 +1183,9 @@ namespace SLD200_MSL
 
                 Equipment.MachineStop_byUser = true;
 
+                //  소켓 가공 건너뛰기 취소
+                checkBox_Main_SocketDrilling_Pass.Checked = false;
+                Equipment.SocketDrilling_Skip = false;
 
                 //  Main Work 타이머
                 //workStage.m_btimer_MainWork_Stop = true;                
@@ -1502,6 +1386,22 @@ namespace SLD200_MSL
             }
 
 
+            if (Equipment.SocketDrilling_Skip)
+            {
+                m_strTemp = string.Format("소켓 가공 건너뛰기.\r\n\r\n[얼라인까지 진행하고, 소켓은 가공되지 않습니다.]\r\n\r\n[Hole1 Layer 를 제외한 나머지 가공 진행]");
+
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", m_strTemp);
+            }
+            else
+            {
+                m_strTemp = string.Format("소켓 가공 정상 진행.\r\n\r\n[소켓얼라인 -> 소켓 가공 -> 나머지 Layer 가공 진행]");
+
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", m_strTemp);
+            }
+
+
             //  Loader Port 에 자재가 없으면 메세지 창 Pop up
             if (!loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
             {
@@ -1537,11 +1437,25 @@ namespace SLD200_MSL
                 // null 이면 가공할 것이 없음    
             }
 
+
             //  여기서 정지 후 재시작시 상태 및 소켓 정보 확인 후 구동
             if (workStage.m_nLaserDrilling_MainStep_Recovery == (int)LaserDrilling_Step.DrillingData_PreAlign_Start)
             {
                 //  Pre Align 중이었으니 그대로 시작
                 Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Pre Align 부터 다시 시작");
+
+                if (checkBox_Main_AlignStartSocket_SelectMode.Checked && (workStage.m_nSocketAlign_StartIndex >= 0))                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
+                {
+                    m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\nNo : {1}번 소켓 Align Start", workStage.m_nSocketAlign_StartIndex, workStage.m_nDrillingWork_Group_Count);
+
+                    var mb = new MessageBoxYesNo();
+                    if (DialogResult.Yes == mb.ShowDialog("Question ?", m_strTemp))
+                    {
+                        workStage.m_nDrillingWork_Group_Count = workStage.m_nSocketAlign_StartIndex;        //  선택한 소켓 번호로 변경
+                    }
+
+                    checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                }
 
                 workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
             }
@@ -1550,6 +1464,19 @@ namespace SLD200_MSL
                 //  Socket Align 중이었으니 그대로 시작
 
                 Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket Align 부터 다시 시작");
+
+                if (checkBox_Main_AlignStartSocket_SelectMode.Checked && (workStage.m_nSocketAlign_StartIndex >= 0))                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
+                {
+                    m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\nNo : {1}번 소켓 Align Start", workStage.m_nSocketAlign_StartIndex, workStage.m_nDrillingWork_Group_Count);
+
+                    var mb = new MessageBoxYesNo();
+                    if (DialogResult.Yes == mb.ShowDialog("Question ?", m_strTemp))
+                    {
+                        workStage.m_nDrillingWork_Group_Count = workStage.m_nSocketAlign_StartIndex;        //  선택한 소켓 번호로 변경
+                    }
+
+                    checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                }
 
                 workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
             }
@@ -2221,7 +2148,6 @@ namespace SLD200_MSL
 
         private void button_TEST_RTCInit_Click(object sender, EventArgs e)
         {
-            return;
             //SiriusViewer_Main.Document = Equipment.EqpSiriusViewer_Origin.Document;
             //workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
             //m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
@@ -2387,6 +2313,9 @@ namespace SLD200_MSL
             //  Layer Info List 초기화
             ProcessManager.Init();
 
+            checkBox_Main_SocketDrilling_Pass.Checked = false;
+            Equipment.SocketDrilling_Skip = false;
+
             Equipment.ProcessingData_Parsing_byLoader = false;
 
             //  Loader 파츠 사용 변수 초기화
@@ -2445,6 +2374,7 @@ namespace SLD200_MSL
 
             //  Unloader 파츠 사용 변수 초기화
             unloader.m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
+            unloader.m_nUnloaderTransferMoveType = (int)UnloaderTransferMoveType.Cycle_None;
             unloader.m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
             unloader.m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
 
@@ -2699,9 +2629,18 @@ namespace SLD200_MSL
 
         private void buttonForceMaterialOut_Click(object sender, EventArgs e)
         {
-            workStage.m_bLaserDrilling_Complete = true;
-            workStage.m_nLaserDrilling_MainStep = 0;
-            workStage.m_nSocketAlign_MainStep = 0;
+            if (!Equipment.AutoRunStatus)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "Button Click", "강제배출 버튼 Click");
+
+                workStage.m_bLaserDrilling_Complete = true;
+                workStage.m_nLaserDrilling_MainStep = 0;
+                workStage.m_nSocketAlign_MainStep = 0;
+            }
+            else
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "Button Click", "AutoRun 중 강제배출 버튼 Click");
+            }
         }
         private void FormNew_Main_Load(object sender, EventArgs e)
         {
@@ -3053,12 +2992,28 @@ namespace SLD200_MSL
             }
         }
 
+        private void checkBox_Main_SocketDrilling_Pass_CheckedChanged(object sender, EventArgs e)
+        {
+            //  소켓 가공 건너뛰기 여부
+
+            if (checkBox_Main_SocketDrilling_Pass.Checked)
+            {
+                Equipment.SocketDrilling_Skip = true;               //  소켓 가공 건너뛰기 (얼라인만 사용)
+            }
+            else
+            {
+                Equipment.SocketDrilling_Skip = false;              //  소켓 가공 건너뛰지 않음 (정상 가공)
+            }
+        }
+
+        private void button_Test12_Click(object sender, EventArgs e)
+        {
+            workStage.AlarmPost(QMC.Common.Modules.WorkStage.AlarmKey.PreAlignFail);
+        }
+
         private void button_TEST12_Click(object sender, EventArgs e)
         {
-            return;
-
-            //Equipment.AutoRunStatus = true;
-            Equipment.AutoManualStatus = true;
+            Equipment.AutoManualStatus = false;
 
             int nCol = workStage.Main_SocketPositions_ColumnCount = 5;
             int nRow = workStage.Main_SocketPositions_RowCount = 5;

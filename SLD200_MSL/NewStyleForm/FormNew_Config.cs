@@ -61,6 +61,18 @@ namespace SLD200_MSL
         private Thread m_ConfigStatusThread;
         private bool m_bConfigStatusCycleExit;
 
+        private int m_nLDUL_ActiveUnit = 0;                     //  LDUL Active Part (0:LD R-Port, 1:LD_L-Port, 2:LD_Transfer, 3:LD_MAligner, 4:UL_Transfer, 5:UL_R-Port, 6:UL_L-Port)
+        private enum LDUL_Units
+        {
+            LD_RPort = 0,
+            LD_LPort,
+            LD_Transfer,
+            LD_MAligner,
+            UL_Transfer,
+            UL_RPort,
+            UL_LPort
+        };
+
         private int[] m_nModuleAddrCount;                               //  모듈 별 IO 카운트용 변수
         private int m_nLaserAddrCount = 0;
         private int m_nBDSAddrCount = 0;
@@ -1404,377 +1416,6 @@ namespace SLD200_MSL
             else if (m_keyPad.DialogResult == DialogResult.Cancel)
             {
                 
-            }
-        }
-
-        private void checkedListBox_Config_LDUL_DIO_Output_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            //  LDUL Output IO 상태 변경
-
-            int m_nIndex = checkedListBox_Config_LDUL_DIO_Output.SelectedIndex;
-            bool m_bCurStatus = checkedListBox_Config_LDUL_DIO_Output.GetItemChecked(m_nIndex);
-            int m_nOutputChannel = 0;
-
-            if (m_nIndex < 0)
-                return;
-
-            //  LDUL Output IO List (괄호는 실제 IO 번호)
-
-            //  여기부터 Module 2
-            //  0 (0) : Loader Transfer Inner Vacuum On
-            //  1 (1) : Loader Transfer Outer Vacuum On
-            //  2 (2) : Loader Transfer Air Blow On
-            //  3 (3) : M - Aligner Center Vacuum On
-            //  4 (4) : M - Aligner Inner Vacuum On
-            //  5 (5) : M - Aligner Outer Vacuum On
-            //  6 (6) : M - Aligner Center Air Blow On
-            //  7 (7) : Loader Port Ionizer On
-            //  8 (8) : M - Aligner Inner Air Blow On
-            //  9 (9) : M - Aligner Outer Air Blow On
-
-            //  여기부터 Module 3
-            //  10 (16) : Unloader Tansfer Inner Vacuum On
-            //  11 (17) : Unloader Tansfer Outer Vacuum On
-            //  12 (18) : Unloader Tansfer Air Blow On
-
-            DioPoint dioPoint;
-
-            if ((m_nIndex >= 0) && (m_nIndex <= 9))                                                         //  Loader Output (0 ~ 7) --> 2개 추가하여 9까지
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  0번부터 시작하므로 그대로 사용
-                    m_nOutputChannel = m_nIndex;
-
-                    if ((dioPoint.IoType == IoType.Output) && (dioPoint.ModuleNo == 2) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-            else if ((m_nIndex >= 10) && (m_nIndex <= 12))                                                   //  Unloader Output (16 ~ 18) --> (0 ~ 2)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  0번부터 시작하므로 변환하여 사용 (10일 때0과 같음)
-                    m_nOutputChannel = m_nIndex - 10;
-
-                    if ((dioPoint.IoType == IoType.Output) && (dioPoint.ModuleNo == 3) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        private void checkedListBox_Config_WorkStage_DIO_Output_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            //  Work Stage Output IO 상태 변경
-
-            int m_nIndex = checkedListBox_Config_WorkStage_DIO_Output.SelectedIndex;
-            bool m_bCurStatus = checkedListBox_Config_WorkStage_DIO_Output.GetItemChecked(m_nIndex);
-            int m_nOutputChannel = 0;
-
-            if (m_nIndex < 0)
-                return;
-
-            //  WorkStage Output IO List (괄호는 실제 IO 번호)
-
-            //  0 (0) : Start Switch Lamp
-            //  1 (1) : Stop Switch Lamp
-            //  2 (2) : Reset Switch Lamp
-            //  3 (3) : TowerLamp Red
-            //  4 (4) : TowerLamp Yellow
-            //  5 (5) : TowerLamp Green
-            //  6 (6) : TowerLamp Buzzer
-            //  7 (21) : Work Stage Vacuum On
-            //  8 (22) : Laser Cal - Sheet Vacuum On
-            //  9 (23) : Work Stage Air Blow On
-            //  10 (24) : Laser Cal - Sheet Air Blow On
-            //  11 (25) : Chiller Run
-            //  12 (26) : Dust Collector 0 Air Pulse Run
-            //  13 (27) : Dust Collector 1 Air Pulse Run
-
-            DioPoint dioPoint;
-
-            if ((m_nIndex >= 0) && (m_nIndex <= 6))                                                         //  Work Stage Output (0 ~ 6)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  0번부터 시작하므로 그대로 사용
-                    m_nOutputChannel = m_nIndex;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-            else if ((m_nIndex >= 7) && (m_nIndex <= 10))                                                   //  Work Stage Output (21 ~ 24)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  21번부터 시작하므로 변환하여 사용 (7일 때 21과 같음)
-                    m_nOutputChannel = m_nIndex + 14;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-            else if ((m_nIndex >= 11) && (m_nIndex <= 13))                                                   //  Work Stage Output (26 ~ 27)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  25번부터 시작하므로 변환하여 사용 (11일 때 25과 같음)
-                    m_nOutputChannel = m_nIndex + 14;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        private void checkedListBox_Config_Laser_DIO_Output_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            //  Laser & Scanner Output IO 상태 변경
-
-            int m_nIndex = checkedListBox_Config_Laser_DIO_Output.SelectedIndex;
-            bool m_bCurStatus = checkedListBox_Config_Laser_DIO_Output.GetItemChecked(m_nIndex);
-            int m_nOutputChannel = 0;
-
-            if (m_nIndex < 0)
-                return;
-
-            //  Laser & Scanner Output IO List (괄호는 실제 IO 번호)
-
-            //  0 (7) : Laser Coolant Supply
-            //  1 (8) : Laser Coolant Return
-            //  2 (11) : Scanner Coolant Supply
-            //  3 (12) : Scanner Coolant Return
-            //  4 (13) : Varioscan Coolant Supply
-            //  5 (14) : Varioscan Coolant Return
-            //  6 (18) : Laser Purge
-            //  7 (19) : Scanner Purge
-            //  8 (20) : Varioscan Purge
-            //  9 (28) : Laser Enable
-
-            DioPoint dioPoint;
-
-            if ((m_nIndex >= 0) && (m_nIndex <= 1))                                                         //  Laser & Scanner Output (7 ~ 8)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  7번부터 시작하므로 변환하여 사용 (0일 때 7과 같음)
-                    m_nOutputChannel = m_nIndex + 7;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-            else if ((m_nIndex >= 2) && (m_nIndex <= 5))                                                    //  Laser & Scanner Output (11 ~ 14)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  11번부터 시작하므로 변환하여 사용 (2일 때 11과 같음)
-                    m_nOutputChannel = m_nIndex + 9;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-            else if ((m_nIndex >= 6) && (m_nIndex <= 8))                                                    //  Laser & Scanner Output (18 ~ 20)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  18번부터 시작하므로 변환하여 사용 (6일 때 18과 같음)
-                    m_nOutputChannel = m_nIndex + 12;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-            else if (m_nIndex == 9)                                                                         //  Laser & Scanner Output (28)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  28번부터 시작하므로 변환하여 사용 (9일 때 28와 같음)
-                    m_nOutputChannel = m_nIndex + 19;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        private void checkedListBox_Config_BDS_DIO_Output_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            //  BDS Output IO 상태 변경
-
-            int m_nIndex = checkedListBox_Config_BDS_DIO_Output.SelectedIndex;
-            bool m_bCurStatus = checkedListBox_Config_BDS_DIO_Output.GetItemChecked(m_nIndex);
-            int m_nOutputChannel = 0;
-
-            if (m_nIndex < 0)
-                return;
-
-            //  BDS Output IO List (괄호는 실제 IO 번호)
-
-            //  0 (9) : Mask Coolant Supply
-            //  1 (10) : Mask Coolant Return
-            //  2 (15) : BDS PowerMeter FW
-            //  3 (16) : BDS PowerMeter BW
-            //  4 (17) : BDS Purge
-
-
-            DioPoint dioPoint;
-
-            if ((m_nIndex >= 0) && (m_nIndex <= 1))                                                         //  BDS Output (9 ~ 10)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  9번부터 시작하므로 변환하여 사용 (0일 때 9와 같음)
-                    m_nOutputChannel = m_nIndex + 9;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
-            }
-            else if ((m_nIndex >= 2) && (m_nIndex <= 4))                                                    //  BDS Output (15 ~ 17)
-            {
-                foreach (DioPoint point in Equipment.GetAllDioPointList())
-                {
-                    dioPoint = point;
-
-                    if (dioPoint == null)
-                        return;
-
-                    //  15번부터 시작하므로 변환하여 사용 (2일 때 15와 같음)
-                    m_nOutputChannel = m_nIndex + 13;
-
-                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
-                    {
-                        if (m_bCurStatus)
-                            dioPoint.Write(DioValue.Off);
-                        else
-                            dioPoint.Write(DioValue.On);
-
-                        break;
-                    }
-                }
             }
         }
 
@@ -4383,25 +4024,67 @@ namespace SLD200_MSL
 
             if (m_nIndex >= 0)
             {
+                //  모두 비활성화 (선택 항목만 활성화 하도록)
+                textBox_Config_LDUL_TeachingPos_TransferX.Enabled = false;
+                textBox_Config_LDUL_TeachingPos_TransferZ.Enabled = false;
+                textBox_Config_LDUL_TeachingPos_RPortZ.Enabled = false;
+                textBox_Config_LDUL_TeachingPos_LPortZ.Enabled = false;
+                textBox_Config_LDUL_TeachingPos_MAlignerX.Enabled = false;
+                textBox_Config_LDUL_TeachingPos_MAlignerY.Enabled = false;
+                button_KeypadCall_Config_LDUL_TeachingPos_TransferX.Enabled = false;
+                button_KeypadCall_Config_LDUL_TeachingPos_TransferZ.Enabled = false;
+                button_KeypadCall_Config_LDUL_TeachingPos_RPortZ.Enabled = false;
+                button_KeypadCall_Config_LDUL_TeachingPos_LPortZ.Enabled = false;
+                button_KeypadCall_Config_LDUL_TeachingPos_MAlignerX.Enabled = false;
+                button_KeypadCall_Config_LDUL_TeachingPos_MAlignerY.Enabled = false;
+
                 if (m_nIndex <= 11)                 //  Loader
                 {
                     //  Jog 모드 변경
                     radioButton_Config_ActiveUnit_Loader.Checked = true;
 
                     //  활성/비활성
-                    textBox_Config_LDUL_TeachingPos_TransferX.Enabled = true;
-                    textBox_Config_LDUL_TeachingPos_TransferZ.Enabled = true;
-                    textBox_Config_LDUL_TeachingPos_RPortZ.Enabled = true;
-                    textBox_Config_LDUL_TeachingPos_LPortZ.Enabled = true;
-                    textBox_Config_LDUL_TeachingPos_MAlignerX.Enabled = true;
-                    textBox_Config_LDUL_TeachingPos_MAlignerY.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_TransferX.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_TransferZ.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_RPortZ.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_LPortZ.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_MAlignerX.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_MAlignerY.Enabled = true;
+                    switch(m_nIndex)
+                    {
+                        //  R-Port
+                        case 0:
+                        case 1:
+                            textBox_Config_LDUL_TeachingPos_RPortZ.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_RPortZ.Enabled = true;
+                            break;
 
+                        //  L-Port
+                        case 2:
+                        case 3:
+                            textBox_Config_LDUL_TeachingPos_LPortZ.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_LPortZ.Enabled = true;
+                            break;
+
+                        //  Transfer
+                        case 4:
+                        case 5:
+                        case 6:
+                        case 7:
+                        case 8:
+                            textBox_Config_LDUL_TeachingPos_TransferX.Enabled = true;
+                            textBox_Config_LDUL_TeachingPos_TransferZ.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_TransferX.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_TransferZ.Enabled = true;
+                            break;
+
+                        //  MAligner
+                        case 9:
+                        case 10:
+                        case 11:
+                            textBox_Config_LDUL_TeachingPos_MAlignerX.Enabled = true;
+                            textBox_Config_LDUL_TeachingPos_MAlignerY.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_MAlignerX.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_MAlignerY.Enabled = true;
+                            break;
+
+                        default:
+                            break;
+                    }
 
                     //  데이터 표시
                     textBox_Config_LDUL_TeachingPos_TransferX.Text = loader.stLDULTeachingPos[m_nIndex].LD_Transfer_X.ToString();
@@ -4417,18 +4100,37 @@ namespace SLD200_MSL
                     radioButton_Config_ActiveUnit_Unloader.Checked = true;
 
                     //  활성/비활성
-                    textBox_Config_LDUL_TeachingPos_TransferX.Enabled = true;
-                    textBox_Config_LDUL_TeachingPos_TransferZ.Enabled = true;
-                    textBox_Config_LDUL_TeachingPos_RPortZ.Enabled = true;
-                    textBox_Config_LDUL_TeachingPos_LPortZ.Enabled = true;
-                    textBox_Config_LDUL_TeachingPos_MAlignerX.Enabled = false;
-                    textBox_Config_LDUL_TeachingPos_MAlignerY.Enabled = false;
-                    button_KeypadCall_Config_LDUL_TeachingPos_TransferX.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_TransferZ.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_RPortZ.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_LPortZ.Enabled = true;
-                    button_KeypadCall_Config_LDUL_TeachingPos_MAlignerX.Enabled = false;
-                    button_KeypadCall_Config_LDUL_TeachingPos_MAlignerY.Enabled = false;
+                    switch (m_nIndex)
+                    {
+                        //  R-Port
+                        case 12:
+                        case 13:
+                        case 14:
+                        case 15:
+                        case 16:
+                            textBox_Config_LDUL_TeachingPos_TransferX.Enabled = true;
+                            textBox_Config_LDUL_TeachingPos_TransferZ.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_TransferX.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_TransferZ.Enabled = true;                            
+                            break;
+
+                        //  R-Port
+                        case 17:
+                        case 18:
+                            textBox_Config_LDUL_TeachingPos_RPortZ.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_RPortZ.Enabled = true;
+                            break;
+
+                        //  L-Port
+                        case 19:
+                        case 20:
+                            textBox_Config_LDUL_TeachingPos_LPortZ.Enabled = true;
+                            button_KeypadCall_Config_LDUL_TeachingPos_LPortZ.Enabled = true;
+                            break;
+
+                        default:
+                            break;
+                    }
 
                     //  데이터 표시
                     textBox_Config_LDUL_TeachingPos_TransferX.Text = loader.stLDULTeachingPos[m_nIndex].UL_Transfer_X.ToString();
@@ -4445,7 +4147,7 @@ namespace SLD200_MSL
         {
             //workStage.m_dPowerMeterBDS_Value = 123.0;
             //return;
-
+            
 
             //  선택된 축에 대한 데이터 갖다 넣기
             int m_nIndex = listBox_Config_WorkStage_TeachingPositions.SelectedIndex;
@@ -6827,75 +6529,169 @@ namespace SLD200_MSL
                 }
             }
         }
-
+        
         private void Button_Config_LDUL_TeachingPositions_Move_Click(object sender, EventArgs e)
         {
             //  Loader Unloader Teaching Position 이동
 
-            var mb = new MessageBoxOk();
-            mb.ShowDialog("Information !", "미구현 기능.");
-            return;
+            //var mb = new MessageBoxOk();
+            //mb.ShowDialog("Information !", "미구현 기능.");
+            //return;
 
+            double lfVelocity = 0.0f;
+            double lfAccDec = 0.0f;
 
+            int m_nIndex = listBox_Config_LDUL_TeachingPositions.SelectedIndex;
 
-            //double lfVelocity = 0.0f;
-            //double lfAccDec = 0.0f;
+            if (m_nIndex < 0)
+            {
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Warning !", "Teaching Position 이 선택되지 않았습니다.");
+                return;
+            }
 
-            //int m_nIndex = listBox_Config_LDUL_TeachingPositions.SelectedIndex;
-
-            //if (m_nIndex < 0)
+            //if (!workStage.m_bHomeOK)
             //{
             //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Teaching Position 이 선택되지 않았습니다.");
-            //    return;
-            //}
-
-            ////if (!workStage.m_bHomeOK)
-            ////{
-            ////    var mb1 = new MessageBoxOk();
-            ////    mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
-            ////    return;
-            ////}
-
-            //var mb = new MessageBoxYesNo();
-            //if (DialogResult.Yes != mb.ShowDialog("Question ?", "Stage 를 선택 위치로 보내시겠습니까?\r\n\r\n##  XY 방향 이동 시 Z축 충돌 주의!!!  ##"))
-            //    return;
-
-            //if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
-            //    !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Stage 가 이동중입니다.");
+            //    mb1.ShowDialog("Information !", "먼저 장비 초기화를 해야 합니다.");
             //    return;
             //}
 
 
-            //switch (m_nIndex)
-            //{
+            //  동작할 Unit 결정
+            switch (m_nIndex)
+            {
+                //  Loader R-Port
+                case 0:
+                case 1:
+                    m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_RPort;
+                    break;
 
-            //}
+                //  Loader L-Port
+                case 2:
+                case 3:
+                    m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_LPort;
+                    break;
+
+                //  Loader Transfer
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                    m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_Transfer;
+                    break;
+
+                //  Loader M-Aligner
+                case 9:
+                case 10:
+                case 11:
+                    m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_MAligner;
+                    break;
+
+                //  Unloader Transfer
+                case 12:
+                case 13:
+                case 14:
+                case 15:
+                case 16:
+                    m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_Transfer;
+                    break;
+
+                //  Unloader R-Port
+                case 17:
+                case 18:
+                    m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_RPort;
+                    break;
+
+                //  Unloader L-Port
+                case 19:
+                case 20:
+                    m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_LPort;
+                    break;
+
+                default:
+                    break;
+            }
 
 
-            ////  속도 설정
-            //if (radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine.Checked)
-            //{
-            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
-            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
-            //}
-            //else
-            //{
-            //    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
-            //    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-            //}
+            //  선택한 Unit 별로 이동 명령 다르게
+            if ( m_nLDUL_ActiveUnit == (int)LDUL_Units.LD_RPort)
+            {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader R-Port Z0 축을 선택 위치로 보내시겠습니까?"))
+                    return;
 
-            ////workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.X, workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X,
-            ////                                lfVelocity, lfAccDec, lfAccDec);
-            ////workStage.MC_Func.MC_MovePosition((int)WorkStage.nAxis.Y, workStage.stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y,
-            ////                               lfVelocity, lfAccDec, lfAccDec);
+                if (!loader.MC_Func.MC_GetDone((int)Loader.nAxis.Z0) || !loader.MC_Func.MC_GetInposition((int)Loader.nAxis.Z0))
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Warning !", "Loader R-Port Z0 축이 이동중입니다.");
+                    return;
+                }
 
-            //xyInterpolatedCoordinate.X = workStage.stWorkStageTeachingPos[m_nIndex].Stage_X;
-            //xyInterpolatedCoordinate.Y = workStage.stWorkStageTeachingPos[m_nIndex].Stage_Y;
-            //workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                //  속도 설정
+                if (radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.Checked)
+                {
+                    lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Jog_Speed_Fine;
+                    lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Common_Acceleration_Fine;
+                }
+                else
+                {
+                    lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Jog_Speed_Coarse;
+                    lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Common_Acceleration_Coarse;
+                }
+
+                loader.MC_Func.MC_MovePosition((int)Loader.nAxis.Z0, loader.stLDULTeachingPos[m_nIndex].LD_Stacker_Z0,
+                                                lfVelocity, lfAccDec, lfAccDec);
+            }
+            else if (m_nLDUL_ActiveUnit == (int)LDUL_Units.LD_LPort)
+            {
+                var mb = new MessageBoxYesNo();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader L-Port Z1 축을 선택 위치로 보내시겠습니까?"))
+                    return;
+
+                if (!loader.MC_Func.MC_GetDone((int)Loader.nAxis.Z1) || !loader.MC_Func.MC_GetInposition((int)Loader.nAxis.Z1))
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Warning !", "Loader L-Port Z1 축이 이동중입니다.");
+                    return;
+                }
+
+                //  속도 설정
+                if (radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.Checked)
+                {
+                    lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Jog_Speed_Fine;
+                    lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Acceleration_Fine;
+                }
+                else
+                {
+                    lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Jog_Speed_Coarse;
+                    lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Acceleration_Coarse;
+                }
+
+                loader.MC_Func.MC_MovePosition((int)Loader.nAxis.Z1, loader.stLDULTeachingPos[m_nIndex].LD_Stacker_Z1,
+                                                lfVelocity, lfAccDec, lfAccDec);
+            }
+            else if (m_nLDUL_ActiveUnit == (int)LDUL_Units.LD_Transfer)
+            {
+
+            }
+            else if (m_nLDUL_ActiveUnit == (int)LDUL_Units.LD_MAligner)
+            {
+
+            }
+            else if (m_nLDUL_ActiveUnit == (int)LDUL_Units.UL_Transfer)
+            {
+
+            }
+            else if (m_nLDUL_ActiveUnit == (int)LDUL_Units.UL_RPort)
+            {
+
+            }
+            else if (m_nLDUL_ActiveUnit == (int)LDUL_Units.UL_LPort)
+            {
+
+            }            
         }
 
         private void Button_Config_Vision_TeachingPositions_Move_Click(object sender, EventArgs e)
@@ -7873,6 +7669,377 @@ namespace SLD200_MSL
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !", "Work Stage 가 동작중입니다.");
                 return;
+            }
+        }
+
+        private void checkedListBox_Config_WorkStage_DIO_Output_MouseClick(object sender, MouseEventArgs e)
+        {
+            //  Work Stage Output IO 상태 변경
+
+            int m_nIndex = checkedListBox_Config_WorkStage_DIO_Output.SelectedIndex;
+            bool m_bCurStatus = checkedListBox_Config_WorkStage_DIO_Output.GetItemChecked(m_nIndex);
+            int m_nOutputChannel = 0;
+
+            if (m_nIndex < 0)
+                return;
+
+            //  WorkStage Output IO List (괄호는 실제 IO 번호)
+
+            //  0 (0) : Start Switch Lamp
+            //  1 (1) : Stop Switch Lamp
+            //  2 (2) : Reset Switch Lamp
+            //  3 (3) : TowerLamp Red
+            //  4 (4) : TowerLamp Yellow
+            //  5 (5) : TowerLamp Green
+            //  6 (6) : TowerLamp Buzzer
+            //  7 (21) : Work Stage Vacuum On
+            //  8 (22) : Laser Cal - Sheet Vacuum On
+            //  9 (23) : Work Stage Air Blow On
+            //  10 (24) : Laser Cal - Sheet Air Blow On
+            //  11 (25) : Chiller Run
+            //  12 (26) : Dust Collector 0 Air Pulse Run
+            //  13 (27) : Dust Collector 1 Air Pulse Run
+
+            DioPoint dioPoint;
+
+            if ((m_nIndex >= 0) && (m_nIndex <= 6))                                                         //  Work Stage Output (0 ~ 6)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  0번부터 시작하므로 그대로 사용
+                    m_nOutputChannel = m_nIndex;
+
+                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+            else if ((m_nIndex >= 7) && (m_nIndex <= 10))                                                   //  Work Stage Output (21 ~ 24)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  21번부터 시작하므로 변환하여 사용 (7일 때 21과 같음)
+                    m_nOutputChannel = m_nIndex + 14;
+
+                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+            else if ((m_nIndex >= 11) && (m_nIndex <= 13))                                                   //  Work Stage Output (26 ~ 27)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  25번부터 시작하므로 변환하여 사용 (11일 때 25과 같음)
+                    m_nOutputChannel = m_nIndex + 14;
+
+                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void checkedListBox_Config_LDUL_DIO_Output_MouseClick(object sender, MouseEventArgs e)
+        {
+            //  LDUL Output IO 상태 변경
+
+            int m_nIndex = checkedListBox_Config_LDUL_DIO_Output.SelectedIndex;
+            bool m_bCurStatus = checkedListBox_Config_LDUL_DIO_Output.GetItemChecked(m_nIndex);
+            int m_nOutputChannel = 0;
+
+            if (m_nIndex < 0)
+                return;
+
+            //  LDUL Output IO List (괄호는 실제 IO 번호)
+
+            //  여기부터 Module 2
+            //  0 (0) : Loader Transfer Inner Vacuum On
+            //  1 (1) : Loader Transfer Outer Vacuum On
+            //  2 (2) : Loader Transfer Air Blow On
+            //  3 (3) : M - Aligner Center Vacuum On
+            //  4 (4) : M - Aligner Inner Vacuum On
+            //  5 (5) : M - Aligner Outer Vacuum On
+            //  6 (6) : M - Aligner Center Air Blow On
+            //  7 (7) : Loader Port Ionizer On
+            //  8 (8) : M - Aligner Inner Air Blow On
+            //  9 (9) : M - Aligner Outer Air Blow On
+
+            //  여기부터 Module 3
+            //  10 (16) : Unloader Tansfer Inner Vacuum On
+            //  11 (17) : Unloader Tansfer Outer Vacuum On
+            //  12 (18) : Unloader Tansfer Air Blow On
+
+            DioPoint dioPoint;
+
+            if ((m_nIndex >= 0) && (m_nIndex <= 9))                                                         //  Loader Output (0 ~ 7) --> 2개 추가하여 9까지
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  0번부터 시작하므로 그대로 사용
+                    m_nOutputChannel = m_nIndex;
+
+                    if ((dioPoint.IoType == IoType.Output) && (dioPoint.ModuleNo == 2) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+            else if ((m_nIndex >= 10) && (m_nIndex <= 12))                                                   //  Unloader Output (16 ~ 18) --> (0 ~ 2)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  0번부터 시작하므로 변환하여 사용 (10일 때0과 같음)
+                    m_nOutputChannel = m_nIndex - 10;
+
+                    if ((dioPoint.IoType == IoType.Output) && (dioPoint.ModuleNo == 3) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void checkedListBox_Config_Laser_DIO_Output_MouseClick(object sender, MouseEventArgs e)
+        {
+            //  Laser & Scanner Output IO 상태 변경
+
+            int m_nIndex = checkedListBox_Config_Laser_DIO_Output.SelectedIndex;
+            bool m_bCurStatus = checkedListBox_Config_Laser_DIO_Output.GetItemChecked(m_nIndex);
+            int m_nOutputChannel = 0;
+
+            if (m_nIndex < 0)
+                return;
+
+            //  Laser & Scanner Output IO List (괄호는 실제 IO 번호)
+
+            //  0 (7) : Laser Coolant Supply
+            //  1 (8) : Laser Coolant Return
+            //  2 (11) : Scanner Coolant Supply
+            //  3 (12) : Scanner Coolant Return
+            //  4 (13) : Varioscan Coolant Supply
+            //  5 (14) : Varioscan Coolant Return
+            //  6 (18) : Laser Purge
+            //  7 (19) : Scanner Purge
+            //  8 (20) : Varioscan Purge
+            //  9 (28) : Laser Enable
+
+            DioPoint dioPoint;
+
+            if ((m_nIndex >= 0) && (m_nIndex <= 1))                                                         //  Laser & Scanner Output (7 ~ 8)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  7번부터 시작하므로 변환하여 사용 (0일 때 7과 같음)
+                    m_nOutputChannel = m_nIndex + 7;
+
+                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+            else if ((m_nIndex >= 2) && (m_nIndex <= 5))                                                    //  Laser & Scanner Output (11 ~ 14)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  11번부터 시작하므로 변환하여 사용 (2일 때 11과 같음)
+                    m_nOutputChannel = m_nIndex + 9;
+
+                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+            else if ((m_nIndex >= 6) && (m_nIndex <= 8))                                                    //  Laser & Scanner Output (18 ~ 20)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  18번부터 시작하므로 변환하여 사용 (6일 때 18과 같음)
+                    m_nOutputChannel = m_nIndex + 12;
+
+                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+            else if (m_nIndex == 9)                                                                         //  Laser & Scanner Output (28)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  28번부터 시작하므로 변환하여 사용 (9일 때 28와 같음)
+                    m_nOutputChannel = m_nIndex + 19;
+
+                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void checkedListBox_Config_BDS_DIO_Output_MouseClick(object sender, MouseEventArgs e)
+        {
+            //  BDS Output IO 상태 변경
+
+            int m_nIndex = checkedListBox_Config_BDS_DIO_Output.SelectedIndex;
+            bool m_bCurStatus = checkedListBox_Config_BDS_DIO_Output.GetItemChecked(m_nIndex);
+            int m_nOutputChannel = 0;
+
+            if (m_nIndex < 0)
+                return;
+
+            //  BDS Output IO List (괄호는 실제 IO 번호)
+
+            //  0 (9) : Mask Coolant Supply
+            //  1 (10) : Mask Coolant Return
+            //  2 (15) : BDS PowerMeter FW
+            //  3 (16) : BDS PowerMeter BW
+            //  4 (17) : BDS Purge
+
+
+            DioPoint dioPoint;
+
+            if ((m_nIndex >= 0) && (m_nIndex <= 1))                                                         //  BDS Output (9 ~ 10)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  9번부터 시작하므로 변환하여 사용 (0일 때 9와 같음)
+                    m_nOutputChannel = m_nIndex + 9;
+
+                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
+            }
+            else if ((m_nIndex >= 2) && (m_nIndex <= 4))                                                    //  BDS Output (15 ~ 17)
+            {
+                foreach (DioPoint point in Equipment.GetAllDioPointList())
+                {
+                    dioPoint = point;
+
+                    if (dioPoint == null)
+                        return;
+
+                    //  15번부터 시작하므로 변환하여 사용 (2일 때 15와 같음)
+                    m_nOutputChannel = m_nIndex + 13;
+
+                    if ((dioPoint.ModuleNo == 1) && (dioPoint.Address == m_nOutputChannel))
+                    {
+                        if (m_bCurStatus)
+                            dioPoint.Write(DioValue.Off);
+                        else
+                            dioPoint.Write(DioValue.On);
+
+                        break;
+                    }
+                }
             }
         }
     }

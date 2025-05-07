@@ -288,8 +288,8 @@ namespace QMC.Common.VisionPart
             List<PointF> polygon = new List<PointF>();
             List<PointF> points = new List<PointF>();
             int nDivideCount = 5;
-            int nStepX =(int)( w / (nDivideCount *1.5));
-            int nStepY = (int)(h / (nDivideCount * 1.5));
+            int nStepX =(int)( w / (nDivideCount * 3));
+            int nStepY = (int)(h / (nDivideCount * 3));
             int nDirectionX = 0;
             int nDirectionY = 0;
             bool bFindCircle = false;

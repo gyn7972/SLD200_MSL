@@ -429,7 +429,7 @@ namespace QMC.Common.Parts
 
                         }
                         //Thread.Sleep(Config.MoveToDelay);
-                        Thread.Sleep(100);
+                        Thread.Sleep(500);
 
                         m_AlignPositions[0].X = xyInterpolatedCoordinate.X;
                         m_AlignPositions[0].Y = xyInterpolatedCoordinate.Y;
@@ -448,7 +448,7 @@ namespace QMC.Common.Parts
                         {
                             FirstPosition_ImageCoord = GetCoordinate(firstPointSearchResult.Values[0].X, firstPointSearchResult.Values[0].Y);                            //  이미지 좌표
                                                                                                                                                                          //finalFirstPosition = firstPointCoordinate + GetCoordinate(firstPointSearchResult.Values[0].X, firstPointSearchResult.Values[0].Y);          //  이미지 좌표 + 모션 좌표
-                            finalFirstPosition = firstPointCoordinate + FirstPosition_ImageCoord;                                                                        //  이미지 좌표 + 모션 좌표
+                            finalFirstPosition = firstPointCoordinate - FirstPosition_ImageCoord;                                                                        //  이미지 좌표 + 모션 좌표
 
                             FirstPosition = finalFirstPosition;
                             this.Result = 0.0;
@@ -510,7 +510,7 @@ namespace QMC.Common.Parts
                         }
                     }
                     //Thread.Sleep(Config.MoveToDelay);
-                    Thread.Sleep(100);
+                    Thread.Sleep(500);
 
                     m_AlignPositions[1].X = xyInterpolatedCoordinate.X;
                     m_AlignPositions[1].Y = xyInterpolatedCoordinate.Y;
@@ -526,7 +526,7 @@ namespace QMC.Common.Parts
                         {
                             FirstPosition_ImageCoord = GetCoordinate(secondPointSearchResult.Values[0].X, secondPointSearchResult.Values[0].Y);                              //  이미지 좌표
                                                                                                                                                                              //finalSecondPosition = secondPointCoordinate + GetCoordinate(secondPointSearchResult.Values[0].X, secondPointSearchResult.Values[0].Y);          //  이미지 좌표 + 모션 좌표
-                            finalSecondPosition = secondPointCoordinate + FirstPosition_ImageCoord;                                                                          //  이미지 좌표 + 모션 좌표
+                            finalSecondPosition = secondPointCoordinate - FirstPosition_ImageCoord;                                                                          //  이미지 좌표 + 모션 좌표
 
                             FirstPosition = finalSecondPosition;
                             this.Result = 0.0;
@@ -557,9 +557,12 @@ namespace QMC.Common.Parts
                         }
                         else
                         {
-                            // ScannerCalibration 할때 좌표를 - 로하여 이동했음.
+                            // 꼭확인
+                            // 1, 2번 마크 위치가.. 좌우 바뀌었는데...
                             XyzCoordinate position1 = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
+
                             XyzCoordinate position2 = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos2.X, Equipment.stLayerRecipeSet[0].PreAlignPos2.Y, 0.0);
+
                             double dRefAngle = GetAngle(new XyCoordinate(position1.X,position1.Y), new XyCoordinate(position2.X, position2.Y));
                             position1.X -= finalFirstPosition.X;
                             position1.Y -= finalFirstPosition.Y;

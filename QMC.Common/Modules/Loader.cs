@@ -730,6 +730,9 @@ namespace QMC.Common.Modules
 
             TICK_ALIGN = 8,             //  8 : M-Align
 
+            TICK_LDSZ0_NOMATERIAL_DETECT = 9,             //  9 : Loader Stacker Z0 No Material Detect Time
+            TICK_LDSZ1_NOMATERIAL_DETECT = 10,            //  10 : Loader Stacker Z1 No Material Detect Time
+
             //TICK_LASER_INTERFACE = 3,   //  3 : Laser Interface Set
             //TICK_LASER_FOCUS = 4,       //  4 : Laser Focus Check Cycle
             //TICK_LASER_COMM = 5,        //  5 : Laser Comm. Cycle
@@ -1909,17 +1912,29 @@ namespace QMC.Common.Modules
                 //}
             }
 
-            // Stacker0 에서 Module 을 Pick Up 하기 위한 위치로 이동
-            // 제품 확인해서 없으면 멈춰서 대기 해야 함. 제품이 확인 안되면 GUI에 표시 필요.
+
+            //  Stacker0 에서 Module 을 Pick-Up 하는 도중에, 모든 Module 이 들려올라가면서 자재 감지 센서가 Off 되는 상황이 있음. 이것 때문에 Pause 상태로 변경됨을 확인.
+            //  자재 감지 센서가 설정된 시간 동안 감지되지 않을 경우에만 Pause 상태로 변경되도록 함.
             if (!loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))
             {
-                Equipment.Loader_RPort_Pause = true;
+                if (!Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable)
+                {
+                    Equipment.Loader_RPort_Pause = true;
+                }
+                else if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDSZ0_NOMATERIAL_DETECT) > (Equipment.Machine_LoaderStacker_NoMaterialDetectTime * 1000)))
+                {
+                    Equipment.Loader_RPort_Pause = true;
+                }
+
                 Equipment.Loader_RPort_Empty = true;    // 자재 없음 알림.
             }
             else
             {
-                Equipment.Loader_RPort_Empty = false;   // 자재 있음 알림.
+                TickCount_Start((int)TickType.TICK_LDSZ0_NOMATERIAL_DETECT);
+
+                Equipment.Loader_RPort_Empty = false;    // 자재 있음 알림.
             }
+
 
             //  자동운전 시, Stacker0 동작 조건 : TR Cycle (None), Stacker0 Cycle (None), TR 이 Module 을 집어갔을 때
             if (Equipment.AutoRunStatus &&
@@ -2714,13 +2729,25 @@ namespace QMC.Common.Modules
                 
             }
 
+            //  Stacker1 에서 Module 을 Pick-Up 하는 도중에, 모든 Module 이 들려올라가면서 자재 감지 센서가 Off 되는 상황이 있음. 이것 때문에 Pause 상태로 변경됨을 확인.
+            //  자재 감지 센서가 설정된 시간 동안 감지되지 않을 경우에만 Pause 상태로 변경되도록 함.
             if (!loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
             {
-                Equipment.Loader_LPort_Pause = true;
+                if (!Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable)
+                {
+                    Equipment.Loader_LPort_Pause = true;
+                }
+                else if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT) > (Equipment.Machine_LoaderStacker_NoMaterialDetectTime * 1000)))
+                {
+                    Equipment.Loader_LPort_Pause = true;
+                }
+
                 Equipment.Loader_LPort_Empty = true;    // 자재 없음 알림.
             }
             else
             {
+                TickCount_Start((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT);
+
                 Equipment.Loader_LPort_Empty = false;    // 자재 있음 알림.
             }
 
@@ -3746,7 +3773,7 @@ namespace QMC.Common.Modules
                     (m_nMAlign_Step == (int)MAlign_Step.None) &&
                     (m_bMAlign_Complete || m_bMAlign_Retry) &&
 
-                    //  Module 을 미리 들고 있게 하기 위해 주석 처리 --> 아래 5번째 단계로 옮김
+                    ////  M-Aligner 에서 Module 을 미리 Pick Up 하기 위해서 5번 조건으로 이동
                     //!workStage.m_bMainWorkCycle_Complete &&                                                   //  Work Stage 의 완료 상태가 False 일 때 얼라인 완료된 모듈을 픽업 한다. 
                     //((workStage.m_bMainWorkCycle_DryRun && (workStage.m_nDryRun_Step == (int)WorkStage.DryRun_Step.None)) ||                        //  Dry Run 이면?? Dry Run Step None 확인
                     //(!workStage.m_bMainWorkCycle_DryRun && (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))) &&     //  Drilling Run 이면?? Drilling Step None 확인
@@ -3762,13 +3789,16 @@ namespace QMC.Common.Modules
                 // 5. Work Stage에 제품 안착
                 else if (m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete &&
                     !m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete &&
+
                     (unloader.m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None) &&
                     (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_Stage) &&
 
-                    //  Module 을 미리 들고 있게 하기 위해 코드 이동 --> 위 4번째 단계의 조건을 5번째 단계로 옮김
-                    !workStage.m_bMainWorkCycle_Complete &&                                                                                         //  Work Stage 의 완료 상태가 False 일 때 얼라인 완료된 모듈을 픽업 한다. 
+                    //  M-Aligner 에서 Module 을 미리 Pick Up 하기 위해서 4번 조건에 있던 것으로 5번으로 이동
+                    !workStage.m_bMainWorkCycle_Complete &&                                                   //  Work Stage 의 완료 상태가 False 일 때 얼라인 완료된 모듈을 픽업 한다. 
                     ((workStage.m_bMainWorkCycle_DryRun && (workStage.m_nDryRun_Step == (int)WorkStage.DryRun_Step.None)) ||                        //  Dry Run 이면?? Dry Run Step None 확인
                     (!workStage.m_bMainWorkCycle_DryRun && (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None))) &&     //  Drilling Run 이면?? Drilling Step None 확인
+
+                    (unloader.m_nUnloaderTransferMoveType != (int)UnloaderTransferMoveType.Cycle_WorkStage_PickUp) && 
 
                     (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) &&      //  Work Stage 에서 아무것도 하지 않을 때
                     (workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None))
@@ -5880,9 +5910,9 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum On");
 
-                    loaderParameter.DO_Loader_Picker_Blow(false);
                     loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, true);
                     loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, true);
+                    loaderParameter.DO_Loader_Picker_Blow(false);
 
                     TickCount_Start((int)TickType.TICK_LDTR);
 
@@ -8693,6 +8723,11 @@ namespace QMC.Common.Modules
             }
             else
             {
+                m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse * Equipment.Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio;
+                if(m_dSpeed > 4000)
+                {
+                    m_dSpeed = 4000;
+                }
                 m_dAccDec = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Acceleration_Coarse * Equipment.Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio;
             }            
 
@@ -9793,6 +9828,10 @@ namespace QMC.Common.Modules
             {
                 m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Move_ReadyPos2_1stStep;
             }
+            else if (Step <= (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_VibrationMove_UpPos_DoneCheck)
+            {
+                m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Vibration_Start;
+            }
             else if (Step <= (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Move_ReadyPos2_2ndStep_DoneCheck)
             {
                 m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Move_ReadyPos2_2ndStep;
@@ -9825,6 +9864,10 @@ namespace QMC.Common.Modules
             else if (Step <= (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_1stStep_DoneCheck)
             {
                 m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_1stStep;
+            }
+            else if (Step <= (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_VibrationMove_UpPos_DoneCheck)
+            {
+                m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Vibration_Start;
             }
             else if (Step <= (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_2ndStep_DoneCheck)
             {

@@ -771,7 +771,7 @@
             this.checkedListBox_Config_LDUL_DIO_Output.Size = new System.Drawing.Size(279, 156);
             this.checkedListBox_Config_LDUL_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_LDUL_DIO_Output.ThreeDCheckBoxes = true;
-            this.checkedListBox_Config_LDUL_DIO_Output.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_LDUL_DIO_Output_MouseDoubleClick);
+            this.checkedListBox_Config_LDUL_DIO_Output.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_LDUL_DIO_Output_MouseClick);
             // 
             // groupBox_Config_LDUL_DIO_Input
             // 
@@ -1265,25 +1265,25 @@
             // 
             // radioButton_Config_LDUL_JogMove_Step
             // 
+            this.radioButton_Config_LDUL_JogMove_Step.Checked = true;
             this.radioButton_Config_LDUL_JogMove_Step.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_LDUL_JogMove_Step.Location = new System.Drawing.Point(10, 50);
             this.radioButton_Config_LDUL_JogMove_Step.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.radioButton_Config_LDUL_JogMove_Step.Name = "radioButton_Config_LDUL_JogMove_Step";
             this.radioButton_Config_LDUL_JogMove_Step.Size = new System.Drawing.Size(59, 24);
             this.radioButton_Config_LDUL_JogMove_Step.TabIndex = 6;
+            this.radioButton_Config_LDUL_JogMove_Step.TabStop = true;
             this.radioButton_Config_LDUL_JogMove_Step.Text = "Step";
             this.radioButton_Config_LDUL_JogMove_Step.UseVisualStyleBackColor = true;
             // 
             // radioButton_Config_LDUL_JogMove_Continuous
             // 
-            this.radioButton_Config_LDUL_JogMove_Continuous.Checked = true;
             this.radioButton_Config_LDUL_JogMove_Continuous.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_LDUL_JogMove_Continuous.Location = new System.Drawing.Point(10, 25);
             this.radioButton_Config_LDUL_JogMove_Continuous.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.radioButton_Config_LDUL_JogMove_Continuous.Name = "radioButton_Config_LDUL_JogMove_Continuous";
             this.radioButton_Config_LDUL_JogMove_Continuous.Size = new System.Drawing.Size(107, 24);
             this.radioButton_Config_LDUL_JogMove_Continuous.TabIndex = 5;
-            this.radioButton_Config_LDUL_JogMove_Continuous.TabStop = true;
             this.radioButton_Config_LDUL_JogMove_Continuous.Text = "Continuous";
             this.radioButton_Config_LDUL_JogMove_Continuous.UseVisualStyleBackColor = true;
             // 
@@ -1909,25 +1909,25 @@
             // 
             // radioButton_Config_LDUL_Move_MoveMode_Coarse
             // 
+            this.radioButton_Config_LDUL_Move_MoveMode_Coarse.Checked = true;
             this.radioButton_Config_LDUL_Move_MoveMode_Coarse.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_LDUL_Move_MoveMode_Coarse.Location = new System.Drawing.Point(196, 25);
             this.radioButton_Config_LDUL_Move_MoveMode_Coarse.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_LDUL_Move_MoveMode_Coarse.Name = "radioButton_Config_LDUL_Move_MoveMode_Coarse";
             this.radioButton_Config_LDUL_Move_MoveMode_Coarse.Size = new System.Drawing.Size(105, 24);
             this.radioButton_Config_LDUL_Move_MoveMode_Coarse.TabIndex = 6;
+            this.radioButton_Config_LDUL_Move_MoveMode_Coarse.TabStop = true;
             this.radioButton_Config_LDUL_Move_MoveMode_Coarse.Text = "Coarse";
             this.radioButton_Config_LDUL_Move_MoveMode_Coarse.UseVisualStyleBackColor = true;
             // 
             // radioButton_Config_LDUL_Move_MoveMode_Fine
             // 
-            this.radioButton_Config_LDUL_Move_MoveMode_Fine.Checked = true;
             this.radioButton_Config_LDUL_Move_MoveMode_Fine.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_LDUL_Move_MoveMode_Fine.Location = new System.Drawing.Point(38, 25);
             this.radioButton_Config_LDUL_Move_MoveMode_Fine.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_LDUL_Move_MoveMode_Fine.Name = "radioButton_Config_LDUL_Move_MoveMode_Fine";
             this.radioButton_Config_LDUL_Move_MoveMode_Fine.Size = new System.Drawing.Size(105, 24);
             this.radioButton_Config_LDUL_Move_MoveMode_Fine.TabIndex = 5;
-            this.radioButton_Config_LDUL_Move_MoveMode_Fine.TabStop = true;
             this.radioButton_Config_LDUL_Move_MoveMode_Fine.Text = "Fine";
             this.radioButton_Config_LDUL_Move_MoveMode_Fine.UseVisualStyleBackColor = true;
             // 
@@ -2013,25 +2013,25 @@
             // 
             // radioButton_Config_LDUL_TeachingPositions_MoveMode_Coarse
             // 
+            this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Coarse.Checked = true;
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Coarse.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Coarse.Location = new System.Drawing.Point(72, 25);
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Coarse.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Coarse.Name = "radioButton_Config_LDUL_TeachingPositions_MoveMode_Coarse";
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Coarse.Size = new System.Drawing.Size(70, 24);
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Coarse.TabIndex = 6;
+            this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Coarse.TabStop = true;
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Coarse.Text = "Coarse";
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Coarse.UseVisualStyleBackColor = true;
             // 
             // radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine
             // 
-            this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.Checked = true;
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.Location = new System.Drawing.Point(10, 25);
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.Name = "radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine";
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.Size = new System.Drawing.Size(52, 24);
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.TabIndex = 5;
-            this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.TabStop = true;
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.Text = "Fine";
             this.radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.UseVisualStyleBackColor = true;
             // 
@@ -3131,7 +3131,7 @@
             this.checkedListBox_Config_WorkStage_DIO_Output.Size = new System.Drawing.Size(279, 251);
             this.checkedListBox_Config_WorkStage_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_WorkStage_DIO_Output.ThreeDCheckBoxes = true;
-            this.checkedListBox_Config_WorkStage_DIO_Output.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_WorkStage_DIO_Output_MouseDoubleClick);
+            this.checkedListBox_Config_WorkStage_DIO_Output.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_WorkStage_DIO_Output_MouseClick);
             // 
             // groupBox53
             // 
@@ -3495,25 +3495,25 @@
             // 
             // radioButton_Config_WorkStage_JogMove_Step
             // 
+            this.radioButton_Config_WorkStage_JogMove_Step.Checked = true;
             this.radioButton_Config_WorkStage_JogMove_Step.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_WorkStage_JogMove_Step.Location = new System.Drawing.Point(10, 50);
             this.radioButton_Config_WorkStage_JogMove_Step.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.radioButton_Config_WorkStage_JogMove_Step.Name = "radioButton_Config_WorkStage_JogMove_Step";
             this.radioButton_Config_WorkStage_JogMove_Step.Size = new System.Drawing.Size(59, 24);
             this.radioButton_Config_WorkStage_JogMove_Step.TabIndex = 6;
+            this.radioButton_Config_WorkStage_JogMove_Step.TabStop = true;
             this.radioButton_Config_WorkStage_JogMove_Step.Text = "Step";
             this.radioButton_Config_WorkStage_JogMove_Step.UseVisualStyleBackColor = true;
             // 
             // radioButton_Config_WorkStage_JogMove_Continuous
             // 
-            this.radioButton_Config_WorkStage_JogMove_Continuous.Checked = true;
             this.radioButton_Config_WorkStage_JogMove_Continuous.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_WorkStage_JogMove_Continuous.Location = new System.Drawing.Point(10, 25);
             this.radioButton_Config_WorkStage_JogMove_Continuous.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.radioButton_Config_WorkStage_JogMove_Continuous.Name = "radioButton_Config_WorkStage_JogMove_Continuous";
             this.radioButton_Config_WorkStage_JogMove_Continuous.Size = new System.Drawing.Size(107, 24);
             this.radioButton_Config_WorkStage_JogMove_Continuous.TabIndex = 5;
-            this.radioButton_Config_WorkStage_JogMove_Continuous.TabStop = true;
             this.radioButton_Config_WorkStage_JogMove_Continuous.Text = "Continuous";
             this.radioButton_Config_WorkStage_JogMove_Continuous.UseVisualStyleBackColor = true;
             // 
@@ -3842,25 +3842,25 @@
             // 
             // radioButton_Config_WorkStage_Move_MoveMode_Coarse
             // 
+            this.radioButton_Config_WorkStage_Move_MoveMode_Coarse.Checked = true;
             this.radioButton_Config_WorkStage_Move_MoveMode_Coarse.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_WorkStage_Move_MoveMode_Coarse.Location = new System.Drawing.Point(196, 25);
             this.radioButton_Config_WorkStage_Move_MoveMode_Coarse.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_WorkStage_Move_MoveMode_Coarse.Name = "radioButton_Config_WorkStage_Move_MoveMode_Coarse";
             this.radioButton_Config_WorkStage_Move_MoveMode_Coarse.Size = new System.Drawing.Size(105, 24);
             this.radioButton_Config_WorkStage_Move_MoveMode_Coarse.TabIndex = 6;
+            this.radioButton_Config_WorkStage_Move_MoveMode_Coarse.TabStop = true;
             this.radioButton_Config_WorkStage_Move_MoveMode_Coarse.Text = "Coarse";
             this.radioButton_Config_WorkStage_Move_MoveMode_Coarse.UseVisualStyleBackColor = true;
             // 
             // radioButton_Config_WorkStage_Move_MoveMode_Fine
             // 
-            this.radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked = true;
             this.radioButton_Config_WorkStage_Move_MoveMode_Fine.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_WorkStage_Move_MoveMode_Fine.Location = new System.Drawing.Point(38, 25);
             this.radioButton_Config_WorkStage_Move_MoveMode_Fine.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_WorkStage_Move_MoveMode_Fine.Name = "radioButton_Config_WorkStage_Move_MoveMode_Fine";
             this.radioButton_Config_WorkStage_Move_MoveMode_Fine.Size = new System.Drawing.Size(105, 24);
             this.radioButton_Config_WorkStage_Move_MoveMode_Fine.TabIndex = 5;
-            this.radioButton_Config_WorkStage_Move_MoveMode_Fine.TabStop = true;
             this.radioButton_Config_WorkStage_Move_MoveMode_Fine.Text = "Fine";
             this.radioButton_Config_WorkStage_Move_MoveMode_Fine.UseVisualStyleBackColor = true;
             // 
@@ -3946,25 +3946,25 @@
             // 
             // radioButton_Config_WorkStage_TeachingPositions_MoveMode_Coarse
             // 
+            this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Coarse.Checked = true;
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Coarse.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Coarse.Location = new System.Drawing.Point(72, 25);
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Coarse.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Coarse.Name = "radioButton_Config_WorkStage_TeachingPositions_MoveMode_Coarse";
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Coarse.Size = new System.Drawing.Size(70, 24);
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Coarse.TabIndex = 6;
+            this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Coarse.TabStop = true;
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Coarse.Text = "Coarse";
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Coarse.UseVisualStyleBackColor = true;
             // 
             // radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine
             // 
-            this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine.Checked = true;
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine.Location = new System.Drawing.Point(10, 25);
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine.Name = "radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine";
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine.Size = new System.Drawing.Size(51, 24);
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine.TabIndex = 5;
-            this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine.TabStop = true;
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine.Text = "Fine";
             this.radioButton_Config_WorkStage_TeachingPositions_MoveMode_Fine.UseVisualStyleBackColor = true;
             // 
@@ -4191,25 +4191,25 @@
             // 
             // radioButton_Config_Vision_JogMove_Step
             // 
+            this.radioButton_Config_Vision_JogMove_Step.Checked = true;
             this.radioButton_Config_Vision_JogMove_Step.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_Vision_JogMove_Step.Location = new System.Drawing.Point(10, 50);
             this.radioButton_Config_Vision_JogMove_Step.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.radioButton_Config_Vision_JogMove_Step.Name = "radioButton_Config_Vision_JogMove_Step";
             this.radioButton_Config_Vision_JogMove_Step.Size = new System.Drawing.Size(59, 24);
             this.radioButton_Config_Vision_JogMove_Step.TabIndex = 6;
+            this.radioButton_Config_Vision_JogMove_Step.TabStop = true;
             this.radioButton_Config_Vision_JogMove_Step.Text = "Step";
             this.radioButton_Config_Vision_JogMove_Step.UseVisualStyleBackColor = true;
             // 
             // radioButton_Config_Vision_JogMove_Continuous
             // 
-            this.radioButton_Config_Vision_JogMove_Continuous.Checked = true;
             this.radioButton_Config_Vision_JogMove_Continuous.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_Vision_JogMove_Continuous.Location = new System.Drawing.Point(10, 25);
             this.radioButton_Config_Vision_JogMove_Continuous.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.radioButton_Config_Vision_JogMove_Continuous.Name = "radioButton_Config_Vision_JogMove_Continuous";
             this.radioButton_Config_Vision_JogMove_Continuous.Size = new System.Drawing.Size(107, 24);
             this.radioButton_Config_Vision_JogMove_Continuous.TabIndex = 5;
-            this.radioButton_Config_Vision_JogMove_Continuous.TabStop = true;
             this.radioButton_Config_Vision_JogMove_Continuous.Text = "Continuous";
             this.radioButton_Config_Vision_JogMove_Continuous.UseVisualStyleBackColor = true;
             // 
@@ -4757,25 +4757,25 @@
             // 
             // radioButton_Config_Vision_Move_MoveMode_Coarse
             // 
+            this.radioButton_Config_Vision_Move_MoveMode_Coarse.Checked = true;
             this.radioButton_Config_Vision_Move_MoveMode_Coarse.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_Vision_Move_MoveMode_Coarse.Location = new System.Drawing.Point(196, 25);
             this.radioButton_Config_Vision_Move_MoveMode_Coarse.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_Vision_Move_MoveMode_Coarse.Name = "radioButton_Config_Vision_Move_MoveMode_Coarse";
             this.radioButton_Config_Vision_Move_MoveMode_Coarse.Size = new System.Drawing.Size(105, 24);
             this.radioButton_Config_Vision_Move_MoveMode_Coarse.TabIndex = 6;
+            this.radioButton_Config_Vision_Move_MoveMode_Coarse.TabStop = true;
             this.radioButton_Config_Vision_Move_MoveMode_Coarse.Text = "Coarse";
             this.radioButton_Config_Vision_Move_MoveMode_Coarse.UseVisualStyleBackColor = true;
             // 
             // radioButton_Config_Vision_Move_MoveMode_Fine
             // 
-            this.radioButton_Config_Vision_Move_MoveMode_Fine.Checked = true;
             this.radioButton_Config_Vision_Move_MoveMode_Fine.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_Vision_Move_MoveMode_Fine.Location = new System.Drawing.Point(38, 25);
             this.radioButton_Config_Vision_Move_MoveMode_Fine.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_Vision_Move_MoveMode_Fine.Name = "radioButton_Config_Vision_Move_MoveMode_Fine";
             this.radioButton_Config_Vision_Move_MoveMode_Fine.Size = new System.Drawing.Size(105, 24);
             this.radioButton_Config_Vision_Move_MoveMode_Fine.TabIndex = 5;
-            this.radioButton_Config_Vision_Move_MoveMode_Fine.TabStop = true;
             this.radioButton_Config_Vision_Move_MoveMode_Fine.Text = "Fine";
             this.radioButton_Config_Vision_Move_MoveMode_Fine.UseVisualStyleBackColor = true;
             // 
@@ -4874,25 +4874,25 @@
             // 
             // radioButton_Config_Vision_TeachingPositions_MoveMode_Coarse
             // 
+            this.radioButton_Config_Vision_TeachingPositions_MoveMode_Coarse.Checked = true;
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Coarse.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Coarse.Location = new System.Drawing.Point(72, 25);
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Coarse.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Coarse.Name = "radioButton_Config_Vision_TeachingPositions_MoveMode_Coarse";
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Coarse.Size = new System.Drawing.Size(70, 24);
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Coarse.TabIndex = 6;
+            this.radioButton_Config_Vision_TeachingPositions_MoveMode_Coarse.TabStop = true;
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Coarse.Text = "Coarse";
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Coarse.UseVisualStyleBackColor = true;
             // 
             // radioButton_Config_Vision_TeachingPositions_MoveMode_Fine
             // 
-            this.radioButton_Config_Vision_TeachingPositions_MoveMode_Fine.Checked = true;
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Fine.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Fine.Location = new System.Drawing.Point(10, 25);
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Fine.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Fine.Name = "radioButton_Config_Vision_TeachingPositions_MoveMode_Fine";
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Fine.Size = new System.Drawing.Size(54, 24);
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Fine.TabIndex = 5;
-            this.radioButton_Config_Vision_TeachingPositions_MoveMode_Fine.TabStop = true;
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Fine.Text = "Fine";
             this.radioButton_Config_Vision_TeachingPositions_MoveMode_Fine.UseVisualStyleBackColor = true;
             // 
@@ -5661,7 +5661,7 @@
             this.checkedListBox_Config_Laser_DIO_Output.Size = new System.Drawing.Size(279, 156);
             this.checkedListBox_Config_Laser_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_Laser_DIO_Output.ThreeDCheckBoxes = true;
-            this.checkedListBox_Config_Laser_DIO_Output.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_Laser_DIO_Output_MouseDoubleClick);
+            this.checkedListBox_Config_Laser_DIO_Output.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_Laser_DIO_Output_MouseClick);
             // 
             // groupBox64
             // 
@@ -6095,7 +6095,7 @@
             this.checkedListBox_Config_BDS_DIO_Output.Size = new System.Drawing.Size(279, 156);
             this.checkedListBox_Config_BDS_DIO_Output.TabIndex = 50;
             this.checkedListBox_Config_BDS_DIO_Output.ThreeDCheckBoxes = true;
-            this.checkedListBox_Config_BDS_DIO_Output.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_BDS_DIO_Output_MouseDoubleClick);
+            this.checkedListBox_Config_BDS_DIO_Output.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkedListBox_Config_BDS_DIO_Output_MouseClick);
             // 
             // groupBox61
             // 
@@ -6363,25 +6363,25 @@
             // 
             // radioButton_Config_BDS_JogMove_Step
             // 
+            this.radioButton_Config_BDS_JogMove_Step.Checked = true;
             this.radioButton_Config_BDS_JogMove_Step.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_BDS_JogMove_Step.Location = new System.Drawing.Point(10, 50);
             this.radioButton_Config_BDS_JogMove_Step.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.radioButton_Config_BDS_JogMove_Step.Name = "radioButton_Config_BDS_JogMove_Step";
             this.radioButton_Config_BDS_JogMove_Step.Size = new System.Drawing.Size(59, 24);
             this.radioButton_Config_BDS_JogMove_Step.TabIndex = 6;
+            this.radioButton_Config_BDS_JogMove_Step.TabStop = true;
             this.radioButton_Config_BDS_JogMove_Step.Text = "Step";
             this.radioButton_Config_BDS_JogMove_Step.UseVisualStyleBackColor = true;
             // 
             // radioButton_Config_BDS_JogMove_Continuous
             // 
-            this.radioButton_Config_BDS_JogMove_Continuous.Checked = true;
             this.radioButton_Config_BDS_JogMove_Continuous.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_BDS_JogMove_Continuous.Location = new System.Drawing.Point(10, 25);
             this.radioButton_Config_BDS_JogMove_Continuous.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.radioButton_Config_BDS_JogMove_Continuous.Name = "radioButton_Config_BDS_JogMove_Continuous";
             this.radioButton_Config_BDS_JogMove_Continuous.Size = new System.Drawing.Size(107, 24);
             this.radioButton_Config_BDS_JogMove_Continuous.TabIndex = 5;
-            this.radioButton_Config_BDS_JogMove_Continuous.TabStop = true;
             this.radioButton_Config_BDS_JogMove_Continuous.Text = "Continuous";
             this.radioButton_Config_BDS_JogMove_Continuous.UseVisualStyleBackColor = true;
             // 
@@ -6466,25 +6466,25 @@
             // 
             // radioButton_Config_BDS_Move_MoveMode_Coarse
             // 
+            this.radioButton_Config_BDS_Move_MoveMode_Coarse.Checked = true;
             this.radioButton_Config_BDS_Move_MoveMode_Coarse.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_BDS_Move_MoveMode_Coarse.Location = new System.Drawing.Point(196, 25);
             this.radioButton_Config_BDS_Move_MoveMode_Coarse.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_BDS_Move_MoveMode_Coarse.Name = "radioButton_Config_BDS_Move_MoveMode_Coarse";
             this.radioButton_Config_BDS_Move_MoveMode_Coarse.Size = new System.Drawing.Size(105, 24);
             this.radioButton_Config_BDS_Move_MoveMode_Coarse.TabIndex = 6;
+            this.radioButton_Config_BDS_Move_MoveMode_Coarse.TabStop = true;
             this.radioButton_Config_BDS_Move_MoveMode_Coarse.Text = "Coarse";
             this.radioButton_Config_BDS_Move_MoveMode_Coarse.UseVisualStyleBackColor = true;
             // 
             // radioButton_Config_BDS_Move_MoveMode_Fine
             // 
-            this.radioButton_Config_BDS_Move_MoveMode_Fine.Checked = true;
             this.radioButton_Config_BDS_Move_MoveMode_Fine.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_BDS_Move_MoveMode_Fine.Location = new System.Drawing.Point(38, 25);
             this.radioButton_Config_BDS_Move_MoveMode_Fine.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_BDS_Move_MoveMode_Fine.Name = "radioButton_Config_BDS_Move_MoveMode_Fine";
             this.radioButton_Config_BDS_Move_MoveMode_Fine.Size = new System.Drawing.Size(105, 24);
             this.radioButton_Config_BDS_Move_MoveMode_Fine.TabIndex = 5;
-            this.radioButton_Config_BDS_Move_MoveMode_Fine.TabStop = true;
             this.radioButton_Config_BDS_Move_MoveMode_Fine.Text = "Fine";
             this.radioButton_Config_BDS_Move_MoveMode_Fine.UseVisualStyleBackColor = true;
             // 
@@ -6582,25 +6582,25 @@
             // 
             // radioButton_Config_BDS_TeachingPositions_MoveMode_Coarse
             // 
+            this.radioButton_Config_BDS_TeachingPositions_MoveMode_Coarse.Checked = true;
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Coarse.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Coarse.Location = new System.Drawing.Point(72, 25);
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Coarse.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Coarse.Name = "radioButton_Config_BDS_TeachingPositions_MoveMode_Coarse";
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Coarse.Size = new System.Drawing.Size(70, 24);
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Coarse.TabIndex = 6;
+            this.radioButton_Config_BDS_TeachingPositions_MoveMode_Coarse.TabStop = true;
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Coarse.Text = "Coarse";
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Coarse.UseVisualStyleBackColor = true;
             // 
             // radioButton_Config_BDS_TeachingPositions_MoveMode_Fine
             // 
-            this.radioButton_Config_BDS_TeachingPositions_MoveMode_Fine.Checked = true;
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Fine.Font = new System.Drawing.Font("Tahoma", 10F);
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Fine.Location = new System.Drawing.Point(10, 25);
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Fine.Margin = new System.Windows.Forms.Padding(5);
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Fine.Name = "radioButton_Config_BDS_TeachingPositions_MoveMode_Fine";
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Fine.Size = new System.Drawing.Size(50, 24);
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Fine.TabIndex = 5;
-            this.radioButton_Config_BDS_TeachingPositions_MoveMode_Fine.TabStop = true;
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Fine.Text = "Fine";
             this.radioButton_Config_BDS_TeachingPositions_MoveMode_Fine.UseVisualStyleBackColor = true;
             // 

@@ -74,6 +74,10 @@ namespace SLD200_MSL
                 //}
             }
 
+
+            MachineType_Component_Enable(Equipment.Machine_LaserType_CO2);
+
+
             m_formSiriusEditor = new FormNew_SiriusEditor();
 
             //  Layer Data 를 보여주는 ListView 설정
@@ -92,6 +96,21 @@ namespace SLD200_MSL
 
             //LoadSubForm();
         }
+
+        private void MachineType_Component_Enable(bool m_bLaserType)
+        {
+            //  Laser Type (true:CO2, false:UV)
+
+            label_Recipe_TabRecipe_Miscellaneous_DrillingPower.Enabled = !m_bLaserType;
+            textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Enabled = !m_bLaserType;
+            button_Recipe_TabRecipe_Miscellaneous_DrillingPower.Enabled = !m_bLaserType;
+
+            label_Recipe_TabRecipe_Miscellaneous_Mask.Enabled = m_bLaserType;
+            comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Enabled = m_bLaserType;
+            label_Recipe_TabRecipe_Miscellaneous_BETPosition.Enabled = m_bLaserType;
+            comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Enabled = m_bLaserType;            
+        }
+
         private void LoadSubForm()
         {
             //OnCreateControl();
@@ -841,6 +860,10 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].ProcessOption_SocketAlign_Use = Convert.ToBoolean(temp.ToString());
                 NativeMethods.GetPrivateProfileString(strTemp, "Socket_HeightCheck_Use", "false", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheck_Use = Convert.ToBoolean(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "Socket_HeightCheckPos_OffsetX", "0.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheckPos_OffsetX = Equipment.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "Socket_HeightCheckPos_OffsetY", "0.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheckPos_OffsetY = Equipment.ToDouble(temp.ToString());
 
                 //  Module Information
                 NativeMethods.GetPrivateProfileString(strTemp, "Module_Width", "125.0", temp, 255, strFIle);
@@ -981,7 +1004,9 @@ namespace SLD200_MSL
 
                 Equipment.stLayerRecipeSet[i].ProcessOption_SocketAlign_Use = ReadBool(data, "Socket_Align_Use", false);
                 Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheck_Use = ReadBool(data, "Socket_HeightCheck_Use", false);
-
+                Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheckPos_OffsetX = ReadDouble(data, "Socket_HeightCheckPos_OffsetX", 0.0);
+                Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheckPos_OffsetY = ReadDouble(data, "Socket_HeightCheckPos_OffsetY", 0.0);
+                
                 Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Width = ReadDouble(data, "Module_Width", 125.0);
                 Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Height = ReadDouble(data, "Module_Height", 120.0);
                 Equipment.stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness = ReadDouble(data, "Module_SiliconThickness", 0.0);
@@ -1127,7 +1152,9 @@ namespace SLD200_MSL
                 //  Process Options
                 NativeMethods.WritePrivateProfileString(strTemp, "Socket_Align_Use", Equipment.stLayerRecipeSet[i].ProcessOption_SocketAlign_Use.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "Socket_HeightCheck_Use", Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheck_Use.ToString(), strFIle);
-
+                NativeMethods.WritePrivateProfileString(strTemp, "Socket_HeightCheckPos_OffsetX", Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheckPos_OffsetX.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "Socket_HeightCheckPos_OffsetY", Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheckPos_OffsetY.ToString(), strFIle);
+                
                 //  Module Information  
                 NativeMethods.WritePrivateProfileString(strTemp, "Module_Width", Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Width.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "Module_Height", Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Height.ToString(), strFIle);
@@ -1224,6 +1251,8 @@ namespace SLD200_MSL
 
                 layerDict["Socket_Align_Use"] = Equipment.stLayerRecipeSet[i].ProcessOption_SocketAlign_Use.ToString();
                 layerDict["Socket_HeightCheck_Use"] = Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheck_Use.ToString();
+                layerDict["Socket_HeightCheckPos_OffsetX"] = Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheckPos_OffsetX.ToString();
+                layerDict["Socket_HeightCheckPos_OffsetY"] = Equipment.stLayerRecipeSet[i].ProcessOption_SocketHeightCheckPos_OffsetY.ToString();
 
                 layerDict["Module_Width"] = Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Width.ToString();
                 layerDict["Module_Height"] = Equipment.stLayerRecipeSet[i].ModuleInformation_Module_Height.ToString();
@@ -1511,7 +1540,9 @@ namespace SLD200_MSL
             //  Process Options
             Equipment.stLayerRecipeSet[m_nLayerIndex].ProcessOption_SocketAlign_Use = checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked;                         //  Socket Align 기능 사용 여부
             Equipment.stLayerRecipeSet[m_nLayerIndex].ProcessOption_SocketHeightCheck_Use = checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck.Checked;             //  Socket Height Check 기능 사용 여부
-
+            Equipment.stLayerRecipeSet[m_nLayerIndex].ProcessOption_SocketHeightCheckPos_OffsetX = textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Text) : 0.0;     //  Socket Height Check Position Offset X
+            Equipment.stLayerRecipeSet[m_nLayerIndex].ProcessOption_SocketHeightCheckPos_OffsetY = textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Text) : 0.0;     //  Socket Height Check Position Offset Y
+            
             //  Module Information
             Equipment.stLayerRecipeSet[m_nLayerIndex].ModuleInformation_Module_Width = textBox_Recipe_TabRecipe_ModuleInformation_Width.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_Width.Text) : 125.0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].ModuleInformation_Module_Height = textBox_Recipe_TabRecipe_ModuleInformation_Height.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_ModuleInformation_Height.Text) : 120.0;
@@ -1668,7 +1699,9 @@ namespace SLD200_MSL
                 //  process Options
                 checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부
                 checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use;             //  Socket Height Check 기능 사용 여부
-
+                textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Text = Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetX.ToString();
+                textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Text = Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetY.ToString();
+                
                 //  Module Information
                 textBox_Recipe_TabRecipe_ModuleInformation_Width.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width.ToString();
                 textBox_Recipe_TabRecipe_ModuleInformation_Height.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height.ToString();
@@ -1895,7 +1928,9 @@ namespace SLD200_MSL
             //  process Options
             checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부
             checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use;             //  Socket Height Check 기능 사용 여부
-
+            textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Text = Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetX.ToString();
+            textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Text = Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetY.ToString();
+            
             //  Module Information
             textBox_Recipe_TabRecipe_ModuleInformation_Width.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width.ToString();
             textBox_Recipe_TabRecipe_ModuleInformation_Height.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height.ToString();
@@ -2008,7 +2043,9 @@ namespace SLD200_MSL
             //  process Options
             checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부
             checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheck_Use;             //  Socket Height Check 기능 사용 여부
-
+            textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX.Text = Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetX.ToString();
+            textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY.Text = Equipment.stLayerRecipeSet[0].ProcessOption_SocketHeightCheckPos_OffsetY.ToString();
+            
             //  Module Information
             textBox_Recipe_TabRecipe_ModuleInformation_Width.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width.ToString();
             textBox_Recipe_TabRecipe_ModuleInformation_Height.Text = Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height.ToString();
@@ -2059,9 +2096,50 @@ namespace SLD200_MSL
             MessageBox.Show("Recipe Data를 로드하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void richTextBox_Recipe_TabRecipe_DrawingFile_TextChanged(object sender, EventArgs e)
+        private void button_DutyCycle_Calc_Click(object sender, EventArgs e)
         {
+            try
+            {
+                // 입력값 가져오기
+                double frequency = double.Parse(textBox_Recipe_TabRecipe_LaserParam_Frequency.Text);
+                double pulseWidthUs = double.Parse(textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text);
 
+                // Period 계산
+                double periodSeconds = 1 / frequency;
+
+                // Duty Cycle 계산
+                double dutyCycle = (pulseWidthUs / (periodSeconds * 1_000_000)) * 100;
+
+                // 결과 출력
+                textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = dutyCycle.ToString(); //$"Duty Cycle: {dutyCycle:F2}%";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void button_PulseWidth_Calc_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // 입력값 가져오기
+                double frequency = double.Parse(textBox_Recipe_TabRecipe_LaserParam_Frequency.Text);
+                double dutyCycle = double.Parse(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text);
+
+                // Period 계산 (초 단위) 
+                double periodSeconds = 1 / frequency;
+
+                // Pulse Width 계산 (μs 단위)
+                double pulseWidthUs = (dutyCycle * periodSeconds / 100) * 1_000_000;
+
+                // 결과 출력
+                textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text = pulseWidthUs.ToString("F2"); // 소수점 2자리까지 표시
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
         }
     }
 }

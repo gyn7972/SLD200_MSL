@@ -128,6 +128,24 @@
             this.baseLabel_Main_Divice_Status_Laser = new SLD200_MSL.BaseLabel();
             this.pictureBox_Main_DiviceStatus_Laser = new System.Windows.Forms.PictureBox();
             this.label_Main_LaserStatus = new System.Windows.Forms.Label();
+            this.checkBox_Main_SocketDrilling_Pass = new System.Windows.Forms.CheckBox();
+            this.ImageViewer_Main_Rows = new QMC.Common.Hmi.VisionImageViewer();
+            this.ImageViewer_Main_highs = new QMC.Common.Hmi.VisionImageViewer();
+            this.baseLabel_Main_Divice_Status_Illuminator = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Main_Divice_Status_CameraPre = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Main_Divice_Status_CameraFine = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Main_Divice_Status_heightsensor = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Main_Divice_Status_ElectroRequlator = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Main_Divice_Status_BeamExpander = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Main_Divice_Status_Chiller = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Main_Divice_Status_Stage = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Main_Divice_Status_PowermeterBds = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Main_Divice_Status_DustcollectorLower = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Main_Divice_Status_DustcollectorUpper = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Main_Divice_Status_Scanner = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Main_Divice_Status_Motion = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Main_Divice_Status_IO = new SLD200_MSL.BaseLabel();
+            this.baseLabel_Main_Divice_Status_Laser = new SLD200_MSL.BaseLabel();
             this.baseTextBox_DryRun_ProcessingTime = new SLD200_MSL.BaseTextBox();
             this.baseLabel5 = new SLD200_MSL.BaseLabel();
             this.checkBox_Test_LaserDrillingCycle = new System.Windows.Forms.CheckBox();
@@ -1124,6 +1142,226 @@
             this.groupBox_Main_DiviceStatus.TabStop = false;
             this.groupBox_Main_DiviceStatus.Text = " Device Status ";
             // 
+            // pictureBox_Main_DiviceStatus_Illuminator
+            // 
+            this.pictureBox_Main_DiviceStatus_Illuminator.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_Illuminator.Location = new System.Drawing.Point(369, 155);
+            this.pictureBox_Main_DiviceStatus_Illuminator.Name = "pictureBox_Main_DiviceStatus_Illuminator";
+            this.pictureBox_Main_DiviceStatus_Illuminator.Size = new System.Drawing.Size(25, 25);
+            this.pictureBox_Main_DiviceStatus_Illuminator.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_Illuminator.TabIndex = 240;
+            this.pictureBox_Main_DiviceStatus_Illuminator.TabStop = false;
+            // 
+            // pictureBox_Main_DiviceStatus_CameraPre
+            // 
+            this.pictureBox_Main_DiviceStatus_CameraPre.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_CameraPre.Location = new System.Drawing.Point(369, 124);
+            this.pictureBox_Main_DiviceStatus_CameraPre.Name = "pictureBox_Main_DiviceStatus_CameraPre";
+            this.pictureBox_Main_DiviceStatus_CameraPre.Size = new System.Drawing.Size(25, 25);
+            this.pictureBox_Main_DiviceStatus_CameraPre.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_CameraPre.TabIndex = 238;
+            this.pictureBox_Main_DiviceStatus_CameraPre.TabStop = false;
+            // 
+            // pictureBox_Main_DiviceStatus_CameraFine
+            // 
+            this.pictureBox_Main_DiviceStatus_CameraFine.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_CameraFine.Location = new System.Drawing.Point(369, 93);
+            this.pictureBox_Main_DiviceStatus_CameraFine.Name = "pictureBox_Main_DiviceStatus_CameraFine";
+            this.pictureBox_Main_DiviceStatus_CameraFine.Size = new System.Drawing.Size(25, 25);
+            this.pictureBox_Main_DiviceStatus_CameraFine.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_CameraFine.TabIndex = 236;
+            this.pictureBox_Main_DiviceStatus_CameraFine.TabStop = false;
+            // 
+            // pictureBox_Main_DiviceStatus_HeightSensor
+            // 
+            this.pictureBox_Main_DiviceStatus_HeightSensor.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_HeightSensor.Location = new System.Drawing.Point(369, 62);
+            this.pictureBox_Main_DiviceStatus_HeightSensor.Name = "pictureBox_Main_DiviceStatus_HeightSensor";
+            this.pictureBox_Main_DiviceStatus_HeightSensor.Size = new System.Drawing.Size(25, 25);
+            this.pictureBox_Main_DiviceStatus_HeightSensor.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_HeightSensor.TabIndex = 234;
+            this.pictureBox_Main_DiviceStatus_HeightSensor.TabStop = false;
+            // 
+            // pictureBox_Main_DiviceStatus_ElectroRegulator
+            // 
+            this.pictureBox_Main_DiviceStatus_ElectroRegulator.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_ElectroRegulator.Location = new System.Drawing.Point(369, 31);
+            this.pictureBox_Main_DiviceStatus_ElectroRegulator.Name = "pictureBox_Main_DiviceStatus_ElectroRegulator";
+            this.pictureBox_Main_DiviceStatus_ElectroRegulator.Size = new System.Drawing.Size(25, 25);
+            this.pictureBox_Main_DiviceStatus_ElectroRegulator.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_ElectroRegulator.TabIndex = 232;
+            this.pictureBox_Main_DiviceStatus_ElectroRegulator.TabStop = false;
+            // 
+            // pictureBox_Main_DiviceStatus_BeamExpander
+            // 
+            this.pictureBox_Main_DiviceStatus_BeamExpander.Enabled = false;
+            this.pictureBox_Main_DiviceStatus_BeamExpander.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_BeamExpander.Location = new System.Drawing.Point(155, 155);
+            this.pictureBox_Main_DiviceStatus_BeamExpander.Name = "pictureBox_Main_DiviceStatus_BeamExpander";
+            this.pictureBox_Main_DiviceStatus_BeamExpander.Size = new System.Drawing.Size(25, 25);
+            this.pictureBox_Main_DiviceStatus_BeamExpander.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_BeamExpander.TabIndex = 230;
+            this.pictureBox_Main_DiviceStatus_BeamExpander.TabStop = false;
+            // 
+            // pictureBox_Main_DiviceStatus_Chiller
+            // 
+            this.pictureBox_Main_DiviceStatus_Chiller.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_Chiller.Location = new System.Drawing.Point(14, 155);
+            this.pictureBox_Main_DiviceStatus_Chiller.Name = "pictureBox_Main_DiviceStatus_Chiller";
+            this.pictureBox_Main_DiviceStatus_Chiller.Size = new System.Drawing.Size(25, 25);
+            this.pictureBox_Main_DiviceStatus_Chiller.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_Chiller.TabIndex = 228;
+            this.pictureBox_Main_DiviceStatus_Chiller.TabStop = false;
+            // 
+            // pictureBox_Main_DiviceStatus_Powermeter_Stage
+            // 
+            this.pictureBox_Main_DiviceStatus_Powermeter_Stage.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_Powermeter_Stage.Location = new System.Drawing.Point(155, 124);
+            this.pictureBox_Main_DiviceStatus_Powermeter_Stage.Name = "pictureBox_Main_DiviceStatus_Powermeter_Stage";
+            this.pictureBox_Main_DiviceStatus_Powermeter_Stage.Size = new System.Drawing.Size(25, 25);
+            this.pictureBox_Main_DiviceStatus_Powermeter_Stage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_Powermeter_Stage.TabIndex = 226;
+            this.pictureBox_Main_DiviceStatus_Powermeter_Stage.TabStop = false;
+            // 
+            // pictureBox_Main_DiviceStatus_Powermeter_bds
+            // 
+            this.pictureBox_Main_DiviceStatus_Powermeter_bds.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_Powermeter_bds.Location = new System.Drawing.Point(155, 93);
+            this.pictureBox_Main_DiviceStatus_Powermeter_bds.Name = "pictureBox_Main_DiviceStatus_Powermeter_bds";
+            this.pictureBox_Main_DiviceStatus_Powermeter_bds.Size = new System.Drawing.Size(25, 25);
+            this.pictureBox_Main_DiviceStatus_Powermeter_bds.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_Powermeter_bds.TabIndex = 224;
+            this.pictureBox_Main_DiviceStatus_Powermeter_bds.TabStop = false;
+            // 
+            // pictureBox_Main_DiviceStatus_DustCollector_Lower
+            // 
+            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Location = new System.Drawing.Point(155, 62);
+            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Name = "pictureBox_Main_DiviceStatus_DustCollector_Lower";
+            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Size = new System.Drawing.Size(25, 25);
+            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.TabIndex = 222;
+            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.TabStop = false;
+            // 
+            // pictureBox_Main_DiviceStatus_DustCollector_Upper
+            // 
+            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Location = new System.Drawing.Point(155, 31);
+            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Name = "pictureBox_Main_DiviceStatus_DustCollector_Upper";
+            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Size = new System.Drawing.Size(25, 25);
+            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.TabIndex = 220;
+            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.TabStop = false;
+            // 
+            // pictureBox_Main_DiviceStatus_Scanner
+            // 
+            this.pictureBox_Main_DiviceStatus_Scanner.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_Scanner.Location = new System.Drawing.Point(14, 124);
+            this.pictureBox_Main_DiviceStatus_Scanner.Name = "pictureBox_Main_DiviceStatus_Scanner";
+            this.pictureBox_Main_DiviceStatus_Scanner.Size = new System.Drawing.Size(25, 25);
+            this.pictureBox_Main_DiviceStatus_Scanner.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_Scanner.TabIndex = 218;
+            this.pictureBox_Main_DiviceStatus_Scanner.TabStop = false;
+            // 
+            // pictureBox_Main_DiviceStatus_Motion
+            // 
+            this.pictureBox_Main_DiviceStatus_Motion.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_Motion.Location = new System.Drawing.Point(14, 31);
+            this.pictureBox_Main_DiviceStatus_Motion.Name = "pictureBox_Main_DiviceStatus_Motion";
+            this.pictureBox_Main_DiviceStatus_Motion.Size = new System.Drawing.Size(25, 25);
+            this.pictureBox_Main_DiviceStatus_Motion.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_Motion.TabIndex = 216;
+            this.pictureBox_Main_DiviceStatus_Motion.TabStop = false;
+            // 
+            // pictureBox_Main_DiviceStatus_IO
+            // 
+            this.pictureBox_Main_DiviceStatus_IO.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_IO.Location = new System.Drawing.Point(14, 62);
+            this.pictureBox_Main_DiviceStatus_IO.Name = "pictureBox_Main_DiviceStatus_IO";
+            this.pictureBox_Main_DiviceStatus_IO.Size = new System.Drawing.Size(25, 25);
+            this.pictureBox_Main_DiviceStatus_IO.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_IO.TabIndex = 214;
+            this.pictureBox_Main_DiviceStatus_IO.TabStop = false;
+            // 
+            // pictureBox_Main_DiviceStatus_Laser
+            // 
+            this.pictureBox_Main_DiviceStatus_Laser.Image = global::SLD200.Properties.Resources.DioEllipseOff;
+            this.pictureBox_Main_DiviceStatus_Laser.Location = new System.Drawing.Point(14, 93);
+            this.pictureBox_Main_DiviceStatus_Laser.Name = "pictureBox_Main_DiviceStatus_Laser";
+            this.pictureBox_Main_DiviceStatus_Laser.Size = new System.Drawing.Size(25, 25);
+            this.pictureBox_Main_DiviceStatus_Laser.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_Main_DiviceStatus_Laser.TabIndex = 212;
+            this.pictureBox_Main_DiviceStatus_Laser.TabStop = false;
+            // 
+            // label_Main_LaserStatus
+            // 
+            this.label_Main_LaserStatus.BackColor = System.Drawing.Color.Black;
+            this.label_Main_LaserStatus.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_LaserStatus.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Main_LaserStatus.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_LaserStatus.Location = new System.Drawing.Point(1726, 298);
+            this.label_Main_LaserStatus.Name = "label_Main_LaserStatus";
+            this.label_Main_LaserStatus.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.label_Main_LaserStatus.Size = new System.Drawing.Size(178, 68);
+            this.label_Main_LaserStatus.TabIndex = 208;
+            this.label_Main_LaserStatus.Text = "레이저 상태";
+            this.label_Main_LaserStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checkBox_Main_SocketDrilling_Pass
+            // 
+            this.checkBox_Main_SocketDrilling_Pass.BackColor = System.Drawing.Color.LightGreen;
+            this.checkBox_Main_SocketDrilling_Pass.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.checkBox_Main_SocketDrilling_Pass.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox_Main_SocketDrilling_Pass.Location = new System.Drawing.Point(1476, 444);
+            this.checkBox_Main_SocketDrilling_Pass.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.checkBox_Main_SocketDrilling_Pass.Name = "checkBox_Main_SocketDrilling_Pass";
+            this.checkBox_Main_SocketDrilling_Pass.Size = new System.Drawing.Size(194, 73);
+            this.checkBox_Main_SocketDrilling_Pass.TabIndex = 209;
+            this.checkBox_Main_SocketDrilling_Pass.Text = "소켓 가공 건너뛰기\r\n(얼라인 후 소켓을 제외한 나머지 Layer 가공)";
+            this.checkBox_Main_SocketDrilling_Pass.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_Main_SocketDrilling_Pass.UseVisualStyleBackColor = false;
+            this.checkBox_Main_SocketDrilling_Pass.CheckedChanged += new System.EventHandler(this.checkBox_Main_SocketDrilling_Pass_CheckedChanged);
+            // 
+            // ImageViewer_Main_Rows
+            // 
+            this.ImageViewer_Main_Rows.BackColor = System.Drawing.Color.Black;
+            this.ImageViewer_Main_Rows.Camera = null;
+            this.ImageViewer_Main_Rows.CameraSwitch = null;
+            this.ImageViewer_Main_Rows.FrameRate = 1D;
+            this.ImageViewer_Main_Rows.InputImage = null;
+            this.ImageViewer_Main_Rows.IsViewCustomizedImage = false;
+            this.ImageViewer_Main_Rows.Location = new System.Drawing.Point(10, 28);
+            this.ImageViewer_Main_Rows.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ImageViewer_Main_Rows.Name = "ImageViewer_Main_Rows";
+            this.ImageViewer_Main_Rows.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.ImageViewer_Main_Rows.Simulated = false;
+            this.ImageViewer_Main_Rows.Size = new System.Drawing.Size(295, 247);
+            this.ImageViewer_Main_Rows.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ImageViewer_Main_Rows.TabIndex = 190;
+            this.ImageViewer_Main_Rows.TabStop = false;
+            this.ImageViewer_Main_Rows.UpdateDelayTime = 160;
+            this.ImageViewer_Main_Rows.VisibleCrossLine = true;
+            // 
+            // ImageViewer_Main_highs
+            // 
+            this.ImageViewer_Main_highs.BackColor = System.Drawing.Color.Black;
+            this.ImageViewer_Main_highs.Camera = null;
+            this.ImageViewer_Main_highs.CameraSwitch = null;
+            this.ImageViewer_Main_highs.FrameRate = 1D;
+            this.ImageViewer_Main_highs.InputImage = null;
+            this.ImageViewer_Main_highs.IsViewCustomizedImage = false;
+            this.ImageViewer_Main_highs.Location = new System.Drawing.Point(10, 28);
+            this.ImageViewer_Main_highs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ImageViewer_Main_highs.Name = "ImageViewer_Main_highs";
+            this.ImageViewer_Main_highs.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.ImageViewer_Main_highs.Simulated = false;
+            this.ImageViewer_Main_highs.Size = new System.Drawing.Size(295, 247);
+            this.ImageViewer_Main_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ImageViewer_Main_highs.TabIndex = 189;
+            this.ImageViewer_Main_highs.TabStop = false;
+            this.ImageViewer_Main_highs.UpdateDelayTime = 160;
+            this.ImageViewer_Main_highs.VisibleCrossLine = true;
+            // 
             // baseLabel_Main_Divice_Status_Illuminator
             // 
             this.baseLabel_Main_Divice_Status_Illuminator.AutoSize = true;
@@ -1446,30 +1684,6 @@
             this.baseLabel_Main_Divice_Status_Laser.TabIndex = 130;
             this.baseLabel_Main_Divice_Status_Laser.Text = "Laser";
             // 
-            // pictureBox_Main_DiviceStatus_Laser
-            // 
-            this.pictureBox_Main_DiviceStatus_Laser.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_Laser.Location = new System.Drawing.Point(14, 93);
-            this.pictureBox_Main_DiviceStatus_Laser.Name = "pictureBox_Main_DiviceStatus_Laser";
-            this.pictureBox_Main_DiviceStatus_Laser.Size = new System.Drawing.Size(25, 25);
-            this.pictureBox_Main_DiviceStatus_Laser.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox_Main_DiviceStatus_Laser.TabIndex = 212;
-            this.pictureBox_Main_DiviceStatus_Laser.TabStop = false;
-            // 
-            // label_Main_LaserStatus
-            // 
-            this.label_Main_LaserStatus.BackColor = System.Drawing.Color.Black;
-            this.label_Main_LaserStatus.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label_Main_LaserStatus.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Main_LaserStatus.ForeColor = System.Drawing.Color.Lime;
-            this.label_Main_LaserStatus.Location = new System.Drawing.Point(1726, 298);
-            this.label_Main_LaserStatus.Name = "label_Main_LaserStatus";
-            this.label_Main_LaserStatus.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.label_Main_LaserStatus.Size = new System.Drawing.Size(178, 68);
-            this.label_Main_LaserStatus.TabIndex = 208;
-            this.label_Main_LaserStatus.Text = "레이저 상태";
-            this.label_Main_LaserStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // baseTextBox_DryRun_ProcessingTime
             // 
             this.baseTextBox_DryRun_ProcessingTime.BackColor = System.Drawing.Color.White;
@@ -1531,8 +1745,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 877);
             this.ControlBox = false;
-            this.Controls.Add(this.button_Main_ManualStart);
-            this.Controls.Add(this.checkBox_Test_LaserDrillingCycle);
+            this.Controls.Add(this.checkBox_Main_SocketDrilling_Pass);
             this.Controls.Add(this.label_Main_LaserStatus);
             this.Controls.Add(this.groupBox_Main_DiviceStatus);
             this.Controls.Add(this.label_Title_Stacker_RPort);
@@ -1716,7 +1929,6 @@
         private BaseLabel baseLabel_Main_Divice_Status_ElectroRequlator;
         private System.Windows.Forms.PictureBox pictureBox_Main_DiviceStatus_ElectroRegulator;
         private System.Windows.Forms.Label label_Main_LaserStatus;
-        private System.Windows.Forms.CheckBox checkBox_Test_LaserDrillingCycle;
-        private System.Windows.Forms.Button button_Main_ManualStart;
+        private System.Windows.Forms.CheckBox checkBox_Main_SocketDrilling_Pass;
     }
 }
