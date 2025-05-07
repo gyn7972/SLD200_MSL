@@ -400,7 +400,8 @@ namespace QMC.Common.Parts
                         nWait = 0;
                         while (true)
                         {
-                            if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) == true)
+                            if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) &&
+                                MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, xyInterpolatedCoordinate.X))
                             {
                                 break;
                             }
@@ -416,7 +417,8 @@ namespace QMC.Common.Parts
                         nWait = 0;
                         while (true)
                         {
-                            if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == true)
+                            if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) &&
+                                MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y))
                             {
                                 break;
                             }
@@ -483,7 +485,8 @@ namespace QMC.Common.Parts
                     nWait = 0;
                     while (true)
                     {
-                        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) == true)
+                        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) &&
+                            MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, xyInterpolatedCoordinate.X))
                         {
                             break;
                         }
@@ -498,7 +501,8 @@ namespace QMC.Common.Parts
                     nWait = 0;
                     while (true)
                     {
-                        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == true)
+                        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) &&
+                            MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y))
                         {
                             break;
                         }
