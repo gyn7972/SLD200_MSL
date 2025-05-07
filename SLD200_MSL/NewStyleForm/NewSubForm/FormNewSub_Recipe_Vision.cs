@@ -95,7 +95,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 this.ImageViewer_RecipeVision_highs.SuspendDisplay();
                 this.ImageViewer_RecipeVision_highs.StopUpdateTask();
 
-                this.ImageViewer_RecipeVision_highs.Camera = Owner.Camera;
+                this.ImageViewer_RecipeVision_highs.Camera = workStage.jigAligner_HighRes.Camera; //Owner.Camera;
 
                 this.ImageViewer_RecipeVision_highs.ResumeDisplay();
                 this.ImageViewer_RecipeVision_highs.StartUpdateTask();
@@ -147,6 +147,8 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void RecipeVisionTimer_Tick(object sender, EventArgs e)
         {
+            //this.ImageViewer_RecipeVision_highs.Camera = workStage.jigAligner_HighRes.Camera; //Owner.Camera;
+
             //  Work Stage Position
             label_RecipeVision_EncPosition_STAGE_X.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X));
             label_RecipeVision_EncPosition_STAGE_Y.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y));

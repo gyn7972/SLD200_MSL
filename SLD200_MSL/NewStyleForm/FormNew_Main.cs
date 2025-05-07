@@ -26,6 +26,7 @@ using System.Runtime.CompilerServices;
 using System.Net.Sockets;
 using OpenCvSharp.Aruco;
 using System.Data.Common;
+using System.Windows.Media.Media3D;
 
 namespace SLD200_MSL
 {
@@ -188,11 +189,26 @@ namespace SLD200_MSL
 
             m_SiriusViewerRefresy = false;
             workStage.ActionSiriusViewerRefresy += OnSiriusViewerRefresy;
-
+            workStage.UpdateResultOveray += OnUpdateResultOverlay;
 
 
             label_Title_Stacker_LPort.Text = "Loader_Stacker Left:";
             label_Title_Stacker_RPort.Text = "Loader_Stacker Right:";
+        }
+
+        private void OnUpdateResultOverlay(object sender, EventArgs e)
+        {
+            if( sender is QMC.Common.Vision.Cameras.Camera camera)
+            {
+                if (camera == workStage.Camera_HighRes)
+                {
+                    ImageViewer_Main_highs.ResultOverlays = workStage.FineCamResultOveray;
+                }
+                else if (camera == workStage.jigAligner_LowRes.Camera)
+                {
+                    ImageViewer_Main_Lows.ResultOverlays = workStage.CoarseCamResultOveray;
+                }
+            }
         }
 
         private bool m_bFormVisible = false; // 실제 Show 상태 여부
@@ -237,15 +253,15 @@ namespace SLD200_MSL
                 this.ImageViewer_Main_highs.StartUpdateTask();
             }
 
-            if (this.ImageViewer_Main_Rows.IsHandleCreated)
+            if (this.ImageViewer_Main_Lows.IsHandleCreated)
             {
-                this.ImageViewer_Main_Rows.SizeMode = PictureBoxSizeMode.CenterImage;
-                this.ImageViewer_Main_Rows.SuspendDisplay();
-                this.ImageViewer_Main_Rows.StopUpdateTask();
+                this.ImageViewer_Main_Lows.SizeMode = PictureBoxSizeMode.CenterImage;
+                this.ImageViewer_Main_Lows.SuspendDisplay();
+                this.ImageViewer_Main_Lows.StopUpdateTask();
                 //Prealign은 jigAligner와 연동
-                this.ImageViewer_Main_Rows.Camera = workStage.jigAligner_LowRes.Camera;
-                this.ImageViewer_Main_Rows.ResumeDisplay();
-                this.ImageViewer_Main_Rows.StartUpdateTask();
+                this.ImageViewer_Main_Lows.Camera = workStage.jigAligner_LowRes.Camera;
+                this.ImageViewer_Main_Lows.ResumeDisplay();
+                this.ImageViewer_Main_Lows.StartUpdateTask();
             }
 
             // control 초기화 
@@ -1117,7 +1133,7 @@ namespace SLD200_MSL
 
             if (workStage.jigAligner_LowRes.Camera.Opened)
             {
-                ImageViewer_Main_Rows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
+                ImageViewer_Main_Lows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
             }
 
             // label_Title_MESMessage
