@@ -400,6 +400,7 @@ namespace QMC.Common
             public int Miscellaneous_DrillingRepetition;                //  Drilling Repetition
             public int Miscellaneous_DrillingRepetitionBundle;          //  Drilling Repetition Bundle
             public double Miscellaneous_RotationAngleArc;               //  Rotation Angle Arc (degree)
+            public double Miscellaneous_CircleStartAngleCircle1time;  //  Rotation Start Angle Circle 1 time (degree)
             public double Miscellaneous_P2PDistance;                    //  P2P Distance (mm)
             public int Miscellaneous_MaskIndex;                         //  Mask Index (0:None, 1:Mask1, 2:Mask2, 3:Mask3, 4:Mask4)
             public int Miscellaneous_BETPositionIndex;                  //  BET Position Index (0:0.1X, 1:0.5X, 2:1.0X, 3:1.5X, 4:2.0X)
@@ -1009,8 +1010,9 @@ namespace QMC.Common
                 stLayerRecipeSet[i].Miscellaneous_Drilling_Power = 1;                               //  Drilling Power (w)
                 stLayerRecipeSet[i].Miscellaneous_P2PDistance = 0.1;                                //  P2P Distance (mm)
                 stLayerRecipeSet[i].Miscellaneous_DrillingRepetition = 1;                           //  Drilling 반복 횟수
-                stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle = 100;                    //  Drilling 반복 묶음 횟수
+                stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle = 100;                   //  Drilling 반복 묶음 횟수
                 stLayerRecipeSet[i].Miscellaneous_RotationAngleArc = 360.0;                         //  Rotation Angle Arc (degree)
+                stLayerRecipeSet[i].Miscellaneous_CircleStartAngleCircle1time = 0.0;                //  Circle Start Angle (degree)
                 stLayerRecipeSet[i].Miscellaneous_MaskIndex = 0;                                    //  Mask Index  
                 stLayerRecipeSet[i].Miscellaneous_BETPositionIndex = 0;                             //  BET Index  
                 stLayerRecipeSet[i].Miscellaneous_Drilling_Power = 10;                              //  Drilling Power              

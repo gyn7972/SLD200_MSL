@@ -90,7 +90,7 @@
             this.groupBox_FineCam = new System.Windows.Forms.GroupBox();
             this.ImageViewer_Main_highs = new QMC.Common.Hmi.VisionImageViewer();
             this.groupBox_CoarseCam = new System.Windows.Forms.GroupBox();
-            this.ImageViewer_Main_Rows = new QMC.Common.Hmi.VisionImageViewer();
+            this.ImageViewer_Main_Lows = new QMC.Common.Hmi.VisionImageViewer();
             this.checkBox_Main_AutoRun = new System.Windows.Forms.CheckBox();
             this.button_TEST12 = new System.Windows.Forms.Button();
             this.button_TestbyUser_LPort_Start = new System.Windows.Forms.Button();
@@ -149,7 +149,7 @@
             this.groupBox_FineCam.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).BeginInit();
             this.groupBox_CoarseCam.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Rows)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Lows)).BeginInit();
             this.groupBox_Main_DiviceStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Illuminator)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_CameraPre)).BeginInit();
@@ -985,7 +985,7 @@
             // 
             // groupBox_CoarseCam
             // 
-            this.groupBox_CoarseCam.Controls.Add(this.ImageViewer_Main_Rows);
+            this.groupBox_CoarseCam.Controls.Add(this.ImageViewer_Main_Lows);
             this.groupBox_CoarseCam.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox_CoarseCam.Location = new System.Drawing.Point(744, 580);
             this.groupBox_CoarseCam.Name = "groupBox_CoarseCam";
@@ -996,23 +996,23 @@
             // 
             // ImageViewer_Main_Rows
             // 
-            this.ImageViewer_Main_Rows.BackColor = System.Drawing.Color.Black;
-            this.ImageViewer_Main_Rows.Camera = null;
-            this.ImageViewer_Main_Rows.CameraSwitch = null;
-            this.ImageViewer_Main_Rows.FrameRate = 1D;
-            this.ImageViewer_Main_Rows.InputImage = null;
-            this.ImageViewer_Main_Rows.IsViewCustomizedImage = false;
-            this.ImageViewer_Main_Rows.Location = new System.Drawing.Point(10, 28);
-            this.ImageViewer_Main_Rows.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.ImageViewer_Main_Rows.Name = "ImageViewer_Main_Rows";
-            this.ImageViewer_Main_Rows.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
-            this.ImageViewer_Main_Rows.Simulated = false;
-            this.ImageViewer_Main_Rows.Size = new System.Drawing.Size(295, 247);
-            this.ImageViewer_Main_Rows.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.ImageViewer_Main_Rows.TabIndex = 190;
-            this.ImageViewer_Main_Rows.TabStop = false;
-            this.ImageViewer_Main_Rows.UpdateDelayTime = 160;
-            this.ImageViewer_Main_Rows.VisibleCrossLine = true;
+            this.ImageViewer_Main_Lows.BackColor = System.Drawing.Color.Black;
+            this.ImageViewer_Main_Lows.Camera = null;
+            this.ImageViewer_Main_Lows.CameraSwitch = null;
+            this.ImageViewer_Main_Lows.FrameRate = 1D;
+            this.ImageViewer_Main_Lows.InputImage = null;
+            this.ImageViewer_Main_Lows.IsViewCustomizedImage = false;
+            this.ImageViewer_Main_Lows.Location = new System.Drawing.Point(10, 28);
+            this.ImageViewer_Main_Lows.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ImageViewer_Main_Lows.Name = "ImageViewer_Main_Rows";
+            this.ImageViewer_Main_Lows.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.ImageViewer_Main_Lows.Simulated = false;
+            this.ImageViewer_Main_Lows.Size = new System.Drawing.Size(295, 247);
+            this.ImageViewer_Main_Lows.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ImageViewer_Main_Lows.TabIndex = 190;
+            this.ImageViewer_Main_Lows.TabStop = false;
+            this.ImageViewer_Main_Lows.UpdateDelayTime = 160;
+            this.ImageViewer_Main_Lows.VisibleCrossLine = true;
             // 
             // checkBox_Main_AutoRun
             // 
@@ -1607,7 +1607,7 @@
             this.groupBox_FineCam.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).EndInit();
             this.groupBox_CoarseCam.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Rows)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Lows)).EndInit();
             this.groupBox_Main_DiviceStatus.ResumeLayout(false);
             this.groupBox_Main_DiviceStatus.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Illuminator)).EndInit();
@@ -1692,7 +1692,7 @@
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button buttonForceMaterialOut;
-        private QMC.Common.Hmi.VisionImageViewer ImageViewer_Main_Rows;
+        private QMC.Common.Hmi.VisionImageViewer ImageViewer_Main_Lows;
         private QMC.Common.Hmi.VisionImageViewer ImageViewer_Main_highs;
         private System.Windows.Forms.GroupBox groupBox_FineCam;
         private System.Windows.Forms.GroupBox groupBox_CoarseCam;
