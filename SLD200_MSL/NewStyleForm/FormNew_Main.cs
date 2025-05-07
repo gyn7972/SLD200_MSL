@@ -332,7 +332,6 @@ namespace SLD200_MSL
             }
         }
                 
-
         // 가로, 세로 배열 크기 변경 메서드
         public void Change_SocketArraySize(int columns, int rows, int subcolumns, int subrows)
         {
@@ -592,8 +591,6 @@ namespace SLD200_MSL
                 MessageBox.Show("도면 로드 완료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             
-
-
             //if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
             //{
             //    workStage.m_bHomeProgressForm_Close = false;
@@ -949,7 +946,6 @@ namespace SLD200_MSL
                 m_bNeedSocketArrayChange = true;
             }
 
-
             //  소켓 상태 업데이트
             if (workStage.Main_SocketPositions_StatusCheck_Flag)
             {
@@ -978,47 +974,17 @@ namespace SLD200_MSL
                 }
             }
 
-            //    var pos = ProcessManager.GetFirstUnprocessedPosition();
-            //    if (pos.HasValue)                                   //  가공 중 (Processing)
-            //    {
-            //        workStage.Main_SocketPositions_ProcessingSocket = pos.Value.socketIndex;
-            //        workStage.Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.Processing;
+            //workStage에서 진행.
+            //workStage.UpdateLaserStatus();
+            if (workStage.m_nLaser_PulseMode != 1)
+            {
+                //알람 발생 할것.!
+                workStage.AlarmPost(WorkStage.AlarmKey.LaserFail_External_Mode);
 
-            //        workStage.Main_SocketPositions_SetStatus = true;
-            //    }
-            //    else                                               //  Complete
-            //    {
-            //        workStage.Main_SocketPositions_CompleteSocket = pos.Value.socketIndex;
-            //        workStage.Main_SocketPositions_CompleteStatus = (int)Socket_Process_Status.Complete;
-
-            //        workStage.Main_SocketPositions_SetCompleteStatus = true;
-            //    }
-            //}
-
-            ////그리는 부분
-            //if (workStage.Main_SocketPositions_SetStatus)
-            //{
-            //    workStage.Main_SocketPositions_SetStatus = false;
-
-            //    m_ProcSocketRowCol = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_ProcessingSocket, workStage.Main_SocketPositions_ColumnCount);
-            //    m_ProcRegionRowCol = workStage.GetRegionRowColumnFromIndex(workStage.Main_SocketPositions_ProcessingSocket_Region, workStage.Main_SocketPositions_SubColumnCount);
-            //    m_ProcSocketStatus = workStage.Main_SocketPositions_ProcessingStatus;
-            //    m_ProcRegionStatus = workStage.Main_SocketPositions_ProcessingStatus_Region;
-
-            //    m_bNeedProcStatusUpdate = true;
-            //}
-
-            //if (workStage.Main_SocketPositions_SetCompleteStatus)
-            //{
-            //    workStage.Main_SocketPositions_SetCompleteStatus = false;
-
-            //    m_CompSocketRowCol = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_CompleteSocket, workStage.Main_SocketPositions_ColumnCount);
-            //    m_CompRegionRowCol = workStage.GetRowColumnFromIndex(workStage.Main_SocketPositions_CompleteSocket_Region, workStage.Main_SocketPositions_SubColumnCount);
-            //    m_CompSocketStatus = workStage.Main_SocketPositions_CompleteStatus;
-            //    m_CompRegionStatus = workStage.Main_SocketPositions_CompleteStatus_Region;
-
-            //    m_bNeedCompStatusUpdate = true;
-            //}
+                //var mb = new MessageBoxOk();
+                //mb.ShowDialog("Information !", "레이저 External 모드가 아닙니다.\r\n\r\n [[External]] 모드로 변경 후 다시 시도 바랍니다.");
+                //return;
+            }
 
             if (Equipment.AutoRunStatus &&
                 Equipment.CycleStop &&
@@ -1048,18 +1014,12 @@ namespace SLD200_MSL
                 m_NeedDocumentSync = false;
                 SiriusViewer_Main.Document = Equipment.EqpSiriusViewer.Document;
             }
+                        
+            label_Main_LaserStatus.Text = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF";
+            label_Main_LaserStatus.BackColor = workStage.GetLaserBusyStatus() ? Color.Red : Color.Black;
+            label_Main_LaserStatus.ForeColor = workStage.GetLaserBusyStatus() ? Color.White : Color.Lime;
 
             // 상태 표시 CheckBox
-            //checkBox_Main_ProcessStatus_LD_LPort_Complete.Checked = Equipment.m_bMainProcessStatus_LD_LPort_Complete;
-            //checkBox_Main_ProcessStatus_LD_RPort_Complete.Checked = Equipment.m_bMainProcessStatus_LD_RPort_Complete;
-            //checkBox_Main_ProcessStatus_LD_Module_PortPickUp_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_PortPickUp_Complete;
-            //checkBox_Main_ProcessStatus_LD_Module_MAlignerPutDown_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_MAlignerPutDown_Complete;
-            //checkBox_Main_ProcessStatus_LD_MAlign_Complete.Checked = Equipment.m_bMainProcessStatus_LD_M_Aligner_Align_Complete;
-            //checkBox_Main_ProcessStatus_LD_Module_MAlignerPickUp_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_MAlignerPickUp_Complete;
-            //checkBox_Main_ProcessStatus_LD_Module_WorkStagePutDown_Complete.Checked = Equipment.m_bMainProcessStatus_LD_Module_WorkStagePutDown_Complete;
-            //checkBox_Main_ProcessStatus_WorkStage_Module_Process_Complete.Checked = Equipment.m_bMainProcessStatus_WorkStage_Module_Process_Complete;
-            //checkBox_Main_ProcessStatus_UL_Module_PickUp_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_WorkStagePickUp_Complete;
-            //checkBox_Main_ProcessStatus_UL_Module_PutDown_Complete.Checked = Equipment.m_bMainProcessStatus_UL_Module_PortPutDown_Complete;
             //checkBox_Main_Loader_Transfer_Pause.Checked = Equipment.Loader_Transfer_Pause;
             checkBox_Main_Loader_LPort_Pause.Checked = Equipment.Loader_LPort_Pause;
             checkBox_Main_Loader_RPort_Pause.Checked = Equipment.Loader_RPort_Pause;

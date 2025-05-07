@@ -29,7 +29,6 @@ using SocketLaser;
 using SocketLaserHeightSensor;
 using System.IO.Ports;
 using MessageBox = System.Windows.Forms.MessageBox;
-using System;
 //  Sirius1
 using SpiralLab.Sirius;
 using LaserVirtual = SpiralLab.Sirius.LaserVirtual;
@@ -1556,6 +1555,7 @@ namespace QMC.Common.Modules
             InitFail_CameraFine,
             InitFail_CameraPre,
             InitFail_Illuminator,
+            LaserFail_External_Mode,
 
             eDrillingDataloadFail,
             eStageMoveFail,
@@ -1739,6 +1739,15 @@ namespace QMC.Common.Modules
             alarm.Code = (int)AlarmKey.InitFail_Illuminator;
             alarm.Title = "Illuminator";
             alarm.Cause = "Illuminator가 초기화 되지 않았습니다. 통신 연결 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
+            //LaserFail_External_Mode
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.LaserFail_External_Mode;
+            alarm.Title = "Laser";
+            alarm.Cause = "Laser Mode가 External_Mode 아닙니다. External_Mode로 변경 바랍니다.";
             alarm.Source = Name;
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
@@ -4549,6 +4558,14 @@ namespace QMC.Common.Modules
                 while (true)
                 {
                     Thread.Sleep(1);
+
+                    //if(!m_bLaserBusy)
+                    //{
+                    //    if (IsAlarm())
+                    //    {
+                    //        continue;
+                    //    }
+                    //}
                     if (IsAlarm())
                     {
                         continue;
@@ -4557,6 +4574,7 @@ namespace QMC.Common.Modules
                     {
                         break;
                     }
+
                     Timer_LaserDrillingWork_Tick(null, null);
 
                 }
@@ -7802,7 +7820,25 @@ namespace QMC.Common.Modules
 
         #region Event Handler
 
-        
+
+        private bool m_bLaserBusy = false;
+        public bool GetLaserBusyStatus()
+        {
+            return m_bLaserBusy;
+        }
+        public void UpdateLaserStatus()
+        {
+            try
+            {
+                m_bLaserBusy = rtc.CtlGetStatus(RtcStatus.Busy);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                //m_bLaserBusy = false;
+            }
+        }
+
         private async void Timer_MainWork_Tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -7907,8 +7943,13 @@ namespace QMC.Common.Modules
 
                     CommonModule.Instance.TowerLamp_BuzzerStop = false;
                 }
-                
-                // Scanner Calibration이 활성화되지 않은 경우 종료 ??
+
+
+                // Scanner signal로 레이저 발진 유/무 확인.
+                if(rtc != null)
+                    UpdateLaserStatus();
+
+                // Scanner Calibration이 활성화되지 않은 경우 종료??
                 if (!m_MainWork_Start)
                 {
                     return;
@@ -13647,8 +13688,10 @@ namespace QMC.Common.Modules
 
                     this.jigAligner_HighRes.UsePatternMatchingTool = true;
                     //this.jigAligner_HighRes.Work();
-                    ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width);
+                    int retryCount = 1;
                     
+                    ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width, retryCount);
+                    jigAligner_HighRes.Camera.StartLive();
                     timer_VisionAlign.Enabled = true;
 
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_fromVision_ResultCheck;
@@ -13724,10 +13767,10 @@ namespace QMC.Common.Modules
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry 횟수 초과");
 
-                            //  알람 정지 (LED Bar - Red Blink)
-                            Equipment.MachineStop_byAlarm = true;
+                            ////  알람 정지 (LED Bar - Red Blink)
+                            //Equipment.MachineStop_byAlarm = true;
 
-                            timer_VisionAlign.Enabled = false;
+                            //timer_VisionAlign.Enabled = false;
 
                             m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
                         }
@@ -13796,7 +13839,6 @@ namespace QMC.Common.Modules
                             m_bSocketAlign_OK = false;
                         }
                     }
-
 
                     //if ((m_nLaserDrilling_MainStep != (int)LaserDrilling_Step.None) ||
                     //    (m_nAlignVerification_MainStep != (int)AlignVerification_Step.None))                            //  자동운전중이거나, 얼라인 Verification Cyc 일 경우, Cycle 완료
@@ -14220,7 +14262,7 @@ namespace QMC.Common.Modules
             return new XyCoordinate(dNewX + dRotationCenterX, dNewY + dRotationCenterY);
         }
 
-        private int SpiralSearch(double dWidth)
+        private int SpiralSearch(double dWidth , int maxSteps = 9)
         {
             int ret = -1;
             try
@@ -14233,7 +14275,7 @@ namespace QMC.Common.Modules
                 XyCoordinate xyFirst = new XyCoordinate(xyCenter.X, xyCenter.Y);
                 // 이동 거리 및 검색 횟수 설정
                 double stepSize = 0.5; // 1mm 이동
-                int maxSteps = 10; // 최대 50번 검색
+                
                 List<XyCoordinate> xyCoordinates = new List<XyCoordinate>();
 
                 // 스파이럴 이동 구현
@@ -18313,6 +18355,11 @@ namespace QMC.Common.Modules
                                 //m_dALIGN_FACTOR_Theta += Equipment.m_dTest_SocketAlign_Theta;
 
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketData_RotAndOffset_Move;
+                            }
+                            else
+                            {
+
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
                             }
                         
                         }
