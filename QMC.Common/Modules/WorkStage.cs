@@ -8836,7 +8836,7 @@ namespace QMC.Common.Modules
                     //  라이브 상태가 아니면 라이브로 변경
                     if (jigAligner_LowRes.Camera.IsLiveOn == false)
                     {
-                        jigAligner_LowRes.Camera.StartLive();
+                        //jigAligner_LowRes.Camera.StartLive();
                     }
 
                     //  어느 쪽 마크를 찾을 것인지... 1번 마크인지 2번 마크인지...
@@ -8914,7 +8914,7 @@ namespace QMC.Common.Modules
                             m_bFindLowerAlignMark_OK = true;
                         }
                     }
-                    jigAligner_LowRes.Camera.StartLive();
+                    //jigAligner_LowRes.Camera.StartLive();
                     m_bFindAlignMark_Complete = true;
                     m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
                     break;
@@ -13621,7 +13621,7 @@ namespace QMC.Common.Modules
                     this.jigAligner_HighRes.UsePatternMatchingTool = true;
                     //this.jigAligner_HighRes.Work();
                     ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width);
-                    jigAligner_HighRes.Camera.StartLive();
+                    
                     timer_VisionAlign.Enabled = true;
 
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_fromVision_ResultCheck;
@@ -14149,13 +14149,13 @@ namespace QMC.Common.Modules
             m_nSocketAlign_Retry_Max = 3;
             m_nSocketAlign_Retry_Count = 0;
 
-            //Todo: 성부장님. 엎드려.
+           
             m_nSocketAlign_FiducialCount_Total = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos.Length;
             m_nSocketAlign_FiducialCount = 0;
 
             if (Camera_HighRes != null)
             {
-                Camera_HighRes.StartLive();
+               // Camera_HighRes.StartLive();
             }
 
             CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
