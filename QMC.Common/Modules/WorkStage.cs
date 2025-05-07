@@ -14284,8 +14284,16 @@ namespace QMC.Common.Modules
                                 {
                                     Point ptStart = new Point((int)v.Left, (int)v.Top);
                                     Point ptEnd = new Point((int)v.Right, (int)v.Bottom);
-                                    FineCamResultOveray.Add(new RectangleFrameVisionImageOverlay("Fine Align", ptStart, ptEnd));
-
+                                    var overayRect = new RectangleFrameVisionImageOverlay("Fine Align", ptStart, ptEnd);
+                                    overayRect.Visible = true;
+                                    overayRect.Color = Color.Lime;
+                                    overayRect.Thickness = 1;
+                                    FineCamResultOveray.Add(overayRect);
+                                    var overayEl = new EllipseFrameVisionImageOverlay("Fine Align", ptStart, ptEnd);
+                                    overayEl.Visible = true;
+                                    overayEl.Color = Color.Lime;
+                                    overayEl.Thickness = 1;
+                                    FineCamResultOveray.Add(overayEl);
                                 }
                                 UpdateResultOveray?.Invoke(this.Camera_HighRes, null);
                             }
