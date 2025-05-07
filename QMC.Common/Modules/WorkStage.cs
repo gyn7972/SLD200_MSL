@@ -4663,6 +4663,7 @@ namespace QMC.Common.Modules
                         v.Add(overay);
                     }
                     this.CoarseCamResultOveray = v;
+                    UpdateResultOveray?.Invoke(this.Camera_LowRes,null);
                 }
                 catch (Exception ex)
                 {
