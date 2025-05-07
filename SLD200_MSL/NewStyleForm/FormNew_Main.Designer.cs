@@ -84,7 +84,6 @@
             this.checkBox_Main_SocketDrilling_Pass = new System.Windows.Forms.CheckBox();
             this.checkBox_Test_LaserDrillingCycle = new System.Windows.Forms.CheckBox();
             this.button_Main_ManualStart = new System.Windows.Forms.Button();
-            this.ImageViewer_Main_Rows = new QMC.Common.Hmi.VisionImageViewer();
             this.ImageViewer_Main_highs = new QMC.Common.Hmi.VisionImageViewer();
             this.checkBox_Main_AlignStartSocket_ContinueMode = new System.Windows.Forms.CheckBox();
             this.baseLabel_Main_Divice_Status_Illuminator = new SLD200_MSL.BaseLabel();
@@ -164,7 +163,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Motion)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_IO)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Laser)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Rows)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).BeginInit();
             this.baseGroupBox_Progress.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Module_TargetCount)).BeginInit();
@@ -898,26 +896,6 @@
             this.button_Main_ManualStart.Text = "Laser Drilling Cycle Start    (공정 테스트용)";
             this.button_Main_ManualStart.UseVisualStyleBackColor = false;
             this.button_Main_ManualStart.Click += new System.EventHandler(this.button_Main_ManualStart_Click);
-            // 
-            // ImageViewer_Main_Rows
-            // 
-            this.ImageViewer_Main_Rows.BackColor = System.Drawing.Color.Black;
-            this.ImageViewer_Main_Rows.Camera = null;
-            this.ImageViewer_Main_Rows.CameraSwitch = null;
-            this.ImageViewer_Main_Rows.FrameRate = 1D;
-            this.ImageViewer_Main_Rows.InputImage = null;
-            this.ImageViewer_Main_Rows.IsViewCustomizedImage = false;
-            this.ImageViewer_Main_Rows.Location = new System.Drawing.Point(10, 28);
-            this.ImageViewer_Main_Rows.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.ImageViewer_Main_Rows.Name = "ImageViewer_Main_Rows";
-            this.ImageViewer_Main_Rows.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
-            this.ImageViewer_Main_Rows.Simulated = false;
-            this.ImageViewer_Main_Rows.Size = new System.Drawing.Size(295, 247);
-            this.ImageViewer_Main_Rows.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.ImageViewer_Main_Rows.TabIndex = 190;
-            this.ImageViewer_Main_Rows.TabStop = false;
-            this.ImageViewer_Main_Rows.UpdateDelayTime = 160;
-            this.ImageViewer_Main_Rows.VisibleCrossLine = true;
             // 
             // ImageViewer_Main_highs
             // 
@@ -1659,7 +1637,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Motion)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_IO)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Laser)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Rows)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).EndInit();
             this.baseGroupBox_Progress.ResumeLayout(false);
             this.baseGroupBox_Progress.PerformLayout();
