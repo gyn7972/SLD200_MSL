@@ -17924,7 +17924,8 @@ namespace QMC.Common.Modules
 
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR, 3);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR, 3); //-> 안먹나?
+                    //CommonModule.Instance.Illuminator.SetVolume(3500, 3);
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 1);          //  Fine Cam Red 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 2);          //  Fine Cam IR 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 3);           //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
@@ -19842,20 +19843,42 @@ namespace QMC.Common.Modules
                                     entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
                                                         m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
 
-                                    //  시작 위치 각도 분할을 사용할 경우 (매번 분할 각도만큼 이동하여 시작)
-                                    if (m_nCircleDrilling_CurrentRotStep >= 1)
+                                    //  Circle 1회 가공일 경우, Circle 그리기 시작하는 위치의 각도를 입력하면 각도에 맞게 이동한다.
+                                    if ((Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DrillingRepetition == 1) &&
+                                        (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_CircleStartAngleCircle1time != 0.0))
                                     {
+                                        m_strTemp = string.Format("Circle 원 가공 반복 회수 1회, Start Angle : {0:0.000}", Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_CircleStartAngleCircle1time);
+                                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+
                                         entity_Position_Center.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
                                                                     m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
                                         entity_Position_Center.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
                                                                     m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
 
-                                        entity_Position_Rot = RotatePoint(entity_Position_Center, entity_Position, DegreeToRadian((double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree));
+                                        entity_Position_Rot = RotatePoint(entity_Position_Center, entity_Position, DegreeToRadian((double)Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_CircleStartAngleCircle1time));
                                         //entity_Position_Rot = RotatePoint_CurPos(entity_Position_Center, entity_Position, DegreeToRadian((double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree));                                    
 
                                         entity_Position = entity_Position_Rot;
                                     }
+                                    else
+                                    {
+                                        //  시작 위치 각도 분할을 사용할 경우 (매번 분할 각도만큼 이동하여 시작)
+                                        if (m_nCircleDrilling_CurrentRotStep >= 1)
+                                        {
+                                            m_strTemp = string.Format("Circle 원 가공 반복 회수 n회, 계산된 Start Angle : {0:0.000}", (double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree);
+                                            Log.Write("SLD-200", "Auto Run", m_strTemp);
 
+                                            entity_Position_Center.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                            entity_Position_Center.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                            entity_Position_Rot = RotatePoint(entity_Position_Center, entity_Position, DegreeToRadian((double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree));
+                                            //entity_Position_Rot = RotatePoint_CurPos(entity_Position_Center, entity_Position, DegreeToRadian((double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree));                                    
+
+                                            entity_Position = entity_Position_Rot;
+                                        }
+                                    }
                                     //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
                                     //{
                                     //    m_bDivRegionList_Success &= rtcSyncAxis.ListJump(new Vector2((float)entity_Position.X, (float)entity_Position.Y));
@@ -20048,18 +20071,41 @@ namespace QMC.Common.Modules
                                     entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
                                                         m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
 
-                                    //  시작 위치 각도 분할을 사용할 경우 (매번 분할 각도만큼 이동하여 시작)
-                                    if (m_nCircleDrilling_CurrentRotStep >= 1)
+                                    //  Circle 1회 가공일 경우, Circle 그리기 시작하는 위치의 각도를 입력하면 각도에 맞게 이동한다.
+                                    if ((Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_DrillingRepetition == 1) &&
+                                        (Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_CircleStartAngleCircle1time != 0.0))
                                     {
+                                        m_strTemp = string.Format("Arc 원 가공 반복 회수 1회, Start Angle : {0:0.000}", Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_CircleStartAngleCircle1time);
+                                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+
                                         entity_Position_Center.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
                                                                     m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
                                         entity_Position_Center.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
                                                                     m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
 
-                                        entity_Position_Rot = RotatePoint(entity_Position_Center, entity_Position, DegreeToRadian((double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree));
-                                        //entity_Position_Rot = RotatePoint_CurPos(entity_Position_Center, entity_Position, DegreeToRadian((double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree));
+                                        entity_Position_Rot = RotatePoint(entity_Position_Center, entity_Position, DegreeToRadian((double)Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_CircleStartAngleCircle1time));
+                                        //entity_Position_Rot = RotatePoint_CurPos(entity_Position_Center, entity_Position, DegreeToRadian((double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree));                                    
 
                                         entity_Position = entity_Position_Rot;
+                                    }
+                                    else
+                                    {
+                                        //  시작 위치 각도 분할을 사용할 경우 (매번 분할 각도만큼 이동하여 시작)
+                                        if (m_nCircleDrilling_CurrentRotStep >= 1)
+                                        {
+                                            m_strTemp = string.Format("Arc 원 가공 반복 회수 n회, 계산된 Start Angle : {0:0.000}", (double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree);
+                                            Log.Write("SLD-200", "Auto Run", m_strTemp);
+
+                                            entity_Position_Center.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X -
+                                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                            entity_Position_Center.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y -
+                                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                            entity_Position_Rot = RotatePoint(entity_Position_Center, entity_Position, DegreeToRadian((double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree));
+                                            //entity_Position_Rot = RotatePoint_CurPos(entity_Position_Center, entity_Position, DegreeToRadian((double)m_nCircleDrilling_CurrentRotStep * m_dCircleDrilling_RotDegree));                                    
+
+                                            entity_Position = entity_Position_Rot;
+                                        }
                                     }
 
                                     //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
