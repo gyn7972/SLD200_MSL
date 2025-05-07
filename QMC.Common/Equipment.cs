@@ -820,7 +820,14 @@ namespace QMC.Common
 
         public static bool SocketDrilling_Skip { set; get; } = false;            //  Socket Drilling Skip (true: Skip, false: Not Skip)
 
-
+        public enum SelectedSocketStartModeList : int
+        {
+            All = 0,
+            SelectedSocketOnly,
+            SelectedSocketContinue,
+        }
+        public static int SelectedSocketStartMode { set; get; } = (int)SelectedSocketStartModeList.All;                //  소켓 가공 시작 모드 (0:None, 1:단일 선택 가공,  2:선택 이후 나머지 가공)
+        
 
         public enum LoaderPortList : int
         {

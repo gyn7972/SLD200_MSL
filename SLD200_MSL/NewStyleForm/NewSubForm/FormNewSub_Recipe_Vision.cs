@@ -214,7 +214,11 @@ namespace SLD200.NewStyleForm.NewSubForm
                 basetextBox_RecipeVision_MinScore.Text = Equipment.stVisionRecipeSet.PatternMatching.MinScore.ToString();
                 baseToggleButton_RecipeVision_DuplicateCheck.UpdateToggleStatus(Equipment.stVisionRecipeSet.PatternMatching.DuplicateChecked);
                 baseToggleButton_RecipeVision_UseMaskImage.UpdateToggleStatus(Equipment.stVisionRecipeSet.PatternMatching.UseMaskImage);
-                pictureBox_RecipeVision_TrainImage.Image = Equipment.stVisionRecipeSet.LoadTrainImage().GetImage();
+                if (Equipment.stVisionRecipeSet.LoadTrainImage().GetImage() != null)
+                {
+                    pictureBox_RecipeVision_TrainImage.Image = Equipment.stVisionRecipeSet.LoadTrainImage().GetImage();
+                }
+                
 
                 PatternMatchingParameter.MaxTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text);
                 PatternMatchingParameter.MaxInstance = Equipment.ToInt(basetextBox_RecipeVision_MaxInstance.Text);
