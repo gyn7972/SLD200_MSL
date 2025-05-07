@@ -31,7 +31,7 @@ namespace SLD200.NewStyleForm.NewSubForm
         static WorkStage workStage;
         static JigAligner Owner;
 
-        static Vision vision;
+        //static Vision vision;
 
         private int nMarkType = 0; //0:Cross, 1:Circle 등
         private int nSerchType = 0; //0:PatternMatching, 1:Blob, 2:CircleA 등
@@ -78,10 +78,10 @@ namespace SLD200.NewStyleForm.NewSubForm
                     Owner = workStage.jigAligner_LowRes;
                 }
 
-                if (module.Name == "Vision")
-                {
-                    vision = module as Vision;
-                }
+                //if (module.Name == "Vision")
+                //{
+                //    vision = module as Vision;
+                //}
             }
 
             RecipeVisionTimer = new System.Windows.Forms.Timer();
@@ -95,7 +95,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 this.ImageViewer_RecipeVision_highs.SuspendDisplay();
                 this.ImageViewer_RecipeVision_highs.StopUpdateTask();
 
-                this.ImageViewer_RecipeVision_highs.Camera = Owner.Camera;
+                this.ImageViewer_RecipeVision_highs.Camera = workStage.jigAligner_HighRes.Camera; //Owner.Camera;
 
                 this.ImageViewer_RecipeVision_highs.ResumeDisplay();
                 this.ImageViewer_RecipeVision_highs.StartUpdateTask();
@@ -147,6 +147,8 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void RecipeVisionTimer_Tick(object sender, EventArgs e)
         {
+            //this.ImageViewer_RecipeVision_highs.Camera = workStage.jigAligner_HighRes.Camera; //Owner.Camera;
+
             //  Work Stage Position
             label_RecipeVision_EncPosition_STAGE_X.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X));
             label_RecipeVision_EncPosition_STAGE_Y.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y));
@@ -195,7 +197,10 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (Owner.Recipe != null)
             {
                 VisionImage visionImage = Owner.Recipe.PatternMatchingParameter.TrainImage;
-                this.pictureBox_RecipeVision_TrainImage.Image = visionImage.GetImage();
+                if(visionImage != null)
+                {
+                    this.pictureBox_RecipeVision_TrainImage.Image = visionImage.GetImage();
+                }
             }
             else
             {
@@ -204,22 +209,47 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             if (PatternMatchingParameter != null)
             {
-                basetextBox_RecipeVision_AngleTolerance.Text = Owner.Recipe.PatternMatchingParameter.MaxTolerance.ToString();
-                PatternMatchingParameter.MaxTolerance = Owner.Recipe.PatternMatchingParameter.MaxTolerance;
+                basetextBox_RecipeVision_AngleTolerance.Text = Equipment.stVisionRecipeSet.PatternMatching.MaxTolerance.ToString();
+                basetextBox_RecipeVision_MaxInstance.Text = Equipment.stVisionRecipeSet.PatternMatching.MaxInstance.ToString();
+                basetextBox_RecipeVision_MinScore.Text = Equipment.stVisionRecipeSet.PatternMatching.MinScore.ToString();
+                baseToggleButton_RecipeVision_DuplicateCheck.UpdateToggleStatus(Equipment.stVisionRecipeSet.PatternMatching.DuplicateChecked);
+                baseToggleButton_RecipeVision_UseMaskImage.UpdateToggleStatus(Equipment.stVisionRecipeSet.PatternMatching.UseMaskImage);
+                if (Equipment.stVisionRecipeSet.LoadTrainImage().GetImage() != null)
+                {
+                    pictureBox_RecipeVision_TrainImage.Image = Equipment.stVisionRecipeSet.LoadTrainImage().GetImage();
+                }
+                
 
-                basetextBox_RecipeVision_MaxInstance.Text = Owner.Recipe.PatternMatchingParameter.MaxInstance.ToString();
-                PatternMatchingParameter.MaxInstance = Owner.Recipe.PatternMatchingParameter.MaxInstance;
+                PatternMatchingParameter.MaxTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text);
+                PatternMatchingParameter.MaxInstance = Equipment.ToInt(basetextBox_RecipeVision_MaxInstance.Text);
+                PatternMatchingParameter.MinTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text) * -1;
+                PatternMatchingParameter.MinScore = Equipment.ToDouble(basetextBox_RecipeVision_MinScore.Text);
+                PatternMatchingParameter.DuplicateChecked = baseToggleButton_RecipeVision_DuplicateCheck.GetButtonStatus();
+                PatternMatchingParameter.UseMaskImage = baseToggleButton_RecipeVision_UseMaskImage.GetButtonStatus();
+                PatternMatchingParameter.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
+                Owner.Recipe.PatternMatchingParameter = PatternMatchingParameter;
 
-                basetextBox_RecipeVision_MinScore.Text = Owner.Recipe.PatternMatchingParameter.MinScore.ToString();
-                PatternMatchingParameter.MinScore = Owner.Recipe.PatternMatchingParameter.MinScore;
+                Owner.Recipe.InspectRoiStartLocation = Equipment.stVisionRecipeSet.InspectRoiStartLocation; //RoiInspect.Parameter.StartLocation;
+                Owner.Recipe.InspectRoiEndLocation = Equipment.stVisionRecipeSet.InspectRoiEndLocation;     //RoiInspect.Parameter.EndLocation;
+                Owner.Recipe.TrainRoiStartLocation = Equipment.stVisionRecipeSet.TrainRoiStartLocation;     //RoiTrain.Parameter.StartLocation;
+                Owner.Recipe.TrainRoiEndLocation = Equipment.stVisionRecipeSet.TrainRoiEndLocation;         //RoiTrain.Parameter.EndLocation;
 
-                bool bOn = Owner.Recipe.PatternMatchingParameter.DuplicateChecked;
-                baseToggleButton_RecipeVision_DuplicateCheck.UpdateToggleStatus(bOn);
-                PatternMatchingParameter.DuplicateChecked = bOn;
+                //basetextBox_RecipeVision_AngleTolerance.Text = Owner.Recipe.PatternMatchingParameter.MaxTolerance.ToString();
+                //PatternMatchingParameter.MaxTolerance = Owner.Recipe.PatternMatchingParameter.MaxTolerance;
 
-                bOn = Owner.Recipe.PatternMatchingParameter.UseMaskImage;
-                baseToggleButton_RecipeVision_UseMaskImage.UpdateToggleStatus(bOn);
-                PatternMatchingParameter.UseMaskImage = bOn;
+                //basetextBox_RecipeVision_MaxInstance.Text = Owner.Recipe.PatternMatchingParameter.MaxInstance.ToString();
+                //PatternMatchingParameter.MaxInstance = Owner.Recipe.PatternMatchingParameter.MaxInstance;
+
+                //basetextBox_RecipeVision_MinScore.Text = Owner.Recipe.PatternMatchingParameter.MinScore.ToString();
+                //PatternMatchingParameter.MinScore = Owner.Recipe.PatternMatchingParameter.MinScore;
+
+                //bool bOn = Owner.Recipe.PatternMatchingParameter.DuplicateChecked;
+                //baseToggleButton_RecipeVision_DuplicateCheck.UpdateToggleStatus(bOn);
+                //PatternMatchingParameter.DuplicateChecked = bOn;
+
+                //bOn = Owner.Recipe.PatternMatchingParameter.UseMaskImage;
+                //baseToggleButton_RecipeVision_UseMaskImage.UpdateToggleStatus(bOn);
+                //PatternMatchingParameter.UseMaskImage = bOn;
             }
 
             this.radioButton_RecipeVision_Pattern.Checked = true;   //무조건 무조건이야~
@@ -393,7 +423,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             //    m_TrainImageControl.Show();
             //    m_TrainImageControl.BringToFront();
             //}
-            SetTrainImage(Owner.Recipe.PatternMatchingParameter.TrainImage);
+            //SetTrainImage(Owner.Recipe.PatternMatchingParameter.TrainImage);
 
 
 
@@ -660,7 +690,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                     m_TempScale.InvertedX = workStage.Config.ParamConfig.UpperVision_ScaleInvert_X;
                     m_TempScale.InvertedY = workStage.Config.ParamConfig.UpperVision_ScaleInvert_Y;
 
-
                     double pixelR = (Equipment.Scanner_Calibration_CrossMarkLength / 2) / (m_TempScale.X);
                     if (ImageViewer_RecipeVision_Rows.Simulated)
                     {
@@ -716,14 +745,25 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
             else //Scanner_Calibration_UsePatternMatching
             {
+                //jigAligner_LowRes.Recipe.PatternMatchingParameter = stVisionRecipeSet.PatternMatching;
+                //jigAligner_LowRes.Recipe.InspectRoiStartLocation = stVisionRecipeSet.InspectRoiStartLocation;
+                //jigAligner_LowRes.Recipe.InspectRoiEndLocation = stVisionRecipeSet.InspectRoiEndLocation;
+                //jigAligner_LowRes.Recipe.TrainRoiStartLocation = stVisionRecipeSet.TrainRoiStartLocation;
+                //jigAligner_LowRes.Recipe.TrainRoiEndLocation = stVisionRecipeSet.TrainRoiEndLocation;
+
                 PatternMatchingParameter.MaxTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text);
                 PatternMatchingParameter.MaxInstance = Equipment.ToInt(basetextBox_RecipeVision_MaxInstance.Text);
                 PatternMatchingParameter.MinTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text) * -1;
                 PatternMatchingParameter.MinScore = Equipment.ToDouble(basetextBox_RecipeVision_MinScore.Text);
                 PatternMatchingParameter.DuplicateChecked = baseToggleButton_RecipeVision_DuplicateCheck.GetButtonStatus();
                 PatternMatchingParameter.UseMaskImage = baseToggleButton_RecipeVision_UseMaskImage.GetButtonStatus();
-                //PatternMatchingParameter.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
+                PatternMatchingParameter.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
                 Owner.Recipe.PatternMatchingParameter = PatternMatchingParameter;
+
+                Owner.Recipe.InspectRoiStartLocation = RoiInspect.Parameter.StartLocation;
+                Owner.Recipe.InspectRoiEndLocation = RoiInspect.Parameter.EndLocation;
+                Owner.Recipe.TrainRoiStartLocation = RoiTrain.Parameter.StartLocation;
+                Owner.Recipe.TrainRoiEndLocation = RoiTrain.Parameter.EndLocation;
 
                 PatternMatchingResult result = Owner.GetResult();
                 if (result != null)
@@ -783,6 +823,16 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void button_RecipeVision_Vision_Save_Click(object sender, EventArgs e)
         {
+            Equipment.stVisionRecipeSet.PatternMatching = PatternMatchingParameter;
+            Equipment.stVisionRecipeSet.TrainRoiStartLocation = RoiTrain.Parameter.StartLocation;
+            Equipment.stVisionRecipeSet.TrainRoiEndLocation = RoiTrain.Parameter.EndLocation;
+            Equipment.stVisionRecipeSet.InspectRoiStartLocation = RoiInspect.Parameter.StartLocation;
+            Equipment.stVisionRecipeSet.InspectRoiEndLocation = RoiInspect.Parameter.EndLocation;
+            Equipment.stVisionRecipeSet.IlluminationIR = hScrollBar_RecipeVision_Illuminator.Value;
+            Equipment.stVisionRecipeSet.SaveTrainImage(pictureBox_RecipeVision_TrainImage.Image);
+
+            Equipment.stVisionRecipeSet.SaveToIni(Equipment.Current_Recipe);
+
             UpdateOwnerRecipe(PatternMatchingParameter);
 
             //workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter = PatternMatchingParameter;
@@ -832,7 +882,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (Equipment.AjinBoard_Opened)
             {
                 //  Vision
-                if (vision.MC_Func.MC_isLimit_Neg((int)Vision.nAxis.X))
+                if (workStage.MC_Func.MC_isLimit_Neg((int)Vision.nAxis.X))
                 {
                     button_RecipeVision_X_Neg.BackColor = Color.Red;
                     button_RecipeVision_X_Neg.ForeColor = Color.White;
@@ -843,7 +893,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                     button_RecipeVision_X_Neg.ForeColor = Color.Black;
                 }
 
-                if (vision.MC_Func.MC_isLimit_Pos((int)Vision.nAxis.X))
+                if (workStage.MC_Func.MC_isLimit_Pos((int)Vision.nAxis.X))
                 {
                     button_RecipeVision_X_Pos.BackColor = Color.Red;
                     button_RecipeVision_X_Pos.ForeColor = Color.White;
@@ -854,7 +904,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                     button_RecipeVision_X_Pos.ForeColor = Color.Black;
                 }
 
-                if (vision.MC_Func.MC_isLimit_Neg((int)Vision.nAxis.Y))
+                if (workStage.MC_Func.MC_isLimit_Neg((int)Vision.nAxis.Y))
                 {
                     button_RecipeVision_Y_Neg.BackColor = Color.Red;
                     button_RecipeVision_Y_Neg.ForeColor = Color.White;
@@ -865,7 +915,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                     button_RecipeVision_Y_Neg.ForeColor = Color.Black;
                 }
 
-                if (vision.MC_Func.MC_isLimit_Pos((int)Vision.nAxis.Y))
+                if (workStage.MC_Func.MC_isLimit_Pos((int)Vision.nAxis.Y))
                 {
                     button_RecipeVision_Y_Pos.BackColor = Color.Red;
                     button_RecipeVision_Y_Pos.ForeColor = Color.White;
@@ -876,7 +926,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                     button_RecipeVision_Y_Pos.ForeColor = Color.Black;
                 }
 
-                if (vision.MC_Func.MC_isLimit_Neg((int)Vision.nAxis.Z))
+                if (workStage.MC_Func.MC_isLimit_Neg((int)Vision.nAxis.Z))
                 {
                     button_RecipeVision_Z_Neg.BackColor = Color.Red;
                     button_RecipeVision_Z_Neg.ForeColor = Color.White;
@@ -887,7 +937,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                     button_RecipeVision_Z_Neg.ForeColor = Color.Black;
                 }
 
-                if (vision.MC_Func.MC_isLimit_Pos((int)Vision.nAxis.Z))
+                if (workStage.MC_Func.MC_isLimit_Pos((int)Vision.nAxis.Z))
                 {
                     button_RecipeVision_Z_Pos.BackColor = Color.Red;
                     button_RecipeVision_Z_Pos.ForeColor = Color.White;
@@ -907,9 +957,9 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             if (Equipment.AjinBoard_Opened)
             {
-                vision.MC_Func.MC_JogStop((int)Vision.nAxis.X);
-                vision.MC_Func.MC_JogStop((int)Vision.nAxis.Y);
-                vision.MC_Func.MC_JogStop((int)Vision.nAxis.Z);
+                workStage.MC_Func.MC_JogStop((int)Vision.nAxis.X);
+                workStage.MC_Func.MC_JogStop((int)Vision.nAxis.Y);
+                workStage.MC_Func.MC_JogStop((int)Vision.nAxis.Z);
             }
         }
 
@@ -956,13 +1006,13 @@ namespace SLD200.NewStyleForm.NewSubForm
                 {
                     if (radioButton_RecipeVision_JogMove_Continuous.Checked)
                     {
-                        vision.MC_Func.MC_JogMove(axis, velocity * direction, accdec, accdec);
+                        workStage.MC_Func.MC_JogMove(axis, velocity * direction, accdec, accdec);
                     }
                     else if (radioButton_RecipeVision_JogMove_Step.Checked)
                     {
                         string text = textBox_RecipeVision_JogMove_StepSize.Text;
                         distance = Math.Abs(Equipment.ToDouble(text));
-                        vision.MC_Func.MC_MoveRelPosition(axis, distance * direction, velocity, accdec, accdec);
+                        workStage.MC_Func.MC_MoveRelPosition(axis, distance * direction, velocity, accdec, accdec);
                     }
                 }
                 catch (Exception ex)
@@ -975,8 +1025,8 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void button_RecipeVision_WorkStage_GetCurrentPos_ToTempPos1_Click(object sender, EventArgs e)
         {
-            textBox_RecipeVision_WorkStage_TempPos1_StageX.Text = string.Format("{0:0.000}", vision.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X).ToString());
-            textBox_RecipeVision_WorkStage_TempPos1_StageY.Text = string.Format("{0:0.000}", vision.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y).ToString());
+            textBox_RecipeVision_WorkStage_TempPos1_StageX.Text = string.Format("{0:0.000}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X).ToString());
+            textBox_RecipeVision_WorkStage_TempPos1_StageY.Text = string.Format("{0:0.000}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y).ToString());
 
             Temp_Position_Save();
         }

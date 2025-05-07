@@ -1213,6 +1213,10 @@ namespace SLD200_MSL
                 return;
             }
 
+            //PreAlign Param
+
+
+
             var iniData = new Dictionary<string, Dictionary<string, string>>();
             int layerCount = (int)System.Enum.GetValues(typeof(LayerList)).Length;
 
@@ -1385,6 +1389,10 @@ namespace SLD200_MSL
                 Recipe_Data_Save_Refactory(fileName);
                 Equipment.Current_Recipe = fileName;
 
+                // Vision Data 저장
+                //visionData.SaveTrainImage(Owner.TrainImage);
+                stVisionRecipeSet.SaveToIni(fileName);
+
                 MessageBox.Show("Recipe Data를 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -1399,7 +1407,7 @@ namespace SLD200_MSL
             //  Recipe 창의 데이터를 Equipment Recipe Set에 적용
 
             //  Layer Index 확인
-            int m_nLayerIndex = -1;
+            int m_nLayerIndex = -1; 
             int m_nIndex = listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex;
             string m_strLayerName = "";
             
@@ -1415,6 +1423,13 @@ namespace SLD200_MSL
             else
             {
                 m_strLayerName = listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items[m_nIndex].ToString();
+            }
+
+            //  도면 확인
+            if (richTextBox_Recipe_TabRecipe_DrawingFile.Text.Length <= 0)
+            {
+                MessageBox.Show("도면 파일이 없습니다.", "Information!!"); 
+                return;
             }
 
             //  Layer Index 확인
@@ -1505,6 +1520,7 @@ namespace SLD200_MSL
 
             //  Drawing File
             Equipment.stLayerRecipeSet[m_nLayerIndex].DrawingFile = richTextBox_Recipe_TabRecipe_DrawingFile.Text;                  //  Drawing File 은 0번 Layer 에만 저장한다.
+            Equipment.RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
 
             //  Laser Parameter
             Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_PulseWidth = textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text) : 0;
@@ -1596,8 +1612,9 @@ namespace SLD200_MSL
 
         private void button_Recipe_Open_Click(object sender, EventArgs e)
         {
-            string fileName;
-
+            string filePath = "";
+            string fileName = "";
+            
             if (Equipment.EqpSiriusViewer == null)
             {
                 MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
@@ -1626,6 +1643,7 @@ namespace SLD200_MSL
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
+                //filePath = openFileDialog.filePath;
                 fileName = openFileDialog.FileName;
 
                 //  Recipe Data 로드
@@ -1637,9 +1655,16 @@ namespace SLD200_MSL
                 //  Recipe 명 표시
                 label_Recipe_FileName.Text = System.IO.Path.GetFileName(fileName);
 
+                // Recipe Vision Load
+                string iniPath = fileName;  //ConfigManager.GetRecipeDataPath() + "\\RecipeVisionData.ini";
+                stVisionRecipeSet = VisionRecipeData.LoadFromIni(iniPath);
+                if (workStage.jigAligner_LowRes != null)
+                {
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage = stVisionRecipeSet.LoadTrainImage(); //Bitmap.FromFile(m_strFile);
+                    workStage.jigAligner_LowRes.TrainImage = stVisionRecipeSet.LoadTrainImage(); //이거 사용중.
+                }
 
                 //  Recipe 창에 데이터 표시
-
                 //  Drawing File
                 richTextBox_Recipe_TabRecipe_DrawingFile.Text = Equipment.stLayerRecipeSet[0].DrawingFile;
 
@@ -1758,7 +1783,7 @@ namespace SLD200_MSL
                 //Equipment.EqpSiriusViewer_Origin.Document = m_formSiriusEditor.SiriusEditor.Document;
 
                 //  자동운전 중 모듈 가공 시 이 위치의 도면파일을 로드한다.
-                RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
+                Equipment.RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
 
                 workStage.DrillingData_Parsing();
 

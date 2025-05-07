@@ -1206,6 +1206,11 @@ namespace SLD200_MSL
                 checkBox_Main_SocketDrilling_Pass.Checked = false;
                 Equipment.SocketDrilling_Skip = false;
 
+                workStage.m_nSocketAlign_StartIndex = -1;
+                Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
+                checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
+
                 //  Main Work 타이머
                 //workStage.m_btimer_MainWork_Stop = true;                
                 //workStage.timer_MainWork.Enabled = false;
@@ -1375,6 +1380,13 @@ namespace SLD200_MSL
                 return;
             }
 
+            if (workStage.m_nLaser_PulseMode != 1)
+            {
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "레이저 External 모드가 아닙니다.\r\n\r\n [[External]] 모드로 변경 후 다시 시도 바랍니다.");
+                return;
+            }
+
             if (Equipment.AutoRunStatus)
             {
                 var mb = new MessageBoxOk();
@@ -1463,17 +1475,30 @@ namespace SLD200_MSL
                 //  Pre Align 중이었으니 그대로 시작
                 Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Pre Align 부터 다시 시작");
 
-                if (checkBox_Main_AlignStartSocket_SelectMode.Checked && (workStage.m_nSocketAlign_StartIndex >= 0))                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
+                if (workStage.m_nSocketAlign_StartIndex >= 0)                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
                 {
-                    m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\nNo : {1}번 소켓 Align Start", workStage.m_nSocketAlign_StartIndex, workStage.m_nDrillingWork_Group_Count);
+                    if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly)
+                    {
+                        m_strTemp = string.Format("선택한 {0}번 소켓 단일 가공을 진행하시겠습니까?\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex);
+                    }
+                    else if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)
+                    {
+                        m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex);
+                    }
+
+                    checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                    checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
 
                     var mb = new MessageBoxYesNo();
                     if (DialogResult.Yes == mb.ShowDialog("Question ?", m_strTemp))
                     {
                         workStage.m_nDrillingWork_Group_Count = workStage.m_nSocketAlign_StartIndex;        //  선택한 소켓 번호로 변경
                     }
-
-                    checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Button Click", "가공 취소");
+                        return;
+                    }
                 }
 
                 workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
@@ -1484,17 +1509,30 @@ namespace SLD200_MSL
 
                 Log.Write("SLD-200", Equipment.User_Name, "Button Click", "Socket Align 부터 다시 시작");
 
-                if (checkBox_Main_AlignStartSocket_SelectMode.Checked && (workStage.m_nSocketAlign_StartIndex >= 0))                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
+                if (workStage.m_nSocketAlign_StartIndex >= 0)                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
                 {
-                    m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\nNo : {1}번 소켓 Align Start", workStage.m_nSocketAlign_StartIndex, workStage.m_nDrillingWork_Group_Count);
+                    if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly)
+                    {
+                        m_strTemp = string.Format("선택한 {0}번 소켓 단일 가공을 진행하시겠습니까?\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex);
+                    }
+                    else if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)
+                    {
+                        m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex);
+                    }
+
+                    checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                    checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
 
                     var mb = new MessageBoxYesNo();
                     if (DialogResult.Yes == mb.ShowDialog("Question ?", m_strTemp))
                     {
                         workStage.m_nDrillingWork_Group_Count = workStage.m_nSocketAlign_StartIndex;        //  선택한 소켓 번호로 변경
                     }
-
-                    checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Button Click", "가공 취소");
+                        return;
+                    }
                 }
 
                 workStage.m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
@@ -1553,17 +1591,31 @@ namespace SLD200_MSL
 
                         workStage.m_nDrillingWork_Group_Count = workStage.CurrentSocketNumber;                  //  소켓 번호 설정 (다음 소켓 ???)
 
-                        if (checkBox_Main_AlignStartSocket_SelectMode.Checked && (workStage.m_nSocketAlign_StartIndex >= 0))                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
+
+                        if (workStage.m_nSocketAlign_StartIndex >= 0)                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
                         {
-                            m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\nNo : {1}번 소켓 Align Start", workStage.m_nSocketAlign_StartIndex, workStage.m_nDrillingWork_Group_Count);
+                            if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly)
+                            {
+                                m_strTemp = string.Format("선택한 {0}번 소켓 단일 가공을 진행하시겠습니까?\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex);
+                            }
+                            else if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)
+                            {
+                                m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex);
+                            }
+
+                            checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                            checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
 
                             var mb = new MessageBoxYesNo();
                             if (DialogResult.Yes == mb.ShowDialog("Question ?", m_strTemp))
                             {
                                 workStage.m_nDrillingWork_Group_Count = workStage.m_nSocketAlign_StartIndex;        //  선택한 소켓 번호로 변경
                             }
-
-                            checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Button Click", "가공 취소");
+                                return;
+                            }
                         }
                     }
                     else if (workStage.CurrentLayerName == "Thruhole")
@@ -1579,17 +1631,32 @@ namespace SLD200_MSL
                         }
 
                         workStage.m_nDrillingWork_Group_Count = workStage.CurrentSocketNumber;          //  소켓 번호 설정 (다음 소켓 ???)
-                        if (checkBox_Main_AlignStartSocket_SelectMode.Checked && (workStage.m_nSocketAlign_StartIndex >= 0))                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
+
+
+                        if (workStage.m_nSocketAlign_StartIndex >= 0)                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
                         {
-                            m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\nNo : {1}번 소켓 Align Start", workStage.m_nSocketAlign_StartIndex, workStage.m_nDrillingWork_Group_Count);
+                            if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly)
+                            {
+                                m_strTemp = string.Format("선택한 {0}번 소켓 단일 가공을 진행하시겠습니까?\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex);
+                            }
+                            else if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)
+                            {
+                                m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex);
+                            }
+
+                            checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                            checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
 
                             var mb = new MessageBoxYesNo();
                             if (DialogResult.Yes == mb.ShowDialog("Question ?", m_strTemp))
                             {
                                 workStage.m_nDrillingWork_Group_Count = workStage.m_nSocketAlign_StartIndex;        //  선택한 소켓 번호로 변경
                             }
-
-                            checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Button Click", "가공 취소");
+                                return;
+                            }
                         }
                     }
                     else if (workStage.CurrentLayerName == "Outline")
@@ -1606,17 +1673,31 @@ namespace SLD200_MSL
 
                         workStage.m_nDrillingWork_Group_Count = workStage.CurrentSocketNumber;          //  소켓 번호 설정 (다음 소켓 ???)
 
-                        if (checkBox_Main_AlignStartSocket_SelectMode.Checked && (workStage.m_nSocketAlign_StartIndex >= 0))                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
+
+                        if (workStage.m_nSocketAlign_StartIndex >= 0)                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
                         {
-                            m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\nNo : {1}번 소켓 Align Start", workStage.m_nSocketAlign_StartIndex, workStage.m_nDrillingWork_Group_Count);
+                            if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly)
+                            {
+                                m_strTemp = string.Format("선택한 {0}번 소켓 단일 가공을 진행하시겠습니까?\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex);
+                            }
+                            else if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)
+                            {
+                                m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex);
+                            }
+
+                            checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                            checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
 
                             var mb = new MessageBoxYesNo();
                             if (DialogResult.Yes == mb.ShowDialog("Question ?", m_strTemp))
                             {
                                 workStage.m_nDrillingWork_Group_Count = workStage.m_nSocketAlign_StartIndex;        //  선택한 소켓 번호로 변경
                             }
-
-                            checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Button Click", "가공 취소");
+                                return;
+                            }
                         }
                     }
                     else if (workStage.CurrentLayerName == "Marking")
@@ -1633,17 +1714,30 @@ namespace SLD200_MSL
 
                         workStage.m_nDrillingWork_Group_Count = workStage.CurrentSocketNumber;          //  소켓 번호 설정 (다음 소켓 ???)
 
-                        if (checkBox_Main_AlignStartSocket_SelectMode.Checked && (workStage.m_nSocketAlign_StartIndex >= 0))                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
+                        if (workStage.m_nSocketAlign_StartIndex >= 0)                          //  소켓 얼라인을 진행할 소켓을 선택한 경우
                         {
-                            m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\nNo : {1}번 소켓 Align Start", workStage.m_nSocketAlign_StartIndex, workStage.m_nDrillingWork_Group_Count);
+                            if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly)
+                            {
+                                m_strTemp = string.Format("선택한 {0}번 소켓 단일 가공을 진행하시겠습니까?\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex);
+                            }
+                            else if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)
+                            {
+                                m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex);
+                            }
+
+                            checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                            checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
 
                             var mb = new MessageBoxYesNo();
                             if (DialogResult.Yes == mb.ShowDialog("Question ?", m_strTemp))
                             {
                                 workStage.m_nDrillingWork_Group_Count = workStage.m_nSocketAlign_StartIndex;        //  선택한 소켓 번호로 변경
                             }
-
-                            checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                            else
+                            {
+                                Log.Write("SLD-200", Equipment.User_Name, "Button Click", "가공 취소");
+                                return;
+                            }
                         }
                     }
 
@@ -1710,15 +1804,17 @@ namespace SLD200_MSL
             //loader.m_bStacker0_Complete = false;              //  임시 주석 : 왼쪽 Port 만 사용
             loader.m_bStacker1_Complete = false;
 
-            //  Loader Stacker 에 자재가 있으면 Pause 를 풀어 준다.
-            if (loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
-            {
-                if (loader.m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_None)
-                {
-                    loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
-                }
-                Equipment.Loader_LPort_Pause = false;
-            }
+
+            //  Loader Stacker Pause 해제는 수동으로. (자동으로 풀어주니 너무 계속 한다)
+            ////  Loader Stacker 에 자재가 있으면 Pause 를 풀어 준다.
+            //if (loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
+            //{
+            //    if (loader.m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_None)
+            //    {
+            //        loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
+            //    }
+            //    Equipment.Loader_LPort_Pause = false;
+            //}
 
 
             Equipment.AutoRunStatus = true;
@@ -2091,6 +2187,11 @@ namespace SLD200_MSL
 
             Equipment.ProcessingData_Parsing_byLoader = false;
 
+            workStage.m_nSocketAlign_StartIndex = -1;
+            Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
+            checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+            checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
+
             workStage._isMainWorkRunning = false;
             workStage._isLaserDrillingWorkRunning = false;
             loader._isLoaderWorkRunning = false;
@@ -2336,6 +2437,11 @@ namespace SLD200_MSL
             Equipment.SocketDrilling_Skip = false;
 
             Equipment.ProcessingData_Parsing_byLoader = false;
+
+            workStage.m_nSocketAlign_StartIndex = -1;
+            Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
+            checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+            checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
 
             //  Loader 파츠 사용 변수 초기화
             loader.m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_None; //  Transfer Move Type
@@ -3022,6 +3128,34 @@ namespace SLD200_MSL
             else
             {
                 Equipment.SocketDrilling_Skip = false;              //  소켓 가공 건너뛰지 않음 (정상 가공)
+            }
+        }
+
+        private void checkBox_Main_AlignStartSocket_SelectMode_MouseClick(object sender, MouseEventArgs e)
+        {
+            checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
+
+            if (checkBox_Main_AlignStartSocket_SelectMode.Checked)
+            {
+                Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.SelectedSocketOnly;
+            }
+            else
+            {
+                Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
+            }
+        }
+
+        private void checkBox_Main_AlignStartSocket_ContinueMode_MouseClick(object sender, MouseEventArgs e)
+        {
+            checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+
+            if (checkBox_Main_AlignStartSocket_ContinueMode.Checked)
+            {
+                Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.SelectedSocketContinue;
+            }
+            else
+            {
+                Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
             }
         }
 

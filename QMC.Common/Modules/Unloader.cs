@@ -2637,7 +2637,6 @@ namespace QMC.Common.Modules
                 //  Stacker0 에 Module 을 Put Down 하기 위한 조건
                 else if (m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete &&
                     (m_nStacker0_ModulePutdownWaitingPos_Step == (int)StackerModulePutdownWaitingPos_Step.None) &&
-                    //workStage.m_bMainWorkCycle_ResultOK &&
                     (workStage.m_nMainWorkCycle_ResultOKNG == (int)WorkStage.MainCycle_Result.OK) &&
                     workStage.m_bMainWorkCycle_ResultOK_toRPort &&
                     m_bStacker0_Complete)
@@ -2670,7 +2669,6 @@ namespace QMC.Common.Modules
                 //  Stacker1 에 Module 을 Put Down 하기 위한 조건
                 else if (m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete &&
                     (m_nStacker1_ModulePutdownWaitingPos_Step == (int)StackerModulePutdownWaitingPos_Step.None) &&
-                    //workStage.m_bMainWorkCycle_ResultOK &&
                     (workStage.m_nMainWorkCycle_ResultOKNG == (int)WorkStage.MainCycle_Result.OK) &&
                     !workStage.m_bMainWorkCycle_ResultOK_toRPort &&
                     m_bStacker1_Complete)
@@ -2702,9 +2700,7 @@ namespace QMC.Common.Modules
                 }
                 //  NG-Port 에 Module 을 Drop 하기 위한 조건
                 else if (m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete &&
-
-                    //!workStage.m_bMainWorkCycle_ResultOK)
-                    (workStage.m_nMainWorkCycle_ResultOKNG == (int)WorkStage.MainCycle_Result.NG))
+                        (workStage.m_nMainWorkCycle_ResultOKNG == (int)WorkStage.MainCycle_Result.NG))  ////!workStage.m_bMainWorkCycle_ResultOK)
                 {
                     m_nUnloaderTransferMoveType = (int)UnloaderTransferMoveType.Cycle_NG_PutDown;            //  NG-Port 에 Module Drop Cycle
                     m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
