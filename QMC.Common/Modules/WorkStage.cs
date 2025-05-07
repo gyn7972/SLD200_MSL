@@ -13464,7 +13464,7 @@ namespace QMC.Common.Modules
                     //  데이터 위치를 Fine 카메라 위치로 변경
                     workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
                     workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
-
+                     
                     workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[m_nSocketAlign_FiducialCount].X;
                     workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[m_nSocketAlign_FiducialCount].Y;
 
@@ -14588,6 +14588,7 @@ namespace QMC.Common.Modules
             ActionLaserDrillingStep?.Invoke((LaserDrilling_Step)m_nLaserDrilling_MainStep);
 
             //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_CompleteCheck;
+            //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
             switch (m_nLaserDrilling_MainStep)
             {
                 case (int)LaserDrilling_Step.Start:
@@ -17993,10 +17994,14 @@ namespace QMC.Common.Modules
                             dft = -dft / 180 * Math.PI;
                             XyzCoordinate positionFirst = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
                             positionFirst = this.ConvertPointFineCam(positionFirst);
-                            xyCoordinateAlignPositionOrgLast= new XyCoordinate( positionFirst.X, positionFirst.Y);
 
-                            positionFirst.X -= dfx;
-                            positionFirst.Y += dfy;
+                            m_strTemp = string.Format("PreAlign좌표1, X : {0:0.000}, Y : {1:0.000}", positionFirst.X, positionFirst.Y);
+                            Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
+
+                            xyCoordinateAlignPositionOrgLast = new XyCoordinate( positionFirst.X, positionFirst.Y);
+
+                            positionFirst.X += dfx;
+                            positionFirst.Y -= dfy;
 
                             xyCoordinateAlignPositionLast = new XyCoordinate(positionFirst.X, positionFirst.Y);
                            
@@ -18004,7 +18009,7 @@ namespace QMC.Common.Modules
 
                             //Log Data 남기자.
                             //m_strTemp = string.Format("");
-                            m_strTemp = string.Format("PreAlign좌표, X : {0:0.000}, Y : {1:0.000}", positionFirst.X, positionFirst.Y);
+                            m_strTemp = string.Format("PreAlign좌표2, X : {0:0.000}, Y : {1:0.000}", positionFirst.X, positionFirst.Y);
                             Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
 
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Correction;
@@ -18042,6 +18047,9 @@ namespace QMC.Common.Modules
                     m_bPreAlignCompleted = true;
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_Start;
                     //None으로 하고 Test 해야하고...
+                    //Test Code
+                    //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+                    //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
                     break;
 
 
