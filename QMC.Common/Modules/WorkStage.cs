@@ -13620,7 +13620,9 @@ namespace QMC.Common.Modules
 
                     this.jigAligner_HighRes.UsePatternMatchingTool = true;
                     //this.jigAligner_HighRes.Work();
-                    ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width);
+                    int retryCount = 1;
+                    
+                    ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width, retryCount);
                     jigAligner_HighRes.Camera.StartLive();
                     timer_VisionAlign.Enabled = true;
 
@@ -14193,7 +14195,7 @@ namespace QMC.Common.Modules
             return new XyCoordinate(dNewX + dRotationCenterX, dNewY + dRotationCenterY);
         }
 
-        private int SpiralSearch(double dWidth)
+        private int SpiralSearch(double dWidth , int maxSteps = 9)
         {
             int ret = -1;
             try
@@ -14206,7 +14208,7 @@ namespace QMC.Common.Modules
                 XyCoordinate xyFirst = new XyCoordinate(xyCenter.X, xyCenter.Y);
                 // 이동 거리 및 검색 횟수 설정
                 double stepSize = 0.5; // 1mm 이동
-                int maxSteps = 10; // 최대 50번 검색
+                
                 List<XyCoordinate> xyCoordinates = new List<XyCoordinate>();
 
                 // 스파이럴 이동 구현
