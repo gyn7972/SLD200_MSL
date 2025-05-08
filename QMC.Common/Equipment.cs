@@ -387,6 +387,7 @@ namespace QMC.Common
             Marking,
             Fiducial,
             Thruhole,
+            PreAlign,
         }
 
         public enum MarkTypeList : int

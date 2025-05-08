@@ -389,7 +389,8 @@ namespace QMC.Common.Modules
             LAYER_THRUHOLE = 2,
             LAYER_MARKING = 3,
             LAYER_FIDUCIAL = 4,
-            LAYER_RECTANGLE = 5
+            LAYER_RECTANGLE = 5,
+            LAYER_PREALIGN = 6,
         }
 
         public enum ObjectType : int
@@ -671,7 +672,10 @@ namespace QMC.Common.Modules
             public double[] dFiducialWidth;             //  Fiducial 마크 가로 크기
             public double[] dFiducialHeight;            //  Fiducial 마크 세로 크기
 
-
+            public int m_nPreAlign_TotalCount;          //  PreAlign 마크 개수
+            public PointD[] dPreAlignPos;            //  PreAlign 마크 위치 좌표
+            public double[] dPreAlignWidth;           //  PreAlign 마크 가로 크기
+            public double[] dPreAlignHeight;          //  PreAlign 마크 세로 크기
         }
         public stDividedRegion_GroupData[] m_stDividedRegion_GroupData;
 
@@ -742,6 +746,36 @@ namespace QMC.Common.Modules
         /// <summary>
         /// "드릴링" 영역 처리 (syncAxis) - 여기까지
         /// </summary>
+        /// 
+
+
+
+        /// <summary>
+        /// Pre-Align 용 데이터
+        ///  
+
+        public PointD[] m_ptPreAlign;                   //  PreAlign Mark Position 좌표
+        public double[] m_dPreAlignWidth;               //  PreAlign Mark Width
+        public double[] m_dPreAlignHeight;              //  PreAlign Mark Height
+
+        //  Fiducial Mark 데이터
+        public struct PreAlignCircle
+        {
+            public PointD Center;
+            public double Radius;
+
+            public PreAlignCircle(PointD center, double radius)
+            {
+                Center = center;
+                Radius = radius;
+            }
+        }
+        // 원의 좌표와 반지름을 저장하는 배열
+        private PreAlignCircle[] preAlignCircles;
+
+        ///  
+        /// <summary>
+        /// Pre-Align 용 데이터
 
 
 
@@ -13446,7 +13480,7 @@ namespace QMC.Common.Modules
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
                     CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR, 3);
-                    CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명
+                    CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명 
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
 
@@ -27259,6 +27293,7 @@ namespace QMC.Common.Modules
             int m_nLayerOutline_Count = 0;
             int m_nLayerMarking_Count = 0;
             int m_nLayerFiducial_Count = 0;
+            int m_nLayerPreAlign_Count = 0;
             //int m_nLayerThruhole_Count = 0;             //  드릴링 Hole 은 아니지만, 드문드문 존재하는 가공 Hole
             //int m_nLayerOutline_Count = 0;
 
@@ -27461,6 +27496,10 @@ namespace QMC.Common.Modules
                     else if (layer.Name == "Thruhole")
                     {
                         m_nThruholeSocket_Count++;
+                    }
+                    else if (layer.Name == "PreAlign")
+                    {
+                        m_nLayerPreAlign_Count++;
                     }
                 }
             }
@@ -29909,6 +29948,234 @@ namespace QMC.Common.Modules
                             }
                         }
                     }
+                    /////////////////////////////
+                    ///                       ///
+                    ///     Pre-Align 마크    ///
+                    ///                       ///
+                    /////////////////////////////
+                    else if (layer.Name == "PreAlign")                                                                  //  PreAlign
+                    {
+                        m_stLayerType.m_nLayerType[m_nLayerCount] = (int)LayerType.LAYER_PREALIGN;
+                        m_stLayerType.m_nLayerIndex[m_nLayerCount++] = (int)LayerList.PreAlign;                 //  Layer Parameter 변경을 위한 Index
+
+                        //  Fiducial Layer 의 모든 데이터를 저장한다.
+                        //  Hole1 Layer 의 Group 개수의 4배수인지 확인한다. Group (Socket) 별로 4개씩 Fiducial 마크를 가져가기 때문에...
+                        //  각 Group (Socket) 과 가장 가까운 거리의 Fiducial 위치를 그 Socket 의 Fiducial 위치로 사용한다.
+
+                        //m_nLayerCount++;          //  마지막에 추가
+
+
+                        //  Item 이 Group 인지 아닌지 확인 (Group 이면 저 아래에서 데이터 변수 할당, Group 이 아니면 여기서 할당)
+                        int m_nCount = 0;
+                        int m_nCount_inGroup = 0;
+                        int m_nItemCount = 0;
+
+                        LayerIsGroup = true;
+
+                        foreach (var entity in layer)
+                        {
+                            var group = entity as Group;
+
+                            if (group == null)
+                            {
+                                m_nCount = layer.Count;
+
+                                LayerIsGroup = false;
+                            }
+                            else
+                            {
+                                m_nCount++;
+
+                                if (entity.EntityType == EType.Group)
+                                {
+                                    m_nCount_inGroup = group.Count;
+                                }
+                            }
+                        }
+
+                        if (m_nCount >= 1)
+                        {
+                            if (LayerIsGroup)
+                            {
+                                m_ptPreAlign = new PointD[m_nCount_inGroup];
+                                m_dPreAlignWidth = new double[m_nCount_inGroup];
+                                m_dPreAlignHeight = new double[m_nCount_inGroup];
+                                preAlignCircles = new PreAlignCircle[m_nCount_inGroup];
+                            }
+                            else
+                            {
+                                m_ptPreAlign = new PointD[m_nCount];
+                                m_dPreAlignWidth = new double[m_nCount];
+                                m_dPreAlignHeight = new double[m_nCount];
+                                preAlignCircles = new PreAlignCircle[m_nCount];
+                            }
+                        }
+
+                        if (m_stDividedRegion_GroupData == null)
+                        {
+                            MessageBox.Show("PreAlign Layer 는 Hole1 Layer 보다 아래에 있어야 합니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return (int)nGetDataResult.GETDATA_FAIL;
+                        }
+
+                        //  PreAlign 위치 저장 공간 할당 (모듈 당 1개. GroupData 의 0번 인덱스만 사용)
+                        m_stDividedRegion_GroupData[0].m_nPreAlign_TotalCount = m_nCount;
+                        m_stDividedRegion_GroupData[0].dPreAlignPos = new PointD[m_nCount];
+                        m_stDividedRegion_GroupData[0].dPreAlignWidth = new double[m_nCount];
+                        m_stDividedRegion_GroupData[0].dPreAlignHeight = new double[m_nCount];
+
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    //point.Location 
+                                    //point.DwellTime
+                                    //success &= point.Mark(markerArg);
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as Points;
+                                    foreach (var vertex in points)
+                                    {
+                                        //vertex.X
+                                        //vertex.Y
+                                    }
+                                    //points.DwellTime
+                                    //success &= points.Mark(markerArg);
+                                    break;
+
+                                case EType.Line:
+                                    var line = entity as SpiralLab.Sirius.Line;
+
+                                    //line.Start
+                                    //line.End
+                                    //success &= line.Mark(markerArg);
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+                                    //arc.Radius
+                                    //arc.Center
+                                    //arc.StartAngle
+                                    //arc.SweepAngle
+                                    //success &= arc.Mark(markerArg);
+
+                                    m_ptPreAlign[m_nItemCount].X = (double)arc.Center.X;
+                                    m_ptPreAlign[m_nItemCount].Y = (double)arc.Center.Y;
+                                    m_dPreAlignWidth[m_nItemCount] = (double)arc.Radius;
+                                    m_dPreAlignHeight[m_nItemCount] = (double)arc.Radius;
+
+                                    preAlignCircles[m_nItemCount].Center.X = (double)arc.Center.X;
+                                    preAlignCircles[m_nItemCount].Center.Y = (double)arc.Center.Y;
+                                    preAlignCircles[m_nItemCount++].Radius = (double)arc.Radius;
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+
+                                    //circle.Center 
+                                    //circle.Radius
+                                    //success &= circle.Mark(markerArg);
+
+                                    m_ptPreAlign[m_nItemCount].X = (double)circle.Center.X;
+                                    m_ptPreAlign[m_nItemCount].Y = (double)circle.Center.Y;
+                                    m_dPreAlignWidth[m_nItemCount] = (double)circle.Radius;
+                                    m_dPreAlignHeight[m_nItemCount] = (double)circle.Radius;
+
+                                    preAlignCircles[m_nItemCount].Center.X = (double)circle.Center.X;
+                                    preAlignCircles[m_nItemCount].Center.Y = (double)circle.Center.Y;
+                                    preAlignCircles[m_nItemCount++].Radius = (double)circle.Radius;
+                                    break;
+
+                                case EType.Rectangle:
+                                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
+
+                                    //rectangle.Width
+                                    //rectangle.Height
+                                    //rectangle.Align
+                                    //rectangle.Location
+                                    //success &= rectangle.Mark(markerArg);
+                                    break;
+
+                                case EType.LWPolyline:
+                                    var lwPolyline = entity as SpiralLab.Sirius.LwPolyline;
+                                    //lwPolyline.IsClosed
+
+                                    //foreach (var vertex in lwPolyline)
+                                    //{
+                                    //    //vertex.X
+                                    //    //vertex.Y
+                                    //    //vertex.Bulge
+                                    //}
+                                    //success &= lwPolyline.Mark(markerArg);
+                                    break;
+
+                                case EType.Spiral:
+                                    var spiral = entity as Spiral;
+                                    //spiral.OutterDiameter 
+                                    //spiral.InnerDiameter
+                                    //spiral.RadialPitch
+                                    //spiral.Revolutions
+                                    //spiral.Center
+                                    //success &= spiral.Mark(markerArg);
+                                    break;
+
+                                case EType.Group:
+                                default:
+                                    var group = entity as Group;
+
+                                    //  세부 데이터 저장
+                                    m_nGroupData_Count = 0;
+                                    foreach (var subEntity in group)
+                                    {
+                                        //m_stDrilling_LayerData.m_stDrilling_GroupData[m_stDrilling_LayerData.nRegion_GroupCount].m_stDrilling_ObjectData[m_nGroupData_Count].bAssigned = false;
+
+                                        Type t = subEntity.GetType();
+                                        if (t.Name == "LwPolyline")
+                                        {
+                                            var pl = subEntity as SpiralLab.Sirius.LwPolyline;
+                                        }
+                                        else if (t.Name == "Circle")
+                                        {
+                                            var pl = subEntity as SpiralLab.Sirius.Circle;
+
+                                            m_ptPreAlign[m_nItemCount].X = (double)pl.Center.X;
+                                            m_ptPreAlign[m_nItemCount].Y = (double)pl.Center.Y;
+                                            m_dPreAlignWidth[m_nItemCount] = (double)pl.Radius;
+                                            m_dPreAlignHeight[m_nItemCount] = (double)pl.Radius;
+
+                                            preAlignCircles[m_nItemCount].Center.X = (double)pl.Center.X;
+                                            preAlignCircles[m_nItemCount].Center.Y = (double)pl.Center.Y;
+                                            preAlignCircles[m_nItemCount++].Radius = (double)pl.Radius;
+                                        }
+                                        else if (t.Name == "Rectangle")
+                                        {
+                                            var pl = subEntity as SpiralLab.Sirius.Rectangle;
+                                        }
+                                        else if (t.Name == "Line")
+                                        {
+                                            var pl = subEntity as SpiralLab.Sirius.Line;
+                                        }
+                                        else if (t.Name == "Arc")
+                                        {
+                                            var pl = subEntity as SpiralLab.Sirius.Arc;
+
+                                            m_ptPreAlign[m_nItemCount].X = (double)pl.Center.X;
+                                            m_ptPreAlign[m_nItemCount].Y = (double)pl.Center.Y;
+                                            m_dPreAlignWidth[m_nItemCount] = (double)pl.Radius;
+                                            m_dPreAlignHeight[m_nItemCount] = (double)pl.Radius;
+
+                                            preAlignCircles[m_nItemCount].Center.X = (double)pl.Center.X;
+                                            preAlignCircles[m_nItemCount].Center.Y = (double)pl.Center.Y;
+                                            preAlignCircles[m_nItemCount++].Radius = (double)pl.Radius;
+                                        }
+                                    }
+
+                                    break;
+                            }
+                        }
+                    }
                     ///////////////////////
                     ///                 ///
                     ///     쓰루홀      ///
@@ -31857,6 +32124,8 @@ namespace QMC.Common.Modules
             m_ptSocketCenter.X = 0.0;
             m_ptSocketCenter.Y = 0.0;
 
+
+            //  Fiducial 데이터 처리
             if (m_ptFiducial != null)
             {
                 if ((m_ptFiducial.Length > 0) && (m_stDividedRegion_GroupData.Length > 0))
@@ -31866,7 +32135,6 @@ namespace QMC.Common.Modules
                     //if (m_ptFiducial.Length == (m_stDividedRegion_GroupData[0].nGroup_Num * 4))
                     if (m_ptFiducial.Length >= 4)
                     {
-                        //Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Socket 별 Fiducial 데이터 할당, Fiducial 데이터 개수가 Socket 개수의 4배수입니다.");
                         Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Socket 별 Fiducial 데이터 할당, Fiducial 데이터 개수가 4개 이상입니다.");
 
                         for (int i = 0; i < m_stDividedRegion_GroupData[0].nGroup_Num; i++)
@@ -31915,6 +32183,79 @@ namespace QMC.Common.Modules
                 else
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Socket 별 Fiducial 데이터 할당, Fiducial 데이터가 없거나 가공 데이터가 없습니다.");
+                }
+            }
+
+
+            //  PreAlign 데이터 처리
+            if (m_ptPreAlign != null)
+            {
+                if ((m_ptPreAlign.Length > 0) && (m_stDividedRegion_GroupData.Length > 0))
+                {
+                    //  Fiducial 데이터의 개수가 Socket 개수의 4배수인지 확인한다.
+
+                    //if (m_ptFiducial.Length == (m_stDividedRegion_GroupData[0].nGroup_Num * 4))
+                    if (m_ptPreAlign.Length >= 2)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Pre-Align 데이터 할당, Pre-Align 마크 개수가 2개 이상입니다.");
+
+                        for ( int i = 0; i < m_ptPreAlign.Length; i++ )
+                        {
+                            m_stDividedRegion_GroupData[0].dPreAlignPos[i].X = preAlignCircles[i].Center.X;
+                            m_stDividedRegion_GroupData[0].dPreAlignPos[i].Y = preAlignCircles[i].Center.Y;
+                            m_stDividedRegion_GroupData[0].dPreAlignWidth[i] = preAlignCircles[i].Radius;
+                            m_stDividedRegion_GroupData[0].dPreAlignHeight[i] = preAlignCircles[i].Radius;
+                        }
+
+
+                        //  4 Point 정렬해서 넣던 코드는 일단 주석 처리. (Pre-Align 마크 개수가 4개가 아닐 수 있기 때문에)
+
+                        //for (int i = 0; i < m_stDividedRegion_GroupData[0].nGroup_Num; i++)
+                        //{
+                        //    m_ptSocketCenter.X = m_stDividedRegion_GroupData[i].dGroupCenter.X;
+                        //    m_ptSocketCenter.Y = m_stDividedRegion_GroupData[i].dGroupCenter.Y;
+
+                        //    //PointD[] m_ptResult = GetClosestCircles(m_ptSocketCenter);                        //  Group Center 와 가장 가까운 Fiducial 위치를 찾는다.
+                        //    FiducialCircle[] m_ptResult = GetClosestCircles(m_ptSocketCenter);                  //  Group Center 와 가장 가까운 Fiducial 위치를 찾는다.
+
+                        //    if (m_ptResult.Length == 4)
+                        //    {
+                        //        FiducialCircle[] m_ptSortedResult = SortCircles(m_ptResult);                   //  Fiducial 위치를 정렬한다.
+
+                        //        m_stDividedRegion_GroupData[i].dFiducialPos[0].X = m_ptSortedResult[0].Center.X;
+                        //        m_stDividedRegion_GroupData[i].dFiducialPos[0].Y = m_ptSortedResult[0].Center.Y;
+                        //        m_stDividedRegion_GroupData[i].dFiducialWidth[0] = m_ptSortedResult[0].Radius;
+                        //        m_stDividedRegion_GroupData[i].dFiducialHeight[0] = m_ptSortedResult[0].Radius;
+
+                        //        m_stDividedRegion_GroupData[i].dFiducialPos[1].X = m_ptSortedResult[1].Center.X;
+                        //        m_stDividedRegion_GroupData[i].dFiducialPos[1].Y = m_ptSortedResult[1].Center.Y;
+                        //        m_stDividedRegion_GroupData[i].dFiducialWidth[1] = m_ptSortedResult[1].Radius;
+                        //        m_stDividedRegion_GroupData[i].dFiducialHeight[1] = m_ptSortedResult[1].Radius;
+
+                        //        m_stDividedRegion_GroupData[i].dFiducialPos[2].X = m_ptSortedResult[2].Center.X;
+                        //        m_stDividedRegion_GroupData[i].dFiducialPos[2].Y = m_ptSortedResult[2].Center.Y;
+                        //        m_stDividedRegion_GroupData[i].dFiducialWidth[2] = m_ptSortedResult[2].Radius;
+                        //        m_stDividedRegion_GroupData[i].dFiducialHeight[2] = m_ptSortedResult[2].Radius;
+
+                        //        m_stDividedRegion_GroupData[i].dFiducialPos[3].X = m_ptSortedResult[3].Center.X;
+                        //        m_stDividedRegion_GroupData[i].dFiducialPos[3].Y = m_ptSortedResult[3].Center.Y;
+                        //        m_stDividedRegion_GroupData[i].dFiducialWidth[3] = m_ptSortedResult[3].Radius;
+                        //        m_stDividedRegion_GroupData[i].dFiducialHeight[3] = m_ptSortedResult[3].Radius;
+                        //    }
+                        //    else
+                        //    {
+                        //        Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Socket 별 Fiducial 데이터 할당, 현재 Socket Center 와 가장 가까운 위치의 Fiducial 개수가 4개가 아닙니다.");
+                        //    }
+                        //}
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Pre-Align 데이터 할당, Pre-Align 마크 개수가 2개 미만입니다.");
+                    }
+                }
+                else
+                {
+                    Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Pre-Align 데이터 할당, Pre-Align 데이터가 없거나 가공 데이터가 없습니다.");
                 }
             }
 

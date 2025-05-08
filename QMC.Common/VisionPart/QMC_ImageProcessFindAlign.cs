@@ -301,7 +301,15 @@ namespace QMC.Common.VisionPart
             float cx = 0;
             float cy = 0;
             double dErrorRatio = 0.1;
-
+            int direction = 0; // 0: 오른쪽, 1: 위, 2: 왼쪽, 3: 아래
+            int stepsInCurrentDirection = 1;
+            int stepsTaken = 0;
+            int directionChangeCount = 0;
+            XyCoordinate currentPosition = new XyCoordinate
+            {
+                X = w / 2,
+                Y = h / 2
+            };
             for (int y = 0; y < nDivideCount; y++)
             {
                 if (bFindCircle)
@@ -325,6 +333,11 @@ namespace QMC.Common.VisionPart
                         }
                     }
 
+                    nCx = (int)currentPosition.X;
+                    nCy = (int)currentPosition.Y;
+                    
+
+
                     int nMaxCircle = (int)(radius * (1 + dSpec));
                     int nMinCircle = (int)(radius * (1 - dSpec));
 
@@ -341,7 +354,7 @@ namespace QMC.Common.VisionPart
                         nMaxCircleFirst = 1000;
                     }
                     
-                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, radius/3, radius*4, 1);
+                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, radius/2, (int)(radius*1.5), 3);
                     points = polygon;
                     circlesResult.Clear();
                     FindCircleFitter(circlesResult, points, out dRadius, 5);
@@ -365,28 +378,62 @@ namespace QMC.Common.VisionPart
                         cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
                         cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
 
-                        polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 0.5, 2);
+                        polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 1, 2);
 
 
                         points = polygon;
 
                         circlesResult.Clear();
                         double dRadius2 = 0;
-                        FindCircleFitter(circlesResult, points, out dRadius2, 2);
+                        Circle center = FindCircleFitter(circlesResult, points, out dRadius2, 2);
 
-                        if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.02)
+                        if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.01)
                         {
-                            bFindCircle = true;
-                            break;
+                            //허상을 찾아는지 검사 한다.
+                            double dScore = IsRealCircle(center, dRadius2, points,dSpec/4);
+                            if (dScore > 0.5)
+                            {
+                                bFindCircle = true;
+                                break;
+                            }
+                            
 
                         }
 
                         //return circlesResult;
                     }
-                    nDirectionX++;
+                    switch (direction)
+                    {
+                        case 0: // 오른쪽
+                            currentPosition.X += nStepX;
+                            break;
+                        case 1: // 위
+                            currentPosition.Y += nStepX;
+                            break;
+                        case 2: // 왼쪽
+                            currentPosition.X -= nStepX;
+                            break;
+                        case 3: // 아래
+                            currentPosition.Y -= nStepX;
+                            break;
+                    }
+
+                    stepsTaken++;
+                    if (stepsTaken == stepsInCurrentDirection)
+                    {
+                        stepsTaken = 0;
+                        direction = (direction + 1) % 4; // 방향 전환
+                        directionChangeCount++;
+
+                        if (directionChangeCount % 2 == 0)
+                        {
+                            stepsInCurrentDirection++; // 두 번 방향 전환 후 이동 거리 증가
+                        }
+                    }
+
 
                 }
-                nDirectionY++;
+
             }
 
             //  원을 찾았는지 여부 Ref.
@@ -410,6 +457,25 @@ namespace QMC.Common.VisionPart
             FindCircleFitter(circlesResult, points, out dRadius);
 
             return circlesResult;
+        }
+
+        private double IsRealCircle(Circle center, double dRadius, List<PointF> points,double dSpec)
+        {
+            double dScore= 0;
+            double dDistance = 0;
+            int TotalCount = points.Count;
+            int GoodCoount = 0;
+            foreach (var point in points)
+            {
+                dDistance = Math.Pow(center.CenterX - point.X, 2) + Math.Pow(center.CenterY - point.Y, 2);
+                dDistance = Math.Sqrt(dDistance);
+                if (dRadius * (1- dSpec) < dDistance && dDistance < dRadius*(1+dSpec))
+                {
+                    GoodCoount++;
+                }
+            }
+            dScore = (double)GoodCoount / (double)TotalCount;
+            return dScore;
         }
 
         public List<RectangleF> FindMetalPowder(List<RectangleF> circlesResult, byte[] pixelData, int w, int h, ref bool circleFound)
@@ -1183,7 +1249,7 @@ namespace QMC.Common.VisionPart
         }
 
 
-        private static void FindCircleFitter( List<RectangleF> circles, List<PointF> points,out double radius,double threshold = 10)
+        private static Circle FindCircleFitter( List<RectangleF> circles, List<PointF> points,out double radius,double threshold = 10)
         {
             int iter = points.Count;
             if(iter < 1000)
@@ -1196,6 +1262,7 @@ namespace QMC.Common.VisionPart
             RectangleF circle = new RectangleF((float)(fittedCircle.CenterX - radius), (float)(fittedCircle.CenterY - radius), (float)(2 * radius), (float)(2 * radius));
            
             circles.Add(circle);
+            return fittedCircle;
         }
 
         //주석좀 달아줘라.
