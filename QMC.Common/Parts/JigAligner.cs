@@ -454,12 +454,14 @@ namespace QMC.Common.Parts
                         else if(Equipment.stVisionRecipeSet.AlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
                         {
                             bool bIsDarkCircleSearch = Equipment.stVisionRecipeSet.bCircleDetectionColor;
-                            double dwidth = 0;
-                            dwidth = m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
+                            double dSpec = 0.05;
+                            double dRadius = 0;
+                            dSpec = Equipment.stVisionRecipeSet.dCircleSpec;
+                            dRadius = m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
                             if (m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0] == 0)
-                                dwidth = Equipment.stVisionRecipeSet.dCircleDetectionSizeW;
+                                dRadius = Equipment.stVisionRecipeSet.dCircleDetectionSizeW;
 
-                            this.FindCircleDetection(dwidth, bIsDarkCircleSearch, out firstPointSearchResult, out firstPointCoordinate);
+                            this.FindCircleDetection(dRadius, bIsDarkCircleSearch, dSpec, out firstPointSearchResult, out firstPointCoordinate);
                         }
                         else
                         {
@@ -554,12 +556,14 @@ namespace QMC.Common.Parts
                     else if (Equipment.stVisionRecipeSet.AlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
                     {
                         bool bIsDarkCircleSearch = Equipment.stVisionRecipeSet.bCircleDetectionColor;
-                        double dwidth = 0;
-                        dwidth = m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
+                        double dSpec = 0.05;
+                        double dRadius = 0;
+                        dSpec = Equipment.stVisionRecipeSet.dCircleSpec;
+                        dRadius = m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
                         if (m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0] == 0)
-                            dwidth = Equipment.stVisionRecipeSet.dCircleDetectionSizeW;
+                            dRadius = Equipment.stVisionRecipeSet.dCircleDetectionSizeW;
 
-                        this.FindCircleDetection(dwidth, bIsDarkCircleSearch, out firstPointSearchResult, out firstPointCoordinate);
+                        this.FindCircleDetection(dRadius, bIsDarkCircleSearch, dSpec, out firstPointSearchResult, out firstPointCoordinate);
                     }
                     else
                     {
@@ -684,7 +688,7 @@ namespace QMC.Common.Parts
             return ret;
         }
 
-        public int FindCircleDetection(double dWidth, bool bIsDarkCircleSearch, out PatternMatchingResult searchResult, out XyCoordinate currentCoordinate)
+        public int FindCircleDetection(double dRadius, bool bIsDarkCircleSearch, double dSpec, out PatternMatchingResult searchResult, out XyCoordinate currentCoordinate)
         {
             int ret = 0;
             currentCoordinate = new XyCoordinate();
@@ -699,7 +703,6 @@ namespace QMC.Common.Parts
             VisionScale TempScale = new VisionScale();
 
             m_Owner = this.Owner as WorkStage;
-
             try
             {
                 TempScale.X = ((WorkStage)this.Owner).Config.ParamConfig.LowerVision_Scale_X;
@@ -707,10 +710,8 @@ namespace QMC.Common.Parts
                 TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.LowerVision_ScaleInvert_X;
                 TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.LowerVision_ScaleInvert_Y;
 
-                //int nWidthImageCount = (int)(Camera.LatestImage.Header.Width / TempScale.X);
-                //dWidth = dWidth / 2;
-                int nWidthImageCount = (int)(dWidth / TempScale.X); // 찾고자 하는 circle size 
-
+                int nRadiusImageCount = (int)(dRadius / TempScale.X); // 찾고자 하는 circle size 
+                nRadiusImageCount /= 2;
                 //Simulated = true;
                 if (Simulated)
                 {
@@ -730,11 +731,12 @@ namespace QMC.Common.Parts
 
                 {
                     //Circle 찾는 알고리듬 적용
+                    //dSpec;
                     qip.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
                         Camera.LatestImage.RawData,
                         Camera.LatestImage.Header.Width,
                         Camera.LatestImage.Header.Height,
-                        nWidthImageCount,0.5, ref bFind, 0, 0, bIsDarkCircleSearch);
+                        nRadiusImageCount, dSpec, ref bFind, 0, 0, bIsDarkCircleSearch);
                     // 0.05 - Spec 
 
                     if (Fiducial_circlesResult.Count > 0 && bFind == true)

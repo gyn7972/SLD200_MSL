@@ -497,6 +497,7 @@ namespace QMC.Common
 
             public bool bCircleDetectionColor;  //0: White, 1: Black
             public double dCircleDetectionSizeW; //circle size width
+            public double dCircleSpec;  //
             public VisionAlgorithmType AlgorithmType;
             public PatternShapeType PatternShape;
 
@@ -525,6 +526,7 @@ namespace QMC.Common
 
                 NativeMethods.WritePrivateProfileString("CircleDetection", "Color", bCircleDetectionColor.ToString(), path);
                 NativeMethods.WritePrivateProfileString("CircleDetection", "SizeW", dCircleDetectionSizeW.ToString(), path);
+                NativeMethods.WritePrivateProfileString("CircleDetection", "Spec", dCircleSpec.ToString(), path);
 
                 string folderName = Path.GetFileNameWithoutExtension(path);
                 string folderPath = Path.Combine(Path.GetDirectoryName(path), folderName);
@@ -591,6 +593,9 @@ namespace QMC.Common
 
                     NativeMethods.GetPrivateProfileString("CircleDetection", "SizeW", "0.5", sb, sb.Capacity, path);
                     data.dCircleDetectionSizeW = Equipment.ToDouble(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("CircleDetection", "Spec", "0.05", sb, sb.Capacity, path);
+                    data.dCircleSpec = Equipment.ToDouble(sb.ToString());
 
                     NativeMethods.GetPrivateProfileString("TrainImage", "Path", "", sb, sb.Capacity, path);
                     data.TrainImagePath = sb.ToString();

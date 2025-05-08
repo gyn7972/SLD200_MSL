@@ -79,11 +79,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                     workStage = module as WorkStage;
                     Owner = workStage.jigAligner_LowRes;
                 }
-
-                //if (module.Name == "Vision")
-                //{
-                //    vision = module as Vision;
-                //}
             }
 
             RecipeVisionTimer = new System.Windows.Forms.Timer();
@@ -162,16 +157,17 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             if (Equipment.stVisionRecipeSet.bCircleDetectionColor == true)
             {
-                radioButton_RecipeVision_White.Checked = true;
-                radioButton_RecipeVision_Black.Checked = false;
-            }
-            else
-            {
                 radioButton_RecipeVision_White.Checked = false;
                 radioButton_RecipeVision_Black.Checked = true;
             }
+            else
+            {
+                radioButton_RecipeVision_White.Checked = true;
+                radioButton_RecipeVision_Black.Checked = false;
+            }
 
-
+            textBox_RecipeVision_Circle_Spec.Text = Equipment.stVisionRecipeSet.dCircleSpec.ToString();
+            textBox_RecipeVision_Circle_Size.Text = Equipment.stVisionRecipeSet.dCircleDetectionSizeW.ToString();
 
             radioButton_RecipeVision_Move_MoveMode_Fine.Checked = false;
             radioButton_RecipeVision_Move_MoveMode_Coarse.Checked = true;
@@ -179,7 +175,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             radioButton_RecipeVision_JogMove_Step.Checked = true;
 
             radioButton_RecipeVision_Circle.Checked = true;
-
         }
 
         private void RecipeVisionTimer_Tick(object sender, EventArgs e)
@@ -733,8 +728,10 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
             else if(radioButton_RecipeVision_Blob.Checked)
             {
+                Equipment.stVisionRecipeSet.dCircleSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
                 Equipment.stVisionRecipeSet.dCircleDetectionSizeW = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
-                double dwidth = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);    //0.5; //Size Param 만들어야됨.
+                double dspec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);    //0.5; //Spec Param 만들어야됨.
+                double dRadius = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);    //0.5; //Size Param 만들어야됨.
                 bool bIsDarkCircleSearch = radioButton_RecipeVision_Black.Checked;
                 if(radioButton_RecipeVision_Black.Checked)
                 {
@@ -748,7 +745,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 XyCoordinate PointCoordinate = new XyCoordinate();
 
                 ImageViewer_RecipeVision_Rows.ResultOverlays.Clear();
-                Owner.FindCircleDetection(dwidth, bIsDarkCircleSearch, out SearchResult, out PointCoordinate);
+                Owner.FindCircleDetection(dRadius, bIsDarkCircleSearch, dspec, out SearchResult, out PointCoordinate);
                 if (SearchResult != null)
                 {
                     foreach (var overlay in SearchResult.ResultOverlays)
@@ -841,6 +838,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
 
             Equipment.stVisionRecipeSet.dCircleDetectionSizeW = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
+            Equipment.stVisionRecipeSet.dCircleSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
 
             Equipment.stVisionRecipeSet.SaveToIni(Equipment.Current_Recipe);
 

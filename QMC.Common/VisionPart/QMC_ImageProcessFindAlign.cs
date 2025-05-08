@@ -283,7 +283,7 @@ namespace QMC.Common.VisionPart
             SaveImage(images, w, h, filename);
         }
         public List<RectangleF> FindCirclesWidthCircleBoundary(List<RectangleF> circlesResult, 
-            byte[] pixelData, int w, int h,int radius,double dSpec, ref bool circleFound, int nCenterX = 0, int nCenterY = 0,bool bIsDarkCircleSearch = true)
+            byte[] pixelData, int w, int h,int radius, double dSpec, ref bool circleFound, int nCenterX = 0, int nCenterY = 0,bool bIsDarkCircleSearch = true)
         {
             if(bIsDarkCircleSearch == false)
             {
