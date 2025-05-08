@@ -283,7 +283,7 @@ namespace QMC.Common.VisionPart
             SaveImage(images, w, h, filename);
         }
         public List<RectangleF> FindCirclesWidthCircleBoundary(List<RectangleF> circlesResult, 
-            byte[] pixelData, int w, int h,int radius,double dSpec, ref bool circleFound, int nCenterX = 0, int nCenterY = 0,bool bIsDarkCircleSearch = true)
+            byte[] pixelData, int w, int h,int radius, double dSpec, ref bool circleFound, int nCenterX = 0, int nCenterY = 0,bool bIsDarkCircleSearch = true)
         {
             if(bIsDarkCircleSearch == false)
             {
@@ -372,12 +372,18 @@ namespace QMC.Common.VisionPart
 
                         circlesResult.Clear();
                         double dRadius2 = 0;
-                        FindCircleFitter(circlesResult, points, out dRadius2, 2);
+                        Circle center = FindCircleFitter(circlesResult, points, out dRadius2, 2);
 
                         if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.02)
                         {
-                            bFindCircle = true;
-                            break;
+                            //허상을 찾아는지 검사 한다.
+                            double dScore = IsRealCircle(center, dRadius2, points,dSpec);
+                            if (dScore > 0.4)
+                            {
+                                bFindCircle = true;
+                                break;
+                            }
+                            
 
                         }
 
@@ -410,6 +416,25 @@ namespace QMC.Common.VisionPart
             FindCircleFitter(circlesResult, points, out dRadius);
 
             return circlesResult;
+        }
+
+        private double IsRealCircle(Circle center, double dRadius, List<PointF> points,double dSpec)
+        {
+            double dScore= 0;
+            double dDistance = 0;
+            int TotalCount = points.Count;
+            int GoodCoount = 0;
+            foreach (var point in points)
+            {
+                dDistance = Math.Pow(center.CenterX - point.X, 2) + Math.Pow(center.CenterY - point.Y, 2);
+                dDistance = Math.Sqrt(dDistance);
+                if (dRadius * (1- dSpec) < dDistance && dDistance < dRadius*(1+dSpec))
+                {
+                    GoodCoount++;
+                }
+            }
+            dScore = (double)GoodCoount / (double)TotalCount;
+            return dScore;
         }
 
         public List<RectangleF> FindMetalPowder(List<RectangleF> circlesResult, byte[] pixelData, int w, int h, ref bool circleFound)
@@ -1183,7 +1208,7 @@ namespace QMC.Common.VisionPart
         }
 
 
-        private static void FindCircleFitter( List<RectangleF> circles, List<PointF> points,out double radius,double threshold = 10)
+        private static Circle FindCircleFitter( List<RectangleF> circles, List<PointF> points,out double radius,double threshold = 10)
         {
             int iter = points.Count;
             if(iter < 1000)
@@ -1196,6 +1221,7 @@ namespace QMC.Common.VisionPart
             RectangleF circle = new RectangleF((float)(fittedCircle.CenterX - radius), (float)(fittedCircle.CenterY - radius), (float)(2 * radius), (float)(2 * radius));
            
             circles.Add(circle);
+            return fittedCircle;
         }
 
         //주석좀 달아줘라.

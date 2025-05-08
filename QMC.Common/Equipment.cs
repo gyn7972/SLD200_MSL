@@ -39,6 +39,7 @@ using static System.Collections.Specialized.BitVector32;
 using System.Drawing;
 using QMC.Common.Vision;
 using Cognex.VisionPro;
+using System.ServiceModel.Syndication;
 
 
 
@@ -455,6 +456,8 @@ namespace QMC.Common
             public double SpiralParam_Revolutions;                      //  Spiral Revolutions
             public double SpiralParam_AngleFactor;                      //  Spiral Angle Factor
 
+            public double EPRO_ModuleAbsorptionLevel;                   //  EPRO Module Absorption Level
+
             public bool MAligner_VacuumPos_Center;                      //  M-Aligner Vacuum Position Center (true: Using, false: Not Using)
             public bool MAligner_VacuumPos_Inner;                       //  M-Aligner Vacuum Position Inner (true: Using, false: Not Using)
             public bool MAligner_VacuumPos_Outer;                       //  M-Aligner Vacuum Position Outer (true: Using, false: Not Using)
@@ -471,6 +474,18 @@ namespace QMC.Common
         }
         public static stLayerRecipeParameter[] stLayerRecipeSet = new stLayerRecipeParameter[System.Enum.GetValues(typeof(LayerList)).Length];
 
+        public enum VisionAlgorithmType
+        {
+            PatternMatching = 0,
+            CircleDetection = 1,
+            //BlobDetection = 2,
+        }
+
+        public enum PatternShapeType
+        {
+            Circle = 0,
+            Cross = 1
+        }
         //  Recipe 파라미터 - PreAlign 
         public struct VisionRecipeData
         {
@@ -480,9 +495,13 @@ namespace QMC.Common
             public System.Drawing.Point InspectRoiStartLocation;
             public System.Drawing.Point InspectRoiEndLocation;
             public int IlluminationIR;
-            public double TempPos1_X;
-            public double TempPos1_Y;
             public string TrainImagePath;
+
+            public bool bCircleDetectionColor;  //0: White, 1: Black
+            public double dCircleDetectionSizeW; //circle size width
+            public double dCircleSpec;  //
+            public VisionAlgorithmType AlgorithmType;
+            public PatternShapeType PatternShape;
 
             public void SaveToIni(string path)
             {
@@ -502,7 +521,14 @@ namespace QMC.Common
                 NativeMethods.WritePrivateProfileString("InspectROI", "EndX", InspectRoiEndLocation.X.ToString(), path);
                 NativeMethods.WritePrivateProfileString("InspectROI", "EndY", InspectRoiEndLocation.Y.ToString(), path);
 
+                NativeMethods.WritePrivateProfileString("Vision", "AlgorithmType", ((int)AlgorithmType).ToString(), path);
+                NativeMethods.WritePrivateProfileString("Vision", "PatternShape", ((int)PatternShape).ToString(), path);
+
                 NativeMethods.WritePrivateProfileString("Illumination", "IR", IlluminationIR.ToString(), path);
+
+                NativeMethods.WritePrivateProfileString("CircleDetection", "Color", bCircleDetectionColor.ToString(), path);
+                NativeMethods.WritePrivateProfileString("CircleDetection", "SizeW", dCircleDetectionSizeW.ToString(), path);
+                NativeMethods.WritePrivateProfileString("CircleDetection", "Spec", dCircleSpec.ToString(), path);
 
                 string folderName = Path.GetFileNameWithoutExtension(path);
                 string folderPath = Path.Combine(Path.GetDirectoryName(path), folderName);
@@ -555,9 +581,23 @@ namespace QMC.Common
                     NativeMethods.GetPrivateProfileString("InspectROI", "EndY", "0", sb, sb.Capacity, path); 
                     data.InspectRoiEndLocation.Y = Equipment.ToInt(sb.ToString());
 
-                    // 기타
+                    NativeMethods.GetPrivateProfileString("Vision", "AlgorithmType", "0", sb, sb.Capacity, path);
+                    data.AlgorithmType = (VisionAlgorithmType)Equipment.ToInt(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("Vision", "PatternShape", "0", sb, sb.Capacity, path);
+                    data.PatternShape = (PatternShapeType)Equipment.ToInt(sb.ToString());
+
                     NativeMethods.GetPrivateProfileString("Illumination", "IR", "3500", sb, sb.Capacity, path);
                     data.IlluminationIR = Equipment.ToInt(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("CircleDetection", "Color", "False", sb, sb.Capacity, path);
+                    data.bCircleDetectionColor = Equipment.ToBoolean(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("CircleDetection", "SizeW", "0.5", sb, sb.Capacity, path);
+                    data.dCircleDetectionSizeW = Equipment.ToDouble(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("CircleDetection", "Spec", "0.05", sb, sb.Capacity, path);
+                    data.dCircleSpec = Equipment.ToDouble(sb.ToString());
 
                     NativeMethods.GetPrivateProfileString("TrainImage", "Path", "", sb, sb.Capacity, path);
                     data.TrainImagePath = sb.ToString();
@@ -596,6 +636,28 @@ namespace QMC.Common
                     img.Load(TrainImagePath, VisionImage.FileFilter.bmp);
                     return img;
                 }
+
+                string strFile = "";
+                strFile = string.Format("{0}\\PreAlign.bmp", ConfigManager.GetPatternImagePath());
+                if (File.Exists(strFile))
+                {
+                    try
+                    {
+                        // 필요한 디렉터리 생성
+                        Directory.CreateDirectory(Path.GetDirectoryName(TrainImagePath));
+
+                        File.Copy(strFile, TrainImagePath, overwrite: true);
+
+                        VisionImage defaultImg = new VisionImage();
+                        defaultImg.Load(TrainImagePath, VisionImage.FileFilter.bmp);
+                        return defaultImg;
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Write(ex);
+                    }
+                }
+
                 return null;
             }
         }
@@ -642,10 +704,10 @@ namespace QMC.Common
         public static double Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio { set; get; } = 2.0;        //  Vibration 시 가감속 속도 비율
         public static int Machine_LoaderTransfer_NumberOfVibrations { set; get; } = 2;                      //  Vibration 횟수
         public static double Machine_LoaderTransfer_Vibration_MoveDistance { set; get; } = 2.0;             //  Vibration 시 이동 거리
+        public static int Machine_LoaderTransfer_Vibration_Interval { set; get; } = 500;                    //  Vibration 시 Interval 시간. (한번 털고 나서 대기하는 시간)
         public static bool Machine_LoaderStacker_LiftUp_Enable { set; get; } = true;                        //  Loader Stacker Lift Up Enable
         public static int Machine_LoaderStacker_LiftUpStep { set; get; } = 7;                               //  Loader Stacker Lift Up Step
         public static int Machine_LoaderStacker_LiftUp_StableTime { set; get; } = 1000;                     //  Loader Stacker Lift Up Stable Time
-        public static double Machine_WorkStage_ModuleAbsorption_JudgeLevel { set; get; } = -40.0;           //  Work Stage 에 Module Loading 시, 전자식 진공 레귤레이터 판정값
         public static bool Machine_LoaderStacker_Down_afterLoaderPickUp_Enable { set; get; } = true;        //  Loader Stacker Down after Loader Module Pick Up Enable
         public static double Machine_LoaderStacker_DownDistance_afterLoaderPickUp { set; get; } = 5.0;      //  Loader 가 Module Pick Up 후 Stacker 를 내리는 거리
         public static bool Machine_LoaderStacker_NoMaterialDetectTime_Enable { set; get; } = true;          //  Loader Stacker No Material Detect Time Enable
@@ -1207,6 +1269,9 @@ namespace QMC.Common
                 stLayerRecipeSet[i].SpiralParam_InnerDiameter = 0.0;                                //  Spiral Inner Diameter Resizing (mm)
                 stLayerRecipeSet[i].SpiralParam_Revolutions = 10.0;                                 //  Spiral Revolutions
                 stLayerRecipeSet[i].SpiralParam_AngleFactor = 10.0;                                 //  Spiral Angle Factor
+
+                //  EPRO Module Absorption Level
+                stLayerRecipeSet[i].EPRO_ModuleAbsorptionLevel = -40.0;                             //  EPRO Module Absorption Level (kPa)
 
                 //  Mechanical-Alignment Vacuum
                 stLayerRecipeSet[i].MAligner_VacuumPos_Center = true;                               //  Mechanical-Alignment Center Vacuum Use (true: Use, false: Not Use)
@@ -2968,15 +3033,15 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderTransfer_NumberOfVibrations", "2", temp, 255, strFIle);
             Equipment.Machine_LoaderTransfer_NumberOfVibrations = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderTransfer_Vibration_MoveDistance", "2.0", temp, 255, strFIle);
-            Equipment.Machine_LoaderTransfer_Vibration_MoveDistance = Equipment.ToDouble(temp.ToString());           
+            Equipment.Machine_LoaderTransfer_Vibration_MoveDistance = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderTransfer_Vibration_Interval", "500", temp, 255, strFIle);
+            Equipment.Machine_LoaderTransfer_Vibration_Interval = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_Enable", "True", temp, 255, strFIle);
             Equipment.Machine_LoaderStacker_LiftUp_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_Step", "7", temp, 255, strFIle);
             Equipment.Machine_LoaderStacker_LiftUpStep = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_StableTime", "1000", temp, 255, strFIle);
             Equipment.Machine_LoaderStacker_LiftUp_StableTime = Equipment.ToInt(temp.ToString());
-            NativeMethods.GetPrivateProfileString("Machine_Option", "WorkStage_ModuleAbsorption_JudgeLevel", "-40.0", temp, 255, strFIle);
-            Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_Down_afterLDPickUp_Enable", "True", temp, 255, strFIle);
             Equipment.Machine_LoaderStacker_Down_afterLoaderPickUp_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_DownDistance_afterLDPickUp", "5.0", temp, 255, strFIle);

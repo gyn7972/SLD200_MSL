@@ -421,13 +421,14 @@ namespace SLD200_MSL
 
                 Equipment.EqpSiriusViewer.Document = m_formSiriusEditor.SiriusEditor.Document;
 
-                workStage.DrillingData_Parsing();
-
-                foreach (var layer in m_formSiriusEditor.SiriusEditor.Document.Layers)
+                if (workStage.DrillingData_Parsing())
                 {
-                    if (layer.IsMarkerable)
+                    foreach (var layer in m_formSiriusEditor.SiriusEditor.Document.Layers)
                     {
-                        listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Add(layer.Name);
+                        if (layer.IsMarkerable)
+                        {
+                            listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Add(layer.Name);
+                        }
                     }
                 }
             }
@@ -886,6 +887,10 @@ namespace SLD200_MSL
                 NativeMethods.GetPrivateProfileString(strTemp, "Spiral_AngleFactor", "10.0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].SpiralParam_AngleFactor = Equipment.ToDouble(temp.ToString());
 
+                //  EPRO Module Absorption Level
+                NativeMethods.GetPrivateProfileString(strTemp, "EPRO_ModuleAbsorptionLevel", "-40.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].EPRO_ModuleAbsorptionLevel = Equipment.ToDouble(temp.ToString());
+
                 //  M-Aligner Vacuum Use
                 NativeMethods.GetPrivateProfileString(strTemp, "MAlignerVacuumUse_Center", "true", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Center = Convert.ToBoolean(temp.ToString());
@@ -1019,6 +1024,8 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].SpiralParam_InnerDiameter = ReadDouble(data, "Spiral_InnerDiameter", 0.0);
                 Equipment.stLayerRecipeSet[i].SpiralParam_Revolutions = ReadInt(data, "Spiral_Revolutions", 10);
                 Equipment.stLayerRecipeSet[i].SpiralParam_AngleFactor = ReadDouble(data, "Spiral_AngleFactor", 10.0);
+
+                Equipment.stLayerRecipeSet[i].EPRO_ModuleAbsorptionLevel = ReadDouble(data, "EPRO_ModuleAbsorptionLevel", -40.0);
 
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Center = ReadBool(data, "MAlignerVacuumUse_Center", true);
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Inner = ReadBool(data, "MAlignerVacuumUse_Inner", false);
@@ -1172,6 +1179,9 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "Spiral_Revolutions", Equipment.stLayerRecipeSet[i].SpiralParam_Revolutions.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "Spiral_AngleFactor", Equipment.stLayerRecipeSet[i].SpiralParam_AngleFactor.ToString(), strFIle);
 
+                //  EPRO Module Absorption Level
+                NativeMethods.WritePrivateProfileString(strTemp, "EPRO_ModuleAbsorptionLevel", Equipment.stLayerRecipeSet[i].EPRO_ModuleAbsorptionLevel.ToString(), strFIle);
+                
                 //  M-Aligner Vacuum Use
                 NativeMethods.WritePrivateProfileString(strTemp, "MAlignerVacuumUse_Center", Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Center.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "MAlignerVacuumUse_Inner", Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Inner.ToString(), strFIle);
@@ -1273,6 +1283,8 @@ namespace SLD200_MSL
                 layerDict["Spiral_InnerDiameter"] = Equipment.stLayerRecipeSet[i].SpiralParam_InnerDiameter.ToString();
                 layerDict["Spiral_Revolutions"] = Equipment.stLayerRecipeSet[i].SpiralParam_Revolutions.ToString();
                 layerDict["Spiral_AngleFactor"] = Equipment.stLayerRecipeSet[i].SpiralParam_AngleFactor.ToString();
+
+                layerDict["EPRO_ModuleAbsorptionLevel"] = Equipment.stLayerRecipeSet[i].EPRO_ModuleAbsorptionLevel.ToString();
 
                 layerDict["MAlignerVacuumUse_Center"] = Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Center.ToString();
                 layerDict["MAlignerVacuumUse_Inner"] = Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Inner.ToString();
@@ -1578,6 +1590,9 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[m_nLayerIndex].SpiralParam_Revolutions = textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text) : 10;
             Equipment.stLayerRecipeSet[m_nLayerIndex].SpiralParam_AngleFactor = textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text) : 10.0;
 
+            //  EPRO Module Absorption Level
+            Equipment.stLayerRecipeSet[m_nLayerIndex].EPRO_ModuleAbsorptionLevel = textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Text) : -40.0;
+
             //  M-Aligner Vacuum Use
             Equipment.stLayerRecipeSet[m_nLayerIndex].MAligner_VacuumPos_Center = checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked;     //  Center
             Equipment.stLayerRecipeSet[m_nLayerIndex].MAligner_VacuumPos_Inner = checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked;       //  Inner
@@ -1757,6 +1772,9 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text = Equipment.stLayerRecipeSet[0].SpiralParam_Revolutions.ToString();
                 textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text = Equipment.stLayerRecipeSet[0].SpiralParam_AngleFactor.ToString();
 
+                //  EPRO Module Absorption Level
+                textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Text = Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel.ToString();
+
                 //  M-Aligner Vacuum Use
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center;     //  Center
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner;       //  Inner
@@ -1789,24 +1807,29 @@ namespace SLD200_MSL
                 //  자동운전 중 모듈 가공 시 이 위치의 도면파일을 로드한다.
                 Equipment.RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
 
-                workStage.DrillingData_Parsing();
-
-                //  Layer List 전체 삭제
-                listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Clear();
-
-                // Todo : 20250426 확인
-                if(m_formSiriusEditor.SiriusEditor.Document != null)
+                if (workStage.DrillingData_Parsing())
                 {
-                    foreach (var layer in m_formSiriusEditor.SiriusEditor.Document.Layers)
+                    //  Layer List 전체 삭제
+                    listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Clear();
+
+                    // Todo : 20250426 확인
+                    if (m_formSiriusEditor.SiriusEditor.Document != null)
                     {
-                        if (layer.IsMarkerable)
+                        foreach (var layer in m_formSiriusEditor.SiriusEditor.Document.Layers)
                         {
-                            listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Add(layer.Name);
+                            if (layer.IsMarkerable)
+                            {
+                                listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Add(layer.Name);
+                            }
                         }
                     }
-                }
 
-                MessageBox.Show("Recipe Data를 로드하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Recipe Data를 로드하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Recipe Data를 로드하지 못했습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -1981,6 +2004,9 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text = Equipment.stLayerRecipeSet[m_nIndex].SpiralParam_Revolutions.ToString();
             textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text = Equipment.stLayerRecipeSet[m_nIndex].SpiralParam_AngleFactor.ToString();
 
+            //  EPRO Module Absorption Level
+            textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Text = Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel.ToString();
+
             //  M-Aligner Vacuum Use
             checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center;     //  Center
             checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner;       //  Inner
@@ -2092,6 +2118,9 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_SpiralParam_Revolutions.Text = Equipment.stLayerRecipeSet[0].SpiralParam_Revolutions.ToString();
             textBox_Recipe_TabRecipe_SpiralParam_AngleFactor.Text = Equipment.stLayerRecipeSet[0].SpiralParam_AngleFactor.ToString();
 
+            //  EPRO Module Absorption Level
+            textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Text = Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel.ToString();
+
             //  M-Aligner Vacuum Use
             checkBox_Recipe_TabRecipe_MAlignVacuum_Center.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center;     //  Center
             checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Inner;       //  Inner
@@ -2112,17 +2141,22 @@ namespace SLD200_MSL
 
             Equipment.EqpSiriusViewer.Document = m_formSiriusEditor.SiriusEditor.Document;
 
-            workStage.DrillingData_Parsing();
-
-            foreach (var layer in m_formSiriusEditor.SiriusEditor.Document.Layers)
+            if (workStage.DrillingData_Parsing())
             {
-                if (layer.IsMarkerable)
+                foreach (var layer in m_formSiriusEditor.SiriusEditor.Document.Layers)
                 {
-                    listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Add(layer.Name);
+                    if (layer.IsMarkerable)
+                    {
+                        listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items.Add(layer.Name);
+                    }
                 }
-            }
 
-            MessageBox.Show("Recipe Data를 로드하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Recipe Data를 로드하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("Recipe Data를 로드하지 못했습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void button_DutyCycle_Calc_Click(object sender, EventArgs e)

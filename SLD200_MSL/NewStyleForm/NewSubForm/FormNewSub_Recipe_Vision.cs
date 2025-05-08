@@ -21,6 +21,8 @@ using static OpenCvSharp.LineIterator;
 using static QMC.Common.Vision.Tools.PatternMatchingResult;
 using System.Threading;
 using System.IO;
+using static QMC.Common.Equipment;
+using System.Security.Cryptography;
 
 namespace SLD200.NewStyleForm.NewSubForm
 {
@@ -77,11 +79,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                     workStage = module as WorkStage;
                     Owner = workStage.jigAligner_LowRes;
                 }
-
-                //if (module.Name == "Vision")
-                //{
-                //    vision = module as Vision;
-                //}
             }
 
             RecipeVisionTimer = new System.Windows.Forms.Timer();
@@ -136,13 +133,48 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             Temp_Position_Load();
 
+            if(Equipment.stVisionRecipeSet.PatternShape == PatternShapeType.Cross)
+            {
+                radioButton_RecipeVision_Cross.Checked = true;
+                radioButton_RecipeVision_Circle.Checked = false;
+            }
+            else
+            {
+                radioButton_RecipeVision_Cross.Checked = false;
+                radioButton_RecipeVision_Circle.Checked = true;
+            }
+
+            if (Equipment.stVisionRecipeSet.AlgorithmType == VisionAlgorithmType.PatternMatching)
+            {
+                radioButton_RecipeVision_Pattern.Checked = true;
+                radioButton_RecipeVision_Blob.Checked = false;
+            }
+            else
+            {
+                radioButton_RecipeVision_Pattern.Checked = false;
+                radioButton_RecipeVision_Blob.Checked = true;
+            }
+
+            if (Equipment.stVisionRecipeSet.bCircleDetectionColor == true)
+            {
+                radioButton_RecipeVision_White.Checked = false;
+                radioButton_RecipeVision_Black.Checked = true;
+            }
+            else
+            {
+                radioButton_RecipeVision_White.Checked = true;
+                radioButton_RecipeVision_Black.Checked = false;
+            }
+
+            textBox_RecipeVision_Circle_Spec.Text = Equipment.stVisionRecipeSet.dCircleSpec.ToString();
+            textBox_RecipeVision_Circle_Size.Text = Equipment.stVisionRecipeSet.dCircleDetectionSizeW.ToString();
+
             radioButton_RecipeVision_Move_MoveMode_Fine.Checked = false;
             radioButton_RecipeVision_Move_MoveMode_Coarse.Checked = true;
             radioButton_RecipeVision_JogMove_Continuous.Checked = false;
             radioButton_RecipeVision_JogMove_Step.Checked = true;
 
             radioButton_RecipeVision_Circle.Checked = true;
-
         }
 
         private void RecipeVisionTimer_Tick(object sender, EventArgs e)
@@ -166,6 +198,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                 return;
 
             m_bFormVisible = true;
+
+            InitPatternMatchingParameter();
 
             this.ImageViewer_RecipeVision_highs.ResumeDisplay();
             this.ImageViewer_RecipeVision_highs.StartUpdateTask();
@@ -228,55 +262,25 @@ namespace SLD200.NewStyleForm.NewSubForm
                     PatternMatchingParameter.DuplicateChecked = baseToggleButton_RecipeVision_DuplicateCheck.GetButtonStatus();
                     PatternMatchingParameter.UseMaskImage = baseToggleButton_RecipeVision_UseMaskImage.GetButtonStatus();
                     PatternMatchingParameter.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
+                    
                     Owner.Recipe.PatternMatchingParameter = PatternMatchingParameter;
                 }
-                
 
                 RoiTrain.Parameter.StartLocation = Equipment.stVisionRecipeSet.TrainRoiStartLocation;
                 RoiTrain.Parameter.EndLocation = Equipment.stVisionRecipeSet.TrainRoiEndLocation;
                 RoiInspect.Parameter.StartLocation = Equipment.stVisionRecipeSet.InspectRoiStartLocation;
                 RoiInspect.Parameter.EndLocation = Equipment.stVisionRecipeSet.InspectRoiEndLocation;
 
-
                 Owner.Recipe.InspectRoiStartLocation = Equipment.stVisionRecipeSet.InspectRoiStartLocation; //RoiInspect.Parameter.StartLocation;
                 Owner.Recipe.InspectRoiEndLocation = Equipment.stVisionRecipeSet.InspectRoiEndLocation;     //RoiInspect.Parameter.EndLocation;
                 Owner.Recipe.TrainRoiStartLocation = Equipment.stVisionRecipeSet.TrainRoiStartLocation;     //RoiTrain.Parameter.StartLocation;
                 Owner.Recipe.TrainRoiEndLocation = Equipment.stVisionRecipeSet.TrainRoiEndLocation;         //RoiTrain.Parameter.EndLocation;
-
-                //basetextBox_RecipeVision_AngleTolerance.Text = Owner.Recipe.PatternMatchingParameter.MaxTolerance.ToString();
-                //PatternMatchingParameter.MaxTolerance = Owner.Recipe.PatternMatchingParameter.MaxTolerance;
-
-                //basetextBox_RecipeVision_MaxInstance.Text = Owner.Recipe.PatternMatchingParameter.MaxInstance.ToString();
-                //PatternMatchingParameter.MaxInstance = Owner.Recipe.PatternMatchingParameter.MaxInstance;
-
-                //basetextBox_RecipeVision_MinScore.Text = Owner.Recipe.PatternMatchingParameter.MinScore.ToString();
-                //PatternMatchingParameter.MinScore = Owner.Recipe.PatternMatchingParameter.MinScore;
-
-                //bool bOn = Owner.Recipe.PatternMatchingParameter.DuplicateChecked;
-                //baseToggleButton_RecipeVision_DuplicateCheck.UpdateToggleStatus(bOn);
-                //PatternMatchingParameter.DuplicateChecked = bOn;
-
-                //bOn = Owner.Recipe.PatternMatchingParameter.UseMaskImage;
-                //baseToggleButton_RecipeVision_UseMaskImage.UpdateToggleStatus(bOn);
-                //PatternMatchingParameter.UseMaskImage = bOn;
             }
 
-            this.radioButton_RecipeVision_Pattern.Checked = true;   //무조건 무조건이야~
-            this.radioButton_RecipeVision_Blob.Checked = false;
-            this.radioButton_RecipeVision_Cross.Checked = false;
-            this.radioButton_RecipeVision_Circle.Checked = true;
-
             this.radioButton_RecipeVision_Light_IR.Checked = true;
             this.radioButton_RecipeVision_Light_Red.Checked = false;
             //workStage.Config.ListIlluminationChannel[0].Value = Equipment.Scanner_Calibration_Illumination_channel_01_Value; //RED
             //workStage.Config.ListIlluminationChannel[1].Value = Equipment.Scanner_Calibration_Illumination_channel_02_Value; //IR
-
-            this.radioButton_RecipeVision_Light_IR.Checked = true;
-            this.radioButton_RecipeVision_Light_Red.Checked = false;
-            //workStage.Config.ListIlluminationChannel[0].Value = Equipment.Scanner_Calibration_Illumination_channel_01_Value; //RED
-            //workStage.Config.ListIlluminationChannel[1].Value = Equipment.Scanner_Calibration_Illumination_channel_02_Value; //IR
-
-
 
         }
 
@@ -661,104 +665,21 @@ namespace SLD200.NewStyleForm.NewSubForm
                 Owner.TestImage = ImageViewer_RecipeVision_Rows.InputImage;
             }
 
-            if (Equipment.Scanner_Calibration_UseBlobVisionTool)
+            if (radioButton_RecipeVision_Black.Checked)
             {
-                if (IsPixel == true)
-                {
-                    PatternMatchingParameter.MaxTolerance = 0;
-                    PatternMatchingParameter.MaxInstance = Equipment.ToInt(basetextBox_RecipeVision_MaxInstance.Text);
-                    PatternMatchingParameter.MinTolerance = 0;
-                    PatternMatchingParameter.MinScore = Equipment.ToDouble(basetextBox_RecipeVision_MinScore.Text);
-                    PatternMatchingParameter.DuplicateChecked = baseToggleButton_RecipeVision_DuplicateCheck.GetButtonStatus();
-                    PatternMatchingParameter.UseMaskImage = baseToggleButton_RecipeVision_UseMaskImage.GetButtonStatus();
-
-                    PatternMatchingResult result = Owner.GetResult();
-                    if (result != null)
-                    {
-                        ImageViewer_RecipeVision_Rows.ResultOverlays.Clear();
-                    }
-
-                    result = Owner.Search();
-                    if (result != null)
-                    {
-                        foreach (var overlay in result.ResultOverlays)
-                        {
-                            ImageViewer_RecipeVision_Rows.ResultOverlays.Add(overlay);
-                            overlay.Visible = true;
-                        }
-                    }
-
-                    //BlobResult result = workStage.scannerCompensator.Blob();
-                    bool bFind = false;
-                    QMC_ImageProcessFindAlign qip = new QMC_ImageProcessFindAlign();
-                    List<RectangleF> Fiducial_circlesResult = new List<RectangleF>();
-
-                    VisionScale m_TempScale = new VisionScale();
-                    m_TempScale.X = workStage.Config.ParamConfig.UpperVision_Scale_X;
-                    m_TempScale.Y = workStage.Config.ParamConfig.UpperVision_Scale_Y;
-                    m_TempScale.InvertedX = workStage.Config.ParamConfig.UpperVision_ScaleInvert_X;
-                    m_TempScale.InvertedY = workStage.Config.ParamConfig.UpperVision_ScaleInvert_Y;
-
-                    double pixelR = (Equipment.Scanner_Calibration_CrossMarkLength / 2) / (m_TempScale.X);
-                    if (ImageViewer_RecipeVision_Rows.Simulated)
-                    {
-                        qip.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, ImageViewer_RecipeVision_Rows.InputImage.RawData
-                            , ImageViewer_RecipeVision_Rows.InputImage.Header.Width
-                            , ImageViewer_RecipeVision_Rows.InputImage.Header.Height
-                            , (int)pixelR, 0.5, ref bFind, (int)result.Values[0].X, (int)result.Values[0].Y);
-                        //1000, 1 -> 엄청느린값 // 원의 반지름의 값이랑 오차범위
-                        //센터점 전달해서 찾기로, 센터 못찾으면 그냥 센터로. 
-                    }
-                    else
-                    {
-                        qip.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, Owner.Camera.LatestImage.RawData
-                            , Owner.Camera.LatestImage.Header.Width
-                            , Owner.Camera.LatestImage.Header.Height
-                            , (int)pixelR, 0.5, ref bFind, (int)result.Values[0].X, (int)result.Values[0].Y);
-                        //1000, 1 -> 엄청느린값 // 원의 반지름의 값이랑 오차범위
-                        //센터점 전달해서 찾기로, 센터 못찾으면 그냥 센터로. 
-                    }
-
-                    if (Fiducial_circlesResult.Count > 0)
-                    {
-                        double x = Fiducial_circlesResult[0].X + (Fiducial_circlesResult[0].Width / 2);
-                        double y = Fiducial_circlesResult[0].Y + (Fiducial_circlesResult[0].Height / 2);
-
-                        PatternMatchingResultValue pmrv = new PatternMatchingResultValue();
-                        pmrv.X = x;
-                        pmrv.Y = y;
-
-                        //비교를 위해서 우선 막아놈.
-                        //result.Values[0] = pmrv;
-                        RectangleFrameVisionImageOverlay overlay = new RectangleFrameVisionImageOverlay("FindCircle",
-                            new Point((int)Fiducial_circlesResult[0].Left, (int)Fiducial_circlesResult[0].Top)
-                            , new Point((int)(Fiducial_circlesResult[0].Right), (int)Fiducial_circlesResult[0].Bottom));
-
-                        ImageViewer_RecipeVision_Rows.ResultOverlays.Add(overlay);
-                        overlay.Visible = true;
-
-                        UpdataPositionData(result.Values[0].X, result.Values[0].Y, result.Values[0].R, pmrv.X, pmrv.Y);
-                    }
-                }
-                else
-                {
-                    //PointD converted = new PointD((result.Values[0].X - this.m_Owner.Camera.Resolution.Width / 2) * ((WorkStage)this.m_Owner.Owner).Scale.X * (((WorkStage)this.m_Owner.Owner).Scale.InvertedX ? 1 : -1),
-                    //                              (result.Values[0].Y - this.m_Owner.Camera.Resolution.Height / 2) * ((WorkStage)this.m_Owner.Owner).Scale.Y * (((WorkStage)this.m_Owner.Owner).Scale.InvertedY ? 1 : -1));
-
-                    //PointD converted = new PointD((result.Values[0].X - workStage.scannerCompensator.Camera.Resolution.Width / 2) * (workStage.scannerCompensator.Owner).Scale.X * ((workStage.scannerCompensator.Owner).Scale.InvertedX ? 1 : -1),
-                    //                              (result.Values[0].Y - workStage.scannerCompensator.Camera.Resolution.Height / 2) * (workStage.scannerCompensator.Owner).Scale.Y * ((workStage.scannerCompensator.Owner).Scale.InvertedY ? 1 : -1));
-
-                    //UpdataPositionData(converted.X, converted.Y, result.Values[0].R);
-                }
-
+                Equipment.stVisionRecipeSet.bCircleDetectionColor = true;
             }
-            else //Scanner_Calibration_UsePatternMatching
+            else if (radioButton_RecipeVision_White.Checked)
             {
-                //jigAligner_LowRes.Recipe.PatternMatchingParameter = stVisionRecipeSet.PatternMatching;
-                //jigAligner_LowRes.Recipe.InspectRoiStartLocation = stVisionRecipeSet.InspectRoiStartLocation;
-                //jigAligner_LowRes.Recipe.InspectRoiEndLocation = stVisionRecipeSet.InspectRoiEndLocation;
-                //jigAligner_LowRes.Recipe.TrainRoiStartLocation = stVisionRecipeSet.TrainRoiStartLocation;
-                //jigAligner_LowRes.Recipe.TrainRoiEndLocation = stVisionRecipeSet.TrainRoiEndLocation;
+                Equipment.stVisionRecipeSet.bCircleDetectionColor = false;
+            }
+            if (radioButton_RecipeVision_Pattern.Checked)
+            {
+                stVisionRecipeSet.TrainRoiStartLocation = RoiTrain.Parameter.StartLocation;
+                stVisionRecipeSet.TrainRoiEndLocation = RoiTrain.Parameter.EndLocation;
+                stVisionRecipeSet.InspectRoiStartLocation = RoiInspect.Parameter.StartLocation;
+                stVisionRecipeSet.InspectRoiEndLocation = RoiInspect.Parameter.EndLocation;
+                stVisionRecipeSet.IlluminationIR = hScrollBar_RecipeVision_Illuminator.Value;
 
                 PatternMatchingParameter.MaxTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text);
                 PatternMatchingParameter.MaxInstance = Equipment.ToInt(basetextBox_RecipeVision_MaxInstance.Text);
@@ -767,12 +688,10 @@ namespace SLD200.NewStyleForm.NewSubForm
                 PatternMatchingParameter.DuplicateChecked = baseToggleButton_RecipeVision_DuplicateCheck.GetButtonStatus();
                 PatternMatchingParameter.UseMaskImage = baseToggleButton_RecipeVision_UseMaskImage.GetButtonStatus();
                 PatternMatchingParameter.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
-                Owner.Recipe.PatternMatchingParameter = PatternMatchingParameter;
 
-                Owner.Recipe.InspectRoiStartLocation = RoiInspect.Parameter.StartLocation;
-                Owner.Recipe.InspectRoiEndLocation = RoiInspect.Parameter.EndLocation;
-                Owner.Recipe.TrainRoiStartLocation = RoiTrain.Parameter.StartLocation;
-                Owner.Recipe.TrainRoiEndLocation = RoiTrain.Parameter.EndLocation;
+                stVisionRecipeSet.PatternMatching = PatternMatchingParameter;
+
+                UpdateOwnerRecipe(stVisionRecipeSet);
 
                 PatternMatchingResult result = Owner.GetResult();
                 if (result != null)
@@ -808,22 +727,74 @@ namespace SLD200.NewStyleForm.NewSubForm
                     }
                 }
                 ImageViewer_RecipeVision_Rows.Display();
-                UpdateOwnerRecipe(PatternMatchingParameter);
+            }
+            else if(radioButton_RecipeVision_Blob.Checked)
+            {
+                Equipment.stVisionRecipeSet.dCircleSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
+                Equipment.stVisionRecipeSet.dCircleDetectionSizeW = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
+                double dspec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);    //0.5; //Spec Param 만들어야됨.
+                double dRadius = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);    //0.5; //Size Param 만들어야됨.
+                bool bIsDarkCircleSearch = radioButton_RecipeVision_Black.Checked;
+                if(radioButton_RecipeVision_Black.Checked)
+                {
+                    bIsDarkCircleSearch = true;
+                }
+                else
+                {
+                    bIsDarkCircleSearch = false;
+                }
+                    PatternMatchingResult SearchResult = null;
+                XyCoordinate PointCoordinate = new XyCoordinate();
+
+                ImageViewer_RecipeVision_Rows.ResultOverlays.Clear();
+                Owner.FindCircleDetection(dRadius, bIsDarkCircleSearch, dspec, out SearchResult, out PointCoordinate);
+                if (SearchResult != null)
+                {
+                    foreach (var overlay in SearchResult.ResultOverlays)
+                    {
+                        ImageViewer_RecipeVision_Rows.ResultOverlays.Add(overlay);
+                        overlay.Visible = true;
+                    }
+                }
+
+                if (SearchResult != null && SearchResult.Values.Count > 0)
+                {
+                    if (IsPixel == true)
+                    {
+                        UpdataPositionData(SearchResult.Values[0].X, SearchResult.Values[0].Y, SearchResult.Values[0].R);
+                    }
+                }
+                ImageViewer_RecipeVision_Rows.Display();
             }
 
             Owner.Camera.StartLive();
         }
 
-        private void UpdateOwnerRecipe(PatternMatchingParameters parameters)
+        private void UpdateOwnerRecipe(VisionRecipeData data)
         {
             if (Owner is JigAligner)
             {
                 JigAligner visionCompensator = Owner as JigAligner;
-                visionCompensator.Recipe.PatternMatchingParameter = parameters;
+                visionCompensator.Recipe.PatternMatchingParameter = data.PatternMatching;
+                visionCompensator.Recipe.TrainRoiStartLocation = data.TrainRoiStartLocation;
+                visionCompensator.Recipe.TrainRoiEndLocation = data.TrainRoiEndLocation;
+                visionCompensator.Recipe.InspectRoiStartLocation = data.InspectRoiStartLocation;
+                visionCompensator.Recipe.InspectRoiEndLocation = data.InspectRoiEndLocation;
                 Owner = visionCompensator;
+                Equipment.SaveRecipe();
             }
-            Equipment.SaveRecipe();
         }
+
+        //private void UpdateOwnerRecipe(PatternMatchingParameters parameters)
+        //{
+        //    if (Owner is JigAligner)
+        //    {
+        //        JigAligner visionCompensator = Owner as JigAligner;
+        //        visionCompensator.Recipe.PatternMatchingParameter = parameters;
+        //        Owner = visionCompensator;
+        //    }
+        //    Equipment.SaveRecipe();
+        //}
 
         private void checkBox_RecipeVision_CirclePos_CheckedChanged(object sender, EventArgs e)
         {
@@ -841,21 +812,39 @@ namespace SLD200.NewStyleForm.NewSubForm
             //Equipment.stVisionRecipeSet.TrainImagePath = Equipment.stVisionRecipeSet.TrainImagePath;
             Equipment.stVisionRecipeSet.SaveTrainImage(pictureBox_RecipeVision_TrainImage.Image);
 
+            if (this.radioButton_RecipeVision_Pattern.Checked)
+            {
+                Equipment.stVisionRecipeSet.AlgorithmType = VisionAlgorithmType.PatternMatching;
+            }
+            else if (this.radioButton_RecipeVision_Blob.Checked)
+            {
+                Equipment.stVisionRecipeSet.AlgorithmType = VisionAlgorithmType.CircleDetection;
+            }
+
+            if (this.radioButton_RecipeVision_Cross.Checked)
+            {
+                Equipment.stVisionRecipeSet.PatternShape = PatternShapeType.Cross;
+            }
+            else if (this.radioButton_RecipeVision_Circle.Checked)
+            {
+                Equipment.stVisionRecipeSet.PatternShape = PatternShapeType.Circle;
+            }
+
+            if(radioButton_RecipeVision_Black.Checked)
+            {
+                Equipment.stVisionRecipeSet.bCircleDetectionColor = true;
+            }
+            else if (radioButton_RecipeVision_White.Checked)
+            {
+                Equipment.stVisionRecipeSet.bCircleDetectionColor = false;
+            }
+
+            Equipment.stVisionRecipeSet.dCircleDetectionSizeW = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
+            Equipment.stVisionRecipeSet.dCircleSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
+
             Equipment.stVisionRecipeSet.SaveToIni(Equipment.Current_Recipe);
 
-            UpdateOwnerRecipe(PatternMatchingParameter);
-
-            //workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter = PatternMatchingParameter;
-            //Equipment.SaveRecipe();
-
-            //Equipment.Scanner_Calibration_BlobVisionToolParameter.RepeatCount = BlobParameter.RepeatCount;
-            //Equipment.Scanner_Calibration_BlobVisionToolParameter.HasChanged = BlobParameter.HasChanged;
-
-            //workStage.scannerCompensator.Recipe.PatternMatchingParameter = PatternMatchingParameter;
-            //workStage.scannerCompensator.Recipe.BlobParameter = BlobParameter;
-            //Equipment.SaveRecipe();
-
-            //workStage.Scanner_Calibration_Vision_Save();
+            UpdateOwnerRecipe(Equipment.stVisionRecipeSet);
         }
 
         //Jog Move
