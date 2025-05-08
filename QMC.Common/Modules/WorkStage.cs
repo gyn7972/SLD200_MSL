@@ -8938,7 +8938,16 @@ namespace QMC.Common.Modules
                             }
                             else if(stVisionRecipeSet.AlgorithmType == VisionAlgorithmType.CircleDetection)
                             {
-
+                                jigAligner_LowRes.Work();
+                            }
+                            else
+                            {
+                                jigAligner_LowRes.Recipe.PatternMatchingParameter = stVisionRecipeSet.PatternMatching;
+                                jigAligner_LowRes.Recipe.InspectRoiStartLocation = stVisionRecipeSet.InspectRoiStartLocation;
+                                jigAligner_LowRes.Recipe.InspectRoiEndLocation = stVisionRecipeSet.InspectRoiEndLocation;
+                                jigAligner_LowRes.Recipe.TrainRoiStartLocation = stVisionRecipeSet.TrainRoiStartLocation;
+                                jigAligner_LowRes.Recipe.TrainRoiEndLocation = stVisionRecipeSet.TrainRoiEndLocation;
+                                jigAligner_LowRes.Work();
                             }
 
                                 Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "Work() 완료");
@@ -8947,13 +8956,11 @@ namespace QMC.Common.Modules
                         {
                             Log.Write(ex);
                         }
-                        
                     }
                     else
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Pre Align Mark", "지정되지 않은 얼라이너");
 
-                        m_bFindUpperAlignMark_OK = false;
                         m_bFindLowerAlignMark_OK = false;
                     }
 
@@ -8985,7 +8992,6 @@ namespace QMC.Common.Modules
                             m_bFindLowerAlignMark_OK = true;
                         }
                     }
-                    //jigAligner_LowRes.Camera.StartLive();
                     m_bFindAlignMark_Complete = true;
                     m_nFindAlignMark_Step = (int)FindAlignMark_Step.None;
                     break;
@@ -9105,7 +9111,7 @@ namespace QMC.Common.Modules
                         MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.MASK_Y, 2000);
                     }
 
-                    //  Loader 파츠 사용 변수 초기화
+                    // Loader 파츠 사용 변수 초기화
                     loader.m_nLoaderTransferMoveType = (int)LoaderTransferMoveType.Cycle_None; //  Transfer Move Type
                     loader.m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                     loader.m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
@@ -18187,50 +18193,61 @@ namespace QMC.Common.Modules
                     //Equipment.stLayerRecipeSet[0].PreAlignPos1 = leftPoint;
                     //Equipment.stLayerRecipeSet[0].PreAlignPos2 = rightPoint;
 
-                    if(m_nPreAlignRetryCount < 2)
+                    try
                     {
-                        //2번은 1번 소켓으로 수행.
-                        //m_nDrillingWork_Group_Count 이거 0이여야 한다.
-                        try
+                        if (m_stDividedRegion_GroupData != null)
                         {
-                            Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[0].dFiducialPos[2].X;
-                            Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[0].dFiducialPos[2].Y;
-                            Equipment.stLayerRecipeSet[0].PreAlignPos2.X = m_stDividedRegion_GroupData[0].dFiducialPos[3].X;
-                            Equipment.stLayerRecipeSet[0].PreAlignPos2.Y = m_stDividedRegion_GroupData[0].dFiducialPos[3].Y;
+                            //m_nSocketNum_forAlign <- 이게 소켓넘버
+                            int nSocketNumMax = m_stDividedRegion_GroupData[0].nGroup_Num;
+                            //m_nPreAlignRetryCount <- Retry를 소켓을 옮기면서 진행하자.
+                            if ((m_nPreAlignRetryCount >= 0) && (m_nPreAlignRetryCount < nSocketNumMax))
+                            {
+                                //Pre Align은 Socket의 2, 3번 Mark로 수행.
+                                Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[m_nPreAlignRetryCount].dFiducialPos[2].X;
+                                Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[m_nPreAlignRetryCount].dFiducialPos[2].Y;
+                                Equipment.stLayerRecipeSet[0].PreAlignPos2.X = m_stDividedRegion_GroupData[m_nPreAlignRetryCount].dFiducialPos[3].X;
+                                Equipment.stLayerRecipeSet[0].PreAlignPos2.Y = m_stDividedRegion_GroupData[m_nPreAlignRetryCount].dFiducialPos[3].Y;
+
+                                //너무 Data를 빨리 던져서 문제가 아닌지 Test.
+                                Thread.Sleep(100);
+
+                                m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
+                                m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
+                                m_nFindAlignMark_Step = (int)FindAlignMark_Step.Start;
+                                m_bFindAlignMark_Complete = false;
+
+                                TickCount_Start((int)TickType.TICK_MAIN);
+
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_CompleteCheck;
+                            }
+                            else
+                            {
+                                m_strTemp = string.Format("DrillingData_PreAlign_Start :: PreAlign Retry Fail!!!");
+                                Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
+
+                                m_bFindLowerAlignMark_OK = false;
+                                m_bPreAlignCompleted = false;
+                                m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                            }
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            Log.Write(ex);
+                            m_strTemp = string.Format("DrillingData_PreAlign_Start :: Parsing 된 데이터가 없음.");
+                            Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
+
+                            m_bFindLowerAlignMark_OK = false;
+                            m_bPreAlignCompleted = false;
+                            m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                            return AlarmPost(AlarmKey.DataNotValidation);
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        // 마지막은 2번 소켓으로 수행.
-                        try
-                        {
-                            Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[1].dFiducialPos[2].X;
-                            Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[1].dFiducialPos[2].Y;
-                            Equipment.stLayerRecipeSet[0].PreAlignPos2.X = m_stDividedRegion_GroupData[1].dFiducialPos[3].X;
-                            Equipment.stLayerRecipeSet[0].PreAlignPos2.Y = m_stDividedRegion_GroupData[1].dFiducialPos[3].Y;
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Write(ex);
-                        }
+                        Log.Write(ex);
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "DrillingData_PreAlign_Start 실패 : " + ex.Message);
                     }
-
-
-                        //너무 Data를 빨리 던져서 문제가 아닌지 Test.
-                        Thread.Sleep(100);
-
-                    m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
-                    m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
-                    m_nFindAlignMark_Step = (int)FindAlignMark_Step.Start;
-                    m_bFindAlignMark_Complete = false;
-
-                    TickCount_Start((int)TickType.TICK_MAIN);
-
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_CompleteCheck;
                     break;
 
 

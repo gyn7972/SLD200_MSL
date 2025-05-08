@@ -199,6 +199,8 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             m_bFormVisible = true;
 
+            InitPatternMatchingParameter();
+
             this.ImageViewer_RecipeVision_highs.ResumeDisplay();
             this.ImageViewer_RecipeVision_highs.StartUpdateTask();
 
