@@ -747,6 +747,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 XyCoordinate PointCoordinate = new XyCoordinate();
 
                 ImageViewer_RecipeVision_Rows.ResultOverlays.Clear();
+
                 Owner.FindCircleDetection(dRadius, bIsDarkCircleSearch, dspec, out SearchResult, out PointCoordinate);
                 if (SearchResult != null)
                 {

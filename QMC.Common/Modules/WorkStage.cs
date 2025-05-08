@@ -7873,7 +7873,8 @@ namespace QMC.Common.Modules
                 if(rtc != null &&
                    Equipment._InitDeviceStatus.Scanner)
                 {
-                    m_bLaserBusy = rtc.CtlGetStatus(RtcStatus.Busy);
+                    //Todo : ...이거 말고 다른 방법 생각해보자.
+                    //m_bLaserBusy = rtc.CtlGetStatus(RtcStatus.Busy);
                 }
             }
             catch (Exception ex)
@@ -13638,10 +13639,10 @@ namespace QMC.Common.Modules
                     {
                         {
                             XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
-                            xyCoordinateAlign = xyInterpolatedCoordinate + offset;
+                           // xyCoordinateAlign = xyInterpolatedCoordinate + offset;
                             Log.Write("Alaign Test", "xyCoordinateAlign before : ", xyCoordinateAlign.ToString());
                             xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionLast.X, xyCoordinateAlignPositionLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
-                            //xyCoordinateAlign = xyCoordinateAlign + offset;
+                            xyCoordinateAlign = xyCoordinateAlign + offset;
                             Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
 
                             Log.Write("Alaign Test", "Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
@@ -18271,8 +18272,8 @@ namespace QMC.Common.Modules
                             jigAligner_LowRes.m_AlignPositions[1].X = stPreAlignList[1].cX;
                             jigAligner_LowRes.m_AlignPositions[1].Y = stPreAlignList[1].cY;
 
-                            jigAligner_LowRes.m_dRadius[0] = stPreAlignList[0].Width / 2;
-                            jigAligner_LowRes.m_dRadius[1] = stPreAlignList[1].Width / 2;
+                            jigAligner_LowRes.m_dRadius[0] = stPreAlignList[0].Width;// / 2;
+                            jigAligner_LowRes.m_dRadius[1] = stPreAlignList[1].Width;// / 2;
 
                             m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
                             m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
@@ -18306,7 +18307,7 @@ namespace QMC.Common.Modules
 
                     Thread.Sleep(100);
                     
-                    if (m_nPreAlignRetryCount < m_nPreAlignMarkNumMax)
+                    if (m_nPreAlignRetryCount < m_nPreAlignMarkNumMax-1)
                     {
                         //Retry 시에는 1번씩 증가 시키자.
                         jigAligner_LowRes.m_AlignPositions[0].X = stPreAlignList[0 + m_nPreAlignRetryCount].cX;
@@ -18314,8 +18315,8 @@ namespace QMC.Common.Modules
                         jigAligner_LowRes.m_AlignPositions[1].X = stPreAlignList[1 + m_nPreAlignRetryCount].cX;
                         jigAligner_LowRes.m_AlignPositions[1].Y = stPreAlignList[1 + m_nPreAlignRetryCount].cY;
 
-                        jigAligner_LowRes.m_dRadius[0] = stPreAlignList[0 + m_nPreAlignRetryCount].Width / 2;
-                        jigAligner_LowRes.m_dRadius[1] = stPreAlignList[1 + m_nPreAlignRetryCount].Width / 2;
+                        jigAligner_LowRes.m_dRadius[0] = stPreAlignList[0 + m_nPreAlignRetryCount].Width; // / 2;
+                        jigAligner_LowRes.m_dRadius[1] = stPreAlignList[1 + m_nPreAlignRetryCount].Width;// / 2;
 
                         m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
                         m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
@@ -18328,6 +18329,8 @@ namespace QMC.Common.Modules
                     }
                     else
                     {
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
+                        break;
                         m_strTemp = string.Format("PreAlign Max Count 사용 - Fail!!!");
                         Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
 

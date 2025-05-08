@@ -445,8 +445,8 @@ namespace QMC.Common.Parts
                         //Thread.Sleep(Config.MoveToDelay);
                         Thread.Sleep(500);
 
-                        m_AlignPositions[0].X = xyInterpolatedCoordinate.X;
-                        m_AlignPositions[0].Y = xyInterpolatedCoordinate.Y;
+                        //m_AlignPositions[0].X = xyInterpolatedCoordinate.X;
+                        //m_AlignPositions[0].Y = xyInterpolatedCoordinate.Y;
 
                         this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[0];
 
@@ -548,8 +548,8 @@ namespace QMC.Common.Parts
                     //Thread.Sleep(Config.MoveToDelay);
                     Thread.Sleep(500);
 
-                    m_AlignPositions[1].X = xyInterpolatedCoordinate.X;
-                    m_AlignPositions[1].Y = xyInterpolatedCoordinate.Y;
+                    //m_AlignPositions[1].X = xyInterpolatedCoordinate.X;
+                    //m_AlignPositions[1].Y = xyInterpolatedCoordinate.Y;
 
                     this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[1];
                     if (Equipment.stVisionRecipeSet.AlgorithmType == Equipment.VisionAlgorithmType.PatternMatching)
@@ -566,7 +566,7 @@ namespace QMC.Common.Parts
                         if (m_dRadius[1] == 0)
                             dRadius = Equipment.stVisionRecipeSet.dCircleDetectionSizeW;
 
-                        this.FindCircleDetection(dRadius, bIsDarkCircleSearch, dSpec, out firstPointSearchResult, out firstPointCoordinate);
+                        this.FindCircleDetection(dRadius, bIsDarkCircleSearch, dSpec, out secondPointSearchResult, out secondPointCoordinate);
                     }
                     else
                     {
@@ -714,7 +714,7 @@ namespace QMC.Common.Parts
                 TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.LowerVision_ScaleInvert_Y;
 
                 int nRadiusImageCount = (int)(dRadius / TempScale.X); // 찾고자 하는 circle size 
-                nRadiusImageCount /= 2;
+                //nRadiusImageCount /= 2;
                 //Simulated = true;
                 if (Simulated)
                 {

@@ -390,7 +390,7 @@ namespace QMC.Common.VisionPart
                         if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.01)
                         {
                             //허상을 찾아는지 검사 한다.
-                            double dScore = IsRealCircle(center, dRadius2, points,dSpec/4);
+                            double dScore = IsRealCircle(center, dRadius2, points,dSpec/2);
                             if (dScore > 0.5)
                             {
                                 bFindCircle = true;

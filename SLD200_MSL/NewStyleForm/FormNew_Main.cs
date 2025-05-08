@@ -986,7 +986,7 @@ namespace SLD200_MSL
 
             UpdateInitStatusFromComm();
 
-            Motor_Position();
+            //Motor_Position();
         }
 
         // -----------------------

@@ -1503,6 +1503,10 @@ namespace SLD200_MSL
             {
                 m_nLayerIndex = (int)LayerList.Thruhole;
             }
+            else if (m_strLayerName == "PreAlign")
+            {
+                m_nLayerIndex = (int)LayerList.PreAlign;
+            }
 
             //  Drawing File
             Equipment.stLayerRecipeSet[m_nLayerIndex].DrawingFile = richTextBox_Recipe_TabRecipe_DrawingFile.Text;                  //  Drawing File 은 0번 Layer 에만 저장한다.
@@ -1904,6 +1908,10 @@ namespace SLD200_MSL
             else if (m_strLayerName == "Thruhole")
             {
                 m_nIndex = (int)LayerList.Thruhole;
+            }
+            else if (m_strLayerName == "PreAlign")
+            {
+                m_nIndex = (int)LayerList.PreAlign;
             }
 
             //  Laser Parameter
