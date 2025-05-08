@@ -283,13 +283,17 @@ namespace QMC.Common.VisionPart
             SaveImage(images, w, h, filename);
         }
         public List<RectangleF> FindCirclesWidthCircleBoundary(List<RectangleF> circlesResult, 
-            byte[] pixelData, int w, int h,int radius,double dSpec, ref bool circleFound, int ncX = 0, int ncY = 0)
+            byte[] pixelData, int w, int h,int radius,double dSpec, ref bool circleFound, int nCenterX = 0, int nCenterY = 0,bool bIsDarkCircleSearch = false)
         {
+            if(bIsDarkCircleSearch == false)
+            {
+                pixelData = InversImage(pixelData);
+            }
             List<PointF> polygon = new List<PointF>();
             List<PointF> points = new List<PointF>();
-            int nDivideCount = 5;
-            int nStepX =(int)( w / (nDivideCount * 3));
-            int nStepY = (int)(h / (nDivideCount * 3));
+            int nDivideCount = w / radius/2;
+            int nStepX =(int)(radius/2);
+            int nStepY = (int)(radius/2);
             int nDirectionX = 0;
             int nDirectionY = 0;
             bool bFindCircle = false;
@@ -332,25 +336,22 @@ namespace QMC.Common.VisionPart
                     int nMaxCircleFirst = (int)(radius * (1 + dFirstSpec));
                     int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
 
-                    //polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, nMinCircleFirst, nMaxCircleFirst, 1, 10);
-                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, 100, 1000, 1);
+                    
+                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, radius/2, radius*2, 1);
                     points = polygon;
                     circlesResult.Clear();
                     FindCircleFitter(circlesResult, points, out dRadius, 5);
 
-                    if (ncX == 0 || ncY == 0)
+                    if (nCenterX == 0 || nCenterY == 0)
                     {
                         cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
                         cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
                     }
                     else
                     {
-                        cx = (float)ncX;
-                        cy = (float)ncY;
+                        cx = (float)nCenterX;
+                        cy = (float)nCenterY;
                     }
-                    //cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
-                    //cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
-
 
                     if (dRadius < nMaxCircle && dRadius > nMinCircle && cx > 0 && cx < w
                         && cy < h && cy > 0)

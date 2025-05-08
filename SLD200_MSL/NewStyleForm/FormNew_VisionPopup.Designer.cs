@@ -158,6 +158,10 @@ namespace SLD200_MSL
             this.button43 = new System.Windows.Forms.Button();
             this.button47 = new System.Windows.Forms.Button();
             this.button48 = new System.Windows.Forms.Button();
+            this.textBox_VisionPopup_FiducialSize_Width = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.comboBox_VisionPopup_FiducialColor = new System.Windows.Forms.ComboBox();
             this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -498,6 +502,10 @@ namespace SLD200_MSL
             // 
             // tabPage_MarkFind_CircleFind
             // 
+            this.tabPage_MarkFind_CircleFind.Controls.Add(this.comboBox_VisionPopup_FiducialColor);
+            this.tabPage_MarkFind_CircleFind.Controls.Add(this.label8);
+            this.tabPage_MarkFind_CircleFind.Controls.Add(this.textBox_VisionPopup_FiducialSize_Width);
+            this.tabPage_MarkFind_CircleFind.Controls.Add(this.label7);
             this.tabPage_MarkFind_CircleFind.Controls.Add(this.button_VisionPopup_FindMetalPowder_Search);
             this.tabPage_MarkFind_CircleFind.Controls.Add(this.listBox_FindCircle_Result);
             this.tabPage_MarkFind_CircleFind.Controls.Add(this.button_VisionPopup_FindCircle_GrabImage);
@@ -515,10 +523,10 @@ namespace SLD200_MSL
             // button_VisionPopup_FindMetalPowder_Search
             // 
             this.button_VisionPopup_FindMetalPowder_Search.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_VisionPopup_FindMetalPowder_Search.Location = new System.Drawing.Point(252, 56);
+            this.button_VisionPopup_FindMetalPowder_Search.Location = new System.Drawing.Point(252, 102);
             this.button_VisionPopup_FindMetalPowder_Search.Margin = new System.Windows.Forms.Padding(6);
             this.button_VisionPopup_FindMetalPowder_Search.Name = "button_VisionPopup_FindMetalPowder_Search";
-            this.button_VisionPopup_FindMetalPowder_Search.Size = new System.Drawing.Size(186, 42);
+            this.button_VisionPopup_FindMetalPowder_Search.Size = new System.Drawing.Size(186, 39);
             this.button_VisionPopup_FindMetalPowder_Search.TabIndex = 75;
             this.button_VisionPopup_FindMetalPowder_Search.Text = "Search  [Metal Powder]";
             this.button_VisionPopup_FindMetalPowder_Search.UseVisualStyleBackColor = true;
@@ -528,9 +536,9 @@ namespace SLD200_MSL
             // 
             this.listBox_FindCircle_Result.FormattingEnabled = true;
             this.listBox_FindCircle_Result.ItemHeight = 16;
-            this.listBox_FindCircle_Result.Location = new System.Drawing.Point(252, 109);
+            this.listBox_FindCircle_Result.Location = new System.Drawing.Point(252, 147);
             this.listBox_FindCircle_Result.Name = "listBox_FindCircle_Result";
-            this.listBox_FindCircle_Result.Size = new System.Drawing.Size(186, 116);
+            this.listBox_FindCircle_Result.Size = new System.Drawing.Size(186, 100);
             this.listBox_FindCircle_Result.TabIndex = 74;
             // 
             // button_VisionPopup_FindCircle_GrabImage
@@ -570,10 +578,10 @@ namespace SLD200_MSL
             // button_VisionPopup_FindCircle_Search
             // 
             this.button_VisionPopup_FindCircle_Search.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_VisionPopup_FindCircle_Search.Location = new System.Drawing.Point(252, 10);
+            this.button_VisionPopup_FindCircle_Search.Location = new System.Drawing.Point(252, 61);
             this.button_VisionPopup_FindCircle_Search.Margin = new System.Windows.Forms.Padding(6);
             this.button_VisionPopup_FindCircle_Search.Name = "button_VisionPopup_FindCircle_Search";
-            this.button_VisionPopup_FindCircle_Search.Size = new System.Drawing.Size(186, 42);
+            this.button_VisionPopup_FindCircle_Search.Size = new System.Drawing.Size(186, 39);
             this.button_VisionPopup_FindCircle_Search.TabIndex = 70;
             this.button_VisionPopup_FindCircle_Search.Text = "Search      [Fiducial]";
             this.button_VisionPopup_FindCircle_Search.UseVisualStyleBackColor = true;
@@ -1835,6 +1843,51 @@ namespace SLD200_MSL
             this.button48.Text = "Apply";
             this.button48.UseVisualStyleBackColor = true;
             // 
+            // textBox_VisionPopup_FiducialSize_Width
+            // 
+            this.textBox_VisionPopup_FiducialSize_Width.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_VisionPopup_FiducialSize_Width.Location = new System.Drawing.Point(304, 29);
+            this.textBox_VisionPopup_FiducialSize_Width.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_VisionPopup_FiducialSize_Width.Name = "textBox_VisionPopup_FiducialSize_Width";
+            this.textBox_VisionPopup_FiducialSize_Width.Size = new System.Drawing.Size(56, 24);
+            this.textBox_VisionPopup_FiducialSize_Width.TabIndex = 77;
+            this.textBox_VisionPopup_FiducialSize_Width.Text = "1.000";
+            // 
+            // label7
+            // 
+            this.label7.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label7.Location = new System.Drawing.Point(247, 7);
+            this.label7.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(189, 18);
+            this.label7.TabIndex = 76;
+            this.label7.Text = "Target Size (mm)      Color";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label8
+            // 
+            this.label8.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label8.Location = new System.Drawing.Point(251, 29);
+            this.label8.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(52, 24);
+            this.label8.TabIndex = 78;
+            this.label8.Text = "Radius";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // comboBox_VisionPopup_FiducialColor
+            // 
+            this.comboBox_VisionPopup_FiducialColor.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.comboBox_VisionPopup_FiducialColor.FormattingEnabled = true;
+            this.comboBox_VisionPopup_FiducialColor.Items.AddRange(new object[] {
+            "Black",
+            "White"});
+            this.comboBox_VisionPopup_FiducialColor.Location = new System.Drawing.Point(372, 29);
+            this.comboBox_VisionPopup_FiducialColor.Name = "comboBox_VisionPopup_FiducialColor";
+            this.comboBox_VisionPopup_FiducialColor.Size = new System.Drawing.Size(64, 24);
+            this.comboBox_VisionPopup_FiducialColor.TabIndex = 79;
+            this.comboBox_VisionPopup_FiducialColor.Text = "Black";
+            // 
             // FormNew_VisionPopup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -1859,6 +1912,7 @@ namespace SLD200_MSL
             this.groupBox5.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_VisionPopup_PM_ImageDisplay)).EndInit();
             this.tabPage_MarkFind_CircleFind.ResumeLayout(false);
+            this.tabPage_MarkFind_CircleFind.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ImageDisplay)).EndInit();
             this.tabPage_Socket_AlignTest.ResumeLayout(false);
             this.tabPage_Socket_AlignTest.PerformLayout();
@@ -2014,5 +2068,9 @@ namespace SLD200_MSL
         private BaseLabel baseLabelMax_Red;
         private BaseLabel baseLabelMin_Red;
         private TextBox textBox_IlluminationValue_Red;
+        private Label label8;
+        private TextBox textBox_VisionPopup_FiducialSize_Width;
+        private Label label7;
+        private ComboBox comboBox_VisionPopup_FiducialColor;
     }
 }

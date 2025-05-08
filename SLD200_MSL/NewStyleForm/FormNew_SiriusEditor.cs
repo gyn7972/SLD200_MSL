@@ -162,6 +162,14 @@ namespace SLD200_MSL
                 SpiralLab.Sirius.Config.AngleFactor = Equipment.SiriusDrawing_Rendering_Resolution;
             }
 
+            //  Arc 를 Polyline 으로 만들 경우
+            Config.LwPolylineBulgeToLines = true;
+
+            if (Equipment.Machine_PolylineCurve_Resolution < 1)
+                Config.LwPolylineBulgePrecision = 100;
+            else
+                Config.LwPolylineBulgePrecision = Equipment.Machine_PolylineCurve_Resolution;
+
             m_bRet = SpiralLab.Core.Initialize();                   //  Sirius1
             //SpiralLab.Sirius2.Core.Initialize();                  //  Sirius2
             //this.SiriusEditor.EnablePens = true;

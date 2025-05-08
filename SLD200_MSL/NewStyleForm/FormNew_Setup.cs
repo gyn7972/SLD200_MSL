@@ -1286,8 +1286,8 @@ namespace SLD200_MSL
             textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Text = Equipment.Machine_LoaderStacker_DownDistance_afterLoaderPickUp.ToString();
             checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Checked = Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable;
             textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Text = Equipment.Machine_LoaderStacker_NoMaterialDetectTime.ToString();
+            textBox_Setup_Option_PolylineCurve_Resolution.Text = Equipment.Machine_PolylineCurve_Resolution.ToString();
             
-
             if (Equipment.Machine_FiducialImageSave_Always)
             {
                 radioButton_Setup_Option_FiducialImageSave_Always.Checked = true;
@@ -1710,6 +1710,8 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_NoMaterialDetectTime_Enable", checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Checked.ToString(), strFIle);
             Equipment.Machine_LoaderStacker_NoMaterialDetectTime = Equipment.ToInt(textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_NoMaterialDetectTime", textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Text.ToString(), strFIle);
+            Equipment.Machine_PolylineCurve_Resolution = Equipment.ToInt(textBox_Setup_Option_PolylineCurve_Resolution.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "PolylineCurve_Resolution", textBox_Setup_Option_PolylineCurve_Resolution.Text.ToString(), strFIle);
 
             //  Offset Distance
             Equipment.stOffsetDistance.FromScannerToFineCam.X = Equipment.ToDouble(textBox_Setup_Option_Offset_ScannerFineCam_X.Text);

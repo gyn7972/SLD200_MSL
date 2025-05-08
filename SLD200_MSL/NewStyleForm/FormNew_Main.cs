@@ -1755,7 +1755,7 @@ namespace SLD200_MSL
             button_Main_Start.ForeColor = Color.Black;
 
             //  Loader Stacker 동작
-            //loader.m_bStacker0_Complete = false;              //  임시 주석 : 왼쪽 Port 만 사용
+            loader.m_bStacker0_Complete = false;              //  임시 주석 : 왼쪽 Port 만 사용
             loader.m_bStacker1_Complete = false;
 
 
@@ -2141,6 +2141,8 @@ namespace SLD200_MSL
 
             Equipment.ProcessingData_Parsing_byLoader = false;
 
+            selectedRow = -1;
+            selectedColumn = -1;
             workStage.m_nSocketAlign_StartIndex = -1;
             Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
             checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
@@ -2392,6 +2394,8 @@ namespace SLD200_MSL
 
             Equipment.ProcessingData_Parsing_byLoader = false;
 
+            selectedRow = -1;
+            selectedColumn = -1;
             workStage.m_nSocketAlign_StartIndex = -1;
             Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
             checkBox_Main_AlignStartSocket_SelectMode.Checked = false;

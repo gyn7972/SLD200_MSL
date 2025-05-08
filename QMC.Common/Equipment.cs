@@ -702,6 +702,7 @@ namespace QMC.Common
         public static double Machine_LoaderStacker_DownDistance_afterLoaderPickUp { set; get; } = 5.0;      //  Loader 가 Module Pick Up 후 Stacker 를 내리는 거리
         public static bool Machine_LoaderStacker_NoMaterialDetectTime_Enable { set; get; } = true;          //  Loader Stacker No Material Detect Time Enable
         public static int Machine_LoaderStacker_NoMaterialDetectTime { set; get; } = 10;                    //  Loader Stacker No Material Detect Time
+        public static int Machine_PolylineCurve_Resolution { set; get; } = 100;                             //  Polyline Curve Resolution
 
 
         //  Offset Distance
@@ -3035,7 +3036,9 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_NoMaterialDetectTime_Enable", "True", temp, 255, strFIle);
             Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_NoMaterialDetectTime", "10", temp, 255, strFIle);
-            Equipment.Machine_LoaderStacker_NoMaterialDetectTime = Equipment.ToInt(temp.ToString());                        
+            Equipment.Machine_LoaderStacker_NoMaterialDetectTime = Equipment.ToInt(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "PolylineCurve_Resolution", "100", temp, 255, strFIle);
+            Equipment.Machine_PolylineCurve_Resolution = Equipment.ToInt(temp.ToString());
 
             //  Offset Distance
             NativeMethods.GetPrivateProfileString("Offset_Distance", "From_Scanner_To_FineCam_X", "0.0", temp, 255, strFIle);

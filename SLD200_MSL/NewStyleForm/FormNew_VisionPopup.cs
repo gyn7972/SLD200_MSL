@@ -1334,6 +1334,23 @@ namespace SLD200_MSL
             int m_nImage_Width = 0;
             int m_nImage_Height = 0;
 
+            double m_dTargetSize_Radius = 0.0;
+            int m_nTargetColor = 0;
+
+
+            if (textBox_VisionPopup_FiducialSize_Width.Text.Length < 0)
+            {
+                MessageBox.Show("Fiducial Size 를 입력하세요.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //  Fiducial 마크 크기
+            m_dTargetSize_Radius = Equipment.ToDouble(textBox_VisionPopup_FiducialSize_Width.Text);
+
+            //  Fiducial 마크 색깔
+            m_nTargetColor = comboBox_VisionPopup_FiducialColor.SelectedIndex;          //  0: Black, 1: White
+
+
             detectedCircles.Clear();
 
             QMC_ImageProcessFindAlign aligner = new QMC_ImageProcessFindAlign();

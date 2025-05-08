@@ -1661,7 +1661,11 @@ namespace SLD200_MSL
                     workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MinScore = Equipment.stVisionRecipeSet.PatternMatching.MinScore;
                     workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.DuplicateChecked = Equipment.stVisionRecipeSet.PatternMatching.DuplicateChecked;
                     workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.UseMaskImage = Equipment.stVisionRecipeSet.PatternMatching.UseMaskImage;
-                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage = Equipment.stVisionRecipeSet.LoadTrainImage().GetImage();
+                    
+                    if(workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage != null)
+                    {
+                        workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage = Equipment.stVisionRecipeSet.LoadTrainImage().GetImage();
+                    }
 
                     workStage.jigAligner_LowRes.Recipe.TrainRoiStartLocation = Equipment.stVisionRecipeSet.TrainRoiStartLocation;
                     workStage.jigAligner_LowRes.Recipe.TrainRoiEndLocation = Equipment.stVisionRecipeSet.TrainRoiEndLocation;
