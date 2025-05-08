@@ -280,11 +280,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                 Owner.Recipe.TrainRoiEndLocation = Equipment.stVisionRecipeSet.TrainRoiEndLocation;         //RoiTrain.Parameter.EndLocation;
             }
 
-            this.radioButton_RecipeVision_Pattern.Checked = true;   //무조건 무조건이야~
-            this.radioButton_RecipeVision_Blob.Checked = false;
-            this.radioButton_RecipeVision_Cross.Checked = false;
-            this.radioButton_RecipeVision_Circle.Checked = true;
-
             this.radioButton_RecipeVision_Light_IR.Checked = true;
             this.radioButton_RecipeVision_Light_Red.Checked = false;
             //workStage.Config.ListIlluminationChannel[0].Value = Equipment.Scanner_Calibration_Illumination_channel_01_Value; //RED
@@ -738,7 +733,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
             else if(radioButton_RecipeVision_Blob.Checked)
             {
-                double dwidth = 0.5; //Size Param 만들어야됨.
+                Equipment.stVisionRecipeSet.dCircleDetectionSizeW = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
+                double dwidth = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);    //0.5; //Size Param 만들어야됨.
                 bool bIsDarkCircleSearch = radioButton_RecipeVision_Black.Checked;
                 if(radioButton_RecipeVision_Black.Checked)
                 {
@@ -823,14 +819,12 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
             else if (this.radioButton_RecipeVision_Blob.Checked)
             {
-                Equipment.stVisionRecipeSet.AlgorithmType = VisionAlgorithmType.PatternMatching;
-                //Equipment.stVisionRecipeSet.AlgorithmType = VisionAlgorithmType.BlobDetection;
+                Equipment.stVisionRecipeSet.AlgorithmType = VisionAlgorithmType.CircleDetection;
             }
 
             if (this.radioButton_RecipeVision_Cross.Checked)
             {
-                Equipment.stVisionRecipeSet.PatternShape = PatternShapeType.Circle;
-                //Equipment.stVisionRecipeSet.PatternShape = PatternShapeType.Cross;
+                Equipment.stVisionRecipeSet.PatternShape = PatternShapeType.Cross;
             }
             else if (this.radioButton_RecipeVision_Circle.Checked)
             {
@@ -845,6 +839,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 Equipment.stVisionRecipeSet.bCircleDetectionColor = false;
             }
+
+            Equipment.stVisionRecipeSet.dCircleDetectionSizeW = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
 
             Equipment.stVisionRecipeSet.SaveToIni(Equipment.Current_Recipe);
 

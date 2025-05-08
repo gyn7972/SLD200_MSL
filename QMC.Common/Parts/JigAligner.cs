@@ -457,7 +457,7 @@ namespace QMC.Common.Parts
                             double dwidth = 0;
                             dwidth = m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
                             if (m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0] == 0)
-                                dwidth = 1;
+                                dwidth = Equipment.stVisionRecipeSet.dCircleDetectionSizeW;
 
                             this.FindCircleDetection(dwidth, bIsDarkCircleSearch, out firstPointSearchResult, out firstPointCoordinate);
                         }
@@ -557,8 +557,8 @@ namespace QMC.Common.Parts
                         double dwidth = 0;
                         dwidth = m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
                         if (m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0] == 0)
-                            dwidth = 1;
-                        
+                            dwidth = Equipment.stVisionRecipeSet.dCircleDetectionSizeW;
+
                         this.FindCircleDetection(dwidth, bIsDarkCircleSearch, out firstPointSearchResult, out firstPointCoordinate);
                     }
                     else
