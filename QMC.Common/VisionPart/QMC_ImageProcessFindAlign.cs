@@ -283,7 +283,7 @@ namespace QMC.Common.VisionPart
             SaveImage(images, w, h, filename);
         }
         public List<RectangleF> FindCirclesWidthCircleBoundary(List<RectangleF> circlesResult, 
-            byte[] pixelData, int w, int h,int radius,double dSpec, ref bool circleFound, int nCenterX = 0, int nCenterY = 0,bool bIsDarkCircleSearch = false)
+            byte[] pixelData, int w, int h,int radius,double dSpec, ref bool circleFound, int nCenterX = 0, int nCenterY = 0,bool bIsDarkCircleSearch = true)
         {
             if(bIsDarkCircleSearch == false)
             {
@@ -291,7 +291,7 @@ namespace QMC.Common.VisionPart
             }
             List<PointF> polygon = new List<PointF>();
             List<PointF> points = new List<PointF>();
-            int nDivideCount = w / radius/2;
+            int nDivideCount = w / radius;
             int nStepX =(int)(radius/2);
             int nStepY = (int)(radius/2);
             int nDirectionX = 0;
@@ -333,11 +333,15 @@ namespace QMC.Common.VisionPart
                     {
                         dFirstSpec = 0.5;
                     }
-                    int nMaxCircleFirst = (int)(radius * (1 + dFirstSpec));
+                    int nMaxCircleFirst = (int)(radius * 4);
                     int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
 
+                    if(nMaxCircleFirst > 1000)
+                    {
+                        nMaxCircleFirst = 1000;
+                    }
                     
-                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, radius/2, radius*2, 1);
+                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, radius/3, radius*4, 1);
                     points = polygon;
                     circlesResult.Clear();
                     FindCircleFitter(circlesResult, points, out dRadius, 5);

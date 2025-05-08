@@ -1755,19 +1755,30 @@ namespace SLD200_MSL
             button_Main_Start.ForeColor = Color.Black;
 
             //  Loader Stacker 동작
-            loader.m_bStacker0_Complete = false;              //  임시 주석 : 왼쪽 Port 만 사용
-            loader.m_bStacker1_Complete = false;
+            //loader.m_bStacker0_Complete = false;              //  임시 주석 : 왼쪽 Port 만 사용
+            //loader.m_bStacker1_Complete = false;
 
 
             //  Loader Stacker Pause 해제는 수동으로. (자동으로 풀어주니 너무 계속 한다)
             //  Loader Stacker 에 자재가 있으면 Pause 를 풀어 준다.
-            if (loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
+            if (loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))
             {
+                loader.m_bStacker0_Complete = false;              //  임시 주석 : 왼쪽 Port 만 사용
+
                 if (loader.m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_None)
                 {
                     loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
                 }
                 //Equipment.Loader_LPort_Pause = false;
+            }
+            else
+            {
+                loader.m_bStacker1_Complete = false;
+
+                if (loader.m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_None)
+                {
+                    loader.m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker;
+                }
             }
 
 
