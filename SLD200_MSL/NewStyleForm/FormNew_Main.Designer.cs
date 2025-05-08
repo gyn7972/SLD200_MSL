@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.SiriusViewer_Main = new SpiralLab.Sirius.SiriusViewerForm();
             this.groupBoxMain_ModuleProcessingStatus = new System.Windows.Forms.GroupBox();
+            this.checkBox_Main_AlignStartSocket_ContinueMode = new System.Windows.Forms.CheckBox();
             this.checkBox_Main_AlignStartSocket_SelectMode = new System.Windows.Forms.CheckBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
@@ -58,7 +59,6 @@
             this.buttonForceMaterialOut = new System.Windows.Forms.Button();
             this.groupBox_FineCam = new System.Windows.Forms.GroupBox();
             this.groupBox_CoarseCam = new System.Windows.Forms.GroupBox();
-            this.ImageViewer_Main_Lows = new QMC.Common.Hmi.VisionImageViewer();
             this.checkBox_Main_AutoRun = new System.Windows.Forms.CheckBox();
             this.button_TEST12 = new System.Windows.Forms.Button();
             this.button_TestbyUser_LPort_Start = new System.Windows.Forms.Button();
@@ -84,8 +84,42 @@
             this.checkBox_Main_SocketDrilling_Pass = new System.Windows.Forms.CheckBox();
             this.checkBox_Test_LaserDrillingCycle = new System.Windows.Forms.CheckBox();
             this.button_Main_ManualStart = new System.Windows.Forms.Button();
-            this.ImageViewer_Main_highs = new QMC.Common.Hmi.VisionImageViewer();
-            this.checkBox_Main_AlignStartSocket_ContinueMode = new System.Windows.Forms.CheckBox();
+            this.groupBox_Main_AxisPositions = new System.Windows.Forms.GroupBox();
+            this.groupBox_Main_AxisPositions_Unloader = new System.Windows.Forms.GroupBox();
+            this.label_Main_Unloader_LPortZ = new System.Windows.Forms.Label();
+            this.label_Main_EncPosition_UL_Z1 = new System.Windows.Forms.Label();
+            this.label_Main_Unloader_RPortZ = new System.Windows.Forms.Label();
+            this.label_Main_EncPosition_UL_Z0 = new System.Windows.Forms.Label();
+            this.groupBox_Main_AxisPositions_UnloadTransfer = new System.Windows.Forms.GroupBox();
+            this.label_Main_UnloaderTransfer_Z = new System.Windows.Forms.Label();
+            this.label_Main_EncPosition_UL_TRZ = new System.Windows.Forms.Label();
+            this.label_Main_UnloaderTransfer_X = new System.Windows.Forms.Label();
+            this.label_Main_EncPosition_UL_TRX = new System.Windows.Forms.Label();
+            this.groupBox_Main_AxisPositions_Mask = new System.Windows.Forms.GroupBox();
+            this.label_Main_Mak_Y = new System.Windows.Forms.Label();
+            this.label_Main_EncPosition_MASK_Y = new System.Windows.Forms.Label();
+            this.groupBox_Main_AxisPositions_ScannerHead = new System.Windows.Forms.GroupBox();
+            this.label_Main_ScannerHead_Z = new System.Windows.Forms.Label();
+            this.label_Main_EncPosition_SCANNER_Z = new System.Windows.Forms.Label();
+            this.groupBox_Main_AxisPositions_WorkStage = new System.Windows.Forms.GroupBox();
+            this.label_Main_WorkStage_Y = new System.Windows.Forms.Label();
+            this.label_Main_EncPosition_STAGE_Y = new System.Windows.Forms.Label();
+            this.label_Main_WorkStage_X = new System.Windows.Forms.Label();
+            this.label_Main_EncPosition_STAGE_X = new System.Windows.Forms.Label();
+            this.groupBox_Main_AxisPositions_LoadTransfer = new System.Windows.Forms.GroupBox();
+            this.label_Main_loaderTransfer_Z = new System.Windows.Forms.Label();
+            this.label_Main_EncPosition_LD_TRZ = new System.Windows.Forms.Label();
+            this.label_Main_loaderTransfer_X = new System.Windows.Forms.Label();
+            this.label_Main_EncPosition_LD_TRX = new System.Windows.Forms.Label();
+            this.groupBox_Main_AxisPositions_Loader = new System.Windows.Forms.GroupBox();
+            this.label_Main_Loader_MAlignY = new System.Windows.Forms.Label();
+            this.label_Main_EncPosition_LD_ALNY = new System.Windows.Forms.Label();
+            this.label_Main_Loader_MAlignX = new System.Windows.Forms.Label();
+            this.label_Main_EncPosition_LD_ALNX = new System.Windows.Forms.Label();
+            this.label_Main_Loader_LPortZ = new System.Windows.Forms.Label();
+            this.label_Main_EncPosition_LD_Z1 = new System.Windows.Forms.Label();
+            this.label_Main_Loader_RPortZ = new System.Windows.Forms.Label();
+            this.label_Main_EncPosition_LD_Z0 = new System.Windows.Forms.Label();
             this.baseLabel_Main_Divice_Status_Illuminator = new SLD200_MSL.BaseLabel();
             this.baseLabel_Main_Divice_Status_CameraPre = new SLD200_MSL.BaseLabel();
             this.baseLabel_Main_Divice_Status_CameraFine = new SLD200_MSL.BaseLabel();
@@ -101,6 +135,8 @@
             this.baseLabel_Main_Divice_Status_Motion = new SLD200_MSL.BaseLabel();
             this.baseLabel_Main_Divice_Status_IO = new SLD200_MSL.BaseLabel();
             this.baseLabel_Main_Divice_Status_Laser = new SLD200_MSL.BaseLabel();
+            this.ImageViewer_Main_Lows = new QMC.Common.Hmi.VisionImageViewer();
+            this.ImageViewer_Main_highs = new QMC.Common.Hmi.VisionImageViewer();
             this.baseTextBox_DryRun_ProcessingTime = new SLD200_MSL.BaseTextBox();
             this.baseLabel5 = new SLD200_MSL.BaseLabel();
             this.baseTextBox_Socket_Index = new SLD200_MSL.BaseTextBox();
@@ -146,7 +182,6 @@
             this.groupBox_ProcessingData.SuspendLayout();
             this.groupBox_FineCam.SuspendLayout();
             this.groupBox_CoarseCam.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Lows)).BeginInit();
             this.groupBox_Main_DiviceStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Illuminator)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_CameraPre)).BeginInit();
@@ -163,6 +198,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Motion)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_IO)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Laser)).BeginInit();
+            this.groupBox_Main_AxisPositions.SuspendLayout();
+            this.groupBox_Main_AxisPositions_Unloader.SuspendLayout();
+            this.groupBox_Main_AxisPositions_UnloadTransfer.SuspendLayout();
+            this.groupBox_Main_AxisPositions_Mask.SuspendLayout();
+            this.groupBox_Main_AxisPositions_ScannerHead.SuspendLayout();
+            this.groupBox_Main_AxisPositions_WorkStage.SuspendLayout();
+            this.groupBox_Main_AxisPositions_LoadTransfer.SuspendLayout();
+            this.groupBox_Main_AxisPositions_Loader.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Lows)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).BeginInit();
             this.baseGroupBox_Progress.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Module_TargetCount)).BeginInit();
@@ -182,7 +226,7 @@
             this.SiriusViewer_Main.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.SiriusViewer_Main.Name = "SiriusViewer_Main";
             this.SiriusViewer_Main.Progress = 0;
-            this.SiriusViewer_Main.Size = new System.Drawing.Size(690, 538);
+            this.SiriusViewer_Main.Size = new System.Drawing.Size(570, 542);
             this.SiriusViewer_Main.TabIndex = 34;
             // 
             // groupBoxMain_ModuleProcessingStatus
@@ -205,6 +249,21 @@
             this.groupBoxMain_ModuleProcessingStatus.TabIndex = 0;
             this.groupBoxMain_ModuleProcessingStatus.TabStop = false;
             this.groupBoxMain_ModuleProcessingStatus.Text = " Module Status ";
+            // 
+            // checkBox_Main_AlignStartSocket_ContinueMode
+            // 
+            this.checkBox_Main_AlignStartSocket_ContinueMode.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.checkBox_Main_AlignStartSocket_ContinueMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.checkBox_Main_AlignStartSocket_ContinueMode.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox_Main_AlignStartSocket_ContinueMode.Location = new System.Drawing.Point(256, 192);
+            this.checkBox_Main_AlignStartSocket_ContinueMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.checkBox_Main_AlignStartSocket_ContinueMode.Name = "checkBox_Main_AlignStartSocket_ContinueMode";
+            this.checkBox_Main_AlignStartSocket_ContinueMode.Size = new System.Drawing.Size(97, 44);
+            this.checkBox_Main_AlignStartSocket_ContinueMode.TabIndex = 149;
+            this.checkBox_Main_AlignStartSocket_ContinueMode.Text = "연속 가공\r\n시작 소켓";
+            this.checkBox_Main_AlignStartSocket_ContinueMode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_Main_AlignStartSocket_ContinueMode.UseVisualStyleBackColor = false;
+            this.checkBox_Main_AlignStartSocket_ContinueMode.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkBox_Main_AlignStartSocket_ContinueMode_MouseClick);
             // 
             // checkBox_Main_AlignStartSocket_SelectMode
             // 
@@ -314,7 +373,7 @@
             this.groupBoxMain_MaterialInformation.Controls.Add(this.baseLabel_SocketPerModule);
             this.groupBoxMain_MaterialInformation.Controls.Add(this.baseLabel1);
             this.groupBoxMain_MaterialInformation.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxMain_MaterialInformation.Location = new System.Drawing.Point(1347, 9);
+            this.groupBoxMain_MaterialInformation.Location = new System.Drawing.Point(1389, 9);
             this.groupBoxMain_MaterialInformation.Name = "groupBoxMain_MaterialInformation";
             this.groupBoxMain_MaterialInformation.Size = new System.Drawing.Size(323, 112);
             this.groupBoxMain_MaterialInformation.TabIndex = 2;
@@ -370,11 +429,11 @@
             // 
             this.groupBox_ProcessingData.Controls.Add(this.SiriusViewer_Main);
             this.groupBox_ProcessingData.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox_ProcessingData.Location = new System.Drawing.Point(12, 285);
+            this.groupBox_ProcessingData.Location = new System.Drawing.Point(12, 260);
             this.groupBox_ProcessingData.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox_ProcessingData.Name = "groupBox_ProcessingData";
             this.groupBox_ProcessingData.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_ProcessingData.Size = new System.Drawing.Size(711, 581);
+            this.groupBox_ProcessingData.Size = new System.Drawing.Size(595, 588);
             this.groupBox_ProcessingData.TabIndex = 19;
             this.groupBox_ProcessingData.TabStop = false;
             this.groupBox_ProcessingData.Text = "Processing Data";
@@ -385,7 +444,7 @@
             this.button_Main_RecipeOpen.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_RecipeOpen.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Main_RecipeOpen.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_Main_RecipeOpen.Location = new System.Drawing.Point(1503, 124);
+            this.button_Main_RecipeOpen.Location = new System.Drawing.Point(1545, 181);
             this.button_Main_RecipeOpen.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_RecipeOpen.Name = "button_Main_RecipeOpen";
             this.button_Main_RecipeOpen.Size = new System.Drawing.Size(167, 44);
@@ -429,10 +488,10 @@
             this.button_Main_Home.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_Home.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Main_Home.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_Main_Home.Location = new System.Drawing.Point(1726, 15);
+            this.button_Main_Home.Location = new System.Drawing.Point(1724, 119);
             this.button_Main_Home.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_Home.Name = "button_Main_Home";
-            this.button_Main_Home.Size = new System.Drawing.Size(178, 78);
+            this.button_Main_Home.Size = new System.Drawing.Size(178, 106);
             this.button_Main_Home.TabIndex = 56;
             this.button_Main_Home.Text = "Machine\r\nInitialize";
             this.button_Main_Home.UseVisualStyleBackColor = false;
@@ -444,10 +503,10 @@
             this.button_Main_RtcInit.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_RtcInit.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Main_RtcInit.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_Main_RtcInit.Location = new System.Drawing.Point(1726, 100);
+            this.button_Main_RtcInit.Location = new System.Drawing.Point(1724, 8);
             this.button_Main_RtcInit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_RtcInit.Name = "button_Main_RtcInit";
-            this.button_Main_RtcInit.Size = new System.Drawing.Size(178, 63);
+            this.button_Main_RtcInit.Size = new System.Drawing.Size(178, 58);
             this.button_Main_RtcInit.TabIndex = 57;
             this.button_Main_RtcInit.Text = "Scanner Board\r\nOpen";
             this.button_Main_RtcInit.UseVisualStyleBackColor = false;
@@ -456,7 +515,7 @@
             // checkBox_Test_DryRun
             // 
             this.checkBox_Test_DryRun.AutoSize = true;
-            this.checkBox_Test_DryRun.Location = new System.Drawing.Point(1833, 248);
+            this.checkBox_Test_DryRun.Location = new System.Drawing.Point(1833, 230);
             this.checkBox_Test_DryRun.Name = "checkBox_Test_DryRun";
             this.checkBox_Test_DryRun.Size = new System.Drawing.Size(69, 18);
             this.checkBox_Test_DryRun.TabIndex = 59;
@@ -467,7 +526,7 @@
             // 
             this.checkBox_Main_Loader_LPort_Pause.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBox_Main_Loader_LPort_Pause.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_Loader_LPort_Pause.Location = new System.Drawing.Point(1476, 297);
+            this.checkBox_Main_Loader_LPort_Pause.Location = new System.Drawing.Point(1503, 368);
             this.checkBox_Main_Loader_LPort_Pause.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_Loader_LPort_Pause.Name = "checkBox_Main_Loader_LPort_Pause";
             this.checkBox_Main_Loader_LPort_Pause.Size = new System.Drawing.Size(94, 62);
@@ -481,7 +540,7 @@
             // 
             this.checkBox_Main_Loader_RPort_Pause.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBox_Main_Loader_RPort_Pause.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Main_Loader_RPort_Pause.Location = new System.Drawing.Point(1576, 297);
+            this.checkBox_Main_Loader_RPort_Pause.Location = new System.Drawing.Point(1618, 368);
             this.checkBox_Main_Loader_RPort_Pause.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_Loader_RPort_Pause.Name = "checkBox_Main_Loader_RPort_Pause";
             this.checkBox_Main_Loader_RPort_Pause.Size = new System.Drawing.Size(94, 62);
@@ -497,10 +556,10 @@
             this.button_Main_CameraInit.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_CameraInit.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Main_CameraInit.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_Main_CameraInit.Location = new System.Drawing.Point(1726, 170);
+            this.button_Main_CameraInit.Location = new System.Drawing.Point(1724, 70);
             this.button_Main_CameraInit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_CameraInit.Name = "button_Main_CameraInit";
-            this.button_Main_CameraInit.Size = new System.Drawing.Size(178, 63);
+            this.button_Main_CameraInit.Size = new System.Drawing.Size(178, 45);
             this.button_Main_CameraInit.TabIndex = 153;
             this.button_Main_CameraInit.Text = "Camera Open";
             this.button_Main_CameraInit.UseVisualStyleBackColor = false;
@@ -526,7 +585,7 @@
             this.buttonForceMaterialOut.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.buttonForceMaterialOut.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.buttonForceMaterialOut.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.buttonForceMaterialOut.Location = new System.Drawing.Point(1576, 366);
+            this.buttonForceMaterialOut.Location = new System.Drawing.Point(1618, 444);
             this.buttonForceMaterialOut.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonForceMaterialOut.Name = "buttonForceMaterialOut";
             this.buttonForceMaterialOut.Size = new System.Drawing.Size(94, 62);
@@ -539,9 +598,9 @@
             // 
             this.groupBox_FineCam.Controls.Add(this.ImageViewer_Main_highs);
             this.groupBox_FineCam.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox_FineCam.Location = new System.Drawing.Point(744, 285);
+            this.groupBox_FineCam.Location = new System.Drawing.Point(613, 260);
             this.groupBox_FineCam.Name = "groupBox_FineCam";
-            this.groupBox_FineCam.Size = new System.Drawing.Size(315, 286);
+            this.groupBox_FineCam.Size = new System.Drawing.Size(260, 260);
             this.groupBox_FineCam.TabIndex = 191;
             this.groupBox_FineCam.TabStop = false;
             this.groupBox_FineCam.Text = " Fine Camera ";
@@ -550,32 +609,12 @@
             // 
             this.groupBox_CoarseCam.Controls.Add(this.ImageViewer_Main_Lows);
             this.groupBox_CoarseCam.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox_CoarseCam.Location = new System.Drawing.Point(744, 580);
+            this.groupBox_CoarseCam.Location = new System.Drawing.Point(613, 588);
             this.groupBox_CoarseCam.Name = "groupBox_CoarseCam";
-            this.groupBox_CoarseCam.Size = new System.Drawing.Size(315, 286);
+            this.groupBox_CoarseCam.Size = new System.Drawing.Size(260, 260);
             this.groupBox_CoarseCam.TabIndex = 192;
             this.groupBox_CoarseCam.TabStop = false;
             this.groupBox_CoarseCam.Text = " Coarse Camera ";
-            // 
-            // ImageViewer_Main_Rows
-            // 
-            this.ImageViewer_Main_Lows.BackColor = System.Drawing.Color.Black;
-            this.ImageViewer_Main_Lows.Camera = null;
-            this.ImageViewer_Main_Lows.CameraSwitch = null;
-            this.ImageViewer_Main_Lows.FrameRate = 1D;
-            this.ImageViewer_Main_Lows.InputImage = null;
-            this.ImageViewer_Main_Lows.IsViewCustomizedImage = false;
-            this.ImageViewer_Main_Lows.Location = new System.Drawing.Point(10, 28);
-            this.ImageViewer_Main_Lows.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.ImageViewer_Main_Lows.Name = "ImageViewer_Main_Rows";
-            this.ImageViewer_Main_Lows.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
-            this.ImageViewer_Main_Lows.Simulated = false;
-            this.ImageViewer_Main_Lows.Size = new System.Drawing.Size(295, 247);
-            this.ImageViewer_Main_Lows.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.ImageViewer_Main_Lows.TabIndex = 190;
-            this.ImageViewer_Main_Lows.TabStop = false;
-            this.ImageViewer_Main_Lows.UpdateDelayTime = 160;
-            this.ImageViewer_Main_Lows.VisibleCrossLine = true;
             // 
             // checkBox_Main_AutoRun
             // 
@@ -598,7 +637,7 @@
             this.button_TEST12.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_TEST12.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_TEST12.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
-            this.button_TEST12.Location = new System.Drawing.Point(1065, 842);
+            this.button_TEST12.Location = new System.Drawing.Point(1663, 842);
             this.button_TEST12.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_TEST12.Name = "button_TEST12";
             this.button_TEST12.Size = new System.Drawing.Size(57, 24);
@@ -611,7 +650,7 @@
             // 
             this.button_TestbyUser_LPort_Start.BackColor = System.Drawing.Color.DarkGray;
             this.button_TestbyUser_LPort_Start.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_TestbyUser_LPort_Start.Location = new System.Drawing.Point(1476, 366);
+            this.button_TestbyUser_LPort_Start.Location = new System.Drawing.Point(1503, 444);
             this.button_TestbyUser_LPort_Start.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button_TestbyUser_LPort_Start.Name = "button_TestbyUser_LPort_Start";
             this.button_TestbyUser_LPort_Start.Size = new System.Drawing.Size(94, 62);
@@ -626,10 +665,10 @@
             this.label_Title_Stacker_LPort.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_Title_Stacker_LPort.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Title_Stacker_LPort.ForeColor = System.Drawing.Color.Lime;
-            this.label_Title_Stacker_LPort.Location = new System.Drawing.Point(1348, 170);
+            this.label_Title_Stacker_LPort.Location = new System.Drawing.Point(1503, 281);
             this.label_Title_Stacker_LPort.Name = "label_Title_Stacker_LPort";
             this.label_Title_Stacker_LPort.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.label_Title_Stacker_LPort.Size = new System.Drawing.Size(322, 40);
+            this.label_Title_Stacker_LPort.Size = new System.Drawing.Size(209, 40);
             this.label_Title_Stacker_LPort.TabIndex = 205;
             this.label_Title_Stacker_LPort.Text = "R Stacker 자재 유/무";
             this.label_Title_Stacker_LPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -640,10 +679,10 @@
             this.label_Title_Stacker_RPort.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_Title_Stacker_RPort.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Title_Stacker_RPort.ForeColor = System.Drawing.Color.Lime;
-            this.label_Title_Stacker_RPort.Location = new System.Drawing.Point(1348, 219);
+            this.label_Title_Stacker_RPort.Location = new System.Drawing.Point(1503, 322);
             this.label_Title_Stacker_RPort.Name = "label_Title_Stacker_RPort";
             this.label_Title_Stacker_RPort.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.label_Title_Stacker_RPort.Size = new System.Drawing.Size(322, 40);
+            this.label_Title_Stacker_RPort.Size = new System.Drawing.Size(209, 40);
             this.label_Title_Stacker_RPort.TabIndex = 206;
             this.label_Title_Stacker_RPort.Text = "L Stacker 자재 유/무";
             this.label_Title_Stacker_RPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -681,9 +720,9 @@
             this.groupBox_Main_DiviceStatus.Controls.Add(this.baseLabel_Main_Divice_Status_Laser);
             this.groupBox_Main_DiviceStatus.Controls.Add(this.pictureBox_Main_DiviceStatus_Laser);
             this.groupBox_Main_DiviceStatus.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.groupBox_Main_DiviceStatus.Location = new System.Drawing.Point(1117, 676);
+            this.groupBox_Main_DiviceStatus.Location = new System.Drawing.Point(879, 260);
             this.groupBox_Main_DiviceStatus.Name = "groupBox_Main_DiviceStatus";
-            this.groupBox_Main_DiviceStatus.Size = new System.Drawing.Size(553, 190);
+            this.groupBox_Main_DiviceStatus.Size = new System.Drawing.Size(483, 190);
             this.groupBox_Main_DiviceStatus.TabIndex = 207;
             this.groupBox_Main_DiviceStatus.TabStop = false;
             this.groupBox_Main_DiviceStatus.Text = " Device Status ";
@@ -691,7 +730,7 @@
             // pictureBox_Main_DiviceStatus_Illuminator
             // 
             this.pictureBox_Main_DiviceStatus_Illuminator.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_Illuminator.Location = new System.Drawing.Point(369, 155);
+            this.pictureBox_Main_DiviceStatus_Illuminator.Location = new System.Drawing.Point(312, 155);
             this.pictureBox_Main_DiviceStatus_Illuminator.Name = "pictureBox_Main_DiviceStatus_Illuminator";
             this.pictureBox_Main_DiviceStatus_Illuminator.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_Illuminator.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -701,7 +740,7 @@
             // pictureBox_Main_DiviceStatus_CameraPre
             // 
             this.pictureBox_Main_DiviceStatus_CameraPre.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_CameraPre.Location = new System.Drawing.Point(369, 124);
+            this.pictureBox_Main_DiviceStatus_CameraPre.Location = new System.Drawing.Point(312, 124);
             this.pictureBox_Main_DiviceStatus_CameraPre.Name = "pictureBox_Main_DiviceStatus_CameraPre";
             this.pictureBox_Main_DiviceStatus_CameraPre.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_CameraPre.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -711,7 +750,7 @@
             // pictureBox_Main_DiviceStatus_CameraFine
             // 
             this.pictureBox_Main_DiviceStatus_CameraFine.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_CameraFine.Location = new System.Drawing.Point(369, 93);
+            this.pictureBox_Main_DiviceStatus_CameraFine.Location = new System.Drawing.Point(312, 93);
             this.pictureBox_Main_DiviceStatus_CameraFine.Name = "pictureBox_Main_DiviceStatus_CameraFine";
             this.pictureBox_Main_DiviceStatus_CameraFine.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_CameraFine.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -721,7 +760,7 @@
             // pictureBox_Main_DiviceStatus_HeightSensor
             // 
             this.pictureBox_Main_DiviceStatus_HeightSensor.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_HeightSensor.Location = new System.Drawing.Point(369, 62);
+            this.pictureBox_Main_DiviceStatus_HeightSensor.Location = new System.Drawing.Point(312, 62);
             this.pictureBox_Main_DiviceStatus_HeightSensor.Name = "pictureBox_Main_DiviceStatus_HeightSensor";
             this.pictureBox_Main_DiviceStatus_HeightSensor.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_HeightSensor.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -731,7 +770,7 @@
             // pictureBox_Main_DiviceStatus_ElectroRegulator
             // 
             this.pictureBox_Main_DiviceStatus_ElectroRegulator.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_ElectroRegulator.Location = new System.Drawing.Point(369, 31);
+            this.pictureBox_Main_DiviceStatus_ElectroRegulator.Location = new System.Drawing.Point(312, 31);
             this.pictureBox_Main_DiviceStatus_ElectroRegulator.Name = "pictureBox_Main_DiviceStatus_ElectroRegulator";
             this.pictureBox_Main_DiviceStatus_ElectroRegulator.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_ElectroRegulator.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -742,7 +781,7 @@
             // 
             this.pictureBox_Main_DiviceStatus_BeamExpander.Enabled = false;
             this.pictureBox_Main_DiviceStatus_BeamExpander.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_BeamExpander.Location = new System.Drawing.Point(155, 155);
+            this.pictureBox_Main_DiviceStatus_BeamExpander.Location = new System.Drawing.Point(128, 155);
             this.pictureBox_Main_DiviceStatus_BeamExpander.Name = "pictureBox_Main_DiviceStatus_BeamExpander";
             this.pictureBox_Main_DiviceStatus_BeamExpander.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_BeamExpander.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -762,7 +801,7 @@
             // pictureBox_Main_DiviceStatus_Powermeter_Stage
             // 
             this.pictureBox_Main_DiviceStatus_Powermeter_Stage.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_Powermeter_Stage.Location = new System.Drawing.Point(155, 124);
+            this.pictureBox_Main_DiviceStatus_Powermeter_Stage.Location = new System.Drawing.Point(128, 124);
             this.pictureBox_Main_DiviceStatus_Powermeter_Stage.Name = "pictureBox_Main_DiviceStatus_Powermeter_Stage";
             this.pictureBox_Main_DiviceStatus_Powermeter_Stage.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_Powermeter_Stage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -772,7 +811,7 @@
             // pictureBox_Main_DiviceStatus_Powermeter_bds
             // 
             this.pictureBox_Main_DiviceStatus_Powermeter_bds.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_Powermeter_bds.Location = new System.Drawing.Point(155, 93);
+            this.pictureBox_Main_DiviceStatus_Powermeter_bds.Location = new System.Drawing.Point(128, 93);
             this.pictureBox_Main_DiviceStatus_Powermeter_bds.Name = "pictureBox_Main_DiviceStatus_Powermeter_bds";
             this.pictureBox_Main_DiviceStatus_Powermeter_bds.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_Powermeter_bds.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -782,7 +821,7 @@
             // pictureBox_Main_DiviceStatus_DustCollector_Lower
             // 
             this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Location = new System.Drawing.Point(155, 62);
+            this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Location = new System.Drawing.Point(128, 62);
             this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Name = "pictureBox_Main_DiviceStatus_DustCollector_Lower";
             this.pictureBox_Main_DiviceStatus_DustCollector_Lower.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_DustCollector_Lower.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -792,7 +831,7 @@
             // pictureBox_Main_DiviceStatus_DustCollector_Upper
             // 
             this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Image = global::SLD200.Properties.Resources.DioEllipseOff;
-            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Location = new System.Drawing.Point(155, 31);
+            this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Location = new System.Drawing.Point(128, 31);
             this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Name = "pictureBox_Main_DiviceStatus_DustCollector_Upper";
             this.pictureBox_Main_DiviceStatus_DustCollector_Upper.Size = new System.Drawing.Size(25, 25);
             this.pictureBox_Main_DiviceStatus_DustCollector_Upper.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -845,10 +884,10 @@
             this.label_Main_LaserStatus.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_Main_LaserStatus.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Main_LaserStatus.ForeColor = System.Drawing.Color.Lime;
-            this.label_Main_LaserStatus.Location = new System.Drawing.Point(1726, 298);
+            this.label_Main_LaserStatus.Location = new System.Drawing.Point(1726, 281);
             this.label_Main_LaserStatus.Name = "label_Main_LaserStatus";
             this.label_Main_LaserStatus.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.label_Main_LaserStatus.Size = new System.Drawing.Size(178, 68);
+            this.label_Main_LaserStatus.Size = new System.Drawing.Size(178, 85);
             this.label_Main_LaserStatus.TabIndex = 208;
             this.label_Main_LaserStatus.Text = "레이저 상태";
             this.label_Main_LaserStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -858,10 +897,10 @@
             this.checkBox_Main_SocketDrilling_Pass.BackColor = System.Drawing.Color.LightGreen;
             this.checkBox_Main_SocketDrilling_Pass.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.checkBox_Main_SocketDrilling_Pass.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox_Main_SocketDrilling_Pass.Location = new System.Drawing.Point(1476, 444);
+            this.checkBox_Main_SocketDrilling_Pass.Location = new System.Drawing.Point(1503, 520);
             this.checkBox_Main_SocketDrilling_Pass.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_SocketDrilling_Pass.Name = "checkBox_Main_SocketDrilling_Pass";
-            this.checkBox_Main_SocketDrilling_Pass.Size = new System.Drawing.Size(194, 73);
+            this.checkBox_Main_SocketDrilling_Pass.Size = new System.Drawing.Size(209, 73);
             this.checkBox_Main_SocketDrilling_Pass.TabIndex = 209;
             this.checkBox_Main_SocketDrilling_Pass.Text = "소켓 가공 건너뛰기\r\n(얼라인 후 소켓을 제외한 나머지 Layer 가공)";
             this.checkBox_Main_SocketDrilling_Pass.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -872,10 +911,10 @@
             // 
             this.checkBox_Test_LaserDrillingCycle.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBox_Test_LaserDrillingCycle.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.checkBox_Test_LaserDrillingCycle.Location = new System.Drawing.Point(1250, 580);
+            this.checkBox_Test_LaserDrillingCycle.Location = new System.Drawing.Point(1503, 599);
             this.checkBox_Test_LaserDrillingCycle.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Test_LaserDrillingCycle.Name = "checkBox_Test_LaserDrillingCycle";
-            this.checkBox_Test_LaserDrillingCycle.Size = new System.Drawing.Size(207, 55);
+            this.checkBox_Test_LaserDrillingCycle.Size = new System.Drawing.Size(209, 55);
             this.checkBox_Test_LaserDrillingCycle.TabIndex = 209;
             this.checkBox_Test_LaserDrillingCycle.Text = "Laser Drilling Cycle Enable   (공정 테스트용)";
             this.checkBox_Test_LaserDrillingCycle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -888,56 +927,502 @@
             this.button_Main_ManualStart.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_Main_ManualStart.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Main_ManualStart.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Main_ManualStart.Location = new System.Drawing.Point(1463, 580);
+            this.button_Main_ManualStart.Location = new System.Drawing.Point(1503, 676);
             this.button_Main_ManualStart.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button_Main_ManualStart.Name = "button_Main_ManualStart";
-            this.button_Main_ManualStart.Size = new System.Drawing.Size(207, 55);
+            this.button_Main_ManualStart.Size = new System.Drawing.Size(209, 55);
             this.button_Main_ManualStart.TabIndex = 210;
             this.button_Main_ManualStart.Text = "Laser Drilling Cycle Start    (공정 테스트용)";
             this.button_Main_ManualStart.UseVisualStyleBackColor = false;
             this.button_Main_ManualStart.Click += new System.EventHandler(this.button_Main_ManualStart_Click);
             // 
-            // ImageViewer_Main_highs
+            // groupBox_Main_AxisPositions
             // 
-            this.ImageViewer_Main_highs.BackColor = System.Drawing.Color.Black;
-            this.ImageViewer_Main_highs.Camera = null;
-            this.ImageViewer_Main_highs.CameraSwitch = null;
-            this.ImageViewer_Main_highs.FrameRate = 1D;
-            this.ImageViewer_Main_highs.InputImage = null;
-            this.ImageViewer_Main_highs.IsViewCustomizedImage = false;
-            this.ImageViewer_Main_highs.Location = new System.Drawing.Point(10, 28);
-            this.ImageViewer_Main_highs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.ImageViewer_Main_highs.Name = "ImageViewer_Main_highs";
-            this.ImageViewer_Main_highs.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
-            this.ImageViewer_Main_highs.Simulated = false;
-            this.ImageViewer_Main_highs.Size = new System.Drawing.Size(295, 247);
-            this.ImageViewer_Main_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.ImageViewer_Main_highs.TabIndex = 189;
-            this.ImageViewer_Main_highs.TabStop = false;
-            this.ImageViewer_Main_highs.UpdateDelayTime = 160;
-            this.ImageViewer_Main_highs.VisibleCrossLine = true;
+            this.groupBox_Main_AxisPositions.Controls.Add(this.groupBox_Main_AxisPositions_Unloader);
+            this.groupBox_Main_AxisPositions.Controls.Add(this.groupBox_Main_AxisPositions_UnloadTransfer);
+            this.groupBox_Main_AxisPositions.Controls.Add(this.groupBox_Main_AxisPositions_Mask);
+            this.groupBox_Main_AxisPositions.Controls.Add(this.groupBox_Main_AxisPositions_ScannerHead);
+            this.groupBox_Main_AxisPositions.Controls.Add(this.groupBox_Main_AxisPositions_WorkStage);
+            this.groupBox_Main_AxisPositions.Controls.Add(this.groupBox_Main_AxisPositions_LoadTransfer);
+            this.groupBox_Main_AxisPositions.Controls.Add(this.groupBox_Main_AxisPositions_Loader);
+            this.groupBox_Main_AxisPositions.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.groupBox_Main_AxisPositions.Location = new System.Drawing.Point(879, 458);
+            this.groupBox_Main_AxisPositions.Margin = new System.Windows.Forms.Padding(5);
+            this.groupBox_Main_AxisPositions.Name = "groupBox_Main_AxisPositions";
+            this.groupBox_Main_AxisPositions.Padding = new System.Windows.Forms.Padding(5);
+            this.groupBox_Main_AxisPositions.Size = new System.Drawing.Size(483, 390);
+            this.groupBox_Main_AxisPositions.TabIndex = 211;
+            this.groupBox_Main_AxisPositions.TabStop = false;
+            this.groupBox_Main_AxisPositions.Text = " Axis Positions  (Abs. , mm) ";
             // 
-            // checkBox_Main_AlignStartSocket_ContinueMode
+            // groupBox_Main_AxisPositions_Unloader
             // 
-            this.checkBox_Main_AlignStartSocket_ContinueMode.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBox_Main_AlignStartSocket_ContinueMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.checkBox_Main_AlignStartSocket_ContinueMode.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox_Main_AlignStartSocket_ContinueMode.Location = new System.Drawing.Point(256, 192);
-            this.checkBox_Main_AlignStartSocket_ContinueMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox_Main_AlignStartSocket_ContinueMode.Name = "checkBox_Main_AlignStartSocket_ContinueMode";
-            this.checkBox_Main_AlignStartSocket_ContinueMode.Size = new System.Drawing.Size(97, 44);
-            this.checkBox_Main_AlignStartSocket_ContinueMode.TabIndex = 149;
-            this.checkBox_Main_AlignStartSocket_ContinueMode.Text = "연속 가공\r\n시작 소켓";
-            this.checkBox_Main_AlignStartSocket_ContinueMode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_Main_AlignStartSocket_ContinueMode.UseVisualStyleBackColor = false;
-            this.checkBox_Main_AlignStartSocket_ContinueMode.MouseClick += new System.Windows.Forms.MouseEventHandler(this.checkBox_Main_AlignStartSocket_ContinueMode_MouseClick);
+            this.groupBox_Main_AxisPositions_Unloader.Controls.Add(this.label_Main_Unloader_LPortZ);
+            this.groupBox_Main_AxisPositions_Unloader.Controls.Add(this.label_Main_EncPosition_UL_Z1);
+            this.groupBox_Main_AxisPositions_Unloader.Controls.Add(this.label_Main_Unloader_RPortZ);
+            this.groupBox_Main_AxisPositions_Unloader.Controls.Add(this.label_Main_EncPosition_UL_Z0);
+            this.groupBox_Main_AxisPositions_Unloader.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.groupBox_Main_AxisPositions_Unloader.Location = new System.Drawing.Point(230, 25);
+            this.groupBox_Main_AxisPositions_Unloader.Margin = new System.Windows.Forms.Padding(5, 0, 5, 2);
+            this.groupBox_Main_AxisPositions_Unloader.Name = "groupBox_Main_AxisPositions_Unloader";
+            this.groupBox_Main_AxisPositions_Unloader.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox_Main_AxisPositions_Unloader.Size = new System.Drawing.Size(214, 79);
+            this.groupBox_Main_AxisPositions_Unloader.TabIndex = 45;
+            this.groupBox_Main_AxisPositions_Unloader.TabStop = false;
+            this.groupBox_Main_AxisPositions_Unloader.Text = " UnLoader ";
+            // 
+            // label_Main_Unloader_LPortZ
+            // 
+            this.label_Main_Unloader_LPortZ.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_Unloader_LPortZ.Location = new System.Drawing.Point(5, 44);
+            this.label_Main_Unloader_LPortZ.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_Unloader_LPortZ.Name = "label_Main_Unloader_LPortZ";
+            this.label_Main_Unloader_LPortZ.Size = new System.Drawing.Size(93, 24);
+            this.label_Main_Unloader_LPortZ.TabIndex = 36;
+            this.label_Main_Unloader_LPortZ.Text = "L-Port Z :";
+            this.label_Main_Unloader_LPortZ.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Main_EncPosition_UL_Z1
+            // 
+            this.label_Main_EncPosition_UL_Z1.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Main_EncPosition_UL_Z1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_EncPosition_UL_Z1.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_EncPosition_UL_Z1.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_EncPosition_UL_Z1.Location = new System.Drawing.Point(99, 46);
+            this.label_Main_EncPosition_UL_Z1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_EncPosition_UL_Z1.Name = "label_Main_EncPosition_UL_Z1";
+            this.label_Main_EncPosition_UL_Z1.Size = new System.Drawing.Size(105, 25);
+            this.label_Main_EncPosition_UL_Z1.TabIndex = 37;
+            this.label_Main_EncPosition_UL_Z1.Text = "000.000";
+            this.label_Main_EncPosition_UL_Z1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label_Main_Unloader_RPortZ
+            // 
+            this.label_Main_Unloader_RPortZ.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_Unloader_RPortZ.Location = new System.Drawing.Point(5, 19);
+            this.label_Main_Unloader_RPortZ.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_Unloader_RPortZ.Name = "label_Main_Unloader_RPortZ";
+            this.label_Main_Unloader_RPortZ.Size = new System.Drawing.Size(93, 24);
+            this.label_Main_Unloader_RPortZ.TabIndex = 34;
+            this.label_Main_Unloader_RPortZ.Text = "R-Port Z :";
+            this.label_Main_Unloader_RPortZ.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Main_EncPosition_UL_Z0
+            // 
+            this.label_Main_EncPosition_UL_Z0.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Main_EncPosition_UL_Z0.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_EncPosition_UL_Z0.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_EncPosition_UL_Z0.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_EncPosition_UL_Z0.Location = new System.Drawing.Point(99, 21);
+            this.label_Main_EncPosition_UL_Z0.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_EncPosition_UL_Z0.Name = "label_Main_EncPosition_UL_Z0";
+            this.label_Main_EncPosition_UL_Z0.Size = new System.Drawing.Size(105, 25);
+            this.label_Main_EncPosition_UL_Z0.TabIndex = 35;
+            this.label_Main_EncPosition_UL_Z0.Text = "000.000";
+            this.label_Main_EncPosition_UL_Z0.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // groupBox_Main_AxisPositions_UnloadTransfer
+            // 
+            this.groupBox_Main_AxisPositions_UnloadTransfer.Controls.Add(this.label_Main_UnloaderTransfer_Z);
+            this.groupBox_Main_AxisPositions_UnloadTransfer.Controls.Add(this.label_Main_EncPosition_UL_TRZ);
+            this.groupBox_Main_AxisPositions_UnloadTransfer.Controls.Add(this.label_Main_UnloaderTransfer_X);
+            this.groupBox_Main_AxisPositions_UnloadTransfer.Controls.Add(this.label_Main_EncPosition_UL_TRX);
+            this.groupBox_Main_AxisPositions_UnloadTransfer.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.groupBox_Main_AxisPositions_UnloadTransfer.Location = new System.Drawing.Point(234, 163);
+            this.groupBox_Main_AxisPositions_UnloadTransfer.Margin = new System.Windows.Forms.Padding(5, 0, 5, 2);
+            this.groupBox_Main_AxisPositions_UnloadTransfer.Name = "groupBox_Main_AxisPositions_UnloadTransfer";
+            this.groupBox_Main_AxisPositions_UnloadTransfer.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox_Main_AxisPositions_UnloadTransfer.Size = new System.Drawing.Size(214, 79);
+            this.groupBox_Main_AxisPositions_UnloadTransfer.TabIndex = 44;
+            this.groupBox_Main_AxisPositions_UnloadTransfer.TabStop = false;
+            this.groupBox_Main_AxisPositions_UnloadTransfer.Text = " UnLoad Transfer ";
+            // 
+            // label_Main_UnloaderTransfer_Z
+            // 
+            this.label_Main_UnloaderTransfer_Z.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_UnloaderTransfer_Z.Location = new System.Drawing.Point(5, 44);
+            this.label_Main_UnloaderTransfer_Z.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_UnloaderTransfer_Z.Name = "label_Main_UnloaderTransfer_Z";
+            this.label_Main_UnloaderTransfer_Z.Size = new System.Drawing.Size(93, 24);
+            this.label_Main_UnloaderTransfer_Z.TabIndex = 36;
+            this.label_Main_UnloaderTransfer_Z.Text = "Z :";
+            this.label_Main_UnloaderTransfer_Z.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Main_EncPosition_UL_TRZ
+            // 
+            this.label_Main_EncPosition_UL_TRZ.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Main_EncPosition_UL_TRZ.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_EncPosition_UL_TRZ.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_EncPosition_UL_TRZ.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_EncPosition_UL_TRZ.Location = new System.Drawing.Point(99, 46);
+            this.label_Main_EncPosition_UL_TRZ.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_EncPosition_UL_TRZ.Name = "label_Main_EncPosition_UL_TRZ";
+            this.label_Main_EncPosition_UL_TRZ.Size = new System.Drawing.Size(105, 25);
+            this.label_Main_EncPosition_UL_TRZ.TabIndex = 37;
+            this.label_Main_EncPosition_UL_TRZ.Text = "000.000";
+            this.label_Main_EncPosition_UL_TRZ.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label_Main_UnloaderTransfer_X
+            // 
+            this.label_Main_UnloaderTransfer_X.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_UnloaderTransfer_X.Location = new System.Drawing.Point(5, 19);
+            this.label_Main_UnloaderTransfer_X.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_UnloaderTransfer_X.Name = "label_Main_UnloaderTransfer_X";
+            this.label_Main_UnloaderTransfer_X.Size = new System.Drawing.Size(93, 24);
+            this.label_Main_UnloaderTransfer_X.TabIndex = 34;
+            this.label_Main_UnloaderTransfer_X.Text = "X :";
+            this.label_Main_UnloaderTransfer_X.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Main_EncPosition_UL_TRX
+            // 
+            this.label_Main_EncPosition_UL_TRX.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Main_EncPosition_UL_TRX.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_EncPosition_UL_TRX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_EncPosition_UL_TRX.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_EncPosition_UL_TRX.Location = new System.Drawing.Point(99, 21);
+            this.label_Main_EncPosition_UL_TRX.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_EncPosition_UL_TRX.Name = "label_Main_EncPosition_UL_TRX";
+            this.label_Main_EncPosition_UL_TRX.Size = new System.Drawing.Size(105, 25);
+            this.label_Main_EncPosition_UL_TRX.TabIndex = 35;
+            this.label_Main_EncPosition_UL_TRX.Text = "000.000";
+            this.label_Main_EncPosition_UL_TRX.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // groupBox_Main_AxisPositions_Mask
+            // 
+            this.groupBox_Main_AxisPositions_Mask.Controls.Add(this.label_Main_Mak_Y);
+            this.groupBox_Main_AxisPositions_Mask.Controls.Add(this.label_Main_EncPosition_MASK_Y);
+            this.groupBox_Main_AxisPositions_Mask.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.groupBox_Main_AxisPositions_Mask.Location = new System.Drawing.Point(10, 333);
+            this.groupBox_Main_AxisPositions_Mask.Margin = new System.Windows.Forms.Padding(5, 0, 5, 2);
+            this.groupBox_Main_AxisPositions_Mask.Name = "groupBox_Main_AxisPositions_Mask";
+            this.groupBox_Main_AxisPositions_Mask.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox_Main_AxisPositions_Mask.Size = new System.Drawing.Size(214, 54);
+            this.groupBox_Main_AxisPositions_Mask.TabIndex = 43;
+            this.groupBox_Main_AxisPositions_Mask.TabStop = false;
+            this.groupBox_Main_AxisPositions_Mask.Text = " Mask ";
+            // 
+            // label_Main_Mak_Y
+            // 
+            this.label_Main_Mak_Y.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_Mak_Y.Location = new System.Drawing.Point(5, 19);
+            this.label_Main_Mak_Y.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_Mak_Y.Name = "label_Main_Mak_Y";
+            this.label_Main_Mak_Y.Size = new System.Drawing.Size(93, 24);
+            this.label_Main_Mak_Y.TabIndex = 34;
+            this.label_Main_Mak_Y.Text = "Y :";
+            this.label_Main_Mak_Y.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Main_EncPosition_MASK_Y
+            // 
+            this.label_Main_EncPosition_MASK_Y.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Main_EncPosition_MASK_Y.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_EncPosition_MASK_Y.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_EncPosition_MASK_Y.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_EncPosition_MASK_Y.Location = new System.Drawing.Point(99, 21);
+            this.label_Main_EncPosition_MASK_Y.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_EncPosition_MASK_Y.Name = "label_Main_EncPosition_MASK_Y";
+            this.label_Main_EncPosition_MASK_Y.Size = new System.Drawing.Size(105, 25);
+            this.label_Main_EncPosition_MASK_Y.TabIndex = 35;
+            this.label_Main_EncPosition_MASK_Y.Text = "000.000";
+            this.label_Main_EncPosition_MASK_Y.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // groupBox_Main_AxisPositions_ScannerHead
+            // 
+            this.groupBox_Main_AxisPositions_ScannerHead.Controls.Add(this.label_Main_ScannerHead_Z);
+            this.groupBox_Main_AxisPositions_ScannerHead.Controls.Add(this.label_Main_EncPosition_SCANNER_Z);
+            this.groupBox_Main_AxisPositions_ScannerHead.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.groupBox_Main_AxisPositions_ScannerHead.Location = new System.Drawing.Point(234, 251);
+            this.groupBox_Main_AxisPositions_ScannerHead.Margin = new System.Windows.Forms.Padding(5, 0, 5, 2);
+            this.groupBox_Main_AxisPositions_ScannerHead.Name = "groupBox_Main_AxisPositions_ScannerHead";
+            this.groupBox_Main_AxisPositions_ScannerHead.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox_Main_AxisPositions_ScannerHead.Size = new System.Drawing.Size(214, 54);
+            this.groupBox_Main_AxisPositions_ScannerHead.TabIndex = 42;
+            this.groupBox_Main_AxisPositions_ScannerHead.TabStop = false;
+            this.groupBox_Main_AxisPositions_ScannerHead.Text = " Scanner Head, Vision ";
+            // 
+            // label_Main_ScannerHead_Z
+            // 
+            this.label_Main_ScannerHead_Z.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_ScannerHead_Z.Location = new System.Drawing.Point(5, 19);
+            this.label_Main_ScannerHead_Z.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_ScannerHead_Z.Name = "label_Main_ScannerHead_Z";
+            this.label_Main_ScannerHead_Z.Size = new System.Drawing.Size(93, 24);
+            this.label_Main_ScannerHead_Z.TabIndex = 34;
+            this.label_Main_ScannerHead_Z.Text = "Z :";
+            this.label_Main_ScannerHead_Z.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Main_EncPosition_SCANNER_Z
+            // 
+            this.label_Main_EncPosition_SCANNER_Z.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Main_EncPosition_SCANNER_Z.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_EncPosition_SCANNER_Z.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_EncPosition_SCANNER_Z.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_EncPosition_SCANNER_Z.Location = new System.Drawing.Point(99, 21);
+            this.label_Main_EncPosition_SCANNER_Z.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_EncPosition_SCANNER_Z.Name = "label_Main_EncPosition_SCANNER_Z";
+            this.label_Main_EncPosition_SCANNER_Z.Size = new System.Drawing.Size(105, 25);
+            this.label_Main_EncPosition_SCANNER_Z.TabIndex = 35;
+            this.label_Main_EncPosition_SCANNER_Z.Text = "000.000";
+            this.label_Main_EncPosition_SCANNER_Z.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // groupBox_Main_AxisPositions_WorkStage
+            // 
+            this.groupBox_Main_AxisPositions_WorkStage.Controls.Add(this.label_Main_WorkStage_Y);
+            this.groupBox_Main_AxisPositions_WorkStage.Controls.Add(this.label_Main_EncPosition_STAGE_Y);
+            this.groupBox_Main_AxisPositions_WorkStage.Controls.Add(this.label_Main_WorkStage_X);
+            this.groupBox_Main_AxisPositions_WorkStage.Controls.Add(this.label_Main_EncPosition_STAGE_X);
+            this.groupBox_Main_AxisPositions_WorkStage.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.groupBox_Main_AxisPositions_WorkStage.Location = new System.Drawing.Point(10, 251);
+            this.groupBox_Main_AxisPositions_WorkStage.Margin = new System.Windows.Forms.Padding(5, 0, 5, 2);
+            this.groupBox_Main_AxisPositions_WorkStage.Name = "groupBox_Main_AxisPositions_WorkStage";
+            this.groupBox_Main_AxisPositions_WorkStage.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox_Main_AxisPositions_WorkStage.Size = new System.Drawing.Size(214, 79);
+            this.groupBox_Main_AxisPositions_WorkStage.TabIndex = 41;
+            this.groupBox_Main_AxisPositions_WorkStage.TabStop = false;
+            this.groupBox_Main_AxisPositions_WorkStage.Text = " Work Stage ";
+            // 
+            // label_Main_WorkStage_Y
+            // 
+            this.label_Main_WorkStage_Y.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_WorkStage_Y.Location = new System.Drawing.Point(5, 44);
+            this.label_Main_WorkStage_Y.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_WorkStage_Y.Name = "label_Main_WorkStage_Y";
+            this.label_Main_WorkStage_Y.Size = new System.Drawing.Size(93, 24);
+            this.label_Main_WorkStage_Y.TabIndex = 36;
+            this.label_Main_WorkStage_Y.Text = "Y :";
+            this.label_Main_WorkStage_Y.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Main_EncPosition_STAGE_Y
+            // 
+            this.label_Main_EncPosition_STAGE_Y.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Main_EncPosition_STAGE_Y.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_EncPosition_STAGE_Y.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_EncPosition_STAGE_Y.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_EncPosition_STAGE_Y.Location = new System.Drawing.Point(99, 46);
+            this.label_Main_EncPosition_STAGE_Y.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_EncPosition_STAGE_Y.Name = "label_Main_EncPosition_STAGE_Y";
+            this.label_Main_EncPosition_STAGE_Y.Size = new System.Drawing.Size(105, 25);
+            this.label_Main_EncPosition_STAGE_Y.TabIndex = 37;
+            this.label_Main_EncPosition_STAGE_Y.Text = "000.000";
+            this.label_Main_EncPosition_STAGE_Y.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label_Main_WorkStage_X
+            // 
+            this.label_Main_WorkStage_X.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_WorkStage_X.Location = new System.Drawing.Point(5, 19);
+            this.label_Main_WorkStage_X.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_WorkStage_X.Name = "label_Main_WorkStage_X";
+            this.label_Main_WorkStage_X.Size = new System.Drawing.Size(93, 24);
+            this.label_Main_WorkStage_X.TabIndex = 34;
+            this.label_Main_WorkStage_X.Text = "X :";
+            this.label_Main_WorkStage_X.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Main_EncPosition_STAGE_X
+            // 
+            this.label_Main_EncPosition_STAGE_X.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Main_EncPosition_STAGE_X.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_EncPosition_STAGE_X.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_EncPosition_STAGE_X.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_EncPosition_STAGE_X.Location = new System.Drawing.Point(99, 21);
+            this.label_Main_EncPosition_STAGE_X.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_EncPosition_STAGE_X.Name = "label_Main_EncPosition_STAGE_X";
+            this.label_Main_EncPosition_STAGE_X.Size = new System.Drawing.Size(105, 25);
+            this.label_Main_EncPosition_STAGE_X.TabIndex = 35;
+            this.label_Main_EncPosition_STAGE_X.Text = "000.000";
+            this.label_Main_EncPosition_STAGE_X.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // groupBox_Main_AxisPositions_LoadTransfer
+            // 
+            this.groupBox_Main_AxisPositions_LoadTransfer.Controls.Add(this.label_Main_loaderTransfer_Z);
+            this.groupBox_Main_AxisPositions_LoadTransfer.Controls.Add(this.label_Main_EncPosition_LD_TRZ);
+            this.groupBox_Main_AxisPositions_LoadTransfer.Controls.Add(this.label_Main_loaderTransfer_X);
+            this.groupBox_Main_AxisPositions_LoadTransfer.Controls.Add(this.label_Main_EncPosition_LD_TRX);
+            this.groupBox_Main_AxisPositions_LoadTransfer.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.groupBox_Main_AxisPositions_LoadTransfer.Location = new System.Drawing.Point(10, 163);
+            this.groupBox_Main_AxisPositions_LoadTransfer.Margin = new System.Windows.Forms.Padding(5, 0, 5, 2);
+            this.groupBox_Main_AxisPositions_LoadTransfer.Name = "groupBox_Main_AxisPositions_LoadTransfer";
+            this.groupBox_Main_AxisPositions_LoadTransfer.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox_Main_AxisPositions_LoadTransfer.Size = new System.Drawing.Size(214, 79);
+            this.groupBox_Main_AxisPositions_LoadTransfer.TabIndex = 40;
+            this.groupBox_Main_AxisPositions_LoadTransfer.TabStop = false;
+            this.groupBox_Main_AxisPositions_LoadTransfer.Text = " Load Transfer ";
+            // 
+            // label_Main_loaderTransfer_Z
+            // 
+            this.label_Main_loaderTransfer_Z.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_loaderTransfer_Z.Location = new System.Drawing.Point(5, 44);
+            this.label_Main_loaderTransfer_Z.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_loaderTransfer_Z.Name = "label_Main_loaderTransfer_Z";
+            this.label_Main_loaderTransfer_Z.Size = new System.Drawing.Size(93, 24);
+            this.label_Main_loaderTransfer_Z.TabIndex = 36;
+            this.label_Main_loaderTransfer_Z.Text = "Z :";
+            this.label_Main_loaderTransfer_Z.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Main_EncPosition_LD_TRZ
+            // 
+            this.label_Main_EncPosition_LD_TRZ.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Main_EncPosition_LD_TRZ.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_EncPosition_LD_TRZ.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_EncPosition_LD_TRZ.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_EncPosition_LD_TRZ.Location = new System.Drawing.Point(99, 46);
+            this.label_Main_EncPosition_LD_TRZ.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_EncPosition_LD_TRZ.Name = "label_Main_EncPosition_LD_TRZ";
+            this.label_Main_EncPosition_LD_TRZ.Size = new System.Drawing.Size(105, 25);
+            this.label_Main_EncPosition_LD_TRZ.TabIndex = 37;
+            this.label_Main_EncPosition_LD_TRZ.Text = "000.000";
+            this.label_Main_EncPosition_LD_TRZ.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label_Main_loaderTransfer_X
+            // 
+            this.label_Main_loaderTransfer_X.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_loaderTransfer_X.Location = new System.Drawing.Point(5, 19);
+            this.label_Main_loaderTransfer_X.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_loaderTransfer_X.Name = "label_Main_loaderTransfer_X";
+            this.label_Main_loaderTransfer_X.Size = new System.Drawing.Size(93, 24);
+            this.label_Main_loaderTransfer_X.TabIndex = 34;
+            this.label_Main_loaderTransfer_X.Text = "X :";
+            this.label_Main_loaderTransfer_X.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Main_EncPosition_LD_TRX
+            // 
+            this.label_Main_EncPosition_LD_TRX.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Main_EncPosition_LD_TRX.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_EncPosition_LD_TRX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_EncPosition_LD_TRX.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_EncPosition_LD_TRX.Location = new System.Drawing.Point(99, 21);
+            this.label_Main_EncPosition_LD_TRX.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_EncPosition_LD_TRX.Name = "label_Main_EncPosition_LD_TRX";
+            this.label_Main_EncPosition_LD_TRX.Size = new System.Drawing.Size(105, 25);
+            this.label_Main_EncPosition_LD_TRX.TabIndex = 35;
+            this.label_Main_EncPosition_LD_TRX.Text = "000.000";
+            this.label_Main_EncPosition_LD_TRX.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // groupBox_Main_AxisPositions_Loader
+            // 
+            this.groupBox_Main_AxisPositions_Loader.Controls.Add(this.label_Main_Loader_MAlignY);
+            this.groupBox_Main_AxisPositions_Loader.Controls.Add(this.label_Main_EncPosition_LD_ALNY);
+            this.groupBox_Main_AxisPositions_Loader.Controls.Add(this.label_Main_Loader_MAlignX);
+            this.groupBox_Main_AxisPositions_Loader.Controls.Add(this.label_Main_EncPosition_LD_ALNX);
+            this.groupBox_Main_AxisPositions_Loader.Controls.Add(this.label_Main_Loader_LPortZ);
+            this.groupBox_Main_AxisPositions_Loader.Controls.Add(this.label_Main_EncPosition_LD_Z1);
+            this.groupBox_Main_AxisPositions_Loader.Controls.Add(this.label_Main_Loader_RPortZ);
+            this.groupBox_Main_AxisPositions_Loader.Controls.Add(this.label_Main_EncPosition_LD_Z0);
+            this.groupBox_Main_AxisPositions_Loader.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.groupBox_Main_AxisPositions_Loader.Location = new System.Drawing.Point(10, 25);
+            this.groupBox_Main_AxisPositions_Loader.Margin = new System.Windows.Forms.Padding(5, 0, 5, 2);
+            this.groupBox_Main_AxisPositions_Loader.Name = "groupBox_Main_AxisPositions_Loader";
+            this.groupBox_Main_AxisPositions_Loader.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox_Main_AxisPositions_Loader.Size = new System.Drawing.Size(214, 129);
+            this.groupBox_Main_AxisPositions_Loader.TabIndex = 36;
+            this.groupBox_Main_AxisPositions_Loader.TabStop = false;
+            this.groupBox_Main_AxisPositions_Loader.Text = " Loader ";
+            // 
+            // label_Main_Loader_MAlignY
+            // 
+            this.label_Main_Loader_MAlignY.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_Loader_MAlignY.Location = new System.Drawing.Point(5, 94);
+            this.label_Main_Loader_MAlignY.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_Loader_MAlignY.Name = "label_Main_Loader_MAlignY";
+            this.label_Main_Loader_MAlignY.Size = new System.Drawing.Size(93, 24);
+            this.label_Main_Loader_MAlignY.TabIndex = 40;
+            this.label_Main_Loader_MAlignY.Text = "M-Align Y :";
+            this.label_Main_Loader_MAlignY.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Main_EncPosition_LD_ALNY
+            // 
+            this.label_Main_EncPosition_LD_ALNY.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Main_EncPosition_LD_ALNY.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_EncPosition_LD_ALNY.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_EncPosition_LD_ALNY.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_EncPosition_LD_ALNY.Location = new System.Drawing.Point(99, 96);
+            this.label_Main_EncPosition_LD_ALNY.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_EncPosition_LD_ALNY.Name = "label_Main_EncPosition_LD_ALNY";
+            this.label_Main_EncPosition_LD_ALNY.Size = new System.Drawing.Size(105, 25);
+            this.label_Main_EncPosition_LD_ALNY.TabIndex = 41;
+            this.label_Main_EncPosition_LD_ALNY.Text = "000.000";
+            this.label_Main_EncPosition_LD_ALNY.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label_Main_Loader_MAlignX
+            // 
+            this.label_Main_Loader_MAlignX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_Loader_MAlignX.Location = new System.Drawing.Point(5, 69);
+            this.label_Main_Loader_MAlignX.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_Loader_MAlignX.Name = "label_Main_Loader_MAlignX";
+            this.label_Main_Loader_MAlignX.Size = new System.Drawing.Size(93, 24);
+            this.label_Main_Loader_MAlignX.TabIndex = 38;
+            this.label_Main_Loader_MAlignX.Text = "M-Align X :";
+            this.label_Main_Loader_MAlignX.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Main_EncPosition_LD_ALNX
+            // 
+            this.label_Main_EncPosition_LD_ALNX.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Main_EncPosition_LD_ALNX.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_EncPosition_LD_ALNX.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_EncPosition_LD_ALNX.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_EncPosition_LD_ALNX.Location = new System.Drawing.Point(99, 71);
+            this.label_Main_EncPosition_LD_ALNX.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_EncPosition_LD_ALNX.Name = "label_Main_EncPosition_LD_ALNX";
+            this.label_Main_EncPosition_LD_ALNX.Size = new System.Drawing.Size(105, 25);
+            this.label_Main_EncPosition_LD_ALNX.TabIndex = 39;
+            this.label_Main_EncPosition_LD_ALNX.Text = "000.000";
+            this.label_Main_EncPosition_LD_ALNX.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label_Main_Loader_LPortZ
+            // 
+            this.label_Main_Loader_LPortZ.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_Loader_LPortZ.Location = new System.Drawing.Point(5, 44);
+            this.label_Main_Loader_LPortZ.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_Loader_LPortZ.Name = "label_Main_Loader_LPortZ";
+            this.label_Main_Loader_LPortZ.Size = new System.Drawing.Size(93, 24);
+            this.label_Main_Loader_LPortZ.TabIndex = 36;
+            this.label_Main_Loader_LPortZ.Text = "L-Port Z :";
+            this.label_Main_Loader_LPortZ.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Main_EncPosition_LD_Z1
+            // 
+            this.label_Main_EncPosition_LD_Z1.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Main_EncPosition_LD_Z1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_EncPosition_LD_Z1.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_EncPosition_LD_Z1.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_EncPosition_LD_Z1.Location = new System.Drawing.Point(99, 46);
+            this.label_Main_EncPosition_LD_Z1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_EncPosition_LD_Z1.Name = "label_Main_EncPosition_LD_Z1";
+            this.label_Main_EncPosition_LD_Z1.Size = new System.Drawing.Size(105, 25);
+            this.label_Main_EncPosition_LD_Z1.TabIndex = 37;
+            this.label_Main_EncPosition_LD_Z1.Text = "000.000";
+            this.label_Main_EncPosition_LD_Z1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label_Main_Loader_RPortZ
+            // 
+            this.label_Main_Loader_RPortZ.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_Loader_RPortZ.Location = new System.Drawing.Point(5, 19);
+            this.label_Main_Loader_RPortZ.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_Loader_RPortZ.Name = "label_Main_Loader_RPortZ";
+            this.label_Main_Loader_RPortZ.Size = new System.Drawing.Size(93, 24);
+            this.label_Main_Loader_RPortZ.TabIndex = 34;
+            this.label_Main_Loader_RPortZ.Text = "R-Port Z :";
+            this.label_Main_Loader_RPortZ.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Main_EncPosition_LD_Z0
+            // 
+            this.label_Main_EncPosition_LD_Z0.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label_Main_EncPosition_LD_Z0.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Main_EncPosition_LD_Z0.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Main_EncPosition_LD_Z0.ForeColor = System.Drawing.Color.Lime;
+            this.label_Main_EncPosition_LD_Z0.Location = new System.Drawing.Point(99, 21);
+            this.label_Main_EncPosition_LD_Z0.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.label_Main_EncPosition_LD_Z0.Name = "label_Main_EncPosition_LD_Z0";
+            this.label_Main_EncPosition_LD_Z0.Size = new System.Drawing.Size(105, 25);
+            this.label_Main_EncPosition_LD_Z0.TabIndex = 35;
+            this.label_Main_EncPosition_LD_Z0.Text = "000.000";
+            this.label_Main_EncPosition_LD_Z0.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // baseLabel_Main_Divice_Status_Illuminator
             // 
             this.baseLabel_Main_Divice_Status_Illuminator.AutoSize = true;
             this.baseLabel_Main_Divice_Status_Illuminator.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_Illuminator.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_Illuminator.Location = new System.Drawing.Point(398, 158);
+            this.baseLabel_Main_Divice_Status_Illuminator.Location = new System.Drawing.Point(341, 158);
             this.baseLabel_Main_Divice_Status_Illuminator.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_Illuminator.Name = "baseLabel_Main_Divice_Status_Illuminator";
             this.baseLabel_Main_Divice_Status_Illuminator.Size = new System.Drawing.Size(75, 18);
@@ -949,7 +1434,7 @@
             this.baseLabel_Main_Divice_Status_CameraPre.AutoSize = true;
             this.baseLabel_Main_Divice_Status_CameraPre.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_CameraPre.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_CameraPre.Location = new System.Drawing.Point(398, 127);
+            this.baseLabel_Main_Divice_Status_CameraPre.Location = new System.Drawing.Point(341, 127);
             this.baseLabel_Main_Divice_Status_CameraPre.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_CameraPre.Name = "baseLabel_Main_Divice_Status_CameraPre";
             this.baseLabel_Main_Divice_Status_CameraPre.Size = new System.Drawing.Size(80, 18);
@@ -961,7 +1446,7 @@
             this.baseLabel_Main_Divice_Status_CameraFine.AutoSize = true;
             this.baseLabel_Main_Divice_Status_CameraFine.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_CameraFine.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_CameraFine.Location = new System.Drawing.Point(398, 96);
+            this.baseLabel_Main_Divice_Status_CameraFine.Location = new System.Drawing.Point(341, 96);
             this.baseLabel_Main_Divice_Status_CameraFine.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_CameraFine.Name = "baseLabel_Main_Divice_Status_CameraFine";
             this.baseLabel_Main_Divice_Status_CameraFine.Size = new System.Drawing.Size(85, 18);
@@ -973,7 +1458,7 @@
             this.baseLabel_Main_Divice_Status_heightsensor.AutoSize = true;
             this.baseLabel_Main_Divice_Status_heightsensor.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_heightsensor.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_heightsensor.Location = new System.Drawing.Point(398, 65);
+            this.baseLabel_Main_Divice_Status_heightsensor.Location = new System.Drawing.Point(341, 65);
             this.baseLabel_Main_Divice_Status_heightsensor.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_heightsensor.Name = "baseLabel_Main_Divice_Status_heightsensor";
             this.baseLabel_Main_Divice_Status_heightsensor.Size = new System.Drawing.Size(93, 18);
@@ -985,7 +1470,7 @@
             this.baseLabel_Main_Divice_Status_ElectroRequlator.AutoSize = true;
             this.baseLabel_Main_Divice_Status_ElectroRequlator.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_ElectroRequlator.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_ElectroRequlator.Location = new System.Drawing.Point(398, 34);
+            this.baseLabel_Main_Divice_Status_ElectroRequlator.Location = new System.Drawing.Point(341, 34);
             this.baseLabel_Main_Divice_Status_ElectroRequlator.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_ElectroRequlator.Name = "baseLabel_Main_Divice_Status_ElectroRequlator";
             this.baseLabel_Main_Divice_Status_ElectroRequlator.Size = new System.Drawing.Size(112, 18);
@@ -998,7 +1483,7 @@
             this.baseLabel_Main_Divice_Status_BeamExpander.Enabled = false;
             this.baseLabel_Main_Divice_Status_BeamExpander.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_BeamExpander.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_BeamExpander.Location = new System.Drawing.Point(184, 158);
+            this.baseLabel_Main_Divice_Status_BeamExpander.Location = new System.Drawing.Point(157, 158);
             this.baseLabel_Main_Divice_Status_BeamExpander.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_BeamExpander.Name = "baseLabel_Main_Divice_Status_BeamExpander";
             this.baseLabel_Main_Divice_Status_BeamExpander.Size = new System.Drawing.Size(107, 18);
@@ -1022,7 +1507,7 @@
             this.baseLabel_Main_Divice_Status_Stage.AutoSize = true;
             this.baseLabel_Main_Divice_Status_Stage.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_Stage.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_Stage.Location = new System.Drawing.Point(184, 127);
+            this.baseLabel_Main_Divice_Status_Stage.Location = new System.Drawing.Point(157, 127);
             this.baseLabel_Main_Divice_Status_Stage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_Stage.Name = "baseLabel_Main_Divice_Status_Stage";
             this.baseLabel_Main_Divice_Status_Stage.Size = new System.Drawing.Size(130, 18);
@@ -1034,7 +1519,7 @@
             this.baseLabel_Main_Divice_Status_PowermeterBds.AutoSize = true;
             this.baseLabel_Main_Divice_Status_PowermeterBds.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_PowermeterBds.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_PowermeterBds.Location = new System.Drawing.Point(184, 96);
+            this.baseLabel_Main_Divice_Status_PowermeterBds.Location = new System.Drawing.Point(157, 96);
             this.baseLabel_Main_Divice_Status_PowermeterBds.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_PowermeterBds.Name = "baseLabel_Main_Divice_Status_PowermeterBds";
             this.baseLabel_Main_Divice_Status_PowermeterBds.Size = new System.Drawing.Size(117, 18);
@@ -1046,7 +1531,7 @@
             this.baseLabel_Main_Divice_Status_DustcollectorLower.AutoSize = true;
             this.baseLabel_Main_Divice_Status_DustcollectorLower.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_DustcollectorLower.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_DustcollectorLower.Location = new System.Drawing.Point(184, 65);
+            this.baseLabel_Main_Divice_Status_DustcollectorLower.Location = new System.Drawing.Point(157, 65);
             this.baseLabel_Main_Divice_Status_DustcollectorLower.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_DustcollectorLower.Name = "baseLabel_Main_Divice_Status_DustcollectorLower";
             this.baseLabel_Main_Divice_Status_DustcollectorLower.Size = new System.Drawing.Size(128, 18);
@@ -1058,7 +1543,7 @@
             this.baseLabel_Main_Divice_Status_DustcollectorUpper.AutoSize = true;
             this.baseLabel_Main_Divice_Status_DustcollectorUpper.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_DustcollectorUpper.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel_Main_Divice_Status_DustcollectorUpper.Location = new System.Drawing.Point(184, 34);
+            this.baseLabel_Main_Divice_Status_DustcollectorUpper.Location = new System.Drawing.Point(157, 34);
             this.baseLabel_Main_Divice_Status_DustcollectorUpper.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel_Main_Divice_Status_DustcollectorUpper.Name = "baseLabel_Main_Divice_Status_DustcollectorUpper";
             this.baseLabel_Main_Divice_Status_DustcollectorUpper.Size = new System.Drawing.Size(129, 18);
@@ -1113,13 +1598,53 @@
             this.baseLabel_Main_Divice_Status_Laser.TabIndex = 130;
             this.baseLabel_Main_Divice_Status_Laser.Text = "Laser";
             // 
+            // ImageViewer_Main_Lows
+            // 
+            this.ImageViewer_Main_Lows.BackColor = System.Drawing.Color.Black;
+            this.ImageViewer_Main_Lows.Camera = null;
+            this.ImageViewer_Main_Lows.CameraSwitch = null;
+            this.ImageViewer_Main_Lows.FrameRate = 1D;
+            this.ImageViewer_Main_Lows.InputImage = null;
+            this.ImageViewer_Main_Lows.IsViewCustomizedImage = false;
+            this.ImageViewer_Main_Lows.Location = new System.Drawing.Point(10, 28);
+            this.ImageViewer_Main_Lows.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ImageViewer_Main_Lows.Name = "ImageViewer_Main_Lows";
+            this.ImageViewer_Main_Lows.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.ImageViewer_Main_Lows.Simulated = false;
+            this.ImageViewer_Main_Lows.Size = new System.Drawing.Size(240, 220);
+            this.ImageViewer_Main_Lows.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ImageViewer_Main_Lows.TabIndex = 190;
+            this.ImageViewer_Main_Lows.TabStop = false;
+            this.ImageViewer_Main_Lows.UpdateDelayTime = 160;
+            this.ImageViewer_Main_Lows.VisibleCrossLine = true;
+            // 
+            // ImageViewer_Main_highs
+            // 
+            this.ImageViewer_Main_highs.BackColor = System.Drawing.Color.Black;
+            this.ImageViewer_Main_highs.Camera = null;
+            this.ImageViewer_Main_highs.CameraSwitch = null;
+            this.ImageViewer_Main_highs.FrameRate = 1D;
+            this.ImageViewer_Main_highs.InputImage = null;
+            this.ImageViewer_Main_highs.IsViewCustomizedImage = false;
+            this.ImageViewer_Main_highs.Location = new System.Drawing.Point(10, 28);
+            this.ImageViewer_Main_highs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ImageViewer_Main_highs.Name = "ImageViewer_Main_highs";
+            this.ImageViewer_Main_highs.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
+            this.ImageViewer_Main_highs.Simulated = false;
+            this.ImageViewer_Main_highs.Size = new System.Drawing.Size(240, 220);
+            this.ImageViewer_Main_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ImageViewer_Main_highs.TabIndex = 189;
+            this.ImageViewer_Main_highs.TabStop = false;
+            this.ImageViewer_Main_highs.UpdateDelayTime = 160;
+            this.ImageViewer_Main_highs.VisibleCrossLine = true;
+            // 
             // baseTextBox_DryRun_ProcessingTime
             // 
             this.baseTextBox_DryRun_ProcessingTime.BackColor = System.Drawing.Color.White;
             this.baseTextBox_DryRun_ProcessingTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.baseTextBox_DryRun_ProcessingTime.Font = new System.Drawing.Font("Tahoma", 10F);
             this.baseTextBox_DryRun_ProcessingTime.ForeColor = System.Drawing.Color.Black;
-            this.baseTextBox_DryRun_ProcessingTime.Location = new System.Drawing.Point(1876, 271);
+            this.baseTextBox_DryRun_ProcessingTime.Location = new System.Drawing.Point(1876, 253);
             this.baseTextBox_DryRun_ProcessingTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.baseTextBox_DryRun_ProcessingTime.Name = "baseTextBox_DryRun_ProcessingTime";
             this.baseTextBox_DryRun_ProcessingTime.Size = new System.Drawing.Size(26, 24);
@@ -1131,12 +1656,12 @@
             // 
             this.baseLabel5.Font = new System.Drawing.Font("Tahoma", 9F);
             this.baseLabel5.ForeColor = System.Drawing.Color.Black;
-            this.baseLabel5.Location = new System.Drawing.Point(1689, 269);
+            this.baseLabel5.Location = new System.Drawing.Point(1726, 251);
             this.baseLabel5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabel5.Name = "baseLabel5";
-            this.baseLabel5.Size = new System.Drawing.Size(188, 26);
+            this.baseLabel5.Size = new System.Drawing.Size(151, 26);
             this.baseLabel5.TabIndex = 150;
-            this.baseLabel5.Text = "(Dry Run Processing Time (sec) :";
+            this.baseLabel5.Text = "(DryRun Time (sec) :";
             this.baseLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // baseTextBox_Socket_Index
@@ -1563,8 +2088,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1920, 877);
+            this.ClientSize = new System.Drawing.Size(1920, 875);
             this.ControlBox = false;
+            this.Controls.Add(this.groupBox_Main_AxisPositions);
             this.Controls.Add(this.checkBox_Main_SocketDrilling_Pass);
             this.Controls.Add(this.label_Main_LaserStatus);
             this.Controls.Add(this.groupBox_Main_DiviceStatus);
@@ -1619,7 +2145,6 @@
             this.groupBox_ProcessingData.ResumeLayout(false);
             this.groupBox_FineCam.ResumeLayout(false);
             this.groupBox_CoarseCam.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Lows)).EndInit();
             this.groupBox_Main_DiviceStatus.ResumeLayout(false);
             this.groupBox_Main_DiviceStatus.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Illuminator)).EndInit();
@@ -1637,6 +2162,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Motion)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_IO)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Main_DiviceStatus_Laser)).EndInit();
+            this.groupBox_Main_AxisPositions.ResumeLayout(false);
+            this.groupBox_Main_AxisPositions_Unloader.ResumeLayout(false);
+            this.groupBox_Main_AxisPositions_UnloadTransfer.ResumeLayout(false);
+            this.groupBox_Main_AxisPositions_Mask.ResumeLayout(false);
+            this.groupBox_Main_AxisPositions_ScannerHead.ResumeLayout(false);
+            this.groupBox_Main_AxisPositions_WorkStage.ResumeLayout(false);
+            this.groupBox_Main_AxisPositions_LoadTransfer.ResumeLayout(false);
+            this.groupBox_Main_AxisPositions_Loader.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_Lows)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImageViewer_Main_highs)).EndInit();
             this.baseGroupBox_Progress.ResumeLayout(false);
             this.baseGroupBox_Progress.PerformLayout();
@@ -1755,5 +2289,41 @@
         private System.Windows.Forms.Label label_Main_LaserStatus;
         private System.Windows.Forms.CheckBox checkBox_Main_SocketDrilling_Pass;
         private System.Windows.Forms.CheckBox checkBox_Main_AlignStartSocket_ContinueMode;
+        private System.Windows.Forms.GroupBox groupBox_Main_AxisPositions;
+        private System.Windows.Forms.GroupBox groupBox_Main_AxisPositions_Unloader;
+        private System.Windows.Forms.Label label_Main_Unloader_LPortZ;
+        private System.Windows.Forms.Label label_Main_EncPosition_UL_Z1;
+        private System.Windows.Forms.Label label_Main_Unloader_RPortZ;
+        private System.Windows.Forms.Label label_Main_EncPosition_UL_Z0;
+        private System.Windows.Forms.GroupBox groupBox_Main_AxisPositions_UnloadTransfer;
+        private System.Windows.Forms.Label label_Main_UnloaderTransfer_Z;
+        private System.Windows.Forms.Label label_Main_EncPosition_UL_TRZ;
+        private System.Windows.Forms.Label label_Main_UnloaderTransfer_X;
+        private System.Windows.Forms.Label label_Main_EncPosition_UL_TRX;
+        private System.Windows.Forms.GroupBox groupBox_Main_AxisPositions_Mask;
+        private System.Windows.Forms.Label label_Main_Mak_Y;
+        private System.Windows.Forms.Label label_Main_EncPosition_MASK_Y;
+        private System.Windows.Forms.GroupBox groupBox_Main_AxisPositions_ScannerHead;
+        private System.Windows.Forms.Label label_Main_ScannerHead_Z;
+        private System.Windows.Forms.Label label_Main_EncPosition_SCANNER_Z;
+        private System.Windows.Forms.GroupBox groupBox_Main_AxisPositions_WorkStage;
+        private System.Windows.Forms.Label label_Main_WorkStage_Y;
+        private System.Windows.Forms.Label label_Main_EncPosition_STAGE_Y;
+        private System.Windows.Forms.Label label_Main_WorkStage_X;
+        private System.Windows.Forms.Label label_Main_EncPosition_STAGE_X;
+        private System.Windows.Forms.GroupBox groupBox_Main_AxisPositions_LoadTransfer;
+        private System.Windows.Forms.Label label_Main_loaderTransfer_Z;
+        private System.Windows.Forms.Label label_Main_EncPosition_LD_TRZ;
+        private System.Windows.Forms.Label label_Main_loaderTransfer_X;
+        private System.Windows.Forms.Label label_Main_EncPosition_LD_TRX;
+        private System.Windows.Forms.GroupBox groupBox_Main_AxisPositions_Loader;
+        private System.Windows.Forms.Label label_Main_Loader_MAlignY;
+        private System.Windows.Forms.Label label_Main_EncPosition_LD_ALNY;
+        private System.Windows.Forms.Label label_Main_Loader_MAlignX;
+        private System.Windows.Forms.Label label_Main_EncPosition_LD_ALNX;
+        private System.Windows.Forms.Label label_Main_Loader_LPortZ;
+        private System.Windows.Forms.Label label_Main_EncPosition_LD_Z1;
+        private System.Windows.Forms.Label label_Main_Loader_RPortZ;
+        private System.Windows.Forms.Label label_Main_EncPosition_LD_Z0;
     }
 }

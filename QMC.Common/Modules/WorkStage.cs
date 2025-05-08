@@ -375,6 +375,9 @@ namespace QMC.Common.Modules
         public st4PointPosition_Data[] m_st2PointPosition_InspectedPos;         //  2-Point 의 측정된 위치 데이터
         public st4PointAlign_Result m_st2PointAlign_Result;                     //  Align 데이터
 
+
+        public bool m_bForceEjectRequest = false;   //강제 배출
+
         #endregion
 
         #region Drilling Data Variable
@@ -8868,6 +8871,8 @@ namespace QMC.Common.Modules
 
 
         #region Align Mark Find
+
+        //PreAlign -
         void Run_FindAlignMark_Func()
         {
             switch (m_nFindAlignMark_Step)
@@ -8921,14 +8926,22 @@ namespace QMC.Common.Modules
                         {
                             //Todo: PreAlign 확인!!!
                             //Recipe Data 전달하기!
-                            jigAligner_LowRes.Recipe.PatternMatchingParameter = stVisionRecipeSet.PatternMatching;
-                            jigAligner_LowRes.Recipe.InspectRoiStartLocation = stVisionRecipeSet.InspectRoiStartLocation;
-                            jigAligner_LowRes.Recipe.InspectRoiEndLocation = stVisionRecipeSet.InspectRoiEndLocation;
-                            jigAligner_LowRes.Recipe.TrainRoiStartLocation = stVisionRecipeSet.TrainRoiStartLocation;
-                            jigAligner_LowRes.Recipe.TrainRoiEndLocation = stVisionRecipeSet.TrainRoiEndLocation;
 
-                            jigAligner_LowRes.Work();
-                            Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "Work() 완료");
+                            if(stVisionRecipeSet.AlgorithmType == VisionAlgorithmType.PatternMatching)
+                            {
+                                jigAligner_LowRes.Recipe.PatternMatchingParameter = stVisionRecipeSet.PatternMatching;
+                                jigAligner_LowRes.Recipe.InspectRoiStartLocation = stVisionRecipeSet.InspectRoiStartLocation;
+                                jigAligner_LowRes.Recipe.InspectRoiEndLocation = stVisionRecipeSet.InspectRoiEndLocation;
+                                jigAligner_LowRes.Recipe.TrainRoiStartLocation = stVisionRecipeSet.TrainRoiStartLocation;
+                                jigAligner_LowRes.Recipe.TrainRoiEndLocation = stVisionRecipeSet.TrainRoiEndLocation;
+                                jigAligner_LowRes.Work();
+                            }
+                            else if(stVisionRecipeSet.AlgorithmType == VisionAlgorithmType.CircleDetection)
+                            {
+
+                            }
+
+                                Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "Work() 완료");
                         }
                         catch(Exception ex)
                         {
@@ -13096,6 +13109,9 @@ namespace QMC.Common.Modules
                 case (int)MainWork_Step.Start:
                     Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "시작");
 
+                    // 여기가 맞는지 확인 필요. 
+                    m_bForceEjectRequest = false;   //강제배출 초기화.
+
                     Equipment.MachineStop_byAlarm = false;
 
                     //  Work Stage XYZ 축 모터 전체 Stop
@@ -13336,12 +13352,11 @@ namespace QMC.Common.Modules
                             //  소켓 얼라인 결과가 NG 이면 NG 로 (설정 개수 이상 NG 일 경우에)
                             //m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.OK;
 
-                            //m_bFindLowerAlignMark_OK = false;
-                            //m_bPreAlignCompleted = false;
-
-                            if ((m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount) ||
+                            if (m_bForceEjectRequest ||
+                                (m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount) ||
+                                !m_bSocketAlign_OK ||
                                 !m_bFindLowerAlignMark_OK ||
-                                !m_bPreAlignCompleted)
+                                !m_bPreAlignCompleted )
                             {
                                 m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.NG;
                             }
@@ -14688,7 +14703,6 @@ namespace QMC.Common.Modules
             double dy = 0.0;
             double dr = 0.0;
             PatternMatchingResult result;
-
 
             if (TickCount_MainCycle_Start == 0)
             {
@@ -18379,7 +18393,7 @@ namespace QMC.Common.Modules
                             }
                             else
                             {
-
+                                m_bSocketAlign_OK = false;
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
                             }
                         
@@ -25262,7 +25276,6 @@ namespace QMC.Common.Modules
             m_ptAlign1_RealPos.X = 0.0;
             m_ptAlign1_RealPos.Y = 0.0;
 
-
             m_nLaserDrilling_ContinuousJobFileCount = 0;              //  연속 작업일 경우, 작업 한 Job File Count
 
             //m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
@@ -25310,11 +25323,13 @@ namespace QMC.Common.Modules
             //  현재 Z 축 값을 가공 Z 위치값으로 한다. (카메라로 초점 확인한 Z 축 값)    --> 보류
             m_dBase_AxisZ_LaserFocus = MC_Func.MC_GetEncPos((int)nAxis.Z);
 
-            m_nDrillingData_SocketTotal = 0;                        //  진행해야하는 Socket 총 개수 (제품 단위 : Module, 하나의 Module 은 n 개의 Socket 으로 구성된다)
-            m_nDrillingData_SocketCount = 0;                        //  진행하는 Socket Count
-            m_nDrillingData_LayerTotal = 0;                         //  진행해야하는 Layer 총 개수 (제품 단위 : Module, 하나의 Module 은 n 개의 Layer 로 구성된다)
-            m_nDrillingData_LayerCount = 0;                         //  진행하는 Layer Count (제품 단위 : Module, 하나의 Module 은 n 개의 Layer 로 구성된다)
+            m_nDrillingData_SocketTotal = 0;    //  진행해야하는 Socket 총 개수 (제품 단위 : Module, 하나의 Module 은 n 개의 Socket 으로 구성된다)
+            m_nDrillingData_SocketCount = 0;    //  진행하는 Socket Count
+            m_nDrillingData_LayerTotal = 0;     //  진행해야하는 Layer 총 개수 (제품 단위 : Module, 하나의 Module 은 n 개의 Layer 로 구성된다)
+            m_nDrillingData_LayerCount = 0;     //  진행하는 Layer Count (제품 단위 : Module, 하나의 Module 은 n 개의 Layer 로 구성된다)
             m_bPreAlignCompleted = false;
+
+            m_bForceEjectRequest = false;       //강제배출 초기화.
 
         }
         #endregion

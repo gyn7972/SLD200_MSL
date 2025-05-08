@@ -355,6 +355,7 @@ namespace SLD200_MSL
             }
         }
 
+        bool m_bPulseModeSetOnce = false;
         private void Timer_Status_Func(object sender, EventArgs e)
         {
             timer_Status.Enabled = false;
@@ -470,11 +471,13 @@ namespace SLD200_MSL
                 switch (workStage.m_nLaser_SystemStatus)
                 {
                     case -1:
+                        m_bPulseModeSetOnce = false;
                         baseLabel_Config_TabLaser_SystemStatus.Text = "Boot";
                         pictureBox_Config_TabLaser_SystemStatus.Image = global::SLD200.Properties.Resources.StopOff;
                         break;
 
                     case 0:
+                        m_bPulseModeSetOnce = false;
                         if (workStage.m_bRapidLxLaser_LaserStart)
                         {
                             baseLabel_Config_TabLaser_SystemStatus.Text = "Starting";
@@ -490,15 +493,27 @@ namespace SLD200_MSL
                         workStage.m_bRapidLxLaser_LaserStart = false;
                         baseLabel_Config_TabLaser_SystemStatus.Text = "On";
                         pictureBox_Config_TabLaser_SystemStatus.Image = global::SLD200.Properties.Resources.DioEllipseOn;
+
+                        if (workStage.m_nLaser_PulseMode != 1 && !m_bPulseModeSetOnce)
+                        {
+                            if (workStage.m_rapidLxLaser_Comm.IsOpen)
+                            {
+                                Thread.Sleep(500); //  Pulse Mode Set 시, Laser Comm이 끊어지는 현상 방지
+                                workStage.RapidLxLaserComm_Laser_PulseMode_Set(1);
+                                m_bPulseModeSetOnce = true;
+                            }
+                        }
                         break;
 
                     case 2:
+                        m_bPulseModeSetOnce = false;
                         workStage.m_bRapidLxLaser_LaserStart = false;
                         baseLabel_Config_TabLaser_SystemStatus.Text = "Fault";
                         pictureBox_Config_TabLaser_SystemStatus.Image = global::SLD200.Properties.Resources.StopOn;
                         break;
 
                     default:
+                        m_bPulseModeSetOnce = false;
                         baseLabel_Config_TabLaser_SystemStatus.Text = "Unknown";
                         pictureBox_Config_TabLaser_SystemStatus.Image = global::SLD200.Properties.Resources.DioRectangleOff;
                         break;
