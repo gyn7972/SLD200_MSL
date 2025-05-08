@@ -34,6 +34,9 @@
             this.button_Recipe_Apply = new System.Windows.Forms.Button();
             this.tabControl_Recipe = new System.Windows.Forms.TabControl();
             this.tabPage_Recipe = new System.Windows.Forms.TabPage();
+            this.groupBox15 = new System.Windows.Forms.GroupBox();
+            this.label88 = new System.Windows.Forms.Label();
+            this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel = new System.Windows.Forms.TextBox();
             this.groupBox19 = new System.Windows.Forms.GroupBox();
             this.button35 = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Illuminator_FineCamRed = new System.Windows.Forms.TextBox();
@@ -294,6 +297,7 @@
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
+            this.groupBox15.SuspendLayout();
             this.groupBox19.SuspendLayout();
             this.groupBox17.SuspendLayout();
             this.groupBox14.SuspendLayout();
@@ -391,6 +395,7 @@
             // 
             // tabPage_Recipe
             // 
+            this.tabPage_Recipe.Controls.Add(this.groupBox15);
             this.tabPage_Recipe.Controls.Add(this.groupBox19);
             this.tabPage_Recipe.Controls.Add(this.groupBox17);
             this.tabPage_Recipe.Controls.Add(this.groupBox14);
@@ -411,6 +416,41 @@
             this.tabPage_Recipe.Text = "Recipe";
             this.tabPage_Recipe.UseVisualStyleBackColor = true;
             // 
+            // groupBox15
+            // 
+            this.groupBox15.Controls.Add(this.label88);
+            this.groupBox15.Controls.Add(this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel);
+            this.groupBox15.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.groupBox15.Location = new System.Drawing.Point(392, 513);
+            this.groupBox15.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.groupBox15.Name = "groupBox15";
+            this.groupBox15.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox15.Size = new System.Drawing.Size(276, 68);
+            this.groupBox15.TabIndex = 91;
+            this.groupBox15.TabStop = false;
+            this.groupBox15.Text = " Electro Pneumatic Regulator ";
+            // 
+            // label88
+            // 
+            this.label88.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label88.Location = new System.Drawing.Point(9, 24);
+            this.label88.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label88.Name = "label88";
+            this.label88.Size = new System.Drawing.Size(204, 33);
+            this.label88.TabIndex = 107;
+            this.label88.Text = "work stage module absorption\r\njudgment value (kPa) :";
+            this.label88.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel
+            // 
+            this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Location = new System.Drawing.Point(216, 29);
+            this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Name = "textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel";
+            this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Size = new System.Drawing.Size(50, 24);
+            this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.TabIndex = 108;
+            this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Text = "-40";
+            // 
             // groupBox19
             // 
             this.groupBox19.Controls.Add(this.button35);
@@ -423,7 +463,7 @@
             this.groupBox19.Controls.Add(this.label79);
             this.groupBox19.Controls.Add(this.label80);
             this.groupBox19.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox19.Location = new System.Drawing.Point(107, 513);
+            this.groupBox19.Location = new System.Drawing.Point(94, 513);
             this.groupBox19.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox19.Name = "groupBox19";
             this.groupBox19.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -719,7 +759,7 @@
             this.groupBox14.Controls.Add(this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower);
             this.groupBox14.Controls.Add(this.label48);
             this.groupBox14.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox14.Location = new System.Drawing.Point(107, 649);
+            this.groupBox14.Location = new System.Drawing.Point(94, 649);
             this.groupBox14.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox14.Name = "groupBox14";
             this.groupBox14.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -820,11 +860,11 @@
             this.groupBox13.Controls.Add(this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center);
             this.groupBox13.Controls.Add(this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner);
             this.groupBox13.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox13.Location = new System.Drawing.Point(387, 691);
+            this.groupBox13.Location = new System.Drawing.Point(392, 623);
             this.groupBox13.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox13.Name = "groupBox13";
             this.groupBox13.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox13.Size = new System.Drawing.Size(258, 57);
+            this.groupBox13.Size = new System.Drawing.Size(276, 57);
             this.groupBox13.TabIndex = 90;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " Vacuum position (M - Alignment) ";
@@ -835,7 +875,7 @@
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked = true;
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Location = new System.Drawing.Point(182, 28);
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Location = new System.Drawing.Point(202, 28);
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Name = "checkBox_Recipe_TabRecipe_MAlignVacuum_Outer";
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Size = new System.Drawing.Size(62, 21);
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.TabIndex = 62;
@@ -861,7 +901,7 @@
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Checked = true;
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Location = new System.Drawing.Point(104, 28);
+            this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Location = new System.Drawing.Point(114, 28);
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Name = "checkBox_Recipe_TabRecipe_MAlignVacuum_Inner";
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.Size = new System.Drawing.Size(59, 21);
             this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner.TabIndex = 60;
@@ -3615,6 +3655,8 @@
             this.Text = "FormNew_Main";
             this.tabControl_Recipe.ResumeLayout(false);
             this.tabPage_Recipe.ResumeLayout(false);
+            this.groupBox15.ResumeLayout(false);
+            this.groupBox15.PerformLayout();
             this.groupBox19.ResumeLayout(false);
             this.groupBox19.PerformLayout();
             this.groupBox17.ResumeLayout(false);
@@ -3920,5 +3962,8 @@
         private System.Windows.Forms.Button button14;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time;
         private System.Windows.Forms.Label label87;
+        private System.Windows.Forms.GroupBox groupBox15;
+        private System.Windows.Forms.Label label88;
+        private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel;
     }
 }

@@ -455,6 +455,8 @@ namespace QMC.Common
             public double SpiralParam_Revolutions;                      //  Spiral Revolutions
             public double SpiralParam_AngleFactor;                      //  Spiral Angle Factor
 
+            public double EPRO_ModuleAbsorptionLevel;                   //  EPRO Module Absorption Level
+
             public bool MAligner_VacuumPos_Center;                      //  M-Aligner Vacuum Position Center (true: Using, false: Not Using)
             public bool MAligner_VacuumPos_Inner;                       //  M-Aligner Vacuum Position Inner (true: Using, false: Not Using)
             public bool MAligner_VacuumPos_Outer;                       //  M-Aligner Vacuum Position Outer (true: Using, false: Not Using)
@@ -642,10 +644,10 @@ namespace QMC.Common
         public static double Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio { set; get; } = 2.0;        //  Vibration 시 가감속 속도 비율
         public static int Machine_LoaderTransfer_NumberOfVibrations { set; get; } = 2;                      //  Vibration 횟수
         public static double Machine_LoaderTransfer_Vibration_MoveDistance { set; get; } = 2.0;             //  Vibration 시 이동 거리
+        public static int Machine_LoaderTransfer_Vibration_Interval { set; get; } = 500;                    //  Vibration 시 Interval 시간. (한번 털고 나서 대기하는 시간)
         public static bool Machine_LoaderStacker_LiftUp_Enable { set; get; } = true;                        //  Loader Stacker Lift Up Enable
         public static int Machine_LoaderStacker_LiftUpStep { set; get; } = 7;                               //  Loader Stacker Lift Up Step
         public static int Machine_LoaderStacker_LiftUp_StableTime { set; get; } = 1000;                     //  Loader Stacker Lift Up Stable Time
-        public static double Machine_WorkStage_ModuleAbsorption_JudgeLevel { set; get; } = -40.0;           //  Work Stage 에 Module Loading 시, 전자식 진공 레귤레이터 판정값
         public static bool Machine_LoaderStacker_Down_afterLoaderPickUp_Enable { set; get; } = true;        //  Loader Stacker Down after Loader Module Pick Up Enable
         public static double Machine_LoaderStacker_DownDistance_afterLoaderPickUp { set; get; } = 5.0;      //  Loader 가 Module Pick Up 후 Stacker 를 내리는 거리
         public static bool Machine_LoaderStacker_NoMaterialDetectTime_Enable { set; get; } = true;          //  Loader Stacker No Material Detect Time Enable
@@ -1207,6 +1209,9 @@ namespace QMC.Common
                 stLayerRecipeSet[i].SpiralParam_InnerDiameter = 0.0;                                //  Spiral Inner Diameter Resizing (mm)
                 stLayerRecipeSet[i].SpiralParam_Revolutions = 10.0;                                 //  Spiral Revolutions
                 stLayerRecipeSet[i].SpiralParam_AngleFactor = 10.0;                                 //  Spiral Angle Factor
+
+                //  EPRO Module Absorption Level
+                stLayerRecipeSet[i].EPRO_ModuleAbsorptionLevel = -40.0;                             //  EPRO Module Absorption Level (kPa)
 
                 //  Mechanical-Alignment Vacuum
                 stLayerRecipeSet[i].MAligner_VacuumPos_Center = true;                               //  Mechanical-Alignment Center Vacuum Use (true: Use, false: Not Use)
@@ -2968,15 +2973,15 @@ namespace QMC.Common
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderTransfer_NumberOfVibrations", "2", temp, 255, strFIle);
             Equipment.Machine_LoaderTransfer_NumberOfVibrations = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderTransfer_Vibration_MoveDistance", "2.0", temp, 255, strFIle);
-            Equipment.Machine_LoaderTransfer_Vibration_MoveDistance = Equipment.ToDouble(temp.ToString());           
+            Equipment.Machine_LoaderTransfer_Vibration_MoveDistance = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderTransfer_Vibration_Interval", "500", temp, 255, strFIle);
+            Equipment.Machine_LoaderTransfer_Vibration_Interval = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_Enable", "True", temp, 255, strFIle);
             Equipment.Machine_LoaderStacker_LiftUp_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_Step", "7", temp, 255, strFIle);
             Equipment.Machine_LoaderStacker_LiftUpStep = Equipment.ToInt(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_StableTime", "1000", temp, 255, strFIle);
             Equipment.Machine_LoaderStacker_LiftUp_StableTime = Equipment.ToInt(temp.ToString());
-            NativeMethods.GetPrivateProfileString("Machine_Option", "WorkStage_ModuleAbsorption_JudgeLevel", "-40.0", temp, 255, strFIle);
-            Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_Down_afterLDPickUp_Enable", "True", temp, 255, strFIle);
             Equipment.Machine_LoaderStacker_Down_afterLoaderPickUp_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_DownDistance_afterLDPickUp", "5.0", temp, 255, strFIle);

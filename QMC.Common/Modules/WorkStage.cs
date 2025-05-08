@@ -25481,6 +25481,13 @@ namespace QMC.Common.Modules
             int m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
             int m_nFiducial_ObjectCount = 0;                                    //  Fiducial 마크 데이터 개수
 
+            //  Group 이 아닌 항목이 있는지 체크하기 위한 변수
+            int m_nHole1_NotGroupCount = 0;
+            int m_nRect_NotGroupCount = 0;
+            int m_nThruhole_NotGroupCount = 0;
+            int m_nOutline_NotGroupCount = 0;
+            int m_nMarking_NotGroupCount = 0;
+
             int m_nLayerCount = 0;
 
             //  글자 개수 카운트
@@ -25543,6 +25550,8 @@ namespace QMC.Common.Modules
                                     //point.Location 
                                     //point.DwellTime
                                     //success &= point.Mark(markerArg);
+
+                                    m_nHole1_NotGroupCount++;
                                     break;
 
                                 case EType.Points:
@@ -25554,11 +25563,14 @@ namespace QMC.Common.Modules
                                     //}
                                     //points.DwellTime
                                     //success &= points.Mark(markerArg);
+
+                                    m_nHole1_NotGroupCount++;
                                     break;
 
                                 case EType.Line:
                                     //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
 
+                                    m_nHole1_NotGroupCount++;
                                     break;
 
                                 case EType.Arc:
@@ -25567,6 +25579,8 @@ namespace QMC.Common.Modules
                                     m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
                                     m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
                                     m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
+
+                                    m_nHole1_NotGroupCount++;
                                     break;
 
                                 case EType.Circle:
@@ -25575,6 +25589,8 @@ namespace QMC.Common.Modules
                                     m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
                                     m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
                                     m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
+
+                                    m_nHole1_NotGroupCount++;
                                     break;
 
                                 case EType.Rectangle:
@@ -25584,6 +25600,8 @@ namespace QMC.Common.Modules
                                     //m_stDrawing_Rect[m_nRect_ObjectCount].CenterY = (double)rectangle.ModelTranslate.Y;
                                     //m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)rectangle.Width;
                                     //m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)rectangle.Height;
+
+                                    m_nHole1_NotGroupCount++;
                                     break;
 
                                 case EType.Group:
@@ -25596,50 +25614,6 @@ namespace QMC.Common.Modules
                                     m_stDrawing_Hole1[m_nHole1_ObjectCount++].CenterY = (double)group.Location.Y;
                                     //m_Drawing_Hole1_Center.X = group.Location.X;
                                     //m_Drawing_Hole1_Center.Y = group.Location.Y;
-
-                                    //    foreach (var subEntity in group)
-                                    //    {
-                                    //        Type t = subEntity.GetType();
-                                    //        if (t.Name == "LwPolyline")
-                                    //        {
-                                    //            var pl = subEntity as SpiralLab.Sirius.LwPolyline;
-
-                                    //        }
-                                    //        else if (t.Name == "Circle")
-                                    //        {
-                                    //            var pl = subEntity as SpiralLab.Sirius.Circle;
-
-                                    //            m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)pl.Center.X;
-                                    //            m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)pl.Center.Y;
-                                    //            m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)pl.Radius;
-                                    //        }
-                                    //        else if (t.Name == "Rectangle")
-                                    //        {
-                                    //            var pl = subEntity as SpiralLab.Sirius.Rectangle;
-
-                                    //            m_stDrawing_Rect[m_nRect_ObjectCount].CenterX = (double)pl.Center.X;
-                                    //            m_stDrawing_Rect[m_nRect_ObjectCount].CenterY = (double)pl.Center.Y;
-                                    //            m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)pl.Width;
-                                    //            m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)pl.Height;
-                                    //        }
-                                    //        else if (t.Name == "Line")
-                                    //        {
-                                    //            var pl = subEntity as SpiralLab.Sirius.Line;
-
-                                    //        }
-                                    //        else if (t.Name == "Arc")
-                                    //        {
-                                    //            var pl = subEntity as SpiralLab.Sirius.Arc;
-
-                                    //            m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)pl.Center.X;
-                                    //            m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)pl.Center.Y;
-                                    //            m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)pl.Radius;
-                                    //        }
-                                    //        else        //  또 뭐가 있나...
-                                    //        {
-
-                                    //        }
-                                    //    }
 
                                     break;
                             }
@@ -25840,6 +25814,8 @@ namespace QMC.Common.Modules
                                     //point.Location 
                                     //point.DwellTime
                                     //success &= point.Mark(markerArg);
+
+                                    m_nRect_NotGroupCount++;
                                     break;
 
                                 case EType.Points:
@@ -25851,11 +25827,14 @@ namespace QMC.Common.Modules
                                     //}
                                     //points.DwellTime
                                     //success &= points.Mark(markerArg);
+
+                                    m_nRect_NotGroupCount++;
                                     break;
 
                                 case EType.Line:
                                     //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
 
+                                    m_nRect_NotGroupCount++;
                                     break;
 
                                 case EType.Arc:
@@ -25864,6 +25843,8 @@ namespace QMC.Common.Modules
                                     //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
                                     //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
                                     //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
+
+                                    m_nRect_NotGroupCount++;
                                     break;
 
                                 case EType.Circle:
@@ -25872,6 +25853,8 @@ namespace QMC.Common.Modules
                                     //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
                                     //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
                                     //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
+
+                                    m_nRect_NotGroupCount++;
                                     break;
 
                                 case EType.Rectangle:
@@ -25881,6 +25864,8 @@ namespace QMC.Common.Modules
                                     m_stDrawing_Rect[m_nRect_ObjectCount].CenterY = (double)rectangle.Center.Y;
                                     m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)rectangle.Width;
                                     m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)rectangle.Height;
+
+                                    m_nRect_NotGroupCount++;
                                     break;
                             }
                         }
@@ -25900,6 +25885,8 @@ namespace QMC.Common.Modules
                                     //point.Location 
                                     //point.DwellTime
                                     //success &= point.Mark(markerArg);
+
+                                    m_nOutline_NotGroupCount++;
                                     break;
 
                                 case EType.Points:
@@ -25911,11 +25898,14 @@ namespace QMC.Common.Modules
                                     //}
                                     //points.DwellTime
                                     //success &= points.Mark(markerArg);
+
+                                    m_nOutline_NotGroupCount++;
                                     break;
 
                                 case EType.Line:
                                     //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
 
+                                    m_nOutline_NotGroupCount++;
                                     break;
 
                                 case EType.Arc:
@@ -25924,6 +25914,8 @@ namespace QMC.Common.Modules
                                     //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
                                     //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
                                     //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
+
+                                    m_nOutline_NotGroupCount++;
                                     break;
 
                                 case EType.Circle:
@@ -25932,6 +25924,8 @@ namespace QMC.Common.Modules
                                     //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
                                     //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
                                     //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
+
+                                    m_nOutline_NotGroupCount++;
                                     break;
 
                                 case EType.Rectangle:
@@ -25941,6 +25935,8 @@ namespace QMC.Common.Modules
                                     m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
                                     m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
                                     m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
+
+                                    m_nOutline_NotGroupCount++;
                                     break;
                             }
                         }
@@ -26005,7 +26001,124 @@ namespace QMC.Common.Modules
                             }
                         }
                     }
+                    else if (layer.Name == "Thruhole")
+                    {
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    //point.Location 
+                                    //point.DwellTime
+                                    //success &= point.Mark(markerArg);
+
+                                    m_nThruhole_NotGroupCount++;
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as SpiralLab.Sirius.Points;
+                                    //foreach (var vertex in points)
+                                    //{
+                                    //    //vertex.X
+                                    //    //vertex.Y
+                                    //}
+                                    //points.DwellTime
+                                    //success &= points.Mark(markerArg);
+
+                                    m_nThruhole_NotGroupCount++;
+                                    break;
+
+                                case EType.Line:
+                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
+
+                                    m_nThruhole_NotGroupCount++;
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+
+                                    m_nThruhole_NotGroupCount++;
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+
+                                    m_nThruhole_NotGroupCount++;
+                                    break;
+
+                                case EType.Rectangle:
+                                    //var rectangle = entity as SpiralLab.Sirius2.Winforms.Entity.EntityRectangle;
+
+                                    m_nThruhole_NotGroupCount++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (layer.Name == "Marking")
+                    {
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    //point.Location 
+                                    //point.DwellTime
+                                    //success &= point.Mark(markerArg);
+
+                                    m_nMarking_NotGroupCount++;
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as SpiralLab.Sirius.Points;
+                                    //foreach (var vertex in points)
+                                    //{
+                                    //    //vertex.X
+                                    //    //vertex.Y
+                                    //}
+                                    //points.DwellTime
+                                    //success &= points.Mark(markerArg);
+
+                                    m_nMarking_NotGroupCount++;
+                                    break;
+
+                                case EType.Line:
+                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
+
+                                    m_nMarking_NotGroupCount++;
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+
+                                    m_nMarking_NotGroupCount++;
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+
+                                    m_nMarking_NotGroupCount++;
+                                    break;
+
+                                case EType.Rectangle:
+                                    //var rectangle = entity as SpiralLab.Sirius2.Winforms.Entity.EntityRectangle;
+
+                                    m_nMarking_NotGroupCount++;
+                                    break;
+                            }
+                        }
+                    }
                 }
+            }
+
+            if ((m_nHole1_NotGroupCount > 0) || (m_nRect_NotGroupCount > 0) || (m_nThruhole_NotGroupCount > 0) ||
+                (m_nOutline_NotGroupCount > 0) || (m_nMarking_NotGroupCount > 0))
+            {
+                MessageBox.Show("\"Hole1\", \"Thruhole\", \"Outline\", \"Marking\" Layer 는 Group 만 가능합니다.", "Information!!");
+                return false;
             }
 
             return success;
