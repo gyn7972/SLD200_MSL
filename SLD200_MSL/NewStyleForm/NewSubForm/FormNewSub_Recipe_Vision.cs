@@ -138,6 +138,41 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             Temp_Position_Load();
 
+            if(Equipment.stVisionRecipeSet.PatternShape == PatternShapeType.Cross)
+            {
+                radioButton_RecipeVision_Cross.Checked = true;
+                radioButton_RecipeVision_Circle.Checked = false;
+            }
+            else
+            {
+                radioButton_RecipeVision_Cross.Checked = false;
+                radioButton_RecipeVision_Circle.Checked = true;
+            }
+
+            if (Equipment.stVisionRecipeSet.AlgorithmType == VisionAlgorithmType.PatternMatching)
+            {
+                radioButton_RecipeVision_Pattern.Checked = true;
+                radioButton_RecipeVision_Blob.Checked = false;
+            }
+            else
+            {
+                radioButton_RecipeVision_Pattern.Checked = false;
+                radioButton_RecipeVision_Blob.Checked = true;
+            }
+
+            if (Equipment.stVisionRecipeSet.bCircleDetectionColor == true)
+            {
+                radioButton_RecipeVision_White.Checked = true;
+                radioButton_RecipeVision_Black.Checked = false;
+            }
+            else
+            {
+                radioButton_RecipeVision_White.Checked = false;
+                radioButton_RecipeVision_Black.Checked = true;
+            }
+
+
+
             radioButton_RecipeVision_Move_MoveMode_Fine.Checked = false;
             radioButton_RecipeVision_Move_MoveMode_Coarse.Checked = true;
             radioButton_RecipeVision_JogMove_Continuous.Checked = false;
@@ -703,12 +738,21 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
             else if(radioButton_RecipeVision_Blob.Checked)
             {
-                double dwidth = 1; //Size Param 만들어야됨.
-                PatternMatchingResult SearchResult = null;
+                double dwidth = 0.5; //Size Param 만들어야됨.
+                bool bIsDarkCircleSearch = radioButton_RecipeVision_Black.Checked;
+                if(radioButton_RecipeVision_Black.Checked)
+                {
+                    bIsDarkCircleSearch = true;
+                }
+                else
+                {
+                    bIsDarkCircleSearch = false;
+                }
+                    PatternMatchingResult SearchResult = null;
                 XyCoordinate PointCoordinate = new XyCoordinate();
 
                 ImageViewer_RecipeVision_Rows.ResultOverlays.Clear();
-                Owner.FindCircleDetection(dwidth, out SearchResult, out PointCoordinate);
+                Owner.FindCircleDetection(dwidth, bIsDarkCircleSearch, out SearchResult, out PointCoordinate);
                 if (SearchResult != null)
                 {
                     foreach (var overlay in SearchResult.ResultOverlays)

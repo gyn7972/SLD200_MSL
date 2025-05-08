@@ -453,17 +453,13 @@ namespace QMC.Common.Parts
                         }
                         else if(Equipment.stVisionRecipeSet.AlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
                         {
+                            bool bIsDarkCircleSearch = Equipment.stVisionRecipeSet.bCircleDetectionColor;
                             double dwidth = 0;
-                            if(m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0] == 0)
-                            {
-                                dwidth = 0;
-                            }
-                            else
-                            {
+                            dwidth = m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
+                            if (m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0] == 0)
                                 dwidth = 1;
-                            }
-                            
-                            this.FindCircleDetection(dwidth, out firstPointSearchResult, out firstPointCoordinate);
+
+                            this.FindCircleDetection(dwidth, bIsDarkCircleSearch, out firstPointSearchResult, out firstPointCoordinate);
                         }
                         else
                         {
@@ -557,17 +553,13 @@ namespace QMC.Common.Parts
                     }
                     else if (Equipment.stVisionRecipeSet.AlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
                     {
+                        bool bIsDarkCircleSearch = Equipment.stVisionRecipeSet.bCircleDetectionColor;
                         double dwidth = 0;
+                        dwidth = m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
                         if (m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0] == 0)
-                        {
-                            dwidth = 0;
-                        }
-                        else
-                        {
                             dwidth = 1;
-                        }
-
-                        this.FindCircleDetection(dwidth, out secondPointSearchResult, out secondPointCoordinate);
+                        
+                        this.FindCircleDetection(dwidth, bIsDarkCircleSearch, out firstPointSearchResult, out firstPointCoordinate);
                     }
                     else
                     {
@@ -692,7 +684,7 @@ namespace QMC.Common.Parts
             return ret;
         }
 
-        public int FindCircleDetection(double dWidth, out PatternMatchingResult searchResult, out XyCoordinate currentCoordinate)
+        public int FindCircleDetection(double dWidth, bool bIsDarkCircleSearch, out PatternMatchingResult searchResult, out XyCoordinate currentCoordinate)
         {
             int ret = 0;
             currentCoordinate = new XyCoordinate();
@@ -705,6 +697,8 @@ namespace QMC.Common.Parts
             VisionImage image;
             VisionImage inputImage = null;
             VisionScale TempScale = new VisionScale();
+
+            m_Owner = this.Owner as WorkStage;
 
             try
             {
@@ -740,7 +734,8 @@ namespace QMC.Common.Parts
                         Camera.LatestImage.RawData,
                         Camera.LatestImage.Header.Width,
                         Camera.LatestImage.Header.Height,
-                        nWidthImageCount, 0.05, ref bFind);
+                        nWidthImageCount,0.5, ref bFind, 0, 0, bIsDarkCircleSearch);
+                    // 0.05 - Spec 
 
                     if (Fiducial_circlesResult.Count > 0 && bFind == true)
                     {
@@ -766,7 +761,7 @@ namespace QMC.Common.Parts
                     {
                         try
                         {
-                            m_Owner.FineCamResultOveray = new VisionImageViewer.OwnedOverlayCollection();
+                            m_Owner.CoarseCamResultOveray = new VisionImageViewer.OwnedOverlayCollection();
                             foreach (var v in Fiducial_circlesResult)
                             {
                                 Point ptStart = new Point((int)v.Left, (int)v.Top);
@@ -775,12 +770,12 @@ namespace QMC.Common.Parts
                                 overayRect.Visible = true;
                                 overayRect.Color = Color.Lime;
                                 overayRect.Thickness = 1;
-                                m_Owner.FineCamResultOveray.Add(overayRect);
+                                m_Owner.CoarseCamResultOveray.Add(overayRect);
                                 var overayEl = new EllipseFrameVisionImageOverlay("Fine Align", ptStart, ptEnd);
                                 overayEl.Visible = true;
                                 overayEl.Color = Color.Blue;
                                 overayEl.Thickness = 1;
-                                m_Owner.FineCamResultOveray.Add(overayEl);
+                                m_Owner.CoarseCamResultOveray.Add(overayEl);
                             }
                             m_Owner.UpdateResultOveray?.Invoke(this.Camera, null);
                         }
