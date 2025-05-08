@@ -39,6 +39,7 @@ using static System.Collections.Specialized.BitVector32;
 using System.Drawing;
 using QMC.Common.Vision;
 using Cognex.VisionPro;
+using System.ServiceModel.Syndication;
 
 
 
@@ -474,6 +475,18 @@ namespace QMC.Common
         }
         public static stLayerRecipeParameter[] stLayerRecipeSet = new stLayerRecipeParameter[System.Enum.GetValues(typeof(LayerList)).Length];
 
+        public enum VisionAlgorithmType
+        {
+            PatternMatching = 0,
+            CircleDetection = 1,
+            //BlobDetection = 2,
+        }
+
+        public enum PatternShapeType
+        {
+            Circle = 0,
+            Cross = 1
+        }
         //  Recipe 파라미터 - PreAlign 
         public struct VisionRecipeData
         {
@@ -483,9 +496,13 @@ namespace QMC.Common
             public System.Drawing.Point InspectRoiStartLocation;
             public System.Drawing.Point InspectRoiEndLocation;
             public int IlluminationIR;
-            public double TempPos1_X;
-            public double TempPos1_Y;
             public string TrainImagePath;
+
+            public bool bCircleDetectionColor;  //0: White, 1: Black
+            public double dCircleDetectionSizeW; //circle size width
+            public double dCircleSpec;  //
+            public VisionAlgorithmType AlgorithmType;
+            public PatternShapeType PatternShape;
 
             public void SaveToIni(string path)
             {
@@ -505,7 +522,14 @@ namespace QMC.Common
                 NativeMethods.WritePrivateProfileString("InspectROI", "EndX", InspectRoiEndLocation.X.ToString(), path);
                 NativeMethods.WritePrivateProfileString("InspectROI", "EndY", InspectRoiEndLocation.Y.ToString(), path);
 
+                NativeMethods.WritePrivateProfileString("Vision", "AlgorithmType", ((int)AlgorithmType).ToString(), path);
+                NativeMethods.WritePrivateProfileString("Vision", "PatternShape", ((int)PatternShape).ToString(), path);
+
                 NativeMethods.WritePrivateProfileString("Illumination", "IR", IlluminationIR.ToString(), path);
+
+                NativeMethods.WritePrivateProfileString("CircleDetection", "Color", bCircleDetectionColor.ToString(), path);
+                NativeMethods.WritePrivateProfileString("CircleDetection", "SizeW", dCircleDetectionSizeW.ToString(), path);
+                NativeMethods.WritePrivateProfileString("CircleDetection", "Spec", dCircleSpec.ToString(), path);
 
                 string folderName = Path.GetFileNameWithoutExtension(path);
                 string folderPath = Path.Combine(Path.GetDirectoryName(path), folderName);
@@ -558,9 +582,23 @@ namespace QMC.Common
                     NativeMethods.GetPrivateProfileString("InspectROI", "EndY", "0", sb, sb.Capacity, path); 
                     data.InspectRoiEndLocation.Y = Equipment.ToInt(sb.ToString());
 
-                    // 기타
+                    NativeMethods.GetPrivateProfileString("Vision", "AlgorithmType", "0", sb, sb.Capacity, path);
+                    data.AlgorithmType = (VisionAlgorithmType)Equipment.ToInt(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("Vision", "PatternShape", "0", sb, sb.Capacity, path);
+                    data.PatternShape = (PatternShapeType)Equipment.ToInt(sb.ToString());
+
                     NativeMethods.GetPrivateProfileString("Illumination", "IR", "3500", sb, sb.Capacity, path);
                     data.IlluminationIR = Equipment.ToInt(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("CircleDetection", "Color", "False", sb, sb.Capacity, path);
+                    data.bCircleDetectionColor = Equipment.ToBoolean(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("CircleDetection", "SizeW", "0.5", sb, sb.Capacity, path);
+                    data.dCircleDetectionSizeW = Equipment.ToDouble(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("CircleDetection", "Spec", "0.05", sb, sb.Capacity, path);
+                    data.dCircleSpec = Equipment.ToDouble(sb.ToString());
 
                     NativeMethods.GetPrivateProfileString("TrainImage", "Path", "", sb, sb.Capacity, path);
                     data.TrainImagePath = sb.ToString();
@@ -599,6 +637,28 @@ namespace QMC.Common
                     img.Load(TrainImagePath, VisionImage.FileFilter.bmp);
                     return img;
                 }
+
+                string strFile = "";
+                strFile = string.Format("{0}\\PreAlign.bmp", ConfigManager.GetPatternImagePath());
+                if (File.Exists(strFile))
+                {
+                    try
+                    {
+                        // 필요한 디렉터리 생성
+                        Directory.CreateDirectory(Path.GetDirectoryName(TrainImagePath));
+
+                        File.Copy(strFile, TrainImagePath, overwrite: true);
+
+                        VisionImage defaultImg = new VisionImage();
+                        defaultImg.Load(TrainImagePath, VisionImage.FileFilter.bmp);
+                        return defaultImg;
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Write(ex);
+                    }
+                }
+
                 return null;
             }
         }

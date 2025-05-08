@@ -985,6 +985,8 @@ namespace SLD200_MSL
             }
 
             UpdateInitStatusFromComm();
+
+            Motor_Position();
         }
 
         // -----------------------
@@ -2731,6 +2733,9 @@ namespace SLD200_MSL
                 workStage.m_bLaserDrilling_Complete = true;
                 workStage.m_nLaserDrilling_MainStep = 0;
                 workStage.m_nSocketAlign_MainStep = 0;
+
+                workStage.m_bForceEjectRequest = true;  // 강제 배출 요청. NG로 빼기 위한 변수.
+
             }
             else
             {
@@ -3170,6 +3175,62 @@ namespace SLD200_MSL
             }
         }
 
-        
+
+        private void Motor_Position()
+        {
+            //  Motion Movement 표시
+            if (Equipment.AjinBoard_Opened)
+            {
+                //  Loader Stacker Position
+                label_Main_EncPosition_LD_Z0.Text = string.Format("{0:F3}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.Z0));
+                label_Main_EncPosition_LD_Z1.Text = string.Format("{0:F3}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.Z1));
+
+                //  Loader Transfer Position
+                label_Main_EncPosition_LD_TRX.Text = string.Format("{0:F3}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.TR_X));
+                label_Main_EncPosition_LD_TRZ.Text = string.Format("{0:F3}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.TR_Z));
+
+                //  Loader Mechanic Aligner Position
+                label_Main_EncPosition_LD_ALNX.Text = string.Format("{0:F3}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.ALN_X));
+                label_Main_EncPosition_LD_ALNY.Text = string.Format("{0:F3}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.ALN_Y));
+
+                //  Work Stage Position
+                label_Main_EncPosition_STAGE_X.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X));
+                label_Main_EncPosition_STAGE_Y.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y));
+
+                //  Scanner & Camera Position
+                label_Main_EncPosition_SCANNER_Z.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z));
+
+                if (Equipment.Machine_LaserType_CO2)
+                {
+                    //  Mask Position
+                    label_Main_EncPosition_MASK_Y.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.MASK_Y));
+                }
+                else
+                {
+                    label_Main_EncPosition_MASK_Y.Text = "0.000";
+                    label_Main_EncPosition_MASK_Y.Visible = false;
+                }
+
+                //  Unloader Stacker Position
+                label_Main_EncPosition_UL_Z0.Text = string.Format("{0:F3}", unloader.MC_Func.MC_GetEncPos((int)Unloader.nAxis.Z0));
+                label_Main_EncPosition_UL_Z1.Text = string.Format("{0:F3}", unloader.MC_Func.MC_GetEncPos((int)Unloader.nAxis.Z1));
+
+                //  Unloader Transfer Position
+                label_Main_EncPosition_UL_TRX.Text = string.Format("{0:F3}", unloader.MC_Func.MC_GetEncPos((int)Unloader.nAxis.TR_X));
+                label_Main_EncPosition_UL_TRZ.Text = string.Format("{0:F3}", unloader.MC_Func.MC_GetEncPos((int)Unloader.nAxis.TR_Z));
+
+                //  Work Stage Limit
+                //if (workStage.MC_Func.MC_isLimit_Neg((int)WorkStage.nAxis.X))
+                //{
+                //    button_Config_WorkStage_X_Neg.BackColor = Color.Red;
+                //    button_Config_WorkStage_X_Neg.ForeColor = Color.White;
+                //}
+                //else
+                //{
+                //    button_Config_WorkStage_X_Neg.BackColor = Color.White;
+                //    button_Config_WorkStage_X_Neg.ForeColor = Color.Black;
+                //}
+            }
+        }
     }
 }

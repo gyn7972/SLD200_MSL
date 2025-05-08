@@ -2021,7 +2021,8 @@ namespace QMC.Common.Modules
                         //  일단 Out. (Transfer 동작이 완료되면 진행하도록 대기할 것인지는 테스트 하면서 결정하기로 함)
                         m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
                     }
-                    else if (!workStage.m_bMainWorkCycle_DryRun && loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0)) //  우측 Port 에 Module 이 감지되어 있을 때만 진행
+                    else if (!workStage.m_bMainWorkCycle_DryRun &&
+                        loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0)) //  우측 Port 에 Module 이 감지되어 있을 때만 진행
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "Stacker_0 Module Exist 센서 감지됨");
 
@@ -2080,6 +2081,7 @@ namespace QMC.Common.Modules
                         //m_nStacker0_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
                         //MessageBox.Show("LD Stacker0 에 Module 이 감지되지 않음.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+
                     break;
 
 
@@ -9943,7 +9945,8 @@ namespace QMC.Common.Modules
                 m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.TransferX_Move_ReadyPos;
             }
             else if (Step <= (int)Loader_Transfer_Step.Stacker0_ModulePickup_Condition_Check)
-            {   
+            {
+                m_bStacker0_Complete = false;
                 m_nLoader_Transfer_Step_Recovery = Step;
             }
             else if (Step <= (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Move_ReadyPos_DoneCheck)
