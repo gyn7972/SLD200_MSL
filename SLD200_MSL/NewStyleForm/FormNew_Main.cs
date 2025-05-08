@@ -1753,7 +1753,7 @@ namespace SLD200_MSL
             button_Main_Start.ForeColor = Color.Black;
 
             //  Loader Stacker 동작
-            //loader.m_bStacker0_Complete = false;              //  임시 주석 : 왼쪽 Port 만 사용
+            loader.m_bStacker0_Complete = false;              //  임시 주석 : 왼쪽 Port 만 사용
             loader.m_bStacker1_Complete = false;
 
 

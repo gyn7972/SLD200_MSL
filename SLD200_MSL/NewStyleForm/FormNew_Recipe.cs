@@ -1653,6 +1653,27 @@ namespace SLD200_MSL
                     workStage.jigAligner_LowRes.TrainImage = stVisionRecipeSet.LoadTrainImage(); //이거 사용중.
                 }
 
+                //workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxInstance = 
+                if (Equipment.stVisionRecipeSet.PatternMatching != null)
+                {
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxTolerance = Equipment.stVisionRecipeSet.PatternMatching.MaxTolerance;
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxInstance = Equipment.stVisionRecipeSet.PatternMatching.MaxInstance;
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MinScore = Equipment.stVisionRecipeSet.PatternMatching.MinScore;
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.DuplicateChecked = Equipment.stVisionRecipeSet.PatternMatching.DuplicateChecked;
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.UseMaskImage = Equipment.stVisionRecipeSet.PatternMatching.UseMaskImage;
+                    
+                    if(workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage != null)
+                    {
+                        workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage = Equipment.stVisionRecipeSet.LoadTrainImage().GetImage();
+                    }
+
+                    workStage.jigAligner_LowRes.Recipe.TrainRoiStartLocation = Equipment.stVisionRecipeSet.TrainRoiStartLocation;
+                    workStage.jigAligner_LowRes.Recipe.TrainRoiEndLocation = Equipment.stVisionRecipeSet.TrainRoiEndLocation;
+                    workStage.jigAligner_LowRes.Recipe.InspectRoiStartLocation = Equipment.stVisionRecipeSet.InspectRoiStartLocation;
+                    workStage.jigAligner_LowRes.Recipe.InspectRoiEndLocation = Equipment.stVisionRecipeSet.InspectRoiEndLocation;
+                }
+
+
                 //  Recipe 창에 데이터 표시
                 //  Drawing File
                 richTextBox_Recipe_TabRecipe_DrawingFile.Text = Equipment.stLayerRecipeSet[0].DrawingFile;

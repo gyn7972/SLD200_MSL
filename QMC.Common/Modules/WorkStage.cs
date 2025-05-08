@@ -18271,8 +18271,6 @@ namespace QMC.Common.Modules
                                 m_bPreAlignCompleted = false;
                                 m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
-                                //return AlarmPost(AlarmKey.PreAlignRetryOver);
-                                //return AlarmPost(AlarmKey.PreAlignFail);
                             }
                         }
                     }
