@@ -18237,7 +18237,7 @@ namespace QMC.Common.Modules
                             stPreAlignList.Clear();
 
                             //m_nSocketNum_forAlign <- 이게 소켓넘버
-                            m_nPreAlignMarkNumMax = 4;  //PreAlign 전체 갯수 받아오기. //m_stDividedRegion_GroupData[0].nGroup_Num;
+                            m_nPreAlignMarkNumMax = m_stDividedRegion_GroupData[0].m_nPreAlign_TotalCount;  //PreAlign 전체 갯수 받아오기. //m_stDividedRegion_GroupData[0].nGroup_Num;
                             //m_nPreAlignRetryCount <- Retry를 소켓을 옮기면서 진행하자.
                             //Prealign Layer에서 Data를 받자.
 
@@ -18247,10 +18247,10 @@ namespace QMC.Common.Modules
                             double dFiducialHeight = 0.0;
                             for (int i = 0; i < m_nPreAlignMarkNumMax; i++)
                             {
-                                dFiducialPosX = m_stDividedRegion_GroupData[0].dFiducialPos[i].X; 
-                                dFiducialPosY = m_stDividedRegion_GroupData[0].dFiducialPos[i].Y;
-                                dFiducialWidth = m_stDividedRegion_GroupData[0].dFiducialWidth[i];
-                                dFiducialHeight = m_stDividedRegion_GroupData[0].dFiducialHeight[i];
+                                dFiducialPosX = m_stDividedRegion_GroupData[0].dPreAlignPos[i].X; 
+                                dFiducialPosY = m_stDividedRegion_GroupData[0].dPreAlignPos[i].Y;
+                                dFiducialWidth = m_stDividedRegion_GroupData[0].dPreAlignWidth[i];
+                                dFiducialHeight = m_stDividedRegion_GroupData[0].dPreAlignHeight[i];
 
                                 stPreAlignList.Add(new PreAlignData(dFiducialPosX, dFiducialPosY, dFiducialWidth, dFiducialHeight));   
                             }
@@ -18271,8 +18271,8 @@ namespace QMC.Common.Modules
                             jigAligner_LowRes.m_AlignPositions[1].X = stPreAlignList[1].cX;
                             jigAligner_LowRes.m_AlignPositions[1].Y = stPreAlignList[1].cY;
 
-                            jigAligner_LowRes.m_dRadius[0] = stPreAlignList[0].Width;
-                            jigAligner_LowRes.m_dRadius[1] = stPreAlignList[1].Width;
+                            jigAligner_LowRes.m_dRadius[0] = stPreAlignList[0].Width / 2;
+                            jigAligner_LowRes.m_dRadius[1] = stPreAlignList[1].Width / 2;
 
                             m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
                             m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
@@ -18314,8 +18314,8 @@ namespace QMC.Common.Modules
                         jigAligner_LowRes.m_AlignPositions[1].X = stPreAlignList[1 + m_nPreAlignRetryCount].cX;
                         jigAligner_LowRes.m_AlignPositions[1].Y = stPreAlignList[1 + m_nPreAlignRetryCount].cY;
 
-                        jigAligner_LowRes.m_dRadius[0] = stPreAlignList[0 + m_nPreAlignRetryCount].Width;
-                        jigAligner_LowRes.m_dRadius[1] = stPreAlignList[1 + m_nPreAlignRetryCount].Width;
+                        jigAligner_LowRes.m_dRadius[0] = stPreAlignList[0 + m_nPreAlignRetryCount].Width / 2;
+                        jigAligner_LowRes.m_dRadius[1] = stPreAlignList[1 + m_nPreAlignRetryCount].Width / 2;
 
                         m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
                         m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
