@@ -7880,6 +7880,20 @@ namespace QMC.Common.Modules
             loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = MC_Func.MC_GetEncPos((int)nAxis.ALN_X) + 20.0;
             loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = MC_Func.MC_GetEncPos((int)nAxis.ALN_Y) + 20.0;
 
+            //  Target Position 변경 : 현재 위치에서 넓히는게 아니라, 자재 크기보다 20mm 크게. 100mm 기준 위치값으로 재설정
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] = stLDULTeachingPos[(int)LDUL_TeachingPosList.MAligner_Gap100mmPos].MAligner_X;
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] = stLDULTeachingPos[(int)LDUL_TeachingPosList.MAligner_Gap100mmPos].MAligner_Y;
+
+            //  Target Position 변경 : 입력한 자재 크기로 변경
+            //  모듈 가로 사이즈 : m_dMAlign_ModuleSize_Width
+            //  모듈 세로 사이즈 : m_dMAlign_ModuleSize_Height
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] += (Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Width - 100.0);
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] += (Equipment.stLayerRecipeSet[0].ModuleInformation_Module_Height - 100.0);
+
+            //  Target Position 변경 : 20mm 더 넓게 변경
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] += 20.0;
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_Y] += 20.0;
+
             //  최대로 넓힌 위치값과 비교하여, 초과할 경우 최대 넓힌 위치값으로 변경
             if (loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.ALN_X] > stLDULTeachingPos[(int)LDUL_TeachingPosList.MAligner_OpenPos].MAligner_X)
             {
