@@ -212,6 +212,12 @@ namespace QMC.Common.Motion.Ajin.Motions
             double m_dCurPos = 0.0;
             double m_dTol = 0.007;            //  Tolerance : +- 0.02mm
 
+            //  Loader, Unloader TR-X 축의 경우 Tolerance 넓게
+            if ((nAxis == (int)Loader.nAxis.TR_X) || (nAxis == (int)Unloader.nAxis.TR_X))
+            {
+                m_dTol = 0.02;
+            }
+
             m_dCurPos = MC_GetEncPos(nAxis);
 
             if ((m_dCurPos >= (m_dTargetPos - m_dTol)) &&
