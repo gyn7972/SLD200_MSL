@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\..\..\SLD-200\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SLD_200C</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SLD_200U</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -141,8 +141,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>NationalInstruments\Library\NationalInstruments.Visa.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="spirallab.core, Version=1.145.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -688,6 +688,7 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="syncAXIS\bin64\lib\syncAXIS.lib" />
     <None Include="syncAXIS\bin\lib\syncAXIS.lib" />
   </ItemGroup>

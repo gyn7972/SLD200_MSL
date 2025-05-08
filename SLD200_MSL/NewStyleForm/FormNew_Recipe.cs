@@ -833,6 +833,9 @@ namespace SLD200_MSL
                 //  Rotation Angle when Arc
                 NativeMethods.GetPrivateProfileString(strTemp, "RotationAngleArc", "360.0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_RotationAngleArc = Equipment.ToDouble(temp.ToString());
+                //  Rotation Start Angle when Circle Processing 1 time
+                NativeMethods.GetPrivateProfileString(strTemp, "RotationStartAngle_Circle1time", "0.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_CircleStartAngleCircle1time = Equipment.ToDouble(temp.ToString());
                 //  Mask Index (0:None, 1:Mask1, 2:Mask2, 3:Mask3, 4:Mask4)
                 NativeMethods.GetPrivateProfileString(strTemp, "MaskIndex", "0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_MaskIndex = Equipment.ToInt(temp.ToString());
@@ -994,6 +997,7 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetition = (short)ReadInt(data, "DrillingRepetation", 0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle = (short)ReadInt(data, "DrillingRepetitionBundle", 100);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_RotationAngleArc = ReadDouble(data, "RotationAngleArc", 360.0);
+                Equipment.stLayerRecipeSet[i].Miscellaneous_CircleStartAngleCircle1time = ReadDouble(data, "RotationStartAngle_Circle1time", 0.0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_MaskIndex = ReadInt(data, "MaskIndex", 0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_BETPositionIndex = ReadInt(data, "BETPositionIndex", 0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = ReadInt(data, "HoleProcessingType", 0);
@@ -1134,6 +1138,8 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "DrillingRepetitionBundle", Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle.ToString(), strFIle);
                 //  Rotation Angle when Arc
                 NativeMethods.WritePrivateProfileString(strTemp, "RotationAngleArc", Equipment.stLayerRecipeSet[i].Miscellaneous_RotationAngleArc.ToString(), strFIle);
+                //  Rotation Start Angle when Circle Processing 1 time
+                NativeMethods.WritePrivateProfileString(strTemp, "RotationStartAngle_Circle1time", Equipment.stLayerRecipeSet[i].Miscellaneous_CircleStartAngleCircle1time.ToString(), strFIle);
                 //  Mask Index (0:None, 1:Mask1, 2:Mask2, 3:Mask3, 4:Mask4)
                 NativeMethods.WritePrivateProfileString(strTemp, "MaskIndex", Equipment.stLayerRecipeSet[i].Miscellaneous_MaskIndex.ToString(), strFIle);
                 //  BET Position Index (0:0.1X, 1:0.5X, 2:1.0X, 3:1.5X, 4:2.0X)
@@ -1207,6 +1213,10 @@ namespace SLD200_MSL
                 return;
             }
 
+            //PreAlign Param
+
+
+
             var iniData = new Dictionary<string, Dictionary<string, string>>();
             int layerCount = (int)System.Enum.GetValues(typeof(LayerList)).Length;
 
@@ -1241,6 +1251,7 @@ namespace SLD200_MSL
                 layerDict["DrillingRepetation"] = Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetition.ToString();
                 layerDict["DrillingRepetitionBundle"] = Equipment.stLayerRecipeSet[i].Miscellaneous_DrillingRepetitionBundle.ToString();
                 layerDict["RotationAngleArc"] = Equipment.stLayerRecipeSet[i].Miscellaneous_RotationAngleArc.ToString();
+                layerDict["RotationStartAngle_Circle1time"] = Equipment.stLayerRecipeSet[i].Miscellaneous_CircleStartAngleCircle1time.ToString();
                 layerDict["MaskIndex"] = Equipment.stLayerRecipeSet[i].Miscellaneous_MaskIndex.ToString();
                 layerDict["BETPositionIndex"] = Equipment.stLayerRecipeSet[i].Miscellaneous_BETPositionIndex.ToString();
                 layerDict["HoleProcessingType"] = Equipment.stLayerRecipeSet[i].Miscellaneous_HoleProcessingType.ToString();
@@ -1378,6 +1389,10 @@ namespace SLD200_MSL
                 Recipe_Data_Save_Refactory(fileName);
                 Equipment.Current_Recipe = fileName;
 
+                // Vision Data 저장
+                //visionData.SaveTrainImage(Owner.TrainImage);
+                stVisionRecipeSet.SaveToIni(fileName);
+
                 MessageBox.Show("Recipe Data를 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -1392,7 +1407,7 @@ namespace SLD200_MSL
             //  Recipe 창의 데이터를 Equipment Recipe Set에 적용
 
             //  Layer Index 확인
-            int m_nLayerIndex = -1;
+            int m_nLayerIndex = -1; 
             int m_nIndex = listBox_Recipe_TabRecipe_ListOfDrawingLayer.SelectedIndex;
             string m_strLayerName = "";
             
@@ -1408,6 +1423,13 @@ namespace SLD200_MSL
             else
             {
                 m_strLayerName = listBox_Recipe_TabRecipe_ListOfDrawingLayer.Items[m_nIndex].ToString();
+            }
+
+            //  도면 확인
+            if (richTextBox_Recipe_TabRecipe_DrawingFile.Text.Length <= 0)
+            {
+                MessageBox.Show("도면 파일이 없습니다.", "Information!!"); 
+                return;
             }
 
             //  Layer Index 확인
@@ -1498,6 +1520,7 @@ namespace SLD200_MSL
 
             //  Drawing File
             Equipment.stLayerRecipeSet[m_nLayerIndex].DrawingFile = richTextBox_Recipe_TabRecipe_DrawingFile.Text;                  //  Drawing File 은 0번 Layer 에만 저장한다.
+            Equipment.RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
 
             //  Laser Parameter
             Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_PulseWidth = textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Text) : 0;
@@ -1528,6 +1551,7 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_DrillingRepetition = textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text) : 0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_DrillingRepetitionBundle = textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text) : 100;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_RotationAngleArc = textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text) : 360.0;
+            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_CircleStartAngleCircle1time = textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text) : 0.0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_P2PDistance = textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text) : 0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_MaskIndex = comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_BETPositionIndex = comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex;
@@ -1569,17 +1593,6 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[m_nLayerIndex].DustCollectorFreq_Upper = textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text) : 20.0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].DustCollectorFreq_Lower = textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text) : 20.0;
 
-            //PreAlign
-            Equipment.stLayerRecipeSet[m_nLayerIndex].PreAlignPos1.X =
-                textBox_Recipe_TabRecipe_PreAlignPosX1.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosX1.Text) : 0.0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].PreAlignPos1.Y =
-                textBox_Recipe_TabRecipe_PreAlignPosY1.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosY1.Text) : 0.0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].PreAlignPos2.X =
-                textBox_Recipe_TabRecipe_PreAlignPosX2.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosX2.Text) : 0.0;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].PreAlignPos2.Y =
-                textBox_Recipe_TabRecipe_PreAlignPosY2.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_PreAlignPosY2.Text) : 0.0;
-
-
             //  도면 데이터를 가공용 Document 에 적용
             Equipment.EqpSiriusViewer.Document = m_formSiriusEditor.SiriusEditor.Document;
 
@@ -1588,8 +1601,9 @@ namespace SLD200_MSL
 
         private void button_Recipe_Open_Click(object sender, EventArgs e)
         {
-            string fileName;
-
+            string filePath = "";
+            string fileName = "";
+            
             if (Equipment.EqpSiriusViewer == null)
             {
                 MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
@@ -1618,6 +1632,7 @@ namespace SLD200_MSL
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
+                //filePath = openFileDialog.filePath;
                 fileName = openFileDialog.FileName;
 
                 //  Recipe Data 로드
@@ -1629,9 +1644,37 @@ namespace SLD200_MSL
                 //  Recipe 명 표시
                 label_Recipe_FileName.Text = System.IO.Path.GetFileName(fileName);
 
+                // Recipe Vision Load
+                string iniPath = fileName;  //ConfigManager.GetRecipeDataPath() + "\\RecipeVisionData.ini";
+                stVisionRecipeSet = VisionRecipeData.LoadFromIni(iniPath);
+                if (workStage.jigAligner_LowRes != null)
+                {
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage = stVisionRecipeSet.LoadTrainImage(); //Bitmap.FromFile(m_strFile);
+                    workStage.jigAligner_LowRes.TrainImage = stVisionRecipeSet.LoadTrainImage(); //이거 사용중.
+                }
+
+                //workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxInstance = 
+                if (Equipment.stVisionRecipeSet.PatternMatching != null)
+                {
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxTolerance = Equipment.stVisionRecipeSet.PatternMatching.MaxTolerance;
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxInstance = Equipment.stVisionRecipeSet.PatternMatching.MaxInstance;
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MinScore = Equipment.stVisionRecipeSet.PatternMatching.MinScore;
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.DuplicateChecked = Equipment.stVisionRecipeSet.PatternMatching.DuplicateChecked;
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.UseMaskImage = Equipment.stVisionRecipeSet.PatternMatching.UseMaskImage;
+                    
+                    if(workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage != null)
+                    {
+                        workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage = Equipment.stVisionRecipeSet.LoadTrainImage().GetImage();
+                    }
+
+                    workStage.jigAligner_LowRes.Recipe.TrainRoiStartLocation = Equipment.stVisionRecipeSet.TrainRoiStartLocation;
+                    workStage.jigAligner_LowRes.Recipe.TrainRoiEndLocation = Equipment.stVisionRecipeSet.TrainRoiEndLocation;
+                    workStage.jigAligner_LowRes.Recipe.InspectRoiStartLocation = Equipment.stVisionRecipeSet.InspectRoiStartLocation;
+                    workStage.jigAligner_LowRes.Recipe.InspectRoiEndLocation = Equipment.stVisionRecipeSet.InspectRoiEndLocation;
+                }
+
 
                 //  Recipe 창에 데이터 표시
-
                 //  Drawing File
                 richTextBox_Recipe_TabRecipe_DrawingFile.Text = Equipment.stLayerRecipeSet[0].DrawingFile;
 
@@ -1685,6 +1728,7 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_DrillingRepetition.ToString();
                 textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_DrillingRepetitionBundle.ToString();
                 textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_RotationAngleArc.ToString();
+                textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_CircleStartAngleCircle1time.ToString();
                 textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_P2PDistance.ToString();
                 //comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString();
                 //comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString();
@@ -1728,12 +1772,6 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper.ToString();
                 textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString();
 
-                // PreAlign
-                textBox_Recipe_TabRecipe_PreAlignPosX1.Text = Equipment.stLayerRecipeSet[0].PreAlignPos1.X.ToString();
-                textBox_Recipe_TabRecipe_PreAlignPosY1.Text = Equipment.stLayerRecipeSet[0].PreAlignPos1.Y.ToString();
-                textBox_Recipe_TabRecipe_PreAlignPosX2.Text = Equipment.stLayerRecipeSet[0].PreAlignPos2.X.ToString();
-                textBox_Recipe_TabRecipe_PreAlignPosY2.Text = Equipment.stLayerRecipeSet[0].PreAlignPos2.Y.ToString();
-
                 int m_nCount = 0;
 
                 do
@@ -1749,7 +1787,7 @@ namespace SLD200_MSL
                 //Equipment.EqpSiriusViewer_Origin.Document = m_formSiriusEditor.SiriusEditor.Document;
 
                 //  자동운전 중 모듈 가공 시 이 위치의 도면파일을 로드한다.
-                RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
+                Equipment.RecipeOpen_DrawingFilePath = richTextBox_Recipe_TabRecipe_DrawingFile.Text;
 
                 workStage.DrillingData_Parsing();
 
@@ -1914,6 +1952,7 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_DrillingRepetition.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_DrillingRepetitionBundle.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_RotationAngleArc.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_CircleStartAngleCircle1time.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_P2PDistance.ToString();
             //comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_MaskIndex.ToString();
             //comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_BETPositionIndex.ToString();
@@ -1922,8 +1961,8 @@ namespace SLD200_MSL
             comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_HoleProcessingType.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialAlignType.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialMarkType.ToString());
-            checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Checked = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_HoleSortByDistance_Use;
-            textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_HoleSortingDistance.ToString();
+            checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Checked = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortByDistance_Use;
+            textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortingDistance.ToString();
 
             //  process Options
             checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Checked = Equipment.stLayerRecipeSet[0].ProcessOption_SocketAlign_Use;                         //  Socket Align 기능 사용 여부
@@ -1957,11 +1996,6 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper.ToString();
             textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString();
 
-            // PreAlign
-            textBox_Recipe_TabRecipe_PreAlignPosX1.Text = Equipment.stLayerRecipeSet[0].PreAlignPos1.X.ToString();
-            textBox_Recipe_TabRecipe_PreAlignPosY1.Text = Equipment.stLayerRecipeSet[0].PreAlignPos1.Y.ToString();
-            textBox_Recipe_TabRecipe_PreAlignPosX2.Text = Equipment.stLayerRecipeSet[0].PreAlignPos2.X.ToString();
-            textBox_Recipe_TabRecipe_PreAlignPosY2.Text = Equipment.stLayerRecipeSet[0].PreAlignPos2.Y.ToString();
         }
 
         public void Recipe_Open(string m_strRecipeFile)
@@ -2029,6 +2063,7 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetition.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_DrillingRepetition.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_DrillingRepetitionBundle.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_DrillingRepetitionBundle.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_RotationAngleArc.ToString();
+            textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_CircleStartAngleCircle1time.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_P2PDistance.ToString();
             //comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString();
             //comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString();
@@ -2071,12 +2106,6 @@ namespace SLD200_MSL
             checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked = Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use;                         //  집진기 Remote Mode 사용 여부
             textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper.ToString();
             textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString();
-
-            // PreAlign
-            textBox_Recipe_TabRecipe_PreAlignPosX1.Text = Equipment.stLayerRecipeSet[0].PreAlignPos1.X.ToString();
-            textBox_Recipe_TabRecipe_PreAlignPosY1.Text = Equipment.stLayerRecipeSet[0].PreAlignPos1.Y.ToString();
-            textBox_Recipe_TabRecipe_PreAlignPosX2.Text = Equipment.stLayerRecipeSet[0].PreAlignPos2.X.ToString();
-            textBox_Recipe_TabRecipe_PreAlignPosY2.Text = Equipment.stLayerRecipeSet[0].PreAlignPos2.Y.ToString();
 
             //  도면 Import
             m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);

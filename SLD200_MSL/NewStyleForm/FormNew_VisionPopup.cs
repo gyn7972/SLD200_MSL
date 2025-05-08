@@ -1334,6 +1334,23 @@ namespace SLD200_MSL
             int m_nImage_Width = 0;
             int m_nImage_Height = 0;
 
+            double m_dTargetSize_Radius = 0.0;
+            int m_nTargetColor = 0;
+
+
+            if (textBox_VisionPopup_FiducialSize_Width.Text.Length < 0)
+            {
+                MessageBox.Show("Fiducial Size 를 입력하세요.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //  Fiducial 마크 크기
+            m_dTargetSize_Radius = Equipment.ToDouble(textBox_VisionPopup_FiducialSize_Width.Text);
+
+            //  Fiducial 마크 색깔
+            m_nTargetColor = comboBox_VisionPopup_FiducialColor.SelectedIndex;          //  0: Black, 1: White
+
+
             detectedCircles.Clear();
 
             QMC_ImageProcessFindAlign aligner = new QMC_ImageProcessFindAlign();
@@ -1347,12 +1364,15 @@ namespace SLD200_MSL
                 m_nImage_Width = w;
                 m_nImage_Height = h;
 
+                double m_dradius = 0.0;
+                m_dradius = m_dTargetSize_Radius / workStage.Config.ParamConfig.LowerVision_Scale_X;
+
                 // Bitmap을 byte 배열로 변환
                 //byte[] pixelData = aligner.ConvertBitmapToByteArray(bm_Temp);
 
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, workStage.Camera_LowRes.LatestImage.RawData, w, h);
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h);
-                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h,3000,0.99, ref m_bFindCircle);
+                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, (int)m_dradius, 0.1, ref m_bFindCircle, 0, 0, m_nTargetColor == 0);
             }
             else
             {
@@ -1362,11 +1382,14 @@ namespace SLD200_MSL
                 m_nImage_Width = w;
                 m_nImage_Height = h;
 
+                double m_dradius = 0.0;
+                m_dradius = m_dTargetSize_Radius / workStage.Config.ParamConfig.UpperVision_Scale_X;
+
                 // Bitmap을 byte 배열로 변환
                 //byte[] pixelData = aligner.ConvertBitmapToByteArray(bm_Temp);                
 
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h);
-                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, 3000, 0.99, ref m_bFindCircle);
+                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, (int)m_dradius, 0.1, ref m_bFindCircle, 0, 0, m_nTargetColor == 0);
             }
 
             if (m_bFindCircle && (circlesResult.Count > 0))
