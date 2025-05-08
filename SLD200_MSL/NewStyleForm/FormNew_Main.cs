@@ -2139,6 +2139,8 @@ namespace SLD200_MSL
 
             Equipment.ProcessingData_Parsing_byLoader = false;
 
+            selectedRow = -1;
+            selectedColumn = -1;
             workStage.m_nSocketAlign_StartIndex = -1;
             Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
             checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
@@ -2390,6 +2392,8 @@ namespace SLD200_MSL
 
             Equipment.ProcessingData_Parsing_byLoader = false;
 
+            selectedRow = -1;
+            selectedColumn = -1;
             workStage.m_nSocketAlign_StartIndex = -1;
             Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
             checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
