@@ -7828,14 +7828,18 @@ namespace QMC.Common.Modules
         }
         public void UpdateLaserStatus()
         {
-            //try
-            //{
-            //    m_bLaserBusy = rtc.CtlGetStatus(RtcStatus.Busy);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log.Write(ex);
-            //}
+            try
+            {
+                if(rtc != null &&
+                   Equipment._InitDeviceStatus.Scanner)
+                {
+                    m_bLaserBusy = rtc.CtlGetStatus(RtcStatus.Busy);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
         }
 
         private async void Timer_MainWork_Tick(object sender, ElapsedEventArgs e)
@@ -7945,8 +7949,7 @@ namespace QMC.Common.Modules
 
 
                 // Scanner signal로 레이저 발진 유/무 확인.
-                if(rtc != null)
-                    UpdateLaserStatus();
+                UpdateLaserStatus();
 
                 // Scanner Calibration이 활성화되지 않은 경우 종료??
                 if (!m_MainWork_Start)
@@ -13587,11 +13590,11 @@ namespace QMC.Common.Modules
                             Log.Write("Alaign Test", "Offset  : " + offset.ToString());
                             
                         }
+
                     }
                     xyCoordinateAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
                     MC_Func.MovePosition(xyCoordinateAlign, lfVelocity, lfAccDec, lfAccDec);
                     // Todo :김영남  얼라인 위치 이동 계산. 해야되는 부분..
-
 
                     TickCount_Start((int)TickType.TICK_ALIGN);
 
@@ -14165,7 +14168,8 @@ namespace QMC.Common.Modules
             if (nSocketNum == 0)
             {
                 // TODO : 여기 변수 바꿔 주세요!! 구영남 부장님~~ 성공 실패..
-                if(m_bPreAlignCompleted)
+                // m_bFindLowerAlignMark_OK : 성공/실패 변수 추가.
+                if (m_bPreAlignCompleted && m_bFindLowerAlignMark_OK)
                 {
                     m_bIsFirstAlign = false;
                 }
@@ -18169,21 +18173,41 @@ namespace QMC.Common.Modules
                     //Equipment.stLayerRecipeSet[0].PreAlignPos1 = leftPoint;
                     //Equipment.stLayerRecipeSet[0].PreAlignPos2 = rightPoint;
 
-                    //m_nDrillingWork_Group_Count 이거 0이여야 한다.
-                    try
+                    if(m_nPreAlignRetryCount < 2)
                     {
-                        Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[0].dFiducialPos[2].X;
-                        Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[0].dFiducialPos[2].Y;
-                        Equipment.stLayerRecipeSet[0].PreAlignPos2.X = m_stDividedRegion_GroupData[0].dFiducialPos[3].X;
-                        Equipment.stLayerRecipeSet[0].PreAlignPos2.Y = m_stDividedRegion_GroupData[0].dFiducialPos[3].Y;
+                        //2번은 1번 소켓으로 수행.
+                        //m_nDrillingWork_Group_Count 이거 0이여야 한다.
+                        try
+                        {
+                            Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[0].dFiducialPos[2].X;
+                            Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[0].dFiducialPos[2].Y;
+                            Equipment.stLayerRecipeSet[0].PreAlignPos2.X = m_stDividedRegion_GroupData[0].dFiducialPos[3].X;
+                            Equipment.stLayerRecipeSet[0].PreAlignPos2.Y = m_stDividedRegion_GroupData[0].dFiducialPos[3].Y;
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Write(ex);
+                        }
                     }
-                    catch(Exception ex)
+                    else
                     {
-                        Log.Write(ex);
+                        // 마지막은 2번 소켓으로 수행.
+                        try
+                        {
+                            Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[1].dFiducialPos[2].X;
+                            Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[1].dFiducialPos[2].Y;
+                            Equipment.stLayerRecipeSet[0].PreAlignPos2.X = m_stDividedRegion_GroupData[1].dFiducialPos[3].X;
+                            Equipment.stLayerRecipeSet[0].PreAlignPos2.Y = m_stDividedRegion_GroupData[1].dFiducialPos[3].Y;
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Write(ex);
+                        }
                     }
 
-                    //너무 Data를 빨리 던져서 문제가 아닌지 Test.
-                    Thread.Sleep(100);
+
+                        //너무 Data를 빨리 던져서 문제가 아닌지 Test.
+                        Thread.Sleep(100);
 
                     m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
                     m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
@@ -18256,7 +18280,7 @@ namespace QMC.Common.Modules
                         else
                         {
                             m_nPreAlignRetryCount++;
-                            if (m_nPreAlignRetryCount < 3)
+                            if (m_nPreAlignRetryCount < 4)
                             {
                                 m_bPreAlignCompleted = false;
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
@@ -18288,7 +18312,7 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 보정 시작.");
 
-                    TickCount_Start((int)TickType.TICK_MAIN);
+                    //TickCount_Start((int)TickType.TICK_MAIN); //<-여기선 필요없음.
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Correction_Complete;
                     break;
