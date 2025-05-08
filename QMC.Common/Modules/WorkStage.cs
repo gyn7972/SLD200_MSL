@@ -371,6 +371,7 @@ namespace QMC.Common.Modules
         public bool m_bAlignCompleted;                                          //  얼라인 완료 되었는지?
         public bool m_bPreAlignCompleted;                                          //  얼라인 완료 되었는지?
         public int m_nPreAlignRetryCount;
+        public int m_nPreAlignMarkNumMax;
 
         public st4PointPosition_Data[] m_st2PointPosition_InspectedPos;         //  2-Point 의 측정된 위치 데이터
         public st4PointAlign_Result m_st2PointAlign_Result;                     //  Align 데이터
@@ -669,6 +670,8 @@ namespace QMC.Common.Modules
             public PointD[] dFiducialPos;               //  Fiducial 마크 위치 (1~4번 마크)
             public double[] dFiducialWidth;             //  Fiducial 마크 가로 크기
             public double[] dFiducialHeight;            //  Fiducial 마크 세로 크기
+
+
         }
         public stDividedRegion_GroupData[] m_stDividedRegion_GroupData;
 
@@ -3545,6 +3548,7 @@ namespace QMC.Common.Modules
             /// <summary>
             /// 2점 PreAlign Start
             DrillingData_PreAlign_Start,                                                 //  가공 할 Socket Align 시작
+            DrillingData_PreAlign_Retry,                                                 //  가공 할 Socket Align 재시도
             DrillingData_PreAlign_CompleteCheck,                                         //  가공 할 Socket Align 완료 확인
             DrillingData_PreAlign_Correction,
             DrillingData_PreAlign_Correction_Complete,
@@ -7781,7 +7785,6 @@ namespace QMC.Common.Modules
         public void Scanner_Calibration_Vision_Save()
         {
             string strTemp = "";
-
             string strFIle = "";
             strFIle = ConfigManager.GetConfigPath() + "\\Machine ScannerCalibration (Do not delete or modify).ini";
 
@@ -18197,39 +18200,54 @@ namespace QMC.Common.Modules
                     {
                         if (m_stDividedRegion_GroupData != null)
                         {
+                            stPreAlignList.Clear();
+
                             //m_nSocketNum_forAlign <- 이게 소켓넘버
-                            int nSocketNumMax = m_stDividedRegion_GroupData[0].nGroup_Num;
+                            m_nPreAlignMarkNumMax = 4;  //PreAlign 전체 갯수 받아오기. //m_stDividedRegion_GroupData[0].nGroup_Num;
                             //m_nPreAlignRetryCount <- Retry를 소켓을 옮기면서 진행하자.
-                            if ((m_nPreAlignRetryCount >= 0) && (m_nPreAlignRetryCount < nSocketNumMax))
+                            //Prealign Layer에서 Data를 받자.
+
+                            double dFiducialPosX = 0.0;
+                            double dFiducialPosY = 0.0;
+                            double dFiducialWidth = 0.0;
+                            double dFiducialHeight = 0.0;
+                            for (int i = 0; i < m_nPreAlignMarkNumMax; i++)
                             {
-                                //Pre Align은 Socket의 2, 3번 Mark로 수행.
-                                Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[m_nPreAlignRetryCount].dFiducialPos[2].X;
-                                Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[m_nPreAlignRetryCount].dFiducialPos[2].Y;
-                                Equipment.stLayerRecipeSet[0].PreAlignPos2.X = m_stDividedRegion_GroupData[m_nPreAlignRetryCount].dFiducialPos[3].X;
-                                Equipment.stLayerRecipeSet[0].PreAlignPos2.Y = m_stDividedRegion_GroupData[m_nPreAlignRetryCount].dFiducialPos[3].Y;
+                                dFiducialPosX = m_stDividedRegion_GroupData[0].dFiducialPos[i].X; 
+                                dFiducialPosY = m_stDividedRegion_GroupData[0].dFiducialPos[i].Y;
+                                dFiducialWidth = m_stDividedRegion_GroupData[0].dFiducialWidth[i];
+                                dFiducialHeight = m_stDividedRegion_GroupData[0].dFiducialHeight[i];
 
-                                //너무 Data를 빨리 던져서 문제가 아닌지 Test.
-                                Thread.Sleep(100);
-
-                                m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
-                                m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
-                                m_nFindAlignMark_Step = (int)FindAlignMark_Step.Start;
-                                m_bFindAlignMark_Complete = false;
-
-                                TickCount_Start((int)TickType.TICK_MAIN);
-
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_CompleteCheck;
+                                stPreAlignList.Add(new PreAlignData(dFiducialPosX, dFiducialPosY, dFiducialWidth, dFiducialHeight));   
                             }
-                            else
-                            {
-                                m_strTemp = string.Format("DrillingData_PreAlign_Start :: PreAlign Retry Fail!!!");
-                                Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
 
-                                m_bFindLowerAlignMark_OK = false;
-                                m_bPreAlignCompleted = false;
-                                m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
-                            }
+                            //Pre Align은 Socket의 2, 3번 Mark로 수행.
+                            //기존에 사용.
+                            //Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[m_nPreAlignRetryCount].dFiducialPos[2].X;
+                            //Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[m_nPreAlignRetryCount].dFiducialPos[2].Y;
+                            //Equipment.stLayerRecipeSet[0].PreAlignPos2.X = m_stDividedRegion_GroupData[m_nPreAlignRetryCount].dFiducialPos[3].X;
+                            //Equipment.stLayerRecipeSet[0].PreAlignPos2.Y = m_stDividedRegion_GroupData[m_nPreAlignRetryCount].dFiducialPos[3].Y;
+
+                            //너무 Data를 빨리 던져서 문제가 아닌지 Test.
+                            Thread.Sleep(100);
+
+                            // 처음에는 여기서 0, 1번으로 진행 하자.
+                            jigAligner_LowRes.m_AlignPositions[0].X = stPreAlignList[0].cX;
+                            jigAligner_LowRes.m_AlignPositions[0].Y = stPreAlignList[0].cY;
+                            jigAligner_LowRes.m_AlignPositions[1].X = stPreAlignList[1].cX;
+                            jigAligner_LowRes.m_AlignPositions[1].Y = stPreAlignList[1].cY;
+
+                            jigAligner_LowRes.m_dRadius[0] = stPreAlignList[0].Width;
+                            jigAligner_LowRes.m_dRadius[1] = stPreAlignList[1].Width;
+
+                            m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
+                            m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
+                            m_nFindAlignMark_Step = (int)FindAlignMark_Step.Start;
+                            m_bFindAlignMark_Complete = false;
+
+                            TickCount_Start((int)TickType.TICK_MAIN);
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_CompleteCheck;
                         }
                         else
                         {
@@ -18250,9 +18268,45 @@ namespace QMC.Common.Modules
                     }
                     break;
 
+                case (int)LaserDrilling_Step.DrillingData_PreAlign_Retry:              //  가공 할 PreAlign 재시도
 
-                case (int)LaserDrilling_Step.DrillingData_PreAlign_CompleteCheck:              //  가공 할 Socket Align 완료 확인
+                    Thread.Sleep(100);
                     
+                    if (m_nPreAlignRetryCount < m_nPreAlignMarkNumMax)
+                    {
+                        //Retry 시에는 1번씩 증가 시키자.
+                        jigAligner_LowRes.m_AlignPositions[0].X = stPreAlignList[0 + m_nPreAlignRetryCount].cX;
+                        jigAligner_LowRes.m_AlignPositions[0].Y = stPreAlignList[0 + m_nPreAlignRetryCount].cY;
+                        jigAligner_LowRes.m_AlignPositions[1].X = stPreAlignList[1 + m_nPreAlignRetryCount].cX;
+                        jigAligner_LowRes.m_AlignPositions[1].Y = stPreAlignList[1 + m_nPreAlignRetryCount].cY;
+
+                        jigAligner_LowRes.m_dRadius[0] = stPreAlignList[0 + m_nPreAlignRetryCount].Width;
+                        jigAligner_LowRes.m_dRadius[1] = stPreAlignList[1 + m_nPreAlignRetryCount].Width;
+
+                        m_nVisionAligner_Type = (int)Aligner_Type.Aligner_PreAlign_Lower;
+                        m_nFindAlignMarkType = (int)AlignMarkType.ALIGN_2POINT;
+                        m_nFindAlignMark_Step = (int)FindAlignMark_Step.Start;
+                        m_bFindAlignMark_Complete = false;
+
+                        TickCount_Start((int)TickType.TICK_MAIN);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_CompleteCheck;
+                    }
+                    else
+                    {
+                        m_strTemp = string.Format("PreAlign Max Count 사용 - Fail!!!");
+                        Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
+
+                        m_bFindLowerAlignMark_OK = false;
+                        m_bPreAlignCompleted = false;
+                        m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.DrillingData_PreAlign_CompleteCheck:              //  가공 할 PreAlign 완료 확인
+
                     if (m_bFindAlignMark_Complete && (m_nFindAlignMark_Step == (int)SocketAlign_Step.None))
                     {
                         if (m_bFindLowerAlignMark_OK)
@@ -18264,7 +18318,10 @@ namespace QMC.Common.Modules
                             double dft = jigAligner_LowRes.GetJigAlignResult();
                             dft = -dft / 180 * Math.PI;
 
-                            XyzCoordinate positionFirst = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
+                            double dPositionX = stPreAlignList[0].cX;
+                            double dPositionY = stPreAlignList[0].cY;
+
+                            XyzCoordinate positionFirst = new XyzCoordinate(jigAligner_LowRes.m_AlignPositions[0].X, jigAligner_LowRes.m_AlignPositions[0].Y, 0.0);
                             positionFirst = this.ConvertPointFineCam(positionFirst);
 
                             m_strTemp = string.Format("PreAlign좌표1, X : {0:0.000}, Y : {1:0.000}", positionFirst.X, positionFirst.Y);
@@ -18292,16 +18349,35 @@ namespace QMC.Common.Modules
                                 Math.Abs(dfy) > dInterlockOffsetY )//|| 
                                 //Math.Abs(dft) > (dInterlockOffsetT * Math.PI / 180.0))
                             {
-                                m_bFindLowerAlignMark_OK = false;
-                                m_bPreAlignCompleted = false;
-                                m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
+                                //Retry 돌렸다가 빼자.
+                                m_nPreAlignRetryCount++;
+                                if (m_nPreAlignRetryCount < m_nPreAlignMarkNumMax) // 카운트 
+                                {
+                                    m_bPreAlignCompleted = false;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Retry;
 
-                                m_strTemp = string.Format("PreAlign InterLoack Fail!!!");
-                                Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
-                                break;
-                                //알람이 아니라 NG 시컨스로 진행하자.
-                                //return AlarmPost(AlarmKey.PreAlignOffsetTooLarge);
+                                }
+                                else
+                                {
+                                    m_strTemp = string.Format("PreAlign Retry Fail!!!");
+                                    Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
+
+                                    m_bFindLowerAlignMark_OK = false;
+                                    m_bPreAlignCompleted = false;
+                                    m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                                }
+
+                                //m_bFindLowerAlignMark_OK = false;
+                                //m_bPreAlignCompleted = false;
+                                //m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
+
+                                //m_strTemp = string.Format("PreAlign InterLoack Fail!!!");
+                                //Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
+                                //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                                //break;
+                                ////알람이 아니라 NG 시컨스로 진행하자.
+                                ////return AlarmPost(AlarmKey.PreAlignOffsetTooLarge);
                             }
 
                             m_nPreAlignRetryCount = 0; // 성공 시 리트라이 카운트 초기화
@@ -18314,7 +18390,7 @@ namespace QMC.Common.Modules
                             if (m_nPreAlignRetryCount < 4)
                             {
                                 m_bPreAlignCompleted = false;
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Retry;
                                
                             }
                             else

@@ -917,16 +917,6 @@ namespace SLD200_MSL
                 NativeMethods.GetPrivateProfileString(strTemp, "DustCollector_Frequency_Lower", "20.0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower = Equipment.ToDouble(temp.ToString());
 
-                // Pre Align
-                NativeMethods.GetPrivateProfileString(strTemp, "PreAlignPosX1", "0.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].PreAlignPos1.X = Equipment.ToDouble(temp.ToString());
-                NativeMethods.GetPrivateProfileString(strTemp, "PreAlignPosY1", "0.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].PreAlignPos1.Y = Equipment.ToDouble(temp.ToString());
-                NativeMethods.GetPrivateProfileString(strTemp, "PreAlignPosX2", "0.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].PreAlignPos2.X = Equipment.ToDouble(temp.ToString());
-                NativeMethods.GetPrivateProfileString(strTemp, "PreAlignPosY2", "0.0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].PreAlignPos2.Y = Equipment.ToDouble(temp.ToString());
-
             }
 
             return m_bRet;
@@ -1038,11 +1028,6 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].DustCollectorRemoteMode_Use = ReadBool(data, "DustCollector_RemoteMode_Use", false);
                 Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper = ReadDouble(data, "DustCollector_Frequency_Upper", 20.0);
                 Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower = ReadDouble(data, "DustCollector_Frequency_Lower", 20.0);
-
-                Equipment.stLayerRecipeSet[i].PreAlignPos1.X = ReadDouble(data, "PreAlignPosX1", 0.0);
-                Equipment.stLayerRecipeSet[i].PreAlignPos1.Y = ReadDouble(data, "PreAlignPosY1", 0.0);
-                Equipment.stLayerRecipeSet[i].PreAlignPos2.X = ReadDouble(data, "PreAlignPosX2", 0.0);
-                Equipment.stLayerRecipeSet[i].PreAlignPos2.Y = ReadDouble(data, "PreAlignPosY2", 0.0);
             }
 
             return true;
@@ -1199,12 +1184,6 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_Frequency_Upper", Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_Frequency_Lower", Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower.ToString(), strFIle);
 
-                // Pre Align
-                NativeMethods.WritePrivateProfileString(strTemp, "PreAlignPosX1", Equipment.stLayerRecipeSet[i].PreAlignPos1.X.ToString(), strFIle);
-                NativeMethods.WritePrivateProfileString(strTemp, "PreAlignPosY1", Equipment.stLayerRecipeSet[i].PreAlignPos1.Y.ToString(), strFIle);
-                NativeMethods.WritePrivateProfileString(strTemp, "PreAlignPosX2", Equipment.stLayerRecipeSet[i].PreAlignPos2.X.ToString(), strFIle);
-                NativeMethods.WritePrivateProfileString(strTemp, "PreAlignPosY2", Equipment.stLayerRecipeSet[i].PreAlignPos2.Y.ToString(), strFIle);
-
             }
         }
 
@@ -1297,11 +1276,6 @@ namespace SLD200_MSL
                 layerDict["DustCollector_RemoteMode_Use"] = Equipment.stLayerRecipeSet[i].DustCollectorRemoteMode_Use.ToString();
                 layerDict["DustCollector_Frequency_Upper"] = Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper.ToString();
                 layerDict["DustCollector_Frequency_Lower"] = Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower.ToString();
-
-                layerDict["PreAlignPosX1"] = Equipment.stLayerRecipeSet[i].PreAlignPos1.X.ToString();
-                layerDict["PreAlignPosY1"] = Equipment.stLayerRecipeSet[i].PreAlignPos1.Y.ToString();
-                layerDict["PreAlignPosX2"] = Equipment.stLayerRecipeSet[i].PreAlignPos2.X.ToString();
-                layerDict["PreAlignPosY2"] = Equipment.stLayerRecipeSet[i].PreAlignPos2.Y.ToString();
 
                 iniData[section] = layerDict;
             }

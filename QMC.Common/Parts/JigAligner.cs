@@ -37,7 +37,7 @@ namespace QMC.Common.Parts
         #region Field
         public WorkStage m_Owner;
         public XyCoordinate[] m_AlignPositions;
-
+        public double[] m_dRadius;
         #endregion
 
         #region Constructor
@@ -56,6 +56,10 @@ namespace QMC.Common.Parts
             m_AlignPositions[0].Y = 0.0;
             m_AlignPositions[1].X = 0.0;
             m_AlignPositions[1].Y = 0.0;
+
+            this.m_dRadius = new double[2];
+            m_dRadius[0] = 0.0;
+            m_dRadius[1] = 0.0;
         }
         #endregion
 
@@ -392,7 +396,7 @@ namespace QMC.Common.Parts
                         //this.Stage.MovePosition(m_AlignPositions[0]);
 
                         //도면 좌표 불러옴 
-                        position = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
+                        position = new XyzCoordinate(m_AlignPositions[0].X, m_AlignPositions[0].Y, 0.0);
                         Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"positionX1{position.X}, positionY1{position.Y}"));
 
                         //  속도 설정
@@ -420,7 +424,6 @@ namespace QMC.Common.Parts
                             {
                                 break;
                             }
-
                         }
 
                         nWait = 0;
@@ -457,8 +460,8 @@ namespace QMC.Common.Parts
                             double dSpec = 0.05;
                             double dRadius = 0;
                             dSpec = Equipment.stVisionRecipeSet.dCircleSpec;
-                            dRadius = m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
-                            if (m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0] == 0)
+                            dRadius = m_dRadius[0];// m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
+                            if (m_dRadius[0] == 0)
                                 dRadius = Equipment.stVisionRecipeSet.dCircleDetectionSizeW;
 
                             this.FindCircleDetection(dRadius, bIsDarkCircleSearch, dSpec, out firstPointSearchResult, out firstPointCoordinate);
@@ -498,7 +501,7 @@ namespace QMC.Common.Parts
 
                     //두번째 위치 Search
                     //this.Stage.MovePosition(m_AlignPositions[1]);
-                    position = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos2.X, Equipment.stLayerRecipeSet[0].PreAlignPos2.Y, 0.0);
+                    position = new XyzCoordinate(m_AlignPositions[1].X, m_AlignPositions[1].Y, 0.0);
 
                     //  속도 설정
                     lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
@@ -559,8 +562,8 @@ namespace QMC.Common.Parts
                         double dSpec = 0.05;
                         double dRadius = 0;
                         dSpec = Equipment.stVisionRecipeSet.dCircleSpec;
-                        dRadius = m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
-                        if (m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0] == 0)
+                        dRadius = m_dRadius[1];// m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
+                        if (m_dRadius[1] == 0)
                             dRadius = Equipment.stVisionRecipeSet.dCircleDetectionSizeW;
 
                         this.FindCircleDetection(dRadius, bIsDarkCircleSearch, dSpec, out firstPointSearchResult, out firstPointCoordinate);
@@ -612,9 +615,9 @@ namespace QMC.Common.Parts
                         {
                             // 꼭확인
                             // 1, 2번 마크 위치가.. 좌우 바뀌었는데...
-                            XyzCoordinate position1 = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos1.X, Equipment.stLayerRecipeSet[0].PreAlignPos1.Y, 0.0);
+                            XyzCoordinate position1 = new XyzCoordinate(m_AlignPositions[0].X, m_AlignPositions[0].Y, 0.0);
 
-                            XyzCoordinate position2 = new XyzCoordinate(Equipment.stLayerRecipeSet[0].PreAlignPos2.X, Equipment.stLayerRecipeSet[0].PreAlignPos2.Y, 0.0);
+                            XyzCoordinate position2 = new XyzCoordinate(m_AlignPositions[1].X, m_AlignPositions[1].Y, 0.0);
 
                             double dRefAngle = GetAngle(new XyCoordinate(position1.X,position1.Y), new XyCoordinate(position2.X, position2.Y));
                             position1.X -= finalFirstPosition.X;
