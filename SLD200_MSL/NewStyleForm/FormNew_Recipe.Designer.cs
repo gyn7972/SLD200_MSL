@@ -436,7 +436,7 @@
             this.label88.Location = new System.Drawing.Point(9, 24);
             this.label88.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label88.Name = "label88";
-            this.label88.Size = new System.Drawing.Size(204, 33);
+            this.label88.Size = new System.Drawing.Size(204, 35);
             this.label88.TabIndex = 107;
             this.label88.Text = "work stage module absorption\r\njudgment value (kPa) :";
             this.label88.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
