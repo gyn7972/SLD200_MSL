@@ -291,7 +291,7 @@ namespace QMC.Common.VisionPart
             }
             List<PointF> polygon = new List<PointF>();
             List<PointF> points = new List<PointF>();
-            int nDivideCount = w / radius;
+            int nDivideCount = w / radius/2;
             int nStepX =(int)(radius/2);
             int nStepY = (int)(radius/2);
             int nDirectionX = 0;
@@ -336,7 +336,7 @@ namespace QMC.Common.VisionPart
                     int nMaxCircleFirst = (int)(radius * (1 + dFirstSpec));
                     int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
 
-                    //polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, nMinCircleFirst, nMaxCircleFirst, 1, 10);
+                    
                     polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, radius/2, radius*2, 1);
                     points = polygon;
                     circlesResult.Clear();
@@ -352,9 +352,6 @@ namespace QMC.Common.VisionPart
                         cx = (float)nCenterX;
                         cy = (float)nCenterY;
                     }
-                    //cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
-                    //cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
-
 
                     if (dRadius < nMaxCircle && dRadius > nMinCircle && cx > 0 && cx < w
                         && cy < h && cy > 0)
