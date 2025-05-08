@@ -266,6 +266,7 @@
     <Compile Include="BlobSearchResultControl.Designer.cs">
       <DependentUpon>BlobSearchResultControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Class1.cs" />
     <Compile Include="EditMode_SLD200.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -1278,10 +1278,10 @@ namespace SLD200_MSL
             textBox_Setup_Option_Vibration_AccDec_Ratio.Text = Equipment.Machine_LoaderTransfer_Vibration_AccDecSpeed_Ratio.ToString();
             textBox_Setup_Option_NumberOfVibrations.Text = Equipment.Machine_LoaderTransfer_NumberOfVibrations.ToString();
             textBox_Setup_Option_VibrationMoveDistance.Text = Equipment.Machine_LoaderTransfer_Vibration_MoveDistance.ToString();
+            textBox_Setup_Option_VibrationMoveInterval.Text = Equipment.Machine_LoaderTransfer_Vibration_Interval.ToString();
             checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Checked = Equipment.Machine_LoaderStacker_LiftUp_Enable;
             textBox_Setup_Option_LoaderStacker_LiftUpStep.Text = Equipment.Machine_LoaderStacker_LiftUpStep.ToString();
             textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Text = Equipment.Machine_LoaderStacker_LiftUp_StableTime.ToString();
-            textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Text = Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel.ToString();
             checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Checked = Equipment.Machine_LoaderStacker_Down_afterLoaderPickUp_Enable;
             textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Text = Equipment.Machine_LoaderStacker_DownDistance_afterLoaderPickUp.ToString();
             checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Checked = Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable;
@@ -1694,14 +1694,14 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderTransfer_NumberOfVibrations", textBox_Setup_Option_NumberOfVibrations.Text.ToString(), strFIle);
             Equipment.Machine_LoaderTransfer_Vibration_MoveDistance = Equipment.ToDouble(textBox_Setup_Option_VibrationMoveDistance.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderTransfer_Vibration_MoveDistance", textBox_Setup_Option_VibrationMoveDistance.Text.ToString(), strFIle);
+            Equipment.Machine_LoaderTransfer_Vibration_Interval = Equipment.ToInt(textBox_Setup_Option_VibrationMoveInterval.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderTransfer_Vibration_Interval", textBox_Setup_Option_VibrationMoveInterval.Text.ToString(), strFIle);
             Equipment.Machine_LoaderStacker_LiftUp_Enable = checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Checked;
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_Enable", checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Checked.ToString(), strFIle);
             Equipment.Machine_LoaderStacker_LiftUpStep = Equipment.ToInt(textBox_Setup_Option_LoaderStacker_LiftUpStep.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_Step", textBox_Setup_Option_LoaderStacker_LiftUpStep.Text.ToString(), strFIle);
             Equipment.Machine_LoaderStacker_LiftUp_StableTime = Equipment.ToInt(textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_LiftUp_StableTime", textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Text.ToString(), strFIle);
-            Equipment.Machine_WorkStage_ModuleAbsorption_JudgeLevel = Equipment.ToDouble(textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Text);
-            NativeMethods.WritePrivateProfileString("Machine_Option", "WorkStage_ModuleAbsorption_JudgeLevel", textBox_Setup_Option_EPRO_ModuleAbsorptionLevel.Text.ToString(), strFIle);
             Equipment.Machine_LoaderStacker_Down_afterLoaderPickUp_Enable = checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Checked;
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_Down_afterLDPickUp_Enable", checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Checked.ToString(), strFIle);
             Equipment.Machine_LoaderStacker_DownDistance_afterLoaderPickUp = Equipment.ToDouble(textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Text);
@@ -2232,6 +2232,7 @@ namespace SLD200_MSL
                 textBox_Setup_Option_Vibration_AccDec_Ratio.Enabled = true;
                 textBox_Setup_Option_NumberOfVibrations.Enabled = true;
                 textBox_Setup_Option_VibrationMoveDistance.Enabled = true;
+                textBox_Setup_Option_VibrationMoveInterval.Enabled = true;
             }
             else
             {
@@ -2239,6 +2240,7 @@ namespace SLD200_MSL
                 textBox_Setup_Option_Vibration_AccDec_Ratio.Enabled = false;
                 textBox_Setup_Option_NumberOfVibrations.Enabled = false;
                 textBox_Setup_Option_VibrationMoveDistance.Enabled = false;
+                textBox_Setup_Option_VibrationMoveInterval.Enabled = false;
             }
 
             if (Equipment.Machine_LoaderStacker_LiftUp_Enable)
@@ -3950,6 +3952,7 @@ namespace SLD200_MSL
                 textBox_Setup_Option_Vibration_AccDec_Ratio.Enabled = true;
                 textBox_Setup_Option_NumberOfVibrations.Enabled = true;
                 textBox_Setup_Option_VibrationMoveDistance.Enabled = true;
+                textBox_Setup_Option_VibrationMoveInterval.Enabled = true;
             }
             else
             {
@@ -3957,6 +3960,7 @@ namespace SLD200_MSL
                 textBox_Setup_Option_Vibration_AccDec_Ratio.Enabled = false; 
                 textBox_Setup_Option_NumberOfVibrations.Enabled = false;
                 textBox_Setup_Option_VibrationMoveDistance.Enabled = false;
+                textBox_Setup_Option_VibrationMoveInterval.Enabled = false;
             }
         }
 

@@ -17,12 +17,23 @@ using System.Drawing;
 using static QMC.Common.Vision.Tools.PatternMatchingResult;
 using System.Net.Http.Headers;
 using QMC.Common.Motion.Ajin.Motions;
+using QMC.Common.Hmi;
 
 namespace QMC.Common.Parts
 {
     [Serializable]
     public class JigAligner : PatternMatchingVisionPart
     {
+        #region Define
+        [Serializable]
+        public enum SearchMethod
+        {
+            PatternMatching,
+            Blob,
+            Circle,
+        }
+        #endregion
+
         #region Field
         public WorkStage m_Owner;
         public XyCoordinate[] m_AlignPositions;
@@ -79,10 +90,8 @@ namespace QMC.Common.Parts
             set;
         }
 
-
         #region Method
         public InterpolatorMotionFunction MC_Func = new InterpolatorMotionFunction();
-
         protected int GetMotionLimit(MotionAxis axis, out RangeD range)
         {
             int ret = 0;
@@ -437,7 +446,27 @@ namespace QMC.Common.Parts
                         m_AlignPositions[0].Y = xyInterpolatedCoordinate.Y;
 
                         this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[0];
-                        this.FindFiducialMark(out firstPointSearchResult, out firstPointCoordinate);
+
+                        if(Equipment.stVisionRecipeSet.AlgorithmType == Equipment.VisionAlgorithmType.PatternMatching)
+                        {
+                            this.FindFiducialMark(out firstPointSearchResult, out firstPointCoordinate);
+                        }
+                        else if(Equipment.stVisionRecipeSet.AlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
+                        {
+                            bool bIsDarkCircleSearch = Equipment.stVisionRecipeSet.bCircleDetectionColor;
+                            double dSpec = 0.05;
+                            double dRadius = 0;
+                            dSpec = Equipment.stVisionRecipeSet.dCircleSpec;
+                            dRadius = m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
+                            if (m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0] == 0)
+                                dRadius = Equipment.stVisionRecipeSet.dCircleDetectionSizeW;
+
+                            this.FindCircleDetection(dRadius, bIsDarkCircleSearch, dSpec, out firstPointSearchResult, out firstPointCoordinate);
+                        }
+                        else
+                        {
+                            this.FindFiducialMark(out firstPointSearchResult, out firstPointCoordinate);
+                        }
                     }
 
                     if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
@@ -520,7 +549,27 @@ namespace QMC.Common.Parts
                     m_AlignPositions[1].Y = xyInterpolatedCoordinate.Y;
 
                     this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[1];
-                    this.FindFiducialMark(out secondPointSearchResult, out secondPointCoordinate);
+                    if (Equipment.stVisionRecipeSet.AlgorithmType == Equipment.VisionAlgorithmType.PatternMatching)
+                    {
+                        this.FindFiducialMark(out secondPointSearchResult, out secondPointCoordinate);
+                    }
+                    else if (Equipment.stVisionRecipeSet.AlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
+                    {
+                        bool bIsDarkCircleSearch = Equipment.stVisionRecipeSet.bCircleDetectionColor;
+                        double dSpec = 0.05;
+                        double dRadius = 0;
+                        dSpec = Equipment.stVisionRecipeSet.dCircleSpec;
+                        dRadius = m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
+                        if (m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0] == 0)
+                            dRadius = Equipment.stVisionRecipeSet.dCircleDetectionSizeW;
+
+                        this.FindCircleDetection(dRadius, bIsDarkCircleSearch, dSpec, out firstPointSearchResult, out firstPointCoordinate);
+                    }
+                    else
+                    {
+
+                        this.FindFiducialMark(out secondPointSearchResult, out secondPointCoordinate);
+                    }
 
                     if (m_Owner.m_nFindAlignMarkType == (int)WorkStage.AlignMarkType.ALIGN_2NDMARK)                                                      //  2번 Align Mark 만 찾을 경우, 여기서 Out
                     {
@@ -634,6 +683,115 @@ namespace QMC.Common.Parts
             if ((ret = this.Scan(this.PathGenerators[0], this.PathParameters[0], out searchResult, out currentCoordinate)) != 0)
             {
                 return ret;
+            }
+
+            return ret;
+        }
+
+        public int FindCircleDetection(double dRadius, bool bIsDarkCircleSearch, double dSpec, out PatternMatchingResult searchResult, out XyCoordinate currentCoordinate)
+        {
+            int ret = 0;
+            currentCoordinate = new XyCoordinate();
+            searchResult = new PatternMatchingResult();
+
+            QMC_ImageProcessFindAlign qip = new QMC_ImageProcessFindAlign();
+            PatternMatchingResultValue pmCircle = new PatternMatchingResult.PatternMatchingResultValue();
+            List<RectangleF> Fiducial_circlesResult = new List<RectangleF>();
+            bool bFind = false;
+            VisionImage image;
+            VisionImage inputImage = null;
+            VisionScale TempScale = new VisionScale();
+
+            m_Owner = this.Owner as WorkStage;
+            try
+            {
+                TempScale.X = ((WorkStage)this.Owner).Config.ParamConfig.LowerVision_Scale_X;
+                TempScale.Y = ((WorkStage)this.Owner).Config.ParamConfig.LowerVision_Scale_Y;
+                TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.LowerVision_ScaleInvert_X;
+                TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.LowerVision_ScaleInvert_Y;
+
+                int nRadiusImageCount = (int)(dRadius / TempScale.X); // 찾고자 하는 circle size 
+                nRadiusImageCount /= 2;
+                //Simulated = true;
+                if (Simulated)
+                {
+                    image = TestImage;
+                }
+                else
+                {
+                    Camera.StopLive();
+                    if ((ret = Camera.GrabSync(Purpose.Processing, out image)) != 0)
+                    {
+                        searchResult = null;
+                        currentCoordinate.X = 0.0;
+                        currentCoordinate.Y = 0.0;
+                        return ret;
+                    }
+                }
+
+                {
+                    //Circle 찾는 알고리듬 적용
+                    //dSpec;
+                    qip.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
+                        Camera.LatestImage.RawData,
+                        Camera.LatestImage.Header.Width,
+                        Camera.LatestImage.Header.Height,
+                        nRadiusImageCount, dSpec, ref bFind, 0, 0, bIsDarkCircleSearch);
+                    // 0.05 - Spec 
+
+                    if (Fiducial_circlesResult.Count > 0 && bFind == true)
+                    {
+                        double cx = Fiducial_circlesResult[0].X + (Fiducial_circlesResult[0].Width / 2);
+                        double cy = Fiducial_circlesResult[0].Y + (Fiducial_circlesResult[0].Height / 2);
+                        pmCircle.X = cx;
+                        pmCircle.Y = cy;
+
+                        //currentCoordinate 안쓰는디...
+                        currentCoordinate.X = 0.0;
+                        currentCoordinate.Y = 0.0;
+                        searchResult.Values.Add(pmCircle);
+                    }
+                    else
+                    {
+                        searchResult = null;
+                        currentCoordinate.X = 0.0;
+                        currentCoordinate.Y = 0.0;
+                        return -1;
+                    }
+
+                    if (m_Owner.UpdateResultOveray != null)
+                    {
+                        try
+                        {
+                            m_Owner.CoarseCamResultOveray = new VisionImageViewer.OwnedOverlayCollection();
+                            foreach (var v in Fiducial_circlesResult)
+                            {
+                                Point ptStart = new Point((int)v.Left, (int)v.Top);
+                                Point ptEnd = new Point((int)v.Right, (int)v.Bottom);
+                                var overayRect = new RectangleFrameVisionImageOverlay("Fine Align", ptStart, ptEnd);
+                                overayRect.Visible = true;
+                                overayRect.Color = Color.Lime;
+                                overayRect.Thickness = 1;
+                                m_Owner.CoarseCamResultOveray.Add(overayRect);
+                                var overayEl = new EllipseFrameVisionImageOverlay("Fine Align", ptStart, ptEnd);
+                                overayEl.Visible = true;
+                                overayEl.Color = Color.Blue;
+                                overayEl.Thickness = 1;
+                                m_Owner.CoarseCamResultOveray.Add(overayEl);
+                            }
+                            m_Owner.UpdateResultOveray?.Invoke(this.Camera, null);
+                        }
+                        catch (Exception ex)
+                        {
+
+                            Log.Write(ex);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
             }
 
             return ret;

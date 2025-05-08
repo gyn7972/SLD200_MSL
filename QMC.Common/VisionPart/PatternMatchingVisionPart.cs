@@ -115,15 +115,10 @@ namespace QMC.Common.VisionPart
             m_PatternMatchingTool.Parameter.MaskRegion = parameter.MaskRegion;
             m_PatternMatchingTool.Parameter.UseMaskImage = parameter.UseMaskImage;
             TrainImage = parameter.TrainImage;
-
             m_RoiInspect.Parameter.StartLocation = startRoiPoint;
             m_RoiInspect.Parameter.EndLocation = endRoiPoint;
-
             m_PatternMatchingTool.SubTools.InputImage = TrainImage;
-
             m_RoiTrain.Parameter.IsFull = true;
-
-
             m_RoiInspect.InputImage = image;
             m_RoiInspect.SubTools.InputImage = TrainImage;
             m_RoiInspect.Parameter.IsFull = false;
