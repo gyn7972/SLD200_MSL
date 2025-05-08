@@ -9185,10 +9185,12 @@ namespace QMC.Common.Modules
 
                 case (int)MAlign_Step.MAligner_ModuleVacuum_OnCheck:                                //  Module Vacuum On 확인
                     
-                    bool bVaccum = (Equipment.Machine_VacuumSensor_Enable && 
-                        (loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center) ||
-                        loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner) ||
-                        loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer)));
+                    bool bVaccum = (!Equipment.Machine_VacuumSensor_Enable || 
+
+                                    (Equipment.Machine_VacuumSensor_Enable && 
+                                    (loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center) ||
+                                    loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner) ||
+                                    loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer))));
 
                     bool bMAlingerCenter = ((Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Center && 
                         loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center)) ||
@@ -9218,7 +9220,7 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", Equipment.User_Name, "M-Align Cycle", "Module Vacuum On 완료");
                         m_nMAlign_Step = (int)MAlign_Step.MAligner_MoveXY_Narrowly;
                     }
-                    else if (TickCount_Elapsed((int)TickType.TICK_ALIGN) > 6000)
+                    else if (TickCount_Elapsed((int)TickType.TICK_ALIGN) > 60000)
                     {
                         m_strTemp = "Module Vacuum On 실패. (Timeout)";
                         Log.Write("SLD-200", Equipment.User_Name, "MAlign_Step", m_strTemp);
