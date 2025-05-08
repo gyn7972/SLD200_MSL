@@ -1772,7 +1772,7 @@ namespace SLD200_MSL
                 }
                 //Equipment.Loader_LPort_Pause = false;
             }
-            else
+            else if (loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
             {
                 loader.m_bStacker1_Complete = false;
 
