@@ -133,6 +133,8 @@ namespace QMC.Common.Modules
             LD_TransferX_Move_MAlignerPos_Timeout,
             LD_TransferX_Move_LoadingPos_Timeout,
 
+            LD_WorkStage_Not_LoadingPos,
+
             LD_MAlignerXY_Move_Widely_Timeout,
             
             LD_Maligner_Not_Set_Module_Size,
@@ -513,6 +515,15 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.LD_WorkStage_Not_LoadingPos;
+            alarm.Title = "Loader Trasfer";
+            alarm.Cause = "Work Stage 가 Module Loading 위치에 있지 않습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+            
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_TransferZ_Move_PutDownPos_Timeout;
@@ -6714,6 +6725,8 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer X 축, Work Stage Loading 위치로 이동 완료");
 
+                        TickCount_Start((int)TickType.TICK_LDTR);
+
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
@@ -6740,9 +6753,26 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep:                            //  Transfer Z 축, Module Put Down 위치로 이동 (1단계, 최종 위치에서 위로 10 mm)
 
-                    Loader_Transfer_Step_WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep(out m_dSpeed, out m_dAccDec);
+                    //  안전을 위해, Stage 가 Module Put Down 위치에 있는지 한번더 체크
+                    if ((workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
 
-                    m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep_DoneCheck;
+                        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X - 0.1)) &&
+                        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X + 0.1)) &&
+                        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y - 0.1)) &&
+                        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y + 0.1)))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer X 축, Work Stage 가 Module Loading 위치에 있음");
+
+                        Loader_Transfer_Step_WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep(out m_dSpeed, out m_dAccDec);
+
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep_DoneCheck;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer X 축, Work Stage 가 Module Loading 위치에 있지 않음");
+
+                        return AlarmPost(AlarmKey.LD_TransferX_Move_LoadingPos_Timeout);
+                    }
                     break;
 
 
