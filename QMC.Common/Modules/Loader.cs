@@ -6675,6 +6675,9 @@ namespace QMC.Common.Modules
                         workStage.m_nWorkStage_Move_Step = (int)WorkStage.WorkStage_Move_Step.Start;
 
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_WorkStageCycle_LoadingPos_CompleteCheck;
+
+                        //  Unloading 위치에 있는 Work Stage 를, Loading 위치로 보냄과 동시에 Loader Transfer 를 Loading 위치로 이동시키려면, 윗줄 주석으로 변경, 아랫줄 주석해제
+                        //m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferX_Move_LoadingPos;
                     }
                     break;
 
@@ -6753,7 +6756,7 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep:                            //  Transfer Z 축, Module Put Down 위치로 이동 (1단계, 최종 위치에서 위로 10 mm)
 
-                    //  안전을 위해, Stage 가 Module Put Down 위치에 있는지 한번더 체크
+                    //  Stage 가 Module Put Down 위치에 있는지 한번더 체크 (Work Stage 와 Loader Transfer 가 동시에 움직이도록 할 경우 인터락)
                     if ((workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
 
                         (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X - 0.1)) &&
