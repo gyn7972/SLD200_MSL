@@ -327,7 +327,7 @@ namespace QMC.Common.VisionPart
 
                 int nCy = h / 2 + nShiftY;
                 nDirectionX = 0;
-                for (int x = 0; x < nDivideCount; x++)
+                for (int x = 0; x < 1; x++)
                 {
                     int nShiftX = nDirectionX % 2 == 0 ? nStepX : -nStepX;
                     nShiftX *= x;

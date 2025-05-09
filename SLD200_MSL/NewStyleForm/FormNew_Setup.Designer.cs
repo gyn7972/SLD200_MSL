@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPage_Setup_Communication = new System.Windows.Forms.TabPage();
             this.groupBox86 = new System.Windows.Forms.GroupBox();
             this.button_Test_SocketConnect = new System.Windows.Forms.Button();
@@ -390,6 +390,8 @@
             this.label64 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_ReferenceValue_atVisionFocusPosition = new System.Windows.Forms.TextBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.label72 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Option_VibrationMoveInterval = new System.Windows.Forms.TextBox();
             this.label76 = new System.Windows.Forms.Label();
             this.textBox_Setup_Option_PolylineCurve_Resolution = new System.Windows.Forms.TextBox();
             this.label77 = new System.Windows.Forms.Label();
@@ -500,6 +502,9 @@
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
             this.Box_Setup_ScannerCal_ImageViewer = new QMC.Common.Hmi.VisionImageViewer();
+            this.label78 = new System.Windows.Forms.Label();
+            this.textBox_Setup_Option_ModulePickup_1stDistance = new System.Windows.Forms.TextBox();
+            this.label79 = new System.Windows.Forms.Label();
             this.baseLabel_Setup_ScannerCal_Max = new SLD200_MSL.BaseLabel();
             this.baseLabel_Setup_ScannerCal_Min = new SLD200_MSL.BaseLabel();
             this.groupBox_Setup_ScannerCal_SearchResult = new SLD200_MSL.WATGroupBox();
@@ -527,8 +532,6 @@
             this.groupBox_Setup_ScannerCal_TrainImage = new SLD200_MSL.WATGroupBox();
             this.pictureBox_Setup_ScannerCal_TrainImage = new System.Windows.Forms.PictureBox();
             this.button_Setup_ScannerCal_Train_Set = new SLD200_MSL.BaseButton();
-            this.label72 = new System.Windows.Forms.Label();
-            this.textBox_Setup_Option_VibrationMoveInterval = new System.Windows.Forms.TextBox();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -1199,14 +1202,14 @@
             this.Output_Active,
             this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn2});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView3.Location = new System.Drawing.Point(10, 28);
             this.dataGridView3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView3.Name = "dataGridView3";
@@ -1259,14 +1262,14 @@
             this.Active,
             this.Column4,
             this.Column5});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridView2.Location = new System.Drawing.Point(10, 28);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.dataGridView2.Name = "dataGridView2";
@@ -5047,6 +5050,9 @@
             // 
             // groupBox13
             // 
+            this.groupBox13.Controls.Add(this.label78);
+            this.groupBox13.Controls.Add(this.textBox_Setup_Option_ModulePickup_1stDistance);
+            this.groupBox13.Controls.Add(this.label79);
             this.groupBox13.Controls.Add(this.label72);
             this.groupBox13.Controls.Add(this.textBox_Setup_Option_VibrationMoveInterval);
             this.groupBox13.Controls.Add(this.label76);
@@ -5106,15 +5112,36 @@
             this.groupBox13.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox13.Name = "groupBox13";
             this.groupBox13.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox13.Size = new System.Drawing.Size(1011, 419);
+            this.groupBox13.Size = new System.Drawing.Size(1006, 419);
             this.groupBox13.TabIndex = 63;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = " Options ";
             // 
+            // label72
+            // 
+            this.label72.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label72.Location = new System.Drawing.Point(722, 396);
+            this.label72.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label72.Name = "label72";
+            this.label72.Size = new System.Drawing.Size(220, 20);
+            this.label72.TabIndex = 115;
+            this.label72.Text = "Vibration Interval (delay, ms) :";
+            this.label72.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Option_VibrationMoveInterval
+            // 
+            this.textBox_Setup_Option_VibrationMoveInterval.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_VibrationMoveInterval.Location = new System.Drawing.Point(942, 395);
+            this.textBox_Setup_Option_VibrationMoveInterval.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_VibrationMoveInterval.Name = "textBox_Setup_Option_VibrationMoveInterval";
+            this.textBox_Setup_Option_VibrationMoveInterval.Size = new System.Drawing.Size(50, 24);
+            this.textBox_Setup_Option_VibrationMoveInterval.TabIndex = 116;
+            this.textBox_Setup_Option_VibrationMoveInterval.Text = "2";
+            // 
             // label76
             // 
             this.label76.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label76.Location = new System.Drawing.Point(735, 291);
+            this.label76.Location = new System.Drawing.Point(363, 218);
             this.label76.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label76.Name = "label76";
             this.label76.Size = new System.Drawing.Size(207, 20);
@@ -5125,7 +5152,7 @@
             // textBox_Setup_Option_PolylineCurve_Resolution
             // 
             this.textBox_Setup_Option_PolylineCurve_Resolution.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_PolylineCurve_Resolution.Location = new System.Drawing.Point(949, 290);
+            this.textBox_Setup_Option_PolylineCurve_Resolution.Location = new System.Drawing.Point(577, 217);
             this.textBox_Setup_Option_PolylineCurve_Resolution.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_PolylineCurve_Resolution.Name = "textBox_Setup_Option_PolylineCurve_Resolution";
             this.textBox_Setup_Option_PolylineCurve_Resolution.Size = new System.Drawing.Size(50, 24);
@@ -5135,7 +5162,7 @@
             // label77
             // 
             this.label77.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label77.Location = new System.Drawing.Point(745, 316);
+            this.label77.Location = new System.Drawing.Point(373, 243);
             this.label77.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label77.Name = "label77";
             this.label77.Size = new System.Drawing.Size(245, 31);
@@ -5146,7 +5173,7 @@
             // label74
             // 
             this.label74.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label74.Location = new System.Drawing.Point(745, 234);
+            this.label74.Location = new System.Drawing.Point(373, 380);
             this.label74.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label74.Name = "label74";
             this.label74.Size = new System.Drawing.Size(245, 31);
@@ -5157,7 +5184,7 @@
             // checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable
             // 
             this.checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.AutoSize = true;
-            this.checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Location = new System.Drawing.Point(727, 200);
+            this.checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Location = new System.Drawing.Point(355, 346);
             this.checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Name = "checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable";
             this.checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Size = new System.Drawing.Size(206, 36);
             this.checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.TabIndex = 111;
@@ -5168,7 +5195,7 @@
             // textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime
             // 
             this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Location = new System.Drawing.Point(949, 202);
+            this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Location = new System.Drawing.Point(577, 348);
             this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Name = "textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime";
             this.textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Size = new System.Drawing.Size(50, 24);
@@ -5178,7 +5205,7 @@
             // label73
             // 
             this.label73.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label73.Location = new System.Drawing.Point(762, 158);
+            this.label73.Location = new System.Drawing.Point(755, 149);
             this.label73.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label73.Name = "label73";
             this.label73.Size = new System.Drawing.Size(138, 17);
@@ -5189,7 +5216,7 @@
             // checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable
             // 
             this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.AutoSize = true;
-            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Location = new System.Drawing.Point(727, 139);
+            this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Location = new System.Drawing.Point(720, 130);
             this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Name = "checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable";
             this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Size = new System.Drawing.Size(221, 20);
             this.checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.TabIndex = 108;
@@ -5200,7 +5227,7 @@
             // textBox_Setup_Option_StackerDownDistance_afterLDPickUp
             // 
             this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Location = new System.Drawing.Point(949, 137);
+            this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Location = new System.Drawing.Point(942, 128);
             this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Name = "textBox_Setup_Option_StackerDownDistance_afterLDPickUp";
             this.textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Size = new System.Drawing.Size(50, 24);
@@ -5210,10 +5237,10 @@
             // label71
             // 
             this.label71.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label71.Location = new System.Drawing.Point(321, 370);
+            this.label71.Location = new System.Drawing.Point(720, 373);
             this.label71.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label71.Name = "label71";
-            this.label71.Size = new System.Drawing.Size(243, 17);
+            this.label71.Size = new System.Drawing.Size(212, 17);
             this.label71.TabIndex = 104;
             this.label71.Text = "* (0 < distance < 10)";
             this.label71.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -5221,18 +5248,18 @@
             // label70
             // 
             this.label70.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label70.Location = new System.Drawing.Point(333, 350);
+            this.label70.Location = new System.Drawing.Point(722, 353);
             this.label70.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label70.Name = "label70";
-            this.label70.Size = new System.Drawing.Size(241, 20);
+            this.label70.Size = new System.Drawing.Size(220, 20);
             this.label70.TabIndex = 102;
-            this.label70.Text = "Vibration movement distance (mm) :";
+            this.label70.Text = "Vibration Distance (mm) :";
             this.label70.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // textBox_Setup_Option_VibrationMoveDistance
             // 
             this.textBox_Setup_Option_VibrationMoveDistance.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_VibrationMoveDistance.Location = new System.Drawing.Point(574, 349);
+            this.textBox_Setup_Option_VibrationMoveDistance.Location = new System.Drawing.Point(942, 352);
             this.textBox_Setup_Option_VibrationMoveDistance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_VibrationMoveDistance.Name = "textBox_Setup_Option_VibrationMoveDistance";
             this.textBox_Setup_Option_VibrationMoveDistance.Size = new System.Drawing.Size(50, 24);
@@ -5242,7 +5269,7 @@
             // label69
             // 
             this.label69.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label69.Location = new System.Drawing.Point(723, 89);
+            this.label69.Location = new System.Drawing.Point(716, 89);
             this.label69.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label69.Name = "label69";
             this.label69.Size = new System.Drawing.Size(220, 20);
@@ -5253,7 +5280,7 @@
             // textBox_Setup_Option_LoaderStackerLiftUp_StableTime
             // 
             this.textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Location = new System.Drawing.Point(949, 88);
+            this.textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Location = new System.Drawing.Point(942, 88);
             this.textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Name = "textBox_Setup_Option_LoaderStackerLiftUp_StableTime";
             this.textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Size = new System.Drawing.Size(50, 24);
@@ -5263,7 +5290,7 @@
             // label68
             // 
             this.label68.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label68.Location = new System.Drawing.Point(748, 47);
+            this.label68.Location = new System.Drawing.Point(741, 47);
             this.label68.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label68.Name = "label68";
             this.label68.Size = new System.Drawing.Size(189, 43);
@@ -5275,7 +5302,7 @@
             // checkBox_Setup_Option_LoaderStackerLiftUp_Enable
             // 
             this.checkBox_Setup_Option_LoaderStackerLiftUp_Enable.AutoSize = true;
-            this.checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Location = new System.Drawing.Point(727, 27);
+            this.checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Location = new System.Drawing.Point(720, 27);
             this.checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Name = "checkBox_Setup_Option_LoaderStackerLiftUp_Enable";
             this.checkBox_Setup_Option_LoaderStackerLiftUp_Enable.Size = new System.Drawing.Size(217, 20);
             this.checkBox_Setup_Option_LoaderStackerLiftUp_Enable.TabIndex = 98;
@@ -5286,7 +5313,7 @@
             // textBox_Setup_Option_LoaderStacker_LiftUpStep
             // 
             this.textBox_Setup_Option_LoaderStacker_LiftUpStep.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_LoaderStacker_LiftUpStep.Location = new System.Drawing.Point(949, 25);
+            this.textBox_Setup_Option_LoaderStacker_LiftUpStep.Location = new System.Drawing.Point(942, 25);
             this.textBox_Setup_Option_LoaderStacker_LiftUpStep.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_LoaderStacker_LiftUpStep.Name = "textBox_Setup_Option_LoaderStacker_LiftUpStep";
             this.textBox_Setup_Option_LoaderStacker_LiftUpStep.Size = new System.Drawing.Size(50, 24);
@@ -5296,7 +5323,7 @@
             // label62
             // 
             this.label62.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label62.Location = new System.Drawing.Point(354, 325);
+            this.label62.Location = new System.Drawing.Point(722, 328);
             this.label62.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label62.Name = "label62";
             this.label62.Size = new System.Drawing.Size(220, 20);
@@ -5307,7 +5334,7 @@
             // textBox_Setup_Option_NumberOfVibrations
             // 
             this.textBox_Setup_Option_NumberOfVibrations.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_NumberOfVibrations.Location = new System.Drawing.Point(574, 324);
+            this.textBox_Setup_Option_NumberOfVibrations.Location = new System.Drawing.Point(942, 327);
             this.textBox_Setup_Option_NumberOfVibrations.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_NumberOfVibrations.Name = "textBox_Setup_Option_NumberOfVibrations";
             this.textBox_Setup_Option_NumberOfVibrations.Size = new System.Drawing.Size(50, 24);
@@ -5317,7 +5344,7 @@
             // label61
             // 
             this.label61.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label61.Location = new System.Drawing.Point(354, 300);
+            this.label61.Location = new System.Drawing.Point(722, 303);
             this.label61.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label61.Name = "label61";
             this.label61.Size = new System.Drawing.Size(220, 20);
@@ -5328,7 +5355,7 @@
             // textBox_Setup_Option_Vibration_AccDec_Ratio
             // 
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_Vibration_AccDec_Ratio.Location = new System.Drawing.Point(574, 299);
+            this.textBox_Setup_Option_Vibration_AccDec_Ratio.Location = new System.Drawing.Point(942, 302);
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Name = "textBox_Setup_Option_Vibration_AccDec_Ratio";
             this.textBox_Setup_Option_Vibration_AccDec_Ratio.Size = new System.Drawing.Size(50, 24);
@@ -5338,7 +5365,7 @@
             // label66
             // 
             this.label66.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label66.Location = new System.Drawing.Point(382, 279);
+            this.label66.Location = new System.Drawing.Point(750, 282);
             this.label66.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label66.Name = "label66";
             this.label66.Size = new System.Drawing.Size(204, 17);
@@ -5349,7 +5376,7 @@
             // checkBox_Setup_Option_Loader_Transfer_Vibration_Enable
             // 
             this.checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.AutoSize = true;
-            this.checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Location = new System.Drawing.Point(369, 260);
+            this.checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Location = new System.Drawing.Point(720, 263);
             this.checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Name = "checkBox_Setup_Option_Loader_Transfer_Vibration_Enable";
             this.checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.Size = new System.Drawing.Size(243, 20);
             this.checkBox_Setup_Option_Loader_Transfer_Vibration_Enable.TabIndex = 91;
@@ -5360,7 +5387,7 @@
             // checkBox_Setup_Option_VacuumBlowTime_Enable
             // 
             this.checkBox_Setup_Option_VacuumBlowTime_Enable.AutoSize = true;
-            this.checkBox_Setup_Option_VacuumBlowTime_Enable.Location = new System.Drawing.Point(370, 217);
+            this.checkBox_Setup_Option_VacuumBlowTime_Enable.Location = new System.Drawing.Point(355, 301);
             this.checkBox_Setup_Option_VacuumBlowTime_Enable.Name = "checkBox_Setup_Option_VacuumBlowTime_Enable";
             this.checkBox_Setup_Option_VacuumBlowTime_Enable.Size = new System.Drawing.Size(191, 20);
             this.checkBox_Setup_Option_VacuumBlowTime_Enable.TabIndex = 84;
@@ -5371,7 +5398,7 @@
             // textBox_Setup_Option_VacuumBlowTime
             // 
             this.textBox_Setup_Option_VacuumBlowTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_VacuumBlowTime.Location = new System.Drawing.Point(574, 215);
+            this.textBox_Setup_Option_VacuumBlowTime.Location = new System.Drawing.Point(577, 299);
             this.textBox_Setup_Option_VacuumBlowTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_VacuumBlowTime.Name = "textBox_Setup_Option_VacuumBlowTime";
             this.textBox_Setup_Option_VacuumBlowTime.Size = new System.Drawing.Size(50, 24);
@@ -5381,7 +5408,7 @@
             // label75
             // 
             this.label75.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label75.Location = new System.Drawing.Point(341, 177);
+            this.label75.Location = new System.Drawing.Point(344, 177);
             this.label75.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label75.Name = "label75";
             this.label75.Size = new System.Drawing.Size(288, 17);
@@ -5392,7 +5419,7 @@
             // label95
             // 
             this.label95.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label95.Location = new System.Drawing.Point(341, 160);
+            this.label95.Location = new System.Drawing.Point(344, 160);
             this.label95.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label95.Name = "label95";
             this.label95.Size = new System.Drawing.Size(288, 17);
@@ -5403,7 +5430,7 @@
             // label94
             // 
             this.label94.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label94.Location = new System.Drawing.Point(369, 136);
+            this.label94.Location = new System.Drawing.Point(372, 136);
             this.label94.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label94.Name = "label94";
             this.label94.Size = new System.Drawing.Size(204, 20);
@@ -5414,7 +5441,7 @@
             // textBox_Setup_Option_Sirius_Drawing_Resolution
             // 
             this.textBox_Setup_Option_Sirius_Drawing_Resolution.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_Sirius_Drawing_Resolution.Location = new System.Drawing.Point(574, 135);
+            this.textBox_Setup_Option_Sirius_Drawing_Resolution.Location = new System.Drawing.Point(577, 135);
             this.textBox_Setup_Option_Sirius_Drawing_Resolution.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_Sirius_Drawing_Resolution.Name = "textBox_Setup_Option_Sirius_Drawing_Resolution";
             this.textBox_Setup_Option_Sirius_Drawing_Resolution.Size = new System.Drawing.Size(50, 24);
@@ -5424,7 +5451,7 @@
             // label93
             // 
             this.label93.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label93.Location = new System.Drawing.Point(366, 84);
+            this.label93.Location = new System.Drawing.Point(369, 84);
             this.label93.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label93.Name = "label93";
             this.label93.Size = new System.Drawing.Size(207, 33);
@@ -5435,7 +5462,7 @@
             // textBox_Setup_Option_DustCollector_WaitingTime
             // 
             this.textBox_Setup_Option_DustCollector_WaitingTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_DustCollector_WaitingTime.Location = new System.Drawing.Point(574, 85);
+            this.textBox_Setup_Option_DustCollector_WaitingTime.Location = new System.Drawing.Point(577, 85);
             this.textBox_Setup_Option_DustCollector_WaitingTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_DustCollector_WaitingTime.Name = "textBox_Setup_Option_DustCollector_WaitingTime";
             this.textBox_Setup_Option_DustCollector_WaitingTime.Size = new System.Drawing.Size(50, 24);
@@ -5445,7 +5472,7 @@
             // label67
             // 
             this.label67.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label67.Location = new System.Drawing.Point(370, 22);
+            this.label67.Location = new System.Drawing.Point(373, 22);
             this.label67.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label67.Name = "label67";
             this.label67.Size = new System.Drawing.Size(134, 37);
@@ -5458,7 +5485,7 @@
             this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Checked = true;
             this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Font = new System.Drawing.Font("Tahoma", 9.75F);
             this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Location = new System.Drawing.Point(515, 44);
+            this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Location = new System.Drawing.Point(518, 44);
             this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Name = "radioButton_Setup_Option_FiducialImageSave_FailedToFind";
             this.radioButton_Setup_Option_FiducialImageSave_FailedToFind.Size = new System.Drawing.Size(112, 21);
@@ -5471,7 +5498,7 @@
             // 
             this.radioButton_Setup_Option_FiducialImageSave_Always.Font = new System.Drawing.Font("Tahoma", 9.75F);
             this.radioButton_Setup_Option_FiducialImageSave_Always.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.radioButton_Setup_Option_FiducialImageSave_Always.Location = new System.Drawing.Point(515, 22);
+            this.radioButton_Setup_Option_FiducialImageSave_Always.Location = new System.Drawing.Point(518, 22);
             this.radioButton_Setup_Option_FiducialImageSave_Always.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.radioButton_Setup_Option_FiducialImageSave_Always.Name = "radioButton_Setup_Option_FiducialImageSave_Always";
             this.radioButton_Setup_Option_FiducialImageSave_Always.Size = new System.Drawing.Size(112, 21);
@@ -5482,7 +5509,7 @@
             // checkBox_Setup_Option_FiducialMarkJudgementRange_Enable
             // 
             this.checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.AutoSize = true;
-            this.checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.Location = new System.Drawing.Point(8, 348);
+            this.checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.Location = new System.Drawing.Point(11, 348);
             this.checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.Name = "checkBox_Setup_Option_FiducialMarkJudgementRange_Enable";
             this.checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.Size = new System.Drawing.Size(200, 36);
             this.checkBox_Setup_Option_FiducialMarkJudgementRange_Enable.TabIndex = 73;
@@ -5493,7 +5520,7 @@
             // textBox_Setup_Option_FiducialMarkJudgementRange
             // 
             this.textBox_Setup_Option_FiducialMarkJudgementRange.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_FiducialMarkJudgementRange.Location = new System.Drawing.Point(211, 354);
+            this.textBox_Setup_Option_FiducialMarkJudgementRange.Location = new System.Drawing.Point(214, 354);
             this.textBox_Setup_Option_FiducialMarkJudgementRange.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_FiducialMarkJudgementRange.Name = "textBox_Setup_Option_FiducialMarkJudgementRange";
             this.textBox_Setup_Option_FiducialMarkJudgementRange.Size = new System.Drawing.Size(50, 24);
@@ -5503,7 +5530,7 @@
             // checkBox_Setup_Option_LaserHeightCheckStableTime_Enable
             // 
             this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.AutoSize = true;
-            this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.Location = new System.Drawing.Point(8, 299);
+            this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.Location = new System.Drawing.Point(11, 299);
             this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.Name = "checkBox_Setup_Option_LaserHeightCheckStableTime_Enable";
             this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.Size = new System.Drawing.Size(161, 36);
             this.checkBox_Setup_Option_LaserHeightCheckStableTime_Enable.TabIndex = 71;
@@ -5514,7 +5541,7 @@
             // textBox_Setup_Option_LaserHeightCheckStableTime
             // 
             this.textBox_Setup_Option_LaserHeightCheckStableTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_LaserHeightCheckStableTime.Location = new System.Drawing.Point(211, 305);
+            this.textBox_Setup_Option_LaserHeightCheckStableTime.Location = new System.Drawing.Point(214, 305);
             this.textBox_Setup_Option_LaserHeightCheckStableTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_LaserHeightCheckStableTime.Name = "textBox_Setup_Option_LaserHeightCheckStableTime";
             this.textBox_Setup_Option_LaserHeightCheckStableTime.Size = new System.Drawing.Size(50, 24);
@@ -5524,7 +5551,7 @@
             // checkBox_Setup_Option_VacuumStableTime_Enable
             // 
             this.checkBox_Setup_Option_VacuumStableTime_Enable.AutoSize = true;
-            this.checkBox_Setup_Option_VacuumStableTime_Enable.Location = new System.Drawing.Point(8, 266);
+            this.checkBox_Setup_Option_VacuumStableTime_Enable.Location = new System.Drawing.Point(11, 266);
             this.checkBox_Setup_Option_VacuumStableTime_Enable.Name = "checkBox_Setup_Option_VacuumStableTime_Enable";
             this.checkBox_Setup_Option_VacuumStableTime_Enable.Size = new System.Drawing.Size(202, 20);
             this.checkBox_Setup_Option_VacuumStableTime_Enable.TabIndex = 69;
@@ -5535,7 +5562,7 @@
             // textBox_Setup_Option_VacuumStableTime
             // 
             this.textBox_Setup_Option_VacuumStableTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_VacuumStableTime.Location = new System.Drawing.Point(211, 264);
+            this.textBox_Setup_Option_VacuumStableTime.Location = new System.Drawing.Point(214, 264);
             this.textBox_Setup_Option_VacuumStableTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_VacuumStableTime.Name = "textBox_Setup_Option_VacuumStableTime";
             this.textBox_Setup_Option_VacuumStableTime.Size = new System.Drawing.Size(50, 24);
@@ -5545,7 +5572,7 @@
             // label60
             // 
             this.label60.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label60.Location = new System.Drawing.Point(23, 233);
+            this.label60.Location = new System.Drawing.Point(26, 233);
             this.label60.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label60.Name = "label60";
             this.label60.Size = new System.Drawing.Size(177, 14);
@@ -5556,7 +5583,7 @@
             // label59
             // 
             this.label59.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label59.Location = new System.Drawing.Point(23, 192);
+            this.label59.Location = new System.Drawing.Point(26, 192);
             this.label59.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label59.Name = "label59";
             this.label59.Size = new System.Drawing.Size(177, 14);
@@ -5567,7 +5594,7 @@
             // label58
             // 
             this.label58.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label58.Location = new System.Drawing.Point(18, 170);
+            this.label58.Location = new System.Drawing.Point(21, 170);
             this.label58.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label58.Name = "label58";
             this.label58.Size = new System.Drawing.Size(192, 24);
@@ -5578,7 +5605,7 @@
             // textBox_Setup_Option_MAligner_WidenDistance
             // 
             this.textBox_Setup_Option_MAligner_WidenDistance.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_MAligner_WidenDistance.Location = new System.Drawing.Point(211, 175);
+            this.textBox_Setup_Option_MAligner_WidenDistance.Location = new System.Drawing.Point(214, 175);
             this.textBox_Setup_Option_MAligner_WidenDistance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_MAligner_WidenDistance.Name = "textBox_Setup_Option_MAligner_WidenDistance";
             this.textBox_Setup_Option_MAligner_WidenDistance.Size = new System.Drawing.Size(50, 24);
@@ -5588,7 +5615,7 @@
             // label57
             // 
             this.label57.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label57.Location = new System.Drawing.Point(18, 211);
+            this.label57.Location = new System.Drawing.Point(21, 211);
             this.label57.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label57.Name = "label57";
             this.label57.Size = new System.Drawing.Size(192, 24);
@@ -5599,7 +5626,7 @@
             // textBox_Setup_Option_MAligner_NarrowingDistance
             // 
             this.textBox_Setup_Option_MAligner_NarrowingDistance.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_MAligner_NarrowingDistance.Location = new System.Drawing.Point(211, 216);
+            this.textBox_Setup_Option_MAligner_NarrowingDistance.Location = new System.Drawing.Point(214, 216);
             this.textBox_Setup_Option_MAligner_NarrowingDistance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_MAligner_NarrowingDistance.Name = "textBox_Setup_Option_MAligner_NarrowingDistance";
             this.textBox_Setup_Option_MAligner_NarrowingDistance.Size = new System.Drawing.Size(50, 24);
@@ -5609,7 +5636,7 @@
             // label56
             // 
             this.label56.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label56.Location = new System.Drawing.Point(26, 133);
+            this.label56.Location = new System.Drawing.Point(29, 133);
             this.label56.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label56.Name = "label56";
             this.label56.Size = new System.Drawing.Size(177, 31);
@@ -5620,7 +5647,7 @@
             // checkBox_Setup_Option_MAligner_ReleaseType
             // 
             this.checkBox_Setup_Option_MAligner_ReleaseType.AutoSize = true;
-            this.checkBox_Setup_Option_MAligner_ReleaseType.Location = new System.Drawing.Point(10, 113);
+            this.checkBox_Setup_Option_MAligner_ReleaseType.Location = new System.Drawing.Point(13, 113);
             this.checkBox_Setup_Option_MAligner_ReleaseType.Name = "checkBox_Setup_Option_MAligner_ReleaseType";
             this.checkBox_Setup_Option_MAligner_ReleaseType.Size = new System.Drawing.Size(191, 20);
             this.checkBox_Setup_Option_MAligner_ReleaseType.TabIndex = 59;
@@ -5630,7 +5657,7 @@
             // label55
             // 
             this.label55.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label55.Location = new System.Drawing.Point(18, 75);
+            this.label55.Location = new System.Drawing.Point(21, 75);
             this.label55.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.label55.Name = "label55";
             this.label55.Size = new System.Drawing.Size(192, 24);
@@ -5641,7 +5668,7 @@
             // textBox_Setup_Option_SignalHoldTime
             // 
             this.textBox_Setup_Option_SignalHoldTime.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_SignalHoldTime.Location = new System.Drawing.Point(211, 76);
+            this.textBox_Setup_Option_SignalHoldTime.Location = new System.Drawing.Point(214, 76);
             this.textBox_Setup_Option_SignalHoldTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Setup_Option_SignalHoldTime.Name = "textBox_Setup_Option_SignalHoldTime";
             this.textBox_Setup_Option_SignalHoldTime.Size = new System.Drawing.Size(50, 24);
@@ -5651,7 +5678,7 @@
             // checkBox_Setup_Option_VacuumSensorEnable
             // 
             this.checkBox_Setup_Option_VacuumSensorEnable.AutoSize = true;
-            this.checkBox_Setup_Option_VacuumSensorEnable.Location = new System.Drawing.Point(10, 58);
+            this.checkBox_Setup_Option_VacuumSensorEnable.Location = new System.Drawing.Point(13, 58);
             this.checkBox_Setup_Option_VacuumSensorEnable.Name = "checkBox_Setup_Option_VacuumSensorEnable";
             this.checkBox_Setup_Option_VacuumSensorEnable.Size = new System.Drawing.Size(176, 20);
             this.checkBox_Setup_Option_VacuumSensorEnable.TabIndex = 1;
@@ -5662,7 +5689,7 @@
             // checkBox_Setup_Option_DoorEnable
             // 
             this.checkBox_Setup_Option_DoorEnable.AutoSize = true;
-            this.checkBox_Setup_Option_DoorEnable.Location = new System.Drawing.Point(10, 27);
+            this.checkBox_Setup_Option_DoorEnable.Location = new System.Drawing.Point(13, 27);
             this.checkBox_Setup_Option_DoorEnable.Name = "checkBox_Setup_Option_DoorEnable";
             this.checkBox_Setup_Option_DoorEnable.Size = new System.Drawing.Size(107, 20);
             this.checkBox_Setup_Option_DoorEnable.TabIndex = 0;
@@ -6367,6 +6394,38 @@
             this.Box_Setup_ScannerCal_ImageViewer.UpdateDelayTime = 160;
             this.Box_Setup_ScannerCal_ImageViewer.VisibleCrossLine = true;
             // 
+            // label78
+            // 
+            this.label78.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label78.Location = new System.Drawing.Point(728, 187);
+            this.label78.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label78.Name = "label78";
+            this.label78.Size = new System.Drawing.Size(207, 20);
+            this.label78.TabIndex = 118;
+            this.label78.Text = "Module Pick Up Distance (1st.)";
+            this.label78.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Setup_Option_ModulePickup_1stDistance
+            // 
+            this.textBox_Setup_Option_ModulePickup_1stDistance.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Setup_Option_ModulePickup_1stDistance.Location = new System.Drawing.Point(942, 186);
+            this.textBox_Setup_Option_ModulePickup_1stDistance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox_Setup_Option_ModulePickup_1stDistance.Name = "textBox_Setup_Option_ModulePickup_1stDistance";
+            this.textBox_Setup_Option_ModulePickup_1stDistance.Size = new System.Drawing.Size(50, 24);
+            this.textBox_Setup_Option_ModulePickup_1stDistance.TabIndex = 119;
+            this.textBox_Setup_Option_ModulePickup_1stDistance.Text = "100";
+            // 
+            // label79
+            // 
+            this.label79.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label79.Location = new System.Drawing.Point(738, 208);
+            this.label79.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.label79.Name = "label79";
+            this.label79.Size = new System.Drawing.Size(197, 31);
+            this.label79.TabIndex = 117;
+            this.label79.Text = "(Lifting height for vibration\r\n   after module pickup)";
+            this.label79.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // baseLabel_Setup_ScannerCal_Max
             // 
             this.baseLabel_Setup_ScannerCal_Max.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -6700,27 +6759,6 @@
             this.button_Setup_ScannerCal_Train_Set.Text = "Train";
             this.button_Setup_ScannerCal_Train_Set.UseVisualStyleBackColor = false;
             this.button_Setup_ScannerCal_Train_Set.Click += new System.EventHandler(this.button_Setup_ScannerCal_Train_Set_Click);
-            // 
-            // label72
-            // 
-            this.label72.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label72.Location = new System.Drawing.Point(305, 393);
-            this.label72.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.label72.Name = "label72";
-            this.label72.Size = new System.Drawing.Size(269, 20);
-            this.label72.TabIndex = 115;
-            this.label72.Text = "Vibration movement Interval (delay, ms) :";
-            this.label72.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Setup_Option_VibrationMoveInterval
-            // 
-            this.textBox_Setup_Option_VibrationMoveInterval.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Setup_Option_VibrationMoveInterval.Location = new System.Drawing.Point(574, 392);
-            this.textBox_Setup_Option_VibrationMoveInterval.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox_Setup_Option_VibrationMoveInterval.Name = "textBox_Setup_Option_VibrationMoveInterval";
-            this.textBox_Setup_Option_VibrationMoveInterval.Size = new System.Drawing.Size(50, 24);
-            this.textBox_Setup_Option_VibrationMoveInterval.TabIndex = 116;
-            this.textBox_Setup_Option_VibrationMoveInterval.Text = "2";
             // 
             // FormNew_Setup
             // 
@@ -7329,5 +7367,8 @@
         private System.Windows.Forms.Label label77;
         private System.Windows.Forms.Label label72;
         private System.Windows.Forms.TextBox textBox_Setup_Option_VibrationMoveInterval;
+        private System.Windows.Forms.Label label78;
+        private System.Windows.Forms.TextBox textBox_Setup_Option_ModulePickup_1stDistance;
+        private System.Windows.Forms.Label label79;
     }
 }
