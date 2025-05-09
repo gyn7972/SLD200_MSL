@@ -1389,7 +1389,7 @@ namespace SLD200_MSL
                 //byte[] pixelData = aligner.ConvertBitmapToByteArray(bm_Temp);                
 
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h);
-                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, (int)m_dradius, 0.1, ref m_bFindCircle, 0, 0, m_nTargetColor == 0);
+                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, (int)m_dradius, 0.08, ref m_bFindCircle, 0, 0, m_nTargetColor == 0);
             }
 
             if (m_bFindCircle && (circlesResult.Count > 0))

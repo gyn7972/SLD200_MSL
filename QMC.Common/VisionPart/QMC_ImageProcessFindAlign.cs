@@ -319,7 +319,7 @@ namespace QMC.Common.VisionPart
 
                 int nCy = h / 2 + nShiftY;
                 nDirectionX = 0;
-                for (int x = 0; x < nDivideCount; x++)
+                for (int x = 0; x < 1; x++)
                 {
                     int nShiftX = nDirectionX % 2 == 0 ? nStepX : -nStepX;
                     nShiftX *= x;
@@ -354,7 +354,7 @@ namespace QMC.Common.VisionPart
                         nMaxCircleFirst = 1000;
                     }
                     
-                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, radius/2, (int)(radius*1.5), 3);
+                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, 100,1000, 2);
                     points = polygon;
                     circlesResult.Clear();
                     FindCircleFitter(circlesResult, points, out dRadius, 5);
@@ -390,8 +390,8 @@ namespace QMC.Common.VisionPart
                         if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.01)
                         {
                             //허상을 찾아는지 검사 한다.
-                            double dScore = IsRealCircle(center, dRadius2, points,dSpec/2);
-                            if (dScore > 0.5)
+                            double dScore = IsRealCircle(center, dRadius2, points,dSpec);
+                            if (dScore > 0.4)
                             {
                                 bFindCircle = true;
                                 break;

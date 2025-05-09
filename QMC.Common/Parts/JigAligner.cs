@@ -615,14 +615,27 @@ namespace QMC.Common.Parts
                         {
                             // 꼭확인
                             // 1, 2번 마크 위치가.. 좌우 바뀌었는데...
+                            //XyzCoordinate position1 = new XyzCoordinate(m_AlignPositions[0].X, m_AlignPositions[0].Y, 0.0);
+
+                            //XyzCoordinate position2 = new XyzCoordinate(m_AlignPositions[1].X, m_AlignPositions[1].Y, 0.0);
+
+                            //double dRefAngle = GetAngle(new XyCoordinate(position2.X,position2.Y), new XyCoordinate(position1.X, position1.Y));
+                            //position1.X -= finalFirstPosition.X;
+                            //position1.Y -= finalFirstPosition.Y;
+                            //position2.X -= finalSecondPosition.X;
+                            //position2.Y -= finalSecondPosition.Y;
+
+                            //dAngle = GetAngle(new XyCoordinate(position2.X, position2.Y), new XyCoordinate(position1.X, position1.Y));
+                            //dAngle -= dRefAngle;
+
                             XyzCoordinate position1 = new XyzCoordinate(m_AlignPositions[0].X, m_AlignPositions[0].Y, 0.0);
 
                             XyzCoordinate position2 = new XyzCoordinate(m_AlignPositions[1].X, m_AlignPositions[1].Y, 0.0);
 
-                            double dRefAngle = GetAngle(new XyCoordinate(position1.X,position1.Y), new XyCoordinate(position2.X, position2.Y));
-                            position1.X -= finalFirstPosition.X;
+                            double dRefAngle = GetAngle(new XyCoordinate(position1.X, position1.Y), new XyCoordinate(position2.X, position2.Y));
+                            position1.X += finalFirstPosition.X;
                             position1.Y -= finalFirstPosition.Y;
-                            position2.X -= finalSecondPosition.X;
+                            position2.X += finalSecondPosition.X;
                             position2.Y -= finalSecondPosition.Y;
 
                             dAngle = GetAngle(new XyCoordinate(position1.X, position1.Y), new XyCoordinate(position2.X, position2.Y));
