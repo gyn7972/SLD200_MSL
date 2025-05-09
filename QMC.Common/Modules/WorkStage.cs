@@ -13639,18 +13639,24 @@ namespace QMC.Common.Modules
                     {
                         {
                             XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
-                           // xyCoordinateAlign = xyInterpolatedCoordinate + offset;
+                            Log.Write("Alaign Test", "xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
+                            Log.Write("Alaign Test", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
+                            Log.Write("Alaign Test", "Offset  : " + offset.ToString());
+
                             Log.Write("Alaign Test", "xyCoordinateAlign before : ", xyCoordinateAlign.ToString());
-                            xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionLast.X, xyCoordinateAlignPositionLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
+                            
+                            //xyCoordinateAlign = xyInterpolatedCoordinate + offset;
+                            xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionOrgLast.X, xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
                             xyCoordinateAlign = xyCoordinateAlign + offset;
                             Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
 
                             Log.Write("Alaign Test", "Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
-                            Log.Write("Alaign Test", "Offset  : " + offset.ToString());
+                            //Log.Write("Alaign Test", "Offset  : " + offset.ToString());
                             
                         }
 
                     }
+
                     xyCoordinateAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
                     MC_Func.MovePosition(xyCoordinateAlign, lfVelocity, lfAccDec, lfAccDec);
                     // Todo :김영남  얼라인 위치 이동 계산. 해야되는 부분..
@@ -13748,8 +13754,9 @@ namespace QMC.Common.Modules
                     Equipment.MachineStop_byUser = false;
 
                     this.jigAligner_HighRes.UsePatternMatchingTool = true;
+                    
                     //this.jigAligner_HighRes.Work();
-                    int retryCount = 1;
+                    int retryCount = 2;
                     
                     ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width, retryCount);
                     //jigAligner_HighRes.Camera.StartLive();
@@ -13787,6 +13794,7 @@ namespace QMC.Common.Modules
                         //  Stage Center 가 0, 0 인 좌표계로 변환일때 offset을 전부 -,- 적용. +,- -> -,- 변경.
                         m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = MC_Func.MC_GetEncPos((int)nAxis.X) - xOffset;
                         m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = MC_Func.MC_GetEncPos((int)nAxis.Y) - yOffset;
+
 
                         Log.Write("FineVision Fiducial", " Socket NO : " + nSocketNum.ToString() +  "  FineVision Fiducial Makr No : " + m_nSocketAlign_FiducialCount.ToString()
                             + " X : " + m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X.ToString()
@@ -14405,7 +14413,12 @@ namespace QMC.Common.Modules
                     //  마크 검출 형식 (Circle, Gold Powder)
                     if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
                     {
-                        Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, bm_AlignRawData, Camera_HighRes.Resolution.Width, Camera_HighRes.Resolution.Height, nWidthImageCount, 0.05, ref Fiducial_circleFound);
+                        Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, 
+                                                                        bm_AlignRawData, 
+                                                                        Camera_HighRes.Resolution.Width, 
+                                                                        Camera_HighRes.Resolution.Height, 
+                                                                        nWidthImageCount, 0.08, ref Fiducial_circleFound);
+
                         if(UpdateResultOveray != null)
                         {
                             try
@@ -18353,7 +18366,7 @@ namespace QMC.Common.Modules
                             double dfx = jigAligner_LowRes.FirstPosition.X;
                             double dfy = jigAligner_LowRes.FirstPosition.Y;
                             double dft = jigAligner_LowRes.GetJigAlignResult();
-                            dft = -dft / 180 * Math.PI;
+                            dft = dft / 180 * Math.PI;
 
                             double dPositionX = stPreAlignList[0].cX;
                             double dPositionY = stPreAlignList[0].cY;
