@@ -4729,8 +4729,9 @@ namespace QMC.Common.Modules
 
             unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_L_Port");
 
-            //  Target Position 변경 : 현재 위치 에서 10 mm 위, 1단계
-            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = MC_Func.MC_GetEncPos((int)nAxis.TR_Z) + 10.0;
+            //  Target Position 변경 : 현재 위치 에서 10 mm 위, 1단계 --> 현재 위치에서 10mm 올리던 것을, Table 위치에서 10mm 올리는 것으로 변경
+            //unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = MC_Func.MC_GetEncPos((int)nAxis.TR_Z) + 10.0;
+            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_WorkTablePos].UL_Transfer_Z + 10.0;
 
             //  Dry Run 모드이면 10mm 더 위로
             if (workStage.m_bMainWorkCycle_DryRun)

@@ -133,6 +133,8 @@ namespace QMC.Common.Modules
             LD_TransferX_Move_MAlignerPos_Timeout,
             LD_TransferX_Move_LoadingPos_Timeout,
 
+            LD_WorkStage_Not_LoadingPos,
+
             LD_MAlignerXY_Move_Widely_Timeout,
             
             LD_Maligner_Not_Set_Module_Size,
@@ -513,6 +515,15 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
+
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.LD_WorkStage_Not_LoadingPos;
+            alarm.Title = "Loader Trasfer";
+            alarm.Cause = "Work Stage 가 Module Loading 위치에 있지 않습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+            
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.LD_TransferZ_Move_PutDownPos_Timeout;
@@ -1940,6 +1951,16 @@ namespace QMC.Common.Modules
             }
 
 
+            //  Stacker0 이 Pause 되는 시점에 Stacker0 을 아래로 내림
+            if (Equipment.Loader_RPort_Pause && !Equipment.Loader_RPort_Pause_Before)
+            {
+                //  Pause 되었으니 Stacker0 을 아래로 내림
+
+                StackerModuleLoadingWaitingPos_StackerZ0_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
+            }
+            Equipment.Loader_RPort_Pause_Before = Equipment.Loader_RPort_Pause;
+
+
             //  자동운전 시, Stacker0 동작 조건 : TR Cycle (None), Stacker0 Cycle (None), TR 이 Module 을 집어갔을 때
             if (Equipment.AutoRunStatus &&
                 !Equipment.Loader_RPort_Pause &&
@@ -2827,6 +2848,16 @@ namespace QMC.Common.Modules
             }
 
 
+            //  Stacker1 이 Pause 되는 시점에 Stacker1 을 아래로 내림
+            if (Equipment.Loader_LPort_Pause && !Equipment.Loader_LPort_Pause_Before)
+            {
+                //  Pause 되었으니 Stacker1 을 아래로 내림
+
+                StackerModuleLoadingWaitingPos_StackerZ1_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
+            }
+            Equipment.Loader_LPort_Pause_Before = Equipment.Loader_LPort_Pause;
+
+
             //  자동운전 시, Stacker1 동작 조건 : TR Cycle (None), Stacker1 Cycle (None), TR 이 Module 을 집어갔을 때
             if (Equipment.AutoRunStatus &&
                 !Equipment.Loader_LPort_Pause &&
@@ -3441,6 +3472,50 @@ namespace QMC.Common.Modules
             return 0;
         }
 
+        private void StackerModuleLoadingWaitingPos_StackerZ0_FastDown(out double m_dSpeed_Stacker_Fast, out double m_dSpeedMag_forAccDec)
+        {
+            Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "Stacker0 Z 축, 제품 투입 위치까지 이동 (고속)");
+
+            loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Stacker0_Bottom");
+
+            //  Target Position 변경 : 맨 아래로 내려가는 위치
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_LPort_ReadyPos].LD_Stacker_Z0;
+
+            //  속도 (기본 속도)
+            m_dSpeed_Stacker_Fast = Equipment.stAxisParam[(int)nAxis.Z0].Common_Speed_Fine;
+
+            //  가감속 배율
+            m_dSpeedMag_forAccDec = 2.0;
+
+            MC_Func.MC_MovePosition((int)nAxis.Z0,
+                                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0],
+                                m_dSpeed_Stacker_Fast,
+                                m_dSpeed_Stacker_Fast * m_dSpeedMag_forAccDec,
+                                m_dSpeed_Stacker_Fast * m_dSpeedMag_forAccDec);
+        }
+
+        private void StackerModuleLoadingWaitingPos_StackerZ1_FastDown(out double m_dSpeed_Stacker_Fast, out double m_dSpeedMag_forAccDec)
+        {
+            Log.Write("SLD-200", Equipment.User_Name, "LD Stacker1 Work Pos. Set", "Stacker1 Z 축, 제품 투입 위치까지 이동 (고속)");
+
+            loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Stacker1_Bottom");
+
+            //  Target Position 변경 : 맨 아래로 내려가는 위치
+            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z1] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_LPort_ReadyPos].LD_Stacker_Z1;
+
+            //  속도 (기본 속도)
+            m_dSpeed_Stacker_Fast = Equipment.stAxisParam[(int)nAxis.Z1].Common_Speed_Fine;
+
+            //  가감속 배율
+            m_dSpeedMag_forAccDec = 2.0;
+
+            MC_Func.MC_MovePosition((int)nAxis.Z1,
+                                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z1],
+                                m_dSpeed_Stacker_Fast,
+                                m_dSpeed_Stacker_Fast * m_dSpeedMag_forAccDec,
+                                m_dSpeed_Stacker_Fast * m_dSpeedMag_forAccDec);
+        }
+
         private void StackerModulePickupWaitingPos_Step_StackerZ_Move_OverDistance(out double m_dSpeed_Stacker_MoreSlow, out double m_dSpeedMag_forAccDec)
         {
             Log.Write("SLD-200", Equipment.User_Name, "LD Stacker0 Work Pos. Set", "Stacker1 Z 축, Full 센서가 On 되는 위치에서 추가 이동 시작");
@@ -3865,7 +3940,7 @@ namespace QMC.Common.Modules
                 else if (m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete &&
                     !m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete &&
 
-                    (unloader.m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None) &&
+                    //(unloader.m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None) &&
                     (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_Stage) &&
 
                     //  M-Aligner 에서 Module 을 미리 Pick Up 하기 위해서 4번 조건에 있던 것으로 5번으로 이동
@@ -6650,6 +6725,8 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer X 축, Work Stage Loading 위치로 이동 완료");
 
+                        TickCount_Start((int)TickType.TICK_LDTR);
+
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
@@ -6676,9 +6753,26 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep:                            //  Transfer Z 축, Module Put Down 위치로 이동 (1단계, 최종 위치에서 위로 10 mm)
 
-                    Loader_Transfer_Step_WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep(out m_dSpeed, out m_dAccDec);
+                    //  안전을 위해, Stage 가 Module Put Down 위치에 있는지 한번더 체크
+                    if ((workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
 
-                    m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep_DoneCheck;
+                        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X - 0.1)) &&
+                        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X + 0.1)) &&
+                        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y - 0.1)) &&
+                        (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) < (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_Y + 0.1)))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer X 축, Work Stage 가 Module Loading 위치에 있음");
+
+                        Loader_Transfer_Step_WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep(out m_dSpeed, out m_dAccDec);
+
+                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep_DoneCheck;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer X 축, Work Stage 가 Module Loading 위치에 있지 않음");
+
+                        return AlarmPost(AlarmKey.LD_TransferX_Move_LoadingPos_Timeout);
+                    }
                     break;
 
 
@@ -6716,6 +6810,10 @@ namespace QMC.Common.Modules
                 case (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_PutDownPos_2ndStep:                            //  Transfer Z 축, Module Put Down 위치로 이동 (2단계, 최종 위치)
 
                     Loader_Transfer_Step_WorkStagePutDown_TransferZ_Move_PutDownPos_2ndStep(out m_dSpeed, out m_dAccDec);
+
+                    //  Transfer Z 축, Module Put Down 위치로 이동하면서 하부 집진기를 켠다. (2단계, 최종 위치)
+                    //  집진기를 너무 일찍 동작시키면, 모듈이 Stage 에 안착될 때 진공압으로 충격이 발생할 수 있다.
+                    workStage.DustCollector_On((int)nDustCollector.DustCollector_Lower);
 
                     m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_PutDownPos_2ndStep_DoneCheck;
                     break;
@@ -7107,6 +7205,12 @@ namespace QMC.Common.Modules
                                         m_dSpeed,
                                         m_dAccDec,
                                         m_dAccDec);
+
+
+                    //  WorkStage 의 MainWork 에서 Parsing 진행 (Module 을 Work Stage 에 내려놓고 도면 Import 하던 것을, Work Stage 에 내려놓는 Cycle 시작할 때 Import 하도록 변경)
+                    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 시작하면서 도면 Import Flag 를 True 로 변경");
+                    Equipment.ProcessingData_Parsing_byLoader = true;
+
 
                     TickCount_Start((int)TickType.TICK_LDTR);
 
@@ -7682,8 +7786,8 @@ namespace QMC.Common.Modules
                             //    workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
                             //}
 
-                            //  WorkStage 의 MainWork 에서 Parsing 진행
-                            Equipment.ProcessingData_Parsing_byLoader = true;
+                            ////  WorkStage 의 MainWork 에서 Parsing 진행        --> 여기가 아니라 Work Stage 에 Module 을 Put Down 하러 출발하면서 해야지 ㅡㅡ
+                            //Equipment.ProcessingData_Parsing_byLoader = true;
 
                             m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = true;
                             m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;
@@ -8592,8 +8696,16 @@ namespace QMC.Common.Modules
 
             loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Transfer_To_L_Port");
 
-            //  Target Position 변경 : 대기 위치 1단계
-            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_LPortPos].LD_Transfer_Z + 10.0;
+            //  Target Position 변경 : 대기 위치 1단계 --> 10mm 고정으로 올리던 것을, 옵션으로 조정 가능하게 변경
+            if (Equipment.Machine_LoaderTransfer_ModulePickup_1stDistance < 10.0)
+            {
+                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_LPortPos].LD_Transfer_Z + 10.0;
+            }
+            else
+            {
+                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_LPortPos].LD_Transfer_Z + Equipment.Machine_LoaderTransfer_ModulePickup_1stDistance;
+            }
+
             loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z1] = MC_Func.MC_GetEncPos((int)nAxis.Z1);
 
             //  LoaderZ 축을 올리면서 Stacker 축을 내릴 경우
@@ -8797,8 +8909,16 @@ namespace QMC.Common.Modules
 
             loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Transfer_To_R_Port");
 
-            //  Target Position 변경 : 대기 위치 1단계
-            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_RPortPos].LD_Transfer_Z + 10.0;
+            //  Target Position 변경 : 대기 위치 1단계 --> 10mm 고정으로 올리던 것을, 옵션으로 조정 가능하게 변경
+            if (Equipment.Machine_LoaderTransfer_ModulePickup_1stDistance < 10.0)
+            {
+                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_RPortPos].LD_Transfer_Z + 10.0;
+            }
+            else
+            {
+                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_RPortPos].LD_Transfer_Z + Equipment.Machine_LoaderTransfer_ModulePickup_1stDistance;
+            }
+
             loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0] = MC_Func.MC_GetEncPos((int)nAxis.Z0);
 
             //  LoaderZ 축을 올리면서 Stacker 축을 내릴 경우

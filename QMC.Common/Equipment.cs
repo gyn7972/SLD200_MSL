@@ -733,6 +733,7 @@ namespace QMC.Common
         public static int Machine_LoaderStacker_LiftUp_StableTime { set; get; } = 1000;                     //  Loader Stacker Lift Up Stable Time
         public static bool Machine_LoaderStacker_Down_afterLoaderPickUp_Enable { set; get; } = true;        //  Loader Stacker Down after Loader Module Pick Up Enable
         public static double Machine_LoaderStacker_DownDistance_afterLoaderPickUp { set; get; } = 5.0;      //  Loader 가 Module Pick Up 후 Stacker 를 내리는 거리
+        public static double Machine_LoaderTransfer_ModulePickup_1stDistance { set; get; } = 10.0;          //  Loader 가 Module Pick Up 후 Z축을 올리는 거리 (이 거리만큼 올린 후 바이브레이션을 진행함)
         public static bool Machine_LoaderStacker_NoMaterialDetectTime_Enable { set; get; } = true;          //  Loader Stacker No Material Detect Time Enable
         public static int Machine_LoaderStacker_NoMaterialDetectTime { set; get; } = 10;                    //  Loader Stacker No Material Detect Time
         public static int Machine_PolylineCurve_Resolution { set; get; } = 100;                             //  Polyline Curve Resolution
@@ -935,7 +936,9 @@ namespace QMC.Common
         //  Loader Port 투입 일시정지
         public static bool Loader_Transfer_Pause { set; get; } = false;
         public static bool Loader_LPort_Pause { set; get; } = false;
+        public static bool Loader_LPort_Pause_Before { set; get; } = false;             //  L-Port 가 Pause 가 될 때 L-Port 를 아래로 내리기 위한 Flag
         public static bool Loader_RPort_Pause { set; get; } = false;
+        public static bool Loader_RPort_Pause_Before { set; get; } = false;             //  R-Port 가 Pause 가 될 때 R-Port 를 아래로 내리기 위한 Flag
 
         // Loader 자재 상태
         public static bool Loader_LPort_Empty { set; get; } = false;
@@ -3069,6 +3072,8 @@ namespace QMC.Common
             Equipment.Machine_LoaderStacker_Down_afterLoaderPickUp_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_DownDistance_afterLDPickUp", "5.0", temp, 255, strFIle);
             Equipment.Machine_LoaderStacker_DownDistance_afterLoaderPickUp = Equipment.ToDouble(temp.ToString());
+            NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderTransfer_ModulePickup_1stDistance", "10.0", temp, 255, strFIle);
+            Equipment.Machine_LoaderTransfer_ModulePickup_1stDistance = Equipment.ToDouble(temp.ToString());
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_NoMaterialDetectTime_Enable", "True", temp, 255, strFIle);
             Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable = temp.ToString() == "False" ? false : true;
             NativeMethods.GetPrivateProfileString("Machine_Option", "LoaderStacker_NoMaterialDetectTime", "10", temp, 255, strFIle);
