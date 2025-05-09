@@ -1,4 +1,4 @@
-using SP_FindCircle;
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -327,7 +327,7 @@ namespace QMC.Common.VisionPart
 
                 int nCy = h / 2 + nShiftY;
                 nDirectionX = 0;
-                for (int x = 0; x < 1; x++)
+                for (int x = 0; x < nDivideCount; x++)
                 {
                     int nShiftX = nDirectionX % 2 == 0 ? nStepX : -nStepX;
                     nShiftX *= x;
@@ -343,8 +343,6 @@ namespace QMC.Common.VisionPart
 
                     nCx = (int)currentPosition.X;
                     nCy = (int)currentPosition.Y;
-
-
 
                     int nMaxCircle = (int)(radius * (1 + dSpec));
                     int nMinCircle = (int)(radius * (1 - dSpec));

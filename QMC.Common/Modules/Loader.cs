@@ -1956,7 +1956,7 @@ namespace QMC.Common.Modules
             {
                 //  Pause 되었으니 Stacker0 을 아래로 내림
 
-                StackerModuleLoadingWaitingPos_StackerZ0_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
+                //StackerModuleLoadingWaitingPos_StackerZ0_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
             }
             Equipment.Loader_RPort_Pause_Before = Equipment.Loader_RPort_Pause;
 
@@ -2853,7 +2853,7 @@ namespace QMC.Common.Modules
             {
                 //  Pause 되었으니 Stacker1 을 아래로 내림
 
-                StackerModuleLoadingWaitingPos_StackerZ1_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
+                //StackerModuleLoadingWaitingPos_StackerZ1_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
             }
             Equipment.Loader_LPort_Pause_Before = Equipment.Loader_LPort_Pause;
 
@@ -10159,6 +10159,7 @@ namespace QMC.Common.Modules
             }
             else if (Step <= (int)Loader_Transfer_Step.MAligner_MAlign_CompleteCheck)
             {
+                TickCount_Start((int)TickType.TICK_LDTR);
                 m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.MAligner_MAlign_Start;
             }
 
