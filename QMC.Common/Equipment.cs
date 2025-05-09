@@ -936,7 +936,9 @@ namespace QMC.Common
         //  Loader Port 투입 일시정지
         public static bool Loader_Transfer_Pause { set; get; } = false;
         public static bool Loader_LPort_Pause { set; get; } = false;
+        public static bool Loader_LPort_Pause_Before { set; get; } = false;             //  L-Port 가 Pause 가 될 때 L-Port 를 아래로 내리기 위한 Flag
         public static bool Loader_RPort_Pause { set; get; } = false;
+        public static bool Loader_RPort_Pause_Before { set; get; } = false;             //  R-Port 가 Pause 가 될 때 R-Port 를 아래로 내리기 위한 Flag
 
         // Loader 자재 상태
         public static bool Loader_LPort_Empty { set; get; } = false;
