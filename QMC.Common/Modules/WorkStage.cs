@@ -8020,7 +8020,7 @@ namespace QMC.Common.Modules
                 {
                     Equipment.ProcessingData_Parsing_byLoader = false;
 
-                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Main Tick, Loader Transfer 의 Loading 에 의한 가공 데이터 Parsing 시도");
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Main Tick, Loader Transfer 의 Loading 중 Flag 에 의한 가공 데이터 Parsing 시도");
 
                     if (!m_bMainWorkCycle_DryRun)
                     {

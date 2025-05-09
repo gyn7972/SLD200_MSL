@@ -7176,6 +7176,12 @@ namespace QMC.Common.Modules
                                         m_dAccDec,
                                         m_dAccDec);
 
+
+                    //  WorkStage 의 MainWork 에서 Parsing 진행 (Module 을 Work Stage 에 내려놓고 도면 Import 하던 것을, Work Stage 에 내려놓는 Cycle 시작할 때 Import 하도록 변경)
+                    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 시작하면서 도면 Import Flag 를 True 로 변경");
+                    Equipment.ProcessingData_Parsing_byLoader = true;
+
+
                     TickCount_Start((int)TickType.TICK_LDTR);
 
                     m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.MAlignerPutDown_TransferZ_Move_ReadyPos_DoneCheck;
@@ -7750,8 +7756,8 @@ namespace QMC.Common.Modules
                             //    workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
                             //}
 
-                            //  WorkStage 의 MainWork 에서 Parsing 진행
-                            Equipment.ProcessingData_Parsing_byLoader = true;
+                            ////  WorkStage 의 MainWork 에서 Parsing 진행        --> 여기가 아니라 Work Stage 에 Module 을 Put Down 하러 출발하면서 해야지 ㅡㅡ
+                            //Equipment.ProcessingData_Parsing_byLoader = true;
 
                             m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = true;
                             m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete = false;
