@@ -3865,7 +3865,7 @@ namespace QMC.Common.Modules
                 else if (m_bAUTORUN_Loader_Transfer_ModulePickUpfromMAligner_Complete &&
                     !m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete &&
 
-                    (unloader.m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None) &&
+                    //(unloader.m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None) &&
                     (m_nLoaderTransfer_ProcessStep == (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_Stage) &&
 
                     //  M-Aligner 에서 Module 을 미리 Pick Up 하기 위해서 4번 조건에 있던 것으로 5번으로 이동
@@ -8592,8 +8592,16 @@ namespace QMC.Common.Modules
 
             loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Transfer_To_L_Port");
 
-            //  Target Position 변경 : 대기 위치 1단계
-            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_LPortPos].LD_Transfer_Z + 10.0;
+            //  Target Position 변경 : 대기 위치 1단계 --> 10mm 고정으로 올리던 것을, 옵션으로 조정 가능하게 변경
+            if (Equipment.Machine_LoaderTransfer_ModulePickup_1stDistance < 10.0)
+            {
+                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_LPortPos].LD_Transfer_Z + 10.0;
+            }
+            else
+            {
+                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_LPortPos].LD_Transfer_Z + Equipment.Machine_LoaderTransfer_ModulePickup_1stDistance;
+            }
+
             loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z1] = MC_Func.MC_GetEncPos((int)nAxis.Z1);
 
             //  LoaderZ 축을 올리면서 Stacker 축을 내릴 경우
@@ -8797,8 +8805,16 @@ namespace QMC.Common.Modules
 
             loaderParameter.stLoaderPosParam = loaderParameter.GetPositionInformation("Transfer_To_R_Port");
 
-            //  Target Position 변경 : 대기 위치 1단계
-            loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_RPortPos].LD_Transfer_Z + 10.0;
+            //  Target Position 변경 : 대기 위치 1단계 --> 10mm 고정으로 올리던 것을, 옵션으로 조정 가능하게 변경
+            if (Equipment.Machine_LoaderTransfer_ModulePickup_1stDistance < 10.0)
+            {
+                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_RPortPos].LD_Transfer_Z + 10.0;
+            }
+            else
+            {
+                loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_RPortPos].LD_Transfer_Z + Equipment.Machine_LoaderTransfer_ModulePickup_1stDistance;
+            }
+
             loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0] = MC_Func.MC_GetEncPos((int)nAxis.Z0);
 
             //  LoaderZ 축을 올리면서 Stacker 축을 내릴 경우

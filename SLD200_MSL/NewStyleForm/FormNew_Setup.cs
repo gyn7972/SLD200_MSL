@@ -1284,6 +1284,7 @@ namespace SLD200_MSL
             textBox_Setup_Option_LoaderStackerLiftUp_StableTime.Text = Equipment.Machine_LoaderStacker_LiftUp_StableTime.ToString();
             checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Checked = Equipment.Machine_LoaderStacker_Down_afterLoaderPickUp_Enable;
             textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Text = Equipment.Machine_LoaderStacker_DownDistance_afterLoaderPickUp.ToString();
+            textBox_Setup_Option_ModulePickup_1stDistance.Text = Equipment.Machine_LoaderTransfer_ModulePickup_1stDistance.ToString();
             checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Checked = Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable;
             textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Text = Equipment.Machine_LoaderStacker_NoMaterialDetectTime.ToString();
             textBox_Setup_Option_PolylineCurve_Resolution.Text = Equipment.Machine_PolylineCurve_Resolution.ToString();
@@ -1706,6 +1707,8 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_Down_afterLDPickUp_Enable", checkBox_Setup_Option_StackerDownDistance_afterLDPickUp_Enable.Checked.ToString(), strFIle);
             Equipment.Machine_LoaderStacker_DownDistance_afterLoaderPickUp = Equipment.ToDouble(textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Text);
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_DownDistance_afterLDPickUp", textBox_Setup_Option_StackerDownDistance_afterLDPickUp.Text.ToString(), strFIle);
+            Equipment.Machine_LoaderTransfer_ModulePickup_1stDistance = Equipment.ToDouble(textBox_Setup_Option_ModulePickup_1stDistance.Text);
+            NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderTransfer_ModulePickup_1stDistance", textBox_Setup_Option_ModulePickup_1stDistance.Text.ToString(), strFIle);
             Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable = checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Checked;
             NativeMethods.WritePrivateProfileString("Machine_Option", "LoaderStacker_NoMaterialDetectTime_Enable", checkBox_Setup_Option_LoaderStacker_NoMaterialDetectTime_Enable.Checked.ToString(), strFIle);
             Equipment.Machine_LoaderStacker_NoMaterialDetectTime = Equipment.ToInt(textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Text);
