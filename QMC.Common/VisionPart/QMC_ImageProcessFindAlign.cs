@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -326,7 +327,7 @@ namespace QMC.Common.VisionPart
 
                 int nCy = h / 2 + nShiftY;
                 nDirectionX = 0;
-                for (int x = 0; x < 1; x++)
+                for (int x = 0; x < nDivideCount; x++)
                 {
                     int nShiftX = nDirectionX % 2 == 0 ? nStepX : -nStepX;
                     nShiftX *= x;
@@ -342,8 +343,6 @@ namespace QMC.Common.VisionPart
 
                     nCx = (int)currentPosition.X;
                     nCy = (int)currentPosition.Y;
-
-
 
                     int nMaxCircle = (int)(radius * (1 + dSpec));
                     int nMinCircle = (int)(radius * (1 - dSpec));
@@ -394,7 +393,7 @@ namespace QMC.Common.VisionPart
                         double dRadius2 = 0;
                         Circle center = FindCircleFitter(circlesResult, points, out dRadius2, 2);
 
-                        if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.01)
+                        if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.1)
                         {
                             //허상을 찾아는지 검사 한다.
                             double dScore = IsRealCircle(center, dRadius2, points, dSpec);
