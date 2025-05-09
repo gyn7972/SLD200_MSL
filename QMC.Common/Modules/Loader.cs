@@ -6617,7 +6617,7 @@ namespace QMC.Common.Modules
                     if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 완료");
-
+                        
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_WorkStageCycle_LoadingPos_Start;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
@@ -7208,12 +7208,6 @@ namespace QMC.Common.Modules
                                         m_dSpeed,
                                         m_dAccDec,
                                         m_dAccDec);
-
-
-                    //  WorkStage 의 MainWork 에서 Parsing 진행 (Module 을 Work Stage 에 내려놓고 도면 Import 하던 것을, Work Stage 에 내려놓는 Cycle 시작할 때 Import 하도록 변경)
-                    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 시작하면서 도면 Import Flag 를 True 로 변경");
-                    Equipment.ProcessingData_Parsing_byLoader = true;
-
 
                     TickCount_Start((int)TickType.TICK_LDTR);
 
@@ -8235,6 +8229,12 @@ namespace QMC.Common.Modules
                                 m_dSpeed,
                                 m_dAccDec,
                                 m_dAccDec);
+
+
+            //  WorkStage 의 MainWork 에서 Parsing 진행 (Module 을 Work Stage 에 내려놓고 도면 Import 하던 것을, Work Stage 에 내려놓는 Cycle 시작할 때 Import 하도록 변경)
+            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 시작하면서 도면 Import Flag 를 True 로 변경");
+            Equipment.ProcessingData_Parsing_byLoader = true;
+
 
             TickCount_Start((int)TickType.TICK_LDTR);
         }
@@ -10303,6 +10303,11 @@ namespace QMC.Common.Modules
             else if (Step <= (int)Loader_Transfer_Step.MAlignerPutDown_PickerVacuum_MAlignerVacuum_Check)
             {
                 m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.MAlignerPutDown_MAligner_Vacuum_On;
+            }
+            else if (Step <= (int)Loader_Transfer_Step.MAlignerPutDown_MAlign_CompleteCheck)
+            {
+                TickCount_Start((int)TickType.TICK_LDTR);
+                m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.MAlignerPutDown_MAlign_CompleteCheck;
             }
             else
             {
