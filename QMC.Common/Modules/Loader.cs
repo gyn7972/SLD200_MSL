@@ -10162,7 +10162,6 @@ namespace QMC.Common.Modules
             }
             else if (Step <= (int)Loader_Transfer_Step.MAligner_MAlign_CompleteCheck)
             {
-                TickCount_Start((int)TickType.TICK_LDTR);
                 m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.MAligner_MAlign_Start;
             }
 
@@ -10308,7 +10307,7 @@ namespace QMC.Common.Modules
             {
                 TickCount_Start((int)TickType.TICK_LDTR);
                 m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.MAlignerPutDown_MAlign_CompleteCheck;
-            }
+            }            
             else
             {
                 m_nLoader_Transfer_Step_Recovery = Step;
