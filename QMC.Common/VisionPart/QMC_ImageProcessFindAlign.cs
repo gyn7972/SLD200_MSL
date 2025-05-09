@@ -387,7 +387,7 @@ namespace QMC.Common.VisionPart
                         double dRadius2 = 0;
                         Circle center = FindCircleFitter(circlesResult, points, out dRadius2, 2);
 
-                        if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.01)
+                        if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.1)
                         {
                             //허상을 찾아는지 검사 한다.
                             double dScore = IsRealCircle(center, dRadius2, points,dSpec);
