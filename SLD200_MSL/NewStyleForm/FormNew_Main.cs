@@ -2736,6 +2736,10 @@ namespace SLD200_MSL
 
                 workStage.m_bForceEjectRequest = true;  // 강제 배출 요청. NG로 빼기 위한 변수.
 
+
+                workStage.rtc.CtlAbort();
+                Thread.Sleep(2000);
+                workStage.rtc.CtlReset();
             }
             else
             {
