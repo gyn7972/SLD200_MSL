@@ -862,6 +862,8 @@ namespace QMC.Common.Modules
 
             public double dLaserHeightValue;            //  레이저 높이 값
 
+            public bool bProcessing;                    //  가공 진행 여부
+
             public int nRegion_ObjectTotalNum;          //  객체 총 개수
             public int nRegion_ObjectCount;             //  객체 누적 카운트
         }
@@ -24218,11 +24220,22 @@ namespace QMC.Common.Modules
 
                 m_nThruHole_ObjectDataCount = 0;
 
-                m_nThruHole_SocketCount = m_nDrillingWork_Group_Count;
+                if (m_stThruHole_SocketData[m_nDrillingWork_Group_Count].bProcessing == false)
+                {
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole, Socket 데이터는 있으나 가공하지 않는 Socket 이므로 다음 Socket 체크");
 
+                    m_nDrillingWork_Group_Count++;
+                    nextStep = (int)LaserDrilling_Step.ThruHole_SocketRemainedCheck;
+                }
+                else
+                {
+                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole, Socket 데이터 있고 가공하는 Socket 확인");
 
-                //nextStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_ObjectData_RemainedCheck;
-                nextStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;
+                    m_nThruHole_SocketCount = m_nDrillingWork_Group_Count;
+
+                    //nextStep = (int)LaserDrilling_Step.ThruHole_ScannerOnly_ObjectData_RemainedCheck;
+                    nextStep = (int)LaserDrilling_Step.ThruHole_LayerParameter_ZOffset_Move;
+                }
             }
             else
             {
@@ -30251,6 +30264,24 @@ namespace QMC.Common.Modules
                             m_stThruHole_SocketData = new stThruHole_SocketData[layer.Count];
                         }
 
+                        for (int i = 0; i < layer.Count ; i++)
+                        {
+                            if (layer.Items[i].Description == null)
+                            {
+                                m_stThruHole_SocketData[i].bProcessing = true;
+                            }
+                            else if ((layer.Items[i].Description.ToUpper() == "NO") ||
+                                    (layer.Items[i].Description.ToUpper() == "NOT") ||
+                                    (layer.Items[i].Description.ToUpper() == "X") ||
+                                    (layer.Items[i].Description.ToUpper() == "FALSE"))
+                            {
+                                m_stThruHole_SocketData[i].bProcessing = false;
+                            }
+                            else
+                            {
+                                m_stThruHole_SocketData[i].bProcessing = true;
+                            }
+                        }                        
 
                         //  세부 데이터 저장
                         m_nGroupData_Count = 0;
