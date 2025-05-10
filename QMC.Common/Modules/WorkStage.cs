@@ -9239,6 +9239,7 @@ namespace QMC.Common.Modules
                     unloader.m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete = false;                 //  Stacker0 에 Module Put Down 완료 여부
                     unloader.m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete = false;                 //  Stacker1 에 Module Put Down 완료 여부
                     unloader.m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete = false;                       //  NG-Port 에 Module Put Down 완료 여부
+                    unloader.m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = false;                        //  Unloader Transfer Module Unloading 완료 여부
                     unloader.m_bUL_Transfer_fromWorkStage_Module_PickUp_Complete_Flag = false;                      //  Work Stage 에서 Module Pick Up 완료 여부
 
                     //  Main 파츠 사용 변수 초기화

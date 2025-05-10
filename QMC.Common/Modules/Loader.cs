@@ -4676,7 +4676,24 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 바이브레이션 Interval Check 완료");
 
-                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Vibration_Start;
+                        //  바이브레이션 도중 모듈이 이탈되었는지 체크
+                        if (Equipment.Machine_VacuumSensor_Enable)
+                        {
+                            //  여기서 Module 이 이탈되었으면? 계속 바이브레이션을 진행할 필요 없이 알람 처리하도록
+                            if (!loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) &&
+                                !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+                            {
+                                m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Move_ReadyPos2_2ndStep;
+                            }
+                            else
+                            {
+                                m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Vibration_Start;
+                            }
+                        }
+                        else
+                        {
+                            m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Vibration_Start;
+                        }
                     }
                     break;
                 //  모듈 털기 - 종료
@@ -5382,7 +5399,24 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 바이브레이션 Interval Check 완료");
 
-                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Vibration_Start;
+                        //  바이브레이션 도중 모듈이 이탈되었는지 체크
+                        if (Equipment.Machine_VacuumSensor_Enable)
+                        {
+                            //  여기서 Module 이 이탈되었으면? 계속 바이브레이션을 진행할 필요 없이 알람 처리하도록
+                            if (!loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) &&
+                                !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+                            {
+                                m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_2ndStep;
+                            }
+                            else
+                            {
+                                m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Vibration_Start;
+                            }
+                        }
+                        else
+                        {
+                            m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Vibration_Start;
+                        }
                     }
                     break;
                 //  모듈 털기 - 종료
@@ -5428,7 +5462,7 @@ namespace QMC.Common.Modules
 
                                 m_strTemp = "Transfer Z 축, Module Picker 공압이 형성되지 않음";
                                 Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
-                                return AlarmPost(AlarmKey.LD_TransferZ_Move_VibrationPos_Timeout);
+                                return AlarmPost(AlarmKey.LD_Transfer_PickerVacuumOn_Timeout);
 
                                 Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, Module Picker 공압이 형성되지 않음");
 
@@ -10109,6 +10143,11 @@ namespace QMC.Common.Modules
             }
             else if (Step <= (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Move_ReadyPos2_2ndStep_DoneCheck)
             {
+                //  Stacker0 에서 모듈을 Pick Up 하지 못한 경우, (공압 형성 안됨, 털다가 떨어지거나, 아예 집지 못하거나)
+                //  Loader Transfer Recovery 를 None 으로 보내고, Stacker0 의 Complete 를 false 로 해주면...
+                //  Stacker0 부터 Pick Up 대기위치 이동 동작하고,
+                //  그 이후에 Transfer 가 모듈 Pick Up 을 진행할 것으로 예상
+
                 m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Move_ReadyPos2_2ndStep;
             }
             else if (Step <= (int)Loader_Transfer_Step.Stacker1_ModulePickup_Condition_Check)
@@ -10150,6 +10189,11 @@ namespace QMC.Common.Modules
             }
             else if (Step <= (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_2ndStep_DoneCheck)
             {
+                //  Stacker1 에서 모듈을 Pick Up 하지 못한 경우, (공압 형성 안됨, 털다가 떨어지거나, 아예 집지 못하거나)
+                //  Loader Transfer Recovery 를 None 으로 보내고, Stacker1 의 Complete 를 false 로 해주면...
+                //  Stacker1 부터 Pick Up 대기위치 이동 동작하고,
+                //  그 이후에 Transfer 가 모듈 Pick Up 을 진행할 것으로 예상
+
                 m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_2ndStep;
             }
             else if (Step <= (int)Loader_Transfer_Step.MAligner_ModulePickup_Condition_Check)
