@@ -288,6 +288,11 @@ namespace QMC.Common
         }
         public static stAxisParameter[] stAxisParam = new stAxisParameter[Max_Axis];                  //  총 14개 축. 가변 가능하도록 변경해야 함. (시간 관계상 고정하자)
 
+        public enum Type_Motor_Speed
+        {
+            Fine = 0,
+            Coarse,
+        }
 
         //  Communication 장치 파라미터
         public enum CommList : int
@@ -582,9 +587,9 @@ namespace QMC.Common
                     data.Miscellaneous_FiducialMarkType = Equipment.ToInt(sb.ToString());
                     NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSize", "0.5", sb, sb.Capacity, path);
                     data.Miscellaneous_FiducialMarkRadius = Equipment.ToDouble(sb.ToString());
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSpec", "0.05", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSpec", "0.08", sb, sb.Capacity, path);
                     data.Miscellaneous_FiducialMarkSpec = Equipment.ToDouble(sb.ToString());
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "IR", "2500", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "IR", "5", sb, sb.Capacity, path);
                     data.nFiduciallluminationIR = Equipment.ToInt(sb.ToString());
                     NativeMethods.GetPrivateProfileString("SocketAlign", "Red", "2500", sb, sb.Capacity, path);
                     data.nFiduciallluminationRed = Equipment.ToInt(sb.ToString());
@@ -640,7 +645,7 @@ namespace QMC.Common
                     NativeMethods.GetPrivateProfileString("CircleDetection", "SizeW", "0.5", sb, sb.Capacity, path);
                     data.dCircleDetectionSizeW = Equipment.ToDouble(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("CircleDetection", "Spec", "0.05", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("CircleDetection", "Spec", "0.08", sb, sb.Capacity, path);
                     data.dCircleSpec = Equipment.ToDouble(sb.ToString());
 
                     NativeMethods.GetPrivateProfileString("TrainImage", "Path", "", sb, sb.Capacity, path);

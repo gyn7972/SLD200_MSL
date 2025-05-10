@@ -13583,9 +13583,12 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align Part 시작");
 
                     //처음 시작시 끄지만 여기에서 다시 한 번 진행 예정.
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR, 3);
+                    //CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
+                    //CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
+                    //CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR, 3);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationRed, 1);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationIR, 2);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreAlignlluminationIR, 3);
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명 
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
                     Thread.Sleep(50);
@@ -36047,6 +36050,229 @@ namespace QMC.Common.Modules
             }
         }
 
-        
+
+        //motion 함수 
+        public bool IsInterlock_WorkStageXY_Enabled()
+        {
+            bool bRtn = false;
+            string strTemp = "";
+
+            if (!m_bHomeOK)
+            {
+                strTemp = string.Format("IsInterlock_WorkStageXY_Enabled [Fail]: 장비 초기화 후 구동");
+                Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                return bRtn;
+            }
+
+            if (!MC_Func.MC_GetDone((int)WorkStage.nAxis.X) ||
+                !MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) ||
+                !MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) ||
+                !MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y))
+            {
+                strTemp = string.Format("IsInterlock_WorkStageXY_Enabled [Fail]: StageXY Axis이 이동중입니다.");
+                Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                return bRtn;
+            }
+
+            // Todo: 구영남 - 여기 설정값 셋팅 연결 필요.
+            double dStageZ = 45;
+            double dLoaderTransferX = 100;
+            double dUnloaderTransferX = 800;
+            double dLoaderTransferZ = 100;
+            double dUnloaderTransferZ = 100;
+
+            double dCurPositionStageZ = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z);
+            double dCurPositionLoaderTransferX = MC_Func.MC_GetEncPos((int)Loader.nAxis.TR_X);
+            double dCurPositionUnloaderTransferX = MC_Func.MC_GetEncPos((int)Unloader.nAxis.TR_X);
+            double dCurPositionLoaderTransferZ = MC_Func.MC_GetEncPos((int)Loader.nAxis.TR_Z);
+            double dCurPositionUnloaderTransferZ = MC_Func.MC_GetEncPos((int)Unloader.nAxis.TR_Z);
+
+            if (dCurPositionStageZ > dStageZ)
+            {
+                strTemp = string.Format("IsInterlock_WorkStageXY_Enabled [Fail]: Stage Z축 설정보다 내려와 있습니다.");
+                Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                return bRtn = false;
+            }
+
+            if(dCurPositionLoaderTransferX < dLoaderTransferX)
+            {
+                if (dCurPositionLoaderTransferZ > dLoaderTransferZ)
+                {
+                    strTemp = string.Format("IsInterlock_WorkStageXY_Enabled [Fail]: Loader Z축 설정보다 내려와 있습니다.");
+                    Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                    return bRtn = false;
+                }
+            }
+
+            if(dCurPositionUnloaderTransferX > dUnloaderTransferX)
+            {
+                if (dCurPositionUnloaderTransferZ > dUnloaderTransferZ)
+                {
+                    strTemp = string.Format("IsInterlock_WorkStageXY_Enabled [Fail]: Unloader Z축 설정보다 내려와 있습니다.");
+                    Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                    return bRtn = false;
+                }
+            }
+
+            bRtn = true;
+            return bRtn;
+        }
+        public bool MovetoWorkStage_TeachingPositionsXY(int nTeachingPos, Type_Motor_Speed typeSpeed)
+        {
+            // WorkStage Teaching Position 이동
+            // string strTemp = "";
+            bool bRtn = false;
+            double dVelocity = 0.0;
+            double dAcc = 0.0;
+            try
+            {
+                if (IsInterlock_WorkStageXY_Enabled())
+                {
+                    if(IsWorkStage_TeachingPositionsXY(nTeachingPos) == false)
+                    {
+                        //// 맵 데이터를 이원화 할 경우
+                        //if (laserDrilling.Config.ParamConfig.ScannerCamera_MapData_Div)
+                        //{
+                        //    laserDrilling.MapData_Change((int)LaserDrilling.MapDataType.MAPDATASTATUS_SCANNER);
+                        //}
+
+                        switch(typeSpeed)
+                        {
+                            case Type_Motor_Speed.Fine:
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+                                break;
+                            case Type_Motor_Speed.Coarse:
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                                break;
+                            default:
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+                                break;
+                        }
+
+                        xyInterpolatedCoordinate.X = stWorkStageTeachingPos[nTeachingPos].Stage_X;
+                        xyInterpolatedCoordinate.Y = stWorkStageTeachingPos[nTeachingPos].Stage_Y;
+                        MC_Func.MovePosition(xyInterpolatedCoordinate, dVelocity, dAcc, dAcc);
+                    }
+
+                    bRtn = true;
+                }
+                //strTemp = string.Format("Move_to_WorkStage_TeachingPositions 이동");
+                //Log.Write("SLD-200", Equipment.User_Name, strTemp);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+            return bRtn;
+        }
+        public bool IsWorkStage_TeachingPositionsXY(int nTeachingPos)
+        {
+            bool bRtn = false;
+
+            if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) &&
+                MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[nTeachingPos].Stage_X) &&
+                MC_Func.MC_GetDone((int)WorkStage.nAxis.X) &&
+                MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[nTeachingPos].Stage_Y))
+            {
+                bRtn = true;
+            }
+
+            return bRtn;
+        }
+
+        public bool IsInterlock_WorkStageZ_Enabled()
+        {
+            bool bRtn = false;
+            string strTemp = "";
+
+            if (!m_bHomeOK)
+            {
+                strTemp = string.Format("IsInterlock_WorkStageZ_Enabled [Fail]: 장비 초기화 후 구동");
+                Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                return bRtn;
+            }
+
+            if (!MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
+                !MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
+            {
+                strTemp = string.Format("IsInterlock_WorkStageZ_Enabled [Fail]: StageXY Axis이 이동중입니다.");
+                Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                return bRtn;
+            }
+
+            // Stage 구동 중에는 Z축 움직이지 말자. - 추 후 진짜 필요없으면 제거.
+            if (!MC_Func.MC_GetDone((int)WorkStage.nAxis.X) ||
+                !MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) ||
+                !MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) ||
+                !MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y))
+            {
+                strTemp = string.Format("IsInterlock_WorkStageXY_Enabled [Fail]: StageXY Axis이 이동중입니다.");
+                Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                return bRtn;
+            }
+
+            bRtn = true;
+            return bRtn;
+        }
+        public bool MovetoWorkStage_TeachingPositionsZ(int nTeachingPos, Type_Motor_Speed typeSpeed)
+        {
+            // WorkStage Teaching Position 이동
+            // string strTemp = "";
+            bool bRtn = false;
+            double dVelocity = 0.0;
+            double dAcc = 0.0;
+            try
+            {
+                if (IsInterlock_WorkStageZ_Enabled())
+                {
+                    if (IsWorkStage_TeachingPositionsZ(nTeachingPos) == false)
+                    {
+                        switch (typeSpeed)
+                        {
+                            case Type_Motor_Speed.Fine:
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+                                break;
+                            case Type_Motor_Speed.Coarse:
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
+                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
+                                break;
+                            default:
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+                                break;
+                        }
+
+                        MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[nTeachingPos].Vision_Z,
+                                            dVelocity, dAcc, dAcc);
+                    }
+                    bRtn = true;
+                }
+                //strTemp = string.Format("Move_to_WorkStage_TeachingPositions 이동");
+                //Log.Write("SLD-200", Equipment.User_Name, strTemp);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+            return bRtn;
+        }
+        public bool IsWorkStage_TeachingPositionsZ(int nTeachingPos)
+        {
+            bool bRtn = false;
+
+            if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
+                MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[nTeachingPos].Vision_Z))
+            {
+                bRtn = true;
+            }
+
+            return bRtn;
+        }
     }
 }
