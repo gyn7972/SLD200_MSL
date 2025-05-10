@@ -82,6 +82,13 @@ namespace QMC.Common
                 }
             }
 
+            // 3. saver에 알람 저장
+            if (Saver != null)
+            {
+                Saver.AddAlarm(alarm);
+                Saver.Close();
+            }
+
             //m_Alarms.Add(alarm);
             //if (PostAlarm != null)
             //{

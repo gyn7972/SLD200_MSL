@@ -2314,8 +2314,14 @@ namespace QMC.Common.Modules
             None = 0,
             Start,                                                          //  시작
 
+            HomeStep_Vacuum_On,                                             //  각 Parts Vacuum On (Work Stage Vacuum On, EPRO On, M-Aligner On)
+            HomeStep_Vacuum_On_StableTime,
+
             // 여기서 장비 내부 자재 유/무 확인 후 처리.
             HomeStep_Vacuum_Check,
+
+            //  초기화 시 자재 확인을 위해 Vacuum On 한 파츠들 Off
+            HomeStep_Vacuum_Off,                                            //  각 Parts Vacuum Off (Work Stage Vacuum Off, EPRO Off, M-Aligner Off)
 
             //  알람이 발생한 축이 있을 경우, Servo Off --> Reset --> Servo On 해야 한다.
             AxisAlarmCheck,                                                 //  서보 축 알람 체크
@@ -9261,8 +9267,42 @@ namespace QMC.Common.Modules
 
                     loader.timer_LoaderWork.Enabled = false;
 
-                    m_nHomeStep = (int)Home_Step.HomeStep_Vacuum_Check;
+                    m_nHomeStep = (int)Home_Step.HomeStep_Vacuum_On;
                     break;
+
+
+                case (int)Home_Step.HomeStep_Vacuum_On:                                     //  각 Parts Vacuum On (Work Stage Vacuum On, EPRO On, M-Aligner On)
+                    //  Work Stage Vacuum On
+                    workStageParameter.DO_Stage_Blow(false);
+                    workStageParameter.DO_Stage_Vacuum(true);
+
+                    //  Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
+                    ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);            //  임시로 -30 고정
+
+                    //  M-Aligner Vacuum On
+                    loader.loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Center, false);
+                    loader.loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Inner, false);
+                    loader.loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Outer, false);
+                    loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, true);
+                    loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, true);
+                    loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, true);
+
+                    TickCount_Start((int)TickType.TICK_HOME);
+
+                    m_nHomeStep = (int)Home_Step.HomeStep_Vacuum_On_StableTime;
+
+                    break;
+
+
+                case (int)Home_Step.HomeStep_Vacuum_On_StableTime:                          //  각 Parts Vacuum On (Work Stage Vacuum On, EPRO On, M-Aligner On) 후 안정화 시간
+
+                    if (TickCount_Elapsed((int)TickType.TICK_HOME) > 1000)                  //  안정화 시간 1초만 해보고
+                    {
+                        m_nHomeStep = (int)Home_Step.HomeStep_Vacuum_Check;
+                    }
+
+                    break;
+
 
                 case (int)Home_Step.HomeStep_Vacuum_Check:
 
@@ -9286,7 +9326,7 @@ namespace QMC.Common.Modules
                         m_nHomeStep = (int)Home_Step.Fail;
                     }
                     //Stage 진공 체크
-                    else if (workStageParameter.DI_Stage_Vacuum_Check())
+                    else if (workStageParameter.DI_Stage_Vacuum_Check() && (m_dEPRO_Value < -5.0))              //  모듈이 없을 때 EPRO 에 얼마나 인가되는지 확인 후 변경
                     {
                         AlarmPost(AlarmKey.Home_MainStage_Vacuum_Off_Fail);
                         Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Initialize Stage Vacuum Off Fail");
@@ -9304,9 +9344,42 @@ namespace QMC.Common.Modules
                     }
                     else
                     {
-                        m_nHomeStep = (int)Home_Step.AxisAlarmCheck;
+                        m_nHomeStep = (int)Home_Step.HomeStep_Vacuum_Off;
                     }
                     break;
+
+
+                case (int)Home_Step.HomeStep_Vacuum_Off:                                    //  각 Parts Vacuum Off (Work Stage Vacuum Off, EPRO Off, M-Aligner Off)
+
+                    //  Work Stage Vacuum Off
+                    workStageParameter.DO_Stage_Blow(false);
+                    workStageParameter.DO_Stage_Vacuum(false);
+
+                    //  진공레귤레이터도 Off --> 한번에 꺼질란가???
+                    ElectroPneumaticRegulatorComm_Pressure_Set(-1.3);                       //  가장 낮은 값이 -1.3
+
+                    //  M-Aligner Vacuum Off
+                    loader.loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Center, false);
+                    loader.loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Inner, false);
+                    loader.loaderParameter.DO_Loader_Aligner_Blow((int)LoaderParameter.MAlignerVacuumPos.Outer, false);
+                    loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, false);
+                    loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, false);
+                    loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, false);
+
+                    //  Loader Picker Vacuum Off
+                    loader.loaderParameter.DO_Loader_Picker_Blow(false);
+                    loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, false);
+                    loader.loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, false);
+
+                    //  Unloader Picker Vacuum Off
+                    unloader.unloaderParameter.DO_Unloader_Picker_Blow(false);
+                    unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Inner, false);
+                    unloader.unloaderParameter.DO_Unloader_Picker_Vacuum((int)UnloaderParameter.PickerVacuumPos.Outer, false);
+
+                    m_nHomeStep = (int)Home_Step.AxisAlarmCheck;
+
+                    break;
+
 
                 case (int)Home_Step.AxisAlarmCheck:                                         //  서보 축 알람 체크
 
@@ -18115,6 +18188,13 @@ namespace QMC.Common.Modules
                     {
                         m_dZOffset_SocketHeightCheck = m_dLaserHeightSensorSocket_Value - Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition;
                     }
+
+
+                    //  Laser Height Sensor 값을 파일로 저장
+                    //  레시피 명, 소켓 번호, 소켓 높이값(기준값 대비 차이값)
+                    LaserHeightSensorValue_Save(Equipment.Current_Recipe, m_nDrillingWork_Group_Count, 
+                        Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck);
+
 
                     //  여기서 측정한 소켓 높이값을 Thruhole, Outline 등에서 사용하도록 한다.
                     if (m_stThruHole_SocketData != null)
@@ -36039,6 +36119,42 @@ namespace QMC.Common.Modules
             }
         }
 
-        
+        //  Laser Height Sensor Value 저장
+        public void LaserHeightSensorValue_Save(string m_strRecipeName, int m_nSocketNum, double m_dLaserHeightValue_Base, double m_dLaserHeightValue, double m_dLaserHeight_Calc)
+        {
+            //  폴더 없으면 만들기
+            string m_strLaserHeightValueDataPath = LogManager.Instance.GetLogPath() + "\\LaserHeightData";
+            if (Directory.Exists(m_strLaserHeightValueDataPath) == false)
+            {
+                Directory.CreateDirectory(m_strLaserHeightValueDataPath);
+            }
+
+            string m_strRecipeName_Now = System.IO.Path.GetFileName(m_strRecipeName);
+
+            string fileName = string.Format("{0}{1}_{2}", LogManager.Instance.GetLogPath() + "\\LaserHeightData\\", m_strRecipeName_Now, DateTime.Now.ToString("yyyy_MM_dd"));
+
+            DateTime now = DateTime.Now;
+            string timeString = now.ToString("yyyy-MM-dd HH_mm_ss");
+            string strData = "";
+
+            strData += timeString;
+            strData += " , ";
+            strData += "Socket Numer : " + m_nSocketNum.ToString();
+            //strData += " , ";
+            //strData += "Reference Height Value : " + m_dLaserHeightValue_Base.ToString();             //  레이저 높이 센서의 기준값 
+            //strData += " , ";
+            //strData += "Laser Height Sensor Value : " + m_dLaserHeightValue.ToString();               //  실제 레이저 센서에서 읽은 값
+            strData += " , ";
+            strData += "Calculated Height Value : " + m_dLaserHeight_Calc.ToString();
+            strData += "\n";
+
+            File.AppendAllText(fileName + ".txt", strData);
+        }
+
+
+        public void AlarmTest()
+        {
+            AlarmPost(AlarmKey.DataNotValidation);
+        }
     }
 }

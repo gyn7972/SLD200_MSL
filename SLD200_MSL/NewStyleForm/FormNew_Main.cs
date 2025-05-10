@@ -2734,12 +2734,17 @@ namespace SLD200_MSL
             {
                 Log.Write("SLD-200", Equipment.User_Name, "Button Click", "강제배출 버튼 Click");
 
+                string m_strTemp = "강제 배출 하시겠습니까?\r\n\r\n[레이저도 Off 됩니다.]";
+
+                var mb = new MessageBoxOk();
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", m_strTemp))
+                    return;
+
                 workStage.m_bLaserDrilling_Complete = true;
                 workStage.m_nLaserDrilling_MainStep = 0;
                 workStage.m_nSocketAlign_MainStep = 0;
 
                 workStage.m_bForceEjectRequest = true;  // 강제 배출 요청. NG로 빼기 위한 변수.
-
 
                 workStage.rtc.CtlAbort();
                 Thread.Sleep(2000);
@@ -3024,9 +3029,9 @@ namespace SLD200_MSL
             else
             {
                 var mb = new MessageBoxYesNo();
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", "가공을 중지하시겠습니까?"))
+                if (DialogResult.Yes != mb.ShowDialog("Question ?", "가공을 중지하시겠습니까?\r\n\r\n[레이저도 Off 됩니다.]"))
                     return;
-
+                
                 Equipment.MachineStop_byUser = true;
 
                 WorkStartTick = 0;
@@ -3149,11 +3154,14 @@ namespace SLD200_MSL
 
         private void button_TEST12_Click(object sender, EventArgs e)
         {
-            Equipment.AutoManualStatus = false;
+            workStage.AlarmTest();
+            //workStage.LaserHeightSensorValue_Save(Equipment.Current_Recipe, 1, Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition, workStage.m_dLaserHeightSensorSocket_Value, 2);
 
-            int nCol = workStage.Main_SocketPositions_ColumnCount = 5;
-            int nRow = workStage.Main_SocketPositions_RowCount = 5;
-            Change_SocketArraySize(nCol, nRow, 3, 3);
+            //Equipment.AutoManualStatus = false;
+
+            //int nCol = workStage.Main_SocketPositions_ColumnCount = 5;
+            //int nRow = workStage.Main_SocketPositions_RowCount = 5;
+            //Change_SocketArraySize(nCol, nRow, 3, 3);
         }
 
         private void checkBox_Main_Loader_LPort_Pause_CheckedChanged(object sender, EventArgs e)

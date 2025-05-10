@@ -55,7 +55,6 @@ namespace QMC.Common
                        + $"Method: {methodName}\n"
                        + $"StackTrace:\n{ex.StackTrace}";
             LogManager.Instance.Write(LogLevel.Highest, "ProgramExeption", log);
-
         }
         public static void WriteWorkLog(string strMessage)
         {

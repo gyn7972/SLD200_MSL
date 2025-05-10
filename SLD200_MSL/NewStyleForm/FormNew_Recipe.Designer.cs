@@ -295,6 +295,8 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
+            this.label89 = new System.Windows.Forms.Label();
+            this.label_PulseWidth_Range = new System.Windows.Forms.Label();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox15.SuspendLayout();
@@ -1335,6 +1337,8 @@
             // 
             // groupBox7
             // 
+            this.groupBox7.Controls.Add(this.label_PulseWidth_Range);
+            this.groupBox7.Controls.Add(this.label89);
             this.groupBox7.Controls.Add(this.button34);
             this.groupBox7.Controls.Add(this.textBox_Recipe_TabRecipe_LaserParam_Frequency);
             this.groupBox7.Controls.Add(this.label77);
@@ -1349,7 +1353,7 @@
             this.groupBox7.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox7.Size = new System.Drawing.Size(254, 156);
+            this.groupBox7.Size = new System.Drawing.Size(254, 184);
             this.groupBox7.TabIndex = 85;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = " Laser Set Points ";
@@ -1389,7 +1393,7 @@
             // button_PulseWidth_Calc
             // 
             this.button_PulseWidth_Calc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_PulseWidth_Calc.Location = new System.Drawing.Point(180, 103);
+            this.button_PulseWidth_Calc.Location = new System.Drawing.Point(180, 130);
             this.button_PulseWidth_Calc.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.button_PulseWidth_Calc.Name = "button_PulseWidth_Calc";
             this.button_PulseWidth_Calc.Size = new System.Drawing.Size(65, 43);
@@ -1401,7 +1405,7 @@
             // textBox_Recipe_TabRecipe_LaserParam_DutyCycle
             // 
             this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Location = new System.Drawing.Point(124, 103);
+            this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Location = new System.Drawing.Point(124, 130);
             this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Name = "textBox_Recipe_TabRecipe_LaserParam_DutyCycle";
             this.textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Size = new System.Drawing.Size(53, 24);
@@ -1411,7 +1415,7 @@
             // button_DutyCycle_Calc
             // 
             this.button_DutyCycle_Calc.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button_DutyCycle_Calc.Location = new System.Drawing.Point(180, 56);
+            this.button_DutyCycle_Calc.Location = new System.Drawing.Point(180, 57);
             this.button_DutyCycle_Calc.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.button_DutyCycle_Calc.Name = "button_DutyCycle_Calc";
             this.button_DutyCycle_Calc.Size = new System.Drawing.Size(65, 43);
@@ -1423,7 +1427,7 @@
             // textBox_Recipe_TabRecipe_LaserParam_PulseWidth
             // 
             this.textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Location = new System.Drawing.Point(124, 56);
+            this.textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Location = new System.Drawing.Point(124, 57);
             this.textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Name = "textBox_Recipe_TabRecipe_LaserParam_PulseWidth";
             this.textBox_Recipe_TabRecipe_LaserParam_PulseWidth.Size = new System.Drawing.Size(53, 24);
@@ -1433,7 +1437,7 @@
             // label20
             // 
             this.label20.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label20.Location = new System.Drawing.Point(5, 101);
+            this.label20.Location = new System.Drawing.Point(5, 129);
             this.label20.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(119, 24);
@@ -1444,7 +1448,7 @@
             // label21
             // 
             this.label21.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label21.Location = new System.Drawing.Point(5, 54);
+            this.label21.Location = new System.Drawing.Point(5, 55);
             this.label21.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(119, 24);
@@ -1604,7 +1608,7 @@
             this.groupBox167.Controls.Add(this.radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod);
             this.groupBox167.Controls.Add(this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P);
             this.groupBox167.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox167.Location = new System.Drawing.Point(946, 188);
+            this.groupBox167.Location = new System.Drawing.Point(946, 218);
             this.groupBox167.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox167.Name = "groupBox167";
             this.groupBox167.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -3631,6 +3635,28 @@
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
             // 
+            // label89
+            // 
+            this.label89.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label89.Location = new System.Drawing.Point(13, 156);
+            this.label89.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label89.Name = "label89";
+            this.label89.Size = new System.Drawing.Size(162, 17);
+            this.label89.TabIndex = 21;
+            this.label89.Text = "(0% ~ 100%)  ";
+            this.label89.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label_PulseWidth_Range
+            // 
+            this.label_PulseWidth_Range.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_PulseWidth_Range.Location = new System.Drawing.Point(13, 83);
+            this.label_PulseWidth_Range.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_PulseWidth_Range.Name = "label_PulseWidth_Range";
+            this.label_PulseWidth_Range.Size = new System.Drawing.Size(162, 17);
+            this.label_PulseWidth_Range.TabIndex = 22;
+            this.label_PulseWidth_Range.Text = "(0.00us ~ 0.00us)  ";
+            this.label_PulseWidth_Range.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // FormNew_Recipe
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -3965,5 +3991,7 @@
         private System.Windows.Forms.GroupBox groupBox15;
         private System.Windows.Forms.Label label88;
         private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel;
+        private System.Windows.Forms.Label label89;
+        private System.Windows.Forms.Label label_PulseWidth_Range;
     }
 }

@@ -552,8 +552,26 @@ namespace SLD200_MSL
                 //  Percent of Energy
                 baseLabel_Config_TabLaser_PercentOfEnergy.Text = string.Format("{0}", workStage.m_dLaser_OutputEnergy);
 
-                //  Laser Head Operating Hours
-                baseLabel_Config_TabLaser_LaserHeadOperatingHours.Text = string.Format("{0}", workStage.m_dLaser_OperatingHours);
+                //  Laser Head Operating Hours --> 시간 표기 변경 (HH:MM) 
+                //  ? Head Operating Hours 로 확인되는 데이터가 "시간" 인지 "분" 인지 확인 필요
+                //baseLabel_Config_TabLaser_LaserHeadOperatingHours.Text = string.Format("{0}", workStage.m_dLaser_OperatingHours);
+
+                // HH:MM 형식으로 변환
+                try
+                {
+                    int hours = (int)workStage.m_dLaser_OperatingHours / 60;        // 시간 계산
+                    int minutes = (int)workStage.m_dLaser_OperatingHours % 60;      // 분 계산
+                    string formattedTime = $"{hours:D2}:{minutes:D2}";
+
+                    baseLabel_Config_TabLaser_LaserHeadOperatingHours.Text = string.Format("{0}", formattedTime);
+                }
+                catch (Exception ex)
+                {
+                    // 예외 처리
+                    Console.WriteLine("Error: " + ex.Message);
+
+                    baseLabel_Config_TabLaser_LaserHeadOperatingHours.Text = string.Format("---");
+                }
 
                 //  Water Temperature
                 baseLabel_Config_TabLaser_WaterTemperature.Text = string.Format("{0}", workStage.m_dLaser_WaterTemperature);

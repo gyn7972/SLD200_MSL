@@ -1518,6 +1518,13 @@ namespace QMC.Common
             bds.Create();
             Modules.Add(bds);
 
+            AlarmSaver alarmSaver = new AlarmSaver();
+            alarmSaver.Server = "SLD-200\\SQLEXPRESS";
+            alarmSaver.Database = "LASER_DRILLING";
+            alarmSaver.UID = "qmc1";
+            alarmSaver.Password = "q1234!";
+            alarmSaver.Open();
+            AlarmManager.Instance.Saver = alarmSaver;
         }
 
         public static void Start()
