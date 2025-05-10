@@ -69,6 +69,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                     workStage = module as WorkStage;
                     Owner = workStage.jigAligner_LowRes;
                     workStage.UpdateResultOveray += workStage_UpdateResultOveray;
+
                 }
             }
         }
@@ -1081,37 +1082,35 @@ namespace SLD200.NewStyleForm.NewSubForm
                 // 축 번호 결정
                 switch (axisName)
                 {
-                    case "X": axis = (int)Vision.nAxis.X; break;
-                    case "Y": axis = (int)Vision.nAxis.Y; break;
-                    case "Z": axis = (int)Vision.nAxis.Z; break;
+                    case "X": axis = (int)WorkStage.nAxis.X; break;
+                    case "Y": axis = (int)WorkStage.nAxis.Y; break;
+                    case "Z": axis = (int)WorkStage.nAxis.Z; break;
                     default: return;
                 }
 
                 // 속도/가감속 설정
+                Type_Motor_Speed type_Motor_Speed;
                 if (radioButton_RecipeVision_Move_MoveMode_Fine.Checked)
                 {
-                    velocity = Equipment.stAxisParam[axis].Jog_Speed_Fine;
-                    accdec = Equipment.stAxisParam[axis].Common_Acceleration_Fine;
+                    type_Motor_Speed = Type_Motor_Speed.Fine;
                 }
                 else
                 {
-                    velocity = Equipment.stAxisParam[axis].Jog_Speed_Coarse;
-                    accdec = Equipment.stAxisParam[axis].Common_Acceleration_Coarse;
+                    type_Motor_Speed = Type_Motor_Speed.Coarse;
                 }
-
                 velocity = Math.Abs(velocity);
 
                 try
                 {
                     if (radioButton_RecipeVision_JogMove_Continuous.Checked)
                     {
-                        workStage.MC_Func.MC_JogMove(axis, velocity * direction, accdec, accdec);
+                        workStage.MovetoWorkStage_Jog_Positions((WorkStage.nAxis)axis, (int)direction, type_Motor_Speed);
                     }
                     else if (radioButton_RecipeVision_JogMove_Step.Checked)
                     {
                         string text = textBox_RecipeVision_JogMove_StepSize.Text;
                         distance = Math.Abs(Equipment.ToDouble(text));
-                        workStage.MC_Func.MC_MoveRelPosition(axis, distance * direction, velocity, accdec, accdec);
+                        workStage.MovetoWorkStage_Rel_Positions((WorkStage.nAxis)axis, distance, (int)direction, type_Motor_Speed);
                     }
                 }
                 catch (Exception ex)
@@ -1314,11 +1313,11 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void radioButton_RecipeVision_CameraSelection_LowMag_CheckedChanged(object sender, EventArgs e)
         {
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명
+            CommonModule.Instance.Illuminator.TurnOnOff(false, 1);       //  Fine Cam Red 조명
             Thread.Sleep(1);
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
+            CommonModule.Instance.Illuminator.TurnOnOff(false, 2);       //  Fine Cam IR 조명
             Thread.Sleep(1);
-            CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
+            CommonModule.Instance.Illuminator.TurnOnOff(true, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
 
             hScrollBar_RecipeVision_Illuminator_IR.Enabled = true;
             textBox_RecipeVision_IlluminationValue_IR.Enabled = true;
@@ -1404,10 +1403,12 @@ namespace SLD200.NewStyleForm.NewSubForm
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, 
                 //                                    bm_RawData, w, h, (int)m_dradius, 0.08, 
                 //                                    ref bFindCircle, 0, 0, nTargetColor == 0);
-                aligner.FindCirclesWidthCircleBoundary(circlesResult,
+                QMC_ImageProcessFindAlignResult result = aligner.FindCirclesWidthCircleBoundary(circlesResult,
                                                     workStage.Camera_HighRes.LatestImage.RawData, 
                                                     w, h, (int)m_dradius, dSpec,
                                                     ref bFindCircle, 0, 0, nTargetColor == 0);
+
+                workStage.UpdateOverlay(result);
             }
 
             if (bFindCircle && (circlesResult.Count > 0))

@@ -1369,9 +1369,8 @@
             this.button_Config_LD_ALNX_Neg.TabIndex = 63;
             this.button_Config_LD_ALNX_Neg.Text = "-X\r\n(Narrowly)";
             this.button_Config_LD_ALNX_Neg.UseVisualStyleBackColor = true;
-            this.button_Config_LD_ALNX_Neg.Click += new System.EventHandler(this.button_Config_LD_ALNX_Neg_Click);
-            this.button_Config_LD_ALNX_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_LD_ALNX_Neg_MouseDown);
-            this.button_Config_LD_ALNX_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_Axis_MouseUp);
+            this.button_Config_LD_ALNX_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_LD_ALNX_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_LD_ALNX_Pos
             // 
@@ -1383,9 +1382,8 @@
             this.button_Config_LD_ALNX_Pos.TabIndex = 62;
             this.button_Config_LD_ALNX_Pos.Text = "+X\r\n(Widely)";
             this.button_Config_LD_ALNX_Pos.UseVisualStyleBackColor = true;
-            this.button_Config_LD_ALNX_Pos.Click += new System.EventHandler(this.button_Config_LD_ALNX_Pos_Click);
-            this.button_Config_LD_ALNX_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_LD_ALNX_Pos_MouseDown);
-            this.button_Config_LD_ALNX_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_Axis_MouseUp);
+            this.button_Config_LD_ALNX_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_LD_ALNX_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_LD_ALNY_Neg
             // 
@@ -1397,9 +1395,8 @@
             this.button_Config_LD_ALNY_Neg.TabIndex = 61;
             this.button_Config_LD_ALNY_Neg.Text = "-Y\r\n(Narrowly)";
             this.button_Config_LD_ALNY_Neg.UseVisualStyleBackColor = true;
-            this.button_Config_LD_ALNY_Neg.Click += new System.EventHandler(this.button_Config_LD_ALNY_Neg_Click);
-            this.button_Config_LD_ALNY_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_LD_ALNY_Neg_MouseDown);
-            this.button_Config_LD_ALNY_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_Axis_MouseUp);
+            this.button_Config_LD_ALNY_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_LD_ALNY_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_LD_ALNY_Pos
             // 
@@ -1411,9 +1408,8 @@
             this.button_Config_LD_ALNY_Pos.TabIndex = 60;
             this.button_Config_LD_ALNY_Pos.Text = "+Y\r\n(Widely)";
             this.button_Config_LD_ALNY_Pos.UseVisualStyleBackColor = true;
-            this.button_Config_LD_ALNY_Pos.Click += new System.EventHandler(this.button_Config_LD_ALNY_Pos_Click);
-            this.button_Config_LD_ALNY_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_LD_ALNY_Pos_MouseDown);
-            this.button_Config_LD_ALNY_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_Axis_MouseUp);
+            this.button_Config_LD_ALNY_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_LD_ALNY_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // groupBox_Config_LDUL_Move_JogMove_Port
             // 
@@ -1497,9 +1493,8 @@
             this.button_Config_LDUL_Z1_Neg.TabIndex = 67;
             this.button_Config_LDUL_Z1_Neg.Text = "-Z\r\n(L)";
             this.button_Config_LDUL_Z1_Neg.UseVisualStyleBackColor = true;
-            this.button_Config_LDUL_Z1_Neg.Click += new System.EventHandler(this.button_Config_LDUL_Z1_Neg_Click);
-            this.button_Config_LDUL_Z1_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_Z1_Neg_MouseDown);
-            this.button_Config_LDUL_Z1_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_Axis_MouseUp);
+            this.button_Config_LDUL_Z1_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_LDUL_Z1_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_LDUL_Z1_Pos
             // 
@@ -1511,9 +1506,8 @@
             this.button_Config_LDUL_Z1_Pos.TabIndex = 66;
             this.button_Config_LDUL_Z1_Pos.Text = "+Z\r\n(L)";
             this.button_Config_LDUL_Z1_Pos.UseVisualStyleBackColor = true;
-            this.button_Config_LDUL_Z1_Pos.Click += new System.EventHandler(this.button_Config_LDUL_Z1_Pos_Click);
-            this.button_Config_LDUL_Z1_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_Z1_Pos_MouseDown);
-            this.button_Config_LDUL_Z1_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_Axis_MouseUp);
+            this.button_Config_LDUL_Z1_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_LDUL_Z1_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_LDUL_Z0_Neg
             // 
@@ -1525,9 +1519,8 @@
             this.button_Config_LDUL_Z0_Neg.TabIndex = 65;
             this.button_Config_LDUL_Z0_Neg.Text = "-Z\r\n(R)";
             this.button_Config_LDUL_Z0_Neg.UseVisualStyleBackColor = true;
-            this.button_Config_LDUL_Z0_Neg.Click += new System.EventHandler(this.button_Config_LDUL_Z0_Neg_Click);
-            this.button_Config_LDUL_Z0_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_Z0_Neg_MouseDown);
-            this.button_Config_LDUL_Z0_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_Axis_MouseUp);
+            this.button_Config_LDUL_Z0_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_LDUL_Z0_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_LDUL_Z0_Pos
             // 
@@ -1539,9 +1532,8 @@
             this.button_Config_LDUL_Z0_Pos.TabIndex = 64;
             this.button_Config_LDUL_Z0_Pos.Text = "+Z\r\n(R)";
             this.button_Config_LDUL_Z0_Pos.UseVisualStyleBackColor = true;
-            this.button_Config_LDUL_Z0_Pos.Click += new System.EventHandler(this.button_Config_LDUL_Z0_Pos_Click);
-            this.button_Config_LDUL_Z0_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_Z0_Pos_MouseDown);
-            this.button_Config_LDUL_Z0_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_Axis_MouseUp);
+            this.button_Config_LDUL_Z0_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_LDUL_Z0_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // groupBox_Config_LDUL_Move_JogMove_Transfer
             // 
@@ -1625,9 +1617,8 @@
             this.button_Config_LDUL_TRX_Neg.TabIndex = 59;
             this.button_Config_LDUL_TRX_Neg.Text = "-X";
             this.button_Config_LDUL_TRX_Neg.UseVisualStyleBackColor = true;
-            this.button_Config_LDUL_TRX_Neg.Click += new System.EventHandler(this.button_Config_LDUL_TRX_Neg_Click);
-            this.button_Config_LDUL_TRX_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_TRX_Neg_MouseDown);
-            this.button_Config_LDUL_TRX_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_Axis_MouseUp);
+            this.button_Config_LDUL_TRX_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_LDUL_TRX_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_LDUL_TRX_Pos
             // 
@@ -1639,9 +1630,8 @@
             this.button_Config_LDUL_TRX_Pos.TabIndex = 58;
             this.button_Config_LDUL_TRX_Pos.Text = "+X";
             this.button_Config_LDUL_TRX_Pos.UseVisualStyleBackColor = true;
-            this.button_Config_LDUL_TRX_Pos.Click += new System.EventHandler(this.button_Config_LDUL_TRX_Pos_Click);
-            this.button_Config_LDUL_TRX_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_TRX_Pos_MouseDown);
-            this.button_Config_LDUL_TRX_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_Axis_MouseUp);
+            this.button_Config_LDUL_TRX_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_LDUL_TRX_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_LDUL_TRZ_Neg
             // 
@@ -1653,9 +1643,8 @@
             this.button_Config_LDUL_TRZ_Neg.TabIndex = 57;
             this.button_Config_LDUL_TRZ_Neg.Text = "-Z";
             this.button_Config_LDUL_TRZ_Neg.UseVisualStyleBackColor = true;
-            this.button_Config_LDUL_TRZ_Neg.Click += new System.EventHandler(this.button_Config_LDUL_TRZ_Neg_Click);
-            this.button_Config_LDUL_TRZ_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_TRZ_Neg_MouseDown);
-            this.button_Config_LDUL_TRZ_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_Axis_MouseUp);
+            this.button_Config_LDUL_TRZ_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_LDUL_TRZ_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_LDUL_TRZ_Pos
             // 
@@ -1667,9 +1656,8 @@
             this.button_Config_LDUL_TRZ_Pos.TabIndex = 56;
             this.button_Config_LDUL_TRZ_Pos.Text = "+Z";
             this.button_Config_LDUL_TRZ_Pos.UseVisualStyleBackColor = true;
-            this.button_Config_LDUL_TRZ_Pos.Click += new System.EventHandler(this.button_Config_LDUL_TRZ_Pos_Click);
-            this.button_Config_LDUL_TRZ_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_TRZ_Pos_MouseDown);
-            this.button_Config_LDUL_TRZ_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_LDUL_Axis_MouseUp);
+            this.button_Config_LDUL_TRZ_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_LDUL_TRZ_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_LDUL_Movement_AlignY_SetZero
             // 
@@ -3569,9 +3557,8 @@
             this.button_Config_WorkStage_Z_Neg.TabIndex = 67;
             this.button_Config_WorkStage_Z_Neg.Text = "-Z";
             this.button_Config_WorkStage_Z_Neg.UseVisualStyleBackColor = true;
-            this.button_Config_WorkStage_Z_Neg.Click += new System.EventHandler(this.button_Config_WorkStage_Z_Neg_Click);
-            this.button_Config_WorkStage_Z_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_WorkStage_Z_Neg_MouseDown);
-            this.button_Config_WorkStage_Z_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_WorkStage_Axis_MouseUp);
+            this.button_Config_WorkStage_Z_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_WorkStage_Z_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_WorkStage_Z_Pos
             // 
@@ -3583,9 +3570,8 @@
             this.button_Config_WorkStage_Z_Pos.TabIndex = 66;
             this.button_Config_WorkStage_Z_Pos.Text = "+Z";
             this.button_Config_WorkStage_Z_Pos.UseVisualStyleBackColor = true;
-            this.button_Config_WorkStage_Z_Pos.Click += new System.EventHandler(this.button_Config_WorkStage_Z_Pos_Click);
-            this.button_Config_WorkStage_Z_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_WorkStage_Z_Pos_MouseDown);
-            this.button_Config_WorkStage_Z_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_WorkStage_Axis_MouseUp);
+            this.button_Config_WorkStage_Z_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_WorkStage_Z_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // groupBox46
             // 
@@ -3669,9 +3655,8 @@
             this.button_Config_WorkStage_X_Neg.TabIndex = 59;
             this.button_Config_WorkStage_X_Neg.Text = "-X";
             this.button_Config_WorkStage_X_Neg.UseVisualStyleBackColor = true;
-            this.button_Config_WorkStage_X_Neg.Click += new System.EventHandler(this.button_Config_WorkStage_X_Neg_Click);
-            this.button_Config_WorkStage_X_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_WorkStage_X_Neg_MouseDown);
-            this.button_Config_WorkStage_X_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_WorkStage_Axis_MouseUp);
+            this.button_Config_WorkStage_X_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_WorkStage_X_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_WorkStage_X_Pos
             // 
@@ -3683,9 +3668,8 @@
             this.button_Config_WorkStage_X_Pos.TabIndex = 58;
             this.button_Config_WorkStage_X_Pos.Text = "+X";
             this.button_Config_WorkStage_X_Pos.UseVisualStyleBackColor = true;
-            this.button_Config_WorkStage_X_Pos.Click += new System.EventHandler(this.button_Config_WorkStage_X_Pos_Click);
-            this.button_Config_WorkStage_X_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_WorkStage_X_Pos_MouseDown);
-            this.button_Config_WorkStage_X_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_WorkStage_Axis_MouseUp);
+            this.button_Config_WorkStage_X_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_WorkStage_X_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_WorkStage_Y_Neg
             // 
@@ -3697,9 +3681,8 @@
             this.button_Config_WorkStage_Y_Neg.TabIndex = 57;
             this.button_Config_WorkStage_Y_Neg.Text = "-Y";
             this.button_Config_WorkStage_Y_Neg.UseVisualStyleBackColor = true;
-            this.button_Config_WorkStage_Y_Neg.Click += new System.EventHandler(this.button_Config_WorkStage_Y_Neg_Click);
-            this.button_Config_WorkStage_Y_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_WorkStage_Y_Neg_MouseDown);
-            this.button_Config_WorkStage_Y_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_WorkStage_Axis_MouseUp);
+            this.button_Config_WorkStage_Y_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_WorkStage_Y_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_WorkStage_Y_Pos
             // 
@@ -3711,9 +3694,8 @@
             this.button_Config_WorkStage_Y_Pos.TabIndex = 56;
             this.button_Config_WorkStage_Y_Pos.Text = "+Y";
             this.button_Config_WorkStage_Y_Pos.UseVisualStyleBackColor = true;
-            this.button_Config_WorkStage_Y_Pos.Click += new System.EventHandler(this.button_Config_WorkStage_Y_Pos_Click);
-            this.button_Config_WorkStage_Y_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_WorkStage_Y_Pos_MouseDown);
-            this.button_Config_WorkStage_Y_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_WorkStage_Axis_MouseUp);
+            this.button_Config_WorkStage_Y_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_WorkStage_Y_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_WorkStage_Movement_ScannerZ_SetZero
             // 
@@ -4265,9 +4247,8 @@
             this.button_Config_Vision_Z_Neg.TabIndex = 67;
             this.button_Config_Vision_Z_Neg.Text = "-Z";
             this.button_Config_Vision_Z_Neg.UseVisualStyleBackColor = true;
-            this.button_Config_Vision_Z_Neg.Click += new System.EventHandler(this.button_Config_Vision_Z_Neg_Click);
-            this.button_Config_Vision_Z_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_Vision_Z_Neg_MouseDown);
-            this.button_Config_Vision_Z_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_Vision_Axis_MouseUp);
+            this.button_Config_Vision_Z_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_Vision_Z_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_Vision_Z_Pos
             // 
@@ -4279,9 +4260,8 @@
             this.button_Config_Vision_Z_Pos.TabIndex = 66;
             this.button_Config_Vision_Z_Pos.Text = "+Z";
             this.button_Config_Vision_Z_Pos.UseVisualStyleBackColor = true;
-            this.button_Config_Vision_Z_Pos.Click += new System.EventHandler(this.button_Config_Vision_Z_Pos_Click);
-            this.button_Config_Vision_Z_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_Vision_Z_Pos_MouseDown);
-            this.button_Config_Vision_Z_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_Vision_Axis_MouseUp);
+            this.button_Config_Vision_Z_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_Vision_Z_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // groupBox58
             // 
@@ -4365,9 +4345,8 @@
             this.button_Config_Vision_X_Neg.TabIndex = 59;
             this.button_Config_Vision_X_Neg.Text = "-X";
             this.button_Config_Vision_X_Neg.UseVisualStyleBackColor = true;
-            this.button_Config_Vision_X_Neg.Click += new System.EventHandler(this.button_Config_Vision_X_Neg_Click);
-            this.button_Config_Vision_X_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_Vision_X_Neg_MouseDown);
-            this.button_Config_Vision_X_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_Vision_Axis_MouseUp);
+            this.button_Config_Vision_X_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_Vision_X_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_Vision_X_Pos
             // 
@@ -4379,9 +4358,8 @@
             this.button_Config_Vision_X_Pos.TabIndex = 58;
             this.button_Config_Vision_X_Pos.Text = "+X";
             this.button_Config_Vision_X_Pos.UseVisualStyleBackColor = true;
-            this.button_Config_Vision_X_Pos.Click += new System.EventHandler(this.button_Config_Vision_X_Pos_Click);
-            this.button_Config_Vision_X_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_Vision_X_Pos_MouseDown);
-            this.button_Config_Vision_X_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_Vision_Axis_MouseUp);
+            this.button_Config_Vision_X_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_Vision_X_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_Vision_Y_Neg
             // 
@@ -4393,9 +4371,8 @@
             this.button_Config_Vision_Y_Neg.TabIndex = 57;
             this.button_Config_Vision_Y_Neg.Text = "-Y";
             this.button_Config_Vision_Y_Neg.UseVisualStyleBackColor = true;
-            this.button_Config_Vision_Y_Neg.Click += new System.EventHandler(this.button_Config_Vision_Y_Neg_Click);
-            this.button_Config_Vision_Y_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_Vision_Y_Neg_MouseDown);
-            this.button_Config_Vision_Y_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_Vision_Axis_MouseUp);
+            this.button_Config_Vision_Y_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_Vision_Y_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_Vision_Y_Pos
             // 
@@ -4407,9 +4384,8 @@
             this.button_Config_Vision_Y_Pos.TabIndex = 56;
             this.button_Config_Vision_Y_Pos.Text = "+Y";
             this.button_Config_Vision_Y_Pos.UseVisualStyleBackColor = true;
-            this.button_Config_Vision_Y_Pos.Click += new System.EventHandler(this.button_Config_Vision_Y_Pos_Click);
-            this.button_Config_Vision_Y_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_Vision_Y_Pos_MouseDown);
-            this.button_Config_Vision_Y_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_Vision_Axis_MouseUp);
+            this.button_Config_Vision_Y_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_Vision_Y_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // label4
             // 
@@ -6395,9 +6371,8 @@
             this.button_Config_BDS_Y_Neg.TabIndex = 69;
             this.button_Config_BDS_Y_Neg.Text = "-Y\r\n(Direction to None Mask)";
             this.button_Config_BDS_Y_Neg.UseVisualStyleBackColor = true;
-            this.button_Config_BDS_Y_Neg.Click += new System.EventHandler(this.button_Config_BDS_Y_Neg_Click);
-            this.button_Config_BDS_Y_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_BDS_Y_Neg_MouseDown);
-            this.button_Config_BDS_Y_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_BDS_Axis_MouseUp);
+            this.button_Config_BDS_Y_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_BDS_Y_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_BDS_Y_Pos
             // 
@@ -6409,9 +6384,8 @@
             this.button_Config_BDS_Y_Pos.TabIndex = 68;
             this.button_Config_BDS_Y_Pos.Text = "+Y\r\n(Direction to #4 Mask)";
             this.button_Config_BDS_Y_Pos.UseVisualStyleBackColor = true;
-            this.button_Config_BDS_Y_Pos.Click += new System.EventHandler(this.button_Config_BDS_Y_Pos_Click);
-            this.button_Config_BDS_Y_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_Config_BDS_Y_Pos_MouseDown);
-            this.button_Config_BDS_Y_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_BDS_Axis_MouseUp);
+            this.button_Config_BDS_Y_Pos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
+            this.button_Config_BDS_Y_Pos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_BDS_Movement_MaskY_SetZero
             // 
