@@ -37,16 +37,6 @@
             this.groupBox15 = new System.Windows.Forms.GroupBox();
             this.label88 = new System.Windows.Forms.Label();
             this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel = new System.Windows.Forms.TextBox();
-            this.groupBox19 = new System.Windows.Forms.GroupBox();
-            this.button35 = new System.Windows.Forms.Button();
-            this.textBox_Recipe_TabRecipe_Illuminator_FineCamRed = new System.Windows.Forms.TextBox();
-            this.label78 = new System.Windows.Forms.Label();
-            this.button36 = new System.Windows.Forms.Button();
-            this.textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR = new System.Windows.Forms.TextBox();
-            this.button37 = new System.Windows.Forms.Button();
-            this.textBox_Recipe_TabRecipe_Illuminator_FineCamIR = new System.Windows.Forms.TextBox();
-            this.label79 = new System.Windows.Forms.Label();
-            this.label80 = new System.Windows.Forms.Label();
             this.groupBox17 = new System.Windows.Forms.GroupBox();
             this.label81 = new System.Windows.Forms.Label();
             this.label82 = new System.Windows.Forms.Label();
@@ -108,9 +98,6 @@
             this.label76 = new System.Windows.Forms.Label();
             this.checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck = new System.Windows.Forms.CheckBox();
             this.checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign = new System.Windows.Forms.CheckBox();
-            this.groupBox12 = new System.Windows.Forms.GroupBox();
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External = new System.Windows.Forms.RadioButton();
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal = new System.Windows.Forms.RadioButton();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.button34 = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_LaserParam_Frequency = new System.Windows.Forms.TextBox();
@@ -121,17 +108,6 @@
             this.textBox_Recipe_TabRecipe_LaserParam_PulseWidth = new System.Windows.Forms.TextBox();
             this.label20 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.label26 = new System.Windows.Forms.Label();
-            this.label25 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
-            this.label22 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
             this.groupBox167 = new System.Windows.Forms.GroupBox();
             this.radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod = new System.Windows.Forms.RadioButton();
             this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P = new System.Windows.Forms.RadioButton();
@@ -146,10 +122,6 @@
             this.button19 = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height = new System.Windows.Forms.RichTextBox();
             this.label84 = new System.Windows.Forms.Label();
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType = new System.Windows.Forms.ComboBox();
-            this.label83 = new System.Windows.Forms.Label();
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType = new System.Windows.Forms.ComboBox();
-            this.label45 = new System.Windows.Forms.Label();
             this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType = new System.Windows.Forms.ComboBox();
             this.label38 = new System.Windows.Forms.Label();
             this.label33 = new System.Windows.Forms.Label();
@@ -295,19 +267,18 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox15.SuspendLayout();
-            this.groupBox19.SuspendLayout();
             this.groupBox17.SuspendLayout();
             this.groupBox14.SuspendLayout();
             this.groupBox13.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.groupBox9.SuspendLayout();
-            this.groupBox12.SuspendLayout();
             this.groupBox7.SuspendLayout();
-            this.groupBox6.SuspendLayout();
             this.groupBox167.SuspendLayout();
             this.groupBox163.SuspendLayout();
             this.groupBox136.SuspendLayout();
@@ -396,16 +367,13 @@
             // tabPage_Recipe
             // 
             this.tabPage_Recipe.Controls.Add(this.groupBox15);
-            this.tabPage_Recipe.Controls.Add(this.groupBox19);
             this.tabPage_Recipe.Controls.Add(this.groupBox17);
             this.tabPage_Recipe.Controls.Add(this.groupBox14);
             this.tabPage_Recipe.Controls.Add(this.groupBox13);
             this.tabPage_Recipe.Controls.Add(this.groupBox11);
             this.tabPage_Recipe.Controls.Add(this.groupBox10);
             this.tabPage_Recipe.Controls.Add(this.groupBox9);
-            this.tabPage_Recipe.Controls.Add(this.groupBox12);
             this.tabPage_Recipe.Controls.Add(this.groupBox7);
-            this.tabPage_Recipe.Controls.Add(this.groupBox6);
             this.tabPage_Recipe.Controls.Add(this.groupBox167);
             this.tabPage_Recipe.Controls.Add(this.groupBox163);
             this.tabPage_Recipe.Controls.Add(this.groupBox136);
@@ -421,7 +389,7 @@
             this.groupBox15.Controls.Add(this.label88);
             this.groupBox15.Controls.Add(this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel);
             this.groupBox15.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox15.Location = new System.Drawing.Point(392, 513);
+            this.groupBox15.Location = new System.Drawing.Point(397, 516);
             this.groupBox15.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox15.Name = "groupBox15";
             this.groupBox15.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -451,125 +419,10 @@
             this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.TabIndex = 108;
             this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel.Text = "-40";
             // 
-            // groupBox19
-            // 
-            this.groupBox19.Controls.Add(this.button35);
-            this.groupBox19.Controls.Add(this.textBox_Recipe_TabRecipe_Illuminator_FineCamRed);
-            this.groupBox19.Controls.Add(this.label78);
-            this.groupBox19.Controls.Add(this.button36);
-            this.groupBox19.Controls.Add(this.textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR);
-            this.groupBox19.Controls.Add(this.button37);
-            this.groupBox19.Controls.Add(this.textBox_Recipe_TabRecipe_Illuminator_FineCamIR);
-            this.groupBox19.Controls.Add(this.label79);
-            this.groupBox19.Controls.Add(this.label80);
-            this.groupBox19.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox19.Location = new System.Drawing.Point(94, 513);
-            this.groupBox19.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox19.Name = "groupBox19";
-            this.groupBox19.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox19.Size = new System.Drawing.Size(272, 117);
-            this.groupBox19.TabIndex = 89;
-            this.groupBox19.TabStop = false;
-            this.groupBox19.Text = " Illuminator (for Fiducial Mark Find) ";
-            // 
-            // button35
-            // 
-            this.button35.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button35.Location = new System.Drawing.Point(229, 27);
-            this.button35.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.button35.Name = "button35";
-            this.button35.Size = new System.Drawing.Size(35, 25);
-            this.button35.TabIndex = 20;
-            this.button35.Text = "#";
-            this.button35.UseVisualStyleBackColor = true;
-            // 
-            // textBox_Recipe_TabRecipe_Illuminator_FineCamRed
-            // 
-            this.textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Location = new System.Drawing.Point(138, 27);
-            this.textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Name = "textBox_Recipe_TabRecipe_Illuminator_FineCamRed";
-            this.textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Size = new System.Drawing.Size(87, 24);
-            this.textBox_Recipe_TabRecipe_Illuminator_FineCamRed.TabIndex = 19;
-            this.textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text = "0";
-            // 
-            // label78
-            // 
-            this.label78.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label78.Location = new System.Drawing.Point(9, 25);
-            this.label78.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label78.Name = "label78";
-            this.label78.Size = new System.Drawing.Size(119, 24);
-            this.label78.TabIndex = 18;
-            this.label78.Text = "Fine Cam. Red :";
-            this.label78.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // button36
-            // 
-            this.button36.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button36.Location = new System.Drawing.Point(229, 81);
-            this.button36.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.button36.Name = "button36";
-            this.button36.Size = new System.Drawing.Size(35, 25);
-            this.button36.TabIndex = 17;
-            this.button36.Text = "#";
-            this.button36.UseVisualStyleBackColor = true;
-            // 
-            // textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR
-            // 
-            this.textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Location = new System.Drawing.Point(138, 81);
-            this.textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Name = "textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR";
-            this.textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Size = new System.Drawing.Size(87, 24);
-            this.textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.TabIndex = 16;
-            this.textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text = "0";
-            // 
-            // button37
-            // 
-            this.button37.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button37.Location = new System.Drawing.Point(229, 54);
-            this.button37.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.button37.Name = "button37";
-            this.button37.Size = new System.Drawing.Size(35, 25);
-            this.button37.TabIndex = 15;
-            this.button37.Text = "#";
-            this.button37.UseVisualStyleBackColor = true;
-            // 
-            // textBox_Recipe_TabRecipe_Illuminator_FineCamIR
-            // 
-            this.textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Location = new System.Drawing.Point(138, 54);
-            this.textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Name = "textBox_Recipe_TabRecipe_Illuminator_FineCamIR";
-            this.textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Size = new System.Drawing.Size(87, 24);
-            this.textBox_Recipe_TabRecipe_Illuminator_FineCamIR.TabIndex = 14;
-            this.textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text = "0";
-            // 
-            // label79
-            // 
-            this.label79.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label79.Location = new System.Drawing.Point(9, 79);
-            this.label79.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label79.Name = "label79";
-            this.label79.Size = new System.Drawing.Size(119, 24);
-            this.label79.TabIndex = 7;
-            this.label79.Text = "Coarse Cam. IR :";
-            this.label79.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label80
-            // 
-            this.label80.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label80.Location = new System.Drawing.Point(9, 52);
-            this.label80.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label80.Name = "label80";
-            this.label80.Size = new System.Drawing.Size(119, 24);
-            this.label80.TabIndex = 6;
-            this.label80.Text = "Fine Cam. IR :";
-            this.label80.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // groupBox17
             // 
+            this.groupBox17.Controls.Add(this.label14);
+            this.groupBox17.Controls.Add(this.label15);
             this.groupBox17.Controls.Add(this.label81);
             this.groupBox17.Controls.Add(this.label82);
             this.groupBox17.Controls.Add(this.label49);
@@ -589,7 +442,7 @@
             this.groupBox17.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox17.Name = "groupBox17";
             this.groupBox17.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox17.Size = new System.Drawing.Size(72, 225);
+            this.groupBox17.Size = new System.Drawing.Size(372, 240);
             this.groupBox17.TabIndex = 64;
             this.groupBox17.TabStop = false;
             this.groupBox17.Text = " Available Layer Names ";
@@ -759,7 +612,7 @@
             this.groupBox14.Controls.Add(this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower);
             this.groupBox14.Controls.Add(this.label48);
             this.groupBox14.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox14.Location = new System.Drawing.Point(94, 649);
+            this.groupBox14.Location = new System.Drawing.Point(694, 592);
             this.groupBox14.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox14.Name = "groupBox14";
             this.groupBox14.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -860,7 +713,7 @@
             this.groupBox13.Controls.Add(this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center);
             this.groupBox13.Controls.Add(this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner);
             this.groupBox13.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox13.Location = new System.Drawing.Point(392, 623);
+            this.groupBox13.Location = new System.Drawing.Point(397, 624);
             this.groupBox13.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox13.Name = "groupBox13";
             this.groupBox13.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -925,7 +778,7 @@
             this.groupBox11.Controls.Add(this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter);
             this.groupBox11.Controls.Add(this.label42);
             this.groupBox11.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox11.Location = new System.Drawing.Point(694, 505);
+            this.groupBox11.Location = new System.Drawing.Point(694, 409);
             this.groupBox11.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox11.Name = "groupBox11";
             this.groupBox11.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -1097,7 +950,7 @@
             this.groupBox10.Controls.Add(this.textBox_Recipe_TabRecipe_ModuleInformation_Width);
             this.groupBox10.Controls.Add(this.label34);
             this.groupBox10.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox10.Location = new System.Drawing.Point(946, 304);
+            this.groupBox10.Location = new System.Drawing.Point(946, 259);
             this.groupBox10.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox10.Name = "groupBox10";
             this.groupBox10.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -1222,7 +1075,7 @@
             this.groupBox9.Controls.Add(this.checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck);
             this.groupBox9.Controls.Add(this.checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign);
             this.groupBox9.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox9.Location = new System.Drawing.Point(694, 304);
+            this.groupBox9.Location = new System.Drawing.Point(694, 10);
             this.groupBox9.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -1294,44 +1147,6 @@
             this.checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.TabIndex = 60;
             this.checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.Text = "Socket Align";
             this.checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign.UseVisualStyleBackColor = true;
-            // 
-            // groupBox12
-            // 
-            this.groupBox12.Controls.Add(this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External);
-            this.groupBox12.Controls.Add(this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal);
-            this.groupBox12.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox12.Location = new System.Drawing.Point(694, 218);
-            this.groupBox12.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox12.Name = "groupBox12";
-            this.groupBox12.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox12.Size = new System.Drawing.Size(231, 62);
-            this.groupBox12.TabIndex = 86;
-            this.groupBox12.TabStop = false;
-            this.groupBox12.Text = " Laser Trigger Modes ";
-            // 
-            // radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External
-            // 
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Checked = true;
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Location = new System.Drawing.Point(120, 28);
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Margin = new System.Windows.Forms.Padding(5);
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Name = "radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External";
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Size = new System.Drawing.Size(78, 20);
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.TabIndex = 6;
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.TabStop = true;
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Text = "External";
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.UseVisualStyleBackColor = true;
-            // 
-            // radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal
-            // 
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal.Location = new System.Drawing.Point(17, 28);
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal.Margin = new System.Windows.Forms.Padding(5);
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal.Name = "radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal";
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal.Size = new System.Drawing.Size(88, 20);
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal.TabIndex = 5;
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal.Text = "Internal";
-            this.radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal.UseVisualStyleBackColor = true;
             // 
             // groupBox7
             // 
@@ -1452,159 +1267,12 @@
             this.label21.Text = "Pulse Width (us) :";
             this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // groupBox6
-            // 
-            this.groupBox6.Controls.Add(this.label26);
-            this.groupBox6.Controls.Add(this.label25);
-            this.groupBox6.Controls.Add(this.label24);
-            this.groupBox6.Controls.Add(this.label23);
-            this.groupBox6.Controls.Add(this.label19);
-            this.groupBox6.Controls.Add(this.label18);
-            this.groupBox6.Controls.Add(this.label22);
-            this.groupBox6.Controls.Add(this.label16);
-            this.groupBox6.Controls.Add(this.label15);
-            this.groupBox6.Controls.Add(this.label14);
-            this.groupBox6.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox6.Location = new System.Drawing.Point(694, 10);
-            this.groupBox6.Margin = new System.Windows.Forms.Padding(5);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox6.Size = new System.Drawing.Size(231, 184);
-            this.groupBox6.TabIndex = 84;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = " Laser Status ";
-            // 
-            // label26
-            // 
-            this.label26.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label26.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label26.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label26.ForeColor = System.Drawing.Color.Lime;
-            this.label26.Location = new System.Drawing.Point(123, 87);
-            this.label26.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(98, 25);
-            this.label26.TabIndex = 16;
-            this.label26.Text = "000,000";
-            this.label26.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label25
-            // 
-            this.label25.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label25.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label25.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label25.ForeColor = System.Drawing.Color.Lime;
-            this.label25.Location = new System.Drawing.Point(123, 57);
-            this.label25.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(98, 25);
-            this.label25.TabIndex = 15;
-            this.label25.Text = "00.00";
-            this.label25.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label24
-            // 
-            this.label24.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label24.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label24.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label24.ForeColor = System.Drawing.Color.Lime;
-            this.label24.Location = new System.Drawing.Point(123, 147);
-            this.label24.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(98, 25);
-            this.label24.TabIndex = 14;
-            this.label24.Text = "0.00";
-            this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label23
-            // 
-            this.label23.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label23.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label23.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label23.ForeColor = System.Drawing.Color.Lime;
-            this.label23.Location = new System.Drawing.Point(123, 117);
-            this.label23.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(98, 25);
-            this.label23.TabIndex = 13;
-            this.label23.Text = "0.00";
-            this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label19
-            // 
-            this.label19.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label19.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label19.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label19.ForeColor = System.Drawing.Color.Lime;
-            this.label19.Location = new System.Drawing.Point(123, 27);
-            this.label19.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(98, 25);
-            this.label19.TabIndex = 12;
-            this.label19.Text = "Standby";
-            this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label18
-            // 
-            this.label18.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label18.Location = new System.Drawing.Point(4, 85);
-            this.label18.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(117, 24);
-            this.label18.TabIndex = 11;
-            this.label18.Text = "Rep. Rate (Hz) :";
-            this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label22
-            // 
-            this.label22.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label22.Location = new System.Drawing.Point(4, 55);
-            this.label22.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(117, 24);
-            this.label22.TabIndex = 10;
-            this.label22.Text = "Duty Cycle (%) :";
-            this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label16
-            // 
-            this.label16.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label16.Location = new System.Drawing.Point(4, 145);
-            this.label16.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(117, 24);
-            this.label16.TabIndex = 8;
-            this.label16.Text = "Energy (mJ) :";
-            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label15
-            // 
-            this.label15.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label15.Location = new System.Drawing.Point(4, 115);
-            this.label15.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(117, 24);
-            this.label15.TabIndex = 7;
-            this.label15.Text = "Power (Watts) :";
-            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label14
-            // 
-            this.label14.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label14.Location = new System.Drawing.Point(4, 25);
-            this.label14.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(117, 24);
-            this.label14.TabIndex = 6;
-            this.label14.Text = "State :";
-            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // groupBox167
             // 
             this.groupBox167.Controls.Add(this.radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod);
             this.groupBox167.Controls.Add(this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P);
             this.groupBox167.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox167.Location = new System.Drawing.Point(946, 188);
+            this.groupBox167.Location = new System.Drawing.Point(946, 175);
             this.groupBox167.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox167.Name = "groupBox167";
             this.groupBox167.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -1649,10 +1317,6 @@
             this.groupBox163.Controls.Add(this.button19);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height);
             this.groupBox163.Controls.Add(this.label84);
-            this.groupBox163.Controls.Add(this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType);
-            this.groupBox163.Controls.Add(this.label83);
-            this.groupBox163.Controls.Add(this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType);
-            this.groupBox163.Controls.Add(this.label45);
             this.groupBox163.Controls.Add(this.comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType);
             this.groupBox163.Controls.Add(this.label38);
             this.groupBox163.Controls.Add(this.label33);
@@ -1769,7 +1433,7 @@
             // button21
             // 
             this.button21.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button21.Location = new System.Drawing.Point(349, 707);
+            this.button21.Location = new System.Drawing.Point(349, 643);
             this.button21.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button21.Name = "button21";
             this.button21.Size = new System.Drawing.Size(35, 25);
@@ -1780,7 +1444,7 @@
             // textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance
             // 
             this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Location = new System.Drawing.Point(198, 707);
+            this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Location = new System.Drawing.Point(198, 643);
             this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Multiline = false;
             this.textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Name = "textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance";
@@ -1791,7 +1455,7 @@
             // checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance
             // 
             this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Location = new System.Drawing.Point(28, 700);
+            this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Location = new System.Drawing.Point(28, 636);
             this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Name = "checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance";
             this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Size = new System.Drawing.Size(169, 39);
             this.checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.TabIndex = 151;
@@ -1831,56 +1495,6 @@
             this.label84.TabIndex = 148;
             this.label84.Text = "Scan Field - Height (mm) :";
             this.label84.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType
-            // 
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.Font = new System.Drawing.Font("Tahoma", 11F);
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.FormattingEnabled = true;
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.Items.AddRange(new object[] {
-            "Circle (Dark)",
-            "Gold Powder"});
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.Location = new System.Drawing.Point(198, 642);
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.Name = "comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType";
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.Size = new System.Drawing.Size(147, 26);
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.TabIndex = 147;
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.Text = "Circle (Dark)";
-            // 
-            // label83
-            // 
-            this.label83.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label83.Location = new System.Drawing.Point(8, 641);
-            this.label83.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.label83.Name = "label83";
-            this.label83.Size = new System.Drawing.Size(186, 25);
-            this.label83.TabIndex = 146;
-            this.label83.Text = "Fiducial Mark Type :";
-            this.label83.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType
-            // 
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.Font = new System.Drawing.Font("Tahoma", 11F);
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.FormattingEnabled = true;
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.Items.AddRange(new object[] {
-            "Circle Find",
-            "Pattern Matching"});
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.Location = new System.Drawing.Point(198, 670);
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.Name = "comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType";
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.Size = new System.Drawing.Size(147, 26);
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.TabIndex = 145;
-            this.comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.Text = "Circle Find";
-            // 
-            // label45
-            // 
-            this.label45.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label45.Location = new System.Drawing.Point(8, 669);
-            this.label45.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(186, 25);
-            this.label45.TabIndex = 144;
-            this.label45.Text = "Fiducial Align Method :";
-            this.label45.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType
             // 
@@ -3631,6 +3245,28 @@
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
             // 
+            // label14
+            // 
+            this.label14.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label14.Location = new System.Drawing.Point(125, 207);
+            this.label14.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(205, 24);
+            this.label14.TabIndex = 28;
+            this.label14.Text = "Pre Align Position";
+            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label15
+            // 
+            this.label15.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label15.Location = new System.Drawing.Point(7, 207);
+            this.label15.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(114, 24);
+            this.label15.TabIndex = 27;
+            this.label15.Text = "PreAlign  :";
+            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // FormNew_Recipe
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -3657,8 +3293,6 @@
             this.tabPage_Recipe.ResumeLayout(false);
             this.groupBox15.ResumeLayout(false);
             this.groupBox15.PerformLayout();
-            this.groupBox19.ResumeLayout(false);
-            this.groupBox19.PerformLayout();
             this.groupBox17.ResumeLayout(false);
             this.groupBox14.ResumeLayout(false);
             this.groupBox14.PerformLayout();
@@ -3670,10 +3304,8 @@
             this.groupBox10.PerformLayout();
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
-            this.groupBox12.ResumeLayout(false);
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
-            this.groupBox6.ResumeLayout(false);
             this.groupBox167.ResumeLayout(false);
             this.groupBox163.ResumeLayout(false);
             this.groupBox136.ResumeLayout(false);
@@ -3733,9 +3365,6 @@
         private System.Windows.Forms.RadioButton radioButton74;
         private System.Windows.Forms.CheckBox checkBox7;
         private System.Windows.Forms.Button button_Recipe_TabRecipe_OpenEditor;
-        private System.Windows.Forms.GroupBox groupBox12;
-        private System.Windows.Forms.RadioButton radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External;
-        private System.Windows.Forms.RadioButton radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.Button button_PulseWidth_Calc;
         private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_LaserParam_DutyCycle;
@@ -3743,17 +3372,6 @@
         private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_LaserParam_PulseWidth;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.Label label26;
-        private System.Windows.Forms.Label label25;
-        private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.Label label14;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.RadioButton radioButton5;
         private System.Windows.Forms.RadioButton radioButton6;
@@ -3880,16 +3498,6 @@
         private System.Windows.Forms.Button button34;
         private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_LaserParam_Frequency;
         private System.Windows.Forms.Label label77;
-        private System.Windows.Forms.GroupBox groupBox19;
-        private System.Windows.Forms.Button button35;
-        private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_Illuminator_FineCamRed;
-        private System.Windows.Forms.Label label78;
-        private System.Windows.Forms.Button button36;
-        private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR;
-        private System.Windows.Forms.Button button37;
-        private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_Illuminator_FineCamIR;
-        private System.Windows.Forms.Label label79;
-        private System.Windows.Forms.Label label80;
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign;
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck;
@@ -3932,8 +3540,6 @@
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_MAlignVacuum_Outer;
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_MAlignVacuum_Center;
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_MAlignVacuum_Inner;
-        private System.Windows.Forms.ComboBox comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType;
-        private System.Windows.Forms.Label label45;
         private System.Windows.Forms.GroupBox groupBox14;
         private System.Windows.Forms.Button button18;
         private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper;
@@ -3945,8 +3551,6 @@
         private System.Windows.Forms.Label label47;
         private System.Windows.Forms.Label label81;
         private System.Windows.Forms.Label label82;
-        private System.Windows.Forms.ComboBox comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType;
-        private System.Windows.Forms.Label label83;
         private System.Windows.Forms.TabPage tabPage_RecipeVision;
         private System.Windows.Forms.Button button19;
         private System.Windows.Forms.RichTextBox textBox_Recipe_TabRecipe_Miscellaneous_GroupSplitSize_Height;
@@ -3965,5 +3569,7 @@
         private System.Windows.Forms.GroupBox groupBox15;
         private System.Windows.Forms.Label label88;
         private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
     }
 }
