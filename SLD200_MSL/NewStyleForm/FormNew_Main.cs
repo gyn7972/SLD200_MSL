@@ -1402,6 +1402,7 @@ namespace SLD200_MSL
                 mb.ShowDialog("Information !", m_strTemp);
             }
 
+
             // Process Status
             var pos = ProcessManager.GetFirstUnprocessedPosition();
             if (pos.HasValue)
