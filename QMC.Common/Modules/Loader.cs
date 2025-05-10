@@ -10797,10 +10797,10 @@ namespace QMC.Common.Modules
                                     break;
 
                                 //Config.TimeOut
-                                if (2000 > 0) // 2000 정도면 2초?
+                                if (100000 > 0) // 2000 정도면 2초?
                                 {
                                     ProcessTime = DateTime.Now - StartTime;
-                                    if (ProcessTime.TotalMilliseconds >= 2000)
+                                    if (ProcessTime.TotalMilliseconds >= 100000)
                                     {
                                         bTimeout = true;
                                         break;
@@ -10945,10 +10945,10 @@ namespace QMC.Common.Modules
                                     break;
 
                                 //Config.TimeOut
-                                if (2000 > 0) // 2000 정도면 2초?
+                                if (100000 > 0) // 2000 정도면 10초?
                                 {
                                     ProcessTime = DateTime.Now - StartTime;
-                                    if (ProcessTime.TotalMilliseconds >= 2000)
+                                    if (ProcessTime.TotalMilliseconds >= 100000)
                                     {
                                         bTimeout = true;
                                         break;
