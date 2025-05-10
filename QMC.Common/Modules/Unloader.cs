@@ -552,6 +552,7 @@ namespace QMC.Common.Modules
         public bool m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker0_Complete { set; get; }     //  Stacker0 에 Module Put Down 완료 여부
         public bool m_bAUTORUN_Unloader_Transfer_ModulePutDowntoStacker1_Complete { set; get; }     //  Stacker1 에 Module Put Down 완료 여부
         public bool m_bAUTORUN_Unloader_Transfer_ModulePutDowntoNG_Complete { set; get; }           //  NG-Port 에 Module Put Down 완료 여부        
+        public bool m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete { set; get; } = false;   //  Module Unloading 완료 여부 (이게 true 가 되면 OK or NG 로 배출이 된 상태이므로, 다음 Unloading 위해 대기위치로 이동한다.)
 
 
         public int m_nUnloader_Transfer_Step { set; get; }                                   //  Transfer Step
@@ -2706,6 +2707,12 @@ namespace QMC.Common.Modules
                     m_nUnloaderTransferMoveType = (int)UnloaderTransferMoveType.Cycle_NG_PutDown;            //  NG-Port 에 Module Drop Cycle
                     m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
                 }
+                //  대기 위치로 보내기 위한 조건 (Module Unloading 후 다음 Module 을 빠르게 Unloading 하기 위한 대기 위치)
+                else if (m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete)
+                {
+                    m_nUnloaderTransferMoveType = (int)UnloaderTransferMoveType.Cycle_Transfer_ReadyPos;            //  Transfer 대기 위치로 이동
+                    m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.Start;
+                }
             }
 
             switch (m_nUnloader_Transfer_Step)
@@ -4609,6 +4616,19 @@ namespace QMC.Common.Modules
                     {
                         case (int)UnloaderTransferMoveType.Cycle_Transfer_ReadyPos:
                             Log.Write("SLD-200", Equipment.User_Name, "UL Transfer Cycle", "Ready Position 이동 완료");
+
+                            m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = false;
+
+                            //  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
+                            if (Equipment.CycleStop)
+                            {
+                                //  Loader 와 Work Stage 모두 Cycle Stop 되었을 때만 Unloader 를 cycle Stop 처리 한다.
+                                if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)
+                                {
+                                    //  Unloader Transfer 돌아가지 않게
+                                    Equipment.CycleStopped_UnloaderTransfer = true;
+                                }
+                            }
                             break;
 
                         case (int)UnloaderTransferMoveType.Cycle_WorkStage_PickUp:
@@ -4616,6 +4636,8 @@ namespace QMC.Common.Modules
 
                             loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete = false;                                                //  Unloader 에서 Work Stage 의 Module 을 가져갔으므로 false 로 만들어 줌. 
                             m_bAUTORUN_Unloader_Transfer_ModulePickUpfromWorkStage_Complete = true;
+
+                            m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = false;
 
                             workStage.m_bMainWorkCycle_Complete = false;
                             break;
@@ -4629,16 +4651,18 @@ namespace QMC.Common.Modules
                             workStage.m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.None;       //  모듈을 Unloading 했으니 결과데이터 초기화
                             m_bStacker0_Complete = false;                                                       //  Module 내려놨으면 Stacker 높이 재조정해야 함.
 
-                            //  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
-                            if (Equipment.CycleStop)
-                            {
-                                //  Loader 와 Work Stage 모두 Cycle Stop 되었을 때만 Unloader 를 cycle Stop 처리 한다.
-                                if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)
-                                {
-                                    //  Unloader Transfer 돌아가지 않게
-                                    Equipment.CycleStopped_UnloaderTransfer = true;
-                                }
-                            }
+                            m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = true;                      //  Unloader 에서 Stacker0 에 Module 을 내려놓았으므로 true 로 만들어 줌.
+
+                            ////  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
+                            //if (Equipment.CycleStop)
+                            //{
+                            //    //  Loader 와 Work Stage 모두 Cycle Stop 되었을 때만 Unloader 를 cycle Stop 처리 한다.
+                            //    if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)
+                            //    {
+                            //        //  Unloader Transfer 돌아가지 않게
+                            //        Equipment.CycleStopped_UnloaderTransfer = true;
+                            //    }
+                            //}
                             break;
 
                         case (int)UnloaderTransferMoveType.Cycle_Stacker1_PutDown:
@@ -4650,16 +4674,18 @@ namespace QMC.Common.Modules
                             workStage.m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.None;       //  모듈을 Unloading 했으니 결과데이터 초기화
                             m_bStacker1_Complete = false;                                                       //  Module 내려놨으면 Stacker 높이 재조정해야 함.
 
-                            //  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
-                            if (Equipment.CycleStop)
-                            {
-                                //  Loader 와 Work Stage 모두 Cycle Stop 되었을 때만 Unloader 를 cycle Stop 처리 한다.
-                                if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)
-                                {
-                                    //  Unloader Transfer 돌아가지 않게
-                                    Equipment.CycleStopped_UnloaderTransfer = true;
-                                }
-                            }
+                            m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = true;                      //  Unloader 에서 Stacker1 에 Module 을 내려놓았으므로 true 로 만들어 줌.
+
+                            ////  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
+                            //if (Equipment.CycleStop)
+                            //{
+                            //    //  Loader 와 Work Stage 모두 Cycle Stop 되었을 때만 Unloader 를 cycle Stop 처리 한다.
+                            //    if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)
+                            //    {
+                            //        //  Unloader Transfer 돌아가지 않게
+                            //        Equipment.CycleStopped_UnloaderTransfer = true;
+                            //    }
+                            //}
                             break;
 
                         case (int)UnloaderTransferMoveType.Cycle_NG_PutDown:
@@ -4670,18 +4696,18 @@ namespace QMC.Common.Modules
 
                             workStage.m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.None;       //  모듈을 Unloading 했으니 결과데이터 초기화
 
+                            m_bAUTORUN_Unloader_Transfer_Module_Unloading_Complete = true;                      //  Unloader 에서 NG-Port 에 Module 을 내려놓았으므로 true 로 만들어 줌.
 
-
-                            //  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
-                            if (Equipment.CycleStop)
-                            {
-                                //  Loader 와 Work Stage 모두 Cycle Stop 되었을 때만 Unloader 를 cycle Stop 처리 한다.
-                                if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)
-                                {
-                                    //  Unloader Transfer 돌아가지 않게
-                                    Equipment.CycleStopped_UnloaderTransfer = true;
-                                }
-                            }
+                            ////  Cycle Stop 이면?              --> Unloader 에게 Cycle Stop 은 Module 을 OK 또는 NG 위치에 내려놓으면 Stop
+                            //if (Equipment.CycleStop)
+                            //{
+                            //    //  Loader 와 Work Stage 모두 Cycle Stop 되었을 때만 Unloader 를 cycle Stop 처리 한다.
+                            //    if (Equipment.CycleStopped_LoaderTransfer && Equipment.CycleStopped_MainWork)
+                            //    {
+                            //        //  Unloader Transfer 돌아가지 않게
+                            //        Equipment.CycleStopped_UnloaderTransfer = true;
+                            //    }
+                            //}
                             break;
 
                         default:            //  Error
@@ -5011,7 +5037,7 @@ namespace QMC.Common.Modules
             }
             else if (step <= (int)Unloader_Transfer_Step.TransferZ_Move_ReadyPos_DoneCheck)
             {
-                m_nUnloader_Transfer_Step_Recovery = (int)Unloader_Transfer_Step.Transfer_Move_Condition_Check;
+                m_nUnloader_Transfer_Step_Recovery = (int)Unloader_Transfer_Step.TransferZ_Move_ReadyPos;
             }
             else if (step <= (int)Unloader_Transfer_Step.TransferX_Move_ReadyPos_DoneCheck)
             {
