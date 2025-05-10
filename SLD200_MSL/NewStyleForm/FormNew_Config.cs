@@ -21,6 +21,7 @@ using QMC.Common.Parts;
 using QMC.Common.VisionPart;
 using QMC.Core;
 using SpiralLab.Sirius;
+using static QMC.Common.Equipment;
 using static QMC.Common.Modules.Loader;
 using static QMC.Common.Modules.Unloader;
 using static QMC.Common.Modules.Vision;
@@ -168,6 +169,8 @@ namespace SLD200_MSL
             radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked = false;
             radioButton_Config_WorkStage_Move_MoveMode_Coarse.Checked = true;
 
+
+            InitializeJogButtons();
         }
 
         
@@ -182,6 +185,7 @@ namespace SLD200_MSL
             {
                 m_bFormVisible = true;
                 timer_Status.Enabled = true;
+                InitializeJogButtons();
             }
             else if (!this.Visible && m_bFormVisible)
             {
@@ -928,7 +932,6 @@ namespace SLD200_MSL
             }
         }
 
-
         private void Motor_Position()
         {
             //  Loader Stacker Position
@@ -1438,8 +1441,6 @@ namespace SLD200_MSL
                 }
             }
         }
-
-
         private void button_KeypadCall_Config_LDUL_TeachingPos_TransferX_Click(object sender, EventArgs e)
         {
             m_keyPad.StartPosition = FormStartPosition.CenterScreen;
@@ -1457,2570 +1458,290 @@ namespace SLD200_MSL
             }
         }
 
-        private void button_Config_LDUL_TRX_Neg_MouseDown(object sender, MouseEventArgs e)
+
+        void InitializeJogButtons()
         {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = -1.0;
+            button_Config_LDUL_TRZ_Pos.Tag = "Loader,TR_Z,1";
+            button_Config_LDUL_TRZ_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_LDUL_TRZ_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
 
-            if (!this.radioButton_Config_LDUL_JogMove_Continuous.Checked)
-                return;
+            button_Config_LDUL_TRZ_Neg.Tag = "Loader,TR_Z,-1";
+            button_Config_LDUL_TRZ_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_LDUL_TRZ_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
 
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  Active Unit 선택에 따라 동작
-                    if (radioButton_Config_ActiveUnit_Loader.Checked)
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Common_Acceleration_Coarse;
-                        }
+            button_Config_LDUL_TRX_Pos.Tag = "Loader,TR_X,1";
+            button_Config_LDUL_TRX_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_LDUL_TRX_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
 
-                        //  방향 설정
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Negative direction : Using - (minus) velocity
+            button_Config_LDUL_TRX_Neg.Tag = "Loader,TR_X,-1";
+            button_Config_LDUL_TRX_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_LDUL_TRX_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
 
-                        loader.MC_Func.MC_JogMove((int)Loader.nAxis.TR_X, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                    }
-                    else
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.TR_X].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.TR_X].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.TR_X].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.TR_X].Common_Acceleration_Coarse;
-                        }
+            button_Config_LDUL_Z1_Pos.Tag = "Loader,Z1,1";
+            button_Config_LDUL_Z1_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_LDUL_Z1_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
 
-                        //  방향 설정
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Negative direction : Using - (minus) velocity
+            button_Config_LDUL_Z1_Neg.Tag = "Loader,Z1,-1";
+            button_Config_LDUL_Z1_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_LDUL_Z1_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
 
-                        unloader.MC_Func.MC_JogMove((int)Unloader.nAxis.TR_X, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
+            button_Config_LDUL_Z0_Pos.Tag = "Loader,Z0,1";
+            button_Config_LDUL_Z0_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_LDUL_Z0_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+
+            button_Config_LDUL_Z0_Neg.Tag = "Loader,Z0,-1";
+            button_Config_LDUL_Z0_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_LDUL_Z0_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+
+            button_Config_LD_ALNY_Pos.Tag = "Loader,ALN_Y,1";
+            button_Config_LD_ALNY_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_LD_ALNY_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+
+            button_Config_LD_ALNY_Neg.Tag = "Loader,ALN_Y,-1";
+            button_Config_LD_ALNY_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_LD_ALNY_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+
+            button_Config_LD_ALNX_Pos.Tag = "Loader,ALN_X,1";
+            button_Config_LD_ALNX_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_LD_ALNX_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+
+            button_Config_LD_ALNX_Neg.Tag = "Loader,ALN_X,-1";
+            button_Config_LD_ALNX_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_LD_ALNX_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+
+            button_Config_WorkStage_Y_Pos.Tag = "WorkStage,Y,1";
+            button_Config_WorkStage_Y_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_WorkStage_Y_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+
+            button_Config_WorkStage_Y_Neg.Tag = "WorkStage,Y,-1";
+            button_Config_WorkStage_Y_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_WorkStage_Y_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+
+            button_Config_WorkStage_X_Pos.Tag = "WorkStage,X,1";
+            button_Config_WorkStage_X_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_WorkStage_X_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+
+            button_Config_WorkStage_X_Neg.Tag = "WorkStage,X,-1";
+            button_Config_WorkStage_X_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_WorkStage_X_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+
+            button_Config_WorkStage_Z_Pos.Tag = "WorkStage,Z,1";
+            button_Config_WorkStage_Z_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_WorkStage_Z_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+
+            button_Config_WorkStage_Z_Neg.Tag = "WorkStage,Z,-1";
+            button_Config_WorkStage_Z_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_WorkStage_Z_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+
+            button_Config_Vision_Y_Pos.Tag = "Vision,Y,1";
+            button_Config_Vision_Y_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_Vision_Y_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+
+            button_Config_Vision_Y_Neg.Tag = "Vision,Y,-1";
+            button_Config_Vision_Y_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_Vision_Y_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+
+            button_Config_Vision_X_Pos.Tag = "Vision,X,1";
+            button_Config_Vision_X_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_Vision_X_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+
+            button_Config_Vision_X_Neg.Tag = "Vision,X,-1";
+            button_Config_Vision_X_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_Vision_X_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+
+            button_Config_Vision_Z_Pos.Tag = "Vision,Z,1";
+            button_Config_Vision_Z_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_Vision_Z_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+
+            button_Config_Vision_Z_Neg.Tag = "Vision,Z,-1";
+            button_Config_Vision_Z_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_Vision_Z_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
         }
 
-        private void button_Config_LDUL_TRX_Pos_MouseDown(object sender, MouseEventArgs e)
+
+        // 축 JogMove 공통 처리
+        private void button_AxisJog_MouseDown(object sender, MouseEventArgs e)
         {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = 1.0;
-
-            if (!this.radioButton_Config_LDUL_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  Active Unit 선택에 따라 동작
-                    if (radioButton_Config_ActiveUnit_Loader.Checked)
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Common_Acceleration_Coarse;
-                        }
-
-                        //  방향 설정
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Positive direction : Using + (plus) velocity
-
-                        loader.MC_Func.MC_JogMove((int)Loader.nAxis.TR_X, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                    }
-                    else
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.TR_X].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.TR_X].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.TR_X].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.TR_X].Common_Acceleration_Coarse;
-                        }
-
-                        //  방향 설정
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Positive direction : Using + (plus) velocity
-
-                        unloader.MC_Func.MC_JogMove((int)Unloader.nAxis.TR_X, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LDUL_TRZ_Neg_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = -1.0;
-
-            if (!this.radioButton_Config_LDUL_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  Active Unit 선택에 따라 동작
-                    if (radioButton_Config_ActiveUnit_Loader.Checked)
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Common_Acceleration_Coarse;
-                        }
-
-                        //  방향 설정
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Negative direction : Using - (minus) velocity
-
-                        loader.MC_Func.MC_JogMove((int)Loader.nAxis.TR_Z, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                    }
-                    else
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.TR_Z].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.TR_Z].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.TR_Z].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.TR_Z].Common_Acceleration_Coarse;
-                        }
-
-                        //  방향 설정
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Negative direction : Using - (minus) velocity
-
-                        unloader.MC_Func.MC_JogMove((int)Unloader.nAxis.TR_Z, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LDUL_TRZ_Pos_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = 1.0;
-
-            if (!this.radioButton_Config_LDUL_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  Active Unit 선택에 따라 동작
-                    if (radioButton_Config_ActiveUnit_Loader.Checked)
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Common_Acceleration_Coarse;
-                        }
-
-                        //  방향 설정
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Positive direction : Using + (plus) velocity
-
-                        loader.MC_Func.MC_JogMove((int)Loader.nAxis.TR_Z, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                    }
-                    else
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.TR_Z].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.TR_Z].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.TR_Z].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.TR_Z].Common_Acceleration_Coarse;
-                        }
-
-                        //  방향 설정
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Positive direction : Using + (plus) velocity
-
-                        unloader.MC_Func.MC_JogMove((int)Unloader.nAxis.TR_Z, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LDUL_Z0_Neg_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = -1.0;
-
-            if (!this.radioButton_Config_LDUL_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  Active Unit 선택에 따라 동작
-                    if (radioButton_Config_ActiveUnit_Loader.Checked)
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Common_Acceleration_Coarse;
-                        }
-
-                        //  방향 설정
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Negative direction : Using - (minus) velocity
-
-                        loader.MC_Func.MC_JogMove((int)Loader.nAxis.Z0, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                    }
-                    else
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.Z0].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.Z0].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.Z0].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.Z0].Common_Acceleration_Coarse;
-                        }
-
-                        //  방향 설정
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Negative direction : Using - (minus) velocity
-
-                        unloader.MC_Func.MC_JogMove((int)Unloader.nAxis.Z0, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LDUL_Z0_Pos_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = 1.0;
-
-            if (!this.radioButton_Config_LDUL_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  Active Unit 선택에 따라 동작
-                    if (radioButton_Config_ActiveUnit_Loader.Checked)
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Common_Acceleration_Coarse;
-                        }
-
-                        //  방향 설정
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Positive direction : Using + (plus) velocity
-
-                        loader.MC_Func.MC_JogMove((int)Loader.nAxis.Z0, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                    }
-                    else
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.Z0].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.Z0].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.Z0].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.Z0].Common_Acceleration_Coarse;
-                        }
-
-                        //  방향 설정
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Positive direction : Using + (plus) velocity
-
-                        unloader.MC_Func.MC_JogMove((int)Unloader.nAxis.Z0, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LDUL_Z1_Neg_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = -1.0;
-
-            if (!this.radioButton_Config_LDUL_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  Active Unit 선택에 따라 동작
-                    if (radioButton_Config_ActiveUnit_Loader.Checked)
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Acceleration_Coarse;
-                        }
-
-                        //  방향 설정
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Negative direction : Using - (minus) velocity
-
-                        loader.MC_Func.MC_JogMove((int)Loader.nAxis.Z1, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                    }
-                    else
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.Z1].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.Z1].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.Z1].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.Z1].Common_Acceleration_Coarse;
-                        }
-
-                        //  방향 설정
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Negative direction : Using - (minus) velocity
-
-                        unloader.MC_Func.MC_JogMove((int)Unloader.nAxis.Z1, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LDUL_Z1_Pos_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = 1.0;
-
-            if (!this.radioButton_Config_LDUL_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  Active Unit 선택에 따라 동작
-                    if (radioButton_Config_ActiveUnit_Loader.Checked)
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Acceleration_Coarse;
-                        }
-
-                        //  방향 설정
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Positive direction : Using + (plus) velocity
-
-                        loader.MC_Func.MC_JogMove((int)Loader.nAxis.Z1, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                    }
-                    else
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.Z1].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.Z1].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.Z1].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.Z1].Common_Acceleration_Coarse;
-                        }
-
-                        //  방향 설정
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Positive direction : Using + (plus) velocity
-
-                        unloader.MC_Func.MC_JogMove((int)Unloader.nAxis.Z1, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LD_ALNX_Neg_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = -1.0;
-
-            if (!this.radioButton_Config_LDUL_JogMove_Continuous.Checked)
-                return;
-
-            if (!radioButton_Config_ActiveUnit_Loader.Checked)
-            {
-                MessageBox.Show("Please select the Loader Unit.", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Common_Acceleration_Coarse;
-                    }
-
-                    //  방향 설정
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Negative direction : Using - (minus) velocity
-
-                    loader.MC_Func.MC_JogMove((int)Loader.nAxis.ALN_X, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LD_ALNX_Pos_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = 1.0;
-
-            if (!this.radioButton_Config_LDUL_JogMove_Continuous.Checked)
-                return;
-
-            if (!radioButton_Config_ActiveUnit_Loader.Checked)
-            {
-                MessageBox.Show("Please select the Loader Unit.", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Common_Acceleration_Coarse;
-                    }
-
-                    //  방향 설정
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Positive direction : Using + (plus) velocity
-
-                    loader.MC_Func.MC_JogMove((int)Loader.nAxis.ALN_X, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LD_ALNY_Neg_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = -1.0;
-
-            if (!this.radioButton_Config_LDUL_JogMove_Continuous.Checked)
-                return;
-
-            if (!radioButton_Config_ActiveUnit_Loader.Checked)
-            {
-                MessageBox.Show("Please select the Loader Unit.", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_Y].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.ALN_Y].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_Y].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.ALN_Y].Common_Acceleration_Coarse;
-                    }
-
-                    //  방향 설정
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Negative direction : Using - (minus) velocity
-
-                    loader.MC_Func.MC_JogMove((int)Loader.nAxis.ALN_Y, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LD_ALNY_Pos_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = 1.0;
-
-            if (!this.radioButton_Config_LDUL_JogMove_Continuous.Checked)
-                return;
-
-            if (!radioButton_Config_ActiveUnit_Loader.Checked)
-            {
-                MessageBox.Show("Please select the Loader Unit.", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_Y].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.ALN_Y].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_Y].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.ALN_Y].Common_Acceleration_Coarse;
-                    }
-
-                    //  방향 설정
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Positive direction : Using + (plus) velocity
-
-                    loader.MC_Func.MC_JogMove((int)Loader.nAxis.ALN_Y, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LDUL_Axis_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (!this.radioButton_Config_LDUL_JogMove_Continuous.Checked)
+            Button btn = sender as Button;
+            if (btn == null || btn.Tag == null)
                 return;
 
             if (Equipment.AjinBoard_Opened)
             {
-                if (radioButton_Config_ActiveUnit_Loader.Checked)
+                string[] tagParts = btn.Tag?.ToString()?.Split(',');
+                if (tagParts == null || tagParts.Length != 3)
+                    return;
+
+                string unit = tagParts[0];         // 예: "Vision", "WorkStage", "Loader"
+                string axisName = tagParts[1];     // 예: "X", "Y", "Z0", "TR_X"
+                double direction = Convert.ToDouble(tagParts[2]); // -1.0 또는 1.0
+
+                dynamic controller = GetControllerByUnit(unit);
+                if (controller == null) return;
+
+                int axis = GetAxisIndex(unit, axisName);
+                if (axis < 0) return;
+
+                Type_Motor_Speed speedType = GetMotorSpeedType(unit);
+
+                if (IsJogMoveContinuous(unit))
                 {
-                    loader.MC_Func.MC_JogStop((int)Loader.nAxis.Z0);
-                    loader.MC_Func.MC_JogStop((int)Loader.nAxis.Z1);
-                    loader.MC_Func.MC_JogStop((int)Loader.nAxis.TR_X);
-                    loader.MC_Func.MC_JogStop((int)Loader.nAxis.TR_Z);
-                    loader.MC_Func.MC_JogStop((int)Loader.nAxis.ALN_X);
-                    loader.MC_Func.MC_JogStop((int)Loader.nAxis.ALN_Y);
+                    switch (unit)
+                    {
+                        case "Vision":  workStage.MovetoWorkStage_Jog_Positions((WorkStage.nAxis)axis, (int)direction, speedType); break;
+                        case "WorkStage": workStage.MovetoWorkStage_Jog_Positions((WorkStage.nAxis)axis, (int)direction, speedType); break;
+                        case "Loader": loader.MovetoLoader_Jog_Positions((Loader.nAxis)axis, (int)direction, speedType); break;
+                        case "Unloader": unloader.MovetoUnloader_Jog_Positions((Unloader.nAxis)axis, (int)direction, speedType); break;
+                    }
                 }
-                else
+                else if (IsJogMoveStep(unit))
                 {
-                    unloader.MC_Func.MC_JogStop((int)Unloader.nAxis.Z0);
-                    unloader.MC_Func.MC_JogStop((int)Unloader.nAxis.Z1);
-                    unloader.MC_Func.MC_JogStop((int)Unloader.nAxis.TR_X);
-                    unloader.MC_Func.MC_JogStop((int)Unloader.nAxis.TR_Z);
+                    double distance = GetStepDistance(unit);
+                    switch (unit)
+                    {
+                        case "Vision": workStage.MovetoWorkStage_Rel_Positions((WorkStage.nAxis)axis, distance, (int)direction, speedType); break;
+                        case "WorkStage": workStage.MovetoWorkStage_Rel_Positions((WorkStage.nAxis)axis, distance, (int)direction, speedType); break;
+                        case "Loader": loader.MovetoLoader_Rel_Positions((Loader.nAxis)axis, distance, (int)direction, speedType); break;
+                        case "Unloader": unloader.MovetoUnloader_Rel_Positions((Unloader.nAxis)axis, distance, (int)direction, speedType); break;
+                    }
+                    //controller.MovetoWorkStage_Rel_Positions((WorkStage.nAxis)axis, distance, (int)direction, speedType);
                 }
             }
         }
 
-        private void button_Config_LDUL_TRX_Neg_Click(object sender, EventArgs e)
+        // 축 JogStop 공통 처리
+        private void button_AxisJog_MouseUp(object sender, MouseEventArgs e)
         {
-            if (!this.radioButton_Config_LDUL_JogMove_Step.Checked)
+            Button btn = sender as Button;
+            if (btn == null || btn.Tag == null)
                 return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0;
-            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);            
-
-            //  방향 설정
-            nDirection = -1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  Active Unit 선택에 따라 동작
-                    if (radioButton_Config_ActiveUnit_Loader.Checked)
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Common_Acceleration_Coarse;
-                        }
-
-                        //  속도는 양수로
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                        loader.MC_Func.MC_MoveRelPosition((int)Loader.nAxis.TR_X, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                    }
-                    else
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.TR_X].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.TR_X].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.TR_X].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.TR_X].Common_Acceleration_Coarse;
-                        }
-
-                        //  속도는 양수로
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                        unloader.MC_Func.MC_MoveRelPosition((int)Unloader.nAxis.TR_X, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LDUL_TRX_Pos_Click(object sender, EventArgs e)
-        {
-            if (!this.radioButton_Config_LDUL_JogMove_Step.Checked)
-                return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0;
-            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = 1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  Active Unit 선택에 따라 동작
-                    if (radioButton_Config_ActiveUnit_Loader.Checked)
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Common_Acceleration_Coarse;
-                        }
-
-                        //  속도는 양수로
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                        loader.MC_Func.MC_MoveRelPosition((int)Loader.nAxis.TR_X, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                    }
-                    else
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.TR_X].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.TR_X].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.TR_X].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.TR_X].Common_Acceleration_Coarse;
-                        }
-
-                        //  속도는 양수로
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                        unloader.MC_Func.MC_MoveRelPosition((int)Unloader.nAxis.TR_X, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LDUL_TRZ_Neg_Click(object sender, EventArgs e)
-        {
-            if (!this.radioButton_Config_LDUL_JogMove_Step.Checked)
-                return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0;
-            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = -1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  Active Unit 선택에 따라 동작
-                    if (radioButton_Config_ActiveUnit_Loader.Checked)
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Common_Acceleration_Coarse;
-                        }
-
-                        //  속도는 양수로
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                        loader.MC_Func.MC_MoveRelPosition((int)Loader.nAxis.TR_Z, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                    }
-                    else
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.TR_Z].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.TR_Z].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.TR_Z].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.TR_Z].Common_Acceleration_Coarse;
-                        }
-
-                        //  속도는 양수로
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                        unloader.MC_Func.MC_MoveRelPosition((int)Unloader.nAxis.TR_Z, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LDUL_TRZ_Pos_Click(object sender, EventArgs e)
-        {
-            if (!this.radioButton_Config_LDUL_JogMove_Step.Checked)
-                return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0;
-            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = 1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  Active Unit 선택에 따라 동작
-                    if (radioButton_Config_ActiveUnit_Loader.Checked)
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.TR_Z].Common_Acceleration_Coarse;
-                        }
-
-                        //  속도는 양수로
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                        loader.MC_Func.MC_MoveRelPosition((int)Loader.nAxis.TR_Z, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                    }
-                    else
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.TR_Z].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.TR_Z].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.TR_Z].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.TR_Z].Common_Acceleration_Coarse;
-                        }
-
-                        //  속도는 양수로
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                        unloader.MC_Func.MC_MoveRelPosition((int)Unloader.nAxis.TR_Z, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LDUL_Z0_Neg_Click(object sender, EventArgs e)
-        {
-            if (!this.radioButton_Config_LDUL_JogMove_Step.Checked)
-                return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = -1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  Active Unit 선택에 따라 동작
-                    if (radioButton_Config_ActiveUnit_Loader.Checked)
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Common_Acceleration_Coarse;
-                        }
-
-                        //  속도는 양수로
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                        loader.MC_Func.MC_MoveRelPosition((int)Loader.nAxis.Z0, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                    }
-                    else
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.Z0].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.Z0].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.Z0].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.Z0].Common_Acceleration_Coarse;
-                        }
-
-                        //  속도는 양수로
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                        unloader.MC_Func.MC_MoveRelPosition((int)Unloader.nAxis.Z0, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LDUL_Z0_Pos_Click(object sender, EventArgs e)
-        {
-            if (!this.radioButton_Config_LDUL_JogMove_Step.Checked)
-                return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = 1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  Active Unit 선택에 따라 동작
-                    if (radioButton_Config_ActiveUnit_Loader.Checked)
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z0].Common_Acceleration_Coarse;
-                        }
-
-                        //  속도는 양수로
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                        loader.MC_Func.MC_MoveRelPosition((int)Loader.nAxis.Z0, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                    }
-                    else
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.Z0].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.Z0].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.Z0].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.Z0].Common_Acceleration_Coarse;
-                        }
-
-                        //  속도는 양수로
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                        unloader.MC_Func.MC_MoveRelPosition((int)Unloader.nAxis.Z0, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LDUL_Z1_Neg_Click(object sender, EventArgs e)
-        {
-            if (!this.radioButton_Config_LDUL_JogMove_Step.Checked)
-                return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = -1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  Active Unit 선택에 따라 동작
-                    if (radioButton_Config_ActiveUnit_Loader.Checked)
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Acceleration_Coarse;
-                        }
-
-                        //  속도는 양수로
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                        loader.MC_Func.MC_MoveRelPosition((int)Loader.nAxis.Z1, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                    }
-                    else
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.Z1].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.Z1].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.Z1].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.Z1].Common_Acceleration_Coarse;
-                        }
-
-                        //  속도는 양수로
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                        unloader.MC_Func.MC_MoveRelPosition((int)Unloader.nAxis.Z1, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LDUL_Z1_Pos_Click(object sender, EventArgs e)
-        {
-            if (!this.radioButton_Config_LDUL_JogMove_Step.Checked)
-                return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = 1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  Active Unit 선택에 따라 동작
-                    if (radioButton_Config_ActiveUnit_Loader.Checked)
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.Z1].Common_Acceleration_Coarse;
-                        }
-
-                        //  속도는 양수로
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                        loader.MC_Func.MC_MoveRelPosition((int)Loader.nAxis.Z1, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                    }
-                    else
-                    {
-                        //  속도 설정
-                        if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.Z1].Jog_Speed_Fine;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.Z1].Common_Acceleration_Fine;
-                        }
-                        else
-                        {
-                            lfVelocity = Equipment.stAxisParam[(int)Unloader.nAxis.Z1].Jog_Speed_Coarse;
-                            lfAccDec = Equipment.stAxisParam[(int)Unloader.nAxis.Z1].Common_Acceleration_Coarse;
-                        }
-
-                        //  속도는 양수로
-                        if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                        unloader.MC_Func.MC_MoveRelPosition((int)Unloader.nAxis.Z1, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LD_ALNX_Neg_Click(object sender, EventArgs e)
-        {
-            if (!this.radioButton_Config_LDUL_JogMove_Step.Checked)
-                return;
-
-            if (!radioButton_Config_ActiveUnit_Loader.Checked)
-            {
-                MessageBox.Show("Please select the Loader Unit.", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = -1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Common_Acceleration_Coarse;
-                    }
-
-                    //  속도는 양수로
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                    loader.MC_Func.MC_MoveRelPosition((int)Loader.nAxis.ALN_X, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LD_ALNX_Pos_Click(object sender, EventArgs e)
-        {
-            if (!this.radioButton_Config_LDUL_JogMove_Step.Checked)
-                return;
-
-            if (!radioButton_Config_ActiveUnit_Loader.Checked)
-            {
-                MessageBox.Show("Please select the Loader Unit.", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = 1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.ALN_X].Common_Acceleration_Coarse;
-                    }
-
-                    //  속도는 양수로
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                    loader.MC_Func.MC_MoveRelPosition((int)Loader.nAxis.ALN_X, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LD_ALNY_Neg_Click(object sender, EventArgs e)
-        {
-            if (!this.radioButton_Config_LDUL_JogMove_Step.Checked)
-                return;
-
-            if (!radioButton_Config_ActiveUnit_Loader.Checked)
-            {
-                MessageBox.Show("Please select the Loader Unit.", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = -1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_Y].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.ALN_Y].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_Y].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.ALN_Y].Common_Acceleration_Coarse;
-                    }
-
-                    //  속도는 양수로
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                    loader.MC_Func.MC_MoveRelPosition((int)Loader.nAxis.ALN_Y, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_LD_ALNY_Pos_Click(object sender, EventArgs e)
-        {
-            if (!this.radioButton_Config_LDUL_JogMove_Step.Checked)
-                return;
-
-            if (!radioButton_Config_ActiveUnit_Loader.Checked)
-            {
-                MessageBox.Show("Please select the Loader Unit.", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = 1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_LDUL_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_Y].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.ALN_Y].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Loader.nAxis.ALN_Y].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Loader.nAxis.ALN_Y].Common_Acceleration_Coarse;
-                    }
-
-                    //  속도는 양수로
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                    loader.MC_Func.MC_MoveRelPosition((int)Loader.nAxis.ALN_Y, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_WorkStage_X_Neg_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = -1.0;
-
-            if (!this.radioButton_Config_WorkStage_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-                    }
-
-                    //  방향 설정
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Negative direction : Using - (minus) velocity
-
-                    workStage.MC_Func.MC_JogMove((int)WorkStage.nAxis.X, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_WorkStage_X_Pos_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = 1.0;
-
-            if (!this.radioButton_Config_WorkStage_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-                    }
-
-                    //  방향 설정
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Positive direction : Using + (plus) velocity
-
-                    workStage.MC_Func.MC_JogMove((int)WorkStage.nAxis.X, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_WorkStage_Y_Neg_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = -1.0;
-
-            if (!this.radioButton_Config_WorkStage_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Y].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Y].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Y].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Y].Common_Acceleration_Coarse;
-                    }
-
-                    //  방향 설정
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Negative direction : Using - (minus) velocity
-
-                    workStage.MC_Func.MC_JogMove((int)WorkStage.nAxis.Y, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_WorkStage_Y_Pos_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = 1.0;
-
-            if (!this.radioButton_Config_WorkStage_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Y].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Y].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Y].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Y].Common_Acceleration_Coarse;
-                    }
-
-                    //  방향 설정
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Positive direction : Using + (plus) velocity
-
-                    workStage.MC_Func.MC_JogMove((int)WorkStage.nAxis.Y, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_WorkStage_Z_Neg_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = -1.0;
-
-            if (!this.radioButton_Config_WorkStage_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
-                    }
-
-                    //  방향 설정
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Negative direction : Using - (minus) velocity
-
-                    workStage.MC_Func.MC_JogMove((int)WorkStage.nAxis.Z, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_WorkStage_Z_Pos_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = 1.0;
-
-            if (!this.radioButton_Config_WorkStage_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
-                    }
-
-                    //  방향 설정
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Positive direction : Using + (plus) velocity
-
-                    workStage.MC_Func.MC_JogMove((int)WorkStage.nAxis.Z, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_WorkStage_Axis_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (!this.radioButton_Config_WorkStage_JogMove_Continuous.Checked)
-                return;
-
             if (Equipment.AjinBoard_Opened)
             {
-                workStage.MC_Func.MC_JogStop((int)WorkStage.nAxis.X);
-                workStage.MC_Func.MC_JogStop((int)WorkStage.nAxis.Y);
-                workStage.MC_Func.MC_JogStop((int)WorkStage.nAxis.Z);
+                string[] tagParts = btn.Tag?.ToString()?.Split(',');
+                if (tagParts == null || tagParts.Length < 2)
+                    return;
+
+                string unit = tagParts[0];         // 예: "Vision"
+                string axisName = tagParts[1];     // 예: "X"
+
+                dynamic controller = GetControllerByUnit(unit);
+                if (controller == null) return;
+
+                int axis = GetAxisIndex(unit, axisName);
+                if (axis < 0) return;
+
+                switch (unit)
+                {
+                    case "Vision": workStage.MC_Func.MC_JogStop(axis); break;
+                    case "WorkStage": workStage.MC_Func.MC_JogStop(axis); break;
+                    case "Loader": loader.MC_Func.MC_JogStop(axis); break;
+                    case "Unloader": unloader.MC_Func.MC_JogStop(axis); break;
+                }
+                //controller.MC_Func.MC_JogStop(axis);
             }
         }
 
-        private void button_Config_WorkStage_X_Neg_Click(object sender, EventArgs e)
+        // 유닛별 컨트롤러 반환
+        private object GetControllerByUnit(string unit)
         {
-            if (!this.radioButton_Config_WorkStage_JogMove_Step.Checked)
-                return;
+            if (unit == "Vision")
+                return vision;
+            else if (unit == "WorkStage")
+                return workStage;
+            else if (unit == "Loader")
+                return loader;
+            else if (unit == "Unloader")
+                return unloader;
+            else
+                return null;
+        }
 
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = -1;
-
+        // 유닛 및 축 이름으로 축 인덱스 반환
+        private int GetAxisIndex(string unit, string axisName)
+        {
             try
             {
-                if (Equipment.AjinBoard_Opened)
+                if (unit == "Vision")
+                    return (int)Enum.Parse(typeof(Vision.nAxis), axisName);
+                else if (unit == "WorkStage")
+                    return (int)Enum.Parse(typeof(WorkStage.nAxis), axisName);
+                else if (unit == "Loader")
                 {
-                    //  속도 설정
-                    if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
-                    }
+                    if (radioButton_Config_ActiveUnit_Loader.Checked)
+                        return (int)Enum.Parse(typeof(Loader.nAxis), axisName);
                     else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-                    }
-
-                    //  속도는 양수로
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                    workStage.MC_Func.MC_MoveRelPosition((int)WorkStage.nAxis.X, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
+                        return -1; // 잘못된 유닛 선택
+                }
+                else if (unit == "Unloader")
+                {
+                    if (!radioButton_Config_ActiveUnit_Loader.Checked)
+                        return (int)Enum.Parse(typeof(Unloader.nAxis), axisName);
+                    else
+                        return -1; // 잘못된 유닛 선택
                 }
             }
             catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
+            {  
+                Log.Write(ex);
             }
+
+            return -1;
         }
 
-        private void button_Config_WorkStage_X_Pos_Click(object sender, EventArgs e)
+        private Type_Motor_Speed GetMotorSpeedType(string unit)
         {
-            if (!this.radioButton_Config_WorkStage_JogMove_Step.Checked)
-                return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = 1;
-
-            try
+            if (unit == "WorkStage")
             {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-                    }
-
-                    //  속도는 양수로
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                    workStage.MC_Func.MC_MoveRelPosition((int)WorkStage.nAxis.X, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                }
+                return radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked ? Type_Motor_Speed.Fine : Type_Motor_Speed.Coarse;
             }
-            catch (Exception ex)
+            else if (unit == "Loader" || unit == "Unloader")
             {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
+                return radioButton_Config_LDUL_Move_MoveMode_Fine.Checked ? Type_Motor_Speed.Fine: Type_Motor_Speed.Coarse;
             }
+
+            // 필요 시 다른 유닛 추가
+            return Type_Motor_Speed.Fine;
         }
 
-        private void button_Config_WorkStage_Y_Neg_Click(object sender, EventArgs e)
+        private bool IsJogMoveContinuous(string unit)
         {
-            if (!this.radioButton_Config_WorkStage_JogMove_Step.Checked)
-                return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = -1;
-
-            try
+            if (unit == "WorkStage")
             {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Y].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Y].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Y].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Y].Common_Acceleration_Coarse;
-                    }
-
-                    //  속도는 양수로
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                    workStage.MC_Func.MC_MoveRelPosition((int)WorkStage.nAxis.Y, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                }
+                return radioButton_Config_WorkStage_JogMove_Continuous.Checked;
             }
-            catch (Exception ex)
+            else if (unit == "Loader" || unit == "Unloader")
             {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
+                return radioButton_Config_LDUL_JogMove_Continuous.Checked;
             }
+            // 필요 시 다른 유닛 추가
+            return false;
         }
 
-        private void button_Config_WorkStage_Y_Pos_Click(object sender, EventArgs e)
+        private bool IsJogMoveStep(string unit)
         {
-            if (!this.radioButton_Config_WorkStage_JogMove_Step.Checked)
-                return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = 1;
-
-            try
+            if (unit == "WorkStage")
             {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Y].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Y].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Y].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Y].Common_Acceleration_Coarse;
-                    }
-
-                    //  속도는 양수로
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                    workStage.MC_Func.MC_MoveRelPosition((int)WorkStage.nAxis.Y, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                }
+                return radioButton_Config_WorkStage_JogMove_Step.Checked;
             }
-            catch (Exception ex)
+            else if (unit == "Loader" || unit == "Unloader")
             {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
+                return radioButton_Config_LDUL_JogMove_Step.Checked;
             }
+            // 필요 시 다른 유닛 추가
+            return false;
         }
 
-        private void button_Config_WorkStage_Z_Neg_Click(object sender, EventArgs e)
+        private double GetStepDistance(string unit)
         {
-            if (!this.radioButton_Config_WorkStage_JogMove_Step.Checked)
-                return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = -1;
-
-            try
+            if (unit == "WorkStage")
             {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
-                    }
-
-                    //  속도는 양수로
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                    workStage.MC_Func.MC_MoveRelPosition((int)WorkStage.nAxis.Z, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                }
+                return Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
             }
-            catch (Exception ex)
+            else if (unit == "Loader" || unit == "Unloader")
             {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
+                return Equipment.ToDouble(textBox_Config_LDUL_JogMove_StepSize.Text);
             }
-        }
-
-        private void button_Config_WorkStage_Z_Pos_Click(object sender, EventArgs e)
-        {
-            if (!this.radioButton_Config_WorkStage_JogMove_Step.Checked)
-                return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_WorkStage_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = 1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
-                    }
-
-                    //  속도는 양수로
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                    workStage.MC_Func.MC_MoveRelPosition((int)WorkStage.nAxis.Z, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_Vision_X_Neg_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = -1.0;
-
-            if (!this.radioButton_Config_Vision_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_Vision_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.X].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.X].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.X].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.X].Common_Acceleration_Coarse;
-                    }
-
-                    //  방향 설정
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Negative direction : Using - (minus) velocity
-
-                    vision.MC_Func.MC_JogMove((int)Vision.nAxis.X, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_Vision_X_Pos_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = 1.0;
-
-            if (!this.radioButton_Config_Vision_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_Vision_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.X].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.X].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.X].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.X].Common_Acceleration_Coarse;
-                    }
-
-                    //  방향 설정
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Positive direction : Using + (plus) velocity
-
-                    vision.MC_Func.MC_JogMove((int)Vision.nAxis.X, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_Vision_Y_Neg_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = -1.0;
-
-            if (!this.radioButton_Config_Vision_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_Vision_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.Y].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.Y].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.Y].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.Y].Common_Acceleration_Coarse;
-                    }
-
-                    //  방향 설정
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Negative direction : Using - (minus) velocity
-
-                    vision.MC_Func.MC_JogMove((int)Vision.nAxis.Y, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_Vision_Y_Pos_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = 1.0;
-
-            if (!this.radioButton_Config_Vision_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_Vision_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.Y].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.Y].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.Y].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.Y].Common_Acceleration_Coarse;
-                    }
-
-                    //  방향 설정
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Positive direction : Using + (plus) velocity
-
-                    vision.MC_Func.MC_JogMove((int)Vision.nAxis.Y, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_Vision_Z_Neg_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = -1.0;
-
-            if (!this.radioButton_Config_Vision_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_Vision_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.Z].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.Z].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.Z].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.Z].Common_Acceleration_Coarse;
-                    }
-
-                    //  방향 설정
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Negative direction : Using - (minus) velocity
-
-                    vision.MC_Func.MC_JogMove((int)Vision.nAxis.Z, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_Vision_Z_Pos_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = 1.0;
-
-            if (!this.radioButton_Config_Vision_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_Vision_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.Z].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.Z].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.Z].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.Z].Common_Acceleration_Coarse;
-                    }
-
-                    //  방향 설정
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Positive direction : Using + (plus) velocity
-
-                    vision.MC_Func.MC_JogMove((int)Vision.nAxis.Z, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_Vision_Axis_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (!this.radioButton_Config_Vision_JogMove_Continuous.Checked)
-                return;
-
-            if (Equipment.AjinBoard_Opened)
-            {
-                vision.MC_Func.MC_JogStop((int)Vision.nAxis.X);
-                vision.MC_Func.MC_JogStop((int)Vision.nAxis.Y);
-                vision.MC_Func.MC_JogStop((int)Vision.nAxis.Z);
-            }
-        }
-
-        private void button_Config_Vision_X_Neg_Click(object sender, EventArgs e)
-        {
-            if (!this.radioButton_Config_Vision_JogMove_Step.Checked)
-                return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = -1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_Vision_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.X].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.X].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.X].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.X].Common_Acceleration_Coarse;
-                    }
-
-                    //  속도는 양수로
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                    vision.MC_Func.MC_MoveRelPosition((int)Vision.nAxis.X, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_Vision_X_Pos_Click(object sender, EventArgs e)
-        {
-            if (!this.radioButton_Config_Vision_JogMove_Step.Checked)
-                return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = 1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_Vision_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.X].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.X].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.X].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.X].Common_Acceleration_Coarse;
-                    }
-
-                    //  속도는 양수로
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                    vision.MC_Func.MC_MoveRelPosition((int)Vision.nAxis.X, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_Vision_Y_Neg_Click(object sender, EventArgs e)
-        {
-            if (!this.radioButton_Config_Vision_JogMove_Step.Checked)
-                return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = -1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_Vision_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.Y].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.Y].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.Y].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.Y].Common_Acceleration_Coarse;
-                    }
-
-                    //  속도는 양수로
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                    vision.MC_Func.MC_MoveRelPosition((int)Vision.nAxis.Y, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_Vision_Y_Pos_Click(object sender, EventArgs e)
-        {
-            if (!this.radioButton_Config_Vision_JogMove_Step.Checked)
-                return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = 1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_Vision_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.Y].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.Y].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.Y].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.Y].Common_Acceleration_Coarse;
-                    }
-
-                    //  속도는 양수로
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                    vision.MC_Func.MC_MoveRelPosition((int)Vision.nAxis.Y, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_Vision_Z_Neg_Click(object sender, EventArgs e)
-        {
-            if (!this.radioButton_Config_Vision_JogMove_Step.Checked)
-                return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = -1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_Vision_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.Z].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.Z].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.Z].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.Z].Common_Acceleration_Coarse;
-                    }
-
-                    //  속도는 양수로
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                    vision.MC_Func.MC_MoveRelPosition((int)Vision.nAxis.Z, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_Vision_Z_Pos_Click(object sender, EventArgs e)
-        {
-            if (!this.radioButton_Config_Vision_JogMove_Step.Checked)
-                return;
-
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDistance = Equipment.ToDouble(textBox_Config_Vision_JogMove_StepSize.Text);
-            int nDirection = 1;
-            double dVelocity = 0;
-
-            //  이동 거리는 양수로 변경
-            if (dDistance < 0) dDistance = dDistance * (-1.0);
-
-            //  방향 설정
-            nDirection = 1;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_Vision_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.Z].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.Z].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Vision.nAxis.Z].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Vision.nAxis.Z].Common_Acceleration_Coarse;
-                    }
-
-                    //  속도는 양수로
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);
-
-                    vision.MC_Func.MC_MoveRelPosition((int)Vision.nAxis.Z, dDistance * (double)nDirection, lfVelocity, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_BDS_Y_Neg_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = -1.0;
-
-            if (!Equipment.Machine_LaserType_CO2)
-                return;
-
-            if (!this.radioButton_Config_BDS_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_BDS_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Common_Acceleration_Coarse;
-                    }
-
-                    //  방향 설정
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Negative direction : Using - (minus) velocity
-
-                    bds.MC_Func.MC_JogMove((int)Bds.nAxis.MASK_Y, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-        }
-
-        private void button_Config_BDS_Y_Pos_MouseDown(object sender, MouseEventArgs e)
-        {
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
-            double dDirection = 1.0;
-
-            if (!Equipment.Machine_LaserType_CO2)
-                return;
-
-            if (!this.radioButton_Config_BDS_JogMove_Continuous.Checked)
-                return;
-
-            try
-            {
-                if (Equipment.AjinBoard_Opened)
-                {
-                    //  속도 설정
-                    if (radioButton_Config_BDS_Move_MoveMode_Fine.Checked)
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Jog_Speed_Fine;
-                        lfAccDec = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Common_Acceleration_Fine;
-                    }
-                    else
-                    {
-                        lfVelocity = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Jog_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)Bds.nAxis.MASK_Y].Common_Acceleration_Coarse;
-                    }
-
-                    //  방향 설정
-                    if (lfVelocity < 0) lfVelocity = lfVelocity * (-1.0);     // Positive direction : Using + (plus) velocity
-
-                    bds.MC_Func.MC_JogMove((int)Bds.nAxis.MASK_Y, lfVelocity * dDirection, lfAccDec, lfAccDec);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
+            return 0.0;
         }
 
         private void button_Config_LDUL_TeachingPositions_Save_Click(object sender, EventArgs e)
@@ -4054,7 +1775,6 @@ namespace SLD200_MSL
 
             MessageBox.Show("저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-
         private void listBox_Config_LDUL_TeachingPositions_SelectedIndexChanged(object sender, EventArgs e)
         {
             //  Teaching 항목 선택에 따른 Position 활성/비활성
@@ -4180,7 +1900,6 @@ namespace SLD200_MSL
                 }
             }
         }
-
         private void button_Config_WorkStage_TeachingPositions_Save_Click(object sender, EventArgs e)
         {
             //workStage.m_dPowerMeterBDS_Value = 123.0;
@@ -4200,7 +1919,6 @@ namespace SLD200_MSL
             workStage.Teaching_Position_Save();
             workStage.Move_Properties_Save();
         }
-
         private void listBox_Config_WorkStage_TeachingPositions_SelectedIndexChanged(object sender, EventArgs e)
         {
             //  Teaching 항목 선택에 따른 Position
@@ -4213,7 +1931,6 @@ namespace SLD200_MSL
                 textBox_Config_WorkStage_TeachingPos_StageY.Text = workStage.stWorkStageTeachingPos[m_nIndex].Stage_Y.ToString();
             }
         }
-
         private void button_Config_Vision_TeachingPositions_Save_Click(object sender, EventArgs e)
         {
             //  선택된 축에 대한 데이터 갖다 넣기

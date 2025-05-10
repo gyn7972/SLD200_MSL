@@ -7183,5 +7183,165 @@ namespace QMC.Common.Modules
 
             return bRtn;
         }
+
+        public bool MovetoUnloader_ABS_Positions(Unloader.nAxis nAxis, double dPos, Type_Motor_Speed typeSpeed)
+        {
+            // string strTemp = "";
+            bool bRtn = false;
+            double dVelocity = 0.0;
+            double dAcc = 0.0;
+            try
+            {
+                switch (nAxis)
+                {
+                    case Unloader.nAxis.Z0:
+                        if (!IsInterlock_UnloaderPortR_Enabled()) return bRtn = false;
+                        break;
+                    case Unloader.nAxis.Z1:
+                        if (!IsInterlock_UnloaderPortL_Enabled()) return bRtn = false;
+                        break;
+                    case Unloader.nAxis.TR_Z:
+                        if (!IsInterlock_UnloaderTransferZ_Enabled()) return bRtn = false;
+                        break;
+                    case Unloader.nAxis.TR_X:
+                        if (!IsInterlock_UnloaderTransferX_Enabled()) return bRtn = false;
+                        break;
+                }
+
+                {
+                    if (IsUnloader_Positions((Unloader.nAxis)nAxis, dPos) == false)
+                    {
+                        switch (typeSpeed)
+                        {
+                            case Type_Motor_Speed.Fine:
+                                dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                                dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
+                                break;
+                            case Type_Motor_Speed.Coarse:
+                                dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Coarse;
+                                dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
+                                break;
+                            default:
+                                dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                                dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
+                                break;
+                        }
+
+                        MC_Func.MC_MovePosition((int)nAxis, dPos, dVelocity, dAcc, dAcc);
+                    }
+
+                    bRtn = true;
+                }
+                //strTemp = string.Format("Move_to_WorkStage_TeachingPositions 이동");
+                //Log.Write("SLD-200", Equipment.User_Name, strTemp);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+            return bRtn;
+        }
+        public bool IsUnloader_Positions(Unloader.nAxis nAxis, double dPos)
+        {
+            bool bRtn = false;
+
+            if (MC_Func.MC_GetDone((int)nAxis) &&
+                MC_Func.MC_PosTolerance((int)nAxis, dPos))
+            {
+                bRtn = true;
+            }
+
+            return bRtn;
+        }
+        public bool MovetoUnloader_Jog_Positions(Unloader.nAxis nAxis, int nDirection, Type_Motor_Speed typeSpeed)
+        {
+            bool bRtn = false;
+            double dVelocity = 0.0;
+            double dAcc = 0.0;
+            try
+            {
+                //Jog시에는 인터락 무시.
+                //if (IsInterlock_WorkStageXY_Enabled())
+                {
+                    switch (typeSpeed)
+                    {
+                        case Type_Motor_Speed.Fine:
+                            dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                            dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
+                            break;
+                        case Type_Motor_Speed.Coarse:
+                            dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Coarse;
+                            dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
+                            break;
+                        default:
+                            dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                            dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
+                            break;
+                    }
+
+                    MC_Func.MC_JogMove((int)nAxis, dVelocity * nDirection, dAcc, dAcc);
+                    bRtn = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+            return bRtn;
+        }
+        public bool MovetoUnloader_Rel_Positions(Unloader.nAxis nAxis, double dPos, int nDirection, Type_Motor_Speed typeSpeed)
+        {
+            // string strTemp = "";
+            bool bRtn = false;
+            double dVelocity = 0.0;
+            double dAcc = 0.0;
+            try
+            {
+                switch (nAxis)
+                {
+                    case Unloader.nAxis.Z0:
+                        if (!IsInterlock_UnloaderPortR_Enabled()) return bRtn = false;
+                        break;
+                    case Unloader.nAxis.Z1:
+                        if (!IsInterlock_UnloaderPortL_Enabled()) return bRtn = false;
+                        break;
+                    case Unloader.nAxis.TR_Z:
+                        if (!IsInterlock_UnloaderTransferZ_Enabled()) return bRtn = false;
+                        break;
+                    case Unloader.nAxis.TR_X:
+                        if (!IsInterlock_UnloaderTransferX_Enabled()) return bRtn = false;
+                        break;
+                }
+
+                switch (typeSpeed)
+                {
+                    case Type_Motor_Speed.Fine:
+                        dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                        dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
+                        break;
+                    case Type_Motor_Speed.Coarse:
+                        dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Coarse;
+                        dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
+                        break;
+                    default:
+                        dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                        dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
+                        break;
+                }
+
+                MC_Func.MC_MoveRelPosition((int)nAxis, dPos * nDirection, dVelocity, dAcc, dAcc);
+                bRtn = true;
+
+                //strTemp = string.Format("Move_to_WorkStage_TeachingPositions 이동");
+                //Log.Write("SLD-200", Equipment.User_Name, strTemp);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+            return bRtn;
+        }
     }
 }

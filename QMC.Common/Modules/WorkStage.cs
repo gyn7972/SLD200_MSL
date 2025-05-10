@@ -64,6 +64,8 @@ using QMC.Common;
 using System.Runtime.InteropServices.WindowsRuntime;
 using QMC.Common.Hmi;
 using QMC.Common.Vision;
+using static QMC.Common.Parts.ActionItem;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace QMC.Common.Modules
@@ -36134,6 +36136,42 @@ namespace QMC.Common.Modules
                 Equipment.EqpSiriusViewer.Document.Action.ActEntitySelect(list);
             }
         }
+        //  Laser Height Sensor Value 저장
+        public void LaserHeightSensorValue_Save(string m_strRecipeName, int m_nSocketNum, double m_dLaserHeightValue_Base, double m_dLaserHeightValue, double m_dLaserHeight_Calc)
+        {
+            //  폴더 없으면 만들기
+            string m_strLaserHeightValueDataPath = LogManager.Instance.GetLogPath() + "\\LaserHeightData";
+            if (Directory.Exists(m_strLaserHeightValueDataPath) == false)
+            {
+                Directory.CreateDirectory(m_strLaserHeightValueDataPath);
+            }
+
+            string m_strRecipeName_Now = System.IO.Path.GetFileName(m_strRecipeName);
+
+            string fileName = string.Format("{0}{1}_{2}", LogManager.Instance.GetLogPath() + "\\LaserHeightData\\", m_strRecipeName_Now, DateTime.Now.ToString("yyyy_MM_dd"));
+
+            DateTime now = DateTime.Now;
+            string timeString = now.ToString("yyyy-MM-dd HH_mm_ss");
+            string strData = "";
+
+            strData += timeString;
+            strData += " , ";
+            strData += "Socket Numer : " + m_nSocketNum.ToString();
+            //strData += " , ";
+            //strData += "Reference Height Value : " + m_dLaserHeightValue_Base.ToString();             //  레이저 높이 센서의 기준값 
+            //strData += " , ";
+            //strData += "Laser Height Sensor Value : " + m_dLaserHeightValue.ToString();               //  실제 레이저 센서에서 읽은 값
+            strData += " , ";
+            strData += "Calculated Height Value : " + m_dLaserHeight_Calc.ToString();
+            strData += "\n";
+
+            File.AppendAllText(fileName + ".txt", strData);
+        }
+
+        public void AlarmTest()
+        {
+            AlarmPost(AlarmKey.DataNotValidation);
+        }
 
 
         //motion 함수 
@@ -36260,15 +36298,15 @@ namespace QMC.Common.Modules
 
             if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) &&
                 MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[nTeachingPos].Stage_X) &&
-                MC_Func.MC_GetDone((int)WorkStage.nAxis.X) &&
-                MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, stWorkStageTeachingPos[nTeachingPos].Stage_Y))
+                MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) &&
+                MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, stWorkStageTeachingPos[nTeachingPos].Stage_Y))
             {
                 bRtn = true;
             }
 
             return bRtn;
         }
-
+        
         public bool IsInterlock_WorkStageZ_Enabled()
         {
             bool bRtn = false;
@@ -36347,39 +36385,6 @@ namespace QMC.Common.Modules
 
             return bRtn;
         }
-
-        //  Laser Height Sensor Value 저장
-        public void LaserHeightSensorValue_Save(string m_strRecipeName, int m_nSocketNum, double m_dLaserHeightValue_Base, double m_dLaserHeightValue, double m_dLaserHeight_Calc)
-        {
-            //  폴더 없으면 만들기
-            string m_strLaserHeightValueDataPath = LogManager.Instance.GetLogPath() + "\\LaserHeightData";
-            if (Directory.Exists(m_strLaserHeightValueDataPath) == false)
-            {
-                Directory.CreateDirectory(m_strLaserHeightValueDataPath);
-            }
-
-            string m_strRecipeName_Now = System.IO.Path.GetFileName(m_strRecipeName);
-
-            string fileName = string.Format("{0}{1}_{2}", LogManager.Instance.GetLogPath() + "\\LaserHeightData\\", m_strRecipeName_Now, DateTime.Now.ToString("yyyy_MM_dd"));
-
-            DateTime now = DateTime.Now;
-            string timeString = now.ToString("yyyy-MM-dd HH_mm_ss");
-            string strData = "";
-
-            strData += timeString;
-            strData += " , ";
-            strData += "Socket Numer : " + m_nSocketNum.ToString();
-            //strData += " , ";
-            //strData += "Reference Height Value : " + m_dLaserHeightValue_Base.ToString();             //  레이저 높이 센서의 기준값 
-            //strData += " , ";
-            //strData += "Laser Height Sensor Value : " + m_dLaserHeightValue.ToString();               //  실제 레이저 센서에서 읽은 값
-            strData += " , ";
-            strData += "Calculated Height Value : " + m_dLaserHeight_Calc.ToString();
-            strData += "\n";
-
-            File.AppendAllText(fileName + ".txt", strData);
-        }
-
         public bool IsWorkStage_TeachingPositionsZ(int nTeachingPos)
         {
             bool bRtn = false;
@@ -36393,9 +36398,246 @@ namespace QMC.Common.Modules
             return bRtn;
         }
 
-        public void AlarmTest()
+        public bool MovetoWorkStage_ABS_PositionsXY(XyCoordinate xyCoordinate, Type_Motor_Speed typeSpeed)
         {
-            AlarmPost(AlarmKey.DataNotValidation);
+            // WorkStage Teaching Position 이동
+            // string strTemp = "";
+            bool bRtn = false;
+            double dVelocity = 0.0;
+            double dAcc = 0.0;
+            try
+            {
+                if (IsInterlock_WorkStageXY_Enabled())
+                {
+                    if (IsWorkStage_Positions(WorkStage.nAxis.X, xyCoordinate.X) == false &&
+                        IsWorkStage_Positions(WorkStage.nAxis.Y, xyCoordinate.Y) == false)
+                    {
+                        //// 맵 데이터를 이원화 할 경우
+                        //if (laserDrilling.Config.ParamConfig.ScannerCamera_MapData_Div)
+                        //{
+                        //    laserDrilling.MapData_Change((int)LaserDrilling.MapDataType.MAPDATASTATUS_SCANNER);
+                        //}
+
+                        switch (typeSpeed)
+                        {
+                            case Type_Motor_Speed.Fine:
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+                                break;
+                            case Type_Motor_Speed.Coarse:
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                                break;
+                            default:
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+                                break;
+                        }
+
+                        xyInterpolatedCoordinate.X = xyCoordinate.X;
+                        xyInterpolatedCoordinate.Y = xyCoordinate.Y;
+                        MC_Func.MovePosition(xyInterpolatedCoordinate, dVelocity, dAcc, dAcc);
+                    }
+
+                    bRtn = true;
+                }
+                //strTemp = string.Format("Move_to_WorkStage_TeachingPositions 이동");
+                //Log.Write("SLD-200", Equipment.User_Name, strTemp);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+            return bRtn;
+        }
+        public bool MovetoWorkStage_ABS_PositionsZ(double dPos, Type_Motor_Speed typeSpeed)
+        {
+            // string strTemp = "";
+            bool bRtn = false;
+            double dVelocity = 0.0;
+            double dAcc = 0.0;
+            try
+            {
+                if (IsInterlock_WorkStageZ_Enabled())
+                {
+                    if (IsWorkStage_Positions(WorkStage.nAxis.Z, dPos) == false)
+                    {
+                        switch (typeSpeed)
+                        {
+                            case Type_Motor_Speed.Fine:
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+                                break;
+                            case Type_Motor_Speed.Coarse:
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
+                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
+                                break;
+                            default:
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Fine;
+                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+                                break;
+                        }
+
+                        MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, dPos, dVelocity, dAcc, dAcc);
+                    }
+
+                    bRtn = true;
+                }
+                //strTemp = string.Format("Move_to_WorkStage_TeachingPositions 이동");
+                //Log.Write("SLD-200", Equipment.User_Name, strTemp);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+            return bRtn;
+        }
+        public bool MovetoWorkStage_ABS_PositionsY(double dPos, Type_Motor_Speed typeSpeed)
+        {
+            // string strTemp = "";
+            bool bRtn = false;
+            double dVelocity = 0.0;
+            double dAcc = 0.0;
+            try
+            {
+                //if (IsInterlock_WorkStageZ_Enabled()) // 조건있으면 걸자.
+                {
+                    if (IsWorkStage_Positions(WorkStage.nAxis.MASK_Y, dPos) == false)
+                    {
+                        switch (typeSpeed)
+                        {
+                            case Type_Motor_Speed.Fine:
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Jog_Speed_Fine;
+                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Common_Acceleration_Fine;
+                                break;
+                            case Type_Motor_Speed.Coarse:
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Jog_Speed_Coarse;
+                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Common_Acceleration_Coarse;
+                                break;
+                            default:
+                                dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Jog_Speed_Fine;
+                                dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Common_Acceleration_Fine;
+                                break;
+                        }
+
+                        MC_Func.MC_MovePosition((int)WorkStage.nAxis.MASK_Y, dPos, dVelocity, dAcc, dAcc);
+                    }
+
+                    bRtn = true;
+                }
+                //strTemp = string.Format("Move_to_WorkStage_TeachingPositions 이동");
+                //Log.Write("SLD-200", Equipment.User_Name, strTemp);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+            return bRtn;
+        }
+        public bool IsWorkStage_Positions(WorkStage.nAxis nAxis, double dPos)
+        {
+            bool bRtn = false;
+
+            if (MC_Func.MC_GetDone((int)nAxis) &&
+                MC_Func.MC_PosTolerance((int)nAxis, dPos))
+            {
+                bRtn = true;
+            }
+
+            return bRtn;
+        }
+        public bool MovetoWorkStage_Rel_Positions(WorkStage.nAxis nAxis, double dPos, int nDirection, Type_Motor_Speed typeSpeed)
+        {
+            // WorkStage Teaching Position 이동
+            // string strTemp = "";
+            bool bRtn = false;
+            double dVelocity = 0.0;
+            double dAcc = 0.0;
+            try
+            {
+                switch (nAxis)
+                {
+                    case WorkStage.nAxis.X:
+                        if (!IsInterlock_WorkStageXY_Enabled()) return bRtn = false;
+                        break;
+                    case WorkStage.nAxis.Y:
+                        if (!IsInterlock_WorkStageXY_Enabled()) return bRtn = false;
+                        break;
+                    case WorkStage.nAxis.Z:
+                        if (!IsInterlock_WorkStageZ_Enabled()) return bRtn = false;
+                        break;
+                    case WorkStage.nAxis.MASK_Y:
+                        //if (!IsInterlock_WorkStageZ_Enabled()) return bRtn = false;
+                        break;
+                }
+                switch (typeSpeed)
+                {
+                    case Type_Motor_Speed.Fine:
+                        dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+                        dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+                        break;
+                    case Type_Motor_Speed.Coarse:
+                        dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+                        dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                        break;
+                    default:
+                        dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+                        dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+                        break;
+                }
+
+                MC_Func.MC_MoveRelPosition((int)nAxis, dPos * nDirection, dVelocity, dAcc, dAcc);
+                bRtn = true;
+
+                //strTemp = string.Format("Move_to_WorkStage_TeachingPositions 이동");
+                //Log.Write("SLD-200", Equipment.User_Name, strTemp);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+            return bRtn;
+        }
+
+        public bool MovetoWorkStage_Jog_Positions(WorkStage.nAxis nAxis, int nDirection, Type_Motor_Speed typeSpeed)
+        {
+            bool bRtn = false;
+            double dVelocity = 0.0;
+            double dAcc = 0.0;
+            try
+            {
+                //Jog시에는 인터락 무시.
+                //if (IsInterlock_WorkStageXY_Enabled())
+                {
+                    switch (typeSpeed)
+                    {
+                        case Type_Motor_Speed.Fine:
+                            dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+                            dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+                            break;
+                        case Type_Motor_Speed.Coarse:
+                            dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
+                            dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                            break;
+                        default:
+                            dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
+                            dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+                            break;
+                    }
+
+                    MC_Func.MC_JogMove((int)nAxis, dVelocity * nDirection, dAcc, dAcc);
+                    bRtn = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+            return bRtn;
         }
     }
 }

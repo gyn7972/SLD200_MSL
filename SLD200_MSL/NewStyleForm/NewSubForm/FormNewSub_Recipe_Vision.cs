@@ -1081,37 +1081,35 @@ namespace SLD200.NewStyleForm.NewSubForm
                 // 축 번호 결정
                 switch (axisName)
                 {
-                    case "X": axis = (int)Vision.nAxis.X; break;
-                    case "Y": axis = (int)Vision.nAxis.Y; break;
-                    case "Z": axis = (int)Vision.nAxis.Z; break;
+                    case "X": axis = (int)WorkStage.nAxis.X; break;
+                    case "Y": axis = (int)WorkStage.nAxis.Y; break;
+                    case "Z": axis = (int)WorkStage.nAxis.Z; break;
                     default: return;
                 }
 
                 // 속도/가감속 설정
+                Type_Motor_Speed type_Motor_Speed;
                 if (radioButton_RecipeVision_Move_MoveMode_Fine.Checked)
                 {
-                    velocity = Equipment.stAxisParam[axis].Jog_Speed_Fine;
-                    accdec = Equipment.stAxisParam[axis].Common_Acceleration_Fine;
+                    type_Motor_Speed = Type_Motor_Speed.Fine;
                 }
                 else
                 {
-                    velocity = Equipment.stAxisParam[axis].Jog_Speed_Coarse;
-                    accdec = Equipment.stAxisParam[axis].Common_Acceleration_Coarse;
+                    type_Motor_Speed = Type_Motor_Speed.Coarse;
                 }
-
                 velocity = Math.Abs(velocity);
 
                 try
                 {
                     if (radioButton_RecipeVision_JogMove_Continuous.Checked)
                     {
-                        workStage.MC_Func.MC_JogMove(axis, velocity * direction, accdec, accdec);
+                        workStage.MovetoWorkStage_Jog_Positions((WorkStage.nAxis)axis, (int)direction, type_Motor_Speed);
                     }
                     else if (radioButton_RecipeVision_JogMove_Step.Checked)
                     {
                         string text = textBox_RecipeVision_JogMove_StepSize.Text;
                         distance = Math.Abs(Equipment.ToDouble(text));
-                        workStage.MC_Func.MC_MoveRelPosition(axis, distance * direction, velocity, accdec, accdec);
+                        workStage.MovetoWorkStage_Rel_Positions((WorkStage.nAxis)axis, distance, (int)direction, type_Motor_Speed);
                     }
                 }
                 catch (Exception ex)
