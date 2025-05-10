@@ -83,7 +83,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 }
                 else if (camera == workStage.jigAligner_LowRes.Camera)
                 {
-                    ImageViewer_RecipeVision_Rows.ResultOverlays = workStage.CoarseCamResultOveray;
+                    ImageViewer_RecipeVision_Lows.ResultOverlays = workStage.CoarseCamResultOveray;
                 }
             }
         }

@@ -1367,18 +1367,18 @@ namespace SLD200_MSL
                 
                 dRaius = m_dTargetSize_Radius / workStage.Config.ParamConfig.LowerVision_Scale_X;
 =======
-                m_nImage_Width = w;
-                m_nImage_Height = h;
+                //m_nImage_Width = w;
+                //m_nImage_Height = h;
 
-                double m_dradius = 0.0;
-                m_dradius = m_dTargetSize_Radius / workStage.Config.ParamConfig.LowerVision_Scale_X;
+                //double m_dradius = 0.0;
+                //m_dradius = m_dTargetSize_Radius / workStage.Config.ParamConfig.LowerVision_Scale_X;
 
                 // Bitmap을 byte 배열로 변환
                 //byte[] pixelData = aligner.ConvertBitmapToByteArray(bm_Temp);
 
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, workStage.Camera_LowRes.LatestImage.RawData, w, h);
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h);
-                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, (int)m_dradius, 0.05, ref m_bFindCircle, 0, 0, m_nTargetColor == 0);
+                //aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, (int)m_dradius, 0.05, ref m_bFindCircle, 0, 0, m_nTargetColor == 0);
 >>>>>>> 2877aa2d376bbe781bfdbb64ffdc798404b5a0f3
             }
             else
