@@ -68,6 +68,22 @@ namespace SLD200.NewStyleForm.NewSubForm
                 {
                     workStage = module as WorkStage;
                     Owner = workStage.jigAligner_LowRes;
+                    workStage.UpdateResultOveray += workStage_UpdateResultOveray;
+                }
+            }
+        }
+
+        private void workStage_UpdateResultOveray(object sender, EventArgs e)
+        {
+            if (sender is QMC.Common.Vision.Cameras.Camera camera)
+            {
+                if (camera == workStage.Camera_HighRes)
+                {
+                    ImageViewer_RecipeVision_highs.ResultOverlays = workStage.FineCamResultOveray;
+                }
+                else if (camera == workStage.jigAligner_LowRes.Camera)
+                {
+                    ImageViewer_RecipeVision_Rows.ResultOverlays = workStage.CoarseCamResultOveray;
                 }
             }
         }

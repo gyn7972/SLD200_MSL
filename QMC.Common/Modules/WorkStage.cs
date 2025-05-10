@@ -4728,6 +4728,7 @@ namespace QMC.Common.Modules
                             v.Add(overay);
                         }
                         this.CoarseCamResultOveray = v;
+                        
                         UpdateResultOveray?.Invoke(this.Camera_LowRes, null);
                     }
                     
@@ -14428,10 +14429,7 @@ namespace QMC.Common.Modules
                     //if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
                     if (Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
                     {
-                        double dRadius = Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkRadius;
-                        double dSpec = Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkSpec;
-
-                        Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, 
+                        QMC_ImageProcessFindAlignResult result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, 
                                                                         bm_AlignRawData, 
                                                                         Camera_HighRes.Resolution.Width, 
                                                                         Camera_HighRes.Resolution.Height, 
@@ -14456,6 +14454,12 @@ namespace QMC.Common.Modules
                                     overayEl.Color = Color.Blue;
                                     overayEl.Thickness = 1;
                                     FineCamResultOveray.Add(overayEl);
+                                    
+                                    string strScore = string.Format("Score : {0:0.00}", result.ScoreCollection[0]);
+                                    Font font = new Font("verdana",10, FontStyle.Bold);
+                                    var textOveray = new TextVisionImageOverlay(strScore, new Point((int)v.Left, (int)v.Top-30),  font);
+                                    textOveray.Visible = true;
+                                    FineCamResultOveray.Add(textOveray);
                                 }
                                 UpdateResultOveray?.Invoke(this.Camera_HighRes, null);
                             }

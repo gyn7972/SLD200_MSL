@@ -748,7 +748,7 @@ namespace QMC.Common.Parts
                 {
                     //Circle 찾는 알고리듬 적용
                     //dSpec;
-                    qip.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
+                    QMC_ImageProcessFindAlignResult result =  qip.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
                         Camera.LatestImage.RawData,
                         Camera.LatestImage.Header.Width,
                         Camera.LatestImage.Header.Height,
@@ -794,6 +794,13 @@ namespace QMC.Common.Parts
                                 overayEl.Color = Color.Blue;
                                 overayEl.Thickness = 1;
                                 m_Owner.CoarseCamResultOveray.Add(overayEl);
+
+
+                                string strScore = string.Format("Score : {0:0.00}", result.ScoreCollection[0]);
+                                Font font = new Font("verdana", 10, FontStyle.Bold);
+                                var textOveray = new TextVisionImageOverlay(strScore, new Point((int)v.Left, (int)v.Top - 30), font);
+                                textOveray.Visible = true;
+                                m_Owner.CoarseCamResultOveray.Add(textOveray);
                             }
                             m_Owner.UpdateResultOveray?.Invoke(this.Camera, null);
                         }
