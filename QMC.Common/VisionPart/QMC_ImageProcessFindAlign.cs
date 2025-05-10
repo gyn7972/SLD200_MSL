@@ -1,4 +1,3 @@
-using SP_FindCircle;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -666,11 +665,14 @@ namespace QMC.Common.VisionPart
 
         private List<PointF> FindCircleBoundary(byte[] pixelData, int width, int height, float cx, float cy, int initialRadius = 50, int maxRadius = 1000, double angleStep = 0.11, int step = 10)
         {
+            List<PointF> boundaryPoints = new List<PointF>();
+
+            if (pixelData == null) //pixelData가 null인 경우 프로그램 다운.
+                return boundaryPoints;
+                
 
             maxRadius = Math.Min(Math.Min(width, height) / 2, maxRadius);
             int pixelAverageCount = 20;
-
-            List<PointF> boundaryPoints = new List<PointF>();
 
             for (double angle = 0; angle < 360; angle += angleStep)
             {

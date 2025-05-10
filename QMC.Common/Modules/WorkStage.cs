@@ -13478,9 +13478,9 @@ namespace QMC.Common.Modules
                     //Display_Event("홈 실행 루틴 : 시작.");
                     SocketAlign_Step_Start(nSocketNum);
 
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR, 3);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationRed, 1);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationIR, 2);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreAlignlluminationIR, 3);
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명 
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
@@ -14297,9 +14297,9 @@ namespace QMC.Common.Modules
                // Camera_HighRes.StartLive();
             }
 
-            CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
-            CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
-            CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR, 3);
+            CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationRed, 1);
+            CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationIR, 2);
+            CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreAlignlluminationIR, 3);
             CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명
             CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
             CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
@@ -14411,8 +14411,12 @@ namespace QMC.Common.Modules
                     }
 
                     //  마크 검출 형식 (Circle, Gold Powder)
-                    if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
+                    //if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
+                    if (Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
                     {
+                        double dRadius = Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkRadius;
+                        double dSpec = Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkSpec;
+
                         Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, 
                                                                         bm_AlignRawData, 
                                                                         Camera_HighRes.Resolution.Width, 
@@ -14452,9 +14456,14 @@ namespace QMC.Common.Modules
 
 
                     }
-                    else if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
+                    //else if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
+                    else if (Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
                     {
-                        Fiducial_aligner.FindMetalPowder(Fiducial_circlesResult, bm_AlignRawData, Camera_HighRes.Resolution.Width, Camera_HighRes.Resolution.Height, ref Fiducial_circleFound);
+                        Fiducial_aligner.FindMetalPowder(Fiducial_circlesResult, 
+                                                        bm_AlignRawData, 
+                                                        Camera_HighRes.Resolution.Width, 
+                                                        Camera_HighRes.Resolution.Height, 
+                                                        ref Fiducial_circleFound);
                     }
 
                     if (Fiducial_circleFound)
@@ -18228,10 +18237,9 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align Cycle 시작.");
 
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR, 3); //-> 안먹나?
-                    //CommonModule.Instance.Illuminator.SetVolume(3500, 3);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationRed, 1);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationIR, 2);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreAlignlluminationIR, 3);
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 1);          //  Fine Cam Red 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 2);          //  Fine Cam IR 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 3);           //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)

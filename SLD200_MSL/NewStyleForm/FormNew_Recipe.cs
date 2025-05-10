@@ -100,7 +100,6 @@ namespace SLD200_MSL
         private void MachineType_Component_Enable(bool m_bLaserType)
         {
             //  Laser Type (true:CO2, false:UV)
-
             label_Recipe_TabRecipe_Miscellaneous_DrillingPower.Enabled = !m_bLaserType;
             textBox_Recipe_TabRecipe_Miscellaneous_DrillingPower.Enabled = !m_bLaserType;
             button_Recipe_TabRecipe_Miscellaneous_DrillingPower.Enabled = !m_bLaserType;
@@ -847,11 +846,11 @@ namespace SLD200_MSL
                 NativeMethods.GetPrivateProfileString(strTemp, "HoleProcessingType", "0", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = Equipment.ToInt(temp.ToString());
                 //  Fiducial Align Type (0:Circle Find, 1:Pattern Matching)
-                NativeMethods.GetPrivateProfileString(strTemp, "FiducialAlignType", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = Equipment.ToInt(temp.ToString());
+                //NativeMethods.GetPrivateProfileString(strTemp, "FiducialAlignType", "0", temp, 255, strFIle);
+                //Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = Equipment.ToInt(temp.ToString());
                 //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
-                NativeMethods.GetPrivateProfileString(strTemp, "FiducialMarkType", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialMarkType = Equipment.ToInt(temp.ToString());
+                //NativeMethods.GetPrivateProfileString(strTemp, "FiducialMarkType", "0", temp, 255, strFIle);
+                //Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialMarkType = Equipment.ToInt(temp.ToString());
                 //  Hole Data Sort by Distance Use
                 NativeMethods.GetPrivateProfileString(strTemp, "HoleSortByDistance_Use", "true", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_HoleSortByDistance_Use = Convert.ToBoolean(temp.ToString());
@@ -900,14 +899,14 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Outer = Convert.ToBoolean(temp.ToString());
 
                 //  Fine Cam. Red
-                NativeMethods.GetPrivateProfileString(strTemp, "FineCam_Red", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed = Equipment.ToInt(temp.ToString());
+                //NativeMethods.GetPrivateProfileString(strTemp, "FineCam_Red", "0", temp, 255, strFIle);
+                //Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed = Equipment.ToInt(temp.ToString());
                 //  Fine Cam. IR
-                NativeMethods.GetPrivateProfileString(strTemp, "FineCam_IR", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR = Equipment.ToInt(temp.ToString());
+                //NativeMethods.GetPrivateProfileString(strTemp, "FineCam_IR", "0", temp, 255, strFIle);
+                //Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR = Equipment.ToInt(temp.ToString());
                 //  Coarse Cam. IR
-                NativeMethods.GetPrivateProfileString(strTemp, "CoarseCam_IR", "0", temp, 255, strFIle);
-                Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR = Equipment.ToInt(temp.ToString());
+                //NativeMethods.GetPrivateProfileString(strTemp, "CoarseCam_IR", "0", temp, 255, strFIle);
+                //Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR = Equipment.ToInt(temp.ToString());
 
                 //  Dust Collector
                 NativeMethods.GetPrivateProfileString(strTemp, "DustCollector_RemoteMode_Use", "false", temp, 255, strFIle);
@@ -996,8 +995,8 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].Miscellaneous_MaskIndex = ReadInt(data, "MaskIndex", 0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_BETPositionIndex = ReadInt(data, "BETPositionIndex", 0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = ReadInt(data, "HoleProcessingType", 0);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = ReadInt(data, "FiducialAlignType", 0);
-                Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialMarkType = ReadInt(data, "FiducialMarkType", 0);
+                //Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = ReadInt(data, "FiducialAlignType", 0);
+                //Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialMarkType = ReadInt(data, "FiducialMarkType", 0);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_HoleSortByDistance_Use = ReadBool(data, "HoleSortByDistance_Use", true);
                 Equipment.stLayerRecipeSet[i].Miscellaneous_HoleSortingDistance = ReadDouble(data, "HoleDataSortingDistance", 0.5);
 
@@ -1021,9 +1020,9 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Inner = ReadBool(data, "MAlignerVacuumUse_Inner", false);
                 Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Outer = ReadBool(data, "MAlignerVacuumUse_Outer", false);
 
-                Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed = ReadInt(data, "FineCam_Red", 0);
-                Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR = ReadInt(data, "FineCam_IR", 0);
-                Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR = ReadInt(data, "CoarseCam_IR", 0);
+                //Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed = ReadInt(data, "FineCam_Red", 0);
+                //Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR = ReadInt(data, "FineCam_IR", 0);
+                //Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR = ReadInt(data, "CoarseCam_IR", 0);
 
                 Equipment.stLayerRecipeSet[i].DustCollectorRemoteMode_Use = ReadBool(data, "DustCollector_RemoteMode_Use", false);
                 Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper = ReadDouble(data, "DustCollector_Frequency_Upper", 20.0);
@@ -1139,9 +1138,9 @@ namespace SLD200_MSL
                 //  Hole Processing Type (0:Circle, 1:Spiral)
                 NativeMethods.WritePrivateProfileString(strTemp, "HoleProcessingType", Equipment.stLayerRecipeSet[i].Miscellaneous_HoleProcessingType.ToString(), strFIle);
                 //  Fiducial Align Type (0:Circle Find, 1:Pattern Matching)
-                NativeMethods.WritePrivateProfileString(strTemp, "FiducialAlignType", Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialAlignType.ToString(), strFIle);
+                //NativeMethods.WritePrivateProfileString(strTemp, "FiducialAlignType", Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialAlignType.ToString(), strFIle);
                 //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
-                NativeMethods.WritePrivateProfileString(strTemp, "FiducialMarkType", Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialMarkType.ToString(), strFIle);
+                //NativeMethods.WritePrivateProfileString(strTemp, "FiducialMarkType", Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialMarkType.ToString(), strFIle);
                 //  Hole Data Sort by Distance Use
                 NativeMethods.WritePrivateProfileString(strTemp, "HoleSortByDistance_Use", Equipment.stLayerRecipeSet[i].Miscellaneous_HoleSortByDistance_Use.ToString(), strFIle);
                 //  Hole Data Sorting Distance
@@ -1173,11 +1172,11 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "MAlignerVacuumUse_Outer", Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Outer.ToString(), strFIle);
 
                 //  Fine Cam. Red
-                NativeMethods.WritePrivateProfileString(strTemp, "FineCam_Red", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed.ToString(), strFIle);
+                //NativeMethods.WritePrivateProfileString(strTemp, "FineCam_Red", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed.ToString(), strFIle);
                 //  Fine Cam. IR
-                NativeMethods.WritePrivateProfileString(strTemp, "FineCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR.ToString(), strFIle);
+                //NativeMethods.WritePrivateProfileString(strTemp, "FineCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR.ToString(), strFIle);
                 //  Coarse Cam. IR
-                NativeMethods.WritePrivateProfileString(strTemp, "CoarseCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR.ToString(), strFIle);
+                //NativeMethods.WritePrivateProfileString(strTemp, "CoarseCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR.ToString(), strFIle);
 
                 //  Dust Collector
                 NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_RemoteMode_Use", Equipment.stLayerRecipeSet[i].DustCollectorRemoteMode_Use.ToString(), strFIle);
@@ -1244,8 +1243,8 @@ namespace SLD200_MSL
                 layerDict["MaskIndex"] = Equipment.stLayerRecipeSet[i].Miscellaneous_MaskIndex.ToString();
                 layerDict["BETPositionIndex"] = Equipment.stLayerRecipeSet[i].Miscellaneous_BETPositionIndex.ToString();
                 layerDict["HoleProcessingType"] = Equipment.stLayerRecipeSet[i].Miscellaneous_HoleProcessingType.ToString();
-                layerDict["FiducialAlignType"] = Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialAlignType.ToString();
-                layerDict["FiducialMarkType"] = Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialMarkType.ToString();
+                //layerDict["FiducialAlignType"] = Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialAlignType.ToString();
+                //layerDict["FiducialMarkType"] = Equipment.stLayerRecipeSet[i].Miscellaneous_FiducialMarkType.ToString();
                 layerDict["HoleSortByDistance_Use"] = Equipment.stLayerRecipeSet[i].Miscellaneous_HoleSortByDistance_Use.ToString();
                 layerDict["HoleDataSortingDistance"] = Equipment.stLayerRecipeSet[i].Miscellaneous_HoleSortingDistance.ToString();
 
@@ -1269,9 +1268,9 @@ namespace SLD200_MSL
                 layerDict["MAlignerVacuumUse_Inner"] = Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Inner.ToString();
                 layerDict["MAlignerVacuumUse_Outer"] = Equipment.stLayerRecipeSet[i].MAligner_VacuumPos_Outer.ToString();
 
-                layerDict["FineCam_Red"] = Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed.ToString();
-                layerDict["FineCam_IR"] = Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR.ToString();
-                layerDict["CoarseCam_IR"] = Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR.ToString();
+                //layerDict["FineCam_Red"] = Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed.ToString();
+                //layerDict["FineCam_IR"] = Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR.ToString();
+                //layerDict["CoarseCam_IR"] = Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR.ToString();
 
                 layerDict["DustCollector_RemoteMode_Use"] = Equipment.stLayerRecipeSet[i].DustCollectorRemoteMode_Use.ToString();
                 layerDict["DustCollector_Frequency_Upper"] = Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper.ToString();
@@ -1518,7 +1517,7 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_Frequency = textBox_Recipe_TabRecipe_LaserParam_Frequency.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_LaserParam_Frequency.Text) : 0;
             Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_DutyCycle = textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text) : 0;
 
-            Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_TriggerMode_External = radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Checked;
+            //Equipment.stLayerRecipeSet[m_nLayerIndex].LaserParam_TriggerMode_External = radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Checked;
 
             //  Process Priority
             Equipment.stLayerRecipeSet[m_nLayerIndex].ProcessPriority_P2P = radioButton_Recipe_TabRecipe_ProcessPriority_P2P.Checked;
@@ -1546,8 +1545,8 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_MaskIndex = comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_BETPositionIndex = comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_HoleProcessingType = comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_FiducialAlignType = comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex;
-            Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_FiducialMarkType = comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex;
+            //Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_FiducialAlignType = comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex;
+            //Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_FiducialMarkType = comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex;
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_HoleSortByDistance_Use = checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Checked;                                                                                             //  Hole Data Sort by Distance Use
             Equipment.stLayerRecipeSet[m_nLayerIndex].Miscellaneous_HoleSortingDistance = textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text) : 0.5;     //  Hole Data Sorting Distance
 
@@ -1577,9 +1576,9 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[m_nLayerIndex].MAligner_VacuumPos_Outer = checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked;       //  Outer
 
             //  조명값 (Fiducial Layer 의 것만 사용한다)
-            Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed = textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text) : 0;
-            Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR = textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text) : 0;
-            Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR = textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text) : 0;
+            //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed = textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text) : 0;
+            //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR = textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text) : 0;
+            //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR = textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text.Length > 0 ? Equipment.ToInt(textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text) : 0;
 
             //  집진기 주파수
             Equipment.stLayerRecipeSet[m_nLayerIndex].DustCollectorRemoteMode_Use = checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked;                         //  집진기 Remote Mode 사용 여부
@@ -1677,14 +1676,14 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_LaserParam_Frequency.Text = Equipment.stLayerRecipeSet[0].LaserParam_Frequency.ToString();
                 textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = Equipment.stLayerRecipeSet[0].LaserParam_DutyCycle.ToString();
 
-                if (Equipment.stLayerRecipeSet[0].LaserParam_TriggerMode_External)
-                {
-                    radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Checked = true;
-                }
-                else
-                {
-                    radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal.Checked = true;
-                }
+                //if (Equipment.stLayerRecipeSet[0].LaserParam_TriggerMode_External)
+                //{
+                //    radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Checked = true;
+                //}
+                //else
+                //{
+                //    radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal.Checked = true;
+                //}
 
                 //  Process Priority
                 if (Equipment.stLayerRecipeSet[0].ProcessPriority_P2P)
@@ -1728,8 +1727,8 @@ namespace SLD200_MSL
                 comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString());
                 comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString());
                 comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_HoleProcessingType.ToString());
-                comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialAlignType.ToString());
-                comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType.ToString());
+                //comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialAlignType.ToString());
+                //comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType.ToString());
                 checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Checked = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortByDistance_Use;
                 textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortingDistance.ToString();
 
@@ -1759,9 +1758,9 @@ namespace SLD200_MSL
                 checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer;       //  Outer
 
                 //  Illuminator
-                textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed.ToString();
-                textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR.ToString();
-                textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR.ToString();
+                //textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed.ToString();
+                //textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR.ToString();
+                //textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR.ToString();
 
                 //  집진기 주파수
                 checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked = Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use;                         //  집진기 Remote Mode 사용 여부
@@ -1920,14 +1919,14 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_LaserParam_Frequency.Text = Equipment.stLayerRecipeSet[m_nIndex].LaserParam_Frequency.ToString();
             textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = Equipment.stLayerRecipeSet[m_nIndex].LaserParam_DutyCycle.ToString();
 
-            if (Equipment.stLayerRecipeSet[m_nIndex].LaserParam_TriggerMode_External)
-            {
-                radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Checked = true;
-            }
-            else
-            {
-                radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal.Checked = true;
-            }
+            //if (Equipment.stLayerRecipeSet[m_nIndex].LaserParam_TriggerMode_External)
+            //{
+            //    radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Checked = true;
+            //}
+            //else
+            //{
+            //    radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal.Checked = true;
+            //}
 
             //  Process Priority
             if (Equipment.stLayerRecipeSet[m_nIndex].ProcessPriority_P2P)
@@ -1959,13 +1958,13 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_RotationAngleArc.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_CircleStartAngleCircle1time.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_P2PDistance.ToString();
-            //comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_MaskIndex.ToString();
-            //comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_BETPositionIndex.ToString();
+            comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_MaskIndex.ToString();
+            comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_BETPositionIndex.ToString();
             comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_MaskIndex.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_BETPositionIndex.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_HoleProcessingType.ToString());
-            comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialAlignType.ToString());
-            comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialMarkType.ToString());
+            //comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialAlignType.ToString());
+            //comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[m_nIndex].Miscellaneous_FiducialMarkType.ToString());
             checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Checked = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortByDistance_Use;
             textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortingDistance.ToString();
 
@@ -1995,9 +1994,9 @@ namespace SLD200_MSL
             checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer;       //  Outer
 
             //  Illuminator
-            textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed.ToString();
-            textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR.ToString();
-            textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR.ToString();
+            //textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed.ToString();
+            //textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR.ToString();
+            //textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR.ToString();
 
             //  집진기 주파수
             checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked = Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use;                         //  집진기 Remote Mode 사용 여부
@@ -2034,14 +2033,14 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_LaserParam_Frequency.Text = Equipment.stLayerRecipeSet[0].LaserParam_Frequency.ToString();
             textBox_Recipe_TabRecipe_LaserParam_DutyCycle.Text = Equipment.stLayerRecipeSet[0].LaserParam_DutyCycle.ToString();
 
-            if (Equipment.stLayerRecipeSet[0].LaserParam_TriggerMode_External)
-            {
-                radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Checked = true;
-            }
-            else
-            {
-                radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal.Checked = true;
-            }
+            //if (Equipment.stLayerRecipeSet[0].LaserParam_TriggerMode_External)
+            //{
+            //    radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_External.Checked = true;
+            //}
+            //else
+            //{
+            //    radioButton_Recipe_TabRecipe_LaserParam_TriggerMode_Internal.Checked = true;
+            //}
 
             //  Process Priority
             if (Equipment.stLayerRecipeSet[0].ProcessPriority_P2P)
@@ -2073,13 +2072,13 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_Miscellaneous_RotationAngleWhenArc.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_RotationAngleArc.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_CircleStartAngleCircle1time.ToString();
             textBox_Recipe_TabRecipe_Miscellaneous_P2PDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_P2PDistance.ToString();
-            //comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString();
-            //comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString();
+            comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString();
+            comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString();
             comboBox_Recipe_TabRecipe_Miscellaneous_MaskIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_MaskIndex.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_BETPositionIndex.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_BETPositionIndex.ToString());
             comboBox_Recipe_TabRecipe_Miscellaneous_HoleProcessingType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_HoleProcessingType.ToString());
-            comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialAlignType.ToString());
-            comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType.ToString());
+            //comboBox_Recipe_TabRecipe_Miscellaneous_FiducialAlignType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialAlignType.ToString());
+            //comboBox_Recipe_TabRecipe_Miscellaneous_FiducialMarkType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType.ToString());
             checkBox_Recipe_TabRecipe_Miscellaneous_HoleDrillingOrder_SortByDistance.Checked = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortByDistance_Use;
             textBox_Recipe_TabRecipe_Miscellaneous_HoleOrder_SortDistance.Text = Equipment.stLayerRecipeSet[0].Miscellaneous_HoleSortingDistance.ToString();
 
@@ -2109,9 +2108,9 @@ namespace SLD200_MSL
             checkBox_Recipe_TabRecipe_MAlignVacuum_Outer.Checked = Equipment.stLayerRecipeSet[0].MAligner_VacuumPos_Outer;       //  Outer
 
             //  Illuminator
-            textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed.ToString();
-            textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR.ToString();
-            textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR.ToString();
+            //textBox_Recipe_TabRecipe_Illuminator_FineCamRed.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed.ToString();
+            //textBox_Recipe_TabRecipe_Illuminator_FineCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR.ToString();
+            //textBox_Recipe_TabRecipe_Illuminator_CoarseCamIR.Text = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR.ToString();
 
             //  집진기 주파수
             checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Checked = Equipment.stLayerRecipeSet[0].DustCollectorRemoteMode_Use;                         //  집진기 Remote Mode 사용 여부

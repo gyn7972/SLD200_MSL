@@ -1328,7 +1328,6 @@ namespace SLD200_MSL
         private void button_VisionPopup_FindCircle_Search_Click(object sender, EventArgs e)
         {
             //  원 찾기
-
             bool m_bFindCircle = false;
 
             int m_nImage_Width = 0;
@@ -1624,9 +1623,9 @@ namespace SLD200_MSL
             if (Equipment.Current_Recipe.Length > 0)
             {
                 //  현재 조명값을 얼라인 조명값으로 설정
-                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed = workStage.Config.ListIlluminationChannel[0].Value;      //  Fine Camera Red
-                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR = workStage.Config.ListIlluminationChannel[1].Value;       //  Fine Camera IR
-                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR = workStage.Config.ListIlluminationChannel[2].Value;     //  Coarse Camera IR
+                //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed = workStage.Config.ListIlluminationChannel[0].Value;      //  Fine Camera Red
+                //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR = workStage.Config.ListIlluminationChannel[1].Value;       //  Fine Camera IR
+                //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR = workStage.Config.ListIlluminationChannel[2].Value;     //  Coarse Camera IR
 
                 //  리스트 전체 저장
                 Recipe_Data_Save_LightValue(Equipment.Current_Recipe);
@@ -1665,11 +1664,11 @@ namespace SLD200_MSL
                 strTemp = string.Format("Layer_{0}", i);
 
                 //  Fine Cam. Red
-                NativeMethods.WritePrivateProfileString(strTemp, "FineCam_Red", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed.ToString(), strFIle);
+                //NativeMethods.WritePrivateProfileString(strTemp, "FineCam_Red", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed.ToString(), strFIle);
                 //  Fine Cam. IR
-                NativeMethods.WritePrivateProfileString(strTemp, "FineCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR.ToString(), strFIle);
+                //NativeMethods.WritePrivateProfileString(strTemp, "FineCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR.ToString(), strFIle);
                 //  Coarse Cam. IR
-                NativeMethods.WritePrivateProfileString(strTemp, "CoarseCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR.ToString(), strFIle);
+                //NativeMethods.WritePrivateProfileString(strTemp, "CoarseCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR.ToString(), strFIle);
             }
         }
 

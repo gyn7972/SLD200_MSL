@@ -438,8 +438,6 @@ namespace QMC.Common
             public int Miscellaneous_MaskIndex;                         //  Mask Index (0:None, 1:Mask1, 2:Mask2, 3:Mask3, 4:Mask4)
             public int Miscellaneous_BETPositionIndex;                  //  BET Position Index (0:0.1X, 1:0.5X, 2:1.0X, 3:1.5X, 4:2.0X)
             public int Miscellaneous_HoleProcessingType;                //  Hole Processing Type (0:Circle, 1:Spiral_Polyline, 2:Spiral_Arc, 3:Spiral_Circle)
-            public int Miscellaneous_FiducialAlignType;                 //  Fiducial Align Type (0:Circle Find, 2:Pattern Matching)
-            public int Miscellaneous_FiducialMarkType;                  //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
             public bool Miscellaneous_HoleSortByDistance_Use;               //  Sort By Distance Use (true: Use, false: Not Use)
             public double Miscellaneous_HoleSortingDistance;            //  Hole Sorting Distance (mm)
 
@@ -463,9 +461,9 @@ namespace QMC.Common
             public bool MAligner_VacuumPos_Inner;                       //  M-Aligner Vacuum Position Inner (true: Using, false: Not Using)
             public bool MAligner_VacuumPos_Outer;                       //  M-Aligner Vacuum Position Outer (true: Using, false: Not Using)
 
-            public int IlluminatorValue_FineCamRed;                     //  Illuminator Value (Fine Camera, Red)                            //  조명은 0번 index 만 사용
-            public int IlluminatorValue_FineCamIR;                      //  Illuminator Value (Fine Camera, IR)                             //  조명은 0번 index 만 사용
-            public int IlluminatorValue_CoarseCamIR;                    //  Illuminator Value (Coarse Camera, IR)                           //  조명은 0번 index 만 사용
+            //public int IlluminatorValue_FineCamRed;                     //  Illuminator Value (Fine Camera, Red)                            //  조명은 0번 index 만 사용
+            //public int IlluminatorValue_FineCamIR;                      //  Illuminator Value (Fine Camera, IR)                             //  조명은 0번 index 만 사용
+            //public int IlluminatorValue_CoarseCamIR;                    //  Illuminator Value (Coarse Camera, IR)                           //  조명은 0번 index 만 사용
 
             public bool DustCollectorRemoteMode_Use;                    //  Dust Collector Remote Mode (true: Remote, false: Local)
             public double DustCollectorFreq_Upper;                      //  Dust Collector Frequency (Upper)
@@ -488,12 +486,21 @@ namespace QMC.Common
         //  Recipe 파라미터 - PreAlign 
         public struct VisionRecipeData
         {
+            //Socket
+            public int      Miscellaneous_FiducialAlignType;                 //  Fiducial Align Type (0:Circle Find, 2:Pattern Matching)
+            public int      Miscellaneous_FiducialMarkType;                  //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
+            public double   Miscellaneous_FiducialMarkRadius;                  //  Fiducial Mark Size (mm)
+            public double   Miscellaneous_FiducialMarkSpec;                  //  Fiducial Mark Spec
+            public int      nFiduciallluminationIR;
+            public int      nFiduciallluminationRed;
+
+            //PreAlign
             public PatternMatchingParameters PatternMatching;
             public System.Drawing.Point TrainRoiStartLocation;
             public System.Drawing.Point TrainRoiEndLocation;
             public System.Drawing.Point InspectRoiStartLocation;
             public System.Drawing.Point InspectRoiEndLocation;
-            public int IlluminationIR;
+            public int nPreAlignlluminationIR;
             public string TrainImagePath;
 
             public bool bCircleDetectionColor;  //0: White, 1: Black
@@ -502,40 +509,62 @@ namespace QMC.Common
             public VisionAlgorithmType AlgorithmType;
             public PatternShapeType PatternShape;
 
-            public void SaveToIni(string path)
+            public bool SaveToIni(string path)
             {
-                NativeMethods.WritePrivateProfileString("PatternMatching", "MinScore", PatternMatching.MinScore.ToString(), path);
-                NativeMethods.WritePrivateProfileString("PatternMatching", "MaxInstance", PatternMatching.MaxInstance.ToString(), path);
-                NativeMethods.WritePrivateProfileString("PatternMatching", "MaxTolerance", PatternMatching.MaxTolerance.ToString(), path);
-                NativeMethods.WritePrivateProfileString("PatternMatching", "DuplicateChecked", PatternMatching.DuplicateChecked.ToString(), path);
-                NativeMethods.WritePrivateProfileString("PatternMatching", "UseMaskImage", PatternMatching.UseMaskImage.ToString(), path);
+                bool bRet = false;
+                if (PatternMatching != null)
+                {
+                    NativeMethods.WritePrivateProfileString("SocketAlign", "Aligntype", Miscellaneous_FiducialAlignType.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("SocketAlign", "MarkType", Miscellaneous_FiducialMarkType.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("SocketAlign", "MarkSize", Miscellaneous_FiducialMarkRadius.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("SocketAlign", "MarkSpec", Miscellaneous_FiducialMarkSpec.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("SocketAlign", "IR", nFiduciallluminationIR.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("SocketAlign", "Red", nFiduciallluminationRed.ToString(), path);
 
-                NativeMethods.WritePrivateProfileString("TrainROI", "StartX", TrainRoiStartLocation.X.ToString(), path);
-                NativeMethods.WritePrivateProfileString("TrainROI", "StartY", TrainRoiStartLocation.Y.ToString(), path);
-                NativeMethods.WritePrivateProfileString("TrainROI", "EndX", TrainRoiEndLocation.X.ToString(), path);
-                NativeMethods.WritePrivateProfileString("TrainROI", "EndY", TrainRoiEndLocation.Y.ToString(), path);
 
-                NativeMethods.WritePrivateProfileString("InspectROI", "StartX", InspectRoiStartLocation.X.ToString(), path);
-                NativeMethods.WritePrivateProfileString("InspectROI", "StartY", InspectRoiStartLocation.Y.ToString(), path);
-                NativeMethods.WritePrivateProfileString("InspectROI", "EndX", InspectRoiEndLocation.X.ToString(), path);
-                NativeMethods.WritePrivateProfileString("InspectROI", "EndY", InspectRoiEndLocation.Y.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("PatternMatching", "MinScore", PatternMatching.MinScore.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("PatternMatching", "MaxInstance", PatternMatching.MaxInstance.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("PatternMatching", "MaxTolerance", PatternMatching.MaxTolerance.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("PatternMatching", "DuplicateChecked", PatternMatching.DuplicateChecked.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("PatternMatching", "UseMaskImage", PatternMatching.UseMaskImage.ToString(), path);
 
-                NativeMethods.WritePrivateProfileString("Vision", "AlgorithmType", ((int)AlgorithmType).ToString(), path);
-                NativeMethods.WritePrivateProfileString("Vision", "PatternShape", ((int)PatternShape).ToString(), path);
+                    NativeMethods.WritePrivateProfileString("TrainROI", "StartX", TrainRoiStartLocation.X.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("TrainROI", "StartY", TrainRoiStartLocation.Y.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("TrainROI", "EndX", TrainRoiEndLocation.X.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("TrainROI", "EndY", TrainRoiEndLocation.Y.ToString(), path);
 
-                NativeMethods.WritePrivateProfileString("Illumination", "IR", IlluminationIR.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("InspectROI", "StartX", InspectRoiStartLocation.X.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("InspectROI", "StartY", InspectRoiStartLocation.Y.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("InspectROI", "EndX", InspectRoiEndLocation.X.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("InspectROI", "EndY", InspectRoiEndLocation.Y.ToString(), path);
 
-                NativeMethods.WritePrivateProfileString("CircleDetection", "Color", bCircleDetectionColor.ToString(), path);
-                NativeMethods.WritePrivateProfileString("CircleDetection", "SizeW", dCircleDetectionSizeW.ToString(), path);
-                NativeMethods.WritePrivateProfileString("CircleDetection", "Spec", dCircleSpec.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("Vision", "AlgorithmType", ((int)AlgorithmType).ToString(), path);
+                    NativeMethods.WritePrivateProfileString("Vision", "PatternShape", ((int)PatternShape).ToString(), path);
 
-                string folderName = Path.GetFileNameWithoutExtension(path);
-                string folderPath = Path.Combine(Path.GetDirectoryName(path), folderName);
-                Directory.CreateDirectory(folderPath); // 없으면 생성
-                string bmpPath = Path.Combine(folderPath, "PreAlign.bmp");  // BMP 저장
-                TrainImagePath = bmpPath;
-                if (!string.IsNullOrWhiteSpace(TrainImagePath))
-                    NativeMethods.WritePrivateProfileString("TrainImage", "Path", TrainImagePath, path);
+                    NativeMethods.WritePrivateProfileString("PreAlign_llumination", "IR", nPreAlignlluminationIR.ToString(), path);
+
+                    NativeMethods.WritePrivateProfileString("CircleDetection", "Color", bCircleDetectionColor.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("CircleDetection", "SizeW", dCircleDetectionSizeW.ToString(), path);
+                    NativeMethods.WritePrivateProfileString("CircleDetection", "Spec", dCircleSpec.ToString(), path);
+
+                    string folderName = Path.GetFileNameWithoutExtension(path);
+                    string folderPath = Path.Combine(Path.GetDirectoryName(path), folderName);
+                    Directory.CreateDirectory(folderPath); // 없으면 생성
+                    string bmpPath = Path.Combine(folderPath, "PreAlign.bmp");  // BMP 저장
+                    TrainImagePath = bmpPath;
+                    if (!string.IsNullOrWhiteSpace(TrainImagePath))
+                        NativeMethods.WritePrivateProfileString("TrainImage", "Path", TrainImagePath, path);
+
+                    bRet = true;
+                }
+                else
+                {
+                    bRet = false;
+                    //var mb = new MessageBoxOk();
+                    //mb.ShowDialog("Error!", "Data가 저장되지 않았습니다. 레시피를 불러온 후 진행 바랍니다.");
+                }
+
+                return bRet;
             }
 
             public static VisionRecipeData LoadFromIni(string path)
@@ -546,6 +575,22 @@ namespace QMC.Common
 
                 try
                 {
+                    // SocketAlign
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "Aligntype", "0", sb, sb.Capacity, path);
+                    data.Miscellaneous_FiducialAlignType = Equipment.ToInt(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkType", "0", sb, sb.Capacity, path);
+                    data.Miscellaneous_FiducialMarkType = Equipment.ToInt(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSize", "0.5", sb, sb.Capacity, path);
+                    data.Miscellaneous_FiducialMarkRadius = Equipment.ToDouble(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSpec", "0.05", sb, sb.Capacity, path);
+                    data.Miscellaneous_FiducialMarkSpec = Equipment.ToDouble(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "IR", "2500", sb, sb.Capacity, path);
+                    data.nFiduciallluminationIR = Equipment.ToInt(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "Red", "2500", sb, sb.Capacity, path);
+                    data.nFiduciallluminationRed = Equipment.ToInt(sb.ToString());
+
+
+                    //PreAlign
                     NativeMethods.GetPrivateProfileString("PatternMatching", "MinScore", "0.7", sb, sb.Capacity, path);
                     data.PatternMatching.MinScore = Equipment.ToDouble(sb.ToString());
 
@@ -586,8 +631,8 @@ namespace QMC.Common
                     NativeMethods.GetPrivateProfileString("Vision", "PatternShape", "0", sb, sb.Capacity, path);
                     data.PatternShape = (PatternShapeType)Equipment.ToInt(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("Illumination", "IR", "3500", sb, sb.Capacity, path);
-                    data.IlluminationIR = Equipment.ToInt(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("PreAlign_llumination", "IR", "3500", sb, sb.Capacity, path);
+                    data.nPreAlignlluminationIR = Equipment.ToInt(sb.ToString());
 
                     NativeMethods.GetPrivateProfileString("CircleDetection", "Color", "False", sb, sb.Capacity, path);
                     data.bCircleDetectionColor = Equipment.ToBoolean(sb.ToString());
@@ -609,6 +654,7 @@ namespace QMC.Common
                         string bmpPath = Path.Combine(folderPath, "PreAlign.bmp");  // BMP 저장
                         data.TrainImagePath = bmpPath;
                     }
+
 
                 }
                 catch (Exception ex)
@@ -1274,8 +1320,8 @@ namespace QMC.Common
                 stLayerRecipeSet[i].Miscellaneous_BETPositionIndex = 0;                             //  BET Index  
                 stLayerRecipeSet[i].Miscellaneous_Drilling_Power = 10;                              //  Drilling Power              
                 stLayerRecipeSet[i].Miscellaneous_HoleProcessingType = 0;                           //  Hole Processing Type (0:Circle, 1:Spiral_Polyline, 2:Spiral_Arc, 3:Spiral_Circle)
-                stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = 0;                            //  Fiducial Align Type (0:Circle Find, 1:Pattern Matching)
-                stLayerRecipeSet[i].Miscellaneous_FiducialMarkType = 0;                             //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
+                //stLayerRecipeSet[i].Miscellaneous_FiducialAlignType = 0;                            //  Fiducial Align Type (0:Circle Find, 1:Pattern Matching)
+                //stLayerRecipeSet[i].Miscellaneous_FiducialMarkType = 0;                             //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
                 stLayerRecipeSet[i].Miscellaneous_HoleSortByDistance_Use = false;                   //  Hole Sort By Distance Use (true: Use, false: Not Use)
                 stLayerRecipeSet[i].Miscellaneous_HoleSortingDistance = 0.5;                        //  Hole Data Sorting Distance (mm)
 
