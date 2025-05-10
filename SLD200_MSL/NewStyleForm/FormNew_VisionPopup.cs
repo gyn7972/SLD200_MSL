@@ -1328,7 +1328,6 @@ namespace SLD200_MSL
         private void button_VisionPopup_FindCircle_Search_Click(object sender, EventArgs e)
         {
             //  원 찾기
-
             bool m_bFindCircle = false;
 
             int m_nImage_Width = 0;
@@ -1355,12 +1354,19 @@ namespace SLD200_MSL
 
             QMC_ImageProcessFindAlign aligner = new QMC_ImageProcessFindAlign();
             List<RectangleF> circlesResult = new List<RectangleF>();
-
+            int w = workStage.Camera_LowRes.Resolution.Width;
+            int h = workStage.Camera_LowRes.Resolution.Height;
+            double dRaius = 0.0;
+            QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
             if (radioButton_VisionPopup_CameraSelection_LowMag.Checked)
             {
-                int w = workStage.Camera_LowRes.Resolution.Width;
-                int h = workStage.Camera_LowRes.Resolution.Height;
 
+<<<<<<< HEAD
+                w = workStage.Camera_LowRes.Resolution.Width;
+                h = workStage.Camera_LowRes.Resolution.Height;
+                
+                dRaius = m_dTargetSize_Radius / workStage.Config.ParamConfig.LowerVision_Scale_X;
+=======
                 m_nImage_Width = w;
                 m_nImage_Height = h;
 
@@ -1373,52 +1379,42 @@ namespace SLD200_MSL
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, workStage.Camera_LowRes.LatestImage.RawData, w, h);
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h);
                 aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, (int)m_dradius, 0.05, ref m_bFindCircle, 0, 0, m_nTargetColor == 0);
+>>>>>>> 2877aa2d376bbe781bfdbb64ffdc798404b5a0f3
             }
             else
             {
-                int w = workStage.Camera_HighRes.Resolution.Width;
-                int h = workStage.Camera_HighRes.Resolution.Height;
+                w = workStage.Camera_HighRes.Resolution.Width;
+                h = workStage.Camera_HighRes.Resolution.Height;
+                
+                dRaius = m_dTargetSize_Radius / workStage.Config.ParamConfig.UpperVision_Scale_X;
 
-                m_nImage_Width = w;
-                m_nImage_Height = h;
-
-                double m_dradius = 0.0;
-                m_dradius = m_dTargetSize_Radius / workStage.Config.ParamConfig.UpperVision_Scale_X;
-
-                // Bitmap을 byte 배열로 변환
-                //byte[] pixelData = aligner.ConvertBitmapToByteArray(bm_Temp);                
-
-                //aligner.FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h);
-                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, (int)m_dradius, 0.08, ref m_bFindCircle, 0, 0, m_nTargetColor == 0);
+                
             }
-
+            result = aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, (int)dRaius, 0.015, ref m_bFindCircle, 0, 0, m_nTargetColor == 0);
             if (m_bFindCircle && (circlesResult.Count > 0))
             {
                 detectedCircles.Clear();
-
-                double dCenterPosX=0.0, dCenterPosY = 0.0;
                 //  좌표 표시
                 listBox_FindCircle_Result.Items.Clear();
-                for (int i = 0; i < circlesResult.Count; i++)
+                for (int i = 0; i < result.Circle.Count; i++)
                 {
-                    listBox_FindCircle_Result.Items.Add((i + 1) + ".  Left-Top X : " + circlesResult[i].X);
-                    listBox_FindCircle_Result.Items.Add((i + 1) + ".  Left-Top Y : " + circlesResult[i].Y);
-                    listBox_FindCircle_Result.Items.Add((i + 1) + ".  Width : " + circlesResult[i].Width);
-                    listBox_FindCircle_Result.Items.Add((i + 1) + ".  Height : " + circlesResult[i].Height);
+                    double dCxpx = result.Circle[i].CenterX;
+                    double dCypx = result.Circle[i].CenterY;
+                    double dCxmm = result.Circle[i].CenterX * workStage.Config.ParamConfig.LowerVision_Scale_X;
+                    double dCymm = result.Circle[i].CenterY * workStage.Config.ParamConfig.LowerVision_Scale_Y;
 
-                    dCenterPosX = circlesResult[i].X + (circlesResult[i].Width / 2);
-                    dCenterPosY = circlesResult[i].Y + (circlesResult[i].Height / 2);
-                    listBox_FindCircle_Result.Items.Add((i + 1) + ".  Center X : " + dCenterPosX);
-                    listBox_FindCircle_Result.Items.Add((i + 1) + ".  Center Y: " + dCenterPosY);
-
+                    listBox_FindCircle_Result.Items.Add((i + 1) + ".X(mm) : " + dCxmm.ToString("F3"));
+                    listBox_FindCircle_Result.Items.Add((i + 1) + ".Y(mm) : " + dCymm.ToString("F3"));
+                    listBox_FindCircle_Result.Items.Add((i + 1) + ".X(px) : " + dCxpx.ToString("F3"));
+                    listBox_FindCircle_Result.Items.Add((i + 1) + ".Y(px) : " + dCypx.ToString("F3"));
+                    listBox_FindCircle_Result.Items.Add((i + 1) + ".지름(mm) : " + (dRaius*2).ToString("F3"));
+                    listBox_FindCircle_Result.Items.Add((i + 1) + ".Score : " + result.ScoreCollection[i].ToString("F2"));
                 }
 
                 foreach (var circle in circlesResult)
                 {
-                    //float ratioX = (float)pictureBox_ImageDisplay.Width / bm_Temp.Width;
-                    //float ratioY = (float)pictureBox_ImageDisplay.Height / bm_Temp.Height;
-                    float ratioX = (float)pictureBox_ImageDisplay.Width / m_nImage_Width;
-                    float ratioY = (float)pictureBox_ImageDisplay.Height / m_nImage_Height;
+                    float ratioX = (float)pictureBox_ImageDisplay.Width / w;
+                    float ratioY = (float)pictureBox_ImageDisplay.Height / h;
                     float ratio = Math.Min(ratioX, ratioY);
 
                     int newX = (int)(circle.X * ratio);
@@ -1430,8 +1426,7 @@ namespace SLD200_MSL
                     pictureBox_ImageDisplay.Invalidate(); // PictureBox를 다시 그리도록 요청
 
                 }
-
-                // 원의 좌표를 이미지 비율에 맞게 변환
+                
 
             }
             else
@@ -1624,9 +1619,9 @@ namespace SLD200_MSL
             if (Equipment.Current_Recipe.Length > 0)
             {
                 //  현재 조명값을 얼라인 조명값으로 설정
-                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed = workStage.Config.ListIlluminationChannel[0].Value;      //  Fine Camera Red
-                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR = workStage.Config.ListIlluminationChannel[1].Value;       //  Fine Camera IR
-                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR = workStage.Config.ListIlluminationChannel[2].Value;     //  Coarse Camera IR
+                //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed = workStage.Config.ListIlluminationChannel[0].Value;      //  Fine Camera Red
+                //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR = workStage.Config.ListIlluminationChannel[1].Value;       //  Fine Camera IR
+                //Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR = workStage.Config.ListIlluminationChannel[2].Value;     //  Coarse Camera IR
 
                 //  리스트 전체 저장
                 Recipe_Data_Save_LightValue(Equipment.Current_Recipe);
@@ -1665,11 +1660,11 @@ namespace SLD200_MSL
                 strTemp = string.Format("Layer_{0}", i);
 
                 //  Fine Cam. Red
-                NativeMethods.WritePrivateProfileString(strTemp, "FineCam_Red", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed.ToString(), strFIle);
+                //NativeMethods.WritePrivateProfileString(strTemp, "FineCam_Red", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamRed.ToString(), strFIle);
                 //  Fine Cam. IR
-                NativeMethods.WritePrivateProfileString(strTemp, "FineCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR.ToString(), strFIle);
+                //NativeMethods.WritePrivateProfileString(strTemp, "FineCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_FineCamIR.ToString(), strFIle);
                 //  Coarse Cam. IR
-                NativeMethods.WritePrivateProfileString(strTemp, "CoarseCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR.ToString(), strFIle);
+                //NativeMethods.WritePrivateProfileString(strTemp, "CoarseCam_IR", Equipment.stLayerRecipeSet[i].IlluminatorValue_CoarseCamIR.ToString(), strFIle);
             }
         }
 

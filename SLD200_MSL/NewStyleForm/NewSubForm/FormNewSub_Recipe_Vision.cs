@@ -23,6 +23,7 @@ using System.Threading;
 using System.IO;
 using static QMC.Common.Equipment;
 using System.Security.Cryptography;
+using MessageBoxOk = QMC.Core.MessageBoxOk;
 
 namespace SLD200.NewStyleForm.NewSubForm
 {
@@ -53,6 +54,10 @@ namespace SLD200.NewStyleForm.NewSubForm
         public FormNewSub_Recipe_Vision()
         {
             InitializeComponent();
+
+            //Size 축소 / 확대 안되게 하기 위한 코드.
+            this.AutoScaleMode = AutoScaleMode.None;
+
             this.Load += FormNewSub_Recipe_Vision_Load; // 👈 여기서 Load 이벤트 연결
 
             ModuleCollection m_collectionModules;
@@ -63,12 +68,30 @@ namespace SLD200.NewStyleForm.NewSubForm
                 {
                     workStage = module as WorkStage;
                     Owner = workStage.jigAligner_LowRes;
+                    workStage.UpdateResultOveray += workStage_UpdateResultOveray;
+                }
+            }
+        }
+
+        private void workStage_UpdateResultOveray(object sender, EventArgs e)
+        {
+            if (sender is QMC.Common.Vision.Cameras.Camera camera)
+            {
+                if (camera == workStage.Camera_HighRes)
+                {
+                    ImageViewer_RecipeVision_highs.ResultOverlays = workStage.FineCamResultOveray;
+                }
+                else if (camera == workStage.jigAligner_LowRes.Camera)
+                {
+                    ImageViewer_RecipeVision_Rows.ResultOverlays = workStage.CoarseCamResultOveray;
                 }
             }
         }
 
         private void FormNewSub_Recipe_Vision_Load(object sender, EventArgs e)
         {
+            this.AutoScaleMode = AutoScaleMode.None;
+
             //GUI생성 완료 후 Data 및 Cintroller 업데이트!
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
@@ -80,6 +103,8 @@ namespace SLD200.NewStyleForm.NewSubForm
                     Owner = workStage.jigAligner_LowRes;
                 }
             }
+
+            workStage.UpdateResultOveray += OnUpdateResultOverlay;
 
             RecipeVisionTimer = new System.Windows.Forms.Timer();
             RecipeVisionTimer.Interval = 200; // 200ms 간격으로 상태 확인
@@ -98,16 +123,16 @@ namespace SLD200.NewStyleForm.NewSubForm
                 this.ImageViewer_RecipeVision_highs.StartUpdateTask();
             }
 
-            if (this.ImageViewer_RecipeVision_Rows.IsHandleCreated)
+            if (this.ImageViewer_RecipeVision_Lows.IsHandleCreated)
             {
-                this.ImageViewer_RecipeVision_Rows.SizeMode = PictureBoxSizeMode.CenterImage;
-                this.ImageViewer_RecipeVision_Rows.SuspendDisplay();
-                this.ImageViewer_RecipeVision_Rows.StopUpdateTask();
+                this.ImageViewer_RecipeVision_Lows.SizeMode = PictureBoxSizeMode.CenterImage;
+                this.ImageViewer_RecipeVision_Lows.SuspendDisplay();
+                this.ImageViewer_RecipeVision_Lows.StopUpdateTask();
 
-                this.ImageViewer_RecipeVision_Rows.Camera = Owner.Camera;
+                this.ImageViewer_RecipeVision_Lows.Camera = Owner.Camera;
 
-                this.ImageViewer_RecipeVision_Rows.ResumeDisplay();
-                this.ImageViewer_RecipeVision_Rows.StartUpdateTask();
+                this.ImageViewer_RecipeVision_Lows.ResumeDisplay();
+                this.ImageViewer_RecipeVision_Lows.StartUpdateTask();
             }
 
             this.pictureBox_RecipeVision_TrainImage.BackColor = Color.SpringGreen;
@@ -122,8 +147,9 @@ namespace SLD200.NewStyleForm.NewSubForm
             PatternMatchingParameter = new PatternMatchingParameters();
             PatternMatchingParameter = Owner.Recipe.PatternMatchingParameter;
 
-            this.hScrollBar_RecipeVision_Illuminator.ValueChanged += new System.EventHandler(this.hScrollBarIlluminator_ValueChanged);
-            SetScroll(2);
+            this.hScrollBar_RecipeVision_Illuminator_IR.ValueChanged += new System.EventHandler(this.hScrollBarIlluminator_ValueChanged_IR);
+            this.hScrollBar_RecipeVision_Illuminator_Red.ValueChanged += new System.EventHandler(this.hScrollBarIlluminator_ValueChanged_Red);
+            SetScroll();
 
             IsPixel = true;
 
@@ -132,49 +158,21 @@ namespace SLD200.NewStyleForm.NewSubForm
             InitializeJogButtons();
 
             Temp_Position_Load();
+        }
 
-            if(Equipment.stVisionRecipeSet.PatternShape == PatternShapeType.Cross)
+        private void OnUpdateResultOverlay(object sender, EventArgs e)
+        {
+            if (sender is QMC.Common.Vision.Cameras.Camera camera)
             {
-                radioButton_RecipeVision_Cross.Checked = true;
-                radioButton_RecipeVision_Circle.Checked = false;
+                if (camera == workStage.Camera_HighRes)
+                {
+                    ImageViewer_RecipeVision_highs.ResultOverlays = workStage.FineCamResultOveray;
+                }
+                else if (camera == workStage.jigAligner_LowRes.Camera)
+                {
+                    ImageViewer_RecipeVision_Lows.ResultOverlays = workStage.CoarseCamResultOveray;
+                }
             }
-            else
-            {
-                radioButton_RecipeVision_Cross.Checked = false;
-                radioButton_RecipeVision_Circle.Checked = true;
-            }
-
-            if (Equipment.stVisionRecipeSet.AlgorithmType == VisionAlgorithmType.PatternMatching)
-            {
-                radioButton_RecipeVision_Pattern.Checked = true;
-                radioButton_RecipeVision_Blob.Checked = false;
-            }
-            else
-            {
-                radioButton_RecipeVision_Pattern.Checked = false;
-                radioButton_RecipeVision_Blob.Checked = true;
-            }
-
-            if (Equipment.stVisionRecipeSet.bCircleDetectionColor == true)
-            {
-                radioButton_RecipeVision_White.Checked = false;
-                radioButton_RecipeVision_Black.Checked = true;
-            }
-            else
-            {
-                radioButton_RecipeVision_White.Checked = true;
-                radioButton_RecipeVision_Black.Checked = false;
-            }
-
-            textBox_RecipeVision_Circle_Spec.Text = Equipment.stVisionRecipeSet.dCircleSpec.ToString();
-            textBox_RecipeVision_Circle_Size.Text = Equipment.stVisionRecipeSet.dCircleDetectionSizeW.ToString();
-
-            radioButton_RecipeVision_Move_MoveMode_Fine.Checked = false;
-            radioButton_RecipeVision_Move_MoveMode_Coarse.Checked = true;
-            radioButton_RecipeVision_JogMove_Continuous.Checked = false;
-            radioButton_RecipeVision_JogMove_Step.Checked = true;
-
-            radioButton_RecipeVision_Circle.Checked = true;
         }
 
         private void RecipeVisionTimer_Tick(object sender, EventArgs e)
@@ -204,8 +202,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             this.ImageViewer_RecipeVision_highs.ResumeDisplay();
             this.ImageViewer_RecipeVision_highs.StartUpdateTask();
 
-            this.ImageViewer_RecipeVision_Rows.ResumeDisplay();
-            this.ImageViewer_RecipeVision_Rows.StartUpdateTask();
+            this.ImageViewer_RecipeVision_Lows.ResumeDisplay();
+            this.ImageViewer_RecipeVision_Lows.StartUpdateTask();
 
             this.RecipeVisionTimer.Start();
         }
@@ -220,8 +218,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             this.ImageViewer_RecipeVision_highs.SuspendDisplay();
             this.ImageViewer_RecipeVision_highs.StopUpdateTask();
 
-            this.ImageViewer_RecipeVision_Rows.SuspendDisplay();
-            this.ImageViewer_RecipeVision_Rows.StopUpdateTask();
+            this.ImageViewer_RecipeVision_Lows.SuspendDisplay();
+            this.ImageViewer_RecipeVision_Lows.StopUpdateTask();
 
             this.RecipeVisionTimer.Stop();
         }
@@ -277,48 +275,128 @@ namespace SLD200.NewStyleForm.NewSubForm
                 Owner.Recipe.TrainRoiEndLocation = Equipment.stVisionRecipeSet.TrainRoiEndLocation;         //RoiTrain.Parameter.EndLocation;
             }
 
-            this.radioButton_RecipeVision_Light_IR.Checked = true;
-            this.radioButton_RecipeVision_Light_Red.Checked = false;
+            if (Equipment.stVisionRecipeSet.PatternShape == PatternShapeType.Cross)
+            {
+                radioButton_RecipeVision_Cross.Checked = true;
+                radioButton_RecipeVision_Circle.Checked = false;
+            }
+            else
+            {
+                radioButton_RecipeVision_Cross.Checked = false;
+                radioButton_RecipeVision_Circle.Checked = true;
+            }
+
+            if (Equipment.stVisionRecipeSet.AlgorithmType == VisionAlgorithmType.PatternMatching)
+            {
+                radioButton_RecipeVision_Pattern.Checked = true;
+                radioButton_RecipeVision_Blob.Checked = false;
+            }
+            else
+            {
+                radioButton_RecipeVision_Pattern.Checked = false;
+                radioButton_RecipeVision_Blob.Checked = true;
+            }
+
+            if (Equipment.stVisionRecipeSet.bCircleDetectionColor == true)
+            {
+                radioButton_RecipeVision_White.Checked = false;
+                radioButton_RecipeVision_Black.Checked = true;
+            }
+            else
+            {
+                radioButton_RecipeVision_White.Checked = true;
+                radioButton_RecipeVision_Black.Checked = false;
+            }
+
+            this.textBox_RecipeVision_Circle_Spec.Text = Equipment.stVisionRecipeSet.dCircleSpec.ToString();
+            this.textBox_RecipeVision_Circle_Size.Text = Equipment.stVisionRecipeSet.dCircleDetectionSizeW.ToString();
+
+            this.radioButton_RecipeVision_Move_MoveMode_Fine.Checked = false;
+            this.radioButton_RecipeVision_Move_MoveMode_Coarse.Checked = true;
+            this.radioButton_RecipeVision_JogMove_Continuous.Checked = false;
+            this.radioButton_RecipeVision_JogMove_Step.Checked = true;
+
+            this.radioButton_RecipeVision_Circle.Checked = true;
+
             //workStage.Config.ListIlluminationChannel[0].Value = Equipment.Scanner_Calibration_Illumination_channel_01_Value; //RED
             //workStage.Config.ListIlluminationChannel[1].Value = Equipment.Scanner_Calibration_Illumination_channel_02_Value; //IR
 
+            comboBox_Recipe_Fiducial_Miscellaneous_FiducialAlignType.SelectedIndex = Equipment.stVisionRecipeSet.Miscellaneous_FiducialAlignType;
+            comboBox_Recipe_Fiducial_Miscellaneous_FiducialMarkType.SelectedIndex = Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkType;
+            textBox_Recipe_Fiducial_CircleSpec.Text = Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkSpec.ToString();
+            textBox_Recipe_Fiducial_CircleSize.Text = Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkRadius.ToString();
+
+
+            textBox_Recipe_RecipeVision_Illuminator_FineCamRed.Text = Equipment.stVisionRecipeSet.nFiduciallluminationRed.ToString();
+            textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text = Equipment.stVisionRecipeSet.nFiduciallluminationIR.ToString();
+            textBox_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text = Equipment.stVisionRecipeSet.nPreAlignlluminationIR.ToString();
+
+            SetScroll();
         }
 
         private void button_RecipeVision_CameraLive_Click(object sender, EventArgs e)
         {
-            if (!Owner.Camera.Opened)
+            if (!Owner.Camera.Opened || !workStage.Camera_HighRes.Opened)
             {
                 var mb1 = new QMC.Common.UI.MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
-            ImageViewer_RecipeVision_Rows.Simulated = false;
-            Owner.Simulated = false;
-
-            this.ImageViewer_RecipeVision_Rows.StartUpdateTask();
-            this.ImageViewer_RecipeVision_Rows.Visible = true;
-
-            if (Owner.Camera != null)
+            if (radioButton_RecipeVision_CameraSelection_LowMag.Checked)
             {
-                Owner.Camera.StartLive();
+                ImageViewer_RecipeVision_Lows.Simulated = false;
+                Owner.Simulated = false;
+
+                this.ImageViewer_RecipeVision_Lows.StartUpdateTask();
+                this.ImageViewer_RecipeVision_Lows.Visible = true;
+
+                if (Owner.Camera != null)
+                    Owner.Camera.StartLive();
+            }
+            else if (radioButton_RecipeVision_CameraSelection_HighMag.Checked)
+            {
+                ImageViewer_RecipeVision_highs.Simulated = false;
+                Owner.Simulated = false;
+                this.ImageViewer_RecipeVision_highs.StartUpdateTask();
+                this.ImageViewer_RecipeVision_highs.Visible = true;
+                if (workStage.Camera_HighRes != null)
+                    workStage.Camera_HighRes.StartLive();
+            }
+            else
+            {
+                var mb1 = new QMC.Common.UI.MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 선택해야 합니다.");
+                return;
             }
         }
 
         private void button_RecipeVision_CameraStop_Click(object sender, EventArgs e)
         {
-            if (!Owner.Camera.Opened)
+            if (!Owner.Camera.Opened || !workStage.Camera_HighRes.Opened)
             {
                 var mb1 = new QMC.Common.UI.MessageBoxOk();
                 mb1.ShowDialog("Information !", "먼저 카메라를 연결해야 해야 합니다.");
                 return;
             }
 
-            this.ImageViewer_RecipeVision_Rows.StopUpdateTask();
-
-            if (Owner.Camera != null)
+            if (radioButton_RecipeVision_CameraSelection_LowMag.Checked)
             {
-                Owner.Camera.StopLive();
+                this.ImageViewer_RecipeVision_Lows.StopUpdateTask();
+                if (Owner.Camera != null)
+                    Owner.Camera.StopLive();
+            }
+            else if(radioButton_RecipeVision_CameraSelection_HighMag.Checked)
+            {
+                this.ImageViewer_RecipeVision_highs.StopUpdateTask();
+                if (workStage.Camera_HighRes != null)
+                    workStage.Camera_HighRes.StopLive();
+            }
+            else
+            {
+                var mb1 = new QMC.Common.UI.MessageBoxOk();
+                mb1.ShowDialog("Information !", "먼저 카메라를 선택해야 합니다.");
+                return;
             }
         }
 
@@ -352,12 +430,12 @@ namespace SLD200.NewStyleForm.NewSubForm
             RoiTrain.Parameter.Overlay.Visible = true;
 
             PatternMatchingResult result = Owner.GetResult();
-            this.ImageViewer_RecipeVision_Rows.NormalOverlays.Add(RoiTrain.Parameter.Overlay);
+            this.ImageViewer_RecipeVision_Lows.NormalOverlays.Add(RoiTrain.Parameter.Overlay);
             foreach (var overlay in result.ResultOverlays)
             {
-                this.ImageViewer_RecipeVision_Rows.NormalOverlays.Remove(overlay);
+                this.ImageViewer_RecipeVision_Lows.NormalOverlays.Remove(overlay);
             }
-            this.ImageViewer_RecipeVision_Rows.Display();
+            this.ImageViewer_RecipeVision_Lows.Display();
 
             m_RoiListControl.RoiTrainClickNew();
         }
@@ -372,12 +450,12 @@ namespace SLD200.NewStyleForm.NewSubForm
             RoiInspect.Parameter.Overlay.Visible = true;
 
             PatternMatchingResult result = Owner.GetResult();
-            this.ImageViewer_RecipeVision_Rows.NormalOverlays.Add(RoiInspect.Parameter.Overlay);
+            this.ImageViewer_RecipeVision_Lows.NormalOverlays.Add(RoiInspect.Parameter.Overlay);
             foreach (var overlay in result.ResultOverlays)
             {
-                this.ImageViewer_RecipeVision_Rows.NormalOverlays.Remove(overlay);
+                this.ImageViewer_RecipeVision_Lows.NormalOverlays.Remove(overlay);
             }
-            this.ImageViewer_RecipeVision_Rows.Display();
+            this.ImageViewer_RecipeVision_Lows.Display();
 
             this.m_RoiListControl.RoiAlignClickNew();
         }
@@ -389,9 +467,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                 RoiTrain.Parameter.CenterLocation = roiVisionTool.Parameter.CenterLocation;
                 RoiTrain.Parameter.Size = roiVisionTool.Parameter.Size;
 
-                this.ImageViewer_RecipeVision_Rows.NormalOverlays.Add(RoiTrain.Parameter.Overlay);
+                this.ImageViewer_RecipeVision_Lows.NormalOverlays.Add(RoiTrain.Parameter.Overlay);
                 RoiTrain.Parameter.Overlay.Visible = true;
-                this.ImageViewer_RecipeVision_Rows.Display();
+                this.ImageViewer_RecipeVision_Lows.Display();
 
             }
         }
@@ -403,9 +481,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                 RoiInspect.Parameter.CenterLocation = roiVisionTool.Parameter.CenterLocation;
                 RoiInspect.Parameter.Size = roiVisionTool.Parameter.Size;
 
-                this.ImageViewer_RecipeVision_Rows.NormalOverlays.Add(RoiInspect.Parameter.Overlay);
+                this.ImageViewer_RecipeVision_Lows.NormalOverlays.Add(RoiInspect.Parameter.Overlay);
                 RoiInspect.Parameter.Overlay.Visible = true;
-                this.ImageViewer_RecipeVision_Rows.Display();
+                this.ImageViewer_RecipeVision_Lows.Display();
             }
         }
 
@@ -418,7 +496,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 RoiTrain.Parameter.StartLocation = recipe.TrainRoiStartLocation;
                 RoiTrain.Parameter.EndLocation = recipe.TrainRoiEndLocation;
                 RoiTrain.Parameter.Overlay.Visible = false;
-                this.ImageViewer_RecipeVision_Rows.Display();
+                this.ImageViewer_RecipeVision_Lows.Display();
                 return;
             }
 
@@ -440,7 +518,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
 
 
-            this.ImageViewer_RecipeVision_Rows.Display();
+            this.ImageViewer_RecipeVision_Lows.Display();
         }
 
         private void SetTrainImage(VisionImage image)
@@ -457,14 +535,14 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 RoiInspect.Parameter.StartLocation = recipe.InspectRoiStartLocation;
                 RoiInspect.Parameter.EndLocation = recipe.InspectRoiEndLocation;
-                this.ImageViewer_RecipeVision_Rows.Display();
+                this.ImageViewer_RecipeVision_Lows.Display();
                 return;
             }
             RoiInspect = roiVisionTool;
             recipe.InspectRoiStartLocation = RoiInspect.Parameter.StartLocation;
             recipe.InspectRoiEndLocation = RoiInspect.Parameter.EndLocation;
 
-            this.ImageViewer_RecipeVision_Rows.Display();
+            this.ImageViewer_RecipeVision_Lows.Display();
 
 
         }
@@ -478,9 +556,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                 RoiTrain.Parameter.CenterLocation = roiVisionTool.Parameter.CenterLocation;
                 RoiTrain.Parameter.Size = roiVisionTool.Parameter.Size;
 
-                this.ImageViewer_RecipeVision_Rows.NormalOverlays.Add(RoiTrain.Parameter.Overlay);
+                this.ImageViewer_RecipeVision_Lows.NormalOverlays.Add(RoiTrain.Parameter.Overlay);
                 RoiTrain.Parameter.Overlay.Visible = true;
-                this.ImageViewer_RecipeVision_Rows.Display();
+                this.ImageViewer_RecipeVision_Lows.Display();
             }
 
             string m_strFile = "";
@@ -488,12 +566,12 @@ namespace SLD200.NewStyleForm.NewSubForm
             RecipeInfo m_recipeInfo = new RecipeInfo();
             m_recipeInfo = Equipment.GetCurrentRecipe();
 
-            Owner.Camera.LatestImage = this.ImageViewer_RecipeVision_Rows.InputImage;
+            Owner.Camera.LatestImage = this.ImageViewer_RecipeVision_Lows.InputImage;
 
-            if (this.ImageViewer_RecipeVision_Rows.Simulated)
+            if (this.ImageViewer_RecipeVision_Lows.Simulated)
             {
                 Owner.Simulated = true;
-                Owner.TestImage = this.ImageViewer_RecipeVision_Rows.InputImage;
+                Owner.TestImage = this.ImageViewer_RecipeVision_Lows.InputImage;
             }
             else
             {
@@ -521,76 +599,80 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
         }
 
-        private void hScrollBarIlluminator_ValueChanged(object sender, System.EventArgs e)
+        private void hScrollBarIlluminator_ValueChanged_IR(object sender, System.EventArgs e)
         {
-            //  고해상도 카메라에는 Red Ring 과 IR 조명이 달려 있음
-            if (radioButton_RecipeVision_Light_IR.Checked)
+            if (radioButton_RecipeVision_CameraSelection_LowMag.Checked)
             {
-                workStage.Config.ListIlluminationChannel[1].Value = hScrollBar_RecipeVision_Illuminator.Value;
-                this.textBox_RecipeVision_IlluminationValue.Text = hScrollBar_RecipeVision_Illuminator.Value.ToString();
-                CommonModule.Instance.Illuminator.SetVolume(this.hScrollBar_RecipeVision_Illuminator.Value, 2);
-
-                Owner.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[1].Value, 2);
-
+                //0:Red-High Mag, 1:IR-High Mag, 2:IR-Low Mag
+                workStage.Config.ListIlluminationChannel[2].Value = hScrollBar_RecipeVision_Illuminator_IR.Value;
+                this.textBox_RecipeVision_IlluminationValue_IR.Text = hScrollBar_RecipeVision_Illuminator_IR.Value.ToString();
+                //1:Red-High Mag, 2:IR-High Mag, 3:IR-Low Mag
+                CommonModule.Instance.Illuminator.SetVolume(this.hScrollBar_RecipeVision_Illuminator_IR.Value, 3);
             }
-            //else        //  Red Ring
-            //{
-            //    workStage.Config.ListIlluminationChannel[0].Value = hScrollBar_RecipeVision_Illuminator.Value;
-            //    this.textBox_RecipeVision_IlluminationValue.Text = hScrollBar_RecipeVision_Illuminator.Value.ToString();
-            //    CommonModule.Instance.Illuminator.SetVolume(this.hScrollBar_RecipeVision_Illuminator.Value, 1);
+            else if (radioButton_RecipeVision_CameraSelection_HighMag.Checked)
+            {
+                //0:Red-High Mag, 1:IR-High Mag, 2:IR-Low Mag
+                workStage.Config.ListIlluminationChannel[1].Value = hScrollBar_RecipeVision_Illuminator_IR.Value;
+                this.textBox_RecipeVision_IlluminationValue_IR.Text = hScrollBar_RecipeVision_Illuminator_IR.Value.ToString();
+                //1:Red-High Mag, 2:IR-High Mag, 3:IR-Low Mag
+                CommonModule.Instance.Illuminator.SetVolume(this.hScrollBar_RecipeVision_Illuminator_IR.Value, 2);
+            }
 
-            //    Owner.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[0].Value, 1);
-            //}
-
-            this.textBox_RecipeVision_IlluminationValue.Refresh();
+            this.textBox_RecipeVision_IlluminationValue_IR.Refresh();
+            this.textBox_RecipeVision_IlluminationValue_Red.Refresh();
         }
 
-        private void SetScroll(int nChannel)
+        private void hScrollBarIlluminator_ValueChanged_Red(object sender, System.EventArgs e)
         {
-            hScrollBar_RecipeVision_Illuminator.Minimum = (int)workStage.Config.ListIlluminationChannel[nChannel].Min;
-            hScrollBar_RecipeVision_Illuminator.Maximum = (int)workStage.Config.ListIlluminationChannel[nChannel].Max;
-
-            baseLabel_RecipeVision_Min.Text = hScrollBar_RecipeVision_Illuminator.Minimum.ToString();
-            baseLabel_RecipeVision_Max.Text = hScrollBar_RecipeVision_Illuminator.Maximum.ToString();
+            if(radioButton_RecipeVision_CameraSelection_HighMag.Checked)
+            {
+                //0:Red-High Mag, 1:IR-High Mag, 2:IR-Low Mag
+                workStage.Config.ListIlluminationChannel[0].Value = hScrollBar_RecipeVision_Illuminator_Red.Value;
+                this.textBox_RecipeVision_IlluminationValue_Red.Text = hScrollBar_RecipeVision_Illuminator_Red.Value.ToString();
+                //1:Red-High Mag, 2:IR-High Mag, 3:IR-Low Mag
+                CommonModule.Instance.Illuminator.SetVolume(this.hScrollBar_RecipeVision_Illuminator_Red.Value, 1);
+            }
+            
+            this.textBox_RecipeVision_IlluminationValue_Red.Refresh();
         }
 
-
-        private void radioButton_RecipeVision_Light_IR_CheckedChanged(object sender, EventArgs e)
+        private void SetScroll()
         {
-            SetScroll(1);
+            //Channel 0: Red - high, 1: IR - high, 2: IR - Low
+            if (radioButton_RecipeVision_CameraSelection_LowMag.Checked)
+            {
+                hScrollBar_RecipeVision_Illuminator_Red.Minimum = (int)workStage.Config.ListIlluminationChannel[0].Min;
+                hScrollBar_RecipeVision_Illuminator_Red.Maximum = (int)workStage.Config.ListIlluminationChannel[0].Max;
+                hScrollBar_RecipeVision_Illuminator_Red.Value = Equipment.stVisionRecipeSet.nFiduciallluminationRed;
+                baseLabel_RecipeVision_Min_Red.Text = hScrollBar_RecipeVision_Illuminator_Red.Minimum.ToString();
+                baseLabel_RecipeVision_Max_Red.Text = hScrollBar_RecipeVision_Illuminator_Red.Maximum.ToString();
 
-            //  조명값 변경
-            //CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[1].Value, 2);
-            //CommonModule.Instance.Illuminator.TurnOnOff(true, 2);
-            //CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[0].Value, 1);
-            //CommonModule.Instance.Illuminator.TurnOnOff(true, 1);
+                hScrollBar_RecipeVision_Illuminator_IR.Minimum = (int)workStage.Config.ListIlluminationChannel[2].Min;
+                hScrollBar_RecipeVision_Illuminator_IR.Maximum = (int)workStage.Config.ListIlluminationChannel[2].Max;
+                hScrollBar_RecipeVision_Illuminator_IR.Value = Equipment.stVisionRecipeSet.nPreAlignlluminationIR;
+                baseLabel_RecipeVision_Min_IR.Text = hScrollBar_RecipeVision_Illuminator_IR.Minimum.ToString();
+                baseLabel_RecipeVision_Max_IR.Text = hScrollBar_RecipeVision_Illuminator_IR.Maximum.ToString();
+            }
+            else if (radioButton_RecipeVision_CameraSelection_HighMag.Checked)
+            {
+                hScrollBar_RecipeVision_Illuminator_Red.Minimum = (int)workStage.Config.ListIlluminationChannel[0].Min;
+                hScrollBar_RecipeVision_Illuminator_Red.Maximum = (int)workStage.Config.ListIlluminationChannel[0].Max;
+                hScrollBar_RecipeVision_Illuminator_Red.Value = Equipment.stVisionRecipeSet.nFiduciallluminationRed;
+                baseLabel_RecipeVision_Min_Red.Text = hScrollBar_RecipeVision_Illuminator_Red.Minimum.ToString();
+                baseLabel_RecipeVision_Max_Red.Text = hScrollBar_RecipeVision_Illuminator_Red.Maximum.ToString();
 
-            hScrollBar_RecipeVision_Illuminator.Value = 400; // workStage.Config.ListIlluminationChannel[1].Value;                //  고해상도 카메라 IR 조명 (2번, Index 는 1번)
-            this.textBox_RecipeVision_IlluminationValue.Text = hScrollBar_RecipeVision_Illuminator.Value.ToString();
-
-            //  Low Mag Camera 조명 끄기
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 3);
-
-        }
-
-        private void radioButton_RecipeVision_Light_Red_CheckedChanged(object sender, EventArgs e)
-        {
-            return;
-
-            SetScroll(0);
-
-            //  조명값 변경
-            //CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[0].Value, 1);
-            //CommonModule.Instance.Illuminator.TurnOnOff(true, 1);
-            //CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[1].Value, 2);
-            //CommonModule.Instance.Illuminator.TurnOnOff(true, 2);
-
-            hScrollBar_RecipeVision_Illuminator.Value = 400;// workStage.Config.ListIlluminationChannel[0].Value;                //  저해상도 카메라 IR 조명 (3번, Index 는 2번)
-            this.textBox_RecipeVision_IlluminationValue.Text = hScrollBar_RecipeVision_Illuminator.Value.ToString();
-
-            //  Low Mag Camera 조명 끄기
-            CommonModule.Instance.Illuminator.TurnOnOff(false, 3);
-
+                hScrollBar_RecipeVision_Illuminator_IR.Minimum = (int)workStage.Config.ListIlluminationChannel[1].Min;
+                hScrollBar_RecipeVision_Illuminator_IR.Maximum = (int)workStage.Config.ListIlluminationChannel[1].Max;
+                hScrollBar_RecipeVision_Illuminator_IR.Value = Equipment.stVisionRecipeSet.nFiduciallluminationIR;
+                baseLabel_RecipeVision_Min_IR.Text = hScrollBar_RecipeVision_Illuminator_IR.Minimum.ToString();
+                baseLabel_RecipeVision_Max_IR.Text = hScrollBar_RecipeVision_Illuminator_IR.Maximum.ToString();
+            }
+            else
+            {
+                // 말이 되냐?
+            }
+            hScrollBar_RecipeVision_Illuminator_Red.Refresh();
+            hScrollBar_RecipeVision_Illuminator_IR.Refresh();
         }
 
         private void baseToggleButton_RecipeVision_DuplicateCheck_Click(object sender, EventArgs e)
@@ -634,35 +716,17 @@ namespace SLD200.NewStyleForm.NewSubForm
             baseTextBox_RecipeVision_PositionX.Text = x.ToString();
             baseTextBox_RecipeVision_PositionY.Text = y.ToString();
             baseTextBox_RecipeVision_PositionT.Text = t.ToString();
-
-            if (checkBox_RecipeVision_CirclePos.Checked)
-            {
-                label_RecipeVision_CirclePosX.Text = circlex.ToString();
-                label_RecipeVision_CirclePosY.Text = circley.ToString();
-            }
-            else
-            {
-                label_RecipeVision_CirclePosX.Text = "---";
-                label_RecipeVision_CirclePosY.Text = "---";
-            }
-
-            baseTextBox_RecipeVision_PositionX.Refresh();
-            baseTextBox_RecipeVision_PositionY.Refresh();
-            baseTextBox_RecipeVision_PositionT.Refresh();
-            label_RecipeVision_CirclePosX.Refresh();
-            label_RecipeVision_CirclePosY.Refresh();
-
         }
 
         private void button_RecipeVision_Search_Click(object sender, EventArgs e)
         {
             UpdataPositionData(0.0, 0.0, 0.0);
 
-            if (ImageViewer_RecipeVision_Rows.Simulated)
+            if (ImageViewer_RecipeVision_Lows.Simulated)
             {
                 Owner.Simulated = true;
-                Owner.Camera.LatestImage = ImageViewer_RecipeVision_Rows.InputImage;
-                Owner.TestImage = ImageViewer_RecipeVision_Rows.InputImage;
+                Owner.Camera.LatestImage = ImageViewer_RecipeVision_Lows.InputImage;
+                Owner.TestImage = ImageViewer_RecipeVision_Lows.InputImage;
             }
 
             if (radioButton_RecipeVision_Black.Checked)
@@ -679,7 +743,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 stVisionRecipeSet.TrainRoiEndLocation = RoiTrain.Parameter.EndLocation;
                 stVisionRecipeSet.InspectRoiStartLocation = RoiInspect.Parameter.StartLocation;
                 stVisionRecipeSet.InspectRoiEndLocation = RoiInspect.Parameter.EndLocation;
-                stVisionRecipeSet.IlluminationIR = hScrollBar_RecipeVision_Illuminator.Value;
+                stVisionRecipeSet.nPreAlignlluminationIR = hScrollBar_RecipeVision_Illuminator_IR.Value;
 
                 PatternMatchingParameter.MaxTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text);
                 PatternMatchingParameter.MaxInstance = Equipment.ToInt(basetextBox_RecipeVision_MaxInstance.Text);
@@ -696,7 +760,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 PatternMatchingResult result = Owner.GetResult();
                 if (result != null)
                 {
-                    ImageViewer_RecipeVision_Rows.ResultOverlays.Clear();
+                    ImageViewer_RecipeVision_Lows.ResultOverlays.Clear();
                 }
 
                 result = Owner.Search();
@@ -704,7 +768,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 {
                     foreach (var overlay in result.ResultOverlays)
                     {
-                        ImageViewer_RecipeVision_Rows.ResultOverlays.Add(overlay);
+                        ImageViewer_RecipeVision_Lows.ResultOverlays.Add(overlay);
                         overlay.Visible = true;
                     }
                 }
@@ -726,7 +790,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                         //UpdataPositionData(converted.X, converted.Y, result.Values[0].R);
                     }
                 }
-                ImageViewer_RecipeVision_Rows.Display();
+                ImageViewer_RecipeVision_Lows.Display();
             }
             else if(radioButton_RecipeVision_Blob.Checked)
             {
@@ -743,17 +807,18 @@ namespace SLD200.NewStyleForm.NewSubForm
                 {
                     bIsDarkCircleSearch = false;
                 }
-                    PatternMatchingResult SearchResult = null;
+                
+                PatternMatchingResult SearchResult = null;
                 XyCoordinate PointCoordinate = new XyCoordinate();
 
-                ImageViewer_RecipeVision_Rows.ResultOverlays.Clear();
+                ImageViewer_RecipeVision_Lows.ResultOverlays.Clear();
 
                 Owner.FindCircleDetection(dRadius, bIsDarkCircleSearch, dspec, out SearchResult, out PointCoordinate);
                 if (SearchResult != null)
                 {
                     foreach (var overlay in SearchResult.ResultOverlays)
                     {
-                        ImageViewer_RecipeVision_Rows.ResultOverlays.Add(overlay);
+                        ImageViewer_RecipeVision_Lows.ResultOverlays.Add(overlay);
                         overlay.Visible = true;
                     }
                 }
@@ -765,7 +830,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                         UpdataPositionData(SearchResult.Values[0].X, SearchResult.Values[0].Y, SearchResult.Values[0].R);
                     }
                 }
-                ImageViewer_RecipeVision_Rows.Display();
+                ImageViewer_RecipeVision_Lows.Display();
             }
 
             Owner.Camera.StartLive();
@@ -804,12 +869,20 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void button_RecipeVision_Vision_Save_Click(object sender, EventArgs e)
         {
+            bool bRtn = false;
+
+            //Socket
+            Equipment.stVisionRecipeSet.Miscellaneous_FiducialAlignType = comboBox_Recipe_Fiducial_Miscellaneous_FiducialAlignType.SelectedIndex;
+            Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkType = comboBox_Recipe_Fiducial_Miscellaneous_FiducialMarkType.SelectedIndex;
+            Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkRadius = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSize.Text);
+            Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkSpec = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text);
+
+            //PreAlign
             Equipment.stVisionRecipeSet.PatternMatching = PatternMatchingParameter;
             Equipment.stVisionRecipeSet.TrainRoiStartLocation = RoiTrain.Parameter.StartLocation;
             Equipment.stVisionRecipeSet.TrainRoiEndLocation = RoiTrain.Parameter.EndLocation;
             Equipment.stVisionRecipeSet.InspectRoiStartLocation = RoiInspect.Parameter.StartLocation;
             Equipment.stVisionRecipeSet.InspectRoiEndLocation = RoiInspect.Parameter.EndLocation;
-            Equipment.stVisionRecipeSet.IlluminationIR = hScrollBar_RecipeVision_Illuminator.Value;
             //Equipment.stVisionRecipeSet.TrainImagePath = Equipment.stVisionRecipeSet.TrainImagePath;
             Equipment.stVisionRecipeSet.SaveTrainImage(pictureBox_RecipeVision_TrainImage.Image);
 
@@ -843,9 +916,35 @@ namespace SLD200.NewStyleForm.NewSubForm
             Equipment.stVisionRecipeSet.dCircleDetectionSizeW = Convert.ToDouble(textBox_RecipeVision_Circle_Size.Text);
             Equipment.stVisionRecipeSet.dCircleSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
 
-            Equipment.stVisionRecipeSet.SaveToIni(Equipment.Current_Recipe);
+            //Illuminator
+            //if (radioButton_RecipeVision_CameraSelection_LowMag.Checked)
+            //{
+            //    //Equipment.stVisionRecipeSet.nPreAlignlluminationIR = hScrollBar_RecipeVision_Illuminator_IR.Value;
+            //    Equipment.stVisionRecipeSet.nPreAlignlluminationIR = workStage.Config.ListIlluminationChannel[2].Value;
+            //}
+            //else if (radioButton_RecipeVision_CameraSelection_HighMag.Checked)
+            //{
+            //    //Equipment.stVisionRecipeSet.nFiduciallluminationIR = hScrollBar_RecipeVision_Illuminator_IR.Value;
+            //    Equipment.stVisionRecipeSet.nFiduciallluminationIR = workStage.Config.ListIlluminationChannel[1].Value;
+            //    //Equipment.stVisionRecipeSet.nFiduciallluminationRed = hScrollBar_RecipeVision_Illuminator_Red.Value;
+            //    Equipment.stVisionRecipeSet.nFiduciallluminationRed = workStage.Config.ListIlluminationChannel[0].Value;
+            //}
 
-            UpdateOwnerRecipe(Equipment.stVisionRecipeSet);
+            Equipment.stVisionRecipeSet.nFiduciallluminationRed = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamRed.Text);// workStage.Config.ListIlluminationChannel[0].Value;
+            Equipment.stVisionRecipeSet.nFiduciallluminationIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text);//workStage.Config.ListIlluminationChannel[1].Value;
+            Equipment.stVisionRecipeSet.nPreAlignlluminationIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text);//workStage.Config.ListIlluminationChannel[2].Value;
+
+            //Equipment.stVisionRecipeSet.SaveToIni(Equipment.Current_Recipe);
+            if (Equipment.stVisionRecipeSet.SaveToIni(Equipment.Current_Recipe))
+            {
+                bRtn = true; //Ok.
+                UpdateOwnerRecipe(Equipment.stVisionRecipeSet);
+            }
+            else
+            {
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Error!", "Data가 저장되지 않았습니다. 레시피를 불러온 후 진행 바랍니다.");
+            }
         }
 
         //Jog Move
@@ -1212,5 +1311,149 @@ namespace SLD200.NewStyleForm.NewSubForm
             return m_bRet;
         }
 
+
+        private void radioButton_RecipeVision_CameraSelection_LowMag_CheckedChanged(object sender, EventArgs e)
+        {
+            CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명
+            Thread.Sleep(1);
+            CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
+            Thread.Sleep(1);
+            CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
+
+            hScrollBar_RecipeVision_Illuminator_IR.Enabled = true;
+            textBox_RecipeVision_IlluminationValue_IR.Enabled = true;
+            button_RecipeVision_Illumin_value_IR.Enabled = true;
+            baseLabel_RecipeVision_Max_IR.Enabled = true;
+            baseLabel_RecipeVision_Min_IR.Enabled = true;
+            label_RecipeVision_Light_IR.Enabled = true;
+
+            hScrollBar_RecipeVision_Illuminator_IR.Value = Equipment.stVisionRecipeSet.nPreAlignlluminationIR;
+
+            hScrollBar_RecipeVision_Illuminator_Red.Enabled = false;
+            textBox_RecipeVision_IlluminationValue_Red.Enabled = false;
+            button_RecipeVision_Illumin_value_Red.Enabled = false;
+            baseLabel_RecipeVision_Max_Red.Enabled = false;
+            baseLabel_RecipeVision_Min_Red.Enabled = false;
+            label_RecipeVision_Light_Red.Enabled = false;
+
+            SetScroll();
+        }
+
+        private void radioButton_RecipeVision_CameraSelection_HighMag_CheckedChanged(object sender, EventArgs e)
+        {
+            CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명
+            Thread.Sleep(1);
+            CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
+            Thread.Sleep(1);
+            CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
+
+            hScrollBar_RecipeVision_Illuminator_IR.Enabled = true;
+            textBox_RecipeVision_IlluminationValue_IR.Enabled = true;
+            button_RecipeVision_Illumin_value_IR.Enabled = true;
+            baseLabel_RecipeVision_Max_IR.Enabled = true;
+            baseLabel_RecipeVision_Min_IR.Enabled = true;
+            label_RecipeVision_Light_IR.Enabled = true;
+
+            hScrollBar_RecipeVision_Illuminator_Red.Enabled = true;
+            textBox_RecipeVision_IlluminationValue_Red.Enabled = true;
+            button_RecipeVision_Illumin_value_Red.Enabled = true;
+            baseLabel_RecipeVision_Max_Red.Enabled = true;
+            baseLabel_RecipeVision_Min_Red.Enabled = true;
+            label_RecipeVision_Light_Red.Enabled = true;
+
+            hScrollBar_RecipeVision_Illuminator_IR.Value = Equipment.stVisionRecipeSet.nFiduciallluminationIR;
+            hScrollBar_RecipeVision_Illuminator_Red.Value = Equipment.stVisionRecipeSet.nFiduciallluminationRed;
+
+            SetScroll();
+        }
+
+        private void button_Recipe_Fiducial_Search_Click(object sender, EventArgs e)
+        {
+            //  원 찾기
+            bool bFindCircle = false;
+            int nImage_Width = 0;
+            int nImage_Height = 0;
+            double dTargetSize_Radius = 0.0;
+            int nTargetColor = 0;
+            double dSpec = 0.0;
+
+            if (textBox_Recipe_Fiducial_CircleSize.Text.Length < 0)
+            {
+                MessageBox.Show("Fiducial Size 를 입력하세요.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            dSpec = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text); //  Fiducial 마크 Spec
+            dTargetSize_Radius = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleSize.Text); //  Fiducial 마크 크기
+            nTargetColor = comboBox_Recipe_Fiducial_CicleColor.SelectedIndex;          //  Fiducial 마크 색깔 //  0: Black, 1: White
+
+            //detectedCircles.Clear();
+            QMC_ImageProcessFindAlign aligner = new QMC_ImageProcessFindAlign();
+            List<RectangleF> circlesResult = new List<RectangleF>();
+            {
+                int w = workStage.Camera_HighRes.Resolution.Width;
+                int h = workStage.Camera_HighRes.Resolution.Height;
+                nImage_Width = w;
+                nImage_Height = h;
+                double m_dradius = 0.0;
+                m_dradius = dTargetSize_Radius / workStage.Config.ParamConfig.UpperVision_Scale_X;
+
+                // Bitmap을 byte 배열로 변환
+                //byte[] pixelData = aligner.ConvertBitmapToByteArray(bm_Temp);      
+                //aligner.FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h);
+                //aligner.FindCirclesWidthCircleBoundary(circlesResult, 
+                //                                    bm_RawData, w, h, (int)m_dradius, 0.08, 
+                //                                    ref bFindCircle, 0, 0, nTargetColor == 0);
+                aligner.FindCirclesWidthCircleBoundary(circlesResult,
+                                                    workStage.Camera_HighRes.LatestImage.RawData, 
+                                                    w, h, (int)m_dradius, dSpec,
+                                                    ref bFindCircle, 0, 0, nTargetColor == 0);
+            }
+
+            if (bFindCircle && (circlesResult.Count > 0))
+            {
+                //detectedCircles.Clear();
+                double dCenterPosX = 0.0, dCenterPosY = 0.0;
+                //  좌표 표시
+                listBox_Recipe_Fiducial_Result.Items.Clear();
+                for (int i = 0; i < circlesResult.Count; i++)
+                {
+                    listBox_Recipe_Fiducial_Result.Items.Add((i + 1) + ".  Left-Top X : " + circlesResult[i].X);
+                    listBox_Recipe_Fiducial_Result.Items.Add((i + 1) + ".  Left-Top Y : " + circlesResult[i].Y);
+                    listBox_Recipe_Fiducial_Result.Items.Add((i + 1) + ".  Width : " + circlesResult[i].Width);
+                    listBox_Recipe_Fiducial_Result.Items.Add((i + 1) + ".  Height : " + circlesResult[i].Height);
+
+                    dCenterPosX = circlesResult[i].X + (circlesResult[i].Width / 2);
+                    dCenterPosY = circlesResult[i].Y + (circlesResult[i].Height / 2);
+                    listBox_Recipe_Fiducial_Result.Items.Add((i + 1) + ".  Center X : " + dCenterPosX);
+                    listBox_Recipe_Fiducial_Result.Items.Add((i + 1) + ".  Center Y: " + dCenterPosY);
+                }
+
+                foreach (var circle in circlesResult)
+                {
+                    float ratioX = (float)ImageViewer_RecipeVision_highs.Width / nImage_Width;
+                    float ratioY = (float)ImageViewer_RecipeVision_highs.Height / nImage_Height;
+                    float ratio = Math.Min(ratioX, ratioY);
+                    int newX = (int)(circle.X * ratio);
+                    int newY = (int)(circle.Y * ratio);
+                    int newWidth = (int)(circle.Width * ratio);
+                    int newHeight = (int)(circle.Height * ratio);
+                    //detectedCircles.Add(new Rectangle(newX, newY, newWidth, newHeight));
+                    //ImageViewer_RecipeVision_highs.Invalidate(); // PictureBox를 다시 그리도록 요청 오버레이로 넘겨야 할듯.
+                }
+            }
+            else
+            {
+                MessageBox.Show("원 찾기 실패", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //detectedCircles.Clear();
+                listBox_Recipe_Fiducial_Result.Items.Clear();
+            }
+
+            //  원 찾기 후 다시 Live
+            if (workStage.Camera_HighRes.Opened)
+            {
+                workStage.Camera_HighRes.StartLive();
+            }
+        }
     }
 }
