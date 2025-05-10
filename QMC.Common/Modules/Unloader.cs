@@ -7054,8 +7054,8 @@ namespace QMC.Common.Modules
             }
 
             double dTargetZ = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].UL_Transfer_Z;
-            if (MC_Func.MC_GetDone((int)Unloader.nAxis.TR_Z) &&
-                MC_Func.MC_PosTolerance((int)Unloader.nAxis.TR_Z, dTargetZ))
+            if (!MC_Func.MC_GetDone((int)Unloader.nAxis.TR_Z) ||
+                !MC_Func.MC_PosTolerance((int)Unloader.nAxis.TR_Z, dTargetZ))
             {
                 strTemp = string.Format("IsInterlock_UnloaderTransferX_Enabled [Fail]: UnloaderTransferZ Axis이 Safety Pos 아닙니다.");
                 Log.Write("SLD-200", Equipment.User_Name, strTemp);

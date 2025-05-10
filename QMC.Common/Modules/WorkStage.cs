@@ -9313,8 +9313,8 @@ namespace QMC.Common.Modules
                     //Loader 진공 체크
                     //DI_Loader_Aligner_VacuumCheck()
                     if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner) ||
-                        loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer) ||
-                        loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center))
+                        loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer))// ||
+                        //loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center))
                     {
                         AlarmPost(AlarmKey.Home_Loader_Aligner_Vacuum_Off_Fail);
                         Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Initialize Loader Aligner Vacuum Off Fail");
@@ -9330,7 +9330,7 @@ namespace QMC.Common.Modules
                         m_nHomeStep = (int)Home_Step.Fail;
                     }
                     //Stage 진공 체크
-                    else if (workStageParameter.DI_Stage_Vacuum_Check() && (m_dEPRO_Value < -5.0))              //  모듈이 없을 때 EPRO 에 얼마나 인가되는지 확인 후 변경
+                    else if (workStageParameter.DI_Stage_Vacuum_Check() && (m_dEPRO_Value < -12.0))              //  모듈이 없을 때 EPRO 에 얼마나 인가되는지 확인 후 변경
                     {
                         AlarmPost(AlarmKey.Home_MainStage_Vacuum_Off_Fail);
                         Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "Initialize Stage Vacuum Off Fail");
@@ -14505,49 +14505,13 @@ namespace QMC.Common.Modules
                     //if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
                     if (Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
                     {
-                        QMC_ImageProcessFindAlignResult result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, 
-                                                                        bm_AlignRawData, 
-                                                                        Camera_HighRes.Resolution.Width, 
-                                                                        Camera_HighRes.Resolution.Height, 
+                        QMC_ImageProcessFindAlignResult result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
+                                                                        bm_AlignRawData,
+                                                                        Camera_HighRes.Resolution.Width,
+                                                                        Camera_HighRes.Resolution.Height,
                                                                         nWidthImageCount, 0.08, ref Fiducial_circleFound);
 
-                        if(UpdateResultOveray != null)
-                        {
-                            try
-                            {
-                                this.FineCamResultOveray = new VisionImageViewer.OwnedOverlayCollection();
-                                foreach (var v in Fiducial_circlesResult)
-                                {
-                                    Point ptStart = new Point((int)v.Left, (int)v.Top);
-                                    Point ptEnd = new Point((int)v.Right, (int)v.Bottom);
-                                    var overayRect = new RectangleFrameVisionImageOverlay("Fine Align", ptStart, ptEnd);
-                                    overayRect.Visible = true;
-                                    overayRect.Color = Color.Lime;
-                                    overayRect.Thickness = 1;
-                                    FineCamResultOveray.Add(overayRect);
-                                    var overayEl = new EllipseFrameVisionImageOverlay("Fine Align", ptStart, ptEnd);
-                                    overayEl.Visible = true;
-                                    overayEl.Color = Color.Blue;
-                                    overayEl.Thickness = 1;
-                                    FineCamResultOveray.Add(overayEl);
-                                    
-                                    string strScore = string.Format("Score : {0:0.00}", result.ScoreCollection[0]);
-                                    Font font = new Font("verdana",10, FontStyle.Bold);
-                                    var textOveray = new TextVisionImageOverlay(strScore, new Point((int)v.Left, (int)v.Top-30),  font);
-                                    textOveray.Visible = true;
-                                    FineCamResultOveray.Add(textOveray);
-                                }
-                                UpdateResultOveray?.Invoke(this.Camera_HighRes, null);
-                            }
-
-                            catch (Exception ex)
-                            {
-
-                                Log.Write(ex);
-                            }
-                        }
-                        
-
+                        UpdateOverlay(result);
 
                     }
                     //else if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
@@ -14620,6 +14584,45 @@ namespace QMC.Common.Modules
                 //Log.Write(ex);
             }
             return ret;
+        }
+
+        public void UpdateOverlay(QMC_ImageProcessFindAlignResult result)
+        {
+            if (UpdateResultOveray != null)
+            {
+                try
+                {
+                    this.FineCamResultOveray = new VisionImageViewer.OwnedOverlayCollection();
+                    foreach (var v in result.Circle)
+                    {
+                        Point ptStart = new Point((int)(v.CenterX - v.Radius), (int)(v.CenterY - v.Radius));
+                        Point ptEnd = new Point((int)(v.CenterX + v.Radius), (int)(v.CenterY + v.Radius));
+                        var overayRect = new RectangleFrameVisionImageOverlay("Fine Align", ptStart, ptEnd);
+                        overayRect.Visible = true;
+                        overayRect.Color = Color.Lime;
+                        overayRect.Thickness = 1;
+                        FineCamResultOveray.Add(overayRect);
+                        var overayEl = new EllipseFrameVisionImageOverlay("Fine Align", ptStart, ptEnd);
+                        overayEl.Visible = true;
+                        overayEl.Color = Color.Blue;
+                        overayEl.Thickness = 1;
+                        FineCamResultOveray.Add(overayEl);
+
+                        string strScore = string.Format("Score : {0:0.00}", result.ScoreCollection[0]);
+                        Font font = new Font("verdana", 64, FontStyle.Bold);
+                        var textOveray = new TextVisionImageOverlay(strScore, new Point((int)ptStart.X, (int)ptStart.Y - 120), font);
+                        textOveray.Visible = true;
+                        FineCamResultOveray.Add(textOveray);
+                    }
+                    UpdateResultOveray?.Invoke(this.Camera_HighRes, null);
+                }
+
+                catch (Exception ex)
+                {
+
+                    Log.Write(ex);
+                }
+            }
         }
         #endregion
 
@@ -36198,11 +36201,11 @@ namespace QMC.Common.Modules
             }
 
             // Todo: 구영남 - 여기 설정값 셋팅 연결 필요.
-            double dStageZ = 45;
-            double dLoaderTransferX = 100;
-            double dUnloaderTransferX = 800;
-            double dLoaderTransferZ = 100;
-            double dUnloaderTransferZ = 100;
+            double dStageZ = -45;
+            double dLoaderTransferX = 50;
+            double dUnloaderTransferX = 1000;
+            double dLoaderTransferZ = -20;
+            double dUnloaderTransferZ = -20;
 
             double dCurPositionStageZ = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z);
             double dCurPositionLoaderTransferX = MC_Func.MC_GetEncPos((int)Loader.nAxis.TR_X);
@@ -36210,7 +36213,7 @@ namespace QMC.Common.Modules
             double dCurPositionLoaderTransferZ = MC_Func.MC_GetEncPos((int)Loader.nAxis.TR_Z);
             double dCurPositionUnloaderTransferZ = MC_Func.MC_GetEncPos((int)Unloader.nAxis.TR_Z);
 
-            if (dCurPositionStageZ > dStageZ)
+            if (dCurPositionStageZ < dStageZ)
             {
                 strTemp = string.Format("IsInterlock_WorkStageXY_Enabled [Fail]: Stage Z축 설정보다 내려와 있습니다.");
                 Log.Write("SLD-200", Equipment.User_Name, strTemp);
@@ -36219,7 +36222,7 @@ namespace QMC.Common.Modules
 
             if(dCurPositionLoaderTransferX < dLoaderTransferX)
             {
-                if (dCurPositionLoaderTransferZ > dLoaderTransferZ)
+                if (dCurPositionLoaderTransferZ < dLoaderTransferZ)
                 {
                     strTemp = string.Format("IsInterlock_WorkStageXY_Enabled [Fail]: Loader Z축 설정보다 내려와 있습니다.");
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
@@ -36229,7 +36232,7 @@ namespace QMC.Common.Modules
 
             if(dCurPositionUnloaderTransferX > dUnloaderTransferX)
             {
-                if (dCurPositionUnloaderTransferZ > dUnloaderTransferZ)
+                if (dCurPositionUnloaderTransferZ < dUnloaderTransferZ)
                 {
                     strTemp = string.Format("IsInterlock_WorkStageXY_Enabled [Fail]: Unloader Z축 설정보다 내려와 있습니다.");
                     Log.Write("SLD-200", Equipment.User_Name, strTemp);
@@ -36576,16 +36579,16 @@ namespace QMC.Common.Modules
                 switch (typeSpeed)
                 {
                     case Type_Motor_Speed.Fine:
-                        dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
-                        dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+                        dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                        dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
                         break;
                     case Type_Motor_Speed.Coarse:
-                        dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
-                        dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                        dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Coarse;
+                        dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
                         break;
                     default:
-                        dVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
-                        dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+                        dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                        dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
                         break;
                 }
 
