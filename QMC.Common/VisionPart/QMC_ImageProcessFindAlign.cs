@@ -9,8 +9,22 @@ using System.Threading.Tasks;
 
 namespace QMC.Common.VisionPart
 {
+    public class QMC_ImageProcessFindAlignResult
+    {
+        public List<Circle> Circle { get; set; }
+        public List<double> ScoreCollection { get; set; }
+
+        public QMC_ImageProcessFindAlignResult()
+        {
+            Circle = new List<Circle>();
+            ScoreCollection = new List<double>();
+
+        }
+    }
+
     public class QMC_ImageProcessFindAlign
     {
+        private bool IsImageSave = false;
         private List<Point> pointsCircle = new List<Point>();
         CirclePoints circlePoints1;
         //Random random = new Random((int)DateTime.Now.Ticks);
@@ -29,7 +43,7 @@ namespace QMC.Common.VisionPart
             int h = bitmap.Height;
             bool m_bFindCircle = false;
 
-            List<RectangleF> listMetal = FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h,
+            var v=  FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h,
                 260, 0.05, ref m_bFindCircle, 0, 0, false); ;
 
             //var v = MatchCoordinates(listMetal, 3);
@@ -41,7 +55,7 @@ namespace QMC.Common.VisionPart
             //    circlesResult.Add(rect);
             //}
 
-            return listMetal;
+            return circlesResult;
         }
         public static List<PointF> MatchCoordinates(List<RectangleF> listMetal, int cols)
         {
@@ -290,7 +304,7 @@ namespace QMC.Common.VisionPart
             }
             SaveImage(images, w, h, filename);
         }
-        public List<RectangleF> FindCirclesWidthCircleBoundary(List<RectangleF> circlesResult,
+        public QMC_ImageProcessFindAlignResult FindCirclesWidthCircleBoundary(List<RectangleF> circlesResult,
             byte[] pixelData, int w, int h, int radius, double dSpec, ref bool circleFound, int nCenterX = 0, int nCenterY = 0, bool bIsDarkCircleSearch = true)
         {
             if (bIsDarkCircleSearch == false)
@@ -396,8 +410,8 @@ namespace QMC.Common.VisionPart
                         if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.1)
                         {
                             //허상을 찾아는지 검사 한다.
-                            double dScore = IsRealCircle(center, dRadius2, points, dSpec);
-                            if (dScore > 0.6)
+                            double dScoreCheck = IsRealCircle(center, dRadius2, points, dSpec);
+                            if (dScoreCheck > 0.6)
                             {
                                 bFindCircle = true;
                                 break;
@@ -448,7 +462,7 @@ namespace QMC.Common.VisionPart
             if (bFindCircle == false)
             {
                 circlesResult.Clear();
-                return circlesResult;
+                return new QMC_ImageProcessFindAlignResult();
             }
 
             cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
@@ -460,9 +474,12 @@ namespace QMC.Common.VisionPart
             points = polygon;
 
             circlesResult.Clear();
-            FindCircleFitter(circlesResult, points, out dRadius);
-
-            return circlesResult;
+            Circle resultCircle =  FindCircleFitter(circlesResult, points, out dRadius);
+            QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
+            result.Circle.Add(resultCircle);
+            double dScore = IsRealCircle(resultCircle, dRadius, points, dSpec);
+            result.ScoreCollection.Add(dScore);
+            return result;
         }
 
         private double IsRealCircle(Circle center, double dRadius, List<PointF> points, double dSpec)
@@ -800,6 +817,10 @@ namespace QMC.Common.VisionPart
         }
         private void SaveImage(byte[] image, int w, int h, string fileName)
         {
+            if(IsImageSave == false)
+            {
+                return;
+            }
             Bitmap bitmap = new Bitmap(w, h, PixelFormat.Format8bppIndexed);
             BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
             //비트맵 8ibt Gray 파레트 추가
