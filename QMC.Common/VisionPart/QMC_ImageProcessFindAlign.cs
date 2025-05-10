@@ -309,7 +309,9 @@ namespace QMC.Common.VisionPart
         {
             if (bIsDarkCircleSearch == false)
             {
-                pixelData = InversImage(pixelData);
+                //pixelData = InversImage(pixelData);
+               // MeanFilter(pixelData, w, h, 10, 10);
+                //SaveImage(pixelData, w, h, "polygonMeanFilter.bmp");
             }
             List<PointF> polygon = new List<PointF>();
             List<PointF> points = new List<PointF>();
@@ -366,15 +368,15 @@ namespace QMC.Common.VisionPart
                     {
                         dFirstSpec = 0.5;
                     }
-                    int nMaxCircleFirst = (int)(radius * 4);
+                    int nMaxCircleFirst = (int)(radius * 2);
                     int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
 
                     if (nMaxCircleFirst > 1000)
                     {
                         nMaxCircleFirst = 1000;
                     }
-
-                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, radius / 2, (int)(radius * 1.5), 3);
+                    
+                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius/1.5), (int)nMaxCircleFirst, 1,10, bIsDarkCircleSearch);
                     points = polygon;
                     circlesResult.Clear();
                     FindCircleFitter(circlesResult, points, out dRadius, 5);
@@ -398,7 +400,7 @@ namespace QMC.Common.VisionPart
                         cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
                         cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
 
-                        polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 1, 2);
+                        polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 1, 2, bIsDarkCircleSearch);
 
 
                         points = polygon;
@@ -468,7 +470,7 @@ namespace QMC.Common.VisionPart
             cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
             cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
             SaveOutLine(polygon, w, h, "polygon.bmp");
-            polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 0.25, 1);
+            polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 0.25, 1, bIsDarkCircleSearch);
             SaveOutLine(polygon, w, h, "polygon2.bmp");
 
             points = polygon;
@@ -679,7 +681,7 @@ namespace QMC.Common.VisionPart
         }
 
 
-        private List<PointF> FindCircleBoundary(byte[] pixelData, int width, int height, float cx, float cy, int initialRadius = 50, int maxRadius = 1000, double angleStep = 0.11, int step = 10)
+        private List<PointF> FindCircleBoundary(byte[] pixelData, int width, int height, float cx, float cy, int initialRadius = 50, int maxRadius = 1000, double angleStep = 0.11, int step = 10, bool bIsDarkCircleSearch = false)
         {
 
             maxRadius = Math.Min(Math.Min(width, height) / 2, maxRadius);
@@ -709,16 +711,25 @@ namespace QMC.Common.VisionPart
                     double currentAverage = GetPixelAverage(pixelData, width, height, x, y, pixelAverageCount, radian, true);
                     double nextAverage = GetPixelAverage(pixelData, width, height, x, y, pixelAverageCount, radian, false);
 
-                    double difference = (nextAverage - currentAverage) / currentAverage;
+                    double difference = 0; 
 
-                    lock (lockObject)
+                    if(bIsDarkCircleSearch == false)
                     {
-                        if (difference > maxDifference)
-                        {
-                            maxDifference = difference;
-                            boundaryPoint = new PointF(x, y);
-                        }
+                        difference = (currentAverage - nextAverage) / nextAverage;
+                        
                     }
+                    else
+                    {
+                        difference = (nextAverage - currentAverage) / currentAverage;
+                    }
+                        lock (lockObject)
+                        {
+                            if (difference > maxDifference)
+                            {
+                                maxDifference = difference;
+                                boundaryPoint = new PointF(x, y);
+                            }
+                        }
                 });
                 boundaryPoints.Add(boundaryPoint);
             }

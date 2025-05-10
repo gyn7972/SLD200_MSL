@@ -752,7 +752,7 @@ namespace QMC.Common.Parts
                         Camera.LatestImage.RawData,
                         Camera.LatestImage.Header.Width,
                         Camera.LatestImage.Header.Height,
-                        nRadiusImageCount, dSpec, ref bFind, 0, 0, bIsDarkCircleSearch);
+                        256, dSpec, ref bFind, 0, 0, bIsDarkCircleSearch);
                     // 0.05 - Spec 
 
                     if (Fiducial_circlesResult.Count > 0 && bFind == true)
