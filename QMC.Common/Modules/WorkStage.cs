@@ -36343,6 +36343,8 @@ namespace QMC.Common.Modules
             {
                 Log.Write(ex);
             }
+
+            return bRtn;
         }
 
         //  Laser Height Sensor Value 저장
@@ -36377,8 +36379,6 @@ namespace QMC.Common.Modules
             File.AppendAllText(fileName + ".txt", strData);
         }
 
-            return bRtn;
-        }
         public bool IsWorkStage_TeachingPositionsZ(int nTeachingPos)
         {
             bool bRtn = false;
