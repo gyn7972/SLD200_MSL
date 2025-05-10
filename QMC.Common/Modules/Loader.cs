@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using System.Security.Policy;
 using System.Linq;
 using static QMC.Common.Equipment;
+using System.ComponentModel;
 
 
 namespace QMC.Common.Modules
@@ -10831,7 +10832,7 @@ namespace QMC.Common.Modules
             if (MC_Func.MC_GetDone((int)Loader.nAxis.TR_Z) &&
                 MC_Func.MC_PosTolerance((int)Loader.nAxis.TR_Z, dTargetZ))
             {
-                strTemp = string.Format("IsInterlock_LoaderTransfer_Enabled [Fail]: LoaderTransferZ Axis이 0 Pos 아닙니다.");
+                strTemp = string.Format("IsInterlock_LoaderTransfer_Enabled [Fail]: LoaderTransferZ Axis이 Safety Pos 아닙니다.");
                 Log.Write("SLD-200", Equipment.User_Name, strTemp);
                 return bRtn;
             }
@@ -11065,5 +11066,175 @@ namespace QMC.Common.Modules
 
             return bRtn;
         }
+
+
+        public bool MovetoLoader_ABS_Positions(Loader.nAxis nAxis, double dPos, Type_Motor_Speed typeSpeed)
+        {
+            // string strTemp = "";
+            bool bRtn = false;
+            double dVelocity = 0.0;
+            double dAcc = 0.0;
+            try
+            {
+                switch (nAxis)
+                {
+                    case Loader.nAxis.Z0:
+                        if (!IsInterlock_LoaderPortR_Enabled()) return bRtn = false;
+                        break;
+                    case Loader.nAxis.Z1:
+                        if (!IsInterlock_LoaderPortL_Enabled()) return bRtn = false;
+                        break;
+                    case Loader.nAxis.ALN_X:
+                        break;
+                    case Loader.nAxis.ALN_Y:
+                        break;
+                    case Loader.nAxis.TR_Z:
+                        if (!IsInterlock_LoaderTransferZ_Enabled()) return bRtn = false;
+                        break;
+                    case Loader.nAxis.TR_X:
+                        if (!IsInterlock_LoaderTransferX_Enabled()) return bRtn = false;
+                        break;
+                }
+
+                {
+                    if (IsLoader_Positions((Loader.nAxis)nAxis, dPos) == false)
+                    {
+                        switch (typeSpeed)
+                        {
+                            case Type_Motor_Speed.Fine:
+                                dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                                dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
+                                break;
+                            case Type_Motor_Speed.Coarse:
+                                dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Coarse;
+                                dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
+                                break;
+                            default:
+                                dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                                dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
+                                break;
+                        }
+
+                        MC_Func.MC_MovePosition((int)nAxis, dPos, dVelocity, dAcc, dAcc);
+                    }
+
+                    bRtn = true;
+                }
+                //strTemp = string.Format("Move_to_WorkStage_TeachingPositions 이동");
+                //Log.Write("SLD-200", Equipment.User_Name, strTemp);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+            return bRtn;
+        }
+        public bool IsLoader_Positions(Loader.nAxis nAxis, double dPos)
+        {
+            bool bRtn = false;
+
+            if (MC_Func.MC_GetDone((int)nAxis) &&
+                MC_Func.MC_PosTolerance((int)nAxis, dPos))
+            {
+                bRtn = true;
+            }
+
+            return bRtn;
+        }
+        public bool MovetoLoader_Jog_Positions(Loader.nAxis nAxis, int nDirection, Type_Motor_Speed typeSpeed)
+        {
+            bool bRtn = false;
+            double dVelocity = 0.0;
+            double dAcc = 0.0;
+            try
+            {
+                //Jog시에는 인터락 무시.
+                //if (IsInterlock_WorkStageXY_Enabled())
+                {
+                    switch (typeSpeed)
+                    {
+                        case Type_Motor_Speed.Fine:
+                            dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                            dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
+                            break;
+                        case Type_Motor_Speed.Coarse:
+                            dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Coarse;
+                            dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
+                            break;
+                        default:
+                            dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                            dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
+                            break;
+                    }
+
+                    MC_Func.MC_JogMove((int)nAxis, dVelocity * nDirection, dAcc, dAcc);
+                    bRtn = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+            return bRtn;
+        }
+        public bool MovetoLoader_Rel_Positions(Loader.nAxis nAxis, double dPos, int nDirection, Type_Motor_Speed typeSpeed)
+        {
+            // string strTemp = "";
+            bool bRtn = false;
+            double dVelocity = 0.0;
+            double dAcc = 0.0;
+            try
+            {
+                switch (nAxis)
+                {
+                    case Loader.nAxis.Z0:
+                        if (!IsInterlock_LoaderPortR_Enabled()) return bRtn = false;
+                        break;
+                    case Loader.nAxis.Z1:
+                        if (!IsInterlock_LoaderPortL_Enabled()) return bRtn = false;
+                        break;
+                    case Loader.nAxis.ALN_X:
+                        break;
+                    case Loader.nAxis.ALN_Y:
+                        break;
+                    case Loader.nAxis.TR_Z:
+                        if (!IsInterlock_LoaderTransferZ_Enabled()) return bRtn = false;
+                        break;
+                    case Loader.nAxis.TR_X:
+                        if (!IsInterlock_LoaderTransferX_Enabled()) return bRtn = false;
+                        break;
+                }
+
+                switch (typeSpeed)
+                {
+                    case Type_Motor_Speed.Fine:
+                        dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                        dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
+                        break;
+                    case Type_Motor_Speed.Coarse:
+                        dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Coarse;
+                        dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
+                        break;
+                    default:
+                        dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                        dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
+                        break;
+                }
+
+                MC_Func.MC_MoveRelPosition((int)nAxis, dPos * nDirection, dVelocity, dAcc, dAcc);
+                bRtn = true;
+
+                //strTemp = string.Format("Move_to_WorkStage_TeachingPositions 이동");
+                //Log.Write("SLD-200", Equipment.User_Name, strTemp);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+            return bRtn;
+        }
+
     }
 }
