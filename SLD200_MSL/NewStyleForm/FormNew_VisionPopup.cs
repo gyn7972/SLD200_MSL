@@ -1371,7 +1371,7 @@ namespace SLD200_MSL
 
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, workStage.Camera_LowRes.LatestImage.RawData, w, h);
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h);
-                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, (int)m_dradius, 0.015, ref m_bFindCircle, 0, 0, m_nTargetColor == 0);
+                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, (int)m_dradius, 0.05, ref m_bFindCircle, 0, 0, m_nTargetColor == 0);
             }
             else
             {

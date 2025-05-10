@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -289,12 +290,40 @@ namespace QMC.Common.VisionPart
             }
             SaveImage(images, w, h, filename);
         }
+
+        private void MeanFilter(byte[] pixelData, int w, int h, int filterSizeW, int FilterSizeH)
+        {
+            byte[] result = new byte[pixelData.Length];
+            int filterSize = filterSizeW * FilterSizeH;
+            for (int y = FilterSizeH; y < h - FilterSizeH; y++)
+            {
+                for (int x = filterSizeW; x < w - filterSizeW; x++)
+                {
+                    int sum = 0;
+                    int nCount = 0;
+                    for (int fy = -FilterSizeH / 2; fy <= FilterSizeH / 2; fy++)
+                    {
+                        for (int fx = -filterSizeW / 2; fx <= filterSizeW / 2; fx++)
+                        {
+
+
+                            sum += pixelData[(fy + y) * w + (x + fx)];
+                            nCount++;
+                        }
+                    }
+                    result[y * w + x] = (byte)(sum / (nCount));
+                }
+            }
+            Array.Copy(result, pixelData, pixelData.Length);
+        }
         public List<RectangleF> FindCirclesWidthCircleBoundary(List<RectangleF> circlesResult,
             byte[] pixelData, int w, int h, int radius, double dSpec, ref bool circleFound, int nCenterX = 0, int nCenterY = 0, bool bIsDarkCircleSearch = true)
         {
             if (bIsDarkCircleSearch == false)
             {
-                pixelData = InversImage(pixelData);
+                //pixelData = InversImage(pixelData);
+               // MeanFilter(pixelData, w, h, 10, 10);
+                //SaveImage(pixelData, w, h, "polygonMeanFilter.bmp");
             }
             List<PointF> polygon = new List<PointF>();
             List<PointF> points = new List<PointF>();
@@ -326,7 +355,7 @@ namespace QMC.Common.VisionPart
 
                 int nCy = h / 2 + nShiftY;
                 nDirectionX = 0;
-                for (int x = 0; x < 1; x++)
+                for (int x = 0; x < nDivideCount; x++)
                 {
                     int nShiftX = nDirectionX % 2 == 0 ? nStepX : -nStepX;
                     nShiftX *= x;
@@ -343,8 +372,6 @@ namespace QMC.Common.VisionPart
                     nCx = (int)currentPosition.X;
                     nCy = (int)currentPosition.Y;
 
-
-
                     int nMaxCircle = (int)(radius * (1 + dSpec));
                     int nMinCircle = (int)(radius * (1 - dSpec));
 
@@ -353,15 +380,15 @@ namespace QMC.Common.VisionPart
                     {
                         dFirstSpec = 0.5;
                     }
-                    int nMaxCircleFirst = (int)(radius * 4);
+                    int nMaxCircleFirst = (int)(radius * 2);
                     int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
 
                     if (nMaxCircleFirst > 1000)
                     {
                         nMaxCircleFirst = 1000;
                     }
-
-                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, radius / 2, (int)(radius * 1.5), 3);
+                    
+                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius/1.5), (int)nMaxCircleFirst, 1,10, bIsDarkCircleSearch);
                     points = polygon;
                     circlesResult.Clear();
                     FindCircleFitter(circlesResult, points, out dRadius, 5);
@@ -385,7 +412,7 @@ namespace QMC.Common.VisionPart
                         cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
                         cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
 
-                        polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 1, 2);
+                        polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 1, 2, bIsDarkCircleSearch);
 
 
                         points = polygon;
@@ -394,11 +421,11 @@ namespace QMC.Common.VisionPart
                         double dRadius2 = 0;
                         Circle center = FindCircleFitter(circlesResult, points, out dRadius2, 2);
 
-                        if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.01)
+                        if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.1)
                         {
                             //허상을 찾아는지 검사 한다.
                             double dScore = IsRealCircle(center, dRadius2, points, dSpec);
-                            if (dScore > 0.6)
+                            if (dScore > 0.8)
                             {
                                 bFindCircle = true;
                                 break;
@@ -455,7 +482,7 @@ namespace QMC.Common.VisionPart
             cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
             cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
             SaveOutLine(polygon, w, h, "polygon.bmp");
-            polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 0.25, 1);
+            polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 0.25, 1, bIsDarkCircleSearch);
             SaveOutLine(polygon, w, h, "polygon2.bmp");
 
             points = polygon;
@@ -663,7 +690,7 @@ namespace QMC.Common.VisionPart
         }
 
 
-        private List<PointF> FindCircleBoundary(byte[] pixelData, int width, int height, float cx, float cy, int initialRadius = 50, int maxRadius = 1000, double angleStep = 0.11, int step = 10)
+        private List<PointF> FindCircleBoundary(byte[] pixelData, int width, int height, float cx, float cy, int initialRadius = 50, int maxRadius = 1000, double angleStep = 0.11, int step = 10, bool bIsDarkCircleSearch = false)
         {
             List<PointF> boundaryPoints = new List<PointF>();
 
@@ -696,16 +723,25 @@ namespace QMC.Common.VisionPart
                     double currentAverage = GetPixelAverage(pixelData, width, height, x, y, pixelAverageCount, radian, true);
                     double nextAverage = GetPixelAverage(pixelData, width, height, x, y, pixelAverageCount, radian, false);
 
-                    double difference = (nextAverage - currentAverage) / currentAverage;
+                    double difference = 0; 
 
-                    lock (lockObject)
+                    if(bIsDarkCircleSearch == false)
                     {
-                        if (difference > maxDifference)
-                        {
-                            maxDifference = difference;
-                            boundaryPoint = new PointF(x, y);
-                        }
+                        difference = (currentAverage - nextAverage) / nextAverage;
+                        
                     }
+                    else
+                    {
+                        difference = (nextAverage - currentAverage) / currentAverage;
+                    }
+                        lock (lockObject)
+                        {
+                            if (difference > maxDifference)
+                            {
+                                maxDifference = difference;
+                                boundaryPoint = new PointF(x, y);
+                            }
+                        }
                 });
                 boundaryPoints.Add(boundaryPoint);
             }

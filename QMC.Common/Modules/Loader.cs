@@ -1956,7 +1956,7 @@ namespace QMC.Common.Modules
             {
                 //  Pause 되었으니 Stacker0 을 아래로 내림
 
-                StackerModuleLoadingWaitingPos_StackerZ0_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
+                //StackerModuleLoadingWaitingPos_StackerZ0_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
             }
             Equipment.Loader_RPort_Pause_Before = Equipment.Loader_RPort_Pause;
 
@@ -2853,7 +2853,7 @@ namespace QMC.Common.Modules
             {
                 //  Pause 되었으니 Stacker1 을 아래로 내림
 
-                StackerModuleLoadingWaitingPos_StackerZ1_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
+                //StackerModuleLoadingWaitingPos_StackerZ1_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
             }
             Equipment.Loader_LPort_Pause_Before = Equipment.Loader_LPort_Pause;
 
@@ -6617,7 +6617,7 @@ namespace QMC.Common.Modules
                     if (MC_Func.MC_GetDone((int)nAxis.TR_Z) && MC_Func.MC_PosTolerance((int)nAxis.TR_Z, loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.TR_Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 완료");
-
+                        
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_WorkStageCycle_LoadingPos_Start;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 60000)
@@ -6675,6 +6675,9 @@ namespace QMC.Common.Modules
                         workStage.m_nWorkStage_Move_Step = (int)WorkStage.WorkStage_Move_Step.Start;
 
                         m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_WorkStageCycle_LoadingPos_CompleteCheck;
+
+                        //  Unloading 위치에 있는 Work Stage 를, Loading 위치로 보냄과 동시에 Loader Transfer 를 Loading 위치로 이동시키려면, 윗줄 주석으로 변경, 아랫줄 주석해제
+                        //m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferX_Move_LoadingPos;
                     }
                     break;
 
@@ -6753,7 +6756,7 @@ namespace QMC.Common.Modules
 
                 case (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_PutDownPos_1stStep:                            //  Transfer Z 축, Module Put Down 위치로 이동 (1단계, 최종 위치에서 위로 10 mm)
 
-                    //  안전을 위해, Stage 가 Module Put Down 위치에 있는지 한번더 체크
+                    //  Stage 가 Module Put Down 위치에 있는지 한번더 체크 (Work Stage 와 Loader Transfer 가 동시에 움직이도록 할 경우 인터락)
                     if ((workStage.m_nWorkStage_Move_Step == (int)WorkStage.WorkStage_Move_Step.None) &&
 
                         (workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) > (workStage.stWorkStageTeachingPos[(int)WorkStage.WorkStage_TeachingPosList.STAGE_LoadingPos].Stage_X - 0.1)) &&
@@ -7205,12 +7208,6 @@ namespace QMC.Common.Modules
                                         m_dSpeed,
                                         m_dAccDec,
                                         m_dAccDec);
-
-
-                    //  WorkStage 의 MainWork 에서 Parsing 진행 (Module 을 Work Stage 에 내려놓고 도면 Import 하던 것을, Work Stage 에 내려놓는 Cycle 시작할 때 Import 하도록 변경)
-                    Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 시작하면서 도면 Import Flag 를 True 로 변경");
-                    Equipment.ProcessingData_Parsing_byLoader = true;
-
 
                     TickCount_Start((int)TickType.TICK_LDTR);
 
@@ -8232,6 +8229,12 @@ namespace QMC.Common.Modules
                                 m_dSpeed,
                                 m_dAccDec,
                                 m_dAccDec);
+
+
+            //  WorkStage 의 MainWork 에서 Parsing 진행 (Module 을 Work Stage 에 내려놓고 도면 Import 하던 것을, Work Stage 에 내려놓는 Cycle 시작할 때 Import 하도록 변경)
+            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 이동 시작하면서 도면 Import Flag 를 True 로 변경");
+            Equipment.ProcessingData_Parsing_byLoader = true;
+
 
             TickCount_Start((int)TickType.TICK_LDTR);
         }
@@ -10300,6 +10303,11 @@ namespace QMC.Common.Modules
             {
                 m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.MAlignerPutDown_MAligner_Vacuum_On;
             }
+            else if (Step <= (int)Loader_Transfer_Step.MAlignerPutDown_MAlign_CompleteCheck)
+            {
+                TickCount_Start((int)TickType.TICK_LDTR);
+                m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.MAlignerPutDown_MAlign_CompleteCheck;
+            }            
             else
             {
                 m_nLoader_Transfer_Step_Recovery = Step;
