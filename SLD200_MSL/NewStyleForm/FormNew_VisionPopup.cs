@@ -1362,10 +1362,25 @@ namespace SLD200_MSL
             if (radioButton_VisionPopup_CameraSelection_LowMag.Checked)
             {
 
+<<<<<<< HEAD
                 w = workStage.Camera_LowRes.Resolution.Width;
                 h = workStage.Camera_LowRes.Resolution.Height;
                 
                 dRaius = m_dTargetSize_Radius / workStage.Config.ParamConfig.LowerVision_Scale_X;
+=======
+                m_nImage_Width = w;
+                m_nImage_Height = h;
+
+                double m_dradius = 0.0;
+                m_dradius = m_dTargetSize_Radius / workStage.Config.ParamConfig.LowerVision_Scale_X;
+
+                // Bitmap을 byte 배열로 변환
+                //byte[] pixelData = aligner.ConvertBitmapToByteArray(bm_Temp);
+
+                //aligner.FindCirclesWidthCircleBoundary(circlesResult, workStage.Camera_LowRes.LatestImage.RawData, w, h);
+                //aligner.FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h);
+                aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, (int)m_dradius, 0.05, ref m_bFindCircle, 0, 0, m_nTargetColor == 0);
+>>>>>>> 2877aa2d376bbe781bfdbb64ffdc798404b5a0f3
             }
             else
             {
@@ -1380,15 +1395,21 @@ namespace SLD200_MSL
             if (m_bFindCircle && (circlesResult.Count > 0))
             {
                 detectedCircles.Clear();
-
-                double dCenterPosX=0.0, dCenterPosY = 0.0;
                 //  좌표 표시
                 listBox_FindCircle_Result.Items.Clear();
                 for (int i = 0; i < result.Circle.Count; i++)
                 {
-                    listBox_FindCircle_Result.Items.Add((i + 1) + ".중점(mm) X,Y : " + result.Circle[i].CenterX.ToString("F3"));
-                    listBox_FindCircle_Result.Items.Add((i + 1) + ".지름(mm)" + (dRaius*2).ToString("F3"));
-                    listBox_FindCircle_Result.Items.Add((i + 1) + "Score : " + result.ScoreCollection[i].ToString("F2"));
+                    double dCxpx = result.Circle[i].CenterX;
+                    double dCypx = result.Circle[i].CenterY;
+                    double dCxmm = result.Circle[i].CenterX * workStage.Config.ParamConfig.LowerVision_Scale_X;
+                    double dCymm = result.Circle[i].CenterY * workStage.Config.ParamConfig.LowerVision_Scale_Y;
+
+                    listBox_FindCircle_Result.Items.Add((i + 1) + ".X(mm) : " + dCxmm.ToString("F3"));
+                    listBox_FindCircle_Result.Items.Add((i + 1) + ".Y(mm) : " + dCymm.ToString("F3"));
+                    listBox_FindCircle_Result.Items.Add((i + 1) + ".X(px) : " + dCxpx.ToString("F3"));
+                    listBox_FindCircle_Result.Items.Add((i + 1) + ".Y(px) : " + dCypx.ToString("F3"));
+                    listBox_FindCircle_Result.Items.Add((i + 1) + ".지름(mm) : " + (dRaius*2).ToString("F3"));
+                    listBox_FindCircle_Result.Items.Add((i + 1) + ".Score : " + result.ScoreCollection[i].ToString("F2"));
                 }
 
                 foreach (var circle in circlesResult)
