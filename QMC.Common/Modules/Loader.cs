@@ -6852,7 +6852,16 @@ namespace QMC.Common.Modules
 
                     //  Transfer Z 축, Module Put Down 위치로 이동하면서 하부 집진기를 켠다. (2단계, 최종 위치)
                     //  집진기를 너무 일찍 동작시키면, 모듈이 Stage 에 안착될 때 진공압으로 충격이 발생할 수 있다.
-                    workStage.DustCollector_On((int)nDustCollector.DustCollector_Lower);
+                    if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "하부 집진기 사용 안함.");
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "하부 집진기 사용. 집진기 On");
+
+                        workStage.DustCollector_On((int)nDustCollector.DustCollector_Lower);
+                    }
 
                     m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_PutDownPos_2ndStep_DoneCheck;
                     break;
@@ -8143,7 +8152,17 @@ namespace QMC.Common.Modules
             workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
             workStage.DustCollector_SetFrequence(Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower);
             Thread.Sleep(1000);
-            workStage.DustCollector_On((int)nDustCollector.DustCollector_Lower);
+
+            if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "WorkStage, 하부 집진기 사용 안함.");
+            }
+            else
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "WorkStage, 하부 집진기 사용. 집진기 On");
+
+                workStage.DustCollector_On((int)nDustCollector.DustCollector_Lower);
+            }
 
             //  Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
             workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);            //  임시로 -30 고정
@@ -10148,6 +10167,9 @@ namespace QMC.Common.Modules
                 //  Loader Transfer Recovery 를 None 으로 보내고, Stacker0 의 Complete 를 false 로 해주면...
                 //  Stacker0 부터 Pick Up 대기위치 이동 동작하고,
                 //  그 이후에 Transfer 가 모듈 Pick Up 을 진행할 것으로 예상
+                //
+                //  m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker
+                //  이걸 해줘야 동작한다.
 
                 m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Move_ReadyPos2_2ndStep;
             }
@@ -10194,6 +10216,9 @@ namespace QMC.Common.Modules
                 //  Loader Transfer Recovery 를 None 으로 보내고, Stacker1 의 Complete 를 false 로 해주면...
                 //  Stacker1 부터 Pick Up 대기위치 이동 동작하고,
                 //  그 이후에 Transfer 가 모듈 Pick Up 을 진행할 것으로 예상
+                //
+                //  m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker
+                //  이걸 해줘야 동작한다.
 
                 m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_2ndStep;
             }

@@ -752,7 +752,7 @@ namespace QMC.Common.Parts
                         Camera.LatestImage.RawData,
                         Camera.LatestImage.Header.Width,
                         Camera.LatestImage.Header.Height,
-                        256, dSpec, ref bFind, 0, 0, bIsDarkCircleSearch);
+                        nRadiusImageCount, dSpec, ref bFind, 0, 0, bIsDarkCircleSearch);
                     // 0.05 - Spec 
 
                     if (Fiducial_circlesResult.Count > 0 && bFind == true)
@@ -779,6 +779,7 @@ namespace QMC.Common.Parts
                     {
                         try
                         {
+
                             m_Owner.CoarseCamResultOveray = new VisionImageViewer.OwnedOverlayCollection();
                             foreach (var v in Fiducial_circlesResult)
                             {
@@ -795,10 +796,10 @@ namespace QMC.Common.Parts
                                 overayEl.Thickness = 1;
                                 m_Owner.CoarseCamResultOveray.Add(overayEl);
 
-
-                                string strScore = string.Format("Score : {0:0.00}", result.ScoreCollection[0]);
-                                Font font = new Font("verdana", 10, FontStyle.Bold);
-                                var textOveray = new TextVisionImageOverlay(strScore, new Point((int)v.Left, (int)v.Top - 30), font);
+                                int FontSize = 50;
+                                string strScore = string.Format("Score : {0:0.00},Size:{1:0.00}  ", result.ScoreCollection[0], result.Circle[0].Radius*2* TempScale.X);
+                                Font font = new Font("verdana", FontSize, FontStyle.Bold);
+                                var textOveray = new TextVisionImageOverlay(strScore, new Point((int)v.Left, (int)v.Top - FontSize *3), font);
                                 textOveray.Visible = true;
                                 m_Owner.CoarseCamResultOveray.Add(textOveray);
                             }

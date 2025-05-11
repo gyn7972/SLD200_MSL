@@ -101,7 +101,7 @@ namespace QMC.Common
         {
             return new XyCoordinate(a + b.X, a + b.Y);
         }
-
+        
         public static XyCoordinate operator +(XyCoordinate a, double b)
         {
             return new XyCoordinate(a.X + b, a.Y + b);
@@ -276,7 +276,7 @@ namespace QMC.Common
         {
             return new XyCoordinate(a.X, a.Y);
         }
-
+       
         public static explicit operator XyCoordinate(XyzCoordinate a)
         {
             return new XyCoordinate(a.X, a.Y);

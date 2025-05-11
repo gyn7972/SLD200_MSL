@@ -556,6 +556,10 @@ namespace SLD200_MSL
                 switch (m_nReturn)
                 {
                     case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:
+
+                        //  Hole1 제외한 나머지 Layer 의 Socket 을 가공할 것인지 여부를 결정하는 Flag 세팅
+                        workStage.GetDrillingData_ProcessingFlagCheck();
+
                         MessageBox.Show("가공 데이터 Parsing 성공", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         break;
 
@@ -1802,8 +1806,11 @@ namespace SLD200_MSL
 
 
 
-            SiriusEditor.Document.Action.ActEntityRotate(SiriusEditor.Document.Action.SelectedEntity, (float)m_dAngle, (float)m_dRotCenter_X, (float)m_dRotCenter_Y);
-            SiriusEditor.Document.Action.ActEntityTransit(SiriusEditor.Document.Action.SelectedEntity, (float)m_dOffsetX, (float)m_dOffsetY);
+            workStage.AlignedDrillingData_FailedSocket_Select_and_OffsetMove(m_dRotCenter_X, m_dRotCenter_Y, m_dOffsetX, m_dOffsetY, m_dAngle);
+
+
+            //SiriusEditor.Document.Action.ActEntityRotate(SiriusEditor.Document.Action.SelectedEntity, (float)m_dAngle, (float)m_dRotCenter_X, (float)m_dRotCenter_Y);
+            //SiriusEditor.Document.Action.ActEntityTransit(SiriusEditor.Document.Action.SelectedEntity, (float)m_dOffsetX, (float)m_dOffsetY);
             return;
 
 
