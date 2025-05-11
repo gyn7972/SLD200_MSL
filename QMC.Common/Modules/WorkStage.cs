@@ -19780,7 +19780,7 @@ namespace QMC.Common.Modules
 
 
                                 var Data = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint;
-                                PointD[] rData = ResizePoliLine(Data);
+                                PointD[] rData = ResizePoliLine(Data , m_dHoleLayer_Resizing);
 
                                 m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling = rData;
                                 //  Rectangle 이고, 가공 사이즈 줄이기 옵션이 활성화 되어 있는 경우, Edge Point 를 줄여서 가공
@@ -21463,7 +21463,7 @@ namespace QMC.Common.Modules
             return 0;
         }
 
-        private PointD[] ResizePoliLine(PointD[] Data)
+        private PointD[] ResizePoliLine(PointD[] Data,double dResize )
         {
             XyCoordinate center = new XyCoordinate();
             XyCoordinate SourceLeftTop = new XyCoordinate();
@@ -21480,10 +21480,10 @@ namespace QMC.Common.Modules
             DestRightBottom.X = SourceRightBottom.X = Data.Max(t => t.X);
             DestRightBottom.Y = SourceRightBottom.Y = Data.Max(t => t.Y);
 
-            DestLeftTop.X -= m_dHoleLayer_Resizing / 2;
-            DestLeftTop.Y -= m_dHoleLayer_Resizing / 2;
-            DestRightBottom.X += m_dHoleLayer_Resizing / 2;
-            DestRightBottom.Y += m_dHoleLayer_Resizing / 2;
+            DestLeftTop.X -= dResize / 2;
+            DestLeftTop.Y -= dResize / 2;
+            DestRightBottom.X += dResize / 2;
+            DestRightBottom.Y += dResize / 2;
             DrawingResizeForPerspectiveProjection drpp = new DrawingResizeForPerspectiveProjection();
             drpp.MakeCorrectionMatrix(SourceLeftTop, SourceRightBottom, DestLeftTop, DestRightBottom);
             var rData = drpp.Resize(Data);
