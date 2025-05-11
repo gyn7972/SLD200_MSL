@@ -19778,31 +19778,11 @@ namespace QMC.Common.Modules
                                 //  Polyline 도형이 직각사각형인지 마름모꼴인지 확인
                                 //  직각사각형 판정 기준 : 0번째 좌표와 1번째 좌표를 비교하여 X 좌표와 Y 좌표가 동일한 값이 있으면 직각사각형으로 본다. (직각사각형이라는 용어가 있나... -_-? 암튼...)
 
-                                
+
                                 var Data = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint;
-                                XyCoordinate center = new XyCoordinate();
-                                XyCoordinate SourceLeftTop= new XyCoordinate();
-                                XyCoordinate SourceRightBottom = new XyCoordinate();
+                                PointD[] rData = ResizePoliLine(Data);
 
-                                
-                                XyCoordinate DestLeftTop = new XyCoordinate();
-                                XyCoordinate DestRightBottom = new XyCoordinate();
-                                center.X = (Data.Min(t => t.X) + Data.Max(t => t.X)) / 2;
-                                center.Y = (Data.Min(t => t.Y) + Data.Max(t => t.Y)) / 2;
-
-                                DestLeftTop.X = SourceLeftTop.X = Data.Min(t => t.X);
-                                DestLeftTop.Y  = SourceLeftTop.Y = Data.Min(t => t.Y);
-                                DestRightBottom.X  = SourceRightBottom.X = Data.Max(t => t.X);
-                                DestRightBottom.Y = SourceRightBottom.Y = Data.Max(t => t.Y);
-                                
-                                DestLeftTop.X -= m_dHoleLayer_Resizing / 2;
-                                DestLeftTop.Y -= m_dHoleLayer_Resizing / 2;
-                                DestRightBottom.X += m_dHoleLayer_Resizing / 2;
-                                DestRightBottom.Y += m_dHoleLayer_Resizing / 2;
-                                DrawingResizeForPerspectiveProjection drpp = new DrawingResizeForPerspectiveProjection();
-                                drpp.MakeCorrectionMatrix(SourceLeftTop, SourceRightBottom, DestLeftTop, DestRightBottom);
-                                var rData = drpp.Resize(Data);
-                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling = drpp.Resize(Data);
+                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling = rData;
                                 //  Rectangle 이고, 가공 사이즈 줄이기 옵션이 활성화 되어 있는 경우, Edge Point 를 줄여서 가공
 
 
@@ -21482,7 +21462,34 @@ namespace QMC.Common.Modules
 
             return 0;
         }
-        
+
+        private PointD[] ResizePoliLine(PointD[] Data)
+        {
+            XyCoordinate center = new XyCoordinate();
+            XyCoordinate SourceLeftTop = new XyCoordinate();
+            XyCoordinate SourceRightBottom = new XyCoordinate();
+
+
+            XyCoordinate DestLeftTop = new XyCoordinate();
+            XyCoordinate DestRightBottom = new XyCoordinate();
+            center.X = (Data.Min(t => t.X) + Data.Max(t => t.X)) / 2;
+            center.Y = (Data.Min(t => t.Y) + Data.Max(t => t.Y)) / 2;
+
+            DestLeftTop.X = SourceLeftTop.X = Data.Min(t => t.X);
+            DestLeftTop.Y = SourceLeftTop.Y = Data.Min(t => t.Y);
+            DestRightBottom.X = SourceRightBottom.X = Data.Max(t => t.X);
+            DestRightBottom.Y = SourceRightBottom.Y = Data.Max(t => t.Y);
+
+            DestLeftTop.X -= m_dHoleLayer_Resizing / 2;
+            DestLeftTop.Y -= m_dHoleLayer_Resizing / 2;
+            DestRightBottom.X += m_dHoleLayer_Resizing / 2;
+            DestRightBottom.Y += m_dHoleLayer_Resizing / 2;
+            DrawingResizeForPerspectiveProjection drpp = new DrawingResizeForPerspectiveProjection();
+            drpp.MakeCorrectionMatrix(SourceLeftTop, SourceRightBottom, DestLeftTop, DestRightBottom);
+            var rData = drpp.Resize(Data);
+            return rData;
+        }
+
         private void MarkSpiralArc(double outDia, double innerDia,int turn,  double m_dTemp_AngleFactor, PointD center)
         {
             innerDia /= 2;
