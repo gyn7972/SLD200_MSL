@@ -371,12 +371,13 @@ namespace QMC.Common.VisionPart
                     int nMaxCircleFirst = (int)(radius * 2);
                     int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
 
-                    if (nMaxCircleFirst > 1000)
+                    if (nMaxCircleFirst > 2000)
                     {
-                        nMaxCircleFirst = 1000;
+                        nMaxCircleFirst = 2000;
                     }
                     
                     polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius/1.5), (int)nMaxCircleFirst, 1,10, bIsDarkCircleSearch);
+                   
                     points = polygon;
                     circlesResult.Clear();
                     FindCircleFitter(circlesResult, points, out dRadius, 5);
@@ -697,7 +698,9 @@ namespace QMC.Common.VisionPart
             for (double angle = 0; angle < 360; angle += angleStep)
             {
                 double radian = angle * Math.PI / 180;
-                double maxDifference = 0;
+                double maxDifferenceD = 0;
+                double maxDifferenceW = 0;
+
                 double dSin = Math.Sin(radian);
                 double dCos = Math.Cos(radian);
                 PointF boundaryPoint = new PointF(cx, cy);
@@ -716,25 +719,32 @@ namespace QMC.Common.VisionPart
                     double currentAverage = GetPixelAverage(pixelData, width, height, x, y, pixelAverageCount, radian, true);
                     double nextAverage = GetPixelAverage(pixelData, width, height, x, y, pixelAverageCount, radian, false);
 
-                    double difference = 0; 
-
-                    if(bIsDarkCircleSearch == false)
+                    double differenceD = 0;
+                    double differenceW = 0;
+                    //if (bIsDarkCircleSearch == false)
                     {
-                        difference = (currentAverage - nextAverage) / nextAverage;
+                        differenceW = (currentAverage - nextAverage) / nextAverage;
                         
                     }
-                    else
+                   // else
                     {
-                        difference = (nextAverage - currentAverage) / currentAverage;
+                        differenceD = (nextAverage - currentAverage) / currentAverage;
                     }
-                        lock (lockObject)
+
+
+                    lock (lockObject)
+                    {
+                        if (differenceD > maxDifferenceD)
                         {
-                            if (difference > maxDifference)
-                            {
-                                maxDifference = difference;
-                                boundaryPoint = new PointF(x, y);
-                            }
+                            maxDifferenceD = differenceD;
+                            boundaryPoint = new PointF(x, y);
                         }
+                        if (differenceW > maxDifferenceW)
+                        {
+                            maxDifferenceW = differenceW;
+                            boundaryPoint = new PointF(x, y);
+                        }
+                    }
                 });
                 boundaryPoints.Add(boundaryPoint);
             }

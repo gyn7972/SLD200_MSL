@@ -14608,8 +14608,11 @@ namespace QMC.Common.Modules
                         overayEl.Thickness = 1;
                         FineCamResultOveray.Add(overayEl);
 
-                        string strScore = string.Format("Score : {0:0.00}", result.ScoreCollection[0]);
-                        Font font = new Font("verdana", 82, FontStyle.Bold);
+                        VisionScale TempScale = new VisionScale();
+                        TempScale.X = this.Config.ParamConfig.UpperVision_Scale_X;
+                        int FontSize = 50;
+                        string strScore = string.Format("Score : {0:0.00},Size:{1:0.00}  ", result.ScoreCollection[0], result.Circle[0].Radius * 2 * TempScale.X);
+                        Font font = new Font("verdana", FontSize, FontStyle.Bold);
                         var textOveray = new TextVisionImageOverlay(strScore, new Point((int)ptStart.X, (int)ptStart.Y - 150), font);
                         textOveray.Visible = true;
                         FineCamResultOveray.Add(textOveray);
