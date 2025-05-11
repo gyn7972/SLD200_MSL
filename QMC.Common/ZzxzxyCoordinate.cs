@@ -383,5 +383,5 @@ namespace QMC.Common
         public ZzxzxyCoordinateCollection() : base() { }
         #endregion
     }
-    #endregion
+    #endregion 
 }
