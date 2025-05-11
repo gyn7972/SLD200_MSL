@@ -10513,11 +10513,6 @@ namespace QMC.Common.Modules
             return ret;
         }
 
-        
-
-        #endregion
-
-
         //        public XytCoordinate GetCurrentPosition()
         //        {
         //            XytCoordinate current = new XytCoordinate();
@@ -10531,9 +10526,20 @@ namespace QMC.Common.Modules
         //            return current;
         //        }
 
+        #endregion
+
+
+
+
 
 
         //motion 함수 
+        public void StoptoLoader_Motor(Loader.nAxis nAxis)
+        {
+            double dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
+            MC_Func.MC_MotorStop((int)nAxis, dAcc);
+        }
+
         public bool IsInterlock_LoaderPortR_Enabled()
         {
             bool bRtn = false;
