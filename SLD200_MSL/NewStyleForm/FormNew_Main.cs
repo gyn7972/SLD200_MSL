@@ -1529,7 +1529,18 @@ namespace SLD200_MSL
                         Log.Write("SLD-200", Equipment.User_Name, "Button Click", "집진기 Off");
 
                         //workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
-                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+
+                        if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Button Click", "하부 집진기 사용 안함.");
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Button Click", "하부 집진기 사용. 집진기 Off");
+
+                            workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                            Thread.Sleep(200);
+                        }
                     }
 
                     workStage.m_bLaserDrilling_Complete = true;
@@ -1753,7 +1764,17 @@ namespace SLD200_MSL
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "Button Click", "강제 배출, 집진기 Off");
 
-                    workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                    if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Button Click", "강제 배출, 하부 집진기 사용 안함.");
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Button Click", "강제 배출, 하부 집진기 사용. 집진기 Off");
+
+                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                        Thread.Sleep(200);
+                    }
                 }
             }
 

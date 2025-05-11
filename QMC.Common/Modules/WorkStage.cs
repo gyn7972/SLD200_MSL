@@ -14979,7 +14979,17 @@ namespace QMC.Common.Modules
                         Log.Write("SLD-200", "Auto Run", "집진기 Remote Mode, 집진기 On");
 
                         DustCollector_On((int)nDustCollector.DustCollector_Upper);
-                        DustCollector_On((int)nDustCollector.DustCollector_Lower);
+
+                        if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable)
+                        {
+                            Log.Write("SLD-200", "Auto Run", "하부 집진기 사용 안함");
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", "Auto Run", "하부 집진기 사용. 집진기 On");
+
+                            DustCollector_On((int)nDustCollector.DustCollector_Lower);
+                        }
 
                         TickCount_Start((int)TickType.TICK_MAIN);
 
@@ -15007,7 +15017,10 @@ namespace QMC.Common.Modules
 
 
                 case (int)LaserDrilling_Step.DustCollector_On_Check:                                //  집진기 On 확인
-                    if ((workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) && workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower)) ||
+                    if ((workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Upper) &&
+
+                        (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable ||
+                        (!Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable && workStageParameter.DI_DustCollector_Fan_Run((int)nDustCollector.DustCollector_Lower))) ) ||
 
                         (TickCount_Elapsed((int)TickType.TICK_MAIN) > DustCollector_TurnOn_AfterStableTime))
                     {
@@ -21932,7 +21945,18 @@ namespace QMC.Common.Modules
                 //  Unloading 위치로 이동하면서 집진기 Off
 
                 //DustCollector_Off((int)nDustCollector.DustCollector_Upper);
-                DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+
+                if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable)
+                {
+                    Log.Write("SLD-200", "Auto Run", "집진기 Remote Mode, Stage Unloading 위치로 이동 시, 하부 집진기 사용 안함.");
+                }
+                else
+                {
+                    Log.Write("SLD-200", "Auto Run", "집진기 Remote Mode, Stage Unloading 위치로 이동 시작 시 하부 집진기 Off");
+
+                    DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                    Thread.Sleep(200);
+                }
             }
 
             xyInterpolatedCoordinate.X = stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_UnloadingPos].Stage_X;
