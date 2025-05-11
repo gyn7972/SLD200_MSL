@@ -383,7 +383,7 @@
             this.tabPage_Recipe.Name = "tabPage_Recipe";
             this.tabPage_Recipe.Size = new System.Drawing.Size(1737, 756);
             this.tabPage_Recipe.TabIndex = 7;
-            this.tabPage_Recipe.Text = "Recipe";
+            this.tabPage_Recipe.Text = "f";
             this.tabPage_Recipe.UseVisualStyleBackColor = true;
             // 
             // groupBox15

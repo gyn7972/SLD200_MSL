@@ -845,6 +845,8 @@ namespace QMC.Common.Modules
             public int nObjectType;                     //  가공 객체의 형태 (0:Polyline, 1:Rectangle, 2:Circle, 3:Line, 4:Arc)
 
             public PointD[] dEdgePoint;                 //  가공 객체의 Edge 좌표 (PolyLine, Rect 등.... Circle 의 경우 Center 좌표)
+            public PointD[] dEdgePoint_PreDrilling;     //  가공 객체의 Edge 좌표 (PolyLine, Rect 등.... Circle 의 경우 Center 좌표) - 내부 가공에 사용
+
             public int nEdgePointNum;                   //  가공 객체의 Edge 개수
 
             public PointD dObjectCenter;                //  가공 객체의 Center 좌표
@@ -3620,8 +3622,11 @@ namespace QMC.Common.Modules
 
             /// <summary>
             /// 소켓 얼라인 Fail 된 위치의 Thruhole 전체 오프셋 보정 - 시작
-            /// </summary>
+            /// </summary>            
             /// 
+            DrillingData_FailedSocket_Start,                                                //  Failed Socket 시작 
+            DrillingData_FailedSocket_AlignHeight_ZOffset_Move,                             //  Socket 의 실리콘 층 두께를 반영하여 높이 보정 이동 (실리콘층 아래에 Fiducial 마크가 있음)
+            DrillingData_FailedSocket_AlignHeight_ZOffset_Move_DoneCheck,                   //  Socket 의 실리콘 층 두께를 반영하여 높이 보정 이동 완료 확인
             DrillingData_FailedSocketAlign_Start,                                           //  Align 성공했던 Socket Align 시작
             DrillingData_FailedSocketAlign_CompleteCheck,                                   //  Align 성공했던 Socket Align 완료 확인
             DrillingData_FailedSocketData_RotAndOffset_Move,                                //  Failed Socket 전체 가공 데이터 회전 및 Offset 이동
@@ -18964,6 +18969,45 @@ namespace QMC.Common.Modules
                 /// 소켓 얼라인 Fail 된 위치의 Thruhole 전체 오프셋 보정 - 시작
                 /// </summary>
                 /// 
+                case (int)LaserDrilling_Step.DrillingData_FailedSocket_Start:                      //  Align 성공했던 Socket Align 시작
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_FailedSocket_AlignHeight_ZOffset_Move;
+                    break;
+
+
+                case (int)LaserDrilling_Step.DrillingData_FailedSocket_AlignHeight_ZOffset_Move:                                    //  Socket 의 실리콘 층 두께를 반영하여 높이 보정 이동 (실리콘층 아래에 Fiducial 마크가 있음)
+
+                    LaserDrilling_StepDrillingData_FailedSocket_AlignHeight_ZOffset_Move(out m_strTemp, out lfVelocity, out lfAccDec, out m_dOffset);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_FailedSocket_AlignHeight_ZOffset_Move_DoneCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.DrillingData_FailedSocket_AlignHeight_ZOffset_Move_DoneCheck:                          //  Socket 의 실리콘 층 두께를 반영하여 높이 보정 이동 완료 확인
+
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Failed Socket Fiducial Align 을 위한 실리콘 두께 조정 완료.");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_FailedSocketAlign_Start;
+                    }
+                    else if (TickCount_Elapsed((int)TickType.TICK_MAIN) > 60000)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Failed Socket Fiducial Align 을 위한 실리콘 두께 조정 실패. (Timeout)");
+
+                        //  알람 정지 (LED Bar - Red Blink)
+                        Equipment.MachineStop_byAlarm = true;
+
+                        //timer_LaserDrillingWork.Enabled = false;
+                        //m_btimer_Motion_Home_Stop = true;
+                        return AlarmPost(AlarmKey.eZAxisFail);
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
+
+                        MessageBox.Show("Stage Z 축, Fiducial Align 을 위한 실리콘 두께 조정 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    break;
+
+
                 case (int)LaserDrilling_Step.DrillingData_FailedSocketAlign_Start:                      //  Align 성공했던 Socket Align 시작
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Failed Socket Align Cycle 시작.");
@@ -20116,11 +20160,6 @@ namespace QMC.Common.Modules
 
                                     m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
                                 }
-
-
-
-
-
                                 break;
 
 
@@ -23841,7 +23880,7 @@ namespace QMC.Common.Modules
             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Failed Socket 가공 높이로 조정 시작.");
 
             m_strTemp = string.Format("Stage Z 축, Failed Socket 높이 측정 후, Socket Index ({0}), Laser Focus 편차 ({1:0.000}), Dofocusing Distance ({2:0.000})",
-                                                m_nSocketNum_forFailedSocket_Align, m_dZOffset_SocketHeightCheck, m_dHoleLayer_Defocusing);
+                                                m_nSocketNum_forFailedSocket_Align, m_dZOffset_SocketHeightCheck, m_dThruholeLayer_Defocusing);
 
             Log.Write("SLD-200", "Auto Run", m_strTemp);
 
@@ -23853,7 +23892,7 @@ namespace QMC.Common.Modules
 
             //  가공 할 Layer 의 Z Offset 값으로 이동
             //  임시로 0 설정 --> Recipe 에서 값 가져오도록 --> Layer 별로 Defocusing 거리 다르게 설정하도록 해야 함
-            m_dOffset = m_dHoleLayer_Defocusing;
+            m_dOffset = m_dThruholeLayer_Defocusing;
 
             //  좌표계 (기존)
             //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z) - m_dOffset;
@@ -23872,6 +23911,37 @@ namespace QMC.Common.Modules
 
             m_strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Silicon Thickness({3:0.000})",
                                                 m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness);
+
+            Log.Write("SLD-200", "Auto Run", m_strTemp);
+
+            workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
+
+            //  속도 설정
+            lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
+            lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+
+            //  실리콘 두께만큼 초점 이동
+            m_dOffset = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness;
+
+            //  좌표계 (기존)
+            //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z) - m_dOffset;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] =
+                vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_FocusPos].Vision_Z + m_dZOffset_SocketHeightCheck + m_dOffset;
+
+            MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
+                                  lfVelocity, lfAccDec, lfAccDec);
+
+            TickCount_Start((int)TickType.TICK_MAIN);
+        }
+
+        private void LaserDrilling_StepDrillingData_FailedSocket_AlignHeight_ZOffset_Move(out string m_strTemp, out double lfVelocity, out double lfAccDec, out double m_dOffset)
+        {
+            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Failed Socket Fiducial Align 을 위한 실리콘 두께 조정 시작.");
+
+            m_dZOffset_SocketHeightCheck = m_stThruHole_SocketData[m_nSocketNum_forFailedSocket_Align].dLaserHeightValue;
+
+            m_strTemp = string.Format("Stage Z 축, Socket Socket Align 을 위한 참조 Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Silicon Thickness({3:0.000})",
+                                                m_nSocketNum_forFailedSocket_Align, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness);
 
             Log.Write("SLD-200", "Auto Run", m_strTemp);
 
@@ -24160,7 +24230,7 @@ namespace QMC.Common.Modules
 
                 if (m_bPassedSocket_Exist && (m_nSocketNum_forFailedSocket_Align != -1))            //  가공을 건너 뛴 Socket 이 있고, 건너 뛴 Socket 보정을 위한 Align Socket 위치 번호가 있을 경우
                 {
-                    nextStep = (int)LaserDrilling_Step.DrillingData_FailedSocketAlign_Start;
+                    nextStep = (int)LaserDrilling_Step.DrillingData_FailedSocket_Start;
                 }
                 else                                                                                //  가공을 건너 뛴 Socket 이 없거나, Socket 보정을 위한 Align 성공한 Socket 번호가 없을 경우, 다음 Layer 확인하러...
                 {
@@ -24193,14 +24263,17 @@ namespace QMC.Common.Modules
 
                 m_nThruHole_ObjectDataCount = 0;
 
-                if (m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing == false)
-                {
-                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole, Socket 데이터는 있으나 가공하지 않는 Socket 이므로 다음 Socket 체크");
 
-                    m_nDrillingWork_Group_Count++;
-                    nextStep = (int)LaserDrilling_Step.ThruHole_SocketRemainedCheck;
-                }
-                else
+                //  Thruhole 은 무조건 다 가공해야 한다.
+
+                //if (m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing == false)
+                //{
+                //    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole, Socket 데이터는 있으나 가공하지 않는 Socket 이므로 다음 Socket 체크");
+
+                //    m_nDrillingWork_Group_Count++;
+                //    nextStep = (int)LaserDrilling_Step.ThruHole_SocketRemainedCheck;
+                //}
+                //else
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole, Socket 데이터 있고 가공하는 Socket 확인");
 
@@ -24952,10 +25025,16 @@ namespace QMC.Common.Modules
 
         private void LaserDrillingStepListDataAddPoli()
         {
+            var Data = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint;
+            PointD[] rData = ResizePoliLine(Data, m_dThruholeLayer_Resizing);
+
+            m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint_PreDrilling = rData;
+            //  Rectangle 이고, 가공 사이즈 줄이기 옵션이 활성화 되어 있는 경우, Edge Point 를 줄여서 가공
+
             //  첫 번째 Edge Point 로 Jump 이동
-            entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].X -
+            entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint_PreDrilling[0].X -
                                 m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
-            entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[0].Y -
+            entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint_PreDrilling[0].Y -
                                 m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
 
             //  사각형 돌릴 때 쓰던거
@@ -24966,9 +25045,9 @@ namespace QMC.Common.Modules
             //  이어서 오는 Edge Point 로 Mark 이동(cont') 하여 Polyline 완성
             for (int nEntity = 1; nEntity < m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].nEdgePointNum; nEntity++)
             {
-                entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[nEntity].X -
+                entity_Position.X = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint_PreDrilling[nEntity].X -
                                     m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.X;
-                entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint[nEntity].Y -
+                entity_Position.Y = m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dEdgePoint_PreDrilling[nEntity].Y -
                                     m_stThruHole_SocketData[m_nThruHole_SocketCount].m_stThruHole_ObjectData[m_nThruHole_ObjectDataCount].dObjectCenter.Y;
 
                 //  사각형 돌릴 때 쓰던거
@@ -25688,6 +25767,8 @@ namespace QMC.Common.Modules
 
             int m_nLayerCount = 0;
 
+            int m_nNonAvailable_LayerCount = 0;
+
             //  글자 개수 카운트
             int m_nTextCount = 0;
 
@@ -25733,6 +25814,24 @@ namespace QMC.Common.Modules
             {
                 if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
                 {
+                    //  Layer 이름에 문제가 없는지 체크
+                    string m_strLayer = layer.Name.Length > 4 ? layer.Name.Substring(0, 4) : layer.Name;
+
+                    if (m_strLayer == "Hole")                   //  Layer 가 Hole 이면?
+                    {
+                        //  Hole 로 시작하는 Layer 이면, 뒤에 숫자를 가져온다.
+                        int m_nHoleLayer_Num = Equipment.ToInt(layer.Name.Substring(4));
+
+                        if ((m_nHoleLayer_Num < 1) || (m_nHoleLayer_Num > 50))
+                        {
+                            m_nNonAvailable_LayerCount++;
+                        }
+                    }
+                    else if ((layer.Name != "Thruhole") && (layer.Name != "Outline") && (layer.Name != "Marking") && (layer.Name != "Rect") && (layer.Name != "Fiducial") && (layer.Name != "PreAlign"))
+                    {
+                        m_nNonAvailable_LayerCount++;
+                    }
+
                     if (layer.Name == "Hole1")
                     {
                         m_nDrawing_Hole1Count = layer.Count;
@@ -26347,6 +26446,12 @@ namespace QMC.Common.Modules
                 (m_nOutline_NotGroupCount > 0) || (m_nMarking_NotGroupCount > 0))
             {
                 MessageBox.Show("\"Hole1\", \"Thruhole\", \"Outline\", \"Marking\" Layer 는 Group 만 가능합니다.", "Information!!");
+                return false;
+            }
+
+            if (m_nNonAvailable_LayerCount > 0)
+            {
+                MessageBox.Show("잘못된 Layer 이름이 있습니다.", "Information!!");
                 return false;
             }
 
@@ -30773,6 +30878,7 @@ namespace QMC.Common.Modules
                                     var line = entity as SpiralLab.Sirius.Line;
 
                                     m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Start      1 : End
+                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Start      1 : End
 
                                     //  객체 Type
                                     m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_LINE;
@@ -30804,6 +30910,9 @@ namespace QMC.Common.Modules
 
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
+
+                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
 
                                     //  객체 Type
                                     m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_ARC;
@@ -30843,6 +30952,7 @@ namespace QMC.Common.Modules
                                     var circle = entity as SpiralLab.Sirius.Circle;
 
                                     m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
 
                                     //  객체 Type
                                     m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_CIR;
@@ -30874,6 +30984,7 @@ namespace QMC.Common.Modules
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
 
                                     m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
+                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
 
                                     //  객체 Type
                                     m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_RECT;
@@ -30920,6 +31031,7 @@ namespace QMC.Common.Modules
                                     //lwPolyline.IsClosed
 
                                     m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
+                                    m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[lwPolyline.IsClosed ? lwPolyline.Count + 1 : lwPolyline.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
 
                                     //  객체 Type
                                     m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_POLY;
@@ -30997,6 +31109,7 @@ namespace QMC.Common.Modules
                                             var pl = subEntity as SpiralLab.Sirius.LwPolyline;
 
                                             m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
+                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[pl.IsClosed ? pl.Count + 1 : pl.Count];       //  모든 Edge Point 좌표 (닫힌 도형이면 좌표 1개 더 추가)
 
                                             //  객체 Type
                                             m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_POLY;
@@ -31034,6 +31147,7 @@ namespace QMC.Common.Modules
                                             var pl = subEntity as SpiralLab.Sirius.Circle;
 
                                             m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
 
                                             //  객체 Type
                                             m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_CIR;
@@ -31065,6 +31179,7 @@ namespace QMC.Common.Modules
                                             var pl = subEntity as SpiralLab.Sirius.Rectangle;
 
                                             m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
+                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[5];       //  순서대로 (0 -> 1 -> 2 -> 3 -> 4 -> 0 해야 닫힌 도형이 됨)
 
                                             //  객체 Type
                                             m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_RECT;
@@ -31104,6 +31219,8 @@ namespace QMC.Common.Modules
                                             var pl = subEntity as SpiralLab.Sirius.Line;
 
                                             m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Start      1 : Endm_stThruHole_LayerData[m_nLayerThruHole_Count]
+                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Start      1 : Endm_stThruHole_LayerData[m_nLayerThruHole_Count]
+
                                             //  객체 Type
                                             m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_LINE;
 
@@ -31132,6 +31249,9 @@ namespace QMC.Common.Modules
                                         else if (t.Name == "Arc")
                                         {
                                             var pl = subEntity as SpiralLab.Sirius.Arc;
+
+                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
+                                            m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].dEdgePoint_PreDrilling = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
 
                                             //  객체 Type
                                             m_stThruHole_SocketData[m_nThruholeSocket_Count].m_stThruHole_ObjectData[m_stThruHole_SocketData[m_nThruholeSocket_Count].nRegion_ObjectCount].nObjectType = (int)ObjectType.OBJECT_ARC;
