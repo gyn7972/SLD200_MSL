@@ -23030,7 +23030,23 @@ namespace QMC.Common.Modules
                     //  Laser Type 이 CO2 일 경우, 여기에서 Duty Cycle 을 Pulse Width 로 계산해서 Power 를 변경할 수 있도록 한다.
                     if (Equipment.Machine_LaserType_CO2)
                     {
+                        if (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_DutyCycle > 0.0)
+                        {
+                            m_dLaserParam_PulseWidth = Calc_PulseWidth(Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_Frequency,
+                                                                        Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_DutyCycle);
 
+                            m_strTemp = string.Format("Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
+                                                    Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_Frequency,
+                                                    m_dLaserParam_PulseWidth);
+                        }
+                        else
+                        {
+                            m_dLaserParam_PulseWidth = 1.0;
+
+                            m_strTemp = string.Format("Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                                                    Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_Frequency,
+                                                    m_dLaserParam_PulseWidth);
+                        }
                     }
                     else
                     {
@@ -24203,21 +24219,45 @@ namespace QMC.Common.Modules
                 {
                     double m_dLaserParam_PulseWidth = 0.0;
 
-                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_PulseWidth > 0.0)
+                    //  Laser Type 이 CO2 일 경우, 여기에서 Duty Cycle 을 Pulse Width 로 계산해서 Power 를 변경할 수 있도록 한다.
+                    if (Equipment.Machine_LaserType_CO2)
                     {
-                        m_dLaserParam_PulseWidth = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_PulseWidth;
+                        if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_DutyCycle > 0.0)
+                        {
+                            m_dLaserParam_PulseWidth = Calc_PulseWidth(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_Frequency,
+                                                                        Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_DutyCycle);
 
-                        m_strTemp = string.Format("Outline 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
-                                            Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_Frequency,
-                                            Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_PulseWidth);
+                            m_strTemp = string.Format("Outline 가공 Loop, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
+                                                    Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_Frequency,
+                                                    m_dLaserParam_PulseWidth);
+                        }
+                        else
+                        {
+                            m_dLaserParam_PulseWidth = 1.0;
+
+                            m_strTemp = string.Format("Outline 가공 Loop, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                                                    Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_Frequency,
+                                                    m_dLaserParam_PulseWidth);
+                        }
                     }
                     else
                     {
-                        m_dLaserParam_PulseWidth = 1.0;
+                        if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_PulseWidth > 0.0)
+                        {
+                            m_dLaserParam_PulseWidth = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_PulseWidth;
 
-                        m_strTemp = string.Format("Outline 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                            m_strTemp = string.Format("Outline 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
                                                 Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_Frequency,
-                                                m_dLaserParam_PulseWidth);
+                                                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_PulseWidth);
+                        }
+                        else
+                        {
+                            m_dLaserParam_PulseWidth = 1.0;
+
+                            m_strTemp = string.Format("Outline 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                                                    Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_Frequency,
+                                                    m_dLaserParam_PulseWidth);
+                        }
                     }
 
                     Log.Write("SLD-200", "Auto Run", m_strTemp);
@@ -24666,21 +24706,45 @@ namespace QMC.Common.Modules
             {
                 double m_dLaserParam_PulseWidth = 0.0;
 
-                if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_PulseWidth > 0.0)
+                //  Laser Type 이 CO2 일 경우, 여기에서 Duty Cycle 을 Pulse Width 로 계산해서 Power 를 변경할 수 있도록 한다.
+                if (Equipment.Machine_LaserType_CO2)
                 {
-                    m_dLaserParam_PulseWidth = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_PulseWidth;
+                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_DutyCycle > 0.0)
+                    {
+                        m_dLaserParam_PulseWidth = Calc_PulseWidth(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_Frequency,
+                                                                    Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_DutyCycle);
 
-                    m_strTemp = string.Format("Thruhole 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
-                                        Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_Frequency,
-                                        Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_PulseWidth);
+                        m_strTemp = string.Format("Thruhole 가공 Loop, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
+                                                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_Frequency,
+                                                m_dLaserParam_PulseWidth);
+                    }
+                    else
+                    {
+                        m_dLaserParam_PulseWidth = 1.0;
+
+                        m_strTemp = string.Format("Thruhole 가공 Loop, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                                                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_Frequency,
+                                                m_dLaserParam_PulseWidth);
+                    }
                 }
                 else
                 {
-                    m_dLaserParam_PulseWidth = 1.0;
+                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_PulseWidth > 0.0)
+                    {
+                        m_dLaserParam_PulseWidth = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_PulseWidth;
 
-                    m_strTemp = string.Format("Thruhole 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                        m_strTemp = string.Format("Thruhole 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
                                             Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_Frequency,
-                                            m_dLaserParam_PulseWidth);
+                                            Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_PulseWidth);
+                    }
+                    else
+                    {
+                        m_dLaserParam_PulseWidth = 1.0;
+
+                        m_strTemp = string.Format("Thruhole 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                                                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_Frequency,
+                                                m_dLaserParam_PulseWidth);
+                    }
                 }
 
                 Log.Write("SLD-200", "Auto Run", m_strTemp);
@@ -36406,6 +36470,30 @@ namespace QMC.Common.Modules
                 Log.Write(ex);
             }
             return bRtn;
+        }
+
+        public double Calc_PulseWidth(double m_dFrequency, double m_dDutyCycle)
+        {
+            double m_dPulseWidth = 0.0;
+
+            try
+            {
+                // 입력값 가져오기
+                double frequency = m_dFrequency;
+                double dutyCycle = m_dDutyCycle;
+
+                // Period 계산 (초 단위) 
+                double periodSeconds = 1 / frequency;
+
+                // Pulse Width 계산 (μs 단위)
+                m_dPulseWidth = (dutyCycle * periodSeconds / 100) * 1_000_000;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Pulse Width Calc. Failed.");
+            }
+
+            return m_dPulseWidth;
         }
     }
 }
