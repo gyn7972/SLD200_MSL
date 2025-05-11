@@ -161,9 +161,10 @@ namespace QMC.Common.Vision
         #region Constructor
         public TextVisionImageOverlay(string name, Point startLocation, Font fontStyle) : base(name)
         {
+            this.Text = name;
             this.FontStyle = fontStyle;
             this.StartLocation = startLocation;
-            this.BrushColor = Brushes.Lime;
+            this.BrushColor = Brushes.LimeGreen;
         }
         public TextVisionImageOverlay(string name, Point startLocation) : this(name, startLocation, new Font(FontFamily.GenericMonospace, 10)) { }
         public TextVisionImageOverlay(string name) : this(name, new Point()) { }

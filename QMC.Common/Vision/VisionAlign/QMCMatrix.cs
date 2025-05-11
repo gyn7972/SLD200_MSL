@@ -166,7 +166,7 @@ namespace QMC.Common.Vision.VisionAlign
         public double m_dOffsetX = 1000;
         public double m_dOffsetY = 1000;
 
-        public QMCMatrix projection_matrix(XyCoordinateCollection coordinateSourceOrg, XyCoordinateCollection coordinateTargetOrg)
+        public QMCMatrix GetCorrectionMatrix(XyCoordinateCollection coordinateSourceOrg, XyCoordinateCollection coordinateTargetOrg)
         {
             for (int i = 0; i < coordinateSourceOrg.Count; i++)
             {

@@ -190,6 +190,7 @@
     <Compile Include="Global\LayerInfo.cs" />
     <Compile Include="Global\ProcessManager.cs" />
     <Compile Include="Global\SocketInfo.cs" />
+    <Compile Include="Interpolator\DrawingResizeForPerspectiveProjection.cs" />
     <Compile Include="ListParam.cs" />
     <Compile Include="Modules\DeviceConnectionModule.cs" />
     <Compile Include="Modules\Laser.cs" />

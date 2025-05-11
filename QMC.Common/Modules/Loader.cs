@@ -10803,10 +10803,10 @@ namespace QMC.Common.Modules
                                     break;
 
                                 //Config.TimeOut
-                                if (2000 > 0) // 2000 정도면 2초?
+                                if (100000 > 0) // 2000 정도면 2초?
                                 {
                                     ProcessTime = DateTime.Now - StartTime;
-                                    if (ProcessTime.TotalMilliseconds >= 2000)
+                                    if (ProcessTime.TotalMilliseconds >= 100000)
                                     {
                                         bTimeout = true;
                                         break;
@@ -10873,14 +10873,14 @@ namespace QMC.Common.Modules
             if (!MC_Func.MC_GetDone((int)Loader.nAxis.TR_X) ||
                 !MC_Func.MC_GetInposition((int)Loader.nAxis.TR_X))
             {
-                strTemp = string.Format("IsInterlock_LoaderTransfer_Enabled [Fail]: LoaderTransferZ Axis이 이동중입니다.");
+                strTemp = string.Format("IsInterlock_LoaderTransfer_Enabled [Fail]: LoaderTransferX Axis이 이동중입니다.");
                 Log.Write("SLD-200", Equipment.User_Name, strTemp);
                 return bRtn;
             }
 
             double dTargetZ = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_SafetyPos].LD_Transfer_Z;
-            if (MC_Func.MC_GetDone((int)Loader.nAxis.TR_Z) &&
-                MC_Func.MC_PosTolerance((int)Loader.nAxis.TR_Z, dTargetZ))
+            if (!MC_Func.MC_GetDone((int)Loader.nAxis.TR_Z) ||
+                !MC_Func.MC_PosTolerance((int)Loader.nAxis.TR_Z, dTargetZ))
             {
                 strTemp = string.Format("IsInterlock_LoaderTransfer_Enabled [Fail]: LoaderTransferZ Axis이 Safety Pos 아닙니다.");
                 Log.Write("SLD-200", Equipment.User_Name, strTemp);
@@ -10951,10 +10951,10 @@ namespace QMC.Common.Modules
                                     break;
 
                                 //Config.TimeOut
-                                if (2000 > 0) // 2000 정도면 2초?
+                                if (100000 > 0) // 2000 정도면 10초?
                                 {
                                     ProcessTime = DateTime.Now - StartTime;
-                                    if (ProcessTime.TotalMilliseconds >= 2000)
+                                    if (ProcessTime.TotalMilliseconds >= 100000)
                                     {
                                         bTimeout = true;
                                         break;

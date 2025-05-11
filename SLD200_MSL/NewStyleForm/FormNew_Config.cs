@@ -1556,8 +1556,15 @@ namespace SLD200_MSL
             button_Config_Vision_Z_Neg.Tag = "Vision,Z,-1";
             button_Config_Vision_Z_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
             button_Config_Vision_Z_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-        }
 
+            button_Config_BDS_Y_Pos.Tag = "WorkStage,MASK_Y,1";
+            button_Config_BDS_Y_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_BDS_Y_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+
+            button_Config_BDS_Y_Neg.Tag = "WorkStage,MASK_Y,-1";
+            button_Config_BDS_Y_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
+            button_Config_BDS_Y_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
+        }
 
         // 축 JogMove 공통 처리
         private void button_AxisJog_MouseDown(object sender, MouseEventArgs e)
@@ -1579,7 +1586,7 @@ namespace SLD200_MSL
                 dynamic controller = GetControllerByUnit(unit);
                 if (controller == null) return;
 
-                int axis = GetAxisIndex(unit, axisName);
+                int axis = GetAxisIndex(ref unit, axisName);
                 if (axis < 0) return;
 
                 Type_Motor_Speed speedType = GetMotorSpeedType(unit);
@@ -1627,7 +1634,7 @@ namespace SLD200_MSL
                 dynamic controller = GetControllerByUnit(unit);
                 if (controller == null) return;
 
-                int axis = GetAxisIndex(unit, axisName);
+                int axis = GetAxisIndex(ref unit, axisName);
                 if (axis < 0) return;
 
                 switch (unit)
@@ -1657,7 +1664,7 @@ namespace SLD200_MSL
         }
 
         // 유닛 및 축 이름으로 축 인덱스 반환
-        private int GetAxisIndex(string unit, string axisName)
+        private int GetAxisIndex(ref string unit, string axisName)
         {
             try
             {
@@ -1670,7 +1677,11 @@ namespace SLD200_MSL
                     if (radioButton_Config_ActiveUnit_Loader.Checked)
                         return (int)Enum.Parse(typeof(Loader.nAxis), axisName);
                     else
-                        return -1; // 잘못된 유닛 선택
+                    {
+                        unit = "Unloader";
+                        return (int)Enum.Parse(typeof(Unloader.nAxis), axisName);
+                    }
+                        //return -1; // 잘못된 유닛 선택
                 }
                 else if (unit == "Unloader")
                 {
@@ -4615,7 +4626,7 @@ namespace SLD200_MSL
                 lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Jog_Speed_Coarse;
                 lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Coarse;
             }
-                        
+                                    
             bds.MC_Func.MC_MovePosition((int)Bds.nAxis.MASK_Y, bds.stBDSTeachingPos[m_nIndex].Mask_Y,
                                             lfVelocity, lfAccDec, lfAccDec);
         }

@@ -6372,7 +6372,7 @@
             this.button_Config_BDS_Y_Neg.Text = "-Y\r\n(Direction to None Mask)";
             this.button_Config_BDS_Y_Neg.UseVisualStyleBackColor = true;
             this.button_Config_BDS_Y_Neg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseDown);
-            this.button_Config_BDS_Y_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_Config_BDS_Axis_MouseUp);
+            this.button_Config_BDS_Y_Neg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_AxisJog_MouseUp);
             // 
             // button_Config_BDS_Y_Pos
             // 
