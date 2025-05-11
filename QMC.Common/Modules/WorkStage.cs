@@ -9312,7 +9312,7 @@ namespace QMC.Common.Modules
 
                     //Loader 진공 체크
                     //DI_Loader_Aligner_VacuumCheck()
-                    if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner) ||
+                    /*if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner) ||
                         loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer))// ||
                         //loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center))
                     {
@@ -9321,7 +9321,7 @@ namespace QMC.Common.Modules
 
                         m_nHomeStep = (int)Home_Step.Fail;
                     }
-                    else if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
+                    else */if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
                             loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
                     {
                         AlarmPost(AlarmKey.Home_LoaderPicker_Vacuum_Off_Fail);
@@ -14609,8 +14609,8 @@ namespace QMC.Common.Modules
                         FineCamResultOveray.Add(overayEl);
 
                         string strScore = string.Format("Score : {0:0.00}", result.ScoreCollection[0]);
-                        Font font = new Font("verdana", 64, FontStyle.Bold);
-                        var textOveray = new TextVisionImageOverlay(strScore, new Point((int)ptStart.X, (int)ptStart.Y - 120), font);
+                        Font font = new Font("verdana", 82, FontStyle.Bold);
+                        var textOveray = new TextVisionImageOverlay(strScore, new Point((int)ptStart.X, (int)ptStart.Y - 150), font);
                         textOveray.Visible = true;
                         FineCamResultOveray.Add(textOveray);
                     }
