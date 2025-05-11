@@ -779,6 +779,7 @@ namespace QMC.Common.Parts
                     {
                         try
                         {
+
                             m_Owner.CoarseCamResultOveray = new VisionImageViewer.OwnedOverlayCollection();
                             foreach (var v in Fiducial_circlesResult)
                             {
