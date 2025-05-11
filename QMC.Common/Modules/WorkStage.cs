@@ -19748,23 +19748,52 @@ namespace QMC.Common.Modules
                                 center.X = (Data.Min(t => t.X) + Data.Max(t => t.X)) / 2;
                                 center.Y = (Data.Min(t => t.Y) + Data.Max(t => t.Y)) / 2;
 
-                                SourceLeftTop.X = Data.Min(t => t.X);
-                                SourceLeftTop.Y = Data.Min(t => t.Y);
-                                SourceRightBottom.X = Data.Max(t => t.X);
-                                SourceRightBottom.Y = Data.Max(t => t.Y);
-
+                                DestLeftTop.X = SourceLeftTop.X = Data.Min(t => t.X);
+                                DestLeftTop.Y  = SourceLeftTop.Y = Data.Min(t => t.Y);
+                                DestRightBottom.X  = SourceRightBottom.X = Data.Max(t => t.X);
+                                DestRightBottom.Y = SourceRightBottom.Y = Data.Max(t => t.Y);
+                                
                                 DestLeftTop.X -= m_dHoleLayer_Resizing / 2;
                                 DestLeftTop.Y -= m_dHoleLayer_Resizing / 2;
                                 DestRightBottom.X += m_dHoleLayer_Resizing / 2;
                                 DestRightBottom.Y += m_dHoleLayer_Resizing / 2;
                                 DrawingResizeForPerspectiveProjection drpp = new DrawingResizeForPerspectiveProjection();
                                 drpp.MakeCorrectionMatrix(SourceLeftTop, SourceRightBottom, DestLeftTop, DestRightBottom);
-
-                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint = drpp.Resize(Data);
+                                var rData = drpp.Resize(Data);
+                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling = drpp.Resize(Data);
                                 //  Rectangle 이고, 가공 사이즈 줄이기 옵션이 활성화 되어 있는 경우, Edge Point 를 줄여서 가공
 
 
 
+
+                                //  첫 번째 Edge Point 로 Jump 이동
+                                entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X -
+                                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y -
+                                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+
+                                //  가공 데이터 Center 계산을 위해
+                                entity_Pos_Min.X = double.MaxValue;
+                                entity_Pos_Min.Y = double.MaxValue;
+                                entity_Pos_Max.X = double.MinValue;
+                                entity_Pos_Max.Y = double.MinValue;
+
+                                //  이어서 오는 Edge Point 로 Mark 이동(cont') 하여 Polyline 완성
+                                for (int nEntity = 1; nEntity < m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].nEdgePointNum; nEntity++)
+                                {
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].X -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].Y -
+                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                    entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                    m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+                                }
 
 
 
