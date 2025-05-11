@@ -2800,7 +2800,7 @@ namespace QMC.Common.Modules
                     else if (TickCount_Elapsed((int)TickType.TICK_ULTR) > 60000)
                     {
                         m_strTemp = "Transfer Z 축, 대기 위치로 이동 실패. (Timeout)";
-                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);
+                        Log.Write("SLD-200", Equipment.User_Name, "Unloader_Transfer_Step", m_strTemp);  
                         return AlarmPost(AlarmKey.UL_Transfer_Z_Move_To_Ready_Pos_Fail);
                     }
                     break;
@@ -4911,7 +4911,7 @@ namespace QMC.Common.Modules
             unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_R_Port");
 
             //  Target Position 변경 : Stacker0 위치
-            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_SafetyPos].LD_Transfer_X;
+            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_X] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].UL_Transfer_X;
 
             //  속도
             m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_X].Common_Speed_Coarse;
@@ -4934,7 +4934,7 @@ namespace QMC.Common.Modules
             unloaderParameter.stUnloaderPosParam = unloaderParameter.GetPositionInformation("Transfer_To_R_Port");
 
             //  Target Position 변경 : 대기 위치
-            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_TR_SafetyPos].LD_Transfer_Z;
+            unloaderParameter.stUnloaderPosParam.dTarget[(int)UnloaderParameter.MotionKey.TR_Z] = loader.stLDULTeachingPos[(int)LDUL_TeachingPosList.UL_TR_SafetyPos].UL_Transfer_Z;
 
             //  속도
             m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Coarse;

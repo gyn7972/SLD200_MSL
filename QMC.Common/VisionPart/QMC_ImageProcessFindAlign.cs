@@ -414,7 +414,7 @@ namespace QMC.Common.VisionPart
                         {
                             //허상을 찾아는지 검사 한다.
                             double dScoreCheck = IsRealCircle(center, dRadius2, points, dSpec);
-                            if (dScoreCheck > 0.6)
+                            if (dScoreCheck > 0.9)
                             {
                                 bFindCircle = true;
                                 break;

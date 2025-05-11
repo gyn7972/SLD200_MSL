@@ -870,8 +870,9 @@ namespace QMC.Common.Modules
             public int nRegion_ObjectCount;             //  객체 누적 카운트
         }
         //public stThruHole_SocketData m_stThruHole_SocketData;
-        //public stThruHole_SocketData[] m_stThruHole_LayerData;         //  Socket Data 를 저장한다.
-        public stThruHole_SocketData[] m_stThruHole_SocketData;          //  Socket Data 를 저장한다.
+        //public stThruHole_SocketData[] m_stThruHole_LayerData;                    //  Socket Data 를 저장한다.
+        public stThruHole_SocketData[] m_stThruHole_SocketData;                     //  Socket Data 를 저장한다.
+        public stThruHole_SocketData[] m_stThruHole_SocketData_ProcessingFlag;      //  Socket Data 를 저장한다. (가공 여부 Flag)
         ///
         /// <summary>
         /// "쓰루홀" 처리 - 여기까지
@@ -8044,6 +8045,10 @@ namespace QMC.Common.Modules
                             //  최초 Data Parsing 후 해당 가공 데이터에 대한 상태 데이터를 초기화 한다. (가공중인 소켓 번호, 소켓 OK NG 여부 등)
                             GlobalSocketStatus_Init();
 
+                            //  Thruhole 가공 Pass 여부를 결정하는 Flag 변수 선언을 여기에서 한번만 한다.
+                            GetDrillingData_ProcessingFlagCheck();
+
+
                             if (m_stDividedRegion_GroupData != null)
                             {
                                 //  메인 화면에 가공위치 표시용
@@ -13915,7 +13920,7 @@ namespace QMC.Common.Modules
                     else
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry");
-
+                        m_nSocketAlign_Retry_Max = 0;
                         if (m_nSocketAlign_Retry_Count < m_nSocketAlign_Retry_Max)
                         {
                             m_nSocketAlign_Retry_Count++;
@@ -13932,6 +13937,8 @@ namespace QMC.Common.Modules
 
                             //timer_VisionAlign.Enabled = false;
 
+                            m_bAlignCompleted = true;
+                            m_bSocketAlign_OK = false;
                             m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
                         }
                     }
@@ -15257,6 +15264,9 @@ namespace QMC.Common.Modules
                             {
                                 //  최초 Data Parsing 후 해당 가공 데이터에 대한 상태 데이터를 초기화 한다. (가공중인 소켓 번호, 소켓 OK NG 여부 등)
                                 GlobalSocketStatus_Init();
+
+                                //  Thruhole 가공 Pass 여부를 결정하는 Flag 변수 선언을 여기에서 한번만 한다.
+                                GetDrillingData_ProcessingFlagCheck();
 
                                 m_nLaserDrilling_LayerCount = 0;
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingWork_Start;                 //  단일 Job File 작업일 경우
@@ -18652,9 +18662,40 @@ namespace QMC.Common.Modules
                             else
                             {
                                 m_bSocketAlign_OK = false;
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
-                            }
-                        
+                                //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+
+                                //  소켓 얼라인 실패했으니 화면 갱신해야 한다.
+                                m_nDrillingData_SocketAlign_NGCount++;                                              //  소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
+
+                                Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
+                                Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
+                                                                                                                    //Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+
+                                GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
+
+                                Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                                Thread.Sleep(200);
+
+                                //  Thruhole Layer 가 있으면, 가공하지 않도록 Flag 를 false 로 변경한다.
+                                if (m_stThruHole_SocketData_ProcessingFlag != null)
+                                {
+                                    if (m_stThruHole_SocketData_ProcessingFlag.Length == m_stDividedRegion_GroupData.Length)
+                                    {
+                                        m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
+                                    }
+                                    else
+                                    {
+                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole 과 Hole1 의 Socket 개수가 다릅니다.");
+                                    }
+                                }
+                                else
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole Processing Skip Flag 저장 변수가 Null 입니다.");
+                                }
+
+                                m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                            }                        
                         }
                         else
                         {
@@ -18667,7 +18708,6 @@ namespace QMC.Common.Modules
                             //MessageBox.Show("Socket Align 실패", "Error");
 
 							//  소켓 얼라인 실패했으니 화면 갱신해야 한다.
-
                             m_nDrillingData_SocketAlign_NGCount++;                                              //  소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
 
                             Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
@@ -18681,7 +18721,6 @@ namespace QMC.Common.Modules
 
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
-
                         }
                     }
                     else if (m_nSocketAlign_MainStep == (int)SocketAlign_Step.None)
@@ -22984,17 +23023,39 @@ namespace QMC.Common.Modules
                 //{
 
                 //  Frequency, Pulse Width 값이 있으면 적용
-                if ((Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_Frequency > 0.0) &&
-                    (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_PulseWidth > 0.0))
+                if (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_Frequency > 0.0)
                 {
-                    m_strTemp = string.Format("Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
-                                            Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_Frequency,
-                                            Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_PulseWidth);
+                    double m_dLaserParam_PulseWidth = 0.0;
+
+                    //  Laser Type 이 CO2 일 경우, 여기에서 Duty Cycle 을 Pulse Width 로 계산해서 Power 를 변경할 수 있도록 한다.
+                    if (Equipment.Machine_LaserType_CO2)
+                    {
+
+                    }
+                    else
+                    {
+                        if (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_PulseWidth > 0.0)
+                        {
+                            m_dLaserParam_PulseWidth = Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_PulseWidth;
+
+                            m_strTemp = string.Format("Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
+                                                    Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_Frequency,
+                                                    Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_PulseWidth);
+                        }
+                        else
+                        {
+                            m_dLaserParam_PulseWidth = 1.0;
+
+                            m_strTemp = string.Format("Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                                                    Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_Frequency,
+                                                    m_dLaserParam_PulseWidth);
+                        }
+                    }
 
                     Log.Write("SLD-200", "Auto Run", m_strTemp);
 
                     m_bScannerLib_Success = rtc.ListFrequency((float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_Frequency,
-                                                                (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_PulseWidth);
+                                                                (float)m_dLaserParam_PulseWidth);
 
                     if (!m_bScannerLib_Success)
                     {
@@ -23765,7 +23826,7 @@ namespace QMC.Common.Modules
 
                 m_nThruHole_ObjectDataCount = 0;
 
-                if (m_stThruHole_SocketData[m_nDrillingWork_Group_Count].bProcessing == false)
+                if (m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing == false)
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole, Socket 데이터는 있으나 가공하지 않는 Socket 이므로 다음 Socket 체크");
 
@@ -24138,17 +24199,31 @@ namespace QMC.Common.Modules
                 //{
 
                 //  Frequency, Pulse Width 값이 있으면 적용
-                if ((Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_Frequency > 0.0) &&
-                    (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_PulseWidth > 0.0))
+                if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_Frequency > 0.0)
                 {
-                    m_strTemp = string.Format("Outline 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
+                    double m_dLaserParam_PulseWidth = 0.0;
+
+                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_PulseWidth > 0.0)
+                    {
+                        m_dLaserParam_PulseWidth = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_PulseWidth;
+
+                        m_strTemp = string.Format("Outline 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
                                             Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_Frequency,
                                             Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_PulseWidth);
+                    }
+                    else
+                    {
+                        m_dLaserParam_PulseWidth = 1.0;
+
+                        m_strTemp = string.Format("Outline 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                                                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_Frequency,
+                                                m_dLaserParam_PulseWidth);
+                    }
 
                     Log.Write("SLD-200", "Auto Run", m_strTemp);
 
                     m_bScannerLib_Success = rtc.ListFrequency((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_Frequency,
-                                                                (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_PulseWidth);
+                                                                (float)m_dLaserParam_PulseWidth);
 
                     if (!m_bScannerLib_Success)
                     {
@@ -24587,17 +24662,31 @@ namespace QMC.Common.Modules
             }
 
 
-            if ((Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_Frequency > 0.0) &&
-                (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_PulseWidth > 0.0))
+            if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_Frequency > 0.0)
             {
-                m_strTemp = string.Format("Thruhole 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
+                double m_dLaserParam_PulseWidth = 0.0;
+
+                if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_PulseWidth > 0.0)
+                {
+                    m_dLaserParam_PulseWidth = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_PulseWidth;
+
+                    m_strTemp = string.Format("Thruhole 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
                                         Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_Frequency,
                                         Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_PulseWidth);
+                }
+                else
+                {
+                    m_dLaserParam_PulseWidth = 1.0;
+
+                    m_strTemp = string.Format("Thruhole 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                                            Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_Frequency,
+                                            m_dLaserParam_PulseWidth);
+                }
 
                 Log.Write("SLD-200", "Auto Run", m_strTemp);
 
                 m_bScannerLib_Success = rtc.ListFrequency((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_Frequency,
-                                                            (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_PulseWidth);
+                                                            (float)m_dLaserParam_PulseWidth);
 
                 if (!m_bScannerLib_Success)
                 {
@@ -25220,6 +25309,8 @@ namespace QMC.Common.Modules
             int m_nRect_ObjectCount = 0;                                        //  Rect 데이터 개수
             int m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
             int m_nFiducial_ObjectCount = 0;                                    //  Fiducial 마크 데이터 개수
+            int m_nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
+            int m_nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수
 
             //  Group 이 아닌 항목이 있는지 체크하기 위한 변수
             int m_nHole1_NotGroupCount = 0;
@@ -25316,9 +25407,9 @@ namespace QMC.Common.Modules
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
 
-                                    m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
-                                    m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
-                                    m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
 
                                     m_nHole1_NotGroupCount++;
                                     break;
@@ -25326,9 +25417,9 @@ namespace QMC.Common.Modules
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
 
-                                    m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
-                                    m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
-                                    m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
 
                                     m_nHole1_NotGroupCount++;
                                     break;
@@ -25600,12 +25691,19 @@ namespace QMC.Common.Modules
                                 case EType.Rectangle:
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
 
-                                    m_stDrawing_Rect[m_nRect_ObjectCount].CenterX = (double)rectangle.Center.X;
-                                    m_stDrawing_Rect[m_nRect_ObjectCount].CenterY = (double)rectangle.Center.Y;
-                                    m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)rectangle.Width;
-                                    m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)rectangle.Height;
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterX = (double)rectangle.Center.X;
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterY = (double)rectangle.Center.Y;
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)rectangle.Width;
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)rectangle.Height;
 
                                     m_nRect_NotGroupCount++;
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    m_stDrawing_Rect[m_nRect_ObjectCount].CenterX = (double)group.Location.X;
+                                    m_stDrawing_Rect[m_nRect_ObjectCount++].CenterY = (double)group.Location.Y;
                                     break;
                             }
                         }
@@ -25671,12 +25769,20 @@ namespace QMC.Common.Modules
                                 case EType.Rectangle:
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
 
-                                    m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)rectangle.Center.X;
-                                    m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
-                                    m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
-                                    m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)rectangle.Center.X;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
 
                                     m_nOutline_NotGroupCount++;
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)group.Location.X;
+                                    m_stDrawing_Outline[m_nOutline_ObjectCount++].CenterY = (double)group.Location.Y;
+
                                     break;
                             }
                         }
@@ -25743,6 +25849,9 @@ namespace QMC.Common.Modules
                     }
                     else if (layer.Name == "Thruhole")
                     {
+                        m_nDrawing_ThruholeCount = layer.Count;
+                        m_stDrawing_Thruhole = new stDrawingHoleParam[m_nDrawing_ThruholeCount];                   //  Thruhole 데이터
+
                         //  데이터 넣기
                         foreach (var entity in layer)
                         {
@@ -25792,6 +25901,13 @@ namespace QMC.Common.Modules
                                     //var rectangle = entity as SpiralLab.Sirius2.Winforms.Entity.EntityRectangle;
 
                                     m_nThruhole_NotGroupCount++;
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    m_stDrawing_Thruhole[m_nThruhole_ObjectCount].CenterX = (double)group.Location.X;
+                                    m_stDrawing_Thruhole[m_nThruhole_ObjectCount++].CenterY = (double)group.Location.Y;
                                     break;
                             }
                         }
@@ -25848,6 +25964,12 @@ namespace QMC.Common.Modules
 
                                     m_nMarking_NotGroupCount++;
                                     break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    m_nThruhole_ObjectCount++;              //  마킹 그룹 개수만 카운트
+                                    break;
                             }
                         }
                     }
@@ -25859,6 +25981,29 @@ namespace QMC.Common.Modules
             {
                 MessageBox.Show("\"Hole1\", \"Thruhole\", \"Outline\", \"Marking\" Layer 는 Group 만 가능합니다.", "Information!!");
                 return false;
+            }
+
+            //  Frequency 데이터가 있는지 체크
+            if (m_nHole1_ObjectCount > 0)
+            {
+                if (Equipment.stLayerRecipeSet[(int)LayerList.Hole1].LaserParam_Frequency <= 0)
+                {
+                    MessageBox.Show("\"Hole1\" Layer 의 Frequency 가 0 입니다.", "Information!!");
+                }
+            }
+            if (m_nThruhole_ObjectCount > 0)
+            {
+                if (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].LaserParam_Frequency <= 0)
+                {
+                    MessageBox.Show("\"Thruhole\" Layer 의 Frequency 가 0 입니다.", "Information!!");
+                }
+            }
+            if (m_nOutline_ObjectCount > 0)
+            {
+                if (Equipment.stLayerRecipeSet[(int)LayerList.Outline].LaserParam_Frequency <= 0)
+                {
+                    MessageBox.Show("\"Outline\" Layer 의 Frequency 가 0 입니다.", "Information!!");
+                }
             }
 
             return success;
@@ -29809,24 +29954,25 @@ namespace QMC.Common.Modules
                             m_stThruHole_SocketData = new stThruHole_SocketData[layer.Count];
                         }
 
-                        for (int i = 0; i < layer.Count ; i++)
-                        {
-                            if (layer.Items[i].Description == null)
-                            {
-                                m_stThruHole_SocketData[i].bProcessing = true;
-                            }
-                            else if ((layer.Items[i].Description.ToUpper() == "NO") ||
-                                    (layer.Items[i].Description.ToUpper() == "NOT") ||
-                                    (layer.Items[i].Description.ToUpper() == "X") ||
-                                    (layer.Items[i].Description.ToUpper() == "FALSE"))
-                            {
-                                m_stThruHole_SocketData[i].bProcessing = false;
-                            }
-                            else
-                            {
-                                m_stThruHole_SocketData[i].bProcessing = true;
-                            }
-                        }                        
+                        //  최초에 GetDrillingData() 함수 다음에 아래 코드를 한번만 수행하도록 함수로 만들어서 빼놓음.
+                        //for (int i = 0; i < layer.Count ; i++)
+                        //{
+                        //    if (layer.Items[i].Description == null)
+                        //    {
+                        //        m_stThruHole_SocketData[i].bProcessing = true;
+                        //    }
+                        //    else if ((layer.Items[i].Description.ToUpper() == "NO") ||
+                        //            (layer.Items[i].Description.ToUpper() == "NOT") ||
+                        //            (layer.Items[i].Description.ToUpper() == "X") ||
+                        //            (layer.Items[i].Description.ToUpper() == "FALSE"))
+                        //    {
+                        //        m_stThruHole_SocketData[i].bProcessing = false;
+                        //    }
+                        //    else
+                        //    {
+                        //        m_stThruHole_SocketData[i].bProcessing = true;
+                        //    }
+                        //}
 
                         //  세부 데이터 저장
                         m_nGroupData_Count = 0;
@@ -31911,6 +32057,190 @@ namespace QMC.Common.Modules
             //}
 
             //Equipment.WorkTotalTime = Equipment.WorkTotalTime_Outline + Equipment.WorkTotalTime_Thruhole + Equipment.WorkTotalTime_Drilling + Equipment.WorkTotalTime_Marking;
+
+            return success == true ? (int)nGetDataResult.GETDATA_SUCCESS : (int)nGetDataResult.GETDATA_FAIL;            //   0 : "데이터가 정상적으로 로드 되었습니다."
+                                                                                                                        //  -1 : "데이터가 정상적으로 로드 되지 않았습니다."
+        }
+
+
+        public int GetDrillingData_ProcessingFlagCheck()
+        {
+            string m_strTemp;
+            bool success = true;
+            bool LayerIsGroup = false;
+
+            //  SLD-200 에서 사용할 변수
+            //int m_nLayerThruHole_Count = 0;
+
+            //m_bGroupExist_LargerThanDivideSize = false;
+
+            int m_nUnusableLayerCount = 0;
+
+
+            if (Equipment.EqpSiriusViewer == null)
+            {
+                MessageBox.Show("먼저 RTC 보드를 초기화 해야 합니다.", "Information!!");
+                return (int)nGetDataResult.GETDATA_RTCINIT;
+            }
+
+            if (Equipment.EqpSiriusViewer.Document == null)
+            {
+                MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
+                return (int)nGetDataResult.GETDATA_FAIL;
+            }
+
+            //  일단 Layer 는 1개만 사용하기로...
+
+            m_nGroupCount = 0;
+
+
+            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            {
+                if (layer.IsMarkerable)
+                {
+                    ///////////////////////
+                    ///                 ///
+                    ///     쓰루홀      ///
+                    ///                 ///
+                    ///////////////////////
+                    if (layer.Name == "Thruhole")
+                    {
+                        //  Item 이 Group 인지 아닌지 확인 (Group 이면 아래에서 데이터 변수 할당, Group 이 아니면 여기서 할당)
+                        int m_nCount = 0;
+                        foreach (var entity in layer)
+                        {
+                            var group = entity as Group;
+
+                            if (group == null)
+                            {
+                                LayerIsGroup = false;
+
+                                m_nCount = layer.Count;
+                            }
+                            else
+                            {
+                                LayerIsGroup = true;
+
+                                m_nCount = 1;
+                            }
+
+                            //break;
+                        }
+
+
+                        if (LayerIsGroup)               //  MSL 은 Thruhole 을 Group 으로 해야 한다. 
+                        {
+                            //  전체 Socket 개수만큼 공간 할당
+                            m_stThruHole_SocketData_ProcessingFlag = new stThruHole_SocketData[layer.Count];
+                        }
+
+                        for (int i = 0; i < layer.Count; i++)
+                        {
+                            if (layer.Items[i].Description == null)
+                            {
+                                m_stThruHole_SocketData_ProcessingFlag[i].bProcessing = true;
+                            }
+                            else if ((layer.Items[i].Description.ToUpper() == "NO") ||
+                                    (layer.Items[i].Description.ToUpper() == "NOT") ||
+                                    (layer.Items[i].Description.ToUpper() == "X") ||
+                                    (layer.Items[i].Description.ToUpper() == "FALSE"))
+                            {
+                                m_stThruHole_SocketData_ProcessingFlag[i].bProcessing = false;
+                            }
+                            else
+                            {
+                                m_stThruHole_SocketData_ProcessingFlag[i].bProcessing = true;
+                            }
+                        }
+                    }
+                    ///////////////////////
+                    ///                 ///
+                    ///     Outline     ///
+                    ///                 ///
+                    ///////////////////////
+                    else if (layer.Name == "Outline")
+                    {
+                        //  Item 이 Group 인지 아닌지 확인 (Group 이면 아래에서 데이터 변수 할당, Group 이 아니면 여기서 할당)
+                        int m_nCount = 0;
+                        foreach (var entity in layer)
+                        {
+                            var group = entity as Group;
+
+                            if (group == null)
+                            {
+                                LayerIsGroup = false;
+
+                                m_nCount = layer.Count;
+                            }
+                            else
+                            {
+                                LayerIsGroup = true;
+
+                                m_nCount = 1;
+                            }
+
+                            break;
+                        }
+
+
+                        if (LayerIsGroup)               //  MSL 은 Outline 을 Group 으로 해야 한다. 
+                        {
+                            //  전체 Socket 개수만큼 공간 할당
+                            //m_stOutLine_SocketData = new stOutLine_SocketData[layer.Count];
+                        }
+
+
+                        //  여기에서 가공 여부 Flag 변수 세팅
+
+                    }
+                    ///////////////////////
+                    ///                 ///
+                    ///      마킹       ///
+                    ///                 ///
+                    ///////////////////////
+                    else if (layer.Name == "Marking")
+                    {
+                        //  Item 이 Group 인지 아닌지 확인 (Group 이면 아래에서 데이터 변수 할당, Group 이 아니면 여기서 할당)
+                        int m_nCount = 0;
+                        foreach (var entity in layer)
+                        {
+                            var group = entity as Group;
+
+                            if (group == null)
+                            {
+                                LayerIsGroup = false;
+
+                                m_nCount = layer.Count;
+                            }
+                            else
+                            {
+                                LayerIsGroup = true;
+
+                                m_nCount = 1;
+                            }
+
+                            break;
+                        }
+
+
+                        if (LayerIsGroup)               //  MSL 은 Outline 을 Group 으로 해야 한다. 
+                        {
+                            //  전체 Socket 개수만큼 공간 할당
+                            //m_stOutLine_SocketData = new stOutLine_SocketData[layer.Count];
+                        }
+
+
+                        //  여기에서 가공 여부 Flag 변수 세팅
+
+                    }
+                    else
+                    {
+                        m_nUnusableLayerCount++;
+                    }
+                }
+                if (!success)
+                    break;
+            }
 
             return success == true ? (int)nGetDataResult.GETDATA_SUCCESS : (int)nGetDataResult.GETDATA_FAIL;            //   0 : "데이터가 정상적으로 로드 되었습니다."
                                                                                                                         //  -1 : "데이터가 정상적으로 로드 되지 않았습니다."
