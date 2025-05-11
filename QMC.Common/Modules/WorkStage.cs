@@ -13915,7 +13915,7 @@ namespace QMC.Common.Modules
                     else
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 실패. Retry");
-
+                        m_nSocketAlign_Retry_Max = 0;
                         if (m_nSocketAlign_Retry_Count < m_nSocketAlign_Retry_Max)
                         {
                             m_nSocketAlign_Retry_Count++;
@@ -13932,6 +13932,8 @@ namespace QMC.Common.Modules
 
                             //timer_VisionAlign.Enabled = false;
 
+                            m_bAlignCompleted = true;
+                            m_bSocketAlign_OK = false;
                             m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
                         }
                     }
@@ -18650,6 +18652,21 @@ namespace QMC.Common.Modules
                             {
                                 m_bSocketAlign_OK = false;
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+
+                                ////  소켓 얼라인 실패했으니 화면 갱신해야 한다.
+                                //m_nDrillingData_SocketAlign_NGCount++;                                              //  소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
+
+                                //Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
+                                //Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
+                                //                                                                                    //Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+
+                                //GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
+
+                                //Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                                //Thread.Sleep(200);
+
+                                //m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
                             }
                         
                         }
