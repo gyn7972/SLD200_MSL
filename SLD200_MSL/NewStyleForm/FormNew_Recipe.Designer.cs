@@ -38,6 +38,8 @@
             this.label88 = new System.Windows.Forms.Label();
             this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel = new System.Windows.Forms.TextBox();
             this.groupBox17 = new System.Windows.Forms.GroupBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
             this.label81 = new System.Windows.Forms.Label();
             this.label82 = new System.Windows.Forms.Label();
             this.label49 = new System.Windows.Forms.Label();
@@ -99,6 +101,8 @@
             this.checkBox_Recipe_TabRecipe_ProcessOptions_SocketHeightCheck = new System.Windows.Forms.CheckBox();
             this.checkBox_Recipe_TabRecipe_ProcessOptions_SocketAlign = new System.Windows.Forms.CheckBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.label_PulseWidth_Range = new System.Windows.Forms.Label();
+            this.label89 = new System.Windows.Forms.Label();
             this.button34 = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_LaserParam_Frequency = new System.Windows.Forms.TextBox();
             this.label77 = new System.Windows.Forms.Label();
@@ -267,10 +271,6 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
-            this.label14 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.label89 = new System.Windows.Forms.Label();
-            this.label_PulseWidth_Range = new System.Windows.Forms.Label();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox15.SuspendLayout();
@@ -448,6 +448,28 @@
             this.groupBox17.TabIndex = 64;
             this.groupBox17.TabStop = false;
             this.groupBox17.Text = " Available Layer Names ";
+            // 
+            // label14
+            // 
+            this.label14.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label14.Location = new System.Drawing.Point(125, 207);
+            this.label14.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(205, 24);
+            this.label14.TabIndex = 28;
+            this.label14.Text = "Pre Align Position";
+            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label15
+            // 
+            this.label15.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label15.Location = new System.Drawing.Point(7, 207);
+            this.label15.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(114, 24);
+            this.label15.TabIndex = 27;
+            this.label15.Text = "PreAlign  :";
+            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label81
             // 
@@ -1172,6 +1194,29 @@
             this.groupBox7.TabIndex = 85;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = " Laser Set Points ";
+            // 
+            // label_PulseWidth_Range
+            // 
+            this.label_PulseWidth_Range.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.label_PulseWidth_Range.ForeColor = System.Drawing.Color.OrangeRed;
+            this.label_PulseWidth_Range.Location = new System.Drawing.Point(13, 83);
+            this.label_PulseWidth_Range.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_PulseWidth_Range.Name = "label_PulseWidth_Range";
+            this.label_PulseWidth_Range.Size = new System.Drawing.Size(162, 19);
+            this.label_PulseWidth_Range.TabIndex = 22;
+            this.label_PulseWidth_Range.Text = "(0.00us ~ 0.00us)  ";
+            this.label_PulseWidth_Range.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label89
+            // 
+            this.label89.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label89.Location = new System.Drawing.Point(13, 156);
+            this.label89.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label89.Name = "label89";
+            this.label89.Size = new System.Drawing.Size(162, 17);
+            this.label89.TabIndex = 21;
+            this.label89.Text = "(0% ~ 100%)  ";
+            this.label89.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // button34
             // 
@@ -3248,50 +3293,6 @@
             this.button_Recipe_Cancel.TabIndex = 20;
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
-            // 
-            // label14
-            // 
-            this.label14.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label14.Location = new System.Drawing.Point(125, 207);
-            this.label14.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(205, 24);
-            this.label14.TabIndex = 28;
-            this.label14.Text = "Pre Align Position";
-            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label15
-            // 
-            this.label15.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label15.Location = new System.Drawing.Point(7, 207);
-            this.label15.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(114, 24);
-            this.label15.TabIndex = 27;
-            this.label15.Text = "PreAlign  :";
-            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label89
-            // 
-            this.label89.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label89.Location = new System.Drawing.Point(13, 156);
-            this.label89.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label89.Name = "label89";
-            this.label89.Size = new System.Drawing.Size(162, 17);
-            this.label89.TabIndex = 21;
-            this.label89.Text = "(0% ~ 100%)  ";
-            this.label89.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label_PulseWidth_Range
-            // 
-            this.label_PulseWidth_Range.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label_PulseWidth_Range.Location = new System.Drawing.Point(13, 83);
-            this.label_PulseWidth_Range.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label_PulseWidth_Range.Name = "label_PulseWidth_Range";
-            this.label_PulseWidth_Range.Size = new System.Drawing.Size(162, 17);
-            this.label_PulseWidth_Range.TabIndex = 22;
-            this.label_PulseWidth_Range.Text = "(0.00us ~ 0.00us)  ";
-            this.label_PulseWidth_Range.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FormNew_Recipe
             // 
