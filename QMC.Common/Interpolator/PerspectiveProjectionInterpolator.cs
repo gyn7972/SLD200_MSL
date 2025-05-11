@@ -130,7 +130,7 @@ namespace QMC.Common.Interpolator
                     coordinatesTarget.Add(new XyCoordinate(v.Position.X + v.Offset.X, v.Position.Y - v.Offset.Y));
 
                 }
-                CorrectionMatrix = perspectiveProjection.projection_matrix(coordinatesSource, coordinatesTarget);
+                CorrectionMatrix = perspectiveProjection.GetCorrectionMatrix(coordinatesSource, coordinatesTarget);
                 XyCoordinate t = perspectiveProjection.GetPerspectiveProjectionPoint(source, CorrectionMatrix);
                 
                 dest = t;
@@ -164,7 +164,7 @@ namespace QMC.Common.Interpolator
                     //Log.Write("PerspectiveProjectionInterpolator", String.Format("{0}, {1}, {2},{3},{4}",
                     //    nIndex++, v.Position.X, v.Position.Y, v.Position.X + v.Offset.X, v.Position.Y + v.Offset.Y));
                 }
-                CorrectionMatrix = perspectiveProjection.projection_matrix(coordinatesTarget, coordinatesSource);
+                CorrectionMatrix = perspectiveProjection.GetCorrectionMatrix(coordinatesTarget, coordinatesSource);
                 XyCoordinate t = perspectiveProjection.GetPerspectiveProjectionPoint(dest, CorrectionMatrix);
 
                 source = t;

@@ -10148,6 +10148,9 @@ namespace QMC.Common.Modules
                 //  Loader Transfer Recovery 를 None 으로 보내고, Stacker0 의 Complete 를 false 로 해주면...
                 //  Stacker0 부터 Pick Up 대기위치 이동 동작하고,
                 //  그 이후에 Transfer 가 모듈 Pick Up 을 진행할 것으로 예상
+                //
+                //  m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker
+                //  이걸 해줘야 동작한다.
 
                 m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Move_ReadyPos2_2ndStep;
             }
@@ -10194,6 +10197,9 @@ namespace QMC.Common.Modules
                 //  Loader Transfer Recovery 를 None 으로 보내고, Stacker1 의 Complete 를 false 로 해주면...
                 //  Stacker1 부터 Pick Up 대기위치 이동 동작하고,
                 //  그 이후에 Transfer 가 모듈 Pick Up 을 진행할 것으로 예상
+                //
+                //  m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePickup_fromStacker
+                //  이걸 해줘야 동작한다.
 
                 m_nLoader_Transfer_Step_Recovery = (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos2_2ndStep;
             }

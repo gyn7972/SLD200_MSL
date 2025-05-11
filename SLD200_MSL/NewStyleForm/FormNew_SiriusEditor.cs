@@ -556,6 +556,10 @@ namespace SLD200_MSL
                 switch (m_nReturn)
                 {
                     case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:
+
+                        //  Hole1 제외한 나머지 Layer 의 Socket 을 가공할 것인지 여부를 결정하는 Flag 세팅
+                        workStage.GetDrillingData_ProcessingFlagCheck();
+
                         MessageBox.Show("가공 데이터 Parsing 성공", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         break;
 

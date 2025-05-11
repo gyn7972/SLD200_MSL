@@ -870,8 +870,9 @@ namespace QMC.Common.Modules
             public int nRegion_ObjectCount;             //  객체 누적 카운트
         }
         //public stThruHole_SocketData m_stThruHole_SocketData;
-        //public stThruHole_SocketData[] m_stThruHole_LayerData;         //  Socket Data 를 저장한다.
-        public stThruHole_SocketData[] m_stThruHole_SocketData;          //  Socket Data 를 저장한다.
+        //public stThruHole_SocketData[] m_stThruHole_LayerData;                    //  Socket Data 를 저장한다.
+        public stThruHole_SocketData[] m_stThruHole_SocketData;                     //  Socket Data 를 저장한다.
+        public stThruHole_SocketData[] m_stThruHole_SocketData_ProcessingFlag;      //  Socket Data 를 저장한다. (가공 여부 Flag)
         ///
         /// <summary>
         /// "쓰루홀" 처리 - 여기까지
@@ -8043,6 +8044,10 @@ namespace QMC.Common.Modules
 
                             //  최초 Data Parsing 후 해당 가공 데이터에 대한 상태 데이터를 초기화 한다. (가공중인 소켓 번호, 소켓 OK NG 여부 등)
                             GlobalSocketStatus_Init();
+
+                            //  Thruhole 가공 Pass 여부를 결정하는 Flag 변수 선언을 여기에서 한번만 한다.
+                            GetDrillingData_ProcessingFlagCheck();
+
 
                             if (m_stDividedRegion_GroupData != null)
                             {
@@ -15257,6 +15262,9 @@ namespace QMC.Common.Modules
                                 //  최초 Data Parsing 후 해당 가공 데이터에 대한 상태 데이터를 초기화 한다. (가공중인 소켓 번호, 소켓 OK NG 여부 등)
                                 GlobalSocketStatus_Init();
 
+                                //  Thruhole 가공 Pass 여부를 결정하는 Flag 변수 선언을 여기에서 한번만 한다.
+                                GetDrillingData_ProcessingFlagCheck();
+
                                 m_nLaserDrilling_LayerCount = 0;
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingWork_Start;                 //  단일 Job File 작업일 경우
                             }
@@ -18651,24 +18659,40 @@ namespace QMC.Common.Modules
                             else
                             {
                                 m_bSocketAlign_OK = false;
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                                //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
 
-                                ////  소켓 얼라인 실패했으니 화면 갱신해야 한다.
-                                //m_nDrillingData_SocketAlign_NGCount++;                                              //  소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
+                                //  소켓 얼라인 실패했으니 화면 갱신해야 한다.
+                                m_nDrillingData_SocketAlign_NGCount++;                                              //  소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
 
-                                //Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
-                                //Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
-                                //                                                                                    //Main_SocketPositions_SetStatus = true;                                              //  상태 변경
+                                Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
+                                Main_SocketPositions_ProcessingSocket = m_nDrillingWork_Group_Count;                //  완료된 소켓 번호 (NG)
+                                                                                                                    //Main_SocketPositions_SetStatus = true;                                              //  상태 변경
 
-                                //GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
+                                GlobalSocketStatus_Set("Hole1", m_nDrillingWork_Group_Count, 0, "소켓 얼라인 실패");
 
-                                //Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
-                                //Thread.Sleep(200);
+                                Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
+                                Thread.Sleep(200);
 
-                                //m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                                //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
-                            }
-                        
+                                //  Thruhole Layer 가 있으면, 가공하지 않도록 Flag 를 false 로 변경한다.
+                                if (m_stThruHole_SocketData_ProcessingFlag != null)
+                                {
+                                    if (m_stThruHole_SocketData_ProcessingFlag.Length == m_stDividedRegion_GroupData.Length)
+                                    {
+                                        m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
+                                    }
+                                    else
+                                    {
+                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole 과 Hole1 의 Socket 개수가 다릅니다.");
+                                    }
+                                }
+                                else
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole Processing Skip Flag 저장 변수가 Null 입니다.");
+                                }
+
+                                m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                            }                        
                         }
                         else
                         {
@@ -18681,7 +18705,6 @@ namespace QMC.Common.Modules
                             //MessageBox.Show("Socket Align 실패", "Error");
 
 							//  소켓 얼라인 실패했으니 화면 갱신해야 한다.
-
                             m_nDrillingData_SocketAlign_NGCount++;                                              //  소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
 
                             Main_SocketPositions_ProcessingStatus = (int)Socket_Process_Status.NG;
@@ -18695,7 +18718,6 @@ namespace QMC.Common.Modules
 
                             m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
-
                         }
                     }
                     else if (m_nSocketAlign_MainStep == (int)SocketAlign_Step.None)
@@ -19753,637 +19775,69 @@ namespace QMC.Common.Modules
                                 //  Polyline 도형이 직각사각형인지 마름모꼴인지 확인
                                 //  직각사각형 판정 기준 : 0번째 좌표와 1번째 좌표를 비교하여 X 좌표와 Y 좌표가 동일한 값이 있으면 직각사각형으로 본다. (직각사각형이라는 용어가 있나... -_-? 암튼...)
 
-                                entity_FirstPoint.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].X;
-                                entity_FirstPoint.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[0].Y;
-                                entity_SecondPoint.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].X;
-                                entity_SecondPoint.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[1].Y;
+                                
+                                var Data = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint;
+                                XyCoordinate center = new XyCoordinate();
+                                XyCoordinate SourceLeftTop= new XyCoordinate();
+                                XyCoordinate SourceRightBottom = new XyCoordinate();
 
-                                if ((entity_FirstPoint.X == entity_SecondPoint.X) || (entity_FirstPoint.Y == entity_SecondPoint.Y))     //  첫번째 점과 두번째 점의 X 좌표나 Y 좌표중에 하나가 동일할 경우 직각으로 봄.
+                                
+                                XyCoordinate DestLeftTop = new XyCoordinate();
+                                XyCoordinate DestRightBottom = new XyCoordinate();
+                                center.X = (Data.Min(t => t.X) + Data.Max(t => t.X)) / 2;
+                                center.Y = (Data.Min(t => t.Y) + Data.Max(t => t.Y)) / 2;
+
+                                DestLeftTop.X = SourceLeftTop.X = Data.Min(t => t.X);
+                                DestLeftTop.Y  = SourceLeftTop.Y = Data.Min(t => t.Y);
+                                DestRightBottom.X  = SourceRightBottom.X = Data.Max(t => t.X);
+                                DestRightBottom.Y = SourceRightBottom.Y = Data.Max(t => t.Y);
+                                
+                                DestLeftTop.X -= m_dHoleLayer_Resizing / 2;
+                                DestLeftTop.Y -= m_dHoleLayer_Resizing / 2;
+                                DestRightBottom.X += m_dHoleLayer_Resizing / 2;
+                                DestRightBottom.Y += m_dHoleLayer_Resizing / 2;
+                                DrawingResizeForPerspectiveProjection drpp = new DrawingResizeForPerspectiveProjection();
+                                drpp.MakeCorrectionMatrix(SourceLeftTop, SourceRightBottom, DestLeftTop, DestRightBottom);
+                                var rData = drpp.Resize(Data);
+                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling = drpp.Resize(Data);
+                                //  Rectangle 이고, 가공 사이즈 줄이기 옵션이 활성화 되어 있는 경우, Edge Point 를 줄여서 가공
+
+
+
+
+                                //  첫 번째 Edge Point 로 Jump 이동
+                                entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X -
+                                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
+                                entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y -
+                                                    m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
+
+                                entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
+
+                                m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
+
+                                //  가공 데이터 Center 계산을 위해
+                                entity_Pos_Min.X = double.MaxValue;
+                                entity_Pos_Min.Y = double.MaxValue;
+                                entity_Pos_Max.X = double.MinValue;
+                                entity_Pos_Max.Y = double.MinValue;
+
+                                //  이어서 오는 Edge Point 로 Mark 이동(cont') 하여 Polyline 완성
+                                for (int nEntity = 1; nEntity < m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].nEdgePointNum; nEntity++)
                                 {
-                                    m_bRightAngle = true;
-                                }
-                                else
-                                {
-                                    m_bRightAngle = false;
-                                }
-
-                                if (m_bRightAngle)              //  사각형이 직각일 경우 --> 기존대로
-                                {
-                                    //  Object Min, Max 체크 (X, Y)   --> 이 크기에서 Reduce Size 만큼 줄임
-                                    entity_Pos_Min.X = double.MaxValue;
-                                    entity_Pos_Min.Y = double.MaxValue;
-                                    entity_Pos_Max.X = double.MinValue;
-                                    entity_Pos_Max.Y = double.MinValue;
-                                    for (int nChkEntity = 0; nChkEntity < m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].nEdgePointNum; nChkEntity++)
-                                    {
-                                        if (entity_Pos_Min.X >= m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[nChkEntity].X)
-                                        {
-                                            entity_Pos_Min.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[nChkEntity].X;
-                                        }
-                                        if (entity_Pos_Min.Y >= m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[nChkEntity].Y)
-                                        {
-                                            entity_Pos_Min.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[nChkEntity].Y;
-                                        }
-                                        if (entity_Pos_Max.X <= m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[nChkEntity].X)
-                                        {
-                                            entity_Pos_Max.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[nChkEntity].X;
-                                        }
-                                        if (entity_Pos_Max.Y <= m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[nChkEntity].Y)
-                                        {
-                                            entity_Pos_Max.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[nChkEntity].Y;
-                                        }
-                                    }
-
-                                    //  영역 위치 이동 때 Reticle Offset 보정을 했으니, Scanner 로 가공할 때는 기존 데이터로 가공하면 된다.
-                                    ////  Reticle 보정일 경우, Offset 보정
-                                    //if (Config.ParamConfig.bReticleReference_Use)
-                                    //{
-                                    //    entity_Pos_Min.X += m_dRETICLE_Correction_X;
-                                    //    entity_Pos_Min.Y += m_dRETICLE_Correction_Y;
-                                    //    entity_Pos_Max.X += m_dRETICLE_Correction_X;
-                                    //    entity_Pos_Max.Y += m_dRETICLE_Correction_Y;
-                                    //}
-
-                                    //if (Config.ParamConfig.bDrillingSizeReduce_Enable)
-                                    if (Math.Abs(m_dHoleLayer_Resizing) > 0.0)
-                                    {
-                                        //  Reduce Size 적용하여 Edge Point 다시 계산
-                                        //  Edge Point 개수 : 5개 (Left Top --> Left Bottom --> Right Bottom --> Right Top --> Left Top)
-                                        //  Left-Top (시작점)
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X =
-                                            entity_Pos_Min.X + (m_dHoleLayer_Resizing / 2.0);
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y =
-                                            entity_Pos_Max.Y - (m_dHoleLayer_Resizing / 2.0);
-                                        //  Left-Bottom
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[1].X =
-                                            entity_Pos_Min.X + (m_dHoleLayer_Resizing / 2.0);
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[1].Y =
-                                            entity_Pos_Min.Y + (m_dHoleLayer_Resizing / 2.0);
-                                        //  Right-Bottom
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[2].X =
-                                            entity_Pos_Max.X - (m_dHoleLayer_Resizing / 2.0);
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[2].Y =
-                                            entity_Pos_Min.Y + (m_dHoleLayer_Resizing / 2.0);
-                                        //  Right-Top
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[3].X =
-                                            entity_Pos_Max.X - (m_dHoleLayer_Resizing / 2.0);
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[3].Y =
-                                            entity_Pos_Max.Y - (m_dHoleLayer_Resizing / 2.0);
-                                        //  Left-Top (다시 시작점으로)
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[4].X =
-                                            entity_Pos_Min.X + (m_dHoleLayer_Resizing / 2.0);
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[4].Y =
-                                            entity_Pos_Max.Y - (m_dHoleLayer_Resizing / 2.0);
-                                    }
-                                    else
-                                    {
-                                        //  Edge Point 다시 계산
-                                        //  Edge Point 개수 : 5개 (Left Top --> Left Bottom --> Right Bottom --> Right Top --> Left Top)
-                                        //  Left-Top (시작점)
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X =
-                                            entity_Pos_Min.X;
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y =
-                                            entity_Pos_Max.Y;
-                                        //  Left-Bottom
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[1].X =
-                                            entity_Pos_Min.X;
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[1].Y =
-                                            entity_Pos_Min.Y;
-                                        //  Right-Bottom
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[2].X =
-                                            entity_Pos_Max.X;
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[2].Y =
-                                            entity_Pos_Min.Y;
-                                        //  Right-Top
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[3].X =
-                                            entity_Pos_Max.X;
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[3].Y =
-                                            entity_Pos_Max.Y;
-                                        //  Left-Top (다시 시작점으로)
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[4].X =
-                                            entity_Pos_Min.X;
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[4].Y =
-                                            entity_Pos_Max.Y;
-                                    }
-                                }
-                                else                //  사각형이 직각이 아니다. --> 직각 모양으로 회전시킨 후 크기를 줄이고 다시 원래 각도로 회전
-                                {
-                                    //if (Config.ParamConfig.bDrillingSizeReduce_Enable)
-                                    if (Math.Abs(m_dHoleLayer_Resizing) > 0.0)
-                                    {
-                                        //  기존 도형 좌표 넣기 (4점 좌표만 넣음)
-                                        for (int nChkEntity = 0; nChkEntity < 4; nChkEntity++)
-                                        {
-                                            m_pPolygon[nChkEntity].X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[nChkEntity].X;
-                                            m_pPolygon[nChkEntity].Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[nChkEntity].Y;
-                                        }
-
-                                        //  Center 좌표 구하기
-                                        m_pCenter.X = (float)((m_pPolygon[0].X + m_pPolygon[2].X) / 2.0);
-                                        m_pCenter.Y = (float)((m_pPolygon[0].Y + m_pPolygon[2].Y) / 2.0);
-
-                                        //  사각형의 기울어진 각도 구하기 (Radian)
-                                        double startX = m_pPolygon[0].X;
-                                        double startY = m_pPolygon[0].Y;
-                                        double endX = m_pPolygon[1].X;
-                                        double endY = m_pPolygon[1].Y;
-                                        double deltaX = endX - startX;
-                                        double deltaY = endY - startY;
-                                        m_dRadianOfRect = Math.Atan2(deltaY, deltaX);
-
-                                        //  기울어진 각도를 직각으로 돌리기
-                                        m_pPolygon_Ret = rotatePolygon(m_pPolygon, m_pCenter, -m_dRadianOfRect);
-
-                                        //  Object Min, Max 체크 (X, Y)   --> 이 크기에서 Reduce Size 만큼 줄임
-                                        entity_Pos_Min.X = double.MaxValue;
-                                        entity_Pos_Min.Y = double.MaxValue;
-                                        entity_Pos_Max.X = double.MinValue;
-                                        entity_Pos_Max.Y = double.MinValue;
-
-                                        for (int nChkEntity = 0; nChkEntity < m_pPolygon_Ret.Length; nChkEntity++)
-                                        {
-                                            if (entity_Pos_Min.X >= m_pPolygon_Ret[nChkEntity].X)
-                                            {
-                                                entity_Pos_Min.X = m_pPolygon_Ret[nChkEntity].X;
-                                            }
-                                            if (entity_Pos_Min.Y >= m_pPolygon_Ret[nChkEntity].Y)
-                                            {
-                                                entity_Pos_Min.Y = m_pPolygon_Ret[nChkEntity].Y;
-                                            }
-                                            if (entity_Pos_Max.X <= m_pPolygon_Ret[nChkEntity].X)
-                                            {
-                                                entity_Pos_Max.X = m_pPolygon_Ret[nChkEntity].X;
-                                            }
-                                            if (entity_Pos_Max.Y <= m_pPolygon_Ret[nChkEntity].Y)
-                                            {
-                                                entity_Pos_Max.Y = m_pPolygon_Ret[nChkEntity].Y;
-                                            }
-                                        }
-
-                                        //  Reduce Size 적용하여 크기 조정
-                                        //  Left-Top (시작점)
-                                        m_pPolygon[0].X = entity_Pos_Min.X + (m_dHoleLayer_Resizing / 2.0);
-                                        m_pPolygon[0].Y = entity_Pos_Max.Y - (m_dHoleLayer_Resizing / 2.0);
-                                        //  Right-Top
-                                        m_pPolygon[1].X = entity_Pos_Max.X - (m_dHoleLayer_Resizing / 2.0);
-                                        m_pPolygon[1].Y = entity_Pos_Max.Y - (m_dHoleLayer_Resizing / 2.0);
-                                        //  Right-Bottom
-                                        m_pPolygon[2].X = entity_Pos_Max.X - (m_dHoleLayer_Resizing / 2.0);
-                                        m_pPolygon[2].Y = entity_Pos_Min.Y + (m_dHoleLayer_Resizing / 2.0);
-                                        //  Left-Bottom
-                                        m_pPolygon[3].X = entity_Pos_Min.X + (m_dHoleLayer_Resizing / 2.0);
-                                        m_pPolygon[3].Y = entity_Pos_Min.Y + (m_dHoleLayer_Resizing / 2.0);
-
-                                        //  다시 원래 각도로 회전
-                                        m_pPolygon_Ret = rotatePolygon(m_pPolygon, m_pCenter, m_dRadianOfRect);
-
-                                        //  데이터 배열에 다시 넣기
-                                        //  Edge Point 개수 : 5개 (Left Top --> Left Bottom --> Right Bottom --> Right Top --> Left Top)
-                                        //  Left-Top (시작점)
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X = m_pPolygon_Ret[0].X;
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y = m_pPolygon_Ret[0].Y;
-                                        //  Left-Bottom
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[1].X = m_pPolygon_Ret[1].X;
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[1].Y = m_pPolygon_Ret[1].Y;
-                                        //  Right-Bottom
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[2].X = m_pPolygon_Ret[2].X;
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[2].Y = m_pPolygon_Ret[2].Y;
-                                        //  Right-Top
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[3].X = m_pPolygon_Ret[3].X;
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[3].Y = m_pPolygon_Ret[3].Y;
-                                        //  Left-Top (다시 시작점으로)
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[4].X = m_pPolygon_Ret[0].X;
-                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[4].Y = m_pPolygon_Ret[0].Y;
-                                    }
-                                    else
-                                    {
-                                        for (int nChkEntity = 0; nChkEntity < m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].nEdgePointNum; nChkEntity++)
-                                        {
-                                            m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nChkEntity].X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[nChkEntity].X;
-                                            m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nChkEntity].Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint[nChkEntity].Y;
-                                        }
-                                    }
-                                }
-
-                                //  면 우선 작업 모드일 경우 (왼쪽면 전체 가공 -> 아랫면 전체 가공 -> 오른쪽면 전체 가공 -> 윗면 전체 가공)
-                                //  2023. 01. 06.  SCH : 가공 순서 변경 (왼쪽면 전체 가공 -> 오른쪽면 전체 가공 -> 아랫면 전체 가공 -> 윗면 전체 가공)
-                                //                       가공 방향       ↓                  ↓                    →                  →
-                                if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst)
-                                {
-
-                                    if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst_isTrue_MarkingOrder)                   //  인접한 면 순차 가공 (꼬리물기)
-                                    {
-                                        //  Jump 이동, Mark 이동 Index 계산
-                                        switch (m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount)
-                                        {
-                                            case 0:     //  기존 : LT -> LB           변경 : LT -> LB
-                                                if (m_bDrillingDirection_FwdRev)
-                                                {
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex = 0;
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex = 1;
-                                                }
-                                                else
-                                                {
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex = 4;
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex = 3;
-                                                }
-                                                break;
-
-                                            case 1:     //  기존 : RB -> RT           변경 : LB -> RB
-                                                if (m_bDrillingDirection_FwdRev)
-                                                {
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex = 1;
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex = 2;
-                                                }
-                                                else
-                                                {
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex = 3;
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex = 2;
-                                                }
-                                                break;
-
-                                            case 2:     //  기존 : LB -> RB           변경 : RT -> RB (테스트 : RB -> RT 로 변경)
-                                                if (m_bDrillingDirection_FwdRev)
-                                                {
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex = 2;
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex = 3;
-                                                }
-                                                else
-                                                {
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex = 2;
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex = 1;
-                                                }
-                                                break;
-
-                                            case 3:     //  기존 : RT -> LT           변경 : LT -> RT (테스트 : RT -> LT 로 변경)
-                                                if (m_bDrillingDirection_FwdRev)
-                                                {
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex = 3;
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex = 4;
-                                                }
-                                                else
-                                                {
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex = 1;
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex = 0;
-                                                }
-                                                break;
-                                        }
-                                    }
-                                    else                                                                                                    //  마주보는 면 우선 가공 (24. 08. 20 이전 방법)
-                                    {
-                                        //  Jump 이동, Mark 이동 Index 계산
-                                        switch (m_nLaserDrilling_OneSideOfADrillingSquare_WorkCount)
-                                        {
-                                            case 0:     //  기존 : LT -> LB           변경 : LT -> LB
-                                                if (m_bDrillingDirection_FwdRev)
-                                                {
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex = 0;
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex = 1;
-                                                }
-                                                else
-                                                {
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex = 1;
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex = 0;
-                                                }
-                                                break;
-
-                                            case 1:     //  기존 : LB -> RB           변경 : RT -> RB (테스트 : RB -> RT 로 변경)
-                                                if (m_bDrillingDirection_FwdRev)
-                                                {
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex = 2;
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex = 3;
-                                                }
-                                                else
-                                                {
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex = 3;
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex = 2;
-                                                }
-                                                break;
-
-                                            case 2:     //  기존 : RB -> RT           변경 : LB -> RB
-                                                if (m_bDrillingDirection_FwdRev)
-                                                {
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex = 1;
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex = 2;
-                                                }
-                                                else
-                                                {
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex = 2;
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex = 1;
-                                                }
-                                                break;
-
-                                            case 3:     //  기존 : RT -> LT           변경 : LT -> RT (테스트 : RT -> LT 로 변경)
-                                                if (m_bDrillingDirection_FwdRev)
-                                                {
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex = 3;
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex = 4;
-                                                }
-                                                else
-                                                {
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex = 4;
-                                                    m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex = 3;
-                                                }
-                                                break;
-                                        }
-                                    }
-
-                                    //  Jump 이동
-                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex].X -
+                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].X -
                                                         m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
-                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex].Y -
+                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].Y -
                                                         m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
 
-                                    ////  데이터 검증용 코드
-                                    //if (Config.ParamConfig.DrillingData_SaveToLogFile)
-                                    //{
-                                    //    m_strTemp = "Jump, X, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex].X.ToString() +
-                                    //                    ", Y, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[m_nLaserDrilling_OneSideOfADrillingSquare_JumpIndex].Y.ToString();
-                                    //    Log.Write("SLD100_Data", "Div. Drilling", m_strTemp);
-                                    //}
+                                    entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
 
-                                    //if (Config.ParamConfig.ScannerData_SaveToLogFile)
-                                    //{
-                                    //    //  Scanner 가공 영역을 넘어가면 저장
-                                    //    if ((entity_Position.X < -Config.ParamConfig.Drilling_DivideSize / 2.0) || (entity_Position.X > Config.ParamConfig.Drilling_DivideSize / 2.0) ||
-                                    //        (entity_Position.Y < -Config.ParamConfig.Drilling_DivideSize / 2.0) || (entity_Position.Y > Config.ParamConfig.Drilling_DivideSize / 2.0))
-                                    //    {
-                                    //        m_strTemp = "Jump, X, " + entity_Position.X.ToString() + ", Y, " + entity_Position.Y.ToString();
-                                    //        Log.Write("SLD100_Data_Scanner_OverRange", "Div. Drilling", m_strTemp);
-                                    //    }
-                                    //}
-
-                                    //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
-                                    //{
-                                    //    m_bDivRegionList_Success &= rtcSyncAxis.ListJump(new Vector2((float)entity_Position.X, (float)entity_Position.Y));
-                                    //}
-                                    //else if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6)
-                                    {
-                                        entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
-
-                                        m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
-                                    }
-
-                                    //  Mark 이동
-                                    entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex].X -
-                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
-                                    entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex].Y -
-                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
-
-                                    ////  데이터 검증용 코드
-                                    //if (Config.ParamConfig.DrillingData_SaveToLogFile)
-                                    //{
-                                    //    m_strTemp = "Mark, X, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex].X.ToString() +
-                                    //                    ", Y, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[m_nLaserDrilling_OneSideOfADrillingSquare_MarkIndex].Y.ToString();
-                                    //    Log.Write("SLD100_Data", "Div. Drilling", m_strTemp);
-                                    //}
-
-                                    //if (Config.ParamConfig.ScannerData_SaveToLogFile)
-                                    //{
-                                    //    //  Scanner 가공 영역을 넘어가면 저장
-                                    //    if ((entity_Position.X < -Config.ParamConfig.Drilling_DivideSize / 2.0) || (entity_Position.X > Config.ParamConfig.Drilling_DivideSize / 2.0) ||
-                                    //        (entity_Position.Y < -Config.ParamConfig.Drilling_DivideSize / 2.0) || (entity_Position.Y > Config.ParamConfig.Drilling_DivideSize / 2.0))
-                                    //    {
-                                    //        m_strTemp = "Mark, X, " + entity_Position.X.ToString() + ", Y, " + entity_Position.Y.ToString();
-                                    //        Log.Write("SLD100_Data_Scanner_OverRange", "Div. Drilling", m_strTemp);
-                                    //    }
-                                    //}
-
-                                    //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
-                                    //{
-                                    //    m_bDivRegionList_Success &= rtcSyncAxis.ListMark(new Vector2((float)entity_Position.X, (float)entity_Position.Y));
-                                    //}
-                                    //else if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6)
-                                    {
-                                        entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
-
-                                        m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
-                                    }
+                                    m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
                                 }
-                                else    //  사각형 우선 작업 모드일 경우 (드릴홀 1개 전체 데이터 가공)
-                                {
-                                    if (Config.ParamConfig.Drilling_ProcessingPriority_EachSideFirst_isFalse_MarkingType)                   //  Line 처럼 가공. (Jump -> Mark -> Jump -> Mark ... )
-                                    {
-                                        //  Jump 이동과 Mark 이동을 짝으로 구성하여 Line 완성
 
-                                        //  가공 데이터 Center 계산을 위해
-                                        entity_Pos_Min.X = double.MaxValue;
-                                        entity_Pos_Min.Y = double.MaxValue;
-                                        entity_Pos_Max.X = double.MinValue;
-                                        entity_Pos_Max.Y = double.MinValue;
 
-                                        for (int nEntity = 0; nEntity < m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].nEdgePointNum - 1; nEntity++)
-                                        {
-                                            //  Jump 이동
-                                            //  첫 번째 Edge Point 로 Jump 이동
-                                            entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].X -
-                                                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
-                                            entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].Y -
-                                                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
 
-                                            ////  데이터 검증용 코드
-                                            //if (Config.ParamConfig.DrillingData_SaveToLogFile)
-                                            //{
-                                            //    m_strTemp = "Jump, X, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X.ToString() +
-                                            //                    ", Y, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y.ToString();
-                                            //    Log.Write("SLD100_Data", "Div. Drilling", m_strTemp);
-                                            //}
 
-                                            //if (Config.ParamConfig.ScannerData_SaveToLogFile)
-                                            //{
-                                            //    //  Scanner 가공 영역을 넘어가면 저장
-                                            //    if ((entity_Position.X < -Config.ParamConfig.Drilling_DivideSize / 2.0) || (entity_Position.X > Config.ParamConfig.Drilling_DivideSize / 2.0) ||
-                                            //        (entity_Position.Y < -Config.ParamConfig.Drilling_DivideSize / 2.0) || (entity_Position.Y > Config.ParamConfig.Drilling_DivideSize / 2.0))
-                                            //    {
-                                            //        m_strTemp = "Jump, X, " + entity_Position.X.ToString() + ", Y, " + entity_Position.Y.ToString();
-                                            //        Log.Write("SLD100_Data_Scanner_OverRange", "Div. Drilling", m_strTemp);
-                                            //    }
-                                            //}
 
-                                            //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
-                                            //{
-                                            //    m_bDivRegionList_Success &= rtcSyncAxis.ListJump(new Vector2((float)entity_Position.X, (float)entity_Position.Y));
-                                            //}
-                                            //else if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6)
-                                            {
-                                                entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
-
-                                                m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
-                                            }
-
-                                            //  Mark 이동
-                                            entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity + 1].X -
-                                                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
-                                            entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity + 1].Y -
-                                                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
-
-                                            ////  데이터 검증용 코드
-                                            //if (Config.ParamConfig.DrillingData_SaveToLogFile)
-                                            //{
-                                            //    //  Min, Max
-                                            //    if (entity_Pos_Min.X >= m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity + 1].X)
-                                            //    {
-                                            //        entity_Pos_Min.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity + 1].X;
-                                            //    }
-                                            //    if (entity_Pos_Min.Y >= m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity + 1].Y)
-                                            //    {
-                                            //        entity_Pos_Min.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity + 1].Y;
-                                            //    }
-                                            //    if (entity_Pos_Max.X <= m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity + 1].X)
-                                            //    {
-                                            //        entity_Pos_Max.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity + 1].X;
-                                            //    }
-                                            //    if (entity_Pos_Max.Y <= m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity + 1].Y)
-                                            //    {
-                                            //        entity_Pos_Max.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity + 1].Y;
-                                            //    }
-
-                                            //    m_strTemp = "Mark, X, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity + 1].X.ToString() +
-                                            //                    ", Y, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity + 1].Y.ToString();
-                                            //    Log.Write("SLD100_Data", "Div. Drilling", m_strTemp);
-                                            //}
-
-                                            //if (Config.ParamConfig.ScannerData_SaveToLogFile)
-                                            //{
-                                            //    //  Scanner 가공 영역을 넘어가면 저장
-                                            //    if ((entity_Position.X < -Config.ParamConfig.Drilling_DivideSize / 2.0) || (entity_Position.X > Config.ParamConfig.Drilling_DivideSize / 2.0) ||
-                                            //        (entity_Position.Y < -Config.ParamConfig.Drilling_DivideSize / 2.0) || (entity_Position.Y > Config.ParamConfig.Drilling_DivideSize / 2.0))
-                                            //    {
-                                            //        m_strTemp = "Mark, X, " + entity_Position.X.ToString() + ", Y, " + entity_Position.Y.ToString();
-                                            //        Log.Write("SLD100_Data_Scanner_OverRange", "Div. Drilling", m_strTemp);
-                                            //    }
-                                            //}
-
-                                            //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
-                                            //{
-                                            //    m_bDivRegionList_Success &= rtcSyncAxis.ListMark(new Vector2((float)entity_Position.X, (float)entity_Position.Y));
-                                            //}
-                                            //else if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6)
-                                            {
-                                                entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
-
-                                                m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
-                                            }
-                                        }
-
-                                        ////  데이터 검증용 코드 (Center 좌표 저장)
-                                        //if (Config.ParamConfig.DrillingData_SaveToLogFile)
-                                        //{
-                                        //    m_strTemp = "Object Center, X, " + ((entity_Pos_Min.X + entity_Pos_Max.X) / 2.0).ToString() +
-                                        //                            ", Y, " + ((entity_Pos_Min.Y + entity_Pos_Max.Y) / 2.0).ToString();
-                                        //    Log.Write("SLD100_Data_ObjectCenter", "Div. Drilling", m_strTemp);
-                                        //}
-                                    }
-                                    else                                                                                                    //  Polyline 처럼 가공 (2024. 08. 20 이전 방법)
-                                    {
-                                        //  첫 번째 Edge Point 로 Jump 이동
-                                        entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X -
-                                                        m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
-                                        entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y -
-                                                            m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
-
-                                        ////  데이터 검증용 코드
-                                        //if (Config.ParamConfig.DrillingData_SaveToLogFile)
-                                        //{
-                                        //    m_strTemp = "Jump, X, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].X.ToString() +
-                                        //                    ", Y, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[0].Y.ToString();
-                                        //    Log.Write("SLD100_Data", "Div. Drilling", m_strTemp);
-                                        //}
-
-                                        //if (Config.ParamConfig.ScannerData_SaveToLogFile)
-                                        //{
-                                        //    //  Scanner 가공 영역을 넘어가면 저장
-                                        //    if ((entity_Position.X < -Config.ParamConfig.Drilling_DivideSize / 2.0) || (entity_Position.X > Config.ParamConfig.Drilling_DivideSize / 2.0) ||
-                                        //        (entity_Position.Y < -Config.ParamConfig.Drilling_DivideSize / 2.0) || (entity_Position.Y > Config.ParamConfig.Drilling_DivideSize / 2.0))
-                                        //    {
-                                        //        m_strTemp = "Jump, X, " + entity_Position.X.ToString() + ", Y, " + entity_Position.Y.ToString();
-                                        //        Log.Write("SLD100_Data_Scanner_OverRange", "Div. Drilling", m_strTemp);
-                                        //    }
-                                        //}
-
-                                        //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
-                                        //{
-                                        //    m_bDivRegionList_Success &= rtcSyncAxis.ListJump(new Vector2((float)entity_Position.X, (float)entity_Position.Y));
-                                        //}
-                                        //else if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6)
-                                        {
-                                            entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
-
-                                            m_bDivRegionList_Success &= rtc.ListJump(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
-                                        }
-
-                                        //  가공 데이터 Center 계산을 위해
-                                        entity_Pos_Min.X = double.MaxValue;
-                                        entity_Pos_Min.Y = double.MaxValue;
-                                        entity_Pos_Max.X = double.MinValue;
-                                        entity_Pos_Max.Y = double.MinValue;
-
-                                        //  이어서 오는 Edge Point 로 Mark 이동(cont') 하여 Polyline 완성
-                                        for (int nEntity = 1; nEntity < m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].nEdgePointNum; nEntity++)
-                                        {
-                                            entity_Position.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].X -
-                                                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.X;
-                                            entity_Position.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].Y -
-                                                                m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].dRegionCenter.Y;
-
-                                            ////  데이터 검증용 코드
-                                            //if (Config.ParamConfig.DrillingData_SaveToLogFile)
-                                            //{
-                                            //    //  Min, Max
-                                            //    if (entity_Pos_Min.X >= m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].X)
-                                            //    {
-                                            //        entity_Pos_Min.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].X;
-                                            //    }
-                                            //    if (entity_Pos_Min.Y >= m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].Y)
-                                            //    {
-                                            //        entity_Pos_Min.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].Y;
-                                            //    }
-                                            //    if (entity_Pos_Max.X <= m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].X)
-                                            //    {
-                                            //        entity_Pos_Max.X = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].X;
-                                            //    }
-                                            //    if (entity_Pos_Max.Y <= m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].Y)
-                                            //    {
-                                            //        entity_Pos_Max.Y = m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].Y;
-                                            //    }
-
-                                            //    m_strTemp = "Mark, X, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].X.ToString() +
-                                            //                    ", Y, " + m_stDividedRegion_GroupData[m_nDrillingWork_Group_Count].m_stDividedRegion_RegionData[m_nDividedRegion_Region_CurrentIndex_forZigZag].m_stDividedRegion_ObjectData[nObject].dEdgePoint_PreDrilling[nEntity].Y.ToString();
-                                            //    Log.Write("SLD100_Data", "Div. Drilling", m_strTemp);
-                                            //}
-
-                                            //if (Config.ParamConfig.ScannerData_SaveToLogFile)
-                                            //{
-                                            //    //  Scanner 가공 영역을 넘어가면 저장
-                                            //    if ((entity_Position.X < -Config.ParamConfig.Drilling_DivideSize / 2.0) || (entity_Position.X > Config.ParamConfig.Drilling_DivideSize / 2.0) ||
-                                            //        (entity_Position.Y < -Config.ParamConfig.Drilling_DivideSize / 2.0) || (entity_Position.Y > Config.ParamConfig.Drilling_DivideSize / 2.0))
-                                            //    {
-                                            //        m_strTemp = "Mark, X, " + entity_Position.X.ToString() + ", Y, " + entity_Position.Y.ToString();
-                                            //        Log.Write("SLD100_Data_Scanner_OverRange", "Div. Drilling", m_strTemp);
-                                            //    }
-                                            //}
-
-                                            //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_SYNCAXIS)
-                                            //{
-                                            //    m_bDivRegionList_Success &= rtcSyncAxis.ListMark(new Vector2((float)entity_Position.X, (float)entity_Position.Y));
-                                            //}
-                                            //else if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6)
-                                            {
-                                                entity_Position_Rot = RotatePoint(scanner_Center, entity_Position, Math.PI / 2.0);
-
-                                                m_bDivRegionList_Success &= rtc.ListMark(new Vector2((float)entity_Position_Rot.X, (float)entity_Position_Rot.Y));
-                                            }
-                                        }
-                                        
-                                        ////  데이터 검증용 코드 (Center 좌표 저장)
-                                        //if (Config.ParamConfig.DrillingData_SaveToLogFile)
-                                        //{
-                                        //    m_strTemp = "Object Center, X, " + ((entity_Pos_Min.X + entity_Pos_Max.X) / 2.0).ToString() +
-                                        //                            ", Y, " + ((entity_Pos_Min.Y + entity_Pos_Max.Y) / 2.0).ToString();
-                                        //    Log.Write("SLD100_Data_ObjectCenter", "Div. Drilling", m_strTemp);
-                                        //}
-                                    }
-                                }
                                 break;
 
 
@@ -23566,17 +23020,39 @@ namespace QMC.Common.Modules
                 //{
 
                 //  Frequency, Pulse Width 값이 있으면 적용
-                if ((Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_Frequency > 0.0) &&
-                    (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_PulseWidth > 0.0))
+                if (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_Frequency > 0.0)
                 {
-                    m_strTemp = string.Format("Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
-                                            Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_Frequency,
-                                            Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_PulseWidth);
+                    double m_dLaserParam_PulseWidth = 0.0;
+
+                    //  Laser Type 이 CO2 일 경우, 여기에서 Duty Cycle 을 Pulse Width 로 계산해서 Power 를 변경할 수 있도록 한다.
+                    if (Equipment.Machine_LaserType_CO2)
+                    {
+
+                    }
+                    else
+                    {
+                        if (Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_PulseWidth > 0.0)
+                        {
+                            m_dLaserParam_PulseWidth = Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_PulseWidth;
+
+                            m_strTemp = string.Format("Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
+                                                    Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_Frequency,
+                                                    Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_PulseWidth);
+                        }
+                        else
+                        {
+                            m_dLaserParam_PulseWidth = 1.0;
+
+                            m_strTemp = string.Format("Drilling 가공 Loop, Divide Region, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                                                    Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_Frequency,
+                                                    m_dLaserParam_PulseWidth);
+                        }
+                    }
 
                     Log.Write("SLD-200", "Auto Run", m_strTemp);
 
                     m_bScannerLib_Success = rtc.ListFrequency((float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_Frequency,
-                                                                (float)Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].LaserParam_PulseWidth);
+                                                                (float)m_dLaserParam_PulseWidth);
 
                     if (!m_bScannerLib_Success)
                     {
@@ -24347,7 +23823,7 @@ namespace QMC.Common.Modules
 
                 m_nThruHole_ObjectDataCount = 0;
 
-                if (m_stThruHole_SocketData[m_nDrillingWork_Group_Count].bProcessing == false)
+                if (m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing == false)
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole, Socket 데이터는 있으나 가공하지 않는 Socket 이므로 다음 Socket 체크");
 
@@ -24720,17 +24196,31 @@ namespace QMC.Common.Modules
                 //{
 
                 //  Frequency, Pulse Width 값이 있으면 적용
-                if ((Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_Frequency > 0.0) &&
-                    (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_PulseWidth > 0.0))
+                if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_Frequency > 0.0)
                 {
-                    m_strTemp = string.Format("Outline 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
+                    double m_dLaserParam_PulseWidth = 0.0;
+
+                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_PulseWidth > 0.0)
+                    {
+                        m_dLaserParam_PulseWidth = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_PulseWidth;
+
+                        m_strTemp = string.Format("Outline 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
                                             Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_Frequency,
                                             Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_PulseWidth);
+                    }
+                    else
+                    {
+                        m_dLaserParam_PulseWidth = 1.0;
+
+                        m_strTemp = string.Format("Outline 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                                                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_Frequency,
+                                                m_dLaserParam_PulseWidth);
+                    }
 
                     Log.Write("SLD-200", "Auto Run", m_strTemp);
 
                     m_bScannerLib_Success = rtc.ListFrequency((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_Frequency,
-                                                                (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Outline].LaserParam_PulseWidth);
+                                                                (float)m_dLaserParam_PulseWidth);
 
                     if (!m_bScannerLib_Success)
                     {
@@ -25169,17 +24659,31 @@ namespace QMC.Common.Modules
             }
 
 
-            if ((Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_Frequency > 0.0) &&
-                (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_PulseWidth > 0.0))
+            if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_Frequency > 0.0)
             {
-                m_strTemp = string.Format("Thruhole 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
+                double m_dLaserParam_PulseWidth = 0.0;
+
+                if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_PulseWidth > 0.0)
+                {
+                    m_dLaserParam_PulseWidth = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_PulseWidth;
+
+                    m_strTemp = string.Format("Thruhole 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
                                         Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_Frequency,
                                         Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_PulseWidth);
+                }
+                else
+                {
+                    m_dLaserParam_PulseWidth = 1.0;
+
+                    m_strTemp = string.Format("Thruhole 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                                            Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_Frequency,
+                                            m_dLaserParam_PulseWidth);
+                }
 
                 Log.Write("SLD-200", "Auto Run", m_strTemp);
 
                 m_bScannerLib_Success = rtc.ListFrequency((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_Frequency,
-                                                            (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Thruhole].LaserParam_PulseWidth);
+                                                            (float)m_dLaserParam_PulseWidth);
 
                 if (!m_bScannerLib_Success)
                 {
@@ -25802,6 +25306,8 @@ namespace QMC.Common.Modules
             int m_nRect_ObjectCount = 0;                                        //  Rect 데이터 개수
             int m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
             int m_nFiducial_ObjectCount = 0;                                    //  Fiducial 마크 데이터 개수
+            int m_nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
+            int m_nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수
 
             //  Group 이 아닌 항목이 있는지 체크하기 위한 변수
             int m_nHole1_NotGroupCount = 0;
@@ -25898,9 +25404,9 @@ namespace QMC.Common.Modules
                                 case EType.Arc:
                                     var arc = entity as SpiralLab.Sirius.Arc;
 
-                                    m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
-                                    m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
-                                    m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
 
                                     m_nHole1_NotGroupCount++;
                                     break;
@@ -25908,9 +25414,9 @@ namespace QMC.Common.Modules
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
 
-                                    m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
-                                    m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
-                                    m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
 
                                     m_nHole1_NotGroupCount++;
                                     break;
@@ -26182,12 +25688,19 @@ namespace QMC.Common.Modules
                                 case EType.Rectangle:
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
 
-                                    m_stDrawing_Rect[m_nRect_ObjectCount].CenterX = (double)rectangle.Center.X;
-                                    m_stDrawing_Rect[m_nRect_ObjectCount].CenterY = (double)rectangle.Center.Y;
-                                    m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)rectangle.Width;
-                                    m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)rectangle.Height;
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterX = (double)rectangle.Center.X;
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount].CenterY = (double)rectangle.Center.Y;
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount].Width = (double)rectangle.Width;
+                                    //m_stDrawing_Rect[m_nRect_ObjectCount++].Height = (double)rectangle.Height;
 
                                     m_nRect_NotGroupCount++;
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    m_stDrawing_Rect[m_nRect_ObjectCount].CenterX = (double)group.Location.X;
+                                    m_stDrawing_Rect[m_nRect_ObjectCount++].CenterY = (double)group.Location.Y;
                                     break;
                             }
                         }
@@ -26253,12 +25766,20 @@ namespace QMC.Common.Modules
                                 case EType.Rectangle:
                                     var rectangle = entity as SpiralLab.Sirius.Rectangle;
 
-                                    m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)rectangle.Center.X;
-                                    m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
-                                    m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
-                                    m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)rectangle.Center.X;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
 
                                     m_nOutline_NotGroupCount++;
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)group.Location.X;
+                                    m_stDrawing_Outline[m_nOutline_ObjectCount++].CenterY = (double)group.Location.Y;
+
                                     break;
                             }
                         }
@@ -26325,6 +25846,9 @@ namespace QMC.Common.Modules
                     }
                     else if (layer.Name == "Thruhole")
                     {
+                        m_nDrawing_ThruholeCount = layer.Count;
+                        m_stDrawing_Thruhole = new stDrawingHoleParam[m_nDrawing_ThruholeCount];                   //  Thruhole 데이터
+
                         //  데이터 넣기
                         foreach (var entity in layer)
                         {
@@ -26374,6 +25898,13 @@ namespace QMC.Common.Modules
                                     //var rectangle = entity as SpiralLab.Sirius2.Winforms.Entity.EntityRectangle;
 
                                     m_nThruhole_NotGroupCount++;
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    m_stDrawing_Thruhole[m_nThruhole_ObjectCount].CenterX = (double)group.Location.X;
+                                    m_stDrawing_Thruhole[m_nThruhole_ObjectCount++].CenterY = (double)group.Location.Y;
                                     break;
                             }
                         }
@@ -26430,6 +25961,12 @@ namespace QMC.Common.Modules
 
                                     m_nMarking_NotGroupCount++;
                                     break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    m_nThruhole_ObjectCount++;              //  마킹 그룹 개수만 카운트
+                                    break;
                             }
                         }
                     }
@@ -26441,6 +25978,29 @@ namespace QMC.Common.Modules
             {
                 MessageBox.Show("\"Hole1\", \"Thruhole\", \"Outline\", \"Marking\" Layer 는 Group 만 가능합니다.", "Information!!");
                 return false;
+            }
+
+            //  Frequency 데이터가 있는지 체크
+            if (m_nHole1_ObjectCount > 0)
+            {
+                if (Equipment.stLayerRecipeSet[(int)LayerList.Hole1].LaserParam_Frequency <= 0)
+                {
+                    MessageBox.Show("\"Hole1\" Layer 의 Frequency 가 0 입니다.", "Information!!");
+                }
+            }
+            if (m_nThruhole_ObjectCount > 0)
+            {
+                if (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].LaserParam_Frequency <= 0)
+                {
+                    MessageBox.Show("\"Thruhole\" Layer 의 Frequency 가 0 입니다.", "Information!!");
+                }
+            }
+            if (m_nOutline_ObjectCount > 0)
+            {
+                if (Equipment.stLayerRecipeSet[(int)LayerList.Outline].LaserParam_Frequency <= 0)
+                {
+                    MessageBox.Show("\"Outline\" Layer 의 Frequency 가 0 입니다.", "Information!!");
+                }
             }
 
             return success;
@@ -30391,24 +29951,25 @@ namespace QMC.Common.Modules
                             m_stThruHole_SocketData = new stThruHole_SocketData[layer.Count];
                         }
 
-                        for (int i = 0; i < layer.Count ; i++)
-                        {
-                            if (layer.Items[i].Description == null)
-                            {
-                                m_stThruHole_SocketData[i].bProcessing = true;
-                            }
-                            else if ((layer.Items[i].Description.ToUpper() == "NO") ||
-                                    (layer.Items[i].Description.ToUpper() == "NOT") ||
-                                    (layer.Items[i].Description.ToUpper() == "X") ||
-                                    (layer.Items[i].Description.ToUpper() == "FALSE"))
-                            {
-                                m_stThruHole_SocketData[i].bProcessing = false;
-                            }
-                            else
-                            {
-                                m_stThruHole_SocketData[i].bProcessing = true;
-                            }
-                        }                        
+                        //  최초에 GetDrillingData() 함수 다음에 아래 코드를 한번만 수행하도록 함수로 만들어서 빼놓음.
+                        //for (int i = 0; i < layer.Count ; i++)
+                        //{
+                        //    if (layer.Items[i].Description == null)
+                        //    {
+                        //        m_stThruHole_SocketData[i].bProcessing = true;
+                        //    }
+                        //    else if ((layer.Items[i].Description.ToUpper() == "NO") ||
+                        //            (layer.Items[i].Description.ToUpper() == "NOT") ||
+                        //            (layer.Items[i].Description.ToUpper() == "X") ||
+                        //            (layer.Items[i].Description.ToUpper() == "FALSE"))
+                        //    {
+                        //        m_stThruHole_SocketData[i].bProcessing = false;
+                        //    }
+                        //    else
+                        //    {
+                        //        m_stThruHole_SocketData[i].bProcessing = true;
+                        //    }
+                        //}
 
                         //  세부 데이터 저장
                         m_nGroupData_Count = 0;
@@ -32493,6 +32054,190 @@ namespace QMC.Common.Modules
             //}
 
             //Equipment.WorkTotalTime = Equipment.WorkTotalTime_Outline + Equipment.WorkTotalTime_Thruhole + Equipment.WorkTotalTime_Drilling + Equipment.WorkTotalTime_Marking;
+
+            return success == true ? (int)nGetDataResult.GETDATA_SUCCESS : (int)nGetDataResult.GETDATA_FAIL;            //   0 : "데이터가 정상적으로 로드 되었습니다."
+                                                                                                                        //  -1 : "데이터가 정상적으로 로드 되지 않았습니다."
+        }
+
+
+        public int GetDrillingData_ProcessingFlagCheck()
+        {
+            string m_strTemp;
+            bool success = true;
+            bool LayerIsGroup = false;
+
+            //  SLD-200 에서 사용할 변수
+            //int m_nLayerThruHole_Count = 0;
+
+            //m_bGroupExist_LargerThanDivideSize = false;
+
+            int m_nUnusableLayerCount = 0;
+
+
+            if (Equipment.EqpSiriusViewer == null)
+            {
+                MessageBox.Show("먼저 RTC 보드를 초기화 해야 합니다.", "Information!!");
+                return (int)nGetDataResult.GETDATA_RTCINIT;
+            }
+
+            if (Equipment.EqpSiriusViewer.Document == null)
+            {
+                MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
+                return (int)nGetDataResult.GETDATA_FAIL;
+            }
+
+            //  일단 Layer 는 1개만 사용하기로...
+
+            m_nGroupCount = 0;
+
+
+            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            {
+                if (layer.IsMarkerable)
+                {
+                    ///////////////////////
+                    ///                 ///
+                    ///     쓰루홀      ///
+                    ///                 ///
+                    ///////////////////////
+                    if (layer.Name == "Thruhole")
+                    {
+                        //  Item 이 Group 인지 아닌지 확인 (Group 이면 아래에서 데이터 변수 할당, Group 이 아니면 여기서 할당)
+                        int m_nCount = 0;
+                        foreach (var entity in layer)
+                        {
+                            var group = entity as Group;
+
+                            if (group == null)
+                            {
+                                LayerIsGroup = false;
+
+                                m_nCount = layer.Count;
+                            }
+                            else
+                            {
+                                LayerIsGroup = true;
+
+                                m_nCount = 1;
+                            }
+
+                            //break;
+                        }
+
+
+                        if (LayerIsGroup)               //  MSL 은 Thruhole 을 Group 으로 해야 한다. 
+                        {
+                            //  전체 Socket 개수만큼 공간 할당
+                            m_stThruHole_SocketData_ProcessingFlag = new stThruHole_SocketData[layer.Count];
+                        }
+
+                        for (int i = 0; i < layer.Count; i++)
+                        {
+                            if (layer.Items[i].Description == null)
+                            {
+                                m_stThruHole_SocketData_ProcessingFlag[i].bProcessing = true;
+                            }
+                            else if ((layer.Items[i].Description.ToUpper() == "NO") ||
+                                    (layer.Items[i].Description.ToUpper() == "NOT") ||
+                                    (layer.Items[i].Description.ToUpper() == "X") ||
+                                    (layer.Items[i].Description.ToUpper() == "FALSE"))
+                            {
+                                m_stThruHole_SocketData_ProcessingFlag[i].bProcessing = false;
+                            }
+                            else
+                            {
+                                m_stThruHole_SocketData_ProcessingFlag[i].bProcessing = true;
+                            }
+                        }
+                    }
+                    ///////////////////////
+                    ///                 ///
+                    ///     Outline     ///
+                    ///                 ///
+                    ///////////////////////
+                    else if (layer.Name == "Outline")
+                    {
+                        //  Item 이 Group 인지 아닌지 확인 (Group 이면 아래에서 데이터 변수 할당, Group 이 아니면 여기서 할당)
+                        int m_nCount = 0;
+                        foreach (var entity in layer)
+                        {
+                            var group = entity as Group;
+
+                            if (group == null)
+                            {
+                                LayerIsGroup = false;
+
+                                m_nCount = layer.Count;
+                            }
+                            else
+                            {
+                                LayerIsGroup = true;
+
+                                m_nCount = 1;
+                            }
+
+                            break;
+                        }
+
+
+                        if (LayerIsGroup)               //  MSL 은 Outline 을 Group 으로 해야 한다. 
+                        {
+                            //  전체 Socket 개수만큼 공간 할당
+                            //m_stOutLine_SocketData = new stOutLine_SocketData[layer.Count];
+                        }
+
+
+                        //  여기에서 가공 여부 Flag 변수 세팅
+
+                    }
+                    ///////////////////////
+                    ///                 ///
+                    ///      마킹       ///
+                    ///                 ///
+                    ///////////////////////
+                    else if (layer.Name == "Marking")
+                    {
+                        //  Item 이 Group 인지 아닌지 확인 (Group 이면 아래에서 데이터 변수 할당, Group 이 아니면 여기서 할당)
+                        int m_nCount = 0;
+                        foreach (var entity in layer)
+                        {
+                            var group = entity as Group;
+
+                            if (group == null)
+                            {
+                                LayerIsGroup = false;
+
+                                m_nCount = layer.Count;
+                            }
+                            else
+                            {
+                                LayerIsGroup = true;
+
+                                m_nCount = 1;
+                            }
+
+                            break;
+                        }
+
+
+                        if (LayerIsGroup)               //  MSL 은 Outline 을 Group 으로 해야 한다. 
+                        {
+                            //  전체 Socket 개수만큼 공간 할당
+                            //m_stOutLine_SocketData = new stOutLine_SocketData[layer.Count];
+                        }
+
+
+                        //  여기에서 가공 여부 Flag 변수 세팅
+
+                    }
+                    else
+                    {
+                        m_nUnusableLayerCount++;
+                    }
+                }
+                if (!success)
+                    break;
+            }
 
             return success == true ? (int)nGetDataResult.GETDATA_SUCCESS : (int)nGetDataResult.GETDATA_FAIL;            //   0 : "데이터가 정상적으로 로드 되었습니다."
                                                                                                                         //  -1 : "데이터가 정상적으로 로드 되지 않았습니다."

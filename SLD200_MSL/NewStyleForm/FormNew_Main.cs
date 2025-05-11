@@ -1736,6 +1736,15 @@ namespace SLD200_MSL
             }
 
 
+            //  강제 배출이면 Laser Drilling Step 을 다시 None 으로 바꿔준다. (Thruhole 가공 중에 강제 배출을 했는데, Thruhole 이 계속 진행되어서...)
+            if (workStage.m_bForceEjectRequest)
+            {
+                workStage.m_bLaserDrilling_Complete = true;
+                workStage.m_nLaserDrilling_MainStep = 0;
+                workStage.m_nSocketAlign_MainStep = 0;
+            }
+
+
             //  강제 배출일 경우, 집진기도 Off
             if (workStage.m_bLaserDrilling_Complete && 
                 (workStage.m_nLaserDrilling_MainStep == 0) && (workStage.m_nSocketAlign_MainStep == 0))

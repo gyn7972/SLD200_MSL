@@ -1506,6 +1506,7 @@ namespace SLD200_MSL
             {
                 m_nLayerIndex = (int)LayerList.PreAlign;
             }
+            
 
             //  Drawing File
             Equipment.stLayerRecipeSet[m_nLayerIndex].DrawingFile = richTextBox_Recipe_TabRecipe_DrawingFile.Text;                  //  Drawing File 은 0번 Layer 에만 저장한다.
@@ -1594,6 +1595,31 @@ namespace SLD200_MSL
 
             //  도면 데이터를 가공용 Document 에 적용
             Equipment.EqpSiriusViewer.Document = m_formSiriusEditor.SiriusEditor.Document;
+
+
+            //  Frequency 데이터가 있는지 체크
+            if (m_nLayerIndex == (int)LayerList.Hole1)
+            {
+                if (Equipment.stLayerRecipeSet[(int)LayerList.Hole1].LaserParam_Frequency <= 0)
+                {
+                    MessageBox.Show("\"Hole1\" Layer 의 Frequency 가 0 입니다.", "Information!!");
+                }
+            }
+            if (m_nLayerIndex == (int)LayerList.Thruhole)
+            {
+                if (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].LaserParam_Frequency <= 0)
+                {
+                    MessageBox.Show("\"Thruhole\" Layer 의 Frequency 가 0 입니다.", "Information!!");
+                }
+            }
+            if (m_nLayerIndex == (int)LayerList.Outline)
+            {
+                if (Equipment.stLayerRecipeSet[(int)LayerList.Outline].LaserParam_Frequency <= 0)
+                {
+                    MessageBox.Show("\"Outline\" Layer 의 Frequency 가 0 입니다.", "Information!!");
+                }
+            }
+
 
             MessageBox.Show("Recipe Data Apply", "Recipe Data Apply");
         }
