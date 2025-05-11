@@ -36946,6 +36946,11 @@ namespace QMC.Common.Modules
 
 
         //motion 함수 
+        public void StoptoWorkStage_Motor(WorkStage.nAxis nAxis)
+        {
+            double dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
+            MC_Func.MC_MotorStop((int)nAxis, dAcc);
+        }
         public bool IsInterlock_WorkStageXY_Enabled()
         {
             bool bRtn = false;

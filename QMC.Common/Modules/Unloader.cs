@@ -6737,7 +6737,11 @@ namespace QMC.Common.Modules
 
         //motion 함수 
 
-
+        public void StoptoUnloader_Motor(Unloader.nAxis nAxis)
+        {
+            double dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
+            MC_Func.MC_MotorStop((int)nAxis, dAcc);
+        }
         public bool IsInterlock_UnloaderPortR_Enabled()
         {
             bool bRtn = false;
