@@ -13264,7 +13264,7 @@ namespace QMC.Common.Modules
                 case (int)MainWork_Step.Start:
                     Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "시작");
 
-                    // 여기가 맞는지 확인 필요. 
+                    // 여기가 맞는지 확인 필요.
                     m_bForceEjectRequest = false;   //강제배출 초기화.
 
                     Equipment.MachineStop_byAlarm = false;
@@ -15505,9 +15505,17 @@ namespace QMC.Common.Modules
                         //if (!m_bDrillingWork_Hole1_Exist && (m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_THRUHOLE))
                         if (m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_THRUHOLE)
                         {
-                            LaserDrillingStepSetThruholeParam();
+                            //  소켓 얼라인이 하나도 안되는 경우가 있으면... ㅡ,.ㅡ
+                            if (m_nDrillingData_SocketAlign_NGCount >= m_stThruHole_SocketData.Length)
+                            {
+                                m_nLaserDrilling_LayerCount++;
+                            }
+                            else
+                            {
+                                LaserDrillingStepSetThruholeParam();
 
-                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_Start;
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.ThruHole_DrillingWork_Start;
+                            }
                         }
                         /// <summary>
                         /// Outline Layer 가공
@@ -15515,9 +15523,17 @@ namespace QMC.Common.Modules
                         //else if (!m_bDrillingWork_Hole1_Exist && (m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_OUTLINE))
                         else if (m_stLayerType.m_nLayerType[m_nLaserDrilling_LayerCount] == (int)LayerType.LAYER_OUTLINE)
                         {
-                            LaserDrillingStepSetOutlineParam();
+                            //  소켓 얼라인이 하나도 안되는 경우가 있으면... ㅡ,.ㅡ
+                            if (m_nDrillingData_SocketAlign_NGCount >= m_stThruHole_SocketData.Length)
+                            {
+                                m_nLaserDrilling_LayerCount++;
+                            }
+                            else
+                            {
+                                LaserDrillingStepSetOutlineParam();
 
-                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_Start;
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.OutLine_DrillingWork_Start;
+                            }
                         }
                         /// <summary>
                         /// Drilling Layer 가공
@@ -18984,7 +19000,7 @@ namespace QMC.Common.Modules
                 /// 
                 case (int)LaserDrilling_Step.DrillingData_FailedSocket_Start:                      //  Align 성공했던 Socket Align 시작
 
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_FailedSocket_AlignHeight_ZOffset_Move;
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_FailedSocketAlign_Start;
                     break;
 
 
@@ -19073,6 +19089,14 @@ namespace QMC.Common.Modules
                                 //  Align 성공했던 Socket 에서 재 Align 이기 때문에, 실패하면 안된다. 
                                 //  실패할 경우, 현재 위치에서 재 Align 혹은, 현재 이전 Socket 에서 재 Align 하도록 해야 함.
                                 //  일단은 성공할거라고 보고...
+
+                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Failed Socket Align 실패. 이후 가공하지 않고 배출 하도록.");
+
+                                //  NG 카운트 최대로 재설정
+                                m_nDrillingData_SocketAlign_NGCount = m_stDividedRegion_GroupData.Length;
+
+                                m_nLaserDrilling_LayerCount++;
+                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
                             }
                         }
                         else
