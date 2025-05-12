@@ -44,7 +44,7 @@ namespace QMC.Common.VisionPart
             bool m_bFindCircle = false;
 
             var v=  FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h,
-                260, 0.05, ref m_bFindCircle, 0, 0, false); ;
+                260, 0.05, ref m_bFindCircle, 0, 0, false);
 
             //var v = MatchCoordinates(listMetal, 3);
             // v의 좌표를 원점으로 하고 listMetal의 w,h 를 가지는 List < RectangleF > result를  생성
@@ -305,7 +305,8 @@ namespace QMC.Common.VisionPart
             SaveImage(images, w, h, filename);
         }
         public QMC_ImageProcessFindAlignResult FindCirclesWidthCircleBoundary(List<RectangleF> circlesResult,
-            byte[] pixelData, int w, int h, int radius, double dSpec, ref bool circleFound, int nCenterX = 0, int nCenterY = 0, bool bIsDarkCircleSearch = true
+            byte[] pixelData, int w, int h, int radius, double dSpec, ref bool circleFound, 
+            int nCenterX = 0, int nCenterY = 0, bool bIsDarkCircleSearch = true
             , double miscellaneous_FiducialMarkSocre = 0.7
             ,bool bSpiralSearch = true)
         {

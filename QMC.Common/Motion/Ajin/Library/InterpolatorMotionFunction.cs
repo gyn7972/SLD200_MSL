@@ -18,6 +18,14 @@ namespace QMC.Common.Motion.Ajin.Motions
         {
         }
 
+        // 축별 Lock 오브젝트 초기화
+        private static readonly object[] _axisLocks = new object[32];
+        static InterpolatorMotionFunction()
+        {
+            for (int i = 0; i < _axisLocks.Length; i++)
+                _axisLocks[i] = new object();
+        }
+
         public override double MC_GetCmdPos(int nAxis)
         {
             //if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart &&(workStage.Stage.Interpolator != null))
@@ -44,45 +52,73 @@ namespace QMC.Common.Motion.Ajin.Motions
         }
         public  override bool MC_MovePosition(int Axis, double position, double vel, double accel, double decel)
         {
-            //if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart && (workStage.Stage.Interpolator != null))
-            if (Equipment.MapDataStatus_Activate && (workStage.Stage.Interpolator != null))
+            lock (_axisLocks[Axis])
             {
-                if (Axis == (int)WorkStage.nAxis.X || Axis == (int)WorkStage.nAxis.Y)
+                int elapsed = 0;
+                //if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart && (workStage.Stage.Interpolator != null))
+                if (Equipment.MapDataStatus_Activate && (workStage.Stage.Interpolator != null))
                 {
-                    XyCoordinate originPosition = new XyCoordinate();
-                    originPosition.X = MC_GetCmdPos((int)WorkStage.nAxis.X);
-                    originPosition.Y = MC_GetCmdPos((int)WorkStage.nAxis.Y);
-                    XyCoordinate destPosition = new XyCoordinate();
+                    if (Axis == (int)WorkStage.nAxis.X || Axis == (int)WorkStage.nAxis.Y)
+                    {
+                        XyCoordinate originPosition = new XyCoordinate();
+                        originPosition.X = MC_GetCmdPos((int)WorkStage.nAxis.X);
+                        originPosition.Y = MC_GetCmdPos((int)WorkStage.nAxis.Y);
+                        XyCoordinate destPosition = new XyCoordinate();
 
-                    if (Axis == (int)WorkStage.nAxis.X)
-                    {
-                        originPosition.X = position;
-                    }
-                    else if (Axis == (int)WorkStage.nAxis.Y)
-                    {
-                        originPosition.Y = position;
-                    }
-                    workStage.Stage.Interpolator.Interpolate(originPosition, ref destPosition);
+                        if (Axis == (int)WorkStage.nAxis.X)
+                        {
+                            originPosition.X = position;
+                        }
+                        else if (Axis == (int)WorkStage.nAxis.Y)
+                        {
+                            originPosition.Y = position;
+                        }
+                        workStage.Stage.Interpolator.Interpolate(originPosition, ref destPosition);
 
-                    if (Axis == (int)WorkStage.nAxis.X)
-                    {
-                        bool bRet = base.MC_MovePosition((int)WorkStage.nAxis.X, destPosition.X, vel, accel, decel);
-                        bRet &= base.MC_MovePosition((int)WorkStage.nAxis.Y, destPosition.Y, vel, accel, decel);
-                        while (!base.MC_GetInposition((int)WorkStage.nAxis.Y))
+                        if (Axis == (int)WorkStage.nAxis.X)
                         {
-                            Thread.Sleep(1);
+                            bool bRet = base.MC_MovePosition((int)WorkStage.nAxis.X, destPosition.X, vel, accel, decel);
+                            bRet &= base.MC_MovePosition((int)WorkStage.nAxis.Y, destPosition.Y, vel, accel, decel);
+                            //while (!base.MC_GetInposition((int)WorkStage.nAxis.Y))
+                            //{
+                            //    Thread.Sleep(1);
+                            //}
+                            while (!base.MC_GetInposition((int)WorkStage.nAxis.X))
+                            {
+                                Thread.Sleep(1);
+                                elapsed++;
+                                if (elapsed > 20000) // 20초
+                                {
+                                    Log.Write("Timeout", $"Axis {Axis} inposition timeout.");
+                                    return false;
+                                }
+                            }
+                            return bRet;
                         }
-                        return bRet;
+                        else if (Axis == (int)WorkStage.nAxis.Y)
+                        {
+                            bool bRet = base.MC_MovePosition((int)WorkStage.nAxis.X, destPosition.X, vel, accel, decel);
+                            bRet &= base.MC_MovePosition((int)WorkStage.nAxis.Y, destPosition.Y, vel, accel, decel);
+                            //while (!base.MC_GetInposition((int)WorkStage.nAxis.X))
+                            //{
+                            //    Thread.Sleep(1);
+                            //}
+                            while (!base.MC_GetInposition((int)WorkStage.nAxis.X))
+                            {
+                                Thread.Sleep(1);
+                                elapsed++;
+                                if (elapsed > 20000) // 20초
+                                {
+                                    Log.Write("Timeout", $"Axis {Axis} inposition timeout.");
+                                    return false;
+                                }
+                            }
+                            return bRet;
+                        }
                     }
-                    else if (Axis == (int)WorkStage.nAxis.Y)
+                    else
                     {
-                        bool bRet = base.MC_MovePosition((int)WorkStage.nAxis.X, destPosition.X, vel, accel, decel);
-                        bRet &= base.MC_MovePosition((int)WorkStage.nAxis.Y, destPosition.Y, vel, accel, decel);
-                        while (!base.MC_GetInposition((int)WorkStage.nAxis.X))
-                        {
-                            Thread.Sleep(1);
-                        }
-                        return bRet;
+                        return base.MC_MovePosition(Axis, position, vel, accel, decel);
                     }
                 }
                 else
@@ -90,10 +126,7 @@ namespace QMC.Common.Motion.Ajin.Motions
                     return base.MC_MovePosition(Axis, position, vel, accel, decel);
                 }
             }
-            else
-            {
-                return base.MC_MovePosition(Axis, position, vel, accel, decel);
-            }
+            
             return false;            
         }
 
@@ -173,64 +206,90 @@ namespace QMC.Common.Motion.Ajin.Motions
 
         public override bool MC_MoveRelPosition(int Axis, double position, double vel, double accel, double decel)
         {
-            //if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart && (workStage.Stage.Interpolator != null))
-            if (Equipment.MapDataStatus_Activate && (workStage.Stage.Interpolator != null))
+            lock (_axisLocks[Axis])
             {
-                if (Axis == (int)WorkStage.nAxis.X || Axis == (int)WorkStage.nAxis.Y)
+                int elapsed = 0;
+                //if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart && (workStage.Stage.Interpolator != null))
+                if (Equipment.MapDataStatus_Activate && (workStage.Stage.Interpolator != null))
                 {
-                    XyCoordinate originPosition = new XyCoordinate();
-                    originPosition.X = MC_GetCmdPos((int)WorkStage.nAxis.X);
-                    originPosition.Y = MC_GetCmdPos((int)WorkStage.nAxis.Y);
-                    XyCoordinate destPosition = new XyCoordinate();
-                    if (Axis == (int)WorkStage.nAxis.X)
+                    if (Axis == (int)WorkStage.nAxis.X || Axis == (int)WorkStage.nAxis.Y)
                     {
-                        originPosition.X += position;
-                    }
-                    else if (Axis == (int)WorkStage.nAxis.Y)
-                    {
-                        originPosition.Y += position;
-                    }
-                    workStage.Stage.Interpolator.Interpolate(originPosition, ref destPosition);
-                    if (Axis == (int)WorkStage.nAxis.X)
-                    {
-                        bool bRet = base.MC_MovePosition((int)WorkStage.nAxis.X, destPosition.X, vel, accel, decel);
-                        bRet &= base.MC_MovePosition((int)WorkStage.nAxis.Y, destPosition.Y, vel, accel, decel);
-                        while (!base.MC_GetInposition((int)WorkStage.nAxis.Y))
+                        XyCoordinate originPosition = new XyCoordinate();
+                        originPosition.X = MC_GetCmdPos((int)WorkStage.nAxis.X);
+                        originPosition.Y = MC_GetCmdPos((int)WorkStage.nAxis.Y);
+                        XyCoordinate destPosition = new XyCoordinate();
+                        if (Axis == (int)WorkStage.nAxis.X)
                         {
-                            Thread.Sleep(1);
+                            originPosition.X += position;
+                        }
+                        else if (Axis == (int)WorkStage.nAxis.Y)
+                        {
+                            originPosition.Y += position;
                         }
 
-                        while (!base.MC_GetInposition((int)WorkStage.nAxis.X))
+                        workStage.Stage.Interpolator.Interpolate(originPosition, ref destPosition);
+                        if (Axis == (int)WorkStage.nAxis.X)
                         {
-                            Thread.Sleep(1);
+                            bool bRet = base.MC_MovePosition((int)WorkStage.nAxis.X, destPosition.X, vel, accel, decel);
+                            bRet &= base.MC_MovePosition((int)WorkStage.nAxis.Y, destPosition.Y, vel, accel, decel);
+                            //while (!base.MC_GetInposition((int)WorkStage.nAxis.Y))
+                            //{
+                            //    Thread.Sleep(1);
+                            //}
+                            while (!base.MC_GetInposition((int)WorkStage.nAxis.Y))
+                            {
+                                Thread.Sleep(1);
+                                elapsed++;
+                                if (elapsed > 20000) // 20초
+                                {
+                                    Log.Write("Timeout", $"Axis {Axis} inposition timeout.");
+                                    return false;
+                                }
+                            }
+
+                            //while (!base.MC_GetInposition((int)WorkStage.nAxis.X))
+                            //{
+                            //    Thread.Sleep(1);
+                            //}
+                            while (!base.MC_GetInposition((int)WorkStage.nAxis.X))
+                            {
+                                Thread.Sleep(1);
+                                elapsed++;
+                                if (elapsed > 20000) // 20초
+                                {
+                                    Log.Write("Timeout", $"Axis {Axis} inposition timeout.");
+                                    return false;
+                                }
+                            }
+
+                            return bRet;
                         }
-                        return bRet;
+                        else if (Axis == (int)WorkStage.nAxis.Y)
+                        {
+                            bool bRet = base.MC_MovePosition((int)WorkStage.nAxis.X, destPosition.X, vel, accel, decel);
+                            bRet &= base.MC_MovePosition((int)WorkStage.nAxis.Y, destPosition.Y, vel, accel, decel);
+                            while (!base.MC_GetInposition((int)WorkStage.nAxis.Y))
+                            {
+                                Thread.Sleep(1);
+                            }
+
+                            while (!base.MC_GetInposition((int)WorkStage.nAxis.X))
+                            {
+                                Thread.Sleep(1);
+                            }
+
+                            return bRet;
+                        }
                     }
-                    else if (Axis == (int)WorkStage.nAxis.Y)
+                    else
                     {
-                        bool bRet = base.MC_MovePosition((int)WorkStage.nAxis.X, destPosition.X, vel, accel, decel);
-                        bRet &= base.MC_MovePosition((int)WorkStage.nAxis.Y, destPosition.Y, vel, accel, decel);
-                        while (!base.MC_GetInposition((int)WorkStage.nAxis.Y))
-                        {
-                            Thread.Sleep(1);
-                        }
-
-                        while (!base.MC_GetInposition((int)WorkStage.nAxis.X))
-                        {
-                            Thread.Sleep(1);
-                        }
-
-                        return bRet;
+                        return base.MC_MoveRelPosition(Axis, position, vel, accel, decel);
                     }
                 }
                 else
                 {
                     return base.MC_MoveRelPosition(Axis, position, vel, accel, decel);
                 }
-            }
-            else
-            {
-                return base.MC_MoveRelPosition(Axis, position, vel, accel, decel);
             }
 
             return false;

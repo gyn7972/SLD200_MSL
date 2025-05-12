@@ -13225,7 +13225,7 @@ namespace QMC.Common.Modules
                 !Equipment.CycleStopped_MainWork &&
                 m_nMainWork_Step == (int)MainWork_Step.None)
             {
-                //  Dry Run 하기 위한 조건
+                // Dry Run 하기 위한 조건
                 if (!m_bMainWorkCycle_Complete &&
                     loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete &&
                     m_bMainWorkCycle_DryRun &&
@@ -13238,7 +13238,7 @@ namespace QMC.Common.Modules
                     m_nMainWorkCycleType = (int)MainWorkCycleType.Cycle_DryRun;                     //  Dry Run Cycle
                     m_nMainWork_Step = (int)MainWork_Step.Start;
                 }
-                //  Laser Drilling 을 위한 조건
+                // Laser Drilling 을 위한 조건
                 else if (!m_bMainWorkCycle_Complete &&
                     loader.m_bAUTORUN_Loader_Transfer_ModulePutDowntoWorkStage_Complete &&
                     !m_bMainWorkCycle_DryRun &&
@@ -13265,7 +13265,9 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "시작");
 
                     // 여기가 맞는지 확인 필요.
-                    m_bForceEjectRequest = false;   //강제배출 초기화.
+                    m_bForceEjectRequest = false;    // 강제배출 초기화.
+                    m_bworkStageVacuumFail = false;  // Loader -> Work Stage 이송 시 진공이 안되면 강제 배출 요청함.
+                                                     // (이송 중 진공이 안되면 강제 배출 요청함.
 
                     Equipment.MachineStop_byAlarm = false;
 
@@ -13495,8 +13497,8 @@ namespace QMC.Common.Modules
                             break;
 
                         case (int)MainWorkCycleType.Cycle_LaserDrilling:
-                            Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "Laser Drilling Cycle 완료");
 
+                            Log.Write("SLD-200", Equipment.User_Name, "Main Work Cycle", "Laser Drilling Cycle 완료");
                             int nCycleTime = TickCount_Elapsed((int)TickType.TICK_MAIN_CYCLE_CHECK);
                             //MainForm으로 Time 전달
 
@@ -13507,8 +13509,9 @@ namespace QMC.Common.Modules
                             //  소켓 얼라인 결과가 NG 이면 NG 로 (설정 개수 이상 NG 일 경우에)
                             //m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.OK;
 
-                            if (m_bForceEjectRequest ||
-                                (m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount) ||
+                            if ((m_nDrillingData_SocketAlign_NGCount >= Equipment.Machine_SocketAlignNG_toNgBox_ReferenceCount) || 
+                                m_bworkStageVacuumFail ||
+                                m_bForceEjectRequest ||
                                 !m_bSocketAlign_OK ||
                                 !m_bFindLowerAlignMark_OK ||
                                 !m_bPreAlignCompleted )
@@ -14941,10 +14944,19 @@ namespace QMC.Common.Modules
             {
                 case (int)LaserDrilling_Step.Start:
                     LaserDrillingStepStart();
-                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
 
+                    if(m_bworkStageVacuumFail)
+                    {
+                        m_strTemp = "Work Stage Vacuum On 실패.";
+                        Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step::Start", m_strTemp);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
+                    }
+                    else
+                    {
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff;
+                    }
                     break;
-
 
                 case (int)LaserDrilling_Step.LaserOff:
                     LaserDrilling_StepLaserOff();
@@ -18483,7 +18495,6 @@ namespace QMC.Common.Modules
 
                             m_bFindLowerAlignMark_OK = false;
                             m_bPreAlignCompleted = false;
-                            m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
                             return AlarmPost(AlarmKey.DataNotValidation);
                         }
@@ -18523,12 +18534,11 @@ namespace QMC.Common.Modules
                     {
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_PreAlign_Start;
                         break;
+
                         m_strTemp = string.Format("PreAlign Max Count 사용 - Fail!!!");
                         Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
-
                         m_bFindLowerAlignMark_OK = false;
                         m_bPreAlignCompleted = false;
-                        m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
                     }
                     break;
@@ -18593,20 +18603,8 @@ namespace QMC.Common.Modules
 
                                     m_bFindLowerAlignMark_OK = false;
                                     m_bPreAlignCompleted = false;
-                                    m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
                                 }
-
-                                //m_bFindLowerAlignMark_OK = false;
-                                //m_bPreAlignCompleted = false;
-                                //m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
-
-                                //m_strTemp = string.Format("PreAlign InterLoack Fail!!!");
-                                //Log.Write("SLD-200", Equipment.User_Name, "PreAlign", m_strTemp);
-                                //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
-                                //break;
-                                ////알람이 아니라 NG 시컨스로 진행하자.
-                                ////return AlarmPost(AlarmKey.PreAlignOffsetTooLarge);
                             }
 
                             m_nPreAlignRetryCount = 0; // 성공 시 리트라이 카운트 초기화
@@ -18629,7 +18627,6 @@ namespace QMC.Common.Modules
 
                                 m_bFindLowerAlignMark_OK = false;
                                 m_bPreAlignCompleted = false;
-                                m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
                                 m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
                             }
                         }
@@ -18716,7 +18713,6 @@ namespace QMC.Common.Modules
                             else
                             {
                                 m_bSocketAlign_OK = false;
-                                //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
 
                                 //  소켓 얼라인 실패했으니 화면 갱신해야 한다.
                                 m_nDrillingData_SocketAlign_NGCount++;                                              //  소켓 얼라인 실패 카운트 증가 (설정된 소켓 개수 이상 얼라인 실패 시 NG Drop)
@@ -18737,7 +18733,6 @@ namespace QMC.Common.Modules
                                     Log.Write("SLD-200", Equipment.User_Name, "Selected Socket, Align", m_strTemp);
 
                                     m_bSocketAlign_OK = false;
-                                    m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
                                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
                                 }
                                 else
@@ -21707,12 +21702,8 @@ namespace QMC.Common.Modules
                     // 상 위 시컨스 동작 중 NG 발생 시 아래 fail 조건부터 시컨스 진행함.
                 case (int)LaserDrilling_Step.Fail:
 
-                    m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
-
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.LaserOff2;
-
                     break;
-
 
                 case (int)LaserDrilling_Step.LaserOff2:                                              //  레이저 Off
                                                                                                      //  Laser Trigger Change (RTC6 Mode)
@@ -21730,7 +21721,6 @@ namespace QMC.Common.Modules
                                                                                                      //}
 
                     //laserDrillingParameter.DO_LaserTrigger_Change(true);
-
                     //  선택 가공 관련 변수 초기화
                     m_nSocketAlign_StartIndex = -1;
                     Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
@@ -25704,8 +25694,8 @@ namespace QMC.Common.Modules
             m_nDrillingData_SocketCount = 0;    //  진행하는 Socket Count
             m_nDrillingData_LayerTotal = 0;     //  진행해야하는 Layer 총 개수 (제품 단위 : Module, 하나의 Module 은 n 개의 Layer 로 구성된다)
             m_nDrillingData_LayerCount = 0;     //  진행하는 Layer Count (제품 단위 : Module, 하나의 Module 은 n 개의 Layer 로 구성된다)
+            
             m_bPreAlignCompleted = false;
-
             m_bForceEjectRequest = false;       //강제배출 초기화.
 
         }
@@ -36996,6 +36986,29 @@ namespace QMC.Common.Modules
             AlarmPost(AlarmKey.DataNotValidation);
         }
 
+        public double Calc_PulseWidth(double m_dFrequency, double m_dDutyCycle)
+        {
+            double m_dPulseWidth = 0.0;
+
+            try
+            {
+                // 입력값 가져오기
+                double frequency = m_dFrequency;
+                double dutyCycle = m_dDutyCycle;
+
+                // Period 계산 (초 단위) 
+                double periodSeconds = 1 / frequency;
+
+                // Pulse Width 계산 (μs 단위)
+                m_dPulseWidth = (dutyCycle * periodSeconds / 100) * 1_000_000;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Pulse Width Calc. Failed.");
+            }
+
+            return m_dPulseWidth;
+        }
 
         //motion 함수 
         public double GetEncWorkStagePos_Motor(WorkStage.nAxis nAxis)
@@ -37253,7 +37266,7 @@ namespace QMC.Common.Modules
                     if (IsWorkStage_Positions(WorkStage.nAxis.X, xyCoordinate.X) == false &&
                         IsWorkStage_Positions(WorkStage.nAxis.Y, xyCoordinate.Y) == false)
                     {
-                        //// 맵 데이터를 이원화 할 경우
+                        // 맵 데이터를 이원화 할 경우
                         //if (laserDrilling.Config.ParamConfig.ScannerCamera_MapData_Div)
                         //{
                         //    laserDrilling.MapData_Change((int)LaserDrilling.MapDataType.MAPDATASTATUS_SCANNER);
@@ -37481,28 +37494,42 @@ namespace QMC.Common.Modules
             return bRtn;
         }
 
-        public double Calc_PulseWidth(double m_dFrequency, double m_dDutyCycle)
+        // 축 위치 대기 함수
+        public Task<bool> WaitUntilInPositionAsync(WorkStage.nAxis axis, double targetPos, int timeoutMs = 50000)
         {
-            double m_dPulseWidth = 0.0;
-
-            try
+            return Task.Run(() =>
             {
-                // 입력값 가져오기
-                double frequency = m_dFrequency;
-                double dutyCycle = m_dDutyCycle;
+                int wait = 0;
+                const int interval = 5;
 
-                // Period 계산 (초 단위) 
-                double periodSeconds = 1 / frequency;
+                while (wait < timeoutMs)
+                {
+                    if (MC_Func.MC_GetDone((int)axis) &&
+                        MC_Func.MC_PosTolerance((int)axis, targetPos))
+                        return true;
 
-                // Pulse Width 계산 (μs 단위)
-                m_dPulseWidth = (dutyCycle * periodSeconds / 100) * 1_000_000;
-            }
-            catch (Exception ex)
+                    Thread.Sleep(interval);
+                    wait += interval;
+                }
+
+                Log.Write("Timeout", $"Axis {axis} timeout at {timeoutMs}ms");
+                return false;
+            });
+        }
+
+        public bool IsWorkStageMoving(WorkStage.nAxis axis)
+        {
+            // signal 정확하게 파악하고 맞춰보자.
+            bool bRtn = false;
+            bool bDone = MC_Func.MC_GetDone((int)axis);
+            bool bInposition = MC_Func.MC_GetInposition((int)axis);
+            if (!bDone ||!bInposition)
             {
-                Console.WriteLine("Pulse Width Calc. Failed.");
+                return bRtn = true;
             }
 
-            return m_dPulseWidth;
+            //true: 구동 중, false: 구동 안함.
+            return bRtn = false;
         }
     }
 }

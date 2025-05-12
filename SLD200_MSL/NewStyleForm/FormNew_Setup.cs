@@ -30,6 +30,7 @@ using static OpenCvSharp.LineIterator;
 using static QMC.Common.Vision.Tools.PatternMatchingResult;
 using Cognex.VisionPro.Exceptions;
 using System.Windows.Controls.Primitives;
+using static QMC.Common.Part;
 //using OpenCvSharp;
 
 namespace SLD200_MSL
@@ -94,6 +95,14 @@ namespace SLD200_MSL
         {
             InitializeComponent();
 
+            //Size 축소 / 확대 안되게 하기 위한 코드.
+            this.AutoScaleMode = AutoScaleMode.None;
+            this.DoubleBuffered = true;
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+            this.UpdateStyles();
+
+            this.Load += FormNew_Setup_Load; // 여기서 Load 이벤트 연결
+
             m_keyPad = new FormNew_KeyPad();
 
             ModuleCollection m_collectionModules;
@@ -121,7 +130,10 @@ namespace SLD200_MSL
                     Bds = module as Bds;
                 }
             }
+        }
 
+        private void FormNew_Setup_Load(object sender, EventArgs e)
+        {
             IOGridSize = new Size(730, 590);
 
             InputPoint = new DioPointCollection();
@@ -208,7 +220,6 @@ namespace SLD200_MSL
             this.m_2DMappingFileControl.Location = new Point(m_2DMappingDataControl.Location.X + m_2DMappingDataControl.Size.Width + 20, m_2DMappingDataControl.Location.Y);
             this.tabPage_Setup_2DMapping.Controls.Add(this.m_2DMappingFileControl);
 
-
             //  Scanner Calibration
             textBox_Setup_ScannerCal_LaserFrequency.Text = Equipment.Scanner_Calibration_LaserFrequency.ToString();
             textBox_Setup_ScannerCal_PulseWidth.Text = Equipment.Scanner_Calibration_LaserPulseWidth.ToString();
@@ -237,7 +248,7 @@ namespace SLD200_MSL
             m_targetFile = Equipment.Scanner_Calibration_targetFilePath;
             m_rowInterval = (float)Equipment.Scanner_Calibration_rowInterval;
             m_colInterval = (float)Equipment.Scanner_Calibration_colInterval;
-            m_row = Equipment.Scanner_Calibration_rowCount; 
+            m_row = Equipment.Scanner_Calibration_rowCount;
             m_col = Equipment.Scanner_Calibration_colCount;
 
             //m_kfactor = (float)Math.Pow(2, 20) / m_fieldSize;
@@ -279,35 +290,20 @@ namespace SLD200_MSL
             workStage.scannerCompensator.ActionSaveDone += OnSaveDone;
             workStage.scannerCompensator.ActionSaveDoneAllData += OnSaveDataDone;
 
-            //m_formScannerCompensatorMaint = new FormScannerCompensatorMaint(workStage.scannerCompensator
-            //Scanner Calibration Vision
-            //this.pictureBox_Setup_ScannerCal_TrainImage.BackColor = Color.White;
-
-            //this.Box_Setup_ScannerCal_ImageViewer = new VisionImageViewer();
             this.Box_Setup_ScannerCal_ImageViewer.SizeMode = PictureBoxSizeMode.CenterImage;
             this.Box_Setup_ScannerCal_ImageViewer.SuspendDisplay();
-            //this.Box_Setup_ScannerCal_ImageViewer.Camera = workStage.Camera_HighRes;
             this.Box_Setup_ScannerCal_ImageViewer.Camera = workStage.scannerCompensator.Camera;
-            //this.Controls.Add(this.Box_Setup_ScannerCal_ImageViewer);
 
             this.RoiTrain = workStage.scannerCompensator.GetTrainRoi();
             this.RoiInspect = workStage.scannerCompensator.GetInspectRoi();
 
-            //this.m_RoiListControl = new RoiListControl(RoiTrain, RoiInspect, workStage.Camera_HighRes.Resolution);
             this.m_RoiListControl = new RoiListControl(RoiTrain, RoiInspect, workStage.scannerCompensator.Camera.Resolution);
-            //this.m_RoiListControl.Location = new Point(this.m_visionImageViewer_Upper.Location.X,
-            //    this.m_visionImageViewer_Upper.Location.Y + m_visionImageViewer_Upper.Height + Configuration.ControlGap);
-            //this.m_RoiListControl.Location = new Point(Box_Setup_ScannerCal_ImageViewer.Location.X, 
-            //    this.Box_Setup_ScannerCal_ImageViewer.Location.Y + Box_Setup_ScannerCal_ImageViewer.Height);
+            
             this.m_RoiListControl.roiTrainButtonClick += RoiTrainButtonClick;
             this.m_RoiListControl.roiAlignButtonClick += RoiInspectButtonClick;
             this.m_RoiListControl.roiTrainSaveButtonClick += RoiTrainSaveButtonClick;
             this.m_RoiListControl.roiAlignSaveButtonClick += RoiInspectSaveButtonClick;
-            //this.Controls.Add(this.m_RoiListControl);
-
-            //this.m_RoiListControl.roiTrainClick += button_Setup_ScannerCal_Train_Click;
-            //this.m_RoiListControl.roiAlignClick += RoiInspectClick;
-
+            
             this.pictureBox_Setup_ScannerCal_TrainImage.BackColor = Color.SpringGreen;
 
             ScannerCompensatorRecipe recipe = workStage.scannerCompensator.Recipe;
@@ -358,7 +354,7 @@ namespace SLD200_MSL
             this.radioButton_Setup_ScannerCal_Blob.Checked = Equipment.Scanner_Calibration_UseBlobVisionTool;
             this.radioButton_Setup_ScannerCal_Cross.Checked = Equipment.Scanner_Calibration_MarkType_Cross;
             this.radioButton_Setup_ScannerCal_Circle.Checked = Equipment.Scanner_Calibration_MarkType_Circlle;
-            
+
             //향 후 상황봐서 적용.
             //if (Equipment.Machine_LaserType_CO2)
             //{
@@ -369,10 +365,10 @@ namespace SLD200_MSL
             //}
             //else
             //{
-                //this.radioButton_Setup_ScannerCal_Pattern.Checked = true;
-                //this.radioButton_Setup_ScannerCal_Cross.Checked = true;
-                //this.radioButton_Setup_ScannerCal_Blob.Checked = false;
-                //this.radioButton_Setup_ScannerCal_Circle.Checked = false;
+            //this.radioButton_Setup_ScannerCal_Pattern.Checked = true;
+            //this.radioButton_Setup_ScannerCal_Cross.Checked = true;
+            //this.radioButton_Setup_ScannerCal_Blob.Checked = false;
+            //this.radioButton_Setup_ScannerCal_Circle.Checked = false;
             //}
 
             this.radioButton_Setup_ScannerCal_Light_IR.Checked = true;
@@ -382,7 +378,6 @@ namespace SLD200_MSL
 
             IsPixel = true;
             this.Refresh();
-
         }
 
         protected override void OnVisibleChanged(EventArgs e)
@@ -2450,8 +2445,7 @@ namespace SLD200_MSL
                 workStage.m_ScannerCalibration_Start = true;
                 Equipment.Scanner_Vision_Offset_Setting_Use = false;
                 workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.Start;
-                workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Run); //<-구동 중 정지할려면 필요. 
-
+                workStage.SetRunStatus(RunStatus.Run);
             }
         }
 
