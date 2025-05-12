@@ -74,7 +74,7 @@
             // 
             this.label_TitleBar_MESMsg.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_TitleBar_MESMsg.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_TitleBar_MESMsg.Location = new System.Drawing.Point(215, 5);
+            this.label_TitleBar_MESMsg.Location = new System.Drawing.Point(215, 63);
             this.label_TitleBar_MESMsg.Name = "label_TitleBar_MESMsg";
             this.label_TitleBar_MESMsg.Size = new System.Drawing.Size(132, 25);
             this.label_TitleBar_MESMsg.TabIndex = 201;
@@ -96,7 +96,7 @@
             // 
             this.label_TitleBar_OPRecipe.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_TitleBar_OPRecipe.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_TitleBar_OPRecipe.Location = new System.Drawing.Point(215, 63);
+            this.label_TitleBar_OPRecipe.Location = new System.Drawing.Point(215, 5);
             this.label_TitleBar_OPRecipe.Name = "label_TitleBar_OPRecipe";
             this.label_TitleBar_OPRecipe.Size = new System.Drawing.Size(132, 25);
             this.label_TitleBar_OPRecipe.TabIndex = 203;
@@ -109,7 +109,7 @@
             this.label_Title_MESMessage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_Title_MESMessage.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Title_MESMessage.ForeColor = System.Drawing.Color.Lime;
-            this.label_Title_MESMessage.Location = new System.Drawing.Point(352, 5);
+            this.label_Title_MESMessage.Location = new System.Drawing.Point(352, 63);
             this.label_Title_MESMessage.Name = "label_Title_MESMessage";
             this.label_Title_MESMessage.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.label_Title_MESMessage.Size = new System.Drawing.Size(868, 25);
@@ -137,7 +137,7 @@
             this.label_Title_Recipe.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_Title_Recipe.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Title_Recipe.ForeColor = System.Drawing.Color.Lime;
-            this.label_Title_Recipe.Location = new System.Drawing.Point(352, 63);
+            this.label_Title_Recipe.Location = new System.Drawing.Point(352, 5);
             this.label_Title_Recipe.Name = "label_Title_Recipe";
             this.label_Title_Recipe.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.label_Title_Recipe.Size = new System.Drawing.Size(868, 25);

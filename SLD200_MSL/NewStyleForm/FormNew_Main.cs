@@ -1529,7 +1529,18 @@ namespace SLD200_MSL
                         Log.Write("SLD-200", Equipment.User_Name, "Button Click", "집진기 Off");
 
                         //workStage.DustCollector_Off((int)nDustCollector.DustCollector_Upper);
-                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+
+                        if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Button Click", "하부 집진기 사용 안함.");
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Button Click", "하부 집진기 사용. 집진기 Off");
+
+                            workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                            Thread.Sleep(200);
+                        }
                     }
 
                     workStage.m_bLaserDrilling_Complete = true;
@@ -1739,8 +1750,12 @@ namespace SLD200_MSL
             //  강제 배출이면 Laser Drilling Step 을 다시 None 으로 바꿔준다. (Thruhole 가공 중에 강제 배출을 했는데, Thruhole 이 계속 진행되어서...)
             if (workStage.m_bForceEjectRequest)
             {
+                //workStage.m_bForceEjectRequest = false;
+
                 workStage.m_bLaserDrilling_Complete = true;
                 workStage.m_nLaserDrilling_MainStep = 0;
+                workStage.m_nLaserDrilling_MainStep_Recovery = 0;
+                workStage.m_nFindAlignMark_Step = 0;
                 workStage.m_nSocketAlign_MainStep = 0;
             }
 
@@ -1753,7 +1768,17 @@ namespace SLD200_MSL
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "Button Click", "강제 배출, 집진기 Off");
 
-                    workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                    if (Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable)
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Button Click", "강제 배출, 하부 집진기 사용 안함.");
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Button Click", "강제 배출, 하부 집진기 사용. 집진기 Off");
+
+                        workStage.DustCollector_Off((int)nDustCollector.DustCollector_Lower);
+                        Thread.Sleep(200);
+                    }
                 }
             }
 
@@ -2747,12 +2772,13 @@ namespace SLD200_MSL
 
                 string m_strTemp = "강제 배출 하시겠습니까?\r\n\r\n[레이저도 Off 됩니다.]";
 
-                var mb = new MessageBoxOk();
+                var mb = new MessageBoxYesNo();
                 if (DialogResult.Yes != mb.ShowDialog("Question ?", m_strTemp))
                     return;
 
                 workStage.m_bLaserDrilling_Complete = true;
                 workStage.m_nLaserDrilling_MainStep = 0;
+                workStage.m_nFindAlignMark_Step = 0;
                 workStage.m_nSocketAlign_MainStep = 0;
 
                 workStage.m_bForceEjectRequest = true;  // 강제 배출 요청. NG로 빼기 위한 변수.

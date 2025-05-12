@@ -271,6 +271,7 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
+            this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable = new System.Windows.Forms.CheckBox();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox15.SuspendLayout();
@@ -627,6 +628,7 @@
             // 
             // groupBox14
             // 
+            this.groupBox14.Controls.Add(this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable);
             this.groupBox14.Controls.Add(this.label47);
             this.groupBox14.Controls.Add(this.checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode);
             this.groupBox14.Controls.Add(this.button18);
@@ -640,7 +642,7 @@
             this.groupBox14.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox14.Name = "groupBox14";
             this.groupBox14.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox14.Size = new System.Drawing.Size(272, 89);
+            this.groupBox14.Size = new System.Drawing.Size(272, 119);
             this.groupBox14.TabIndex = 86;
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = " Dust Collector (Hz) ";
@@ -3294,6 +3296,17 @@
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
             // 
+            // checkBox_Recipe_TabRecipe_LowerDustCollector_Disable
+            // 
+            this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.AutoSize = true;
+            this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Location = new System.Drawing.Point(72, 90);
+            this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Name = "checkBox_Recipe_TabRecipe_LowerDustCollector_Disable";
+            this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Size = new System.Drawing.Size(196, 21);
+            this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.TabIndex = 63;
+            this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Text = "Lower DustCollector Disable";
+            this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.UseVisualStyleBackColor = true;
+            // 
             // FormNew_Recipe
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -3600,5 +3613,6 @@
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label89;
         private System.Windows.Forms.Label label_PulseWidth_Range;
+        private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_LowerDustCollector_Disable;
     }
 }

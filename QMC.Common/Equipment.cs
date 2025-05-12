@@ -473,6 +473,7 @@ namespace QMC.Common
             public bool DustCollectorRemoteMode_Use;                    //  Dust Collector Remote Mode (true: Remote, false: Local)
             public double DustCollectorFreq_Upper;                      //  Dust Collector Frequency (Upper)
             public double DustCollectorFreq_Lower;                      //  Dust Collector Frequency (Lower)
+            public bool DustCollectorLower_Disable;                     //  Dust Collector Lower Disable (true: Disable, false: Enable)
         }
         public static stLayerRecipeParameter[] stLayerRecipeSet = new stLayerRecipeParameter[System.Enum.GetValues(typeof(LayerList)).Length];
 
@@ -1369,6 +1370,7 @@ namespace QMC.Common
                 stLayerRecipeSet[i].DustCollectorRemoteMode_Use = false;                            //  Dust Collector Mode (true: Remote, false: Local)
                 stLayerRecipeSet[i].DustCollectorFreq_Upper = 20.0;                                 //  Dust Collector Upper Frequency (Hz)
                 stLayerRecipeSet[i].DustCollectorFreq_Lower = 20.0;                                 //  Dust Collector Lower Frequency (Hz)
+                stLayerRecipeSet[i].DustCollectorLower_Disable = false;                             //  Dust Collector Lower Disable (true: Disable, false: Enable)
             }
 
 
