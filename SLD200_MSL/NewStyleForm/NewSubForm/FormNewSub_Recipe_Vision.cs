@@ -223,142 +223,150 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void InitPatternMatchingParameter()
         {
-            // Socket Align
-            if (Equipment.stVisionRecipeSet.dSocketAlignType == 0)
+            try
             {
-                radioButton_Fiducial_Pattern.Checked = true;
-                radioButton_Fiducial_Circle.Checked = false;
-            }
-            else
-            {
-                radioButton_Fiducial_Pattern.Checked = false;
-                radioButton_Fiducial_Circle.Checked = true;
-                
-            }
 
-            if (Equipment.stVisionRecipeSet.dSocketMarkType == 0)
-            {
-                radioButton_Fiducial_Type_Circle.Checked = true;
-                radioButton_Fiducial_Type_GoldPowder.Checked = false;
-            }
-            else
-            {
-                radioButton_Fiducial_Type_Circle.Checked = false;
-                radioButton_Fiducial_Type_GoldPowder.Checked = true;
-            }
-
-            if (Equipment.stVisionRecipeSet.bSocketCircleColor == true)
-            {
-                radioButton_Fiducial_White.Checked = false;
-                radioButton_Fiducial_Black.Checked = true;
-            }
-            else
-            {
-                radioButton_Fiducial_White.Checked = true;
-                radioButton_Fiducial_Black.Checked = false;
-            }
-
-            textBox_Recipe_Fiducial_CircleSpec.Text = Equipment.stVisionRecipeSet.dSocketCircleMarkSpec.ToString();
-            textBox_Recipe_Fiducial_CircleSize.Text = Equipment.stVisionRecipeSet.dSocketCircleMarkRadius.ToString();
-            textBox_Recipe_Fiducial_CircleScore.Text = Equipment.stVisionRecipeSet.dSocketCircleMarkScore.ToString();
-
-
-            // Pre Align
-            if (Owner.Recipe != null)
-            {
-                VisionImage visionImage = Owner.Recipe.PatternMatchingParameter.TrainImage;
-                if(visionImage != null)
+                // Socket Align
+                if (Equipment.stVisionRecipeSet.dSocketAlignType == 0)
                 {
-                    this.pictureBox_RecipeVision_TrainImage.Image = visionImage.GetImage();
+                    radioButton_Fiducial_Pattern.Checked = true;
+                    radioButton_Fiducial_Circle.Checked = false;
                 }
-            }
-            else
-            {
-                this.pictureBox_RecipeVision_TrainImage.Image = null;
-            }
-
-            if (PatternMatchingParameter != null)
-            {
-                if(Equipment.stVisionRecipeSet.PrePatternMatching != null)
+                else
                 {
-                    basetextBox_RecipeVision_AngleTolerance.Text = Equipment.stVisionRecipeSet.PrePatternMatching.MaxTolerance.ToString();
-                    basetextBox_RecipeVision_MaxInstance.Text = Equipment.stVisionRecipeSet.PrePatternMatching.MaxInstance.ToString();
-                    basetextBox_RecipeVision_MinScore.Text = Equipment.stVisionRecipeSet.PrePatternMatching.MinScore.ToString();
-                    baseToggleButton_RecipeVision_DuplicateCheck.UpdateToggleStatus(Equipment.stVisionRecipeSet.PrePatternMatching.DuplicateChecked);
-                    baseToggleButton_RecipeVision_UseMaskImage.UpdateToggleStatus(Equipment.stVisionRecipeSet.PrePatternMatching.UseMaskImage);
-                    if (Equipment.stVisionRecipeSet.LoadTrainImage().GetImage() != null)
+                    radioButton_Fiducial_Pattern.Checked = false;
+                    radioButton_Fiducial_Circle.Checked = true;
+
+                }
+
+                if (Equipment.stVisionRecipeSet.dSocketMarkType == 0)
+                {
+                    radioButton_Fiducial_Type_Circle.Checked = true;
+                    radioButton_Fiducial_Type_GoldPowder.Checked = false;
+                }
+                else
+                {
+                    radioButton_Fiducial_Type_Circle.Checked = false;
+                    radioButton_Fiducial_Type_GoldPowder.Checked = true;
+                }
+
+                if (Equipment.stVisionRecipeSet.bSocketCircleColor == true)
+                {
+                    radioButton_Fiducial_White.Checked = false;
+                    radioButton_Fiducial_Black.Checked = true;
+                }
+                else
+                {
+                    radioButton_Fiducial_White.Checked = true;
+                    radioButton_Fiducial_Black.Checked = false;
+                }
+
+                textBox_Recipe_Fiducial_CircleSpec.Text = Equipment.stVisionRecipeSet.dSocketCircleMarkSpec.ToString();
+                textBox_Recipe_Fiducial_CircleSize.Text = Equipment.stVisionRecipeSet.dSocketCircleMarkRadius.ToString();
+                textBox_Recipe_Fiducial_CircleScore.Text = Equipment.stVisionRecipeSet.dSocketCircleMarkScore.ToString();
+
+
+                // Pre Align
+                if (Owner.Recipe != null)
+                {
+                    VisionImage visionImage = Owner.Recipe.PatternMatchingParameter.TrainImage;
+                    if (visionImage != null)
                     {
-                        pictureBox_RecipeVision_TrainImage.Image = Equipment.stVisionRecipeSet.LoadTrainImage().GetImage();
+                        this.pictureBox_RecipeVision_TrainImage.Image = visionImage.GetImage();
+                    }
+                }
+                else
+                {
+                    this.pictureBox_RecipeVision_TrainImage.Image = null;
+                }
+
+                if (PatternMatchingParameter != null)
+                {
+                    if (Equipment.stVisionRecipeSet.PrePatternMatching != null)
+                    {
+                        basetextBox_RecipeVision_AngleTolerance.Text = Equipment.stVisionRecipeSet.PrePatternMatching.MaxTolerance.ToString();
+                        basetextBox_RecipeVision_MaxInstance.Text = Equipment.stVisionRecipeSet.PrePatternMatching.MaxInstance.ToString();
+                        basetextBox_RecipeVision_MinScore.Text = Equipment.stVisionRecipeSet.PrePatternMatching.MinScore.ToString();
+                        baseToggleButton_RecipeVision_DuplicateCheck.UpdateToggleStatus(Equipment.stVisionRecipeSet.PrePatternMatching.DuplicateChecked);
+                        baseToggleButton_RecipeVision_UseMaskImage.UpdateToggleStatus(Equipment.stVisionRecipeSet.PrePatternMatching.UseMaskImage);
+                        if (Equipment.stVisionRecipeSet.LoadTrainImage().GetImage() != null)
+                        {
+                            pictureBox_RecipeVision_TrainImage.Image = Equipment.stVisionRecipeSet.LoadTrainImage().GetImage();
+                        }
+
+                        PatternMatchingParameter.MaxTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text);
+                        PatternMatchingParameter.MaxInstance = Equipment.ToInt(basetextBox_RecipeVision_MaxInstance.Text);
+                        PatternMatchingParameter.MinTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text) * -1;
+                        PatternMatchingParameter.MinScore = Equipment.ToDouble(basetextBox_RecipeVision_MinScore.Text);
+                        PatternMatchingParameter.DuplicateChecked = baseToggleButton_RecipeVision_DuplicateCheck.GetButtonStatus();
+                        PatternMatchingParameter.UseMaskImage = baseToggleButton_RecipeVision_UseMaskImage.GetButtonStatus();
+                        PatternMatchingParameter.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
+
+                        Owner.Recipe.PatternMatchingParameter = PatternMatchingParameter;
                     }
 
-                    PatternMatchingParameter.MaxTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text);
-                    PatternMatchingParameter.MaxInstance = Equipment.ToInt(basetextBox_RecipeVision_MaxInstance.Text);
-                    PatternMatchingParameter.MinTolerance = Equipment.ToDouble(basetextBox_RecipeVision_AngleTolerance.Text) * -1;
-                    PatternMatchingParameter.MinScore = Equipment.ToDouble(basetextBox_RecipeVision_MinScore.Text);
-                    PatternMatchingParameter.DuplicateChecked = baseToggleButton_RecipeVision_DuplicateCheck.GetButtonStatus();
-                    PatternMatchingParameter.UseMaskImage = baseToggleButton_RecipeVision_UseMaskImage.GetButtonStatus();
-                    PatternMatchingParameter.TrainImage = pictureBox_RecipeVision_TrainImage.Image;
-                    
-                    Owner.Recipe.PatternMatchingParameter = PatternMatchingParameter;
+                    RoiTrain.Parameter.StartLocation = Equipment.stVisionRecipeSet.pointPreTrainRoiStartLocation;
+                    RoiTrain.Parameter.EndLocation = Equipment.stVisionRecipeSet.pointPreTrainRoiEndLocation;
+                    RoiInspect.Parameter.StartLocation = Equipment.stVisionRecipeSet.pointPreInspectRoiStartLocation;
+                    RoiInspect.Parameter.EndLocation = Equipment.stVisionRecipeSet.pointPreInspectRoiEndLocation;
+
+                    Owner.Recipe.InspectRoiStartLocation = Equipment.stVisionRecipeSet.pointPreInspectRoiStartLocation; //RoiInspect.Parameter.StartLocation;
+                    Owner.Recipe.InspectRoiEndLocation = Equipment.stVisionRecipeSet.pointPreInspectRoiEndLocation;     //RoiInspect.Parameter.EndLocation;
+                    Owner.Recipe.TrainRoiStartLocation = Equipment.stVisionRecipeSet.pointPreTrainRoiStartLocation;     //RoiTrain.Parameter.StartLocation;
+                    Owner.Recipe.TrainRoiEndLocation = Equipment.stVisionRecipeSet.pointPreTrainRoiEndLocation;         //RoiTrain.Parameter.EndLocation;
                 }
 
-                RoiTrain.Parameter.StartLocation = Equipment.stVisionRecipeSet.pointPreTrainRoiStartLocation;
-                RoiTrain.Parameter.EndLocation = Equipment.stVisionRecipeSet.pointPreTrainRoiEndLocation;
-                RoiInspect.Parameter.StartLocation = Equipment.stVisionRecipeSet.pointPreInspectRoiStartLocation;
-                RoiInspect.Parameter.EndLocation = Equipment.stVisionRecipeSet.pointPreInspectRoiEndLocation;
+                if (Equipment.stVisionRecipeSet.ePreAlgorithmType == VisionAlgorithmType.PatternMatching)
+                {
+                    radioButton_RecipeVision_Pattern.Checked = true;
+                    radioButton_RecipeVision_Blob.Checked = false;
+                }
+                else
+                {
+                    radioButton_RecipeVision_Pattern.Checked = false;
+                    radioButton_RecipeVision_Blob.Checked = true;
+                }
 
-                Owner.Recipe.InspectRoiStartLocation = Equipment.stVisionRecipeSet.pointPreInspectRoiStartLocation; //RoiInspect.Parameter.StartLocation;
-                Owner.Recipe.InspectRoiEndLocation = Equipment.stVisionRecipeSet.pointPreInspectRoiEndLocation;     //RoiInspect.Parameter.EndLocation;
-                Owner.Recipe.TrainRoiStartLocation = Equipment.stVisionRecipeSet.pointPreTrainRoiStartLocation;     //RoiTrain.Parameter.StartLocation;
-                Owner.Recipe.TrainRoiEndLocation = Equipment.stVisionRecipeSet.pointPreTrainRoiEndLocation;         //RoiTrain.Parameter.EndLocation;
+                if (Equipment.stVisionRecipeSet.ePreMarkType == MarkTypeList.Cross)
+                {
+                    radioButton_RecipeVision_Type_Cross.Checked = true;
+                    radioButton_RecipeVision_Circle.Checked = false;
+                }
+                else
+                {
+                    radioButton_RecipeVision_Type_Cross.Checked = false;
+                    radioButton_RecipeVision_Circle.Checked = true;
+                }
+
+                if (Equipment.stVisionRecipeSet.bPreCircleColor == true)
+                {
+                    radioButton_RecipeVision_White.Checked = false;
+                    radioButton_RecipeVision_Black.Checked = true;
+                }
+                else
+                {
+                    radioButton_RecipeVision_White.Checked = true;
+                    radioButton_RecipeVision_Black.Checked = false;
+                }
+                this.textBox_RecipeVision_Circle_Spec.Text = Equipment.stVisionRecipeSet.dPreCircleMarkSpec.ToString();
+                this.textBox_RecipeVision_Circle_Size.Text = Equipment.stVisionRecipeSet.dPreCircleMarkRadius.ToString();
+                this.textBox_RecipeVision_Circle_Score.Text = Equipment.stVisionRecipeSet.dPreCircleMarkScore.ToString();
+
+                this.radioButton_RecipeVision_Move_MoveMode_Fine.Checked = false;
+                this.radioButton_RecipeVision_Move_MoveMode_Coarse.Checked = true;
+                this.radioButton_RecipeVision_JogMove_Continuous.Checked = false;
+                this.radioButton_RecipeVision_JogMove_Step.Checked = true;
+
+                textBox_Recipe_RecipeVision_Illuminator_FineCamRed.Text = Equipment.stVisionRecipeSet.nSocketIlluminationRed.ToString();
+                textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text = Equipment.stVisionRecipeSet.nSocketIlluminationIR.ToString();
+                textBox_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text = Equipment.stVisionRecipeSet.nPreIlluminationIR.ToString();
+
+                SetScroll();
             }
-
-            if (Equipment.stVisionRecipeSet.ePreAlgorithmType == VisionAlgorithmType.PatternMatching)
+            catch (Exception ex)
             {
-                radioButton_RecipeVision_Pattern.Checked = true;
-                radioButton_RecipeVision_Blob.Checked = false;
+                Log.Write(ex);
             }
-            else
-            {
-                radioButton_RecipeVision_Pattern.Checked = false;
-                radioButton_RecipeVision_Blob.Checked = true;
-            }
-
-            if (Equipment.stVisionRecipeSet.ePreMarkType == MarkTypeList.Cross)
-            {
-                radioButton_RecipeVision_Type_Cross.Checked = true;
-                radioButton_RecipeVision_Circle.Checked = false;
-            }
-            else
-            {
-                radioButton_RecipeVision_Type_Cross.Checked = false;
-                radioButton_RecipeVision_Circle.Checked = true;
-            }
-
-            if (Equipment.stVisionRecipeSet.bPreCircleColor == true)
-            {
-                radioButton_RecipeVision_White.Checked = false;
-                radioButton_RecipeVision_Black.Checked = true;
-            }
-            else
-            {
-                radioButton_RecipeVision_White.Checked = true;
-                radioButton_RecipeVision_Black.Checked = false;
-            }
-            this.textBox_RecipeVision_Circle_Spec.Text = Equipment.stVisionRecipeSet.dPreCircleMarkSpec.ToString();
-            this.textBox_RecipeVision_Circle_Size.Text = Equipment.stVisionRecipeSet.dPreCircleMarkRadius.ToString();
-            this.textBox_RecipeVision_Circle_Score.Text = Equipment.stVisionRecipeSet.dPreCircleMarkScore.ToString();
-
-            this.radioButton_RecipeVision_Move_MoveMode_Fine.Checked = false;
-            this.radioButton_RecipeVision_Move_MoveMode_Coarse.Checked = true;
-            this.radioButton_RecipeVision_JogMove_Continuous.Checked = false;
-            this.radioButton_RecipeVision_JogMove_Step.Checked = true;
-
-            textBox_Recipe_RecipeVision_Illuminator_FineCamRed.Text = Equipment.stVisionRecipeSet.nSocketIlluminationRed.ToString();
-            textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text = Equipment.stVisionRecipeSet.nSocketIlluminationIR.ToString();
-            textBox_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text = Equipment.stVisionRecipeSet.nPreIlluminationIR.ToString();
-
-            SetScroll();
         }
 
         private void button_RecipeVision_CameraLive_Click(object sender, EventArgs e)

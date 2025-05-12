@@ -3048,6 +3048,7 @@ namespace SLD200_MSL
                 //Equipment.WorkElapsedTick_Marking = 0;
 
 
+                Equipment.LaserDrillingCycStop_Reservation = false;
                 workStage.m_bLaserDrilling_SocketStopped = false;
                 Equipment.SocketStopped = false;
 
