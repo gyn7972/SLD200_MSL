@@ -54,8 +54,11 @@ namespace QMC.Common.VisionPart
         /// <returns>최적의 원 모델</returns>
         public static Circle FitCircle(List<PointF> points, int iterations = 1000, double threshold = 5.0)
         {
-            
             Circle bestCircle = new Circle();
+
+            if (points.Count <= 0)
+                return bestCircle;
+
             int bestInliers = 0;
             Random rnd = new Random();
             int nStep = points.Count / 6;

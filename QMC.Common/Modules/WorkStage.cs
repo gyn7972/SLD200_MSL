@@ -9008,26 +9008,26 @@ namespace QMC.Common.Modules
                             //Todo: PreAlign 확인!!!
                             //Recipe Data 전달하기!
 
-                            if(stVisionRecipeSet.AlgorithmType == VisionAlgorithmType.PatternMatching)
+                            if(stVisionRecipeSet.ePreAlgorithmType == VisionAlgorithmType.PatternMatching)
                             {
-                                jigAligner_LowRes.Recipe.PatternMatchingParameter = stVisionRecipeSet.PatternMatching;
-                                jigAligner_LowRes.Recipe.InspectRoiStartLocation = stVisionRecipeSet.InspectRoiStartLocation;
-                                jigAligner_LowRes.Recipe.InspectRoiEndLocation = stVisionRecipeSet.InspectRoiEndLocation;
-                                jigAligner_LowRes.Recipe.TrainRoiStartLocation = stVisionRecipeSet.TrainRoiStartLocation;
-                                jigAligner_LowRes.Recipe.TrainRoiEndLocation = stVisionRecipeSet.TrainRoiEndLocation;
+                                jigAligner_LowRes.Recipe.PatternMatchingParameter = stVisionRecipeSet.PrePatternMatching;
+                                jigAligner_LowRes.Recipe.InspectRoiStartLocation = stVisionRecipeSet.pointPreInspectRoiStartLocation;
+                                jigAligner_LowRes.Recipe.InspectRoiEndLocation = stVisionRecipeSet.pointPreInspectRoiEndLocation;
+                                jigAligner_LowRes.Recipe.TrainRoiStartLocation = stVisionRecipeSet.pointPreTrainRoiStartLocation;
+                                jigAligner_LowRes.Recipe.TrainRoiEndLocation = stVisionRecipeSet.pointPreTrainRoiEndLocation;
                                 jigAligner_LowRes.Work();
                             }
-                            else if(stVisionRecipeSet.AlgorithmType == VisionAlgorithmType.CircleDetection)
+                            else if(stVisionRecipeSet.ePreAlgorithmType == VisionAlgorithmType.CircleDetection)
                             {
                                 jigAligner_LowRes.Work();
                             }
                             else
                             {
-                                jigAligner_LowRes.Recipe.PatternMatchingParameter = stVisionRecipeSet.PatternMatching;
-                                jigAligner_LowRes.Recipe.InspectRoiStartLocation = stVisionRecipeSet.InspectRoiStartLocation;
-                                jigAligner_LowRes.Recipe.InspectRoiEndLocation = stVisionRecipeSet.InspectRoiEndLocation;
-                                jigAligner_LowRes.Recipe.TrainRoiStartLocation = stVisionRecipeSet.TrainRoiStartLocation;
-                                jigAligner_LowRes.Recipe.TrainRoiEndLocation = stVisionRecipeSet.TrainRoiEndLocation;
+                                jigAligner_LowRes.Recipe.PatternMatchingParameter = stVisionRecipeSet.PrePatternMatching;
+                                jigAligner_LowRes.Recipe.InspectRoiStartLocation = stVisionRecipeSet.pointPreInspectRoiStartLocation;
+                                jigAligner_LowRes.Recipe.InspectRoiEndLocation = stVisionRecipeSet.pointPreInspectRoiEndLocation;
+                                jigAligner_LowRes.Recipe.TrainRoiStartLocation = stVisionRecipeSet.pointPreTrainRoiStartLocation;
+                                jigAligner_LowRes.Recipe.TrainRoiEndLocation = stVisionRecipeSet.pointPreTrainRoiEndLocation;
                                 jigAligner_LowRes.Work();
                             }
 
@@ -13589,9 +13589,9 @@ namespace QMC.Common.Modules
                     //Display_Event("홈 실행 루틴 : 시작.");
                     SocketAlign_Step_Start(nSocketNum);
 
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationRed, 1);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationIR, 2);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreAlignlluminationIR, 3);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationRed, 1);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationIR, 2);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreIlluminationIR, 3);
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명 
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
@@ -13695,9 +13695,9 @@ namespace QMC.Common.Modules
                     //CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
                     //CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
                     //CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR, 3);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationRed, 1);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationIR, 2);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreAlignlluminationIR, 3);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationRed, 1);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationIR, 2);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreIlluminationIR, 3);
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명 
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
                     Thread.Sleep(50);
@@ -13887,7 +13887,7 @@ namespace QMC.Common.Modules
 
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_fromVision_ResultCheck;
 
-                    if (this.IsStopAutoSequence == true)
+                    if (Equipment.AutoManualStatus == false)
                     {
                         Equipment.AutoRunStatus = false;
                         m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
@@ -14422,21 +14422,12 @@ namespace QMC.Common.Modules
                // Camera_HighRes.StartLive();
             }
 
-            CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationRed, 1);
-            CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationIR, 2);
-            CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreAlignlluminationIR, 3);
+            CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationRed, 1);
+            CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationIR, 2);
+            CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreIlluminationIR, 3);
             CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명
             CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
             CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
-        }
-
-        public bool IsStopAutoSequence
-        {
-            get
-            {
-                return Equipment.AutoRunStatus == false; ;
-            }
-
         }
 
         public VisionImageViewer.OwnedOverlayCollection FineCamResultOveray { get; set; } = new VisionImageViewer.OwnedOverlayCollection();
@@ -14489,10 +14480,11 @@ namespace QMC.Common.Modules
                 for (int i = 0; i < maxSteps; i++)
                 {
 
-                    if( this.IsStopAutoSequence == true)
+                    if(Equipment.AutoManualStatus == false)
                     {
                         return 0;
                     }
+
                     // 현재 위치를 리스트에 추가
                     xyCoordinates.Add(new XyCoordinate { X = currentPosition.X, Y = currentPosition.Y });
 
@@ -14507,14 +14499,14 @@ namespace QMC.Common.Modules
                         {
                             tick++;
                             Thread.Sleep(1);
-                            if (tick > 1000)
+                            if (tick > 5000)
                                 break;
                         }
                         while (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == false)
                         {
                             tick++;
                             Thread.Sleep(1);
-                            if (tick > 1000)
+                            if (tick > 5000)
                                 break;
                         }
                         Thread.Sleep(100);
@@ -14522,7 +14514,8 @@ namespace QMC.Common.Modules
 
 
                     if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
-
+                    QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
+                   // UpdateOverlay(result);
                     // 이미지 Grab 및 원 검색
                     Camera_HighRes.Grab();
                     int nWidthImageCount = (int)(dWidth / this.Config.ParamConfig.UpperVision_Scale_X );
@@ -14537,25 +14530,25 @@ namespace QMC.Common.Modules
 
                     //  마크 검출 형식 (Circle, Gold Powder)
                     //if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
-                    if (Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
+                    if (Equipment.stVisionRecipeSet.dSocketMarkType == (int)MarkTypeList.Circle)
                     {
-                        QMC_ImageProcessFindAlignResult result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
+                        result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
                                                                         bm_AlignRawData,
                                                                         Camera_HighRes.Resolution.Width,
                                                                         Camera_HighRes.Resolution.Height,
                                                                         nWidthImageCount, 
-                                                                        Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkSpec,
+                                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
                                                                         ref Fiducial_circleFound,
                                                                         0,0,
-                                                                        (Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkType == 0),
-                                                                        Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkSocre,
+                                                                        (Equipment.stVisionRecipeSet.dSocketMarkType == 0),
+                                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
                                                                         false);
                         
                         UpdateOverlay(result);
 
                     }
                     //else if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
-                    else if (Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
+                    else if (Equipment.stVisionRecipeSet.dSocketMarkType == (int)MarkTypeList.GoldPowder)
                     {
                         Fiducial_aligner.FindMetalPowder(Fiducial_circlesResult, 
                                                         bm_AlignRawData, 
@@ -18416,9 +18409,9 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align Cycle 시작.");
 
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationRed, 1);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationIR, 2);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreAlignlluminationIR, 3);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationRed, 1);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationIR, 2);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreIlluminationIR, 3);
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 1);          //  Fine Cam Red 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 2);          //  Fine Cam IR 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 3);           //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
@@ -18738,25 +18731,38 @@ namespace QMC.Common.Modules
                                 Main_SocketPositions_StatusCheck_Flag = true;           //  소켓 상태 체크 공통 Flag
                                 Thread.Sleep(200);
 
-                                //  Thruhole Layer 가 있으면, 가공하지 않도록 Flag 를 false 로 변경한다.
-                                if (m_stThruHole_SocketData_ProcessingFlag != null)
+                                //  단일 선택 가공이면, Align 실패 시 Out
+                                if ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) && (m_nSocketAlign_StartIndex >= 0))
                                 {
-                                    if (m_stThruHole_SocketData_ProcessingFlag.Length == m_stDividedRegion_GroupData.Length)
-                                    {
-                                        m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
-                                    }
-                                    else
-                                    {
-                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole 과 Hole1 의 Socket 개수가 다릅니다.");
-                                    }
+                                    m_strTemp = string.Format("단일 선택 가공 중 Socket Align Fail!!! (자재 배출)");
+                                    Log.Write("SLD-200", Equipment.User_Name, "Selected Socket, Align", m_strTemp);
+
+                                    m_bSocketAlign_OK = false;
+                                    m_nMainWorkCycle_ResultOKNG = (int)WorkStage.MainCycle_Result.NG;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Fail;
                                 }
                                 else
                                 {
-                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole Processing Skip Flag 저장 변수가 Null 입니다.");
-                                }
+                                    //  Thruhole Layer 가 있으면, 가공하지 않도록 Flag 를 false 로 변경한다.
+                                    if (m_stThruHole_SocketData_ProcessingFlag != null)
+                                    {
+                                        if (m_stThruHole_SocketData_ProcessingFlag.Length == m_stDividedRegion_GroupData.Length)
+                                        {
+                                            m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
+                                        }
+                                        else
+                                        {
+                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole 과 Hole1 의 Socket 개수가 다릅니다.");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole Processing Skip Flag 저장 변수가 Null 입니다.");
+                                    }
 
-                                m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                    m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketRemainedCheck;
+                                }
                             }                        
                         }
                         else
@@ -21726,6 +21732,57 @@ namespace QMC.Common.Modules
 
                     //laserDrillingParameter.DO_LaserTrigger_Change(true);
 
+                    //  선택 가공 모드였으면, 도면 다시 로드
+                    if ((m_nSocketAlign_StartIndex >= 0) || (Equipment.SelectedSocketStartMode != (int)SelectedSocketStartModeList.All))
+                    {
+                        Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
+
+                        if (GetDrillingData() == (int)WorkStage.nGetDataResult.GETDATA_SUCCESS)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Auto Run, 선택 가공이 끝났으므로 도면 다시 로드");
+
+                            //  최초 Data Parsing 후 해당 가공 데이터에 대한 상태 데이터를 초기화 한다. (가공중인 소켓 번호, 소켓 OK NG 여부 등)
+                            GlobalSocketStatus_Init();
+
+                            //  Thruhole 가공 Pass 여부를 결정하는 Flag 변수 선언을 여기에서 한번만 한다.
+                            GetDrillingData_ProcessingFlagCheck();
+
+
+                            if (m_stDividedRegion_GroupData != null)
+                            {
+                                //  메인 화면에 가공위치 표시용
+                                Main_SocketPositions = new List<PointD>();
+
+                                for (int i = 0; i < m_stDividedRegion_GroupData[0].nGroup_Num; i++)
+                                {
+                                    Main_SocketPositions.Add(new PointD(m_stDividedRegion_GroupData[i].dGroupCenter.X, m_stDividedRegion_GroupData[i].dGroupCenter.Y));
+                                }
+
+                                if (Main_SocketPositions.Count > 0)
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 있음.");
+
+                                    //  메인 화면에 그려지는 가공위치의 개수
+                                    (Main_SocketPositions_RowCount, Main_SocketPositions_ColumnCount) = CalculateArraySize(Main_SocketPositions);
+
+                                    //  가공 소켓이 몇개의 영역으로 나눠지는지
+                                    Main_SocketPositions_SubRowCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y : 1;
+                                    Main_SocketPositions_SubColumnCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X : 1;
+
+                                    Main_SocketPositions_Draw = true;
+                                }
+                                else
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 없음. (Data Parsing 이 정상적으로 이루어졌으면 여기 들어오면 안됨)");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "선택 가공을 위한 도면 Loading 중 가공 데이터 Parsing 실패");
+                        }
+                    }
+
                     //  선택 가공 관련 변수 초기화
                     m_nSocketAlign_StartIndex = -1;
                     Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
@@ -21837,7 +21894,10 @@ namespace QMC.Common.Modules
 
                     if (!Equipment.AutoRunStatus)
                     {
-                        MessageBox.Show("가공 완료.", "Information!");
+                        //MessageBox.Show("가공 완료.", "Information!");
+
+                        //var mb1 = new QMC.Common.UI.MessageBoxOk();
+                        //mb1.ShowDialog("Warning !", "냉각수를 순환 시키고 작업을 진행해야 합니다.");
                     }
                     break;
             }
@@ -25357,7 +25417,22 @@ namespace QMC.Common.Modules
 
             m_bDrillingWork_Hole1_Exist = true;
 
-            m_nDrillingWork_Group_Count = 0;                //  Drilling Group 개수 Count
+            //  선택 가공일 경우 여기에서 Group Count (소켓 번호) 를 초기화 시키지 않는다.
+
+            if ((m_nSocketAlign_StartIndex >= 0) &&
+                ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) || (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)))
+            {
+                m_strTemp = string.Format("선택 가공 (단일 or 연속). 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count);
+                Log.Write("SLD-200", "Auto Run", m_strTemp);
+            }
+            else
+            {
+                m_nDrillingWork_Group_Count = 0;                //  Drilling Group 개수 Count
+
+                m_strTemp = string.Format("전체 가공. 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count);
+                Log.Write("SLD-200", "Auto Run", m_strTemp);
+            }
+
             m_nDrillingWork_Repeat_Count = 0;               //  Drilling 반복 회수 Count
 
             m_nHoleLayer_ProcessIndex = 0;
@@ -27473,7 +27548,17 @@ namespace QMC.Common.Modules
                 {
                     if (m_stThruHole_SocketData_ProcessingFlag[i].bProcessing == false)
                     {
-                        m_nListCount++;
+                        if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
+                        {
+                            if (i >= m_nSocketAlign_StartIndex)
+                            {
+                                m_nListCount++;
+                            }
+                        }
+                        else                                                                                                                                        //  전체 가공 모드일 경우
+                        {
+                            m_nListCount++;
+                        }
                     }
                 }
             }
@@ -27765,11 +27850,24 @@ namespace QMC.Common.Modules
                                 case EType.Group:
                                     var group = entity as Group;
 
-                                    if (m_stThruHole_SocketData_ProcessingFlag[m_nThruhole_ObjectCount++].bProcessing == false)
+                                    if (m_stThruHole_SocketData_ProcessingFlag[m_nThruhole_ObjectCount].bProcessing == false)
                                     {
-                                        //  선택한 소켓의 가공 객체를 List 로 등록
-                                        list.Add(group);
+                                        if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)     //  선택한 소켓 이후만 가공하는 모드일 경우
+                                        {
+                                            if (m_nThruhole_ObjectCount >= m_nSocketAlign_StartIndex)
+                                            {
+                                                //  선택한 소켓의 가공 객체를 List 로 등록
+                                                list.Add(group);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            //  선택한 소켓의 가공 객체를 List 로 등록
+                                            list.Add(group);
+                                        }
                                     }
+
+                                    m_nThruhole_ObjectCount++;
                                     break;
                             }
                         }
@@ -36952,6 +37050,19 @@ namespace QMC.Common.Modules
 
 
         //motion 함수 
+        public double GetEncWorkStagePos_Motor(WorkStage.nAxis nAxis)
+        {
+            double dEncPos = -999.999;
+            try
+            {
+                dEncPos = MC_Func.MC_GetEncPos((int)nAxis);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+            return dEncPos;
+        }
         public void StoptoWorkStage_Motor(WorkStage.nAxis nAxis)
         {
             double dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;

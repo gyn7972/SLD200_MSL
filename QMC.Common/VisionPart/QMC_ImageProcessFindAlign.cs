@@ -312,7 +312,7 @@ namespace QMC.Common.VisionPart
             if (bIsDarkCircleSearch == false)
             {
                 //pixelData = InversImage(pixelData);
-               // MeanFilter(pixelData, w, h, 10, 10);
+                //MeanFilter(pixelData, w, h, 10, 10);
                 //SaveImage(pixelData, w, h, "polygonMeanFilter.bmp");
             }
             List<PointF> polygon = new List<PointF>();
@@ -338,7 +338,7 @@ namespace QMC.Common.VisionPart
             };
             if(bSpiralSearch == false)
             {
-                nDivideCount = 1;
+                nDivideCount = 3;
             }
             for (int y = 0; y < nDivideCount; y++)
             {
@@ -366,7 +366,7 @@ namespace QMC.Common.VisionPart
                     {
                         dFirstSpec = 0.5;
                     }
-                    int nMaxCircleFirst = (int)(radius * 2);
+                    int nMaxCircleFirst = (int)(radius * 3);
                     int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
 
                     if (nMaxCircleFirst > 2000)
@@ -689,7 +689,6 @@ namespace QMC.Common.VisionPart
             if (pixelData == null) //pixelData가 null인 경우 프로그램 다운.
                 return boundaryPoints;
                 
-
             maxRadius = Math.Min(Math.Min(width, height) / 2, maxRadius);
             int pixelAverageCount = 20;
 
@@ -701,7 +700,9 @@ namespace QMC.Common.VisionPart
 
                 double dSin = Math.Sin(radian);
                 double dCos = Math.Cos(radian);
-                PointF boundaryPoint = new PointF(cx, cy);
+                PointF boundaryPointD = new PointF(cx, cy);
+
+                PointF boundaryPointW = new PointF(cx, cy);
 
 
                 // 병렬 처리
@@ -735,16 +736,27 @@ namespace QMC.Common.VisionPart
                         if (differenceD > maxDifferenceD)
                         {
                             maxDifferenceD = differenceD;
-                            boundaryPoint = new PointF(x, y);
+                            boundaryPointD = new PointF(x, y);
                         }
                         if (differenceW > maxDifferenceW)
                         {
                             maxDifferenceW = differenceW;
-                            boundaryPoint = new PointF(x, y);
+                            boundaryPointW = new PointF(x, y);
                         }
                     }
                 });
-                boundaryPoints.Add(boundaryPoint);
+                //double dW = GetDistance(boundaryPointW, new PointF(cx, cy));
+                //double dD = GetDistance(boundaryPointD, new PointF(cx, cy));
+                if(bIsDarkCircleSearch)
+                {
+                    boundaryPoints.Add(boundaryPointD);
+                }
+                else
+                {
+                    boundaryPoints.Add(boundaryPointW);
+                   
+                }
+               
             }
 
             return boundaryPoints;

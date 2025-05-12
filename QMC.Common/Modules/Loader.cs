@@ -1958,7 +1958,12 @@ namespace QMC.Common.Modules
             {
                 //  Pause 되었으니 Stacker0 을 아래로 내림
 
-                //StackerModuleLoadingWaitingPos_StackerZ0_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
+                //  요래 했더니, M-Align 할 때 멈추는 현상이 있음. --> Transfer 와 M-Aligner 의 Step 이 None 일 때만 동작하도록 변경해봄
+                if ((m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None) && (m_nMAlign_Step == (int)MAlign_Step.None))
+                {
+                    //  Stacker0 을 아래로 내림
+                    StackerModuleLoadingWaitingPos_StackerZ0_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
+                }
             }
             Equipment.Loader_RPort_Pause_Before = Equipment.Loader_RPort_Pause;
 
@@ -2855,7 +2860,11 @@ namespace QMC.Common.Modules
             {
                 //  Pause 되었으니 Stacker1 을 아래로 내림
 
-                //StackerModuleLoadingWaitingPos_StackerZ1_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
+                //  요래 했더니, M-Align 할 때 멈추는 현상이 있음. --> Transfer 와 M-Aligner 의 Step 이 None 일 때만 동작하도록 변경해봄
+                if ((m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None) && (m_nMAlign_Step == (int)MAlign_Step.None))
+                {
+                    StackerModuleLoadingWaitingPos_StackerZ1_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
+                }
             }
             Equipment.Loader_LPort_Pause_Before = Equipment.Loader_LPort_Pause;
 
@@ -3484,7 +3493,7 @@ namespace QMC.Common.Modules
             loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z0] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_LPort_ReadyPos].LD_Stacker_Z0;
 
             //  속도 (기본 속도)
-            m_dSpeed_Stacker_Fast = Equipment.stAxisParam[(int)nAxis.Z0].Common_Speed_Fine;
+            m_dSpeed_Stacker_Fast = Equipment.stAxisParam[(int)nAxis.Z0].Common_Speed_Coarse;
 
             //  가감속 배율
             m_dSpeedMag_forAccDec = 2.0;
@@ -3506,7 +3515,7 @@ namespace QMC.Common.Modules
             loaderParameter.stLoaderPosParam.dTarget[(int)LoaderParameter.MotionKey.Z1] = stLDULTeachingPos[(int)LDUL_TeachingPosList.LD_LPort_ReadyPos].LD_Stacker_Z1;
 
             //  속도 (기본 속도)
-            m_dSpeed_Stacker_Fast = Equipment.stAxisParam[(int)nAxis.Z1].Common_Speed_Fine;
+            m_dSpeed_Stacker_Fast = Equipment.stAxisParam[(int)nAxis.Z1].Common_Speed_Coarse;
 
             //  가감속 배율
             m_dSpeedMag_forAccDec = 2.0;
@@ -10559,10 +10568,31 @@ namespace QMC.Common.Modules
 
 
         //motion 함수 
+        public double GetEncLoaderPos_Motor(Loader.nAxis nAxis)
+        {
+            double dEncPos = -999.999;
+            try
+            {
+                dEncPos = MC_Func.MC_GetEncPos((int)nAxis);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+            return dEncPos;
+        }
+
         public void StoptoLoader_Motor(Loader.nAxis nAxis)
         {
-            double dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
-            MC_Func.MC_MotorStop((int)nAxis, dAcc);
+            try
+            {
+                double dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
+                MC_Func.MC_MotorStop((int)nAxis, dAcc);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
         }
 
         public bool IsInterlock_LoaderPortR_Enabled()
