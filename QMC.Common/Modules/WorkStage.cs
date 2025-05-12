@@ -14516,8 +14516,14 @@ namespace QMC.Common.Modules
                                                                         bm_AlignRawData,
                                                                         Camera_HighRes.Resolution.Width,
                                                                         Camera_HighRes.Resolution.Height,
-                                                                        nWidthImageCount, 0.08, ref Fiducial_circleFound);
-
+                                                                        nWidthImageCount, 
+                                                                        Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkSpec,
+                                                                        ref Fiducial_circleFound,
+                                                                        0,0,
+                                                                        (Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkType == 0),
+                                                                        Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkSocre,
+                                                                        false);
+                        
                         UpdateOverlay(result);
 
                     }
