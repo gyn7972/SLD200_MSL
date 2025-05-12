@@ -213,7 +213,6 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             try
             {
-
                 // Socket Align
                 if (Equipment.stVisionRecipeSet.dSocketAlignType == 0)
                 {
@@ -253,6 +252,10 @@ namespace SLD200.NewStyleForm.NewSubForm
                 textBox_Recipe_Fiducial_CircleSize.Text = Equipment.stVisionRecipeSet.dSocketCircleMarkRadius.ToString();
                 textBox_Recipe_Fiducial_CircleScore.Text = Equipment.stVisionRecipeSet.dSocketCircleMarkScore.ToString();
 
+                checkBox_RecipeVision_Illuminator_Red.Checked = Equipment.stVisionRecipeSet.bSocketIlluminationRedUse;
+                checkBox_RecipeVision_Illuminator_IR.Checked = Equipment.stVisionRecipeSet.bSocketIlluminationIRUse;
+                textBox_RecipeVision_Camera_ExposureTime.Text = Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime.ToString();
+                textBox_RecipeVision_AxisZ_Setting.Text = Equipment.stVisionRecipeSet.dSocketAxisZ_Offset.ToString();
 
                 // Pre Align
                 if (Owner.Recipe != null)
@@ -909,6 +912,12 @@ namespace SLD200.NewStyleForm.NewSubForm
             Equipment.stVisionRecipeSet.dSocketCircleMarkSpec = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text);
             Equipment.stVisionRecipeSet.dSocketCircleMarkScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);
 
+            Equipment.stVisionRecipeSet.bSocketIlluminationRedUse = checkBox_RecipeVision_Illuminator_Red.Checked;
+            Equipment.stVisionRecipeSet.bSocketIlluminationIRUse = checkBox_RecipeVision_Illuminator_IR.Checked;
+            Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime = Convert.ToDouble(textBox_RecipeVision_Camera_ExposureTime.Text);
+            Equipment.stVisionRecipeSet.dSocketAxisZ_Offset = Convert.ToDouble(textBox_RecipeVision_AxisZ_Setting.Text);
+
+
             //PreAlign
             Equipment.stVisionRecipeSet.PrePatternMatching = PatternMatchingParameter;
             Equipment.stVisionRecipeSet.pointPreTrainRoiStartLocation = RoiTrain.Parameter.StartLocation;
@@ -1330,6 +1339,10 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             hScrollBar_RecipeVision_Illuminator_IR.Value = Equipment.stVisionRecipeSet.nPreIlluminationIR;
 
+            checkBox_RecipeVision_Illuminator_Red.Enabled = false;
+            checkBox_RecipeVision_Illuminator_IR.Enabled = false;
+            textBox_RecipeVision_Camera_ExposureTime.Enabled = false;
+            textBox_RecipeVision_AxisZ_Setting.Enabled = false;
             hScrollBar_RecipeVision_Illuminator_Red.Enabled = false;
             textBox_RecipeVision_IlluminationValue_Red.Enabled = false;
             button_RecipeVision_Illumin_value_Red.Enabled = false;
@@ -1361,6 +1374,11 @@ namespace SLD200.NewStyleForm.NewSubForm
             baseLabel_RecipeVision_Max_Red.Enabled = true;
             baseLabel_RecipeVision_Min_Red.Enabled = true;
             label_RecipeVision_Light_Red.Enabled = true;
+
+            checkBox_RecipeVision_Illuminator_Red.Enabled = true;
+            checkBox_RecipeVision_Illuminator_IR.Enabled = true;
+            textBox_RecipeVision_Camera_ExposureTime.Enabled = true;
+            textBox_RecipeVision_AxisZ_Setting.Enabled = true;
 
             hScrollBar_RecipeVision_Illuminator_IR.Value = Equipment.stVisionRecipeSet.nSocketIlluminationIR;
             hScrollBar_RecipeVision_Illuminator_Red.Value = Equipment.stVisionRecipeSet.nSocketIlluminationRed;
@@ -1452,6 +1470,48 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (workStage.Camera_HighRes.Opened)
             {
                 workStage.Camera_HighRes.StartLive();
+            }
+        }
+
+        private void button_RecipeVision_Camera_ExposureTime_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void button_RecipeVision_AxisZ_Setting_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBox_RecipeVision_Illuminator_Red_CheckedChanged(object sender, EventArgs e)
+        {
+            if(checkBox_RecipeVision_Illuminator_Red.Checked)
+            {
+                checkBox_RecipeVision_Illuminator_Red.Text = "USE";
+                hScrollBar_RecipeVision_Illuminator_Red.Enabled = true;
+                textBox_RecipeVision_IlluminationValue_Red.Enabled = true;
+            }
+            else
+            {
+                checkBox_RecipeVision_Illuminator_Red.Text = "NOT USE";
+                hScrollBar_RecipeVision_Illuminator_Red.Enabled = false;
+                textBox_RecipeVision_IlluminationValue_Red.Enabled = false;
+            }
+        }
+
+        private void checkBox_RecipeVision_Illuminator_IR_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_RecipeVision_Illuminator_IR.Checked)
+            {
+                checkBox_RecipeVision_Illuminator_IR.Text = "USE";
+                hScrollBar_RecipeVision_Illuminator_IR.Enabled = true;
+                textBox_RecipeVision_IlluminationValue_IR.Enabled = true;
+            }
+            else
+            {
+                checkBox_RecipeVision_Illuminator_IR.Text = "NOT USE";
+                hScrollBar_RecipeVision_Illuminator_IR.Enabled = false;
+                textBox_RecipeVision_IlluminationValue_IR.Enabled = false;
             }
         }
     }

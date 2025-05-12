@@ -7441,5 +7441,20 @@ namespace QMC.Common.Modules
                 return false;
             });
         }
+
+        public bool IsUnloaderMoving(Unloader.nAxis axis)
+        {
+            // signal 정확하게 파악하고 맞춰보자.
+            bool bRtn = false;
+            bool bDone = MC_Func.MC_GetDone((int)axis);
+            bool bInposition = MC_Func.MC_GetInposition((int)axis);
+            if (!bDone || !bInposition)
+            {
+                return bRtn = true;
+            }
+
+            //true: 구동 중, false: 구동 안함.
+            return bRtn = false;
+        }
     }
 }

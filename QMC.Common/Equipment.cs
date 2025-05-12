@@ -508,6 +508,12 @@ namespace QMC.Common
             public int      nSocketIlluminationIR;
             public int      nSocketIlluminationRed;
 
+            public bool     bSocketIlluminationIRUse;
+            public bool     bSocketIlluminationRedUse;
+
+            public double   dSocketIlluminationExposureTime;
+            public double   dSocketAxisZ_Offset;
+
             //PreAlign
             public PatternMatchingParameters PrePatternMatching;
             public System.Drawing.Point pointPreTrainRoiStartLocation;
@@ -538,6 +544,12 @@ namespace QMC.Common
 
                 NativeMethods.WritePrivateProfileString("SocketAlign", "IR", nSocketIlluminationIR.ToString(), path);
                 NativeMethods.WritePrivateProfileString("SocketAlign", "Red", nSocketIlluminationRed.ToString(), path);
+
+                NativeMethods.WritePrivateProfileString("SocketAlign", "IRUse", bSocketIlluminationIRUse.ToString(), path);
+                NativeMethods.WritePrivateProfileString("SocketAlign", "RedUse", bSocketIlluminationRedUse.ToString(), path);
+                NativeMethods.WritePrivateProfileString("SocketAlign", "ExposureTime", dSocketIlluminationExposureTime.ToString(), path);
+                NativeMethods.WritePrivateProfileString("SocketAlign", "AxisZ_Offset", dSocketAxisZ_Offset.ToString(), path);
+
 
                 if (PrePatternMatching != null)
                 {
@@ -619,6 +631,15 @@ namespace QMC.Common
                     data.nSocketIlluminationIR = Equipment.ToInt(sb.ToString());
                     NativeMethods.GetPrivateProfileString("SocketAlign", "Red", "2500", sb, sb.Capacity, path);
                     data.nSocketIlluminationRed = Equipment.ToInt(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "IRUse", "True", sb, sb.Capacity, path);
+                    data.bSocketIlluminationIRUse = Equipment.ToBoolean(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "RedUse", "True", sb, sb.Capacity, path);
+                    data.bSocketIlluminationRedUse = Equipment.ToBoolean(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "ExposureTime", "20000", sb, sb.Capacity, path);
+                    data.dSocketIlluminationExposureTime = Equipment.ToDouble(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "AxisZ_Offset", "0.0", sb, sb.Capacity, path);
+                    data.dSocketAxisZ_Offset = Equipment.ToDouble(sb.ToString());
 
 
                     //PreAlign

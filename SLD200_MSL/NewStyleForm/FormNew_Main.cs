@@ -197,6 +197,8 @@ namespace SLD200_MSL
 
             InitImageViewer();
             InitializeDeviceStatusBindings();
+            InitAxisLabelMap();
+
 
             //  Main Status 타이머
             timer_Main_Status = new System.Windows.Forms.Timer();
@@ -998,7 +1000,7 @@ namespace SLD200_MSL
 
             UpdateInitStatusFromComm();
 
-            //Motor_Position();
+            
         }
 
         // -----------------------
@@ -1006,6 +1008,8 @@ namespace SLD200_MSL
         // -----------------------
         private void UpdateUIControls()
         {
+            Motor_Position2();
+
             if (m_bNeedHideProgressForm)
             {
                 m_bNeedHideProgressForm = false;
@@ -3240,44 +3244,137 @@ namespace SLD200_MSL
             //  Motion Movement 표시
             if (Equipment.AjinBoard_Opened)
             {
+                double pos = 0.0;
                 //  Loader Stacker Position
-                label_Main_EncPosition_LD_Z0.Text = string.Format("{0:F3}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.Z0));
-                label_Main_EncPosition_LD_Z1.Text = string.Format("{0:F3}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.Z1));
-
+                pos = loader.GetEncLoaderPos_Motor(Loader.nAxis.Z0);
+                label_Main_EncPosition_LD_Z0.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
+                pos = loader.GetEncLoaderPos_Motor(Loader.nAxis.Z1);
+                label_Main_EncPosition_LD_Z1.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
                 //  Loader Transfer Position
-                label_Main_EncPosition_LD_TRX.Text = string.Format("{0:F3}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.TR_X));
-                label_Main_EncPosition_LD_TRZ.Text = string.Format("{0:F3}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.TR_Z));
-
+                pos = loader.GetEncLoaderPos_Motor(Loader.nAxis.TR_X);
+                label_Main_EncPosition_LD_TRX.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
+                pos = loader.GetEncLoaderPos_Motor(Loader.nAxis.TR_Z);
+                label_Main_EncPosition_LD_TRZ.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
                 //  Loader Mechanic Aligner Position
-                label_Main_EncPosition_LD_ALNX.Text = string.Format("{0:F3}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.ALN_X));
-                label_Main_EncPosition_LD_ALNY.Text = string.Format("{0:F3}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.ALN_Y));
-
+                pos = loader.GetEncLoaderPos_Motor(Loader.nAxis.ALN_X);
+                label_Main_EncPosition_LD_ALNX.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
+                pos = loader.GetEncLoaderPos_Motor(Loader.nAxis.ALN_Y);
+                label_Main_EncPosition_LD_ALNY.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
                 //  Work Stage Position
-                label_Main_EncPosition_STAGE_X.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X));
-                label_Main_EncPosition_STAGE_Y.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y));
-
+                pos = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X);
+                label_Main_EncPosition_STAGE_X.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
+                pos = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y);
+                label_Main_EncPosition_STAGE_Y.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
                 //  Scanner & Camera Position
-                label_Main_EncPosition_SCANNER_Z.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z));
-
+                pos = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Z);
+                label_Main_EncPosition_SCANNER_Z.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
                 if (Equipment.Machine_LaserType_CO2)
                 {
-                    //  Mask Position
-                    label_Main_EncPosition_MASK_Y.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.MASK_Y));
+                    pos = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.MASK_Y);
+                    label_Main_EncPosition_MASK_Y.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
                 }
                 else
                 {
-                    label_Main_EncPosition_MASK_Y.Text = "0.000";
+                    label_Main_EncPosition_MASK_Y.Text = "---.---";
                     label_Main_EncPosition_MASK_Y.Visible = false;
                 }
-
                 //  Unloader Stacker Position
-                label_Main_EncPosition_UL_Z0.Text = string.Format("{0:F3}", unloader.MC_Func.MC_GetEncPos((int)Unloader.nAxis.Z0));
-                label_Main_EncPosition_UL_Z1.Text = string.Format("{0:F3}", unloader.MC_Func.MC_GetEncPos((int)Unloader.nAxis.Z1));
-
+                pos = unloader.GetEncUnloaderPos_Motor(Unloader.nAxis.Z0);
+                label_Main_EncPosition_UL_Z0.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
+                pos = unloader.GetEncUnloaderPos_Motor(Unloader.nAxis.Z1);
+                label_Main_EncPosition_UL_Z1.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
                 //  Unloader Transfer Position
-                label_Main_EncPosition_UL_TRX.Text = string.Format("{0:F3}", unloader.MC_Func.MC_GetEncPos((int)Unloader.nAxis.TR_X));
-                label_Main_EncPosition_UL_TRZ.Text = string.Format("{0:F3}", unloader.MC_Func.MC_GetEncPos((int)Unloader.nAxis.TR_Z));
+                pos = unloader.GetEncUnloaderPos_Motor(Unloader.nAxis.TR_X);
+                label_Main_EncPosition_UL_TRX.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
+                pos = unloader.GetEncUnloaderPos_Motor(Unloader.nAxis.TR_Z);
+                label_Main_EncPosition_UL_TRZ.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
             }
         }
+
+        private Dictionary<Loader.nAxis, Label> loaderAxisLabelMap;
+        private Dictionary<Unloader.nAxis, Label> unloaderAxisLabelMap;
+        private Dictionary<WorkStage.nAxis, Label> workstageAxisLabelMap;
+
+        private void InitAxisLabelMap()
+        {
+            loaderAxisLabelMap = new Dictionary<Loader.nAxis, Label>
+            {
+                { Loader.nAxis.Z0, label_Main_EncPosition_LD_Z0 },
+                { Loader.nAxis.Z1, label_Main_EncPosition_LD_Z1 },
+                { Loader.nAxis.TR_X, label_Main_EncPosition_LD_TRX },
+                { Loader.nAxis.TR_Z, label_Main_EncPosition_LD_TRZ },
+                { Loader.nAxis.ALN_X, label_Main_EncPosition_LD_ALNX },
+                { Loader.nAxis.ALN_Y, label_Main_EncPosition_LD_ALNY },
+            };
+
+            unloaderAxisLabelMap = new Dictionary<Unloader.nAxis, Label>
+            {
+                { Unloader.nAxis.Z0, label_Main_EncPosition_UL_Z0 },
+                { Unloader.nAxis.Z1, label_Main_EncPosition_UL_Z1 },
+                { Unloader.nAxis.TR_X, label_Main_EncPosition_UL_TRX },
+                { Unloader.nAxis.TR_Z, label_Main_EncPosition_UL_TRZ },
+            };
+
+            workstageAxisLabelMap = new Dictionary<WorkStage.nAxis, Label>
+            {
+                { WorkStage.nAxis.X, label_Main_EncPosition_STAGE_X },
+                { WorkStage.nAxis.Y, label_Main_EncPosition_STAGE_Y },
+                { WorkStage.nAxis.Z, label_Main_EncPosition_SCANNER_Z },
+                { WorkStage.nAxis.MASK_Y, label_Main_EncPosition_MASK_Y }
+            };
+        }
+
+        private string FormatPos(double pos)
+        {
+            return double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
+        }
+
+        private void Motor_Position2()
+        {
+            if (!Equipment.AjinBoard_Opened)
+                return;
+
+            // Loader
+            foreach (var pair in loaderAxisLabelMap)
+            {
+                double pos = loader.GetEncLoaderPos_Motor(pair.Key);
+                pair.Value.Text = FormatPos(pos);
+            }
+
+            // WorkStage
+            foreach (var pair in workstageAxisLabelMap)
+            {
+                if (pair.Key == WorkStage.nAxis.MASK_Y)
+                {
+                    if (Equipment.Machine_LaserType_CO2)
+                    {
+                        double pos = workStage.GetEncWorkStagePos_Motor(pair.Key);
+                        pair.Value.Text = FormatPos(pos);
+                        pair.Value.Visible = true;
+                    }
+                    else
+                    {
+                        pair.Value.Text = "---.---";
+                        pair.Value.Visible = false;
+                    }
+                }
+                else
+                {
+                    double pos = workStage.GetEncWorkStagePos_Motor(pair.Key);
+                    pair.Value.Text = FormatPos(pos);
+                }
+            }
+
+            // Unloader
+            foreach (var pair in unloaderAxisLabelMap)
+            {
+                double pos = unloader.GetEncUnloaderPos_Motor(pair.Key);
+                pair.Value.Text = FormatPos(pos);
+            }
+        }
+
+
+
+
     }
 }
