@@ -544,7 +544,7 @@ namespace SLD200_MSL
             //  여기 도면 데이터를 WorkStage 의 Doc 로 넘겨준다.
             //  Sirius2
             //workStage.siriusEditorUserControl_WorkStage = siriusEditor;
-            
+
             if (workStage.DrillingData_Parsing())
             {
                 MessageBox.Show("데이터 추출 성공", "Processing Data ...", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1855,5 +1855,101 @@ namespace SLD200_MSL
 
             workStage.rtc.PrimaryHeadBaseOffset = ScannerOffset;
         }
+
+        void RenameNewLayer(int Count)
+        {
+
+            List<string> list = new List<string>();
+            list.Add("Hole1");
+            list.Add("Thruhole");
+            list.Add("Fiducial");
+            list.Add("PreAlign");
+            list.Add("Outline");
+            list.Add("Marking");
+            if (Count > list.Count)
+            {
+                Count = list.Count;
+            }
+            var Document = this.SiriusEditor.Document;
+            for (int iter = 0; iter < Count; iter++)
+            {
+                var l = Document.Layers;
+                if (l.Count > iter)
+                {
+                    l[iter].Name = list[iter];
+                }
+                else
+                {
+                    var layer = new Layer();
+                    layer.Name = list[iter];
+                    l.Add(layer);
+                }
+            }
+        }
+        private void AddHoleLayer()
+        {
+            var Document = this.SiriusEditor.Document;
+            var l = Document.Layers;
+            var layer = new Layer();
+            int NextNo = l.Where(t => t.Name.Contains("Hole")).Count() + 1;
+            layer.Name = "Hole" + NextNo.ToString();
+            l.Insert(NextNo - 1, layer);
+        }
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+
+            if (keyData == Keys.F7)
+            {
+                var Document = this.SiriusEditor.Document;
+                Document.Action.ActEntityGroup(Document.Action.SelectedEntity);
+            }
+            if (keyData == Keys.F8)
+            {
+                var Document = this.SiriusEditor.Document;
+
+                Document.Action.ActEntityUngroup(Document.Action.SelectedEntity);
+            }
+            if (keyData == Keys.Delete)
+            {
+                var Document = this.SiriusEditor.Document;
+                Document.Action.ActEntityDelete(Document.Action.SelectedEntity);
+            }
+            switch (keyData)
+            {
+                case Keys.Alt | Keys.D2:
+                    {
+                        RenameNewLayer(2);
+                    }
+                    break;
+                case Keys.Alt | Keys.D3:
+                    {
+                        RenameNewLayer(3);
+                    }
+                    break;
+                case Keys.Alt | Keys.D4:
+                    {
+                        RenameNewLayer(4);
+                    }
+                    break;
+                case Keys.Alt | Keys.D5:
+                    {
+                        RenameNewLayer(5);
+                    }
+                    break;
+                case Keys.Alt | Keys.D6:
+                    {
+                        RenameNewLayer(6);
+                    }
+                    break;
+                case Keys.Alt | Keys.H:
+                    {
+                        AddHoleLayer();
+                    }
+                    break;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+
     }
 }
