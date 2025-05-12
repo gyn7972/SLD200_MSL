@@ -173,9 +173,9 @@
             this.label41 = new System.Windows.Forms.Label();
             this.label_Main_EPRO_Current_Pressure = new System.Windows.Forms.Label();
             this.label72 = new System.Windows.Forms.Label();
+            this.groupBox_Processing_Test = new System.Windows.Forms.GroupBox();
             this.baseTextBox_DryRun_ProcessingTime = new SLD200_MSL.BaseTextBox();
             this.baseLabel5 = new SLD200_MSL.BaseLabel();
-            this.groupBox_Processing_Test = new System.Windows.Forms.GroupBox();
             this.groupBoxMain_ModuleProcessingStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -234,7 +234,7 @@
             this.SiriusViewer_Main.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.SiriusViewer_Main.Name = "SiriusViewer_Main";
             this.SiriusViewer_Main.Progress = 0;
-            this.SiriusViewer_Main.Size = new System.Drawing.Size(570, 542);
+            this.SiriusViewer_Main.Size = new System.Drawing.Size(547, 542);
             this.SiriusViewer_Main.TabIndex = 34;
             // 
             // groupBoxMain_ModuleProcessingStatus
@@ -278,7 +278,7 @@
             this.checkBox_Main_AlignStartSocket_SelectMode.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBox_Main_AlignStartSocket_SelectMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.checkBox_Main_AlignStartSocket_SelectMode.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox_Main_AlignStartSocket_SelectMode.Location = new System.Drawing.Point(256, 139);
+            this.checkBox_Main_AlignStartSocket_SelectMode.Location = new System.Drawing.Point(256, 142);
             this.checkBox_Main_AlignStartSocket_SelectMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkBox_Main_AlignStartSocket_SelectMode.Name = "checkBox_Main_AlignStartSocket_SelectMode";
             this.checkBox_Main_AlignStartSocket_SelectMode.Size = new System.Drawing.Size(97, 44);
@@ -861,7 +861,7 @@
             this.groupBox_ProcessingData.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox_ProcessingData.Name = "groupBox_ProcessingData";
             this.groupBox_ProcessingData.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_ProcessingData.Size = new System.Drawing.Size(595, 588);
+            this.groupBox_ProcessingData.Size = new System.Drawing.Size(570, 588);
             this.groupBox_ProcessingData.TabIndex = 19;
             this.groupBox_ProcessingData.TabStop = false;
             this.groupBox_ProcessingData.Text = "Processing Data";
@@ -1026,9 +1026,9 @@
             // 
             this.groupBox_FineCam.Controls.Add(this.ImageViewer_Main_highs);
             this.groupBox_FineCam.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox_FineCam.Location = new System.Drawing.Point(613, 260);
+            this.groupBox_FineCam.Location = new System.Drawing.Point(588, 260);
             this.groupBox_FineCam.Name = "groupBox_FineCam";
-            this.groupBox_FineCam.Size = new System.Drawing.Size(260, 260);
+            this.groupBox_FineCam.Size = new System.Drawing.Size(285, 260);
             this.groupBox_FineCam.TabIndex = 191;
             this.groupBox_FineCam.TabStop = false;
             this.groupBox_FineCam.Text = " Fine Camera ";
@@ -1046,7 +1046,7 @@
             this.ImageViewer_Main_highs.Name = "ImageViewer_Main_highs";
             this.ImageViewer_Main_highs.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
             this.ImageViewer_Main_highs.Simulated = false;
-            this.ImageViewer_Main_highs.Size = new System.Drawing.Size(240, 220);
+            this.ImageViewer_Main_highs.Size = new System.Drawing.Size(263, 220);
             this.ImageViewer_Main_highs.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.ImageViewer_Main_highs.TabIndex = 189;
             this.ImageViewer_Main_highs.TabStop = false;
@@ -1057,9 +1057,9 @@
             // 
             this.groupBox_CoarseCam.Controls.Add(this.ImageViewer_Main_Lows);
             this.groupBox_CoarseCam.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox_CoarseCam.Location = new System.Drawing.Point(613, 588);
+            this.groupBox_CoarseCam.Location = new System.Drawing.Point(588, 588);
             this.groupBox_CoarseCam.Name = "groupBox_CoarseCam";
-            this.groupBox_CoarseCam.Size = new System.Drawing.Size(260, 260);
+            this.groupBox_CoarseCam.Size = new System.Drawing.Size(285, 260);
             this.groupBox_CoarseCam.TabIndex = 192;
             this.groupBox_CoarseCam.TabStop = false;
             this.groupBox_CoarseCam.Text = " Coarse Camera ";
@@ -1077,7 +1077,7 @@
             this.ImageViewer_Main_Lows.Name = "ImageViewer_Main_Lows";
             this.ImageViewer_Main_Lows.OperatingType = QMC.Common.Hmi.VisionImageViewer.OperatingTypes.Center;
             this.ImageViewer_Main_Lows.Simulated = false;
-            this.ImageViewer_Main_Lows.Size = new System.Drawing.Size(240, 220);
+            this.ImageViewer_Main_Lows.Size = new System.Drawing.Size(263, 220);
             this.ImageViewer_Main_Lows.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.ImageViewer_Main_Lows.TabIndex = 190;
             this.ImageViewer_Main_Lows.TabStop = false;
@@ -1551,7 +1551,7 @@
             this.checkBox_Main_SocketDrilling_Pass.Name = "checkBox_Main_SocketDrilling_Pass";
             this.checkBox_Main_SocketDrilling_Pass.Size = new System.Drawing.Size(209, 73);
             this.checkBox_Main_SocketDrilling_Pass.TabIndex = 209;
-            this.checkBox_Main_SocketDrilling_Pass.Text = "소켓 가공 건너뛰기\r\n(얼라인 후 소켓을 제외한 나머지 Layer 가공)";
+            this.checkBox_Main_SocketDrilling_Pass.Text = "소켓 가공 건너뛰기\r\n(얼라인 후 소켓을 제외한\r\n나머지 Layer 가공)";
             this.checkBox_Main_SocketDrilling_Pass.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_Main_SocketDrilling_Pass.UseVisualStyleBackColor = false;
             this.checkBox_Main_SocketDrilling_Pass.CheckedChanged += new System.EventHandler(this.checkBox_Main_SocketDrilling_Pass_CheckedChanged);
@@ -2132,6 +2132,20 @@
             this.label72.Text = "Current Pressure (kPa) :";
             this.label72.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // groupBox_Processing_Test
+            // 
+            this.groupBox_Processing_Test.Controls.Add(this.button_Main_ManualStart);
+            this.groupBox_Processing_Test.Controls.Add(this.checkBox_Test_LaserDrillingCycle);
+            this.groupBox_Processing_Test.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
+            this.groupBox_Processing_Test.Location = new System.Drawing.Point(1400, 615);
+            this.groupBox_Processing_Test.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.groupBox_Processing_Test.Name = "groupBox_Processing_Test";
+            this.groupBox_Processing_Test.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox_Processing_Test.Size = new System.Drawing.Size(312, 104);
+            this.groupBox_Processing_Test.TabIndex = 212;
+            this.groupBox_Processing_Test.TabStop = false;
+            this.groupBox_Processing_Test.Text = " Process Testing ";
+            // 
             // baseTextBox_DryRun_ProcessingTime
             // 
             this.baseTextBox_DryRun_ProcessingTime.BackColor = System.Drawing.Color.White;
@@ -2157,20 +2171,6 @@
             this.baseLabel5.TabIndex = 150;
             this.baseLabel5.Text = "(DryRun Time (sec) :";
             this.baseLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // groupBox_Processing_Test
-            // 
-            this.groupBox_Processing_Test.Controls.Add(this.button_Main_ManualStart);
-            this.groupBox_Processing_Test.Controls.Add(this.checkBox_Test_LaserDrillingCycle);
-            this.groupBox_Processing_Test.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold);
-            this.groupBox_Processing_Test.Location = new System.Drawing.Point(1400, 615);
-            this.groupBox_Processing_Test.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox_Processing_Test.Name = "groupBox_Processing_Test";
-            this.groupBox_Processing_Test.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox_Processing_Test.Size = new System.Drawing.Size(312, 104);
-            this.groupBox_Processing_Test.TabIndex = 212;
-            this.groupBox_Processing_Test.TabStop = false;
-            this.groupBox_Processing_Test.Text = " Process Testing ";
             // 
             // FormNew_Main
             // 

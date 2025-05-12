@@ -1958,7 +1958,7 @@ namespace QMC.Common.Modules
             {
                 //  Pause 되었으니 Stacker0 을 아래로 내림
 
-                //  요래 했더니, M-Align 할 때 멈추는 현상이 있음. --> Transfer Step 이 None 일 때만 동작하도록 변경해봄
+                //  요래 했더니, M-Align 할 때 멈추는 현상이 있음. --> Transfer 와 M-Aligner 의 Step 이 None 일 때만 동작하도록 변경해봄
                 if ((m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None) && (m_nMAlign_Step == (int)MAlign_Step.None))
                 {
                     //  Stacker0 을 아래로 내림
@@ -2860,7 +2860,7 @@ namespace QMC.Common.Modules
             {
                 //  Pause 되었으니 Stacker1 을 아래로 내림
 
-                //  요래 했더니, M-Align 할 때 멈추는 현상이 있음. --> Transfer Step 이 None 일 때만 동작하도록 변경해봄
+                //  요래 했더니, M-Align 할 때 멈추는 현상이 있음. --> Transfer 와 M-Aligner 의 Step 이 None 일 때만 동작하도록 변경해봄
                 if ((m_nLoader_Transfer_Step == (int)Loader_Transfer_Step.None) && (m_nMAlign_Step == (int)MAlign_Step.None))
                 {
                     StackerModuleLoadingWaitingPos_StackerZ1_FastDown(out m_dSpeed_Stacker_Fast, out m_dSpeedMag_forAccDec);
