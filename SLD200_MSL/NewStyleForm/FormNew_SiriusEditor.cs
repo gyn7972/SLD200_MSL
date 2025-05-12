@@ -383,11 +383,11 @@ namespace SLD200_MSL
             //var rtcPin2DOutput = new RtcDOutput2Pin(rtc, 0, "DOUT RTC PIN2");
             //rtcPin2DOutput.Initialize();
 
-            //this.siriusEditorForm1.RtcExtension1Input = rtcExt1DInput;
-            //this.siriusEditorForm1.RtcExtension1Output = rtcExt1DOutput;
-            //this.siriusEditorForm1.RtcExtension2Output = rtcExt2DOutput;
-            //this.siriusEditorForm1.RtcPin2Input = rtcPin2DInput;
-            //this.siriusEditorForm1.RtcPin2Output = rtcPin2DOutput;
+            //this.SiriusEditor.RtcExtension1Input = rtcExt1DInput;
+            //this.SiriusEditor.RtcExtension1Output = rtcExt1DOutput;
+            //this.SiriusEditor.RtcExtension2Output = rtcExt2DOutput;
+            //this.SiriusEditor.RtcPin2Input = rtcPin2DInput;
+            //this.SiriusEditor.RtcPin2Output = rtcPin2DOutput;
             #endregion
 
             #region XYZ 모터
@@ -408,10 +408,10 @@ namespace SLD200_MSL
             //motorR,
             //};
             //var motors = new MotorsDefault(0, "Group", motorArray);
-            //this.siriusEditorForm1.Motors = motors;
+            //this.SiriusEditor.Motors = motors;
 
             //var motorZ = new MotorVirtual(0, "Z");
-            //this.siriusEditorForm1.MotorZ = motorZ;
+            //this.SiriusEditor.MotorZ = motorZ;
             #endregion
 
             #region PowerMeter
@@ -421,14 +421,14 @@ namespace SLD200_MSL
             ////var powerMeter = new PowerMeterCoherentPowerMax(0, "CoherentPM", 1);
             ////var powerMeter = new PowerMeterThorLabsPMSeries(0, "PM100USB", "SERIALNO");
             //powerMeter.Initialize();
-            //this.siriusEditorForm1.PowerMeter = powerMeter;
+            //this.SiriusEditor.PowerMeter = powerMeter;
             #endregion
 
             #region Powermap
             //var powerMap = new PowerMapDefault(0, "Virtual", "Watt");
             ////var powerMapFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "powermap", "default.map");
             ////PowerMapSerializer.Open(powerMap, powerMapFile);
-            //this.siriusEditorForm1.PowerMap = powerMap;
+            //this.SiriusEditor.PowerMap = powerMap;
             //laser.PowerMap = powerMap;
             #endregion
 
@@ -1859,21 +1859,195 @@ namespace SLD200_MSL
             workStage.rtc.PrimaryHeadBaseOffset = ScannerOffset;
         }
 
+        void RenameNewLayer(int Count)
+        {
+
+            List<string> list = new List<string>();
+            list.Add("Hole1");
+            list.Add("Fiducial");
+            list.Add("PreAlign");
+            list.Add("Thruhole");
+            list.Add("Outline");
+            list.Add("Marking");
+            if (Count > list.Count)
+            {
+                Count = list.Count;
+            }
+            var Document = this.SiriusEditor.Document;
+            for (int iter = 0; iter < Count; iter++)
+            {
+                var l = Document.Layers;
+                if (l.Count > iter)
+                {
+                    l[iter].Name = list[iter];
+                }
+                else
+                {
+                    var layer = new Layer();
+                    layer.Name = list[iter];
+                    l.Add(layer);
+                }
+            }
+        }
+        private void AddHoleLayer()
+        {
+            var Document = this.SiriusEditor.Document;
+            var l = Document.Layers;
+            var layer = new Layer();
+            int NextNo = l.Where(t => t.Name.Contains("Hole")).Count() + 1;
+            layer.Name = "Hole" + NextNo.ToString();
+            l.Insert(NextNo - 1, layer);
+        }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            // 키 입력 처리
+
             if (keyData == Keys.F7)
             {
-                var Document = this.SiriusEditor.Document;
-                Document.Action.ActEntityGroup(Document.Action.SelectedEntity);
+                Group();
             }
             if (keyData == Keys.F8)
             {
-                var Document = this.SiriusEditor.Document;
-                Document.Action.ActEntityUngroup(Document.Action.SelectedEntity);
+                UnGroup();
             }
+            if (keyData == Keys.Delete)
+            {
+                var Document = this.SiriusEditor.Document;
+                Document.Action.ActEntityDelete(Document.Action.SelectedEntity);
+            }
+            switch (keyData)
+            {
+                case Keys.Alt | Keys.D2:
+                    {
+                        RenameNewLayer(2);
+                    }
+                    break;
+                case Keys.Alt | Keys.D3:
+                    {
+                        RenameNewLayer(3);
+                    }
+                    break;
+                case Keys.Alt | Keys.D4:
+                    {
+                        RenameNewLayer(4);
+                    }
+                    break;
+                case Keys.Alt | Keys.D5:
+                    {
+                        RenameNewLayer(5);
+                    }
+                    break;
+                case Keys.Alt | Keys.D6:
+                    {
+                        RenameNewLayer(6);
+                    }
+                    break;
+                case Keys.Control | Keys.Alt | Keys.H:
+                    {
+                        AddHoleLayer();
+                    }
+                    break;
+                case Keys.Alt | Keys.H:
+                    {
+                        HoleGroup();
+                    }
+                    break;
+                case Keys.Alt | Keys.T:
+                    {
+                        ThruholeGroup();
+                    }
+                    break;
+                case Keys.Alt | Keys.F:
+                    {
+                        MoveToFiducial();
+                    }
+                    break;
+                case Keys.Alt | Keys.P:
+                    {
+                        MoveToPreAlign();
+                    }
+                    break;
 
+                case Keys.Control | Keys.Alt | Keys.M:
+                    {
+                        MoveToMarking();
+                    }
+                    break;
+            }
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void MoveToMarking()
+        {
+            MoveToGroup("Marking");
+        }
+
+        private void ThruholeGroup()
+        {
+            SelectLayer("Thruhole");
+            Group();
+        }
+
+        private void MoveToPreAlign()
+        {
+            MoveToGroup("PreAlign");
+        }
+
+        private void MoveToGroup(string Name)
+        {
+            var Document = this.SiriusEditor.Document;
+            var l = Document.Layers;
+
+            var layer = l.Where(t => t.Name.Contains(Name)).FirstOrDefault();
+            MoveToGroup(Document, layer);
+        }
+        private void MoveToFiducial()
+        {
+            MoveToGroup("Fiducial");
+        }
+
+        private static void MoveToGroup(IDocument Document, Layer layer)
+        {
+            Document.Action.ActEntityCut(Document.Action.SelectedEntity);
+            Document.Action.ActEntityPasteClone(layer);
+        }
+
+        private void UnGroup()
+        {
+            var Document = this.SiriusEditor.Document;
+
+            Document.Action.ActEntityUngroup(Document.Action.SelectedEntity);
+        }
+
+        private void Group()
+        {
+            var Document = this.SiriusEditor.Document;
+            Document.Action.ActEntityGroup(Document.Action.SelectedEntity);
+
+
+        }
+
+        private void HoleGroup()
+        {
+            SelectLayer("Hole1");
+            Group();
+
+
+        }
+
+        private void SelectLayer(string strName)
+        {
+            var Document = this.SiriusEditor.Document;
+            var l = Document.Layers;
+
+            var layer = l.Where(t => t.Name.Contains(strName)).FirstOrDefault();
+            if (layer is Layer Lay)
+            {
+                foreach (var v in l)
+                {
+                    v.IsSelected = false;
+                }
+                Lay.IsSelected = true;
+            }
         }
     }
 }
