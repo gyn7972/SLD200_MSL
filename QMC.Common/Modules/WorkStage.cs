@@ -14499,14 +14499,14 @@ namespace QMC.Common.Modules
                         {
                             tick++;
                             Thread.Sleep(1);
-                            if (tick > 1000)
+                            if (tick > 5000)
                                 break;
                         }
                         while (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == false)
                         {
                             tick++;
                             Thread.Sleep(1);
-                            if (tick > 1000)
+                            if (tick > 5000)
                                 break;
                         }
                         Thread.Sleep(100);
@@ -14514,7 +14514,8 @@ namespace QMC.Common.Modules
 
 
                     if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
-
+                    QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
+                   // UpdateOverlay(result);
                     // 이미지 Grab 및 원 검색
                     Camera_HighRes.Grab();
                     int nWidthImageCount = (int)(dWidth / this.Config.ParamConfig.UpperVision_Scale_X );
@@ -14531,7 +14532,7 @@ namespace QMC.Common.Modules
                     //if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
                     if (Equipment.stVisionRecipeSet.dSocketMarkType == (int)MarkTypeList.Circle)
                     {
-                        QMC_ImageProcessFindAlignResult result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
+                        result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
                                                                         bm_AlignRawData,
                                                                         Camera_HighRes.Resolution.Width,
                                                                         Camera_HighRes.Resolution.Height,
