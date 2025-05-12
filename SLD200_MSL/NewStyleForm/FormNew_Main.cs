@@ -2191,6 +2191,7 @@ namespace SLD200_MSL
 
             selectedRow = -1;
             selectedColumn = -1;
+            workStage.m_nSelectedSocket_Index = -1;
             workStage.m_nSocketAlign_StartIndex = -1;
             Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
             checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
@@ -2444,6 +2445,7 @@ namespace SLD200_MSL
 
             selectedRow = -1;
             selectedColumn = -1;
+            workStage.m_nSelectedSocket_Index = -1;
             workStage.m_nSocketAlign_StartIndex = -1;
             Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
             checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
