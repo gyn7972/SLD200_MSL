@@ -1210,16 +1210,16 @@ namespace SLD200.NewStyleForm.NewSubForm
             lfTargetY = Equipment.ToDouble(textBox_RecipeVision_WorkStage_TempPos1_StageY.Text);
 
             //  소프트웨어 리밋 체크
-            if (lfTargetX < X_Limit_Min || lfTargetX > X_Limit_Max ||
-                lfTargetY < Y_Limit_Min || lfTargetY > Y_Limit_Max)
-            {
-                string msg = $"이동하려는 위치가 소프트웨어 리밋을 벗어났습니다.\n\n" +
-                             $"X 범위: {X_Limit_Min} ~ {X_Limit_Max}, 현재: {lfTargetX}\n" +
-                             $"Y 범위: {Y_Limit_Min} ~ {Y_Limit_Max}, 현재: {lfTargetY}";
-                var mb1 = new QMC.Common.UI.MessageBoxOk();
-                mb1.ShowDialog("Software Limit", msg);
-                return;
-            }
+            //if (lfTargetX < X_Limit_Min || lfTargetX > X_Limit_Max ||
+            //    lfTargetY < Y_Limit_Min || lfTargetY > Y_Limit_Max)
+            //{
+            //    string msg = $"이동하려는 위치가 소프트웨어 리밋을 벗어났습니다.\n\n" +
+            //                 $"X 범위: {X_Limit_Min} ~ {X_Limit_Max}, 현재: {lfTargetX}\n" +
+            //                 $"Y 범위: {Y_Limit_Min} ~ {Y_Limit_Max}, 현재: {lfTargetY}";
+            //    var mb1 = new QMC.Common.UI.MessageBoxOk();
+            //    mb1.ShowDialog("Software Limit", msg);
+            //    return;
+            //}
 
             //  속도 설정
             Type_Motor_Speed motor_Speed;
@@ -1268,6 +1268,8 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 Log.Write(ex);
             }
+
+
         }
 
 
@@ -1475,7 +1477,8 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void button_RecipeVision_Camera_ExposureTime_Click(object sender, EventArgs e)
         {
-            
+            double dExposureTime = Equipment.ToDouble(textBox_RecipeVision_Camera_ExposureTime.Text);//Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime;
+            workStage.jigAligner_HighRes.Camera.SetExposureTime(dExposureTime);
         }
 
         private void button_RecipeVision_AxisZ_Setting_Click(object sender, EventArgs e)

@@ -7453,7 +7453,7 @@ namespace QMC.Common.Modules
                 return bRtn = true;
             }
 
-            //true: 구동 중, false: 구동 안함.
+            //false: 구동 중, true: 구동 안함.
             return bRtn = false;
         }
     }

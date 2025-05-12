@@ -37365,8 +37365,8 @@ namespace QMC.Common.Modules
                 {
                     //if (IsWorkStage_Positions(WorkStage.nAxis.X, xyCoordinate.X) == false &&
                     //    IsWorkStage_Positions(WorkStage.nAxis.Y, xyCoordinate.Y) == false)
-                    if(IsWorkStageMoving(WorkStage.nAxis.X) == false &&
-                       IsWorkStageMoving(WorkStage.nAxis.Y) == false )
+                    if(IsWorkStageMoving(WorkStage.nAxis.X) &&
+                       IsWorkStageMoving(WorkStage.nAxis.Y)  )
                     {
                         // 맵 데이터를 이원화 할 경우
                         //if (laserDrilling.Config.ParamConfig.ScannerCamera_MapData_Div)
@@ -37625,12 +37625,12 @@ namespace QMC.Common.Modules
             bool bRtn = false;
             bool bDone = MC_Func.MC_GetDone((int)axis);
             bool bInposition = MC_Func.MC_GetInposition((int)axis);
-            if (!bDone ||!bInposition)
+            if (bDone ||bInposition)
             {
                 return bRtn = true;
             }
 
-            //true: 구동 중, false: 구동 안함.
+            //false: 구동 중, true: 구동 안함.
             return bRtn = false;
         }
     }
