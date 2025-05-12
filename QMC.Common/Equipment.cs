@@ -486,8 +486,17 @@ namespace QMC.Common
         }
 
         //  Recipe 파라미터 - PreAlign 
-        public struct VisionRecipeData
+        public class VisionRecipeData
         {
+            public VisionRecipeData()
+            {
+                PatternMatching = new PatternMatchingParameters();
+                TrainRoiStartLocation = new System.Drawing.Point(0, 0);
+                TrainRoiEndLocation = new System.Drawing.Point(0, 0);
+                InspectRoiStartLocation = new System.Drawing.Point(0, 0);
+                InspectRoiEndLocation = new System.Drawing.Point(0, 0);
+                Miscellaneous_FiducialMarkSocre = 0.7;
+            }
             //Socket
             public int      dSocketAlignType;                 //  Fiducial Align Type (0:Circle Find, 2:Pattern Matching)
             public int      dSocketMarkType;                  //  Fiducial Mark Type (0:Circle, 1:Gold Powder)

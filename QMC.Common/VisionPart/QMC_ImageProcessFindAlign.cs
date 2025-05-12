@@ -305,7 +305,9 @@ namespace QMC.Common.VisionPart
             SaveImage(images, w, h, filename);
         }
         public QMC_ImageProcessFindAlignResult FindCirclesWidthCircleBoundary(List<RectangleF> circlesResult,
-            byte[] pixelData, int w, int h, int radius, double dSpec, ref bool circleFound, int nCenterX = 0, int nCenterY = 0, bool bIsDarkCircleSearch = true)
+            byte[] pixelData, int w, int h, int radius, double dSpec, ref bool circleFound, int nCenterX = 0, int nCenterY = 0, bool bIsDarkCircleSearch = true
+            , double miscellaneous_FiducialMarkSocre = 0.7
+            ,bool bSpiralSearch = true)
         {
             if (bIsDarkCircleSearch == false)
             {
@@ -334,6 +336,10 @@ namespace QMC.Common.VisionPart
                 X = w / 2,
                 Y = h / 2
             };
+            if(bSpiralSearch == false)
+            {
+                nDivideCount = 1;
+            }
             for (int y = 0; y < nDivideCount; y++)
             {
                 if (bFindCircle)
@@ -348,14 +354,6 @@ namespace QMC.Common.VisionPart
                     int nShiftX = nDirectionX % 2 == 0 ? nStepX : -nStepX;
                     nShiftX *= x;
                     int nCx = w / 2 + nShiftX;
-
-                    if (nCx > 500 && nCx < 600)
-                    {
-                        if (nCy < 1200 && nCy > 1100)
-                        {
-
-                        }
-                    }
 
                     nCx = (int)currentPosition.X;
                     nCy = (int)currentPosition.Y;
@@ -376,7 +374,7 @@ namespace QMC.Common.VisionPart
                         nMaxCircleFirst = 2000;
                     }
                     
-                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius/1.5), (int)nMaxCircleFirst, 1,10, bIsDarkCircleSearch);
+                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius/1.5), (int)nMaxCircleFirst, 360/(2*3.141592 * radius),10, bIsDarkCircleSearch);
                    
                     points = polygon;
                     circlesResult.Clear();
