@@ -988,7 +988,7 @@ namespace SLD200_MSL
 
             UpdateInitStatusFromComm();
 
-            Motor_Position();
+            //Motor_Position();
         }
 
         // -----------------------
@@ -2852,7 +2852,7 @@ namespace SLD200_MSL
                 }
 
                 //  Resizing 크기 체크
-                if (Math.Abs(Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing) >= 1.0)
+                if (Math.Abs(Equipment.stLayerRecipeSet[i].Miscellaneous_Resizing) >= 2.0)
                 {
                     var mb1 = new MessageBoxOk();
                     mb1.ShowDialog("Information !", "가공 홀 크기 조정량이 너무 큽니다.\r\n\r\n[-1.0mm < z < 1.0mm] 범위로 조정");
@@ -2860,64 +2860,6 @@ namespace SLD200_MSL
                     return;
                 }
             }
-
-            //if (Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_NONE)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "Scanner Mode 를 선택해야 합니다.");
-            //    return;
-            //}
-
-            //if (!laserDrilling.laserDrillingParameter.DI_Safety_Door())
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Safety Door 가 열려있습니다.");
-            //    return;
-            //}
-
-            //if (laserDrilling.laserDrillingParameter.IsDO_Door_Unlock())
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Safety Door Unlock 상태입니다.");
-            //    return;
-            //}
-
-            //if ((laserDrilling.Config.ParamConfig.nLaserSource_Type == (int)LaserDrillingParameterConfig.LaserSource.SpectraPhysics) &&
-            //    laserDrilling.laserDrillingParameter.DI_FrontDoor_Open())
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Front Door 가 열려있습니다.");
-            //    return;
-            //}
-
-
-            //if ((laserDrilling.Config.ParamConfig.Drilling_Repeat_Count > 0) && (laserDrilling.Config.ParamConfig.Drilling_Laser_Power_Percent <= 0))
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "미세홀 본 가공(1차) 가공 출력을 확인하십시오.\r\n\r\n[가공 출력 : 0 %]");
-            //    return;
-            //}
-
-            //if ((laserDrilling.Config.ParamConfig.Drilling_Repeat_Count_2nd > 0) && (laserDrilling.Config.ParamConfig.Drilling_Laser_Power_Percent_2nd <= 0))
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "미세홀 본 가공(2차) 가공 출력을 확인하십시오.\r\n\r\n[가공 출력 : 0 %]");
-            //    return;
-            //}
-
-            //if ((laserDrilling.Config.ParamConfig.PreDrilling_Repeat_Count > 0) && (laserDrilling.Config.ParamConfig.PreDrilling_Laser_Power_Percent <= 0))
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "미세홀 내부 가공(1차) 가공 출력을 확인하십시오.\r\n\r\n[가공 출력 : 0 %]");
-            //    return;
-            //}
-
-            //if ((laserDrilling.Config.ParamConfig.PreDrilling_Repeat_Count_2nd > 0) && (laserDrilling.Config.ParamConfig.PreDrilling_Laser_Power_Percent_2nd <= 0))
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Information !", "미세홀 내부 가공(2차) 가공 출력을 확인하십시오.\r\n\r\n[가공 출력 : 0 %]");
-            //    return;
-            //}
 
             if (workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None)
             {
@@ -3020,11 +2962,11 @@ namespace SLD200_MSL
                 {
                     if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly)
                     {
-                        m_strTemp = string.Format("선택한 {0}번 소켓 단일 가공을 진행하시겠습니까?\r\n\r\n[선택 소켓 가공 -> 배출 -> 완료]\r\n\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex);
+                        m_strTemp = string.Format("선택한 {0}번 소켓 단일 가공을 진행하시겠습니까?\r\n\r\n[선택 소켓 가공 -> 배출 -> 완료]\r\n\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex + 1);
                     }
                     else if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)
                     {
-                        m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\n[선택 소켓 부터 끝까지 가공 시작 -> 배출 -> 완료]\r\n\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex);
+                        m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\n[선택 소켓 부터 끝까지 가공 시작 -> 배출 -> 완료]\r\n\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex + 1);
                     }
 
                     checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
@@ -3096,8 +3038,8 @@ namespace SLD200_MSL
                 Equipment.SocketStopped = false;
 
                 workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.Start;
-                workStage.timer_LaserDrillingWork.Enabled = true;
-                //laserDrilling.StartThread();
+                workStage.m_LaserDrillingWork_Start = true;
+                workStage.m_ProductAlign_Start = true;
 
                 WorkStartTick = Environment.TickCount;
             }
@@ -3116,7 +3058,10 @@ namespace SLD200_MSL
 
                 //workStage.timer_LaserDrillingWork.Enabled = false;
                 //laserDrilling.StopThread();
+                Equipment.LaserDrillingCycStop_Reservation = false;
                 workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
+                workStage.m_nFindAlignMark_Step = 0;
+                workStage.m_nSocketAlign_MainStep = 0;
 
                 workStage.laser.Rtc.CtlAbort();             //  실행중인 리스트 명령(busy 상태를)을 강제 종료
                 Thread.Sleep(2000);

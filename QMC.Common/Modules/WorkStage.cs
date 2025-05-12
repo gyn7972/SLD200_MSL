@@ -13887,7 +13887,7 @@ namespace QMC.Common.Modules
 
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_fromVision_ResultCheck;
 
-                    if (this.IsStopAutoSequence == true)
+                    if (Equipment.AutoManualStatus == false)
                     {
                         Equipment.AutoRunStatus = false;
                         m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
@@ -14430,15 +14430,6 @@ namespace QMC.Common.Modules
             CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
         }
 
-        public bool IsStopAutoSequence
-        {
-            get
-            {
-                return Equipment.AutoRunStatus == false; ;
-            }
-
-        }
-
         public VisionImageViewer.OwnedOverlayCollection FineCamResultOveray { get; set; } = new VisionImageViewer.OwnedOverlayCollection();
         public VisionImageViewer.OwnedOverlayCollection CoarseCamResultOveray { get; set; } = new VisionImageViewer.OwnedOverlayCollection();
 
@@ -14489,10 +14480,11 @@ namespace QMC.Common.Modules
                 for (int i = 0; i < maxSteps; i++)
                 {
 
-                    if( this.IsStopAutoSequence == true)
+                    if(Equipment.AutoManualStatus == false)
                     {
                         return 0;
                     }
+
                     // 현재 위치를 리스트에 추가
                     xyCoordinates.Add(new XyCoordinate { X = currentPosition.X, Y = currentPosition.Y });
 
@@ -14544,11 +14536,11 @@ namespace QMC.Common.Modules
                                                                         Camera_HighRes.Resolution.Width,
                                                                         Camera_HighRes.Resolution.Height,
                                                                         nWidthImageCount, 
-                                                                        Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkSpec,
+                                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
                                                                         ref Fiducial_circleFound,
                                                                         0,0,
-                                                                        (Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkType == 0),
-                                                                        Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkSocre,
+                                                                        (Equipment.stVisionRecipeSet.dSocketMarkType == 0),
+                                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
                                                                         false);
                         
                         UpdateOverlay(result);
@@ -21850,7 +21842,10 @@ namespace QMC.Common.Modules
 
                     if (!Equipment.AutoRunStatus)
                     {
-                        MessageBox.Show("가공 완료.", "Information!");
+                        //MessageBox.Show("가공 완료.", "Information!");
+
+                        //var mb1 = new QMC.Common.UI.MessageBoxOk();
+                        //mb1.ShowDialog("Warning !", "냉각수를 순환 시키고 작업을 진행해야 합니다.");
                     }
                     break;
             }

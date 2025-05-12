@@ -420,7 +420,7 @@ namespace QMC.Common.Parts
                             }
                             Thread.Sleep(1);
                             nWait++;
-                            if (nWait == 1000)
+                            if (nWait == 100000)
                             {
                                 break;
                             }
@@ -436,7 +436,7 @@ namespace QMC.Common.Parts
                             }
                             Thread.Sleep(1);
                             nWait++;
-                            if (nWait == 1000)
+                            if (nWait == 100000)
                             {
                                 break;
                             }

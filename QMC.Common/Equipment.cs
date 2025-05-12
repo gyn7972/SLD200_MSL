@@ -490,12 +490,11 @@ namespace QMC.Common
         {
             public VisionRecipeData()
             {
-                PatternMatching = new PatternMatchingParameters();
-                TrainRoiStartLocation = new System.Drawing.Point(0, 0);
-                TrainRoiEndLocation = new System.Drawing.Point(0, 0);
-                InspectRoiStartLocation = new System.Drawing.Point(0, 0);
-                InspectRoiEndLocation = new System.Drawing.Point(0, 0);
-                Miscellaneous_FiducialMarkSocre = 0.7;
+                PrePatternMatching = new PatternMatchingParameters();
+                pointPreTrainRoiStartLocation = new System.Drawing.Point(0, 0);
+                pointPreTrainRoiEndLocation = new System.Drawing.Point(0, 0);
+                pointPreInspectRoiStartLocation = new System.Drawing.Point(0, 0);
+                pointPreInspectRoiEndLocation = new System.Drawing.Point(0, 0);
             }
             //Socket
             public int      dSocketAlignType;                 //  Fiducial Align Type (0:Circle Find, 2:Pattern Matching)
