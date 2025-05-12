@@ -13266,7 +13266,9 @@ namespace QMC.Common.Modules
 
                     // 여기가 맞는지 확인 필요.
                     m_bForceEjectRequest = false;    // 강제배출 초기화.
-                    m_bworkStageVacuumFail = false;  // Loader -> Work Stage 이송 시 진공이 안되면 강제 배출 요청함.
+                    
+                    //여기서 false를 하면 안됨. -> Loaser에서 signal을 true로 변경함.
+                    //m_bworkStageVacuumFail = false;  // Loader -> Work Stage 이송 시 진공이 안되면 강제 배출 요청함.
                                                      // (이송 중 진공이 안되면 강제 배출 요청함.
 
                     Equipment.MachineStop_byAlarm = false;
@@ -13517,6 +13519,8 @@ namespace QMC.Common.Modules
                                 !m_bPreAlignCompleted )
                             {
                                 m_nMainWorkCycle_ResultOKNG = (int)MainCycle_Result.NG;
+                                m_bworkStageVacuumFail = false;
+                                m_bForceEjectRequest = false;
                             }
                             else
                             {
@@ -13569,9 +13573,7 @@ namespace QMC.Common.Modules
 
         XyCoordinate xyCoordinateAlignPositionLast = new XyCoordinate();
         XyCoordinate xyCoordinateAlignPositionOrgLast = new XyCoordinate();
-
         XyCoordinate xyCoordinateAlignPositionOrgLastTemp = new XyCoordinate();
-        
         XyCoordinate xyCoordinateAlign = new XyCoordinate();
 
         #region Socket Align
@@ -13592,12 +13594,32 @@ namespace QMC.Common.Modules
                     //Display_Event("홈 실행 루틴 : 시작.");
                     SocketAlign_Step_Start(nSocketNum);
 
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationRed, 1);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationIR, 2);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreIlluminationIR, 3);
-                    CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명 
-                    CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
+                    //Socket Align 시작시 PreAlign Camera 먼저 끄자.
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
+                    Thread.Sleep(100);
+                    if (Equipment.stVisionRecipeSet.bSocketIlluminationRedUse)
+                    {
+                        CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명
+                        CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationRed, 1);
+                    }
+                    else
+                    {
+                        CommonModule.Instance.Illuminator.TurnOnOff(false, 1);       //  Fine Cam Red 조명
+                    }
+
+                    if (Equipment.stVisionRecipeSet.bSocketIlluminationIRUse)
+                    {
+                        CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
+                        CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationIR, 2);
+                    }
+                    else
+                    {
+                        CommonModule.Instance.Illuminator.TurnOnOff(false, 2);       //  Fine Cam Red 조명
+                    }
+
+                    //카메라 Setting
+                    double dExposureTime = Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime;
+                    jigAligner_HighRes.Camera.SetExposureTime(dExposureTime);
 
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.AlignSocketData_Load;
                     break;
@@ -13661,8 +13683,9 @@ namespace QMC.Common.Modules
                     lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
                     lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
 
-                    MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_SafetyPos].Vision_Z,
-                                          lfVelocity, lfAccDec, lfAccDec);
+                    MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, 
+                                            vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_SafetyPos].Vision_Z,
+                                            lfVelocity, lfAccDec, lfAccDec);
 
                     TickCount_Start((int)TickType.TICK_ALIGN);
 
@@ -13694,18 +13717,29 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align Part 시작");
 
-                    //처음 시작시 끄지만 여기에서 다시 한 번 진행 예정.
-                    //CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
-                    //CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
-                    //CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR, 3);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationRed, 1);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationIR, 2);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreIlluminationIR, 3);
-                    CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명 
-                    CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
-                    Thread.Sleep(50);
+                    // 조명 제어를.. 한번 더.
+                    //Socket Align 시작시 PreAlign Camera 먼저 끄자.
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
+                    Thread.Sleep(100);
+                    if (Equipment.stVisionRecipeSet.bSocketIlluminationRedUse)
+                    {
+                        CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명
+                        CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationRed, 1);
+                    }
+                    else
+                    {
+                        CommonModule.Instance.Illuminator.TurnOnOff(false, 1);       //  Fine Cam Red 조명
+                    }
 
+                    if (Equipment.stVisionRecipeSet.bSocketIlluminationIRUse)
+                    {
+                        CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
+                        CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationIR, 2);
+                    }
+                    else
+                    {
+                        CommonModule.Instance.Illuminator.TurnOnOff(false, 2);       //  Fine Cam Red 조명
+                    }
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     //  맵 데이터 변경 (기준위치 : Scanner)
                     //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
@@ -13811,7 +13845,6 @@ namespace QMC.Common.Modules
                         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                         //m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveInspPos;
-
                         //꼭수정 TEST
                         m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_toVision_AlignStart;
                     }
@@ -13836,39 +13869,64 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Z 축 비전 검사 위치로 이동 시작");
 
-                    //  속도 설정 (스트로크 짧은 Z축은 느리게)
-                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
-                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
-
-                    MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_FocusPos].Vision_Z,
-                                          lfVelocity, lfAccDec, lfAccDec);
-
+                    double dZpos = 0.0;
+                    double dZPosOffset = 0.0;
+                    dZpos = GetEncWorkStagePos_Motor(nAxis.Z);  // 현재 Z축 위치가 변위센서 측정 후 포커스 위치여야 함.
+                    if (Equipment.stVisionRecipeSet.bSocketIlluminationRedUse)
+                    {
+                        dZPosOffset = Equipment.stVisionRecipeSet.dSocketAxisZ_Offset;
+                    }
+                    dZpos += dZPosOffset;
+                    workStageParameter.stStageCenterPosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = dZpos;
+                    MovetoWorkStage_ABS_PositionsZ(dZpos, Type_Motor_Speed.Fine);
                     TickCount_Start((int)TickType.TICK_ALIGN);
-
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveInspPosDoneCheck;
+
+                    //  속도 설정 (스트로크 짧은 Z축은 느리게)
+                    //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Speed_Fine;
+                    //lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
+                    //MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_FocusPos].Vision_Z,
+                    //                      lfVelocity, lfAccDec, lfAccDec);
+                    //TickCount_Start((int)TickType.TICK_ALIGN);
+                    //m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveInspPosDoneCheck;
+
                     break;
 
 
                 case (int)SocketAlign_Step.SocketAlignZ_MoveInspPosDoneCheck:                                        //  Stage Z 축, 비전 검사 위치(높이)로 이동 완료 확인
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_FocusPos].Vision_Z))
+                    
+                    //signal 확인하자.쩝.
+                    if(!IsWorkStageMoving(WorkStage.nAxis.Z) &&
+                       IsWorkStage_Positions(WorkStage.nAxis.Z, workStageParameter.stStageCenterPosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Z 축 비전 검사 위치로 이동 완료");
-
                         m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_toVision_AlignStart;
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_ALIGN) >= 60000)
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Z 축 비전 검사 위치로 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
                         return AlarmPost(AlarmKey.SocketAlignZMoveFail);
-
-                        timer_VisionAlign.Enabled = false;
-
-                        m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
                     }
+
+                    //if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) &&
+                    //    MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z,
+                    //    vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Vision_FocusPos].Vision_Z))
+                    //{
+                    //    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Z 축 비전 검사 위치로 이동 완료");
+
+                    //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.SocketAlign_toVision_AlignStart;
+                    //}
+                    //else if (TickCount_Elapsed((int)TickType.TICK_ALIGN) >= 60000)
+                    //{
+                    //    Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Z 축 비전 검사 위치로 이동 실패. (Timeout)");
+
+                    //    //  알람 정지 (LED Bar - Red Blink)
+                    //    Equipment.MachineStop_byAlarm = true;
+
+                    //    return AlarmPost(AlarmKey.SocketAlignZMoveFail);
+                    //    timer_VisionAlign.Enabled = false;
+                    //    m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
+                    //}
                     break;
 
 
@@ -14424,13 +14482,6 @@ namespace QMC.Common.Modules
             {
                // Camera_HighRes.StartLive();
             }
-
-            CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationRed, 1);
-            CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationIR, 2);
-            CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreIlluminationIR, 3);
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
-            CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
         }
 
         public VisionImageViewer.OwnedOverlayCollection FineCamResultOveray { get; set; } = new VisionImageViewer.OwnedOverlayCollection();
@@ -14950,6 +15001,7 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.Start:
                     LaserDrillingStepStart();
 
+                    //Loaser에서 Stage로 제품 이송시 vacuum 안잡히면 Ng로 그냥 뺀다.
                     if(m_bworkStageVacuumFail)
                     {
                         m_strTemp = "Work Stage Vacuum On 실패.";
@@ -18425,21 +18477,11 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align Cycle 시작.");
 
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationRed, 1);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationIR, 2);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreIlluminationIR, 3);
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 1);          //  Fine Cam Red 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 2);          //  Fine Cam IR 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 3);           //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
-
-                    //Align Mark Pos - 도면에서 추출하여 전달.
-                    // 소켓 1번과 동일한 얼라인 좌표로 얼라인 하기 위하여 아래와 같이 수정.
-                    //stDividedRegion_GroupData[] inputGroupData = m_stDividedRegion_GroupData;
-                    //PointD leftPoint, rightPoint;
-                    //FindEdgePoints(inputGroupData, out leftPoint, out rightPoint);
-                    //Equipment.stLayerRecipeSet[0].PreAlignPos1 = leftPoint;
-                    //Equipment.stLayerRecipeSet[0].PreAlignPos2 = rightPoint;
-
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreIlluminationIR, 3);
+                    
                     try
                     {
                         if (m_stDividedRegion_GroupData != null)
@@ -18834,6 +18876,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move:                                 //  Socket 가공 높이로 보정 이동
 
+                    //  가공 높이로 보정 이동
                     LaserDrilling_StepDrillingData_Socket_DrillingHeight_ZOffset_Move(out m_strTemp, out lfVelocity, out lfAccDec, out m_dOffset);
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move_DoneCheck;
@@ -37322,6 +37365,8 @@ namespace QMC.Common.Modules
                 {
                     //if (IsWorkStage_Positions(WorkStage.nAxis.X, xyCoordinate.X) == false &&
                     //    IsWorkStage_Positions(WorkStage.nAxis.Y, xyCoordinate.Y) == false)
+                    if(IsWorkStageMoving(WorkStage.nAxis.X) == false &&
+                       IsWorkStageMoving(WorkStage.nAxis.Y) == false )
                     {
                         // 맵 데이터를 이원화 할 경우
                         //if (laserDrilling.Config.ParamConfig.ScannerCamera_MapData_Div)
@@ -37372,7 +37417,7 @@ namespace QMC.Common.Modules
             {
                 if (IsInterlock_WorkStageZ_Enabled())
                 {
-                    if (IsWorkStage_Positions(WorkStage.nAxis.Z, dPos) == false)
+                    if (IsWorkStageMoving(WorkStage.nAxis.Z) == false)
                     {
                         switch (typeSpeed)
                         {
@@ -37415,7 +37460,7 @@ namespace QMC.Common.Modules
             {
                 //if (IsInterlock_WorkStageZ_Enabled()) // 조건있으면 걸자.
                 {
-                    if (IsWorkStage_Positions(WorkStage.nAxis.MASK_Y, dPos) == false)
+                    if (IsWorkStageMoving(WorkStage.nAxis.MASK_Y) == false)
                     {
                         switch (typeSpeed)
                         {
@@ -37472,13 +37517,13 @@ namespace QMC.Common.Modules
                 switch (nAxis)
                 {
                     case WorkStage.nAxis.X:
-                        if (!IsInterlock_WorkStageXY_Enabled()) return bRtn = false;
+                        if (!IsInterlock_WorkStageXY_Enabled() && !IsWorkStageMoving(nAxis)) return bRtn = false;
                         break;
                     case WorkStage.nAxis.Y:
-                        if (!IsInterlock_WorkStageXY_Enabled()) return bRtn = false;
+                        if (!IsInterlock_WorkStageXY_Enabled() && !IsWorkStageMoving(nAxis)) return bRtn = false;
                         break;
                     case WorkStage.nAxis.Z:
-                        if (!IsInterlock_WorkStageZ_Enabled()) return bRtn = false;
+                        if (!IsInterlock_WorkStageZ_Enabled() && !IsWorkStageMoving(nAxis)) return bRtn = false;
                         break;
                     case WorkStage.nAxis.MASK_Y:
                         //if (!IsInterlock_WorkStageZ_Enabled()) return bRtn = false;

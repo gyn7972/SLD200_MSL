@@ -10469,6 +10469,7 @@ namespace QMC.Common.Modules
             catch (Exception ex)
             {
                 Log.Write(ex);
+                return double.NaN; // 명확하게 오류값 반환
             }
             return dEncPos;
         }
@@ -11128,7 +11129,7 @@ namespace QMC.Common.Modules
                 }
 
                 {
-                    if (IsLoader_Positions((Loader.nAxis)nAxis, dPos) == false)
+                    if (IsLoaderMoving((Loader.nAxis)nAxis) == false)
                     {
                         switch (typeSpeed)
                         {
@@ -11220,20 +11221,20 @@ namespace QMC.Common.Modules
                 switch (nAxis)
                 {
                     case Loader.nAxis.Z0:
-                        if (!IsInterlock_LoaderPortR_Enabled()) return bRtn = false;
+                        if (!IsInterlock_LoaderPortR_Enabled() && !IsLoaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Loader.nAxis.Z1:
-                        if (!IsInterlock_LoaderPortL_Enabled()) return bRtn = false;
+                        if (!IsInterlock_LoaderPortL_Enabled() && !IsLoaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Loader.nAxis.ALN_X:
                         break;
                     case Loader.nAxis.ALN_Y:
                         break;
                     case Loader.nAxis.TR_Z:
-                        if (!IsInterlock_LoaderTransferZ_Enabled()) return bRtn = false;
+                        if (!IsInterlock_LoaderTransferZ_Enabled() && !IsLoaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Loader.nAxis.TR_X:
-                        if (!IsInterlock_LoaderTransferX_Enabled()) return bRtn = false;
+                        if (!IsInterlock_LoaderTransferX_Enabled() && !IsLoaderMoving(nAxis)) return bRtn = false;
                         break;
                 }
 
@@ -11287,6 +11288,21 @@ namespace QMC.Common.Modules
                 Log.Write("Timeout", $"[Loader] Axis {axis} timeout at {timeoutMs}ms");
                 return false;
             });
+        }
+
+        public bool IsLoaderMoving(Loader.nAxis axis)
+        {
+            // signal 정확하게 파악하고 맞춰보자.
+            bool bRtn = false;
+            bool bDone = MC_Func.MC_GetDone((int)axis);
+            bool bInposition = MC_Func.MC_GetInposition((int)axis);
+            if (!bDone || !bInposition)
+            {
+                return bRtn = true;
+            }
+
+            //true: 구동 중, false: 구동 안함.
+            return bRtn = false;
         }
     }
 }
