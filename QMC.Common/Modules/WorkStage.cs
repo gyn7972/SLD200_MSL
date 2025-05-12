@@ -14502,14 +14502,14 @@ namespace QMC.Common.Modules
                         {
                             tick++;
                             Thread.Sleep(1);
-                            if (tick > 1000)
+                            if (tick > 5000)
                                 break;
                         }
                         while (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == false)
                         {
                             tick++;
                             Thread.Sleep(1);
-                            if (tick > 1000)
+                            if (tick > 5000)
                                 break;
                         }
                         Thread.Sleep(100);
@@ -14517,7 +14517,8 @@ namespace QMC.Common.Modules
 
 
                     if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
-
+                    QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
+                   // UpdateOverlay(result);
                     // 이미지 Grab 및 원 검색
                     Camera_HighRes.Grab();
                     int nWidthImageCount = (int)(dWidth / this.Config.ParamConfig.UpperVision_Scale_X );
@@ -14534,7 +14535,7 @@ namespace QMC.Common.Modules
                     //if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
                     if (Equipment.stVisionRecipeSet.dSocketMarkType == (int)MarkTypeList.Circle)
                     {
-                        QMC_ImageProcessFindAlignResult result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
+                        result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
                                                                         bm_AlignRawData,
                                                                         Camera_HighRes.Resolution.Width,
                                                                         Camera_HighRes.Resolution.Height,
@@ -21721,6 +21722,58 @@ namespace QMC.Common.Modules
                                                                                                      //}
 
                     //laserDrillingParameter.DO_LaserTrigger_Change(true);
+
+                    //  선택 가공 모드였으면, 도면 다시 로드
+                    if ((m_nSocketAlign_StartIndex >= 0) || (Equipment.SelectedSocketStartMode != (int)SelectedSocketStartModeList.All))
+                    {
+                        Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
+
+                        if (GetDrillingData() == (int)WorkStage.nGetDataResult.GETDATA_SUCCESS)
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Auto Run, 선택 가공이 끝났으므로 도면 다시 로드");
+
+                            //  최초 Data Parsing 후 해당 가공 데이터에 대한 상태 데이터를 초기화 한다. (가공중인 소켓 번호, 소켓 OK NG 여부 등)
+                            GlobalSocketStatus_Init();
+
+                            //  Thruhole 가공 Pass 여부를 결정하는 Flag 변수 선언을 여기에서 한번만 한다.
+                            GetDrillingData_ProcessingFlagCheck();
+
+
+                            if (m_stDividedRegion_GroupData != null)
+                            {
+                                //  메인 화면에 가공위치 표시용
+                                Main_SocketPositions = new List<PointD>();
+
+                                for (int i = 0; i < m_stDividedRegion_GroupData[0].nGroup_Num; i++)
+                                {
+                                    Main_SocketPositions.Add(new PointD(m_stDividedRegion_GroupData[i].dGroupCenter.X, m_stDividedRegion_GroupData[i].dGroupCenter.Y));
+                                }
+
+                                if (Main_SocketPositions.Count > 0)
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 있음.");
+
+                                    //  메인 화면에 그려지는 가공위치의 개수
+                                    (Main_SocketPositions_RowCount, Main_SocketPositions_ColumnCount) = CalculateArraySize(Main_SocketPositions);
+
+                                    //  가공 소켓이 몇개의 영역으로 나눠지는지
+                                    Main_SocketPositions_SubRowCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y : 1;
+                                    Main_SocketPositions_SubColumnCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X : 1;
+
+                                    Main_SocketPositions_Draw = true;
+                                }
+                                else
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 없음. (Data Parsing 이 정상적으로 이루어졌으면 여기 들어오면 안됨)");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "선택 가공을 위한 도면 Loading 중 가공 데이터 Parsing 실패");
+                        }
+                    }
+
                     //  선택 가공 관련 변수 초기화
                     m_nSocketAlign_StartIndex = -1;
                     Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
