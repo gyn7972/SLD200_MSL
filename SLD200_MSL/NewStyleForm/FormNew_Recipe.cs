@@ -1689,23 +1689,23 @@ namespace SLD200_MSL
                 }
 
                 //workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxInstance = 
-                if (Equipment.stVisionRecipeSet.PatternMatching != null)
+                if (Equipment.stVisionRecipeSet.PrePatternMatching != null)
                 {
-                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxTolerance = Equipment.stVisionRecipeSet.PatternMatching.MaxTolerance;
-                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxInstance = Equipment.stVisionRecipeSet.PatternMatching.MaxInstance;
-                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MinScore = Equipment.stVisionRecipeSet.PatternMatching.MinScore;
-                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.DuplicateChecked = Equipment.stVisionRecipeSet.PatternMatching.DuplicateChecked;
-                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.UseMaskImage = Equipment.stVisionRecipeSet.PatternMatching.UseMaskImage;
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxTolerance = Equipment.stVisionRecipeSet.PrePatternMatching.MaxTolerance;
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxInstance = Equipment.stVisionRecipeSet.PrePatternMatching.MaxInstance;
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MinScore = Equipment.stVisionRecipeSet.PrePatternMatching.MinScore;
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.DuplicateChecked = Equipment.stVisionRecipeSet.PrePatternMatching.DuplicateChecked;
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.UseMaskImage = Equipment.stVisionRecipeSet.PrePatternMatching.UseMaskImage;
                     
                     if(workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage != null)
                     {
                         workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage = Equipment.stVisionRecipeSet.LoadTrainImage().GetImage();
                     }
 
-                    workStage.jigAligner_LowRes.Recipe.TrainRoiStartLocation = Equipment.stVisionRecipeSet.TrainRoiStartLocation;
-                    workStage.jigAligner_LowRes.Recipe.TrainRoiEndLocation = Equipment.stVisionRecipeSet.TrainRoiEndLocation;
-                    workStage.jigAligner_LowRes.Recipe.InspectRoiStartLocation = Equipment.stVisionRecipeSet.InspectRoiStartLocation;
-                    workStage.jigAligner_LowRes.Recipe.InspectRoiEndLocation = Equipment.stVisionRecipeSet.InspectRoiEndLocation;
+                    workStage.jigAligner_LowRes.Recipe.TrainRoiStartLocation = Equipment.stVisionRecipeSet.pointPreTrainRoiStartLocation;
+                    workStage.jigAligner_LowRes.Recipe.TrainRoiEndLocation = Equipment.stVisionRecipeSet.pointPreTrainRoiEndLocation;
+                    workStage.jigAligner_LowRes.Recipe.InspectRoiStartLocation = Equipment.stVisionRecipeSet.pointPreInspectRoiStartLocation;
+                    workStage.jigAligner_LowRes.Recipe.InspectRoiEndLocation = Equipment.stVisionRecipeSet.pointPreInspectRoiEndLocation;
                 }
 
 
@@ -2061,10 +2061,8 @@ namespace SLD200_MSL
             Equipment.Current_Recipe = fileName;
             Equipment.Current_DrawingFileName = System.IO.Path.GetFileName(Equipment.stLayerRecipeSet[0].DrawingFile);
 
-
             //  Recipe 명 표시
             label_Recipe_FileName.Text = System.IO.Path.GetFileName(fileName);
-
 
             //  Recipe 창에 데이터 표시
 

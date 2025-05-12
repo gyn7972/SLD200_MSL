@@ -310,7 +310,7 @@ namespace QMC.Common.VisionPart
             if (bIsDarkCircleSearch == false)
             {
                 //pixelData = InversImage(pixelData);
-               // MeanFilter(pixelData, w, h, 10, 10);
+                //MeanFilter(pixelData, w, h, 10, 10);
                 //SaveImage(pixelData, w, h, "polygonMeanFilter.bmp");
             }
             List<PointF> polygon = new List<PointF>();
@@ -691,7 +691,6 @@ namespace QMC.Common.VisionPart
             if (pixelData == null) //pixelData가 null인 경우 프로그램 다운.
                 return boundaryPoints;
                 
-
             maxRadius = Math.Min(Math.Min(width, height) / 2, maxRadius);
             int pixelAverageCount = 20;
 

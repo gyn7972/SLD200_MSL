@@ -6736,7 +6736,19 @@ namespace QMC.Common.Modules
 
 
         //motion 함수 
-
+        public double GetEncUnloaderPos_Motor(Unloader.nAxis nAxis)
+        {
+            double dEncPos = -999.999;
+            try
+            {
+                dEncPos = MC_Func.MC_GetEncPos((int)nAxis);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+            return dEncPos;
+        }
         public void StoptoUnloader_Motor(Unloader.nAxis nAxis)
         {
             double dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;

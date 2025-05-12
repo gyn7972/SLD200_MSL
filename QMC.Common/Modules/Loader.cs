@@ -10559,10 +10559,31 @@ namespace QMC.Common.Modules
 
 
         //motion 함수 
+        public double GetEncLoaderPos_Motor(Loader.nAxis nAxis)
+        {
+            double dEncPos = -999.999;
+            try
+            {
+                dEncPos = MC_Func.MC_GetEncPos((int)nAxis);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+            return dEncPos;
+        }
+
         public void StoptoLoader_Motor(Loader.nAxis nAxis)
         {
-            double dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
-            MC_Func.MC_MotorStop((int)nAxis, dAcc);
+            try
+            {
+                double dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
+                MC_Func.MC_MotorStop((int)nAxis, dAcc);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
         }
 
         public bool IsInterlock_LoaderPortR_Enabled()

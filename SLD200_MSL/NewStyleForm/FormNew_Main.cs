@@ -986,7 +986,7 @@ namespace SLD200_MSL
 
             UpdateInitStatusFromComm();
 
-            //Motor_Position();
+            Motor_Position();
         }
 
         // -----------------------
@@ -1346,7 +1346,6 @@ namespace SLD200_MSL
                 }
             }
             
-
             if (Equipment.AutoRunStatus)
             {
                 var mb = new MessageBoxOk();
@@ -1391,7 +1390,6 @@ namespace SLD200_MSL
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !", m_strTemp);
             }
-
 
             //  Loader Port 에 자재가 없으면 메세지 창 Pop up
             if (!loader.loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
@@ -1545,6 +1543,7 @@ namespace SLD200_MSL
 
                     workStage.m_bLaserDrilling_Complete = true;
                     workStage.m_nLaserDrilling_MainStep = (int)WorkStage.LaserDrilling_Step.None;
+                    workStage.m_nFindAlignMark_Step = (int)WorkStage.FindAlignMark_Step.None;
                     workStage.m_nSocketAlign_MainStep = (int)WorkStage.SocketAlign_Step.None;
                 }
                 else
@@ -1752,6 +1751,7 @@ namespace SLD200_MSL
             {
                 workStage.m_bLaserDrilling_Complete = true;
                 workStage.m_nLaserDrilling_MainStep = 0;
+                workStage.m_nFindAlignMark_Step = 0;
                 workStage.m_nSocketAlign_MainStep = 0;
             }
 
@@ -1777,7 +1777,6 @@ namespace SLD200_MSL
                     }
                 }
             }
-
 
             // 아래 변수가 자동운전 Tick 돌리는 변수임.
             workStage.m_MainWork_Start = true;
@@ -1879,13 +1878,11 @@ namespace SLD200_MSL
 
             openFileDialog.Filter = "Recipe File(*.ini)|*.ini";
 
-
             if (workStage.rtc == null)
             {
                 MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
                 return;
             }
-
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -1895,7 +1892,6 @@ namespace SLD200_MSL
                 Equipment.RecipeName_fromMainForm = fileName;
 
                 //RecipeForm = new FormNew_Recipe();
-
                 //RecipeForm.Recipe_Open(fileName);
             }
 
@@ -1903,8 +1899,6 @@ namespace SLD200_MSL
 
             ////  Data Parsing
             //workStage.GetDrillingData();
-
-
 
             ////  선택된 Socket 의 Center 좌표 확인
             //double m_dSelectedGroup_Center_X = 999.0;
@@ -2774,7 +2768,8 @@ namespace SLD200_MSL
 
                 workStage.m_bLaserDrilling_Complete = true;
                 workStage.m_nLaserDrilling_MainStep = 0;
-                workStage.m_nSocketAlign_MainStep = 0;
+                workStage.m_nFindAlignMark_Step = 0;        // PreAlign Mark 찾기 초기화
+                workStage.m_nSocketAlign_MainStep = 0;      // Socket Align 초기화
 
                 workStage.m_bForceEjectRequest = true;  // 강제 배출 요청. NG로 빼기 위한 변수.
 
@@ -3266,18 +3261,6 @@ namespace SLD200_MSL
                 //  Unloader Transfer Position
                 label_Main_EncPosition_UL_TRX.Text = string.Format("{0:F3}", unloader.MC_Func.MC_GetEncPos((int)Unloader.nAxis.TR_X));
                 label_Main_EncPosition_UL_TRZ.Text = string.Format("{0:F3}", unloader.MC_Func.MC_GetEncPos((int)Unloader.nAxis.TR_Z));
-
-                //  Work Stage Limit
-                //if (workStage.MC_Func.MC_isLimit_Neg((int)WorkStage.nAxis.X))
-                //{
-                //    button_Config_WorkStage_X_Neg.BackColor = Color.Red;
-                //    button_Config_WorkStage_X_Neg.ForeColor = Color.White;
-                //}
-                //else
-                //{
-                //    button_Config_WorkStage_X_Neg.BackColor = Color.White;
-                //    button_Config_WorkStage_X_Neg.ForeColor = Color.Black;
-                //}
             }
         }
     }

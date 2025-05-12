@@ -9008,26 +9008,26 @@ namespace QMC.Common.Modules
                             //Todo: PreAlign 확인!!!
                             //Recipe Data 전달하기!
 
-                            if(stVisionRecipeSet.AlgorithmType == VisionAlgorithmType.PatternMatching)
+                            if(stVisionRecipeSet.ePreAlgorithmType == VisionAlgorithmType.PatternMatching)
                             {
-                                jigAligner_LowRes.Recipe.PatternMatchingParameter = stVisionRecipeSet.PatternMatching;
-                                jigAligner_LowRes.Recipe.InspectRoiStartLocation = stVisionRecipeSet.InspectRoiStartLocation;
-                                jigAligner_LowRes.Recipe.InspectRoiEndLocation = stVisionRecipeSet.InspectRoiEndLocation;
-                                jigAligner_LowRes.Recipe.TrainRoiStartLocation = stVisionRecipeSet.TrainRoiStartLocation;
-                                jigAligner_LowRes.Recipe.TrainRoiEndLocation = stVisionRecipeSet.TrainRoiEndLocation;
+                                jigAligner_LowRes.Recipe.PatternMatchingParameter = stVisionRecipeSet.PrePatternMatching;
+                                jigAligner_LowRes.Recipe.InspectRoiStartLocation = stVisionRecipeSet.pointPreInspectRoiStartLocation;
+                                jigAligner_LowRes.Recipe.InspectRoiEndLocation = stVisionRecipeSet.pointPreInspectRoiEndLocation;
+                                jigAligner_LowRes.Recipe.TrainRoiStartLocation = stVisionRecipeSet.pointPreTrainRoiStartLocation;
+                                jigAligner_LowRes.Recipe.TrainRoiEndLocation = stVisionRecipeSet.pointPreTrainRoiEndLocation;
                                 jigAligner_LowRes.Work();
                             }
-                            else if(stVisionRecipeSet.AlgorithmType == VisionAlgorithmType.CircleDetection)
+                            else if(stVisionRecipeSet.ePreAlgorithmType == VisionAlgorithmType.CircleDetection)
                             {
                                 jigAligner_LowRes.Work();
                             }
                             else
                             {
-                                jigAligner_LowRes.Recipe.PatternMatchingParameter = stVisionRecipeSet.PatternMatching;
-                                jigAligner_LowRes.Recipe.InspectRoiStartLocation = stVisionRecipeSet.InspectRoiStartLocation;
-                                jigAligner_LowRes.Recipe.InspectRoiEndLocation = stVisionRecipeSet.InspectRoiEndLocation;
-                                jigAligner_LowRes.Recipe.TrainRoiStartLocation = stVisionRecipeSet.TrainRoiStartLocation;
-                                jigAligner_LowRes.Recipe.TrainRoiEndLocation = stVisionRecipeSet.TrainRoiEndLocation;
+                                jigAligner_LowRes.Recipe.PatternMatchingParameter = stVisionRecipeSet.PrePatternMatching;
+                                jigAligner_LowRes.Recipe.InspectRoiStartLocation = stVisionRecipeSet.pointPreInspectRoiStartLocation;
+                                jigAligner_LowRes.Recipe.InspectRoiEndLocation = stVisionRecipeSet.pointPreInspectRoiEndLocation;
+                                jigAligner_LowRes.Recipe.TrainRoiStartLocation = stVisionRecipeSet.pointPreTrainRoiStartLocation;
+                                jigAligner_LowRes.Recipe.TrainRoiEndLocation = stVisionRecipeSet.pointPreTrainRoiEndLocation;
                                 jigAligner_LowRes.Work();
                             }
 
@@ -13589,9 +13589,9 @@ namespace QMC.Common.Modules
                     //Display_Event("홈 실행 루틴 : 시작.");
                     SocketAlign_Step_Start(nSocketNum);
 
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationRed, 1);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationIR, 2);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreAlignlluminationIR, 3);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationRed, 1);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationIR, 2);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreIlluminationIR, 3);
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명 
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
@@ -13695,9 +13695,9 @@ namespace QMC.Common.Modules
                     //CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamRed, 1);
                     //CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_FineCamIR, 2);
                     //CommonModule.Instance.Illuminator.SetVolume(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Fiducial].IlluminatorValue_CoarseCamIR, 3);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationRed, 1);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationIR, 2);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreAlignlluminationIR, 3);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationRed, 1);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationIR, 2);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreIlluminationIR, 3);
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명 
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
                     Thread.Sleep(50);
@@ -14422,9 +14422,9 @@ namespace QMC.Common.Modules
                // Camera_HighRes.StartLive();
             }
 
-            CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationRed, 1);
-            CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationIR, 2);
-            CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreAlignlluminationIR, 3);
+            CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationRed, 1);
+            CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationIR, 2);
+            CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreIlluminationIR, 3);
             CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명
             CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
             CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
@@ -14537,7 +14537,7 @@ namespace QMC.Common.Modules
 
                     //  마크 검출 형식 (Circle, Gold Powder)
                     //if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
-                    if (Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
+                    if (Equipment.stVisionRecipeSet.dSocketMarkType == (int)MarkTypeList.Circle)
                     {
                         QMC_ImageProcessFindAlignResult result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
                                                                         bm_AlignRawData,
@@ -14549,7 +14549,7 @@ namespace QMC.Common.Modules
 
                     }
                     //else if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
-                    else if (Equipment.stVisionRecipeSet.Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
+                    else if (Equipment.stVisionRecipeSet.dSocketMarkType == (int)MarkTypeList.GoldPowder)
                     {
                         Fiducial_aligner.FindMetalPowder(Fiducial_circlesResult, 
                                                         bm_AlignRawData, 
@@ -18394,9 +18394,9 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align Cycle 시작.");
 
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationRed, 1);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nFiduciallluminationIR, 2);
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreAlignlluminationIR, 3);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationRed, 1);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationIR, 2);
+                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreIlluminationIR, 3);
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 1);          //  Fine Cam Red 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(false, 2);          //  Fine Cam IR 조명
                     CommonModule.Instance.Illuminator.TurnOnOff(true, 3);           //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
@@ -36922,6 +36922,19 @@ namespace QMC.Common.Modules
 
 
         //motion 함수 
+        public double GetEncWorkStagePos_Motor(WorkStage.nAxis nAxis)
+        {
+            double dEncPos = -999.999;
+            try
+            {
+                dEncPos = MC_Func.MC_GetEncPos((int)nAxis);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+            return dEncPos;
+        }
         public void StoptoWorkStage_Motor(WorkStage.nAxis nAxis)
         {
             double dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
