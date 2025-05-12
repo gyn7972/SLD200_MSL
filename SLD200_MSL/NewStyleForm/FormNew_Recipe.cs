@@ -248,13 +248,15 @@ namespace SLD200_MSL
 
             if (Equipment.EqpSiriusViewer == null)
             {
-                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !!", "먼저 Scanner Board 를 초기화 해야 합니다.");
                 return;
             }
 
             if (workStage.rtc == null)
             {
-                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !!", "먼저 Scanner Board 를 초기화 해야 합니다.");
                 return;
             }
 
@@ -286,7 +288,8 @@ namespace SLD200_MSL
                     //  해당 위치에 파일이 존재하는지 확인
                     if (File.Exists(richTextBox_Recipe_TabRecipe_DrawingFile.Text) == false)
                     {
-                        MessageBox.Show("도면 파일이 없습니다.\r\n\r\n[마지막 작업하던 도면으로 Editor Open]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        var mb1 = new MessageBoxOk();
+                        mb1.ShowDialog("Error !!", "도면 파일이 없습니다.\r\n\r\n[마지막 작업하던 도면으로 Editor Open]");
                         //return;
                     }
                     else
@@ -300,7 +303,8 @@ namespace SLD200_MSL
                         }
                         else
                         {
-                            MessageBox.Show("도면 파일이 아닙니다. (*.sirius, *.dxf)\r\n\r\n[마지막 작업하던 도면으로 Editor Open]", "Information!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            var mb1 = new MessageBoxOk();
+                            mb1.ShowDialog("Error !!", "도면 파일 형식이 아닙니다. (*.sirius, *.dxf)\r\n\r\n[마지막 작업하던 도면으로 Editor Open]");
                             //return;
                         }
                     }
@@ -348,7 +352,8 @@ namespace SLD200_MSL
         {
             if (Equipment.EqpSiriusViewer == null)
             {
-                MessageBox.Show("RTC 보드를 초기화 해야 합니다.", "Information!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !!", "RTC 보드를 초기화 해야 합니다.");
                 return;
             }
 
@@ -360,7 +365,8 @@ namespace SLD200_MSL
                 //  해당 위치에 파일이 존재하는지 확인
                 if (File.Exists(richTextBox_Recipe_TabRecipe_DrawingFile.Text) == false)
                 {
-                    MessageBox.Show("도면 파일이 없습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Error !!", "도면 파일이 없습니다.");
                     return;
                 }
 
@@ -407,8 +413,8 @@ namespace SLD200_MSL
                 }
                 else
                 {
-                    //MessageBox.Show("도면 파일이 아닙니다.\r\n\r\n[*.sirius2, *.dwg, *.dxf", "Information!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    MessageBox.Show("도면 파일이 아닙니다.\r\n\r\n[*.sirius, *.dxf", "Information!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Information !!", "도면 파일이 아닙니다.\r\n\r\n[available  *.sirius, *.dxf]");
                     return;
                 }
 
@@ -1342,6 +1348,13 @@ namespace SLD200_MSL
 
             //saveFileDialog.InitialDirectory = ConfigManager.GetRecipeDataPath();
 
+            if (Equipment.Current_Recipe.Length <= 0)
+            {
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "레시피를 불러오지 않았습니다.");
+                return;
+            }
+
             if (Equipment.RecipeFilePath.Length > 0)
             {
                 saveFileDialog.InitialDirectory = Equipment.RecipeFilePath;
@@ -1359,10 +1372,13 @@ namespace SLD200_MSL
                 di.Create();
             }
 
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                fileName = saveFileDialog.FileName;
+            fileName = Equipment.Current_Recipe;
 
+            string m_strTemp = string.Format("레시피 설정을 저장하시겠습니까?\r\n\r\nName : {0}", System.IO.Path.GetFileName(fileName));
+
+            var mb1 = new MessageBoxYesNo();
+            if (DialogResult.Yes == mb1.ShowDialog("Question ?", m_strTemp))
+            {
                 if (File.Exists(fileName) == false)
                 {
                     //File.Create(fileName);
@@ -1381,7 +1397,8 @@ namespace SLD200_MSL
                 //visionData.SaveTrainImage(Owner.TrainImage);
                 stVisionRecipeSet.SaveToIni(fileName);
 
-                MessageBox.Show("Recipe Data를 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                var mb2 = new MessageBoxOk();
+                mb2.ShowDialog("Information !", "Recipe Data를 저장하였습니다.");
             }
         }
 
@@ -1416,7 +1433,8 @@ namespace SLD200_MSL
             //  도면 확인
             if (richTextBox_Recipe_TabRecipe_DrawingFile.Text.Length <= 0)
             {
-                MessageBox.Show("도면 파일이 없습니다.", "Information!!"); 
+                var mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Information !", "도면 파일이 없습니다.");
                 return;
             }
 
@@ -1513,7 +1531,8 @@ namespace SLD200_MSL
             //  사용 되지 않는 Layer (Layer 이름이 잘못되었을 경우)
             if (m_nLayerIndex == -1)
             {
-                MessageBox.Show("잘못된 Layer Name 입니다.", "Information!!");
+                var mb2 = new MessageBoxOk();
+                mb2.ShowDialog("Information !", "잘못된 Layer Name 입니다.");
                 return;
             }
 
@@ -1612,26 +1631,29 @@ namespace SLD200_MSL
             {
                 if (Equipment.stLayerRecipeSet[(int)LayerList.Hole1].LaserParam_Frequency <= 0)
                 {
-                    MessageBox.Show("\"Hole1\" Layer 의 Frequency 가 0 입니다.", "Information!!");
+                    var mb3 = new MessageBoxOk();
+                    mb3.ShowDialog("Information !", "\"Hole1\" Layer 의 Frequency 가 0 입니다.");
                 }
             }
             if (m_nLayerIndex == (int)LayerList.Thruhole)
             {
                 if (Equipment.stLayerRecipeSet[(int)LayerList.Thruhole].LaserParam_Frequency <= 0)
                 {
-                    MessageBox.Show("\"Thruhole\" Layer 의 Frequency 가 0 입니다.", "Information!!");
+                    var mb3 = new MessageBoxOk();
+                    mb3.ShowDialog("Information !", "\"Thruhole\" Layer 의 Frequency 가 0 입니다.");
                 }
             }
             if (m_nLayerIndex == (int)LayerList.Outline)
             {
                 if (Equipment.stLayerRecipeSet[(int)LayerList.Outline].LaserParam_Frequency <= 0)
                 {
-                    MessageBox.Show("\"Outline\" Layer 의 Frequency 가 0 입니다.", "Information!!");
+                    var mb3 = new MessageBoxOk();
+                    mb3.ShowDialog("Information !", "\"Outline\" Layer 의 Frequency 가 0 입니다.");
                 }
             }
 
-
-            MessageBox.Show("Recipe Data Apply", "Recipe Data Apply");
+            var mb4 = new MessageBoxOk();
+            mb4.ShowDialog("Recipe Data Apply !", "Recipe Data Apply");
         }
 
         private void button_Recipe_Open_Click(object sender, EventArgs e)
@@ -1641,13 +1663,15 @@ namespace SLD200_MSL
             
             if (Equipment.EqpSiriusViewer == null)
             {
-                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !!", "먼저 Scanner Board 를 초기화 해야 합니다.");
                 return;
             }
 
             if (workStage.rtc == null)
             {
-                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !!", "먼저 Scanner Board 를 초기화 해야 합니다.");
                 return;
             }
 
@@ -1844,12 +1868,14 @@ namespace SLD200_MSL
                             }
                         }
                     }
-
-                    MessageBox.Show("Recipe Data를 로드하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        
+                    var mb = new MessageBoxOk();
+                    mb.ShowDialog("Information !!", "Recipe Data를 로드하였습니다.");
                 }
                 else
                 {
-                    MessageBox.Show("Recipe Data를 로드하지 못했습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    var mb = new MessageBoxOk();
+                    mb.ShowDialog("Error !!", "Recipe Data를 로드하지 못했습니다.");
                 }
             }
         }
@@ -2374,11 +2400,13 @@ namespace SLD200_MSL
                     }
                 }
 
-                MessageBox.Show("Recipe Data를 로드하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !!", "Recipe Data를 로드하였습니다.");
             }
             else
             {
-                MessageBox.Show("Recipe Data를 로드하지 못했습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Error !!", "Recipe Data를 로드하지 못했습니다.");
             }
         }
 
@@ -2435,6 +2463,61 @@ namespace SLD200_MSL
             {
                 MessageBox.Show($"Error: {ex.Message}");
             }
-        }        
+        }
+
+        private void button_Recipe_SaveAs_Click(object sender, EventArgs e)
+        {
+            string fileName;
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = "Recipe Data Path";
+            saveFileDialog.OverwritePrompt = true;
+            saveFileDialog.CreatePrompt = true;
+
+            //saveFileDialog.InitialDirectory = ConfigManager.GetRecipeDataPath();
+
+            if (Equipment.RecipeFilePath.Length > 0)
+            {
+                saveFileDialog.InitialDirectory = Equipment.RecipeFilePath;
+            }
+            else
+            {
+                saveFileDialog.InitialDirectory = ConfigManager.GetRecipeDataPath();
+            }
+
+            saveFileDialog.Filter = "Recipe File(*.ini)|*.ini";
+
+            DirectoryInfo di = new DirectoryInfo(ConfigManager.GetRecipeDataPath());
+            if (!di.Exists == false)
+            {
+                di.Create();
+            }
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                fileName = saveFileDialog.FileName;
+
+                if (File.Exists(fileName) == false)
+                {
+                    //File.Create(fileName);
+                    using (FileStream fs = File.Create(fileName))
+                    {
+                        // 파일만 생성하고 바로 닫음
+                    }
+                }
+
+                //  Recipe Data 저장
+                //Recipe_Data_Save(fileName);
+                Recipe_Data_Save_Refactory(fileName);
+                Equipment.Current_Recipe = fileName;
+
+                // Vision Data 저장
+                //visionData.SaveTrainImage(Owner.TrainImage);
+                stVisionRecipeSet.SaveToIni(fileName);
+
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !!", "Recipe Data를 저장하였습니다.");
+            }
+        }
     }
 }
