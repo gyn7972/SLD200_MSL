@@ -215,7 +215,6 @@ namespace SLD200_MSL
 
                 str = $"STEP: {currentStopSocket}";
                 label_Config_SeqTest_SeqStatus_Disp_workStage_SocketAlign.Text = str;
-
             }
         }
 
@@ -389,23 +388,22 @@ namespace SLD200_MSL
 
                 Equipment.MachineStop_byUser = true;
 
-                loader.MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z0, 2000);
-                loader.MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.Z1, 2000);
-                loader.MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.TR_X, 2000);
-                loader.MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.TR_Z, 2000);
-                loader.MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.ALN_X, 2000);
-                loader.MC_Func.MC_MotorStop((int)LoaderParameter.AxisAjinEnum.ALN_Y, 2000);
-                unloader.MC_Func.MC_MotorStop((int)UnloaderParameter.AxisAjinEnum.Z0, 2000);
-                unloader.MC_Func.MC_MotorStop((int)UnloaderParameter.AxisAjinEnum.Z1, 2000);
-                unloader.MC_Func.MC_MotorStop((int)UnloaderParameter.AxisAjinEnum.TR_X, 2000);
-                unloader.MC_Func.MC_MotorStop((int)UnloaderParameter.AxisAjinEnum.TR_Z, 2000);
-                workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.X, 2000);
-                workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.Y, 2000);
-                workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.Z, 2000);
-
+                loader.StoptoLoader_Motor(Loader.nAxis.Z0);
+                loader.StoptoLoader_Motor(Loader.nAxis.Z1);
+                loader.StoptoLoader_Motor(Loader.nAxis.TR_X);
+                loader.StoptoLoader_Motor(Loader.nAxis.TR_Z);
+                loader.StoptoLoader_Motor(Loader.nAxis.ALN_X);
+                loader.StoptoLoader_Motor(Loader.nAxis.ALN_Y);
+                unloader.StoptoUnloader_Motor(Unloader.nAxis.Z0);
+                unloader.StoptoUnloader_Motor(Unloader.nAxis.Z1);
+                unloader.StoptoUnloader_Motor(Unloader.nAxis.TR_X);
+                unloader.StoptoUnloader_Motor(Unloader.nAxis.TR_Z);
+                workStage.StoptoWorkStage_Motor(WorkStage.nAxis.X);
+                workStage.StoptoWorkStage_Motor(WorkStage.nAxis.Y);
+                workStage.StoptoWorkStage_Motor(WorkStage.nAxis.Z);
                 if (Equipment.Machine_LaserType_CO2)
                 {
-                    workStage.MC_Func.MC_MotorStop((int)WorkStageParameter.AxisAjinEnum.MASK_Y, 2000);
+                    workStage.StoptoWorkStage_Motor(WorkStage.nAxis.MASK_Y);
                 }
 
                 workStage.m_bHomeOK = false;

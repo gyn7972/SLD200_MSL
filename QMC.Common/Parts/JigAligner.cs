@@ -420,7 +420,7 @@ namespace QMC.Common.Parts
                             }
                             Thread.Sleep(1);
                             nWait++;
-                            if (nWait == 1000)
+                            if (nWait == 100000)
                             {
                                 break;
                             }
@@ -436,7 +436,7 @@ namespace QMC.Common.Parts
                             }
                             Thread.Sleep(1);
                             nWait++;
-                            if (nWait == 1000)
+                            if (nWait == 100000)
                             {
                                 break;
                             }
@@ -450,21 +450,24 @@ namespace QMC.Common.Parts
 
                         this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[0];
 
-                        if(Equipment.stVisionRecipeSet.AlgorithmType == Equipment.VisionAlgorithmType.PatternMatching)
+                        if(Equipment.stVisionRecipeSet.ePreAlgorithmType == Equipment.VisionAlgorithmType.PatternMatching)
                         {
                             this.FindFiducialMark(out firstPointSearchResult, out firstPointCoordinate);
                         }
-                        else if(Equipment.stVisionRecipeSet.AlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
+                        else if(Equipment.stVisionRecipeSet.ePreAlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
                         {
-                            bool bIsDarkCircleSearch = Equipment.stVisionRecipeSet.bCircleDetectionColor;
+                            bool bIsDarkCircleSearch = Equipment.stVisionRecipeSet.bPreCircleColor;
                             double dSpec = 0.05;
                             double dRadius = 0;
-                            dSpec = Equipment.stVisionRecipeSet.dCircleSpec;
+                            double dScore = 0.7;
+                            dSpec = Equipment.stVisionRecipeSet.dPreCircleMarkSpec;
+                            dScore = Equipment.stVisionRecipeSet.dPreCircleMarkScore;
                             dRadius = m_dRadius[0];// m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
-                            if (m_dRadius[0] == 0)
-                                dRadius = Equipment.stVisionRecipeSet.dCircleDetectionSizeW;
 
-                            this.FindCircleDetection(dRadius, bIsDarkCircleSearch, dSpec, out firstPointSearchResult, out firstPointCoordinate);
+                            if (m_dRadius[0] == 0)
+                                dRadius = Equipment.stVisionRecipeSet.dPreCircleMarkRadius;
+
+                            this.FindCircleDetection(dRadius, bIsDarkCircleSearch, dSpec, dScore, out firstPointSearchResult, out firstPointCoordinate);
                         }
                         else
                         {
@@ -552,21 +555,23 @@ namespace QMC.Common.Parts
                     //m_AlignPositions[1].Y = xyInterpolatedCoordinate.Y;
 
                     this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[1];
-                    if (Equipment.stVisionRecipeSet.AlgorithmType == Equipment.VisionAlgorithmType.PatternMatching)
+                    if (Equipment.stVisionRecipeSet.ePreAlgorithmType == Equipment.VisionAlgorithmType.PatternMatching)
                     {
                         this.FindFiducialMark(out secondPointSearchResult, out secondPointCoordinate);
                     }
-                    else if (Equipment.stVisionRecipeSet.AlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
+                    else if (Equipment.stVisionRecipeSet.ePreAlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
                     {
-                        bool bIsDarkCircleSearch = Equipment.stVisionRecipeSet.bCircleDetectionColor;
+                        bool bIsDarkCircleSearch = Equipment.stVisionRecipeSet.bPreCircleColor;
                         double dSpec = 0.05;
+                        double dScore = 0.7;
                         double dRadius = 0;
-                        dSpec = Equipment.stVisionRecipeSet.dCircleSpec;
+                        dSpec = Equipment.stVisionRecipeSet.dPreCircleMarkSpec;
+                        dScore = Equipment.stVisionRecipeSet.dPreCircleMarkScore;
                         dRadius = m_dRadius[1];// m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
                         if (m_dRadius[1] == 0)
-                            dRadius = Equipment.stVisionRecipeSet.dCircleDetectionSizeW;
+                            dRadius = Equipment.stVisionRecipeSet.dPreCircleMarkRadius;
 
-                        this.FindCircleDetection(dRadius, bIsDarkCircleSearch, dSpec, out secondPointSearchResult, out secondPointCoordinate);
+                        this.FindCircleDetection(dRadius, bIsDarkCircleSearch, dSpec, dScore, out secondPointSearchResult, out secondPointCoordinate);
                     }
                     else
                     {
@@ -704,7 +709,7 @@ namespace QMC.Common.Parts
             return ret;
         }
 
-        public int FindCircleDetection(double dRadius, bool bIsDarkCircleSearch, double dSpec, out PatternMatchingResult searchResult, out XyCoordinate currentCoordinate)
+        public int FindCircleDetection(double dRadius, bool bIsDarkCircleSearch, double dSpec, double dScore, out PatternMatchingResult searchResult, out XyCoordinate currentCoordinate)
         {
             int ret = 0;
             currentCoordinate = new XyCoordinate();
@@ -779,6 +784,7 @@ namespace QMC.Common.Parts
                     {
                         try
                         {
+
                             m_Owner.CoarseCamResultOveray = new VisionImageViewer.OwnedOverlayCollection();
                             foreach (var v in Fiducial_circlesResult)
                             {

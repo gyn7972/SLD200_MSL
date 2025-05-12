@@ -1806,6 +1806,9 @@ namespace SLD200_MSL
 
 
 
+            //workStage.AlignedDrillingData_FailedSocket_Select_and_OffsetMove(m_dRotCenter_X, m_dRotCenter_Y, m_dOffsetX, m_dOffsetY, m_dAngle);
+
+
             SiriusEditor.Document.Action.ActEntityRotate(SiriusEditor.Document.Action.SelectedEntity, (float)m_dAngle, (float)m_dRotCenter_X, (float)m_dRotCenter_Y);
             SiriusEditor.Document.Action.ActEntityTransit(SiriusEditor.Document.Action.SelectedEntity, (float)m_dOffsetX, (float)m_dOffsetY);
             return;

@@ -305,12 +305,14 @@ namespace QMC.Common.VisionPart
             SaveImage(images, w, h, filename);
         }
         public QMC_ImageProcessFindAlignResult FindCirclesWidthCircleBoundary(List<RectangleF> circlesResult,
-            byte[] pixelData, int w, int h, int radius, double dSpec, ref bool circleFound, int nCenterX = 0, int nCenterY = 0, bool bIsDarkCircleSearch = true)
+            byte[] pixelData, int w, int h, int radius, double dSpec, ref bool circleFound, int nCenterX = 0, int nCenterY = 0, bool bIsDarkCircleSearch = true
+            , double miscellaneous_FiducialMarkSocre = 0.7
+            ,bool bSpiralSearch = true)
         {
             if (bIsDarkCircleSearch == false)
             {
                 //pixelData = InversImage(pixelData);
-               // MeanFilter(pixelData, w, h, 10, 10);
+                //MeanFilter(pixelData, w, h, 10, 10);
                 //SaveImage(pixelData, w, h, "polygonMeanFilter.bmp");
             }
             List<PointF> polygon = new List<PointF>();
@@ -334,6 +336,10 @@ namespace QMC.Common.VisionPart
                 X = w / 2,
                 Y = h / 2
             };
+            if(bSpiralSearch == false)
+            {
+                nDivideCount = 3;
+            }
             for (int y = 0; y < nDivideCount; y++)
             {
                 if (bFindCircle)
@@ -349,14 +355,6 @@ namespace QMC.Common.VisionPart
                     nShiftX *= x;
                     int nCx = w / 2 + nShiftX;
 
-                    if (nCx > 500 && nCx < 600)
-                    {
-                        if (nCy < 1200 && nCy > 1100)
-                        {
-
-                        }
-                    }
-
                     nCx = (int)currentPosition.X;
                     nCy = (int)currentPosition.Y;
 
@@ -368,7 +366,7 @@ namespace QMC.Common.VisionPart
                     {
                         dFirstSpec = 0.5;
                     }
-                    int nMaxCircleFirst = (int)(radius * 2);
+                    int nMaxCircleFirst = (int)(radius * 3);
                     int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
 
                     if (nMaxCircleFirst > 2000)
@@ -793,9 +791,9 @@ namespace QMC.Common.VisionPart
                     //if (bIsDarkCircleSearch == false)
                     {
                         differenceW = (currentAverage - nextAverage) / nextAverage;
-
+                        
                     }
-                    // else
+                   // else
                     {
                         differenceD = (nextAverage - currentAverage) / currentAverage;
                     }
@@ -815,8 +813,18 @@ namespace QMC.Common.VisionPart
                         }
                     }
                 });
-                
-                boundaryPoints.Add(boundaryPointD);
+                //double dW = GetDistance(boundaryPointW, new PointF(cx, cy));
+                //double dD = GetDistance(boundaryPointD, new PointF(cx, cy));
+                if(bIsDarkCircleSearch)
+                {
+                    boundaryPoints.Add(boundaryPointD);
+                }
+                else
+                {
+                    boundaryPoints.Add(boundaryPointW);
+                   
+                }
+               
             }
 
             return boundaryPoints;
