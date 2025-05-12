@@ -1858,5 +1858,22 @@ namespace SLD200_MSL
 
             workStage.rtc.PrimaryHeadBaseOffset = ScannerOffset;
         }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // 키 입력 처리
+            if (keyData == Keys.F7)
+            {
+                var Document = this.SiriusEditor.Document;
+                Document.Action.ActEntityGroup(Document.Action.SelectedEntity);
+            }
+            if (keyData == Keys.F8)
+            {
+                var Document = this.SiriusEditor.Document;
+                Document.Action.ActEntityUngroup(Document.Action.SelectedEntity);
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
     }
 }
