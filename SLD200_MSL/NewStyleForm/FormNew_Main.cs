@@ -2832,6 +2832,13 @@ namespace SLD200_MSL
                 return;
             }
 
+            if (!Equipment.AutoManualStatus)
+            {
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !", "장비가 [[ AUTO ]] 상태가 아닙니다.");
+                return;
+            }
+
             if (Equipment.RecipeOpen_DrawingFilePath.Length == 0)
             {
                 var mb1 = new MessageBoxOk();
@@ -2941,21 +2948,26 @@ namespace SLD200_MSL
                         workStage.m_nSocketAlign_StartIndex = -1;
                     }
                 }
+                else
+                {
+                    Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
+                    workStage.m_nSocketAlign_StartIndex = -1;
+                }
 
-                //  Socket 선택 가공인지 확인용
-                ////////////////////////////////////////////////////////////////////////////
+                    //  Socket 선택 가공인지 확인용
+                    ////////////////////////////////////////////////////////////////////////////
 
 
-                //if (laserDrilling.m_nAutoCal_ScannerCamCenter_Step > (int)LaserDrilling.AutoCalScannerCameraCenter_Step.None)
-                //{
-                //    var mb1 = new MessageBoxOk();
-                //    mb1.ShowDialog("Warning !", "스캐너와 카메라 Offset 자동 보정 진행중입니다.");
-                //    return;
-                //}
+                    //if (laserDrilling.m_nAutoCal_ScannerCamCenter_Step > (int)LaserDrilling.AutoCalScannerCameraCenter_Step.None)
+                    //{
+                    //    var mb1 = new MessageBoxOk();
+                    //    mb1.ShowDialog("Warning !", "스캐너와 카메라 Offset 자동 보정 진행중입니다.");
+                    //    return;
+                    //}
 
-                //  도면 갱신 (Main 화면의 Sirius Document 를 가공할때 사용하는 Document 로 복사)
-                //workStage.SiriusEditor.Document = SiriusViewer_Main.Document;
-                Equipment.EqpSiriusViewer.Document = SiriusViewer_Main.Document;                            //  메인 화면에 보이는 도면을 가공하기 위함
+                    //  도면 갱신 (Main 화면의 Sirius Document 를 가공할때 사용하는 Document 로 복사)
+                    //workStage.SiriusEditor.Document = SiriusViewer_Main.Document;
+                    Equipment.EqpSiriusViewer.Document = SiriusViewer_Main.Document;                            //  메인 화면에 보이는 도면을 가공하기 위함
 
 
                 if (workStage.m_nSocketAlign_StartIndex >= 0)
