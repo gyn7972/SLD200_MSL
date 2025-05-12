@@ -374,7 +374,7 @@ namespace QMC.Common.VisionPart
                     {
                         nMaxCircleFirst = 2000;
                     }
-                    double dAngleStep = 360 / (2 * 3.141592 * radius);
+                    double dAngleStep = 3;
                     polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius/1.5), (int)nMaxCircleFirst, dAngleStep, 10, bIsDarkCircleSearch);
                     points = polygon;
                     circlesResult.Clear();

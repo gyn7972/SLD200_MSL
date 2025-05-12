@@ -14480,6 +14480,10 @@ namespace QMC.Common.Modules
                 };
 
                 bool bFound = false;
+                if(maxSteps <3)
+                {
+                    stepSize = 0;
+                }
                 for (int i = 0; i < maxSteps; i++)
                 {
 
@@ -37316,8 +37320,8 @@ namespace QMC.Common.Modules
             {
                 if (IsInterlock_WorkStageXY_Enabled())
                 {
-                    if (IsWorkStage_Positions(WorkStage.nAxis.X, xyCoordinate.X) == false &&
-                        IsWorkStage_Positions(WorkStage.nAxis.Y, xyCoordinate.Y) == false)
+                    //if (IsWorkStage_Positions(WorkStage.nAxis.X, xyCoordinate.X) == false &&
+                    //    IsWorkStage_Positions(WorkStage.nAxis.Y, xyCoordinate.Y) == false)
                     {
                         // 맵 데이터를 이원화 할 경우
                         //if (laserDrilling.Config.ParamConfig.ScannerCamera_MapData_Div)

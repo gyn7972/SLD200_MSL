@@ -1864,9 +1864,9 @@ namespace SLD200_MSL
 
             List<string> list = new List<string>();
             list.Add("Hole1");
+            list.Add("Thruhole");
             list.Add("Fiducial");
             list.Add("PreAlign");
-            list.Add("Thruhole");
             list.Add("Outline");
             list.Add("Marking");
             if (Count > list.Count)
@@ -1983,8 +1983,7 @@ namespace SLD200_MSL
 
         private void ThruholeGroup()
         {
-            SelectLayer("Thruhole");
-            Group();
+            MoveToGroup("Thruhole");
         }
 
         private void MoveToPreAlign()
@@ -2028,8 +2027,7 @@ namespace SLD200_MSL
 
         private void HoleGroup()
         {
-            SelectLayer("Hole1");
-            Group();
+            MoveToGroup("Hole1");
 
 
         }
