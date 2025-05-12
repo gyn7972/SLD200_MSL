@@ -53,21 +53,11 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             //Size 축소 / 확대 안되게 하기 위한 코드.
             this.AutoScaleMode = AutoScaleMode.None;
+            this.DoubleBuffered = true;
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+            this.UpdateStyles();
 
-            this.Load += FormNewSub_Recipe_Vision_Load; // 👈 여기서 Load 이벤트 연결
-
-            ModuleCollection m_collectionModules;
-            m_collectionModules = Equipment.Modules;
-            foreach (Module module in m_collectionModules)
-            {
-                if (module.Name == "WorkStage")
-                {
-                    workStage = module as WorkStage;
-                    Owner = workStage.jigAligner_LowRes;
-                    workStage.UpdateResultOveray += workStage_UpdateResultOveray;
-
-                }
-            }
+            this.Load += FormNewSub_Recipe_Vision_Load; // 여기서 Load 이벤트 연결
         }
 
         private void workStage_UpdateResultOveray(object sender, EventArgs e)
@@ -87,8 +77,6 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void FormNewSub_Recipe_Vision_Load(object sender, EventArgs e)
         {
-            this.AutoScaleMode = AutoScaleMode.None;
-
             //GUI생성 완료 후 Data 및 Cintroller 업데이트!
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
@@ -1173,23 +1161,20 @@ namespace SLD200.NewStyleForm.NewSubForm
             Temp_Position_Save();
         }
 
-        private void button_RecipeVision_WorkStage_ToTempPos1_Move_Click(object sender, EventArgs e)
+        private async void button_RecipeVision_WorkStage_ToTempPos1_Move_Click(object sender, EventArgs e)
         {
             //  Temp1 위치로 이동
             //  현재 Fine Camera Center 위치를 Scanner Center 위치로 이동
             double lfTargetX = 0.0f;
             double lfTargetY = 0.0f;
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
 
-            // 파일에 저장 해 놓자.
+            // 파일에 저장 해 놓자. // 가져 올 수 있는 Data 인지 확인하자.
             double X_Limit_Min = 5.0;
             double X_Limit_Max = 800.0;
             double Y_Limit_Min = 5.0;
             double Y_Limit_Max = 500.0;
 
-
-            if (Equipment.ToDouble(textBox_RecipeVision_WorkStage_TempPos1_StageX.Text) == 0.0 && 
+            if (Equipment.ToDouble(textBox_RecipeVision_WorkStage_TempPos1_StageX.Text) == 0.0 &&
                 Equipment.ToDouble(textBox_RecipeVision_WorkStage_TempPos1_StageY.Text) == 0.0)
             {
                 var mb1 = new QMC.Common.UI.MessageBoxOk();
@@ -1201,41 +1186,17 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "Temp1 위치로 이동하시겠습니까?"))
                 return;
 
-            if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || 
-                !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || 
-                !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
-                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || 
-                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || 
-                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
+            // 아래 코드 고민해 보자. IsMoving 함수 만들어서 사용해야 할듯.
+            if (!workStage.IsWorkStageMoving(WorkStage.nAxis.X) ||
+                !workStage.IsWorkStageMoving(WorkStage.nAxis.Y) ||
+                !workStage.IsWorkStageMoving(WorkStage.nAxis.Z))
             {
                 var mb1 = new QMC.Common.UI.MessageBoxOk();
                 mb1.ShowDialog("Warning !", "Stage 가 이동중입니다.");
                 return;
             }
 
-
-            //Todo: Z축 이동시 Interlock 체크 - 코드 삽입 할것.1!!!
-            ////  StageZ 한계위치 설정되어 있는지 체크
-            //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos <= 0.0)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이가 설정되어 있지 않습니다.\r\n\r\n(Config -> [17] Interlock  확인)");
-            //    return;
-            //}
-            ////  StageZ 한계위치를 초과하여 이동하는지 체크
-            //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos < laserDrilling.laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.Z])
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이를 초과하여 이동하려고 하였습니다.\r\n\r\n[ Cancel ]");
-            //    return;
-            //}
-            ////  맵 데이터를 이원화 할 경우
-            //if (laserDrilling.Config.ParamConfig.ScannerCamera_MapData_Div)
-            //{
-            //    laserDrilling.MapData_Change((int)LaserDrilling.MapDataType.MAPDATASTATUS_SCANNER);
-            //}
-
-            //  Target 위치
+            // Target 위치
             lfTargetX = Equipment.ToDouble(textBox_RecipeVision_WorkStage_TempPos1_StageX.Text);
             lfTargetY = Equipment.ToDouble(textBox_RecipeVision_WorkStage_TempPos1_StageY.Text);
 
@@ -1252,54 +1213,51 @@ namespace SLD200.NewStyleForm.NewSubForm
             }
 
             //  속도 설정
+            Type_Motor_Speed motor_Speed;
             if (radioButton_RecipeVision_Move_MoveMode_Fine.Checked)
             {
-                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
-                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+                motor_Speed = Type_Motor_Speed.Fine;
             }
             else
             {
-                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
-                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                motor_Speed = Type_Motor_Speed.Coarse;
             }
-
             XyCoordinate xyInterpolatedCoordinate = new XyCoordinate();
             xyInterpolatedCoordinate.X = lfTargetX;
             xyInterpolatedCoordinate.Y = lfTargetY;
+            workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, motor_Speed);
+            //workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
 
-            workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+            bool bWaitPosX = false;
+            bool bWaitPosY = false;
 
-            int nWait = 0;
-            while (true)
+            try
             {
-                if (workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X)
-                    && workStage.MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, xyInterpolatedCoordinate.X))
+                // 각각의 비동기 Task를 받아서 기다림
+                var taskX = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
+                var taskY = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
+
+                // 동시에 실행하고 결과 기다림
+                var results = await Task.WhenAll(taskX, taskY);
+
+                bWaitPosX = results[0];
+                bWaitPosY = results[1];
+
+                if (!bWaitPosX)
                 {
-                    break;
-                }
-                Thread.Sleep(1);
-                nWait++;
-                if (nWait == 1000)
-                {
-                    break;
+                    Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "X축 이동 실패");
+                    workStage.AlarmPost(WorkStage.AlarmKey.eStageMoveFail);
                 }
 
+                if (!bWaitPosY)
+                {
+                    Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "Y축 이동 실패");
+                    workStage.AlarmPost(WorkStage.AlarmKey.eStageMoveFail);
+                }
             }
-
-            nWait = 0;
-            while (true)
+            catch (Exception ex)
             {
-                if (workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y)
-                    && workStage.MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y))
-                {
-                    break;
-                }
-                Thread.Sleep(1);
-                nWait++;
-                if (nWait == 1000)
-                {
-                    break;
-                }
+                Log.Write(ex);
             }
         }
 
@@ -1431,7 +1389,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 //Owner.Simulated = true;
                 workStage.Camera_HighRes.LatestImage = ImageViewer_RecipeVision_highs.InputImage;
-                //workStage.Camera_HighRes.TestImage = ImageViewer_RecipeVision_highs.InputImage;
             }
 
 

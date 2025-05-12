@@ -29,6 +29,7 @@ using System.Data.Common;
 using System.Windows.Media.Media3D;
 using Cognex.DataMan.SDK.Utils;
 using netDxf.Blocks;
+using static QMC.Common.Part;
 
 namespace SLD200_MSL
 {
@@ -83,7 +84,11 @@ namespace SLD200_MSL
         {
             InitializeComponent();
 
-            InitializeDeviceStatusBindings();
+            //Size 축소 / 확대 안되게 하기 위한 코드.
+            this.AutoScaleMode = AutoScaleMode.None;
+            this.DoubleBuffered = true;
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+            this.UpdateStyles();
 
             this.Load += FormNew_Main_Load;
 
@@ -124,21 +129,16 @@ namespace SLD200_MSL
                 }
             }
 
-            //  Main Status 타이머
-            timer_Main_Status = new System.Windows.Forms.Timer();
-            timer_Main_Status.Interval = 100;
-            timer_Main_Status.Tick += new System.EventHandler(Timer_MainStatus_Func);
-            timer_Main_Status.Enabled = true;
-
-            //ThreadStart();
-
             //  WorkStage 에서 모듈 할당
             workStage.Module_Allocation();
             unloader.Module_Allocation();
             loader.Module_Allocation();
 
-            //  통신 Parts 초기화 (Connect 옵션에 따라 활성화 된 것들만 초기화 됨)
-            Comm_Init();
+        }
+
+        private void FormNew_Main_Load(object sender, EventArgs e)
+        {
+            InitializeDeviceStatusBindings();
 
             m_FormProgress = new ProgressForm("Initialize", "장비 초기화 진행중...");
             m_bHomeProgress_Show = false;
@@ -148,12 +148,10 @@ namespace SLD200_MSL
             Equipment.EqpSiriusViewer = new SpiralLab.Sirius.SiriusViewerForm();
             Equipment.EqpSiriusViewer_Origin = new SpiralLab.Sirius.SiriusViewerForm();
 
-
             //  Fiducial Align Data 를 보여주는 ListView 설정
             listView_Main_FiducialAlignData.View = View.Details;
             listView_Main_FiducialAlignData.GridLines = true;         //  구분선 표시
             listView_Main_FiducialAlignData.FullRowSelect = true;     //  한줄씩 선택 설정
-
 
             //  Module Socket Processing 상태를 보여주는 Picture Box
             Initialize_SocketStatus(Columns, Rows, SubColumns, SubRows); // 초기화
@@ -174,7 +172,7 @@ namespace SLD200_MSL
                     //workStage.PatternMatchingImage_Reticle_Loaded_Upper = true;
                 }
             }
-            
+
             m_strFile = string.Format("{0}\\PreAlign.bmp", ConfigManager.GetPatternImagePath());
             if (File.Exists(m_strFile))
             {
@@ -196,6 +194,18 @@ namespace SLD200_MSL
 
             label_Title_Stacker_LPort.Text = "Loader_Stacker Left:";
             label_Title_Stacker_RPort.Text = "Loader_Stacker Right:";
+
+            InitImageViewer();
+            InitializeDeviceStatusBindings();
+
+            //  Main Status 타이머
+            timer_Main_Status = new System.Windows.Forms.Timer();
+            timer_Main_Status.Interval = 100;
+            timer_Main_Status.Tick += new System.EventHandler(Timer_MainStatus_Func);
+            timer_Main_Status.Enabled = true;
+
+            //  통신 Parts 초기화 (Connect 옵션에 따라 활성화 된 것들만 초기화 됨)
+            Comm_Init();
         }
 
         private void OnUpdateResultOverlay(object sender, EventArgs e)
@@ -1059,7 +1069,6 @@ namespace SLD200_MSL
                 button_Main_Start.ForeColor = Color.Black;
             }
 
-
             //button_Main_Loader_Continue.Enabled = Equipment.MachineStop_byTimeout_Loader;
             //button_Main_Unloader_Continue.Enabled = Equipment.MachineStop_byTimeout_Unloader;
             //button_Main_WorkStage_Continue.Enabled = Equipment.SocketStopped;
@@ -1069,6 +1078,8 @@ namespace SLD200_MSL
                 m_bNeedAutoRunStop = false;
 
                 Equipment.AutoRunStatus = false;
+                workStage.SetRunStatus(RunStatus.Stop);
+
                 workStage.timer_MainWork.Stop();
                 workStage.m_MainWork_Start = false;
                 loader.m_LoaderWork_Start = false;
@@ -1825,6 +1836,7 @@ namespace SLD200_MSL
 
 
             Equipment.AutoRunStatus = true;
+            workStage.SetRunStatus(RunStatus.Run);
 
             return;
         }
@@ -2167,6 +2179,7 @@ namespace SLD200_MSL
 
             //최종 AutoRunStatus 로 장비 구동 상태 확인 및 제어!!
             Equipment.AutoRunStatus = true;
+            workStage.SetRunStatus(RunStatus.Run);
 
             workStage._isMainWorkRunning = false;
             workStage._isLaserDrillingWorkRunning = false;
@@ -2186,11 +2199,13 @@ namespace SLD200_MSL
 
             Equipment.AutoRunStatus = false;        // 자동운전중
             Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+            workStage.SetRunStatus(RunStatus.Stop);
 
             Equipment.ProcessingData_Parsing_byLoader = false;
 
             selectedRow = -1;
             selectedColumn = -1;
+            workStage.m_nSelectedSocket_Index = -1;
             workStage.m_nSocketAlign_StartIndex = -1;
             Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
             checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
@@ -2444,6 +2459,7 @@ namespace SLD200_MSL
 
             selectedRow = -1;
             selectedColumn = -1;
+            workStage.m_nSelectedSocket_Index = -1;
             workStage.m_nSocketAlign_StartIndex = -1;
             Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
             checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
@@ -2787,12 +2803,6 @@ namespace SLD200_MSL
                 Log.Write("SLD-200", Equipment.User_Name, "Button Click", "AutoRun 중 강제배출 버튼 Click");
             }
         }
-        private void FormNew_Main_Load(object sender, EventArgs e)
-        {
-            InitImageViewer();
-            InitializeDeviceStatusBindings();
-        }
-
         private void checkBox_Test_LaserDrillingCycle_CheckedChanged(object sender, EventArgs e)
         {
             Equipment.LaserDrillingCycleEnable_Manual = checkBox_Test_LaserDrillingCycle.Checked;

@@ -601,11 +601,11 @@ namespace QMC.Common
                 try
                 {
                     // SocketAlign
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "Aligntype", "0", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "Aligntype", "1", sb, sb.Capacity, path);
                     data.dSocketAlignType = Equipment.ToInt(sb.ToString());
                     NativeMethods.GetPrivateProfileString("SocketAlign", "MarkType", "0", sb, sb.Capacity, path);
                     data.dSocketMarkType = Equipment.ToInt(sb.ToString());
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkColor", "False", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkColor", "true", sb, sb.Capacity, path);
                     data.bSocketCircleColor = Equipment.ToBoolean(sb.ToString());
 
                     NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSize", "0.5", sb, sb.Capacity, path);
@@ -656,22 +656,22 @@ namespace QMC.Common
                     NativeMethods.GetPrivateProfileString("InspectROI", "EndY", "0", sb, sb.Capacity, path); 
                     data.pointPreInspectRoiEndLocation.Y = Equipment.ToInt(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("Vision", "AlgorithmType", "0", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("Vision", "AlgorithmType", "1", sb, sb.Capacity, path);
                     data.ePreAlgorithmType = (VisionAlgorithmType)Equipment.ToInt(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("Vision", "PatternShape", "0", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("Vision", "PatternShape", "1", sb, sb.Capacity, path);
                     data.ePreMarkType = (MarkTypeList)Equipment.ToInt(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("PreAlign_llumination", "IR", "3500", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("PreAlign_llumination", "IR", "3000", sb, sb.Capacity, path);
                     data.nPreIlluminationIR = Equipment.ToInt(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("CircleDetection", "Color", "False", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("CircleDetection", "Color", "true", sb, sb.Capacity, path);
                     data.bPreCircleColor = Equipment.ToBoolean(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("CircleDetection", "SizeW", "0.5", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("CircleDetection", "SizeW", "1.0", sb, sb.Capacity, path);
                     data.dPreCircleMarkRadius = Equipment.ToDouble(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("CircleDetection", "Spec", "0.08", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("CircleDetection", "Spec", "0.1", sb, sb.Capacity, path);
                     data.dPreCircleMarkSpec = Equipment.ToDouble(sb.ToString());
 
                     NativeMethods.GetPrivateProfileString("CircleDetection", "Score", "0.7", sb, sb.Capacity, path);
@@ -723,12 +723,12 @@ namespace QMC.Common
                     try
                     {
                         // 필요한 디렉터리 생성
-                        Directory.CreateDirectory(Path.GetDirectoryName(pointPreTrainImagePath));
+                        Directory.CreateDirectory(Path.GetDirectoryName(strFile));
 
-                        File.Copy(strFile, pointPreTrainImagePath, overwrite: true);
+                        //File.Copy(strFile, pointPreTrainImagePath, overwrite: true);
 
                         VisionImage defaultImg = new VisionImage();
-                        defaultImg.Load(pointPreTrainImagePath, VisionImage.FileFilter.bmp);
+                        defaultImg.Load(strFile, VisionImage.FileFilter.bmp);
                         return defaultImg;
                     }
                     catch (Exception ex)
@@ -3446,5 +3446,7 @@ namespace QMC.Common
             return m_bRet;
         }
 
+
+        public static bool m_bworkStageVacuumFail = false;
     }
 }

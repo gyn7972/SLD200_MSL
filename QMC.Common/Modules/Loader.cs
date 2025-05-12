@@ -6552,43 +6552,16 @@ namespace QMC.Common.Modules
                         m_strTemp = "Picker 에 Module 이 감지되지 않음.";
                         Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.LD_Transfer_PickerVacuumOn_Timeout);
-
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Picker 에 Module 이 감지되지 않음.");
-                        //  Out.
-                        //////////////////////////////////////////////////////////////////////////////////////////
-                        //  재시작 위치 저장용
-                        //
-                        Equipment.MachineStop_byTimeout_Loader = true;
-                        Loader_CurrentStatus_Save_StopedByTimeout();
-                        //
-                        //  재시작 위치 저장용
-                        //////////////////////////////////////////////////////////////////////////////////////////
-
-                        return AlarmPost(AlarmKey.LD_Transfer_PickerVacuumOn_Timeout);
-                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                     }
                     else if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
                     {
+                        // 20250512 - 감지가 되면 안됨. 
+                        // 여기는 들어오면 장비 멈춰야 함. 
                         Loader_CurrentStatus_Save_StopedByTimeout();
 
                         m_strTemp = "Work Stage 에 Module 이 감지됨. (Vacuum Sensor : On)";
                         Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.LD_Transfer_WorkStageVacuumOn_Timeout);
-
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage 에 Module 이 감지됨. (Vacuum Sensor : On)");
-
-                        //  Out.
-                        //////////////////////////////////////////////////////////////////////////////////////////
-                        //  재시작 위치 저장용
-                        //
-                        Equipment.MachineStop_byTimeout_Loader = true;
-                        Loader_CurrentStatus_Save_StopedByTimeout();
-                        //
-                        //  재시작 위치 저장용
-                        //////////////////////////////////////////////////////////////////////////////////////////
-
-                        return AlarmPost(AlarmKey.LD_Transfer_WorkStageVacuumOn_Timeout);
-                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
                     }
                     else if (workStage.m_nWorkStage_Move_Step > (int)WorkStage.WorkStage_Move_Step.None)                                                       //  Transfer Cycle 이 동작중
                     {
@@ -6907,6 +6880,7 @@ namespace QMC.Common.Modules
                     break;
 
 
+                    //20250512 //Stage 
                 case (int)Loader_Transfer_Step.WorkStagePutDown_WorkStage_Vacuum_On:                                     //  Work Stage, Vacuum On
 
                     Loader_Transfer_Step_WorkStagePutDown_WorkStage_Vacuum_On();
@@ -6928,19 +6902,14 @@ namespace QMC.Common.Modules
                     if ((!loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) &&
                         !loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer)) &&
                         
-                        ((Equipment.Machine_VacuumSensor_Enable && //workStage.workStageParameter.DI_Stage_Vacuum_Check() &&            //  Stage Vacuum 은 형성되지 않을 수도 있다. Picker 를 올린 후 다시 체크하도록 변경
-
+                        ((Equipment.Machine_VacuumSensor_Enable &&
                         (!Equipment.Machine_VacuumStableTime_Enable ||
                         (Equipment.Machine_VacuumStableTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_VacuumStableTime)))) ||
-
                         (!Equipment.Machine_VacuumSensor_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_SignalHoldTime))) &&
-
                         (!Equipment.Machine_VacuumBlowTime_Enable ||
                         (Equipment.Machine_VacuumBlowTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDTR) > Equipment.Machine_VacuumBlowTime))))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum Off 완료");
-
-
                         //////////////////////////////////////////////////////////////////////////////////////////
                         //  복원 지점 체크용 (Work Stage 에 Module Put Down 완료) - Work Stage 공압이 형성되었고, Picker 공압이 파기되었으므로, 자재가 Stage 에 안착되었다고 본다.
                         m_bLD_Transfer_toWorkStage_Module_PutDown_Complete_Flag = true;
@@ -6948,93 +6917,67 @@ namespace QMC.Common.Modules
                         //  복원 지점 체크용 (Work Stage 에 Module Put Down 완료)
                         //////////////////////////////////////////////////////////////////////////////////////////
                         //To do: stage 압력 스펙 제어 부분 성부장님 파라미터로 빼!!!  --> ㅇㅋ염
-                        if(workStage.workStageParameter.DI_Stage_Vacuum_Check() && (workStage.m_dEPRO_Value < Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel))       //  Stage Vacuum 센서와 Regulator 값을 함께 본다.
+                        if(workStage.workStageParameter.DI_Stage_Vacuum_Check() && 
+                          (workStage.m_dEPRO_Value < Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel))       //  Stage Vacuum 센서와 Regulator 값을 함께 본다.
                         {
+                            m_bworkStageVacuumFail = false;
                             m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_ReadyPos2_1stStep;
-
                         }
                         else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 20000)
                         {
-                            loaderParameter.DO_Loader_Picker_Blow(false);
+                            if(true)
+                            {
+                                m_bworkStageVacuumFail = true;
 
-                            Loader_CurrentStatus_Save_StopedByTimeout();
+                                m_strTemp = "Work Stage Vacuum On 실패. (Timeout)";
+                                Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
 
-                            m_strTemp = "Work Stage Vacuum On 실패. (Timeout)";
-                            Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
-                            return AlarmPost(AlarmKey.LD_Transfer_WorkStageVacuumOn_Timeout);
+                                m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_ReadyPos2_1stStep;
+                            }
+                            else
+                            {
+                                //20250512 = 기존 Flow
+                                loaderParameter.DO_Loader_Picker_Blow(false);
+                                Loader_CurrentStatus_Save_StopedByTimeout();
 
-                            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Work Stage Vacuum On 실패. (Timeout)");
-
-                            //  알람 정지 (LED Bar - Red Blink)
-                            Equipment.MachineStop_byAlarm = true;
-
-                            //timer_Motion_Home.Enabled = false;
-                            //m_btimer_Motion_Home_Stop = true;
-
-                            loaderParameter.DO_Loader_Picker_Blow(false);
-
-
-                            //////////////////////////////////////////////////////////////////////////////////////////
-                            //  재시작 위치 저장용
-                            //
-                            Equipment.MachineStop_byTimeout_Loader = true;
-                            Loader_CurrentStatus_Save_StopedByTimeout();
-                            //
-                            //  재시작 위치 저장용
-                            //////////////////////////////////////////////////////////////////////////////////////////                        
-
-                            return AlarmPost(AlarmKey.LD_Transfer_WorkStageVacuumOn_Timeout);
-                            m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
+                                m_strTemp = "Work Stage Vacuum On 실패. (Timeout)";
+                                Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
+                                return AlarmPost(AlarmKey.LD_Transfer_WorkStageVacuumOn_Timeout);
+                            }
                         }
                         else
                         {
                             //이 부분에서 자주 발생. 
                             workStage.workStageParameter.DO_Stage_Blow(false);                   //  Blow Off
-                            Thread.Sleep(100);  //너무 신호 빠른거 아닌지?
+                            Thread.Sleep(100);
                             workStage.workStageParameter.DO_Stage_Vacuum(true);
-                            
                             // Stage Vacuum On 시, 진공레귤레이터도 함께 동작시켜야 한다.
                             // 여기는 -60 <- 파라미터로 빼야함.
                             workStage.ElectroPneumaticRegulatorComm_Pressure_Set(-60.0);            //  임시로 -30 고정
-                            Thread.Sleep(100); //너무 신호 빠른거 아닌지?
+                            Thread.Sleep(100);
                         }
-
                     }
                     else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 10000)
                     {
-                        loaderParameter.DO_Loader_Picker_Blow(false);
+                        // Stage Vacuum 실패 시, 알람 미 발생 후 강제 배출. 
+                        if (true)
+                        {
+                            m_bworkStageVacuumFail = true;
 
-                        Loader_CurrentStatus_Save_StopedByTimeout();
+                            m_strTemp = "Work Stage Vacuum On 실패. (Timeout)";
+                            Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
 
-                        m_strTemp = "Transfer 축, Module Picker Vacuum Off 실패. (Timeout)";
-                        Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
-                        return AlarmPost(AlarmKey.LD_Transfer_PickerVacuumOff_Timeout);
+                            m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.WorkStagePutDown_TransferZ_Move_ReadyPos2_1stStep;
+                        }
+                        else
+                        {
+                            loaderParameter.DO_Loader_Picker_Blow(false);
+                            Loader_CurrentStatus_Save_StopedByTimeout();
 
-
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum Off 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
-                        loaderParameter.DO_Loader_Picker_Blow(false);
-
-
-                        //////////////////////////////////////////////////////////////////////////////////////////
-                        //  재시작 위치 저장용
-                        //
-                        Equipment.MachineStop_byTimeout_Loader = true;
-                        Loader_CurrentStatus_Save_StopedByTimeout();
-                        //
-                        //  재시작 위치 저장용
-                        //////////////////////////////////////////////////////////////////////////////////////////                        
-
-                        return AlarmPost(AlarmKey.LD_Transfer_PickerVacuumOff_Timeout);
-                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
-
-                        MessageBox.Show("Transfer 축, Module Picker Vacuum Off 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            m_strTemp = "Transfer 축, Module Picker Vacuum Off 실패. (Timeout)";
+                            Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
+                            return AlarmPost(AlarmKey.LD_Transfer_PickerVacuumOff_Timeout);
+                        }
                     }
                     break;
 
@@ -7062,19 +7005,6 @@ namespace QMC.Common.Modules
                         m_strTemp = "Transfer Z 축, 대기 위치로 1단계 이동 실패. (Timeout)";
                         Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.LD_TransferZ_Move_ReadyPos_Timeout);
-
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 1단계 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
-                        return AlarmPost(AlarmKey.LD_TransferZ_Move_ReadyPos_Timeout);
-                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
-
-                        MessageBox.Show("Transfer Z 축, 대기 위치로 1단계 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
 
@@ -7101,59 +7031,37 @@ namespace QMC.Common.Modules
                             {
                                 //  Loader 에서 Pick Up 한 Port 번호를 Work Stage 에 넘겨준다.
                                 Equipment.AUTORUN_WorkStage_PickUpPort = Equipment.AUTORUN_Loader_PickUpPort;
-
                                 m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
                             }
                             else if (TickCount_Elapsed((int)TickType.TICK_LDTR) > 10000)
                             {
-                                //////////////////////////////////////////////////////////////////////////////////////////
-                                //  복원 지점 체크용 (Work Stage 에 Module Put Down 실패) - Picker 공압이 파기되지 않음
-                                //
-                                m_bLD_Transfer_toWorkStage_Module_PutDown_Complete_Flag = false;
-                                //
-                                //  복원 지점 체크용 (Work Stage 에 Module Put Down 실패)
-                                //////////////////////////////////////////////////////////////////////////////////////////
-                                ///
-                                Loader_CurrentStatus_Save_StopedByTimeout();
+                                if (true)
+                                {
+                                    m_bworkStageVacuumFail = true;
+                                    m_strTemp = "Module 을 Work Stage 에 정상적으로 내려놓지 못함. Work Stage 에 공압이 확인되지 않음.";
+                                    Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
 
-                                m_strTemp = "Module 을 Work Stage 에 정상적으로 내려놓지 못함. Work Stage 에 공압이 확인되지 않음.";
-                                Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
-                                return AlarmPost(AlarmKey.LD_Transfer_WorkStageVacuumOn_Timeout);
-
-                                Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Module 을 Work Stage 에 정상적으로 내려놓지 못함. Work Stage 에 공압이 확인되지 않음.");
-
-
-                                //////////////////////////////////////////////////////////////////////////////////////////
-                                //  복원 지점 체크용 (Work Stage 에 Module Put Down 실패) - Picker 공압이 파기되지 않음
-                                //
-                                m_bLD_Transfer_toWorkStage_Module_PutDown_Complete_Flag = false;
-                                //
-                                //  복원 지점 체크용 (Work Stage 에 Module Put Down 실패)
-                                //////////////////////////////////////////////////////////////////////////////////////////
-
-                                //  알람 정지 (LED Bar - Red Blink)
-                                Equipment.MachineStop_byAlarm = true;
-
-                                //////////////////////////////////////////////////////////////////////////////////////////
-                                //  재시작 위치 저장용
-                                //
-                                Equipment.MachineStop_byTimeout_Loader = true;
-                                Loader_CurrentStatus_Save_StopedByTimeout();
-                                //
-                                //  재시작 위치 저장용
-                                //////////////////////////////////////////////////////////////////////////////////////////
-
-                                return AlarmPost(AlarmKey.LD_Transfer_WorkStageVacuumOn_Timeout);
-                                m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
-
-                                MessageBox.Show("Module 을 Work Stage 에 내려놓지 못함.\r\n[Work Stage Vacuum 확인되지 않음]\r\n\r\n[Port 의 Module Pick Up 부터 다시 진행됩니다.]\r\n\r\n[Picker 에 Module 이 있다면 제거하세요.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    Equipment.AUTORUN_WorkStage_PickUpPort = Equipment.AUTORUN_Loader_PickUpPort;
+                                    m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
+                                }
+                                else
+                                {
+                                    //////////////////////////////////////////////////////////////////////////////////////////
+                                    //  복원 지점 체크용 (Work Stage 에 Module Put Down 실패) - Picker 공압이 파기되지 않음
+                                    m_bLD_Transfer_toWorkStage_Module_PutDown_Complete_Flag = false;
+                                    //  복원 지점 체크용 (Work Stage 에 Module Put Down 실패)
+                                    //////////////////////////////////////////////////////////////////////////////////////////
+                                    Loader_CurrentStatus_Save_StopedByTimeout();
+                                    m_strTemp = "Module 을 Work Stage 에 정상적으로 내려놓지 못함. Work Stage 에 공압이 확인되지 않음.";
+                                    Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
+                                    return AlarmPost(AlarmKey.LD_Transfer_WorkStageVacuumOn_Timeout);
+                                }
                             }
                         }
                         else
                         {
                             //  Loader 에서 Pick Up 한 Port 번호를 Work Stage 에 넘겨준다.
                             Equipment.AUTORUN_WorkStage_PickUpPort = Equipment.AUTORUN_Loader_PickUpPort;
-
                             m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Complete;
                         }
                     }
@@ -7162,19 +7070,6 @@ namespace QMC.Common.Modules
                         m_strTemp = "Transfer Z 축, 대기 위치로 2단계 이동 실패. (Timeout)";
                         Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
                         return AlarmPost(AlarmKey.LD_TransferZ_Move_ReadyPos_Timeout);
-
-                        Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer Z 축, 대기 위치로 2단계 이동 실패. (Timeout)");
-
-                        //  알람 정지 (LED Bar - Red Blink)
-                        Equipment.MachineStop_byAlarm = true;
-
-                        //timer_Motion_Home.Enabled = false;
-                        //m_btimer_Motion_Home_Stop = true;
-
-                        return AlarmPost(AlarmKey.LD_TransferZ_Move_ReadyPos_Timeout);
-                        m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.None;
-
-                        MessageBox.Show("Transfer Z 축, 대기 위치로 2단계 이동 실패", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     break;
                 /// <summary>
@@ -10563,10 +10458,6 @@ namespace QMC.Common.Modules
         #endregion
 
 
-
-
-
-
         //motion 함수 
         public double GetEncLoaderPos_Motor(Loader.nAxis nAxis)
         {
@@ -10847,30 +10738,10 @@ namespace QMC.Common.Modules
                         MC_Func.MC_MovePosition((int)Loader.nAxis.TR_Z, stLDULTeachingPos[nTeachingPos].LD_Transfer_Z,
                                                 dVelocity, dAcc, dAcc);
 
-                        if(bSynchronous)
+                        if (bSynchronous)
                         {
-                            bool bTimeout = false;
-                            DateTime StartTime = DateTime.Now;
-                            TimeSpan ProcessTime;
-                            while (true)
-                            {
-                                if (IsLoader_TeachingPositionsTransferZ(nTeachingPos))
-                                    break;
-
-                                //Config.TimeOut
-                                if (100000 > 0) // 2000 정도면 2초?
-                                {
-                                    ProcessTime = DateTime.Now - StartTime;
-                                    if (ProcessTime.TotalMilliseconds >= 100000)
-                                    {
-                                        bTimeout = true;
-                                        break;
-                                    }
-                                }
-                                Thread.Sleep(1);
-                            }
-
-                            if (bTimeout)
+                            bool bWaitZ = WaitUntilLoaderInPositionAsync(Loader.nAxis.TR_Z, stLDULTeachingPos[nTeachingPos].LD_Transfer_Z).Result;
+                            if (!bWaitZ)
                             {
                                 strTemp = string.Format("MovetoLoader_TeachingPositionsTransferZ [Fail]: LoaderTransferZ Axis이 이동 실패.");
                                 Log.Write("SLD-200", Equipment.User_Name, strTemp);
@@ -10886,6 +10757,42 @@ namespace QMC.Common.Modules
                                 return bRtn = false;
                             }
                         }
+
+                        //if (bSynchronous)
+                        //{
+                        //    bool bTimeout = false;
+                        //    DateTime StartTime = DateTime.Now;
+                        //    TimeSpan ProcessTime;
+                        //    while (true)
+                        //    {
+                        //        if (IsLoader_TeachingPositionsTransferZ(nTeachingPos))
+                        //            break;
+                        //        //Config.TimeOut
+                        //        if (100000 > 0) // 2000 정도면 2초?
+                        //        {
+                        //            ProcessTime = DateTime.Now - StartTime;
+                        //            if (ProcessTime.TotalMilliseconds >= 100000)
+                        //            {
+                        //                bTimeout = true;
+                        //                break;
+                        //            }
+                        //        }
+                        //        Thread.Sleep(1);
+                        //    }
+                        //    if (bTimeout)
+                        //    {
+                        //        strTemp = string.Format("MovetoLoader_TeachingPositionsTransferZ [Fail]: LoaderTransferZ Axis이 이동 실패.");
+                        //        Log.Write("SLD-200", Equipment.User_Name, strTemp);
+                        //        Alarm alarm = new Alarm();
+                        //        alarm.Title = "Loader TransferZ Timeout";
+                        //        alarm.Code = -100;
+                        //        alarm.Grade = "Stop";
+                        //        alarm.Source = this.Name;
+                        //        alarm.Cause = "Loader TransferZ Timeout이 발생했습니다. Loader TransferZ을 확인해주세요.";
+                        //        //AlarmPost(AlarmKey.LoaderTransferZTimeout);
+                        //        return bRtn = false;
+                        //    }
+                        //}
                     }
 
                     bRtn = true;
@@ -10995,30 +10902,10 @@ namespace QMC.Common.Modules
                                                     dVelocity, dAcc, dAcc);
                         }
 
-                        if(bSynchronous)
+                        if (bSynchronous)
                         {
-                            bool bTimeout = false;
-                            DateTime StartTime = DateTime.Now;
-                            TimeSpan ProcessTime;
-                            while (true)
-                            {
-                                if (IsLoader_TeachingPositionsTransferX(nTeachingPos))
-                                    break;
-
-                                //Config.TimeOut
-                                if (100000 > 0) // 2000 정도면 10초?
-                                {
-                                    ProcessTime = DateTime.Now - StartTime;
-                                    if (ProcessTime.TotalMilliseconds >= 100000)
-                                    {
-                                        bTimeout = true;
-                                        break;
-                                    }
-                                }
-                                Thread.Sleep(1);
-                            }
-
-                            if (bTimeout)
+                            bool bWaitX = WaitUntilLoaderInPositionAsync(Loader.nAxis.TR_X, stLDULTeachingPos[nTeachingPos].LD_Transfer_X).Result;
+                            if (!bWaitX)
                             {
                                 strTemp = string.Format("MovetoLoader_TeachingPositionsTransferX [Fail]: LoaderTransferX Axis이 이동 실패.");
                                 Log.Write("SLD-200", Equipment.User_Name, strTemp);
@@ -11034,8 +10921,48 @@ namespace QMC.Common.Modules
                                 return bRtn = false;
                             }
                         }
-
                         bRtn = true;
+
+                        //if (bSynchronous)
+                        //{
+                        //    bool bTimeout = false;
+                        //    DateTime StartTime = DateTime.Now;
+                        //    TimeSpan ProcessTime;
+                        //    while (true)
+                        //    {
+                        //        if (IsLoader_TeachingPositionsTransferX(nTeachingPos))
+                        //            break;
+
+                        //        //Config.TimeOut
+                        //        if (100000 > 0) // 2000 정도면 10초?
+                        //        {
+                        //            ProcessTime = DateTime.Now - StartTime;
+                        //            if (ProcessTime.TotalMilliseconds >= 100000)
+                        //            {
+                        //                bTimeout = true;
+                        //                break;
+                        //            }
+                        //        }
+                        //        Thread.Sleep(1);
+                        //    }
+
+                        //    if (bTimeout)
+                        //    {
+                        //        strTemp = string.Format("MovetoLoader_TeachingPositionsTransferX [Fail]: LoaderTransferX Axis이 이동 실패.");
+                        //        Log.Write("SLD-200", Equipment.User_Name, strTemp);
+
+                        //        Alarm alarm = new Alarm();
+                        //        alarm.Title = "Loader TransferX Timeout";
+                        //        alarm.Code = -100;
+                        //        alarm.Grade = "Stop";
+                        //        alarm.Source = this.Name;
+                        //        alarm.Cause = "Loader TransferX Timeout이 발생했습니다. Loader TransferX을 확인해주세요.";
+                        //        //AlarmPost(AlarmKey.LoaderTransferZTimeout);
+
+                        //        return bRtn = false;
+                        //    }
+                        //}
+                        //bRtn = true;
                     }
                 }
                 else
@@ -11171,7 +11098,6 @@ namespace QMC.Common.Modules
 
             return bRtn;
         }
-
 
         public bool MovetoLoader_ABS_Positions(Loader.nAxis nAxis, double dPos, Type_Motor_Speed typeSpeed)
         {
@@ -11341,5 +11267,26 @@ namespace QMC.Common.Modules
             return bRtn;
         }
 
+        public Task<bool> WaitUntilLoaderInPositionAsync(Loader.nAxis axis, double targetPos, int timeoutMs = 20000)
+        {
+            return Task.Run(() =>
+            {
+                int wait = 0;
+                const int interval = 5;
+
+                while (wait < timeoutMs)
+                {
+                    if (MC_Func.MC_GetDone((int)axis) &&
+                        MC_Func.MC_PosTolerance((int)axis, targetPos))
+                        return true;
+
+                    Thread.Sleep(interval);
+                    wait += interval;
+                }
+
+                Log.Write("Timeout", $"[Loader] Axis {axis} timeout at {timeoutMs}ms");
+                return false;
+            });
+        }
     }
 }

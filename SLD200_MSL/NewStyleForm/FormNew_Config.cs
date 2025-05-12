@@ -83,6 +83,14 @@ namespace SLD200_MSL
         {
             InitializeComponent();
 
+            //Size 축소 / 확대 안되게 하기 위한 코드.
+            this.AutoScaleMode = AutoScaleMode.None;
+            this.DoubleBuffered = true;
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+            this.UpdateStyles();
+
+            this.Load += FormNew_Config_Load; // 여기서 Load 이벤트 연결
+
             m_keyPad = new FormNew_KeyPad();
 
             ModuleCollection m_collectionModules;
@@ -115,15 +123,20 @@ namespace SLD200_MSL
                     bds = module as Bds;
                 }
             }
+        }
 
+        private void FormNew_Config_Load(object sender, EventArgs e)
+        {
             loader.Teaching_Position_Load();
-            //loader.Move_Properties_Load();
             workStage.Teaching_Position_Load();
-            //workStage.Move_Properties_Load();
             vision.Teaching_Position_Load();
-            //vision.Move_Properties_Load();
             bds.Teaching_Position_Load();
-            //bds.Move_Properties_Load();
+
+            //  Status 타이머
+            timer_Status = new System.Windows.Forms.Timer();
+            timer_Status.Interval = 200;
+            timer_Status.Tick += new System.EventHandler(Timer_Status_Func);
+            timer_Status.Enabled = true;
 
             listBox_Config_LDUL_TeachingPositions.SelectedIndex = 0;                                                                            //  LDUL Teaching Position 첫번째 항목 선택
             textBox_Config_LDUL_JogMove_StepSize.Text = Equipment.stAxisParam[(int)Loader.nAxis.TR_X].Jog_StepSize_Coarse.ToString();           //  LDUL Jog Move Step Size 초기화
@@ -145,23 +158,7 @@ namespace SLD200_MSL
             m_nBDSAddrCount = 0;
 
             MotionMovement_AllReset();
-
-            //  Status 타이머
-            timer_Status = new System.Windows.Forms.Timer();
-            timer_Status.Interval = 200;
-            timer_Status.Tick += new System.EventHandler(Timer_Status_Func);
-            timer_Status.Enabled = true;
-
-            //ThreadStart();
-
             m_bEmgBtn_Clicked = false;
-
-            //checkedListBox_Config_LDUL_DIO_Input.SetItemChecked(0, true);                     //  IO 상태 표시
-
-            ////Action
-            //workStage.ActionLaserDrillingStep += OnLaserDrillingStep;
-            //loader.ActionLoaderTransferStep += OnLoaderStep;
-            //unloader.ActionUnloaderTransferStep += OnUnLoaderStep;
 
             radioButton_Config_LDUL_Move_MoveMode_Fine.Checked = false;
             radioButton_Config_LDUL_Move_MoveMode_Coarse.Checked = true;
@@ -169,11 +166,11 @@ namespace SLD200_MSL
             radioButton_Config_WorkStage_Move_MoveMode_Fine.Checked = false;
             radioButton_Config_WorkStage_Move_MoveMode_Coarse.Checked = true;
 
-
             InitializeJogButtons();
         }
 
-        
+
+
         protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
@@ -4244,7 +4241,7 @@ namespace SLD200_MSL
             }
         }
         
-        private void Button_Config_LDUL_TeachingPositions_Move_Click(object sender, EventArgs e)
+        private async void Button_Config_LDUL_TeachingPositions_Move_Click(object sender, EventArgs e)
         {
             //  Loader Unloader Teaching Position 이동
             //var mb = new MessageBoxOk();
@@ -4261,6 +4258,7 @@ namespace SLD200_MSL
 
             var mb = new MessageBoxYesNo();
             Equipment.Type_Motor_Speed motor_Speed;
+
             //  속도 설정
             if (radioButton_Config_LDUL_TeachingPositions_MoveMode_Fine.Checked)
             {
@@ -4271,227 +4269,237 @@ namespace SLD200_MSL
                 motor_Speed = Equipment.Type_Motor_Speed.Coarse;
             }
 
-            //  동작할 Unit 결정
-            switch (nIndex)
+            try
             {
-                //  Loader R-Port
-                case 0:
-                case 1:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_RPort;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader R-Port Z0 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    loader.MovetoLoader_TeachingPositionsPortR(nIndex, motor_Speed);
-                    break;
-                //  Loader L-Port
-                case 2:
-                case 3:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_LPort;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader L-Port Z1 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    loader.MovetoLoader_TeachingPositionsPortL(nIndex, motor_Speed);
-                    break;
-
-                //  Loader Transfer
-                case 4:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_Transfer;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    // Loader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
-                    // MovetoLoader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
-                    if(loader.MovetoLoader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
+                await Task.Run(() =>
+                {
+                    //  동작할 Unit 결정
+                    switch (nIndex)
                     {
-                        loader.MovetoLoader_TeachingPositionsTransferZ(nIndex, motor_Speed);
+                        //  Loader R-Port
+                        case 0:
+                        case 1:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_RPort;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader R-Port Z0 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            loader.MovetoLoader_TeachingPositionsPortR(nIndex, motor_Speed);
+                            break;
+                        //  Loader L-Port
+                        case 2:
+                        case 3:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_LPort;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader L-Port Z1 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            loader.MovetoLoader_TeachingPositionsPortL(nIndex, motor_Speed);
+                            break;
+
+                        //  Loader Transfer
+                        case 4:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_Transfer;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            // Loader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
+                            // MovetoLoader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
+                            if (loader.MovetoLoader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
+                            {
+                                loader.MovetoLoader_TeachingPositionsTransferZ(nIndex, motor_Speed);
+                            }
+                            break;
+                        case 5:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_Transfer;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            // Loader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
+                            // MovetoLoader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
+                            if (loader.MovetoLoader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
+                            {
+                                loader.MovetoLoader_TeachingPositionsTransferZ(nIndex, motor_Speed);
+                            }
+                            break;
+                        case 6:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_Transfer;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            // Loader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
+                            // MovetoLoader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
+                            if (loader.MovetoLoader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
+                            {
+                                loader.MovetoLoader_TeachingPositionsTransferZ(nIndex, motor_Speed);
+                            }
+                            break;
+                        case 7:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_Transfer;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            // Loader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
+                            // MovetoLoader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
+                            if (loader.MovetoLoader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
+                            {
+                                loader.MovetoLoader_TeachingPositionsTransferZ(nIndex, motor_Speed);
+                            }
+                            break;
+                        case 8:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_Transfer;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            // Loader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
+                            // MovetoLoader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
+                            if (loader.MovetoLoader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
+                            {
+                                loader.MovetoLoader_TeachingPositionsTransferZ(nIndex, motor_Speed);
+                            }
+                            break;
+
+                        // Loader M-Aligner
+                        case 9:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_MAligner;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader M-Aligner X/Y 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            loader.MovetoLoader_TeachingPositionsMAlign(nIndex, motor_Speed);
+                            break;
+                        case 10:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_MAligner;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader M-Aligner X/Y 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            loader.MovetoLoader_TeachingPositionsMAlign(nIndex, motor_Speed);
+                            break;
+                        case 11:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_MAligner;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader M-Aligner X/Y 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            loader.MovetoLoader_TeachingPositionsMAlign(nIndex, motor_Speed);
+                            break;
+
+                        //  Unloader Transfer
+                        case 12:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_Transfer;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            // Unloader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
+                            // MovetoUnloader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
+                            if (unloader.MovetoUnloader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
+                            {
+                                unloader.MovetoUnloader_TeachingPositionsTransferZ(nIndex, motor_Speed);
+                            }
+                            break;
+                        case 13:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_Transfer;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            // Unloader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
+                            // MovetoUnloader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
+                            if (unloader.MovetoUnloader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
+                            {
+                                unloader.MovetoUnloader_TeachingPositionsTransferZ(nIndex, motor_Speed);
+                            }
+                            break;
+                        case 14:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_Transfer;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            // Unloader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
+                            // MovetoUnloader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
+                            if (unloader.MovetoUnloader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
+                            {
+                                unloader.MovetoUnloader_TeachingPositionsTransferZ(nIndex, motor_Speed);
+                            }
+                            break;
+                        case 15:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_Transfer;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            // Unloader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
+                            // MovetoUnloader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
+                            if (unloader.MovetoUnloader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
+                            {
+                                unloader.MovetoUnloader_TeachingPositionsTransferZ(nIndex, motor_Speed);
+                            }
+                            break;
+                        case 16:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_Transfer;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            // Unloader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
+                            // MovetoUnloader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
+                            if (unloader.MovetoUnloader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
+                            {
+                                unloader.MovetoUnloader_TeachingPositionsTransferZ(nIndex, motor_Speed);
+                            }
+                            break;
+
+                        //  Unloader R-Port
+                        case 17:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_Transfer;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Port R 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            unloader.MovetoUnloader_TeachingPositionsPortR(nIndex, motor_Speed);
+                            break;
+                        case 18:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_Transfer;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Port R 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            unloader.MovetoUnloader_TeachingPositionsPortR(nIndex, motor_Speed);
+                            break;
+                        //  Unloader L-Port
+                        case 19:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_LPort;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Port L 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            unloader.MovetoUnloader_TeachingPositionsPortL(nIndex, motor_Speed);
+                            break;
+                        case 20:
+                            m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_LPort;
+                            mb = new MessageBoxYesNo();
+                            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Port L 축을 선택 위치로 보내시겠습니까?"))
+                                return;
+
+                            unloader.MovetoUnloader_TeachingPositionsPortL(nIndex, motor_Speed);
+                            break;
+
+                        default:
+                            break;
                     }
-                    break;
-                case 5:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_Transfer;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    // Loader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
-                    // MovetoLoader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
-                    if (loader.MovetoLoader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
-                    {
-                        loader.MovetoLoader_TeachingPositionsTransferZ(nIndex, motor_Speed);
-                    }
-                    break;
-                case 6:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_Transfer;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    // Loader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
-                    // MovetoLoader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
-                    if (loader.MovetoLoader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
-                    {
-                        loader.MovetoLoader_TeachingPositionsTransferZ(nIndex, motor_Speed);
-                    }
-                    break;
-                case 7:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_Transfer;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    // Loader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
-                    // MovetoLoader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
-                    if (loader.MovetoLoader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
-                    {
-                        loader.MovetoLoader_TeachingPositionsTransferZ(nIndex, motor_Speed);
-                    }
-                    break;
-                case 8:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_Transfer;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    // Loader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
-                    // MovetoLoader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
-                    if (loader.MovetoLoader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
-                    {
-                        loader.MovetoLoader_TeachingPositionsTransferZ(nIndex, motor_Speed);
-                    }
-                    break;
-
-                // Loader M-Aligner
-                case 9:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_MAligner;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader M-Aligner X/Y 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    loader.MovetoLoader_TeachingPositionsMAlign(nIndex, motor_Speed);
-                    break;
-                case 10:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_MAligner;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader M-Aligner X/Y 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    loader.MovetoLoader_TeachingPositionsMAlign(nIndex, motor_Speed);
-                    break;
-                case 11:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.LD_MAligner;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Loader M-Aligner X/Y 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    loader.MovetoLoader_TeachingPositionsMAlign(nIndex, motor_Speed);
-                    break;
-
-                //  Unloader Transfer
-                case 12:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_Transfer;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    // Unloader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
-                    // MovetoUnloader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
-                    if (unloader.MovetoUnloader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
-                    {
-                        unloader.MovetoUnloader_TeachingPositionsTransferZ(nIndex, motor_Speed);
-                    }
-                    break;
-                case 13:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_Transfer;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    // Unloader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
-                    // MovetoUnloader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
-                    if (unloader.MovetoUnloader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
-                    {
-                        unloader.MovetoUnloader_TeachingPositionsTransferZ(nIndex, motor_Speed);
-                    }
-                    break;
-                case 14:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_Transfer;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    // Unloader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
-                    // MovetoUnloader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
-                    if (unloader.MovetoUnloader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
-                    {
-                        unloader.MovetoUnloader_TeachingPositionsTransferZ(nIndex, motor_Speed);
-                    }
-                    break;
-                case 15:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_Transfer;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    // Unloader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
-                    // MovetoUnloader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
-                    if (unloader.MovetoUnloader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
-                    {
-                        unloader.MovetoUnloader_TeachingPositionsTransferZ(nIndex, motor_Speed);
-                    }
-                    break;
-                case 16:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_Transfer;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Transfer X / Z 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    // Unloader Transfer X Axis 이동 시 무조건 Z축은 Safety Position으로 이동 후에 움직인다.
-                    // MovetoUnloader_TeachingPositionsTransferX 함수 내부에서 Z축을 무조건 Safety Position으로 이동 시킨다.
-                    if (unloader.MovetoUnloader_TeachingPositionsTransferX(nIndex, motor_Speed, true))
-                    {
-                        unloader.MovetoUnloader_TeachingPositionsTransferZ(nIndex, motor_Speed);
-                    }
-                    break;
-
-                //  Unloader R-Port
-                case 17:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_Transfer;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Port R 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    unloader.MovetoUnloader_TeachingPositionsPortR(nIndex, motor_Speed);
-                    break;
-                case 18:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_Transfer;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Port R 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    unloader.MovetoUnloader_TeachingPositionsPortR(nIndex, motor_Speed);
-                    break;
-                //  Unloader L-Port
-                case 19:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_LPort;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Port L 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    unloader.MovetoUnloader_TeachingPositionsPortL(nIndex, motor_Speed);
-                    break;
-                case 20:
-                    m_nLDUL_ActiveUnit = (int)LDUL_Units.UL_LPort;
-                    mb = new MessageBoxYesNo();
-                    if (DialogResult.Yes != mb.ShowDialog("Question ?", "Unloader Port L 축을 선택 위치로 보내시겠습니까?"))
-                        return;
-
-                    unloader.MovetoUnloader_TeachingPositionsPortL(nIndex, motor_Speed);
-                    break;
-
-                default:
-                    break;
+                });
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
             }
         }
 

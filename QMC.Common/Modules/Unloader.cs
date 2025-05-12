@@ -2617,13 +2617,9 @@ namespace QMC.Common.Modules
             //4. NG-Port 에 Module Drop Cycle
 
             if (Equipment.AutoRunStatus &&
-
                 !Equipment.SocketStopped &&                                             //  Socket Stop 시 동작 안되도록
-
                 !Equipment.CycleStopped_UnloaderTransfer &&                             //  Cycle Stop 시 동작 안되도록
-
                 !Equipment.MachineStop_byTimeout_Unloader &&                            //  Unloader 가 Time out 으로 멈추면 동작 안되도록
-
                 m_nUnloader_Transfer_Step == (int)Unloader_Transfer_Step.None)
             {
                 //  Work Stage 에서 Module 을 Pick Up 하기 위한 조건
@@ -7008,28 +7004,8 @@ namespace QMC.Common.Modules
 
                         if (bSynchronous)
                         {
-                            bool bTimeout = false;
-                            DateTime StartTime = DateTime.Now;
-                            TimeSpan ProcessTime;
-                            while (true)
-                            {
-                                if (IsUnloader_TeachingPositionsTransferZ(nTeachingPos))
-                                    break;
-
-                                //Config.TimeOut
-                                if (2000 > 0) // 2000 정도면 2초?
-                                {
-                                    ProcessTime = DateTime.Now - StartTime;
-                                    if (ProcessTime.TotalMilliseconds >= 2000)
-                                    {
-                                        bTimeout = true;
-                                        break;
-                                    }
-                                }
-                                Thread.Sleep(1);
-                            }
-
-                            if (bTimeout)
+                            bool bWaitX = WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_Z, loader.stLDULTeachingPos[nTeachingPos].UL_Transfer_Z).Result;
+                            if (!bWaitX)
                             {
                                 strTemp = string.Format("MovetoUnloader_TeachingPositionsTransferZ [Fail]: UnloaderTransferZ Axis이 이동 실패.");
                                 Log.Write("SLD-200", Equipment.User_Name, strTemp);
@@ -7045,6 +7021,47 @@ namespace QMC.Common.Modules
                                 return bRtn = false;
                             }
                         }
+                        bRtn = true;
+
+                        //if (bSynchronous)
+                        //{
+                        //    bool bTimeout = false;
+                        //    DateTime StartTime = DateTime.Now;
+                        //    TimeSpan ProcessTime;
+                        //    while (true)
+                        //    {
+                        //        if (IsUnloader_TeachingPositionsTransferZ(nTeachingPos))
+                        //            break;
+
+                        //        //Config.TimeOut
+                        //        if (2000 > 0) // 2000 정도면 2초?
+                        //        {
+                        //            ProcessTime = DateTime.Now - StartTime;
+                        //            if (ProcessTime.TotalMilliseconds >= 2000)
+                        //            {
+                        //                bTimeout = true;
+                        //                break;
+                        //            }
+                        //        }
+                        //        Thread.Sleep(1);
+                        //    }
+
+                        //    if (bTimeout)
+                        //    {
+                        //        strTemp = string.Format("MovetoUnloader_TeachingPositionsTransferZ [Fail]: UnloaderTransferZ Axis이 이동 실패.");
+                        //        Log.Write("SLD-200", Equipment.User_Name, strTemp);
+
+                        //        Alarm alarm = new Alarm();
+                        //        alarm.Title = "Unloader TransferZ Timeout";
+                        //        alarm.Code = -100;
+                        //        alarm.Grade = "Stop";
+                        //        alarm.Source = this.Name;
+                        //        alarm.Cause = "Unloader TransferZ Timeout이 발생했습니다. Unloader TransferZ을 확인해주세요.";
+                        //        //AlarmPost(AlarmKey.LoaderTransferZTimeout);
+
+                        //        return bRtn = false;
+                        //    }
+                        //}
                     }
 
                     bRtn = true;
@@ -7127,7 +7144,7 @@ namespace QMC.Common.Modules
             double dAcc = 0.0;
             try
             {
-                //Loader Z-Axis를 무조건 safety Pos 으로 보내고 이동.
+                //Unloader Z-Axis를 무조건 safety Pos 으로 보내고 이동.
                 if (MovetoUnloader_TeachingPositionsTransferZ((int)LDUL_TeachingPosList.UL_TR_SafetyPos, typeSpeed, true))
                 {
                     if (IsInterlock_UnloaderTransferX_Enabled())
@@ -7156,28 +7173,8 @@ namespace QMC.Common.Modules
 
                         if (bSynchronous)
                         {
-                            bool bTimeout = false;
-                            DateTime StartTime = DateTime.Now;
-                            TimeSpan ProcessTime;
-                            while (true)
-                            {
-                                if (IsUnloader_TeachingPositionsTransferX(nTeachingPos))
-                                    break;
-
-                                //Config.TimeOut
-                                if (100000 > 0) // 2000 정도면 2초?
-                                {
-                                    ProcessTime = DateTime.Now - StartTime;
-                                    if (ProcessTime.TotalMilliseconds >= 10000000)
-                                    {
-                                        bTimeout = true;
-                                        break;
-                                    }
-                                }
-                                Thread.Sleep(1);
-                            }
-
-                            if (bTimeout)
+                            bool bWaitX = WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_X, loader.stLDULTeachingPos[nTeachingPos].UL_Transfer_X).Result;
+                            if (!bWaitX)
                             {
                                 strTemp = string.Format("MovetoUnloader_TeachingPositionsTransferX [Fail]: UnloaderTransferX Axis이 이동 실패.");
                                 Log.Write("SLD-200", Equipment.User_Name, strTemp);
@@ -7193,8 +7190,48 @@ namespace QMC.Common.Modules
                                 return bRtn = false;
                             }
                         }
-
                         bRtn = true;
+
+                        //if (bSynchronous)
+                        //{
+                        //    bool bTimeout = false;
+                        //    DateTime StartTime = DateTime.Now;
+                        //    TimeSpan ProcessTime;
+                        //    while (true)
+                        //    {
+                        //        if (IsUnloader_TeachingPositionsTransferX(nTeachingPos))
+                        //            break;
+
+                        //        //Config.TimeOut
+                        //        if (100000 > 0) // 2000 정도면 2초?
+                        //        {
+                        //            ProcessTime = DateTime.Now - StartTime;
+                        //            if (ProcessTime.TotalMilliseconds >= 10000000)
+                        //            {
+                        //                bTimeout = true;
+                        //                break;
+                        //            }
+                        //        }
+                        //        Thread.Sleep(1);
+                        //    }
+
+                        //    if (bTimeout)
+                        //    {
+                        //        strTemp = string.Format("MovetoUnloader_TeachingPositionsTransferX [Fail]: UnloaderTransferX Axis이 이동 실패.");
+                        //        Log.Write("SLD-200", Equipment.User_Name, strTemp);
+
+                        //        Alarm alarm = new Alarm();
+                        //        alarm.Title = "Loader TransferX Timeout";
+                        //        alarm.Code = -100;
+                        //        alarm.Grade = "Stop";
+                        //        alarm.Source = this.Name;
+                        //        alarm.Cause = "Unloader TransferX Timeout이 발생했습니다. Unloader TransferX을 확인해주세요.";
+                        //        //AlarmPost(AlarmKey.LoaderTransferZTimeout);
+
+                        //        return bRtn = false;
+                        //    }
+                        //}
+                        //bRtn = true;
                     }
                 }
                 else
@@ -7381,6 +7418,28 @@ namespace QMC.Common.Modules
             }
 
             return bRtn;
+        }
+
+        public Task<bool> WaitUntilUnloaderInPositionAsync(Unloader.nAxis axis, double targetPos, int timeoutMs = 20000)
+        {
+            return Task.Run(() =>
+            {
+                int wait = 0;
+                const int interval = 5;
+
+                while (wait < timeoutMs)
+                {
+                    if (MC_Func.MC_GetDone((int)axis) &&
+                        MC_Func.MC_PosTolerance((int)axis, targetPos))
+                        return true;
+
+                    Thread.Sleep(interval);
+                    wait += interval;
+                }
+
+                Log.Write("Timeout", $"[Unloader] Axis {axis} timeout at {timeoutMs}ms");
+                return false;
+            });
         }
     }
 }

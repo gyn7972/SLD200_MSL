@@ -44,7 +44,7 @@ namespace QMC.Common.VisionPart
             bool m_bFindCircle = false;
 
             var v=  FindCirclesWidthCircleBoundary(circlesResult, pixelData, w, h,
-                260, 0.05, ref m_bFindCircle, 0, 0, false); ;
+                260, 0.05, ref m_bFindCircle, 0, 0, false);
 
             //var v = MatchCoordinates(listMetal, 3);
             // v의 좌표를 원점으로 하고 listMetal의 w,h 를 가지는 List < RectangleF > result를  생성
@@ -305,7 +305,8 @@ namespace QMC.Common.VisionPart
             SaveImage(images, w, h, filename);
         }
         public QMC_ImageProcessFindAlignResult FindCirclesWidthCircleBoundary(List<RectangleF> circlesResult,
-            byte[] pixelData, int w, int h, int radius, double dSpec, ref bool circleFound, int nCenterX = 0, int nCenterY = 0, bool bIsDarkCircleSearch = true
+            byte[] pixelData, int w, int h, int radius, double dSpec, ref bool circleFound, 
+            int nCenterX = 0, int nCenterY = 0, bool bIsDarkCircleSearch = true
             , double miscellaneous_FiducialMarkSocre = 0.7
             ,bool bSpiralSearch = true)
         {
@@ -373,9 +374,8 @@ namespace QMC.Common.VisionPart
                     {
                         nMaxCircleFirst = 2000;
                     }
-                    
-                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius/1.5), (int)nMaxCircleFirst, 360/(2*3.141592 * radius),10, bIsDarkCircleSearch);
-                   
+                    double dAngleStep = 360 / (2 * 3.141592 * radius);
+                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius/1.5), (int)nMaxCircleFirst, dAngleStep, 10, bIsDarkCircleSearch);
                     points = polygon;
                     circlesResult.Clear();
                     FindCircleFitter(circlesResult, points, out dRadius, 5);
@@ -479,9 +479,19 @@ namespace QMC.Common.VisionPart
             circlesResult.Clear();
             Circle resultCircle =  FindCircleFitter(circlesResult, points, out dRadius);
             QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
-            result.Circle.Add(resultCircle);
+            
             double dScore = IsRealCircle(resultCircle, dRadius, points, dSpec);
-            result.ScoreCollection.Add(dScore);
+            if (dScore > 0.8)
+            {
+                bFindCircle = true;
+                result.Circle.Add(resultCircle);
+                result.ScoreCollection.Add(dScore);
+            }
+            else
+            {
+                circlesResult.Clear();
+            }
+               
             return result;
         }
 
@@ -682,13 +692,73 @@ namespace QMC.Common.VisionPart
         }
 
 
+        //private List<PointF> FindCircleBoundary(byte[] pixelData, int width, int height, float cx, float cy, int initialRadius = 50, int maxRadius = 1000, double angleStep = 0.11, int step = 10, bool bIsDarkCircleSearch = false)
+        //{
+        //    List<PointF> boundaryPoints = new List<PointF>();
+
+        //    if (pixelData == null) //pixelData가 null인 경우 프로그램 다운.
+        //        return boundaryPoints;
+
+
+        //    maxRadius = Math.Min(Math.Min(width, height) / 2, maxRadius);
+        //    int pixelAverageCount = 20;
+
+        //    for (double angle = 0; angle < 360; angle += angleStep)
+        //    {
+        //        double radian = angle * Math.PI / 180;
+        //        double maxDifference = 0;
+        //        double dSin = Math.Sin(radian);
+        //        double dCos = Math.Cos(radian);
+        //        PointF boundaryPoint = new PointF(cx, cy);
+
+
+        //        // 병렬 처리
+        //        object lockObject = new object();
+        //        Parallel.For((int)initialRadius, (int)maxRadius, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, r =>
+        //        {
+        //            float x = cx + (int)(r * dCos);
+        //            float y = cy + (int)(r * dSin);
+
+        //            if (x < 0 || x >= width || y < 0 || y >= height)
+        //                return;
+
+        //            double currentAverage = GetPixelAverage(pixelData, width, height, x, y, pixelAverageCount, radian, true);
+        //            double nextAverage = GetPixelAverage(pixelData, width, height, x, y, pixelAverageCount, radian, false);
+
+        //            double difference = 0; 
+
+        //            if(bIsDarkCircleSearch == false)
+        //            {
+        //                difference = (currentAverage - nextAverage) / nextAverage;
+
+        //            }
+        //            else
+        //            {
+        //                difference = (nextAverage - currentAverage) / currentAverage;
+        //            }
+        //                lock (lockObject)
+        //                {
+        //                    if (difference > maxDifference)
+        //                    {
+        //                        maxDifference = difference;
+        //                        boundaryPoint = new PointF(x, y);
+        //                    }
+        //                }
+        //        });
+        //        boundaryPoints.Add(boundaryPoint);
+        //    }
+
+        //    return boundaryPoints;
+        //}
+
         private List<PointF> FindCircleBoundary(byte[] pixelData, int width, int height, float cx, float cy, int initialRadius = 50, int maxRadius = 1000, double angleStep = 0.11, int step = 10, bool bIsDarkCircleSearch = false)
         {
             List<PointF> boundaryPoints = new List<PointF>();
 
             if (pixelData == null) //pixelData가 null인 경우 프로그램 다운.
                 return boundaryPoints;
-                
+
+
             maxRadius = Math.Min(Math.Min(width, height) / 2, maxRadius);
             int pixelAverageCount = 20;
 
@@ -700,9 +770,8 @@ namespace QMC.Common.VisionPart
 
                 double dSin = Math.Sin(radian);
                 double dCos = Math.Cos(radian);
-                PointF boundaryPointD = new PointF(cx, cy);
-
                 PointF boundaryPointW = new PointF(cx, cy);
+                PointF boundaryPointD = new PointF(cx, cy);
 
 
                 // 병렬 처리
