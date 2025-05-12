@@ -27,6 +27,8 @@ using System.Net.Sockets;
 using OpenCvSharp.Aruco;
 using System.Data.Common;
 using System.Windows.Media.Media3D;
+using Cognex.DataMan.SDK.Utils;
+using netDxf.Blocks;
 
 namespace SLD200_MSL
 {
@@ -2985,6 +2987,26 @@ namespace SLD200_MSL
                         }
                     }
                 }
+
+                if (workStage.m_nSelectedSocket_Index >= 0)
+                {
+                    if (checkBox_Main_AlignStartSocket_SelectMode.Checked)
+                    {
+                        Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.SelectedSocketOnly;
+                        workStage.m_nSocketAlign_StartIndex = workStage.m_nSelectedSocket_Index;
+                    }
+                    else if (checkBox_Main_AlignStartSocket_ContinueMode.Checked)
+                    {
+                        Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.SelectedSocketContinue;
+                        workStage.m_nSocketAlign_StartIndex = workStage.m_nSelectedSocket_Index;
+                    }
+                    else                        
+                    { 
+                        Equipment.SelectedSocketStartMode = (int)SelectedSocketStartModeList.All;
+                        workStage.m_nSocketAlign_StartIndex = -1;
+                    }
+                }
+
                 //  Socket 선택 가공인지 확인용
                 ////////////////////////////////////////////////////////////////////////////
 
@@ -3001,9 +3023,30 @@ namespace SLD200_MSL
                 Equipment.EqpSiriusViewer.Document = SiriusViewer_Main.Document;                            //  메인 화면에 보이는 도면을 가공하기 위함
 
 
-                if (workStage.m_nSelectedSocket_Index >= 0)
+                if (workStage.m_nSocketAlign_StartIndex >= 0)
                 {
-                    m_strTemp = string.Format("선택 가공을 시작하시겠습니까?\r\n\r\n[소켓 번호 : {0}]", workStage.m_nSelectedSocket_Index);
+                    if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly)
+                    {
+                        m_strTemp = string.Format("선택한 {0}번 소켓 단일 가공을 진행하시겠습니까?\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex);
+                    }
+                    else if (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)
+                    {
+                        m_strTemp = string.Format("선택한 소켓 {0}번부터 가공을 진행하시겠습니까?\r\n\r\nNo : 가공 취소", workStage.m_nSocketAlign_StartIndex);
+                    }
+
+                    checkBox_Main_AlignStartSocket_SelectMode.Checked = false;
+                    checkBox_Main_AlignStartSocket_ContinueMode.Checked = false;
+
+                    var mb1 = new MessageBoxYesNo();
+                    if (DialogResult.Yes == mb1.ShowDialog("Question ?", m_strTemp))
+                    {
+                        workStage.m_nDrillingWork_Group_Count = workStage.m_nSocketAlign_StartIndex;        //  선택한 소켓 번호로 변경
+                    }
+                    else
+                    {
+                        Log.Write("SLD-200", Equipment.User_Name, "Button Click", "가공 취소");
+                        return;
+                    }
                 }
                 else
                 {
@@ -3015,10 +3058,11 @@ namespace SLD200_MSL
                     {
                         m_strTemp = "전체 가공을 시작하시겠습니까?\r\n\r\n[소켓 얼라인 사용 안함]";
                     }
+
+                    if (DialogResult.Yes != mb.ShowDialog("Question ?", m_strTemp))
+                        return;
                 }
 
-                if (DialogResult.Yes != mb.ShowDialog("Question ?", m_strTemp))
-                    return;
 
                 if (!workStage.workStageParameter.IsDO_BeamDump_Coolant_Supply() || !workStage.workStageParameter.IsDO_Scanner_Coolant_Supply() ||
                     (Equipment.Machine_LaserType_CO2 && (!workStage.workStageParameter.IsDO_Mask_Coolant_Supply() || !workStage.workStageParameter.IsDO_VarioScan_Coolant_Supply())))
