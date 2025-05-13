@@ -30,6 +30,7 @@ using System.Security.Policy;
 using System.Linq;
 using static QMC.Common.Equipment;
 using System.ComponentModel;
+using QMC.Common.Vision.Cameras;
 
 
 namespace QMC.Common.Modules
@@ -10741,6 +10742,7 @@ namespace QMC.Common.Modules
 
                         if (bSynchronous)
                         {
+                            Thread.Sleep(500);
                             bool bWaitZ = WaitUntilLoaderInPositionAsync(Loader.nAxis.TR_Z, stLDULTeachingPos[nTeachingPos].LD_Transfer_Z).Result;
                             if (!bWaitZ)
                             {
@@ -10905,6 +10907,7 @@ namespace QMC.Common.Modules
 
                         if (bSynchronous)
                         {
+                            Thread.Sleep(500);
                             bool bWaitX = WaitUntilLoaderInPositionAsync(Loader.nAxis.TR_X, stLDULTeachingPos[nTeachingPos].LD_Transfer_X).Result;
                             if (!bWaitX)
                             {
@@ -11277,11 +11280,14 @@ namespace QMC.Common.Modules
 
                 while (wait < timeoutMs)
                 {
+                    Thread.Sleep(interval);
+
                     if (MC_Func.MC_GetDone((int)axis) &&
                         MC_Func.MC_PosTolerance((int)axis, targetPos))
+                    {
                         return true;
+                    }
 
-                    Thread.Sleep(interval);
                     wait += interval;
                 }
 

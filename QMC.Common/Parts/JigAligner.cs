@@ -389,6 +389,9 @@ namespace QMC.Common.Parts
                 bool bWaitPosX = false;
                 bool bWaitPosY = false;
 
+                Task<bool> WaitPosX;
+                Task<bool> WaitPosY;
+
                 if (Owner is WorkStage workstage)
                 {
                     //무조건 2개 서치 - 소스 확인 하자.
@@ -416,10 +419,18 @@ namespace QMC.Common.Parts
                         m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
                         //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
 
+                        Thread.Sleep(300); //Sleep은 안하는게 좋음.
+
                         // 비동기 대기 (UI에서 사용하면 안됨)
-                        bWaitPosX = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X).Result;
-                        bWaitPosY = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y).Result;
-                        if (!bWaitPosX || !bWaitPosY)
+                        //bWaitPosX = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X).Result;
+                        //bWaitPosY = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y).Result;
+
+                        WaitPosX = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
+                        WaitPosY = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
+                        Task.WaitAll(WaitPosX, WaitPosY);
+
+                        //if (!bWaitPosX || !bWaitPosY)
+                        if (!WaitPosX.Result || !WaitPosY.Result)
                         {
                             //  이동 실패 
                             if(!bWaitPosX)
@@ -503,11 +514,17 @@ namespace QMC.Common.Parts
 
                     m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
                     //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+                    Thread.Sleep(300); //Sleep은 안하는게 좋음.
 
                     // 비동기 대기 (UI에서 사용하면 안됨)
-                    bWaitPosX = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X).Result;
-                    bWaitPosY = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y).Result;
-                    if (!bWaitPosX || !bWaitPosY)
+                    //bWaitPosX = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X).Result;
+                    //bWaitPosY = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y).Result;
+                    WaitPosX = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
+                    WaitPosY = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
+                    Task.WaitAll(WaitPosX, WaitPosY);
+
+                    //if (!bWaitPosX || !bWaitPosY)
+                    if (!WaitPosX.Result || !WaitPosY.Result)
                     {
                         //  이동 실패 
                         if (!bWaitPosX)
@@ -522,7 +539,6 @@ namespace QMC.Common.Parts
                             m_Owner.AlarmPost(AlarmKey.eStageMoveFail); //X,Y축 분할 필요?
                         }
                     }
-                    //Thread.Sleep(500); //Sleep은 안하는게 좋음.
 
                     //nWait = 0;
                     //while (true)

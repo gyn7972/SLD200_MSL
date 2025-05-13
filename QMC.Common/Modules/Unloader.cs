@@ -7004,6 +7004,7 @@ namespace QMC.Common.Modules
 
                         if (bSynchronous)
                         {
+                            Thread.Sleep(500);
                             bool bWaitX = WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_Z, loader.stLDULTeachingPos[nTeachingPos].UL_Transfer_Z).Result;
                             if (!bWaitX)
                             {
@@ -7173,6 +7174,7 @@ namespace QMC.Common.Modules
 
                         if (bSynchronous)
                         {
+                            Thread.Sleep(500);
                             bool bWaitX = WaitUntilUnloaderInPositionAsync(Unloader.nAxis.TR_X, loader.stLDULTeachingPos[nTeachingPos].UL_Transfer_X).Result;
                             if (!bWaitX)
                             {
@@ -7429,11 +7431,13 @@ namespace QMC.Common.Modules
 
                 while (wait < timeoutMs)
                 {
+                    Thread.Sleep(interval);
+
                     if (MC_Func.MC_GetDone((int)axis) &&
                         MC_Func.MC_PosTolerance((int)axis, targetPos))
+                    {
                         return true;
-
-                    Thread.Sleep(interval);
+                    }
                     wait += interval;
                 }
 

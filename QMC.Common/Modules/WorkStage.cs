@@ -37594,7 +37594,9 @@ namespace QMC.Common.Modules
 
                     if (MC_Func.MC_GetDone((int)axis) &&
                         MC_Func.MC_PosTolerance((int)axis, targetPos))
+                    {
                         return true;
+                    }
 
                     wait += interval;
                 }
