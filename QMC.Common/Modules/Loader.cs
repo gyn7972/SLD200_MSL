@@ -10463,16 +10463,19 @@ namespace QMC.Common.Modules
         public double GetEncLoaderPos_Motor(Loader.nAxis nAxis)
         {
             double dEncPos = -999.999;
-            try
+            lock(this)
             {
-                dEncPos = MC_Func.MC_GetEncPos((int)nAxis);
+                try
+                {
+                    dEncPos = MC_Func.MC_GetEncPos((int)nAxis);
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(ex);
+                    return double.NaN; // 명확하게 오류값 반환
+                }
+                return dEncPos;
             }
-            catch (Exception ex)
-            {
-                Log.Write(ex);
-                return double.NaN; // 명확하게 오류값 반환
-            }
-            return dEncPos;
         }
 
         public void StoptoLoader_Motor(Loader.nAxis nAxis)

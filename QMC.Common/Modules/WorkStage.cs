@@ -37101,15 +37101,19 @@ namespace QMC.Common.Modules
         public double GetEncWorkStagePos_Motor(WorkStage.nAxis nAxis)
         {
             double dEncPos = -999.999;
-            try
+            lock (this)
             {
-                dEncPos = MC_Func.MC_GetEncPos((int)nAxis);
+                try
+                {
+                    dEncPos = MC_Func.MC_GetEncPos((int)nAxis);
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(ex);
+                }
+                return dEncPos;
             }
-            catch (Exception ex)
-            {
-                Log.Write(ex);
-            }
-            return dEncPos;
+                
         }
         public void StoptoWorkStage_Motor(WorkStage.nAxis nAxis)
         {
