@@ -31,7 +31,7 @@ namespace SLD200_MSL
         /// </summary>
         private void InitializeComponent()
         {
-            this.SiriusEditor = new SpiralLab.Sirius.SiriusEditorForm();
+            this.SiriusEditor = new SpiralLab.Sirius.QMCSiriusEditorForm();
             this.button_DataParsing = new System.Windows.Forms.Button();
             this.button_Rotate = new System.Windows.Forms.Button();
             this.groupBox167 = new System.Windows.Forms.GroupBox();
@@ -362,7 +362,7 @@ namespace SLD200_MSL
         #endregion
 
         //private SpiralLab.Sirius2.Winforms.UI.SiriusEditorUserControl siriusEditor;
-        public SpiralLab.Sirius.SiriusEditorForm SiriusEditor;
+        public SpiralLab.Sirius.QMCSiriusEditorForm SiriusEditor;
         private Button button_DataParsing;
         private Button button_Rotate;
         private GroupBox groupBox167;

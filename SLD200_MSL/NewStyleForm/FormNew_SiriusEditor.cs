@@ -83,11 +83,11 @@ namespace SLD200_MSL
             timer_RtcInit.Enabled = true;
 
             SiriusEditor.OnDocumentSourceChanged += SiriusEditor_OnDocumentSourceChanged;
+            
         }
 
         private void SiriusEditor_OnDocumentSourceChanged(object sender, IDocument doc)
         {
-
             try
             {
                 foreach (var v in SiriusEditor.Document.Views)
@@ -112,7 +112,6 @@ namespace SLD200_MSL
             {
 
             }
-            
         }
 
         private void SiriusView_OnCustomDraw(IView view)
@@ -131,10 +130,16 @@ namespace SLD200_MSL
 
         private void DrawGrid(IView view)
         {
-            var layer  = this.SiriusEditor.Document.Layers.Where(x => x.Name == "Hole1").FirstOrDefault();
-            if(layer != null) 
+            var layer = this.SiriusEditor.Document.Layers.Where(x => x.Name == "Hole1").FirstOrDefault();
+            DrawGrid(view, layer);
+
+        }
+
+        private static void DrawGrid(IView view, Layer layer)
+        {
+            if (layer != null)
             {
-                foreach(var v in layer.Items)
+                foreach (var v in layer.Items)
                 {
                     double width = v.BoundRect.Width;
                     double height = v.BoundRect.Height;
@@ -144,7 +149,7 @@ namespace SLD200_MSL
                     double dSplitH = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize_Height;
                     int colCount = (int)Math.Ceiling(width / dSplitW);
                     int rowCount = (int)Math.Ceiling(height / dSplitH);
-                    double dStartX = centerX - (colCount * dSplitW)/2;
+                    double dStartX = centerX - (colCount * dSplitW) / 2;
                     double dStartY = centerY - (rowCount * dSplitH) / 2;
                     double dEndX = centerX + (colCount * dSplitW) / 2;
                     double dEndY = centerY + (rowCount * dSplitH) / 2;
@@ -159,7 +164,7 @@ namespace SLD200_MSL
                     renderer.Color(0.0f, 1.0f, 0.0f); // 라임색 (RGB: 0, 255, 0)
                     for (double dX = dStartX; dX <= dEndX; dX += dSplitW)
                     {
-                        
+
                         renderer.Begin(OpenGL.GL_LINES);
                         renderer.Vertex(dX, dStartY, 0.0f);          // 왼쪽 끝
                         renderer.Vertex(dX, dEndY, 0.0f);   // 오른쪽 끝
@@ -175,8 +180,6 @@ namespace SLD200_MSL
 
                 }
             }
-
-           
         }
 
         public FormNew_SiriusEditor CreateSiriusEditor()
@@ -275,7 +278,7 @@ namespace SLD200_MSL
             //}
             if (SiriusEditor == null)
             {
-                SiriusEditor = new SpiralLab.Sirius.SiriusEditorForm();
+                SiriusEditor = new SpiralLab.Sirius.QMCSiriusEditorForm();
             }
             // 문서 지정
             //this.SiriusViewer.Document = doc;
