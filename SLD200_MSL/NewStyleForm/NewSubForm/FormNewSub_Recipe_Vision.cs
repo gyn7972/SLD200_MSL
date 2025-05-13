@@ -53,21 +53,11 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             //Size 축소 / 확대 안되게 하기 위한 코드.
             this.AutoScaleMode = AutoScaleMode.None;
+            this.DoubleBuffered = true;
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+            this.UpdateStyles();
 
-            this.Load += FormNewSub_Recipe_Vision_Load; // 👈 여기서 Load 이벤트 연결
-
-            ModuleCollection m_collectionModules;
-            m_collectionModules = Equipment.Modules;
-            foreach (Module module in m_collectionModules)
-            {
-                if (module.Name == "WorkStage")
-                {
-                    workStage = module as WorkStage;
-                    Owner = workStage.jigAligner_LowRes;
-                    workStage.UpdateResultOveray += workStage_UpdateResultOveray;
-
-                }
-            }
+            this.Load += FormNewSub_Recipe_Vision_Load; // 여기서 Load 이벤트 연결
         }
 
         private void workStage_UpdateResultOveray(object sender, EventArgs e)
@@ -87,8 +77,6 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void FormNewSub_Recipe_Vision_Load(object sender, EventArgs e)
         {
-            this.AutoScaleMode = AutoScaleMode.None;
-
             //GUI생성 완료 후 Data 및 Cintroller 업데이트!
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
@@ -221,11 +209,11 @@ namespace SLD200.NewStyleForm.NewSubForm
             this.RecipeVisionTimer.Stop();
         }
 
+
         private void InitPatternMatchingParameter()
         {
             try
             {
-
                 // Socket Align
                 if (Equipment.stVisionRecipeSet.dSocketAlignType == 0)
                 {
@@ -265,6 +253,10 @@ namespace SLD200.NewStyleForm.NewSubForm
                 textBox_Recipe_Fiducial_CircleSize.Text = Equipment.stVisionRecipeSet.dSocketCircleMarkRadius.ToString();
                 textBox_Recipe_Fiducial_CircleScore.Text = Equipment.stVisionRecipeSet.dSocketCircleMarkScore.ToString();
 
+                checkBox_RecipeVision_Illuminator_Red.Checked = Equipment.stVisionRecipeSet.bSocketIlluminationRedUse;
+                checkBox_RecipeVision_Illuminator_IR.Checked = Equipment.stVisionRecipeSet.bSocketIlluminationIRUse;
+                textBox_RecipeVision_Camera_ExposureTime.Text = Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime.ToString();
+                textBox_RecipeVision_AxisZ_Setting.Text = Equipment.stVisionRecipeSet.dSocketAxisZ_Offset.ToString();
 
                 // Pre Align
                 if (Owner.Recipe != null)
@@ -921,6 +913,12 @@ namespace SLD200.NewStyleForm.NewSubForm
             Equipment.stVisionRecipeSet.dSocketCircleMarkSpec = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text);
             Equipment.stVisionRecipeSet.dSocketCircleMarkScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);
 
+            Equipment.stVisionRecipeSet.bSocketIlluminationRedUse = checkBox_RecipeVision_Illuminator_Red.Checked;
+            Equipment.stVisionRecipeSet.bSocketIlluminationIRUse = checkBox_RecipeVision_Illuminator_IR.Checked;
+            Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime = Convert.ToDouble(textBox_RecipeVision_Camera_ExposureTime.Text);
+            Equipment.stVisionRecipeSet.dSocketAxisZ_Offset = Convert.ToDouble(textBox_RecipeVision_AxisZ_Setting.Text);
+
+
             //PreAlign
             Equipment.stVisionRecipeSet.PrePatternMatching = PatternMatchingParameter;
             Equipment.stVisionRecipeSet.pointPreTrainRoiStartLocation = RoiTrain.Parameter.StartLocation;
@@ -1173,23 +1171,20 @@ namespace SLD200.NewStyleForm.NewSubForm
             Temp_Position_Save();
         }
 
-        private void button_RecipeVision_WorkStage_ToTempPos1_Move_Click(object sender, EventArgs e)
+        private async void button_RecipeVision_WorkStage_ToTempPos1_Move_Click(object sender, EventArgs e)
         {
             //  Temp1 위치로 이동
             //  현재 Fine Camera Center 위치를 Scanner Center 위치로 이동
             double lfTargetX = 0.0f;
             double lfTargetY = 0.0f;
-            double lfVelocity = 0.0f;
-            double lfAccDec = 0.0f;
 
-            // 파일에 저장 해 놓자.
+            // 파일에 저장 해 놓자. // 가져 올 수 있는 Data 인지 확인하자.
             double X_Limit_Min = 5.0;
             double X_Limit_Max = 800.0;
             double Y_Limit_Min = 5.0;
             double Y_Limit_Max = 500.0;
 
-
-            if (Equipment.ToDouble(textBox_RecipeVision_WorkStage_TempPos1_StageX.Text) == 0.0 && 
+            if (Equipment.ToDouble(textBox_RecipeVision_WorkStage_TempPos1_StageX.Text) == 0.0 &&
                 Equipment.ToDouble(textBox_RecipeVision_WorkStage_TempPos1_StageY.Text) == 0.0)
             {
                 var mb1 = new QMC.Common.UI.MessageBoxOk();
@@ -1201,106 +1196,84 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "Temp1 위치로 이동하시겠습니까?"))
                 return;
 
-            if (!workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X) || 
-                !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) || 
-                !workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) ||
-                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) || 
-                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y) || 
-                !workStage.MC_Func.MC_GetInposition((int)WorkStage.nAxis.Z))
+            // 아래 코드 고민해 보자. IsMoving 함수 만들어서 사용해야 할듯.
+            if (!workStage.IsWorkStageMoving(WorkStage.nAxis.X) ||
+                !workStage.IsWorkStageMoving(WorkStage.nAxis.Y) ||
+                !workStage.IsWorkStageMoving(WorkStage.nAxis.Z))
             {
                 var mb1 = new QMC.Common.UI.MessageBoxOk();
                 mb1.ShowDialog("Warning !", "Stage 가 이동중입니다.");
                 return;
             }
 
-
-            //Todo: Z축 이동시 Interlock 체크 - 코드 삽입 할것.1!!!
-            ////  StageZ 한계위치 설정되어 있는지 체크
-            //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos <= 0.0)
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이가 설정되어 있지 않습니다.\r\n\r\n(Config -> [17] Interlock  확인)");
-            //    return;
-            //}
-            ////  StageZ 한계위치를 초과하여 이동하는지 체크
-            //if (laserDrilling.Config.ParamConfig.Interlock_StageZ_UpperPos < laserDrilling.laserDrillingParameter.stLaserDrillingPosParam.dTarget[(int)WorkStageParameter.MotionKey.Z])
-            //{
-            //    var mb1 = new MessageBoxOk();
-            //    mb1.ShowDialog("Warning !", "Stage Z축 한계 높이를 초과하여 이동하려고 하였습니다.\r\n\r\n[ Cancel ]");
-            //    return;
-            //}
-            ////  맵 데이터를 이원화 할 경우
-            //if (laserDrilling.Config.ParamConfig.ScannerCamera_MapData_Div)
-            //{
-            //    laserDrilling.MapData_Change((int)LaserDrilling.MapDataType.MAPDATASTATUS_SCANNER);
-            //}
-
-            //  Target 위치
+            // Target 위치
             lfTargetX = Equipment.ToDouble(textBox_RecipeVision_WorkStage_TempPos1_StageX.Text);
             lfTargetY = Equipment.ToDouble(textBox_RecipeVision_WorkStage_TempPos1_StageY.Text);
 
             //  소프트웨어 리밋 체크
-            if (lfTargetX < X_Limit_Min || lfTargetX > X_Limit_Max ||
-                lfTargetY < Y_Limit_Min || lfTargetY > Y_Limit_Max)
-            {
-                string msg = $"이동하려는 위치가 소프트웨어 리밋을 벗어났습니다.\n\n" +
-                             $"X 범위: {X_Limit_Min} ~ {X_Limit_Max}, 현재: {lfTargetX}\n" +
-                             $"Y 범위: {Y_Limit_Min} ~ {Y_Limit_Max}, 현재: {lfTargetY}";
-                var mb1 = new QMC.Common.UI.MessageBoxOk();
-                mb1.ShowDialog("Software Limit", msg);
-                return;
-            }
+            //if (lfTargetX < X_Limit_Min || lfTargetX > X_Limit_Max ||
+            //    lfTargetY < Y_Limit_Min || lfTargetY > Y_Limit_Max)
+            //{
+            //    string msg = $"이동하려는 위치가 소프트웨어 리밋을 벗어났습니다.\n\n" +
+            //                 $"X 범위: {X_Limit_Min} ~ {X_Limit_Max}, 현재: {lfTargetX}\n" +
+            //                 $"Y 범위: {Y_Limit_Min} ~ {Y_Limit_Max}, 현재: {lfTargetY}";
+            //    var mb1 = new QMC.Common.UI.MessageBoxOk();
+            //    mb1.ShowDialog("Software Limit", msg);
+            //    return;
+            //}
 
             //  속도 설정
+            Type_Motor_Speed motor_Speed;
             if (radioButton_RecipeVision_Move_MoveMode_Fine.Checked)
             {
-                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Fine;
-                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
+                motor_Speed = Type_Motor_Speed.Fine;
             }
             else
             {
-                lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Jog_Speed_Coarse;
-                lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                motor_Speed = Type_Motor_Speed.Coarse;
             }
-
             XyCoordinate xyInterpolatedCoordinate = new XyCoordinate();
             xyInterpolatedCoordinate.X = lfTargetX;
             xyInterpolatedCoordinate.Y = lfTargetY;
+            workStage.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, motor_Speed);
+            //workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
 
-            workStage.MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+            bool bWaitPosX = false;
+            bool bWaitPosY = false;
 
-            int nWait = 0;
-            while (true)
-            {
-                if (workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.X)
-                    && workStage.MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, xyInterpolatedCoordinate.X))
+            try
+            {   
+                //움직임 바로 확인하면 문제 발생..
+                Thread.Sleep(200); // 1초 대기
+
+                // 각각의 비동기 Task를 받아서 기다림
+                var taskX = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
+                var taskY = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
+
+                // 동시에 실행하고 결과 기다림
+                var results = await Task.WhenAll(taskX, taskY);
+
+                bWaitPosX = results[0];
+                bWaitPosY = results[1];
+
+                if (!bWaitPosX)
                 {
-                    break;
+                    Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "X축 이동 실패");
+                    workStage.AlarmPost(WorkStage.AlarmKey.eStageMoveFail);
                 }
-                Thread.Sleep(1);
-                nWait++;
-                if (nWait == 1000)
-                {
-                    break;
-                }
 
-            }
-
-            nWait = 0;
-            while (true)
-            {
-                if (workStage.MC_Func.MC_GetDone((int)WorkStage.nAxis.Y)
-                    && workStage.MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y))
+                if (!bWaitPosY)
                 {
-                    break;
-                }
-                Thread.Sleep(1);
-                nWait++;
-                if (nWait == 1000)
-                {
-                    break;
+                    Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "Y축 이동 실패");
+                    workStage.AlarmPost(WorkStage.AlarmKey.eStageMoveFail);
                 }
             }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+
         }
 
 
@@ -1372,6 +1345,10 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             hScrollBar_RecipeVision_Illuminator_IR.Value = Equipment.stVisionRecipeSet.nPreIlluminationIR;
 
+            checkBox_RecipeVision_Illuminator_Red.Enabled = false;
+            checkBox_RecipeVision_Illuminator_IR.Enabled = false;
+            textBox_RecipeVision_Camera_ExposureTime.Enabled = false;
+            textBox_RecipeVision_AxisZ_Setting.Enabled = false;
             hScrollBar_RecipeVision_Illuminator_Red.Enabled = false;
             textBox_RecipeVision_IlluminationValue_Red.Enabled = false;
             button_RecipeVision_Illumin_value_Red.Enabled = false;
@@ -1404,6 +1381,11 @@ namespace SLD200.NewStyleForm.NewSubForm
             baseLabel_RecipeVision_Min_Red.Enabled = true;
             label_RecipeVision_Light_Red.Enabled = true;
 
+            checkBox_RecipeVision_Illuminator_Red.Enabled = true;
+            checkBox_RecipeVision_Illuminator_IR.Enabled = true;
+            textBox_RecipeVision_Camera_ExposureTime.Enabled = true;
+            textBox_RecipeVision_AxisZ_Setting.Enabled = true;
+
             hScrollBar_RecipeVision_Illuminator_IR.Value = Equipment.stVisionRecipeSet.nSocketIlluminationIR;
             hScrollBar_RecipeVision_Illuminator_Red.Value = Equipment.stVisionRecipeSet.nSocketIlluminationRed;
 
@@ -1431,7 +1413,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 //Owner.Simulated = true;
                 workStage.Camera_HighRes.LatestImage = ImageViewer_RecipeVision_highs.InputImage;
-                //workStage.Camera_HighRes.TestImage = ImageViewer_RecipeVision_highs.InputImage;
             }
 
 
@@ -1495,6 +1476,49 @@ namespace SLD200.NewStyleForm.NewSubForm
             if (workStage.Camera_HighRes.Opened)
             {
                 workStage.Camera_HighRes.StartLive();
+            }
+        }
+
+        private void button_RecipeVision_Camera_ExposureTime_Click(object sender, EventArgs e)
+        {
+            double dExposureTime = Equipment.ToDouble(textBox_RecipeVision_Camera_ExposureTime.Text);//Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime;
+            workStage.jigAligner_HighRes.Camera.SetExposureTime(dExposureTime);
+        }
+
+        private void button_RecipeVision_AxisZ_Setting_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBox_RecipeVision_Illuminator_Red_CheckedChanged(object sender, EventArgs e)
+        {
+            if(checkBox_RecipeVision_Illuminator_Red.Checked)
+            {
+                checkBox_RecipeVision_Illuminator_Red.Text = "USE";
+                hScrollBar_RecipeVision_Illuminator_Red.Enabled = true;
+                textBox_RecipeVision_IlluminationValue_Red.Enabled = true;
+            }
+            else
+            {
+                checkBox_RecipeVision_Illuminator_Red.Text = "NOT USE";
+                hScrollBar_RecipeVision_Illuminator_Red.Enabled = false;
+                textBox_RecipeVision_IlluminationValue_Red.Enabled = false;
+            }
+        }
+
+        private void checkBox_RecipeVision_Illuminator_IR_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_RecipeVision_Illuminator_IR.Checked)
+            {
+                checkBox_RecipeVision_Illuminator_IR.Text = "USE";
+                hScrollBar_RecipeVision_Illuminator_IR.Enabled = true;
+                textBox_RecipeVision_IlluminationValue_IR.Enabled = true;
+            }
+            else
+            {
+                checkBox_RecipeVision_Illuminator_IR.Text = "NOT USE";
+                hScrollBar_RecipeVision_Illuminator_IR.Enabled = false;
+                textBox_RecipeVision_IlluminationValue_IR.Enabled = false;
             }
         }
     }

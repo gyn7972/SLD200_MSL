@@ -369,6 +369,7 @@ namespace AsyncSocket
                 if (bytesRead > 0)
                     Received(rev);
 
+                Thread.Sleep(100);
                 // 다음 읽을 데이터를 처리한다.
                 Receive();
             }

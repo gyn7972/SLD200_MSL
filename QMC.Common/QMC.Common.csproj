@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\..\..\SLD-200\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SLD_200U</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SLD_200C</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -29,7 +29,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\..\SLD-200\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;SLD_200C</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -187,6 +187,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Global\AreaInfo.cs" />
+    <Compile Include="Global\GlobalHotkeyMessageFilter.cs" />
     <Compile Include="Global\LayerInfo.cs" />
     <Compile Include="Global\ProcessManager.cs" />
     <Compile Include="Global\SocketInfo.cs" />
@@ -200,6 +201,9 @@
     <Compile Include="Modules\Scanner.cs" />
     <Compile Include="Modules\LaserConfig.cs" />
     <Compile Include="Modules\LaserRecipe.cs" />
+    <Compile Include="SpiralLab\Sirius\QMCSiriusEditorForm.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="SpiralLab\SpialData.cs" />
     <Compile Include="SpiralLab\SpiralDataCollector.cs" />
     <Compile Include="SpiralLab\SpiralLabScanner.cs" />

@@ -1165,11 +1165,7 @@ namespace SLD200_MSL
                 return;
             }
 
-            if (Equipment.EqpSiriusViewer == null)
-            {
-                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
-                return;
-            }
+            
 
             if (workStage.rtc == null)
             {

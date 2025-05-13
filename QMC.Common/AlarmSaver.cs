@@ -39,8 +39,8 @@ namespace QMC.Common
             {
                 Log.Write(ex);
                 bRet = false;
-                Log.Write(ex);
-                Console.WriteLine(ex.Message);
+                //Log.Write(ex);
+                //Console.WriteLine(ex.Message);
             }
            
 

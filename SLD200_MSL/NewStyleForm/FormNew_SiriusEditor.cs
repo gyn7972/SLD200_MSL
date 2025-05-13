@@ -23,6 +23,7 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 using SpiralLab.Sirius;
 using System.Numerics;
+using SharpGL;
 
 //using OpenTK;
 //using OpenTK.Graphics.OpenGL;
@@ -82,12 +83,103 @@ namespace SLD200_MSL
             timer_RtcInit.Enabled = true;
 
             SiriusEditor.OnDocumentSourceChanged += SiriusEditor_OnDocumentSourceChanged;
+            
         }
 
         private void SiriusEditor_OnDocumentSourceChanged(object sender, IDocument doc)
         {
+            try
+            {
+                foreach (var v in SiriusEditor.Document.Views)
+                {
+                    v.OnCustomDraw -= SiriusView_OnCustomDraw;
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
             SiriusEditor.Document = doc;
-            //Equipment.EqpSiriusViewer.Document = doc;
+            try
+            {
+
+                foreach (var v in SiriusEditor.Document.Views)
+                {
+                    v.OnCustomDraw += SiriusView_OnCustomDraw; ;
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        private void SiriusView_OnCustomDraw(IView view)
+        {
+            foreach(var layer in this.SiriusEditor.Document.Layers)
+            {
+                if(layer.IsSelected)
+                {
+                    if(layer.Name.Contains("Hole"))
+                    {
+                        DrawGrid(view);
+                    }
+                }
+            }
+        }
+
+        private void DrawGrid(IView view)
+        {
+            var layer = this.SiriusEditor.Document.Layers.Where(x => x.Name == "Hole1").FirstOrDefault();
+            DrawGrid(view, layer);
+
+        }
+
+        private static void DrawGrid(IView view, Layer layer)
+        {
+            if (layer != null)
+            {
+                foreach (var v in layer.Items)
+                {
+                    double width = v.BoundRect.Width;
+                    double height = v.BoundRect.Height;
+                    double centerX = v.BoundRect.Center.X;
+                    double centerY = v.BoundRect.Center.Y;
+                    double dSplitW = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize;
+                    double dSplitH = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize_Height;
+                    int colCount = (int)Math.Ceiling(width / dSplitW);
+                    int rowCount = (int)Math.Ceiling(height / dSplitH);
+                    double dStartX = centerX - (colCount * dSplitW) / 2;
+                    double dStartY = centerY - (rowCount * dSplitH) / 2;
+                    double dEndX = centerX + (colCount * dSplitW) / 2;
+                    double dEndY = centerY + (rowCount * dSplitH) / 2;
+
+                    OpenGL renderer = view.Renderer;
+                    // 바둑판의 크기와 간격 설정
+                    float squareSize = 10.0f; // 각 셀의 크기
+                    int gridCount = 10;       // 가로, 세로로 그릴 셀의 개수
+                    float gridSize = squareSize * gridCount; // 전체 그리드 크기
+
+                    // 라임색 설정
+                    renderer.Color(0.0f, 1.0f, 0.0f); // 라임색 (RGB: 0, 255, 0)
+                    for (double dX = dStartX; dX <= dEndX; dX += dSplitW)
+                    {
+
+                        renderer.Begin(OpenGL.GL_LINES);
+                        renderer.Vertex(dX, dStartY, 0.0f);          // 왼쪽 끝
+                        renderer.Vertex(dX, dEndY, 0.0f);   // 오른쪽 끝
+                        renderer.End();
+                    }
+                    for (double dY = dStartY; dY <= dEndY; dY += dSplitH)
+                    {
+                        renderer.Begin(OpenGL.GL_LINES);
+                        renderer.Vertex(dStartX, dY, 0.0f);          // 아래쪽 끝
+                        renderer.Vertex(dEndX, dY, 0.0f);   // 위쪽 끝
+                        renderer.End();
+                    }
+
+                }
+            }
         }
 
         public FormNew_SiriusEditor CreateSiriusEditor()
@@ -186,7 +278,7 @@ namespace SLD200_MSL
             //}
             if (SiriusEditor == null)
             {
-                SiriusEditor = new SpiralLab.Sirius.SiriusEditorForm();
+                SiriusEditor = new SpiralLab.Sirius.QMCSiriusEditorForm();
             }
             // 문서 지정
             //this.SiriusViewer.Document = doc;
@@ -383,11 +475,11 @@ namespace SLD200_MSL
             //var rtcPin2DOutput = new RtcDOutput2Pin(rtc, 0, "DOUT RTC PIN2");
             //rtcPin2DOutput.Initialize();
 
-            //this.siriusEditorForm1.RtcExtension1Input = rtcExt1DInput;
-            //this.siriusEditorForm1.RtcExtension1Output = rtcExt1DOutput;
-            //this.siriusEditorForm1.RtcExtension2Output = rtcExt2DOutput;
-            //this.siriusEditorForm1.RtcPin2Input = rtcPin2DInput;
-            //this.siriusEditorForm1.RtcPin2Output = rtcPin2DOutput;
+            //this.SiriusEditor.RtcExtension1Input = rtcExt1DInput;
+            //this.SiriusEditor.RtcExtension1Output = rtcExt1DOutput;
+            //this.SiriusEditor.RtcExtension2Output = rtcExt2DOutput;
+            //this.SiriusEditor.RtcPin2Input = rtcPin2DInput;
+            //this.SiriusEditor.RtcPin2Output = rtcPin2DOutput;
             #endregion
 
             #region XYZ 모터
@@ -408,10 +500,10 @@ namespace SLD200_MSL
             //motorR,
             //};
             //var motors = new MotorsDefault(0, "Group", motorArray);
-            //this.siriusEditorForm1.Motors = motors;
+            //this.SiriusEditor.Motors = motors;
 
             //var motorZ = new MotorVirtual(0, "Z");
-            //this.siriusEditorForm1.MotorZ = motorZ;
+            //this.SiriusEditor.MotorZ = motorZ;
             #endregion
 
             #region PowerMeter
@@ -421,14 +513,14 @@ namespace SLD200_MSL
             ////var powerMeter = new PowerMeterCoherentPowerMax(0, "CoherentPM", 1);
             ////var powerMeter = new PowerMeterThorLabsPMSeries(0, "PM100USB", "SERIALNO");
             //powerMeter.Initialize();
-            //this.siriusEditorForm1.PowerMeter = powerMeter;
+            //this.SiriusEditor.PowerMeter = powerMeter;
             #endregion
 
             #region Powermap
             //var powerMap = new PowerMapDefault(0, "Virtual", "Watt");
             ////var powerMapFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "powermap", "default.map");
             ////PowerMapSerializer.Open(powerMap, powerMapFile);
-            //this.siriusEditorForm1.PowerMap = powerMap;
+            //this.SiriusEditor.PowerMap = powerMap;
             //laser.PowerMap = powerMap;
             #endregion
 
@@ -461,7 +553,7 @@ namespace SLD200_MSL
         private void SiriusEditor_OnDocumentSourceChanged1(object sender, IDocument doc)
         {
             SiriusEditor.Document = doc;
-            Equipment.EqpSiriusViewer.Document = doc;
+            Equipment.SetEqpSiriusViewerDocument(doc);
         }
 
         #endregion
@@ -550,7 +642,7 @@ namespace SLD200_MSL
                 MessageBox.Show("데이터 추출 성공", "Processing Data ...", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 //workStage.SiriusEditor.Document = SiriusEditor.Document;
-                Equipment.EqpSiriusViewer.Document = SiriusEditor.Document;
+                Equipment.SetEqpSiriusViewerDocument(SiriusEditor.Document);
 
                 int m_nReturn = workStage.GetDrillingData();
                 switch (m_nReturn)
@@ -1900,17 +1992,13 @@ namespace SLD200_MSL
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-
             if (keyData == Keys.F7)
             {
-                var Document = this.SiriusEditor.Document;
-                Document.Action.ActEntityGroup(Document.Action.SelectedEntity);
+                Group();
             }
             if (keyData == Keys.F8)
             {
-                var Document = this.SiriusEditor.Document;
-
-                Document.Action.ActEntityUngroup(Document.Action.SelectedEntity);
+                UnGroup();
             }
             if (keyData == Keys.Delete)
             {
@@ -1944,15 +2032,111 @@ namespace SLD200_MSL
                         RenameNewLayer(6);
                     }
                     break;
-                case Keys.Alt | Keys.H:
+                case Keys.Control | Keys.Alt | Keys.H:
                     {
                         AddHoleLayer();
+                    }
+                    break;
+                case Keys.Alt | Keys.H:
+                    {
+                        HoleGroup();
+                    }
+                    break;
+                case Keys.Alt | Keys.T:
+                    {
+                        ThruholeGroup();
+                    }
+                    break;
+                case Keys.Alt | Keys.F:
+                    {
+                        MoveToFiducial();
+                    }
+                    break;
+                case Keys.Alt | Keys.P:
+                    {
+                        MoveToPreAlign();
+                    }
+                    break;
+
+                case Keys.Control | Keys.Alt | Keys.M:
+                    {
+                        MoveToMarking();
                     }
                     break;
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
+        private void MoveToMarking()
+        {
+            MoveToGroup("Marking");
+        }
 
+        private void ThruholeGroup()
+        {
+            MoveToGroup("Thruhole");
+        }
+
+        private void MoveToPreAlign()
+        {
+            MoveToGroup("PreAlign");
+        }
+
+        private void MoveToGroup(string Name)
+        {
+            var Document = this.SiriusEditor.Document;
+            var l = Document.Layers;
+
+            var layer = l.Where(t => t.Name.Contains(Name)).FirstOrDefault();
+            MoveToGroup(Document, layer);
+        }
+        private void MoveToFiducial()
+        {
+            MoveToGroup("Fiducial");
+        }
+
+        private static void MoveToGroup(IDocument Document, Layer layer)
+        {
+            Document.Action.ActEntityCut(Document.Action.SelectedEntity);
+            Document.Action.ActEntityPasteClone(layer);
+        }
+
+        private void UnGroup()
+        {
+            var Document = this.SiriusEditor.Document;
+
+            Document.Action.ActEntityUngroup(Document.Action.SelectedEntity);
+        }
+
+        private void Group()
+        {
+            var Document = this.SiriusEditor.Document;
+            Document.Action.ActEntityGroup(Document.Action.SelectedEntity);
+
+
+        }
+
+        private void HoleGroup()
+        {
+            MoveToGroup("Hole1");
+
+
+        }
+
+        private void SelectLayer(string strName)
+        {
+            var Document = this.SiriusEditor.Document;
+            var l = Document.Layers;
+
+            var layer = l.Where(t => t.Name.Contains(strName)).FirstOrDefault();
+            if (layer is Layer Lay)
+            {
+                foreach (var v in l)
+                {
+                    v.IsSelected = false;
+                }
+                Lay.IsSelected = true;
+            }
+        }
     }
 }

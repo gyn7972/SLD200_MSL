@@ -35,7 +35,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\..\..\SLD-200\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SLD_200U</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SLD_200C</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
@@ -48,7 +48,7 @@
     <OutputPath>..\..\..\SLD-200\</OutputPath>
     <DefineConstants>TRACE;SLD_200C</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>5</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
@@ -148,6 +148,15 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="SharpGL, Version=3.1.1.0, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpGL.3.1.1\lib\net472\SharpGL.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpGL.SceneGraph, Version=3.1.1.0, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpGL.SceneGraph.3.1.1\lib\net472\SharpGL.SceneGraph.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpGL.WinForms, Version=3.1.1.0, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpGL.WinForms.3.1.1\lib\net472\SharpGL.WinForms.dll</HintPath>
+    </Reference>
     <Reference Include="spirallab.core, Version=1.145.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\QMC.Common\SpiralLab\Sirius\spirallab.core.dll</HintPath>
@@ -169,6 +178,10 @@
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.4.7.0\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
     </Reference>
@@ -321,6 +334,12 @@
     </Compile>
     <Compile Include="NewStyleForm\FormNew_AlarmLog.Designer.cs">
       <DependentUpon>FormNew_AlarmLog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewStyleForm\FormNew_JogPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\FormNew_JogPopup.Designer.cs">
+      <DependentUpon>FormNew_JogPopup.cs</DependentUpon>
     </Compile>
     <Compile Include="NewStyleForm\FormNew_SiriusEditor.cs">
       <SubType>Form</SubType>
@@ -648,6 +667,24 @@
     </Compile>
     <Compile Include="NeedleCalibrationJogControl.designer.cs">
       <DependentUpon>NeedleCalibrationJogControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Loader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Loader.Designer.cs">
+      <DependentUpon>FormNewSub_JogPopup_Loader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Stage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Stage.Designer.cs">
+      <DependentUpon>FormNewSub_JogPopup_Stage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Unloader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Unloader.Designer.cs">
+      <DependentUpon>FormNewSub_JogPopup_Unloader.cs</DependentUpon>
     </Compile>
     <Compile Include="NewStyleForm\NewSubForm\FormNewSub_Recipe_Vision.cs">
       <SubType>UserControl</SubType>
@@ -1358,6 +1395,9 @@
     <EmbeddedResource Include="NewStyleForm\FormNew_AlarmLog.resx">
       <DependentUpon>FormNew_AlarmLog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\FormNew_JogPopup.resx">
+      <DependentUpon>FormNew_JogPopup.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\FormNew_SiriusEditor.resx">
       <DependentUpon>FormNew_SiriusEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -1468,6 +1508,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NeedleCalibrationJogControl.resx">
       <DependentUpon>NeedleCalibrationJogControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Loader.resx">
+      <DependentUpon>FormNewSub_JogPopup_Loader.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Stage.resx">
+      <DependentUpon>FormNewSub_JogPopup_Stage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_JogPopup_Unloader.resx">
+      <DependentUpon>FormNewSub_JogPopup_Unloader.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewStyleForm\NewSubForm\FormNewSub_Recipe_Vision.resx">
       <DependentUpon>FormNewSub_Recipe_Vision.cs</DependentUpon>
@@ -1803,6 +1852,8 @@
     <Content Include="Resources\Buzzer.png" />
     <Content Include="Resources\Buzzera.png" />
     <Content Include="Resources\CCW.png" />
+    <Content Include="SharpGL.ico" />
+    <Content Include="SharpGL.png" />
     <None Include="Resources\Z_Up_Small.png" />
     <None Include="Resources\Chart.png" />
     <None Include="Resources\Charta.png" />
