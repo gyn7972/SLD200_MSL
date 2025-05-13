@@ -89,7 +89,7 @@ namespace SLD200_MSL
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
             this.UpdateStyles();
 
-            this.Load += FormNew_Config_Load; // 여기서 Load 이벤트 연결
+            //this.Load += FormNew_Config_Load; // 여기서 Load 이벤트 연결
 
             m_keyPad = new FormNew_KeyPad();
 
@@ -123,9 +123,12 @@ namespace SLD200_MSL
                     bds = module as Bds;
                 }
             }
+
+            FormNew_Config_Load();
         }
 
-        private void FormNew_Config_Load(object sender, EventArgs e)
+        //private void FormNew_Config_Load(object sender, EventArgs e)
+        private void FormNew_Config_Load()
         {
             loader.Teaching_Position_Load();
             workStage.Teaching_Position_Load();

@@ -1661,7 +1661,11 @@ namespace QMC.Common.Hmi
                                 {
                                     if (bufferedGrphics.Graphics != null)
                                     {
-                                        bufferedGrphics.Graphics.DrawImage(bmpCutImage, 0, 0, this.Width, this.Height);
+                                        if(bmpCutImage != null)
+                                        {
+
+                                            bufferedGrphics.Graphics.DrawImage(bmpCutImage, 0, 0, this.Width, this.Height);
+                                        }
                                     }
 
                                 }
