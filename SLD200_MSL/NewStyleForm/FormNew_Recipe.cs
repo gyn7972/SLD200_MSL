@@ -1658,7 +1658,7 @@ namespace SLD200_MSL
             string filePath = "";
             string fileName = "";
             
-            if (Equipment.GetEqpSiriusViewerDocument() == null)
+            if (Equipment.GetEqpSiriusViewer() == null)
             {
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !!", "먼저 Scanner Board 를 초기화 해야 합니다.");

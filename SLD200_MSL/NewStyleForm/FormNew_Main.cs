@@ -31,6 +31,8 @@ using Cognex.DataMan.SDK.Utils;
 using netDxf.Blocks;
 using SharpGL;
 using static QMC.Common.Part;
+using SharpGL;
+using System.Windows;
 
 namespace SLD200_MSL
 {
@@ -137,28 +139,7 @@ namespace SLD200_MSL
             SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
         }
 
-        private void GLcontrol_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (sender is OpenGLControl gl)
-            {
-                var Document = this.SiriusViewer_Main.Document;
-                if (Document.Views.Count > 0)
-                {
-                    var view = Document.Views.ElementAt(0);
-                    float x;
-                    float y;
-                    var ptOrg = e.Location;
-                    view.Dp2Lp(ptOrg, out x, out y);
-                    
-                    if (Equipment.AutoManualStatus == false)
-                    {
-                        var v = workStage.ConvertPointFineCam(new XyzCoordinate(x, y, 0));
-                        workStage.MovetoWorkStage_ABS_PositionsXY(new XyCoordinate(v.X,v.Y), Type_Motor_Speed.Coarse);
-                    }
-                    //MessageBox.Show($"X:{x}, Y:{y}");
-                }
-            }
-        }
+        
 
         private void FormNew_Main_Load(object sender, EventArgs e)
         {
@@ -232,6 +213,8 @@ namespace SLD200_MSL
 
             //  통신 Parts 초기화 (Connect 옵션에 따라 활성화 된 것들만 초기화 됨)
             Comm_Init();
+
+            SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
         }
 
         private void OnUpdateResultOverlay(object sender, EventArgs e)
@@ -261,10 +244,13 @@ namespace SLD200_MSL
             {
                 m_bFormVisible = true;
                 // OnShowRecipeForm();
+                this.ImageViewer_Main_highs.ResumeDisplay();
             }
             else if (!this.Visible && m_bFormVisible)
             {
                 m_bFormVisible = false;
+
+                this.ImageViewer_Main_highs.SuspendDisplay();
                 //OnHideRecipeForm();
             }
         }
@@ -626,7 +612,7 @@ namespace SLD200_MSL
 
                 workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
 
-                MessageBox.Show("도면 로드 완료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                System.Windows.Forms.MessageBox.Show("도면 로드 완료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             
             //if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
@@ -1043,8 +1029,20 @@ namespace SLD200_MSL
             if (m_NeedDocumentSync)
             {
                 m_NeedDocumentSync = false;
-                SiriusViewer_Main.Document.Views.Clear();
-                SiriusViewer_Main.Document =(IDocument)Equipment.GetEqpSiriusViewerDocument().Clone();
+                try
+                {
+
+                    if (SiriusViewer_Main.Document.Views != null)
+                    {
+
+                        SiriusViewer_Main.Document.Views.Clear();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(ex);
+                }
+                SiriusViewer_Main.Document =(IDocument)Equipment.GetEqpSiriusViewerDocument();
             }
                         
             label_Main_LaserStatus.Text = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF";
@@ -1117,7 +1115,7 @@ namespace SLD200_MSL
                 unloader.timer_UnloaderWork.Stop();
                 unloader.m_UnloaderWork_Start = false;
 
-                MessageBox.Show("자동 운전 종료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                System.Windows.Forms.MessageBox.Show("자동 운전 종료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             if (workStage.Camera_HighRes.Opened)
@@ -1290,7 +1288,16 @@ namespace SLD200_MSL
 
                 // 문서 생성후 뷰어에 지정
                 var doc = new DocumentDefault();
-                SiriusViewer_Main.Document.Views.Clear();
+                if(SiriusViewer_Main.Document != null)
+                {
+
+                    if (SiriusViewer_Main.Document.Views != null)
+                    {
+
+                        SiriusViewer_Main.Document.Views.Clear();
+                    }
+                    
+                }
                 SiriusViewer_Main.Document = doc;
             }
             else
@@ -1332,7 +1339,7 @@ namespace SLD200_MSL
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    System.Windows.Forms.MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     //System.Diagnostics.Debug.WriteLine(ex.Message);
                 }
             }
@@ -1927,7 +1934,7 @@ namespace SLD200_MSL
 
             if (workStage.rtc == null)
             {
-                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                System.Windows.Forms.MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
                 return;
             }
 
@@ -2347,7 +2354,7 @@ namespace SLD200_MSL
                 if (File.Exists(correctionFile) == false)
                 {
                     string m_strPath = string.Format("Scanner Correction 파일이 없습니다.\r\n\r\n[{0}]", correctionFile);
-                    MessageBox.Show(m_strPath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    System.Windows.Forms.MessageBox.Show(m_strPath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -2376,7 +2383,7 @@ namespace SLD200_MSL
                 if (File.Exists(correctionFile) == false)
                 {
                     string m_strPath = string.Format("Scanner Correction 파일이 없습니다.\r\n\r\n[{0}]", correctionFile);
-                    MessageBox.Show(m_strPath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    System.Windows.Forms.MessageBox.Show(m_strPath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return ;
                 }
                 // initialize rtc controller
@@ -2763,11 +2770,11 @@ namespace SLD200_MSL
             }
 
             //  ListView Column 설정
-            listView_Main_FiducialAlignData.Columns.Add("No", 50, HorizontalAlignment.Center);
-            listView_Main_FiducialAlignData.Columns.Add("Socket", 55, HorizontalAlignment.Center);
-            listView_Main_FiducialAlignData.Columns.Add("Devi. X", 70, HorizontalAlignment.Center);
-            listView_Main_FiducialAlignData.Columns.Add("Devi. Y", 70, HorizontalAlignment.Center);
-            listView_Main_FiducialAlignData.Columns.Add("Hole Size", 70, HorizontalAlignment.Center);
+            listView_Main_FiducialAlignData.Columns.Add("No", 50, System.Windows.Forms.HorizontalAlignment.Center);
+            listView_Main_FiducialAlignData.Columns.Add("Socket", 55, System.Windows.Forms.HorizontalAlignment.Center);
+            listView_Main_FiducialAlignData.Columns.Add("Devi. X", 70, System.Windows.Forms.HorizontalAlignment.Center);
+            listView_Main_FiducialAlignData.Columns.Add("Devi. Y", 70, System.Windows.Forms.HorizontalAlignment.Center);
+            listView_Main_FiducialAlignData.Columns.Add("Hole Size", 70, System.Windows.Forms.HorizontalAlignment.Center);
 
             listView_Main_FiducialAlignData.EndUpdate();
         }
@@ -2856,7 +2863,7 @@ namespace SLD200_MSL
            
             if (workStage.rtc == null)
             {
-                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                System.Windows.Forms.MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
                 return;
             }
 
@@ -3393,6 +3400,64 @@ namespace SLD200_MSL
                 pair.Value.Text = FormatPos(pos);
             }
         }
+        private PointF ConvertScreenToReal(System.Drawing.Point location, double scale)
+        {
+            PointF pt = new PointF((float)(location.X / scale), (float)(location.Y / scale));
+            return pt;
+        }
+        private void GLcontrol_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (sender is OpenGLControl gl)
+            {
+                var Document = this.SiriusViewer_Main.Document;
+                if (Document.Views.Count > 0)
+                {
+                    var view = Document.Views.Last();
+                    
+
+                    double scale = view.Width / view.ScaleWidth;
+                    double dCenterX = view.Width / 2;
+                    double scaleWidht = view.ScaleWidth;
+                    double scaleHeight = view.ScaleHeight;
+                    double dCenterY = view.Height / 2;
+                    double dScale = view.Scale;
+                    var cX = view.CameraX;
+                    var cY = view.CameraY;
+                    System.Drawing.Point Center = new System.Drawing.Point((int)dCenterX, (int)dCenterY);
+                    var pt = new System.Drawing.Point(e.X, e.Y);
+                    pt.Offset(-Center.X, -Center.Y);
+                    pt.Y *= -1;
+                    var ptReal = ConvertScreenToReal(pt, scale);
+                    ptReal.X += cX;
+                    ptReal.Y += cY;
+                    
+
+                    if (Equipment.AutoManualStatus == false)
+                    {
+                        if(Equipment._InitDeviceStatus.MotionIo)
+                        {
+                            var v = workStage.ConvertPointFineCam(new XyzCoordinate(ptReal.X, ptReal.Y, 0));
+
+                            //workStageParameter.stWorkStagePosParam.dTarget
+                            workStage.MovetoWorkStage_ABS_PositionsXY(new XyCoordinate(v.X, v.Y), Type_Motor_Speed.Coarse);
+                            return;
+                        }
+                        else
+                        {
+                            MessageBoxOk messageBoxOk = new MessageBoxOk();
+                            messageBoxOk.ShowDialog("Error", "초기화 되지 않았습니다.");
+                        }
+                    }
+                    else
+                    {
+                        MessageBoxOk messageBoxOk = new MessageBoxOk();
+                        messageBoxOk.ShowDialog("Error", "설비가 Manual 상태가 아닙니다.");
+                    }
+                    
+                }
+            }
+        }
+
 
 
 

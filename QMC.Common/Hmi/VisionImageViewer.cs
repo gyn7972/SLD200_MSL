@@ -2019,10 +2019,10 @@ namespace QMC.Common.Hmi
                                             m_VerticalLine.EndLocation = new Point(nX / 2, nY);
                                         }
                                     }
-                                    this.m_InputImage = Camera.LatestImage;
-
-                                    
+                                   
                                 }
+                                this.m_InputImage = Camera.LatestImage;
+
                                 this.m_IsChanged = true;
                                 UpdateOverlay(false);
                                 this.DrawToBuffer(this.m_Graphics);
@@ -2031,10 +2031,7 @@ namespace QMC.Common.Hmi
                         }
                     }
 
-                    token.Register(() =>
-                    {
-                        m_bStop = true;
-                    });
+                    
                     Thread.Sleep(UpdateDelayTime);
                 }
             });
