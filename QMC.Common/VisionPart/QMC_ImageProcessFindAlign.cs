@@ -373,8 +373,8 @@ namespace QMC.Common.VisionPart
                     {
                         nMaxCircleFirst = 2000;
                     }
-                    double dAngleStep = 360 / (2 * 3.141592 * radius);
-                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius/1.5), (int)nMaxCircleFirst, dAngleStep, 10, bIsDarkCircleSearch);
+                    double dAngleStep = 2;
+                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius/2), (int)nMaxCircleFirst, dAngleStep, 10, bIsDarkCircleSearch);
                     points = polygon;
                     circlesResult.Clear();
                     FindCircleFitter(circlesResult, points, out dRadius, 5);
@@ -464,14 +464,17 @@ namespace QMC.Common.VisionPart
             if (bFindCircle == false)
             {
                 circlesResult.Clear();
+                string strFileName = "d:\\Temp\\AlignFail" + DateTime.Now.Ticks.ToString() + ".bmp";
+                IsImageSave = true;
+                SaveImage(pixelData, w, h, strFileName);
                 return new QMC_ImageProcessFindAlignResult();
             }
 
             cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
             cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
-            SaveOutLine(polygon, w, h, "polygon.bmp");
+            //SaveOutLine(polygon, w, h, "polygon.bmp");
             polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 0.25, 1, bIsDarkCircleSearch);
-            SaveOutLine(polygon, w, h, "polygon2.bmp");
+            //(polygon, w, h, "polygon2.bmp");
 
             points = polygon;
 

@@ -601,23 +601,23 @@ namespace QMC.Common
                 try
                 {
                     // SocketAlign
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "Aligntype", "0", sb, sb.Capacity, path);
-                    data.dSocketAlignType = Equipment.ToInt(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "Aligntype", "1", sb, sb.Capacity, path);
+                    data.dSocketAlignType = 1;  // Equipment.ToInt(sb.ToString());
                     NativeMethods.GetPrivateProfileString("SocketAlign", "MarkType", "0", sb, sb.Capacity, path);
-                    data.dSocketMarkType = Equipment.ToInt(sb.ToString());
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkColor", "False", sb, sb.Capacity, path);
+                    data.dSocketMarkType = 0; // Equipment.ToInt(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkColor", "true", sb, sb.Capacity, path);
                     data.bSocketCircleColor = Equipment.ToBoolean(sb.ToString());
 
                     NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSize", "0.5", sb, sb.Capacity, path);
                     data.dSocketCircleMarkRadius = Equipment.ToDouble(sb.ToString());
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSpec", "0.08", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSpec", "0.05", sb, sb.Capacity, path);
                     data.dSocketCircleMarkSpec = Equipment.ToDouble(sb.ToString());
                     NativeMethods.GetPrivateProfileString("SocketAlign", "MarkScore", "0.7", sb, sb.Capacity, path);
                     data.dSocketCircleMarkScore = Equipment.ToDouble(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "IR", "5", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "IR", "250", sb, sb.Capacity, path);
                     data.nSocketIlluminationIR = Equipment.ToInt(sb.ToString());
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "Red", "2500", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "Red", "0", sb, sb.Capacity, path);
                     data.nSocketIlluminationRed = Equipment.ToInt(sb.ToString());
 
 
