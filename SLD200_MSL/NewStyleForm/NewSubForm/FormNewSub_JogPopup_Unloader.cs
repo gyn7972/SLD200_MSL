@@ -87,10 +87,10 @@ namespace SLD200.NewStyleForm.NewSubForm
             button_JogPopup_Unloader_TransferX_Neg.Tag = "Unloader,TR_X,-1";
             button_JogPopup_Unloader_TransferZ_Pos.Tag = "Unloader,TR_Z,1";
             button_JogPopup_Unloader_TransferZ_Neg.Tag = "Unloader,TR_Z,-1";
-            button_JogPopup_Unloader_portZ0_Pos.Tag = "Unloader,PORT_Z0,1";
-            button_JogPopup_Unloader_portZ0_Neg.Tag = "Unloader,PORT_Z0,-1";
-            button_JogPopup_Unloader_portZ1_Pos.Tag = "Unloader,PORT_Z1,1";
-            button_JogPopup_Unloader_portZ1_Neg.Tag = "Unloader,PORT_Z1,-1";
+            button_JogPopup_Unloader_portZ0_Pos.Tag = "Unloader,Z0,1";
+            button_JogPopup_Unloader_portZ0_Neg.Tag = "Unloader,Z0,-1";
+            button_JogPopup_Unloader_portZ1_Pos.Tag = "Unloader,Z1,1";
+            button_JogPopup_Unloader_portZ1_Neg.Tag = "Unloader,Z1,-1";
 
 
             // Initialize the jog buttons here if needed

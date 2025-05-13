@@ -1676,6 +1676,7 @@ namespace QMC.Common.Hmi
                                 }
 
                             }
+
                             lock (bufferedGrphics)
                             {
                                 OwnedOverlayCollection resultNormal = this.NormalOverlays;
@@ -1691,26 +1692,29 @@ namespace QMC.Common.Hmi
                                 catch (Exception ex)
                                 {
                                     Log.Write(ex);
-                                    Console.WriteLine(ex.Message);
+                                    //Console.WriteLine(ex.Message);
                                 }
                                 OwnedOverlayCollection resultOverlays = this.ResultOverlays;
                                 {
                                     try
                                     {
-                                        for (int i = 0; i < resultOverlays.Count; i++)
+                                        lock(resultOverlays)
                                         {
+                                            for (int i = 0; i < resultOverlays.Count; i++)
+                                            {
 
-                                            if (resultOverlays[i].Visible == true)
-                                                resultOverlays[i].Draw(this.Scale.GetOffset(), size, new SizeD(this.Size.Width, this.Size.Height), bufferedGrphics);
+                                                if (resultOverlays[i].Visible == true)
+                                                    resultOverlays[i].Draw(this.Scale.GetOffset(), size, new SizeD(this.Size.Width, this.Size.Height), bufferedGrphics);
+                                            }
                                         }
+                                       
                                     }
                                     catch (Exception ex)
                                     {
                                         Log.Write(ex);
-                                        Console.WriteLine(ex.Message);
+                                        //Console.WriteLine(ex.Message);
                                     }
                                 }
-
                             }
                         }
 

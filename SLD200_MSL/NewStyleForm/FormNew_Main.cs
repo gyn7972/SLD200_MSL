@@ -252,12 +252,14 @@ namespace SLD200_MSL
                 m_bFormVisible = true;
                 // OnShowRecipeForm();
                 this.ImageViewer_Main_highs.ResumeDisplay();
+                this.ImageViewer_Main_Lows.ResumeDisplay();
             }
             else if (!this.Visible && m_bFormVisible)
             {
                 m_bFormVisible = false;
 
                 this.ImageViewer_Main_highs.SuspendDisplay();
+                this.ImageViewer_Main_Lows.SuspendDisplay();
                 //OnHideRecipeForm();
             }
         }
@@ -272,7 +274,7 @@ namespace SLD200_MSL
        
         private void InitImageViewer()
         {
-            if (this.ImageViewer_Main_highs.IsHandleCreated)
+            //if (this.ImageViewer_Main_highs.IsHandleCreated)
             {
                 this.ImageViewer_Main_highs.SizeMode = PictureBoxSizeMode.CenterImage;
                 this.ImageViewer_Main_highs.SuspendDisplay();
@@ -284,7 +286,7 @@ namespace SLD200_MSL
                 this.ImageViewer_Main_highs.StartUpdateTask();
             }
 
-            if (this.ImageViewer_Main_Lows.IsHandleCreated)
+            //if (this.ImageViewer_Main_Lows.IsHandleCreated)
             {
                 this.ImageViewer_Main_Lows.SizeMode = PictureBoxSizeMode.CenterImage;
                 this.ImageViewer_Main_Lows.SuspendDisplay();
@@ -3451,6 +3453,8 @@ namespace SLD200_MSL
         {
             if (sender is OpenGLControl gl)
             {
+                ImageViewer_Main_highs.Camera.StartLive();
+                ImageViewer_Main_Lows.Camera.StartLive();
                 var Document = this.SiriusViewer_Main.Document;
                 if (Document.Views.Count > 0)
                 {

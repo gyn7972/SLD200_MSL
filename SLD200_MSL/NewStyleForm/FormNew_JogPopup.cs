@@ -112,11 +112,13 @@ namespace SLD200.NewStyleForm
             {
                 m_bFormVisible = true;
                 OnShow();
+                timer_Status.Start();
             }
             else if (!this.Visible && m_bFormVisible)
             {
                 m_bFormVisible = false;
                 OnHide();
+                timer_Status.Stop();
             }
         }
 

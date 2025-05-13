@@ -52,7 +52,7 @@ namespace QMC.Common.Motion.Ajin.Motions
         }
         public  override bool MC_MovePosition(int Axis, double position, double vel, double accel, double decel)
         {
-            lock (_axisLocks[Axis])
+            //lock (_axisLocks[Axis])
             {
                 int elapsed = 0;
                 //if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart && (workStage.Stage.Interpolator != null))
@@ -206,7 +206,7 @@ namespace QMC.Common.Motion.Ajin.Motions
 
         public override bool MC_MoveRelPosition(int Axis, double position, double vel, double accel, double decel)
         {
-            lock (_axisLocks[Axis])
+            //lock (_axisLocks[Axis])
             {
                 int elapsed = 0;
                 //if (workStage.Config.ParamConfig.MapFileApply_WhenPgmStart && (workStage.Stage.Interpolator != null))
