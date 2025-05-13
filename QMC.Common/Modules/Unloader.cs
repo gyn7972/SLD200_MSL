@@ -6735,15 +6735,18 @@ namespace QMC.Common.Modules
         public double GetEncUnloaderPos_Motor(Unloader.nAxis nAxis)
         {
             double dEncPos = -999.999;
-            try
+            lock (this)
             {
-                dEncPos = MC_Func.MC_GetEncPos((int)nAxis);
+                try
+                {
+                    dEncPos = MC_Func.MC_GetEncPos((int)nAxis);
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(ex);
+                }
+                return dEncPos;
             }
-            catch (Exception ex)
-            {
-                Log.Write(ex);
-            }
-            return dEncPos;
         }
         public void StoptoUnloader_Motor(Unloader.nAxis nAxis)
         {
