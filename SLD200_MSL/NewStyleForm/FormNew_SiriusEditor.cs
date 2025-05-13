@@ -461,7 +461,7 @@ namespace SLD200_MSL
         private void SiriusEditor_OnDocumentSourceChanged1(object sender, IDocument doc)
         {
             SiriusEditor.Document = doc;
-            Equipment.EqpSiriusViewer.Document = doc;
+            Equipment.SetEqpSiriusViewerDocument(doc);
         }
 
         #endregion
@@ -550,7 +550,7 @@ namespace SLD200_MSL
                 MessageBox.Show("데이터 추출 성공", "Processing Data ...", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 //workStage.SiriusEditor.Document = SiriusEditor.Document;
-                Equipment.EqpSiriusViewer.Document = SiriusEditor.Document;
+                Equipment.SetEqpSiriusViewerDocument(SiriusEditor.Document);
 
                 int m_nReturn = workStage.GetDrillingData();
                 switch (m_nReturn)
