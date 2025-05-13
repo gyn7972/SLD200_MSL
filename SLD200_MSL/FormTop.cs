@@ -16,6 +16,7 @@ using System.Reflection;
 using static QMC.Common.Equipment;
 using QMC.Common.Parts;
 using SLD200.NewStyleForm;
+using QMC.Common.Global;
 
 namespace SLD200_MSL
 {
@@ -52,6 +53,8 @@ namespace SLD200_MSL
         private string m_strDrawingFileName_Now;
         private string m_strDrawingFileName_Before;
 
+        private GlobalHotkeyMessageFilter _hotkeyFilter;
+
         FormNew_JogPopup m_formJogPopup;
         public FormNew_JogPopup formJogPopup
         {
@@ -62,6 +65,9 @@ namespace SLD200_MSL
         public FormTop()
         {
             InitializeComponent();
+
+            this.KeyPreview = true;
+
             Configuration = new FormBaseConfiguration();
             m_formLogIn = new FormLogIn();
 
@@ -102,6 +108,25 @@ namespace SLD200_MSL
             m_strDrawingFileName_Before = "";
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            if (_hotkeyFilter == null)
+            {
+                _hotkeyFilter = new GlobalHotkeyMessageFilter();
+                _hotkeyFilter.OnKeyPressed = HandleGlobalHotkey;
+                Application.AddMessageFilter(_hotkeyFilter);
+            }
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            base.OnFormClosed(e);
+
+            if (_hotkeyFilter != null)
+                Application.RemoveMessageFilter(_hotkeyFilter);
+        }
 
         Button[] control = new Button[Enum.GetValues(typeof(TopButtons)).Length];
         //string path = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName;
@@ -359,12 +384,51 @@ namespace SLD200_MSL
             }
         }
 
+        private void Show_JopgPopup()
+        {
+            if (formJogPopup.Visible)
+            {
+                formJogPopup.Hide();
+            }
+            else
+            {
+                formJogPopup.Show();
+                formJogPopup.Activate();
+            }
+        }
         private void button_JogPopup_Click(object sender, EventArgs e)
         {
             if (!formJogPopup.Visible)
             {
                 formJogPopup.Show();
                 formJogPopup.Activate();
+            }
+        }
+
+        //protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        //{
+        //    switch (keyData)
+        //    {
+        //        case Keys.Alt | Keys.J:
+        //            {
+        //                Show_JopgPopup();
+        //            }
+        //            break;
+        //    }
+        //    return base.ProcessCmdKey(ref msg, keyData);
+        //}
+
+        private bool HandleGlobalHotkey(Keys key)
+        {
+            switch (key)
+            {
+                case Keys.Control | Keys.J:
+                    {
+                        Show_JopgPopup();
+                        return true;
+                    }
+                default:
+                    return false;
             }
         }
     }

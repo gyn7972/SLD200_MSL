@@ -1989,7 +1989,6 @@ namespace SLD200_MSL
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-
             if (keyData == Keys.F7)
             {
                 Group();
