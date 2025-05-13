@@ -139,28 +139,7 @@ namespace SLD200_MSL
             SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
         }
 
-        private void GLcontrol_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (sender is OpenGLControl gl)
-            {
-                var Document = this.SiriusViewer_Main.Document;
-                if (Document.Views.Count > 0)
-                {
-                    var view = Document.Views.ElementAt(0);
-                    float x;
-                    float y;
-                    var ptOrg = e.Location;
-                    view.Dp2Lp(ptOrg, out x, out y);
-                    
-                    if (Equipment.AutoManualStatus == false)
-                    {
-                        var v = workStage.ConvertPointFineCam(new XyzCoordinate(x, y, 0));
-                        workStage.MovetoWorkStage_ABS_PositionsXY(new XyCoordinate(v.X,v.Y), Type_Motor_Speed.Coarse);
-                    }
-                    //MessageBox.Show($"X:{x}, Y:{y}");
-                }
-            }
-        }
+        
 
         private void FormNew_Main_Load(object sender, EventArgs e)
         {
