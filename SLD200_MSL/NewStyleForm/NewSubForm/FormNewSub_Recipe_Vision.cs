@@ -209,6 +209,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             this.RecipeVisionTimer.Stop();
         }
 
+
         private void InitPatternMatchingParameter()
         {
             try

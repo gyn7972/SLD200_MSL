@@ -13164,6 +13164,10 @@ namespace QMC.Common.Modules
 
         #region Main Work Cycle Function (자동 운전)
 
+
+        
+
+
         int Run_MainWork_Cycle_Func()
         {
             int ret = 0;
@@ -13172,7 +13176,6 @@ namespace QMC.Common.Modules
 
             double m_dSpeed = 0.0;
             double m_dAccDec = 0.0;
-
 
             //  운전 중 Door 를 열면 장비 Stop
             if (m_nMainWork_Step >= (int)MainWork_Step.Start)
@@ -14999,6 +15002,10 @@ namespace QMC.Common.Modules
             switch (m_nLaserDrilling_MainStep)
             {
                 case (int)LaserDrilling_Step.Start:
+
+                    //Cycle Time
+                    CycleTimer_LaserDrilling.Start();
+
                     LaserDrillingStepStart();
 
                     //Loaser에서 Stage로 제품 이송시 vacuum 안잡히면 Ng로 그냥 뺀다.
@@ -21923,12 +21930,17 @@ namespace QMC.Common.Modules
                     break;
 
                 case (int)LaserDrilling_Step.Complete:
-                    Log.Write("SLD-200", "Auto Run", "전체 가공 완료");
-                    
-                    m_bLaserDrilling_Complete = true;
 
-                    //timer_LaserDrillingWork.Enabled = false;
-                    //m_bExit = true;
+                    m_strTemp = string.Format("전체 가공 완료");
+                    Log.Write("SLD-200", "Auto Run", m_strTemp);
+
+                    //Cycle Time
+                    CycleTimer_LaserDrilling.End();
+                    m_strTemp = string.Format("LaserDrillingOneCycle Time: {0:0.000} sec", CycleTimer_LaserDrilling.Latest.Interval.TotalSeconds);
+                    Log.Write("SLD-200", "Auto Run", m_strTemp);
+
+
+                    m_bLaserDrilling_Complete = true;
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.None;
 
                     if (!Equipment.AutoRunStatus)
