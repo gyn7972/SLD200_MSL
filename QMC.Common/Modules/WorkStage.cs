@@ -26006,13 +26006,8 @@ namespace QMC.Common.Modules
             //  글자를 구성하는 요소 개수 카운트
             int m_nTextItemCount = 0;
 
-            if (Equipment.EqpSiriusViewer == null)
-            {
-                MessageBox.Show("먼저 RTC 보드를 초기화 해야 합니다.", "Information!!");
-                return false;
-            }
-
-            if (Equipment.EqpSiriusViewer.Document == null)
+            
+            if (Equipment.GetEqpSiriusViewerDocument()== null)
             {
                 MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
                 return false;
@@ -26023,7 +26018,7 @@ namespace QMC.Common.Modules
             //  Layer 개수 체크
             m_nLayerCount = 0;
             //foreach (var layer in siriusEditorUserControl_WorkStage.Document.InternalData.Layers)
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 m_nLayerCount++;
             }
@@ -26041,7 +26036,7 @@ namespace QMC.Common.Modules
 
             //  Layer 종류별 Count
             //foreach (var layer in siriusEditorUserControl_WorkStage.Document.InternalData.Layers)
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
                 {
@@ -26748,13 +26743,8 @@ namespace QMC.Common.Modules
             //  글자를 구성하는 요소 개수 카운트
             int m_nTextItemCount = 0;
 
-            if (Equipment.EqpSiriusViewer == null)
-            {
-                MessageBox.Show("먼저 RTC 보드를 초기화 해야 합니다.", "Information!!");
-                return false;
-            }
-
-            if (Equipment.EqpSiriusViewer.Document == null)
+            
+            if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
                 MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
                 return false;
@@ -26765,7 +26755,7 @@ namespace QMC.Common.Modules
             //  Layer 개수 체크
             m_nLayerCount = 0;
             //foreach (var layer in siriusEditorUserControl_WorkStage.Document.InternalData.Layers)
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 m_nLayerCount++;
             }
@@ -26784,7 +26774,7 @@ namespace QMC.Common.Modules
             int m_nListCount = 0;
 
             //  Layer 종류별 Count
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
                 {
@@ -27140,7 +27130,7 @@ namespace QMC.Common.Modules
 
 
             //  Layer 종류별 Count
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
                 {
@@ -27542,13 +27532,8 @@ namespace QMC.Common.Modules
             //  글자를 구성하는 요소 개수 카운트
             int m_nTextItemCount = 0;
 
-            if (Equipment.EqpSiriusViewer == null)
-            {
-                MessageBox.Show("먼저 RTC 보드를 초기화 해야 합니다.", "Information!!");
-                return false;
-            }
-
-            if (Equipment.EqpSiriusViewer.Document == null)
+            
+            if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
                 MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
                 return false;
@@ -27559,7 +27544,7 @@ namespace QMC.Common.Modules
             //  Layer 개수 체크
             m_nLayerCount = 0;
             //foreach (var layer in siriusEditorUserControl_WorkStage.Document.InternalData.Layers)
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 m_nLayerCount++;
             }
@@ -27622,7 +27607,7 @@ namespace QMC.Common.Modules
 
 
             //  Layer 종류별 Count
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
                 {
@@ -27944,8 +27929,9 @@ namespace QMC.Common.Modules
             }
             else
             {
-                Equipment.EqpSiriusViewer.Document.Action.ActEntityRotate(Equipment.EqpSiriusViewer.Document.Action.SelectedEntity, (float)m_dAngle, (float)m_dRotCenterX, (float)m_dRotCenterY);
-                Equipment.EqpSiriusViewer.Document.Action.ActEntityTransit(Equipment.EqpSiriusViewer.Document.Action.SelectedEntity, (float)m_dOffsetX, (float)m_dOffsetY);
+                var Document = Equipment.GetEqpSiriusViewerDocument();
+                Document.Action.ActEntityRotate(Document.Action.SelectedEntity, (float)m_dAngle, (float)m_dRotCenterX, (float)m_dRotCenterY);
+                Document.Action.ActEntityTransit(Document.Action.SelectedEntity, (float)m_dOffsetX, (float)m_dOffsetY);
 
             }
         }
@@ -28242,13 +28228,9 @@ namespace QMC.Common.Modules
             double m_dLine_Max_X = double.MinValue;
             double m_dLine_Max_Y = double.MinValue;
 
-            if (Equipment.EqpSiriusViewer == null)
-            {
-                MessageBox.Show("먼저 RTC 보드를 초기화 해야 합니다.", "Information!!");
-                return (int)nGetDataResult.GETDATA_RTCINIT;
-            }
+           
 
-            if (Equipment.EqpSiriusViewer.Document == null)
+            if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
                 MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
                 return (int)nGetDataResult.GETDATA_FAIL;
@@ -28266,7 +28248,7 @@ namespace QMC.Common.Modules
 
             //  Layer 개수 체크
             m_nLayerCount = 0;
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 m_nLayerCount++;
             }
@@ -28282,7 +28264,7 @@ namespace QMC.Common.Modules
             m_stLayerType.m_nLayerIndex = new int[(int)System.Enum.GetValues(typeof(LayerList)).Length];
 
             //  Layer 종류별 Count
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 if (layer.IsMarkerable)
                 {
@@ -28373,7 +28355,7 @@ namespace QMC.Common.Modules
             //}
 
             m_nLayerCount = 0;
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 if (layer.IsMarkerable)
                 {
@@ -33222,13 +33204,7 @@ namespace QMC.Common.Modules
             int m_nUnusableLayerCount = 0;
 
 
-            if (Equipment.EqpSiriusViewer == null)
-            {
-                MessageBox.Show("먼저 RTC 보드를 초기화 해야 합니다.", "Information!!");
-                return (int)nGetDataResult.GETDATA_RTCINIT;
-            }
-
-            if (Equipment.EqpSiriusViewer.Document == null)
+            if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
                 MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
                 return (int)nGetDataResult.GETDATA_FAIL;
@@ -33239,7 +33215,7 @@ namespace QMC.Common.Modules
             m_nGroupCount = 0;
 
 
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 if (layer.IsMarkerable)
                 {
@@ -33424,14 +33400,14 @@ namespace QMC.Common.Modules
                 var doc = DocumentSerializer.OpenDxf(strFileName);
                 //SiriusViewer_Main.Document = doc;
                 
-                Equipment.EqpSiriusViewer.Document = doc;
+                Equipment.SetEqpSiriusViewerDocument(  doc);
             }
             else if (m_strExt.ToUpper() == ".SIRIUS")
             {
                 //SiriusEditor.Document.New();
                 var doc = DocumentSerializer.OpenSirius(strFileName);
                 //SiriusViewer_Main.Document = doc;
-                Equipment.EqpSiriusViewer.Document = doc;
+                Equipment.SetEqpSiriusViewerDocument(doc);
             }
         }
 
@@ -34031,19 +34007,15 @@ namespace QMC.Common.Modules
             m_stTemp_AlignMark.dRotationCenter.Y = 0.0;
             m_dTemp_RotationCenter_X = m_dTemp_RotationCenter_Y = 0.0;
 
-            if (Equipment.EqpSiriusViewer.Document == null)
+            if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
                 MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
                 return (int)nGetDataResult.GETDATA_FAIL;
             }
 
-            if (Equipment.EqpSiriusViewer == null)
-            {
-                //  Sirius2
-                //siriusEditor = new SpiralLab.Sirius2.Winforms.UI.SiriusEditorUserControl();
-            }
+           
 
-            //if (Equipment.EqpSiriusViewer.Document == null)
+            //if (Equipment.GetEqpSiriusViewerDocument() == null)
             //{
             //    MessageBox.Show("도면 데이터 임시 저장용 Document 가 준비되지 않았습니다.", "Information!!");
             //    return (int)nGetDataResult.GETDATA_FAIL;
@@ -34051,7 +34023,7 @@ namespace QMC.Common.Modules
 
             //  전체 가공 객체 개수
             int m_nTotalCount = 0;
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 m_nTotalCount += layer.Count;
             }
@@ -34220,7 +34192,7 @@ namespace QMC.Common.Modules
 
             //  전체 가공 객체를 List 로 등록
             var list = new List<IEntity>(m_nTotalCount);
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 foreach (var entity in layer)
                 {
@@ -34229,11 +34201,11 @@ namespace QMC.Common.Modules
             }
 
             //  List 에 등록된 가공 객체 Select
-            Equipment.EqpSiriusViewer.Document.Action.ActEntitySelect(list);
+            Equipment.GetEqpSiriusViewerDocument().Action.ActEntitySelect(list);
 
             //  가공 객체 회전 이동
-            Equipment.EqpSiriusViewer.Document.Action.ActEntityRotate(Equipment.EqpSiriusViewer.Document.Action.SelectedEntity, (float)m_dAngle, (float)m_dRotCenter_X, (float)m_dRotCenter_Y);
-            Equipment.EqpSiriusViewer.Document.Action.ActEntityTransit(Equipment.EqpSiriusViewer.Document.Action.SelectedEntity, (float)m_dOffsetX, (float)m_dOffsetY);
+            Equipment.GetEqpSiriusViewerDocument().Action.ActEntityRotate(Equipment.GetEqpSiriusViewerDocument().Action.SelectedEntity, (float)m_dAngle, (float)m_dRotCenter_X, (float)m_dRotCenter_Y);
+            Equipment.GetEqpSiriusViewerDocument().Action.ActEntityTransit(Equipment.GetEqpSiriusViewerDocument().Action.SelectedEntity, (float)m_dOffsetX, (float)m_dOffsetY);
 
             return success == true ? (int)nGetDataResult.GETDATA_SUCCESS : (int)nGetDataResult.GETDATA_FAIL;            //   0 : "데이터가 정상적으로 로드 되었습니다."
                                                                                                                         //  -1 : "데이터가 정상적으로 로드 되지 않았습니다."
@@ -37046,7 +37018,7 @@ namespace QMC.Common.Modules
             }
             else
             {
-                Equipment.EqpSiriusViewer.Document.Action.ActEntitySelect(list);
+                Equipment.GetEqpSiriusViewerDocument().Action.ActEntitySelect(list);
             }
         }
         //  Laser Height Sensor Value 저장
@@ -37351,7 +37323,7 @@ namespace QMC.Common.Modules
 
             return bRtn;
         }
-
+        
         public bool MovetoWorkStage_ABS_PositionsXY(XyCoordinate xyCoordinate, Type_Motor_Speed typeSpeed)
         {
             // WorkStage Teaching Position 이동

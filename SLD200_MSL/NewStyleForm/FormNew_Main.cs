@@ -29,6 +29,7 @@ using System.Data.Common;
 using System.Windows.Media.Media3D;
 using Cognex.DataMan.SDK.Utils;
 using netDxf.Blocks;
+using SharpGL;
 using static QMC.Common.Part;
 
 namespace SLD200_MSL
@@ -133,7 +134,30 @@ namespace SLD200_MSL
             workStage.Module_Allocation();
             unloader.Module_Allocation();
             loader.Module_Allocation();
+            SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
+        }
 
+        private void GLcontrol_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (sender is OpenGLControl gl)
+            {
+                var Document = this.SiriusViewer_Main.Document;
+                if (Document.Views.Count > 0)
+                {
+                    var view = Document.Views.ElementAt(0);
+                    float x;
+                    float y;
+                    var ptOrg = e.Location;
+                    view.Dp2Lp(ptOrg, out x, out y);
+                    
+                    if (Equipment.AutoManualStatus == false)
+                    {
+                        var v = workStage.ConvertPointFineCam(new XyzCoordinate(x, y, 0));
+                        workStage.MovetoWorkStage_ABS_PositionsXY(new XyCoordinate(v.X,v.Y), Type_Motor_Speed.Coarse);
+                    }
+                    //MessageBox.Show($"X:{x}, Y:{y}");
+                }
+            }
         }
 
         private void FormNew_Main_Load(object sender, EventArgs e)
@@ -145,8 +169,8 @@ namespace SLD200_MSL
 
             //  Sirius Viewer
             //workStage.SiriusEditor = new SpiralLab.Sirius.SiriusEditorForm();
-            Equipment.EqpSiriusViewer = new SpiralLab.Sirius.SiriusViewerForm();
-            Equipment.EqpSiriusViewer_Origin = new SpiralLab.Sirius.SiriusViewerForm();
+            Equipment.SetEqpSiriusViewer(new SpiralLab.Sirius.SiriusViewerForm());
+            Equipment.SetEqpSiriusViewerOrg( new SpiralLab.Sirius.SiriusViewerForm());
 
             //  Fiducial Align Data 를 보여주는 ListView 설정
             listView_Main_FiducialAlignData.View = View.Details;
@@ -944,9 +968,9 @@ namespace SLD200_MSL
                 m_bNeedHideProgressForm = true;
             }
 
-            if ((SiriusViewer_Main.Document != null) && (Equipment.EqpSiriusViewer.Document != null))
+            if ((SiriusViewer_Main.Document != null) && (Equipment.GetEqpSiriusViewerDocument ()!= null))
             {
-                if ((SiriusViewer_Main.Document != Equipment.EqpSiriusViewer.Document) &&
+                if ((SiriusViewer_Main.Document != Equipment.GetEqpSiriusViewerDocument()) &&
                     ((workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) || m_SiriusViewerRefresy))
                 {
                     m_NeedDocumentSync = true;
@@ -1019,7 +1043,8 @@ namespace SLD200_MSL
             if (m_NeedDocumentSync)
             {
                 m_NeedDocumentSync = false;
-                SiriusViewer_Main.Document = Equipment.EqpSiriusViewer.Document;
+                SiriusViewer_Main.Document.Views.Clear();
+                SiriusViewer_Main.Document =(IDocument)Equipment.GetEqpSiriusViewerDocument().Clone();
             }
                         
             label_Main_LaserStatus.Text = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF";
@@ -1265,6 +1290,7 @@ namespace SLD200_MSL
 
                 // 문서 생성후 뷰어에 지정
                 var doc = new DocumentDefault();
+                SiriusViewer_Main.Document.Views.Clear();
                 SiriusViewer_Main.Document = doc;
             }
             else
@@ -2827,12 +2853,7 @@ namespace SLD200_MSL
                 return;
             }
 
-            if (Equipment.EqpSiriusViewer == null)
-            {
-                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
-                return;
-            }
-
+           
             if (workStage.rtc == null)
             {
                 MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
@@ -2899,7 +2920,7 @@ namespace SLD200_MSL
 
                 double m_dSelectedGroup_Center_X = 999.0;
                 double m_dSelectedGroup_Center_Y = 999.0;
-                foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+                foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
                 {
                     if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
                     {
@@ -2981,7 +3002,7 @@ namespace SLD200_MSL
 
                     //  도면 갱신 (Main 화면의 Sirius Document 를 가공할때 사용하는 Document 로 복사)
                     //workStage.SiriusEditor.Document = SiriusViewer_Main.Document;
-                    Equipment.EqpSiriusViewer.Document = SiriusViewer_Main.Document;                            //  메인 화면에 보이는 도면을 가공하기 위함
+                    Equipment.SetEqpSiriusViewerDocument( SiriusViewer_Main.Document);                            //  메인 화면에 보이는 도면을 가공하기 위함
 
 
                 if (workStage.m_nSocketAlign_StartIndex >= 0)
