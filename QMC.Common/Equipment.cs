@@ -1162,9 +1162,16 @@ namespace QMC.Common
             }
             return EqpSiriusViewer.Document;
         }
+        public static SiriusViewerForm GetEqpSiriusViewer()
+        {
+            return EqpSiriusViewer;
+        }
         public static void SetEqpSiriusViewerDocument(IDocument doc)
         {
-            EqpSiriusViewer.Document.Views = new HashSet<IView>();
+            if(EqpSiriusViewer.Document != null)
+            {
+                EqpSiriusViewer.Document.Views = new HashSet<IView>();
+            }
             EqpSiriusViewer.Document = doc;
         }
 
@@ -1174,8 +1181,11 @@ namespace QMC.Common
         }
         public static void SetEqpSiriusViewerDocumentOrg(IDocument doc)
         {
-            EqpSiriusViewer_Origin.Document.Views = new HashSet<IView>();
-            EqpSiriusViewer_Origin.Document.Views = new HashSet<IView>();
+            if(EqpSiriusViewer_Origin.Document != null)
+            {
+
+                EqpSiriusViewer_Origin.Document.Views = new HashSet<IView>();
+            }
             EqpSiriusViewer_Origin.Document = doc;
         }
         public static void SetEqpSiriusViewer(SiriusViewerForm viewer)

@@ -1029,8 +1029,20 @@ namespace SLD200_MSL
             if (m_NeedDocumentSync)
             {
                 m_NeedDocumentSync = false;
-                SiriusViewer_Main.Document.Views.Clear();
-                SiriusViewer_Main.Document =(IDocument)Equipment.GetEqpSiriusViewerDocument().Clone();
+                try
+                {
+
+                    if (SiriusViewer_Main.Document.Views != null)
+                    {
+
+                        SiriusViewer_Main.Document.Views.Clear();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(ex);
+                }
+                SiriusViewer_Main.Document =(IDocument)Equipment.GetEqpSiriusViewerDocument();
             }
                         
             label_Main_LaserStatus.Text = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF";
@@ -1276,7 +1288,16 @@ namespace SLD200_MSL
 
                 // 문서 생성후 뷰어에 지정
                 var doc = new DocumentDefault();
-                SiriusViewer_Main.Document.Views.Clear();
+                if(SiriusViewer_Main.Document != null)
+                {
+
+                    if (SiriusViewer_Main.Document.Views != null)
+                    {
+
+                        SiriusViewer_Main.Document.Views.Clear();
+                    }
+                    
+                }
                 SiriusViewer_Main.Document = doc;
             }
             else
@@ -3389,11 +3410,11 @@ namespace SLD200_MSL
             if (sender is OpenGLControl gl)
             {
                 var Document = this.SiriusViewer_Main.Document;
-                if (Document.Views.Count > 1)
+                if (Document.Views.Count > 0)
                 {
-                    var view = Document.Views.ElementAt(1);
-
+                    var view = Document.Views.Last();
                     
+
                     double scale = view.Width / view.ScaleWidth;
                     double dCenterX = view.Width / 2;
                     double scaleWidht = view.ScaleWidth;
