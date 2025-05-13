@@ -101,7 +101,7 @@ namespace SLD200_MSL
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
             this.UpdateStyles();
 
-            this.Load += FormNew_Setup_Load; // 여기서 Load 이벤트 연결
+            //this.Load += FormNew_Setup_Load; // 여기서 Load 이벤트 연결
 
             m_keyPad = new FormNew_KeyPad();
 
@@ -130,9 +130,12 @@ namespace SLD200_MSL
                     Bds = module as Bds;
                 }
             }
+
+            FormNew_Setup_Load();
         }
 
-        private void FormNew_Setup_Load(object sender, EventArgs e)
+        //private void FormNew_Setup_Load(object sender, EventArgs e)
+        private void FormNew_Setup_Load()
         {
             IOGridSize = new Size(730, 590);
 

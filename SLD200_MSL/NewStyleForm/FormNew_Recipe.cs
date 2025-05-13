@@ -49,13 +49,15 @@ namespace SLD200_MSL
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
             this.UpdateStyles();
 
-            this.Load += FormNewSub_Recipe_Load; // 여기서 Load 이벤트 연결
+            //this.Load += FormNewSub_Recipe_Load; // 여기서 Load 이벤트 연결
             this.tabControl_Recipe.SelectedIndexChanged += new System.EventHandler(this.tabControl_Recipe_SelectedIndexChanged);
 
             //LoadSubForm();
+            FormNewSub_Recipe_Load();
         }
 
-        private void FormNewSub_Recipe_Load(object sender, EventArgs e)
+        //private void FormNewSub_Recipe_Load(object sender, EventArgs e)
+        private void FormNewSub_Recipe_Load()
         {
             //GUI생성 완료 후 Data 및 Cintroller 업데이트!
             ModuleCollection m_collectionModules;

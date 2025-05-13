@@ -1,5 +1,7 @@
+using QMC.Common;
 using SpiralLab.Sirius;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace SpiralLab.Sirius
 {
@@ -12,7 +14,19 @@ namespace SpiralLab.Sirius
         protected override void Action_OnSelectedEntityChanged(IDocument doc, List<IEntity> list)
         {
             base.Action_OnSelectedEntityChanged(doc, list);
-            this.Invalidate();
+            foreach(var view in this.Document.Views)
+            {
+                if(this.InvokeRequired)
+                {
+                    Equipment.formMain.Invoke(new System.Action(() =>
+                    {
+                        this.Refresh();
+                    }));
+                    
+
+                }
+                //view.Render();
+            }
 
         }
     }

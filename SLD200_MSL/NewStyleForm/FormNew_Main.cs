@@ -93,7 +93,7 @@ namespace SLD200_MSL
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
             this.UpdateStyles();
 
-            this.Load += FormNew_Main_Load;
+            //this.Load += FormNew_Main_Load;
 
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
@@ -137,11 +137,15 @@ namespace SLD200_MSL
             unloader.Module_Allocation();
             loader.Module_Allocation();
             SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
+
+
+            FormNew_Main_Load();
         }
 
-        
 
-        private void FormNew_Main_Load(object sender, EventArgs e)
+
+        //private void FormNew_Main_Load(object sender, EventArgs e)
+        private void FormNew_Main_Load()
         {
             InitializeDeviceStatusBindings();
 
@@ -1039,7 +1043,7 @@ namespace SLD200_MSL
         private void UpdateUIControls()
         {
             UpdateCycleTimerUI();
-            return;
+            //return;
 
             Motor_Position2();
             
