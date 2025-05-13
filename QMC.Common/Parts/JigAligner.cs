@@ -416,10 +416,14 @@ namespace QMC.Common.Parts
                         m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
                         //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
 
-                        // 비동기 대기 (UI에서 사용하면 안됨)
-                        bWaitPosX = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X).Result;
-                        bWaitPosY = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y).Result;
-                        if (!bWaitPosX || !bWaitPosY)
+                        Thread.Sleep(200);
+
+                        Task<bool> resultX1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
+                        Task<bool> resultY1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
+
+                        resultX1.Wait();
+                        resultY1.Wait();
+                        if (!resultX1.Result || !resultY1.Result)
                         {
                             //  이동 실패 
                             if(!bWaitPosX)
@@ -504,10 +508,15 @@ namespace QMC.Common.Parts
                     m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
                     //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
 
+                    Thread.Sleep(200);
+
                     // 비동기 대기 (UI에서 사용하면 안됨)
-                    bWaitPosX = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X).Result;
-                    bWaitPosY = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y).Result;
-                    if (!bWaitPosX || !bWaitPosY)
+                    Task<bool> resultX = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
+                    Task<bool> resultY = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
+                    
+                    resultX.Wait();
+                    resultY.Wait();
+                    if (!resultX.Result || !resultY.Result)
                     {
                         //  이동 실패 
                         if (!bWaitPosX)

@@ -37578,11 +37578,18 @@ namespace QMC.Common.Modules
 
                 while (wait < timeoutMs)
                 {
-                    if (MC_Func.MC_GetDone((int)axis) &&
-                        MC_Func.MC_PosTolerance((int)axis, targetPos))
-                        return true;
-
                     Thread.Sleep(interval);
+
+                    //if (MC_Func.MC_GetDone((int)axis) &&
+                    //    MC_Func.MC_PosTolerance((int)axis, targetPos))
+                    //    return true;
+
+                    if (IsWorkStageMoving(axis))
+                    {
+                        return true;
+                    }
+
+
                     wait += interval;
                 }
 
