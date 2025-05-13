@@ -16,6 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
+using QMC.Core;
 
 namespace QMC.Common
 {
@@ -292,6 +293,9 @@ namespace QMC.Common
             this.AddCycleTime(cycleTime);
             // start time을 리셋한다.
             this.StartTime = DateTime.MaxValue;
+            // 총 소요 시간을 갱신한다.
+            TotalElapsed += cycleTime.Interval;
+
             // 로그를 기록한다.
             Console.WriteLine(string.Format("[Cycle Time] Interval: {0} msec, Start: {1}, End: {2}", cycleTime.Interval.TotalMilliseconds, cycleTime.Start.ToString("yyyy-MM-dd HH:mm:ss.fff"), cycleTime.End.ToString("yyyy-MM-dd HH:mm:ss.fff")));
         }
@@ -308,6 +312,67 @@ namespace QMC.Common
         {
             this.AvailableRange = specification.AvailableRange;
             this.Capacity = specification.Capacity;
+        }
+
+        //20250513 - 실시간 가져오기 위해서 추가.
+        public bool IsRunning => StartTime != DateTime.MaxValue;
+
+        public TimeSpan Elapsed => (IsRunning && StartTime != DateTime.MaxValue)
+                           ? DateTime.Now - StartTime
+                           : TimeSpan.Zero;
+
+        public TimeSpan TotalElapsed { get; private set; }  // End() 내부에서 누적 갱신
+
+
+        public bool SaveToIni(string section, string path)
+        {
+            try
+            {
+                var totalTicks = this.CycleTimes.Sum(c => c.Interval.Ticks);
+                var totalTime = TimeSpan.FromTicks(totalTicks);
+
+                NativeMethods.WritePrivateProfileString(section, "TotalRunningTime", totalTime.TotalMilliseconds.ToString(), path);
+                NativeMethods.WritePrivateProfileString(section, "CycleCount", this.CycleTimes.Count.ToString(), path);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                return false;
+            }
+        }
+
+        public bool LoadFromIni(string section, string path)
+        {
+            try
+            {
+                StringBuilder sb = new StringBuilder(255);
+                NativeMethods.GetPrivateProfileString(section, "TotalRunningTime", "0", sb, sb.Capacity, path);
+                double totalMs = double.Parse(sb.ToString());
+
+                NativeMethods.GetPrivateProfileString(section, "CycleCount", "0", sb, sb.Capacity, path);
+                int count = int.Parse(sb.ToString());
+
+                if (totalMs > 0 && count > 0)
+                {
+                    TimeSpan avg = TimeSpan.FromMilliseconds(totalMs / count);
+                    this.Clear();
+                    for (int i = 0; i < count; i++)
+                    {
+                        var fakeStart = DateTime.Now;
+                        this.CycleTimes.Add(new CycleTime(fakeStart, fakeStart + avg)); // 수정
+                    }
+
+                    this.TotalElapsed = TimeSpan.FromMilliseconds(totalMs); // 누적 시간도 복원
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                return false;
+            }
         }
 
         //private static CycleTimer[] FindCycleTimer(Part part)
@@ -332,7 +397,7 @@ namespace QMC.Common
         //}
         #endregion
 
-        
+
         public object Owner
         {
             get { return this.m_Owner; }

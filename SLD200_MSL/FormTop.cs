@@ -15,6 +15,7 @@ using System.IO;
 using System.Reflection;
 using static QMC.Common.Equipment;
 using QMC.Common.Parts;
+using SLD200.NewStyleForm;
 
 namespace SLD200_MSL
 {
@@ -40,7 +41,6 @@ namespace SLD200_MSL
         public LogOutClickHandler LogOutClick { get; set; }
 
         private FormLogIn m_formLogIn;
-
         protected Timer m_Timer;
 
         bool m_bBlink;
@@ -52,17 +52,24 @@ namespace SLD200_MSL
         private string m_strDrawingFileName_Now;
         private string m_strDrawingFileName_Before;
 
+        FormNew_JogPopup m_formJogPopup;
+        public FormNew_JogPopup formJogPopup
+        {
+            get { return m_formJogPopup; }
+            set { m_formJogPopup = value; }
+        }
 
         public FormTop()
         {
             InitializeComponent();
             Configuration = new FormBaseConfiguration();
-
             m_formLogIn = new FormLogIn();
+
+            m_formJogPopup = new FormNew_JogPopup();
+            m_formJogPopup.Owner = this;
 
             //this.BackColor = Configuration.BaseBackColor;
             this.BackColor = System.Drawing.SystemColors.Control;
-
 
             //  C 드라이브 이름 가져오기 (Title 에 쓰기 위함)
             DriveInfo[] drive = DriveInfo.GetDrives();
@@ -81,9 +88,7 @@ namespace SLD200_MSL
             //  파일 수정 날짜 표시하기
             string file = Path.GetFileName(Assembly.GetEntryAssembly().Location);
 
-
             label_Ver.Text = string.Format("Ver 1.0.0.1");
-
 
             m_bBlink = false;
             m_nBlink = 0;
@@ -351,6 +356,15 @@ namespace SLD200_MSL
             if (TopButtonClick != null)
             {
                 TopButtonClick(TopButtons.AlarmLog);
+            }
+        }
+
+        private void button_JogPopup_Click(object sender, EventArgs e)
+        {
+            if (!formJogPopup.Visible)
+            {
+                formJogPopup.Show();
+                formJogPopup.Activate();
             }
         }
     }

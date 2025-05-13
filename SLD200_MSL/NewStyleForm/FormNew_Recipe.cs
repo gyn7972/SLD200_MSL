@@ -43,6 +43,21 @@ namespace SLD200_MSL
         {
             InitializeComponent();
 
+            //Size 축소 / 확대 안되게 하기 위한 코드.
+            this.AutoScaleMode = AutoScaleMode.None;
+            this.DoubleBuffered = true;
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+            this.UpdateStyles();
+
+            this.Load += FormNewSub_Recipe_Load; // 여기서 Load 이벤트 연결
+            this.tabControl_Recipe.SelectedIndexChanged += new System.EventHandler(this.tabControl_Recipe_SelectedIndexChanged);
+
+            //LoadSubForm();
+        }
+
+        private void FormNewSub_Recipe_Load(object sender, EventArgs e)
+        {
+            //GUI생성 완료 후 Data 및 Cintroller 업데이트!
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
 
@@ -52,31 +67,9 @@ namespace SLD200_MSL
                 {
                     workStage = module as WorkStage;
                 }
-                
-                //if (module.Name == "Loader")
-                //{
-                //    loader = module as Loader;
-                //}
-
-                //if (module.Name == "Unloader")
-                //{
-                //    unloader = module as Unloader;
-                //}
-
-                //if (module.Name == "Vision")
-                //{
-                //    vision = module as Vision;
-                //}
-
-                //if (module.Name == "BDS")
-                //{
-                //    bds = module as Bds;
-                //}
             }
 
-
             MachineType_Component_Enable(Equipment.Machine_LaserType_CO2);
-
 
             m_formSiriusEditor = new FormNew_SiriusEditor();
 
@@ -85,16 +78,12 @@ namespace SLD200_MSL
             listView_Recipe_TabRecipe_LayerData.GridLines = true;         //  구분선 표시
             listView_Recipe_TabRecipe_LayerData.FullRowSelect = true;     //  한줄씩 선택 설정
 
-
             //  Recipe Open 타이머
             timer_Recipe_Open = new System.Windows.Forms.Timer();
             timer_Recipe_Open.Interval = 50;
             timer_Recipe_Open.Tick += new System.EventHandler(Timer_RecipeOpen_Func);
             timer_Recipe_Open.Enabled = true;
 
-            this.tabControl_Recipe.SelectedIndexChanged += new System.EventHandler(this.tabControl_Recipe_SelectedIndexChanged);
-
-            //LoadSubForm();
         }
 
         private void MachineType_Component_Enable(bool m_bLaserType)

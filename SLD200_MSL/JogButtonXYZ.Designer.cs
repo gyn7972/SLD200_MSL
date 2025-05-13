@@ -51,9 +51,10 @@
             // 
             this.baseLabelX.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
             this.baseLabelX.ForeColor = System.Drawing.Color.White;
-            this.baseLabelX.Location = new System.Drawing.Point(55, 55);
+            this.baseLabelX.Location = new System.Drawing.Point(90, 82);
+            this.baseLabelX.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabelX.Name = "baseLabelX";
-            this.baseLabelX.Size = new System.Drawing.Size(64, 16);
+            this.baseLabelX.Size = new System.Drawing.Size(67, 24);
             this.baseLabelX.TabIndex = 9;
             this.baseLabelX.Text = "Axis X";
             // 
@@ -61,9 +62,10 @@
             // 
             this.baseLabelY.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
             this.baseLabelY.ForeColor = System.Drawing.Color.White;
-            this.baseLabelY.Location = new System.Drawing.Point(55, 77);
+            this.baseLabelY.Location = new System.Drawing.Point(90, 116);
+            this.baseLabelY.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabelY.Name = "baseLabelY";
-            this.baseLabelY.Size = new System.Drawing.Size(64, 16);
+            this.baseLabelY.Size = new System.Drawing.Size(67, 24);
             this.baseLabelY.TabIndex = 18;
             this.baseLabelY.Text = "Axis Y";
             // 
@@ -71,9 +73,10 @@
             // 
             this.baseLabelZ.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
             this.baseLabelZ.ForeColor = System.Drawing.Color.White;
-            this.baseLabelZ.Location = new System.Drawing.Point(209, 66);
+            this.baseLabelZ.Location = new System.Drawing.Point(313, 100);
+            this.baseLabelZ.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.baseLabelZ.Name = "baseLabelZ";
-            this.baseLabelZ.Size = new System.Drawing.Size(64, 16);
+            this.baseLabelZ.Size = new System.Drawing.Size(63, 24);
             this.baseLabelZ.TabIndex = 19;
             this.baseLabelZ.Text = "Axis Z";
             // 
@@ -81,10 +84,10 @@
             // 
             this.buttonAxisXLeft.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.buttonAxisXLeft.Image = global::SLD200.Properties.Resources.Left;
-            this.buttonAxisXLeft.Location = new System.Drawing.Point(4, 51);
-            this.buttonAxisXLeft.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonAxisXLeft.Location = new System.Drawing.Point(6, 76);
+            this.buttonAxisXLeft.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonAxisXLeft.Name = "buttonAxisXLeft";
-            this.buttonAxisXLeft.Size = new System.Drawing.Size(47, 46);
+            this.buttonAxisXLeft.Size = new System.Drawing.Size(67, 69);
             this.buttonAxisXLeft.TabIndex = 16;
             this.buttonAxisXLeft.UseVisualStyleBackColor = false;
             this.buttonAxisXLeft.Click += new System.EventHandler(this.buttonMoveLeft_Click);
@@ -95,10 +98,10 @@
             // 
             this.buttonAxisXRight.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.buttonAxisXRight.Image = global::SLD200.Properties.Resources.Right;
-            this.buttonAxisXRight.Location = new System.Drawing.Point(122, 51);
-            this.buttonAxisXRight.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonAxisXRight.Location = new System.Drawing.Point(174, 76);
+            this.buttonAxisXRight.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonAxisXRight.Name = "buttonAxisXRight";
-            this.buttonAxisXRight.Size = new System.Drawing.Size(48, 46);
+            this.buttonAxisXRight.Size = new System.Drawing.Size(69, 69);
             this.buttonAxisXRight.TabIndex = 11;
             this.buttonAxisXRight.UseVisualStyleBackColor = false;
             this.buttonAxisXRight.Click += new System.EventHandler(this.buttonMoveRight_Click);
@@ -109,10 +112,10 @@
             // 
             this.buttonAxisYFwd.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.buttonAxisYFwd.Image = global::SLD200.Properties.Resources.Down;
-            this.buttonAxisYFwd.Location = new System.Drawing.Point(63, 99);
-            this.buttonAxisYFwd.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonAxisYFwd.Location = new System.Drawing.Point(90, 148);
+            this.buttonAxisYFwd.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonAxisYFwd.Name = "buttonAxisYFwd";
-            this.buttonAxisYFwd.Size = new System.Drawing.Size(47, 46);
+            this.buttonAxisYFwd.Size = new System.Drawing.Size(67, 69);
             this.buttonAxisYFwd.TabIndex = 12;
             this.buttonAxisYFwd.UseVisualStyleBackColor = false;
             this.buttonAxisYFwd.Click += new System.EventHandler(this.buttonMoveForward_Click);
@@ -123,10 +126,10 @@
             // 
             this.buttonAxisYBwd.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.buttonAxisYBwd.Image = global::SLD200.Properties.Resources.Up;
-            this.buttonAxisYBwd.Location = new System.Drawing.Point(63, 4);
-            this.buttonAxisYBwd.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonAxisYBwd.Location = new System.Drawing.Point(90, 6);
+            this.buttonAxisYBwd.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonAxisYBwd.Name = "buttonAxisYBwd";
-            this.buttonAxisYBwd.Size = new System.Drawing.Size(47, 46);
+            this.buttonAxisYBwd.Size = new System.Drawing.Size(67, 69);
             this.buttonAxisYBwd.TabIndex = 15;
             this.buttonAxisYBwd.UseVisualStyleBackColor = false;
             this.buttonAxisYBwd.Click += new System.EventHandler(this.buttonMoveBackward_Click);
@@ -137,10 +140,10 @@
             // 
             this.buttonAxisZUp.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.buttonAxisZUp.Image = global::SLD200.Properties.Resources.Z_Up;
-            this.buttonAxisZUp.Location = new System.Drawing.Point(216, 4);
-            this.buttonAxisZUp.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonAxisZUp.Location = new System.Drawing.Point(309, 6);
+            this.buttonAxisZUp.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonAxisZUp.Name = "buttonAxisZUp";
-            this.buttonAxisZUp.Size = new System.Drawing.Size(47, 46);
+            this.buttonAxisZUp.Size = new System.Drawing.Size(67, 69);
             this.buttonAxisZUp.TabIndex = 14;
             this.buttonAxisZUp.UseVisualStyleBackColor = false;
             this.buttonAxisZUp.Click += new System.EventHandler(this.buttonMoveUp_Click);
@@ -151,10 +154,10 @@
             // 
             this.buttonAxisZDown.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.buttonAxisZDown.Image = global::SLD200.Properties.Resources.Z_Down;
-            this.buttonAxisZDown.Location = new System.Drawing.Point(216, 99);
-            this.buttonAxisZDown.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonAxisZDown.Location = new System.Drawing.Point(309, 148);
+            this.buttonAxisZDown.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonAxisZDown.Name = "buttonAxisZDown";
-            this.buttonAxisZDown.Size = new System.Drawing.Size(47, 46);
+            this.buttonAxisZDown.Size = new System.Drawing.Size(67, 69);
             this.buttonAxisZDown.TabIndex = 13;
             this.buttonAxisZDown.UseVisualStyleBackColor = false;
             this.buttonAxisZDown.Click += new System.EventHandler(this.buttonMoveDown_Click);
@@ -163,7 +166,7 @@
             // 
             // JogButtonXYZ
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
             this.Controls.Add(this.baseLabelZ);
@@ -175,9 +178,9 @@
             this.Controls.Add(this.buttonAxisYBwd);
             this.Controls.Add(this.buttonAxisXLeft);
             this.Controls.Add(this.baseLabelX);
-            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "JogButtonXYZ";
-            this.Size = new System.Drawing.Size(274, 148);
+            this.Size = new System.Drawing.Size(391, 222);
             this.ResumeLayout(false);
 
         }

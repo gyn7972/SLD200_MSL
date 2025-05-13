@@ -206,6 +206,9 @@ namespace SLD200_MSL
             timer_Main_Status.Tick += new System.EventHandler(Timer_MainStatus_Func);
             timer_Main_Status.Enabled = true;
 
+            string strPath = "D:\\SLD-200_Parameter\\CycleTime.ini";
+            Equipment.CycleTimer_LaserDrilling.LoadFromIni("LaserDrilling", strPath);
+
             //  통신 Parts 초기화 (Connect 옵션에 따라 활성화 된 것들만 초기화 됨)
             Comm_Init();
         }
@@ -713,21 +716,38 @@ namespace SLD200_MSL
             }
 
             // Laser m_rapidLxLaser_Comm
-            if (workStage.m_rapidLxLaser_Comm == null)
+            if (Equipment.Machine_LaserType_CO2)
             {
-                workStage.RapidLxLaser_Comm_Init();
+                if(!workStage.workStageParameter.IsDO_Laser_Enable())
+                {
+                    // CO2 - Test 확인하고 하자.
+                    // workStage.workStageParameter.DO_Laser_Enable(true);
+                }
             }
             else
             {
-                if (!workStage.m_rapidLxLaser_Comm.IsOpen)
+                if (workStage.m_rapidLxLaser_Comm == null)
+                {
+                    workStage.m_bRapidLxLaser_UserConnect = true;
                     workStage.RapidLxLaser_Comm_Init();
+                }
+                else
+                {
+                    if (!workStage.m_rapidLxLaser_Comm.IsOpen)
+                    {
+                        workStage.m_bRapidLxLaser_UserConnect = true;
+                        workStage.RapidLxLaser_Comm_Init();
+                    }
+                }
+
             }
             
-            //  Laser
-            if (workStage.m_SocketLaser == null)
-            {
-                workStage.Laser_Socket_Connect();
-            }
+            
+            //  Laser X -> 이거 안쓰는데?
+            //if (workStage.m_SocketLaser == null)
+            //{
+            //    workStage.Laser_Socket_Connect();
+            //}
 
             //  Laser Height Sensor
             if (workStage.m_SocketLaserHeightSensor == null)
@@ -1008,7 +1028,11 @@ namespace SLD200_MSL
         // -----------------------
         private void UpdateUIControls()
         {
+            UpdateCycleTimerUI();
+            return;
+
             Motor_Position2();
+            
 
             if (m_bNeedHideProgressForm)
             {
@@ -2286,7 +2310,11 @@ namespace SLD200_MSL
             unloader.m_nUL_RESTORE_LaserDrilling_Cycle_Step = workStage.m_nLaserDrilling_MainStep;                                                                              //  Laser Drilling Cycle Step
             unloader.m_bUL_RESTORE_MainWork_Cycle_Complete = workStage.m_bMainWorkCycle_Complete;                                                                               //  Main Work Cycle 완료 여부
             unloader.m_nUL_RESTORE_MainWork_Cycle_ResultOKNG = workStage.m_nMainWorkCycle_ResultOKNG;                                                                           //  Main Work Cycle 결과 (OK, NG) : OK 인 경우에만 R-Port 로 가져감
-            unloader.m_bUL_RESTORE_MainWorkCycle_ResultOK_toRPort = workStage.m_bMainWorkCycle_ResultOK_toRPort;                                                                //  OK 인 Module 을 R-Port 로 가져갈 것인지 L-Port 로 가져갈 것인지
+            unloader.m_bUL_RESTORE_MainWorkCycle_ResultOK_toRPort = workStage.m_bMainWorkCycle_ResultOK_toRPort;
+
+
+            string strPath = "D:\\SLD-200_Parameter\\CycleTime.ini";
+            Equipment.CycleTimer_LaserDrilling.SaveToIni("LaserDrilling", strPath);
         }
 
         private void button_TEST_RTCInit_Click(object sender, EventArgs e)
@@ -3201,7 +3229,9 @@ namespace SLD200_MSL
 
         private void button_TEST12_Click(object sender, EventArgs e)
         {
-            workStage.AlarmTest();
+            //Test code
+            Equipment.CycleTimer_LaserDrilling.Start();
+            //workStage.AlarmTest();
             //workStage.LaserHeightSensorValue_Save(Equipment.Current_Recipe, 1, Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition, workStage.m_dLaserHeightSensorSocket_Value, 2);
 
             //Equipment.AutoManualStatus = false;
@@ -3295,6 +3325,14 @@ namespace SLD200_MSL
         private Dictionary<Unloader.nAxis, Label> unloaderAxisLabelMap;
         private Dictionary<WorkStage.nAxis, Label> workstageAxisLabelMap;
 
+        private void button_AverageOneCycleTime_Clear_Click(object sender, EventArgs e)
+        {
+            //Test
+            Equipment.CycleTimer_LaserDrilling.End();
+            string m_strTemp = string.Format("LaserDrillingOneCycle Time: {0:0.000} sec", Equipment.CycleTimer_LaserDrilling.Latest.Interval.TotalSeconds);
+            Log.Write("SLD-200", "Auto Run", m_strTemp);
+        }
+
         private void InitAxisLabelMap()
         {
             loaderAxisLabelMap = new Dictionary<Loader.nAxis, Label>
@@ -3370,6 +3408,40 @@ namespace SLD200_MSL
             {
                 double pos = unloader.GetEncUnloaderPos_Motor(pair.Key);
                 pair.Value.Text = FormatPos(pos);
+            }
+        }
+
+        private void UpdateCycleTimerUI()
+        {
+            try
+            {
+                int goalOneCycleSec = 70;      // 목표 1사이클 시간 (초)
+                int goalTotalSec = 86400;      // 총 목표 시간 (초) - 24시간
+
+                // 실시간 경과 시간
+                TimeSpan oneCycle = Equipment.CycleTimer_LaserDrilling.IsRunning
+                                    ? Equipment.CycleTimer_LaserDrilling.Elapsed
+                                    : Equipment.CycleTimer_LaserDrilling.Latest.Interval;
+
+                TimeSpan totalElapsed = Equipment.CycleTimer_LaserDrilling.TotalElapsed;
+                TimeSpan avgCycle = Equipment.CycleTimer_LaserDrilling.Average;
+
+                // ---- 1 Cycle Time 표시 ----
+                baseLabel_CurrentOneCycle_ElapsedTime.Text = oneCycle.ToString(@"hh\:mm\:ss");
+                int oneCycleProgress = (int)(oneCycle.TotalSeconds / goalOneCycleSec * 100);
+                progressBar_OneCycle_Time.Value = Math.Min(progressBar_OneCycle_Time.Maximum, Math.Max(0, oneCycleProgress));
+
+                // ---- Total 누적 시간 표시 ----
+                baseLabel_Total_RemainedTime.Text = totalElapsed.ToString(@"hh\:mm\:ss");
+                int totalProgress = (int)(totalElapsed.TotalSeconds / goalTotalSec * 100);
+                progressBar_TotalRemained_Time.Value = Math.Min(progressBar_TotalRemained_Time.Maximum, Math.Max(0, totalProgress));
+
+                // ---- Average 표시 ----
+                baseLabel_Average_OneCycleTime.Text = avgCycle.ToString(@"hh\:mm\:ss");
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);  // UI 다운 방지
             }
         }
 

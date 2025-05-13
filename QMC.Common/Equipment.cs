@@ -214,9 +214,12 @@ namespace QMC.Common
         public static double WorkElapsedTick_Marking_1time { set; get; }               //  Marking 작업 진행 Tick (1회)
         public static double WorkTotalTime_Marking_AdditionalTime { set; get; }        //  Marking 추가 시간 (sec)
 
-
-        //  전체 가공시간 계산을 위해 사용되는 변수
         public static double MainCycle_Interval { set; get; }                           //  Main Cycle 타이머의 Interval. 
+
+
+        //  workStage 가공시간 계산을 위해 사용되는 변수
+        public static CycleTimer CycleTimer_LaserDrilling = new CycleTimer();
+
 
 
         //  Auto-Focus 에 실패했을 때 사용자가 수동으로 카메라 초점을 조작하기 위한 Flag
@@ -1510,7 +1513,9 @@ namespace QMC.Common
             InitializeSequence = new InitializeSequenceCollection();
             LoadingQueue = new LoadingQueue();
             ConfigManager.SetEquipmentName(Name);
-            CreateModules();
+
+            
+            CreateModules();    //오래걸리는부분.
             LoadMotionBoards();
             LoadIOBoards();
             //LoadModuleCollection();
@@ -1540,7 +1545,6 @@ namespace QMC.Common
                 board.Open();
             }
 
-
             //  2024. 04. 08.  SCH : Pattern Matching Image 저장 폴더 생성
             string strFolderPath = ConfigManager.GetPatternImagePath();
             if (!VerifyFile(strFolderPath))
@@ -1548,10 +1552,7 @@ namespace QMC.Common
                 Directory.CreateDirectory(ConfigManager.GetPatternImagePath());
             }
 
-
-
             //FunctionManager.Instance.SetModuleCollection(Modules);
-
             //ApplyConfigData();
 
             CommonModule.Instance.Initialize();
@@ -1561,7 +1562,6 @@ namespace QMC.Common
             //{
             //
             //}
-
 
             NewForm_AxisParameter_Load();
             NewForm_CommParameter_Load();
@@ -1620,13 +1620,16 @@ namespace QMC.Common
             bds.Create();
             Modules.Add(bds);
 
-            AlarmSaver alarmSaver = new AlarmSaver();
-            alarmSaver.Server = "SLD-200\\SQLEXPRESS";
-            alarmSaver.Database = "LASER_DRILLING";
-            alarmSaver.UID = "qmc1";
-            alarmSaver.Password = "q1234!";
-            alarmSaver.Open();
-            AlarmManager.Instance.Saver = alarmSaver;
+            // 여기때문에 시작이 느림. 
+            // 재 확인 후 연결 시도 하자.
+            //AlarmSaver alarmSaver = new AlarmSaver();
+            ////alarmSaver.Server = "SLD-200\\SQLEXPRESS";
+            //alarmSaver.Server = "localhost\\SQLEXPRESS";
+            //alarmSaver.Database = "LASER_DRILLING";
+            //alarmSaver.UID = "qmc1";
+            //alarmSaver.Password = "q1234!";
+            //alarmSaver.Open();
+            //AlarmManager.Instance.Saver = alarmSaver;
         }
 
         public static void Start()
