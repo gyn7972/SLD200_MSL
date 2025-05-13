@@ -1242,7 +1242,10 @@ namespace SLD200.NewStyleForm.NewSubForm
             bool bWaitPosY = false;
 
             try
-            {
+            {   
+                //움직임 바로 확인하면 문제 발생..
+                Thread.Sleep(200); // 1초 대기
+
                 // 각각의 비동기 Task를 받아서 기다림
                 var taskX = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
                 var taskY = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);

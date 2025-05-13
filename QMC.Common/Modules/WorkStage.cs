@@ -37590,11 +37590,12 @@ namespace QMC.Common.Modules
 
                 while (wait < timeoutMs)
                 {
+                    Thread.Sleep(interval);
+
                     if (MC_Func.MC_GetDone((int)axis) &&
                         MC_Func.MC_PosTolerance((int)axis, targetPos))
                         return true;
 
-                    Thread.Sleep(interval);
                     wait += interval;
                 }
 
