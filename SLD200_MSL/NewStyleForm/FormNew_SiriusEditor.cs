@@ -92,7 +92,7 @@ namespace SLD200_MSL
             {
                 foreach (var v in SiriusEditor.Document.Views)
                 {
-                    v.OnCustomDraw -= ;
+                    v.OnCustomDraw -= SiriusView_OnCustomDraw;
                 }
             }
             catch (Exception ex)
