@@ -23,6 +23,7 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 using SpiralLab.Sirius;
 using System.Numerics;
+using SharpGL;
 
 //using OpenTK;
 //using OpenTK.Graphics.OpenGL;
@@ -86,8 +87,96 @@ namespace SLD200_MSL
 
         private void SiriusEditor_OnDocumentSourceChanged(object sender, IDocument doc)
         {
+
+            try
+            {
+                foreach (var v in SiriusEditor.Document.Views)
+                {
+                    v.OnCustomDraw -= SiriusView_OnCustomDraw;
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
             SiriusEditor.Document = doc;
-            //Equipment.EqpSiriusViewer.Document = doc;
+            try
+            {
+
+                foreach (var v in SiriusEditor.Document.Views)
+                {
+                    v.OnCustomDraw += SiriusView_OnCustomDraw; ;
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            
+        }
+
+        private void SiriusView_OnCustomDraw(IView view)
+        {
+            foreach(var layer in this.SiriusEditor.Document.Layers)
+            {
+                if(layer.IsSelected)
+                {
+                    if(layer.Name.Contains("Hole"))
+                    {
+                        DrawGrid(view);
+                    }
+                }
+            }
+        }
+
+        private void DrawGrid(IView view)
+        {
+            var layer  = this.SiriusEditor.Document.Layers.Where(x => x.Name == "Hole1").FirstOrDefault();
+            if(layer != null) 
+            {
+                foreach(var v in layer.Items)
+                {
+                    double width = v.BoundRect.Width;
+                    double height = v.BoundRect.Height;
+                    double centerX = v.BoundRect.Center.X;
+                    double centerY = v.BoundRect.Center.Y;
+                    double dSplitW = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize;
+                    double dSplitH = Equipment.stLayerRecipeSet[0].Miscellaneous_GroupSplitSize_Height;
+                    int colCount = (int)Math.Ceiling(width / dSplitW);
+                    int rowCount = (int)Math.Ceiling(height / dSplitH);
+                    double dStartX = centerX - (colCount * dSplitW)/2;
+                    double dStartY = centerY - (rowCount * dSplitH) / 2;
+                    double dEndX = centerX + (colCount * dSplitW) / 2;
+                    double dEndY = centerY + (rowCount * dSplitH) / 2;
+
+                    OpenGL renderer = view.Renderer;
+                    // 바둑판의 크기와 간격 설정
+                    float squareSize = 10.0f; // 각 셀의 크기
+                    int gridCount = 10;       // 가로, 세로로 그릴 셀의 개수
+                    float gridSize = squareSize * gridCount; // 전체 그리드 크기
+
+                    // 라임색 설정
+                    renderer.Color(0.0f, 1.0f, 0.0f); // 라임색 (RGB: 0, 255, 0)
+                    for (double dX = dStartX; dX <= dEndX; dX += dSplitW)
+                    {
+                        
+                        renderer.Begin(OpenGL.GL_LINES);
+                        renderer.Vertex(dX, dStartY, 0.0f);          // 왼쪽 끝
+                        renderer.Vertex(dX, dEndY, 0.0f);   // 오른쪽 끝
+                        renderer.End();
+                    }
+                    for (double dY = dStartY; dY <= dEndY; dY += dSplitH)
+                    {
+                        renderer.Begin(OpenGL.GL_LINES);
+                        renderer.Vertex(dStartX, dY, 0.0f);          // 아래쪽 끝
+                        renderer.Vertex(dEndX, dY, 0.0f);   // 위쪽 끝
+                        renderer.End();
+                    }
+
+                }
+            }
+
+           
         }
 
         public FormNew_SiriusEditor CreateSiriusEditor()
@@ -461,7 +550,7 @@ namespace SLD200_MSL
         private void SiriusEditor_OnDocumentSourceChanged1(object sender, IDocument doc)
         {
             SiriusEditor.Document = doc;
-            Equipment.EqpSiriusViewer.Document = doc;
+            Equipment.SetEqpSiriusViewerDocument(doc);
         }
 
         #endregion
@@ -550,7 +639,7 @@ namespace SLD200_MSL
                 MessageBox.Show("데이터 추출 성공", "Processing Data ...", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 //workStage.SiriusEditor.Document = SiriusEditor.Document;
-                Equipment.EqpSiriusViewer.Document = SiriusEditor.Document;
+                Equipment.SetEqpSiriusViewerDocument(SiriusEditor.Document);
 
                 int m_nReturn = workStage.GetDrillingData();
                 switch (m_nReturn)

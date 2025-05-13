@@ -14574,7 +14574,7 @@ namespace QMC.Common.Modules
                     }
 
 
-                    if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
+                    //if (m_Status == RunStatus.Stop) return 1;               //  마크 찾다가 중지 하면 빠져나가자
                     QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
                    // UpdateOverlay(result);
                     // 이미지 Grab 및 원 검색
@@ -17929,7 +17929,8 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.Drilling_LayerParameter_ZOffset_Move_DoneCheck:                 //  Drilling 가공 Layer 파라미터, Z Offset 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && 
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Layer Z Offset 이동 완료 확인");
 
@@ -26018,13 +26019,8 @@ namespace QMC.Common.Modules
             //  글자를 구성하는 요소 개수 카운트
             int m_nTextItemCount = 0;
 
-            if (Equipment.EqpSiriusViewer == null)
-            {
-                MessageBox.Show("먼저 RTC 보드를 초기화 해야 합니다.", "Information!!");
-                return false;
-            }
-
-            if (Equipment.EqpSiriusViewer.Document == null)
+            
+            if (Equipment.GetEqpSiriusViewerDocument()== null)
             {
                 MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
                 return false;
@@ -26035,7 +26031,7 @@ namespace QMC.Common.Modules
             //  Layer 개수 체크
             m_nLayerCount = 0;
             //foreach (var layer in siriusEditorUserControl_WorkStage.Document.InternalData.Layers)
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 m_nLayerCount++;
             }
@@ -26053,7 +26049,7 @@ namespace QMC.Common.Modules
 
             //  Layer 종류별 Count
             //foreach (var layer in siriusEditorUserControl_WorkStage.Document.InternalData.Layers)
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
                 {
@@ -26760,13 +26756,8 @@ namespace QMC.Common.Modules
             //  글자를 구성하는 요소 개수 카운트
             int m_nTextItemCount = 0;
 
-            if (Equipment.EqpSiriusViewer == null)
-            {
-                MessageBox.Show("먼저 RTC 보드를 초기화 해야 합니다.", "Information!!");
-                return false;
-            }
-
-            if (Equipment.EqpSiriusViewer.Document == null)
+            
+            if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
                 MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
                 return false;
@@ -26777,7 +26768,7 @@ namespace QMC.Common.Modules
             //  Layer 개수 체크
             m_nLayerCount = 0;
             //foreach (var layer in siriusEditorUserControl_WorkStage.Document.InternalData.Layers)
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 m_nLayerCount++;
             }
@@ -26796,7 +26787,7 @@ namespace QMC.Common.Modules
             int m_nListCount = 0;
 
             //  Layer 종류별 Count
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
                 {
@@ -27152,7 +27143,7 @@ namespace QMC.Common.Modules
 
 
             //  Layer 종류별 Count
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
                 {
@@ -27554,13 +27545,8 @@ namespace QMC.Common.Modules
             //  글자를 구성하는 요소 개수 카운트
             int m_nTextItemCount = 0;
 
-            if (Equipment.EqpSiriusViewer == null)
-            {
-                MessageBox.Show("먼저 RTC 보드를 초기화 해야 합니다.", "Information!!");
-                return false;
-            }
-
-            if (Equipment.EqpSiriusViewer.Document == null)
+            
+            if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
                 MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
                 return false;
@@ -27571,7 +27557,7 @@ namespace QMC.Common.Modules
             //  Layer 개수 체크
             m_nLayerCount = 0;
             //foreach (var layer in siriusEditorUserControl_WorkStage.Document.InternalData.Layers)
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 m_nLayerCount++;
             }
@@ -27634,7 +27620,7 @@ namespace QMC.Common.Modules
 
 
             //  Layer 종류별 Count
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
                 {
@@ -27956,8 +27942,9 @@ namespace QMC.Common.Modules
             }
             else
             {
-                Equipment.EqpSiriusViewer.Document.Action.ActEntityRotate(Equipment.EqpSiriusViewer.Document.Action.SelectedEntity, (float)m_dAngle, (float)m_dRotCenterX, (float)m_dRotCenterY);
-                Equipment.EqpSiriusViewer.Document.Action.ActEntityTransit(Equipment.EqpSiriusViewer.Document.Action.SelectedEntity, (float)m_dOffsetX, (float)m_dOffsetY);
+                var Document = Equipment.GetEqpSiriusViewerDocument();
+                Document.Action.ActEntityRotate(Document.Action.SelectedEntity, (float)m_dAngle, (float)m_dRotCenterX, (float)m_dRotCenterY);
+                Document.Action.ActEntityTransit(Document.Action.SelectedEntity, (float)m_dOffsetX, (float)m_dOffsetY);
 
             }
         }
@@ -28254,13 +28241,9 @@ namespace QMC.Common.Modules
             double m_dLine_Max_X = double.MinValue;
             double m_dLine_Max_Y = double.MinValue;
 
-            if (Equipment.EqpSiriusViewer == null)
-            {
-                MessageBox.Show("먼저 RTC 보드를 초기화 해야 합니다.", "Information!!");
-                return (int)nGetDataResult.GETDATA_RTCINIT;
-            }
+           
 
-            if (Equipment.EqpSiriusViewer.Document == null)
+            if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
                 MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
                 return (int)nGetDataResult.GETDATA_FAIL;
@@ -28278,7 +28261,7 @@ namespace QMC.Common.Modules
 
             //  Layer 개수 체크
             m_nLayerCount = 0;
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 m_nLayerCount++;
             }
@@ -28294,7 +28277,7 @@ namespace QMC.Common.Modules
             m_stLayerType.m_nLayerIndex = new int[(int)System.Enum.GetValues(typeof(LayerList)).Length];
 
             //  Layer 종류별 Count
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 if (layer.IsMarkerable)
                 {
@@ -28385,7 +28368,7 @@ namespace QMC.Common.Modules
             //}
 
             m_nLayerCount = 0;
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 if (layer.IsMarkerable)
                 {
@@ -33234,13 +33217,7 @@ namespace QMC.Common.Modules
             int m_nUnusableLayerCount = 0;
 
 
-            if (Equipment.EqpSiriusViewer == null)
-            {
-                MessageBox.Show("먼저 RTC 보드를 초기화 해야 합니다.", "Information!!");
-                return (int)nGetDataResult.GETDATA_RTCINIT;
-            }
-
-            if (Equipment.EqpSiriusViewer.Document == null)
+            if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
                 MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
                 return (int)nGetDataResult.GETDATA_FAIL;
@@ -33251,7 +33228,7 @@ namespace QMC.Common.Modules
             m_nGroupCount = 0;
 
 
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 if (layer.IsMarkerable)
                 {
@@ -33436,14 +33413,14 @@ namespace QMC.Common.Modules
                 var doc = DocumentSerializer.OpenDxf(strFileName);
                 //SiriusViewer_Main.Document = doc;
                 
-                Equipment.EqpSiriusViewer.Document = doc;
+                Equipment.SetEqpSiriusViewerDocument(  doc);
             }
             else if (m_strExt.ToUpper() == ".SIRIUS")
             {
                 //SiriusEditor.Document.New();
                 var doc = DocumentSerializer.OpenSirius(strFileName);
                 //SiriusViewer_Main.Document = doc;
-                Equipment.EqpSiriusViewer.Document = doc;
+                Equipment.SetEqpSiriusViewerDocument(doc);
             }
         }
 
@@ -34043,19 +34020,15 @@ namespace QMC.Common.Modules
             m_stTemp_AlignMark.dRotationCenter.Y = 0.0;
             m_dTemp_RotationCenter_X = m_dTemp_RotationCenter_Y = 0.0;
 
-            if (Equipment.EqpSiriusViewer.Document == null)
+            if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
                 MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
                 return (int)nGetDataResult.GETDATA_FAIL;
             }
 
-            if (Equipment.EqpSiriusViewer == null)
-            {
-                //  Sirius2
-                //siriusEditor = new SpiralLab.Sirius2.Winforms.UI.SiriusEditorUserControl();
-            }
+           
 
-            //if (Equipment.EqpSiriusViewer.Document == null)
+            //if (Equipment.GetEqpSiriusViewerDocument() == null)
             //{
             //    MessageBox.Show("도면 데이터 임시 저장용 Document 가 준비되지 않았습니다.", "Information!!");
             //    return (int)nGetDataResult.GETDATA_FAIL;
@@ -34063,7 +34036,7 @@ namespace QMC.Common.Modules
 
             //  전체 가공 객체 개수
             int m_nTotalCount = 0;
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 m_nTotalCount += layer.Count;
             }
@@ -34232,7 +34205,7 @@ namespace QMC.Common.Modules
 
             //  전체 가공 객체를 List 로 등록
             var list = new List<IEntity>(m_nTotalCount);
-            foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
             {
                 foreach (var entity in layer)
                 {
@@ -34241,11 +34214,11 @@ namespace QMC.Common.Modules
             }
 
             //  List 에 등록된 가공 객체 Select
-            Equipment.EqpSiriusViewer.Document.Action.ActEntitySelect(list);
+            Equipment.GetEqpSiriusViewerDocument().Action.ActEntitySelect(list);
 
             //  가공 객체 회전 이동
-            Equipment.EqpSiriusViewer.Document.Action.ActEntityRotate(Equipment.EqpSiriusViewer.Document.Action.SelectedEntity, (float)m_dAngle, (float)m_dRotCenter_X, (float)m_dRotCenter_Y);
-            Equipment.EqpSiriusViewer.Document.Action.ActEntityTransit(Equipment.EqpSiriusViewer.Document.Action.SelectedEntity, (float)m_dOffsetX, (float)m_dOffsetY);
+            Equipment.GetEqpSiriusViewerDocument().Action.ActEntityRotate(Equipment.GetEqpSiriusViewerDocument().Action.SelectedEntity, (float)m_dAngle, (float)m_dRotCenter_X, (float)m_dRotCenter_Y);
+            Equipment.GetEqpSiriusViewerDocument().Action.ActEntityTransit(Equipment.GetEqpSiriusViewerDocument().Action.SelectedEntity, (float)m_dOffsetX, (float)m_dOffsetY);
 
             return success == true ? (int)nGetDataResult.GETDATA_SUCCESS : (int)nGetDataResult.GETDATA_FAIL;            //   0 : "데이터가 정상적으로 로드 되었습니다."
                                                                                                                         //  -1 : "데이터가 정상적으로 로드 되지 않았습니다."
@@ -36998,49 +36971,48 @@ namespace QMC.Common.Modules
         public XyzCoordinate ConvertPointFineCam(XyzCoordinate position)
         {
 
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = 0.0;
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0.0;
+            XyzCoordinate result = new XyzCoordinate();
 
             //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
+            result.X += Equipment.StageOffset_forDrilling_X;
+            result.Y += Equipment.StageOffset_forDrilling_Y;
 
+            
             //  데이터 위치를 Fine 카메라 위치로 변경
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            result.X -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
+            result.Y -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
 
-            //바꿔보자
+           
             //this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= position.X;
             //this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= position.Y;
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= position.X;
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= position.Y;
+            result.X -= position.X;
+            result.Y -= position.Y;
 
-            return new XyzCoordinate(this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]
-                , this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y], 0);
+            return result;
 
         }
         public XyzCoordinate ConvertPointCoarseCam(XyzCoordinate position)
         {
 
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = 0.0;
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0.0;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = 0.0;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = 0.0;
 
             //  좌표계 변환 (Stage 좌표계와 Scanner 좌표계를 일치시키지 않을 경우에 사용. Stage 원점 위치에서 Scanner Center 까지의 Offset 거리를 더해서 이동시킨다.)
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] += Equipment.StageOffset_forDrilling_X;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] += Equipment.StageOffset_forDrilling_Y;
 
             //  데이터 위치를 Fine 카메라 위치로 변경
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromScannerToFineCam.X;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= Equipment.stOffsetDistance.FromScannerToFineCam.Y;
 
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromFineCamToCoarseCam.X;
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= Equipment.stOffsetDistance.FromFineCamToCoarseCam.X;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= Equipment.stOffsetDistance.FromFineCamToCoarseCam.Y;
 
             //바꿔보자
             //this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= position.X;
             //this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= position.Y;
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= position.X;
-            this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= position.Y;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] -= position.X;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= position.Y;
 
             return new XyzCoordinate(this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]
                 , this.workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] , 0);
@@ -37058,7 +37030,7 @@ namespace QMC.Common.Modules
             }
             else
             {
-                Equipment.EqpSiriusViewer.Document.Action.ActEntitySelect(list);
+                Equipment.GetEqpSiriusViewerDocument().Action.ActEntitySelect(list);
             }
         }
         //  Laser Height Sensor Value 저장
@@ -37363,7 +37335,7 @@ namespace QMC.Common.Modules
 
             return bRtn;
         }
-
+        
         public bool MovetoWorkStage_ABS_PositionsXY(XyCoordinate xyCoordinate, Type_Motor_Speed typeSpeed)
         {
             // WorkStage Teaching Position 이동

@@ -1156,8 +1156,50 @@ namespace QMC.Common
         public static bool m_bBarcodeReaderComm_1time { set; get; }
 
         //private static Object g_objLock = new object();
-        public static SiriusViewerForm EqpSiriusViewer { set; get; }
-        public static SiriusViewerForm EqpSiriusViewer_Origin { set; get; }                     //  모듈 생산 완료 후, 다음 모듈이 투입될 때 이 데이터로 재설정
+        private static SiriusViewerForm EqpSiriusViewer { set;  get; }
+        public static IDocument GetEqpSiriusViewerDocument()
+        {
+            if(EqpSiriusViewer == null)
+            {
+                return null;
+            }
+            return EqpSiriusViewer.Document;
+        }
+        public static SiriusViewerForm GetEqpSiriusViewer()
+        {
+            return EqpSiriusViewer;
+        }
+        public static void SetEqpSiriusViewerDocument(IDocument doc)
+        {
+            if(EqpSiriusViewer.Document != null)
+            {
+                EqpSiriusViewer.Document.Views = new HashSet<IView>();
+            }
+            EqpSiriusViewer.Document = doc;
+        }
+
+        public static IDocument GetEqpSiriusViewerDocumentOrg()
+        {
+            return EqpSiriusViewer_Origin.Document;
+        }
+        public static void SetEqpSiriusViewerDocumentOrg(IDocument doc)
+        {
+            if(EqpSiriusViewer_Origin.Document != null)
+            {
+
+                EqpSiriusViewer_Origin.Document.Views = new HashSet<IView>();
+            }
+            EqpSiriusViewer_Origin.Document = doc;
+        }
+        public static void SetEqpSiriusViewer(SiriusViewerForm viewer)
+        {
+            Equipment.EqpSiriusViewer = viewer;
+        }
+        public static void SetEqpSiriusViewerOrg(SiriusViewerForm viewer)
+        {
+            Equipment.EqpSiriusViewer_Origin = viewer;
+        }
+        private static SiriusViewerForm EqpSiriusViewer_Origin { set; get; }                     //  모듈 생산 완료 후, 다음 모듈이 투입될 때 이 데이터로 재설정
         public static bool m_bAlignVisionThread_1time { set; get; }
         public static bool m_bParamLoadThread_1time { set; get; }
 
