@@ -20,7 +20,9 @@ namespace SpiralLab.Sirius
                 {
                     Equipment.formMain.Invoke(new System.Action(() =>
                     {
+                        this.Invalidate();
                         this.Refresh();
+                      
                     }));
                     
 
