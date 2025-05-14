@@ -385,6 +385,13 @@ namespace QMC.Common.Parts
                 double lfVelocity = 0.0;
                 double lfAccDec = 0.0;
                 int nWait = 0;
+
+                bool bWaitPosX = false;
+                bool bWaitPosY = false;
+
+                Task<bool> WaitPosX;
+                Task<bool> WaitPosY;
+
                 if (Owner is WorkStage workstage)
                 {
                     //무조건 2개 서치 - 소스 확인 하자.
@@ -400,8 +407,8 @@ namespace QMC.Common.Parts
                         Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"positionX1{position.X}, positionY1{position.Y}"));
 
                         //  속도 설정
-                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                        //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                        //lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
 
                         position = workstage.ConvertPointCoarseCam(position);
 
@@ -409,47 +416,34 @@ namespace QMC.Common.Parts
                         xyInterpolatedCoordinate.Y = position.Y;
                         Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"xyInterpolatedCoordinateX1{xyInterpolatedCoordinate.X}, xyInterpolatedCoordinateY1{xyInterpolatedCoordinate.Y}"));
 
-                        MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-                        nWait = 0;
-                        while (true)
+                        m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
+                        //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+
+                        Thread.Sleep(200);
+
+                        Task<bool> resultX1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
+                        Task<bool> resultY1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
+
+                        resultX1.Wait();
+                        resultY1.Wait();
+                        if (!resultX1.Result || !resultY1.Result)
                         {
-                            if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) &&
-                                MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, xyInterpolatedCoordinate.X))
+                            //  이동 실패 
+                            if(!bWaitPosX)
                             {
-                                break;
+                                Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"X축 이동 실패"));
+                                m_Owner.AlarmPost(AlarmKey.eStageMoveFail); //X,Y축 분할 필요?
                             }
-                            Thread.Sleep(1);
-                            nWait++;
-                            if (nWait == 100000)
+
+                            if (!bWaitPosY)
                             {
-                                break;
+                                Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"Y축 이동 실패"));
+                                m_Owner.AlarmPost(AlarmKey.eStageMoveFail); //X,Y축 분할 필요?
                             }
                         }
-
-                        nWait = 0;
-                        while (true)
-                        {
-                            if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) &&
-                                MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y))
-                            {
-                                break;
-                            }
-                            Thread.Sleep(1);
-                            nWait++;
-                            if (nWait == 100000)
-                            {
-                                break;
-                            }
-
-                        }
-                        //Thread.Sleep(Config.MoveToDelay);
-                        Thread.Sleep(500);
-
-                        //m_AlignPositions[0].X = xyInterpolatedCoordinate.X;
-                        //m_AlignPositions[0].Y = xyInterpolatedCoordinate.Y;
+                        //Thread.Sleep(500); //Sleep은 안하는게 좋음.
 
                         this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[0];
-
                         if(Equipment.stVisionRecipeSet.ePreAlgorithmType == Equipment.VisionAlgorithmType.PatternMatching)
                         {
                             this.FindFiducialMark(out firstPointSearchResult, out firstPointCoordinate);
@@ -457,13 +451,9 @@ namespace QMC.Common.Parts
                         else if(Equipment.stVisionRecipeSet.ePreAlgorithmType == Equipment.VisionAlgorithmType.CircleDetection)
                         {
                             bool bIsDarkCircleSearch = Equipment.stVisionRecipeSet.bPreCircleColor;
-                            double dSpec = 0.05;
-                            double dRadius = 0;
-                            double dScore = 0.7;
-                            dSpec = Equipment.stVisionRecipeSet.dPreCircleMarkSpec;
-                            dScore = Equipment.stVisionRecipeSet.dPreCircleMarkScore;
-                            dRadius = m_dRadius[0];// m_Owner.m_stDividedRegion_GroupData[0].dFiducialWidth[0];
-
+                            double dSpec = Equipment.stVisionRecipeSet.dPreCircleMarkSpec;
+                            double dScore = Equipment.stVisionRecipeSet.dPreCircleMarkScore;
+                            double dRadius = m_dRadius[0];
                             if (m_dRadius[0] == 0)
                                 dRadius = Equipment.stVisionRecipeSet.dPreCircleMarkRadius;
 
@@ -507,8 +497,8 @@ namespace QMC.Common.Parts
                     position = new XyzCoordinate(m_AlignPositions[1].X, m_AlignPositions[1].Y, 0.0);
 
                     //  속도 설정
-                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                    //lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                    //lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
 
                     position = workstage.ConvertPointCoarseCam(position);
 
@@ -516,43 +506,68 @@ namespace QMC.Common.Parts
                     xyInterpolatedCoordinate.Y = position.Y; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
 
                     Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"xyInterpolatedCoordinateX2{xyInterpolatedCoordinate.X}, xyInterpolatedCoordinateY2{xyInterpolatedCoordinate.Y}"));
-                    MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-                    nWait = 0;
-                    while (true)
+
+
+                    m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
+                    //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
+
+                    Thread.Sleep(200);
+
+                    // 비동기 대기 (UI에서 사용하면 안됨)
+                    Task<bool> resultX = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
+                    Task<bool> resultY = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
+                    
+                    resultX.Wait();
+                    resultY.Wait();
+                    if (!resultX.Result || !resultY.Result)
                     {
-                        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) &&
-                            MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, xyInterpolatedCoordinate.X))
+                        //  이동 실패 
+                        if (!bWaitPosX)
                         {
-                            break;
+                            Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"X축 이동 실패"));
+                            m_Owner.AlarmPost(AlarmKey.eStageMoveFail); //X,Y축 분할 필요?
                         }
-                        Thread.Sleep(1);
-                        nWait++;
-                        if (nWait == 1000)
+
+                        if (!bWaitPosY)
                         {
-                            break;
+                            Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"Y축 이동 실패"));
+                            m_Owner.AlarmPost(AlarmKey.eStageMoveFail); //X,Y축 분할 필요?
                         }
                     }
 
-                    nWait = 0;
-                    while (true)
-                    {
-                        if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) &&
-                            MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y))
-                        {
-                            break;
-                        }
-                        Thread.Sleep(1);
-                        nWait++;
-                        if (nWait == 1000)
-                        {
-                            break;
-                        }
-                    }
-                    //Thread.Sleep(Config.MoveToDelay);
-                    Thread.Sleep(500);
+                    //nWait = 0;
+                    //while (true)
+                    //{
+                    //    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) &&
+                    //        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, xyInterpolatedCoordinate.X))
+                    //    {
+                    //        break;
+                    //    }
+                    //    Thread.Sleep(1);
+                    //    nWait++;
+                    //    if (nWait == 1000)
+                    //    {
+                    //        break;
+                    //    }
+                    //}
 
-                    //m_AlignPositions[1].X = xyInterpolatedCoordinate.X;
-                    //m_AlignPositions[1].Y = xyInterpolatedCoordinate.Y;
+                    //nWait = 0;
+                    //while (true)
+                    //{
+                    //    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) &&
+                    //        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y))
+                    //    {
+                    //        break;
+                    //    }
+                    //    Thread.Sleep(1);
+                    //    nWait++;
+                    //    if (nWait == 1000)
+                    //    {
+                    //        break;
+                    //    }
+                    //}
+                    ////Thread.Sleep(Config.MoveToDelay);
+                    //Thread.Sleep(500);
 
                     this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[1];
                     if (Equipment.stVisionRecipeSet.ePreAlgorithmType == Equipment.VisionAlgorithmType.PatternMatching)
@@ -757,7 +772,7 @@ namespace QMC.Common.Parts
                         Camera.LatestImage.RawData,
                         Camera.LatestImage.Header.Width,
                         Camera.LatestImage.Header.Height,
-                        nRadiusImageCount, dSpec, ref bFind, 0, 0, bIsDarkCircleSearch);
+                        nRadiusImageCount, dSpec, ref bFind, 0, 0, bIsDarkCircleSearch, dScore);
                     // 0.05 - Spec 
 
                     if (Fiducial_circlesResult.Count > 0 && bFind == true)

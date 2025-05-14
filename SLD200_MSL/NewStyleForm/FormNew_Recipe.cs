@@ -43,6 +43,23 @@ namespace SLD200_MSL
         {
             InitializeComponent();
 
+            //Size 축소 / 확대 안되게 하기 위한 코드.
+            this.AutoScaleMode = AutoScaleMode.None;
+            this.DoubleBuffered = true;
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+            this.UpdateStyles();
+
+            //this.Load += FormNewSub_Recipe_Load; // 여기서 Load 이벤트 연결
+            this.tabControl_Recipe.SelectedIndexChanged += new System.EventHandler(this.tabControl_Recipe_SelectedIndexChanged);
+
+            //LoadSubForm();
+            FormNewSub_Recipe_Load();
+        }
+
+        //private void FormNewSub_Recipe_Load(object sender, EventArgs e)
+        private void FormNewSub_Recipe_Load()
+        {
+            //GUI생성 완료 후 Data 및 Cintroller 업데이트!
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
 
@@ -52,31 +69,9 @@ namespace SLD200_MSL
                 {
                     workStage = module as WorkStage;
                 }
-                
-                //if (module.Name == "Loader")
-                //{
-                //    loader = module as Loader;
-                //}
-
-                //if (module.Name == "Unloader")
-                //{
-                //    unloader = module as Unloader;
-                //}
-
-                //if (module.Name == "Vision")
-                //{
-                //    vision = module as Vision;
-                //}
-
-                //if (module.Name == "BDS")
-                //{
-                //    bds = module as Bds;
-                //}
             }
 
-
             MachineType_Component_Enable(Equipment.Machine_LaserType_CO2);
-
 
             m_formSiriusEditor = new FormNew_SiriusEditor();
 
@@ -85,16 +80,12 @@ namespace SLD200_MSL
             listView_Recipe_TabRecipe_LayerData.GridLines = true;         //  구분선 표시
             listView_Recipe_TabRecipe_LayerData.FullRowSelect = true;     //  한줄씩 선택 설정
 
-
             //  Recipe Open 타이머
             timer_Recipe_Open = new System.Windows.Forms.Timer();
             timer_Recipe_Open.Interval = 50;
             timer_Recipe_Open.Tick += new System.EventHandler(Timer_RecipeOpen_Func);
             timer_Recipe_Open.Enabled = true;
 
-            this.tabControl_Recipe.SelectedIndexChanged += new System.EventHandler(this.tabControl_Recipe_SelectedIndexChanged);
-
-            //LoadSubForm();
         }
 
         private void MachineType_Component_Enable(bool m_bLaserType)
@@ -246,12 +237,7 @@ namespace SLD200_MSL
         {
             //  Sirius Editor 창을 연다.
 
-            if (Equipment.EqpSiriusViewer == null)
-            {
-                var mb = new MessageBoxOk();
-                mb.ShowDialog("Information !!", "먼저 Scanner Board 를 초기화 해야 합니다.");
-                return;
-            }
+           
 
             if (workStage.rtc == null)
             {
@@ -350,7 +336,7 @@ namespace SLD200_MSL
 
         private void button_Recipe_TabRecipe_LayerImport_Click(object sender, EventArgs e)
         {
-            if (Equipment.EqpSiriusViewer == null)
+            if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
                 var mb1 = new MessageBoxOk();
                 mb1.ShowDialog("Information !!", "RTC 보드를 초기화 해야 합니다.");
@@ -402,6 +388,7 @@ namespace SLD200_MSL
                     //SiriusEditor.Document.New();
                     var doc = DocumentSerializer.OpenDxf(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
                     //Equipment.EqpSiriusViewer.Document = doc;
+                    m_formSiriusEditor.SiriusEditor.Document.Views.Clear();
                     m_formSiriusEditor.SiriusEditor.Document = doc;
                 }
                 else if (m_strExt.ToUpper() == ".SIRIUS")
@@ -409,6 +396,7 @@ namespace SLD200_MSL
                     //SiriusEditor.Document.New();
                     var doc = DocumentSerializer.OpenSirius(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
                     //Equipment.EqpSiriusViewer.Document = doc;
+                    m_formSiriusEditor.SiriusEditor.Document.Views.Clear();
                     m_formSiriusEditor.SiriusEditor.Document = doc;
                 }
                 else
@@ -424,7 +412,7 @@ namespace SLD200_MSL
                 //doc.ActOpen(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
                 //siriusEditor_Temp.Document = doc;
 
-                Equipment.EqpSiriusViewer.Document = m_formSiriusEditor.SiriusEditor.Document;
+                Equipment.SetEqpSiriusViewerDocument(m_formSiriusEditor.SiriusEditor.Document);
 
                 if (workStage.DrillingData_Parsing())
                 {
@@ -1623,7 +1611,7 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable = checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Checked;                                        //  하부 집진기 사용 여부
 
             //  도면 데이터를 가공용 Document 에 적용
-            Equipment.EqpSiriusViewer.Document = m_formSiriusEditor.SiriusEditor.Document;
+            Equipment.SetEqpSiriusViewerDocument(m_formSiriusEditor.SiriusEditor.Document);
 
 
             //  Frequency 데이터가 있는지 체크
@@ -1661,7 +1649,7 @@ namespace SLD200_MSL
             string filePath = "";
             string fileName = "";
             
-            if (Equipment.EqpSiriusViewer == null)
+            if (Equipment.GetEqpSiriusViewer() == null)
             {
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !!", "먼저 Scanner Board 를 초기화 해야 합니다.");
@@ -1846,7 +1834,7 @@ namespace SLD200_MSL
                 //  도면 Import
                 m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
 
-                Equipment.EqpSiriusViewer.Document = m_formSiriusEditor.SiriusEditor.Document;
+                Equipment.SetEqpSiriusViewerDocument( m_formSiriusEditor.SiriusEditor.Document);
                 //Equipment.EqpSiriusViewer_Origin.Document = m_formSiriusEditor.SiriusEditor.Document;
 
                 //  자동운전 중 모듈 가공 시 이 위치의 도면파일을 로드한다.
@@ -2081,7 +2069,7 @@ namespace SLD200_MSL
 
             fileName = m_strRecipeFile;
 
-            if (Equipment.EqpSiriusViewer == null)
+            if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
                 MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
                 return;
@@ -2245,7 +2233,7 @@ namespace SLD200_MSL
             //  도면 Import
             m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
 
-            Equipment.EqpSiriusViewer.Document = m_formSiriusEditor.SiriusEditor.Document;
+            Equipment.SetEqpSiriusViewerDocument( m_formSiriusEditor.SiriusEditor.Document);
             //Equipment.EqpSiriusViewer_Origin.Document = m_formSiriusEditor.SiriusEditor.Document;
 
             //  자동운전 중 모듈 가공 시 이 위치의 도면파일을 로드한다.
@@ -2388,7 +2376,7 @@ namespace SLD200_MSL
             //  도면 Import
             m_formSiriusEditor.Import_DrawingFile(richTextBox_Recipe_TabRecipe_DrawingFile.Text);
 
-            Equipment.EqpSiriusViewer.Document = m_formSiriusEditor.SiriusEditor.Document;
+            Equipment.SetEqpSiriusViewerDocument(  m_formSiriusEditor.SiriusEditor.Document);
 
             if (workStage.DrillingData_Parsing())
             {

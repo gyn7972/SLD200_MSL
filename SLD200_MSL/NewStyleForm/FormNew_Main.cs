@@ -29,6 +29,10 @@ using System.Data.Common;
 using System.Windows.Media.Media3D;
 using Cognex.DataMan.SDK.Utils;
 using netDxf.Blocks;
+using SharpGL;
+using static QMC.Common.Part;
+using SharpGL;
+using System.Windows;
 
 namespace SLD200_MSL
 {
@@ -83,9 +87,13 @@ namespace SLD200_MSL
         {
             InitializeComponent();
 
-            InitializeDeviceStatusBindings();
+            //Size 축소 / 확대 안되게 하기 위한 코드.
+            this.AutoScaleMode = AutoScaleMode.None;
+            this.DoubleBuffered = true;
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+            this.UpdateStyles();
 
-            this.Load += FormNew_Main_Load;
+            //this.Load += FormNew_Main_Load;
 
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
@@ -124,36 +132,35 @@ namespace SLD200_MSL
                 }
             }
 
-            //  Main Status 타이머
-            timer_Main_Status = new System.Windows.Forms.Timer();
-            timer_Main_Status.Interval = 100;
-            timer_Main_Status.Tick += new System.EventHandler(Timer_MainStatus_Func);
-            timer_Main_Status.Enabled = true;
-
-            //ThreadStart();
-
             //  WorkStage 에서 모듈 할당
             workStage.Module_Allocation();
             unloader.Module_Allocation();
             loader.Module_Allocation();
+            SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
 
-            //  통신 Parts 초기화 (Connect 옵션에 따라 활성화 된 것들만 초기화 됨)
-            Comm_Init();
+
+            FormNew_Main_Load();
+        }
+
+
+
+        //private void FormNew_Main_Load(object sender, EventArgs e)
+        private void FormNew_Main_Load()
+        {
+            InitializeDeviceStatusBindings();
 
             m_FormProgress = new ProgressForm("Initialize", "장비 초기화 진행중...");
             m_bHomeProgress_Show = false;
 
             //  Sirius Viewer
             //workStage.SiriusEditor = new SpiralLab.Sirius.SiriusEditorForm();
-            Equipment.EqpSiriusViewer = new SpiralLab.Sirius.SiriusViewerForm();
-            Equipment.EqpSiriusViewer_Origin = new SpiralLab.Sirius.SiriusViewerForm();
-
+            Equipment.SetEqpSiriusViewer(new SpiralLab.Sirius.SiriusViewerForm());
+            Equipment.SetEqpSiriusViewerOrg( new SpiralLab.Sirius.SiriusViewerForm());
 
             //  Fiducial Align Data 를 보여주는 ListView 설정
             listView_Main_FiducialAlignData.View = View.Details;
             listView_Main_FiducialAlignData.GridLines = true;         //  구분선 표시
             listView_Main_FiducialAlignData.FullRowSelect = true;     //  한줄씩 선택 설정
-
 
             //  Module Socket Processing 상태를 보여주는 Picture Box
             Initialize_SocketStatus(Columns, Rows, SubColumns, SubRows); // 초기화
@@ -174,7 +181,7 @@ namespace SLD200_MSL
                     //workStage.PatternMatchingImage_Reticle_Loaded_Upper = true;
                 }
             }
-            
+
             m_strFile = string.Format("{0}\\PreAlign.bmp", ConfigManager.GetPatternImagePath());
             if (File.Exists(m_strFile))
             {
@@ -196,6 +203,25 @@ namespace SLD200_MSL
 
             label_Title_Stacker_LPort.Text = "Loader_Stacker Left:";
             label_Title_Stacker_RPort.Text = "Loader_Stacker Right:";
+
+            InitImageViewer();
+            InitializeDeviceStatusBindings();
+            InitAxisLabelMap();
+
+
+            //  Main Status 타이머
+            timer_Main_Status = new System.Windows.Forms.Timer();
+            timer_Main_Status.Interval = 100;
+            timer_Main_Status.Tick += new System.EventHandler(Timer_MainStatus_Func);
+            timer_Main_Status.Enabled = true;
+
+            string strPath = "D:\\SLD-200_Parameter\\CycleTime.ini";
+            Equipment.CycleTimer_LaserDrilling.LoadFromIni("LaserDrilling", strPath);
+
+            //  통신 Parts 초기화 (Connect 옵션에 따라 활성화 된 것들만 초기화 됨)
+            Comm_Init();
+
+            SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
         }
 
         private void OnUpdateResultOverlay(object sender, EventArgs e)
@@ -225,10 +251,15 @@ namespace SLD200_MSL
             {
                 m_bFormVisible = true;
                 // OnShowRecipeForm();
+                this.ImageViewer_Main_highs.ResumeDisplay();
+                this.ImageViewer_Main_Lows.ResumeDisplay();
             }
             else if (!this.Visible && m_bFormVisible)
             {
                 m_bFormVisible = false;
+
+                this.ImageViewer_Main_highs.SuspendDisplay();
+                this.ImageViewer_Main_Lows.SuspendDisplay();
                 //OnHideRecipeForm();
             }
         }
@@ -243,7 +274,7 @@ namespace SLD200_MSL
        
         private void InitImageViewer()
         {
-            if (this.ImageViewer_Main_highs.IsHandleCreated)
+            //if (this.ImageViewer_Main_highs.IsHandleCreated)
             {
                 this.ImageViewer_Main_highs.SizeMode = PictureBoxSizeMode.CenterImage;
                 this.ImageViewer_Main_highs.SuspendDisplay();
@@ -255,7 +286,7 @@ namespace SLD200_MSL
                 this.ImageViewer_Main_highs.StartUpdateTask();
             }
 
-            if (this.ImageViewer_Main_Lows.IsHandleCreated)
+            //if (this.ImageViewer_Main_Lows.IsHandleCreated)
             {
                 this.ImageViewer_Main_Lows.SizeMode = PictureBoxSizeMode.CenterImage;
                 this.ImageViewer_Main_Lows.SuspendDisplay();
@@ -590,7 +621,7 @@ namespace SLD200_MSL
 
                 workStage.Import_DrawingFile(Equipment.RecipeOpen_DrawingFilePath);
 
-                MessageBox.Show("도면 로드 완료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                System.Windows.Forms.MessageBox.Show("도면 로드 완료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             
             //if (m_bHomeProgress_Show && (workStage.m_bHomeOK || workStage.m_bHomeProgressForm_Close))
@@ -701,21 +732,38 @@ namespace SLD200_MSL
             }
 
             // Laser m_rapidLxLaser_Comm
-            if (workStage.m_rapidLxLaser_Comm == null)
+            if (Equipment.Machine_LaserType_CO2)
             {
-                workStage.RapidLxLaser_Comm_Init();
+                if(!workStage.workStageParameter.IsDO_Laser_Enable())
+                {
+                    // CO2 - Test 확인하고 하자.
+                    // workStage.workStageParameter.DO_Laser_Enable(true);
+                }
             }
             else
             {
-                if (!workStage.m_rapidLxLaser_Comm.IsOpen)
+                if (workStage.m_rapidLxLaser_Comm == null)
+                {
+                    workStage.m_bRapidLxLaser_UserConnect = true;
                     workStage.RapidLxLaser_Comm_Init();
+                }
+                else
+                {
+                    if (!workStage.m_rapidLxLaser_Comm.IsOpen)
+                    {
+                        workStage.m_bRapidLxLaser_UserConnect = true;
+                        workStage.RapidLxLaser_Comm_Init();
+                    }
+                }
+
             }
             
-            //  Laser
-            if (workStage.m_SocketLaser == null)
-            {
-                workStage.Laser_Socket_Connect();
-            }
+            
+            //  Laser X -> 이거 안쓰는데?
+            //if (workStage.m_SocketLaser == null)
+            //{
+            //    workStage.Laser_Socket_Connect();
+            //}
 
             //  Laser Height Sensor
             if (workStage.m_SocketLaserHeightSensor == null)
@@ -932,9 +980,9 @@ namespace SLD200_MSL
                 m_bNeedHideProgressForm = true;
             }
 
-            if ((SiriusViewer_Main.Document != null) && (Equipment.EqpSiriusViewer.Document != null))
+            if ((SiriusViewer_Main.Document != null) && (Equipment.GetEqpSiriusViewerDocument ()!= null))
             {
-                if ((SiriusViewer_Main.Document != Equipment.EqpSiriusViewer.Document) &&
+                if ((SiriusViewer_Main.Document != Equipment.GetEqpSiriusViewerDocument()) &&
                     ((workStage.m_nLaserDrilling_MainStep == (int)WorkStage.LaserDrilling_Step.None) || m_SiriusViewerRefresy))
                 {
                     m_NeedDocumentSync = true;
@@ -988,7 +1036,7 @@ namespace SLD200_MSL
 
             UpdateInitStatusFromComm();
 
-            //Motor_Position();
+            
         }
 
         // -----------------------
@@ -996,6 +1044,12 @@ namespace SLD200_MSL
         // -----------------------
         private void UpdateUIControls()
         {
+            UpdateCycleTimerUI();
+            //return;
+
+            Motor_Position2();
+            
+
             if (m_bNeedHideProgressForm)
             {
                 m_bNeedHideProgressForm = false;
@@ -1005,7 +1059,20 @@ namespace SLD200_MSL
             if (m_NeedDocumentSync)
             {
                 m_NeedDocumentSync = false;
-                SiriusViewer_Main.Document = Equipment.EqpSiriusViewer.Document;
+                try
+                {
+
+                    if (SiriusViewer_Main.Document.Views != null)
+                    {
+
+                        SiriusViewer_Main.Document.Views.Clear();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(ex);
+                }
+                SiriusViewer_Main.Document =(IDocument)Equipment.GetEqpSiriusViewerDocument();
             }
                         
             label_Main_LaserStatus.Text = workStage.GetLaserBusyStatus() ? "🔴 LASER ON" : "⚫ LASER OFF";
@@ -1059,7 +1126,6 @@ namespace SLD200_MSL
                 button_Main_Start.ForeColor = Color.Black;
             }
 
-
             //button_Main_Loader_Continue.Enabled = Equipment.MachineStop_byTimeout_Loader;
             //button_Main_Unloader_Continue.Enabled = Equipment.MachineStop_byTimeout_Unloader;
             //button_Main_WorkStage_Continue.Enabled = Equipment.SocketStopped;
@@ -1069,6 +1135,8 @@ namespace SLD200_MSL
                 m_bNeedAutoRunStop = false;
 
                 Equipment.AutoRunStatus = false;
+                workStage.SetRunStatus(RunStatus.Stop);
+
                 workStage.timer_MainWork.Stop();
                 workStage.m_MainWork_Start = false;
                 loader.m_LoaderWork_Start = false;
@@ -1077,7 +1145,7 @@ namespace SLD200_MSL
                 unloader.timer_UnloaderWork.Stop();
                 unloader.m_UnloaderWork_Start = false;
 
-                MessageBox.Show("자동 운전 종료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                System.Windows.Forms.MessageBox.Show("자동 운전 종료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             if (workStage.Camera_HighRes.Opened)
@@ -1250,6 +1318,16 @@ namespace SLD200_MSL
 
                 // 문서 생성후 뷰어에 지정
                 var doc = new DocumentDefault();
+                if(SiriusViewer_Main.Document != null)
+                {
+
+                    if (SiriusViewer_Main.Document.Views != null)
+                    {
+
+                        SiriusViewer_Main.Document.Views.Clear();
+                    }
+                    
+                }
                 SiriusViewer_Main.Document = doc;
             }
             else
@@ -1291,7 +1369,7 @@ namespace SLD200_MSL
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    System.Windows.Forms.MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     //System.Diagnostics.Debug.WriteLine(ex.Message);
                 }
             }
@@ -1825,6 +1903,7 @@ namespace SLD200_MSL
 
 
             Equipment.AutoRunStatus = true;
+            workStage.SetRunStatus(RunStatus.Run);
 
             return;
         }
@@ -1885,7 +1964,7 @@ namespace SLD200_MSL
 
             if (workStage.rtc == null)
             {
-                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                System.Windows.Forms.MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
                 return;
             }
 
@@ -2167,6 +2246,7 @@ namespace SLD200_MSL
 
             //최종 AutoRunStatus 로 장비 구동 상태 확인 및 제어!!
             Equipment.AutoRunStatus = true;
+            workStage.SetRunStatus(RunStatus.Run);
 
             workStage._isMainWorkRunning = false;
             workStage._isLaserDrillingWorkRunning = false;
@@ -2186,6 +2266,7 @@ namespace SLD200_MSL
 
             Equipment.AutoRunStatus = false;        // 자동운전중
             Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
+            workStage.SetRunStatus(RunStatus.Stop);
 
             Equipment.ProcessingData_Parsing_byLoader = false;
 
@@ -2268,7 +2349,11 @@ namespace SLD200_MSL
             unloader.m_nUL_RESTORE_LaserDrilling_Cycle_Step = workStage.m_nLaserDrilling_MainStep;                                                                              //  Laser Drilling Cycle Step
             unloader.m_bUL_RESTORE_MainWork_Cycle_Complete = workStage.m_bMainWorkCycle_Complete;                                                                               //  Main Work Cycle 완료 여부
             unloader.m_nUL_RESTORE_MainWork_Cycle_ResultOKNG = workStage.m_nMainWorkCycle_ResultOKNG;                                                                           //  Main Work Cycle 결과 (OK, NG) : OK 인 경우에만 R-Port 로 가져감
-            unloader.m_bUL_RESTORE_MainWorkCycle_ResultOK_toRPort = workStage.m_bMainWorkCycle_ResultOK_toRPort;                                                                //  OK 인 Module 을 R-Port 로 가져갈 것인지 L-Port 로 가져갈 것인지
+            unloader.m_bUL_RESTORE_MainWorkCycle_ResultOK_toRPort = workStage.m_bMainWorkCycle_ResultOK_toRPort;
+
+
+            string strPath = "D:\\SLD-200_Parameter\\CycleTime.ini";
+            Equipment.CycleTimer_LaserDrilling.SaveToIni("LaserDrilling", strPath);
         }
 
         private void button_TEST_RTCInit_Click(object sender, EventArgs e)
@@ -2303,7 +2388,7 @@ namespace SLD200_MSL
                 if (File.Exists(correctionFile) == false)
                 {
                     string m_strPath = string.Format("Scanner Correction 파일이 없습니다.\r\n\r\n[{0}]", correctionFile);
-                    MessageBox.Show(m_strPath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    System.Windows.Forms.MessageBox.Show(m_strPath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -2332,7 +2417,7 @@ namespace SLD200_MSL
                 if (File.Exists(correctionFile) == false)
                 {
                     string m_strPath = string.Format("Scanner Correction 파일이 없습니다.\r\n\r\n[{0}]", correctionFile);
-                    MessageBox.Show(m_strPath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    System.Windows.Forms.MessageBox.Show(m_strPath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return ;
                 }
                 // initialize rtc controller
@@ -2719,11 +2804,11 @@ namespace SLD200_MSL
             }
 
             //  ListView Column 설정
-            listView_Main_FiducialAlignData.Columns.Add("No", 50, HorizontalAlignment.Center);
-            listView_Main_FiducialAlignData.Columns.Add("Socket", 55, HorizontalAlignment.Center);
-            listView_Main_FiducialAlignData.Columns.Add("Devi. X", 70, HorizontalAlignment.Center);
-            listView_Main_FiducialAlignData.Columns.Add("Devi. Y", 70, HorizontalAlignment.Center);
-            listView_Main_FiducialAlignData.Columns.Add("Hole Size", 70, HorizontalAlignment.Center);
+            listView_Main_FiducialAlignData.Columns.Add("No", 50, System.Windows.Forms.HorizontalAlignment.Center);
+            listView_Main_FiducialAlignData.Columns.Add("Socket", 55, System.Windows.Forms.HorizontalAlignment.Center);
+            listView_Main_FiducialAlignData.Columns.Add("Devi. X", 70, System.Windows.Forms.HorizontalAlignment.Center);
+            listView_Main_FiducialAlignData.Columns.Add("Devi. Y", 70, System.Windows.Forms.HorizontalAlignment.Center);
+            listView_Main_FiducialAlignData.Columns.Add("Hole Size", 70, System.Windows.Forms.HorizontalAlignment.Center);
 
             listView_Main_FiducialAlignData.EndUpdate();
         }
@@ -2789,12 +2874,6 @@ namespace SLD200_MSL
                 Log.Write("SLD-200", Equipment.User_Name, "Button Click", "AutoRun 중 강제배출 버튼 Click");
             }
         }
-        private void FormNew_Main_Load(object sender, EventArgs e)
-        {
-            InitImageViewer();
-            InitializeDeviceStatusBindings();
-        }
-
         private void checkBox_Test_LaserDrillingCycle_CheckedChanged(object sender, EventArgs e)
         {
             Equipment.LaserDrillingCycleEnable_Manual = checkBox_Test_LaserDrillingCycle.Checked;
@@ -2815,15 +2894,10 @@ namespace SLD200_MSL
                 return;
             }
 
-            if (Equipment.EqpSiriusViewer == null)
-            {
-                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
-                return;
-            }
-
+           
             if (workStage.rtc == null)
             {
-                MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
+                System.Windows.Forms.MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
                 return;
             }
 
@@ -2887,7 +2961,7 @@ namespace SLD200_MSL
 
                 double m_dSelectedGroup_Center_X = 999.0;
                 double m_dSelectedGroup_Center_Y = 999.0;
-                foreach (var layer in Equipment.EqpSiriusViewer.Document.Layers)
+                foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
                 {
                     if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
                     {
@@ -2969,7 +3043,7 @@ namespace SLD200_MSL
 
                     //  도면 갱신 (Main 화면의 Sirius Document 를 가공할때 사용하는 Document 로 복사)
                     //workStage.SiriusEditor.Document = SiriusViewer_Main.Document;
-                    Equipment.EqpSiriusViewer.Document = SiriusViewer_Main.Document;                            //  메인 화면에 보이는 도면을 가공하기 위함
+                    Equipment.SetEqpSiriusViewerDocument( SiriusViewer_Main.Document);                            //  메인 화면에 보이는 도면을 가공하기 위함
 
 
                 if (workStage.m_nSocketAlign_StartIndex >= 0)
@@ -3189,7 +3263,9 @@ namespace SLD200_MSL
 
         private void button_TEST12_Click(object sender, EventArgs e)
         {
-            workStage.AlarmTest();
+            //Test code
+            Equipment.CycleTimer_LaserDrilling.Start();
+            //workStage.AlarmTest();
             //workStage.LaserHeightSensorValue_Save(Equipment.Current_Recipe, 1, Equipment.LaserHeightSensor_ReferenceValue_atScannerFocusPosition, workStage.m_dLaserHeightSensorSocket_Value, 2);
 
             //Equipment.AutoManualStatus = false;
@@ -3232,44 +3308,239 @@ namespace SLD200_MSL
             //  Motion Movement 표시
             if (Equipment.AjinBoard_Opened)
             {
+                double pos = 0.0;
                 //  Loader Stacker Position
-                label_Main_EncPosition_LD_Z0.Text = string.Format("{0:F3}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.Z0));
-                label_Main_EncPosition_LD_Z1.Text = string.Format("{0:F3}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.Z1));
-
+                pos = loader.GetEncLoaderPos_Motor(Loader.nAxis.Z0);
+                label_Main_EncPosition_LD_Z0.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
+                pos = loader.GetEncLoaderPos_Motor(Loader.nAxis.Z1);
+                label_Main_EncPosition_LD_Z1.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
                 //  Loader Transfer Position
-                label_Main_EncPosition_LD_TRX.Text = string.Format("{0:F3}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.TR_X));
-                label_Main_EncPosition_LD_TRZ.Text = string.Format("{0:F3}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.TR_Z));
-
+                pos = loader.GetEncLoaderPos_Motor(Loader.nAxis.TR_X);
+                label_Main_EncPosition_LD_TRX.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
+                pos = loader.GetEncLoaderPos_Motor(Loader.nAxis.TR_Z);
+                label_Main_EncPosition_LD_TRZ.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
                 //  Loader Mechanic Aligner Position
-                label_Main_EncPosition_LD_ALNX.Text = string.Format("{0:F3}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.ALN_X));
-                label_Main_EncPosition_LD_ALNY.Text = string.Format("{0:F3}", loader.MC_Func.MC_GetEncPos((int)Loader.nAxis.ALN_Y));
-
+                pos = loader.GetEncLoaderPos_Motor(Loader.nAxis.ALN_X);
+                label_Main_EncPosition_LD_ALNX.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
+                pos = loader.GetEncLoaderPos_Motor(Loader.nAxis.ALN_Y);
+                label_Main_EncPosition_LD_ALNY.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
                 //  Work Stage Position
-                label_Main_EncPosition_STAGE_X.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X));
-                label_Main_EncPosition_STAGE_Y.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y));
-
+                pos = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.X);
+                label_Main_EncPosition_STAGE_X.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
+                pos = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Y);
+                label_Main_EncPosition_STAGE_Y.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
                 //  Scanner & Camera Position
-                label_Main_EncPosition_SCANNER_Z.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z));
-
+                pos = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.Z);
+                label_Main_EncPosition_SCANNER_Z.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
                 if (Equipment.Machine_LaserType_CO2)
                 {
-                    //  Mask Position
-                    label_Main_EncPosition_MASK_Y.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.MASK_Y));
+                    pos = workStage.GetEncWorkStagePos_Motor(WorkStage.nAxis.MASK_Y);
+                    label_Main_EncPosition_MASK_Y.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
                 }
                 else
                 {
-                    label_Main_EncPosition_MASK_Y.Text = "0.000";
+                    label_Main_EncPosition_MASK_Y.Text = "---.---";
                     label_Main_EncPosition_MASK_Y.Visible = false;
                 }
-
                 //  Unloader Stacker Position
-                label_Main_EncPosition_UL_Z0.Text = string.Format("{0:F3}", unloader.MC_Func.MC_GetEncPos((int)Unloader.nAxis.Z0));
-                label_Main_EncPosition_UL_Z1.Text = string.Format("{0:F3}", unloader.MC_Func.MC_GetEncPos((int)Unloader.nAxis.Z1));
-
+                pos = unloader.GetEncUnloaderPos_Motor(Unloader.nAxis.Z0);
+                label_Main_EncPosition_UL_Z0.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
+                pos = unloader.GetEncUnloaderPos_Motor(Unloader.nAxis.Z1);
+                label_Main_EncPosition_UL_Z1.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
                 //  Unloader Transfer Position
-                label_Main_EncPosition_UL_TRX.Text = string.Format("{0:F3}", unloader.MC_Func.MC_GetEncPos((int)Unloader.nAxis.TR_X));
-                label_Main_EncPosition_UL_TRZ.Text = string.Format("{0:F3}", unloader.MC_Func.MC_GetEncPos((int)Unloader.nAxis.TR_Z));
+                pos = unloader.GetEncUnloaderPos_Motor(Unloader.nAxis.TR_X);
+                label_Main_EncPosition_UL_TRX.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
+                pos = unloader.GetEncUnloaderPos_Motor(Unloader.nAxis.TR_Z);
+                label_Main_EncPosition_UL_TRZ.Text = double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
             }
         }
+
+        private Dictionary<Loader.nAxis, Label> loaderAxisLabelMap;
+        private Dictionary<Unloader.nAxis, Label> unloaderAxisLabelMap;
+        private Dictionary<WorkStage.nAxis, Label> workstageAxisLabelMap;
+
+        private void button_AverageOneCycleTime_Clear_Click(object sender, EventArgs e)
+        {
+            //Test
+            Equipment.CycleTimer_LaserDrilling.End();
+            string m_strTemp = string.Format("LaserDrillingOneCycle Time: {0:0.000} sec", Equipment.CycleTimer_LaserDrilling.Latest.Interval.TotalSeconds);
+            Log.Write("SLD-200", "Auto Run", m_strTemp);
+        }
+
+        private void InitAxisLabelMap()
+        {
+            loaderAxisLabelMap = new Dictionary<Loader.nAxis, Label>
+            {
+                { Loader.nAxis.Z0, label_Main_EncPosition_LD_Z0 },
+                { Loader.nAxis.Z1, label_Main_EncPosition_LD_Z1 },
+                { Loader.nAxis.TR_X, label_Main_EncPosition_LD_TRX },
+                { Loader.nAxis.TR_Z, label_Main_EncPosition_LD_TRZ },
+                { Loader.nAxis.ALN_X, label_Main_EncPosition_LD_ALNX },
+                { Loader.nAxis.ALN_Y, label_Main_EncPosition_LD_ALNY },
+            };
+
+            unloaderAxisLabelMap = new Dictionary<Unloader.nAxis, Label>
+            {
+                { Unloader.nAxis.Z0, label_Main_EncPosition_UL_Z0 },
+                { Unloader.nAxis.Z1, label_Main_EncPosition_UL_Z1 },
+                { Unloader.nAxis.TR_X, label_Main_EncPosition_UL_TRX },
+                { Unloader.nAxis.TR_Z, label_Main_EncPosition_UL_TRZ },
+            };
+
+            workstageAxisLabelMap = new Dictionary<WorkStage.nAxis, Label>
+            {
+                { WorkStage.nAxis.X, label_Main_EncPosition_STAGE_X },
+                { WorkStage.nAxis.Y, label_Main_EncPosition_STAGE_Y },
+                { WorkStage.nAxis.Z, label_Main_EncPosition_SCANNER_Z },
+                { WorkStage.nAxis.MASK_Y, label_Main_EncPosition_MASK_Y }
+            };
+        }
+
+        private string FormatPos(double pos)
+        {
+            return double.IsNaN(pos) ? "ERR" : string.Format("{0:F3}", pos);
+        }
+
+        private void Motor_Position2()
+        {
+            if (!Equipment.AjinBoard_Opened)
+                return;
+
+            // Loader
+            foreach (var pair in loaderAxisLabelMap)
+            {
+                double pos = loader.GetEncLoaderPos_Motor(pair.Key);
+                pair.Value.Text = FormatPos(pos);
+            }
+
+            // WorkStage
+            foreach (var pair in workstageAxisLabelMap)
+            {
+                if (pair.Key == WorkStage.nAxis.MASK_Y)
+                {
+                    if (Equipment.Machine_LaserType_CO2)
+                    {
+                        double pos = workStage.GetEncWorkStagePos_Motor(pair.Key);
+                        pair.Value.Text = FormatPos(pos);
+                        pair.Value.Visible = true;
+                    }
+                    else
+                    {
+                        pair.Value.Text = "---.---";
+                        pair.Value.Visible = false;
+                    }
+                }
+                else
+                {
+                    double pos = workStage.GetEncWorkStagePos_Motor(pair.Key);
+                    pair.Value.Text = FormatPos(pos);
+                }
+            }
+
+            // Unloader
+            foreach (var pair in unloaderAxisLabelMap)
+            {
+                double pos = unloader.GetEncUnloaderPos_Motor(pair.Key);
+                pair.Value.Text = FormatPos(pos);
+            }
+        }
+        private PointF ConvertScreenToReal(System.Drawing.Point location, double scale)
+        {
+            PointF pt = new PointF((float)(location.X / scale), (float)(location.Y / scale));
+            return pt;
+        }
+        private void GLcontrol_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (sender is OpenGLControl gl)
+            {
+                ImageViewer_Main_highs.Camera.StartLive();
+                ImageViewer_Main_Lows.Camera.StartLive();
+                var Document = this.SiriusViewer_Main.Document;
+                if (Document.Views.Count > 0)
+                {
+                    var view = Document.Views.Last();
+                    
+
+                    double scale = view.Width / view.ScaleWidth;
+                    double dCenterX = view.Width / 2;
+                    double scaleWidht = view.ScaleWidth;
+                    double scaleHeight = view.ScaleHeight;
+                    double dCenterY = view.Height / 2;
+                    double dScale = view.Scale;
+                    var cX = view.CameraX;
+                    var cY = view.CameraY;
+                    System.Drawing.Point Center = new System.Drawing.Point((int)dCenterX, (int)dCenterY);
+                    var pt = new System.Drawing.Point(e.X, e.Y);
+                    pt.Offset(-Center.X, -Center.Y);
+                    pt.Y *= -1;
+                    var ptReal = ConvertScreenToReal(pt, scale);
+                    ptReal.X += cX;
+                    ptReal.Y += cY;
+                    
+
+                    if (Equipment.AutoManualStatus == false)
+                    {
+                        if(Equipment._InitDeviceStatus.MotionIo)
+                        {
+                            var v = workStage.ConvertPointFineCam(new XyzCoordinate(ptReal.X, ptReal.Y, 0));
+
+                            //workStageParameter.stWorkStagePosParam.dTarget
+                            workStage.MovetoWorkStage_ABS_PositionsXY(new XyCoordinate(v.X, v.Y), Type_Motor_Speed.Coarse);
+                            return;
+                        }
+                        else
+                        {
+                            MessageBoxOk messageBoxOk = new MessageBoxOk();
+                            messageBoxOk.ShowDialog("Error", "초기화 되지 않았습니다.");
+                        }
+                    }
+                    else
+                    {
+                        MessageBoxOk messageBoxOk = new MessageBoxOk();
+                        messageBoxOk.ShowDialog("Error", "설비가 Manual 상태가 아닙니다.");
+                    }
+                    
+                }
+            }
+        }
+
+
+        private void UpdateCycleTimerUI()
+        {
+            try
+            {
+                int goalOneCycleSec = 70;      // 목표 1사이클 시간 (초)
+                int goalTotalSec = 86400;      // 총 목표 시간 (초) - 24시간
+
+                // 실시간 경과 시간
+                TimeSpan oneCycle = Equipment.CycleTimer_LaserDrilling.IsRunning
+                                    ? Equipment.CycleTimer_LaserDrilling.Elapsed
+                                    : Equipment.CycleTimer_LaserDrilling.Latest.Interval;
+
+                TimeSpan totalElapsed = Equipment.CycleTimer_LaserDrilling.TotalElapsed;
+                TimeSpan avgCycle = Equipment.CycleTimer_LaserDrilling.Average;
+
+                // ---- 1 Cycle Time 표시 ----
+                baseLabel_CurrentOneCycle_ElapsedTime.Text = oneCycle.ToString(@"hh\:mm\:ss");
+                int oneCycleProgress = (int)(oneCycle.TotalSeconds / goalOneCycleSec * 100);
+                progressBar_OneCycle_Time.Value = Math.Min(progressBar_OneCycle_Time.Maximum, Math.Max(0, oneCycleProgress));
+
+                // ---- Total 누적 시간 표시 ----
+                baseLabel_Total_RemainedTime.Text = totalElapsed.ToString(@"hh\:mm\:ss");
+                int totalProgress = (int)(totalElapsed.TotalSeconds / goalTotalSec * 100);
+                progressBar_TotalRemained_Time.Value = Math.Min(progressBar_TotalRemained_Time.Maximum, Math.Max(0, totalProgress));
+
+                // ---- Average 표시 ----
+                baseLabel_Average_OneCycleTime.Text = avgCycle.ToString(@"hh\:mm\:ss");
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);  // UI 다운 방지
+            }
+        }
+
+
+
+
     }
 }

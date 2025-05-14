@@ -1661,7 +1661,11 @@ namespace QMC.Common.Hmi
                                 {
                                     if (bufferedGrphics.Graphics != null)
                                     {
-                                        bufferedGrphics.Graphics.DrawImage(bmpCutImage, 0, 0, this.Width, this.Height);
+                                        if(bmpCutImage != null)
+                                        {
+
+                                            bufferedGrphics.Graphics.DrawImage(bmpCutImage, 0, 0, this.Width, this.Height);
+                                        }
                                     }
 
                                 }
@@ -1672,6 +1676,7 @@ namespace QMC.Common.Hmi
                                 }
 
                             }
+
                             lock (bufferedGrphics)
                             {
                                 OwnedOverlayCollection resultNormal = this.NormalOverlays;
@@ -1687,26 +1692,29 @@ namespace QMC.Common.Hmi
                                 catch (Exception ex)
                                 {
                                     Log.Write(ex);
-                                    Console.WriteLine(ex.Message);
+                                    //Console.WriteLine(ex.Message);
                                 }
                                 OwnedOverlayCollection resultOverlays = this.ResultOverlays;
                                 {
                                     try
                                     {
-                                        for (int i = 0; i < resultOverlays.Count; i++)
+                                        lock(resultOverlays)
                                         {
+                                            for (int i = 0; i < resultOverlays.Count; i++)
+                                            {
 
-                                            if (resultOverlays[i].Visible == true)
-                                                resultOverlays[i].Draw(this.Scale.GetOffset(), size, new SizeD(this.Size.Width, this.Size.Height), bufferedGrphics);
+                                                if (resultOverlays[i].Visible == true)
+                                                    resultOverlays[i].Draw(this.Scale.GetOffset(), size, new SizeD(this.Size.Width, this.Size.Height), bufferedGrphics);
+                                            }
                                         }
+                                       
                                     }
                                     catch (Exception ex)
                                     {
                                         Log.Write(ex);
-                                        Console.WriteLine(ex.Message);
+                                        //Console.WriteLine(ex.Message);
                                     }
                                 }
-
                             }
                         }
 
@@ -2019,10 +2027,10 @@ namespace QMC.Common.Hmi
                                             m_VerticalLine.EndLocation = new Point(nX / 2, nY);
                                         }
                                     }
-                                    this.m_InputImage = Camera.LatestImage;
-
-                                    
+                                   
                                 }
+                                this.m_InputImage = Camera.LatestImage;
+
                                 this.m_IsChanged = true;
                                 UpdateOverlay(false);
                                 this.DrawToBuffer(this.m_Graphics);
@@ -2031,10 +2039,7 @@ namespace QMC.Common.Hmi
                         }
                     }
 
-                    token.Register(() =>
-                    {
-                        m_bStop = true;
-                    });
+                    
                     Thread.Sleep(UpdateDelayTime);
                 }
             });

@@ -46,6 +46,7 @@
             this.lbl_UI_TowerLamp_Yellow = new SLD200_MSL.BaseLabel();
             this.lbl_UI_TowerLamp_Red = new SLD200_MSL.BaseLabel();
             this.buttonAlarmLog = new System.Windows.Forms.Button();
+            this.button_JogPopup = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_QMC_Logo)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -250,10 +251,22 @@
             this.buttonAlarmLog.UseVisualStyleBackColor = true;
             this.buttonAlarmLog.Click += new System.EventHandler(this.buttonAlarmLog_Click);
             // 
+            // button_JogPopup
+            // 
+            this.button_JogPopup.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.button_JogPopup.Location = new System.Drawing.Point(1477, 63);
+            this.button_JogPopup.Name = "button_JogPopup";
+            this.button_JogPopup.Size = new System.Drawing.Size(30, 24);
+            this.button_JogPopup.TabIndex = 210;
+            this.button_JogPopup.Text = "J";
+            this.button_JogPopup.UseVisualStyleBackColor = true;
+            this.button_JogPopup.Click += new System.EventHandler(this.button_JogPopup_Click);
+            // 
             // FormTop
             // 
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(1919, 97);
+            this.Controls.Add(this.button_JogPopup);
             this.Controls.Add(this.buttonAlarmLog);
             this.Controls.Add(this.label_Ver);
             this.Controls.Add(this.label_DateTime);
@@ -298,5 +311,6 @@
         private System.Windows.Forms.Label label_DateTime;
         private System.Windows.Forms.Label label_Ver;
         private System.Windows.Forms.Button buttonAlarmLog;
+        private System.Windows.Forms.Button button_JogPopup;
     }
 }

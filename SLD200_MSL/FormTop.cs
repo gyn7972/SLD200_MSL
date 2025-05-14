@@ -15,6 +15,8 @@ using System.IO;
 using System.Reflection;
 using static QMC.Common.Equipment;
 using QMC.Common.Parts;
+using SLD200.NewStyleForm;
+using QMC.Common.Global;
 
 namespace SLD200_MSL
 {
@@ -40,7 +42,6 @@ namespace SLD200_MSL
         public LogOutClickHandler LogOutClick { get; set; }
 
         private FormLogIn m_formLogIn;
-
         protected Timer m_Timer;
 
         bool m_bBlink;
@@ -52,17 +53,29 @@ namespace SLD200_MSL
         private string m_strDrawingFileName_Now;
         private string m_strDrawingFileName_Before;
 
+        private GlobalHotkeyMessageFilter _hotkeyFilter;
+
+        FormNew_JogPopup m_formJogPopup;
+        public FormNew_JogPopup formJogPopup
+        {
+            get { return m_formJogPopup; }
+            set { m_formJogPopup = value; }
+        }
 
         public FormTop()
         {
             InitializeComponent();
-            Configuration = new FormBaseConfiguration();
 
+            this.KeyPreview = true;
+
+            Configuration = new FormBaseConfiguration();
             m_formLogIn = new FormLogIn();
+
+            m_formJogPopup = new FormNew_JogPopup();
+            m_formJogPopup.Owner = this;
 
             //this.BackColor = Configuration.BaseBackColor;
             this.BackColor = System.Drawing.SystemColors.Control;
-
 
             //  C 드라이브 이름 가져오기 (Title 에 쓰기 위함)
             DriveInfo[] drive = DriveInfo.GetDrives();
@@ -81,9 +94,7 @@ namespace SLD200_MSL
             //  파일 수정 날짜 표시하기
             string file = Path.GetFileName(Assembly.GetEntryAssembly().Location);
 
-
             label_Ver.Text = string.Format("Ver 1.0.0.1");
-
 
             m_bBlink = false;
             m_nBlink = 0;
@@ -97,6 +108,25 @@ namespace SLD200_MSL
             m_strDrawingFileName_Before = "";
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            if (_hotkeyFilter == null)
+            {
+                _hotkeyFilter = new GlobalHotkeyMessageFilter();
+                _hotkeyFilter.OnKeyPressed = HandleGlobalHotkey;
+                Application.AddMessageFilter(_hotkeyFilter);
+            }
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            base.OnFormClosed(e);
+
+            if (_hotkeyFilter != null)
+                Application.RemoveMessageFilter(_hotkeyFilter);
+        }
 
         Button[] control = new Button[Enum.GetValues(typeof(TopButtons)).Length];
         //string path = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName;
@@ -351,6 +381,54 @@ namespace SLD200_MSL
             if (TopButtonClick != null)
             {
                 TopButtonClick(TopButtons.AlarmLog);
+            }
+        }
+
+        private void Show_JopgPopup()
+        {
+            if (formJogPopup.Visible)
+            {
+                formJogPopup.Hide();
+            }
+            else
+            {
+                formJogPopup.Show();
+                formJogPopup.Activate();
+            }
+        }
+        private void button_JogPopup_Click(object sender, EventArgs e)
+        {
+            if (!formJogPopup.Visible)
+            {
+                formJogPopup.Show();
+                formJogPopup.Activate();
+            }
+        }
+
+        //protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        //{
+        //    switch (keyData)
+        //    {
+        //        case Keys.Alt | Keys.J:
+        //            {
+        //                Show_JopgPopup();
+        //            }
+        //            break;
+        //    }
+        //    return base.ProcessCmdKey(ref msg, keyData);
+        //}
+
+        private bool HandleGlobalHotkey(Keys key)
+        {
+            switch (key)
+            {
+                case Keys.Control | Keys.J:
+                    {
+                        Show_JopgPopup();
+                        return true;
+                    }
+                default:
+                    return false;
             }
         }
     }

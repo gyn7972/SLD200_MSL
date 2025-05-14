@@ -214,9 +214,12 @@ namespace QMC.Common
         public static double WorkElapsedTick_Marking_1time { set; get; }               //  Marking 작업 진행 Tick (1회)
         public static double WorkTotalTime_Marking_AdditionalTime { set; get; }        //  Marking 추가 시간 (sec)
 
-
-        //  전체 가공시간 계산을 위해 사용되는 변수
         public static double MainCycle_Interval { set; get; }                           //  Main Cycle 타이머의 Interval. 
+
+
+        //  workStage 가공시간 계산을 위해 사용되는 변수
+        public static CycleTimer CycleTimer_LaserDrilling = new CycleTimer();
+
 
 
         //  Auto-Focus 에 실패했을 때 사용자가 수동으로 카메라 초점을 조작하기 위한 Flag
@@ -508,6 +511,12 @@ namespace QMC.Common
             public int      nSocketIlluminationIR;
             public int      nSocketIlluminationRed;
 
+            public bool     bSocketIlluminationIRUse;
+            public bool     bSocketIlluminationRedUse;
+
+            public double   dSocketIlluminationExposureTime;
+            public double   dSocketAxisZ_Offset;
+
             //PreAlign
             public PatternMatchingParameters PrePatternMatching;
             public System.Drawing.Point pointPreTrainRoiStartLocation;
@@ -538,6 +547,12 @@ namespace QMC.Common
 
                 NativeMethods.WritePrivateProfileString("SocketAlign", "IR", nSocketIlluminationIR.ToString(), path);
                 NativeMethods.WritePrivateProfileString("SocketAlign", "Red", nSocketIlluminationRed.ToString(), path);
+
+                NativeMethods.WritePrivateProfileString("SocketAlign", "IRUse", bSocketIlluminationIRUse.ToString(), path);
+                NativeMethods.WritePrivateProfileString("SocketAlign", "RedUse", bSocketIlluminationRedUse.ToString(), path);
+                NativeMethods.WritePrivateProfileString("SocketAlign", "ExposureTime", dSocketIlluminationExposureTime.ToString(), path);
+                NativeMethods.WritePrivateProfileString("SocketAlign", "AxisZ_Offset", dSocketAxisZ_Offset.ToString(), path);
+
 
                 if (PrePatternMatching != null)
                 {
@@ -601,24 +616,33 @@ namespace QMC.Common
                 try
                 {
                     // SocketAlign
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "Aligntype", "0", sb, sb.Capacity, path);
-                    data.dSocketAlignType = Equipment.ToInt(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "Aligntype", "1", sb, sb.Capacity, path);
+                    data.dSocketAlignType = 1;  // Equipment.ToInt(sb.ToString());
                     NativeMethods.GetPrivateProfileString("SocketAlign", "MarkType", "0", sb, sb.Capacity, path);
-                    data.dSocketMarkType = Equipment.ToInt(sb.ToString());
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkColor", "False", sb, sb.Capacity, path);
+                    data.dSocketMarkType = 0; // Equipment.ToInt(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkColor", "true", sb, sb.Capacity, path);
                     data.bSocketCircleColor = Equipment.ToBoolean(sb.ToString());
 
                     NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSize", "0.5", sb, sb.Capacity, path);
                     data.dSocketCircleMarkRadius = Equipment.ToDouble(sb.ToString());
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSpec", "0.08", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSpec", "0.05", sb, sb.Capacity, path);
                     data.dSocketCircleMarkSpec = Equipment.ToDouble(sb.ToString());
                     NativeMethods.GetPrivateProfileString("SocketAlign", "MarkScore", "0.7", sb, sb.Capacity, path);
                     data.dSocketCircleMarkScore = Equipment.ToDouble(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "IR", "5", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "IR", "250", sb, sb.Capacity, path);
                     data.nSocketIlluminationIR = Equipment.ToInt(sb.ToString());
-                    NativeMethods.GetPrivateProfileString("SocketAlign", "Red", "2500", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "Red", "0", sb, sb.Capacity, path);
                     data.nSocketIlluminationRed = Equipment.ToInt(sb.ToString());
+
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "IRUse", "True", sb, sb.Capacity, path);
+                    data.bSocketIlluminationIRUse = Equipment.ToBoolean(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "RedUse", "True", sb, sb.Capacity, path);
+                    data.bSocketIlluminationRedUse = Equipment.ToBoolean(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "ExposureTime", "20000", sb, sb.Capacity, path);
+                    data.dSocketIlluminationExposureTime = Equipment.ToDouble(sb.ToString());
+                    NativeMethods.GetPrivateProfileString("SocketAlign", "AxisZ_Offset", "0.0", sb, sb.Capacity, path);
+                    data.dSocketAxisZ_Offset = Equipment.ToDouble(sb.ToString());
 
 
                     //PreAlign
@@ -656,22 +680,22 @@ namespace QMC.Common
                     NativeMethods.GetPrivateProfileString("InspectROI", "EndY", "0", sb, sb.Capacity, path); 
                     data.pointPreInspectRoiEndLocation.Y = Equipment.ToInt(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("Vision", "AlgorithmType", "0", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("Vision", "AlgorithmType", "1", sb, sb.Capacity, path);
                     data.ePreAlgorithmType = (VisionAlgorithmType)Equipment.ToInt(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("Vision", "PatternShape", "0", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("Vision", "PatternShape", "1", sb, sb.Capacity, path);
                     data.ePreMarkType = (MarkTypeList)Equipment.ToInt(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("PreAlign_llumination", "IR", "3500", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("PreAlign_llumination", "IR", "3000", sb, sb.Capacity, path);
                     data.nPreIlluminationIR = Equipment.ToInt(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("CircleDetection", "Color", "False", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("CircleDetection", "Color", "true", sb, sb.Capacity, path);
                     data.bPreCircleColor = Equipment.ToBoolean(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("CircleDetection", "SizeW", "0.5", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("CircleDetection", "SizeW", "1.0", sb, sb.Capacity, path);
                     data.dPreCircleMarkRadius = Equipment.ToDouble(sb.ToString());
 
-                    NativeMethods.GetPrivateProfileString("CircleDetection", "Spec", "0.08", sb, sb.Capacity, path);
+                    NativeMethods.GetPrivateProfileString("CircleDetection", "Spec", "0.1", sb, sb.Capacity, path);
                     data.dPreCircleMarkSpec = Equipment.ToDouble(sb.ToString());
 
                     NativeMethods.GetPrivateProfileString("CircleDetection", "Score", "0.7", sb, sb.Capacity, path);
@@ -723,12 +747,12 @@ namespace QMC.Common
                     try
                     {
                         // 필요한 디렉터리 생성
-                        Directory.CreateDirectory(Path.GetDirectoryName(pointPreTrainImagePath));
+                        Directory.CreateDirectory(Path.GetDirectoryName(strFile));
 
-                        File.Copy(strFile, pointPreTrainImagePath, overwrite: true);
+                        //File.Copy(strFile, pointPreTrainImagePath, overwrite: true);
 
                         VisionImage defaultImg = new VisionImage();
-                        defaultImg.Load(pointPreTrainImagePath, VisionImage.FileFilter.bmp);
+                        defaultImg.Load(strFile, VisionImage.FileFilter.bmp);
                         return defaultImg;
                     }
                     catch (Exception ex)
@@ -1132,8 +1156,50 @@ namespace QMC.Common
         public static bool m_bBarcodeReaderComm_1time { set; get; }
 
         //private static Object g_objLock = new object();
-        public static SiriusViewerForm EqpSiriusViewer { set; get; }
-        public static SiriusViewerForm EqpSiriusViewer_Origin { set; get; }                     //  모듈 생산 완료 후, 다음 모듈이 투입될 때 이 데이터로 재설정
+        private static SiriusViewerForm EqpSiriusViewer { set;  get; }
+        public static IDocument GetEqpSiriusViewerDocument()
+        {
+            if(EqpSiriusViewer == null)
+            {
+                return null;
+            }
+            return EqpSiriusViewer.Document;
+        }
+        public static SiriusViewerForm GetEqpSiriusViewer()
+        {
+            return EqpSiriusViewer;
+        }
+        public static void SetEqpSiriusViewerDocument(IDocument doc)
+        {
+            if(EqpSiriusViewer.Document != null)
+            {
+                EqpSiriusViewer.Document.Views = new HashSet<IView>();
+            }
+            EqpSiriusViewer.Document = doc;
+        }
+
+        public static IDocument GetEqpSiriusViewerDocumentOrg()
+        {
+            return EqpSiriusViewer_Origin.Document;
+        }
+        public static void SetEqpSiriusViewerDocumentOrg(IDocument doc)
+        {
+            if(EqpSiriusViewer_Origin.Document != null)
+            {
+
+                EqpSiriusViewer_Origin.Document.Views = new HashSet<IView>();
+            }
+            EqpSiriusViewer_Origin.Document = doc;
+        }
+        public static void SetEqpSiriusViewer(SiriusViewerForm viewer)
+        {
+            Equipment.EqpSiriusViewer = viewer;
+        }
+        public static void SetEqpSiriusViewerOrg(SiriusViewerForm viewer)
+        {
+            Equipment.EqpSiriusViewer_Origin = viewer;
+        }
+        private static SiriusViewerForm EqpSiriusViewer_Origin { set; get; }                     //  모듈 생산 완료 후, 다음 모듈이 투입될 때 이 데이터로 재설정
         public static bool m_bAlignVisionThread_1time { set; get; }
         public static bool m_bParamLoadThread_1time { set; get; }
 
@@ -1489,7 +1555,9 @@ namespace QMC.Common
             InitializeSequence = new InitializeSequenceCollection();
             LoadingQueue = new LoadingQueue();
             ConfigManager.SetEquipmentName(Name);
-            CreateModules();
+
+            
+            CreateModules();    //오래걸리는부분.
             LoadMotionBoards();
             LoadIOBoards();
             //LoadModuleCollection();
@@ -1519,7 +1587,6 @@ namespace QMC.Common
                 board.Open();
             }
 
-
             //  2024. 04. 08.  SCH : Pattern Matching Image 저장 폴더 생성
             string strFolderPath = ConfigManager.GetPatternImagePath();
             if (!VerifyFile(strFolderPath))
@@ -1527,10 +1594,7 @@ namespace QMC.Common
                 Directory.CreateDirectory(ConfigManager.GetPatternImagePath());
             }
 
-
-
             //FunctionManager.Instance.SetModuleCollection(Modules);
-
             //ApplyConfigData();
 
             CommonModule.Instance.Initialize();
@@ -1540,7 +1604,6 @@ namespace QMC.Common
             //{
             //
             //}
-
 
             NewForm_AxisParameter_Load();
             NewForm_CommParameter_Load();
@@ -1599,13 +1662,16 @@ namespace QMC.Common
             bds.Create();
             Modules.Add(bds);
 
-            AlarmSaver alarmSaver = new AlarmSaver();
-            alarmSaver.Server = "SLD-200\\SQLEXPRESS";
-            alarmSaver.Database = "LASER_DRILLING";
-            alarmSaver.UID = "qmc1";
-            alarmSaver.Password = "q1234!";
-            alarmSaver.Open();
-            AlarmManager.Instance.Saver = alarmSaver;
+            // 여기때문에 시작이 느림. 
+            // 재 확인 후 연결 시도 하자.
+            //AlarmSaver alarmSaver = new AlarmSaver();
+            ////alarmSaver.Server = "SLD-200\\SQLEXPRESS";
+            //alarmSaver.Server = "localhost\\SQLEXPRESS";
+            //alarmSaver.Database = "LASER_DRILLING";
+            //alarmSaver.UID = "qmc1";
+            //alarmSaver.Password = "q1234!";
+            //alarmSaver.Open();
+            //AlarmManager.Instance.Saver = alarmSaver;
         }
 
         public static void Start()
@@ -3446,5 +3512,7 @@ namespace QMC.Common
             return m_bRet;
         }
 
+
+        public static bool m_bworkStageVacuumFail = false;
     }
 }
