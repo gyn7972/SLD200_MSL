@@ -2017,10 +2017,6 @@ namespace SLD200_MSL
             workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             
-
-            ////  맵 데이터 변경
-            workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_FineCam);
-
             //  속도 설정
             if (radioButton_VisionPopup_Move_MoveMode_Fine.Checked)
             {
@@ -2099,6 +2095,12 @@ namespace SLD200_MSL
             //}
 
 
+            //  Target 위치 계산
+            lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + Equipment.stOffsetDistance.FromScannerToFineCam.X;
+            lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) + Equipment.stOffsetDistance.FromScannerToFineCam.Y;
+
+
+
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //  맵 데이터 변경 (기준위치 : Scanner)
             //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
@@ -2106,10 +2108,6 @@ namespace SLD200_MSL
             workStage.MapData_Apply((int)WorkStage.nMapData_Type.MapData_Stage_Scanner);
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-            //  Target 위치 계산
-            lfTargetX = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X) + Equipment.stOffsetDistance.FromScannerToFineCam.X;
-            lfTargetY = workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y) + Equipment.stOffsetDistance.FromScannerToFineCam.Y;
 
             //  속도 설정
             if (radioButton_VisionPopup_Move_MoveMode_Fine.Checked)

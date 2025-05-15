@@ -6735,7 +6735,7 @@ namespace QMC.Common.Modules
         public double GetEncUnloaderPos_Motor(Unloader.nAxis nAxis)
         {
             double dEncPos = -999.999;
-            lock (this)
+            //lock (this)
             {
                 try
                 {
