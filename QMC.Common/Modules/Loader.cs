@@ -10477,7 +10477,6 @@ namespace QMC.Common.Modules
                 return dEncPos;
             }
         }
-
         public void StoptoLoader_Motor(Loader.nAxis nAxis)
         {
             try
@@ -10490,7 +10489,6 @@ namespace QMC.Common.Modules
                 Log.Write(ex);
             }
         }
-
         public bool IsInterlock_LoaderPortR_Enabled()
         {
             bool bRtn = false;
@@ -10503,8 +10501,7 @@ namespace QMC.Common.Modules
                 return bRtn;
             }
 
-            if (!MC_Func.MC_GetDone((int)Loader.nAxis.Z0) ||
-                !MC_Func.MC_GetInposition((int)Loader.nAxis.Z0))
+            if(!IsLoaderMoving(nAxis.Z0))
             {
                 strTemp = string.Format("IsInterlock_LoaderPortR_Enabled [Fail]: LoaderPortR Axis이 이동중입니다.");
                 Log.Write("SLD-200", Equipment.User_Name, strTemp);
@@ -10585,7 +10582,6 @@ namespace QMC.Common.Modules
 
             return bRtn;
         }
-
         public bool IsInterlock_LoaderPortL_Enabled()
         {
             bool bRtn = false;
@@ -10680,7 +10676,6 @@ namespace QMC.Common.Modules
 
             return bRtn;
         }
-
         public bool IsInterlock_LoaderTransferZ_Enabled()
         {
             bool bRtn = false;
@@ -10825,7 +10820,6 @@ namespace QMC.Common.Modules
 
             return bRtn;
         }
-
         public bool IsInterlock_LoaderTransferX_Enabled()
         {
             bool bRtn = false;
@@ -10997,7 +10991,6 @@ namespace QMC.Common.Modules
 
             return bRtn;
         }
-
         public bool IsInterlock_LoaderMAlign_Enabled()
         {
             bool bRtn = false;
@@ -11105,7 +11098,6 @@ namespace QMC.Common.Modules
 
             return bRtn;
         }
-
         public bool MovetoLoader_ABS_Positions(Loader.nAxis nAxis, double dPos, Type_Motor_Speed typeSpeed)
         {
             // string strTemp = "";
@@ -11164,18 +11156,6 @@ namespace QMC.Common.Modules
             catch (Exception ex)
             {
                 Log.Write(ex);
-            }
-
-            return bRtn;
-        }
-        public bool IsLoader_Positions(Loader.nAxis nAxis, double dPos)
-        {
-            bool bRtn = false;
-
-            if (MC_Func.MC_GetDone((int)nAxis) &&
-                MC_Func.MC_PosTolerance((int)nAxis, dPos))
-            {
-                bRtn = true;
             }
 
             return bRtn;
@@ -11273,45 +11253,61 @@ namespace QMC.Common.Modules
 
             return bRtn;
         }
+        
+        public bool IsLoaderMoving(Loader.nAxis nAxis)
+        {
+            // signal 정확하게 파악하고 맞춰보자.
+            bool bRtn = false;
+            bool bDone = MC_Func.MC_GetDone((int)nAxis);
+            bool bInposition = MC_Func.MC_GetInposition((int)nAxis);
+            if (bDone || bInposition)
+            {
+                //true: 구동 안함.
+                Thread.Sleep(5); //확인 후 바로 모션 이동 시키지 않기 위해 Sleep 추가.
+                return bRtn = true;
+            }
 
+            //false: 구동 중, 
+            return bRtn;
+        }
+        public bool IsLoader_Positions(Loader.nAxis nAxis, double dPos)
+        {
+            bool bRtn = false;
+            bool bDone = MC_Func.MC_GetDone((int)nAxis);
+            bool bInposition = MC_Func.MC_GetInposition((int)nAxis);
+            bool bPosTolerance = MC_Func.MC_PosTolerance((int)nAxis, dPos);
+
+            if (bDone && bInposition && bPosTolerance)
+            {
+                //true: 구동 안함.
+                Thread.Sleep(5); //확인 후 바로 모션 이동 시키지 않기 위해 Sleep 추가.
+                return bRtn = true;
+                
+            }
+            //false: 구동 중, 
+            return bRtn;
+        }
         public Task<bool> WaitUntilLoaderInPositionAsync(Loader.nAxis axis, double targetPos, int timeoutMs = 20000)
         {
             return Task.Run(() =>
             {
+                Thread.Sleep(100);  //처음 동작 후 바로 확인 할 수도 있기 때문에 Sleep 좀 주자.
                 int wait = 0;
                 const int interval = 5;
-
                 while (wait < timeoutMs)
                 {
                     Thread.Sleep(interval);
-
-                    if (MC_Func.MC_GetDone((int)axis) &&
-                        MC_Func.MC_PosTolerance((int)axis, targetPos))
+                    if (IsLoader_Positions(axis, targetPos))
                     {
+                        Thread.Sleep(5); //확인 후 바로 모션 이동 시키지 않기 위해 Sleep 추가.
                         return true;
                     }
-
                     wait += interval;
                 }
 
                 Log.Write("Timeout", $"[Loader] Axis {axis} timeout at {timeoutMs}ms");
                 return false;
             });
-        }
-
-        public bool IsLoaderMoving(Loader.nAxis axis)
-        {
-            // signal 정확하게 파악하고 맞춰보자.
-            bool bRtn = false;
-            bool bDone = MC_Func.MC_GetDone((int)axis);
-            bool bInposition = MC_Func.MC_GetInposition((int)axis);
-            if (!bDone || !bInposition)
-            {
-                return bRtn = true;
-            }
-
-            //false: 구동 중, true: 구동 안함.
-            return bRtn = false;
         }
     }
 }

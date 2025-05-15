@@ -23,6 +23,7 @@ using static QMC.Common.Modules.WorkStage;
 using Newtonsoft.Json.Linq;
 using static QMC.Common.Vision.Tools.PatternMatchingResult;
 using System.ServiceModel.Syndication;
+using static QMC.Common.Equipment;
 
 namespace QMC.Common.Parts
 {
@@ -610,53 +611,30 @@ namespace QMC.Common.Parts
                     #endregion
 
                     position = new XyzCoordinate(movePosition.X + this.Config.PitchDistanceX * x, movePosition.Y + this.Config.PitchDistanceY * y, movePosition.Z);
+                    xyInterpolatedCoordinate.X = position.X;
+                    xyInterpolatedCoordinate.Y = position.Y;
 
-                    double lfVelocity;
-                    double lfAccDec;
-                    //  속도 설정
-                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-
-                    xyInterpolatedCoordinate.X = position.X; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
-                    xyInterpolatedCoordinate.Y = position.Y; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
-
-                    MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-                    int nWait = 0;
-                    while (true)
+                    m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                    
+                    Task<bool> resultX1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
+                    Task<bool> resultY1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
+                    resultX1.Wait();
+                    resultY1.Wait();
+                    if (!resultX1.Result || !resultY1.Result)
                     {
-                        if (MC_Func.MC_GetDone((int)nAxis.X) 
-                            && MC_Func.MC_PosTolerance((int)nAxis.X, xyInterpolatedCoordinate.X))
-                            //if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) == true)
+                        //  이동 실패 
+                        if (!resultX1.Result)
                         {
-                            break;
+                            Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"X축 이동 실패"));
+                            m_Owner.AlarmPost(AlarmKey.eStageMoveFail); //X,Y축 분할 필요?
                         }
-                        Thread.Sleep(1);
-                        nWait++;
-                        if (nWait == 1000)
+                        if (!resultY1.Result)
                         {
-                            break;
-                        }
-
-                    }
-
-                    nWait = 0;
-                    while (true)
-                    {
-                        //if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == true)
-                        if (MC_Func.MC_GetDone((int)nAxis.Y)
-                            && MC_Func.MC_PosTolerance((int)nAxis.Y, xyInterpolatedCoordinate.Y))
-                        {
-                            break;
-                        }
-                        Thread.Sleep(1);
-                        nWait++;
-                        if (nWait == 1000)
-                        {
-                            break;
+                            Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"Y축 이동 실패"));
+                            m_Owner.AlarmPost(AlarmKey.eStageMoveFail); //X,Y축 분할 필요?
                         }
                     }
-                    //Thread.Sleep(Config.MoveToDelay);
-                    Thread.Sleep(500);
+                    //Thread.Sleep(500);
 
                     XyzCoordinate currentPos = new XyzCoordinate();
                     this.Stage.GetCommandPosition(ref currentPos);

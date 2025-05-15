@@ -7323,18 +7323,7 @@ namespace QMC.Common.Modules
 
             return bRtn;
         }
-        public bool IsUnloader_Positions(Unloader.nAxis nAxis, double dPos)
-        {
-            bool bRtn = false;
-
-            if (MC_Func.MC_GetDone((int)nAxis) &&
-                MC_Func.MC_PosTolerance((int)nAxis, dPos))
-            {
-                bRtn = true;
-            }
-
-            return bRtn;
-        }
+        
         public bool MovetoUnloader_Jog_Positions(Unloader.nAxis nAxis, int nDirection, Type_Motor_Speed typeSpeed)
         {
             bool bRtn = false;
@@ -7425,43 +7414,59 @@ namespace QMC.Common.Modules
             return bRtn;
         }
 
+        public bool IsUnloaderMoving(Unloader.nAxis nAxis)
+        {
+            // signal 정확하게 파악하고 맞춰보자.
+            bool bRtn = false;
+            bool bDone = MC_Func.MC_GetDone((int)nAxis);
+            bool bInposition = MC_Func.MC_GetInposition((int)nAxis);
+            if (bDone || bInposition)
+            {
+                //true: 구동 안함.
+                Thread.Sleep(5); //확인 후 바로 모션 이동 시키지 않기 위해 Sleep 추가.
+                return bRtn = true;
+            }
+
+            //false: 구동 중, 
+            return bRtn;
+        }
+        public bool IsUnloader_Positions(Unloader.nAxis nAxis, double dPos)
+        {
+            bool bRtn = false;
+            bool bDone = MC_Func.MC_GetDone((int)nAxis);
+            bool bInposition = MC_Func.MC_GetInposition((int)nAxis);
+            bool bPosTolerance = MC_Func.MC_PosTolerance((int)nAxis, dPos);
+
+            if (bDone && bInposition && bPosTolerance)
+            {
+                //true: 구동 안함.
+                Thread.Sleep(5); //확인 후 바로 모션 이동 시키지 않기 위해 Sleep 추가.
+                return bRtn = true;
+            }
+            //false: 구동 중, 
+            return bRtn;
+        }
         public Task<bool> WaitUntilUnloaderInPositionAsync(Unloader.nAxis axis, double targetPos, int timeoutMs = 20000)
         {
             return Task.Run(() =>
             {
+                Thread.Sleep(100);  //처음 동작 후 바로 확인 할 수도 있기 때문에 Sleep 좀 주자.
                 int wait = 0;
                 const int interval = 5;
-
                 while (wait < timeoutMs)
                 {
                     Thread.Sleep(interval);
-
-                    if (MC_Func.MC_GetDone((int)axis) &&
-                        MC_Func.MC_PosTolerance((int)axis, targetPos))
+                    if (IsUnloader_Positions(axis, targetPos))
                     {
+                        Thread.Sleep(5); //확인 후 바로 모션 이동 시키지 않기 위해 Sleep 추가.
                         return true;
                     }
                     wait += interval;
                 }
-
                 Log.Write("Timeout", $"[Unloader] Axis {axis} timeout at {timeoutMs}ms");
                 return false;
             });
         }
 
-        public bool IsUnloaderMoving(Unloader.nAxis axis)
-        {
-            // signal 정확하게 파악하고 맞춰보자.
-            bool bRtn = false;
-            bool bDone = MC_Func.MC_GetDone((int)axis);
-            bool bInposition = MC_Func.MC_GetInposition((int)axis);
-            if (!bDone || !bInposition)
-            {
-                return bRtn = true;
-            }
-
-            //false: 구동 중, true: 구동 안함.
-            return bRtn = false;
-        }
     }
 }

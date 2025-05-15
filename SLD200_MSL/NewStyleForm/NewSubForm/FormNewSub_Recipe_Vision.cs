@@ -1218,17 +1218,13 @@ namespace SLD200.NewStyleForm.NewSubForm
             bool bWaitPosY = false;
 
             try
-            {   
-                //움직임 바로 확인하면 문제 발생..
-                Thread.Sleep(200); // 1초 대기
-
+            {
                 // 각각의 비동기 Task를 받아서 기다림
                 var taskX = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
                 var taskY = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
 
                 // 동시에 실행하고 결과 기다림
                 var results = await Task.WhenAll(taskX, taskY);
-
                 bWaitPosX = results[0];
                 bWaitPosY = results[1];
 
@@ -1237,7 +1233,6 @@ namespace SLD200.NewStyleForm.NewSubForm
                     Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "X축 이동 실패");
                     workStage.AlarmPost(WorkStage.AlarmKey.eStageMoveFail);
                 }
-
                 if (!bWaitPosY)
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "Y축 이동 실패");
@@ -1248,8 +1243,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 Log.Write(ex);
             }
-
-
         }
 
 
