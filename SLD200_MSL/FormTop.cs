@@ -327,6 +327,19 @@ namespace SLD200_MSL
 
 
             Equipment.Current_DrawingFileName = System.IO.Path.GetFileName(Equipment.stLayerRecipeSet[0].DrawingFile);
+
+
+            //  Alarm
+            if (AlarmManager.Instance.Alarms.Count > 0)
+            {
+                Alarm lastAlarm = AlarmManager.Instance.Alarms[0];
+
+                label_Title_AlarmMessage.Text = lastAlarm.Cause;
+            }
+            else
+            {
+                label_Title_AlarmMessage.Text = "";
+            }
         }
 
         public void LogInInfo()

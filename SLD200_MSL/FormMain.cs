@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using QMC.Core;
 using QMC.Common.Modules;
 using System.Windows.Documents;
+using System.Threading;
 //using QMC.Common.UI;
 
 namespace SLD200_MSL
@@ -123,7 +124,7 @@ namespace SLD200_MSL
         {
             BeginInvoke(new Action(() =>
             {
-                this.FormNew_Alarm.Alarms = AlarmManager.Instance.Alarms;
+                this.FormNew_Alarm.Alarms = AlarmManager.Instance.Alarms;                
                 this.ShowAlarmForm(FormNew_Alarm);
             }));
         }
@@ -553,6 +554,8 @@ namespace SLD200_MSL
         }
         public void ShowAlarmForm(Form form)
         {
+            Thread.Sleep(100);                      //  창이 너무 빨리 떠서 알람 코드가 안보이나?
+
             form.TopLevel = false;
             panelContent.Controls.Add(form);
             form.BringToFront();

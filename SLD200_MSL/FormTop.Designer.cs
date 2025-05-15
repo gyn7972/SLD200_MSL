@@ -31,10 +31,10 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormTop));
             this.pictureBox_QMC_Logo = new System.Windows.Forms.PictureBox();
             this.label_Title = new System.Windows.Forms.Label();
-            this.label_TitleBar_MESMsg = new System.Windows.Forms.Label();
+            this.label_TitleBar_AlarmMsg = new System.Windows.Forms.Label();
             this.label_TitleBar_DrawingFile = new System.Windows.Forms.Label();
             this.label_TitleBar_OPRecipe = new System.Windows.Forms.Label();
-            this.label_Title_MESMessage = new System.Windows.Forms.Label();
+            this.label_Title_AlarmMessage = new System.Windows.Forms.Label();
             this.label_Title_DrawingFile = new System.Windows.Forms.Label();
             this.label_Title_Recipe = new System.Windows.Forms.Label();
             this.buttonAlarmClear = new System.Windows.Forms.Button();
@@ -71,16 +71,16 @@
             this.label_Title.TabIndex = 200;
             this.label_Title.Text = "SLD-200 (CO₂)";
             // 
-            // label_TitleBar_MESMsg
+            // label_TitleBar_AlarmMsg
             // 
-            this.label_TitleBar_MESMsg.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label_TitleBar_MESMsg.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_TitleBar_MESMsg.Location = new System.Drawing.Point(215, 63);
-            this.label_TitleBar_MESMsg.Name = "label_TitleBar_MESMsg";
-            this.label_TitleBar_MESMsg.Size = new System.Drawing.Size(132, 25);
-            this.label_TitleBar_MESMsg.TabIndex = 201;
-            this.label_TitleBar_MESMsg.Text = "MES MSG.";
-            this.label_TitleBar_MESMsg.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label_TitleBar_AlarmMsg.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_TitleBar_AlarmMsg.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_TitleBar_AlarmMsg.Location = new System.Drawing.Point(215, 63);
+            this.label_TitleBar_AlarmMsg.Name = "label_TitleBar_AlarmMsg";
+            this.label_TitleBar_AlarmMsg.Size = new System.Drawing.Size(132, 25);
+            this.label_TitleBar_AlarmMsg.TabIndex = 201;
+            this.label_TitleBar_AlarmMsg.Text = "Alarm MSG.";
+            this.label_TitleBar_AlarmMsg.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label_TitleBar_DrawingFile
             // 
@@ -104,19 +104,19 @@
             this.label_TitleBar_OPRecipe.Text = "OP Recipe";
             this.label_TitleBar_OPRecipe.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label_Title_MESMessage
+            // label_Title_AlarmMessage
             // 
-            this.label_Title_MESMessage.BackColor = System.Drawing.Color.Black;
-            this.label_Title_MESMessage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label_Title_MESMessage.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Title_MESMessage.ForeColor = System.Drawing.Color.Lime;
-            this.label_Title_MESMessage.Location = new System.Drawing.Point(352, 63);
-            this.label_Title_MESMessage.Name = "label_Title_MESMessage";
-            this.label_Title_MESMessage.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.label_Title_MESMessage.Size = new System.Drawing.Size(868, 25);
-            this.label_Title_MESMessage.TabIndex = 204;
-            this.label_Title_MESMessage.Text = "OP Recipe";
-            this.label_Title_MESMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label_Title_AlarmMessage.BackColor = System.Drawing.Color.Black;
+            this.label_Title_AlarmMessage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_Title_AlarmMessage.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Title_AlarmMessage.ForeColor = System.Drawing.Color.Lime;
+            this.label_Title_AlarmMessage.Location = new System.Drawing.Point(352, 63);
+            this.label_Title_AlarmMessage.Name = "label_Title_AlarmMessage";
+            this.label_Title_AlarmMessage.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.label_Title_AlarmMessage.Size = new System.Drawing.Size(868, 25);
+            this.label_Title_AlarmMessage.TabIndex = 204;
+            this.label_Title_AlarmMessage.Text = "OP Recipe";
+            this.label_Title_AlarmMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label_Title_DrawingFile
             // 
@@ -274,10 +274,10 @@
             this.Controls.Add(this.buttonAlarmClear);
             this.Controls.Add(this.label_Title_Recipe);
             this.Controls.Add(this.label_Title_DrawingFile);
-            this.Controls.Add(this.label_Title_MESMessage);
+            this.Controls.Add(this.label_Title_AlarmMessage);
             this.Controls.Add(this.label_TitleBar_OPRecipe);
             this.Controls.Add(this.label_TitleBar_DrawingFile);
-            this.Controls.Add(this.label_TitleBar_MESMsg);
+            this.Controls.Add(this.label_TitleBar_AlarmMsg);
             this.Controls.Add(this.label_Title);
             this.Controls.Add(this.pictureBox_QMC_Logo);
             this.Controls.Add(this.lbl_UI_TowerLamp_Green);
@@ -299,10 +299,10 @@
         private BaseLabel lbl_UI_TowerLamp_Green;
         private System.Windows.Forms.PictureBox pictureBox_QMC_Logo;
         private System.Windows.Forms.Label label_Title;
-        private System.Windows.Forms.Label label_TitleBar_MESMsg;
+        private System.Windows.Forms.Label label_TitleBar_AlarmMsg;
         private System.Windows.Forms.Label label_TitleBar_DrawingFile;
         private System.Windows.Forms.Label label_TitleBar_OPRecipe;
-        private System.Windows.Forms.Label label_Title_MESMessage;
+        private System.Windows.Forms.Label label_Title_AlarmMessage;
         private System.Windows.Forms.Label label_Title_DrawingFile;
         private System.Windows.Forms.Label label_Title_Recipe;
         private System.Windows.Forms.Button buttonAlarmClear;

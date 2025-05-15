@@ -2265,6 +2265,9 @@ namespace SLD200_MSL
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 중지하시겠습니까?"))
                 return;
 
+            Equipment.Loader_LPort_Pause = true;        //  장비 Stop 시 Pause
+            Equipment.Loader_RPort_Pause = true;        //  장비 Stop 시 Pause
+
             Equipment.AutoRunStatus = false;        // 자동운전중
             Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
             workStage.SetRunStatus(RunStatus.Stop);
@@ -3272,8 +3275,8 @@ namespace SLD200_MSL
 
         private void button_TEST12_Click(object sender, EventArgs e)
         {
-            workStage.GlobalSocketStatus_Init();
-
+            loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_Widely_DoneCheck_Timeout);
+            return;
 
             //Test code
             Equipment.CycleTimer_LaserDrilling.Start();

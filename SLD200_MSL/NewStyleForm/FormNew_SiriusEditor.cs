@@ -258,7 +258,7 @@ namespace SLD200_MSL
             Config.LwPolylineBulgeToLines = true;
 
             Config.LwPolylineBulgeToLineMinThreshold = (float)0.001;
-
+            
             if (Equipment.Machine_PolylineCurve_Resolution < 1)
                 Config.LwPolylineBulgePrecision = 100;
             else
