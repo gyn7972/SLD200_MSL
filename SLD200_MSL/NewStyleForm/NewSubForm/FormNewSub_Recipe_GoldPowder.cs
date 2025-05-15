@@ -350,7 +350,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 m_recipe.dGoldPowderMarkType = radioButton_Recipe_GoldPowder_Fiducial_Type_Circle.Checked ? 0 : 1;
 
                 // 마크 색상
-                m_recipe.bGoldPowderCircleColor = radioButton_Recipe_GoldPowder_Fiducial_White.Checked;
+                m_recipe.bGoldPowderCircleColor = radioButton_Recipe_GoldPowder_Fiducial_White.Checked ? false : true;
 
                 // Z 오프셋 및 노출 시간
                 m_recipe.dGoldPowderAxisZ_Offset = ParseDouble(textBox_Recipe_GoldPowder_AxisZ_Setting.Text);

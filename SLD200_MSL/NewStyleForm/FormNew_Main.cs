@@ -268,14 +268,18 @@ namespace SLD200_MSL
                 m_bFormVisible = true;
                 // OnShowRecipeForm();
                 this.ImageViewer_Main_highs.ResumeDisplay();
+                this.ImageViewer_Main_highs.StartUpdateTask();
                 this.ImageViewer_Main_Lows.ResumeDisplay();
+                this.ImageViewer_Main_Lows.StartUpdateTask();
             }
             else if (!this.Visible && m_bFormVisible)
             {
                 m_bFormVisible = false;
 
                 this.ImageViewer_Main_highs.SuspendDisplay();
+                this.ImageViewer_Main_highs.StopUpdateTask();
                 this.ImageViewer_Main_Lows.SuspendDisplay();
+                this.ImageViewer_Main_Lows.StopUpdateTask();
                 //OnHideRecipeForm();
             }
         }
@@ -798,10 +802,11 @@ namespace SLD200_MSL
             }
             else
             {
-                if (workStage.workStageParameter.IsDO_Laser_Enable())
-                    _InitDeviceStatus.Laser = true;
-                else
-                    _InitDeviceStatus.Laser = false;
+                //여기서 io를 계속 읽는 거는 아닌거 같다.
+                //if (workStage.workStageParameter.IsDO_Laser_Enable())
+                //    _InitDeviceStatus.Laser = true;
+                //else
+                //    _InitDeviceStatus.Laser = false;
             }
             //if (!_InitDeviceStatus.Laser)
             //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Laser);
@@ -868,7 +873,6 @@ namespace SLD200_MSL
             _InitDeviceStatus.Illuminator = bOn;
             if (!_InitDeviceStatus.HeightSensor)
                 workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Illuminator);
-
 
         }
 
@@ -1060,11 +1064,19 @@ namespace SLD200_MSL
         // -----------------------
         private void UpdateUIControls()
         {
-            UpdateCycleTimerUI();
-            //return;
+            // 이거 안해도 될거 같은데.
+            //if (workStage.Camera_HighRes.Opened)
+            //{
+            //    ImageViewer_Main_highs.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
+            //}
 
+            //if (workStage.jigAligner_LowRes.Camera.Opened)
+            //{
+            //    ImageViewer_Main_Lows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
+            //}
+
+            UpdateCycleTimerUI();
             Motor_Position2();
-            
 
             if (m_bNeedHideProgressForm)
             {
@@ -1121,16 +1133,6 @@ namespace SLD200_MSL
                     m_ProcRegionStatus);
             }
 
-            //if (m_bNeedCompStatusUpdate)
-            //{
-            //    m_bNeedCompStatusUpdate = false;
-            //    Update_SocketStatus(
-            //        m_CompSocketRowCol.Item1, m_CompSocketRowCol.Item2,
-            //        m_CompSocketStatus,
-            //        m_CompRegionRowCol.Item1, m_CompRegionRowCol.Item2,
-            //        m_CompRegionStatus);
-            //}
-
             if(Equipment.AutoRunStatus)
             {
                 button_Main_Start.BackColor = Color.Lime;
@@ -1141,10 +1143,6 @@ namespace SLD200_MSL
                 button_Main_Start.BackColor = Color.LightGray;
                 button_Main_Start.ForeColor = Color.Black;
             }
-
-            //button_Main_Loader_Continue.Enabled = Equipment.MachineStop_byTimeout_Loader;
-            //button_Main_Unloader_Continue.Enabled = Equipment.MachineStop_byTimeout_Unloader;
-            //button_Main_WorkStage_Continue.Enabled = Equipment.SocketStopped;
 
             if (m_bNeedAutoRunStop)
             {
@@ -1162,16 +1160,6 @@ namespace SLD200_MSL
                 unloader.m_UnloaderWork_Start = false;
 
                 System.Windows.Forms.MessageBox.Show("자동 운전 종료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-
-            if (workStage.Camera_HighRes.Opened)
-            {
-                ImageViewer_Main_highs.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
-            }
-
-            if (workStage.jigAligner_LowRes.Camera.Opened)
-            {
-                ImageViewer_Main_Lows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
             }
 
             // label_Title_MESMessage
