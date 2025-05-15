@@ -1306,11 +1306,10 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void radioButton_RecipeVision_CameraSelection_LowMag_CheckedChanged(object sender, EventArgs e)
         {
-            CommonModule.Instance.Illuminator.TurnOnOff(false, 1);       //  Fine Cam Red 조명
-            Thread.Sleep(1);
-            CommonModule.Instance.Illuminator.TurnOnOff(false, 2);       //  Fine Cam IR 조명
-            Thread.Sleep(1);
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, Equipment.stVisionRecipeSet.nPreIlluminationIR);
+            Thread.Sleep(100);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, 0, false);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, 0, false);
 
             hScrollBar_RecipeVision_Illuminator_IR.Enabled = true;
             textBox_RecipeVision_IlluminationValue_IR.Enabled = true;
@@ -1337,11 +1336,10 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void radioButton_RecipeVision_CameraSelection_HighMag_CheckedChanged(object sender, EventArgs e)
         {
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명
-            Thread.Sleep(1);
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
-            Thread.Sleep(1);
-            CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+            Thread.Sleep(100);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, Equipment.stVisionRecipeSet.nSocketIlluminationRed);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, Equipment.stVisionRecipeSet.nSocketIlluminationIR);
 
             hScrollBar_RecipeVision_Illuminator_IR.Enabled = true;
             textBox_RecipeVision_IlluminationValue_IR.Enabled = true;

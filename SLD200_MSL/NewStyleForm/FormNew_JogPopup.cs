@@ -34,6 +34,7 @@ namespace SLD200.NewStyleForm
         public FormNew_JogPopup()
         {
             InitializeComponent();
+            this.AutoScaleMode = AutoScaleMode.None;
 
             this.Load += FormNewSub_JogPopup_Load; // 여기서 Load 이벤트 연결
             this.FormClosing += FormNew_JogPopup_FormClosing; // 추가
@@ -55,15 +56,6 @@ namespace SLD200.NewStyleForm
             if (m_bInitialized)
                 return;
 
-            //this.AutoScaleMode = AutoScaleMode.None;
-            //this.AutoSize = false;
-            //this.DoubleBuffered = true;
-            //this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
-            //this.UpdateStyles();
-
-            this.tabControl_JogPopup.Dock = DockStyle.Fill;
-            tabControl_JogPopup.AutoSize = false;
-            
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
             foreach (Module module in m_collectionModules)
@@ -172,16 +164,10 @@ namespace SLD200.NewStyleForm
 
         private void InitializeTabs()
         {
-            tabPage_Loader.Dock = DockStyle.Fill;
-            tabPage_Stage.Dock = DockStyle.Fill;
-            tabPage_Unloader.Dock = DockStyle.Fill;
-            tabPage_Loader.AutoSize = false;
-            tabPage_Stage.AutoSize = false;
-            tabPage_Unloader.AutoSize = false;
-
             userform_Loader = new FormNewSub_JogPopup_Loader(this);
             userform_Stage = new FormNewSub_JogPopup_Stage(this);
             userform_Unloader = new FormNewSub_JogPopup_Unloader(this);
+
             userform_Loader.Dock = DockStyle.Fill;
             userform_Stage.Dock = DockStyle.Fill;
             userform_Unloader.Dock = DockStyle.Fill;
@@ -192,6 +178,8 @@ namespace SLD200.NewStyleForm
             tabPage_Loader.Controls.Add(userform_Loader);
             tabPage_Stage.Controls.Add(userform_Stage);
             tabPage_Unloader.Controls.Add(userform_Unloader);
+
+            
         }
 
         private void tabControl_SelectedIndexChanged(object sender, EventArgs e)

@@ -66,6 +66,7 @@ using QMC.Common.Hmi;
 using QMC.Common.Vision;
 using static QMC.Common.Parts.ActionItem;
 using static System.Net.Mime.MediaTypeNames;
+using System.Runtime.Remoting.Channels;
 
 
 namespace QMC.Common.Modules
@@ -8490,7 +8491,6 @@ namespace QMC.Common.Modules
             }
         }
 
-
         private void Timer_Comm_Tick(object sender, ElapsedEventArgs e)
         {
 
@@ -8524,8 +8524,6 @@ namespace QMC.Common.Modules
             }
         }
 
-        //
-        
         private void Timer_ProductAlign_tick(object sender, ElapsedEventArgs e)
         {
             // 중복 실행 방지
@@ -13640,7 +13638,8 @@ namespace QMC.Common.Modules
                     SocketAlign_Step_Start(nSocketNum, alignMode);
 
                     // Socket Align 시작시 PreAlign Camera 끄기
-                    CommonModule.Instance.Illuminator.TurnOnOff(false, 3); // Coarse Cam IR 조명 Off
+                    SetLightingByChannel(LightingChannel.CoarseCamIR, 0, false);
+                    
                     Thread.Sleep(100);
 
                     if (alignMode == AlignMode.Socket)
@@ -13661,14 +13660,10 @@ namespace QMC.Common.Modules
                     }
 
                     // Fine Cam Red 조명
-                    CommonModule.Instance.Illuminator.TurnOnOff(bUseRed, 1);
                     if (bUseRed)
-                        CommonModule.Instance.Illuminator.SetVolume(redVolume, 1);
-
-                    // Fine Cam IR 조명
-                    CommonModule.Instance.Illuminator.TurnOnOff(bUseIR, 2);
+                        SetLightingByChannel(LightingChannel.FineCamRed, redVolume, bUseRed);
                     if (bUseIR)
-                        CommonModule.Instance.Illuminator.SetVolume(irVolume, 2);
+                        SetLightingByChannel(LightingChannel.FineCamIR, irVolume, bUseIR);
 
                     // 카메라 노출 설정
                     jigAligner_HighRes.Camera.SetExposureTime(exposureTime);
@@ -13766,35 +13761,13 @@ namespace QMC.Common.Modules
                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align Part 시작");
 
                     // 조명 값 변경을 한 번 더 하자. 
-                    CommonModule.Instance.Illuminator.TurnOnOff(false, 3); // Coarse Cam IR 조명 Off
+                    SetLightingByChannel(LightingChannel.CoarseCamIR, 0, false);
                     Thread.Sleep(100);
-                    if (alignMode == AlignMode.Socket)
-                    {
-                        bUseRed = Equipment.stVisionRecipeSet.bSocketIlluminationRedUse;
-                        bUseIR = Equipment.stVisionRecipeSet.bSocketIlluminationIRUse;
-                        redVolume = Equipment.stVisionRecipeSet.nSocketIlluminationRed;
-                        irVolume = Equipment.stVisionRecipeSet.nSocketIlluminationIR;
-                        exposureTime = Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime;
-                    }
-                    else if (alignMode == AlignMode.GoldPowder)
-                    {
-                        bUseRed = Equipment.stVisionRecipeSet.bGoldPowderIlluminationRedUse;
-                        bUseIR = Equipment.stVisionRecipeSet.bGoldPowderIlluminationIRUse;
-                        redVolume = Equipment.stVisionRecipeSet.nSocketIlluminationRed; // TODO: 전용 Red 값 분리 가능
-                        irVolume = Equipment.stVisionRecipeSet.nSocketIlluminationIR;   // TODO: 전용 IR 값 분리 가능
-                        exposureTime = Equipment.stVisionRecipeSet.dGoldPowderIlluminationExposureTime;
-                    }
-
                     // Fine Cam Red 조명
-                    CommonModule.Instance.Illuminator.TurnOnOff(bUseRed, 1);
                     if (bUseRed)
-                        CommonModule.Instance.Illuminator.SetVolume(redVolume, 1);
-
-                    // Fine Cam IR 조명
-                    CommonModule.Instance.Illuminator.TurnOnOff(bUseIR, 2);
+                        SetLightingByChannel(LightingChannel.FineCamRed, redVolume, bUseRed);
                     if (bUseIR)
-                        CommonModule.Instance.Illuminator.SetVolume(irVolume, 2);
-
+                        SetLightingByChannel(LightingChannel.FineCamIR, irVolume, bUseIR);
                     // 카메라 노출 설정
                     jigAligner_HighRes.Camera.SetExposureTime(exposureTime);
 
@@ -14366,28 +14339,10 @@ namespace QMC.Common.Modules
                     //Display_Event("홈 실행 루틴 : 시작.");
                     SocketAlign_Step_Start(nSocketNum);
 
-                    //Socket Align 시작시 PreAlign Camera 먼저 끄자.
-                    CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
+                    SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
                     Thread.Sleep(100);
-                    if (Equipment.stVisionRecipeSet.bSocketIlluminationRedUse)
-                    {
-                        CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명
-                        CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationRed, 1);
-                    }
-                    else
-                    {
-                        CommonModule.Instance.Illuminator.TurnOnOff(false, 1);       //  Fine Cam Red 조명
-                    }
-
-                    if (Equipment.stVisionRecipeSet.bSocketIlluminationIRUse)
-                    {
-                        CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
-                        CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationIR, 2);
-                    }
-                    else
-                    {
-                        CommonModule.Instance.Illuminator.TurnOnOff(false, 2);       //  Fine Cam Red 조명
-                    }
+                    SetLightingByChannel(Equipment.LightingChannel.FineCamRed, Equipment.stVisionRecipeSet.nSocketIlluminationRed, Equipment.stVisionRecipeSet.bSocketIlluminationRedUse);
+                    SetLightingByChannel(Equipment.LightingChannel.FineCamIR, Equipment.stVisionRecipeSet.nSocketIlluminationIR, Equipment.stVisionRecipeSet.bSocketIlluminationIRUse);
 
                     //카메라 Setting
                     double dExposureTime = Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime;
@@ -14485,29 +14440,16 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align Part 시작");
 
-                    // 조명 제어를.. 한번 더.
-                    //Socket Align 시작시 PreAlign Camera 먼저 끄자.
-                    CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
+                    SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
                     Thread.Sleep(100);
-                    if (Equipment.stVisionRecipeSet.bSocketIlluminationRedUse)
-                    {
-                        CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명
-                        CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationRed, 1);
-                    }
-                    else
-                    {
-                        CommonModule.Instance.Illuminator.TurnOnOff(false, 1);       //  Fine Cam Red 조명
-                    }
+                    SetLightingByChannel(Equipment.LightingChannel.FineCamRed, Equipment.stVisionRecipeSet.nSocketIlluminationRed, Equipment.stVisionRecipeSet.bSocketIlluminationRedUse);
+                    SetLightingByChannel(Equipment.LightingChannel.FineCamIR, Equipment.stVisionRecipeSet.nSocketIlluminationIR, Equipment.stVisionRecipeSet.bSocketIlluminationIRUse);
 
-                    if (Equipment.stVisionRecipeSet.bSocketIlluminationIRUse)
-                    {
-                        CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
-                        CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nSocketIlluminationIR, 2);
-                    }
-                    else
-                    {
-                        CommonModule.Instance.Illuminator.TurnOnOff(false, 2);       //  Fine Cam Red 조명
-                    }
+                    //카메라 Setting
+                    dExposureTime = Equipment.stVisionRecipeSet.dSocketIlluminationExposureTime;
+                    jigAligner_HighRes.Camera.SetExposureTime(dExposureTime);
+
+
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     //  맵 데이터 변경 (기준위치 : Scanner)
                     //  기준위치로 보낼 때, 맵데이터를 변경한 후 보낸다.
@@ -19196,13 +19138,13 @@ namespace QMC.Common.Modules
                         if (nearest != null)
                         {
                             m_strTemp = string.Format("Socket 가공 중 Cal file 변경 시작, Offset(mm):{0}, File:{1})",
-                                nearest.OffsetZ_um.ToString(), nearest.CalFilePath);
+                                nearest.OffsetZ_mm.ToString(), nearest.CalFilePath);
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                         }
                         else
                         {
                             m_strTemp = string.Format("Socket 가공 중 Cal file 변경 실패, Offset(mm):{0}, File:{없음})",
-                                nearest.OffsetZ_um.ToString());
+                                nearest.OffsetZ_mm.ToString());
                             Log.Write("SLD-200", Equipment.User_Name, "Auto Run", m_strTemp);
                         }
 
@@ -19226,10 +19168,10 @@ namespace QMC.Common.Modules
 
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Pre Align Cycle 시작.");
 
-                    CommonModule.Instance.Illuminator.TurnOnOff(false, 1);          //  Fine Cam Red 조명
-                    CommonModule.Instance.Illuminator.TurnOnOff(false, 2);          //  Fine Cam IR 조명
-                    CommonModule.Instance.Illuminator.TurnOnOff(true, 3);           //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
-                    CommonModule.Instance.Illuminator.SetVolume(Equipment.stVisionRecipeSet.nPreIlluminationIR, 3);
+                    SetLightingByChannel(LightingChannel.CoarseCamIR, Equipment.stVisionRecipeSet.nPreIlluminationIR);
+                    Thread.Sleep(100);
+                    SetLightingByChannel(LightingChannel.FineCamRed, 0, false);
+                    SetLightingByChannel(LightingChannel.FineCamIR, 0, false);
                     
                     try
                     {
@@ -19255,16 +19197,6 @@ namespace QMC.Common.Modules
 
                                 stPreAlignList.Add(new PreAlignData(dFiducialPosX, dFiducialPosY, dFiducialWidth, dFiducialHeight));   
                             }
-
-                            //Pre Align은 Socket의 2, 3번 Mark로 수행.
-                            //기존에 사용.
-                            //Equipment.stLayerRecipeSet[0].PreAlignPos1.X = m_stDividedRegion_GroupData[m_nPreAlignRetryCount].dFiducialPos[2].X;
-                            //Equipment.stLayerRecipeSet[0].PreAlignPos1.Y = m_stDividedRegion_GroupData[m_nPreAlignRetryCount].dFiducialPos[2].Y;
-                            //Equipment.stLayerRecipeSet[0].PreAlignPos2.X = m_stDividedRegion_GroupData[m_nPreAlignRetryCount].dFiducialPos[3].X;
-                            //Equipment.stLayerRecipeSet[0].PreAlignPos2.Y = m_stDividedRegion_GroupData[m_nPreAlignRetryCount].dFiducialPos[3].Y;
-
-                            //너무 Data를 빨리 던져서 문제가 아닌지 Test.
-                            Thread.Sleep(100);
 
                             // 처음에는 여기서 0, 1번으로 진행 하자.
                             jigAligner_LowRes.m_AlignPositions[0].X = stPreAlignList[0].cX;
@@ -19304,9 +19236,7 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DrillingData_PreAlign_Retry:              //  가공 할 PreAlign 재시도
 
-                    Thread.Sleep(100);
-                    
-                    if (m_nPreAlignRetryCount < m_nPreAlignMarkNumMax-1)
+                    if (m_nPreAlignRetryCount < m_nPreAlignMarkNumMax - 1)
                     {
                         //Retry 시에는 1번씩 증가 시키자.
                         jigAligner_LowRes.m_AlignPositions[0].X = stPreAlignList[0 + m_nPreAlignRetryCount].cX;
@@ -28974,7 +28904,10 @@ namespace QMC.Common.Modules
             double m_dLine_Max_X = double.MinValue;
             double m_dLine_Max_Y = double.MinValue;
 
-           
+
+            // 변수 초기화.
+            m_ptPreAlign = null;
+            m_ptFiducial = null;
 
             if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
@@ -35507,18 +35440,14 @@ namespace QMC.Common.Modules
                         m_pStageXY_Pos_AfterVerify.X = 0.0;
                         m_pStageXY_Pos_AfterVerify.Y = 0.0;
 
-                        // Todo : 조명 디버깅 필요
                         int ch1Val = Equipment.Scanner_Calibration_Illumination_channel_01_Value;
                         int ch2Val = Equipment.Scanner_Calibration_Illumination_channel_02_Value;
-                        CommonModule.Instance.Illuminator.SetVolume(ch1Val, 1);
-                        CommonModule.Instance.Illuminator.SetVolume(ch2Val, 2);
-                        CommonModule.Instance.Illuminator.TurnOnOff(true, 1);
-                        CommonModule.Instance.Illuminator.TurnOnOff(true, 2);
+                        SetLightingByChannel(LightingChannel.CoarseCamIR, 0, false);
+                        Thread.Sleep(100);
+                        SetLightingByChannel(LightingChannel.FineCamRed, ch1Val);
+                        SetLightingByChannel(LightingChannel.FineCamIR, ch2Val);
 
                         m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.Laser_Off;
-
-                       
-
                         Log.Write("SLD-200", "Scanner Calibration", "Laser&Scanner Calibration Start");
                     }
                     break;
@@ -36406,10 +36335,10 @@ namespace QMC.Common.Modules
                         // Todo : 조명 디버깅 필요 
                         int ch1Val = Equipment.Scanner_Calibration_Illumination_channel_01_Value;
                         int ch2Val = Equipment.Scanner_Calibration_Illumination_channel_02_Value;
-                        CommonModule.Instance.Illuminator.SetVolume(ch1Val, 1);
-                        CommonModule.Instance.Illuminator.SetVolume(ch2Val, 2);
-                        CommonModule.Instance.Illuminator.TurnOnOff(true, 1);
-                        CommonModule.Instance.Illuminator.TurnOnOff(true, 2);
+                        SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+                        Thread.Sleep(100);
+                        SetLightingByChannel(Equipment.LightingChannel.FineCamRed, ch1Val);
+                        SetLightingByChannel(Equipment.LightingChannel.FineCamIR, ch2Val);
 
                         XyzCoordinate currentPos = new XyzCoordinate();
                         if (scannerCompensator == null || scannerCompensator.Stage == null)
@@ -38381,6 +38310,26 @@ namespace QMC.Common.Modules
 
             //false: 구동 중, true: 구동 안함.
             return bRtn = false;
+        }
+
+        // 조명 제어 함수
+        /// <summary>
+        /// 조명 채널 제어 함수 (use 생략 시 ON)
+        /// </summary>
+        /// <param name="channel">조명 채널 번호</param>
+        /// <param name="volume">조명 밝기</param>
+        /// <param name="use">ON/OFF 여부 (기본값: true)</param>
+        public void SetLightingByChannel(LightingChannel echannel, int volume, bool use = true)
+        {
+            if (use)
+            {
+                CommonModule.Instance.Illuminator.TurnOnOff(true, (int)echannel);
+                CommonModule.Instance.Illuminator.SetVolume(volume, (int)echannel);
+            }
+            else
+            {
+                CommonModule.Instance.Illuminator.TurnOnOff(false, (int)echannel);
+            }
         }
     }
 }

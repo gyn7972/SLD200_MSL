@@ -48,6 +48,16 @@ namespace QMC.Common
 {
     public static class Equipment
     {
+        #region Enum
+        public enum LightingChannel
+        {
+            FineCamRed = 1,
+            FineCamIR = 2,
+            CoarseCamIR = 3
+        }
+
+        #endregion
+
         public class InitDeviceStatus
         {
             public bool MotionIo { get; set; }

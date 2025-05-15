@@ -44,21 +44,6 @@ namespace SLD200.NewStyleForm
             if (m_bInitialized)
                 return;
 
-            //this.AutoScaleMode = AutoScaleMode.None;
-            //this.AutoSize = false;
-            //this.DoubleBuffered = true;
-            //this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
-            //this.UpdateStyles();
-
-            // 버튼 이벤트 핸들링 연결
-            button_CalFilePopup_Open.Click += Button_CalFilePopup_Open_Click;
-            button_CalFilePopup_Add.Click += Button_CalFilePopup_Add_Click;
-            button_CalFilePopup_Delete.Click += Button_CalFilePopup_Delete_Click;
-            button_CalFilePopup_Load.Click += Button_CalFilePopup_Load_Click;
-            button_CalFilePopup_Save.Click += Button_CalFilePopup_Save_Click;
-            button_CalFilePopup_GetFile.Click += Button_CalFilePopup_GetFile_Click;
-
-
             // 타이머 초기화
             timer_Status = new System.Windows.Forms.Timer();
             timer_Status.Interval = 200; // 200ms 주기
@@ -81,7 +66,7 @@ namespace SLD200.NewStyleForm
                 var current = Equipment.stConfigScannerCalData.CurrentCalFile;
                 if (current != null)
                 {
-                    label_CalFilePopup_NearestCalFile_Disp.Text = $"[Auto] OffsetZ: {current.OffsetZ_um} μm\n{current.CalFilePath}";
+                    label_CalFilePopup_NearestCalFile_Disp.Text = $"[Auto] OffsetZ: {current.OffsetZ_mm} mm\n{current.CalFilePath}";
                 }
 
             }
@@ -145,9 +130,9 @@ namespace SLD200.NewStyleForm
             };
             var colOffsetZ = new DataGridViewTextBoxColumn
             {
-                Name = "OffsetZ_um",
-                HeaderText = "OffsetZ_um",
-                DataPropertyName = "OffsetZ_um",
+                Name = "OffsetZ_mm",
+                HeaderText = "OffsetZ_mm",
+                DataPropertyName = "OffsetZ_mm",
                 Width = 100,
                 ReadOnly = true
             };
@@ -277,7 +262,7 @@ namespace SLD200.NewStyleForm
                 var nearest = Equipment.stConfigScannerCalData.GetNearestCalFile(currentZ);
                 if (nearest != null)
                 {
-                    label_CalFilePopup_NearestCalFile_Disp.Text = $"OffsetZ: {nearest.OffsetZ_um} μm\nFile: {nearest.CalFilePath}";
+                    label_CalFilePopup_NearestCalFile_Disp.Text = $"OffsetZ: {nearest.OffsetZ_mm} μm\nFile: {nearest.CalFilePath}";
                 }
                 else
                 {

@@ -3662,7 +3662,6 @@ namespace SLD200_MSL
                 CommonModule.Instance.Illuminator.SetVolume(this.hScrollBar_Setup_ScannerCal_Illuminator.Value, 2);
 
                 workStage.scannerCompensator.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[1].Value, 2);
-                
             }
             else        //  Red Ring
             {
@@ -3671,7 +3670,6 @@ namespace SLD200_MSL
                 CommonModule.Instance.Illuminator.SetVolume(this.hScrollBar_Setup_ScannerCal_Illuminator.Value, 1);
 
                 workStage.scannerCompensator.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[0].Value, 1);
-                
             }
 
             this.textBox_Setup_ScannerCal_IlluminationValue.Refresh();
@@ -3690,34 +3688,29 @@ namespace SLD200_MSL
         {
             SetScroll(0);
 
-            //  조명값 변경
-            CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[0].Value, 1);
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 1);
-            CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[1].Value, 2);
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 2);
-
             hScrollBar_Setup_ScannerCal_Illuminator.Value = workStage.Config.ListIlluminationChannel[0].Value;                //  저해상도 카메라 IR 조명 (3번, Index 는 2번)
             this.textBox_Setup_ScannerCal_IlluminationValue.Text = hScrollBar_Setup_ScannerCal_Illuminator.Value.ToString();
 
-            //  Low Mag Camera 조명 끄기
-            CommonModule.Instance.Illuminator.TurnOnOff(false, 3);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+            Thread.Sleep(100);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, hScrollBar_Setup_ScannerCal_Illuminator.Value);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, workStage.Config.ListIlluminationChannel[1].Value);
+
+            
         }
 
         private void radioButton_Setup_ScannerCal_Light_IR_CheckedChanged(object sender, EventArgs e)
         {
             SetScroll(1);
 
-            //  조명값 변경
-            CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[1].Value, 2);
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 2);
-            CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[0].Value, 1);
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 1);
-
             hScrollBar_Setup_ScannerCal_Illuminator.Value = workStage.Config.ListIlluminationChannel[1].Value;                //  고해상도 카메라 IR 조명 (2번, Index 는 1번)
             this.textBox_Setup_ScannerCal_IlluminationValue.Text = hScrollBar_Setup_ScannerCal_Illuminator.Value.ToString();
 
-            //  Low Mag Camera 조명 끄기
-            CommonModule.Instance.Illuminator.TurnOnOff(false, 3);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+            Thread.Sleep(100);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, workStage.Config.ListIlluminationChannel[0].Value);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, hScrollBar_Setup_ScannerCal_Illuminator.Value);
+
         }
         public void SetTrainImage(VisionImage image)
         {

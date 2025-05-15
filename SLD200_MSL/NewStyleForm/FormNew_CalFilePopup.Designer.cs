@@ -61,7 +61,7 @@
             this.label_CalFilePopup_OffsetZ.Name = "label_CalFilePopup_OffsetZ";
             this.label_CalFilePopup_OffsetZ.Size = new System.Drawing.Size(100, 25);
             this.label_CalFilePopup_OffsetZ.TabIndex = 1;
-            this.label_CalFilePopup_OffsetZ.Text = "OffsetZ(um):";
+            this.label_CalFilePopup_OffsetZ.Text = "OffsetZ(mm):";
             this.label_CalFilePopup_OffsetZ.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // textBox_CalFilePopup_OffsetZ
