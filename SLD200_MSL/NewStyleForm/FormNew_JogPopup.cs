@@ -83,7 +83,8 @@ namespace SLD200.NewStyleForm
             timer_Status = new System.Windows.Forms.Timer();
             timer_Status.Interval = 200; // 200ms 주기
             timer_Status.Tick += Timer_Status_Tick;
-            timer_Status.Start();
+            //timer_Status.Start();
+            timer_Status.Stop();
 
             m_bInitialized = true;
         }
@@ -99,7 +100,7 @@ namespace SLD200.NewStyleForm
             {
                 m_bFormVisible = true;
                 OnShow();
-                timer_Status.Start();
+                //timer_Status.Start();
             }
             else if (!this.Visible && m_bFormVisible)
             {
@@ -141,15 +142,15 @@ namespace SLD200.NewStyleForm
                 // 현재 선택된 탭에 따라 해당 UserControl의 상태만 업데이트
                 if (tabControl_JogPopup.SelectedTab == tabPage_Loader)
                 {
-                    userform_Loader?.UpdateStatus();
+                    //userform_Loader?.UpdateStatus();
                 }
                 else if (tabControl_JogPopup.SelectedTab == tabPage_Stage)
                 {
-                    userform_Stage?.UpdateStatus();
+                    //userform_Stage?.UpdateStatus();
                 }
                 else if (tabControl_JogPopup.SelectedTab == tabPage_Unloader)
                 {
-                    userform_Unloader?.UpdateStatus();
+                    //userform_Unloader?.UpdateStatus();
                 }
             }
             catch (Exception ex)
@@ -216,45 +217,49 @@ namespace SLD200.NewStyleForm
             if (btn == null || btn.Tag == null)
                 return;
 
-            if (Equipment.AjinBoard_Opened)
+            //lock(this)
             {
-                string[] tagParts = btn.Tag?.ToString()?.Split(',');
-                if (tagParts == null || tagParts.Length != 3)
-                    return;
-
-                string unit = tagParts[0];         // 예: "WorkStage", "Loader"
-                string axisName = tagParts[1];     // 예: "X", "Y", "Z0", "TR_X"
-                double direction = Convert.ToDouble(tagParts[2]); // -1.0 또는 1.0
-
-                dynamic controller = GetControllerByUnit(unit);
-                if (controller == null) return;
-
-                int axis = GetAxisIndex(ref unit, axisName);
-                if (axis < 0) return;
-
-                Type_Motor_Speed speedType = GetMotorSpeedType(unit);
-
-                if (IsJogMoveContinuous(unit))
+                if (Equipment.AjinBoard_Opened)
                 {
-                    switch (unit)
+                    string[] tagParts = btn.Tag?.ToString()?.Split(',');
+                    if (tagParts == null || tagParts.Length != 3)
+                        return;
+
+                    string unit = tagParts[0];         // 예: "WorkStage", "Loader"
+                    string axisName = tagParts[1];     // 예: "X", "Y", "Z0", "TR_X"
+                    double direction = Convert.ToDouble(tagParts[2]); // -1.0 또는 1.0
+
+                    dynamic controller = GetControllerByUnit(unit);
+                    if (controller == null) return;
+
+                    int axis = GetAxisIndex(ref unit, axisName);
+                    if (axis < 0) return;
+
+                    Type_Motor_Speed speedType = GetMotorSpeedType(unit);
+
+                    if (IsJogMoveContinuous(unit))
                     {
-                        case "WorkStage": workStage.MovetoWorkStage_Jog_Positions((WorkStage.nAxis)axis, (int)direction, speedType); break;
-                        case "Loader": loader.MovetoLoader_Jog_Positions((Loader.nAxis)axis, (int)direction, speedType); break;
-                        case "Unloader": unloader.MovetoUnloader_Jog_Positions((Unloader.nAxis)axis, (int)direction, speedType); break;
+                        switch (unit)
+                        {
+                            case "WorkStage": workStage.MovetoWorkStage_Jog_Positions((WorkStage.nAxis)axis, (int)direction, speedType); break;
+                            case "Loader": loader.MovetoLoader_Jog_Positions((Loader.nAxis)axis, (int)direction, speedType); break;
+                            case "Unloader": unloader.MovetoUnloader_Jog_Positions((Unloader.nAxis)axis, (int)direction, speedType); break;
+                        }
                     }
-                }
-                else if (IsJogMoveStep(unit))
-                {
-                    double distance = GetStepDistance(unit);
-                    switch (unit)
+                    else if (IsJogMoveStep(unit))
                     {
-                        case "WorkStage": workStage.MovetoWorkStage_Rel_Positions((WorkStage.nAxis)axis, distance, (int)direction, speedType); break;
-                        case "Loader": loader.MovetoLoader_Rel_Positions((Loader.nAxis)axis, distance, (int)direction, speedType); break;
-                        case "Unloader": unloader.MovetoUnloader_Rel_Positions((Unloader.nAxis)axis, distance, (int)direction, speedType); break;
+                        double distance = GetStepDistance(unit);
+                        switch (unit)
+                        {
+                            case "WorkStage": workStage.MovetoWorkStage_Rel_Positions((WorkStage.nAxis)axis, distance, (int)direction, speedType); break;
+                            case "Loader": loader.MovetoLoader_Rel_Positions((Loader.nAxis)axis, distance, (int)direction, speedType); break;
+                            case "Unloader": unloader.MovetoUnloader_Rel_Positions((Unloader.nAxis)axis, distance, (int)direction, speedType); break;
+                        }
+                        //controller.MovetoWorkStage_Rel_Positions((WorkStage.nAxis)axis, distance, (int)direction, speedType);
                     }
-                    //controller.MovetoWorkStage_Rel_Positions((WorkStage.nAxis)axis, distance, (int)direction, speedType);
                 }
             }
+            
         }
 
         // 축 JogStop 공통 처리

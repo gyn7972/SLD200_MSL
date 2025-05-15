@@ -26682,7 +26682,12 @@ namespace QMC.Common.Modules
             //  글자를 구성하는 요소 개수 카운트
             int m_nTextItemCount = 0;
 
-            
+
+            //  Recipe 를 새로 Open 할 때, 이전에 사용하던 PreAlign 데이터와 Fiducial 데이터를 초기화 해야 한다. 
+            m_ptPreAlign = null;
+            m_ptFiducial = null;
+
+
             if (Equipment.GetEqpSiriusViewerDocument()== null)
             {
                 MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
@@ -37781,7 +37786,7 @@ namespace QMC.Common.Modules
         public double GetEncWorkStagePos_Motor(WorkStage.nAxis nAxis)
         {
             double dEncPos = -999.999;
-            //lock (this)
+            //lock(this)
             {
                 try
                 {
@@ -37812,10 +37817,8 @@ namespace QMC.Common.Modules
                 return bRtn;
             }
 
-            if (!MC_Func.MC_GetDone((int)WorkStage.nAxis.X) ||
-                !MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) ||
-                !MC_Func.MC_GetInposition((int)WorkStage.nAxis.X) ||
-                !MC_Func.MC_GetInposition((int)WorkStage.nAxis.Y))
+            if (!IsWorkStageMoving(WorkStage.nAxis.X) &&
+                !IsWorkStageMoving(WorkStage.nAxis.Y))
             {
                 strTemp = string.Format("IsInterlock_WorkStageXY_Enabled [Fail]: StageXY Axis이 이동중입니다.");
                 Log.Write("SLD-200", Equipment.User_Name, strTemp);
