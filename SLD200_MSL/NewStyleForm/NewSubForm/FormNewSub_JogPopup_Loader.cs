@@ -146,7 +146,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                 { Loader.nAxis.Z0, label_JogPopup_EncPosition_LD_Z0 },
                 { Loader.nAxis.Z1, label_JogPopup_EncPosition_LD_Z1 },
                 { Loader.nAxis.TR_X, label_JogPopup_EncPosition_LD_TRX },
-                { Loader.nAxis.TR_Z, label_JogPopup_EncPosition_LD_TRX },
+                { Loader.nAxis.TR_Z, label_JogPopup_EncPosition_LD_TRZ },
                 { Loader.nAxis.ALN_X, label_JogPopup_EncPosition_LD_ALNX },
                 { Loader.nAxis.ALN_Y, label_JogPopup_EncPosition_LD_ALNY },
             };

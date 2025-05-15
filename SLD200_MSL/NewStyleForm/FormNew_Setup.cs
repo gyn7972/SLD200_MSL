@@ -2336,29 +2336,19 @@ namespace SLD200_MSL
 
         private void btnCalStart_Click(object sender, EventArgs e)
         {
-            //Test Code
-            //workStage.m_ScannerCalibration_Start = true;
-            ////workStage.timer_ScannerCalibration.Enabled = true;
-            //workStage.timer_ScannerCalibration.Start();
-            //workStage._isCalibrationRunning = false;
-            //workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.Start;
-            //return;
-
             var mb = new QMC.Common.UI.MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Scanner Calibration - Laser부터 시작합니다.\n\n시작하시겠습니까?"))
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", 
+                "Scanner Calibration - Laser부터 시작합니다.\n\n시작하시겠습니까?"))
             {
                 return;
             }
 
-            //TEST
             //if (!workStage.m_bHomeOK)
             //{
             //    var mb2 = new MessageBoxOk();
             //    mb2.ShowDialog("Information !", "장비 초기화를 해야 합니다.");
             //    return;
             //}
-
-           
 
             if (workStage.rtc == null)
             {
@@ -2367,11 +2357,16 @@ namespace SLD200_MSL
                 return;
             }
 
-            //Equipment.Scanner_Calibration_Change;
-            // 캘판 변경 유/무에 대해서 물어보는 메세지 박스해주고 True/False 리턴받기
-            //var mb = new QMC.Common.UI.MessageBoxYesNo();
+            if(!workStage.Camera_HighRes.Opened)
+            {
+                var mb2 = new MessageBoxOk();
+                mb2.ShowDialog("Information !", "카메라를 초기화 해야 합니다.");
+                return;
+            }
+
             var mb1 = new QMC.Common.UI.MessageBoxYesNo();
-            if (DialogResult.Yes != mb1.ShowDialog("Question ?", "Scanner Calibration을 시작합니다.\n\n캘리브레이션 판이 변경되었습니까?"))
+            if (DialogResult.Yes != mb1.ShowDialog("Question ?", 
+                "Scanner Calibration을 시작합니다.\n\n캘리브레이션 판이 변경되었습니까?"))
             {
                 Equipment.Scanner_Calibration_Change = false;
             }
@@ -2382,12 +2377,6 @@ namespace SLD200_MSL
 
             if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)
             {
-                //workStage.timer_ScannerCalibration.Enabled = true;
-                //workStage.timer_ScannerCalibration.Start();
-
-                //Equipment.AutoRunStatus = true;
-
-                //workStage._isCalibrationRunning = false;
                 workStage.m_ScannerCalibration_Start = true;
                 Equipment.Scanner_Vision_Offset_Setting_Use = false;
                 workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.Start;
@@ -2397,10 +2386,6 @@ namespace SLD200_MSL
 
         private void btnCalStop_Click(object sender, EventArgs e)
         {
-            //Equipment.AutoRunStatus = false;
-            //workStage.timer_ScannerCalibration.Enabled = false; //이거 해야하나..
-            //workStage.timer_ScannerCalibration.Stop();
-
             workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
             workStage.m_ScannerCalibration_Start = false;
             workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.None;
@@ -2409,12 +2394,14 @@ namespace SLD200_MSL
         private void btnCalStart_Vision_Click(object sender, EventArgs e)
         {
             var mb = new QMC.Common.UI.MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Scanner Calibration - Vision부터 시작합니다.\n\n시작하시겠습니까?"))
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", 
+                "Scanner Calibration - Vision부터 시작합니다.\n\n시작하시겠습니까?"))
             {
                 return;
             }
             var mb1 = new QMC.Common.UI.MessageBoxYesNo();
-            if (DialogResult.Yes != mb1.ShowDialog("Question ?", "Mark가 Center에 위치해 있는지 확인 바랍니다.\n\n시작하시겠습니까?"))
+            if (DialogResult.Yes != mb1.ShowDialog("Question ?", 
+                "Mark가 Center에 위치해 있는지 확인 바랍니다.\n\n시작하시겠습니까?"))
             {
                 return;
             }
@@ -2434,11 +2421,15 @@ namespace SLD200_MSL
             //}
 
             //카메라 초기화만 봐야 할 듯.
+            if(!workStage.Camera_HighRes.Opened)
+            {
+                var mb2 = new MessageBoxOk();
+                mb2.ShowDialog("Information !", "카메라 초기화를 해야 합니다.");
+                return;
+            }
 
             if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)
             {
-                workStage.timer_ScannerCalibration.Enabled = true;
-
                 workStage.m_ScannerCalibration_Start = true;
 
                 Equipment.Scanner_Vision_Offset_Setting_Use = false;
@@ -3131,8 +3122,6 @@ namespace SLD200_MSL
             //    return;
             //}
 
-            
-
             if (workStage.rtc == null)
             {
                 MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
@@ -3142,7 +3131,8 @@ namespace SLD200_MSL
             //Equipment.Scanner_Calibration_Change;
             // 캘판 변경 유/무에 대해서 물어보는 메세지 박스해주고 True/False 리턴받기
             var mb = new MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Scanner Calibration을 시작합니다.\n\n캘리브레이션 판이 변경되었습니까?"))
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", 
+                "Scanner Calibration을 시작합니다.\n\n캘리브레이션 판이 변경되었습니까?"))
             {
                 Equipment.Scanner_Calibration_Change = false;
             }
@@ -3154,11 +3144,10 @@ namespace SLD200_MSL
             if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)
             {
                 Equipment.Scanner_Vision_Offset_Setting_Use = true;
-
-                workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.Start;
-                workStage.timer_ScannerCalibration.Enabled = true;
-
                 WorkStartTick = Environment.TickCount;
+                workStage.m_ScannerCalibration_Start = true;
+                workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.Start;
+                
             }
         }
 

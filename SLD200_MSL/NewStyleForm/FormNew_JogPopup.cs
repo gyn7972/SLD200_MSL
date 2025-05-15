@@ -83,8 +83,8 @@ namespace SLD200.NewStyleForm
             timer_Status = new System.Windows.Forms.Timer();
             timer_Status.Interval = 200; // 200ms 주기
             timer_Status.Tick += Timer_Status_Tick;
-            //timer_Status.Start();
-            timer_Status.Stop();
+            timer_Status.Start();
+            //timer_Status.Stop();
 
             m_bInitialized = true;
         }
@@ -100,7 +100,7 @@ namespace SLD200.NewStyleForm
             {
                 m_bFormVisible = true;
                 OnShow();
-                //timer_Status.Start();
+                timer_Status.Start();
             }
             else if (!this.Visible && m_bFormVisible)
             {
@@ -142,15 +142,15 @@ namespace SLD200.NewStyleForm
                 // 현재 선택된 탭에 따라 해당 UserControl의 상태만 업데이트
                 if (tabControl_JogPopup.SelectedTab == tabPage_Loader)
                 {
-                    //userform_Loader?.UpdateStatus();
+                    userform_Loader?.UpdateStatus();
                 }
                 else if (tabControl_JogPopup.SelectedTab == tabPage_Stage)
                 {
-                    //userform_Stage?.UpdateStatus();
+                    userform_Stage?.UpdateStatus();
                 }
                 else if (tabControl_JogPopup.SelectedTab == tabPage_Unloader)
                 {
-                    //userform_Unloader?.UpdateStatus();
+                    userform_Unloader?.UpdateStatus();
                 }
             }
             catch (Exception ex)

@@ -264,16 +264,19 @@ namespace SLD200.NewStyleForm.NewSubForm
                 radioButton_Recipe_GoldPowder_Fiducial_Circle.Checked = true;
             }
 
+
+
             // 마크 타입
             if (m_recipe.dGoldPowderMarkType == 0)
             {
-                radioButton_Recipe_GoldPowder_Fiducial_Type_Circle.Checked = true;
-                radioButton_Recipe_GoldPowder_Fiducial_Type_GoldPowder.Checked = false;
+                radioButton_Recipe_GoldPowder_Fiducial_Type_GoldPowder.Checked = true;
+                radioButton_Recipe_GoldPowder_Fiducial_Type_Circle.Checked = false;
+                
             }
             else
             {
-                radioButton_Recipe_GoldPowder_Fiducial_Circle.Checked = false;
-                radioButton_Recipe_GoldPowder_Fiducial_Type_GoldPowder.Checked = true;
+                radioButton_Recipe_GoldPowder_Fiducial_Circle.Checked = true;
+                radioButton_Recipe_GoldPowder_Fiducial_Type_GoldPowder.Checked = false;
             }
 
             // 마크 색상

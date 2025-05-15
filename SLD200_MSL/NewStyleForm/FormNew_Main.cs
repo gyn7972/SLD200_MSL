@@ -218,8 +218,24 @@ namespace SLD200_MSL
             string strPath = "D:\\SLD-200_Parameter\\CycleTime.ini";
             Equipment.CycleTimer_LaserDrilling.LoadFromIni("LaserDrilling", strPath);
 
-            //  통신 Parts 초기화 (Connect 옵션에 따라 활성화 된 것들만 초기화 됨)
-            Comm_Init();
+            if(Machine_LaserType_CO2)
+            {
+                baseLabel_Main_Divice_Status_PowermeterBds.Visible = false;
+                baseLabel_Main_Divice_Status_PowermeterBds.Enabled = false;
+                pictureBox_Main_DiviceStatus_Powermeter_bds.Visible = false;
+                pictureBox_Main_DiviceStatus_Powermeter_bds.Enabled = false;
+            }
+            else
+            {
+                baseLabel_Main_Divice_Status_BeamExpander.Visible = false;
+                baseLabel_Main_Divice_Status_BeamExpander.Enabled = false;
+                pictureBox_Main_DiviceStatus_BeamExpander.Visible = false;
+                pictureBox_Main_DiviceStatus_BeamExpander.Enabled = false;
+            }
+
+
+                //  통신 Parts 초기화 (Connect 옵션에 따라 활성화 된 것들만 초기화 됨)
+                Comm_Init();
 
             SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
         }
@@ -746,7 +762,6 @@ namespace SLD200_MSL
                         workStage.RapidLxLaser_Comm_Init();
                     }
                 }
-
             }
             
             
@@ -776,8 +791,18 @@ namespace SLD200_MSL
             //if (!_InitDeviceStatus.MotionIo)
             //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Motion);
 
-            bOn = workStage.m_rapidLxLaser_Comm != null && workStage.m_rapidLxLaser_Comm.IsOpen;
-            _InitDeviceStatus.Laser = bOn;
+            if (!Equipment.Machine_LaserType_CO2)
+            {
+                bOn = workStage.m_rapidLxLaser_Comm != null && workStage.m_rapidLxLaser_Comm.IsOpen;
+                _InitDeviceStatus.Laser = bOn;
+            }
+            else
+            {
+                if (workStage.workStageParameter.IsDO_Laser_Enable())
+                    _InitDeviceStatus.Laser = true;
+                else
+                    _InitDeviceStatus.Laser = false;
+            }
             //if (!_InitDeviceStatus.Laser)
             //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Laser);
 
@@ -786,11 +811,11 @@ namespace SLD200_MSL
             //_InitDeviceStatus.Scanner = bOn;
 
             if (!Equipment.Machine_LaserType_CO2)
-            { 
-            bOn = workStage.m_powerMeter_ExitPos_Comm != null && workStage.m_powerMeter_ExitPos_Comm.IsOpen;
-            _InitDeviceStatus.PowerMeter_Bds = bOn;
-            if (!_InitDeviceStatus.PowerMeter_Bds)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Powermeter_bds);
+            {
+                bOn = workStage.m_powerMeter_ExitPos_Comm != null && workStage.m_powerMeter_ExitPos_Comm.IsOpen;
+                _InitDeviceStatus.PowerMeter_Bds = bOn;
+                if (!_InitDeviceStatus.PowerMeter_Bds)
+                    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Powermeter_bds);
             }
 
             bOn = workStage.m_powerMeter_TargetPos_Comm != null && workStage.m_powerMeter_TargetPos_Comm.IsOpen;

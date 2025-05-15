@@ -30,6 +30,12 @@
         {
             this.components = new System.ComponentModel.Container();
             this.groupBox_Recipe_GoldPowder_Fine_Camera = new System.Windows.Forms.GroupBox();
+            this.textBox_Recipe_GoldPowder_Fiducial_FindCount = new System.Windows.Forms.TextBox();
+            this.button_Recipe_GoldPowder_Fiducial_FindCount = new System.Windows.Forms.Button();
+            this.label_Recipe_GoldPowder_Fiducial_FindCount = new System.Windows.Forms.Label();
+            this.textBox_Recipe_GoldPowder_Fiducial_MaxInstance = new System.Windows.Forms.TextBox();
+            this.button_Recipe_GoldPowder_Fiducial_MaxInstance = new System.Windows.Forms.Button();
+            this.label_Recipe_GoldPowder_Fiducial_MaxInstance = new System.Windows.Forms.Label();
             this.listBox_Recipe_GoldPowder_Fiducial_Result = new System.Windows.Forms.ListBox();
             this.groupBox_Recipe_GoldPowder_Fiducial_MarkMatching = new System.Windows.Forms.GroupBox();
             this.radioButton_Recipe_GoldPowder_Fiducial_Circle = new System.Windows.Forms.RadioButton();
@@ -87,12 +93,6 @@
             this.hScrollBar_Recipe_GoldPowder_Illuminator_IR = new System.Windows.Forms.HScrollBar();
             this.button_Recipe_GoldPowder_Illumin_value_IR = new System.Windows.Forms.Button();
             this.textBox_Recipe_GoldPowder_IlluminationValue_IR = new System.Windows.Forms.TextBox();
-            this.textBox_Recipe_GoldPowder_Fiducial_MaxInstance = new System.Windows.Forms.TextBox();
-            this.button_Recipe_GoldPowder_Fiducial_MaxInstance = new System.Windows.Forms.Button();
-            this.label_Recipe_GoldPowder_Fiducial_MaxInstance = new System.Windows.Forms.Label();
-            this.textBox_Recipe_GoldPowder_Fiducial_FindCount = new System.Windows.Forms.TextBox();
-            this.button_Recipe_GoldPowder_Fiducial_FindCount = new System.Windows.Forms.Button();
-            this.label_Recipe_GoldPowder_Fiducial_FindCount = new System.Windows.Forms.Label();
             this.groupBox_Recipe_GoldPowder_Fine_Camera.SuspendLayout();
             this.groupBox_Recipe_GoldPowder_Fiducial_MarkMatching.SuspendLayout();
             this.groupBox_Recipe_GoldPowder_Fiducial_MarkType.SuspendLayout();
@@ -135,6 +135,72 @@
             this.groupBox_Recipe_GoldPowder_Fine_Camera.TabIndex = 222;
             this.groupBox_Recipe_GoldPowder_Fine_Camera.TabStop = false;
             this.groupBox_Recipe_GoldPowder_Fine_Camera.Text = " Fine Camera ";
+            // 
+            // textBox_Recipe_GoldPowder_Fiducial_FindCount
+            // 
+            this.textBox_Recipe_GoldPowder_Fiducial_FindCount.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.textBox_Recipe_GoldPowder_Fiducial_FindCount.Location = new System.Drawing.Point(930, 147);
+            this.textBox_Recipe_GoldPowder_Fiducial_FindCount.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox_Recipe_GoldPowder_Fiducial_FindCount.Name = "textBox_Recipe_GoldPowder_Fiducial_FindCount";
+            this.textBox_Recipe_GoldPowder_Fiducial_FindCount.Size = new System.Drawing.Size(64, 24);
+            this.textBox_Recipe_GoldPowder_Fiducial_FindCount.TabIndex = 233;
+            this.textBox_Recipe_GoldPowder_Fiducial_FindCount.Text = "000";
+            this.textBox_Recipe_GoldPowder_Fiducial_FindCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // button_Recipe_GoldPowder_Fiducial_FindCount
+            // 
+            this.button_Recipe_GoldPowder_Fiducial_FindCount.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Recipe_GoldPowder_Fiducial_FindCount.Location = new System.Drawing.Point(1003, 147);
+            this.button_Recipe_GoldPowder_Fiducial_FindCount.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Recipe_GoldPowder_Fiducial_FindCount.Name = "button_Recipe_GoldPowder_Fiducial_FindCount";
+            this.button_Recipe_GoldPowder_Fiducial_FindCount.Size = new System.Drawing.Size(28, 24);
+            this.button_Recipe_GoldPowder_Fiducial_FindCount.TabIndex = 234;
+            this.button_Recipe_GoldPowder_Fiducial_FindCount.Text = "#";
+            this.button_Recipe_GoldPowder_Fiducial_FindCount.UseVisualStyleBackColor = true;
+            // 
+            // label_Recipe_GoldPowder_Fiducial_FindCount
+            // 
+            this.label_Recipe_GoldPowder_Fiducial_FindCount.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.label_Recipe_GoldPowder_Fiducial_FindCount.Location = new System.Drawing.Point(753, 147);
+            this.label_Recipe_GoldPowder_Fiducial_FindCount.Margin = new System.Windows.Forms.Padding(5);
+            this.label_Recipe_GoldPowder_Fiducial_FindCount.Name = "label_Recipe_GoldPowder_Fiducial_FindCount";
+            this.label_Recipe_GoldPowder_Fiducial_FindCount.Size = new System.Drawing.Size(173, 25);
+            this.label_Recipe_GoldPowder_Fiducial_FindCount.TabIndex = 235;
+            this.label_Recipe_GoldPowder_Fiducial_FindCount.Text = "Find Count (ea):";
+            this.label_Recipe_GoldPowder_Fiducial_FindCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Recipe_GoldPowder_Fiducial_MaxInstance
+            // 
+            this.textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Location = new System.Drawing.Point(930, 115);
+            this.textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Name = "textBox_Recipe_GoldPowder_Fiducial_MaxInstance";
+            this.textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Size = new System.Drawing.Size(64, 24);
+            this.textBox_Recipe_GoldPowder_Fiducial_MaxInstance.TabIndex = 230;
+            this.textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Text = "000";
+            this.textBox_Recipe_GoldPowder_Fiducial_MaxInstance.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // button_Recipe_GoldPowder_Fiducial_MaxInstance
+            // 
+            this.button_Recipe_GoldPowder_Fiducial_MaxInstance.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Recipe_GoldPowder_Fiducial_MaxInstance.Location = new System.Drawing.Point(1003, 115);
+            this.button_Recipe_GoldPowder_Fiducial_MaxInstance.Margin = new System.Windows.Forms.Padding(2);
+            this.button_Recipe_GoldPowder_Fiducial_MaxInstance.Name = "button_Recipe_GoldPowder_Fiducial_MaxInstance";
+            this.button_Recipe_GoldPowder_Fiducial_MaxInstance.Size = new System.Drawing.Size(28, 24);
+            this.button_Recipe_GoldPowder_Fiducial_MaxInstance.TabIndex = 231;
+            this.button_Recipe_GoldPowder_Fiducial_MaxInstance.Text = "#";
+            this.button_Recipe_GoldPowder_Fiducial_MaxInstance.UseVisualStyleBackColor = true;
+            // 
+            // label_Recipe_GoldPowder_Fiducial_MaxInstance
+            // 
+            this.label_Recipe_GoldPowder_Fiducial_MaxInstance.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.label_Recipe_GoldPowder_Fiducial_MaxInstance.Location = new System.Drawing.Point(753, 115);
+            this.label_Recipe_GoldPowder_Fiducial_MaxInstance.Margin = new System.Windows.Forms.Padding(5);
+            this.label_Recipe_GoldPowder_Fiducial_MaxInstance.Name = "label_Recipe_GoldPowder_Fiducial_MaxInstance";
+            this.label_Recipe_GoldPowder_Fiducial_MaxInstance.Size = new System.Drawing.Size(173, 25);
+            this.label_Recipe_GoldPowder_Fiducial_MaxInstance.TabIndex = 232;
+            this.label_Recipe_GoldPowder_Fiducial_MaxInstance.Text = "Max Instance (ea):";
+            this.label_Recipe_GoldPowder_Fiducial_MaxInstance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // listBox_Recipe_GoldPowder_Fiducial_Result
             // 
@@ -216,7 +282,6 @@
             // radioButton_Recipe_GoldPowder_Fiducial_Type_GoldPowder
             // 
             this.radioButton_Recipe_GoldPowder_Fiducial_Type_GoldPowder.Checked = true;
-            this.radioButton_Recipe_GoldPowder_Fiducial_Type_GoldPowder.Enabled = false;
             this.radioButton_Recipe_GoldPowder_Fiducial_Type_GoldPowder.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.radioButton_Recipe_GoldPowder_Fiducial_Type_GoldPowder.Location = new System.Drawing.Point(99, 23);
             this.radioButton_Recipe_GoldPowder_Fiducial_Type_GoldPowder.Margin = new System.Windows.Forms.Padding(4);
@@ -828,72 +893,6 @@
             this.textBox_Recipe_GoldPowder_IlluminationValue_IR.TabIndex = 27;
             this.textBox_Recipe_GoldPowder_IlluminationValue_IR.Text = "000";
             this.textBox_Recipe_GoldPowder_IlluminationValue_IR.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // textBox_Recipe_GoldPowder_Fiducial_MaxInstance
-            // 
-            this.textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Location = new System.Drawing.Point(930, 115);
-            this.textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Name = "textBox_Recipe_GoldPowder_Fiducial_MaxInstance";
-            this.textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Size = new System.Drawing.Size(64, 24);
-            this.textBox_Recipe_GoldPowder_Fiducial_MaxInstance.TabIndex = 230;
-            this.textBox_Recipe_GoldPowder_Fiducial_MaxInstance.Text = "000";
-            this.textBox_Recipe_GoldPowder_Fiducial_MaxInstance.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // button_Recipe_GoldPowder_Fiducial_MaxInstance
-            // 
-            this.button_Recipe_GoldPowder_Fiducial_MaxInstance.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Recipe_GoldPowder_Fiducial_MaxInstance.Location = new System.Drawing.Point(1003, 115);
-            this.button_Recipe_GoldPowder_Fiducial_MaxInstance.Margin = new System.Windows.Forms.Padding(2);
-            this.button_Recipe_GoldPowder_Fiducial_MaxInstance.Name = "button_Recipe_GoldPowder_Fiducial_MaxInstance";
-            this.button_Recipe_GoldPowder_Fiducial_MaxInstance.Size = new System.Drawing.Size(28, 24);
-            this.button_Recipe_GoldPowder_Fiducial_MaxInstance.TabIndex = 231;
-            this.button_Recipe_GoldPowder_Fiducial_MaxInstance.Text = "#";
-            this.button_Recipe_GoldPowder_Fiducial_MaxInstance.UseVisualStyleBackColor = true;
-            // 
-            // label_Recipe_GoldPowder_Fiducial_MaxInstance
-            // 
-            this.label_Recipe_GoldPowder_Fiducial_MaxInstance.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.label_Recipe_GoldPowder_Fiducial_MaxInstance.Location = new System.Drawing.Point(753, 115);
-            this.label_Recipe_GoldPowder_Fiducial_MaxInstance.Margin = new System.Windows.Forms.Padding(5);
-            this.label_Recipe_GoldPowder_Fiducial_MaxInstance.Name = "label_Recipe_GoldPowder_Fiducial_MaxInstance";
-            this.label_Recipe_GoldPowder_Fiducial_MaxInstance.Size = new System.Drawing.Size(173, 25);
-            this.label_Recipe_GoldPowder_Fiducial_MaxInstance.TabIndex = 232;
-            this.label_Recipe_GoldPowder_Fiducial_MaxInstance.Text = "Max Instance (ea):";
-            this.label_Recipe_GoldPowder_Fiducial_MaxInstance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox_Recipe_GoldPowder_Fiducial_FindCount
-            // 
-            this.textBox_Recipe_GoldPowder_Fiducial_FindCount.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.textBox_Recipe_GoldPowder_Fiducial_FindCount.Location = new System.Drawing.Point(930, 147);
-            this.textBox_Recipe_GoldPowder_Fiducial_FindCount.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox_Recipe_GoldPowder_Fiducial_FindCount.Name = "textBox_Recipe_GoldPowder_Fiducial_FindCount";
-            this.textBox_Recipe_GoldPowder_Fiducial_FindCount.Size = new System.Drawing.Size(64, 24);
-            this.textBox_Recipe_GoldPowder_Fiducial_FindCount.TabIndex = 233;
-            this.textBox_Recipe_GoldPowder_Fiducial_FindCount.Text = "000";
-            this.textBox_Recipe_GoldPowder_Fiducial_FindCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // button_Recipe_GoldPowder_Fiducial_FindCount
-            // 
-            this.button_Recipe_GoldPowder_Fiducial_FindCount.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Recipe_GoldPowder_Fiducial_FindCount.Location = new System.Drawing.Point(1003, 147);
-            this.button_Recipe_GoldPowder_Fiducial_FindCount.Margin = new System.Windows.Forms.Padding(2);
-            this.button_Recipe_GoldPowder_Fiducial_FindCount.Name = "button_Recipe_GoldPowder_Fiducial_FindCount";
-            this.button_Recipe_GoldPowder_Fiducial_FindCount.Size = new System.Drawing.Size(28, 24);
-            this.button_Recipe_GoldPowder_Fiducial_FindCount.TabIndex = 234;
-            this.button_Recipe_GoldPowder_Fiducial_FindCount.Text = "#";
-            this.button_Recipe_GoldPowder_Fiducial_FindCount.UseVisualStyleBackColor = true;
-            // 
-            // label_Recipe_GoldPowder_Fiducial_FindCount
-            // 
-            this.label_Recipe_GoldPowder_Fiducial_FindCount.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.label_Recipe_GoldPowder_Fiducial_FindCount.Location = new System.Drawing.Point(753, 147);
-            this.label_Recipe_GoldPowder_Fiducial_FindCount.Margin = new System.Windows.Forms.Padding(5);
-            this.label_Recipe_GoldPowder_Fiducial_FindCount.Name = "label_Recipe_GoldPowder_Fiducial_FindCount";
-            this.label_Recipe_GoldPowder_Fiducial_FindCount.Size = new System.Drawing.Size(173, 25);
-            this.label_Recipe_GoldPowder_Fiducial_FindCount.TabIndex = 235;
-            this.label_Recipe_GoldPowder_Fiducial_FindCount.Text = "Find Count (ea):";
-            this.label_Recipe_GoldPowder_Fiducial_FindCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FormNewSub_Recipe_GoldPowder
             // 

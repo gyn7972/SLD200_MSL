@@ -1310,7 +1310,6 @@
             // baseLabel_Main_Divice_Status_BeamExpander
             // 
             this.baseLabel_Main_Divice_Status_BeamExpander.AutoSize = true;
-            this.baseLabel_Main_Divice_Status_BeamExpander.Enabled = false;
             this.baseLabel_Main_Divice_Status_BeamExpander.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.baseLabel_Main_Divice_Status_BeamExpander.ForeColor = System.Drawing.Color.Black;
             this.baseLabel_Main_Divice_Status_BeamExpander.Location = new System.Drawing.Point(159, 158);
@@ -1322,7 +1321,6 @@
             // 
             // pictureBox_Main_DiviceStatus_BeamExpander
             // 
-            this.pictureBox_Main_DiviceStatus_BeamExpander.Enabled = false;
             this.pictureBox_Main_DiviceStatus_BeamExpander.Image = global::SLD200.Properties.Resources.DioEllipseOff;
             this.pictureBox_Main_DiviceStatus_BeamExpander.Location = new System.Drawing.Point(128, 155);
             this.pictureBox_Main_DiviceStatus_BeamExpander.Name = "pictureBox_Main_DiviceStatus_BeamExpander";

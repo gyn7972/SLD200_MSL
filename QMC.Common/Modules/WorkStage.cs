@@ -35432,13 +35432,6 @@ namespace QMC.Common.Modules
 
                 case (int)ScannerCalibration_Step.Start:
                     {
-                        //Test
-                        //DrawCalibrationCrosses(3, 3, 2, 2);
-                        //spiralLabScanner.DrawCalibrationCrosses(3, 3, 2, 2);
-                        //Test
-                        //m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.CrossMarkCenter_MarkFind_Ready;
-                        //break;
-
                         m_bScannerCalibration_Complete = false;
                         m_pStageXY_Pos_BeforeVerify.X = 0.0;
                         m_pStageXY_Pos_BeforeVerify.Y = 0.0;
@@ -35476,7 +35469,6 @@ namespace QMC.Common.Modules
                             if (rtc.CtlGetStatus(RtcStatus.NotBusy))
                             {
                                 Log.Write("SLD-200", "Scanner Calibration", "Laser Off Check");
-
                                 if (Equipment.Machine_LaserType_CO2)
                                 {
                                     m_nScanner_Calibration_Step = (int)ScannerCalibration_Step.DustCollector_On;
@@ -35836,7 +35828,6 @@ namespace QMC.Common.Modules
                                 //범위 안에 있다면, 다음 위치로 이동.
                                 //이동할 위치를 가지고 가자.
                                 //다음 캘리브레이션 위치로 이동.
-
                                 // 정상동작 완료하고 Pos값 넣고 저장하자.... 아니지... Laser 쏘고 완료 되면 
                                 // 저장이다. 한 번 Laser 발진 한 곳은 그냥 끝. 
                                 // m_dScannerCalPosX_Last <- 이 위치가.. Vision cal 할 수 있는 위치가 되겠다..
@@ -36132,8 +36123,7 @@ namespace QMC.Common.Modules
 
                 case (int)ScannerCalibration_Step.StageXY_Move_ScannerCalibrationPos:
                     {
-                        //좌표 맵을 바꿔줘야 하나?
-                        //MapData_Apply((int)nMapData_Type.MapData_Stage_Scanner);            //그냥 이거 사용하면 되지 않나?
+                        //좌표 맵 - 확인 후 적용.   
                         //MapData_Apply((int)nMapData_Type.MapData_Stage_CalPos_Scanner);
                         MapData_Apply((int)nMapData_Type.MapData_Stage_Scanner);
 
@@ -36143,13 +36133,13 @@ namespace QMC.Common.Modules
                         lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
                         lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
 
-                        //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_Scanner_CalPos].Stage_X;
-                        //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_Scanner_CalPos].Stage_Y;
                         workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X] = m_dCurrentCalPosX;
                         workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] = m_dCurrentCalPosY;
 
                         xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
                         xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
+
+
 
                         MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
 
