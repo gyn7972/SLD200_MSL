@@ -577,6 +577,7 @@
             this.groupBox30 = new System.Windows.Forms.GroupBox();
             this.labelStagePressure = new System.Windows.Forms.Label();
             this.label51 = new System.Windows.Forms.Label();
+            this.button_Config__TabLaser_CalFilePopup = new System.Windows.Forms.Button();
             this.tabControl_Config.SuspendLayout();
             this.tabPage_Config_LDUL.SuspendLayout();
             this.groupBox_Config_LDUL_DIO.SuspendLayout();
@@ -4965,6 +4966,7 @@
             // 
             // tabPage_Config_Laser
             // 
+            this.tabPage_Config_Laser.Controls.Add(this.button_Config__TabLaser_CalFilePopup);
             this.tabPage_Config_Laser.Controls.Add(this.groupBox_Config_Laser_UVLaser);
             this.tabPage_Config_Laser.Controls.Add(this.groupBox13);
             this.tabPage_Config_Laser.Controls.Add(this.groupBox2);
@@ -7931,6 +7933,18 @@
             this.label51.Text = "Pressure(kPa) : ";
             this.label51.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // button_Config__TabLaser_CalFilePopup
+            // 
+            this.button_Config__TabLaser_CalFilePopup.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Config__TabLaser_CalFilePopup.Location = new System.Drawing.Point(528, 125);
+            this.button_Config__TabLaser_CalFilePopup.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Config__TabLaser_CalFilePopup.Name = "button_Config__TabLaser_CalFilePopup";
+            this.button_Config__TabLaser_CalFilePopup.Size = new System.Drawing.Size(105, 46);
+            this.button_Config__TabLaser_CalFilePopup.TabIndex = 80;
+            this.button_Config__TabLaser_CalFilePopup.Text = "Cal File";
+            this.button_Config__TabLaser_CalFilePopup.UseVisualStyleBackColor = true;
+            this.button_Config__TabLaser_CalFilePopup.Click += new System.EventHandler(this.button_Config__TabLaser_CalFilePopup_Click);
+            // 
             // FormNew_Config
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -8631,5 +8645,6 @@
         private System.Windows.Forms.Label Label_Config_SeqTest_SeqStatus_Disp_Loader_Lport;
         private System.Windows.Forms.Label label67;
         private System.Windows.Forms.Label label_Config_SeqTest_SeqStatus_Disp_UnLoader_LPort;
+        private System.Windows.Forms.Button button_Config__TabLaser_CalFilePopup;
     }
 }

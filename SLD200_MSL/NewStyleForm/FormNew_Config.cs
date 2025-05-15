@@ -20,6 +20,7 @@ using QMC.Common.Motion.ACS.Motions;
 using QMC.Common.Parts;
 using QMC.Common.VisionPart;
 using QMC.Core;
+using SLD200.NewStyleForm;
 using SpiralLab.Sirius;
 using static QMC.Common.Equipment;
 using static QMC.Common.Modules.Loader;
@@ -34,6 +35,12 @@ namespace SLD200_MSL
     {
         private bool m_bFormVisible = false; // 실제 Show 상태 여부
 
+        static WorkStage workStage;
+        static Loader loader;
+        static Unloader unloader;
+        static Vision vision;
+        static Bds bds;
+
         FormNew_VisionPopup m_formVisionPopup = new FormNew_VisionPopup();
         public FormNew_VisionPopup FormVisionPopup
         {
@@ -41,11 +48,12 @@ namespace SLD200_MSL
             set { m_formVisionPopup = value; }
         }
 
-        static WorkStage workStage;
-        static Loader loader;
-        static Unloader unloader;
-        static Vision vision;
-        static Bds bds;
+        FormNew_CalFilePopup m_FormcalfilePopup;
+        public FormNew_CalFilePopup FormCalfilePopup
+        {
+            get { return m_FormcalfilePopup; }
+            set { m_FormcalfilePopup = value; }
+        }
 
         private bool m_bEmgBtn_Clicked = false;
 
@@ -90,6 +98,9 @@ namespace SLD200_MSL
             this.UpdateStyles();
 
             //this.Load += FormNew_Config_Load; // 여기서 Load 이벤트 연결
+
+            m_FormcalfilePopup = new FormNew_CalFilePopup();
+            m_FormcalfilePopup.Owner = this;
 
             m_keyPad = new FormNew_KeyPad();
 
@@ -5807,6 +5818,15 @@ namespace SLD200_MSL
                         break;
                     }
                 }
+            }
+        }
+
+        private void button_Config__TabLaser_CalFilePopup_Click(object sender, EventArgs e)
+        {
+            if (!FormCalfilePopup.Visible)
+            {
+                FormCalfilePopup.Show();
+                FormCalfilePopup.Activate();
             }
         }
     }

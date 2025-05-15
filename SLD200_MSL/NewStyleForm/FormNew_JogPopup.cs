@@ -55,20 +55,15 @@ namespace SLD200.NewStyleForm
             if (m_bInitialized)
                 return;
 
-
-            //this.Size = new Size(1280, 1024);  // 원하는 사이즈
-            //this.MinimumSize = this.Size;
-            //Size 축소 / 확대 안되게 하기 위한 코드.
-            this.AutoScaleMode = AutoScaleMode.None;
-            this.AutoSize = false;
-            this.DoubleBuffered = true;
-            this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
-            this.UpdateStyles();
+            //this.AutoScaleMode = AutoScaleMode.None;
+            //this.AutoSize = false;
+            //this.DoubleBuffered = true;
+            //this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+            //this.UpdateStyles();
 
             this.tabControl_JogPopup.Dock = DockStyle.Fill;
             tabControl_JogPopup.AutoSize = false;
             
-
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
             foreach (Module module in m_collectionModules)

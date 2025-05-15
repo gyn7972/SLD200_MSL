@@ -1769,60 +1769,6 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Sirius_Drawing", "Rendering_Resolution", textBox_Setup_Option_Sirius_Drawing_Resolution.Text, strFIle);
             SpiralLab.Sirius.Config.AngleFactor = Equipment.SiriusDrawing_Rendering_Resolution;
 
-            ////  Scanner Calibration parameter
-            //Equipment.Scanner_Calibration_LaserFrequency = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserFrequency.Text);
-            //Equipment.Scanner_Calibration_LaserPulseWidth = Equipment.ToDouble(textBox_Setup_ScannerCal_PulseWidth.Text);
-            //Equipment.Scanner_Calibration_LaserEnergy = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserEnergy.Text);
-            //Equipment.Scanner_Calibration_CrossMarkLength = Equipment.ToDouble(textBox_Setup_ScannerCal_CrossMarkLength.Text);
-            //Equipment.Scanner_Calibration_LaserMarkSpeed = Equipment.ToDouble(textBox_Setup_ScannerCal_MarkingSpeed.Text);
-            //Equipment.Scanner_Calibration_LaserJumpSpeed = Equipment.ToDouble(textBox_Setup_ScannerCal_JumpSpeed.Text);
-            //Equipment.Scanner_Calibration_LaserOnDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserOnDelay.Text);
-            //Equipment.Scanner_Calibration_LaserOffDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserOffDelay.Text);
-            //Equipment.Scanner_Calibration_MarkDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_MarkDelay.Text);
-            //Equipment.Scanner_Calibration_JumpDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_JumpDelay.Text);
-            //Equipment.Scanner_Calibration_PolygonDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_PolygonDelay.Text);
-            //Equipment.Scanner_Calibration_CalAreaWidth = Equipment.ToDouble(textBox_Setup_ScannerCal_CalAreaWidth.Text);
-            //Equipment.Scanner_Calibration_CalAreaHeight = Equipment.ToDouble(textBox_Setup_ScannerCal_CalAreaHeight.Text);
-            //Equipment.Scanner_Calibration_CalPitch = Equipment.ToDouble(textBox_Setup_ScannerCal_CalPitch.Text);
-
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Frequency", textBox_Setup_ScannerCal_LaserFrequency.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Pulse_Width", textBox_Setup_ScannerCal_PulseWidth.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Energy", textBox_Setup_ScannerCal_LaserEnergy.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "CrossMark_Length", textBox_Setup_ScannerCal_CrossMarkLength.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Marking_Speed", textBox_Setup_ScannerCal_MarkingSpeed.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Jump_Speed", textBox_Setup_ScannerCal_JumpSpeed.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_On_Delay", textBox_Setup_ScannerCal_LaserOnDelay.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Off_Delay", textBox_Setup_ScannerCal_LaserOffDelay.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Mark_Delay", textBox_Setup_ScannerCal_MarkDelay.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Jump_Delay", textBox_Setup_ScannerCal_JumpDelay.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Polygon_Delay", textBox_Setup_ScannerCal_PolygonDelay.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Width", textBox_Setup_ScannerCal_CalAreaWidth.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Height", textBox_Setup_ScannerCal_CalAreaHeight.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Cal_Pitch", textBox_Setup_ScannerCal_CalPitch.Text, strFIle);
-
-            //Equipment.Scanner_Calibration_srcFilePath = m_correction2DRtc.SourceCorrectionFile; // m_srcFile;
-            //Equipment.Scanner_Calibration_targetFilePath = m_correction2DRtc.TargetCorrectionFile;  // m_targetFile;
-            //Equipment.Scanner_Calibration_FieldSize = m_fieldSize;
-            //Equipment.Scanner_Calibration_rowInterval = m_correction2DRtc.RowInterval;  // m_rowInterval;
-            //Equipment.Scanner_Calibration_colInterval = m_correction2DRtc.ColInterval; //m_colInterval;
-            //Equipment.Scanner_Calibration_rowCount = m_correction2DRtc.Rows;   //m_row;
-            //Equipment.Scanner_Calibration_colCount = m_correction2DRtc.Cols;   //m_col;
-
-            //m_srcFile = Equipment.Scanner_Calibration_srcFilePath;
-            //m_targetFile = Equipment.Scanner_Calibration_targetFilePath;
-            //m_rowInterval = (float)Equipment.Scanner_Calibration_rowInterval;
-            //m_colInterval = (float)Equipment.Scanner_Calibration_colInterval;
-            //m_row = Equipment.Scanner_Calibration_rowCount;
-            //m_col = Equipment.Scanner_Calibration_colCount;
-
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "srcFilePath", m_srcFile, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "targetFilePath", m_targetFile, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "FieldSize", m_fieldSize.ToString(), strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "rowInterval", m_rowInterval.ToString(), strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "colInterval", m_colInterval.ToString(), strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "rowCount", m_row.ToString(), strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "colCount", m_col.ToString(), strFIle);
-
             MessageBox.Show("Machine Option 파일을 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -1900,7 +1846,6 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "rowCount", m_row.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "colCount", m_col.ToString(), strFIle);
 
-            MessageBox.Show("Machine ScannerCalibration 파일을 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btnScannerOffset_Set_Click(object sender, EventArgs e)
@@ -2384,6 +2329,9 @@ namespace SLD200_MSL
 
             //  Scanner Calibration 관련 파라미터 저장
             Machine_ScannerCalibration_Save();
+
+            var mb1 = new QMC.Common.UI.MessageBoxOk();
+            mb1.ShowDialog("Information", "저장하였습니다.");
         }
 
         private void btnCalStart_Click(object sender, EventArgs e)
@@ -2478,15 +2426,14 @@ namespace SLD200_MSL
             //    mb2.ShowDialog("Information !", "장비 초기화를 해야 합니다.");
             //    return;
             //}
+            //if (workStage.rtc == null)
+            //{
+            //    var mb2 = new MessageBoxOk();
+            //    mb2.ShowDialog("Information !", "Scanner Board 를 초기화 해야 합니다.");
+            //    return;
+            //}
 
-            
-
-            if (workStage.rtc == null)
-            {
-                var mb2 = new MessageBoxOk();
-                mb2.ShowDialog("Information !", "Scanner Board 를 초기화 해야 합니다.");
-                return;
-            }
+            //카메라 초기화만 봐야 할 듯.
 
             if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)
             {
@@ -2641,12 +2588,13 @@ namespace SLD200_MSL
 
             m_srcFile = filePath;
             m_correction2DRtc.SourceCorrectionFile = m_srcFile;
-            m_correction2DRtc.TargetCorrectionFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "correction", $"newfile.ct5"); //Equipment.Scanner_Calibration_targetFilePath;
+            m_correction2DRtc.TargetCorrectionFile = m_targetFile;  // Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "correction", $"newfile.ct5"); //Equipment.Scanner_Calibration_targetFilePath;
             m_correction2DRtcForm.RefreshData();
 
             Equipment.Scanner_Calibration_srcFilePath = m_srcFile;
 
-            Machine_ScannerCalibration_Save();
+            //밖에서 저장함. 
+            //Machine_ScannerCalibration_Save();
 
             return true;
         }
@@ -3782,13 +3730,6 @@ namespace SLD200_MSL
             Equipment.Scanner_Calibration_Illumination_channel_01_Value = workStage.Config.ListIlluminationChannel[0].Value; //RED
             Equipment.Scanner_Calibration_Illumination_channel_02_Value = workStage.Config.ListIlluminationChannel[1].Value; //IR
 
-            //workStage.scannerCompensator.IlluminationData
-            //Equipment.Scanner_Calibration_AngleTolerance = Equipment.ToDouble(basetextBox_Setup_ScannerCal_AngleTolerance.Text);
-            //Equipment.Scanner_Calibration_MaxInstance = Equipment.ToDouble(basetextBox_Setup_ScannerCal_MaxInstance.Text);
-            //Equipment.Scanner_Calibration_MinScore = Equipment.ToDouble(basetextBox_Setup_ScannerCal_MinScore.Text);
-            //Equipment.Scanner_Calibration_DuplicateCheck = baseToggleButton_Setup_ScannerCal_DuplicateCheck.GetButtonStatus();
-            //Equipment.Scanner_Calibration_UseMaskImage = baseToggleButton_Setup_ScannerCal_UseMaskImage.GetButtonStatus();
-
             Equipment.Scanner_Calibration_TrainRoiStartLocation_X = RoiTrain.Parameter.StartLocation.X;
             Equipment.Scanner_Calibration_TrainRoiStartLocation_Y = RoiTrain.Parameter.StartLocation.Y;
             Equipment.Scanner_Calibration_TrainRoiEndLocation_X = RoiTrain.Parameter.EndLocation.X;
@@ -3811,11 +3752,13 @@ namespace SLD200_MSL
             Equipment.Scanner_Calibration_BlobVisionToolParameter.RepeatCount = BlobParameter.RepeatCount;
             Equipment.Scanner_Calibration_BlobVisionToolParameter.HasChanged = BlobParameter.HasChanged;
 
-
             workStage.scannerCompensator.Recipe.PatternMatchingParameter = PatternMatchingParameter;
             workStage.scannerCompensator.Recipe.BlobParameter = BlobParameter;
 
             workStage.Scanner_Calibration_Vision_Save();
+
+            var mb1 = new QMC.Common.UI.MessageBoxOk();
+            mb1.ShowDialog("Information", "저장하였습니다.");
         }
 
         private void radioButton_Setup_ScannerCal_Cross_CheckedChanged(object sender, EventArgs e)
@@ -3855,7 +3798,7 @@ namespace SLD200_MSL
         private void button_Setup_ScannerCal_Rtc6_Cal_File_Load_Click(object sender, EventArgs e)
         {
             var mb = new QMC.Common.UI.MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "신규 ct5 파일\n\n적용하시겠습니까?"))
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Target File ct5 파일\n\n적용하시겠습니까?"))
             {
                 return;
             }
@@ -3863,8 +3806,12 @@ namespace SLD200_MSL
             bool bRtn = LoadCorrectionData(0, m_targetFile);
             if (bRtn)
             {
+                m_targetFile = string.Format("D:\\SLD-200_Parameter\\NewCal.ct5");
                 Machine_ScannerCalibration_Save();
             }
+
+            var mb1 = new QMC.Common.UI.MessageBoxOk();
+            mb1.ShowDialog("Information", "완료");
         }
 
         private void button_Setup_ScannerCal_CameraLive_Click(object sender, EventArgs e)
@@ -3991,6 +3938,47 @@ namespace SLD200_MSL
             {
                 Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable = false;
                 textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Enabled = false;
+            }
+        }
+
+        private void button_Setup_ScannerCal_Rtc6_Cal_File_Save_Click(object sender, EventArgs e)
+        {
+            string fileName;
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = "Scanner Cal Data Path";
+            saveFileDialog.OverwritePrompt = true;
+            saveFileDialog.CreatePrompt = true;
+
+            saveFileDialog.InitialDirectory = ConfigManager.GetConfigFilePath();
+           
+            saveFileDialog.Filter = "Cal File(*.ct5)|*.ct5";
+
+            DirectoryInfo di = new DirectoryInfo(ConfigManager.GetRecipeDataPath());
+            if (!di.Exists == false)
+            {
+                di.Create();
+            }
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                fileName = saveFileDialog.FileName;
+
+                // 기존 파일 존재 여부 확인
+                if (!string.IsNullOrEmpty(m_targetFile) && File.Exists(m_targetFile))
+                {
+                    // 파일 복사
+                    File.Copy(m_targetFile, fileName, true); // true = overwrite
+                }
+                else
+                {
+                    // 원본 파일이 없으면 빈 파일 생성
+                    using (FileStream fs = File.Create(fileName)) { }
+                }
+                m_targetFile = fileName; // 새 경로로 업데이트
+
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !!", "ct5 파일을 저장하였습니다.");
             }
         }
     }

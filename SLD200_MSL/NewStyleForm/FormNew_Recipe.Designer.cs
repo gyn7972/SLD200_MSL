@@ -117,6 +117,9 @@
             this.radioButton_Recipe_TabRecipe_ProcessPriority_PulsePeriod = new System.Windows.Forms.RadioButton();
             this.radioButton_Recipe_TabRecipe_ProcessPriority_P2P = new System.Windows.Forms.RadioButton();
             this.groupBox163 = new System.Windows.Forms.GroupBox();
+            this.button_Recipe_TabRecipe_Cal_ZAxisOffset = new System.Windows.Forms.Button();
+            this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset = new System.Windows.Forms.RichTextBox();
+            this.label_Recipe_TabRecipe_Cal_ZAxisOffset = new System.Windows.Forms.Label();
             this.label86 = new System.Windows.Forms.Label();
             this.button14 = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time = new System.Windows.Forms.RichTextBox();
@@ -197,6 +200,7 @@
             this.button_Recipe_TabRecipe_LayerImport = new System.Windows.Forms.Button();
             this.listBox_Recipe_TabRecipe_ListOfDrawingLayer = new System.Windows.Forms.ListBox();
             this.tabPage_RecipeVision = new System.Windows.Forms.TabPage();
+            this.tabPage_RecipeGoldPowder = new System.Windows.Forms.TabPage();
             this.tabPage_Test = new System.Windows.Forms.TabPage();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
@@ -272,6 +276,7 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign = new System.Windows.Forms.CheckBox();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox15.SuspendLayout();
@@ -356,6 +361,7 @@
             this.tabControl_Recipe.Appearance = System.Windows.Forms.TabAppearance.Buttons;
             this.tabControl_Recipe.Controls.Add(this.tabPage_Recipe);
             this.tabControl_Recipe.Controls.Add(this.tabPage_RecipeVision);
+            this.tabControl_Recipe.Controls.Add(this.tabPage_RecipeGoldPowder);
             this.tabControl_Recipe.Controls.Add(this.tabPage_Test);
             this.tabControl_Recipe.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
             this.tabControl_Recipe.ItemSize = new System.Drawing.Size(170, 40);
@@ -1105,6 +1111,7 @@
             // 
             // groupBox9
             // 
+            this.groupBox9.Controls.Add(this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign);
             this.groupBox9.Controls.Add(this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY);
             this.groupBox9.Controls.Add(this.label85);
             this.groupBox9.Controls.Add(this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX);
@@ -1116,7 +1123,7 @@
             this.groupBox9.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox9.Size = new System.Drawing.Size(231, 176);
+            this.groupBox9.Size = new System.Drawing.Size(231, 211);
             this.groupBox9.TabIndex = 87;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = " Process Options ";
@@ -1369,6 +1376,9 @@
             // 
             // groupBox163
             // 
+            this.groupBox163.Controls.Add(this.button_Recipe_TabRecipe_Cal_ZAxisOffset);
+            this.groupBox163.Controls.Add(this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset);
+            this.groupBox163.Controls.Add(this.label_Recipe_TabRecipe_Cal_ZAxisOffset);
             this.groupBox163.Controls.Add(this.label86);
             this.groupBox163.Controls.Add(this.button14);
             this.groupBox163.Controls.Add(this.textBox_Recipe_TabRecipe_Miscellaneous_CircleStartAngleWhenCircle1time);
@@ -1447,6 +1457,39 @@
             this.groupBox163.TabIndex = 81;
             this.groupBox163.TabStop = false;
             this.groupBox163.Text = " Miscellaneous ";
+            // 
+            // button_Recipe_TabRecipe_Cal_ZAxisOffset
+            // 
+            this.button_Recipe_TabRecipe_Cal_ZAxisOffset.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_Recipe_TabRecipe_Cal_ZAxisOffset.Location = new System.Drawing.Point(352, 684);
+            this.button_Recipe_TabRecipe_Cal_ZAxisOffset.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_Cal_ZAxisOffset.Name = "button_Recipe_TabRecipe_Cal_ZAxisOffset";
+            this.button_Recipe_TabRecipe_Cal_ZAxisOffset.Size = new System.Drawing.Size(35, 25);
+            this.button_Recipe_TabRecipe_Cal_ZAxisOffset.TabIndex = 159;
+            this.button_Recipe_TabRecipe_Cal_ZAxisOffset.Text = "#";
+            this.button_Recipe_TabRecipe_Cal_ZAxisOffset.UseVisualStyleBackColor = true;
+            // 
+            // richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset
+            // 
+            this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Location = new System.Drawing.Point(201, 684);
+            this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Multiline = false;
+            this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Name = "richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset";
+            this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Size = new System.Drawing.Size(147, 25);
+            this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.TabIndex = 160;
+            this.richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = "0.0";
+            // 
+            // label_Recipe_TabRecipe_Cal_ZAxisOffset
+            // 
+            this.label_Recipe_TabRecipe_Cal_ZAxisOffset.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_Recipe_TabRecipe_Cal_ZAxisOffset.Location = new System.Drawing.Point(9, 682);
+            this.label_Recipe_TabRecipe_Cal_ZAxisOffset.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.label_Recipe_TabRecipe_Cal_ZAxisOffset.Name = "label_Recipe_TabRecipe_Cal_ZAxisOffset";
+            this.label_Recipe_TabRecipe_Cal_ZAxisOffset.Size = new System.Drawing.Size(188, 25);
+            this.label_Recipe_TabRecipe_Cal_ZAxisOffset.TabIndex = 158;
+            this.label_Recipe_TabRecipe_Cal_ZAxisOffset.Text = "Cal_ZAxisOffset (mm) :";
+            this.label_Recipe_TabRecipe_Cal_ZAxisOffset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label86
             // 
@@ -2368,6 +2411,15 @@
             this.tabPage_RecipeVision.TabIndex = 8;
             this.tabPage_RecipeVision.Text = "Fiducial";
             this.tabPage_RecipeVision.UseVisualStyleBackColor = true;
+            // 
+            // tabPage_RecipeGoldPowder
+            // 
+            this.tabPage_RecipeGoldPowder.Location = new System.Drawing.Point(4, 44);
+            this.tabPage_RecipeGoldPowder.Name = "tabPage_RecipeGoldPowder";
+            this.tabPage_RecipeGoldPowder.Size = new System.Drawing.Size(1737, 756);
+            this.tabPage_RecipeGoldPowder.TabIndex = 9;
+            this.tabPage_RecipeGoldPowder.Text = "GoldPowder";
+            this.tabPage_RecipeGoldPowder.UseVisualStyleBackColor = true;
             // 
             // tabPage_Test
             // 
@@ -3308,6 +3360,17 @@
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
             // 
+            // checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign
+            // 
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.AutoSize = true;
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Location = new System.Drawing.Point(17, 171);
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Name = "checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign";
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Size = new System.Drawing.Size(132, 21);
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.TabIndex = 66;
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Text = "GoldPowder Align";
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.UseVisualStyleBackColor = true;
+            // 
             // FormNew_Recipe
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -3615,5 +3678,10 @@
         private System.Windows.Forms.Label label89;
         private System.Windows.Forms.Label label_PulseWidth_Range;
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_LowerDustCollector_Disable;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_Cal_ZAxisOffset;
+        private System.Windows.Forms.RichTextBox richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset;
+        private System.Windows.Forms.Label label_Recipe_TabRecipe_Cal_ZAxisOffset;
+        private System.Windows.Forms.TabPage tabPage_RecipeGoldPowder;
+        private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign;
     }
 }

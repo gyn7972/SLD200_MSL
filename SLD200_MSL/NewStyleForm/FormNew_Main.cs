@@ -278,23 +278,14 @@ namespace SLD200_MSL
             {
                 this.ImageViewer_Main_highs.SizeMode = PictureBoxSizeMode.CenterImage;
                 this.ImageViewer_Main_highs.SuspendDisplay();
-                this.ImageViewer_Main_highs.StopUpdateTask();
-
-                //Fine은 Workstage Camera와 연동
                 this.ImageViewer_Main_highs.Camera = workStage.Camera_HighRes;
-                this.ImageViewer_Main_highs.ResumeDisplay();
-                this.ImageViewer_Main_highs.StartUpdateTask();
             }
 
             //if (this.ImageViewer_Main_Lows.IsHandleCreated)
             {
                 this.ImageViewer_Main_Lows.SizeMode = PictureBoxSizeMode.CenterImage;
                 this.ImageViewer_Main_Lows.SuspendDisplay();
-                this.ImageViewer_Main_Lows.StopUpdateTask();
-                //Prealign은 jigAligner와 연동
                 this.ImageViewer_Main_Lows.Camera = workStage.jigAligner_LowRes.Camera;
-                this.ImageViewer_Main_Lows.ResumeDisplay();
-                this.ImageViewer_Main_Lows.StartUpdateTask();
             }
 
             // control 초기화 
@@ -3510,7 +3501,7 @@ namespace SLD200_MSL
             try
             {
                 int goalOneCycleSec = 70;      // 목표 1사이클 시간 (초)
-                int goalTotalSec = 86400;      // 총 목표 시간 (초) - 24시간
+                int goalTotalSec = 86400;      // 총 목표 시간 (초) - 24시간 <- 수량 및 1사이클에 따른 남은 시간 계산 필요.
 
                 // 실시간 경과 시간
                 TimeSpan oneCycle = Equipment.CycleTimer_LaserDrilling.IsRunning
@@ -3525,7 +3516,7 @@ namespace SLD200_MSL
                 int oneCycleProgress = (int)(oneCycle.TotalSeconds / goalOneCycleSec * 100);
                 progressBar_OneCycle_Time.Value = Math.Min(progressBar_OneCycle_Time.Maximum, Math.Max(0, oneCycleProgress));
 
-                // ---- Total 누적 시간 표시 ----
+                // ---- Total 누적 시간 표시 ---- -> 남은 시간 계산 필요.
                 baseLabel_Total_RemainedTime.Text = totalElapsed.ToString(@"hh\:mm\:ss");
                 int totalProgress = (int)(totalElapsed.TotalSeconds / goalTotalSec * 100);
                 progressBar_TotalRemained_Time.Value = Math.Min(progressBar_TotalRemained_Time.Maximum, Math.Max(0, totalProgress));
