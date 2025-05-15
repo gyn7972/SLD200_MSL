@@ -103,12 +103,16 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         public void OnShow()
         {
+            if (!m_bInitialized)
+                return;
             LoadRecipe();
             ApplyRecipeToUI();
             timer_Status.Start();
         }
         public void OnHide()
         {
+            if (!m_bInitialized)
+                return;
             UpdateRecipeFromUI();
             timer_Status.Stop();
         }

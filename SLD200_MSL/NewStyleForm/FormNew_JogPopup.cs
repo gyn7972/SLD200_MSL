@@ -211,7 +211,7 @@ namespace SLD200.NewStyleForm
         }
 
         // 축 JogMove 공통 처리
-        public void button_AxisJog_MouseDown(object sender, MouseEventArgs e)
+        public async void button_AxisJog_MouseDown(object sender, MouseEventArgs e)
         {
             Button btn = sender as Button;
             if (btn == null || btn.Tag == null)
@@ -236,7 +236,6 @@ namespace SLD200.NewStyleForm
                     if (axis < 0) return;
 
                     Type_Motor_Speed speedType = GetMotorSpeedType(unit);
-
                     if (IsJogMoveContinuous(unit))
                     {
                         switch (unit)
@@ -255,7 +254,6 @@ namespace SLD200.NewStyleForm
                             case "Loader": loader.MovetoLoader_Rel_Positions((Loader.nAxis)axis, distance, (int)direction, speedType); break;
                             case "Unloader": unloader.MovetoUnloader_Rel_Positions((Unloader.nAxis)axis, distance, (int)direction, speedType); break;
                         }
-                        //controller.MovetoWorkStage_Rel_Positions((WorkStage.nAxis)axis, distance, (int)direction, speedType);
                     }
                 }
             }
@@ -283,13 +281,16 @@ namespace SLD200.NewStyleForm
                 int axis = GetAxisIndex(ref unit, axisName);
                 if (axis < 0) return;
 
-                switch (unit)
+                // 연속 이동일 때만 정지
+                if (IsJogMoveContinuous(unit))
                 {
-                    case "WorkStage": workStage.MC_Func.MC_JogStop(axis); break;
-                    case "Loader": loader.MC_Func.MC_JogStop(axis); break;
-                    case "Unloader": unloader.MC_Func.MC_JogStop(axis); break;
+                    switch (unit)
+                    {
+                        case "WorkStage": workStage.MC_Func.MC_JogStop(axis); break;
+                        case "Loader": loader.MC_Func.MC_JogStop(axis); break;
+                        case "Unloader": unloader.MC_Func.MC_JogStop(axis); break;
+                    }
                 }
-                //controller.MC_Func.MC_JogStop(axis);
             }
         }
 

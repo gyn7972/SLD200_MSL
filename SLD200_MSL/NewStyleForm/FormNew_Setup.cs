@@ -396,6 +396,10 @@ namespace SLD200_MSL
                 timer_Status.Enabled = true;
                 this.Box_Setup_ScannerCal_ImageViewer.ResumeDisplay();
                 this.Box_Setup_ScannerCal_ImageViewer.StartUpdateTask();
+                if (workStage.Camera_HighRes.Opened)
+                {
+                    this.Box_Setup_ScannerCal_ImageViewer.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
+                }
             }
             else if (!this.Visible && m_bFormVisible)
             {
@@ -2365,14 +2369,14 @@ namespace SLD200_MSL
             }
 
             var mb1 = new QMC.Common.UI.MessageBoxYesNo();
-            if (DialogResult.Yes != mb1.ShowDialog("Question ?", 
+            if (DialogResult.Yes == mb1.ShowDialog("Question ?", 
                 "Scanner Calibration을 시작합니다.\n\n캘리브레이션 판이 변경되었습니까?"))
             {
-                Equipment.Scanner_Calibration_Change = false;
+                Equipment.Scanner_Calibration_Change = true;
             }
             else
             {
-                Equipment.Scanner_Calibration_Change = true;
+                Equipment.Scanner_Calibration_Change = false;
             }
 
             if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)

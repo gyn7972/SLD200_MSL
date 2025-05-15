@@ -25,6 +25,7 @@ using static QMC.Common.Equipment;
 using System.Security.Cryptography;
 using MessageBoxOk = QMC.Core.MessageBoxOk;
 using QMC.Common.Recipe;
+using OpenCvSharp.Dnn;
 
 namespace SLD200.NewStyleForm.NewSubForm
 {
@@ -1219,14 +1220,9 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             try
             {
-                // 각각의 비동기 Task를 받아서 기다림
-                var taskX = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
-                var taskY = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
-
-                // 동시에 실행하고 결과 기다림
-                var results = await Task.WhenAll(taskX, taskY);
-                bWaitPosX = results[0];
-                bWaitPosY = results[1];
+                // await 사용으로 UI 프리즈 없이 동작 //시컨스에서는 await 사용 안됨.
+               bWaitPosX = await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
+               bWaitPosY = await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
 
                 if (!bWaitPosX)
                 {

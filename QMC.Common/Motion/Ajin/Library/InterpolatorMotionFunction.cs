@@ -79,40 +79,40 @@ namespace QMC.Common.Motion.Ajin.Motions
                         {
                             bool bRet = base.MC_MovePosition((int)WorkStage.nAxis.X, destPosition.X, vel, accel, decel);
                             bRet &= base.MC_MovePosition((int)WorkStage.nAxis.Y, destPosition.Y, vel, accel, decel);
-                            //while (!base.MC_GetInposition((int)WorkStage.nAxis.Y))
-                            //{
-                            //    Thread.Sleep(1);
-                            //}
-                            while (!base.MC_GetInposition((int)WorkStage.nAxis.X))
+                            while (!base.MC_GetInposition((int)WorkStage.nAxis.Y))
                             {
                                 Thread.Sleep(1);
-                                elapsed++;
-                                if (elapsed > 20000) // 20段
-                                {
-                                    Log.Write("Timeout", $"Axis {Axis} inposition timeout.");
-                                    return false;
-                                }
                             }
+                            //while (!base.MC_GetInposition((int)WorkStage.nAxis.X))
+                            //{
+                            //    Thread.Sleep(1);
+                            //    elapsed++;
+                            //    if (elapsed > 20000) // 20段
+                            //    {
+                            //        Log.Write("Timeout", $"Axis {Axis} inposition timeout.");
+                            //        return false;
+                            //    }
+                            //}
                             return bRet;
                         }
                         else if (Axis == (int)WorkStage.nAxis.Y)
                         {
                             bool bRet = base.MC_MovePosition((int)WorkStage.nAxis.X, destPosition.X, vel, accel, decel);
                             bRet &= base.MC_MovePosition((int)WorkStage.nAxis.Y, destPosition.Y, vel, accel, decel);
-                            //while (!base.MC_GetInposition((int)WorkStage.nAxis.X))
-                            //{
-                            //    Thread.Sleep(1);
-                            //}
                             while (!base.MC_GetInposition((int)WorkStage.nAxis.X))
                             {
                                 Thread.Sleep(1);
-                                elapsed++;
-                                if (elapsed > 20000) // 20段
-                                {
-                                    Log.Write("Timeout", $"Axis {Axis} inposition timeout.");
-                                    return false;
-                                }
                             }
+                            //while (!base.MC_GetInposition((int)WorkStage.nAxis.X))
+                            //{
+                            //    Thread.Sleep(1);
+                            //    elapsed++;
+                            //    if (elapsed > 20000) // 20段
+                            //    {
+                            //        Log.Write("Timeout", $"Axis {Axis} inposition timeout.");
+                            //        return false;
+                            //    }
+                            //}
                             return bRet;
                         }
                     }
@@ -232,35 +232,35 @@ namespace QMC.Common.Motion.Ajin.Motions
                         {
                             bool bRet = base.MC_MovePosition((int)WorkStage.nAxis.X, destPosition.X, vel, accel, decel);
                             bRet &= base.MC_MovePosition((int)WorkStage.nAxis.Y, destPosition.Y, vel, accel, decel);
-                            //while (!base.MC_GetInposition((int)WorkStage.nAxis.Y))
-                            //{
-                            //    Thread.Sleep(1);
-                            //}
                             while (!base.MC_GetInposition((int)WorkStage.nAxis.Y))
                             {
                                 Thread.Sleep(1);
-                                elapsed++;
-                                if (elapsed > 20000) // 20段
-                                {
-                                    Log.Write("Timeout", $"Axis {Axis} inposition timeout.");
-                                    return false;
-                                }
                             }
-
-                            //while (!base.MC_GetInposition((int)WorkStage.nAxis.X))
+                            //while (!base.MC_GetInposition((int)WorkStage.nAxis.Y))
                             //{
                             //    Thread.Sleep(1);
+                            //    elapsed++;
+                            //    if (elapsed > 20000) // 20段
+                            //    {
+                            //        Log.Write("Timeout", $"Axis {Axis} inposition timeout.");
+                            //        return false;
+                            //    }
                             //}
+
                             while (!base.MC_GetInposition((int)WorkStage.nAxis.X))
                             {
                                 Thread.Sleep(1);
-                                elapsed++;
-                                if (elapsed > 20000) // 20段
-                                {
-                                    Log.Write("Timeout", $"Axis {Axis} inposition timeout.");
-                                    return false;
-                                }
                             }
+                            //while (!base.MC_GetInposition((int)WorkStage.nAxis.X))
+                            //{
+                            //    Thread.Sleep(1);
+                            //    elapsed++;
+                            //    if (elapsed > 20000) // 20段
+                            //    {
+                            //        Log.Write("Timeout", $"Axis {Axis} inposition timeout.");
+                            //        return false;
+                            //    }
+                            //}
 
                             return bRet;
                         }

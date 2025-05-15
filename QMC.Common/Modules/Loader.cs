@@ -11109,47 +11109,47 @@ namespace QMC.Common.Modules
                 switch (nAxis)
                 {
                     case Loader.nAxis.Z0:
-                        if (!IsInterlock_LoaderPortR_Enabled()) return bRtn = false;
+                        if (!IsInterlock_LoaderPortR_Enabled() || !IsLoaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Loader.nAxis.Z1:
-                        if (!IsInterlock_LoaderPortL_Enabled()) return bRtn = false;
+                        if (!IsInterlock_LoaderPortL_Enabled() || !IsLoaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Loader.nAxis.ALN_X:
+                        if (!IsLoaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Loader.nAxis.ALN_Y:
+                        if (!IsLoaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Loader.nAxis.TR_Z:
-                        if (!IsInterlock_LoaderTransferZ_Enabled()) return bRtn = false;
+                        if (!IsInterlock_LoaderTransferZ_Enabled() || !IsLoaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Loader.nAxis.TR_X:
-                        if (!IsInterlock_LoaderTransferX_Enabled()) return bRtn = false;
+                        if (!IsInterlock_LoaderTransferX_Enabled() || !IsLoaderMoving(nAxis)) return bRtn = false;
                         break;
                 }
 
+                
+                //if (IsLoaderMoving((Loader.nAxis)nAxis) == false)
                 {
-                    if (IsLoaderMoving((Loader.nAxis)nAxis) == false)
+                    switch (typeSpeed)
                     {
-                        switch (typeSpeed)
-                        {
-                            case Type_Motor_Speed.Fine:
-                                dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
-                                dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
-                                break;
-                            case Type_Motor_Speed.Coarse:
-                                dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Coarse;
-                                dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
-                                break;
-                            default:
-                                dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
-                                dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
-                                break;
-                        }
-
-                        MC_Func.MC_MovePosition((int)nAxis, dPos, dVelocity, dAcc, dAcc);
+                        case Type_Motor_Speed.Fine:
+                            dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                            dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
+                            break;
+                        case Type_Motor_Speed.Coarse:
+                            dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Coarse;
+                            dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Coarse;
+                            break;
+                        default:
+                            dVelocity = Equipment.stAxisParam[(int)nAxis].Jog_Speed_Fine;
+                            dAcc = Equipment.stAxisParam[(int)nAxis].Common_Acceleration_Fine;
+                            break;
                     }
 
-                    bRtn = true;
+                    MC_Func.MC_MovePosition((int)nAxis, dPos, dVelocity, dAcc, dAcc);
                 }
+                bRtn = true;
                 //strTemp = string.Format("Move_to_WorkStage_TeachingPositions 이동");
                 //Log.Write("SLD-200", Equipment.User_Name, strTemp);
             }
@@ -11207,20 +11207,22 @@ namespace QMC.Common.Modules
                 switch (nAxis)
                 {
                     case Loader.nAxis.Z0:
-                        if (!IsInterlock_LoaderPortR_Enabled() && !IsLoaderMoving(nAxis)) return bRtn = false;
+                        if (!IsInterlock_LoaderPortR_Enabled() || !IsLoaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Loader.nAxis.Z1:
-                        if (!IsInterlock_LoaderPortL_Enabled() && !IsLoaderMoving(nAxis)) return bRtn = false;
+                        if (!IsInterlock_LoaderPortL_Enabled() || !IsLoaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Loader.nAxis.ALN_X:
+                        if (!IsLoaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Loader.nAxis.ALN_Y:
+                        if (!IsLoaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Loader.nAxis.TR_Z:
-                        if (!IsInterlock_LoaderTransferZ_Enabled() && !IsLoaderMoving(nAxis)) return bRtn = false;
+                        if (!IsInterlock_LoaderTransferZ_Enabled() || !IsLoaderMoving(nAxis)) return bRtn = false;
                         break;
                     case Loader.nAxis.TR_X:
-                        if (!IsInterlock_LoaderTransferX_Enabled() && !IsLoaderMoving(nAxis)) return bRtn = false;
+                        if (!IsInterlock_LoaderTransferX_Enabled() || !IsLoaderMoving(nAxis)) return bRtn = false;
                         break;
                 }
 

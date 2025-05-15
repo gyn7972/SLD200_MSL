@@ -634,7 +634,7 @@ namespace QMC.Common.Parts
                             m_Owner.AlarmPost(AlarmKey.eStageMoveFail); //X,Y축 분할 필요?
                         }
                     }
-                    //Thread.Sleep(500);
+                    Thread.Sleep(500);
 
                     XyzCoordinate currentPos = new XyzCoordinate();
                     this.Stage.GetCommandPosition(ref currentPos);
@@ -686,6 +686,11 @@ namespace QMC.Common.Parts
                                     pmrv.Score = pmr.Values[0].Score;
 
                                     pmrAll.Values.Add(pmrv);
+                                    Log.Write("SLD-200", Equipment.User_Name, "Scanner Cal.", "OnSearch OK.");
+                                }
+                                else
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Scanner Cal.", "OnSearch Fail.");
                                 }
 
                                 if (Equipment.Scanner_Calibration_UseBlobVisionTool)
@@ -701,8 +706,8 @@ namespace QMC.Common.Parts
                                     m_TempScale.Y = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
                                     m_TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
                                     m_TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
-                                    
-                                    double pixelR = (Equipment.Scanner_Calibration_CrossMarkLength/2) / (m_TempScale.X);
+
+                                    double pixelR = (Equipment.Scanner_Calibration_CrossMarkLength / 2) / (m_TempScale.X);
 
                                     qip.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, Camera.LatestImage.RawData
                                             , Camera.LatestImage.Header.Width
@@ -854,25 +859,28 @@ namespace QMC.Common.Parts
                     double yIndex = defaultYIndex + this.Config.PitchDistanceY * task.Result.y;
 
                     PointD offset = new PointD(result.Offset.X, result.Offset.Y);
-
-                    //기존
-                    //double resultX = xIndex + offset.X;
-                    //double resultY = yIndex + offset.Y;
-                    //FormNew_Setup에서 수정하던 부분 옮김.
                     double resultX = xIndex - offset.X;
                     double resultY = yIndex - offset.Y;
 
                     // data format : row, col, reference, measured
-                    LogManager.Instance.WriteTxt(fileName, string.Format($"{task.Result.x}, {task.Result.y} : {yIndex.ToString("0.000")}, {xIndex.ToString("0.000")}, {resultY.ToString("0.00000")}, {resultX.ToString("0.00000")}"));
-                    //LogManager.Instance.WriteTxt(fileName, string.Format($"{x}, {y} : {xIndex.ToString("0.000")}, {yIndex.ToString("0.000")}, {resultX.ToString("0.000")}, {resultY.ToString("0.000")}"));
-
+                    LogManager.Instance.WriteTxt(fileName, string.Format($"{task.Result.x}, " +
+                                                                         $"{task.Result.y} : {yIndex.ToString("0.000")}, " +
+                                                                         $"{xIndex.ToString("0.000")}, " +
+                                                                         $"{resultY.ToString("0.000000000")}, " +
+                                                                         $"{resultX.ToString("0.000000000")}"));
+                    
                     //Motor <-> Scanner 좌표에 따른 x, y -> y, x 반전.
                     int x = task.Result.x;  // TruncateTo3DecimalPlaces()
                     int y = task.Result.y;
-                    double dX = TruncateTo3DecimalPlacesAndZeroRest(yIndex);
-                    double dY = TruncateTo3DecimalPlacesAndZeroRest(xIndex);
-                    double dMeasureX = TruncateTo3DecimalPlacesAndZeroRest(resultY);
-                    double dMeasureY = TruncateTo3DecimalPlacesAndZeroRest(resultX);
+                    //자릿수 3자리까지
+                    //double dX = TruncateTo3DecimalPlacesAndZeroRest(yIndex);
+                    //double dY = TruncateTo3DecimalPlacesAndZeroRest(xIndex);
+                    //double dMeasureX = TruncateTo3DecimalPlacesAndZeroRest(resultY);
+                    //double dMeasureY = TruncateTo3DecimalPlacesAndZeroRest(resultX);
+                    double dX = yIndex;
+                    double dY = xIndex;
+                    double dMeasureX = resultY;
+                    double dMeasureY = resultX;
 
                     findLenzCenter.AddSLDMeasureData(new SLDMeasureData(x, y, dX, dY, dMeasureX, dMeasureY));
                 }

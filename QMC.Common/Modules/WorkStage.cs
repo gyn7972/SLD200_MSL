@@ -9720,8 +9720,8 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Machine Initialize", "나머지 축 전체 초기화 완료");
 
-                        m_bHomeOK = true;
-
+                        //밑에서 최종 완료 되면. 
+                        //m_bHomeOK = true;
                         //m_nHomeStep = (int)Home_Step.All_Z_Move_ReadyPos;             //  나중에 살리자
                         //m_nHomeStep = (int)Home_Step.Complete;
                         m_nHomeStep = (int)Home_Step.MachineCoordinateMatching;         //  Stage 좌표계와 Scanner 좌표계 일치화 시작
@@ -35754,10 +35754,10 @@ namespace QMC.Common.Modules
                         double AreaCenterY = dScannerCalTeachingPosY;
 
                         // [변경] X 영역은 왼쪽부터 시작, Y는 센터 기준 위쪽부터
-                        double dScannerCalAreaPosX_Min = AreaCenterX + dCalPitchOffset;
-                        double dScannerCalAreaPosX_Max = AreaCenterX + dScannerCalAreaWidth - dCalPitchOffset;
+                        double dScannerCalAreaPosX_Min = AreaCenterX - (dScannerCalAreaWidth / 2) + dCalPitchOffset;
+                        double dScannerCalAreaPosX_Max = AreaCenterX + (dScannerCalAreaWidth / 2) - dCalPitchOffset;
 
-                        double dScannerCalAreaPosY_Min = AreaCenterY + dCalPitchOffset;
+                        double dScannerCalAreaPosY_Min = AreaCenterY - (dScannerCalAreaheight / 2) + dCalPitchOffset;
                         double dScannerCalAreaPosY_Max = AreaCenterY + (dScannerCalAreaheight / 2) - dCalPitchOffset;
 
                         // 현재 하고자 하는 캘 사이즈 계산을 위한 값
@@ -35782,15 +35782,24 @@ namespace QMC.Common.Modules
                         // [변경] 캘판 교체 시 시작 위치는 티칭 기준 중앙에서 왼쪽으로 반 너비만큼 이동
                         if (bCalChagne) //캘판 교체시.
                         {
-                            m_dScannerCalPosX_Last = AreaCenterX - (dCalWidth / 2);  // [변경]
+                            //m_dScannerCalPosX_Last = AreaCenterX - (dCalWidth / 2);  // [변경]
+                            m_dScannerCalPosX_Last = AreaCenterX + (dCalWidth / 2);  // [변경]
                             m_dScannerCalPosY_Last = AreaCenterY;                    // [변경]
                             //m_dScannerCalPosX_Last = dScannerCalAreaPosX_Min + 1;
                             //m_dScannerCalPosY_Last = dScannerCalAreaPosY_Min + 1;
                         }
 
+                        // 영역 계산 로그
+                        Log.Write("SLD-200", "Scanner Calibration",
+                            $"[Cal 영역] X Range = {dScannerCalAreaPosX_Min:F3} ~ {dScannerCalAreaPosX_Max:F3}, " +
+                            $"Y Range = {dScannerCalAreaPosY_Min:F3} ~ {dScannerCalAreaPosY_Max:F3}");
+
+                        Log.Write("SLD-200", "Scanner Calibration",
+                            $"[Last 위치] X = {m_dScannerCalPosX_Last:F3}, Y = {m_dScannerCalPosY_Last:F3}");
+
                         // 캘 영역 벗어나는지 검사
-                        if (m_dScannerCalPosX_Last <= dScannerCalAreaPosX_Min || m_dScannerCalPosX_Last >= dScannerCalAreaPosX_Max ||
-                            m_dScannerCalPosY_Last <= dScannerCalAreaPosY_Min || m_dScannerCalPosY_Last >= dScannerCalAreaPosY_Max)
+                        if (m_dScannerCalPosX_Last < dScannerCalAreaPosX_Min || m_dScannerCalPosX_Last > dScannerCalAreaPosX_Max ||
+                            m_dScannerCalPosY_Last < dScannerCalAreaPosY_Min || m_dScannerCalPosY_Last > dScannerCalAreaPosY_Max)
                         {
                             strTemp = string.Format("캘판 범위 벗어났습니다. 캘판을 교체해 주세요.");
                             Log.Write("SLD-200", "Scanner Calibration", strTemp);
@@ -35809,13 +35818,17 @@ namespace QMC.Common.Modules
                             else
                             {
                                 // [변경] 이후부터는 X축 방향으로만 피치 간격 이동
-                                m_dCurrentCalPosX = m_dScannerCalPosX_Last + dCalWidth + dCalPitchOffset;
+                                //m_dCurrentCalPosX = m_dScannerCalPosX_Last + dCalWidth + dCalPitchOffset; // X만 증가
+                                m_dCurrentCalPosX = m_dScannerCalPosX_Last - (dCalWidth + dCalPitchOffset); // ➖ 방향
                                 m_dCurrentCalPosY = m_dScannerCalPosY_Last; // Y 고정
+
+                                Log.Write("SLD-200", "Scanner Calibration",
+                                $"[현재 가공 위치] X = {m_dCurrentCalPosX:F3}, Y = {m_dCurrentCalPosY:F3}");
                             }
 
                             // [유지] 이동할 위치가 cal area를 벗어나는지 확인
-                            if (m_dCurrentCalPosX <= dScannerCalAreaPosX_Min || m_dCurrentCalPosX >= dScannerCalAreaPosX_Max ||
-                                m_dCurrentCalPosY <= dScannerCalAreaPosY_Min || m_dCurrentCalPosY >= dScannerCalAreaPosY_Max)
+                            if (m_dCurrentCalPosX < dScannerCalAreaPosX_Min || m_dCurrentCalPosX > dScannerCalAreaPosX_Max ||
+                                m_dCurrentCalPosY < dScannerCalAreaPosY_Min || m_dCurrentCalPosY > dScannerCalAreaPosY_Max)
                             {
                                 strTemp = string.Format("캘판 범위 벗어났습니다. 캘판을 교체해 주세요.");
                                 Log.Write("SLD-200", "Scanner Calibration", strTemp);
@@ -37933,17 +37946,14 @@ namespace QMC.Common.Modules
             {
                 if (IsInterlock_WorkStageXY_Enabled())
                 {
-                    //if (IsWorkStage_Positions(WorkStage.nAxis.X, xyCoordinate.X) == false &&
-                    //    IsWorkStage_Positions(WorkStage.nAxis.Y, xyCoordinate.Y) == false)
                     if(IsWorkStageMoving(WorkStage.nAxis.X) &&
-                       IsWorkStageMoving(WorkStage.nAxis.Y)  )
+                       IsWorkStageMoving(WorkStage.nAxis.Y))
                     {
                         // 맵 데이터를 이원화 할 경우
                         //if (laserDrilling.Config.ParamConfig.ScannerCamera_MapData_Div)
                         //{
                         //    laserDrilling.MapData_Change((int)LaserDrilling.MapDataType.MAPDATASTATUS_SCANNER);
                         //}
-
                         switch (typeSpeed)
                         {
                             case Type_Motor_Speed.Fine:
@@ -37959,7 +37969,6 @@ namespace QMC.Common.Modules
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Fine;
                                 break;
                         }
-
                         xyInterpolatedCoordinate.X = xyCoordinate.X;
                         xyInterpolatedCoordinate.Y = xyCoordinate.Y;
                         MC_Func.MovePosition(xyInterpolatedCoordinate, dVelocity, dAcc, dAcc);
@@ -37987,7 +37996,7 @@ namespace QMC.Common.Modules
             {
                 if (IsInterlock_WorkStageZ_Enabled())
                 {
-                    if (IsWorkStageMoving(WorkStage.nAxis.Z) == false)
+                    if (IsWorkStageMoving(WorkStage.nAxis.Z))
                     {
                         switch (typeSpeed)
                         {
@@ -38004,10 +38013,8 @@ namespace QMC.Common.Modules
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
                                 break;
                         }
-
                         MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, dPos, dVelocity, dAcc, dAcc);
                     }
-
                     bRtn = true;
                 }
                 //strTemp = string.Format("Move_to_WorkStage_TeachingPositions 이동");
@@ -38030,7 +38037,7 @@ namespace QMC.Common.Modules
             {
                 //if (IsInterlock_WorkStageZ_Enabled()) // 조건있으면 걸자.
                 {
-                    if (IsWorkStageMoving(WorkStage.nAxis.MASK_Y) == false)
+                    if (IsWorkStageMoving(WorkStage.nAxis.MASK_Y))
                     {
                         switch (typeSpeed)
                         {
@@ -38047,7 +38054,6 @@ namespace QMC.Common.Modules
                                 dAcc = Equipment.stAxisParam[(int)WorkStage.nAxis.MASK_Y].Common_Acceleration_Fine;
                                 break;
                         }
-
                         MC_Func.MC_MovePosition((int)WorkStage.nAxis.MASK_Y, dPos, dVelocity, dAcc, dAcc);
                     }
 
@@ -38082,6 +38088,7 @@ namespace QMC.Common.Modules
         }
         public bool IsWorkStage_Positions(WorkStage.nAxis nAxis, double dPos)
         {
+            //모션 이동 후에만 확인 가능.
             bool bRtn = false;
             bool bDone = MC_Func.MC_GetDone((int)nAxis);
             bool bInposition = MC_Func.MC_GetInposition((int)nAxis);
@@ -38108,16 +38115,23 @@ namespace QMC.Common.Modules
                 switch (nAxis)
                 {
                     case WorkStage.nAxis.X:
-                        if (!IsInterlock_WorkStageXY_Enabled() && !IsWorkStageMoving(nAxis)) return bRtn = false;
+                        if (!IsInterlock_WorkStageXY_Enabled() ||
+                            !IsWorkStageMoving(nAxis)) 
+                            return bRtn;
                         break;
                     case WorkStage.nAxis.Y:
-                        if (!IsInterlock_WorkStageXY_Enabled() && !IsWorkStageMoving(nAxis)) return bRtn = false;
+                        if (!IsInterlock_WorkStageXY_Enabled() ||
+                            !IsWorkStageMoving(nAxis)) 
+                            return bRtn;
                         break;
                     case WorkStage.nAxis.Z:
-                        if (!IsInterlock_WorkStageZ_Enabled() && !IsWorkStageMoving(nAxis)) return bRtn = false;
+                        if (!IsInterlock_WorkStageZ_Enabled() ||
+                            !IsWorkStageMoving(nAxis)) 
+                            return bRtn;
                         break;
                     case WorkStage.nAxis.MASK_Y:
-                        //if (!IsInterlock_WorkStageZ_Enabled()) return bRtn = false;
+                        if (!IsWorkStageMoving(nAxis))
+                            return bRtn;
                         break;
                 }
                 switch (typeSpeed)

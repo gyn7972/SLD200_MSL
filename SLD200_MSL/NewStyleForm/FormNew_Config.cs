@@ -1471,108 +1471,31 @@ namespace SLD200_MSL
         void InitializeJogButtons()
         {
             button_Config_LDUL_TRZ_Pos.Tag = "Loader,TR_Z,1";
-            button_Config_LDUL_TRZ_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LDUL_TRZ_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LDUL_TRZ_Neg.Tag = "Loader,TR_Z,-1";
-            button_Config_LDUL_TRZ_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LDUL_TRZ_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LDUL_TRX_Pos.Tag = "Loader,TR_X,1";
-            button_Config_LDUL_TRX_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LDUL_TRX_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LDUL_TRX_Neg.Tag = "Loader,TR_X,-1";
-            button_Config_LDUL_TRX_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LDUL_TRX_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LDUL_Z1_Pos.Tag = "Loader,Z1,1";
-            button_Config_LDUL_Z1_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LDUL_Z1_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LDUL_Z1_Neg.Tag = "Loader,Z1,-1";
-            button_Config_LDUL_Z1_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LDUL_Z1_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LDUL_Z0_Pos.Tag = "Loader,Z0,1";
-            button_Config_LDUL_Z0_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LDUL_Z0_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LDUL_Z0_Neg.Tag = "Loader,Z0,-1";
-            button_Config_LDUL_Z0_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LDUL_Z0_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LD_ALNY_Pos.Tag = "Loader,ALN_Y,1";
-            button_Config_LD_ALNY_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LD_ALNY_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LD_ALNY_Neg.Tag = "Loader,ALN_Y,-1";
-            button_Config_LD_ALNY_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LD_ALNY_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LD_ALNX_Pos.Tag = "Loader,ALN_X,1";
-            button_Config_LD_ALNX_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LD_ALNX_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LD_ALNX_Neg.Tag = "Loader,ALN_X,-1";
-            button_Config_LD_ALNX_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LD_ALNX_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_WorkStage_Y_Pos.Tag = "WorkStage,Y,1";
-            button_Config_WorkStage_Y_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_WorkStage_Y_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_WorkStage_Y_Neg.Tag = "WorkStage,Y,-1";
-            button_Config_WorkStage_Y_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_WorkStage_Y_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_WorkStage_X_Pos.Tag = "WorkStage,X,1";
-            button_Config_WorkStage_X_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_WorkStage_X_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_WorkStage_X_Neg.Tag = "WorkStage,X,-1";
-            button_Config_WorkStage_X_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_WorkStage_X_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_WorkStage_Z_Pos.Tag = "WorkStage,Z,1";
-            button_Config_WorkStage_Z_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_WorkStage_Z_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_WorkStage_Z_Neg.Tag = "WorkStage,Z,-1";
-            button_Config_WorkStage_Z_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_WorkStage_Z_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_Vision_Y_Pos.Tag = "Vision,Y,1";
-            button_Config_Vision_Y_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_Vision_Y_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_Vision_Y_Neg.Tag = "Vision,Y,-1";
-            button_Config_Vision_Y_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_Vision_Y_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_Vision_X_Pos.Tag = "Vision,X,1";
-            button_Config_Vision_X_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_Vision_X_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_Vision_X_Neg.Tag = "Vision,X,-1";
-            button_Config_Vision_X_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_Vision_X_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_Vision_Z_Pos.Tag = "Vision,Z,1";
-            button_Config_Vision_Z_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_Vision_Z_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_Vision_Z_Neg.Tag = "Vision,Z,-1";
-            button_Config_Vision_Z_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_Vision_Z_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_BDS_Y_Pos.Tag = "WorkStage,MASK_Y,1";
-            button_Config_BDS_Y_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_BDS_Y_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_BDS_Y_Neg.Tag = "WorkStage,MASK_Y,-1";
-            button_Config_BDS_Y_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_BDS_Y_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
         }
 
         // 축 JogMove 공통 처리
@@ -1646,14 +1569,17 @@ namespace SLD200_MSL
                 int axis = GetAxisIndex(ref unit, axisName);
                 if (axis < 0) return;
 
-                switch (unit)
+                // 연속 이동일 때만 정지
+                if (IsJogMoveContinuous(unit))
                 {
-                    case "Vision": workStage.MC_Func.MC_JogStop(axis); break;
-                    case "WorkStage": workStage.MC_Func.MC_JogStop(axis); break;
-                    case "Loader": loader.MC_Func.MC_JogStop(axis); break;
-                    case "Unloader": unloader.MC_Func.MC_JogStop(axis); break;
+                    switch (unit)
+                    {
+                        case "Vision": workStage.MC_Func.MC_JogStop(axis); break;
+                        case "WorkStage": workStage.MC_Func.MC_JogStop(axis); break;
+                        case "Loader": loader.MC_Func.MC_JogStop(axis); break;
+                        case "Unloader": unloader.MC_Func.MC_JogStop(axis); break;
+                    }
                 }
-                //controller.MC_Func.MC_JogStop(axis);
             }
         }
 
