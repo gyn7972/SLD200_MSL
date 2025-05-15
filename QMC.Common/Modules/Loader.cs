@@ -2837,11 +2837,13 @@ namespace QMC.Common.Modules
             //  자재 감지 센서가 설정된 시간 동안 감지되지 않을 경우에만 Pause 상태로 변경되도록 함.
             if (!loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
             {
+                //감지 센서에 감지가 안되는게 문제인데.
                 if (!Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable)
                 {
                     Equipment.Loader_LPort_Pause = true;
                 }
-                else if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable && (TickCount_Elapsed((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT) > (Equipment.Machine_LoaderStacker_NoMaterialDetectTime * 1000)))
+                else if (Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable && 
+                    (TickCount_Elapsed((int)TickType.TICK_LDSZ1_NOMATERIAL_DETECT) > (Equipment.Machine_LoaderStacker_NoMaterialDetectTime * 1000))) //여기를 늘려놔야하나?
                 {
                     Equipment.Loader_LPort_Pause = true;
                 }
