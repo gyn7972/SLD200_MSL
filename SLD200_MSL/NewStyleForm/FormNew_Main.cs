@@ -384,30 +384,31 @@ namespace SLD200_MSL
                     // 큰 영역 색상 결정
                     Color cellColor = GetCellColor(SocketStatus[i, j]);
 
-                    // 선택된 셀의 색상을 다르게 설정
-                    if (i == selectedRow && j == selectedColumn)
-                    {
-                        m_bSocketSelected = true;
+                    //  선택 가공 시 위치 선택 및 표시를 PictureBox 에서 하지 않고 SiriusViewer 에서 하도록 하였음. 여기 코드는 필요 없는 코드.
+                    //// 선택된 셀의 색상을 다르게 설정
+                    //if (i == selectedRow && j == selectedColumn)
+                    //{
+                    //    m_bSocketSelected = true;
 
-                        //  얼라인 할 소켓 선택 (조건 : Pre Align Complete
-                        //if (!Equipment.AutoRunStatus && checkBox_Main_AlignStartSocket_SelectMode.Checked && workStage.m_bPreAlignCompleted)
-                        if (!Equipment.AutoRunStatus && (checkBox_Main_AlignStartSocket_SelectMode.Checked || checkBox_Main_AlignStartSocket_ContinueMode.Checked))
-                        {
-                            cellColor = Color.LightBlue; // 선택된 셀의 색상
+                    //    //  얼라인 할 소켓 선택 (조건 : Pre Align Complete
+                    //    //if (!Equipment.AutoRunStatus && checkBox_Main_AlignStartSocket_SelectMode.Checked && workStage.m_bPreAlignCompleted)
+                    //    if (!Equipment.AutoRunStatus && (checkBox_Main_AlignStartSocket_SelectMode.Checked || checkBox_Main_AlignStartSocket_ContinueMode.Checked))
+                    //    {
+                    //        cellColor = Color.LightBlue; // 선택된 셀의 색상
 
-                            workStage.m_nSocketAlign_StartIndex = (i * workStage.Main_SocketPositions_ColumnCount) + j;
-                        }
-                        else
-                        {
-                            cellColor = GetCellColor(SocketStatus[i, j]); // 기본 색상
+                    //        workStage.m_nSocketAlign_StartIndex = (i * workStage.Main_SocketPositions_ColumnCount) + j;
+                    //    }
+                    //    else
+                    //    {
+                    //        cellColor = GetCellColor(SocketStatus[i, j]); // 기본 색상
 
-                            //workStage.m_nSocketAlign_StartIndex = -1;
-                        }
-                    }
-                    else
-                    {
-                        cellColor = GetCellColor(SocketStatus[i, j]); // 기본 색상
-                    }
+                    //        //workStage.m_nSocketAlign_StartIndex = -1;
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    cellColor = GetCellColor(SocketStatus[i, j]); // 기본 색상
+                    //}
 
                     System.Drawing.Rectangle rect = new System.Drawing.Rectangle(j * CellSize_Width, i * CellSize_Height, CellSize_Width, CellSize_Height);
 
@@ -3006,6 +3007,14 @@ namespace SLD200_MSL
                     }
                 }
 
+                //  선택 가공 시 소켓 번호가 정상적으로 선택되지 않았을 경우.
+                if ((workStage.m_nSelectedSocket_Index == -1) && (checkBox_Main_AlignStartSocket_SelectMode.Checked || checkBox_Main_AlignStartSocket_ContinueMode.Checked))
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Warning !", "선택 가공 소켓 번호를 확인하세요. \r\n\r\n[소켓 다시 선택]");
+                    return;
+                }
+
                 if (workStage.m_nSelectedSocket_Index >= 0)
                 {
                     if (checkBox_Main_AlignStartSocket_SelectMode.Checked)
@@ -3263,6 +3272,9 @@ namespace SLD200_MSL
 
         private void button_TEST12_Click(object sender, EventArgs e)
         {
+            workStage.GlobalSocketStatus_Init();
+
+
             //Test code
             Equipment.CycleTimer_LaserDrilling.Start();
             //workStage.AlarmTest();

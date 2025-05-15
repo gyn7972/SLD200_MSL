@@ -44,20 +44,20 @@
             this.tabControl_JogPopup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl_JogPopup.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
             this.tabControl_JogPopup.Location = new System.Drawing.Point(0, 0);
-            this.tabControl_JogPopup.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabControl_JogPopup.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl_JogPopup.Name = "tabControl_JogPopup";
             this.tabControl_JogPopup.SelectedIndex = 0;
-            this.tabControl_JogPopup.Size = new System.Drawing.Size(654, 507);
+            this.tabControl_JogPopup.Size = new System.Drawing.Size(710, 598);
             this.tabControl_JogPopup.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabControl_JogPopup.TabIndex = 0;
             // 
             // tabPage_Loader
             // 
             this.tabPage_Loader.Location = new System.Drawing.Point(4, 31);
-            this.tabPage_Loader.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage_Loader.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage_Loader.Name = "tabPage_Loader";
-            this.tabPage_Loader.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.tabPage_Loader.Size = new System.Drawing.Size(646, 472);
+            this.tabPage_Loader.Padding = new System.Windows.Forms.Padding(2);
+            this.tabPage_Loader.Size = new System.Drawing.Size(702, 563);
             this.tabPage_Loader.TabIndex = 0;
             this.tabPage_Loader.Text = "Loader";
             this.tabPage_Loader.UseVisualStyleBackColor = true;
@@ -65,9 +65,9 @@
             // tabPage_Stage
             // 
             this.tabPage_Stage.Location = new System.Drawing.Point(4, 31);
-            this.tabPage_Stage.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage_Stage.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage_Stage.Name = "tabPage_Stage";
-            this.tabPage_Stage.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage_Stage.Padding = new System.Windows.Forms.Padding(2);
             this.tabPage_Stage.Size = new System.Drawing.Size(646, 472);
             this.tabPage_Stage.TabIndex = 1;
             this.tabPage_Stage.Text = "Stage";
@@ -76,7 +76,7 @@
             // tabPage_Unloader
             // 
             this.tabPage_Unloader.Location = new System.Drawing.Point(4, 31);
-            this.tabPage_Unloader.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage_Unloader.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage_Unloader.Name = "tabPage_Unloader";
             this.tabPage_Unloader.Size = new System.Drawing.Size(646, 472);
             this.tabPage_Unloader.TabIndex = 2;
@@ -87,9 +87,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(654, 507);
+            this.ClientSize = new System.Drawing.Size(710, 598);
             this.Controls.Add(this.tabControl_JogPopup);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FormNew_JogPopup";
             this.Text = "FormNew_JogPopup";
             this.tabControl_JogPopup.ResumeLayout(false);
