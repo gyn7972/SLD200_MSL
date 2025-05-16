@@ -718,10 +718,10 @@ namespace QMC.Common.VisionPart
         }
 
 
-        public List<RectangleF> FindMetalPowderForAutoTreshold(List<RectangleF> circlesResult,
+        public QMC_ImageProcessFindAlignResult FindMetalPowderForAutoTreshold(List<RectangleF> circlesResult,
             byte[] pixelData, int w, int h, int radius, double dScore, double dSpec)
         {
-            List<RectangleF> result = new List<RectangleF>();
+            QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
             List<Circle> BestCircle = new List<Circle>();
             double dMaxCount = 0;
             object obj = new object();
@@ -767,10 +767,11 @@ namespace QMC.Common.VisionPart
             foreach (var circle in BestCircle)
             {
                 circlesResult.Add(circle.GetBoundery());
+                result.Circles.Add(circle);
             }
 
 
-            return circlesResult;
+            return result;
         }
 
 
