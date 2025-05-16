@@ -33,6 +33,11 @@ using SharpGL;
 using static QMC.Common.Part;
 using SharpGL;
 using System.Windows;
+using System.Diagnostics;
+using System.Windows.Media;
+using Color = System.Drawing.Color;
+using Brush = System.Drawing.Brush;
+using Pen = System.Drawing.Pen;
 
 namespace SLD200_MSL
 {
@@ -2977,7 +2982,7 @@ namespace SLD200_MSL
                             {
                                 switch (entity.EntityType)
                                 {
-                                    case EType.Group:
+                                    case EType.Group: 
                                         var group = entity as Group;
 
                                         if (group.IsSelected)
@@ -3275,7 +3280,38 @@ namespace SLD200_MSL
 
         private void button_TEST12_Click(object sender, EventArgs e)
         {
-            loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_Widely_DoneCheck_Timeout);
+            #region load from sirius file
+            var dlg = new OpenFileDialog();
+            dlg.Filter = "sirius data files (*.sirius)|*.sirius|dxf cad files (*.dxf)|*.dxf|All Files (*.*)|*.*";
+            dlg.Title = "Open to data file";
+            DialogResult result = dlg.ShowDialog();
+            if (result != DialogResult.OK)
+                return;
+            string ext = Path.GetExtension(dlg.FileName);
+            IDocument doc = null;
+            if (0 == string.Compare(ext, ".dxf", true))
+                doc = DocumentSerializer.OpenDxf(dlg.FileName);
+            else if (0 == string.Compare(ext, ".sirius", true))
+                doc = DocumentSerializer.OpenSirius(dlg.FileName);
+            #endregion
+
+            Debug.Assert(null != doc);
+            Debug.Assert(doc.Layers.Count > 0);
+
+            var markerArg = new MarkerArgDefault()
+            {
+                Document = doc,
+                Rtc = workStage.rtc,
+                Laser = workStage.laser,
+            };
+
+            SiriusViewer_Main.Document = markerArg.Document;
+            Equipment.SetEqpSiriusViewerDocument(SiriusViewer_Main.Document);
+
+            workStage.marker.Ready(markerArg);
+
+
+            //loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_Widely_DoneCheck_Timeout);
             return;
 
             //Test code
