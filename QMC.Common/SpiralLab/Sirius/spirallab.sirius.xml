@@ -14236,6 +14236,13 @@
             10 가지 Pen 집합의 색상 목록
             </summary>
         </member>
+        <member name="M:SpiralLab.Sirius.Config.IsPenColorExist(System.Drawing.Color)">
+            <summary>
+             Pen 집합에 해당 색상이 존재하는지 여부
+            </summary>
+            <param name="color">Pen 색상</param>
+            <returns>존재 유무</returns>
+        </member>
         <member name="F:SpiralLab.Sirius.Config.PenDefaultColor">
             <summary>
             개체 생성 펜 기본 색상 (흰색)
