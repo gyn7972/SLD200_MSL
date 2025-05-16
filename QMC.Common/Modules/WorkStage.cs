@@ -15255,7 +15255,7 @@ namespace QMC.Common.Modules
                                                                         Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
                                                                         false);
                         
-                        UpdateOverlay(result);
+                       
 
                     }
                     //else if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
@@ -15273,7 +15273,7 @@ namespace QMC.Common.Modules
                             Fiducial_circleFound = true;
                         }
                     }
-
+                    UpdateOverlay(result);
                     if (Fiducial_circleFound)
                     {
                         if (bFound == false)
@@ -15360,10 +15360,10 @@ namespace QMC.Common.Modules
 
                         VisionScale TempScale = new VisionScale();
                         TempScale.X = this.Config.ParamConfig.UpperVision_Scale_X;
-                        int FontSize = 50;
+                        int FontSize = 30;
                         string strScore = string.Format("Score : {0:0.00},Size:{1:0.00}  ", result.ScoreCollection[0], result.Circles[0].Radius * 2 * TempScale.X);
                         Font font = new Font("verdana", FontSize, FontStyle.Bold);
-                        var textOveray = new TextVisionImageOverlay(strScore, new Point((int)ptStart.X, (int)ptStart.Y - 150), font);
+                        var textOveray = new TextVisionImageOverlay(strScore, new Point((int)ptStart.X, (int)ptStart.Y - FontSize*3), font);
                         textOveray.Visible = true;
                         FineCamResultOveray.Add(textOveray);
                     }
