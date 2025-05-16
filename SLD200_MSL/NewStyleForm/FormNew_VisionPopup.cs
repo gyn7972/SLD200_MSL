@@ -1354,13 +1354,13 @@ namespace SLD200_MSL
                 detectedCircles.Clear();
                 //  좌표 표시
                 listBox_FindCircle_Result.Items.Clear();
-                for (int i = 0; i < result.Circle.Count; i++)
+                for (int i = 0; i < result.Circles.Count; i++)
                 {
-                    double dCxpx = result.Circle[i].CenterX;
-                    double dCypx = result.Circle[i].CenterY;
-                    double dCxmm = result.Circle[i].CenterX * workStage.Config.ParamConfig.LowerVision_Scale_X;
-                    double dCymm = result.Circle[i].CenterY * workStage.Config.ParamConfig.LowerVision_Scale_Y;
-                    dRaius = result.Circle[i].Radius * workStage.Config.ParamConfig.LowerVision_Scale_X;
+                    double dCxpx = result.Circles[i].CenterX;
+                    double dCypx = result.Circles[i].CenterY;
+                    double dCxmm = result.Circles[i].CenterX * workStage.Config.ParamConfig.LowerVision_Scale_X;
+                    double dCymm = result.Circles[i].CenterY * workStage.Config.ParamConfig.LowerVision_Scale_Y;
+                    dRaius = result.Circles[i].Radius * workStage.Config.ParamConfig.LowerVision_Scale_X;
                     listBox_FindCircle_Result.Items.Add((i + 1) + ".X(px) : " + dCxpx.ToString("F3"));
                     listBox_FindCircle_Result.Items.Add((i + 1) + ".Y(px) : " + dCypx.ToString("F3"));
                     listBox_FindCircle_Result.Items.Add((i + 1) + ".X(mm) : " + dCxmm.ToString("F3"));
@@ -2512,7 +2512,14 @@ namespace SLD200_MSL
                 //byte[] pixelData = aligner.ConvertBitmapToByteArray(bm_Temp);                
 
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
-                aligner.FindMetalPowder(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
+                //aligner.FindMetalPowder(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
+                aligner.FindMetalPowderForAutoTreshold(circlesResult,
+                                                        bm_RawData,
+                                                        w,
+                                                        h,
+                                                        75,
+                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
+                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkSpec);
             }
 
             if (circlesResult.Count > 0)

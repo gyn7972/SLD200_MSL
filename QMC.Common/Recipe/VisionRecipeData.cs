@@ -13,6 +13,7 @@ namespace QMC.Common.Recipe
 {
     public class VisionRecipeData
     {
+        
         public VisionRecipeData()
         {
             PrePatternMatching = new PatternMatchingParameters();
@@ -23,9 +24,9 @@ namespace QMC.Common.Recipe
         }
 
         //Socket
-        public int dSocketAlignType;                 //  Fiducial Align Type (0:Circle Find, 2:Pattern Matching)
-        public int dSocketMarkType;                  //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
-        public bool bSocketCircleColor;             //0: White, 1: Black
+        public int nSocketAlignType;                 //  Fiducial Align Type (0:Circle Find, 2:Pattern Matching)
+        public int nSocketMarkType;                  //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
+        public int nSocketCircleColor;               //  0: White, 1: Black, 2: Ignore
         public double dSocketCircleMarkRadius;                  //  Fiducial Mark Size (mm)
         public double dSocketCircleMarkSpec;                  //  Fiducial Mark Spec
         public double dSocketCircleMarkScore;         //circle score
@@ -72,10 +73,10 @@ namespace QMC.Common.Recipe
         {
             bool bRet = false;
 
-            NativeMethods.WritePrivateProfileString("SocketAlign", "Aligntype", dSocketAlignType.ToString(), path);
-            NativeMethods.WritePrivateProfileString("SocketAlign", "MarkType", dSocketMarkType.ToString(), path);
+            NativeMethods.WritePrivateProfileString("SocketAlign", "Aligntype", nSocketAlignType.ToString(), path);
+            NativeMethods.WritePrivateProfileString("SocketAlign", "MarkType", nSocketMarkType.ToString(), path);
 
-            NativeMethods.WritePrivateProfileString("SocketAlign", "MarkColor", bSocketCircleColor.ToString(), path);
+            NativeMethods.WritePrivateProfileString("SocketAlign", "MarkColor", nSocketCircleColor.ToString(), path);
             NativeMethods.WritePrivateProfileString("SocketAlign", "MarkSize", dSocketCircleMarkRadius.ToString(), path);
             NativeMethods.WritePrivateProfileString("SocketAlign", "MarkSpec", dSocketCircleMarkSpec.ToString(), path);
             NativeMethods.WritePrivateProfileString("SocketAlign", "MarkScore", dSocketCircleMarkScore.ToString(), path);
@@ -172,11 +173,11 @@ namespace QMC.Common.Recipe
             {
                 // SocketAlign
                 NativeMethods.GetPrivateProfileString("SocketAlign", "Aligntype", "1", sb, sb.Capacity, path);
-                data.dSocketAlignType = 1;  // Equipment.ToInt(sb.ToString());
+                data.nSocketAlignType = 1;  // Equipment.ToInt(sb.ToString());
                 NativeMethods.GetPrivateProfileString("SocketAlign", "MarkType", "0", sb, sb.Capacity, path);
-                data.dSocketMarkType = 0; // Equipment.ToInt(sb.ToString());
+                data.nSocketMarkType = 0; // Equipment.ToInt(sb.ToString());
                 NativeMethods.GetPrivateProfileString("SocketAlign", "MarkColor", "true", sb, sb.Capacity, path);
-                data.bSocketCircleColor = Equipment.ToBoolean(sb.ToString());
+                data.nSocketCircleColor = Equipment.ToInt(sb.ToString());
 
                 NativeMethods.GetPrivateProfileString("SocketAlign", "MarkSize", "0.5", sb, sb.Capacity, path);
                 data.dSocketCircleMarkRadius = Equipment.ToDouble(sb.ToString());

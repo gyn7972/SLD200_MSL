@@ -219,6 +219,13 @@ namespace SLD200_MSL
             {
                 //SiriusEditor.Document.New();
                 var doc = DocumentSerializer.OpenSirius(strFileName);
+                if(SiriusEditor.Document !=null)
+                {
+                    if(SiriusEditor.Document.Views!=null)
+                    {
+                        SiriusEditor.Document.Views.Clear();
+                    }
+                }
                 SiriusEditor.Document = doc;
             }
         }
@@ -2214,6 +2221,7 @@ namespace SLD200_MSL
                 case Keys.Alt | Keys.T:
                     {
                         ThruholeGroup();
+
                     }
                     break;
                 case Keys.Alt | Keys.F:
@@ -2244,6 +2252,9 @@ namespace SLD200_MSL
         private void ThruholeGroup()
         {
             MoveToGroup("Thruhole");
+            SortToLayer("Thruhole");
+
+
         }
 
         private void MoveToPreAlign()
@@ -2253,21 +2264,52 @@ namespace SLD200_MSL
 
         private void MoveToGroup(string Name)
         {
-            var Document = this.SiriusEditor.Document;
-            var l = Document.Layers;
 
-            var layer = l.Where(t => t.Name.Contains(Name)).FirstOrDefault();
-            MoveToGroup(Document, layer);
+            try
+            {
+                var Document = this.SiriusEditor.Document;
+                var l = Document.Layers;
+                var layer = l.Where(t => t.Name.Contains(Name)).FirstOrDefault();
+                MoveToGroup(Document, layer);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
         }
         private void MoveToFiducial()
         {
             MoveToGroup("Fiducial");
         }
-
+        private void SortToLayer(string Name)
+        {
+            try
+            {
+                var Document = this.SiriusEditor.Document;
+                var l = Document.Layers;
+                var layer = l.Where(t => t.Name.Contains(Name)).FirstOrDefault();
+                if (layer != null)
+                {
+                    if(Document.Action.SelectedEntity != null)
+                    {
+                        if(Document.Action.SelectedEntity.Count>0)
+                        {
+                            Document.Action.ActEntitySort(Document.Action.SelectedEntity, layer, EntitySort.TopToBottom);
+                        }
+                    }
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+        }
         private static void MoveToGroup(IDocument Document, Layer layer)
         {
             Document.Action.ActEntityCut(Document.Action.SelectedEntity);
             Document.Action.ActEntityPasteClone(layer);
+            
         }
 
         private void UnGroup()
@@ -2288,8 +2330,6 @@ namespace SLD200_MSL
         private void HoleGroup()
         {
             MoveToGroup("Hole1");
-
-
         }
 
         private void SelectLayer(string strName)

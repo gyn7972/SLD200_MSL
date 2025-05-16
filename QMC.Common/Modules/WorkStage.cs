@@ -15569,33 +15569,56 @@ namespace QMC.Common.Modules
 
                     //  마크 검출 형식 (Circle, Gold Powder)
                     //if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
-                    if (Equipment.stVisionRecipeSet.dSocketMarkType == (int)MarkTypeList.Circle)
+                    if (Equipment.stVisionRecipeSet.nSocketMarkType == (int)MarkTypeList.Circle)
                     {
-                        result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
+                        if(stVisionRecipeSet.dSocketMarkType <= 1)
+                        {
+                            result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
                                                                         bm_AlignRawData,
                                                                         Camera_HighRes.Resolution.Width,
                                                                         Camera_HighRes.Resolution.Height,
-                                                                        nWidthImageCount, 
+                                                                        nWidthImageCount,
                                                                         Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
                                                                         ref Fiducial_circleFound,
                                                                         0,0,
-                                                                        (Equipment.stVisionRecipeSet.dSocketMarkType == 0),
+                                                                        (Equipment.stVisionRecipeSet.nSocketMarkType == 0),
                                                                         Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
                                                                         false);
+                        }else if(stVisionRecipeSet.dSocketMarkType == 2)
+                        {
+                            result = Fiducial_aligner.FindCircleForFR4( bm_AlignRawData,
+                                                                        Camera_HighRes.Resolution.Width,
+                                                                        Camera_HighRes.Resolution.Height,
+                                                                        nWidthImageCount,
+                                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
+                                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkScore);
+                            Fiducial_circlesResult.Clear();
+                            foreach (var circle in result.Circles)
+                            {
+                                Fiducial_circlesResult.Add(circle.GetBoundery());
+                            }
+                        }
                         
-                        UpdateOverlay(result);
+                        
+                       
 
                     }
                     //else if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
-                    else if (Equipment.stVisionRecipeSet.dSocketMarkType == (int)MarkTypeList.GoldPowder)
+                    else if (Equipment.stVisionRecipeSet.nSocketMarkType == (int)MarkTypeList.GoldPowder)
                     {
-                        Fiducial_aligner.FindMetalPowder(Fiducial_circlesResult, 
+                        result =  Fiducial_aligner.FindMetalPowderForAutoTreshold(Fiducial_circlesResult, 
                                                         bm_AlignRawData, 
                                                         Camera_HighRes.Resolution.Width, 
-                                                        Camera_HighRes.Resolution.Height, 
-                                                        ref Fiducial_circleFound);
+                                                        Camera_HighRes.Resolution.Height,
+                                                        nWidthImageCount,
+                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
+                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkSpec);
+                        if(result.Circles.Count > 3)
+                        {
+                            Fiducial_circleFound = true;
+                        }
                     }
-
+                    UpdateOverlay(result);
                     if (Fiducial_circleFound)
                     {
                         if (bFound == false)
@@ -15665,7 +15688,7 @@ namespace QMC.Common.Modules
                 try
                 {
                     this.FineCamResultOveray = new VisionImageViewer.OwnedOverlayCollection();
-                    foreach (var v in result.Circle)
+                    foreach (var v in result.Circles)
                     {
                         Point ptStart = new Point((int)(v.CenterX - v.Radius), (int)(v.CenterY - v.Radius));
                         Point ptEnd = new Point((int)(v.CenterX + v.Radius), (int)(v.CenterY + v.Radius));
@@ -15682,10 +15705,10 @@ namespace QMC.Common.Modules
 
                         VisionScale TempScale = new VisionScale();
                         TempScale.X = this.Config.ParamConfig.UpperVision_Scale_X;
-                        int FontSize = 50;
-                        string strScore = string.Format("Score : {0:0.00},Size:{1:0.00}  ", result.ScoreCollection[0], result.Circle[0].Radius * 2 * TempScale.X);
+                        int FontSize = 30;
+                        string strScore = string.Format("Score : {0:0.00},Size:{1:0.00}  ", result.ScoreCollection[0], result.Circles[0].Radius * 2 * TempScale.X);
                         Font font = new Font("verdana", FontSize, FontStyle.Bold);
-                        var textOveray = new TextVisionImageOverlay(strScore, new Point((int)ptStart.X, (int)ptStart.Y - 150), font);
+                        var textOveray = new TextVisionImageOverlay(strScore, new Point((int)ptStart.X, (int)ptStart.Y - FontSize*3), font);
                         textOveray.Visible = true;
                         FineCamResultOveray.Add(textOveray);
                     }

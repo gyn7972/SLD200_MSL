@@ -206,7 +206,7 @@ namespace SLD200.NewStyleForm.NewSubForm
             try
             {
                 // Socket Align
-                if (Equipment.stVisionRecipeSet.dSocketAlignType == 0)
+                if (Equipment.stVisionRecipeSet.nSocketAlignType == 0)
                 {
                     radioButton_Fiducial_Pattern.Checked = true;
                     radioButton_Fiducial_Circle.Checked = false;
@@ -218,7 +218,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
                 }
 
-                if (Equipment.stVisionRecipeSet.dSocketMarkType == 0)
+                if (Equipment.stVisionRecipeSet.nSocketMarkType == 0)
                 {
                     radioButton_Fiducial_Type_Circle.Checked = true;
                     radioButton_Fiducial_Type_GoldPowder.Checked = false;
@@ -229,7 +229,7 @@ namespace SLD200.NewStyleForm.NewSubForm
                     radioButton_Fiducial_Type_GoldPowder.Checked = true;
                 }
 
-                if (Equipment.stVisionRecipeSet.bSocketCircleColor == true)
+                if (Equipment.stVisionRecipeSet.nSocketCircleColor == 1)
                 {
                     radioButton_Fiducial_White.Checked = false;
                     radioButton_Fiducial_Black.Checked = true;
@@ -879,29 +879,29 @@ namespace SLD200.NewStyleForm.NewSubForm
             //Socket
             if (this.radioButton_Fiducial_Pattern.Checked)
             {
-                Equipment.stVisionRecipeSet.dSocketAlignType = (int)VisionAlgorithmType.PatternMatching;
+                Equipment.stVisionRecipeSet.nSocketAlignType = (int)VisionAlgorithmType.PatternMatching;
             }
             else if (this.radioButton_Fiducial_Circle.Checked)
             {
-                Equipment.stVisionRecipeSet.dSocketAlignType = (int)VisionAlgorithmType.CircleDetection;
+                Equipment.stVisionRecipeSet.nSocketAlignType = (int)VisionAlgorithmType.CircleDetection;
             }
 
             if (this.radioButton_Fiducial_Type_GoldPowder.Checked)
             {
-                Equipment.stVisionRecipeSet.dSocketMarkType = (int)MarkTypeList.GoldPowder;
+                Equipment.stVisionRecipeSet.nSocketMarkType = (int)MarkTypeList.GoldPowder;
             }
             else if (this.radioButton_Fiducial_Type_Circle.Checked)
             {
-                Equipment.stVisionRecipeSet.dSocketMarkType = (int)MarkTypeList.Circle;
+                Equipment.stVisionRecipeSet.nSocketMarkType = (int)MarkTypeList.Circle;
             }
 
             if (radioButton_Fiducial_Black.Checked)
             {
-                Equipment.stVisionRecipeSet.bSocketCircleColor = true;
+                Equipment.stVisionRecipeSet.nSocketCircleColor = 1;
             }
             else if (radioButton_Fiducial_White.Checked)
             {
-                Equipment.stVisionRecipeSet.bSocketCircleColor = false;
+                Equipment.stVisionRecipeSet.nSocketCircleColor = 0;
             }
             
             Equipment.stVisionRecipeSet.dSocketCircleMarkRadius = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSize.Text);

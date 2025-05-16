@@ -474,10 +474,9 @@ namespace SLD200.NewStyleForm.NewSubForm
                 m_dradius = dTargetSize_Radius / workStage.Config.ParamConfig.UpperVision_Scale_X;
 
                 //dScore
-                QMC_ImageProcessFindAlignResult result = aligner.FindCirclesWidthCircleBoundary(circlesResult,
+                QMC_ImageProcessFindAlignResult result = aligner.FindMetalPowderForAutoTreshold(circlesResult,
                                                     workStage.Camera_HighRes.LatestImage.RawData,
-                                                    w, h, (int)m_dradius, dSpec,
-                                                    ref bFindCircle, 0, 0, nTargetColor == 0);
+                                                    w, h, (int)m_dradius, dSpec,dScore);
 
                 workStage.UpdateOverlay(result);
             }

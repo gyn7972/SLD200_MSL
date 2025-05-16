@@ -13,14 +13,25 @@ namespace QMC.Common.VisionPart
         public float CenterX;
         public float CenterY;
         public float Radius;
-
+        public float Score;
         public Circle(float x, float y, float radius)
         {
             CenterX = x;
             CenterY = y;
             Radius = radius;
+            Score = 0;
         }
-
+        public Circle(float x, float y, float radius, float score)
+        {
+            CenterX = x;
+            CenterY = y;
+            Radius = radius;
+            Score = score;
+        }
+        public RectangleF GetBoundery()
+        {
+            return new RectangleF(CenterX - Radius, CenterY - Radius, Radius * 2, Radius * 2);
+        }
         public override string ToString()
         {
             return $"Center: ({CenterX:F2}, {CenterY:F2}), Radius: {Radius:F2}";
@@ -52,28 +63,31 @@ namespace QMC.Common.VisionPart
         /// <param name="iterations">반복 횟수</param>
         /// <param name="threshold">각 점이 원 모델에 얼마나 근접해야 inlier로 판단할지 정의하는 허용 오차 (픽셀 단위)</param>
         /// <returns>최적의 원 모델</returns>
-        public static Circle FitCircle(List<PointF> points, int iterations = 1000, double threshold = 5.0)
+        public static Circle FitCircle(List<PointF> points, int iterations = 1000, double threshold = 5.0, int r = 0)
         {
+            if (points.Count < 100)
+            {
+                return new Circle();
+            }
+            double dSamplingRate = 1;
+            iterations = (int)(iterations * dSamplingRate);
             Circle bestCircle = new Circle();
-
-            if (points.Count <= 0)
-                return bestCircle;
-
-            int bestInliers = 0;
+            double bestInliers = 0;// (int)(r*2*Math.PI / 2) * dSamplingRate;
             Random rnd = new Random();
-            int nStep = points.Count / 6;
+            int nStep = points.Count / 3;
             int nCount = points.Count;
             for (int i = 0; i < iterations; i++)
             {
                 // 랜덤하게 3개의 서로 다른 점을 선택
-                int idx1 = (i% nCount);
-                if(idx1 ==0 && i !=0)
+                int idx1 = (i % nCount);
+                if (idx1 == 0 && i != 0)
                 {
                     nStep--;
                 }
                 int idx2 = (idx1 + nStep) % nCount;
                 int idx3 = (idx2 + nStep) % nCount;
-
+                if (idx1 < 0 || idx2 < 0 || idx3 < 0)
+                    break;
                 PointF p1 = points[idx1];
                 PointF p2 = points[idx2];
                 PointF p3 = points[idx3];
@@ -82,41 +96,57 @@ namespace QMC.Common.VisionPart
                 Circle? circleCandidate = ComputeCircleFromPoints(p1, p2, p3);
                 if (circleCandidate == null)
                 {
-                    
+
                     continue;
                 }
                 Circle circle = circleCandidate.Value;
 
+                if (r > 0)
+                {
+                    //if (r * 0.80 < circle.Radius && circle.Radius < r * 1.20)
+                    //{
+
+                    //}else
+                    //{
+                    //    continue;
+                    //}
+
+                }
                 // 모든 점들에 대해 원의 경계(반지름)와의 오차를 계산하고 inlier 수를 센다.
                 int inlierCount = 0;
-                foreach (var pt in points)
+                System.Threading.Tasks.Parallel.For(0, points.Count, iter =>
                 {
+                    var pt = points[iter];
                     int x = Math.Abs((int)(pt.X - circle.CenterX));
                     int y = Math.Abs((int)(pt.Y - circle.CenterY));
                     double distance = 0;
-                    //lock (distancedic)
-                    if(x < 4000 && y <4000)
+
+                    if (x < 4000 && y < 4000)
                     {
-                        lock (distancedic)
-                        {
-                            distance = distancedic[x, y];
-                        }
+                        distance = distancedic[x, y];
                     }
                     else
                     {
-                        distance = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+                        distance = Math.Sqrt(x * x + y * y);
                     }
-                    
+
                     double error = Math.Abs(distance - circle.Radius);
                     if (error < threshold)
-                        inlierCount++;
-                }
+                    {
+                        System.Threading.Interlocked.Increment(ref inlierCount);
+                    }
+                });
 
                 // 지금까지의 모델보다 inlier가 많으면 최적 모델을 업데이트
-                if (inlierCount > bestInliers)
+                double dMin = Math.Min(circle.Radius, r);
+                double dMax = Math.Max(circle.Radius, r);
+                double dScore = inlierCount * dMin / dMax;
+                if (dScore > bestInliers)
                 {
-                    bestInliers = inlierCount;
+                    bestInliers = dScore;
+                    circle.Score = (float)dScore / points.Count;
                     bestCircle = circle;
+
                 }
             }
 
@@ -150,35 +180,6 @@ namespace QMC.Common.VisionPart
         }
     }
 
-    //class Program
-    //{
-    //    static void Main(string[] args)
-    //    {
-    //        // 예시: 원의 경계로부터 추출한 엣지 점들의 리스트
-    //        List<PointF> points = new List<PointF>
-    //        {
-    //            new PointF(100, 150),
-    //            new PointF(105, 160),
-    //            new PointF(115, 165),
-    //            new PointF(125, 160),
-    //            new PointF(130, 150),
-    //            new PointF(125, 140),
-    //            new PointF(115, 135),
-    //            new PointF(105, 140),
-    //            // 일부 잡음/이상치 점
-    //            new PointF(200, 250),
-    //            new PointF(210, 255),
-    //            // 원이 부분 가려진 상황을 시뮬레이션할 경우, 실제 데이터는 원의 일부 정보만 포함할 수 있음.
-    //        };
-
-    //        // RANSAC을 통한 원 피팅. (반복 횟수와 오차 임계값은 상황에 맞게 조절)
-    //        Circle fittedCircle = RansacCircleFitter.FitCircle(points, iterations: 1000, threshold: 5.0);
-
-    //        Console.WriteLine("최적의 원 모델:");
-    //        Console.WriteLine(fittedCircle);
-    //    }
-
- 
 }
 
 
