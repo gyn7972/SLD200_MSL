@@ -15241,7 +15241,7 @@ namespace QMC.Common.Modules
 
                     //  마크 검출 형식 (Circle, Gold Powder)
                     //if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
-                    if (Equipment.stVisionRecipeSet.dSocketMarkType == (int)MarkTypeList.Circle)
+                    if (Equipment.stVisionRecipeSet.nSocketMarkType == (int)MarkTypeList.Circle)
                     {
                         result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
                                                                         bm_AlignRawData,
@@ -15251,7 +15251,7 @@ namespace QMC.Common.Modules
                                                                         Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
                                                                         ref Fiducial_circleFound,
                                                                         0,0,
-                                                                        (Equipment.stVisionRecipeSet.dSocketMarkType == 0),
+                                                                        (Equipment.stVisionRecipeSet.nSocketMarkType == 0),
                                                                         Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
                                                                         false);
                         
@@ -15259,7 +15259,7 @@ namespace QMC.Common.Modules
 
                     }
                     //else if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
-                    else if (Equipment.stVisionRecipeSet.dSocketMarkType == (int)MarkTypeList.GoldPowder)
+                    else if (Equipment.stVisionRecipeSet.nSocketMarkType == (int)MarkTypeList.GoldPowder)
                     {
                         result =  Fiducial_aligner.FindMetalPowderForAutoTreshold(Fiducial_circlesResult, 
                                                         bm_AlignRawData, 
