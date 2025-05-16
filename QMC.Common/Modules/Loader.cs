@@ -4449,6 +4449,8 @@ namespace QMC.Common.Modules
                         {
                             Loader_CurrentStatus_Save_StopedByTimeout();
 
+                            Loader_Transfer_Step_Stacker1PickUp_Transfer_PickerVacuum_Off();
+
                             m_strTemp = "Transfer 축, Module Picker Vacuum On 실패. (Timeout)";
                             Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
                             return AlarmPost(AlarmKey.LD_Transfer_PickerVacuumOn_Timeout);
@@ -4479,6 +4481,8 @@ namespace QMC.Common.Modules
                     else if (!Equipment.Machine_LoaderStacker_LiftUp_Enable && TickCount_Elapsed((int)TickType.TICK_LDTR) > 10000)
                     {
                         Loader_CurrentStatus_Save_StopedByTimeout();
+
+                        Loader_Transfer_Step_Stacker1PickUp_Transfer_PickerVacuum_Off();
 
                         m_strTemp = "Transfer 축, Module Picker Vacuum On 실패. (Timeout)";
                         Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
@@ -4783,6 +4787,8 @@ namespace QMC.Common.Modules
                                 else
                                 {
                                     Loader_CurrentStatus_Save_StopedByTimeout();
+
+                                    Loader_Transfer_Step_Stacker1PickUp_Transfer_PickerVacuum_Off();
 
                                     m_strTemp = "Transfer Z 축, Module Picker 공압이 형성되지 않음";
                                     Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
@@ -5199,6 +5205,8 @@ namespace QMC.Common.Modules
                         {
                             Loader_CurrentStatus_Save_StopedByTimeout();
 
+                            Loader_Transfer_Step_Stacker1PickUp_Transfer_PickerVacuum_Off();
+
                             m_strTemp = "Transfer 축, Module Picker Vacuum On 실패. (Timeout)";
                             Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
                             return AlarmPost(AlarmKey.LD_Transfer_PickerVacuumOn_Timeout);
@@ -5229,6 +5237,8 @@ namespace QMC.Common.Modules
                     else if (!Equipment.Machine_LoaderStacker_LiftUp_Enable && TickCount_Elapsed((int)TickType.TICK_LDTR) > 10000)
                     {
                         Loader_CurrentStatus_Save_StopedByTimeout();
+
+                        Loader_Transfer_Step_Stacker1PickUp_Transfer_PickerVacuum_Off();
 
                         m_strTemp = "Transfer 축, Module Picker Vacuum On 실패. (Timeout)";
                         Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
@@ -5547,6 +5557,8 @@ namespace QMC.Common.Modules
                                     //////////////////////////////////////////////////////////////////////////////////////////
 
                                     Loader_CurrentStatus_Save_StopedByTimeout();
+
+                                    Loader_Transfer_Step_Stacker1PickUp_Transfer_PickerVacuum_Off();
 
                                     m_strTemp = "Transfer Z 축, Module Picker 공압이 형성되지 않음";
                                     Log.Write("SLD-200", Equipment.User_Name, "Loader_Transfer_Step", m_strTemp);
@@ -8812,6 +8824,15 @@ namespace QMC.Common.Modules
             loaderParameter.DO_Loader_Picker_Blow(false);
 
             TickCount_Start((int)TickType.TICK_LDTR);
+        }
+
+        private void Loader_Transfer_Step_Stacker1PickUp_Transfer_PickerVacuum_Off()
+        {
+            Log.Write("SLD-200", Equipment.User_Name, "LD Transfer Cycle", "Transfer 축, Module Picker Vacuum Off");
+
+            loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Inner, false);
+            loaderParameter.DO_Loader_Picker_Vacuum((int)LoaderParameter.PickerVacuumPos.Outer, false);
+            loaderParameter.DO_Loader_Picker_Blow(false);
         }
 
         private void Loader_Transfer_Step_Stacker1PickUp_TransferZ_Move_PickUpPos_2ndStep(out double m_dSpeed, out double m_dAccDec)

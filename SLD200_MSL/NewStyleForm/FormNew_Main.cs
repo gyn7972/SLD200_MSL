@@ -3310,49 +3310,48 @@ namespace SLD200_MSL
 
         private void button_TEST12_Click(object sender, EventArgs e)
         {
-            #region Marker Test (load from sirius file)
-            var dlg = new OpenFileDialog();
-            dlg.Filter = "sirius data files (*.sirius)|*.sirius|dxf cad files (*.dxf)|*.dxf|All Files (*.*)|*.*";
-            dlg.Title = "Open to data file";
-            DialogResult result = dlg.ShowDialog();
-            if (result != DialogResult.OK)
-                return;
-            string ext = Path.GetExtension(dlg.FileName);
-            IDocument doc = null;
-            if (0 == string.Compare(ext, ".dxf", true))
-                doc = DocumentSerializer.OpenDxf(dlg.FileName);
-            else if (0 == string.Compare(ext, ".sirius", true))
-                doc = DocumentSerializer.OpenSirius(dlg.FileName);
-            #endregion
+            //#region Marker Test (load from sirius file)
+            //var dlg = new OpenFileDialog();
+            //dlg.Filter = "sirius data files (*.sirius)|*.sirius|dxf cad files (*.dxf)|*.dxf|All Files (*.*)|*.*";
+            //dlg.Title = "Open to data file";
+            //DialogResult result = dlg.ShowDialog();
+            //if (result != DialogResult.OK)
+            //    return;
+            //string ext = Path.GetExtension(dlg.FileName);
+            //IDocument doc = null;
+            //if (0 == string.Compare(ext, ".dxf", true))
+            //    doc = DocumentSerializer.OpenDxf(dlg.FileName);
+            //else if (0 == string.Compare(ext, ".sirius", true))
+            //    doc = DocumentSerializer.OpenSirius(dlg.FileName);
+            //#endregion
 
-            Debug.Assert(null != doc);
-            Debug.Assert(doc.Layers.Count > 0);
+            //Debug.Assert(null != doc);
+            //Debug.Assert(doc.Layers.Count > 0);
 
-            var markerArg = new MarkerArgDefault()
-            {
-                Document = doc,
-                Rtc = workStage.rtc,
-                Laser = workStage.laser,
-            };
+            //var markerArg = new MarkerArgDefault()
+            //{
+            //    Document = doc,
+            //    Rtc = workStage.rtc,
+            //    Laser = workStage.laser,
+            //};
 
-            //  마킹 도면 갱신 (실제 가공할 땐 여기에 올릴 필요가 없긴 한데, 데이터를 확인하려면 올리는 것도 괜찮고...)
-            SiriusViewer_Main.Document = markerArg.Document;
-            Equipment.SetEqpSiriusViewerDocument(SiriusViewer_Main.Document);
+            ////  마킹 도면 갱신 (실제 가공할 땐 여기에 올릴 필요가 없긴 한데, 데이터를 확인하려면 올리는 것도 괜찮고...)
+            //SiriusViewer_Main.Document = markerArg.Document;
+            //Equipment.SetEqpSiriusViewerDocument(SiriusViewer_Main.Document);
 
-            //  마킹 데이터 변경 (데이터 변경은 여기서 해야함)
-
-
-
-            //  마킹 데이터 세팅
-            workStage.marker.Ready(markerArg);
-
-            //  마킹 Start
-            //workStage.marker.Start();
+            ////  마킹 데이터 변경 (데이터 변경은 여기서 해야함)
 
 
+            ////  마킹 데이터 세팅
+            //workStage.marker.Ready(markerArg);
 
-            //loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_Widely_DoneCheck_Timeout);
-            return;
+            ////  마킹 Start
+            ////workStage.marker.Start();
+
+
+
+            ////loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_Widely_DoneCheck_Timeout);
+            //return;
 
             //Test code
             Equipment.CycleTimer_LaserDrilling.Start();

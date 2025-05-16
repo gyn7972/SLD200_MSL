@@ -34,6 +34,12 @@
             this.button_Recipe_Apply = new System.Windows.Forms.Button();
             this.tabControl_Recipe = new System.Windows.Forms.TabControl();
             this.tabPage_Recipe = new System.Windows.Forms.TabPage();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.button_Recipe_TabRecipe_SiriusTemplateFile = new System.Windows.Forms.Button();
+            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile = new System.Windows.Forms.RichTextBox();
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode = new System.Windows.Forms.CheckBox();
             this.groupBox15 = new System.Windows.Forms.GroupBox();
             this.label88 = new System.Windows.Forms.Label();
             this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel = new System.Windows.Forms.TextBox();
@@ -275,14 +281,9 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode = new System.Windows.Forms.CheckBox();
-            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile = new System.Windows.Forms.RichTextBox();
-            this.button_Recipe_TabRecipe_SiriusTemplateFile = new System.Windows.Forms.Button();
-            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity = new System.Windows.Forms.TextBox();
-            this.label16 = new System.Windows.Forms.Label();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.groupBox15.SuspendLayout();
             this.groupBox17.SuspendLayout();
             this.groupBox14.SuspendLayout();
@@ -308,7 +309,6 @@
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox177.SuspendLayout();
-            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // label_Recipe_FileName
@@ -399,12 +399,83 @@
             this.tabPage_Recipe.Text = "Recipe";
             this.tabPage_Recipe.UseVisualStyleBackColor = true;
             // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity);
+            this.groupBox6.Controls.Add(this.label16);
+            this.groupBox6.Controls.Add(this.button_Recipe_TabRecipe_SiriusTemplateFile);
+            this.groupBox6.Controls.Add(this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile);
+            this.groupBox6.Controls.Add(this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode);
+            this.groupBox6.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.groupBox6.Location = new System.Drawing.Point(694, 595);
+            this.groupBox6.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox6.Size = new System.Drawing.Size(506, 159);
+            this.groupBox6.TabIndex = 92;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = " Marking Layer Data ";
+            // 
+            // textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity
+            // 
+            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Location = new System.Drawing.Point(269, 120);
+            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Name = "textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity";
+            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Size = new System.Drawing.Size(130, 24);
+            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.TabIndex = 80;
+            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Text = "TEST";
+            // 
+            // label16
+            // 
+            this.label16.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label16.Location = new System.Drawing.Point(163, 118);
+            this.label16.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(104, 24);
+            this.label16.TabIndex = 79;
+            this.label16.Text = "Marking Data :";
+            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button_Recipe_TabRecipe_SiriusTemplateFile
+            // 
+            this.button_Recipe_TabRecipe_SiriusTemplateFile.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Recipe_TabRecipe_SiriusTemplateFile.Location = new System.Drawing.Point(28, 109);
+            this.button_Recipe_TabRecipe_SiriusTemplateFile.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_SiriusTemplateFile.Name = "button_Recipe_TabRecipe_SiriusTemplateFile";
+            this.button_Recipe_TabRecipe_SiriusTemplateFile.Size = new System.Drawing.Size(118, 44);
+            this.button_Recipe_TabRecipe_SiriusTemplateFile.TabIndex = 78;
+            this.button_Recipe_TabRecipe_SiriusTemplateFile.Text = "Template  File Select (.sirius)";
+            this.button_Recipe_TabRecipe_SiriusTemplateFile.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_SiriusTemplateFile.Click += new System.EventHandler(this.button_Recipe_TabRecipe_SiriusTemplateFile_Click);
+            // 
+            // richTextBox_Recipe_TabRecipe_MarkingTemplateFile
+            // 
+            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Location = new System.Drawing.Point(28, 50);
+            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Name = "richTextBox_Recipe_TabRecipe_MarkingTemplateFile";
+            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Size = new System.Drawing.Size(466, 57);
+            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.TabIndex = 77;
+            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Text = "";
+            // 
+            // checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode
+            // 
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.AutoSize = true;
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Location = new System.Drawing.Point(10, 25);
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Name = "checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode";
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Size = new System.Drawing.Size(435, 21);
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.TabIndex = 62;
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Text = "Processing by changing marking data to barcode (1D, 2D, QR etc)";
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.UseVisualStyleBackColor = true;
+            // 
             // groupBox15
             // 
             this.groupBox15.Controls.Add(this.label88);
             this.groupBox15.Controls.Add(this.textBox_Recipe_TabRecipe_EPRO_ModuleAbsorptionLevel);
             this.groupBox15.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox15.Location = new System.Drawing.Point(397, 516);
+            this.groupBox15.Location = new System.Drawing.Point(397, 509);
             this.groupBox15.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox15.Name = "groupBox15";
             this.groupBox15.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -452,7 +523,7 @@
             this.groupBox17.Controls.Add(this.label55);
             this.groupBox17.Controls.Add(this.label54);
             this.groupBox17.Controls.Add(this.label2);
-            this.groupBox17.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.groupBox17.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.groupBox17.Location = new System.Drawing.Point(10, 509);
             this.groupBox17.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox17.Name = "groupBox17";
@@ -465,10 +536,10 @@
             // label14
             // 
             this.label14.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label14.Location = new System.Drawing.Point(125, 207);
+            this.label14.Location = new System.Drawing.Point(125, 188);
             this.label14.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(205, 24);
+            this.label14.Size = new System.Drawing.Size(205, 19);
             this.label14.TabIndex = 28;
             this.label14.Text = "Pre Align Position";
             this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -476,10 +547,10 @@
             // label15
             // 
             this.label15.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label15.Location = new System.Drawing.Point(7, 207);
+            this.label15.Location = new System.Drawing.Point(7, 188);
             this.label15.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(114, 24);
+            this.label15.Size = new System.Drawing.Size(114, 19);
             this.label15.TabIndex = 27;
             this.label15.Text = "PreAlign  :";
             this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -487,10 +558,10 @@
             // label81
             // 
             this.label81.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label81.Location = new System.Drawing.Point(125, 179);
+            this.label81.Location = new System.Drawing.Point(125, 83);
             this.label81.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label81.Name = "label81";
-            this.label81.Size = new System.Drawing.Size(205, 24);
+            this.label81.Size = new System.Drawing.Size(205, 19);
             this.label81.TabIndex = 26;
             this.label81.Text = "Thruhole Processing (Not yet)";
             this.label81.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -498,10 +569,10 @@
             // label82
             // 
             this.label82.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label82.Location = new System.Drawing.Point(7, 179);
+            this.label82.Location = new System.Drawing.Point(7, 83);
             this.label82.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label82.Name = "label82";
-            this.label82.Size = new System.Drawing.Size(114, 24);
+            this.label82.Size = new System.Drawing.Size(114, 19);
             this.label82.TabIndex = 25;
             this.label82.Text = "Thruhole  :";
             this.label82.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -509,10 +580,10 @@
             // label49
             // 
             this.label49.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label49.Location = new System.Drawing.Point(125, 49);
+            this.label49.Location = new System.Drawing.Point(125, 48);
             this.label49.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label49.Name = "label49";
-            this.label49.Size = new System.Drawing.Size(205, 24);
+            this.label49.Size = new System.Drawing.Size(205, 19);
             this.label49.TabIndex = 24;
             this.label49.Text = "2nd. ~ 10th. Hole Processing";
             this.label49.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -520,10 +591,10 @@
             // label50
             // 
             this.label50.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label50.Location = new System.Drawing.Point(7, 49);
+            this.label50.Location = new System.Drawing.Point(7, 48);
             this.label50.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label50.Name = "label50";
-            this.label50.Size = new System.Drawing.Size(114, 24);
+            this.label50.Size = new System.Drawing.Size(114, 19);
             this.label50.TabIndex = 23;
             this.label50.Text = "Hole2 ~ Hole10 :";
             this.label50.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -531,10 +602,10 @@
             // label64
             // 
             this.label64.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label64.Location = new System.Drawing.Point(125, 155);
+            this.label64.Location = new System.Drawing.Point(125, 211);
             this.label64.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label64.Name = "label64";
-            this.label64.Size = new System.Drawing.Size(205, 24);
+            this.label64.Size = new System.Drawing.Size(205, 19);
             this.label64.TabIndex = 22;
             this.label64.Text = "Align Mark Position";
             this.label64.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -542,10 +613,10 @@
             // label65
             // 
             this.label65.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label65.Location = new System.Drawing.Point(7, 155);
+            this.label65.Location = new System.Drawing.Point(7, 211);
             this.label65.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label65.Name = "label65";
-            this.label65.Size = new System.Drawing.Size(114, 24);
+            this.label65.Size = new System.Drawing.Size(114, 19);
             this.label65.TabIndex = 21;
             this.label65.Text = "Fiducial  :";
             this.label65.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -553,10 +624,10 @@
             // label58
             // 
             this.label58.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label58.Location = new System.Drawing.Point(125, 131);
+            this.label58.Location = new System.Drawing.Point(125, 129);
             this.label58.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label58.Name = "label58";
-            this.label58.Size = new System.Drawing.Size(205, 24);
+            this.label58.Size = new System.Drawing.Size(205, 19);
             this.label58.TabIndex = 20;
             this.label58.Text = "Marking Processing (Not yet)";
             this.label58.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -564,10 +635,10 @@
             // label59
             // 
             this.label59.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label59.Location = new System.Drawing.Point(125, 107);
+            this.label59.Location = new System.Drawing.Point(125, 106);
             this.label59.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label59.Name = "label59";
-            this.label59.Size = new System.Drawing.Size(205, 24);
+            this.label59.Size = new System.Drawing.Size(205, 19);
             this.label59.TabIndex = 19;
             this.label59.Text = "Outline Processing (Not yet)";
             this.label59.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -575,10 +646,10 @@
             // label60
             // 
             this.label60.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label60.Location = new System.Drawing.Point(125, 83);
+            this.label60.Location = new System.Drawing.Point(125, 152);
             this.label60.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label60.Name = "label60";
-            this.label60.Size = new System.Drawing.Size(213, 24);
+            this.label60.Size = new System.Drawing.Size(213, 19);
             this.label60.TabIndex = 18;
             this.label60.Text = "Rectangular Processing (Not yet)";
             this.label60.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -586,10 +657,10 @@
             // label57
             // 
             this.label57.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label57.Location = new System.Drawing.Point(125, 23);
+            this.label57.Location = new System.Drawing.Point(125, 25);
             this.label57.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label57.Name = "label57";
-            this.label57.Size = new System.Drawing.Size(205, 24);
+            this.label57.Size = new System.Drawing.Size(205, 19);
             this.label57.TabIndex = 14;
             this.label57.Text = "1st. Hole Processing (Hole Data)";
             this.label57.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -597,10 +668,10 @@
             // label56
             // 
             this.label56.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label56.Location = new System.Drawing.Point(7, 131);
+            this.label56.Location = new System.Drawing.Point(7, 129);
             this.label56.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label56.Name = "label56";
-            this.label56.Size = new System.Drawing.Size(114, 24);
+            this.label56.Size = new System.Drawing.Size(114, 19);
             this.label56.TabIndex = 13;
             this.label56.Text = "Marking  :";
             this.label56.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -608,10 +679,10 @@
             // label55
             // 
             this.label55.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label55.Location = new System.Drawing.Point(7, 107);
+            this.label55.Location = new System.Drawing.Point(7, 106);
             this.label55.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(114, 24);
+            this.label55.Size = new System.Drawing.Size(114, 19);
             this.label55.TabIndex = 12;
             this.label55.Text = "Outline  :";
             this.label55.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -619,10 +690,10 @@
             // label54
             // 
             this.label54.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label54.Location = new System.Drawing.Point(7, 83);
+            this.label54.Location = new System.Drawing.Point(7, 152);
             this.label54.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(114, 24);
+            this.label54.Size = new System.Drawing.Size(114, 19);
             this.label54.TabIndex = 11;
             this.label54.Text = "Rect  :";
             this.label54.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -630,10 +701,10 @@
             // label2
             // 
             this.label2.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label2.Location = new System.Drawing.Point(7, 23);
+            this.label2.Location = new System.Drawing.Point(7, 25);
             this.label2.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(114, 24);
+            this.label2.Size = new System.Drawing.Size(114, 19);
             this.label2.TabIndex = 7;
             this.label2.Text = "Hole1  :";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -738,7 +809,7 @@
             this.groupBox13.Controls.Add(this.checkBox_Recipe_TabRecipe_MAlignVacuum_Center);
             this.groupBox13.Controls.Add(this.checkBox_Recipe_TabRecipe_MAlignVacuum_Inner);
             this.groupBox13.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox13.Location = new System.Drawing.Point(397, 624);
+            this.groupBox13.Location = new System.Drawing.Point(397, 595);
             this.groupBox13.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox13.Name = "groupBox13";
             this.groupBox13.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -3353,77 +3424,6 @@
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
             // 
-            // groupBox6
-            // 
-            this.groupBox6.Controls.Add(this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity);
-            this.groupBox6.Controls.Add(this.label16);
-            this.groupBox6.Controls.Add(this.button_Recipe_TabRecipe_SiriusTemplateFile);
-            this.groupBox6.Controls.Add(this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile);
-            this.groupBox6.Controls.Add(this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode);
-            this.groupBox6.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox6.Location = new System.Drawing.Point(694, 595);
-            this.groupBox6.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox6.Size = new System.Drawing.Size(506, 159);
-            this.groupBox6.TabIndex = 92;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = " Marking Layer Data ";
-            // 
-            // checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode
-            // 
-            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.AutoSize = true;
-            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Location = new System.Drawing.Point(10, 25);
-            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Name = "checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode";
-            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Size = new System.Drawing.Size(435, 21);
-            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.TabIndex = 62;
-            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Text = "Processing by changing marking data to barcode (1D, 2D, QR etc)";
-            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.UseVisualStyleBackColor = true;
-            // 
-            // richTextBox_Recipe_TabRecipe_MarkingTemplateFile
-            // 
-            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Location = new System.Drawing.Point(28, 50);
-            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Name = "richTextBox_Recipe_TabRecipe_MarkingTemplateFile";
-            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Size = new System.Drawing.Size(466, 57);
-            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.TabIndex = 77;
-            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Text = "";
-            // 
-            // button_Recipe_TabRecipe_SiriusTemplateFile
-            // 
-            this.button_Recipe_TabRecipe_SiriusTemplateFile.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.button_Recipe_TabRecipe_SiriusTemplateFile.Location = new System.Drawing.Point(28, 109);
-            this.button_Recipe_TabRecipe_SiriusTemplateFile.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.button_Recipe_TabRecipe_SiriusTemplateFile.Name = "button_Recipe_TabRecipe_SiriusTemplateFile";
-            this.button_Recipe_TabRecipe_SiriusTemplateFile.Size = new System.Drawing.Size(118, 44);
-            this.button_Recipe_TabRecipe_SiriusTemplateFile.TabIndex = 78;
-            this.button_Recipe_TabRecipe_SiriusTemplateFile.Text = "Template  File Select (.sirius)";
-            this.button_Recipe_TabRecipe_SiriusTemplateFile.UseVisualStyleBackColor = true;
-            this.button_Recipe_TabRecipe_SiriusTemplateFile.Click += new System.EventHandler(this.button_Recipe_TabRecipe_SiriusTemplateFile_Click);
-            // 
-            // textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity
-            // 
-            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Location = new System.Drawing.Point(269, 120);
-            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Name = "textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity";
-            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Size = new System.Drawing.Size(130, 24);
-            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.TabIndex = 80;
-            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Text = "TEST";
-            // 
-            // label16
-            // 
-            this.label16.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label16.Location = new System.Drawing.Point(163, 118);
-            this.label16.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(104, 24);
-            this.label16.TabIndex = 79;
-            this.label16.Text = "Marking Data :";
-            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // FormNew_Recipe
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -3448,6 +3448,8 @@
             this.Text = "FormNew_Main";
             this.tabControl_Recipe.ResumeLayout(false);
             this.tabPage_Recipe.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.groupBox15.ResumeLayout(false);
             this.groupBox15.PerformLayout();
             this.groupBox17.ResumeLayout(false);
@@ -3481,8 +3483,6 @@
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox177.ResumeLayout(false);
-            this.groupBox6.ResumeLayout(false);
-            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
 
         }
