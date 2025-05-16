@@ -15602,7 +15602,7 @@ namespace QMC.Common.Modules
                     //else if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
                     else if (Equipment.stVisionRecipeSet.nSocketMarkType == (int)MarkTypeList.GoldPowder)
                     {
-                        result =  Fiducial_aligner.FindMetalPowderForAutoTreshold(Fiducial_circlesResult, 
+                        result =  Fiducial_aligner.FindGoldPowderForAutoTreshold(Fiducial_circlesResult, 
                                                         bm_AlignRawData, 
                                                         Camera_HighRes.Resolution.Width, 
                                                         Camera_HighRes.Resolution.Height,
@@ -17545,36 +17545,6 @@ namespace QMC.Common.Modules
                 case (int)LaserDrilling_Step.DrillingWork_Start:                                    //  Drilling 작업 시작                    
                     Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 Process 시작");
 
-
-                    //if (m_stDividedRegion_GroupData != null)
-                    //{
-                    //    //  메인 화면에 가공위치 표시용
-                    //    Main_SocketPositions = new List<PointD>();
-
-                    //    for (int i = 0; i < m_stDividedRegion_GroupData[0].nGroup_Num; i++)
-                    //    {
-                    //        Main_SocketPositions.Add(new PointD(m_stDividedRegion_GroupData[i].dGroupCenter.X, m_stDividedRegion_GroupData[i].dGroupCenter.Y));
-                    //    }
-
-                    //    if (Main_SocketPositions.Count > 0)
-                    //    {
-                    //        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 있음.");
-
-                    //        //  메인 화면에 그려지는 가공위치의 개수
-                    //        (Main_SocketPositions_RowCount, Main_SocketPositions_ColumnCount) = CalculateArraySize(Main_SocketPositions);
-
-                    //        //  가공 소켓이 몇개의 영역으로 나눠지는지
-                    //        Main_SocketPositions_SubRowCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_Y : 1;
-                    //        Main_SocketPositions_SubColumnCount = m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X > 0 ? m_stDividedRegion_GroupData[0].nGroup_Region_Divided_X : 1;
-
-                    //        Main_SocketPositions_Draw = true;
-                    //    }
-                    //    else
-                    //    {
-                    //        Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공 소켓 배열 개수 계산을 위한 소켓 데이터 없음. (Data Parsing 이 정상적으로 이루어졌으면 여기 들어오면 안됨)");
-                    //    }
-                    //}
-
                     m_nDrillingData_SocketAlign_NGCount = 0;
 
                     m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_LayerRemainedCheck;
@@ -17598,19 +17568,6 @@ namespace QMC.Common.Modules
                     if (m_nLaserDrilling_LayerCount < m_stLayerType.m_nLayerCount)
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Layer 가 남아 있음");
-
-                        //m_nDividedRegion_Region_CurrentIndex = 0;
-                        //m_nDrillingWork_RepeatBundle_Count = 0;         //  반복 회수가 많을 경우, 몇번을 한 묶음으로 할 것인지?
-
-                        //if ((m_nDrillingWork_Group_Count == 0) || Config.ParamConfig.Drilling_GroupByGroup_CoolingTime <= 0)            //  첫번째 Group 이거나, Cooling Time 이 0 보다 작으면 바로 시작
-                        //{
-                        //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_StageZ_MoveStartPos;
-                        //}
-                        //else
-                        //{
-                        //    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_BeforeMoveToNextRegion_CoolingTime_Start;
-                        //}
-
 
                         /// <summary>
                         /// Thruhole Layer 가공
@@ -30639,7 +30596,8 @@ namespace QMC.Common.Modules
             //  선택 가공일 경우 여기에서 Group Count (소켓 번호) 를 초기화 시키지 않는다.
 
             if ((m_nSocketAlign_StartIndex >= 0) &&
-                ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) || (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)))
+                ((Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketOnly) || 
+                 (Equipment.SelectedSocketStartMode == (int)SelectedSocketStartModeList.SelectedSocketContinue)))
             {
                 m_strTemp = string.Format("선택 가공 (단일 or 연속). 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count);
                 Log.Write("SLD-200", "Auto Run", m_strTemp);
@@ -30647,7 +30605,6 @@ namespace QMC.Common.Modules
             else
             {
                 m_nDrillingWork_Group_Count = 0;                //  Drilling Group 개수 Count
-
                 m_strTemp = string.Format("전체 가공. 선택한 소켓 번호 : {0}", m_nDrillingWork_Group_Count);
                 Log.Write("SLD-200", "Auto Run", m_strTemp);
             }
@@ -30667,11 +30624,9 @@ namespace QMC.Common.Modules
             m_dHoleLayer_Resizing = Equipment.stLayerRecipeSet[m_nHoleLayer_ProcessIndex].Miscellaneous_Resizing;
             m_dZOffset_SocketHeightCheck = 0.0;
 
-            ////  현재 설정된 묶음 개수 가져오기 (작업 파일을 Open 할 때마다 묶음 개수를 원래대로)
-            //m_nRepetation_Bundle = Config.ParamConfig.RepetitionsBundle;
-
+            // 현재 설정된 묶음 개수 가져오기 (작업 파일을 Open 할 때마다 묶음 개수를 원래대로)
+            // m_nRepetation_Bundle = Config.ParamConfig.RepetitionsBundle;
             //Equipment.WorkStartTick_Drilling = Environment.TickCount;                   //  Drilling Tick Start
-
 
             //  Layer 별로 다르게 해야 하는 파라미터
             m_nDrillingWork_Repeat_Count_Total = Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetition <= 0 ? 1 : Equipment.stLayerRecipeSet[m_stLayerType.m_nLayerIndex[m_nLaserDrilling_LayerCount]].Miscellaneous_DrillingRepetition;            //  총 반복 회수
