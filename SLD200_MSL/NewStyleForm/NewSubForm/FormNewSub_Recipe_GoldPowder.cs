@@ -473,15 +473,18 @@ namespace SLD200.NewStyleForm.NewSubForm
                 double m_dradius = 0.0;
                 m_dradius = dTargetSize_Radius / workStage.Config.ParamConfig.UpperVision_Scale_X;
 
-                //dScore
-                QMC_ImageProcessFindAlignResult result = aligner.FindMetalPowderForAutoTreshold(circlesResult,
+                //QMC_ImageProcessFindAlignResult result = aligner.FindMetalPowderForAutoTreshold(circlesResult,
+                //                                    workStage.Camera_HighRes.LatestImage.RawData,
+                //                                    w, h, (int)m_dradius, dScore, dSpec);
+                circlesResult = aligner.FindMetalPowderForAutoTreshold(circlesResult,
                                                     workStage.Camera_HighRes.LatestImage.RawData,
                                                     w, h, (int)m_dradius, dScore, dSpec);
-                if(circlesResult.Count > 3 )
+                if (circlesResult.Count > 3 )
                 {
                     bFindCircle = true;
                 }
-                workStage.UpdateOverlay(result);
+                //우선막자
+                //workStage.UpdateOverlay(result);
             }
 
             if (bFindCircle && (circlesResult.Count > 0))
