@@ -11,12 +11,12 @@ namespace QMC.Common.VisionPart
 {
     public class QMC_ImageProcessFindAlignResult
     {
-        public List<Circle> Circle { get; set; }
+        public List<Circle> Circles { get; set; }
         public List<double> ScoreCollection { get; set; }
 
         public QMC_ImageProcessFindAlignResult()
         {
-            Circle = new List<Circle>();
+            Circles = new List<Circle>();
             ScoreCollection = new List<double>();
 
         }
@@ -487,7 +487,7 @@ namespace QMC.Common.VisionPart
             if (dScore > 0.8)
             {
                 bFindCircle = true;
-                result.Circle.Add(resultCircle);
+                result.Circles.Add(resultCircle);
                 result.ScoreCollection.Add(dScore);
             }
             else
@@ -517,26 +517,30 @@ namespace QMC.Common.VisionPart
             return dScore;
         }
 
-        public List<RectangleF> FindMetalPowder(List<RectangleF> circlesResult, byte[] pixelData, int w, int h, ref bool circleFound)
+        public List<PointF> FindCircleForFR4(byte[] pixelData, int w, int h, float cx, float cy)
+        {
+            List<PointF> result = new List<PointF>();
+            Sobel(pixelData, w, h);
+            return result;
+        }
+
+        public List<Circle> FindMetalPowder(List<RectangleF> circlesResult, byte[] pixelData, int w, int h, ref bool circleFound, int Threshold = 75, double dScore = 0.7, int radius = 0, double dSpec = 0.1)
         {
             List<RectangleF> circlesResultLocal = new List<RectangleF>();
             List<PointF> polygon = new List<PointF>();
             List<PointF> points = new List<PointF>();
             int nStepX = w / 80;
             int nStepY = h / 80;
-            int nDirectionX = 0;
-            int nDirectionY = 0;
-            bool bFindCircle = false;
-            double dRadius = 0;
-            float cx = 0;
-            float cy = 0;
+
             double dErrorRatio = 0.3;
             List<List<Point>> blobs = new List<List<Point>>();
 
-            List<List<Point>> list = FindBrightBlobs(pixelData, w, h, w, 70); // 영상 밝기 바뀌면 70 이게 쓰레스 홀드 입니다. 이거 변경 해야 됩니다.
-            blobs.AddRange(list.Where(t => t.Count() > 5000 && t.Count() < 25000).ToList());
+            List<List<Point>> list = FindBrightBlobs(pixelData, w, h, w, Threshold); // 영상 밝기 바뀌면 70 이게 쓰레스 홀드 입니다. 이거 변경 해야 됩니다.
+            int MinArea = (int)(radius * radius * Math.PI * (1 - dSpec));
+            int MaxArea = (int)(radius * radius * Math.PI * (1 + dSpec));
+            blobs.AddRange(list.Where(t => t.Count() > MinArea && t.Count() < MaxArea).ToList());
             list.Clear();
-
+            List<Circle> circles = new List<Circle>();
             foreach (List<Point> point in blobs)
             {
                 if (point.Count == 0)
@@ -548,9 +552,9 @@ namespace QMC.Common.VisionPart
 
                 // Width와 Height의 비율 계산
                 float ratio = (float)width / height;
-                float filter = 0.2f;
+                float filter = 0.05f;
                 // 비율이 0.9~1.1 사이인 경우만 처리
-                if (ratio >= 1 - filter && ratio <= 1 + filter)
+                //if (ratio >= 1 - filter && ratio <= 1 + filter)
                 {
 
                     // circlesResult에 추가
@@ -589,7 +593,7 @@ namespace QMC.Common.VisionPart
                 circleFound = false;
 
                 circlesResult.Clear();
-                return circlesResult;
+                return circles;
             }
 
 
@@ -601,7 +605,21 @@ namespace QMC.Common.VisionPart
                 // Center 계산 (모든 Point의 평균)
                 float centerX = (float)point.Average(p => p.X);
                 float centerY = (float)point.Average(p => p.Y);
+                int nTotalCount = point.Count;
+                PointF center = new PointF(centerX, centerY);
+                float Myradius = (float)((medianWidth + medianHeight) / 4);
+                var pts = point.Where(p => GetDistance(p, center) < Myradius * 0.95).ToList();
+                int nInCount = pts.Count();
+                int nOutCount = nTotalCount - nInCount;
+                double dGuessInCount = Math.PI * Myradius * Myradius;
+                double Min = Math.Min(nTotalCount, dGuessInCount);
+                double Max = Math.Max(nTotalCount, dGuessInCount);
 
+                double dMyScore = ((nInCount - nOutCount) / dGuessInCount);
+                if (dMyScore < dScore)
+                    continue;
+                centerX = (float)point.Average(p => p.X);
+                centerY = (float)point.Average(p => p.Y);
                 // medianWidth와 medianHeight를 사용하여 RectangleF 생성
                 RectangleF rectangle = new RectangleF(
                     centerX - (float)medianWidth / 2,
@@ -610,88 +628,56 @@ namespace QMC.Common.VisionPart
                     (float)medianHeight
                 );
 
+                circles.Add(new Circle(centerX, centerY, Myradius));
+                //FindBestCircle()
                 // circlesResult에 추가
                 circlesResult.Add(rectangle);
             }
-            //foreach (List<Point> point in blobs) 
-            //{
-            //    int x = (int)point.Average(t => t.X);
-            //    int y = (int)point.Average(t => t.Y); 
-            //    //if (bFindCircle)
-            //    //    break;
-            //    //for (int x = 0; x < 20; x++)
-            //    {
 
 
+            return circles;
+        }
+        public QMC_ImageProcessFindAlignResult FindMetalPowderForAutoTreshold(List<RectangleF> circlesResult,
+            byte[] pixelData, int w, int h, int radius, double dScore, double dSpec)
+        {
 
+            //List<RectangleF> result = new List<RectangleF>();
+            QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
+            List<Circle> BestCircle = new List<Circle>();
+            double dMaxCount = 0;
+            object obj = new object();
+            Parallel.For(1, 20, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, threshold =>
+            {
+                bool bFound = false;
+                var circles = FindMetalPowder(circlesResult, pixelData, w, h, ref bFound, (threshold) * 10 + 50, dScore, radius);
+                int nCount = 0;
+                foreach (var circle in circles)
+                {
+                    double dMin = Math.Min(circle.Radius, radius);
+                    double dMax = Math.Max(circle.Radius, radius);
+                    if (dMin / dMin > dScore)
+                    {
+                        nCount++;
+                    }
+                }
+                lock (obj)
+                {
+                    if (dMaxCount < nCount)
+                    {
+                        dMaxCount = nCount;
+                        BestCircle = circles;
+                    }
+                }
 
-            //        polygon = FindCircleBoundary(pixelData, w, h, x, y, 50, 150, 3, 10);
-            //        //polygon = FindCircleBoundary(pixelData, w, h, 540, 1150, 50, 1000, 1);
-            //        points = polygon;
-            //        circlesResultLocal.Clear();
-            //        FindCircleFitter(circlesResultLocal, points, out dRadius, 5);
+            });
+            circlesResult.Clear();
+            foreach (var circle in BestCircle)
+            {
+                circlesResult.Add(circle.GetBoundery());
+            }
+            result.Circles.AddRange(BestCircle);
 
-            //        cx = circlesResultLocal.Count > 0 ? circlesResultLocal[0].X + circlesResultLocal[0].Width / 2 : w / 2;
-            //        cy = circlesResultLocal.Count > 0 ? circlesResultLocal[0].Y + circlesResultLocal[0].Height / 2 : h / 2;
-            //        if (dRadius < 120 && dRadius > 80 && cx > 0 && cx < w
-            //            && cy < h && cy > 0)
-            //        {
-
-
-            //            cx = circlesResultLocal.Count > 0 ? circlesResultLocal[0].X + circlesResultLocal[0].Width / 2 : w / 2;
-            //            cy = circlesResultLocal.Count > 0 ? circlesResultLocal[0].Y + circlesResultLocal[0].Height / 2 : h / 2;
-
-            //            polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 1, 5);
-
-
-            //            points = polygon;
-
-            //            circlesResultLocal.Clear();
-            //            double dRadius2 = 0;
-            //            FindCircleFitter(circlesResultLocal, points, out dRadius2, 5);
-
-            //            if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.3)
-            //            {
-            //                bFindCircle = true;
-            //                circlesResult.AddRange(circlesResultLocal);
-            //                //break;
-
-            //            }
-
-            //            //return circlesResult;
-            //        }
-            //        nDirectionX++;
-
-            //    }
-            //    nDirectionY++;
-
-
-            //}
-
-
-
-            //if (bFindCircle == false)
-            //{
-
-            //}
-
-
-            //circlesResultLocal.Clear();
-            //circlesResultLocal.AddRange(circlesResult);
-            //circlesResult.Clear();
-            ////circlesResult.Clear();
-            //foreach (var circle in circlesResultLocal)
-            //{
-            //    cx = circle.X + circle.Width / 2;
-            //    cy = circle.Y + circle.Height / 2;
-            //    polygon = FindCircleBoundary(pixelData, w, h, cx, cy, 50, 150, 0.25, 10);
-            //    points = polygon;
-
-            //    FindCircleFitter(circlesResult, points, out dRadius);
-            //}
-
-
-            return circlesResult;
+            return result;
         }
 
 
@@ -828,7 +814,6 @@ namespace QMC.Common.VisionPart
                     boundaryPoints.Add(boundaryPointW);
                    
                 }
-               
             }
 
             return boundaryPoints;

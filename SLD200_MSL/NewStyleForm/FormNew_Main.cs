@@ -3451,56 +3451,49 @@ namespace SLD200_MSL
         }
         private void GLcontrol_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (sender is OpenGLControl gl)
+            try
             {
-                ImageViewer_Main_highs.Camera.StartLive();
-                ImageViewer_Main_Lows.Camera.StartLive();
-                var Document = this.SiriusViewer_Main.Document;
-                if (Document.Views.Count > 0)
+
+                if (sender is OpenGLControl gl)
                 {
-                    var view = Document.Views.Last();
-                    
-
-                    double scale = view.Width / view.ScaleWidth;
-                    double dCenterX = view.Width / 2;
-                    double scaleWidht = view.ScaleWidth;
-                    double scaleHeight = view.ScaleHeight;
-                    double dCenterY = view.Height / 2;
-                    double dScale = view.Scale;
-                    var cX = view.CameraX;
-                    var cY = view.CameraY;
-                    System.Drawing.Point Center = new System.Drawing.Point((int)dCenterX, (int)dCenterY);
-                    var pt = new System.Drawing.Point(e.X, e.Y);
-                    pt.Offset(-Center.X, -Center.Y);
-                    pt.Y *= -1;
-                    var ptReal = ConvertScreenToReal(pt, scale);
-                    ptReal.X += cX;
-                    ptReal.Y += cY;
-                    
-
-                    if (Equipment.AutoManualStatus == false)
+                    ImageViewer_Main_highs.Camera.StartLive();
+                    ImageViewer_Main_Lows.Camera.StartLive();
+                    var Document = this.SiriusViewer_Main.Document;
+                    if (Document.Views.Count > 0)
                     {
-                        if(Equipment._InitDeviceStatus.MotionIo)
-                        {
-                            var v = workStage.ConvertPointFineCam(new XyzCoordinate(ptReal.X, ptReal.Y, 0));
+                        var view = Document.Views.Last();
 
-                            //workStageParameter.stWorkStagePosParam.dTarget
-                            workStage.MovetoWorkStage_ABS_PositionsXY(new XyCoordinate(v.X, v.Y), Type_Motor_Speed.Coarse);
-                            return;
+                        view.Dp2Lp(e.Location, out float dX, out float dY);
+                        XyzCoordinate ptReal = new XyzCoordinate(dX, dY, 0);
+                        ptReal.X += view.CameraX;
+                        ptReal.Y += view.CameraY;
+
+                        if (Equipment.AutoManualStatus == false)
+                        {
+                            if (Equipment._InitDeviceStatus.MotionIo)
+                            {
+                                var v = workStage.ConvertPointFineCam(new XyzCoordinate(ptReal.X, ptReal.Y, 0));
+                                workStage.MovetoWorkStage_ABS_PositionsXY(new XyCoordinate(v.X, v.Y), Type_Motor_Speed.Coarse);
+                                return;
+                            }
+                            else
+                            {
+                                MessageBoxOk messageBoxOk = new MessageBoxOk();
+                                messageBoxOk.ShowDialog("Error", "초기화 되지 않았습니다.");
+                            }
                         }
                         else
                         {
                             MessageBoxOk messageBoxOk = new MessageBoxOk();
-                            messageBoxOk.ShowDialog("Error", "초기화 되지 않았습니다.");
+                            messageBoxOk.ShowDialog("Error", "설비가 Manual 상태가 아닙니다.");
                         }
+
                     }
-                    else
-                    {
-                        MessageBoxOk messageBoxOk = new MessageBoxOk();
-                        messageBoxOk.ShowDialog("Error", "설비가 Manual 상태가 아닙니다.");
-                    }
-                    
                 }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
             }
         }
 

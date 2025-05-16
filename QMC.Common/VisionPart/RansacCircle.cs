@@ -13,14 +13,24 @@ namespace QMC.Common.VisionPart
         public float CenterX;
         public float CenterY;
         public float Radius;
+        public float Score;
+        public Circle(float x, float y, float radius): this(x,y,radius,0)
+        {
+            
+            
+        }
 
-        public Circle(float x, float y, float radius)
+        public Circle(float x, float y, float radius,float score)
         {
             CenterX = x;
             CenterY = y;
             Radius = radius;
+            Score = score;
         }
-
+        public RectangleF GetBoundery()
+        {
+            return new RectangleF(CenterX - Radius, CenterY - Radius, Radius * 2, Radius * 2);
+        }
         public override string ToString()
         {
             return $"Center: ({CenterX:F2}, {CenterY:F2}), Radius: {Radius:F2}";

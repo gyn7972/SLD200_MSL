@@ -14614,11 +14614,17 @@ namespace QMC.Common.Modules
                     //else if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
                     else if (Equipment.stVisionRecipeSet.dSocketMarkType == (int)MarkTypeList.GoldPowder)
                     {
-                        Fiducial_aligner.FindMetalPowder(Fiducial_circlesResult, 
+                        result =  Fiducial_aligner.FindMetalPowderForAutoTreshold(Fiducial_circlesResult, 
                                                         bm_AlignRawData, 
                                                         Camera_HighRes.Resolution.Width, 
-                                                        Camera_HighRes.Resolution.Height, 
-                                                        ref Fiducial_circleFound);
+                                                        Camera_HighRes.Resolution.Height,
+                                                        nWidthImageCount,
+                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
+                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkSpec);
+                        if(result.Circles.Count > 3)
+                        {
+                            Fiducial_circleFound = true;
+                        }
                     }
 
                     if (Fiducial_circleFound)
@@ -14690,7 +14696,7 @@ namespace QMC.Common.Modules
                 try
                 {
                     this.FineCamResultOveray = new VisionImageViewer.OwnedOverlayCollection();
-                    foreach (var v in result.Circle)
+                    foreach (var v in result.Circles)
                     {
                         Point ptStart = new Point((int)(v.CenterX - v.Radius), (int)(v.CenterY - v.Radius));
                         Point ptEnd = new Point((int)(v.CenterX + v.Radius), (int)(v.CenterY + v.Radius));
@@ -14708,7 +14714,7 @@ namespace QMC.Common.Modules
                         VisionScale TempScale = new VisionScale();
                         TempScale.X = this.Config.ParamConfig.UpperVision_Scale_X;
                         int FontSize = 50;
-                        string strScore = string.Format("Score : {0:0.00},Size:{1:0.00}  ", result.ScoreCollection[0], result.Circle[0].Radius * 2 * TempScale.X);
+                        string strScore = string.Format("Score : {0:0.00},Size:{1:0.00}  ", result.ScoreCollection[0], result.Circles[0].Radius * 2 * TempScale.X);
                         Font font = new Font("verdana", FontSize, FontStyle.Bold);
                         var textOveray = new TextVisionImageOverlay(strScore, new Point((int)ptStart.X, (int)ptStart.Y - 150), font);
                         textOveray.Visible = true;
