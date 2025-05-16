@@ -33934,6 +33934,33 @@ namespace QMC.Common.Modules
                                     if (entity.Name == m_strEntityName)
                                     {
                                         text.TextData = m_strEntityData;
+
+                                        //  선택한 소켓의 가공 객체를 List 로 등록
+                                        list.Add(entity);
+                                    }
+                                    break;
+
+                                case EType.Barcode1D:
+                                    var Barcode = entity as SpiralLab.Sirius.Barcode1D;
+
+                                    if (entity.Name == m_strEntityName)
+                                    {
+                                        Barcode.TextData = m_strEntityData;
+
+                                        //  선택한 소켓의 가공 객체를 List 로 등록
+                                        list.Add(entity);
+                                    }
+                                    break;
+
+                                case EType.BarcodeDataMatrix2:
+                                    var DM2 = entity as SpiralLab.Sirius.BarcodeDataMatrix2;
+
+                                    if (entity.Name == m_strEntityName)
+                                    {
+                                        DM2.TextData = m_strEntityData;
+
+                                        //  선택한 소켓의 가공 객체를 List 로 등록
+                                        list.Add(entity);
                                     }
                                     break;
 
@@ -38760,8 +38787,6 @@ namespace QMC.Common.Modules
                                     var sirius_BarcodeQR2 = entity as SpiralLab.Sirius.BarcodeQR2;
 
                                     //sirius_BarcodeQR2.TextData = "MY_QR1231235555";
-
-
                                     break;
 
                                 case EType.BarcodeDataMatrix:
