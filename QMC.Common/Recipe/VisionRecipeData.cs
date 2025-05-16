@@ -26,6 +26,10 @@ namespace QMC.Common.Recipe
         //Socket
         public int nSocketAlignType;                 //  Fiducial Align Type (0:Circle Find, 2:Pattern Matching)
         public int nSocketMarkType;                  //  Fiducial Mark Type (0:Circle, 1:Gold Powder)
+
+        /// <summary>
+        /// Mark Color  0: White, 1: Black, 2: Ignore
+        /// </summary>
         public int nSocketCircleColor;               //  0: White, 1: Black, 2: Ignore
         public double dSocketCircleMarkRadius;                  //  Fiducial Mark Size (mm)
         public double dSocketCircleMarkSpec;                  //  Fiducial Mark Spec
