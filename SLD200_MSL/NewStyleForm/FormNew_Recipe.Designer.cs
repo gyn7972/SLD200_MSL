@@ -3368,7 +3368,7 @@
             this.groupBox6.Size = new System.Drawing.Size(506, 159);
             this.groupBox6.TabIndex = 92;
             this.groupBox6.TabStop = false;
-            this.groupBox6.Text = " Marking Data ";
+            this.groupBox6.Text = " Marking Layer Data ";
             // 
             // checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode
             // 
