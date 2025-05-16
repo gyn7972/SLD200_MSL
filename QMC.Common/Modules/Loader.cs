@@ -8732,7 +8732,7 @@ namespace QMC.Common.Modules
             }
 
             //  속도
-            m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Fine;
+            m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Fine / 2.0;
 
             //  가감속
             m_dAccDec = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Acceleration_Fine;
@@ -8945,7 +8945,7 @@ namespace QMC.Common.Modules
             }
 
             //  속도
-            m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Fine;
+            m_dSpeed = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Speed_Fine / 2.0;
 
             //  가감속
             m_dAccDec = Equipment.stAxisParam[(int)nAxis.TR_Z].Common_Acceleration_Fine;

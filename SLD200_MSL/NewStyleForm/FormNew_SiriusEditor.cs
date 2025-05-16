@@ -449,6 +449,7 @@ namespace SLD200_MSL
             //var marker = new MarkerDefault(0);
             workStage.marker = new MarkerDefault(0, " RTC6 Marker ");           //  Sirius1
             //workStage.marker = new MarkerRtc(0, " RTC6 Marker ");             //  Sirius2
+            //workStage.marker.ScannerRotateAngle = 90.0;                         //  Scanner 가공 Field 를 CCW 방향으로 90도 회전 (Scanner 좌표계와 Stage 좌표계가 일치하지 않음) - 일단 보류. 이걸 하면 Scanner Cal 좌표계가 바뀌기 때문에...
 
             //workStage.marker.Laser.Scanner.ScannerRotateAngle = 90.0;                     //  2022. 10. 12.  SCH : Scanner 가공 Field 를 CCW 방향으로 90도 회전
             //  (SLD-100 은 Scanner 와 Stage 방향이 일치하지 않음. Scanner 가 CW 방향으로 90도 돌아가 있음)

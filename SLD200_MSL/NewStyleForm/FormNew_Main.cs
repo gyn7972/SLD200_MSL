@@ -38,6 +38,10 @@ using System.Windows.Media;
 using Color = System.Drawing.Color;
 using Brush = System.Drawing.Brush;
 using Pen = System.Drawing.Pen;
+using System.Windows.Controls;
+using ListViewItem = System.Windows.Forms.ListViewItem;
+using Label = System.Windows.Forms.Label;
+using System.Numerics;
 
 namespace SLD200_MSL
 {
@@ -2486,6 +2490,28 @@ namespace SLD200_MSL
 
         private void checkBox_Main_CycleStop_CheckedChanged(object sender, EventArgs e)
         {
+            //  Layer Name : "Marking"
+            //  Eitity Name : "QR2"
+            //  변경 Data : "TESTTEST"
+            //workStage.MarkingEntity_DataChange("QR2", "TESTTEST");
+
+            var text = new BarcodeQR2("SIRIUS1234");
+            
+            Vector2 RotCenter = new Vector2(text.Width / 2, text.Height / 2);
+            text.Rotate(90, RotCenter);
+            text.Location = new Vector2(text.Location.X - (float)(text.Width / 2.0), text.Location.Y - (float)(text.Height / 2.0));
+            SiriusViewer_Main.Document.Action.ActEntityAdd(text);
+
+            var text2 = new Barcode1D("TESTTTTT");
+            RotCenter = new Vector2(text2.Width / 2, text2.Height / 2);
+            text2.Rotate(90, RotCenter);
+            text2.Location = new Vector2(text2.Location.X - (float)(text2.Width / 2.0), text2.Location.Y - (float)(text2.Height / 2.0));
+            SiriusViewer_Main.Document.Action.ActEntityAdd(text2);
+
+            return;
+
+
+
             //  Cycle Stop 일 경우, 현재 동작중인 Cycle 완료 후 정지
 
             //  대상
@@ -3284,7 +3310,7 @@ namespace SLD200_MSL
 
         private void button_TEST12_Click(object sender, EventArgs e)
         {
-            #region load from sirius file
+            #region Marker Test (load from sirius file)
             var dlg = new OpenFileDialog();
             dlg.Filter = "sirius data files (*.sirius)|*.sirius|dxf cad files (*.dxf)|*.dxf|All Files (*.*)|*.*";
             dlg.Title = "Open to data file";
@@ -3309,10 +3335,20 @@ namespace SLD200_MSL
                 Laser = workStage.laser,
             };
 
+            //  마킹 도면 갱신 (실제 가공할 땐 여기에 올릴 필요가 없긴 한데, 데이터를 확인하려면 올리는 것도 괜찮고...)
             SiriusViewer_Main.Document = markerArg.Document;
             Equipment.SetEqpSiriusViewerDocument(SiriusViewer_Main.Document);
 
+            //  마킹 데이터 변경 (데이터 변경은 여기서 해야함)
+
+
+
+            //  마킹 데이터 세팅
             workStage.marker.Ready(markerArg);
+
+            //  마킹 Start
+            //workStage.marker.Start();
+
 
 
             //loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_Widely_DoneCheck_Timeout);

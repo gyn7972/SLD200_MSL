@@ -493,7 +493,11 @@ namespace QMC.Common
             public double DustCollectorFreq_Lower;                      //  Dust Collector Frequency (Lower)
             public bool DustCollectorLower_Disable;                     //  Dust Collector Lower Disable (true: Disable, false: Enable)
 
-            public double CalfileOffsetZAxismm;                            //  Z Axis Offset Calibration File (mm)
+            public bool MarkingData_SiriusTemplate_Use;                 //  Sirius Template 파일을 이용한 가공을 할 경우
+            public string MarkingTemplate_SiriusFile;                   //  Marking Template File Path and Name
+            public string MarkingTemplate_EntityData;                   //  Marking Template Entity 에 집어넣을 데이터
+
+            public double CalfileOffsetZAxismm;                         //  Z Axis Offset Calibration File (mm)
         }
         public static stLayerRecipeParameter[] stLayerRecipeSet = new stLayerRecipeParameter[System.Enum.GetValues(typeof(LayerList)).Length];
         
@@ -1194,6 +1198,11 @@ namespace QMC.Common
                 stLayerRecipeSet[i].DustCollectorFreq_Upper = 20.0;                                 //  Dust Collector Upper Frequency (Hz)
                 stLayerRecipeSet[i].DustCollectorFreq_Lower = 20.0;                                 //  Dust Collector Lower Frequency (Hz)
                 stLayerRecipeSet[i].DustCollectorLower_Disable = false;                             //  Dust Collector Lower Disable (true: Disable, false: Enable)
+
+                //  Marking Template
+                stLayerRecipeSet[i].MarkingData_SiriusTemplate_Use = false;                         //  Sirius Template 파일을 이용한 가공을 할 경우
+                stLayerRecipeSet[i].MarkingTemplate_SiriusFile = "";                                //  Marking Template File Path and Name
+                stLayerRecipeSet[i].MarkingTemplate_EntityData = "";                                //  Marking Template Entity 에 집어넣을 데이터
 
                 stLayerRecipeSet[i].CalfileOffsetZAxismm = 0.0;
             }

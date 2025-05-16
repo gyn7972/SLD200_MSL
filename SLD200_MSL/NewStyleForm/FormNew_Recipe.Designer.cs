@@ -58,10 +58,8 @@
             this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable = new System.Windows.Forms.CheckBox();
             this.label47 = new System.Windows.Forms.Label();
             this.checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode = new System.Windows.Forms.CheckBox();
-            this.button18 = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper = new System.Windows.Forms.TextBox();
             this.label46 = new System.Windows.Forms.Label();
-            this.button20 = new System.Windows.Forms.Button();
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower = new System.Windows.Forms.TextBox();
             this.label48 = new System.Windows.Forms.Label();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
@@ -95,6 +93,7 @@
             this.textBox_Recipe_TabRecipe_ModuleInformation_Width = new System.Windows.Forms.TextBox();
             this.label34 = new System.Windows.Forms.Label();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign = new System.Windows.Forms.CheckBox();
             this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY = new System.Windows.Forms.TextBox();
             this.label85 = new System.Windows.Forms.Label();
             this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX = new System.Windows.Forms.TextBox();
@@ -276,7 +275,12 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
-            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign = new System.Windows.Forms.CheckBox();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode = new System.Windows.Forms.CheckBox();
+            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile = new System.Windows.Forms.RichTextBox();
+            this.button_Recipe_TabRecipe_SiriusTemplateFile = new System.Windows.Forms.Button();
+            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox15.SuspendLayout();
@@ -304,6 +308,7 @@
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox177.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // label_Recipe_FileName
@@ -375,6 +380,7 @@
             // 
             // tabPage_Recipe
             // 
+            this.tabPage_Recipe.Controls.Add(this.groupBox6);
             this.tabPage_Recipe.Controls.Add(this.groupBox15);
             this.tabPage_Recipe.Controls.Add(this.groupBox17);
             this.tabPage_Recipe.Controls.Add(this.groupBox14);
@@ -637,18 +643,16 @@
             this.groupBox14.Controls.Add(this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable);
             this.groupBox14.Controls.Add(this.label47);
             this.groupBox14.Controls.Add(this.checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode);
-            this.groupBox14.Controls.Add(this.button18);
             this.groupBox14.Controls.Add(this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper);
             this.groupBox14.Controls.Add(this.label46);
-            this.groupBox14.Controls.Add(this.button20);
             this.groupBox14.Controls.Add(this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower);
             this.groupBox14.Controls.Add(this.label48);
             this.groupBox14.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox14.Location = new System.Drawing.Point(694, 592);
+            this.groupBox14.Location = new System.Drawing.Point(694, 250);
             this.groupBox14.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox14.Name = "groupBox14";
             this.groupBox14.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox14.Size = new System.Drawing.Size(272, 119);
+            this.groupBox14.Size = new System.Drawing.Size(231, 142);
             this.groupBox14.TabIndex = 86;
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = " Dust Collector (Hz) ";
@@ -657,7 +661,7 @@
             // 
             this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.AutoSize = true;
             this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Location = new System.Drawing.Point(72, 90);
+            this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Location = new System.Drawing.Point(10, 110);
             this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Name = "checkBox_Recipe_TabRecipe_LowerDustCollector_Disable";
             this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Size = new System.Drawing.Size(196, 21);
             this.checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.TabIndex = 63;
@@ -686,66 +690,44 @@
             this.checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.Text = "Remote";
             this.checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode.UseVisualStyleBackColor = true;
             // 
-            // button18
-            // 
-            this.button18.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button18.Location = new System.Drawing.Point(229, 26);
-            this.button18.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.button18.Name = "button18";
-            this.button18.Size = new System.Drawing.Size(35, 25);
-            this.button18.TabIndex = 20;
-            this.button18.Text = "#";
-            this.button18.UseVisualStyleBackColor = true;
-            // 
             // textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper
             // 
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Location = new System.Drawing.Point(156, 27);
+            this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Location = new System.Drawing.Point(163, 27);
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Name = "textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper";
-            this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Size = new System.Drawing.Size(71, 24);
+            this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Size = new System.Drawing.Size(58, 24);
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.TabIndex = 19;
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text = "20";
             // 
             // label46
             // 
             this.label46.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label46.Location = new System.Drawing.Point(94, 25);
+            this.label46.Location = new System.Drawing.Point(109, 25);
             this.label46.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(59, 24);
+            this.label46.Size = new System.Drawing.Size(54, 24);
             this.label46.TabIndex = 18;
             this.label46.Text = "Upper :";
             this.label46.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button20
-            // 
-            this.button20.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.button20.Location = new System.Drawing.Point(229, 53);
-            this.button20.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.button20.Name = "button20";
-            this.button20.Size = new System.Drawing.Size(35, 25);
-            this.button20.TabIndex = 15;
-            this.button20.Text = "#";
-            this.button20.UseVisualStyleBackColor = true;
-            // 
             // textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower
             // 
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Location = new System.Drawing.Point(156, 54);
+            this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Location = new System.Drawing.Point(163, 54);
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Name = "textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower";
-            this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Size = new System.Drawing.Size(71, 24);
+            this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Size = new System.Drawing.Size(58, 24);
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.TabIndex = 14;
             this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = "20";
             // 
             // label48
             // 
             this.label48.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label48.Location = new System.Drawing.Point(94, 52);
+            this.label48.Location = new System.Drawing.Point(109, 52);
             this.label48.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label48.Name = "label48";
-            this.label48.Size = new System.Drawing.Size(59, 24);
+            this.label48.Size = new System.Drawing.Size(54, 24);
             this.label48.TabIndex = 6;
             this.label48.Text = "Lower :";
             this.label48.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -821,7 +803,7 @@
             this.groupBox11.Controls.Add(this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter);
             this.groupBox11.Controls.Add(this.label42);
             this.groupBox11.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox11.Location = new System.Drawing.Point(694, 409);
+            this.groupBox11.Location = new System.Drawing.Point(694, 405);
             this.groupBox11.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox11.Name = "groupBox11";
             this.groupBox11.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -993,7 +975,7 @@
             this.groupBox10.Controls.Add(this.textBox_Recipe_TabRecipe_ModuleInformation_Width);
             this.groupBox10.Controls.Add(this.label34);
             this.groupBox10.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox10.Location = new System.Drawing.Point(946, 259);
+            this.groupBox10.Location = new System.Drawing.Point(946, 250);
             this.groupBox10.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox10.Name = "groupBox10";
             this.groupBox10.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -1127,6 +1109,17 @@
             this.groupBox9.TabIndex = 87;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = " Process Options ";
+            // 
+            // checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign
+            // 
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.AutoSize = true;
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Location = new System.Drawing.Point(17, 171);
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Name = "checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign";
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Size = new System.Drawing.Size(132, 21);
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.TabIndex = 66;
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Text = "GoldPowder Align";
+            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.UseVisualStyleBackColor = true;
             // 
             // textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY
             // 
@@ -3360,16 +3353,76 @@
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
             // 
-            // checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign
+            // groupBox6
             // 
-            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.AutoSize = true;
-            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Location = new System.Drawing.Point(17, 171);
-            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Name = "checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign";
-            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Size = new System.Drawing.Size(132, 21);
-            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.TabIndex = 66;
-            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.Text = "GoldPowder Align";
-            this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign.UseVisualStyleBackColor = true;
+            this.groupBox6.Controls.Add(this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity);
+            this.groupBox6.Controls.Add(this.label16);
+            this.groupBox6.Controls.Add(this.button_Recipe_TabRecipe_SiriusTemplateFile);
+            this.groupBox6.Controls.Add(this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile);
+            this.groupBox6.Controls.Add(this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode);
+            this.groupBox6.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.groupBox6.Location = new System.Drawing.Point(694, 595);
+            this.groupBox6.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox6.Size = new System.Drawing.Size(506, 159);
+            this.groupBox6.TabIndex = 92;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = " Marking Data ";
+            // 
+            // checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode
+            // 
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.AutoSize = true;
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Location = new System.Drawing.Point(10, 25);
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Name = "checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode";
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Size = new System.Drawing.Size(435, 21);
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.TabIndex = 62;
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Text = "Processing by changing marking data to barcode (1D, 2D, QR etc)";
+            this.checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.UseVisualStyleBackColor = true;
+            // 
+            // richTextBox_Recipe_TabRecipe_MarkingTemplateFile
+            // 
+            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Location = new System.Drawing.Point(28, 50);
+            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Name = "richTextBox_Recipe_TabRecipe_MarkingTemplateFile";
+            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Size = new System.Drawing.Size(466, 57);
+            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.TabIndex = 77;
+            this.richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Text = "";
+            // 
+            // button_Recipe_TabRecipe_SiriusTemplateFile
+            // 
+            this.button_Recipe_TabRecipe_SiriusTemplateFile.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.button_Recipe_TabRecipe_SiriusTemplateFile.Location = new System.Drawing.Point(28, 109);
+            this.button_Recipe_TabRecipe_SiriusTemplateFile.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.button_Recipe_TabRecipe_SiriusTemplateFile.Name = "button_Recipe_TabRecipe_SiriusTemplateFile";
+            this.button_Recipe_TabRecipe_SiriusTemplateFile.Size = new System.Drawing.Size(118, 44);
+            this.button_Recipe_TabRecipe_SiriusTemplateFile.TabIndex = 78;
+            this.button_Recipe_TabRecipe_SiriusTemplateFile.Text = "Template  File Select (.sirius)";
+            this.button_Recipe_TabRecipe_SiriusTemplateFile.UseVisualStyleBackColor = true;
+            this.button_Recipe_TabRecipe_SiriusTemplateFile.Click += new System.EventHandler(this.button_Recipe_TabRecipe_SiriusTemplateFile_Click);
+            // 
+            // textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity
+            // 
+            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Location = new System.Drawing.Point(269, 120);
+            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Name = "textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity";
+            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Size = new System.Drawing.Size(130, 24);
+            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.TabIndex = 80;
+            this.textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Text = "TEST";
+            // 
+            // label16
+            // 
+            this.label16.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label16.Location = new System.Drawing.Point(163, 118);
+            this.label16.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(104, 24);
+            this.label16.TabIndex = 79;
+            this.label16.Text = "Marking Data :";
+            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FormNew_Recipe
             // 
@@ -3428,6 +3481,8 @@
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox177.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -3645,10 +3700,8 @@
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_MAlignVacuum_Center;
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_MAlignVacuum_Inner;
         private System.Windows.Forms.GroupBox groupBox14;
-        private System.Windows.Forms.Button button18;
         private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper;
         private System.Windows.Forms.Label label46;
-        private System.Windows.Forms.Button button20;
         private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower;
         private System.Windows.Forms.Label label48;
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_ProcessOptions_DustCollector_RemoteMode;
@@ -3683,5 +3736,11 @@
         private System.Windows.Forms.Label label_Recipe_TabRecipe_Cal_ZAxisOffset;
         private System.Windows.Forms.TabPage tabPage_RecipeGoldPowder;
         private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.CheckBox checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode;
+        private System.Windows.Forms.Button button_Recipe_TabRecipe_SiriusTemplateFile;
+        private System.Windows.Forms.RichTextBox richTextBox_Recipe_TabRecipe_MarkingTemplateFile;
+        private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity;
+        private System.Windows.Forms.Label label16;
     }
 }

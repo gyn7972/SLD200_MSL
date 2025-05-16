@@ -67,6 +67,7 @@ using QMC.Common.Vision;
 using static QMC.Common.Parts.ActionItem;
 using static System.Net.Mime.MediaTypeNames;
 using System.Runtime.Remoting.Channels;
+using System.Diagnostics;
 
 
 namespace QMC.Common.Modules
@@ -1673,6 +1674,7 @@ namespace QMC.Common.Modules
             eGetdata_Drildata_not_group ,     //  "Drilling Data 가 Group 이 아닙니다."
             eGetdata_Rtcinit ,                //  "RTC 보드가 초기화 되지 않았습니다."
             eGetdata_Drildata_No_group,     //  "Drilling Data 가 Group 이 아닙니다."
+            eGetData_TemplateNotExist,          //  마킹용 템플릿 파일이 없습니다.
             DryRunFail,
             DataNotValidation,
             SocketAlignZMoveFail,
@@ -1878,7 +1880,6 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
-
             
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.eGetDataFaile;
@@ -1888,6 +1889,13 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.eGetData_TemplateNotExist;
+            alarm.Title = "데이터로드에 실패";
+            alarm.Cause = "마킹 데이터 템플릿 도면 파일이 없습니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
 
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.eGetdata_Not_group;
@@ -3760,11 +3768,20 @@ namespace QMC.Common.Modules
 
             Marking_StageXY_MoveObjectCenterPos_StableTime,                 //  마킹 할 Object Center 위치로 이동 후 안정화 시간
 
+            //  가공 방법 : Buffer List 직접 컨트롤
             Marking_ListOpen,                                               //  List Buffer Open
             Marking_ListData_Add,                                           //  List 에 데이터 추가
             Marking_ListData_Execute,                                       //  List 실행
             Marking_ListData_ExecuteCheck,                                  //  List 실행 되었는지 확인
             Marking_LaserBusyCheck,                                         //  마킹 완료되었는지 확인
+
+            //  가공방법 : Marker 에 도면 데이터를 전송하여 가공
+            Marking_CustomMarker_DataSet,                                   //  Marker 에 도면 데이터 전송
+            Marking_CustomMarker_DataSet_DoneCheck,                         //  Marker 에 도면 데이터 전송 완료 확인
+            Marking_CustomMarker_Execute,                                   //  Marker 가공 시작
+            Marking_CustomMarker_ExecuteCheck,                              //  Marker 가공 시작 완료 확인
+            Marking_CustomMarker_LaserBusyCheck,                            //  Marker 가공 완료되었는지 확인
+
             Marking_RepeatComplete,                                         //  마킹 반복 완료
 
             Marking_DrillingWork_CompleteCheck,                             //  마킹 가공 작업 완료 확인
@@ -21878,11 +21895,26 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, 가공할 Object Center 를 Scanner Center 위치로 이동 후 안정화 시간. (임시로 500ms 로 고정)");
 
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_ListOpen;
+                        //  Custom Marker 창으로 가공하려면 여기에서 분기해야 한다.
+
+                        if (Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use)
+                        {
+                            //  도면에 올라가 있는 Entity 위치에 Barcode, QR code 등을 가공할 경우
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_CustomMarker_DataSet;
+                        }
+                        else
+                        {
+                            //  도면에 올라가 있는 Entity 를 가공할 경우 (기존)
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_ListOpen;
+                        }
                     }
                     break;
 
 
+
+                /// <summary>
+                /// 마킹 Buffer 에 데이터를 직접 넣어서 가공 - 시작
+                /// 
                 case (int)LaserDrilling_Step.Marking_ListOpen:                                  //  List Buffer Open
                     if (!rtc.CtlGetStatus(RtcStatus.Busy))
                     {
@@ -22253,6 +22285,115 @@ namespace QMC.Common.Modules
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_SocketRemainedCheck;
                     }
                     break;
+                /// 
+                /// 마킹 Buffer 에 데이터를 직접 넣어서 가공 - 완료
+                /// <summary>
+
+                                    
+
+                /// <summary>
+                /// Custom Marker 에 마킹 도면과 데이터를 세팅하여 Marker 의 가공 함수를 호출하여 가공 - 시작
+                /// 
+                case (int)LaserDrilling_Step.Marking_CustomMarker_DataSet:                                  //  Marker 에 도면 데이터 전송
+
+                    if (!rtc.CtlGetStatus(RtcStatus.Busy))
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, Custom Marker 에 데이터 세팅");
+
+                        //  시작할 때 템플릿 도면 파일 유무 체크해야 한다. (임시로 있다고 치고...테스트)
+                        string m_strFileName = Equipment.stLayerRecipeSet[0].MarkingTemplate_SiriusFile;            //  Sirius 도면 파일 (sirius 파일만 사용한다)
+                        string m_MarkingData = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData;
+
+                        if (m_strFileName.Length <= 0)
+                        {
+                            //  알람 정지 (LED Bar - Red Blink)
+                            Equipment.MachineStop_byAlarm = true;
+
+                            return AlarmPost(AlarmKey.eGetData_TemplateNotExist);
+                        }
+                        else
+                        {
+                            IDocument doc = null;
+
+                            doc = DocumentSerializer.OpenSirius(m_strFileName);
+
+                            var markerArg = new MarkerArgDefault()
+                            {
+                                Document = doc,
+                                Rtc = rtc,
+                                Laser = laser,
+                            };
+
+                            //  마킹 도면 갱신 (필요하면) - 가공할 위치 데이터가 사라지니 갱신하면 안됨
+                            //Equipment.SetEqpSiriusViewerDocument(markerArg.Document);
+
+                            //  마킹 데이터 변경
+
+                            //  Layer Name : "Marking"
+                            //  Eitity Name : "QR2"
+                            //  변경 Data : "TESTTEST"
+                            MarkingEntity_DataChange("QR2", m_MarkingData);                //  임시 : QR 코드의 데이터를 "TESTTEST" 로 변경하는 코드
+
+                            //  마킹 데이터 세팅 (마킹 Start Ready)
+                            marker.Ready(markerArg);
+
+                            TickCount_Start((int)TickType.TICK_MAIN);
+
+                            m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_CustomMarker_DataSet_DoneCheck;
+                        }
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.Marking_CustomMarker_DataSet_DoneCheck:                                  //  Marker 에 도면 데이터 전송 완료 확인
+
+                    if ((TickCount_Elapsed((int)TickType.TICK_MAIN) >= 500) &&
+                        (!rtc.CtlGetStatus(RtcStatus.Busy)))
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, Custom Marker 에 데이터 세팅 완료 확인 (Delay 500ms)");
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_CustomMarker_Execute;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.Marking_CustomMarker_Execute:                              //  Marker 가공 시작
+
+                    m_bDivRegionList_Success &= marker.Start();
+
+                    Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, Custom Marker Marking Start (Execute)");
+
+                    TickCount_Start((int)TickType.TICK_MAIN);
+
+                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_CustomMarker_LaserBusyCheck;
+                    break;
+
+
+                case (int)LaserDrilling_Step.Marking_CustomMarker_ExecuteCheck:                                //  Marker 가공 시작 완료 확인
+                    if ((TickCount_Elapsed((int)TickType.TICK_MAIN) >= 1000) &&
+                        ((Equipment.RtcMode_syncAxis == (int)Equipment.RtcMode.RTC_RTC6) && rtc.CtlGetStatus(RtcStatus.Busy)))
+                    {
+                        TickCount_Start((int)TickType.TICK_MAIN);
+
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_CustomMarker_LaserBusyCheck;
+                    }
+                    break;
+
+
+                case (int)LaserDrilling_Step.Marking_CustomMarker_LaserBusyCheck:                                //  Marker 가공 완료되었는지 확인
+                    if ((TickCount_Elapsed((int)TickType.TICK_MAIN) >= 300) &&
+                        (!rtc.CtlGetStatus(RtcStatus.Busy)))
+                    {
+                        Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, Custom Marker Marking Complete");
+
+                        m_nDrillingWork_Group_Count++;              //  소켓 Index 증가
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Marking_SocketRemainedCheck;
+                    }
+                    break;
+                /// 
+                /// Custom Marker 에 마킹 도면과 데이터를 세팅하여 Marker 의 가공 함수를 호출하여 가공 - 완료
+                /// <summary>
+                /// 
                 #endregion
 
 
@@ -33656,6 +33797,180 @@ namespace QMC.Common.Modules
 
 
         /// <summary>
+        /// 마킹 데이터 변경을 위한 함수
+        /// </summary>
+        public bool MarkingEntity_DataChange(string m_strEntityName, string m_strEntityData)
+        {
+            string m_strTemp;
+            bool success = true;
+            bool LayerIsGroup = false;
+            bool m_bSelected = false;
+
+            //  SLD-200 에서 사용할 변수
+            //  도면 데이터 개수 초기화
+            int m_nHole1_ObjectCount = 0;                                       //  Hole1 데이터 개수
+            int m_nHole2_ObjectCount = 0;                                       //  Hole2 데이터 개수
+            int m_nHole3_ObjectCount = 0;                                       //  Hole3 데이터 개수
+            int m_nHole4_ObjectCount = 0;                                       //  Hole4 데이터 개수
+            int m_nHole5_ObjectCount = 0;                                       //  Hole5 데이터 개수
+            int m_nHole6_ObjectCount = 0;                                       //  Hole6 데이터 개수
+            int m_nHole7_ObjectCount = 0;                                       //  Hole7 데이터 개수
+            int m_nHole8_ObjectCount = 0;                                       //  Hole8 데이터 개수
+            int m_nHole9_ObjectCount = 0;                                       //  Hole9 데이터 개수
+            int m_nHole10_ObjectCount = 0;                                      //  Hole10 데이터 개수
+            int m_nRect_ObjectCount = 0;                                        //  Rect 데이터 개수
+            int m_nOutline_ObjectCount = 0;                                     //  Outline 데이터 개수
+            int m_nFiducial_ObjectCount = 0;                                    //  Fiducial 마크 데이터 개수
+            int m_nThruhole_ObjectCount = 0;                                    //  Thruhole 데이터 개수
+            int m_nMarking_ObjectCount = 0;                                     //  Marking 데이터 개수 (요건 Group 아님)
+
+            int m_nLayerCount = 0;
+
+            //  글자 개수 카운트
+            int m_nTextCount = 0;
+
+            //  글자를 구성하는 요소 개수 카운트
+            int m_nTextItemCount = 0;
+
+
+            if (Equipment.GetEqpSiriusViewerDocument() == null)
+            {
+                MessageBox.Show("도면 데이터를 불러올 Document 가 준비되지 않았습니다.", "Information!!");
+                return false;
+            }
+
+            m_nGroupCount = 0;
+
+            //  Layer 개수 체크
+            m_nLayerCount = 0;
+            //foreach (var layer in siriusEditorUserControl_WorkStage.Document.InternalData.Layers)
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
+            {
+                m_nLayerCount++;
+            }
+
+            if (m_nLayerCount == 0)
+            {
+                MessageBox.Show("Layer 개수가 0 입니다.", "Information!!");
+                return false;
+            }
+
+            //  회전을 위한 데이터 개수
+            int m_nTotalCount = 0;
+
+
+            //  List 를 몇개를 만들어야 할지
+            int m_nListCount = 0;
+
+
+
+            //  한개만 선택해서 데이터를 변경하므로 1 (임시)
+            var list = new List<IEntity>(1);
+
+
+            //  Layer 종류별 Count
+            foreach (var layer in Equipment.GetEqpSiriusViewerDocument().Layers)
+            {
+                if (layer.IsMarkerable && (layer.Count > 0))               //  데이터가 없으면 배열 할당할 필요 없지
+                {
+                    if (layer.Name == "Marking")
+                    {
+                        //  데이터 넣기
+                        foreach (var entity in layer)
+                        {
+                            switch (entity.EntityType)
+                            {
+                                case EType.Point:
+                                    var point = entity as SpiralLab.Sirius.Point;
+                                    //point.Location 
+                                    //point.DwellTime
+                                    //success &= point.Mark(markerArg);
+                                    break;
+
+                                case EType.Points:
+                                    var points = entity as SpiralLab.Sirius.Points;
+                                    //foreach (var vertex in points)
+                                    //{
+                                    //    //vertex.X
+                                    //    //vertex.Y
+                                    //}
+                                    //points.DwellTime
+                                    //success &= points.Mark(markerArg);
+                                    break;
+
+                                case EType.Line:
+                                    //var line = entity as SpiralLab.Sirius2.Winforms.Entity.EntityLine;
+
+                                    break;
+
+                                case EType.Arc:
+                                    var arc = entity as SpiralLab.Sirius.Arc;
+
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)arc.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)arc.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)arc.Radius;
+                                    break;
+
+                                case EType.Circle:
+                                    var circle = entity as SpiralLab.Sirius.Circle;
+
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterX = (double)circle.Center.X;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount].CenterY = (double)circle.Center.Y;
+                                    //m_stDrawing_Hole1[m_nHole1_ObjectCount++].radius = (double)circle.Radius;
+                                    break;
+
+                                case EType.Rectangle:
+                                    var rectangle = entity as SpiralLab.Sirius.Rectangle;
+
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterX = (double)rectangle.Center.X;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].CenterY = (double)rectangle.Center.Y;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount].Width = (double)rectangle.Width;
+                                    //m_stDrawing_Outline[m_nOutline_ObjectCount++].Height = (double)rectangle.Height;
+                                    break;
+
+                                case EType.Text:
+                                    var text = entity as SpiralLab.Sirius.Text;
+
+                                    if (entity.Name == m_strEntityName)
+                                    {
+                                        text.TextData = m_strEntityData;
+                                    }
+                                    break;
+
+                                case EType.BarcodeQRCode2:
+                                    var QR2 = entity as SpiralLab.Sirius.BarcodeQR2;
+
+                                    if (entity.Name == m_strEntityName)
+                                    {
+                                        QR2.TextData = m_strEntityData;
+
+                                        //  선택한 소켓의 가공 객체를 List 로 등록
+                                        list.Add(entity);
+                                    }
+                                    break;
+
+                                case EType.Group:
+                                    var group = entity as Group;
+
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (list.Count > 0)
+            {
+                //1차로 죽어서 수정. 2차 시 에러코드 확인 요망.
+                //  List 에 등록된 가공 객체 Select
+                SiriusViewObjectEntitySelect(list);
+            }
+
+            return success;
+        }
+
+
+        /// <summary>
         /// 회전 이동
         /// </summary>
         /// 
@@ -33950,6 +34265,7 @@ namespace QMC.Common.Modules
             // 변수 초기화.
             m_ptPreAlign = null;
             m_ptFiducial = null;
+
 
             if (Equipment.GetEqpSiriusViewerDocument() == null)
             {
@@ -39057,7 +39373,7 @@ namespace QMC.Common.Modules
             {
                 if (m_stDividedRegion_GroupData != null)                                                //  Hole1 Layer 가 있는 경우
                 {
-                    if ((m_ptPreAlign.Length > 0) && (m_stDividedRegion_GroupData.Length > 0))
+                    if ((m_ptPreAlign.Length > 0) && (m_stDividedRegion_GroupData.Length > 0) && (m_nLayerHole1_Count > 0))
                     {
                         //  Fiducial 데이터의 개수가 Socket 개수의 4배수인지 확인한다.
 
@@ -39087,7 +39403,7 @@ namespace QMC.Common.Modules
 
                 if (m_stThruHole_SocketData != null)                                                     //  Thruhole Layer 가 있으면 여기에도 넣고
                 {
-                    if ((m_ptPreAlign.Length >= 2) && (m_stThruHole_SocketData.Length > 0))
+                    if ((m_ptPreAlign.Length >= 2) && (m_stThruHole_SocketData.Length > 0) && (m_nLayerThruhole_Count > 0))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Thruhole Layer, Pre-Align 데이터 할당, Pre-Align 마크 개수가 2개 이상입니다.");
 
@@ -39111,7 +39427,7 @@ namespace QMC.Common.Modules
 
                 if (m_stOutLine_SocketData != null)                                                     //  Outline Layer 가 있으면 여기에도 넣고
                 {
-                    if ((m_ptPreAlign.Length >= 2) && (m_stOutLine_SocketData.Length > 0))
+                    if ((m_ptPreAlign.Length >= 2) && (m_stOutLine_SocketData.Length > 0) && (m_nLayerOutline_Count > 0))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Outline Layer, Pre-Align 데이터 할당, Pre-Align 마크 개수가 2개 이상입니다.");
 
@@ -39135,7 +39451,7 @@ namespace QMC.Common.Modules
 
                 if (m_stMarking_SocketData.m_stMarking_ObjectData != null)                                                     //  Marking Layer 가 있으면 여기에도 넣고
                 {
-                    if ((m_ptPreAlign.Length >= 2) && (m_stMarking_SocketData.m_stMarking_ObjectData.Length > 0))
+                    if ((m_ptPreAlign.Length >= 2) && (m_stMarking_SocketData.m_stMarking_ObjectData.Length > 0) && (m_nLayerMarking_Count > 0))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "GetDrillingData", "Marking Layer, Pre-Align 데이터 할당, Pre-Align 마크 개수가 2개 이상입니다.");
 
