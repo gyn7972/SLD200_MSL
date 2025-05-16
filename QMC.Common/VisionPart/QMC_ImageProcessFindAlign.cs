@@ -716,8 +716,6 @@ namespace QMC.Common.VisionPart
                 }
             }
         }
-
-
         public QMC_ImageProcessFindAlignResult FindGoldPowderForAutoTreshold(List<RectangleF> circlesResult,
             byte[] pixelData, int w, int h, int radius, double dScore, double dSpec)
         {
