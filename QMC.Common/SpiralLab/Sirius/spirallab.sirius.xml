@@ -7677,24 +7677,29 @@
             the contents of this method with the code editor.
             </summary>
         </member>
-        <member name="T:SpiralLab.Sirius.LayerForm">
+        <member name="P:SpiralLab.Sirius.Laser.AdvancedOptowaveAOPicoPrecisionForm.LaserSource">
             <summary>
-            레이어 엔티티 편집용 폼
-            <para>Layer (for edit) winforms</para>
+            Advanced OptoWave Fotia 레이저용 윈폼
             </summary>
         </member>
-        <member name="F:SpiralLab.Sirius.LayerForm.components">
+        <member name="M:SpiralLab.Sirius.Laser.AdvancedOptowaveAOPicoPrecisionForm.#ctor(SpiralLab.Sirius.AdvancedOptoWaveAOPicoPrecision)">
+            <summary>
+            생성자
+            </summary>
+            <param name="Pico">레이저 소스 객체</param>
+        </member>
+        <member name="F:SpiralLab.Sirius.Laser.AdvancedOptowaveAOPicoPrecisionForm.components">
             <summary>
             Required designer variable.
             </summary>
         </member>
-        <member name="M:SpiralLab.Sirius.LayerForm.Dispose(System.Boolean)">
+        <member name="M:SpiralLab.Sirius.Laser.AdvancedOptowaveAOPicoPrecisionForm.Dispose(System.Boolean)">
             <summary>
             Clean up any resources being used.
             </summary>
             <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         </member>
-        <member name="M:SpiralLab.Sirius.LayerForm.InitializeComponent">
+        <member name="M:SpiralLab.Sirius.Laser.AdvancedOptowaveAOPicoPrecisionForm.InitializeComponent">
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
@@ -8066,6 +8071,29 @@
             the contents of this method with the code editor.
             </summary>
         </member>
+        <member name="T:SpiralLab.Sirius.LayerForm">
+            <summary>
+            레이어 엔티티 편집용 폼
+            <para>Layer (for edit) winforms</para>
+            </summary>
+        </member>
+        <member name="F:SpiralLab.Sirius.LayerForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SpiralLab.Sirius.LayerForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SpiralLab.Sirius.LayerForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
         <member name="T:SpiralLab.Sirius.Motor.MotorsForm">
             <summary>
             모터 집합 윈폼
@@ -8138,6 +8166,56 @@
             <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         </member>
         <member name="M:SpiralLab.Sirius.Motor.MotorForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:SpiralLab.Sirius.PowerMapCompensateForm">
+            <summary>
+            파뭐 보정 인자 편집용 윈폼
+            </summary>
+        </member>
+        <member name="M:SpiralLab.Sirius.PowerMapCompensateForm.CategoryWattValue.#ctor(System.String,System.Single,System.Boolean)">
+            <summary>
+            생성자
+            </summary>
+            <param name="category">카테고리</param>
+            <param name="watt">목표 파워</param>
+            <param name="enable">활성화 여부</param>
+        </member>
+        <member name="P:SpiralLab.Sirius.PowerMapCompensateForm.CategoryWatts">
+            <summary>
+            카테고리/파워 리스트 (바인딩 용)
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.PowerMapCompensateForm.HoldTimeMs">
+            <summary>
+            유지시간 (msec)
+            </summary>
+        </member>
+        <member name="P:SpiralLab.Sirius.PowerMapCompensateForm.Threshold">
+            <summary>
+            오차값(W)
+            </summary>
+        </member>
+        <member name="M:SpiralLab.Sirius.PowerMapCompensateForm.#ctor">
+            <summary>
+            생성자
+            </summary>
+        </member>
+        <member name="F:SpiralLab.Sirius.PowerMapCompensateForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SpiralLab.Sirius.PowerMapCompensateForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SpiralLab.Sirius.PowerMapCompensateForm.InitializeComponent">
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
@@ -10875,6 +10953,13 @@
             <para>Power (W)</para>
             </summary>
         </member>
+        <member name="P:SpiralLab.Sirius.IPen.PowerMax">
+            <summary>
+            레이저 소스의 최대 파워값 (읽기 전용)
+            <para>레이저 객체(ILaser)에 설정된 MaxPower 값에 해당함</para>
+            <para>Max laser power (W)</para>
+            </summary>
+        </member>
         <member name="P:SpiralLab.Sirius.IPen.Frequency">
             <summary>
             주파수 (Hz)
@@ -11389,6 +11474,72 @@
             Pen 엔티티 객체 (기본 버전)
             </summary>
         </member>
+        <member name="E:SpiralLab.Sirius.PenDefault.OnMarkPen">
+             <summary>
+             PenDefault 의 Mark 기능을 오버라이드 하기 위한 이벤트
+             <code>
+             PenDefault.OnMarkPen += MyOnMarkPen;
+             ...
+             bool MyOnMarkPen(IMarkerArg markerArg, PenDefault pen)
+             {
+                 var rtc = markerArg.Rtc;
+                 var rtcExtension = rtc as IRtcExtension;
+                 var rtcSyncAxis = rtc as IRtcSyncAxis;
+                 var laser = markerArg.Laser;
+                 bool success = true;
+                 bool isDutyControlled = false;
+                 if (null != laser)
+                 {
+                     if (laser is IPowerControl powerControl)
+                     {
+                         if (powerControl.PowerControlMethod == PowerControlMethod.Duty)
+                         {
+                             rtc.Frequency = pen.Frequency;
+                             isDutyControlled = true;
+                         }
+                         success &amp;= powerControl.ListPower(pen.Power, pen.PowerMapCategory);
+                      }
+                 }
+                 if (!isDutyControlled)
+                     success &amp;= rtc.ListFrequency(pen.Frequency, pen.PulseWidth);
+                  
+                 success &amp;= rtc.ListDelay(pen.LaserOnDelay, pen.LaserOffDelay, pen.ScannerJumpDelay, pen.ScannerMarkDelay, this.ScannerPolygonDelay);   
+                 if (null != rtcExtension)
+                 {
+                     if (pen.IsScannerVariablePolygonDelay || pen.IsScannerVariableJumpDelay)
+                         success &amp;= rtcExtension.ListDelayVariable(pen.IsScannerVariablePolygonDelay, pen.ScannerVariablePolygonDelayEdgeLevel, pen.IsScannerVariableJumpDelay, pen.ScannerVariableJumpDelayMin, pen.ScannerVariableJumpLength);
+                     else
+                         success &amp;= rtcExtension.ListDelayVariable(false, 0, false, 0, 0);
+                 }
+                 // 자세한 내용은 생략
+                 //switch (markerArg.MarkTargets)
+            
+                 if (null != rtcExtension)
+                 {
+                     success &amp;= rtcExt.ListFirstPulseKiller(pen.LaserFpk);
+                     success &amp;= rtcExt.ListQSwitchDelay(pen.LaserQSwitchDelay);
+                     
+                     if (pen.IsSkyWritingEnabled)
+                         success &amp;= rtcExt.ListSkyWritingBegin(pen.SkyWritingMode, pen.LaserOnShift, pen.TimeLag, pen.AngularLimit);
+                     else
+                         success &amp;= rtcExt.ListSkyWritingEnd();
+                        
+                     if (pen.IsWobbelEnabled)
+                         success &amp;= rtcExt.ListWobbel(pen.WobbelParallel, pen.WobbelPerpendicular, pen.WobbelFrequency, pen.WobbelShape);
+                     else
+                         success &amp;= rtcExt.ListWobbel(0, 0, 0);
+                 }
+                 if (null != rtcSyncAxis)
+                 {
+                     // 자세한 내용은 생략
+                 }
+                 if (success)
+                     markerArg.PenStack.Push(pen);
+                 return success;
+             }
+             </code>
+             </summary>
+        </member>
         <member name="P:SpiralLab.Sirius.PenDefault.Owner">
             <inheritdoc/>
         </member>
@@ -11435,11 +11586,7 @@
             <inheritdoc/>
         </member>
         <member name="P:SpiralLab.Sirius.PenDefault.PowerMax">
-            <summary>
-            레이저 소스의 최대 파워값 (읽기 전용)
-            <para>레이저 객체(ILaser)에 설정된 MaxPower 값에 해당함</para>
-            <para>Max laser power (W)</para>
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="F:SpiralLab.Sirius.PenDefault.powerMax">
             <summary>
@@ -14013,8 +14160,17 @@
         </member>
         <member name="F:SpiralLab.Sirius.Config.LwPolylineBulgePrecision">
             <summary>
-            DXF 파일 분석시 폴리라인의 Bulge 구간을 지정된 라인으로 분해
+            DXF 파일 분석시 폴리라인의 Bulge 구간을 지정된 라인으로 분해 <br/>
+            LwPolylineBulgeToLines 가 <c>False</c> 일 경우 유효함 <br/>
+            LwPolylineBulgeToLineThreshold 값 이내의 거리값을 가진 경우 유효함 <br/>
             <para>Line counts when convert bulge to lines at LWpolyline</para>
+            </summary>
+        </member>
+        <member name="F:SpiralLab.Sirius.Config.LwPolylineBulgeToLineMinThreshold">
+            <summary>
+            DXF 파일 분석시 폴리라인의 Bulge 구간을 라인으로 분해할 대상의 최소 거리값 (mm) <br/>
+            LwPolylineBulgeToLines 가 <c>False</c> 일 경우 유효함
+            <para>Min. threshold distance when convert bulge to lines at LWpolyline</para>
             </summary>
         </member>
         <member name="F:SpiralLab.Sirius.Config.UndoStackSize">
@@ -14079,6 +14235,13 @@
             <summary>
             10 가지 Pen 집합의 색상 목록
             </summary>
+        </member>
+        <member name="M:SpiralLab.Sirius.Config.IsPenColorExist(System.Drawing.Color)">
+            <summary>
+             Pen 집합에 해당 색상이 존재하는지 여부
+            </summary>
+            <param name="color">Pen 색상</param>
+            <returns>존재 유무</returns>
         </member>
         <member name="F:SpiralLab.Sirius.Config.PenDefaultColor">
             <summary>

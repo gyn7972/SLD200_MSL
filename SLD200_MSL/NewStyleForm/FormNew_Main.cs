@@ -33,6 +33,15 @@ using SharpGL;
 using static QMC.Common.Part;
 using SharpGL;
 using System.Windows;
+using System.Diagnostics;
+using System.Windows.Media;
+using Color = System.Drawing.Color;
+using Brush = System.Drawing.Brush;
+using Pen = System.Drawing.Pen;
+using System.Windows.Controls;
+using ListViewItem = System.Windows.Forms.ListViewItem;
+using Label = System.Windows.Forms.Label;
+using System.Numerics;
 
 namespace SLD200_MSL
 {
@@ -395,30 +404,31 @@ namespace SLD200_MSL
                     // 큰 영역 색상 결정
                     Color cellColor = GetCellColor(SocketStatus[i, j]);
 
-                    // 선택된 셀의 색상을 다르게 설정
-                    if (i == selectedRow && j == selectedColumn)
-                    {
-                        m_bSocketSelected = true;
+                    //  선택 가공 시 위치 선택 및 표시를 PictureBox 에서 하지 않고 SiriusViewer 에서 하도록 하였음. 여기 코드는 필요 없는 코드.
+                    //// 선택된 셀의 색상을 다르게 설정
+                    //if (i == selectedRow && j == selectedColumn)
+                    //{
+                    //    m_bSocketSelected = true;
 
-                        //  얼라인 할 소켓 선택 (조건 : Pre Align Complete
-                        //if (!Equipment.AutoRunStatus && checkBox_Main_AlignStartSocket_SelectMode.Checked && workStage.m_bPreAlignCompleted)
-                        if (!Equipment.AutoRunStatus && (checkBox_Main_AlignStartSocket_SelectMode.Checked || checkBox_Main_AlignStartSocket_ContinueMode.Checked))
-                        {
-                            cellColor = Color.LightBlue; // 선택된 셀의 색상
+                    //    //  얼라인 할 소켓 선택 (조건 : Pre Align Complete
+                    //    //if (!Equipment.AutoRunStatus && checkBox_Main_AlignStartSocket_SelectMode.Checked && workStage.m_bPreAlignCompleted)
+                    //    if (!Equipment.AutoRunStatus && (checkBox_Main_AlignStartSocket_SelectMode.Checked || checkBox_Main_AlignStartSocket_ContinueMode.Checked))
+                    //    {
+                    //        cellColor = Color.LightBlue; // 선택된 셀의 색상
 
-                            workStage.m_nSocketAlign_StartIndex = (i * workStage.Main_SocketPositions_ColumnCount) + j;
-                        }
-                        else
-                        {
-                            cellColor = GetCellColor(SocketStatus[i, j]); // 기본 색상
+                    //        workStage.m_nSocketAlign_StartIndex = (i * workStage.Main_SocketPositions_ColumnCount) + j;
+                    //    }
+                    //    else
+                    //    {
+                    //        cellColor = GetCellColor(SocketStatus[i, j]); // 기본 색상
 
-                            //workStage.m_nSocketAlign_StartIndex = -1;
-                        }
-                    }
-                    else
-                    {
-                        cellColor = GetCellColor(SocketStatus[i, j]); // 기본 색상
-                    }
+                    //        //workStage.m_nSocketAlign_StartIndex = -1;
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    cellColor = GetCellColor(SocketStatus[i, j]); // 기본 색상
+                    //}
 
                     System.Drawing.Rectangle rect = new System.Drawing.Rectangle(j * CellSize_Width, i * CellSize_Height, CellSize_Width, CellSize_Height);
 
@@ -2268,6 +2278,9 @@ namespace SLD200_MSL
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "자동운전을 중지하시겠습니까?"))
                 return;
 
+            Equipment.Loader_LPort_Pause = true;        //  장비 Stop 시 Pause
+            Equipment.Loader_RPort_Pause = true;        //  장비 Stop 시 Pause
+
             Equipment.AutoRunStatus = false;        // 자동운전중
             Equipment.AutoManualStatus = false;     // Auto / Manual 상태 유/무 
             workStage.SetRunStatus(RunStatus.Stop);
@@ -2477,6 +2490,28 @@ namespace SLD200_MSL
 
         private void checkBox_Main_CycleStop_CheckedChanged(object sender, EventArgs e)
         {
+            ////  Layer Name : "Marking"
+            ////  Eitity Name : "QR2"
+            ////  변경 Data : "TESTTEST"
+            ////workStage.MarkingEntity_DataChange("QR2", "TESTTEST");
+
+            //var text = new BarcodeQR2("SIRIUS1234");
+            
+            //Vector2 RotCenter = new Vector2(text.Width / 2, text.Height / 2);
+            //text.Rotate(90, RotCenter);
+            //text.Location = new Vector2(text.Location.X - (float)(text.Width / 2.0), text.Location.Y - (float)(text.Height / 2.0));
+            //SiriusViewer_Main.Document.Action.ActEntityAdd(text);
+
+            //var text2 = new Barcode1D("TESTTTTT");
+            //RotCenter = new Vector2(text2.Width / 2, text2.Height / 2);
+            //text2.Rotate(90, RotCenter);
+            //text2.Location = new Vector2(text2.Location.X - (float)(text2.Width / 2.0), text2.Location.Y - (float)(text2.Height / 2.0));
+            //SiriusViewer_Main.Document.Action.ActEntityAdd(text2);
+
+            //return;
+
+
+
             //  Cycle Stop 일 경우, 현재 동작중인 Cycle 완료 후 정지
 
             //  대상
@@ -2977,7 +3012,7 @@ namespace SLD200_MSL
                             {
                                 switch (entity.EntityType)
                                 {
-                                    case EType.Group:
+                                    case EType.Group: 
                                         var group = entity as Group;
 
                                         if (group.IsSelected)
@@ -3008,6 +3043,14 @@ namespace SLD200_MSL
                             break;
                         }
                     }
+                }
+
+                //  선택 가공 시 소켓 번호가 정상적으로 선택되지 않았을 경우.
+                if ((workStage.m_nSelectedSocket_Index == -1) && (checkBox_Main_AlignStartSocket_SelectMode.Checked || checkBox_Main_AlignStartSocket_ContinueMode.Checked))
+                {
+                    var mb1 = new MessageBoxOk();
+                    mb1.ShowDialog("Warning !", "선택 가공 소켓 번호를 확인하세요. \r\n\r\n[소켓 다시 선택]");
+                    return;
                 }
 
                 if (workStage.m_nSelectedSocket_Index >= 0)
@@ -3267,6 +3310,49 @@ namespace SLD200_MSL
 
         private void button_TEST12_Click(object sender, EventArgs e)
         {
+            //#region Marker Test (load from sirius file)
+            //var dlg = new OpenFileDialog();
+            //dlg.Filter = "sirius data files (*.sirius)|*.sirius|dxf cad files (*.dxf)|*.dxf|All Files (*.*)|*.*";
+            //dlg.Title = "Open to data file";
+            //DialogResult result = dlg.ShowDialog();
+            //if (result != DialogResult.OK)
+            //    return;
+            //string ext = Path.GetExtension(dlg.FileName);
+            //IDocument doc = null;
+            //if (0 == string.Compare(ext, ".dxf", true))
+            //    doc = DocumentSerializer.OpenDxf(dlg.FileName);
+            //else if (0 == string.Compare(ext, ".sirius", true))
+            //    doc = DocumentSerializer.OpenSirius(dlg.FileName);
+            //#endregion
+
+            //Debug.Assert(null != doc);
+            //Debug.Assert(doc.Layers.Count > 0);
+
+            //var markerArg = new MarkerArgDefault()
+            //{
+            //    Document = doc,
+            //    Rtc = workStage.rtc,
+            //    Laser = workStage.laser,
+            //};
+
+            ////  마킹 도면 갱신 (실제 가공할 땐 여기에 올릴 필요가 없긴 한데, 데이터를 확인하려면 올리는 것도 괜찮고...)
+            //SiriusViewer_Main.Document = markerArg.Document;
+            //Equipment.SetEqpSiriusViewerDocument(SiriusViewer_Main.Document);
+
+            ////  마킹 데이터 변경 (데이터 변경은 여기서 해야함)
+
+
+            ////  마킹 데이터 세팅
+            //workStage.marker.Ready(markerArg);
+
+            ////  마킹 Start
+            ////workStage.marker.Start();
+
+
+
+            ////loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_Widely_DoneCheck_Timeout);
+            //return;
+
             //Test code
             Equipment.CycleTimer_LaserDrilling.Start();
             //workStage.AlarmTest();

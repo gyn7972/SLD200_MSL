@@ -47,7 +47,7 @@
             this.tabControl_JogPopup.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl_JogPopup.Name = "tabControl_JogPopup";
             this.tabControl_JogPopup.SelectedIndex = 0;
-            this.tabControl_JogPopup.Size = new System.Drawing.Size(654, 507);
+            this.tabControl_JogPopup.Size = new System.Drawing.Size(710, 598);
             this.tabControl_JogPopup.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabControl_JogPopup.TabIndex = 0;
             // 
@@ -88,7 +88,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(654, 507);
+            this.ClientSize = new System.Drawing.Size(710, 598);
             this.Controls.Add(this.tabControl_JogPopup);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FormNew_JogPopup";

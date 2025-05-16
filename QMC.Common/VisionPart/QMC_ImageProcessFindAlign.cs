@@ -379,7 +379,7 @@ namespace QMC.Common.VisionPart
                     polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius/2), (int)nMaxCircleFirst, dAngleStep, 10, bIsDarkCircleSearch);
                     points = polygon;
                     circlesResult.Clear();
-                    FindCircleFitter(circlesResult, points, out dRadius, 5);
+                    FindCircleFitter(circlesResult, points, out dRadius, 5, radius);
 
                     if (nCenterX == 0 || nCenterY == 0)
                     {
@@ -407,13 +407,13 @@ namespace QMC.Common.VisionPart
 
                         circlesResult.Clear();
                         double dRadius2 = 0;
-                        Circle center = FindCircleFitter(circlesResult, points, out dRadius2, 2);
+                        Circle center = FindCircleFitter(circlesResult, points, out dRadius2, 2, radius);
 
                         if (Math.Abs((dRadius - dRadius2) / dRadius2) < 0.1)
                         {
                             //허상을 찾아는지 검사 한다.
                             double dScoreCheck = IsRealCircle(center, dRadius2, points, dSpec);
-                            if (dScoreCheck > 0.8)
+                            if (dScoreCheck > miscellaneous_FiducialMarkSocre)
                             {
                                 bFindCircle = true;
                                 break;
@@ -481,11 +481,11 @@ namespace QMC.Common.VisionPart
             points = polygon;
 
             circlesResult.Clear();
-            Circle resultCircle =  FindCircleFitter(circlesResult, points, out dRadius);
+            Circle resultCircle =  FindCircleFitter(circlesResult, points, out dRadius,2, radius);
             QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
             
             double dScore = IsRealCircle(resultCircle, dRadius, points, dSpec);
-            if (dScore > 0.8)
+            if (dScore > miscellaneous_FiducialMarkSocre)
             {
                 bFindCircle = true;
                 result.Circles.Add(resultCircle);

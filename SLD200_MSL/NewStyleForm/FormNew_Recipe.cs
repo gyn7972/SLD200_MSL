@@ -972,6 +972,14 @@ namespace SLD200_MSL
                 NativeMethods.GetPrivateProfileString(strTemp, "DustCollector_Lower_Disable", "false", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].DustCollectorLower_Disable = Convert.ToBoolean(temp.ToString());
 
+                //  Marking Template
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_Use", "false", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].MarkingData_SiriusTemplate_Use = Convert.ToBoolean(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_File", "", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_SiriusFile = temp.ToString();
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData", "", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData = temp.ToString();
+                
                 NativeMethods.GetPrivateProfileString(strTemp, "ZCalFile_OffsetZ", "0.0", temp, 255, strFIle);
                 stLayerRecipeSet[i].CalfileOffsetZAxismm = Equipment.ToDouble(temp.ToString());
             }
@@ -1089,8 +1097,13 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower = ReadDouble(data, "DustCollector_Frequency_Lower", 20.0);
                 Equipment.stLayerRecipeSet[i].DustCollectorLower_Disable = ReadBool(data, "DustCollector_Lower_Disable", false);
                 Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm = ReadDouble(data, "ZCalFile_OffsetZ", 0.0);
-            }
 
+                //  Marking Template
+                Equipment.stLayerRecipeSet[i].MarkingData_SiriusTemplate_Use = ReadBool(data, "MarkingData_SiriusTemplate_Use", false);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_SiriusFile = ReadValue(data, "MarkingData_SiriusTemplate_File", "");
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData = ReadValue(data, "MarkingData_SiriusTemplate_EntityData", "");
+            }
+            
             return true;
         }
 
@@ -1248,6 +1261,12 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_Frequency_Lower", Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "DustCollector_Lower_Disable", Equipment.stLayerRecipeSet[i].DustCollectorLower_Disable.ToString(), strFIle);
 
+                //  Marking Template
+                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_Use", Equipment.stLayerRecipeSet[i].MarkingData_SiriusTemplate_Use.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_File", Equipment.stLayerRecipeSet[i].MarkingTemplate_SiriusFile, strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData, strFIle);
+
+
                 //  ZCalFile Offset Z Axis (mm)
                 NativeMethods.WritePrivateProfileString(strTemp, "ZCalFile_OffsetZ", Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm.ToString(), strFIle);
             }
@@ -1342,6 +1361,11 @@ namespace SLD200_MSL
                 layerDict["DustCollector_Frequency_Upper"] = Equipment.stLayerRecipeSet[i].DustCollectorFreq_Upper.ToString();
                 layerDict["DustCollector_Frequency_Lower"] = Equipment.stLayerRecipeSet[i].DustCollectorFreq_Lower.ToString();
                 layerDict["DustCollector_Lower_Disable"] = Equipment.stLayerRecipeSet[i].DustCollectorLower_Disable.ToString();
+
+                //  Marking Template
+                layerDict["MarkingData_SiriusTemplate_Use"] = Equipment.stLayerRecipeSet[i].MarkingData_SiriusTemplate_Use.ToString();
+                layerDict["MarkingData_SiriusTemplate_File"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_SiriusFile.ToString();
+                layerDict["MarkingData_SiriusTemplate_EntityData"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData.ToString();
 
                 layerDict["ZCalFile_OffsetZ"] = Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm.ToString();
 
@@ -1686,7 +1710,12 @@ namespace SLD200_MSL
             Equipment.stLayerRecipeSet[0].DustCollectorFreq_Upper = textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_DustCollectorFrequency_Upper.Text) : 20.0;
             Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower = textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text) : 20.0;
             Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable = checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Checked;                                        //  하부 집진기 사용 여부
-            
+
+            //  Marking Template
+            Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use = checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked;                         //  집진기 Remote Mode 사용 여부
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_SiriusFile = richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Text;
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData = textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Text;
+
             // 
             Equipment.stLayerRecipeSet[m_nLayerIndex].CalfileOffsetZAxismm = richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text.Length > 0 ? Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text) : 0.0;     //  Z-Axis Offset mm
 
@@ -1906,6 +1935,11 @@ namespace SLD200_MSL
                 textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString();
                 checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Checked = Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable;                                        //  하부 집진기 사용 여부
 
+                //  Marking Template
+                checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked = Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use;
+                richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_SiriusFile.ToString();
+                textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData.ToString();
+
                 //  Z-Axis Offset mm
                 richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[0].CalfileOffsetZAxismm.ToString();
 
@@ -1945,6 +1979,56 @@ namespace SLD200_MSL
                                         
                     var mb = new MessageBoxOk();
                     mb.ShowDialog("Information !!", "Recipe Data를 로드하였습니다.");
+
+
+                    //  선택 가공을 위해 Drilling Data Parsing 도 해준다.
+                    int m_nReturn = workStage.GetDrillingData();
+                    switch (m_nReturn)
+                    {
+                        case (int)WorkStage.nGetDataResult.GETDATA_SUCCESS:
+
+                            //  Hole1 제외한 나머지 Layer 의 Socket 을 가공할 것인지 여부를 결정하는 Flag 세팅
+                            workStage.GetDrillingData_ProcessingFlagCheck();
+                             
+                            MessageBox.Show("가공 데이터 Parsing 성공", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_FAIL:
+                            MessageBox.Show("데이터가 정상적으로 로드 되지 않았습니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_NOT_GROUP:
+                            MessageBox.Show("데이터가 Group 이 아닙니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information); ;
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_UNGROUP:
+                            MessageBox.Show("데이터를 Group 해제 해야 합니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_LAYERNAME_NG:
+                            MessageBox.Show("Layer Name 은 'Hole1~4', 'Rect', 'Outline', 'Marking', 'Fiducial' 5가지만 가능합니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_MOTIONTYPE_NG:
+                            MessageBox.Show("Layer Motion Type 은 'StageAndScanner', 'ScannerOnly' 2가지만 가능합니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NG:
+                            MessageBox.Show("Drilling Data 는 Polyline, Rectangle, Line, Circle, Arc 중 한 가지 데이터로만 구성되어야 합니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_LINECNT:
+                            MessageBox.Show("Drilling Data 에 Line 데이터 개수가 4의 배수가 아닙니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_DRILDATA_NOT_CLOSED:
+                            MessageBox.Show("Line 으로 이루어진 Drilling Data 가 닫힌 도형이 아닙니다.", "Information !", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            break;
+
+                        case (int)WorkStage.nGetDataResult.GETDATA_RTCINIT:
+                            MessageBox.Show("RTC 보드가 초기화 되지 않았습니다.", "Information !");
+                            break;
+                    }
                 }
                 else
                 {
@@ -2150,6 +2234,11 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString();
             checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Checked = Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable;
 
+            //  Marking Template
+            checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked = Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use;
+            richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_SiriusFile.ToString();
+            textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData.ToString();
+
             richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[m_nIndex].CalfileOffsetZAxismm.ToString();//  하부 집진기 사용 여부
         }
 
@@ -2314,6 +2403,11 @@ namespace SLD200_MSL
             textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower.Text = Equipment.stLayerRecipeSet[0].DustCollectorFreq_Lower.ToString();
             checkBox_Recipe_TabRecipe_LowerDustCollector_Disable.Checked = Equipment.stLayerRecipeSet[0].DustCollectorLower_Disable;                                        //  하부 집진기 사용 여부
 
+            //  Marking Template
+            checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked = Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use;
+            richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_SiriusFile.ToString();
+            textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData.ToString();
+
             richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[0].CalfileOffsetZAxismm.ToString();
 
             int m_nCount = 0;
@@ -2466,6 +2560,40 @@ namespace SLD200_MSL
 
                 var mb = new MessageBoxOk();
                 mb.ShowDialog("Information !!", "Recipe Data를 저장하였습니다.");
+            }
+        }
+
+        private void button_Recipe_TabRecipe_SiriusTemplateFile_Click(object sender, EventArgs e)
+        {
+            int m_nReturn = -1;
+
+            var fileContent = string.Empty;
+            var filePath = string.Empty;
+
+            using (OpenFileDialog fd = new OpenFileDialog())
+            {
+                fd.CustomPlaces.Add(SLD200.Properties.Settings.Default.JobFolder);
+
+                if (Equipment.DrawingFilePath.Length > 0)
+                {
+                    fd.InitialDirectory = Equipment.DrawingFilePath;
+                }
+                else
+                {
+                    fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Recent);          //  최근 폴더
+                }
+
+                fd.Filter = "sirius files (*.sirius)|*.sirius|All files (*.*)|*.*"; //필터 설정
+                fd.FilterIndex = 1; //1번 선택시 txt , 2번 선택시 *.*
+
+                Log.Write("SLD-200", "Button Click", "Marking Data Template 도면 파일 불러오기");
+
+                if (fd.ShowDialog() == DialogResult.OK)
+                {
+                    filePath = fd.FileName;
+
+                    richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Text = filePath;
+                }
             }
         }
     }
