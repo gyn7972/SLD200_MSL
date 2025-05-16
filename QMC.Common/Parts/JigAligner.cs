@@ -419,7 +419,7 @@ namespace QMC.Common.Parts
                         m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
                         //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
 
-                        Thread.Sleep(200);
+                        Thread.Sleep(100);
                         Task<bool> resultX1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
                         Task<bool> resultY1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
                         resultX1.Wait();
@@ -438,6 +438,7 @@ namespace QMC.Common.Parts
                                 m_Owner.AlarmPost(AlarmKey.eStageMoveFail); //X,Y축 분할 필요?
                             }
                         }
+                        Thread.Sleep(100);
                         //Thread.Sleep(500); //Sleep은 안하는게 좋음.
 
                         this.Recipe.pathGenerator.PathParameter.CenterCoordinate = (XyCoordinate)m_AlignPositions[0];
@@ -508,7 +509,7 @@ namespace QMC.Common.Parts
                     m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Equipment.Type_Motor_Speed.Coarse);
                     //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
 
-                    Thread.Sleep(200);
+                    Thread.Sleep(100);
 
                     // 비동기 대기 (UI에서 사용하면 안됨)
                     Task<bool> resultX = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
@@ -531,6 +532,7 @@ namespace QMC.Common.Parts
                             m_Owner.AlarmPost(AlarmKey.eStageMoveFail); //X,Y축 분할 필요?
                         }
                     }
+                    Thread.Sleep(100);
 
                     //nWait = 0;
                     //while (true)

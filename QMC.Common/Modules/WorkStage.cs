@@ -8828,7 +8828,7 @@ namespace QMC.Common.Modules
                 //    m_nSocketAlign_MainStep = 0;
                 //}
                 //Todo : socket / goldpowder Test
-                int nRet = ExecuteAlignmentSequence(m_nSocketNum_forAlign, AlignMode.Socket); //AlignMode.GoldPowder
+                int nRet = ExecuteAlignmentSequence(m_nSocketNum_forAlign, m_AlignMode); //AlignMode.GoldPowder
                 if (nRet != 0)
                 {
                     m_nSocketAlign_MainStep = 0;
@@ -14046,6 +14046,8 @@ namespace QMC.Common.Modules
                                     m_st4PointPosition_DwgPos[i].dFiducial_Width = alignPositions[i].Radius;
                                     m_st4PointPosition_DwgPos[i].dFiducial_Height = alignPositions[i].Radius;
                                 }
+
+                                m_nSocketAlign_MainStep = (int)SocketAlign_Step.__SocketAlign_Start;
                             }
                         }
                         else
@@ -14173,6 +14175,30 @@ namespace QMC.Common.Modules
                             m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[m_nSocketAlign_FiducialCount].X;
                         workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -= 
                             m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[m_nSocketAlign_FiducialCount].Y;
+
+                        //  속도 설정
+                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                        xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
+                        xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
+                        xyCoordinateAlign = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
+
+                        //Pre Align Data -> Sorket Postion 적용
+                        if (m_bIsFirstAlign == false)
+                        {
+                            XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
+                            Log.Write("Alaign Test", "xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
+                            Log.Write("Alaign Test", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
+                            Log.Write("Alaign Test", "Offset  : " + offset.ToString());
+                            Log.Write("Alaign Test", "xyCoordinateAlign before : ", xyCoordinateAlign.ToString());
+
+                            xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionOrgLast.X,
+                                xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
+
+                            xyCoordinateAlign = xyCoordinateAlign + offset;
+                            Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
+                            Log.Write("Alaign Test", "Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
+                        }
                     }
                     else if(alignMode == AlignMode.GoldPowder)
                     {
@@ -14183,30 +14209,13 @@ namespace QMC.Common.Modules
                             m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
                         workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y] -=
                             m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
-                    }
 
-                    //  속도 설정
-                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-                    xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
-                    xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
-                    xyCoordinateAlign = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
-
-                    //Pre Align Data -> Sorket Postion 적용
-                    if (m_bIsFirstAlign == false)
-                    {
-                        XyCoordinate offset = xyCoordinateAlignPositionLast - xyCoordinateAlignPositionOrgLast;
-                        Log.Write("Alaign Test", "xyCoordinateAlignPositionLast : ", xyCoordinateAlignPositionLast.ToString());
-                        Log.Write("Alaign Test", "xyCoordinateAlignPositionOrgLast : ", xyCoordinateAlignPositionOrgLast.ToString());
-                        Log.Write("Alaign Test", "Offset  : " + offset.ToString());
-                        Log.Write("Alaign Test", "xyCoordinateAlign before : ", xyCoordinateAlign.ToString());
-
-                        xyCoordinateAlign = CoordinateTransform(xyCoordinateAlign, xyCoordinateAlignPositionOrgLast.X, 
-                            xyCoordinateAlignPositionOrgLast.Y, -m_st4PointAlign_Result_LastSuccess.dRotationAngle);
-
-                        xyCoordinateAlign = xyCoordinateAlign + offset;
-                        Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
-                        Log.Write("Alaign Test", "Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
+                        //  속도 설정
+                        lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
+                        lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
+                        xyInterpolatedCoordinate.X = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X];
+                        xyInterpolatedCoordinate.Y = workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y];
+                        xyCoordinateAlign = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
                     }
 
                     xyCoordinateAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
@@ -14324,11 +14333,11 @@ namespace QMC.Common.Modules
                     int retryCount = 2;
                     if (alignMode == AlignMode.Socket)
                     {
-                        ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width, retryCount);
+                        ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width, retryCount, alignMode);
                     }
                     else if (alignMode == AlignMode.GoldPowder)
                     {
-                        ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width, retryCount);
+                        ret = SpiralSearch(m_st4PointPosition_DwgPos[m_nSocketAlign_FiducialCount].dFiducial_Width, retryCount, alignMode);
                     }
                     //jigAligner_HighRes.Camera.StartLive();
 
@@ -14344,17 +14353,30 @@ namespace QMC.Common.Modules
 
                 case (int)SocketAlign_Step.SocketAlign_fromVision_ResultCheck:                                        //  Align 결과 확인
 
-                    if (Fiducial_circleFound && (Fiducial_circlesResult.Count > 0))
+                    if (Fiducial_circleFound)
+                    //if (Fiducial_circleFound && (Fiducial_circlesResult.Count > 0))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 성공");
 
-                        //  Stage Center 가 0, 0 인 좌표계로 변환
-                        double xOffset = ((((double)Fiducial_circlesResult[0].X + ((double)Fiducial_circlesResult[0].Width / 2.0)) -
-                                        (double)(Camera_HighRes.Resolution.Width / 2)) * Config.ParamConfig.UpperVision_Scale_X);
+                        double xOffset = 0.0;
+                        double yOffset = 0.0;
+                        //Test
+                        if (false)
+                        {
+                            //  Stage Center 가 0, 0 인 좌표계로 변환
+                            xOffset = ((((double)Fiducial_circlesResult[0].X + ((double)Fiducial_circlesResult[0].Width / 2.0)) -
+                                            (double)(Camera_HighRes.Resolution.Width / 2)) * Config.ParamConfig.UpperVision_Scale_X);
 
-                        double yOffset = (((double)(Camera_HighRes.Resolution.Height / 2) - ((double)Fiducial_circlesResult[0].Y +
-                                        ((double)Fiducial_circlesResult[0].Height / 2.0))) * Config.ParamConfig.UpperVision_Scale_Y);
+                            yOffset = (((double)(Camera_HighRes.Resolution.Height / 2) - ((double)Fiducial_circlesResult[0].Y +
+                                            ((double)Fiducial_circlesResult[0].Height / 2.0))) * Config.ParamConfig.UpperVision_Scale_Y);
 
+                        }
+                        else
+                        {
+                            xOffset = 0.0;
+                            yOffset = 0.0;
+                        }
+                            
                         //  Stage Center 가 0, 0 인 좌표계로 변환일때 offset을 전부 -,- 적용. +,- -> -,- 변경.
                         m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X = MC_Func.MC_GetEncPos((int)nAxis.X) - xOffset;
                         m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = MC_Func.MC_GetEncPos((int)nAxis.Y) - yOffset;
@@ -14377,9 +14399,18 @@ namespace QMC.Common.Modules
                             Equipment.StageOffset_forDrilling_X - m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.X;
                         m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y = 
                             Equipment.StageOffset_forDrilling_Y - m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].ptFiducial_Center.Y;
+                        if (true)
+                        {
+                            //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width = Fiducial_circlesResult[0].Width * Config.ParamConfig.UpperVision_Scale_X;
+                            //m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height = Fiducial_circlesResult[0].Height * Config.ParamConfig.UpperVision_Scale_X;
 
-                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width = Fiducial_circlesResult[0].Width * Config.ParamConfig.UpperVision_Scale_X;
-                        m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height = Fiducial_circlesResult[0].Height * Config.ParamConfig.UpperVision_Scale_X;
+                        }
+                        else
+                        {
+                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Width = Fiducial_circlesResult[0].Width * Config.ParamConfig.UpperVision_Scale_X;
+                            m_st4PointPosition_InspectedPos[m_nSocketAlign_FiducialCount].dFiducial_Height = Fiducial_circlesResult[0].Height * Config.ParamConfig.UpperVision_Scale_X;
+
+                        }
 
                         m_nSocketAlign_FiducialCount++;
 
@@ -15493,7 +15524,7 @@ namespace QMC.Common.Modules
             return new XyCoordinate(dNewX + dRotationCenterX, dNewY + dRotationCenterY);
         }
 
-        private int SpiralSearch(double dWidth , int maxSteps = 9)
+        private int SpiralSearch(double dWidth , int maxSteps = 9, AlignMode alignMode = AlignMode.Socket)
         {
             int ret = -1;
             try
@@ -15582,22 +15613,16 @@ namespace QMC.Common.Modules
 
                     //  마크 검출 형식 (Circle, Gold Powder)
                     //if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
-                    if (Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
+                    if (alignMode == AlignMode.GoldPowder &&
+                        Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
                     {
-                        //result =  Fiducial_aligner.FindMetalPowderForAutoTreshold(Fiducial_circlesResult, 
-                        //                                bm_AlignRawData, 
-                        //                                Camera_HighRes.Resolution.Width, 
-                        //                                Camera_HighRes.Resolution.Height,
-                        //                                nWidthImageCount,
-                        //                                Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
-                        //                                Equipment.stVisionRecipeSet.dSocketCircleMarkSpec);
-                        Fiducial_circlesResult = Fiducial_aligner.FindMetalPowderForAutoTreshold(Fiducial_circlesResult,
+                        result = Fiducial_aligner.FindGoldPowderForAutoTreshold(Fiducial_circlesResult,
                                                         bm_AlignRawData,
                                                         Camera_HighRes.Resolution.Width,
                                                         Camera_HighRes.Resolution.Height,
                                                         nWidthImageCount,
-                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
-                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkSpec);
+                                                        Equipment.stVisionRecipeSet.dGoldPowderCircleMarkScore,
+                                                        Equipment.stVisionRecipeSet.dGoldPowderCircleMarkSpec);
                         //if (result.Circles.Count > 3)
                         if (Fiducial_circlesResult.Count > 3)
                         {
@@ -15641,22 +15666,14 @@ namespace QMC.Common.Modules
                         //else if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
                         else if (Equipment.stVisionRecipeSet.nSocketMarkType == (int)MarkTypeList.GoldPowder)
                         {
-                            //result =  Fiducial_aligner.FindMetalPowderForAutoTreshold(Fiducial_circlesResult, 
-                            //                                bm_AlignRawData, 
-                            //                                Camera_HighRes.Resolution.Width, 
-                            //                                Camera_HighRes.Resolution.Height,
-                            //                                nWidthImageCount,
-                            //                                Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
-                            //                                Equipment.stVisionRecipeSet.dSocketCircleMarkSpec);
-                            Fiducial_circlesResult = Fiducial_aligner.FindMetalPowderForAutoTreshold(Fiducial_circlesResult,
+                            result = Fiducial_aligner.FindGoldPowderForAutoTreshold(Fiducial_circlesResult,
                                                             bm_AlignRawData,
                                                             Camera_HighRes.Resolution.Width,
                                                             Camera_HighRes.Resolution.Height,
                                                             nWidthImageCount,
                                                             Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
                                                             Equipment.stVisionRecipeSet.dSocketCircleMarkSpec);
-                            //if (result.Circles.Count > 3)
-                            if (Fiducial_circlesResult.Count > 3)
+                            if (result.Circles.Count > 3)
                             {
                                 Fiducial_circleFound = true;
                             }
@@ -22465,6 +22482,10 @@ namespace QMC.Common.Modules
                         if(Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
                         {
                             Log.Write("SLD-200", "LaserDrilling_Step", "Drilling_LayerParameter_Change_Start::GoldPowerAlign Seq");
+                            if (m_nSelectedSocket_Index >= 0)
+                            {
+                                m_nDrillingWork_Group_Count = m_nSelectedSocket_Index;
+                            }
                             m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.Drilling_LayerParameter_ZOffset_Move;
                         }
                         else
@@ -29359,8 +29380,9 @@ namespace QMC.Common.Modules
             // Hole 가공 ( socket 가공) 은 하지 않는다! 
 
             int nextStep = 0;
-            if (m_nDrillingWork_Group_Count < m_stDividedRegion_GroupData[0].nGroup_Num &&
-                Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use == false  )
+            //if (m_nDrillingWork_Group_Count < m_stDividedRegion_GroupData[0].nGroup_Num &&
+            //    Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use == false  ) //흠.
+            if (m_nDrillingWork_Group_Count < m_stDividedRegion_GroupData[0].nGroup_Num)
             {
                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있음");
                 m_bDrillingWork_Thruhole_Exist = false;

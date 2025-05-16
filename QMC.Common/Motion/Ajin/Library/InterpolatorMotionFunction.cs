@@ -440,10 +440,10 @@ namespace QMC.Common.Motion.Ajin.Motions
                     NativeMethods.WritePrivateProfileString(section, keyMin, minValue.ToString("F3"), iniPath);
                     NativeMethods.WritePrivateProfileString(section, keyMax, maxValue.ToString("F3"), iniPath);
 
-                    Log.Write("SLD-200", "SoftLimit", $"[기본값 적용] {axis.UnitName}_{axis.Name} → Min={minValue:F3}, Max={maxValue:F3}");
+                    //Log.Write("SLD-200", "SoftLimit", $"[기본값 적용] {axis.UnitName}_{axis.Name} → Min={minValue:F3}, Max={maxValue:F3}");
                 }
 
-                Log.Write("SLD-200", "SoftLimit", $"SoftLimit 파일이 없어 기본값으로 생성됨: {iniPath}");
+                //Log.Write("SLD-200", "SoftLimit", $"SoftLimit 파일이 없어 기본값으로 생성됨: {iniPath}");
                 return true;
             }
 
@@ -464,7 +464,7 @@ namespace QMC.Common.Motion.Ajin.Motions
                     continue;
 
                 motionFunc.SetSoftLimit(axis.AxisNumber, minValue, maxValue);
-                Log.Write("SLD-200", "SoftLimit", $"[{axis.UnitName}] {axis.Name}({axis.AxisNumber}) → Min={minValue:F3}, Max={maxValue:F3}");
+                //Log.Write("SLD-200", "SoftLimit", $"[{axis.UnitName}] {axis.Name}({axis.AxisNumber}) → Min={minValue:F3}, Max={maxValue:F3}");
             }
 
             return bRet;
