@@ -2512,7 +2512,14 @@ namespace SLD200_MSL
                 //byte[] pixelData = aligner.ConvertBitmapToByteArray(bm_Temp);                
 
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
-                aligner.FindMetalPowder(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
+                //aligner.FindMetalPowder(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
+                aligner.FindMetalPowderForAutoTreshold(circlesResult,
+                                                        bm_RawData,
+                                                        w,
+                                                        h,
+                                                        75,
+                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
+                                                        Equipment.stVisionRecipeSet.dSocketCircleMarkSpec);
             }
 
             if (circlesResult.Count > 0)
