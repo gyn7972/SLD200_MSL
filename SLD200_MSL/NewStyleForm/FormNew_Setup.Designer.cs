@@ -532,6 +532,7 @@
             this.radioButton_Setup_Option_LaserType_UV = new System.Windows.Forms.RadioButton();
             this.radioButton_Setup_Option_LaserType_CO2 = new System.Windows.Forms.RadioButton();
             this.label96 = new System.Windows.Forms.Label();
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save = new System.Windows.Forms.Button();
             this.tabPage_Setup_Communication.SuspendLayout();
             this.groupBox86.SuspendLayout();
             this.tabControl_Setup_Communication_Type.SuspendLayout();
@@ -3116,6 +3117,7 @@
             // 
             // tabPage_Setup_ScannerCalibration
             // 
+            this.tabPage_Setup_ScannerCalibration.Controls.Add(this.button_Setup_ScannerCal_Rtc6_Cal_File_Save);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.button_Setup_ScannerCal_CameraStop);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.checkBox_Setup_ScannerCal_CirclePos);
             this.tabPage_Setup_ScannerCalibration.Controls.Add(this.label_Setup_ScannerCal_CirclePosY);
@@ -3205,7 +3207,7 @@
             // button_Setup_ScannerCal_Rtc6_Cal_File_Load
             // 
             this.button_Setup_ScannerCal_Rtc6_Cal_File_Load.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_Setup_ScannerCal_Rtc6_Cal_File_Load.Location = new System.Drawing.Point(1068, 527);
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Load.Location = new System.Drawing.Point(1068, 528);
             this.button_Setup_ScannerCal_Rtc6_Cal_File_Load.Name = "button_Setup_ScannerCal_Rtc6_Cal_File_Load";
             this.button_Setup_ScannerCal_Rtc6_Cal_File_Load.Size = new System.Drawing.Size(166, 35);
             this.button_Setup_ScannerCal_Rtc6_Cal_File_Load.TabIndex = 168;
@@ -6760,6 +6762,17 @@
             this.label96.Text = "Waiting time after turning on the dust collector (ms) :";
             this.label96.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // button_Setup_ScannerCal_Rtc6_Cal_File_Save
+            // 
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Location = new System.Drawing.Point(1068, 569);
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Name = "button_Setup_ScannerCal_Rtc6_Cal_File_Save";
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Size = new System.Drawing.Size(166, 35);
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.TabIndex = 172;
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Text = "Rtc6calFile Save";
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.UseVisualStyleBackColor = true;
+            this.button_Setup_ScannerCal_Rtc6_Cal_File_Save.Click += new System.EventHandler(this.button_Setup_ScannerCal_Rtc6_Cal_File_Save_Click);
+            // 
             // FormNew_Setup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -7370,5 +7383,6 @@
         private System.Windows.Forms.Label label78;
         private System.Windows.Forms.TextBox textBox_Setup_Option_ModulePickup_1stDistance;
         private System.Windows.Forms.Label label79;
+        private System.Windows.Forms.Button button_Setup_ScannerCal_Rtc6_Cal_File_Save;
     }
 }

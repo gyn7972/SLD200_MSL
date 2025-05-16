@@ -223,8 +223,24 @@ namespace SLD200_MSL
             string strPath = "D:\\SLD-200_Parameter\\CycleTime.ini";
             Equipment.CycleTimer_LaserDrilling.LoadFromIni("LaserDrilling", strPath);
 
-            //  통신 Parts 초기화 (Connect 옵션에 따라 활성화 된 것들만 초기화 됨)
-            Comm_Init();
+            if(Machine_LaserType_CO2)
+            {
+                baseLabel_Main_Divice_Status_PowermeterBds.Visible = false;
+                baseLabel_Main_Divice_Status_PowermeterBds.Enabled = false;
+                pictureBox_Main_DiviceStatus_Powermeter_bds.Visible = false;
+                pictureBox_Main_DiviceStatus_Powermeter_bds.Enabled = false;
+            }
+            else
+            {
+                baseLabel_Main_Divice_Status_BeamExpander.Visible = false;
+                baseLabel_Main_Divice_Status_BeamExpander.Enabled = false;
+                pictureBox_Main_DiviceStatus_BeamExpander.Visible = false;
+                pictureBox_Main_DiviceStatus_BeamExpander.Enabled = false;
+            }
+
+
+                //  통신 Parts 초기화 (Connect 옵션에 따라 활성화 된 것들만 초기화 됨)
+                Comm_Init();
 
             SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
         }
@@ -257,14 +273,18 @@ namespace SLD200_MSL
                 m_bFormVisible = true;
                 // OnShowRecipeForm();
                 this.ImageViewer_Main_highs.ResumeDisplay();
+                this.ImageViewer_Main_highs.StartUpdateTask();
                 this.ImageViewer_Main_Lows.ResumeDisplay();
+                this.ImageViewer_Main_Lows.StartUpdateTask();
             }
             else if (!this.Visible && m_bFormVisible)
             {
                 m_bFormVisible = false;
 
                 this.ImageViewer_Main_highs.SuspendDisplay();
+                this.ImageViewer_Main_highs.StopUpdateTask();
                 this.ImageViewer_Main_Lows.SuspendDisplay();
+                this.ImageViewer_Main_Lows.StopUpdateTask();
                 //OnHideRecipeForm();
             }
         }
@@ -283,23 +303,14 @@ namespace SLD200_MSL
             {
                 this.ImageViewer_Main_highs.SizeMode = PictureBoxSizeMode.CenterImage;
                 this.ImageViewer_Main_highs.SuspendDisplay();
-                this.ImageViewer_Main_highs.StopUpdateTask();
-
-                //Fine은 Workstage Camera와 연동
                 this.ImageViewer_Main_highs.Camera = workStage.Camera_HighRes;
-                this.ImageViewer_Main_highs.ResumeDisplay();
-                this.ImageViewer_Main_highs.StartUpdateTask();
             }
 
             //if (this.ImageViewer_Main_Lows.IsHandleCreated)
             {
                 this.ImageViewer_Main_Lows.SizeMode = PictureBoxSizeMode.CenterImage;
                 this.ImageViewer_Main_Lows.SuspendDisplay();
-                this.ImageViewer_Main_Lows.StopUpdateTask();
-                //Prealign은 jigAligner와 연동
                 this.ImageViewer_Main_Lows.Camera = workStage.jigAligner_LowRes.Camera;
-                this.ImageViewer_Main_Lows.ResumeDisplay();
-                this.ImageViewer_Main_Lows.StartUpdateTask();
             }
 
             // control 초기화 
@@ -761,7 +772,6 @@ namespace SLD200_MSL
                         workStage.RapidLxLaser_Comm_Init();
                     }
                 }
-
             }
             
             
@@ -791,8 +801,19 @@ namespace SLD200_MSL
             //if (!_InitDeviceStatus.MotionIo)
             //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Motion);
 
-            bOn = workStage.m_rapidLxLaser_Comm != null && workStage.m_rapidLxLaser_Comm.IsOpen;
-            _InitDeviceStatus.Laser = bOn;
+            if (!Equipment.Machine_LaserType_CO2)
+            {
+                bOn = workStage.m_rapidLxLaser_Comm != null && workStage.m_rapidLxLaser_Comm.IsOpen;
+                _InitDeviceStatus.Laser = bOn;
+            }
+            else
+            {
+                //여기서 io를 계속 읽는 거는 아닌거 같다.
+                //if (workStage.workStageParameter.IsDO_Laser_Enable())
+                //    _InitDeviceStatus.Laser = true;
+                //else
+                //    _InitDeviceStatus.Laser = false;
+            }
             //if (!_InitDeviceStatus.Laser)
             //    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Laser);
 
@@ -801,11 +822,11 @@ namespace SLD200_MSL
             //_InitDeviceStatus.Scanner = bOn;
 
             if (!Equipment.Machine_LaserType_CO2)
-            { 
-            bOn = workStage.m_powerMeter_ExitPos_Comm != null && workStage.m_powerMeter_ExitPos_Comm.IsOpen;
-            _InitDeviceStatus.PowerMeter_Bds = bOn;
-            if (!_InitDeviceStatus.PowerMeter_Bds)
-                workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Powermeter_bds);
+            {
+                bOn = workStage.m_powerMeter_ExitPos_Comm != null && workStage.m_powerMeter_ExitPos_Comm.IsOpen;
+                _InitDeviceStatus.PowerMeter_Bds = bOn;
+                if (!_InitDeviceStatus.PowerMeter_Bds)
+                    workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Powermeter_bds);
             }
 
             bOn = workStage.m_powerMeter_TargetPos_Comm != null && workStage.m_powerMeter_TargetPos_Comm.IsOpen;
@@ -858,7 +879,6 @@ namespace SLD200_MSL
             _InitDeviceStatus.Illuminator = bOn;
             if (!_InitDeviceStatus.HeightSensor)
                 workStage.AlarmPost(WorkStage.AlarmKey.InitFail_Illuminator);
-
 
         }
 
@@ -1050,11 +1070,19 @@ namespace SLD200_MSL
         // -----------------------
         private void UpdateUIControls()
         {
-            UpdateCycleTimerUI();
-            //return;
+            // 이거 안해도 될거 같은데.
+            //if (workStage.Camera_HighRes.Opened)
+            //{
+            //    ImageViewer_Main_highs.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
+            //}
 
+            //if (workStage.jigAligner_LowRes.Camera.Opened)
+            //{
+            //    ImageViewer_Main_Lows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
+            //}
+
+            UpdateCycleTimerUI();
             Motor_Position2();
-            
 
             if (m_bNeedHideProgressForm)
             {
@@ -1111,16 +1139,6 @@ namespace SLD200_MSL
                     m_ProcRegionStatus);
             }
 
-            //if (m_bNeedCompStatusUpdate)
-            //{
-            //    m_bNeedCompStatusUpdate = false;
-            //    Update_SocketStatus(
-            //        m_CompSocketRowCol.Item1, m_CompSocketRowCol.Item2,
-            //        m_CompSocketStatus,
-            //        m_CompRegionRowCol.Item1, m_CompRegionRowCol.Item2,
-            //        m_CompRegionStatus);
-            //}
-
             if(Equipment.AutoRunStatus)
             {
                 button_Main_Start.BackColor = Color.Lime;
@@ -1131,10 +1149,6 @@ namespace SLD200_MSL
                 button_Main_Start.BackColor = Color.LightGray;
                 button_Main_Start.ForeColor = Color.Black;
             }
-
-            //button_Main_Loader_Continue.Enabled = Equipment.MachineStop_byTimeout_Loader;
-            //button_Main_Unloader_Continue.Enabled = Equipment.MachineStop_byTimeout_Unloader;
-            //button_Main_WorkStage_Continue.Enabled = Equipment.SocketStopped;
 
             if (m_bNeedAutoRunStop)
             {
@@ -1152,16 +1166,6 @@ namespace SLD200_MSL
                 unloader.m_UnloaderWork_Start = false;
 
                 System.Windows.Forms.MessageBox.Show("자동 운전 종료", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-
-            if (workStage.Camera_HighRes.Opened)
-            {
-                ImageViewer_Main_highs.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
-            }
-
-            if (workStage.jigAligner_LowRes.Camera.Opened)
-            {
-                ImageViewer_Main_Lows.SetImageNDisplay(workStage.jigAligner_LowRes.Camera.LatestImage);
             }
 
             // label_Title_MESMessage
@@ -3561,7 +3565,7 @@ namespace SLD200_MSL
             try
             {
                 int goalOneCycleSec = 70;      // 목표 1사이클 시간 (초)
-                int goalTotalSec = 86400;      // 총 목표 시간 (초) - 24시간
+                int goalTotalSec = 86400;      // 총 목표 시간 (초) - 24시간 <- 수량 및 1사이클에 따른 남은 시간 계산 필요.
 
                 // 실시간 경과 시간
                 TimeSpan oneCycle = Equipment.CycleTimer_LaserDrilling.IsRunning
@@ -3576,7 +3580,7 @@ namespace SLD200_MSL
                 int oneCycleProgress = (int)(oneCycle.TotalSeconds / goalOneCycleSec * 100);
                 progressBar_OneCycle_Time.Value = Math.Min(progressBar_OneCycle_Time.Maximum, Math.Max(0, oneCycleProgress));
 
-                // ---- Total 누적 시간 표시 ----
+                // ---- Total 누적 시간 표시 ---- -> 남은 시간 계산 필요.
                 baseLabel_Total_RemainedTime.Text = totalElapsed.ToString(@"hh\:mm\:ss");
                 int totalProgress = (int)(totalElapsed.TotalSeconds / goalTotalSec * 100);
                 progressBar_TotalRemained_Time.Value = Math.Min(progressBar_TotalRemained_Time.Maximum, Math.Max(0, totalProgress));

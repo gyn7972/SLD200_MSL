@@ -57,7 +57,7 @@
             this.tabPage_Loader.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage_Loader.Name = "tabPage_Loader";
             this.tabPage_Loader.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage_Loader.Size = new System.Drawing.Size(702, 563);
+            this.tabPage_Loader.Size = new System.Drawing.Size(646, 472);
             this.tabPage_Loader.TabIndex = 0;
             this.tabPage_Loader.Text = "Loader";
             this.tabPage_Loader.UseVisualStyleBackColor = true;
@@ -78,6 +78,7 @@
             this.tabPage_Unloader.Location = new System.Drawing.Point(4, 31);
             this.tabPage_Unloader.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage_Unloader.Name = "tabPage_Unloader";
+            this.tabPage_Unloader.Padding = new System.Windows.Forms.Padding(2);
             this.tabPage_Unloader.Size = new System.Drawing.Size(646, 472);
             this.tabPage_Unloader.TabIndex = 2;
             this.tabPage_Unloader.Text = "Unloader";

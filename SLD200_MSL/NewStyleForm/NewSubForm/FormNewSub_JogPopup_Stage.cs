@@ -31,6 +31,7 @@ namespace SLD200.NewStyleForm.NewSubForm
         {
             InitializeComponent();
             m_Parent = parent;
+            this.AutoScaleMode = AutoScaleMode.None;
 
             this.Load += FormNewSub_JogPopup_Stage_Load; // 여기서 Load 이벤트 연결
 

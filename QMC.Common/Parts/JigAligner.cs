@@ -420,22 +420,19 @@ namespace QMC.Common.Parts
                         //MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
 
                         Thread.Sleep(200);
-
                         Task<bool> resultX1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
                         Task<bool> resultY1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
-
                         resultX1.Wait();
                         resultY1.Wait();
                         if (!resultX1.Result || !resultY1.Result)
                         {
                             //  이동 실패 
-                            if(!bWaitPosX)
+                            if(!resultX1.Result)
                             {
                                 Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"X축 이동 실패"));
                                 m_Owner.AlarmPost(AlarmKey.eStageMoveFail); //X,Y축 분할 필요?
                             }
-
-                            if (!bWaitPosY)
+                            if (!resultY1.Result)
                             {
                                 Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"Y축 이동 실패"));
                                 m_Owner.AlarmPost(AlarmKey.eStageMoveFail); //X,Y축 분할 필요?
