@@ -624,7 +624,7 @@ namespace QMC.Common.VisionPart
                     (float)medianHeight
                 );
 
-                circles.Add(new Circle(centerX, centerY, Myradius));
+                circles.Add(new Circle(centerX, centerY, Myradius,(float) dMyScore));
                 //FindBestCircle()
                 // circlesResult¿¡ Ãß°¡
                 circlesResult.Add(rectangle);
@@ -728,7 +728,7 @@ namespace QMC.Common.VisionPart
             Parallel.For(1, 20, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, threshold =>
             {
                 bool bFound = false;
-                var circles = FindMetalPowder(circlesResult, pixelData, w, h, ref bFound, (threshold) * 10 + 50, dScore, radius);
+                var circles = FindMetalPowder(circlesResult, pixelData, w, h, ref bFound, (threshold) * 10 + 50, dScore, radius, dSpec);
                 int nCount = 0;
                 foreach (var circle in circles)
                 {
@@ -753,6 +753,7 @@ namespace QMC.Common.VisionPart
             foreach (var circle in BestCircle)
             {
                 circlesResult.Add(circle.GetBoundery());
+                result.ScoreCollection.Add(circle.Score);
             }
             result.Circles.AddRange(BestCircle);
 

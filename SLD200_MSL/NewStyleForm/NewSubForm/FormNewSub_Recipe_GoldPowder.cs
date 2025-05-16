@@ -476,8 +476,11 @@ namespace SLD200.NewStyleForm.NewSubForm
                 //dScore
                 QMC_ImageProcessFindAlignResult result = aligner.FindMetalPowderForAutoTreshold(circlesResult,
                                                     workStage.Camera_HighRes.LatestImage.RawData,
-                                                    w, h, (int)m_dradius, dSpec,dScore);
-
+                                                    w, h, (int)m_dradius, dScore, dSpec);
+                if(circlesResult.Count > 3 )
+                {
+                    bFindCircle = true;
+                }
                 workStage.UpdateOverlay(result);
             }
 
