@@ -2490,25 +2490,25 @@ namespace SLD200_MSL
 
         private void checkBox_Main_CycleStop_CheckedChanged(object sender, EventArgs e)
         {
-            //  Layer Name : "Marking"
-            //  Eitity Name : "QR2"
-            //  변경 Data : "TESTTEST"
-            //workStage.MarkingEntity_DataChange("QR2", "TESTTEST");
+            ////  Layer Name : "Marking"
+            ////  Eitity Name : "QR2"
+            ////  변경 Data : "TESTTEST"
+            ////workStage.MarkingEntity_DataChange("QR2", "TESTTEST");
 
-            var text = new BarcodeQR2("SIRIUS1234");
+            //var text = new BarcodeQR2("SIRIUS1234");
             
-            Vector2 RotCenter = new Vector2(text.Width / 2, text.Height / 2);
-            text.Rotate(90, RotCenter);
-            text.Location = new Vector2(text.Location.X - (float)(text.Width / 2.0), text.Location.Y - (float)(text.Height / 2.0));
-            SiriusViewer_Main.Document.Action.ActEntityAdd(text);
+            //Vector2 RotCenter = new Vector2(text.Width / 2, text.Height / 2);
+            //text.Rotate(90, RotCenter);
+            //text.Location = new Vector2(text.Location.X - (float)(text.Width / 2.0), text.Location.Y - (float)(text.Height / 2.0));
+            //SiriusViewer_Main.Document.Action.ActEntityAdd(text);
 
-            var text2 = new Barcode1D("TESTTTTT");
-            RotCenter = new Vector2(text2.Width / 2, text2.Height / 2);
-            text2.Rotate(90, RotCenter);
-            text2.Location = new Vector2(text2.Location.X - (float)(text2.Width / 2.0), text2.Location.Y - (float)(text2.Height / 2.0));
-            SiriusViewer_Main.Document.Action.ActEntityAdd(text2);
+            //var text2 = new Barcode1D("TESTTTTT");
+            //RotCenter = new Vector2(text2.Width / 2, text2.Height / 2);
+            //text2.Rotate(90, RotCenter);
+            //text2.Location = new Vector2(text2.Location.X - (float)(text2.Width / 2.0), text2.Location.Y - (float)(text2.Height / 2.0));
+            //SiriusViewer_Main.Document.Action.ActEntityAdd(text2);
 
-            return;
+            //return;
 
 
 
