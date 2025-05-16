@@ -2513,7 +2513,7 @@ namespace SLD200_MSL
 
                 //aligner.FindCirclesWidthCircleBoundary(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
                 //aligner.FindMetalPowder(circlesResult, bm_RawData, w, h, ref m_bFindCircle);
-                aligner.FindMetalPowderForAutoTreshold(circlesResult,
+                aligner.FindGoldPowderForAutoTreshold(circlesResult,
                                                         bm_RawData,
                                                         w,
                                                         h,

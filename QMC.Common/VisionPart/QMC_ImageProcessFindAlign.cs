@@ -520,7 +520,7 @@ namespace QMC.Common.VisionPart
 
 
 
-        public List<Circle> FindMetalPowder(List<RectangleF> circlesResult, byte[] pixelData, int w, int h, ref bool circleFound, int Threshold = 75, double dScore = 0.7, int radius = 0, double dSpec = 0.1)
+        public List<Circle> FindGoldPowder(List<RectangleF> circlesResult, byte[] pixelData, int w, int h, ref bool circleFound, int Threshold = 75, double dScore = 0.7, int radius = 0, double dSpec = 0.1)
         {
             List<RectangleF> circlesResultLocal = new List<RectangleF>();
             List<PointF> polygon = new List<PointF>();
@@ -718,10 +718,12 @@ namespace QMC.Common.VisionPart
         }
 
 
-        public List<RectangleF> FindMetalPowderForAutoTreshold(List<RectangleF> circlesResult,
+        public QMC_ImageProcessFindAlignResult FindGoldPowderForAutoTreshold(List<RectangleF> circlesResult,
             byte[] pixelData, int w, int h, int radius, double dScore, double dSpec)
         {
-            List<RectangleF> result = new List<RectangleF>();
+
+            //List<RectangleF> result = new List<RectangleF>();
+            QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
             List<Circle> BestCircle = new List<Circle>();
             double dMaxCount = 0;
             object obj = new object();
@@ -730,7 +732,7 @@ namespace QMC.Common.VisionPart
             {
                 int myThreshold = threshold * 7 + 50;
                 bool bFound = false;
-                var circles = FindMetalPowder(circlesResult, pixelData, w, h, ref bFound, (myThreshold), dScore, radius, dSpec);
+                var circles = FindGoldPowder(circlesResult, pixelData, w, h, ref bFound, myThreshold, dScore, radius, dSpec);
                 int nCount = 0;
                 foreach (var circle in circles)
                 {
@@ -767,10 +769,11 @@ namespace QMC.Common.VisionPart
             foreach (var circle in BestCircle)
             {
                 circlesResult.Add(circle.GetBoundery());
+                result.ScoreCollection.Add(circle.Score);
             }
+            result.Circles.AddRange(BestCircle);
 
-
-            return circlesResult;
+            return result;
         }
 
 

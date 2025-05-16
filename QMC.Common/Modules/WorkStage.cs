@@ -15602,7 +15602,7 @@ namespace QMC.Common.Modules
                     //else if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.GoldPowder)
                     else if (Equipment.stVisionRecipeSet.nSocketMarkType == (int)MarkTypeList.GoldPowder)
                     {
-                        result =  Fiducial_aligner.FindMetalPowderForAutoTreshold(Fiducial_circlesResult, 
+                        result =  Fiducial_aligner.FindGoldPowderForAutoTreshold(Fiducial_circlesResult, 
                                                         bm_AlignRawData, 
                                                         Camera_HighRes.Resolution.Width, 
                                                         Camera_HighRes.Resolution.Height,
