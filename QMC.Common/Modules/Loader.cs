@@ -4250,9 +4250,7 @@ namespace QMC.Common.Modules
 
 
                 case (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Move_ReadyPos:                            //  Transfer Z 축, 대기 위치로 이동
-
-                    m_nStacker0_Retry_Count = 0;                    //  Pick Up Retry Count 초기화
-
+                                        
                     Loader_Transfer_Step_Stacker0PickUp_TransferZ_Move_ReadyPos(out m_dSpeed, out m_dAccDec);
 
                     m_nLoader_Transfer_Step = (int)Loader_Transfer_Step.Stacker0PickUp_TransferZ_Move_ReadyPos_DoneCheck;
@@ -4786,6 +4784,8 @@ namespace QMC.Common.Modules
                                 }
                                 else
                                 {
+                                    m_nStacker0_Retry_Count = 0;                    //  Pick Up Retry Count 초기화
+
                                     Loader_CurrentStatus_Save_StopedByTimeout();
 
                                     Loader_Transfer_Step_Stacker1PickUp_Transfer_PickerVacuum_Off();
@@ -4997,8 +4997,6 @@ namespace QMC.Common.Modules
 
 
                 case (int)Loader_Transfer_Step.Stacker1PickUp_TransferZ_Move_ReadyPos:                            //  Transfer Z 축, 대기 위치로 이동
-
-                    m_nStacker1_Retry_Count = 0;                    //  Pick Up Retry Count 초기화
 
                     Loader_Transfer_Step_Stacker1PickUp_TransferZ_Move_ReadyPos(out m_dSpeed, out m_dAccDec);
 
@@ -5555,6 +5553,8 @@ namespace QMC.Common.Modules
                                     //
                                     //  복원 지점 체크용 (Stacker0 에서 Module Pick Up 완료)
                                     //////////////////////////////////////////////////////////////////////////////////////////
+
+                                    m_nStacker1_Retry_Count = 0;                    //  Pick Up Retry Count 초기화
 
                                     Loader_CurrentStatus_Save_StopedByTimeout();
 
@@ -7786,6 +7786,8 @@ namespace QMC.Common.Modules
 
                             m_nStacker0_PickUpWaitingPos_RetryCount = 0;            //  PickUp Retry Count Reset
 
+                            m_nStacker0_Retry_Count = 0;                    //  Pick Up Retry Count 초기화
+
                             m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_MAligner;
                             break;
 
@@ -7797,6 +7799,8 @@ namespace QMC.Common.Modules
                             m_bStacker1_Complete = false;
 
                             m_nStacker1_PickUpWaitingPos_RetryCount = 0;            //  PickUp Retry Count Reset
+
+                            m_nStacker1_Retry_Count = 0;                    //  Pick Up Retry Count 초기화
 
                             m_nLoaderTransfer_ProcessStep = (int)LoaderTransferProcessStep.LoaderStep_ModulePutDown_MAligner;
                             break;
