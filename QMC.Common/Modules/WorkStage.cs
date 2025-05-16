@@ -15571,7 +15571,7 @@ namespace QMC.Common.Modules
                     //if (Equipment.stLayerRecipeSet[0].Miscellaneous_FiducialMarkType == (int)MarkTypeList.Circle)
                     if (Equipment.stVisionRecipeSet.nSocketMarkType == (int)MarkTypeList.Circle)
                     {
-                        if(stVisionRecipeSet.dSocketMarkType <= 1)
+                        if(stVisionRecipeSet.nSocketCircleColor <= 1)
                         {
                             result = Fiducial_aligner.FindCirclesWidthCircleBoundary(Fiducial_circlesResult,
                                                                         bm_AlignRawData,
@@ -15584,7 +15584,7 @@ namespace QMC.Common.Modules
                                                                         (Equipment.stVisionRecipeSet.nSocketMarkType == 0),
                                                                         Equipment.stVisionRecipeSet.dSocketCircleMarkScore,
                                                                         false);
-                        }else if(stVisionRecipeSet.dSocketMarkType == 2)
+                        }else if(stVisionRecipeSet.nSocketCircleColor == 2)
                         {
                             result = Fiducial_aligner.FindCircleForFR4( bm_AlignRawData,
                                                                         Camera_HighRes.Resolution.Width,
