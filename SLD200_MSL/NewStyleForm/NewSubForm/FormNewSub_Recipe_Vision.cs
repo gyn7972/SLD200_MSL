@@ -1220,7 +1220,7 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             try
             {
-                // await 사용으로 UI 프리즈 없이 동작 //시컨스에서는 await 사용 안됨.
+               // await 사용으로 UI 프리즈 없이 동작 //시컨스에서는 await 사용 안됨.
                bWaitPosX = await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
                bWaitPosY = await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
 
