@@ -23,6 +23,7 @@ using static QMC.Common.Modules.WorkStage;
 using Newtonsoft.Json.Linq;
 using static QMC.Common.Vision.Tools.PatternMatchingResult;
 using System.ServiceModel.Syndication;
+using static QMC.Common.Equipment;
 
 namespace QMC.Common.Parts
 {
@@ -610,52 +611,29 @@ namespace QMC.Common.Parts
                     #endregion
 
                     position = new XyzCoordinate(movePosition.X + this.Config.PitchDistanceX * x, movePosition.Y + this.Config.PitchDistanceY * y, movePosition.Z);
+                    xyInterpolatedCoordinate.X = position.X;
+                    xyInterpolatedCoordinate.Y = position.Y;
 
-                    double lfVelocity;
-                    double lfAccDec;
-                    //  속도 설정
-                    lfVelocity = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Speed_Coarse;
-                    lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.X].Common_Acceleration_Coarse;
-
-                    xyInterpolatedCoordinate.X = position.X; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_X;
-                    xyInterpolatedCoordinate.Y = position.Y; //stWorkStageTeachingPos[(int)WorkStage_TeachingPosList.STAGE_ProcessingPos].Stage_Y;
-
-                    MC_Func.MovePosition(xyInterpolatedCoordinate, lfVelocity, lfAccDec, lfAccDec);
-                    int nWait = 0;
-                    while (true)
+                    m_Owner.MovetoWorkStage_ABS_PositionsXY(xyInterpolatedCoordinate, Type_Motor_Speed.Coarse);
+                    
+                    Task<bool> resultX1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
+                    Task<bool> resultY1 = m_Owner.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
+                    resultX1.Wait();
+                    resultY1.Wait();
+                    if (!resultX1.Result || !resultY1.Result)
                     {
-                        if (MC_Func.MC_GetDone((int)nAxis.X) 
-                            && MC_Func.MC_PosTolerance((int)nAxis.X, xyInterpolatedCoordinate.X))
-                            //if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) == true)
+                        //  이동 실패 
+                        if (!resultX1.Result)
                         {
-                            break;
+                            Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"X축 이동 실패"));
+                            m_Owner.AlarmPost(AlarmKey.eStageMoveFail); //X,Y축 분할 필요?
                         }
-                        Thread.Sleep(1);
-                        nWait++;
-                        if (nWait == 1000)
+                        if (!resultY1.Result)
                         {
-                            break;
-                        }
-
-                    }
-
-                    nWait = 0;
-                    while (true)
-                    {
-                        //if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) == true)
-                        if (MC_Func.MC_GetDone((int)nAxis.Y)
-                            && MC_Func.MC_PosTolerance((int)nAxis.Y, xyInterpolatedCoordinate.Y))
-                        {
-                            break;
-                        }
-                        Thread.Sleep(1);
-                        nWait++;
-                        if (nWait == 1000)
-                        {
-                            break;
+                            Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", string.Format($"Y축 이동 실패"));
+                            m_Owner.AlarmPost(AlarmKey.eStageMoveFail); //X,Y축 분할 필요?
                         }
                     }
-                    //Thread.Sleep(Config.MoveToDelay);
                     Thread.Sleep(500);
 
                     XyzCoordinate currentPos = new XyzCoordinate();
@@ -708,6 +686,11 @@ namespace QMC.Common.Parts
                                     pmrv.Score = pmr.Values[0].Score;
 
                                     pmrAll.Values.Add(pmrv);
+                                    Log.Write("SLD-200", Equipment.User_Name, "Scanner Cal.", "OnSearch OK.");
+                                }
+                                else
+                                {
+                                    Log.Write("SLD-200", Equipment.User_Name, "Scanner Cal.", "OnSearch Fail.");
                                 }
 
                                 if (Equipment.Scanner_Calibration_UseBlobVisionTool)
@@ -723,8 +706,8 @@ namespace QMC.Common.Parts
                                     m_TempScale.Y = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_Scale_Y;
                                     m_TempScale.InvertedX = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_X;
                                     m_TempScale.InvertedY = ((WorkStage)this.Owner).Config.ParamConfig.UpperVision_ScaleInvert_Y;
-                                    
-                                    double pixelR = (Equipment.Scanner_Calibration_CrossMarkLength/2) / (m_TempScale.X);
+
+                                    double pixelR = (Equipment.Scanner_Calibration_CrossMarkLength / 2) / (m_TempScale.X);
 
                                     qip.FindCirclesWidthCircleBoundary(Fiducial_circlesResult, Camera.LatestImage.RawData
                                             , Camera.LatestImage.Header.Width
@@ -876,25 +859,28 @@ namespace QMC.Common.Parts
                     double yIndex = defaultYIndex + this.Config.PitchDistanceY * task.Result.y;
 
                     PointD offset = new PointD(result.Offset.X, result.Offset.Y);
-
-                    //기존
-                    //double resultX = xIndex + offset.X;
-                    //double resultY = yIndex + offset.Y;
-                    //FormNew_Setup에서 수정하던 부분 옮김.
                     double resultX = xIndex - offset.X;
                     double resultY = yIndex - offset.Y;
 
                     // data format : row, col, reference, measured
-                    LogManager.Instance.WriteTxt(fileName, string.Format($"{task.Result.x}, {task.Result.y} : {yIndex.ToString("0.000")}, {xIndex.ToString("0.000")}, {resultY.ToString("0.00000")}, {resultX.ToString("0.00000")}"));
-                    //LogManager.Instance.WriteTxt(fileName, string.Format($"{x}, {y} : {xIndex.ToString("0.000")}, {yIndex.ToString("0.000")}, {resultX.ToString("0.000")}, {resultY.ToString("0.000")}"));
-
+                    LogManager.Instance.WriteTxt(fileName, string.Format($"{task.Result.x}, " +
+                                                                         $"{task.Result.y} : {yIndex.ToString("0.000")}, " +
+                                                                         $"{xIndex.ToString("0.000")}, " +
+                                                                         $"{resultY.ToString("0.000000000")}, " +
+                                                                         $"{resultX.ToString("0.000000000")}"));
+                    
                     //Motor <-> Scanner 좌표에 따른 x, y -> y, x 반전.
                     int x = task.Result.x;  // TruncateTo3DecimalPlaces()
                     int y = task.Result.y;
-                    double dX = TruncateTo3DecimalPlacesAndZeroRest(yIndex);
-                    double dY = TruncateTo3DecimalPlacesAndZeroRest(xIndex);
-                    double dMeasureX = TruncateTo3DecimalPlacesAndZeroRest(resultY);
-                    double dMeasureY = TruncateTo3DecimalPlacesAndZeroRest(resultX);
+                    //자릿수 3자리까지
+                    //double dX = TruncateTo3DecimalPlacesAndZeroRest(yIndex);
+                    //double dY = TruncateTo3DecimalPlacesAndZeroRest(xIndex);
+                    //double dMeasureX = TruncateTo3DecimalPlacesAndZeroRest(resultY);
+                    //double dMeasureY = TruncateTo3DecimalPlacesAndZeroRest(resultX);
+                    double dX = yIndex;
+                    double dY = xIndex;
+                    double dMeasureX = resultY;
+                    double dMeasureY = resultX;
 
                     findLenzCenter.AddSLDMeasureData(new SLDMeasureData(x, y, dX, dY, dMeasureX, dMeasureY));
                 }

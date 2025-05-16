@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using QMC.Core;
 using QMC.Common.Modules;
 using System.Windows.Documents;
+using SLD200.NewStyleForm.NewSubForm;
 //using QMC.Common.UI;
 
 namespace SLD200_MSL
@@ -48,6 +49,10 @@ namespace SLD200_MSL
         private FormNew_Logout m_FormNew_Logout;
         private FormNew_Alarm m_FormNew_Alarm;
         private FormNew_AlarmLog m_FormNew_AlarmLog;
+
+        private FormNewSub_Recipe_Vision m_FormnewSub_RecipeVision;
+        private FormNewSub_Recipe_GoldPowder m_FormnewSub_Recipe_GoldPowder;
+
 
         private Form currentVisibleForm = null;
 
@@ -100,14 +105,21 @@ namespace SLD200_MSL
             this.m_FormSelectIO = new FormSelectIO();
 
             //  2025. 02. 04.  SCH : 새로운 Form 추가
+            this.FormNewSub_Recipe_Vision = new FormNewSub_Recipe_Vision();
+            this.FormNewSub_Recipe_GoldPowder = new FormNewSub_Recipe_GoldPowder();
+
             this.FormNew_Main = new FormNew_Main();
             this.FormNew_Recipe = new FormNew_Recipe();
+            this.FormNew_Recipe.SetRecipeTabs(FormNewSub_Recipe_Vision, FormNewSub_Recipe_GoldPowder);
             this.FormNew_Config = new FormNew_Config();
             this.FormNew_Setup = new FormNew_Setup();
             this.FormNew_Log = new FormNew_Log();
             this.FormNew_Logout = new FormNew_Logout();
             this.FormNew_Alarm = new FormNew_Alarm();
             this.FormNew_AlarmLog = new FormNew_AlarmLog();
+
+            
+
 
 
             FormTopShow();
@@ -262,6 +274,18 @@ namespace SLD200_MSL
         {
             get { return this.m_FormNew_AlarmLog; }
             set { this.m_FormNew_AlarmLog = value; }
+        }
+
+        public FormNewSub_Recipe_Vision FormNewSub_Recipe_Vision
+        {
+            get { return this.m_FormnewSub_RecipeVision; }
+            set { this.m_FormnewSub_RecipeVision = value; }
+        }
+
+        public FormNewSub_Recipe_GoldPowder FormNewSub_Recipe_GoldPowder
+        {
+            get { return this.m_FormnewSub_Recipe_GoldPowder; }
+            set { this.m_FormnewSub_Recipe_GoldPowder = value; }
         }
 
 

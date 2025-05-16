@@ -24,12 +24,15 @@ using System.IO;
 using static QMC.Common.Equipment;
 using System.Security.Cryptography;
 using MessageBoxOk = QMC.Core.MessageBoxOk;
+using QMC.Common.Recipe;
+using OpenCvSharp.Dnn;
 
 namespace SLD200.NewStyleForm.NewSubForm
 {
     public partial class FormNewSub_Recipe_Vision : UserControl
     {
         private bool m_bFormVisible = false; // 실제 Show 상태 여부
+        public bool m_bInitialized = false;
 
         static WorkStage workStage;
         static JigAligner Owner;
@@ -57,27 +60,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
             this.UpdateStyles();
 
-            this.Load += FormNewSub_Recipe_Vision_Load; // 여기서 Load 이벤트 연결
-        }
-
-        private void workStage_UpdateResultOveray(object sender, EventArgs e)
-        {
-            if (sender is QMC.Common.Vision.Cameras.Camera camera)
-            {
-                if (camera == workStage.Camera_HighRes)
-                {
-                    ImageViewer_RecipeVision_highs.ResultOverlays = workStage.FineCamResultOveray;
-                }
-                else if (camera == workStage.jigAligner_LowRes.Camera)
-                {
-                    ImageViewer_RecipeVision_Lows.ResultOverlays = workStage.CoarseCamResultOveray;
-                }
-            }
-        }
-
-        private void FormNewSub_Recipe_Vision_Load(object sender, EventArgs e)
-        {
-            //GUI생성 완료 후 Data 및 Cintroller 업데이트!
             ModuleCollection m_collectionModules;
             m_collectionModules = Equipment.Modules;
             foreach (Module module in m_collectionModules)
@@ -88,37 +70,33 @@ namespace SLD200.NewStyleForm.NewSubForm
                     Owner = workStage.jigAligner_LowRes;
                 }
             }
+        }
 
-            workStage.UpdateResultOveray += OnUpdateResultOverlay;
-
-            RecipeVisionTimer = new System.Windows.Forms.Timer();
-            RecipeVisionTimer.Interval = 200; // 200ms 간격으로 상태 확인
-            RecipeVisionTimer.Tick += RecipeVisionTimer_Tick;
-            RecipeVisionTimer.Start();
-
+        private void FormNewSub_Recipe_Vision_Load(object sender, EventArgs e)
+        {
+            if (m_bInitialized)
+                return;
+            
+            //GUI생성 완료 후 Data 및 Cintroller 업데이트!
             if (this.ImageViewer_RecipeVision_highs.IsHandleCreated)
             {
                 this.ImageViewer_RecipeVision_highs.SizeMode = PictureBoxSizeMode.CenterImage;
                 this.ImageViewer_RecipeVision_highs.SuspendDisplay();
-                this.ImageViewer_RecipeVision_highs.StopUpdateTask();
-
                 this.ImageViewer_RecipeVision_highs.Camera = workStage.jigAligner_HighRes.Camera; //Owner.Camera;
-
-                this.ImageViewer_RecipeVision_highs.ResumeDisplay();
-                this.ImageViewer_RecipeVision_highs.StartUpdateTask();
             }
 
             if (this.ImageViewer_RecipeVision_Lows.IsHandleCreated)
             {
                 this.ImageViewer_RecipeVision_Lows.SizeMode = PictureBoxSizeMode.CenterImage;
                 this.ImageViewer_RecipeVision_Lows.SuspendDisplay();
-                this.ImageViewer_RecipeVision_Lows.StopUpdateTask();
-
                 this.ImageViewer_RecipeVision_Lows.Camera = Owner.Camera;
-
-                this.ImageViewer_RecipeVision_Lows.ResumeDisplay();
-                this.ImageViewer_RecipeVision_Lows.StartUpdateTask();
             }
+            workStage.UpdateResultOveray += OnUpdateResultOverlay;
+
+            RecipeVisionTimer = new System.Windows.Forms.Timer();
+            RecipeVisionTimer.Interval = 200; // 200ms 간격으로 상태 확인
+            RecipeVisionTimer.Tick += RecipeVisionTimer_Tick;
+            RecipeVisionTimer.Start();
 
             this.pictureBox_RecipeVision_TrainImage.BackColor = Color.SpringGreen;
             this.RoiTrain = Owner.GetTrainRoi();
@@ -139,11 +117,28 @@ namespace SLD200.NewStyleForm.NewSubForm
             IsPixel = true;
 
             InitPatternMatchingParameter();
-
             InitializeJogButtons();
-
             Temp_Position_Load();
+
+            m_bInitialized = true;
         }
+
+        private void workStage_UpdateResultOveray(object sender, EventArgs e)
+        {
+            if (sender is QMC.Common.Vision.Cameras.Camera camera)
+            {
+                if (camera == workStage.Camera_HighRes)
+                {
+                    ImageViewer_RecipeVision_highs.ResultOverlays = workStage.FineCamResultOveray;
+                }
+                else if (camera == workStage.jigAligner_LowRes.Camera)
+                {
+                    ImageViewer_RecipeVision_Lows.ResultOverlays = workStage.CoarseCamResultOveray;
+                }
+            }
+        }
+
+        
 
         private void OnUpdateResultOverlay(object sender, EventArgs e)
         {
@@ -162,8 +157,6 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void RecipeVisionTimer_Tick(object sender, EventArgs e)
         {
-            //this.ImageViewer_RecipeVision_highs.Camera = workStage.jigAligner_HighRes.Camera; //Owner.Camera;
-
             //  Work Stage Position
             label_RecipeVision_EncPosition_STAGE_X.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.X));
             label_RecipeVision_EncPosition_STAGE_Y.Text = string.Format("{0:F3}", workStage.MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Y));
@@ -177,10 +170,9 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         public void OnShow()
         {
-            if (m_bFormVisible)
-                return;
-
-            m_bFormVisible = true;
+            //if (m_bFormVisible)
+            //    return;
+            //m_bFormVisible = true;
 
             InitPatternMatchingParameter();
 
@@ -195,10 +187,9 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         public void OnHide()
         {
-            if (!m_bFormVisible)
-                return;
-
-            m_bFormVisible = false;
+            //if (!m_bFormVisible)
+            //    return;
+            //m_bFormVisible = false;
 
             this.ImageViewer_RecipeVision_highs.SuspendDisplay();
             this.ImageViewer_RecipeVision_highs.StopUpdateTask();
@@ -959,20 +950,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             Equipment.stVisionRecipeSet.dPreCircleMarkSpec = Convert.ToDouble(textBox_RecipeVision_Circle_Spec.Text);
             Equipment.stVisionRecipeSet.dPreCircleMarkScore = Convert.ToDouble(textBox_RecipeVision_Circle_Score.Text);
 
-            //Illuminator
-            //if (radioButton_RecipeVision_CameraSelection_LowMag.Checked)
-            //{
-            //    //Equipment.stVisionRecipeSet.nPreAlignlluminationIR = hScrollBar_RecipeVision_Illuminator_IR.Value;
-            //    Equipment.stVisionRecipeSet.nPreAlignlluminationIR = workStage.Config.ListIlluminationChannel[2].Value;
-            //}
-            //else if (radioButton_RecipeVision_CameraSelection_HighMag.Checked)
-            //{
-            //    //Equipment.stVisionRecipeSet.nFiduciallluminationIR = hScrollBar_RecipeVision_Illuminator_IR.Value;
-            //    Equipment.stVisionRecipeSet.nFiduciallluminationIR = workStage.Config.ListIlluminationChannel[1].Value;
-            //    //Equipment.stVisionRecipeSet.nFiduciallluminationRed = hScrollBar_RecipeVision_Illuminator_Red.Value;
-            //    Equipment.stVisionRecipeSet.nFiduciallluminationRed = workStage.Config.ListIlluminationChannel[0].Value;
-            //}
-
             Equipment.stVisionRecipeSet.nSocketIlluminationRed = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamRed.Text);// workStage.Config.ListIlluminationChannel[0].Value;
             Equipment.stVisionRecipeSet.nSocketIlluminationIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_FineCamIR.Text);//workStage.Config.ListIlluminationChannel[1].Value;
             Equipment.stVisionRecipeSet.nPreIlluminationIR = Equipment.ToInt(textBox_Recipe_RecipeVision_Illuminator_CoarseCamIR.Text);//workStage.Config.ListIlluminationChannel[2].Value;
@@ -1242,26 +1219,16 @@ namespace SLD200.NewStyleForm.NewSubForm
             bool bWaitPosY = false;
 
             try
-            {   
-                //움직임 바로 확인하면 문제 발생..
-                Thread.Sleep(200); // 1초 대기
-
-                // 각각의 비동기 Task를 받아서 기다림
-                var taskX = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
-                var taskY = workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
-
-                // 동시에 실행하고 결과 기다림
-                var results = await Task.WhenAll(taskX, taskY);
-
-                bWaitPosX = results[0];
-                bWaitPosY = results[1];
+            {
+               // await 사용으로 UI 프리즈 없이 동작 //시컨스에서는 await 사용 안됨.
+               bWaitPosX = await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.X, xyInterpolatedCoordinate.X);
+               bWaitPosY = await workStage.WaitUntilInPositionAsync(WorkStage.nAxis.Y, xyInterpolatedCoordinate.Y);
 
                 if (!bWaitPosX)
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "X축 이동 실패");
                     workStage.AlarmPost(WorkStage.AlarmKey.eStageMoveFail);
                 }
-
                 if (!bWaitPosY)
                 {
                     Log.Write("SLD-200", Equipment.User_Name, "Find Align Mark", "Y축 이동 실패");
@@ -1272,8 +1239,6 @@ namespace SLD200.NewStyleForm.NewSubForm
             {
                 Log.Write(ex);
             }
-
-
         }
 
 
@@ -1330,11 +1295,10 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void radioButton_RecipeVision_CameraSelection_LowMag_CheckedChanged(object sender, EventArgs e)
         {
-            CommonModule.Instance.Illuminator.TurnOnOff(false, 1);       //  Fine Cam Red 조명
-            Thread.Sleep(1);
-            CommonModule.Instance.Illuminator.TurnOnOff(false, 2);       //  Fine Cam IR 조명
-            Thread.Sleep(1);
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, Equipment.stVisionRecipeSet.nPreIlluminationIR);
+            Thread.Sleep(100);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, 0, false);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, 0, false);
 
             hScrollBar_RecipeVision_Illuminator_IR.Enabled = true;
             textBox_RecipeVision_IlluminationValue_IR.Enabled = true;
@@ -1361,11 +1325,10 @@ namespace SLD200.NewStyleForm.NewSubForm
 
         private void radioButton_RecipeVision_CameraSelection_HighMag_CheckedChanged(object sender, EventArgs e)
         {
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 1);       //  Fine Cam Red 조명
-            Thread.Sleep(1);
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 2);       //  Fine Cam IR 조명
-            Thread.Sleep(1);
-            CommonModule.Instance.Illuminator.TurnOnOff(false, 3);      //  Coarse Cam IR 조명은 일단 Off (Coarse Cam 으로 얼라인을 할 때만 켜도록 한다)
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+            Thread.Sleep(100);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, Equipment.stVisionRecipeSet.nSocketIlluminationRed);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, Equipment.stVisionRecipeSet.nSocketIlluminationIR);
 
             hScrollBar_RecipeVision_Illuminator_IR.Enabled = true;
             textBox_RecipeVision_IlluminationValue_IR.Enabled = true;

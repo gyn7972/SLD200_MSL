@@ -20,6 +20,7 @@ using QMC.Common.Motion.ACS.Motions;
 using QMC.Common.Parts;
 using QMC.Common.VisionPart;
 using QMC.Core;
+using SLD200.NewStyleForm;
 using SpiralLab.Sirius;
 using static QMC.Common.Equipment;
 using static QMC.Common.Modules.Loader;
@@ -34,6 +35,12 @@ namespace SLD200_MSL
     {
         private bool m_bFormVisible = false; // 실제 Show 상태 여부
 
+        static WorkStage workStage;
+        static Loader loader;
+        static Unloader unloader;
+        static Vision vision;
+        static Bds bds;
+
         FormNew_VisionPopup m_formVisionPopup = new FormNew_VisionPopup();
         public FormNew_VisionPopup FormVisionPopup
         {
@@ -41,11 +48,12 @@ namespace SLD200_MSL
             set { m_formVisionPopup = value; }
         }
 
-        static WorkStage workStage;
-        static Loader loader;
-        static Unloader unloader;
-        static Vision vision;
-        static Bds bds;
+        FormNew_CalFilePopup m_FormcalfilePopup;
+        public FormNew_CalFilePopup FormCalfilePopup
+        {
+            get { return m_FormcalfilePopup; }
+            set { m_FormcalfilePopup = value; }
+        }
 
         private bool m_bEmgBtn_Clicked = false;
 
@@ -90,6 +98,9 @@ namespace SLD200_MSL
             this.UpdateStyles();
 
             //this.Load += FormNew_Config_Load; // 여기서 Load 이벤트 연결
+
+            m_FormcalfilePopup = new FormNew_CalFilePopup();
+            m_FormcalfilePopup.Owner = this;
 
             m_keyPad = new FormNew_KeyPad();
 
@@ -1460,108 +1471,31 @@ namespace SLD200_MSL
         void InitializeJogButtons()
         {
             button_Config_LDUL_TRZ_Pos.Tag = "Loader,TR_Z,1";
-            button_Config_LDUL_TRZ_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LDUL_TRZ_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LDUL_TRZ_Neg.Tag = "Loader,TR_Z,-1";
-            button_Config_LDUL_TRZ_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LDUL_TRZ_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LDUL_TRX_Pos.Tag = "Loader,TR_X,1";
-            button_Config_LDUL_TRX_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LDUL_TRX_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LDUL_TRX_Neg.Tag = "Loader,TR_X,-1";
-            button_Config_LDUL_TRX_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LDUL_TRX_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LDUL_Z1_Pos.Tag = "Loader,Z1,1";
-            button_Config_LDUL_Z1_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LDUL_Z1_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LDUL_Z1_Neg.Tag = "Loader,Z1,-1";
-            button_Config_LDUL_Z1_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LDUL_Z1_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LDUL_Z0_Pos.Tag = "Loader,Z0,1";
-            button_Config_LDUL_Z0_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LDUL_Z0_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LDUL_Z0_Neg.Tag = "Loader,Z0,-1";
-            button_Config_LDUL_Z0_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LDUL_Z0_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LD_ALNY_Pos.Tag = "Loader,ALN_Y,1";
-            button_Config_LD_ALNY_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LD_ALNY_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LD_ALNY_Neg.Tag = "Loader,ALN_Y,-1";
-            button_Config_LD_ALNY_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LD_ALNY_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LD_ALNX_Pos.Tag = "Loader,ALN_X,1";
-            button_Config_LD_ALNX_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LD_ALNX_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_LD_ALNX_Neg.Tag = "Loader,ALN_X,-1";
-            button_Config_LD_ALNX_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_LD_ALNX_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_WorkStage_Y_Pos.Tag = "WorkStage,Y,1";
-            button_Config_WorkStage_Y_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_WorkStage_Y_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_WorkStage_Y_Neg.Tag = "WorkStage,Y,-1";
-            button_Config_WorkStage_Y_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_WorkStage_Y_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_WorkStage_X_Pos.Tag = "WorkStage,X,1";
-            button_Config_WorkStage_X_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_WorkStage_X_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_WorkStage_X_Neg.Tag = "WorkStage,X,-1";
-            button_Config_WorkStage_X_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_WorkStage_X_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_WorkStage_Z_Pos.Tag = "WorkStage,Z,1";
-            button_Config_WorkStage_Z_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_WorkStage_Z_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_WorkStage_Z_Neg.Tag = "WorkStage,Z,-1";
-            button_Config_WorkStage_Z_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_WorkStage_Z_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_Vision_Y_Pos.Tag = "Vision,Y,1";
-            button_Config_Vision_Y_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_Vision_Y_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_Vision_Y_Neg.Tag = "Vision,Y,-1";
-            button_Config_Vision_Y_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_Vision_Y_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_Vision_X_Pos.Tag = "Vision,X,1";
-            button_Config_Vision_X_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_Vision_X_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_Vision_X_Neg.Tag = "Vision,X,-1";
-            button_Config_Vision_X_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_Vision_X_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_Vision_Z_Pos.Tag = "Vision,Z,1";
-            button_Config_Vision_Z_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_Vision_Z_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_Vision_Z_Neg.Tag = "Vision,Z,-1";
-            button_Config_Vision_Z_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_Vision_Z_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_BDS_Y_Pos.Tag = "WorkStage,MASK_Y,1";
-            button_Config_BDS_Y_Pos.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_BDS_Y_Pos.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
-
             button_Config_BDS_Y_Neg.Tag = "WorkStage,MASK_Y,-1";
-            button_Config_BDS_Y_Neg.MouseDown += new MouseEventHandler(button_AxisJog_MouseDown);
-            button_Config_BDS_Y_Neg.MouseUp += new MouseEventHandler(button_AxisJog_MouseUp);
         }
 
         // 축 JogMove 공통 처리
@@ -1635,14 +1569,17 @@ namespace SLD200_MSL
                 int axis = GetAxisIndex(ref unit, axisName);
                 if (axis < 0) return;
 
-                switch (unit)
+                // 연속 이동일 때만 정지
+                if (IsJogMoveContinuous(unit))
                 {
-                    case "Vision": workStage.MC_Func.MC_JogStop(axis); break;
-                    case "WorkStage": workStage.MC_Func.MC_JogStop(axis); break;
-                    case "Loader": loader.MC_Func.MC_JogStop(axis); break;
-                    case "Unloader": unloader.MC_Func.MC_JogStop(axis); break;
+                    switch (unit)
+                    {
+                        case "Vision": workStage.MC_Func.MC_JogStop(axis); break;
+                        case "WorkStage": workStage.MC_Func.MC_JogStop(axis); break;
+                        case "Loader": loader.MC_Func.MC_JogStop(axis); break;
+                        case "Unloader": unloader.MC_Func.MC_JogStop(axis); break;
+                    }
                 }
-                //controller.MC_Func.MC_JogStop(axis);
             }
         }
 
@@ -5807,6 +5744,15 @@ namespace SLD200_MSL
                         break;
                     }
                 }
+            }
+        }
+
+        private void button_Config__TabLaser_CalFilePopup_Click(object sender, EventArgs e)
+        {
+            if (!FormCalfilePopup.Visible)
+            {
+                FormCalfilePopup.Show();
+                FormCalfilePopup.Activate();
             }
         }
     }

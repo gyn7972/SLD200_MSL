@@ -396,6 +396,10 @@ namespace SLD200_MSL
                 timer_Status.Enabled = true;
                 this.Box_Setup_ScannerCal_ImageViewer.ResumeDisplay();
                 this.Box_Setup_ScannerCal_ImageViewer.StartUpdateTask();
+                if (workStage.Camera_HighRes.Opened)
+                {
+                    this.Box_Setup_ScannerCal_ImageViewer.SetImageNDisplay(workStage.Camera_HighRes.LatestImage);
+                }
             }
             else if (!this.Visible && m_bFormVisible)
             {
@@ -1769,60 +1773,6 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Sirius_Drawing", "Rendering_Resolution", textBox_Setup_Option_Sirius_Drawing_Resolution.Text, strFIle);
             SpiralLab.Sirius.Config.AngleFactor = Equipment.SiriusDrawing_Rendering_Resolution;
 
-            ////  Scanner Calibration parameter
-            //Equipment.Scanner_Calibration_LaserFrequency = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserFrequency.Text);
-            //Equipment.Scanner_Calibration_LaserPulseWidth = Equipment.ToDouble(textBox_Setup_ScannerCal_PulseWidth.Text);
-            //Equipment.Scanner_Calibration_LaserEnergy = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserEnergy.Text);
-            //Equipment.Scanner_Calibration_CrossMarkLength = Equipment.ToDouble(textBox_Setup_ScannerCal_CrossMarkLength.Text);
-            //Equipment.Scanner_Calibration_LaserMarkSpeed = Equipment.ToDouble(textBox_Setup_ScannerCal_MarkingSpeed.Text);
-            //Equipment.Scanner_Calibration_LaserJumpSpeed = Equipment.ToDouble(textBox_Setup_ScannerCal_JumpSpeed.Text);
-            //Equipment.Scanner_Calibration_LaserOnDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserOnDelay.Text);
-            //Equipment.Scanner_Calibration_LaserOffDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_LaserOffDelay.Text);
-            //Equipment.Scanner_Calibration_MarkDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_MarkDelay.Text);
-            //Equipment.Scanner_Calibration_JumpDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_JumpDelay.Text);
-            //Equipment.Scanner_Calibration_PolygonDelay = Equipment.ToDouble(textBox_Setup_ScannerCal_PolygonDelay.Text);
-            //Equipment.Scanner_Calibration_CalAreaWidth = Equipment.ToDouble(textBox_Setup_ScannerCal_CalAreaWidth.Text);
-            //Equipment.Scanner_Calibration_CalAreaHeight = Equipment.ToDouble(textBox_Setup_ScannerCal_CalAreaHeight.Text);
-            //Equipment.Scanner_Calibration_CalPitch = Equipment.ToDouble(textBox_Setup_ScannerCal_CalPitch.Text);
-
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Frequency", textBox_Setup_ScannerCal_LaserFrequency.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Pulse_Width", textBox_Setup_ScannerCal_PulseWidth.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Energy", textBox_Setup_ScannerCal_LaserEnergy.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "CrossMark_Length", textBox_Setup_ScannerCal_CrossMarkLength.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Marking_Speed", textBox_Setup_ScannerCal_MarkingSpeed.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Jump_Speed", textBox_Setup_ScannerCal_JumpSpeed.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_On_Delay", textBox_Setup_ScannerCal_LaserOnDelay.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Laser_Off_Delay", textBox_Setup_ScannerCal_LaserOffDelay.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Mark_Delay", textBox_Setup_ScannerCal_MarkDelay.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Jump_Delay", textBox_Setup_ScannerCal_JumpDelay.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Polygon_Delay", textBox_Setup_ScannerCal_PolygonDelay.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Width", textBox_Setup_ScannerCal_CalAreaWidth.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Cal_Area_Height", textBox_Setup_ScannerCal_CalAreaHeight.Text, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "Cal_Pitch", textBox_Setup_ScannerCal_CalPitch.Text, strFIle);
-
-            //Equipment.Scanner_Calibration_srcFilePath = m_correction2DRtc.SourceCorrectionFile; // m_srcFile;
-            //Equipment.Scanner_Calibration_targetFilePath = m_correction2DRtc.TargetCorrectionFile;  // m_targetFile;
-            //Equipment.Scanner_Calibration_FieldSize = m_fieldSize;
-            //Equipment.Scanner_Calibration_rowInterval = m_correction2DRtc.RowInterval;  // m_rowInterval;
-            //Equipment.Scanner_Calibration_colInterval = m_correction2DRtc.ColInterval; //m_colInterval;
-            //Equipment.Scanner_Calibration_rowCount = m_correction2DRtc.Rows;   //m_row;
-            //Equipment.Scanner_Calibration_colCount = m_correction2DRtc.Cols;   //m_col;
-
-            //m_srcFile = Equipment.Scanner_Calibration_srcFilePath;
-            //m_targetFile = Equipment.Scanner_Calibration_targetFilePath;
-            //m_rowInterval = (float)Equipment.Scanner_Calibration_rowInterval;
-            //m_colInterval = (float)Equipment.Scanner_Calibration_colInterval;
-            //m_row = Equipment.Scanner_Calibration_rowCount;
-            //m_col = Equipment.Scanner_Calibration_colCount;
-
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "srcFilePath", m_srcFile, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "targetFilePath", m_targetFile, strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "FieldSize", m_fieldSize.ToString(), strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "rowInterval", m_rowInterval.ToString(), strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "colInterval", m_colInterval.ToString(), strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "rowCount", m_row.ToString(), strFIle);
-            //NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "colCount", m_col.ToString(), strFIle);
-
             MessageBox.Show("Machine Option 파일을 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -1900,7 +1850,6 @@ namespace SLD200_MSL
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "rowCount", m_row.ToString(), strFIle);
             NativeMethods.WritePrivateProfileString("Scanner_Calibration_Parameter", "colCount", m_col.ToString(), strFIle);
 
-            MessageBox.Show("Machine ScannerCalibration 파일을 저장하였습니다.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btnScannerOffset_Set_Click(object sender, EventArgs e)
@@ -2384,33 +2333,26 @@ namespace SLD200_MSL
 
             //  Scanner Calibration 관련 파라미터 저장
             Machine_ScannerCalibration_Save();
+
+            var mb1 = new QMC.Common.UI.MessageBoxOk();
+            mb1.ShowDialog("Information", "저장하였습니다.");
         }
 
         private void btnCalStart_Click(object sender, EventArgs e)
         {
-            //Test Code
-            //workStage.m_ScannerCalibration_Start = true;
-            ////workStage.timer_ScannerCalibration.Enabled = true;
-            //workStage.timer_ScannerCalibration.Start();
-            //workStage._isCalibrationRunning = false;
-            //workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.Start;
-            //return;
-
             var mb = new QMC.Common.UI.MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Scanner Calibration - Laser부터 시작합니다.\n\n시작하시겠습니까?"))
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", 
+                "Scanner Calibration - Laser부터 시작합니다.\n\n시작하시겠습니까?"))
             {
                 return;
             }
 
-            //TEST
             //if (!workStage.m_bHomeOK)
             //{
             //    var mb2 = new MessageBoxOk();
             //    mb2.ShowDialog("Information !", "장비 초기화를 해야 합니다.");
             //    return;
             //}
-
-           
 
             if (workStage.rtc == null)
             {
@@ -2419,27 +2361,26 @@ namespace SLD200_MSL
                 return;
             }
 
-            //Equipment.Scanner_Calibration_Change;
-            // 캘판 변경 유/무에 대해서 물어보는 메세지 박스해주고 True/False 리턴받기
-            //var mb = new QMC.Common.UI.MessageBoxYesNo();
-            var mb1 = new QMC.Common.UI.MessageBoxYesNo();
-            if (DialogResult.Yes != mb1.ShowDialog("Question ?", "Scanner Calibration을 시작합니다.\n\n캘리브레이션 판이 변경되었습니까?"))
+            if(!workStage.Camera_HighRes.Opened)
             {
-                Equipment.Scanner_Calibration_Change = false;
+                var mb2 = new MessageBoxOk();
+                mb2.ShowDialog("Information !", "카메라를 초기화 해야 합니다.");
+                return;
+            }
+
+            var mb1 = new QMC.Common.UI.MessageBoxYesNo();
+            if (DialogResult.Yes == mb1.ShowDialog("Question ?", 
+                "Scanner Calibration을 시작합니다.\n\n캘리브레이션 판이 변경되었습니까?"))
+            {
+                Equipment.Scanner_Calibration_Change = true;
             }
             else
             {
-                Equipment.Scanner_Calibration_Change = true;
+                Equipment.Scanner_Calibration_Change = false;
             }
 
             if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)
             {
-                //workStage.timer_ScannerCalibration.Enabled = true;
-                //workStage.timer_ScannerCalibration.Start();
-
-                //Equipment.AutoRunStatus = true;
-
-                //workStage._isCalibrationRunning = false;
                 workStage.m_ScannerCalibration_Start = true;
                 Equipment.Scanner_Vision_Offset_Setting_Use = false;
                 workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.Start;
@@ -2449,10 +2390,6 @@ namespace SLD200_MSL
 
         private void btnCalStop_Click(object sender, EventArgs e)
         {
-            //Equipment.AutoRunStatus = false;
-            //workStage.timer_ScannerCalibration.Enabled = false; //이거 해야하나..
-            //workStage.timer_ScannerCalibration.Stop();
-
             workStage.scannerCompensator.SetRunStatus(Part.RunStatus.Stop);
             workStage.m_ScannerCalibration_Start = false;
             workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.None;
@@ -2461,12 +2398,14 @@ namespace SLD200_MSL
         private void btnCalStart_Vision_Click(object sender, EventArgs e)
         {
             var mb = new QMC.Common.UI.MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Scanner Calibration - Vision부터 시작합니다.\n\n시작하시겠습니까?"))
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", 
+                "Scanner Calibration - Vision부터 시작합니다.\n\n시작하시겠습니까?"))
             {
                 return;
             }
             var mb1 = new QMC.Common.UI.MessageBoxYesNo();
-            if (DialogResult.Yes != mb1.ShowDialog("Question ?", "Mark가 Center에 위치해 있는지 확인 바랍니다.\n\n시작하시겠습니까?"))
+            if (DialogResult.Yes != mb1.ShowDialog("Question ?", 
+                "Mark가 Center에 위치해 있는지 확인 바랍니다.\n\n시작하시겠습니까?"))
             {
                 return;
             }
@@ -2478,20 +2417,23 @@ namespace SLD200_MSL
             //    mb2.ShowDialog("Information !", "장비 초기화를 해야 합니다.");
             //    return;
             //}
+            //if (workStage.rtc == null)
+            //{
+            //    var mb2 = new MessageBoxOk();
+            //    mb2.ShowDialog("Information !", "Scanner Board 를 초기화 해야 합니다.");
+            //    return;
+            //}
 
-            
-
-            if (workStage.rtc == null)
+            //카메라 초기화만 봐야 할 듯.
+            if(!workStage.Camera_HighRes.Opened)
             {
                 var mb2 = new MessageBoxOk();
-                mb2.ShowDialog("Information !", "Scanner Board 를 초기화 해야 합니다.");
+                mb2.ShowDialog("Information !", "카메라 초기화를 해야 합니다.");
                 return;
             }
 
             if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)
             {
-                workStage.timer_ScannerCalibration.Enabled = true;
-
                 workStage.m_ScannerCalibration_Start = true;
 
                 Equipment.Scanner_Vision_Offset_Setting_Use = false;
@@ -2641,12 +2583,13 @@ namespace SLD200_MSL
 
             m_srcFile = filePath;
             m_correction2DRtc.SourceCorrectionFile = m_srcFile;
-            m_correction2DRtc.TargetCorrectionFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "correction", $"newfile.ct5"); //Equipment.Scanner_Calibration_targetFilePath;
+            m_correction2DRtc.TargetCorrectionFile = m_targetFile;  // Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "correction", $"newfile.ct5"); //Equipment.Scanner_Calibration_targetFilePath;
             m_correction2DRtcForm.RefreshData();
 
             Equipment.Scanner_Calibration_srcFilePath = m_srcFile;
 
-            Machine_ScannerCalibration_Save();
+            //밖에서 저장함. 
+            //Machine_ScannerCalibration_Save();
 
             return true;
         }
@@ -3183,8 +3126,6 @@ namespace SLD200_MSL
             //    return;
             //}
 
-            
-
             if (workStage.rtc == null)
             {
                 MessageBox.Show("먼저 Scanner Board 를 초기화 해야 합니다.", "Information!!");
@@ -3194,7 +3135,8 @@ namespace SLD200_MSL
             //Equipment.Scanner_Calibration_Change;
             // 캘판 변경 유/무에 대해서 물어보는 메세지 박스해주고 True/False 리턴받기
             var mb = new MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Scanner Calibration을 시작합니다.\n\n캘리브레이션 판이 변경되었습니까?"))
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", 
+                "Scanner Calibration을 시작합니다.\n\n캘리브레이션 판이 변경되었습니까?"))
             {
                 Equipment.Scanner_Calibration_Change = false;
             }
@@ -3206,11 +3148,10 @@ namespace SLD200_MSL
             if (workStage.m_nScanner_Calibration_Step == (int)WorkStage.ScannerCalibration_Step.None)
             {
                 Equipment.Scanner_Vision_Offset_Setting_Use = true;
-
-                workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.Start;
-                workStage.timer_ScannerCalibration.Enabled = true;
-
                 WorkStartTick = Environment.TickCount;
+                workStage.m_ScannerCalibration_Start = true;
+                workStage.m_nScanner_Calibration_Step = (int)WorkStage.ScannerCalibration_Step.Start;
+                
             }
         }
 
@@ -3714,7 +3655,6 @@ namespace SLD200_MSL
                 CommonModule.Instance.Illuminator.SetVolume(this.hScrollBar_Setup_ScannerCal_Illuminator.Value, 2);
 
                 workStage.scannerCompensator.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[1].Value, 2);
-                
             }
             else        //  Red Ring
             {
@@ -3723,7 +3663,6 @@ namespace SLD200_MSL
                 CommonModule.Instance.Illuminator.SetVolume(this.hScrollBar_Setup_ScannerCal_Illuminator.Value, 1);
 
                 workStage.scannerCompensator.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[0].Value, 1);
-                
             }
 
             this.textBox_Setup_ScannerCal_IlluminationValue.Refresh();
@@ -3742,34 +3681,29 @@ namespace SLD200_MSL
         {
             SetScroll(0);
 
-            //  조명값 변경
-            CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[0].Value, 1);
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 1);
-            CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[1].Value, 2);
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 2);
-
             hScrollBar_Setup_ScannerCal_Illuminator.Value = workStage.Config.ListIlluminationChannel[0].Value;                //  저해상도 카메라 IR 조명 (3번, Index 는 2번)
             this.textBox_Setup_ScannerCal_IlluminationValue.Text = hScrollBar_Setup_ScannerCal_Illuminator.Value.ToString();
 
-            //  Low Mag Camera 조명 끄기
-            CommonModule.Instance.Illuminator.TurnOnOff(false, 3);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+            Thread.Sleep(100);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, hScrollBar_Setup_ScannerCal_Illuminator.Value);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, workStage.Config.ListIlluminationChannel[1].Value);
+
+            
         }
 
         private void radioButton_Setup_ScannerCal_Light_IR_CheckedChanged(object sender, EventArgs e)
         {
             SetScroll(1);
 
-            //  조명값 변경
-            CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[1].Value, 2);
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 2);
-            CommonModule.Instance.Illuminator.SetVolume(workStage.Config.ListIlluminationChannel[0].Value, 1);
-            CommonModule.Instance.Illuminator.TurnOnOff(true, 1);
-
             hScrollBar_Setup_ScannerCal_Illuminator.Value = workStage.Config.ListIlluminationChannel[1].Value;                //  고해상도 카메라 IR 조명 (2번, Index 는 1번)
             this.textBox_Setup_ScannerCal_IlluminationValue.Text = hScrollBar_Setup_ScannerCal_Illuminator.Value.ToString();
 
-            //  Low Mag Camera 조명 끄기
-            CommonModule.Instance.Illuminator.TurnOnOff(false, 3);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.CoarseCamIR, 0, false);
+            Thread.Sleep(100);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamRed, workStage.Config.ListIlluminationChannel[0].Value);
+            workStage.SetLightingByChannel(Equipment.LightingChannel.FineCamIR, hScrollBar_Setup_ScannerCal_Illuminator.Value);
+
         }
         public void SetTrainImage(VisionImage image)
         {
@@ -3781,13 +3715,6 @@ namespace SLD200_MSL
         {
             Equipment.Scanner_Calibration_Illumination_channel_01_Value = workStage.Config.ListIlluminationChannel[0].Value; //RED
             Equipment.Scanner_Calibration_Illumination_channel_02_Value = workStage.Config.ListIlluminationChannel[1].Value; //IR
-
-            //workStage.scannerCompensator.IlluminationData
-            //Equipment.Scanner_Calibration_AngleTolerance = Equipment.ToDouble(basetextBox_Setup_ScannerCal_AngleTolerance.Text);
-            //Equipment.Scanner_Calibration_MaxInstance = Equipment.ToDouble(basetextBox_Setup_ScannerCal_MaxInstance.Text);
-            //Equipment.Scanner_Calibration_MinScore = Equipment.ToDouble(basetextBox_Setup_ScannerCal_MinScore.Text);
-            //Equipment.Scanner_Calibration_DuplicateCheck = baseToggleButton_Setup_ScannerCal_DuplicateCheck.GetButtonStatus();
-            //Equipment.Scanner_Calibration_UseMaskImage = baseToggleButton_Setup_ScannerCal_UseMaskImage.GetButtonStatus();
 
             Equipment.Scanner_Calibration_TrainRoiStartLocation_X = RoiTrain.Parameter.StartLocation.X;
             Equipment.Scanner_Calibration_TrainRoiStartLocation_Y = RoiTrain.Parameter.StartLocation.Y;
@@ -3811,11 +3738,13 @@ namespace SLD200_MSL
             Equipment.Scanner_Calibration_BlobVisionToolParameter.RepeatCount = BlobParameter.RepeatCount;
             Equipment.Scanner_Calibration_BlobVisionToolParameter.HasChanged = BlobParameter.HasChanged;
 
-
             workStage.scannerCompensator.Recipe.PatternMatchingParameter = PatternMatchingParameter;
             workStage.scannerCompensator.Recipe.BlobParameter = BlobParameter;
 
             workStage.Scanner_Calibration_Vision_Save();
+
+            var mb1 = new QMC.Common.UI.MessageBoxOk();
+            mb1.ShowDialog("Information", "저장하였습니다.");
         }
 
         private void radioButton_Setup_ScannerCal_Cross_CheckedChanged(object sender, EventArgs e)
@@ -3855,7 +3784,7 @@ namespace SLD200_MSL
         private void button_Setup_ScannerCal_Rtc6_Cal_File_Load_Click(object sender, EventArgs e)
         {
             var mb = new QMC.Common.UI.MessageBoxYesNo();
-            if (DialogResult.Yes != mb.ShowDialog("Question ?", "신규 ct5 파일\n\n적용하시겠습니까?"))
+            if (DialogResult.Yes != mb.ShowDialog("Question ?", "Target File ct5 파일\n\n적용하시겠습니까?"))
             {
                 return;
             }
@@ -3863,8 +3792,12 @@ namespace SLD200_MSL
             bool bRtn = LoadCorrectionData(0, m_targetFile);
             if (bRtn)
             {
+                m_targetFile = string.Format("D:\\SLD-200_Parameter\\NewCal.ct5");
                 Machine_ScannerCalibration_Save();
             }
+
+            var mb1 = new QMC.Common.UI.MessageBoxOk();
+            mb1.ShowDialog("Information", "완료");
         }
 
         private void button_Setup_ScannerCal_CameraLive_Click(object sender, EventArgs e)
@@ -3991,6 +3924,47 @@ namespace SLD200_MSL
             {
                 Equipment.Machine_LoaderStacker_NoMaterialDetectTime_Enable = false;
                 textBox_Setup_Option_LoaderStacker_NoMaterialDetectTime.Enabled = false;
+            }
+        }
+
+        private void button_Setup_ScannerCal_Rtc6_Cal_File_Save_Click(object sender, EventArgs e)
+        {
+            string fileName;
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = "Scanner Cal Data Path";
+            saveFileDialog.OverwritePrompt = true;
+            saveFileDialog.CreatePrompt = true;
+
+            saveFileDialog.InitialDirectory = ConfigManager.GetConfigFilePath();
+           
+            saveFileDialog.Filter = "Cal File(*.ct5)|*.ct5";
+
+            DirectoryInfo di = new DirectoryInfo(ConfigManager.GetRecipeDataPath());
+            if (!di.Exists == false)
+            {
+                di.Create();
+            }
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                fileName = saveFileDialog.FileName;
+
+                // 기존 파일 존재 여부 확인
+                if (!string.IsNullOrEmpty(m_targetFile) && File.Exists(m_targetFile))
+                {
+                    // 파일 복사
+                    File.Copy(m_targetFile, fileName, true); // true = overwrite
+                }
+                else
+                {
+                    // 원본 파일이 없으면 빈 파일 생성
+                    using (FileStream fs = File.Create(fileName)) { }
+                }
+                m_targetFile = fileName; // 새 경로로 업데이트
+
+                var mb = new MessageBoxOk();
+                mb.ShowDialog("Information !!", "ct5 파일을 저장하였습니다.");
             }
         }
     }

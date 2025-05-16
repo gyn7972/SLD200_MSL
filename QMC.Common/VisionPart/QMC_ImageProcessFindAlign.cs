@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Lifetime;
 using System.Threading.Tasks;
@@ -914,18 +915,31 @@ namespace QMC.Common.VisionPart
             {
                 return;
             }
-            Bitmap bitmap = new Bitmap(w, h, PixelFormat.Format8bppIndexed);
-            BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
-            //비트맵 8ibt Gray 파레트 추가
-            ColorPalette grayPalette = bitmap.Palette;
-            for (int i = 0; i < 256; i++)
+            try
             {
-                grayPalette.Entries[i] = Color.FromArgb(i, i, i);
+                // 디렉토리 없으면 생성
+                string dir = Path.GetDirectoryName(fileName);
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                Bitmap bitmap = new Bitmap(w, h, PixelFormat.Format8bppIndexed);
+                BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
+                //비트맵 8ibt Gray 파레트 추가
+                ColorPalette grayPalette = bitmap.Palette;
+                for (int i = 0; i < 256; i++)
+                {
+                    grayPalette.Entries[i] = Color.FromArgb(i, i, i);
+                }
+                bitmap.Palette = grayPalette;
+                System.Runtime.InteropServices.Marshal.Copy(image, 0, bitmapData.Scan0, image.Length);
+                bitmap.UnlockBits(bitmapData);
+                bitmap.Save(fileName);
             }
-            bitmap.Palette = grayPalette;
-            System.Runtime.InteropServices.Marshal.Copy(image, 0, bitmapData.Scan0, image.Length);
-            bitmap.UnlockBits(bitmapData);
-            bitmap.Save(fileName);
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+                
         }
         int m_nFarField = 10;
         double dCutoffFrequence = 0.5;
