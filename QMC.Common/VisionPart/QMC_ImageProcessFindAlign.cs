@@ -253,15 +253,15 @@ namespace QMC.Common.VisionPart
             List<PointF> polygon = new List<PointF>();
             List<PointF> points = new List<PointF>();
             int nDivideCount =(int)( w / radius);
-            int nStepX = (int)(radius / 3);
-            int nStepY = (int)(radius / 3);
+            int nStepX = (int)(radius / 2);
+            int nStepY = (int)(radius / 2);
             int nDirectionX = 0;
             int nDirectionY = 0;
             bool bFindCircle = false;
             double dRadius = 0;
             float cx = 0;
             float cy = 0;
-            double dErrorRatio = 0.1;
+            double dErrorRatio = 0.2;
             int direction = 0; // 0: 오른쪽, 1: 위, 2: 왼쪽, 3: 아래
             int stepsInCurrentDirection = 1;
             int stepsTaken = 0;
@@ -301,7 +301,7 @@ namespace QMC.Common.VisionPart
                     {
                         dFirstSpec = 0.5;
                     }
-                    int nMaxCircleFirst = (int)(radius * 4);
+                    int nMaxCircleFirst = (int)(radius * 2);
                     int nMinCircleFirst = (int)(radius * (1 - dFirstSpec));
 
                     if (nMaxCircleFirst > 2000)
@@ -309,7 +309,7 @@ namespace QMC.Common.VisionPart
                         nMaxCircleFirst = 2000;
                     }
                     double dAngleStep = 2;
-                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius/3), (int)nMaxCircleFirst, dAngleStep, 10, bIsDarkCircleSearch);
+                    polygon = FindCircleBoundary(pixelData, w, h, nCx, nCy, (int)(radius/2), (int)nMaxCircleFirst, dAngleStep, 10, bIsDarkCircleSearch);
                     points = polygon;
                     circlesResult.Clear();
                     FindCircleFitter(circlesResult, points, out dRadius, 5, radius,dSpec);
@@ -332,7 +332,11 @@ namespace QMC.Common.VisionPart
 
                         cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
                         cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
-
+                        dErrorRatio = dSpec * 2;
+                        if(dErrorRatio < 0.2)
+                        {
+                            dErrorRatio = 0.2;
+                        }
                         polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 1, 2, bIsDarkCircleSearch);
 
 
@@ -408,13 +412,13 @@ namespace QMC.Common.VisionPart
             cx = circlesResult.Count > 0 ? circlesResult[0].X + circlesResult[0].Width / 2 : w / 2;
             cy = circlesResult.Count > 0 ? circlesResult[0].Y + circlesResult[0].Height / 2 : h / 2;
             //SaveOutLine(polygon, w, h, "polygon.bmp");
-            polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dSpec* 1.5)), (int)(dRadius * (1 + dSpec*1.5)), 0.25, 1, bIsDarkCircleSearch);
+            polygon = FindCircleBoundary(pixelData, w, h, cx, cy, (int)(dRadius * (1 - dErrorRatio)), (int)(dRadius * (1 + dErrorRatio)), 0.25, 1, bIsDarkCircleSearch);
             //(polygon, w, h, "polygon2.bmp");
 
             points = polygon;
 
             circlesResult.Clear();
-            Circle resultCircle =  FindCircleFitter(circlesResult, points, out dRadius,2, radius, dSpec);
+            Circle resultCircle =  FindCircleFitter(circlesResult, points, out dRadius,4, radius, dSpec);
             QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
             
             double dScore = IsRealCircle(resultCircle, dRadius, points, dSpec);
