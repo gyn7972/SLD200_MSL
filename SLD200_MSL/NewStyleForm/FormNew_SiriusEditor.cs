@@ -83,7 +83,7 @@ namespace SLD200_MSL
             timer_RtcInit.Enabled = true;
 
             SiriusEditor.OnDocumentSourceChanged += SiriusEditor_OnDocumentSourceChanged;
-            
+
         }
 
         private void SiriusEditor_OnDocumentSourceChanged(object sender, IDocument doc)
@@ -116,11 +116,11 @@ namespace SLD200_MSL
 
         private void SiriusView_OnCustomDraw(IView view)
         {
-            foreach(var layer in this.SiriusEditor.Document.Layers)
+            foreach (var layer in this.SiriusEditor.Document.Layers)
             {
-                if(layer.IsSelected)
+                if (layer.IsSelected)
                 {
-                    if(layer.Name.Contains("Hole"))
+                    if (layer.Name.Contains("Hole"))
                     {
                         DrawGrid(view);
                     }
@@ -207,27 +207,33 @@ namespace SLD200_MSL
 
             //  확장자 확인
             string m_strExt = System.IO.Path.GetExtension(strFileName);
-
+            IDocument doc = null;
             //  Sirius1
             if (m_strExt.ToUpper() == ".DXF")
             {
                 //SiriusEditor.Document.New();
-                var doc = DocumentSerializer.OpenDxf(strFileName);
+                doc = DocumentSerializer.OpenDxf(strFileName);
                 SiriusEditor.Document = doc;
             }
             else if (m_strExt.ToUpper() == ".SIRIUS")
             {
                 //SiriusEditor.Document.New();
-                var doc = DocumentSerializer.OpenSirius(strFileName);
-                if(SiriusEditor.Document !=null)
+                doc = DocumentSerializer.OpenSirius(strFileName);
+                
+            }
+            if(doc!=null)
+            {
+                if (SiriusEditor.Document != null)
                 {
-                    if(SiriusEditor.Document.Views!=null)
+                    if (SiriusEditor.Document.Views != null)
                     {
                         SiriusEditor.Document.Views.Clear();
                     }
                 }
                 SiriusEditor.Document = doc;
+
             }
+            
         }
 
         public bool Imported_DrawingFile_SameCheck(string strFileName)
@@ -265,7 +271,7 @@ namespace SLD200_MSL
             Config.LwPolylineBulgeToLines = true;
 
             Config.LwPolylineBulgeToLineMinThreshold = (float)0.001;
-            
+
             if (Equipment.Machine_PolylineCurve_Resolution < 1)
                 Config.LwPolylineBulgePrecision = 100;
             else
@@ -2125,227 +2131,6 @@ namespace SLD200_MSL
             ScannerOffset.Z = (float)Equipment.ToDouble(tb_ScannerOffset_Angle.Text);
 
             workStage.rtc.PrimaryHeadBaseOffset = ScannerOffset;
-        }
-
-        void RenameNewLayer(int Count)
-        {
-
-            List<string> list = new List<string>();
-            list.Add("Hole1");
-            list.Add("Thruhole");
-            list.Add("Fiducial");
-            list.Add("PreAlign");
-            list.Add("Outline");
-            list.Add("Marking");
-            if (Count > list.Count)
-            {
-                Count = list.Count;
-            }
-            var Document = this.SiriusEditor.Document;
-            for (int iter = 0; iter < Count; iter++)
-            {
-                var l = Document.Layers;
-                if (l.Count > iter)
-                {
-                    l[iter].Name = list[iter];
-                }
-                else
-                {
-                    var layer = new Layer();
-                    layer.Name = list[iter];
-                    l.Add(layer);
-                }
-            }
-        }
-        private void AddHoleLayer()
-        {
-            var Document = this.SiriusEditor.Document;
-            var l = Document.Layers;
-            var layer = new Layer();
-            int NextNo = l.Where(t => t.Name.Contains("Hole")).Count() + 1;
-            layer.Name = "Hole" + NextNo.ToString();
-            l.Insert(NextNo - 1, layer);
-        }
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.F7)
-            {
-                Group();
-            }
-            if (keyData == Keys.F8)
-            {
-                UnGroup();
-            }
-            if (keyData == Keys.Delete)
-            {
-                var Document = this.SiriusEditor.Document;
-                Document.Action.ActEntityDelete(Document.Action.SelectedEntity);
-            }
-            switch (keyData)
-            {
-                case Keys.Alt | Keys.D2:
-                    {
-                        RenameNewLayer(2);
-                    }
-                    break;
-                case Keys.Alt | Keys.D3:
-                    {
-                        RenameNewLayer(3);
-                    }
-                    break;
-                case Keys.Alt | Keys.D4:
-                    {
-                        RenameNewLayer(4);
-                    }
-                    break;
-                case Keys.Alt | Keys.D5:
-                    {
-                        RenameNewLayer(5);
-                    }
-                    break;
-                case Keys.Alt | Keys.D6:
-                    {
-                        RenameNewLayer(6);
-                    }
-                    break;
-                case Keys.Control | Keys.Alt | Keys.H:
-                    {
-                        AddHoleLayer();
-                    }
-                    break;
-                case Keys.Alt | Keys.H:
-                    {
-                        HoleGroup();
-                    }
-                    break;
-                case Keys.Alt | Keys.T:
-                    {
-                        ThruholeGroup();
-
-                    }
-                    break;
-                case Keys.Alt | Keys.F:
-                    {
-                        MoveToFiducial();
-                    }
-                    break;
-                case Keys.Alt | Keys.P:
-                    {
-                        MoveToPreAlign();
-                    }
-                    break;
-
-                case Keys.Control | Keys.Alt | Keys.M:
-                    {
-                        MoveToMarking();
-                    }
-                    break;
-            }
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-
-        private void MoveToMarking()
-        {
-            MoveToGroup("Marking");
-        }
-
-        private void ThruholeGroup()
-        {
-            MoveToGroup("Thruhole");
-            SortToLayer("Thruhole");
-
-
-        }
-
-        private void MoveToPreAlign()
-        {
-            MoveToGroup("PreAlign");
-        }
-
-        private void MoveToGroup(string Name)
-        {
-
-            try
-            {
-                var Document = this.SiriusEditor.Document;
-                var l = Document.Layers;
-                var layer = l.Where(t => t.Name.Contains(Name)).FirstOrDefault();
-                MoveToGroup(Document, layer);
-            }
-            catch (Exception ex)
-            {
-                Log.Write(ex);
-            }
-        }
-        private void MoveToFiducial()
-        {
-            MoveToGroup("Fiducial");
-        }
-        private void SortToLayer(string Name)
-        {
-            try
-            {
-                var Document = this.SiriusEditor.Document;
-                var l = Document.Layers;
-                var layer = l.Where(t => t.Name.Contains(Name)).FirstOrDefault();
-                if (layer != null)
-                {
-                    if(Document.Action.SelectedEntity != null)
-                    {
-                        if(Document.Action.SelectedEntity.Count>0)
-                        {
-                            Document.Action.ActEntitySort(Document.Action.SelectedEntity, layer, EntitySort.TopToBottom);
-                        }
-                    }
-                    
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Write(ex);
-            }
-        }
-        private static void MoveToGroup(IDocument Document, Layer layer)
-        {
-            Document.Action.ActEntityCut(Document.Action.SelectedEntity);
-            Document.Action.ActEntityPasteClone(layer);
-            
-        }
-
-        private void UnGroup()
-        {
-            var Document = this.SiriusEditor.Document;
-
-            Document.Action.ActEntityUngroup(Document.Action.SelectedEntity);
-        }
-
-        private void Group()
-        {
-            var Document = this.SiriusEditor.Document;
-            Document.Action.ActEntityGroup(Document.Action.SelectedEntity);
-
-
-        }
-
-        private void HoleGroup()
-        {
-            MoveToGroup("Hole1");
-        }
-
-        private void SelectLayer(string strName)
-        {
-            var Document = this.SiriusEditor.Document;
-            var l = Document.Layers;
-
-            var layer = l.Where(t => t.Name.Contains(strName)).FirstOrDefault();
-            if (layer is Layer Lay)
-            {
-                foreach (var v in l)
-                {
-                    v.IsSelected = false;
-                }
-                Lay.IsSelected = true;
-            }
         }
     }
 }
