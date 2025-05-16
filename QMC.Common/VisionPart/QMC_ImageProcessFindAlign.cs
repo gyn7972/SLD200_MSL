@@ -518,7 +518,7 @@ namespace QMC.Common.VisionPart
             return dScore;
         }
 
-        
+
 
         public List<Circle> FindMetalPowder(List<RectangleF> circlesResult, byte[] pixelData, int w, int h, ref bool circleFound, int Threshold = 75, double dScore = 0.7, int radius = 0, double dSpec = 0.1)
         {
@@ -532,8 +532,8 @@ namespace QMC.Common.VisionPart
             List<List<Point>> blobs = new List<List<Point>>();
 
             List<List<Point>> list = FindBrightBlobs(pixelData, w, h, w, Threshold); // 영상 밝기 바뀌면 70 이게 쓰레스 홀드 입니다. 이거 변경 해야 됩니다.
-            int MinArea = (int)(radius * radius * Math.PI * (1 - dSpec));
-            int MaxArea = (int)(radius * radius * Math.PI * (1 + dSpec));
+            int MinArea = (int)(radius * radius * Math.PI * (1 - 0.2));
+            int MaxArea = (int)(radius * radius * Math.PI * (1 + 0.2));
             blobs.AddRange(list.Where(t => t.Count() > MinArea && t.Count() < MaxArea).ToList());
             list.Clear();
             List<Circle> circles = new List<Circle>();
@@ -550,7 +550,7 @@ namespace QMC.Common.VisionPart
                 float ratio = (float)width / height;
                 float filter = 0.05f;
                 // 비율이 0.9~1.1 사이인 경우만 처리
-                //if (ratio >= 1 - filter && ratio <= 1 + filter)
+                if (ratio >= 1 - filter && ratio <= 1 + filter)
                 {
 
                     // circlesResult에 추가
@@ -623,11 +623,13 @@ namespace QMC.Common.VisionPart
                     (float)medianWidth,
                     (float)medianHeight
                 );
-
-                circles.Add(new Circle(centerX, centerY, Myradius,(float) dMyScore));
-                //FindBestCircle()
-                // circlesResult에 추가
-                circlesResult.Add(rectangle);
+                if (radius * (1 - dSpec) < Myradius && Myradius < radius * (1 + dSpec))
+                {
+                    circles.Add(new Circle(centerX, centerY, Myradius));
+                    //FindBestCircle()
+                    // circlesResult에 추가
+                    circlesResult.Add(rectangle);
+                }
             }
 
 
@@ -716,19 +718,19 @@ namespace QMC.Common.VisionPart
         }
 
 
-        public QMC_ImageProcessFindAlignResult FindMetalPowderForAutoTreshold(List<RectangleF> circlesResult,
+        public List<RectangleF> FindMetalPowderForAutoTreshold(List<RectangleF> circlesResult,
             byte[] pixelData, int w, int h, int radius, double dScore, double dSpec)
         {
-
-            //List<RectangleF> result = new List<RectangleF>();
-            QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
+            List<RectangleF> result = new List<RectangleF>();
             List<Circle> BestCircle = new List<Circle>();
             double dMaxCount = 0;
             object obj = new object();
+            int nThresholdMax = 0;
             Parallel.For(1, 20, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, threshold =>
             {
+                int myThreshold = threshold * 7 + 50;
                 bool bFound = false;
-                var circles = FindMetalPowder(circlesResult, pixelData, w, h, ref bFound, (threshold) * 10 + 50, dScore, radius, dSpec);
+                var circles = FindMetalPowder(circlesResult, pixelData, w, h, ref bFound, (myThreshold), dScore, radius, dSpec);
                 int nCount = 0;
                 foreach (var circle in circles)
                 {
@@ -745,6 +747,18 @@ namespace QMC.Common.VisionPart
                     {
                         dMaxCount = nCount;
                         BestCircle = circles;
+                        nThresholdMax = myThreshold;
+
+
+                    }
+                    else if (dMaxCount == nCount)
+                    {
+                        if (nThresholdMax < myThreshold)
+                        {
+                            dMaxCount = nCount;
+                            BestCircle = circles;
+                            nThresholdMax = myThreshold;
+                        }
                     }
                 }
 
@@ -753,11 +767,10 @@ namespace QMC.Common.VisionPart
             foreach (var circle in BestCircle)
             {
                 circlesResult.Add(circle.GetBoundery());
-                result.ScoreCollection.Add(circle.Score);
             }
-            result.Circles.AddRange(BestCircle);
 
-            return result;
+
+            return circlesResult;
         }
 
 
