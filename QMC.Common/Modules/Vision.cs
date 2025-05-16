@@ -189,7 +189,7 @@ namespace QMC.Common.Modules
                                                                 //static Conveyor conveyor = new Conveyor("");            //  요거 다시해야 함. Conveyor.cs 에 정의된 변수에 접근할 수 있게... 어케 함? -_-
                                                                 //  static 으로 선언하면 되긴 헌디.... 맞는건가 -_-
         public InterpolatorMotionFunction MC_Func = new InterpolatorMotionFunction();
-        public ACSSPiiPlusAxis ACS_Func = new ACSSPiiPlusAxis();
+        //public ACSSPiiPlusAxis ACS_Func = new ACSSPiiPlusAxis();
 
         public JigAligner m_JigAligner;
 

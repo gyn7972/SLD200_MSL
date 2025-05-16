@@ -971,7 +971,8 @@ namespace QMC.Common
             public double[] LaserHeightValue;                 //  Laser Height Sensor 측정값
         }
         public static stFlatnessMeasurementParameter[] stFlatMeasurePos = new stFlatnessMeasurementParameter[System.Enum.GetValues(typeof(FlatMeasureList)).Length];
-        
+
+        //public InterpolatorMotionFunction MC_Func = new InterpolatorMotionFunction();
 
         public static void CreateInstance(string strEquipmentName)
         {
@@ -1355,7 +1356,6 @@ namespace QMC.Common
             NewForm_MapDataActivate_Load();
             NewForm_FlatMeasurePos_Data_Load();
 
-
             if (m_nBoardOpened != 0)
             {
                 MessageBox.Show("모터 파라미터 폴더가 없거나, 모터 파라미터 파일이 없습니다.\r\n\r\n[D:\\SLD-200_Parameter\\SLD-200.mot]", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -1376,29 +1376,22 @@ namespace QMC.Common
             //WorkStage workStage = new WorkStage("WorkStage");
             WorkStage workStage = new WorkStage("WorkStage");
             workStage.Create();
-            
             Modules.Add(workStage);
-
             Loader Loader = new Loader("Loader");
             Loader.Create();
             Modules.Add(Loader);
-
             Unloader unloader = new Unloader("Unloader");
             unloader.Create();
             Modules.Add(unloader);
-
             Modules.Laser laser = new Modules.Laser("Laser");
             laser.Create();
             Modules.Add(laser);
-
             Scanner scanner = new Scanner("Scanner");
             scanner.Create();
             Modules.Add(scanner);
-
             Modules.Vision vision = new Modules.Vision("Vision");
             vision.Create();
             Modules.Add(vision);
-
             Bds bds = new Bds("BDS");
             bds.Create();
             Modules.Add(bds);
@@ -2568,13 +2561,11 @@ namespace QMC.Common
             StringBuilder temp = new StringBuilder(255);
 
             strFIle = ConfigManager.GetConfigPath() + "\\Axis Setting (Do not delete or modify).ini";
-
             if (File.Exists(strFIle) == false)
             {
                 MessageBox.Show("Axis Setting 파일이 없습니다.\r\n\r\n[Default 값으로 설정됩니다.]", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 //return false;
             }
-
             //  Axis Parameter 로드
             for (int i = 0; i < Equipment.Max_Axis; i++)
             {
