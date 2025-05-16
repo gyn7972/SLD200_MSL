@@ -74,7 +74,7 @@ namespace QMC.Common.VisionPart
             Circle bestCircle = new Circle();
             double bestInliers = 0;// (int)(r*2*Math.PI / 2) * dSamplingRate;
             Random rnd = new Random();
-            int nStep = points.Count / 3;
+            int nStep = points.Count / 6;
             int nCount = points.Count;
             for (int i = 0; i < iterations; i++)
             {
