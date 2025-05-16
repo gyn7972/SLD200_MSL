@@ -174,6 +174,7 @@
             this.button_RecipeVision_AxisZ_Setting = new System.Windows.Forms.Button();
             this.label_RecipeVision_AxisZ_Setting = new System.Windows.Forms.Label();
             this.textBox_RecipeVision_AxisZ_Setting = new System.Windows.Forms.TextBox();
+            this.radioButton_Fiducial_Ignor = new System.Windows.Forms.RadioButton();
             this.groupBox_RecipeVision_Illumination.SuspendLayout();
             this.groupBox_RecipeVision_MarkMatching.SuspendLayout();
             this.groupBox_RecipeVision_MarkType.SuspendLayout();
@@ -1771,6 +1772,7 @@
             // 
             // groupBox_Fiducial_Color
             // 
+            this.groupBox_Fiducial_Color.Controls.Add(this.radioButton_Fiducial_Ignor);
             this.groupBox_Fiducial_Color.Controls.Add(this.radioButton_Fiducial_Black);
             this.groupBox_Fiducial_Color.Controls.Add(this.radioButton_Fiducial_White);
             this.groupBox_Fiducial_Color.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -1786,7 +1788,7 @@
             // radioButton_Fiducial_Black
             // 
             this.radioButton_Fiducial_Black.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Fiducial_Black.Location = new System.Drawing.Point(88, 22);
+            this.radioButton_Fiducial_Black.Location = new System.Drawing.Point(13, 23);
             this.radioButton_Fiducial_Black.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_Fiducial_Black.Name = "radioButton_Fiducial_Black";
             this.radioButton_Fiducial_Black.Size = new System.Drawing.Size(60, 18);
@@ -1798,7 +1800,7 @@
             // 
             this.radioButton_Fiducial_White.Checked = true;
             this.radioButton_Fiducial_White.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.radioButton_Fiducial_White.Location = new System.Drawing.Point(13, 22);
+            this.radioButton_Fiducial_White.Location = new System.Drawing.Point(88, 22);
             this.radioButton_Fiducial_White.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_Fiducial_White.Name = "radioButton_Fiducial_White";
             this.radioButton_Fiducial_White.Size = new System.Drawing.Size(60, 18);
@@ -2047,6 +2049,17 @@
             this.textBox_RecipeVision_AxisZ_Setting.Text = "000";
             this.textBox_RecipeVision_AxisZ_Setting.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // radioButton_Fiducial_Ignor
+            // 
+            this.radioButton_Fiducial_Ignor.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.radioButton_Fiducial_Ignor.Location = new System.Drawing.Point(167, 22);
+            this.radioButton_Fiducial_Ignor.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton_Fiducial_Ignor.Name = "radioButton_Fiducial_Ignor";
+            this.radioButton_Fiducial_Ignor.Size = new System.Drawing.Size(60, 18);
+            this.radioButton_Fiducial_Ignor.TabIndex = 7;
+            this.radioButton_Fiducial_Ignor.Text = "Ignore";
+            this.radioButton_Fiducial_Ignor.UseVisualStyleBackColor = true;
+            // 
             // FormNewSub_Recipe_Vision
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -2261,5 +2274,6 @@
         private System.Windows.Forms.Button button_RecipeVision_AxisZ_Setting;
         private System.Windows.Forms.Label label_RecipeVision_AxisZ_Setting;
         private System.Windows.Forms.TextBox textBox_RecipeVision_AxisZ_Setting;
+        private System.Windows.Forms.RadioButton radioButton_Fiducial_Ignor;
     }
 }

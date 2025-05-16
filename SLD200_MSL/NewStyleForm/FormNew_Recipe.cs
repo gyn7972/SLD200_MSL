@@ -1269,9 +1269,6 @@ namespace SLD200_MSL
             }
 
             //PreAlign Param
-
-
-
             var iniData = new Dictionary<string, Dictionary<string, string>>();
             int layerCount = (int)System.Enum.GetValues(typeof(LayerList)).Length;
 
@@ -1451,6 +1448,8 @@ namespace SLD200_MSL
                     }
                 }
 
+                
+
                 //  Recipe Data 저장
                 //Recipe_Data_Save(fileName);
                 Recipe_Data_Save_Refactory(fileName);
@@ -1459,6 +1458,7 @@ namespace SLD200_MSL
                 // Vision Data 저장
                 //visionData.SaveTrainImage(Owner.TrainImage);
                 stVisionRecipeSet.SaveToIni(fileName);
+
 
                 var mb2 = new MessageBoxOk();
                 mb2.ShowDialog("Information !", "Recipe Data를 저장하였습니다.");
@@ -1774,11 +1774,11 @@ namespace SLD200_MSL
 
                 // Recipe Vision Load
                 string iniPath = fileName;  //ConfigManager.GetRecipeDataPath() + "\\RecipeVisionData.ini";
-                stVisionRecipeSet = VisionRecipeData.LoadFromIni(iniPath);
+                Equipment.stVisionRecipeSet = VisionRecipeData.LoadFromIni(iniPath);
                 if (workStage.jigAligner_LowRes != null)
                 {
-                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage = stVisionRecipeSet.LoadTrainImage(); //Bitmap.FromFile(m_strFile);
-                    workStage.jigAligner_LowRes.TrainImage = stVisionRecipeSet.LoadTrainImage(); //이거 사용중.
+                    workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.TrainImage = Equipment.stVisionRecipeSet.LoadTrainImage(); //Bitmap.FromFile(m_strFile);
+                    workStage.jigAligner_LowRes.TrainImage = Equipment.stVisionRecipeSet.LoadTrainImage(); //이거 사용중.
                 }
 
                 //workStage.jigAligner_LowRes.Recipe.PatternMatchingParameter.MaxInstance = 
