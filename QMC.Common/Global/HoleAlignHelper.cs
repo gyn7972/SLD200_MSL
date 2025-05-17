@@ -46,7 +46,7 @@ namespace QMC.Common.Global
 
             //for (int i = 0; i < regionCount; i++)
             {
-                var region = group.m_stDividedRegion_RegionData[nSocketNum];
+                var region = group.m_stDividedRegion_RegionData[0];
                 var objects = region.m_stDividedRegion_ObjectData;
 
                 for (int j = 0; j < objects.Length; j++)

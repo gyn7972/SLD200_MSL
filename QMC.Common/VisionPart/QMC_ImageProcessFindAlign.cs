@@ -748,7 +748,8 @@ namespace QMC.Common.VisionPart
                     break;
                 }
             }
-            //SaveImage(pixelData, w, h, "d:\\test\\Sobel.bmp");
+            IsImageSave = true;
+            SaveImage(pixelData, w, h, "d:\\test\\Sobel.bmp");
             List<PointF> polygons;
             IOrderedEnumerable<List<Point>> blobSorted;
             double dRadius;
@@ -759,7 +760,7 @@ namespace QMC.Common.VisionPart
                 circlesResult.Clear();
                 FindCircleFR4(pixelData, w, h, r, circlesResult, nThreshold, out polygons, out blobSorted, out dRadius, out result);
 
-                if (r * 0.99 < result.Radius && result.Radius < r * 1.01)
+                if (r * 0.95 < result.Radius && result.Radius < r * 1.05)
                 {
                     if (result.Score > dScore)
                     {
