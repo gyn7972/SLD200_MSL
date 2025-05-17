@@ -13972,8 +13972,8 @@ namespace QMC.Common.Modules
                     {
                         bUseRed = Equipment.stVisionRecipeSet.bGoldPowderIlluminationRedUse;
                         bUseIR = Equipment.stVisionRecipeSet.bGoldPowderIlluminationIRUse;
-                        redVolume = Equipment.stVisionRecipeSet.nSocketIlluminationRed; // TODO: 전용 Red 값 분리 가능
-                        irVolume = Equipment.stVisionRecipeSet.nSocketIlluminationIR;   // TODO: 전용 IR 값 분리 가능
+                        redVolume = Equipment.stVisionRecipeSet.nGoldPowderIlluminationRed;
+                        irVolume = Equipment.stVisionRecipeSet.nGoldPowderIlluminationIR;
                         exposureTime = Equipment.stVisionRecipeSet.dGoldPowderIlluminationExposureTime;
                     }
 
@@ -14116,8 +14116,8 @@ namespace QMC.Common.Modules
                     {
                         bUseRed = Equipment.stVisionRecipeSet.bGoldPowderIlluminationRedUse;
                         bUseIR = Equipment.stVisionRecipeSet.bGoldPowderIlluminationIRUse;
-                        redVolume = Equipment.stVisionRecipeSet.nSocketIlluminationRed; // TODO: 전용 Red 값 분리 가능
-                        irVolume = Equipment.stVisionRecipeSet.nSocketIlluminationIR;   // TODO: 전용 IR 값 분리 가능
+                        redVolume = Equipment.stVisionRecipeSet.nGoldPowderIlluminationRed; // TODO: 전용 Red 값 분리 가능
+                        irVolume = Equipment.stVisionRecipeSet.nGoldPowderIlluminationIR;   // TODO: 전용 IR 값 분리 가능
                         exposureTime = Equipment.stVisionRecipeSet.dGoldPowderIlluminationExposureTime;
                     }
 
@@ -14200,6 +14200,8 @@ namespace QMC.Common.Modules
                             Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
                             Log.Write("Alaign Test", "Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
                         }
+
+                        xyCoordinateAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
                     }
                     else if(alignMode == AlignMode.GoldPowder)
                     {
@@ -14213,7 +14215,6 @@ namespace QMC.Common.Modules
                         xyCoordinateAlign = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
                     }
 
-                    xyCoordinateAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
                     MovetoWorkStage_ABS_PositionsXY(xyCoordinateAlign, Type_Motor_Speed.Coarse);
                     //MC_Func.MovePosition(xyCoordinateAlign, lfVelocity, lfAccDec, lfAccDec);
 
