@@ -984,7 +984,7 @@ namespace SLD200_MSL
 
                 if (this.IsHandleCreated && !this.IsDisposed)
                 {
-                    this.Invoke((System.Action)(() => UpdateUIControls()));
+                    this.BeginInvoke((System.Action)(() => UpdateUIControls()));
                 }
             }
             catch (Exception ex)

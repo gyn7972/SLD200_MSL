@@ -1648,6 +1648,7 @@ namespace QMC.Common.Hmi
                                 try
                                 {
                                     bmpCutImage = (Bitmap)visionImage.CutImage(point, (Size)size);
+                                    bmpCutImage = new Bitmap(bmpCutImage, this.Width, this.Height);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1664,8 +1665,9 @@ namespace QMC.Common.Hmi
                                         if(bmpCutImage != null)
                                         {
 
-                                            bufferedGrphics.Graphics.DrawImage(bmpCutImage, 0, 0, this.Width, this.Height);
-                                            
+                                            //bufferedGrphics.Graphics.DrawImage(bmpCutImage, 0, 0, this.Width, this.Height);
+                                            bufferedGrphics.Graphics.DrawImageUnscaled(bmpCutImage, 0, 0);
+
                                         }
                                     }
 
