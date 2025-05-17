@@ -540,6 +540,7 @@ namespace SLD200_MSL
             //laser.PowerMap = powerMap;
             #endregion
 
+
             ////  Arc 를 Polyline 으로 만들 경우
             //if (workStage.Config.ParamConfig.ConvertArcToPolyline)
             //{
@@ -1415,6 +1416,11 @@ namespace SLD200_MSL
                                     break;
 
                                 case EType.Text:
+                                case EType.Barcode1D:
+                                case EType.BarcodeDataMatrix:
+                                case EType.BarcodeDataMatrix2:
+                                case EType.BarcodeQRCode:
+                                case EType.BarcodeQRCode2:
 
                                     if (m_nMarking_ObjectCount++ == m_nSocketNum)
                                     {
@@ -1882,6 +1888,11 @@ namespace SLD200_MSL
                                     break;
 
                                 case EType.Text:
+                                case EType.Barcode1D:
+                                case EType.BarcodeDataMatrix:
+                                case EType.BarcodeDataMatrix2:
+                                case EType.BarcodeQRCode:
+                                case EType.BarcodeQRCode2:
 
                                     if (m_nMarking_ObjectCount++ == m_nSocketNum)
                                     {
@@ -2063,11 +2074,11 @@ namespace SLD200_MSL
                 return;
             }
 
-            if (workStage.m_stDividedRegion_GroupData == null)
-            {
-                MessageBox.Show("Data Parsing 해야 합니다.", "Information!!");
-                return;
-            }
+            //if (workStage.m_stDividedRegion_GroupData == null)
+            //{
+            //    MessageBox.Show("Data Parsing 해야 합니다.", "Information!!");
+            //    return;
+            //}
 
             m_dOffsetX = Equipment.ToDouble(tb_ScannerOffset_X.Text);
             m_dOffsetY = Equipment.ToDouble(tb_ScannerOffset_Y.Text);

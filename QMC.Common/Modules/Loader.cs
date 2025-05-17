@@ -1974,8 +1974,10 @@ namespace QMC.Common.Modules
 
 
             //  Stacker0 이 Pause 되는 시점에 Stacker0 을 아래로 내림
-            if (Equipment.Loader_RPort_Pause && !Equipment.Loader_RPort_Pause_Before &&
-                !loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))              //  자재가 있지만 사용자가 Pause 시키는 경우가 있어서, 자재가 없을때만 동작하도록 조건 추가
+            if (Equipment.Loader_RPort_Pause && !Equipment.Loader_RPort_Pause_Before)// &&
+
+                //  자재가 있지만 사용자가 Pause 시키는 경우가 있어서, 자재가 없을때만 동작하도록 조건 추가 --> 했다가 다시 원복함. (학 Dragon 이사님 의견 반영. 20250517)
+                //!loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_0))
             {
                 //  Pause 되었으니 Stacker0 을 아래로 내림
 
@@ -2877,8 +2879,10 @@ namespace QMC.Common.Modules
 
 
             //  Stacker1 이 Pause 되는 시점에 Stacker1 을 아래로 내림
-            if (Equipment.Loader_LPort_Pause && !Equipment.Loader_LPort_Pause_Before &&
-                !loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))              //  자재가 있지만 사용자가 Pause 시키는 경우가 있어서, 자재가 없을때만 동작하도록 조건 추가
+            if (Equipment.Loader_LPort_Pause && !Equipment.Loader_LPort_Pause_Before)// &&
+
+                //  자재가 있지만 사용자가 Pause 시키는 경우가 있어서, 자재가 없을때만 동작하도록 조건 추가 --> 했다가 다시 원복함. (학 Dragon 이사님 의견 반영. 20250517)
+                //!loaderParameter.DI_Loader_Stacker_MaterialCheck((int)LoaderParameter.StackerTable.Stacker_1))
             {
                 //  Pause 되었으니 Stacker1 을 아래로 내림
 

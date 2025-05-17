@@ -1651,6 +1651,7 @@ namespace QMC.Common.Hmi
                                 try
                                 {
                                     bmpCutImage = (Bitmap)visionImage.CutImage(point, (Size)size);
+                                    bmpCutImage = new Bitmap(bmpCutImage, this.Width, this.Height);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1667,7 +1668,9 @@ namespace QMC.Common.Hmi
                                         if(bmpCutImage != null)
                                         {
 
-                                            bufferedGrphics.Graphics.DrawImage(bmpCutImage, 0, 0, this.Width, this.Height);
+                                            //bufferedGrphics.Graphics.DrawImage(bmpCutImage, 0, 0, this.Width, this.Height);
+                                            bufferedGrphics.Graphics.DrawImageUnscaled(bmpCutImage, 0, 0);
+
                                         }
                                     }
 
@@ -1984,8 +1987,6 @@ namespace QMC.Common.Hmi
             }
             
 
-            cts = new CancellationTokenSource();
-            CancellationToken token = cts.Token;
             m_task = Task.Factory.StartNew(() =>
             {
                 lock (objLock)
@@ -2038,6 +2039,7 @@ namespace QMC.Common.Hmi
                                 UpdateOverlay(false);
                                 this.DrawToBuffer(this.m_Graphics);
                                 this.Invalidate();
+                                //this.Refresh();
                             }
                         }
                     }

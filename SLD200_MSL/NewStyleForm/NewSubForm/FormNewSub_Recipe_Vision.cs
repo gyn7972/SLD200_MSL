@@ -1452,12 +1452,13 @@ namespace SLD200.NewStyleForm.NewSubForm
                                                       w,
                                                       h,
                                                       (int)dRadius,
-                                                      Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
-                                                      Equipment.stVisionRecipeSet.dSocketCircleMarkScore);
+                                                      dSpec,
+                                                      dScore);
                     circlesResult.Clear();
                     foreach (var circle in result.Circles)
                     {
                         circlesResult.Add(circle.GetBoundery());
+                        bFindCircle = true;
                     }
                 }
                 workStage.UpdateOverlay(result);

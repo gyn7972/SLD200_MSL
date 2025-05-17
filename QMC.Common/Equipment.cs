@@ -49,6 +49,7 @@ namespace QMC.Common
     public static class Equipment
     {
         #region Enum
+
         public enum LightingChannel
         {
             FineCamRed = 1,
@@ -56,7 +57,16 @@ namespace QMC.Common
             CoarseCamIR = 3
         }
 
+        public enum AlignMode
+        {
+            PreAlign,
+            Socket,
+            GoldPowder
+        }
+
         #endregion
+
+        public static AlignMode m_AlignMode = AlignMode.Socket;
 
         public class InitDeviceStatus
         {
@@ -496,6 +506,9 @@ namespace QMC.Common
             public bool MarkingData_SiriusTemplate_Use;                 //  Sirius Template 파일을 이용한 가공을 할 경우
             public string MarkingTemplate_SiriusFile;                   //  Marking Template File Path and Name
             public string MarkingTemplate_EntityData;                   //  Marking Template Entity 에 집어넣을 데이터
+            public int MarkingTemplate_EntityData_Type;                 //  Marking Template Entity 타입 (Text, SiriusText, 1D Barcode, Data Matrix, QR, QR2)
+            public double MarkingTemplate_EntityData_Width;             //  Marking Template Entity Width
+            public double MarkingTemplate_EntityData_Height;            //  Marking Template Entity Height
 
             public double CalfileOffsetZAxismm;                         //  Z Axis Offset Calibration File (mm)
         }
@@ -1204,6 +1217,10 @@ namespace QMC.Common
                 stLayerRecipeSet[i].MarkingData_SiriusTemplate_Use = false;                         //  Sirius Template 파일을 이용한 가공을 할 경우
                 stLayerRecipeSet[i].MarkingTemplate_SiriusFile = "";                                //  Marking Template File Path and Name
                 stLayerRecipeSet[i].MarkingTemplate_EntityData = "";                                //  Marking Template Entity 에 집어넣을 데이터
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_Type = 0;                            //  Marking Template Entity Type (Text, SiriusText, 1D Barcode, Data Matrix, QR, QR2)
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_Width = 0.0;                         //  Marking Template Entity Width
+                stLayerRecipeSet[i].MarkingTemplate_EntityData_Height = 0.0;                        //  Marking Template Entity Height
+
 
                 stLayerRecipeSet[i].CalfileOffsetZAxismm = 0.0;
             }
