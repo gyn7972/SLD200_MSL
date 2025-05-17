@@ -4084,7 +4084,7 @@ namespace QMC.Common.Modules
         protected Task m_taskTimer_ProductAlign_tick = null;
         protected Task m_taskTimer_VerifyScannerCamOffset_Tick = null;
         protected Task m_taskTimer_ScannerCalibration_Tick = null;
-        protected bool m_IsModuleClose = false;
+        private bool isModuleClose = false;
         protected List<Task> listTask = new List<Task>();
 
 
@@ -4887,7 +4887,7 @@ namespace QMC.Common.Modules
                     //{
                     //    continue;
                     //}
-                    if (m_IsModuleClose)
+                    if (IsModuleClose)
                     {
                         break;
                     }
@@ -4908,7 +4908,7 @@ namespace QMC.Common.Modules
                     //{
                     //    continue;
                     //}
-                    if (m_IsModuleClose)
+                    if (IsModuleClose)
                     {
                         break;
                     }
@@ -4936,7 +4936,7 @@ namespace QMC.Common.Modules
                     {
                         continue;
                     }
-                    if (m_IsModuleClose)
+                    if (IsModuleClose)
                     {
                         break;
                     }
@@ -4957,7 +4957,7 @@ namespace QMC.Common.Modules
                     {
                         continue;
                     }
-                    if (m_IsModuleClose)
+                    if (IsModuleClose)
                     {
                         break;
                     }
@@ -4976,7 +4976,7 @@ namespace QMC.Common.Modules
                     {
                         continue;
                     }
-                    if (m_IsModuleClose)
+                    if (IsModuleClose)
                     {
                         break;
                     }
@@ -4996,7 +4996,7 @@ namespace QMC.Common.Modules
                     {
                         continue;
                     }
-                    if (m_IsModuleClose)
+                    if (IsModuleClose)
                     {
                         break;
                     }
@@ -5015,7 +5015,7 @@ namespace QMC.Common.Modules
                     {
                         continue;
                     }
-                    if (m_IsModuleClose)
+                    if (IsModuleClose)
                     {
                         break;
                     }
@@ -5232,7 +5232,7 @@ namespace QMC.Common.Modules
 
         public override void Close()
         {
-            m_IsModuleClose = true;
+            IsModuleClose = true;
             foreach(var task in listTask)
             {
                 task.Wait();
@@ -15623,6 +15623,7 @@ namespace QMC.Common.Modules
 
         public VisionImageViewer.OwnedOverlayCollection FineCamResultOveray { get; set; } = new VisionImageViewer.OwnedOverlayCollection();
         public VisionImageViewer.OwnedOverlayCollection CoarseCamResultOveray { get; set; } = new VisionImageViewer.OwnedOverlayCollection();
+        public bool IsModuleClose { get => isModuleClose; protected set => isModuleClose = value; }
 
         private PointD CoordinateTransform(PointD xyCoordinate, double dRotationCenterX, double dRotationCenterY, double v)
         {

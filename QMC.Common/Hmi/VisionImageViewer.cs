@@ -1984,8 +1984,6 @@ namespace QMC.Common.Hmi
             }
             
 
-            cts = new CancellationTokenSource();
-            CancellationToken token = cts.Token;
             m_task = Task.Factory.StartNew(() =>
             {
                 lock (objLock)
@@ -2038,6 +2036,7 @@ namespace QMC.Common.Hmi
                                 UpdateOverlay(false);
                                 this.DrawToBuffer(this.m_Graphics);
                                 this.Invalidate();
+                                //this.Refresh();
                             }
                         }
                     }
