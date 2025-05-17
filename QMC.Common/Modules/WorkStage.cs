@@ -13972,8 +13972,8 @@ namespace QMC.Common.Modules
                     {
                         bUseRed = Equipment.stVisionRecipeSet.bGoldPowderIlluminationRedUse;
                         bUseIR = Equipment.stVisionRecipeSet.bGoldPowderIlluminationIRUse;
-                        redVolume = Equipment.stVisionRecipeSet.nSocketIlluminationRed; // TODO: 전용 Red 값 분리 가능
-                        irVolume = Equipment.stVisionRecipeSet.nSocketIlluminationIR;   // TODO: 전용 IR 값 분리 가능
+                        redVolume = Equipment.stVisionRecipeSet.nGoldPowderIlluminationRed; // TODO: 전용 Red 값 분리 가능
+                        irVolume = Equipment.stVisionRecipeSet.nGoldPowderIlluminationIR;   // TODO: 전용 IR 값 분리 가능
                         exposureTime = Equipment.stVisionRecipeSet.dGoldPowderIlluminationExposureTime;
                     }
 
@@ -14116,8 +14116,8 @@ namespace QMC.Common.Modules
                     {
                         bUseRed = Equipment.stVisionRecipeSet.bGoldPowderIlluminationRedUse;
                         bUseIR = Equipment.stVisionRecipeSet.bGoldPowderIlluminationIRUse;
-                        redVolume = Equipment.stVisionRecipeSet.nSocketIlluminationRed; // TODO: 전용 Red 값 분리 가능
-                        irVolume = Equipment.stVisionRecipeSet.nSocketIlluminationIR;   // TODO: 전용 IR 값 분리 가능
+                        redVolume = Equipment.stVisionRecipeSet.nGoldPowderIlluminationRed; // TODO: 전용 Red 값 분리 가능
+                        irVolume = Equipment.stVisionRecipeSet.nGoldPowderIlluminationIR;   // TODO: 전용 IR 값 분리 가능
                         exposureTime = Equipment.stVisionRecipeSet.dGoldPowderIlluminationExposureTime;
                     }
 
@@ -14200,6 +14200,8 @@ namespace QMC.Common.Modules
                             Log.Write("Alaign Test", "xyCoordinateAlign After : ", xyCoordinateAlign.ToString());
                             Log.Write("Alaign Test", "Angle : ", m_st4PointAlign_Result_LastSuccess.dRotationAngle.ToString());
                         }
+
+                        xyCoordinateAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
                     }
                     else if(alignMode == AlignMode.GoldPowder)
                     {
@@ -14213,7 +14215,7 @@ namespace QMC.Common.Modules
                         xyCoordinateAlign = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
                     }
 
-                    xyCoordinateAlignPositionOrgLastTemp = new XyCoordinate(xyInterpolatedCoordinate.X, xyInterpolatedCoordinate.Y);
+                    
                     MovetoWorkStage_ABS_PositionsXY(xyCoordinateAlign, Type_Motor_Speed.Coarse);
                     //MC_Func.MovePosition(xyCoordinateAlign, lfVelocity, lfAccDec, lfAccDec);
 
@@ -14597,13 +14599,13 @@ namespace QMC.Common.Modules
                         m_st4PointPosition_DwgPos_LastSuccess = m_st4PointPosition_DwgPos.ToArray();
                         m_st4PointPosition_InspectedPos_LastSuccess = m_st4PointPosition_InspectedPos.ToArray();
                         m_st4PointAlign_Result_LastSuccess = new st4PointAlign_Result();
-                        m_st4PointAlign_Result_LastSuccess.dCenterOffsetX = m_st4PointAlign_Result.dCenterOffsetX;
-                        m_st4PointAlign_Result_LastSuccess.dCenterOffsetY = m_st4PointAlign_Result.dCenterOffsetY;
-                        m_st4PointAlign_Result_LastSuccess.dRotationAngle = m_st4PointAlign_Result.dRotationAngle;
-                        m_st4PointAlign_Result_LastSuccess.dRotationCenterX = m_st4PointAlign_Result.dRotationCenterX;
-                        m_st4PointAlign_Result_LastSuccess.dRotationCenterY = m_st4PointAlign_Result.dRotationCenterY;
-                        m_st4PointAlign_Result_LastSuccess.dRotationCenterX = m_st4PointAlign_Result.dRotationCenterX;
-                        m_st4PointAlign_Result_LastSuccess.dRotationCenterY = m_st4PointAlign_Result.dRotationCenterY;
+                        m_st4PointAlign_Result_LastSuccess.dCenterOffsetX = 0;// m_st4PointAlign_Result.dCenterOffsetX;
+                        m_st4PointAlign_Result_LastSuccess.dCenterOffsetY = 0;//m_st4PointAlign_Result.dCenterOffsetY;
+                        m_st4PointAlign_Result_LastSuccess.dRotationAngle = 0;//m_st4PointAlign_Result.dRotationAngle;
+                        m_st4PointAlign_Result_LastSuccess.dRotationCenterX = 0;//m_st4PointAlign_Result.dRotationCenterX;
+                        m_st4PointAlign_Result_LastSuccess.dRotationCenterY = 0;//m_st4PointAlign_Result.dRotationCenterY;
+                        m_st4PointAlign_Result_LastSuccess.dRotationCenterX = 0;//m_st4PointAlign_Result.dRotationCenterX;
+                        m_st4PointAlign_Result_LastSuccess.dRotationCenterY = 0;//m_st4PointAlign_Result.dRotationCenterY;
                         m_bAlignCompleted = true;
                         m_nSocketAlign_MainStep = (int)SocketAlign_Step.None;
                     }
@@ -15554,7 +15556,7 @@ namespace QMC.Common.Modules
             }
             for (int i = 0; i < 4; i++)
             {
-                //  4-Point 의 도면상 위치 데이터
+                // 4-Point 의 도면상 위치 데이터
                 m_st4PointPosition_DwgPos[i].ptFiducial_Center.X = 0.0;
                 m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y = 0.0;
                 m_st4PointPosition_DwgPos[i].dFiducial_Width = 0.0;
@@ -23441,19 +23443,32 @@ namespace QMC.Common.Modules
                             {
                                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Socket Align 완료");
 
-                                //  Align 후 계산된 데이터 가져오기
-                                m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX;                                 //  얼라인 된 소켓 회전 중심 X
-                                m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  얼라인 된 소켓 회전 중심 Y
-                                m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  얼라인 된 소켓 이동 Offset X
-                                m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  얼라인 된 소켓 이동 Offset Y
-                                m_dALIGN_FACTOR_Theta = m_st4PointAlign_Result.dRotationAngle;                                              //  얼라인 된 소켓 회전 (Theta,     기준위치 : 소켓 Center)
+                                if(m_AlignMode == AlignMode.Socket)
+                                {
+                                    //  Align 후 계산된 데이터 가져오기
+                                    m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX;                                 //  얼라인 된 소켓 회전 중심 X
+                                    m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  얼라인 된 소켓 회전 중심 Y
+                                    m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  얼라인 된 소켓 이동 Offset X
+                                    m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  얼라인 된 소켓 이동 Offset Y
+                                    m_dALIGN_FACTOR_Theta = m_st4PointAlign_Result.dRotationAngle;
+                                }
+                                else if(m_AlignMode == AlignMode.GoldPowder)
+                                {
+                                    //  Align 후 계산된 데이터 가져오기
+                                    m_dALIGN_FACTOR_RotationCenter_X = 0;// m_st4PointAlign_Result.dRotationCenterX;                                 //  얼라인 된 소켓 회전 중심 X
+                                    m_dALIGN_FACTOR_RotationCenter_Y = 0;//m_st4PointAlign_Result.dRotationCenterY;                                 //  얼라인 된 소켓 회전 중심 Y
+                                    m_dALIGN_FACTOR_Offset_X = 0;//m_st4PointAlign_Result.dCenterOffsetX;                                           //  얼라인 된 소켓 이동 Offset X
+                                    m_dALIGN_FACTOR_Offset_Y = 0;//m_st4PointAlign_Result.dCenterOffsetY;                                           //  얼라인 된 소켓 이동 Offset Y
+                                    m_dALIGN_FACTOR_Theta = 0;//m_st4PointAlign_Result.dRotationAngle;
+                                }
+                                    //  얼라인 된 소켓 회전 (Theta,     기준위치 : 소켓 Center)
 
-                                //  메인 화면의 소켓 얼라인 Offset 값을 적용 (테스트)
-                                //m_dALIGN_FACTOR_Offset_X += Equipment.m_dTest_SocketAlign_OffsetX;
-                                //m_dALIGN_FACTOR_Offset_Y += Equipment.m_dTest_SocketAlign_OffsetY;
-                                //m_dALIGN_FACTOR_Theta += Equipment.m_dTest_SocketAlign_Theta;
+                                    //  메인 화면의 소켓 얼라인 Offset 값을 적용 (테스트)
+                                    //m_dALIGN_FACTOR_Offset_X += Equipment.m_dTest_SocketAlign_OffsetX;
+                                    //m_dALIGN_FACTOR_Offset_Y += Equipment.m_dTest_SocketAlign_OffsetY;
+                                    //m_dALIGN_FACTOR_Theta += Equipment.m_dTest_SocketAlign_Theta;
 
-                                m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketData_RotAndOffset_Move;
+                                    m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketData_RotAndOffset_Move;
                             }
                             else
                             {
@@ -23552,12 +23567,26 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DrillingData_SocketData_RotAndOffset_Move:                                         //  가공 데이터 회전 및 Offset 이동
 
-                    m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX;                                 //  전체 가공 도면 회전 중심 X
-                    m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  전체 가공 도면 회전 중심 Y
-                    m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  전체 가공 도면 이동 Offset X
-                    m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  전체 가공 도면 이동 Offset Y
-                    m_dALIGN_FACTOR_Theta = -m_st4PointAlign_Result.dRotationAngle / Math.PI * 180;                             //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
+                    if (m_AlignMode == AlignMode.Socket)
+                    {
+                        //  Align 후 계산된 데이터 가져오기
+                        m_dALIGN_FACTOR_RotationCenter_X = m_st4PointAlign_Result.dRotationCenterX;                                 //  전체 가공 도면 회전 중심 X
+                        m_dALIGN_FACTOR_RotationCenter_Y = m_st4PointAlign_Result.dRotationCenterY;                                 //  전체 가공 도면 회전 중심 Y
+                        m_dALIGN_FACTOR_Offset_X = m_st4PointAlign_Result.dCenterOffsetX;                                           //  전체 가공 도면 이동 Offset X
+                        m_dALIGN_FACTOR_Offset_Y = m_st4PointAlign_Result.dCenterOffsetY;                                           //  전체 가공 도면 이동 Offset Y
+                        m_dALIGN_FACTOR_Theta = -m_st4PointAlign_Result.dRotationAngle / Math.PI * 180;                             //  전체 가공 도면 회전 (Theta,     기준위치 : Align1 (Thruhole 의 Circle 객체, Description 에 Align1 표시)
 
+                    }
+                    else if (m_AlignMode == AlignMode.GoldPowder)
+                    {
+                        //  Align 후 계산된 데이터 가져오기
+                        m_dALIGN_FACTOR_RotationCenter_X = 0;// m_st4PointAlign_Result.dRotationCenterX;                                 //  얼라인 된 소켓 회전 중심 X
+                        m_dALIGN_FACTOR_RotationCenter_Y = 0;//m_st4PointAlign_Result.dRotationCenterY;                                 //  얼라인 된 소켓 회전 중심 Y
+                        m_dALIGN_FACTOR_Offset_X = 0;//m_st4PointAlign_Result.dCenterOffsetX;                                           //  얼라인 된 소켓 이동 Offset X
+                        m_dALIGN_FACTOR_Offset_Y = 0;//m_st4PointAlign_Result.dCenterOffsetY;                                           //  얼라인 된 소켓 이동 Offset Y
+                        m_dALIGN_FACTOR_Theta = 0;//m_st4PointAlign_Result.dRotationAngle;
+                    }
+                    
                     AlignedDrillingData_Select_and_OffsetMove(m_nSocketNum_forAlign, m_dALIGN_FACTOR_RotationCenter_X, m_dALIGN_FACTOR_RotationCenter_Y, m_dALIGN_FACTOR_Offset_X, m_dALIGN_FACTOR_Offset_Y, m_dALIGN_FACTOR_Theta);
 
                     //  메인 화면의 뷰어 갱신
