@@ -540,6 +540,7 @@ namespace SLD200_MSL
             //laser.PowerMap = powerMap;
             #endregion
 
+
             ////  Arc 를 Polyline 으로 만들 경우
             //if (workStage.Config.ParamConfig.ConvertArcToPolyline)
             //{

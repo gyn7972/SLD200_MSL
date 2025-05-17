@@ -3345,11 +3345,138 @@ namespace SLD200_MSL
             ////  마킹 데이터 세팅
             //workStage.marker.Ready(markerArg);
 
-            ////  마킹 Start
-            ////workStage.marker.Start();
+            //  마킹 Start
+            //workStage.marker.Start();
 
 
+            BarcodeQR2 barcodeQR2 = new BarcodeQR2("TEST123");
+            barcodeQR2.Width = 10;
+            barcodeQR2.Height = 10;
+            barcodeQR2.Location = new Vector2(-5, -5);
+            barcodeQR2.Rotate(90);
 
+            string m_strTemp = "";
+            bool m_bScannerLib_Success = true;
+
+            if ((Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].ProcessPriority_P2P) &&                   //  P2P Mode
+                                            (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance > 0.0))
+            {
+                int m_nSDC_Count = 0;
+
+                do
+                {
+                    //  Spot Distance Control
+                    var alc = workStage.rtc as IRtcAutoLaserControl;
+
+                    m_bScannerLib_Success = alc.CtlAutoLaserControl<float>(AutoLaserControlSignal.SpotDistance, AutoLaserControlMode.ActualVelocityWithSCANAhead,
+                        (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance,                              //  Percentage100
+                        (float)(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance * 0.8),                      //  Min
+                        (float)(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_P2PDistance * 1.2));                     //  Max
+
+                    if (!m_bScannerLib_Success)
+                    {
+                        m_strTemp = string.Format("Marking 가공 Loop, ScannerOnly Mode, Spot Distance Control 파라미터 적용 실패, ({0}/3)", m_nSDC_Count + 1);
+
+                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    }
+                    else
+                    {
+                        m_strTemp = string.Format("Marking 가공 Loop, ScannerOnly Mode, Spot Distance Control 파라미터 적용 성공, ({0}/3)", m_nSDC_Count + 1);
+                        Log.Write("SLD-200", "Auto Run", m_strTemp);
+                    }
+
+                    m_nSDC_Count++;
+                } while (!m_bScannerLib_Success && (m_nSDC_Count < 3));
+            }
+
+            //if (Config.ParamConfig.nLaserSource_Type == (int)LaserDrillingParameterConfig.LaserSource.Tangerine)
+            //{
+
+            //  Frequency, Pulse Width 값이 있으면 적용
+            if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency > 0.0)
+            {
+                double m_dLaserParam_PulseWidth = 0.0;
+
+                //  Laser Type 이 CO2 일 경우, 여기에서 Duty Cycle 을 Pulse Width 로 계산해서 Power 를 변경할 수 있도록 한다.
+                if (Equipment.Machine_LaserType_CO2)
+                {
+                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_DutyCycle > 0.0)
+                    {
+                        m_dLaserParam_PulseWidth = workStage.Calc_PulseWidth(Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
+                                                                    Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_DutyCycle);
+
+                        m_strTemp = string.Format("Marking 가공 Loop, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
+                                                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
+                                                m_dLaserParam_PulseWidth);
+                    }
+                    else
+                    {
+                        m_dLaserParam_PulseWidth = 1.0;
+
+                        m_strTemp = string.Format("Marking 가공 Loop, ScannerOnly Mode, 본 가공, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                                                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
+                                                m_dLaserParam_PulseWidth);
+                    }
+                }
+                else
+                {
+                    if (Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_PulseWidth > 0.0)
+                    {
+                        m_dLaserParam_PulseWidth = Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_PulseWidth;
+
+                        m_strTemp = string.Format("Marking 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), Pulse Width ({1})",
+                                            Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
+                                            Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_PulseWidth);
+                    }
+                    else
+                    {
+                        m_dLaserParam_PulseWidth = 1.0;
+
+                        m_strTemp = string.Format("Marking 가공 Loop, ScannerOnly Mode, Frequency 설정, Frequency ({0:0.0000}), 설정한 Pulse Width 값이 없어 1로 임의 설정 ({1})",
+                                                Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
+                                                m_dLaserParam_PulseWidth);
+                    }
+                }
+
+                Log.Write("SLD-200", "Auto Run", m_strTemp);
+
+                m_bScannerLib_Success = workStage.rtc.ListFrequency((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].LaserParam_Frequency,
+                                                            (float)m_dLaserParam_PulseWidth);
+
+                if (!m_bScannerLib_Success)
+                {
+                    Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, Frequency 파라미터 적용 실패");
+                }
+                else
+                {
+                    Log.Write("SLD-200", "Auto Run", "Marking 가공 Loop, ScannerOnly Mode, Frequency 파라미터 적용 성공");
+                }
+            }
+
+            //m_bMarkingList_Success &= rtc.ListDelay((float)Config.ParamConfig.LaserOn_Delay, (float)Config.ParamConfig.LaserOff_Delay,
+            //                                                        (float)Config.ParamConfig.Drilling_Jump_Delay, (float)Config.ParamConfig.Drilling_Mark_Delay, (float)Config.ParamConfig.Drilling_Polygon_Delay);
+            m_bScannerLib_Success &= workStage.rtc.ListDelay((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_LaserOnDelay,
+                                                        (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_LaserOffDelay,
+                                                        (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_JumpDelay,
+                                                        (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_MarkDelay,
+                                                        (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_PolygonDelay);
+
+
+            //m_bMarkingList_Success &= rtc.ListSpeed((float)Config.ParamConfig.Drilling_Jump_Speed, (float)Config.ParamConfig.Drilling_Mark_Speed);
+            m_bScannerLib_Success &= workStage.rtc.ListSpeed((float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_ScannerJumpSpeed, (float)Equipment.stLayerRecipeSet[(int)Equipment.LayerList.Marking].Miscellaneous_ScannerDrillingSpeed);
+
+
+            var markerArg = new MarkerArgDefault()
+            {
+                Document = null,
+                Rtc = workStage.rtc,
+                Laser = workStage.laser,
+                IsEnablePens = false,
+            };
+
+            barcodeQR2.Mark(markerArg);
+
+            return;
             ////loader.AlarmPost(Loader.AlarmKey.MAligner_MoveXY_Widely_DoneCheck_Timeout);
             //return;
 
