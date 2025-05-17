@@ -102,7 +102,6 @@ namespace SLD200_MSL
             this.DoubleBuffered = true;
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
             this.UpdateStyles();
-
             //this.Load += FormNew_Main_Load;
 
             ModuleCollection m_collectionModules;
@@ -256,7 +255,7 @@ namespace SLD200_MSL
             }
             this.FormClosing += FormNew_Main_FormClosing;
             
-                //  통신 Parts 초기화 (Connect 옵션에 따라 활성화 된 것들만 초기화 됨)
+            //  통신 Parts 초기화 (Connect 옵션에 따라 활성화 된 것들만 초기화 됨)
             Comm_Init();
 
             SiriusViewer_Main.GLcontrol.MouseDoubleClick += GLcontrol_MouseDoubleClick;
@@ -3428,6 +3427,11 @@ namespace SLD200_MSL
 
         private void button_TEST12_Click(object sender, EventArgs e)
         {
+            //  테스트용 코드
+           // workStage.m_LaserDrillingWork_Start = true;
+            //workStage.m_ProductAlign_Start = true;
+            ////////workStage.m_nSocketAlign_MainStep = 1;
+            return;
             //#region Marker Test (load from sirius file)
             //var dlg = new OpenFileDialog();
             //dlg.Filter = "sirius data files (*.sirius)|*.sirius|dxf cad files (*.dxf)|*.dxf|All Files (*.*)|*.*";

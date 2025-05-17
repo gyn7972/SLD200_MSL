@@ -1809,6 +1809,15 @@ namespace QMC.Common.Modules
             alarm.Grade = "Error";
             m_dicAlarms.Add(alarm.Code, alarm);
 
+            //InitFail_Chiller
+            alarm = new Alarm();
+            alarm.Code = (int)AlarmKey.InitFail_Chiller;
+            alarm.Title = "Chiller";
+            alarm.Cause = "Chiller 초기화 되지 않았습니다. 초기화 바랍니다.";
+            alarm.Source = Name;
+            alarm.Grade = "Error";
+            m_dicAlarms.Add(alarm.Code, alarm);
+
             alarm = new Alarm();
             alarm.Code = (int)AlarmKey.InitFail_ElectroRegulator;
             alarm.Title = "ElectroRegulator";
@@ -8314,7 +8323,6 @@ namespace QMC.Common.Modules
                 // Scanner signal로 레이저 발진 유/무 확인.
                 UpdateLaserStatus();
 
-                // Scanner Calibration이 활성화되지 않은 경우 종료??
                 if (!m_MainWork_Start)
                 {
                     return;
@@ -30890,7 +30898,6 @@ namespace QMC.Common.Modules
         //protected int AlarmPost(AlarmKey AlarmCode)
         public int AlarmPost(AlarmKey AlarmCode)
         {
-
             try
             {
 
