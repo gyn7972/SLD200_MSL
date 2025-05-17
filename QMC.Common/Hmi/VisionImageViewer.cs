@@ -588,6 +588,11 @@ namespace QMC.Common.Hmi
         #region Constructor
         public VisionImageViewer()
         {
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint |
+                     ControlStyles.UserPaint |
+                     ControlStyles.OptimizedDoubleBuffer, true);
+            this.UpdateStyles();
+
             //this.Timer = new SafeTimer();
             this.NormalOverlays = new OwnedOverlayCollection(this);
             this.ResultOverlays = new OwnedOverlayCollection(this);
@@ -595,8 +600,6 @@ namespace QMC.Common.Hmi
             this.IsViewCustomizedImage = false;
             this.FrameRate = 1;
             this.OperatingType = OperatingTypes.Center;
-
-            this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer, true);
 
             this.VisibleCrossLine = true;
 
