@@ -979,7 +979,13 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_SiriusFile = temp.ToString();
                 NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData", "", temp, 255, strFIle);
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData = temp.ToString();
-                
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_Type", "0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Type = Equipment.ToInt(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_Width", "5.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Width = Equipment.ToDouble(temp.ToString());
+                NativeMethods.GetPrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_Height", "5.0", temp, 255, strFIle);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Height = Equipment.ToDouble(temp.ToString());
+
                 NativeMethods.GetPrivateProfileString(strTemp, "ZCalFile_OffsetZ", "0.0", temp, 255, strFIle);
                 stLayerRecipeSet[i].CalfileOffsetZAxismm = Equipment.ToDouble(temp.ToString());
             }
@@ -1102,6 +1108,9 @@ namespace SLD200_MSL
                 Equipment.stLayerRecipeSet[i].MarkingData_SiriusTemplate_Use = ReadBool(data, "MarkingData_SiriusTemplate_Use", false);
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_SiriusFile = ReadValue(data, "MarkingData_SiriusTemplate_File", "");
                 Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData = ReadValue(data, "MarkingData_SiriusTemplate_EntityData", "");
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Type = ReadInt(data, "MarkingData_SiriusTemplate_EntityData_Type", 0);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Width = ReadDouble(data, "MarkingData_SiriusTemplate_EntityData_Width", 5.0);
+                Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Height = ReadDouble(data, "MarkingData_SiriusTemplate_EntityData_Height", 5.0);
             }
             
             return true;
@@ -1265,7 +1274,9 @@ namespace SLD200_MSL
                 NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_Use", Equipment.stLayerRecipeSet[i].MarkingData_SiriusTemplate_Use.ToString(), strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_File", Equipment.stLayerRecipeSet[i].MarkingTemplate_SiriusFile, strFIle);
                 NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData, strFIle);
-
+                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_Type", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Type.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_Width", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Width.ToString(), strFIle);
+                NativeMethods.WritePrivateProfileString(strTemp, "MarkingData_SiriusTemplate_EntityData_Height", Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Height.ToString(), strFIle);
 
                 //  ZCalFile Offset Z Axis (mm)
                 NativeMethods.WritePrivateProfileString(strTemp, "ZCalFile_OffsetZ", Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm.ToString(), strFIle);
@@ -1366,6 +1377,9 @@ namespace SLD200_MSL
                 layerDict["MarkingData_SiriusTemplate_Use"] = Equipment.stLayerRecipeSet[i].MarkingData_SiriusTemplate_Use.ToString();
                 layerDict["MarkingData_SiriusTemplate_File"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_SiriusFile.ToString();
                 layerDict["MarkingData_SiriusTemplate_EntityData"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData.ToString();
+                layerDict["MarkingData_SiriusTemplate_EntityData_Type"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Type.ToString();
+                layerDict["MarkingData_SiriusTemplate_EntityData_Width"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Width.ToString();
+                layerDict["MarkingData_SiriusTemplate_EntityData_Height"] = Equipment.stLayerRecipeSet[i].MarkingTemplate_EntityData_Height.ToString();
 
                 layerDict["ZCalFile_OffsetZ"] = Equipment.stLayerRecipeSet[i].CalfileOffsetZAxismm.ToString();
 
@@ -1714,7 +1728,10 @@ namespace SLD200_MSL
             //  Marking Template
             Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use = checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked;                         //  집진기 Remote Mode 사용 여부
             Equipment.stLayerRecipeSet[0].MarkingTemplate_SiriusFile = richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Text;
-            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData = textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Text;
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData = textBox_Recipe_TabRecipe_CustomMarking_Data.Text;
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Type = comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex;
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width = textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text) : 5.0;
+            Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height = textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text.Length > 0 ? Equipment.ToDouble(textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text) : 5.0;
 
             // 
             Equipment.stLayerRecipeSet[m_nLayerIndex].CalfileOffsetZAxismm = richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text.Length > 0 ? Equipment.ToDouble(richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text) : 0.0;     //  Z-Axis Offset mm
@@ -1938,7 +1955,11 @@ namespace SLD200_MSL
                 //  Marking Template
                 checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked = Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use;
                 richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_SiriusFile.ToString();
-                textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData.ToString();
+                textBox_Recipe_TabRecipe_CustomMarking_Data.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData.ToString();
+                comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Type.ToString());
+                textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width.ToString();
+                textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height.ToString();
+
 
                 //  Z-Axis Offset mm
                 richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[0].CalfileOffsetZAxismm.ToString();
@@ -2237,7 +2258,11 @@ namespace SLD200_MSL
             //  Marking Template
             checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked = Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use;
             richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_SiriusFile.ToString();
-            textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData.ToString();
+            textBox_Recipe_TabRecipe_CustomMarking_Data.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData.ToString();
+            comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Type.ToString());
+            textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width.ToString();
+            textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height.ToString();
+
 
             richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[m_nIndex].CalfileOffsetZAxismm.ToString();//  하부 집진기 사용 여부
         }
@@ -2406,7 +2431,10 @@ namespace SLD200_MSL
             //  Marking Template
             checkBox_Recipe_TabRecipe_MarkingData_toChange_Barcode.Checked = Equipment.stLayerRecipeSet[0].MarkingData_SiriusTemplate_Use;
             richTextBox_Recipe_TabRecipe_MarkingTemplateFile.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_SiriusFile.ToString();
-            textBox_Recipe_TabRecipe_MarkingData_toTemplateEntity.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData.ToString();
+            textBox_Recipe_TabRecipe_CustomMarking_Data.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData.ToString();
+            comboBox_Recipe_TabRecipe_CustomMarking_DataType.SelectedIndex = Equipment.ToInt(Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Type.ToString());
+            textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Width.ToString();
+            textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text = Equipment.stLayerRecipeSet[0].MarkingTemplate_EntityData_Height.ToString();
 
             richTextBox_Recipe_TabRecipe_Cal_ZAxisOffset.Text = Equipment.stLayerRecipeSet[0].CalfileOffsetZAxismm.ToString();
 
