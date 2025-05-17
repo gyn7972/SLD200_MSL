@@ -374,9 +374,10 @@ namespace QMC.Common.Modules
         public st4PointPosition_Data[] m_st4PointPosition_DwgPos_LastSuccess;     //  4-Point 의 도면상 위치 데이터 (마지막 성공한 데이터)
         public st4PointPosition_Data[] m_st4PointPosition_InspectedPos_LastSuccess; //  4-Point 의 측정된 위치 데이터 (마지막 성공한 데이터)
         public st4PointAlign_Result m_st4PointAlign_Result_LastSuccess;
-        
+
+        public st4PointPosition_Data m_st4PointPosition_DwgPos_goldPowderPre;               //  4-Point 의 도면상 위치 데이터
+
         public bool m_bIsFirstAlign = true; // 첫번째 얼라인 : 프리얼라인
-        public bool m_bIsSecondAlign = true; // 두번째 얼라인 : 소켓얼라인 - goldPowder얼라인을 위해 추가.
         
         public bool m_bAlignCompleted;                                          //  얼라인 완료 되었는지?
         public bool m_bPreAlignCompleted;                                          //  얼라인 완료 되었는지?
@@ -13999,13 +14000,37 @@ namespace QMC.Common.Modules
                         {
                             if ((nSocketNum >= 0) && (nSocketNum < m_stDividedRegion_GroupData[0].nGroup_Num))
                             {
+                                double dPositionXCurX = 0.0;
+                                double dPositionXCurY = 0.0;
                                 for (int i = 0; i < 4; i++)
                                 {
-                                    //  4-Point 의 도면상 위치 데이터
-                                    m_st4PointPosition_DwgPos[i].ptFiducial_Center.X = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[i].X;
-                                    m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[i].Y;
-                                    m_st4PointPosition_DwgPos[i].dFiducial_Width = m_stDividedRegion_GroupData[nSocketNum].dFiducialWidth[i];
-                                    m_st4PointPosition_DwgPos[i].dFiducial_Height = m_stDividedRegion_GroupData[nSocketNum].dFiducialHeight[i];
+                                    if(Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use)
+                                    {
+                                        if(nSocketNum > 0)
+                                        {
+                                            dPositionXCurX = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[i].X -
+                                                m_st4PointPosition_DwgPos_goldPowderPre.ptFiducial_Center.X;
+                                            dPositionXCurY = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[i].Y - 
+                                            m_st4PointPosition_DwgPos_goldPowderPre.ptFiducial_Center.Y;
+                                        }
+                                        //  4-Point 의 도면상 위치 데이터
+                                        m_st4PointPosition_DwgPos[i].ptFiducial_Center.X = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[i].X - dPositionXCurX;
+                                        m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[i].Y - dPositionXCurY;
+                                        m_st4PointPosition_DwgPos[i].dFiducial_Width = m_stDividedRegion_GroupData[nSocketNum].dFiducialWidth[i];
+                                        m_st4PointPosition_DwgPos[i].dFiducial_Height = m_stDividedRegion_GroupData[nSocketNum].dFiducialHeight[i];
+
+                                    }
+                                    else
+                                    {
+                                        //  4-Point 의 도면상 위치 데이터
+                                        m_st4PointPosition_DwgPos[i].ptFiducial_Center.X = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[i].X;
+                                        m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y = m_stDividedRegion_GroupData[nSocketNum].dFiducialPos[i].Y;
+                                        m_st4PointPosition_DwgPos[i].dFiducial_Width = m_stDividedRegion_GroupData[nSocketNum].dFiducialWidth[i];
+                                        m_st4PointPosition_DwgPos[i].dFiducial_Height = m_stDividedRegion_GroupData[nSocketNum].dFiducialHeight[i];
+                                    }
+
+
+
                                 }
                                 //m_nProductAlign_MainStep = (int)SocketAlign_Step.SocketAlignZ_MoveReadyPos;
                                 m_nSocketAlign_MainStep = (int)SocketAlign_Step.__SocketAlign_Start;
@@ -14045,6 +14070,10 @@ namespace QMC.Common.Modules
                                     m_st4PointPosition_DwgPos[i].ptFiducial_Center.Y = alignPositions[i].Y;
                                     m_st4PointPosition_DwgPos[i].dFiducial_Width = alignPositions[i].Radius;
                                     m_st4PointPosition_DwgPos[i].dFiducial_Height = alignPositions[i].Radius;
+                                    m_st4PointPosition_DwgPos_goldPowderPre.ptFiducial_Center.X = alignPositions[i].X;
+                                    m_st4PointPosition_DwgPos_goldPowderPre.ptFiducial_Center.Y = alignPositions[i].Y;
+                                    m_st4PointPosition_DwgPos_goldPowderPre.dFiducial_Width = alignPositions[i].Radius;
+                                    m_st4PointPosition_DwgPos_goldPowderPre.dFiducial_Height = alignPositions[i].Radius;
                                 }
 
                                 m_nSocketAlign_MainStep = (int)SocketAlign_Step.__SocketAlign_Start;
