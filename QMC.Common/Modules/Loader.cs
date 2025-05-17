@@ -878,6 +878,9 @@ namespace QMC.Common.Modules
 
             Complete                                                        //  완료
         }
+        private StackerModulePickupWaitingPos_Step m_prevStacker0Step = StackerModulePickupWaitingPos_Step.None;
+        private StackerModulePickupWaitingPos_Step m_prevStacker1Step = StackerModulePickupWaitingPos_Step.None;
+
         #endregion
 
 
@@ -915,6 +918,7 @@ namespace QMC.Common.Modules
 
             Complete                                                        //  완료
         }
+        private MAlign_Step m_prevMAlignStep = MAlign_Step.None;
 
         #endregion
 
@@ -1267,6 +1271,7 @@ namespace QMC.Common.Modules
 
             Complete                                                        //  완료
         }
+        private Loader_Transfer_Step m_prevLoaderTransferStep = Loader_Transfer_Step.None;
         #endregion
 
 
@@ -2038,6 +2043,8 @@ namespace QMC.Common.Modules
                 }
             }
 
+            StackerModulePickupWaitingPos_Step currentStep = (StackerModulePickupWaitingPos_Step)m_nStacker0_ModulePickupWaitingPos_Step;
+
             switch (m_nStacker0_ModulePickupWaitingPos_Step)
             {
                 case (int)StackerModulePickupWaitingPos_Step.Start:
@@ -2762,6 +2769,12 @@ namespace QMC.Common.Modules
                     break;
             }
 
+            if (currentStep != m_prevStacker0Step)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "Stacker0ModulePickupWaitPos", $"Step: {currentStep}");
+                m_prevStacker0Step = currentStep;
+            }
+
             return 0;
         }
 
@@ -2941,6 +2954,9 @@ namespace QMC.Common.Modules
                     }
                 }
             }
+
+
+            StackerModulePickupWaitingPos_Step currentStep = (StackerModulePickupWaitingPos_Step)m_nStacker1_ModulePickupWaitingPos_Step;
 
             switch (m_nStacker1_ModulePickupWaitingPos_Step)
             {
@@ -3506,6 +3522,13 @@ namespace QMC.Common.Modules
                     m_nStacker1_ModulePickupWaitingPos_Step = (int)StackerModulePickupWaitingPos_Step.None;
                     break;
             }
+
+            if (currentStep != m_prevStacker1Step)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "Stacker1ModulePickupWaitPos", $"Step: {currentStep}");
+                m_prevStacker1Step = currentStep;
+            }
+
             return 0;
         }
 
@@ -4008,6 +4031,7 @@ namespace QMC.Common.Modules
                 }
             }
 
+            Loader_Transfer_Step currentStep = (Loader_Transfer_Step)m_nLoader_Transfer_Step;
             switch (m_nLoader_Transfer_Step)
             {
                 case (int)Loader_Transfer_Step.Start:
@@ -7879,6 +7903,11 @@ namespace QMC.Common.Modules
                     break;
             }
 
+            if (currentStep != m_prevLoaderTransferStep)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "LoaderTransfer", $"Step: {currentStep}");
+                m_prevLoaderTransferStep = currentStep;
+            }
             return 0;     
         }
 
@@ -9316,6 +9345,8 @@ namespace QMC.Common.Modules
             {   
             }
 
+
+            MAlign_Step currentStep = (MAlign_Step)m_nMAlign_Step;
             switch (m_nMAlign_Step)
             {
                 case (int)MAlign_Step.Start:
@@ -9551,6 +9582,13 @@ namespace QMC.Common.Modules
                     }
                     break;
             }
+
+            if (currentStep != m_prevMAlignStep)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "MAlign", $"Step: {currentStep}");
+                m_prevMAlignStep = currentStep;
+            }
+
             return 0;
 
         }

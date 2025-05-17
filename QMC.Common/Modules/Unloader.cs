@@ -502,6 +502,9 @@ namespace QMC.Common.Modules
 
             Complete                                                        //  완료
         }
+        private StackerModulePutdownWaitingPos_Step m_prevStacker0PutdownStep = StackerModulePutdownWaitingPos_Step.None;
+        private StackerModulePutdownWaitingPos_Step m_prevStacker1PutdownStep = StackerModulePutdownWaitingPos_Step.None;
+
         #endregion
 
 
@@ -720,6 +723,8 @@ namespace QMC.Common.Modules
 
             Complete                                                        //  완료
         }
+        private Unloader_Transfer_Step m_prevUnloaderTransferStep = Unloader_Transfer_Step.None;
+
         #endregion
 
 
@@ -1272,6 +1277,8 @@ namespace QMC.Common.Modules
                 m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Start;
             }
 
+
+            StackerModulePutdownWaitingPos_Step currentStep = (StackerModulePutdownWaitingPos_Step)m_nStacker0_ModulePutdownWaitingPos_Step;
             switch (m_nStacker0_ModulePutdownWaitingPos_Step)
             {
                 case (int)StackerModulePutdownWaitingPos_Step.Start:
@@ -1716,6 +1723,13 @@ namespace QMC.Common.Modules
                     m_nStacker0_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
                     break;
             }
+
+            if (currentStep != m_prevStacker0PutdownStep)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "Stacker0Putdown", $"Step: {currentStep}");
+                m_prevStacker0PutdownStep = currentStep;
+            }
+
             return 0;
         }
 
@@ -1954,7 +1968,7 @@ namespace QMC.Common.Modules
                 m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.Start;
             }
 
-
+            StackerModulePutdownWaitingPos_Step currentStep = (StackerModulePutdownWaitingPos_Step)m_nStacker1_ModulePutdownWaitingPos_Step;
             switch (m_nStacker1_ModulePutdownWaitingPos_Step)
             {
                 case (int)StackerModulePutdownWaitingPos_Step.Start:
@@ -2504,6 +2518,13 @@ namespace QMC.Common.Modules
                     m_nStacker1_ModulePutdownWaitingPos_Step = (int)StackerModulePutdownWaitingPos_Step.None;
                     break;
             }
+
+            if (currentStep != m_prevStacker1PutdownStep)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "Stacker1Putdown", $"Step: {currentStep}");
+                m_prevStacker1PutdownStep = currentStep;
+            }
+
             return 0;
         }
 
@@ -2711,6 +2732,7 @@ namespace QMC.Common.Modules
                 }
             }
 
+            Unloader_Transfer_Step currentStep = (Unloader_Transfer_Step)m_nUnloader_Transfer_Step;
             switch (m_nUnloader_Transfer_Step)
             {
                 case (int)Unloader_Transfer_Step.Start:
@@ -4740,6 +4762,12 @@ namespace QMC.Common.Modules
 
                     m_nUnloader_Transfer_Step = (int)Unloader_Transfer_Step.None;
                     break;
+            }
+
+            if (currentStep != m_prevUnloaderTransferStep)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "UnloaderTransfer", $"Step: {currentStep}");
+                m_prevUnloaderTransferStep = currentStep;
             }
 
             return 0;

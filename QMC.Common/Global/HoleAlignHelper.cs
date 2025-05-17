@@ -44,21 +44,43 @@ namespace QMC.Common.Global
             var group = stDividedRegion_GroupData[nSocketNum];
             int regionCount = group.nGroup_Num;
 
-            //for (int i = 0; i < regionCount; i++)
+            if (regionCount == 0)
             {
-                var region = group.m_stDividedRegion_RegionData[0];
-                var objects = region.m_stDividedRegion_ObjectData;
-
-                for (int j = 0; j < objects.Length; j++)
+                if (group.m_stDividedRegion_RegionData.Length > 0)
                 {
-                    var pt = objects[j].dEdgePoint[0];
-                    var pt1 = objects[j].dEdgePoint[1]; // radius 정보
+                    // fallback 안전 처리
+                    var region = group.m_stDividedRegion_RegionData[0];
+                    var objects = region.m_stDividedRegion_ObjectData;
 
-                    float x = (float)pt.X;
-                    float y = (float)pt.Y;
-                    float radius = (float)pt1.X; // 또는 pt1.Y
+                    for (int j = 0; j < objects.Length; j++)
+                    {
+                        var pt = objects[j].dEdgePoint[0];
+                        var pt1 = objects[j].dEdgePoint[1];
+                        float x = (float)pt.X;
+                        float y = (float)pt.Y;
+                        float radius = (float)pt1.X;
 
-                    allPoints.Add(new AlignPoint(x, y, radius));
+                        allPoints.Add(new AlignPoint(x, y, radius));
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < regionCount; i++)
+                {
+                    var region = group.m_stDividedRegion_RegionData[i];
+                    var objects = region.m_stDividedRegion_ObjectData;
+
+                    for (int j = 0; j < objects.Length; j++)
+                    {
+                        var pt = objects[j].dEdgePoint[0];
+                        var pt1 = objects[j].dEdgePoint[1];
+                        float x = (float)pt.X;
+                        float y = (float)pt.Y;
+                        float radius = (float)pt1.X;
+
+                        allPoints.Add(new AlignPoint(x, y, radius));
+                    }
                 }
             }
 
