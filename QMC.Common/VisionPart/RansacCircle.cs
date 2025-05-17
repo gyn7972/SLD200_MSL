@@ -63,7 +63,7 @@ namespace QMC.Common.VisionPart
         /// <param name="iterations">반복 횟수</param>
         /// <param name="threshold">각 점이 원 모델에 얼마나 근접해야 inlier로 판단할지 정의하는 허용 오차 (픽셀 단위)</param>
         /// <returns>최적의 원 모델</returns>
-        public static Circle FitCircle(List<PointF> points, int iterations = 1000, double threshold = 5.0, int r = 0)
+        public static Circle FitCircle(List<PointF> points, int iterations = 1000, double threshold = 5.0, int r = 0,double dSpec = 0.05)
         {
             if (points.Count < 100)
             {
@@ -74,7 +74,7 @@ namespace QMC.Common.VisionPart
             Circle bestCircle = new Circle();
             double bestInliers = 0;// (int)(r*2*Math.PI / 2) * dSamplingRate;
             Random rnd = new Random();
-            int nStep = points.Count / 6;
+            int nStep = points.Count / 3;
             int nCount = points.Count;
             for (int i = 0; i < iterations; i++)
             {
@@ -103,13 +103,14 @@ namespace QMC.Common.VisionPart
 
                 if (r > 0)
                 {
-                    //if (r * 0.80 < circle.Radius && circle.Radius < r * 1.20)
-                    //{
+                    if (r * (1- dSpec)< circle.Radius && circle.Radius < r * (1+dSpec))
+                    {
 
-                    //}else
-                    //{
-                    //    continue;
-                    //}
+                    }
+                    else
+                    {
+                        continue;
+                    }
 
                 }
                 // 모든 점들에 대해 원의 경계(반지름)와의 오차를 계산하고 inlier 수를 센다.

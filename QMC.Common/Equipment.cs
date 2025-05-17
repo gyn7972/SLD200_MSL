@@ -49,6 +49,7 @@ namespace QMC.Common
     public static class Equipment
     {
         #region Enum
+
         public enum LightingChannel
         {
             FineCamRed = 1,
@@ -56,7 +57,16 @@ namespace QMC.Common
             CoarseCamIR = 3
         }
 
+        public enum AlignMode
+        {
+            PreAlign,
+            Socket,
+            GoldPowder
+        }
+
         #endregion
+
+        public static AlignMode m_AlignMode = AlignMode.Socket;
 
         public class InitDeviceStatus
         {

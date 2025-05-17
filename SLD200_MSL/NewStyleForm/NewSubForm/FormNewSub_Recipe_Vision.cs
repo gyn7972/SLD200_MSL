@@ -229,15 +229,30 @@ namespace SLD200.NewStyleForm.NewSubForm
                     radioButton_Fiducial_Type_GoldPowder.Checked = true;
                 }
 
-                if (Equipment.stVisionRecipeSet.nSocketCircleColor == 1)
+                if (Equipment.stVisionRecipeSet.nSocketCircleColor == 0)
                 {
-                    radioButton_Fiducial_White.Checked = false;
                     radioButton_Fiducial_Black.Checked = true;
+                    radioButton_Fiducial_White.Checked = false;
+                    radioButton_Fiducial_Ignor.Checked = false;
+                }
+                else if(Equipment.stVisionRecipeSet.nSocketCircleColor == 1)
+                {
+                    radioButton_Fiducial_Black.Checked = false;
+                    radioButton_Fiducial_White.Checked = true;
+                    radioButton_Fiducial_Ignor.Checked = false;
+                }
+                else if (Equipment.stVisionRecipeSet.nSocketCircleColor == 2)
+                {
+                    radioButton_Fiducial_Black.Checked = false;
+                    radioButton_Fiducial_White.Checked = false;
+                    radioButton_Fiducial_Ignor.Checked = true;
+                    
                 }
                 else
                 {
-                    radioButton_Fiducial_White.Checked = true;
-                    radioButton_Fiducial_Black.Checked = false;
+                    radioButton_Fiducial_Black.Checked = true;
+                    radioButton_Fiducial_White.Checked = false;
+                    radioButton_Fiducial_Ignor.Checked = false;
                 }
 
                 textBox_Recipe_Fiducial_CircleSpec.Text = Equipment.stVisionRecipeSet.dSocketCircleMarkSpec.ToString();
@@ -897,12 +912,22 @@ namespace SLD200.NewStyleForm.NewSubForm
 
             if (radioButton_Fiducial_Black.Checked)
             {
-                Equipment.stVisionRecipeSet.nSocketCircleColor = 1;
+                Equipment.stVisionRecipeSet.nSocketCircleColor = 0;
             }
             else if (radioButton_Fiducial_White.Checked)
             {
+                Equipment.stVisionRecipeSet.nSocketCircleColor = 1;
+            }
+            else if (radioButton_Fiducial_Ignor.Checked)
+            {
+                Equipment.stVisionRecipeSet.nSocketCircleColor = 2;
+
+            }
+            else
+            {
                 Equipment.stVisionRecipeSet.nSocketCircleColor = 0;
             }
+            
             
             Equipment.stVisionRecipeSet.dSocketCircleMarkRadius = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSize.Text);
             Equipment.stVisionRecipeSet.dSocketCircleMarkSpec = Convert.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text);
@@ -1382,19 +1407,27 @@ namespace SLD200.NewStyleForm.NewSubForm
                 workStage.Camera_HighRes.LatestImage = ImageViewer_RecipeVision_highs.InputImage;
             }
 
-
             dSpec = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleSpec.Text); //  Fiducial 마크 Spec
             dTargetSize_Radius = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleSize.Text); //  Fiducial 마크 크기
             dScore = Equipment.ToDouble(textBox_Recipe_Fiducial_CircleScore.Text); //  Fiducial 마크 Score
-            if (radioButton_Fiducial_White.Checked)
+            if (radioButton_Fiducial_Black.Checked)
             {
-                nTargetColor = 1;          //  Fiducial 마크 색깔 //  0: Black, 1: White
+                nTargetColor = 0;
             }
-            else if (radioButton_Fiducial_Black.Checked)
+            else if (radioButton_Fiducial_White.Checked)
             {
-                nTargetColor = 0;          //  Fiducial 마크 색깔 //  0: Black, 1: White
+                nTargetColor = 1;
+            }
+            else if (radioButton_Fiducial_Ignor.Checked)
+            {
+                nTargetColor = 2;
+            }
+            else
+            {
+                nTargetColor = 0;
             }
 
+            QMC_ImageProcessFindAlignResult result = new QMC_ImageProcessFindAlignResult();
             QMC_ImageProcessFindAlign aligner = new QMC_ImageProcessFindAlign();
             List<RectangleF> circlesResult = new List<RectangleF>();
             {
@@ -1402,15 +1435,31 @@ namespace SLD200.NewStyleForm.NewSubForm
                 int h = workStage.Camera_HighRes.Resolution.Height;
                 nImage_Width = w;
                 nImage_Height = h;
-                double m_dradius = 0.0;
-                m_dradius = dTargetSize_Radius / workStage.Config.ParamConfig.UpperVision_Scale_X;
+                double dRadius = 0.0;
+                dRadius = dTargetSize_Radius / workStage.Config.ParamConfig.UpperVision_Scale_X;
 
-                //dScore
-                QMC_ImageProcessFindAlignResult result = aligner.FindCirclesWidthCircleBoundary(circlesResult,
+                if (nTargetColor <= 1)
+                {
+                    result = aligner.FindCirclesWidthCircleBoundary(circlesResult,
                                                     workStage.Camera_HighRes.LatestImage.RawData, 
-                                                    w, h, (int)m_dradius, dSpec,
+                                                    w, h, (int)dRadius, dSpec,
                                                     ref bFindCircle, 0, 0, nTargetColor == 0);
 
+                }
+                else if(nTargetColor == 2)
+                {
+                    result = aligner.FindCircleForFR4(workStage.Camera_HighRes.LatestImage.RawData,
+                                                      w,
+                                                      h,
+                                                      (int)dRadius,
+                                                      Equipment.stVisionRecipeSet.dSocketCircleMarkSpec,
+                                                      Equipment.stVisionRecipeSet.dSocketCircleMarkScore);
+                    circlesResult.Clear();
+                    foreach (var circle in result.Circles)
+                    {
+                        circlesResult.Add(circle.GetBoundery());
+                    }
+                }
                 workStage.UpdateOverlay(result);
             }
 

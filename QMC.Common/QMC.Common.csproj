@@ -188,6 +188,7 @@
     </Compile>
     <Compile Include="Global\AreaInfo.cs" />
     <Compile Include="Global\GlobalHotkeyMessageFilter.cs" />
+    <Compile Include="Global\HoleAlignHelper.cs" />
     <Compile Include="Global\LayerInfo.cs" />
     <Compile Include="Global\ProcessManager.cs" />
     <Compile Include="Global\SocketInfo.cs" />
