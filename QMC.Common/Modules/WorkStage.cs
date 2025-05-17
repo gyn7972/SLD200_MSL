@@ -37914,7 +37914,7 @@ namespace QMC.Common.Modules
 
                                 case EType.Circle:
                                     var circle = entity as SpiralLab.Sirius.Circle;
-
+                                    
                                     m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData[m_stOutLine_SocketData[m_nOutlineSocket_Count].nRegion_ObjectCount].dEdgePoint = new PointD[2];       //  0 : Center 좌표      1 : Radius 값
 
                                     //  객체 Type
@@ -38236,6 +38236,13 @@ namespace QMC.Common.Modules
 
                                         }
                                     }
+
+
+                                    //  순서대로 이어지도록 정렬 (도면을 분할하면 Y 좌표를 기준으로 정렬이 되어서 X 좌표가 왔다 갔다 한다. 그래서 가까운 순서로 다시 정렬해 줘야 한다.)
+                                    var objectDataArray = m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData;
+                                    var sorted = NearestNeighborSort(objectDataArray);
+                                    m_stOutLine_SocketData[m_nOutlineSocket_Count].m_stOutLine_ObjectData = sorted;
+
 
                                     m_nOutlineSocket_Count++;
 
@@ -39656,6 +39663,49 @@ namespace QMC.Common.Modules
 
             return success == true ? (int)nGetDataResult.GETDATA_SUCCESS : (int)nGetDataResult.GETDATA_FAIL;            //   0 : "데이터가 정상적으로 로드 되었습니다."
                                                                                                                         //  -1 : "데이터가 정상적으로 로드 되지 않았습니다."
+        }
+
+        // 거리 계산 함수
+        double GetDistance2(PointD a, PointD b)
+        {
+            double dx = a.X - b.X;
+            double dy = a.Y - b.Y;
+            return Math.Sqrt(dx * dx + dy * dy);
+        }
+
+        // 최근접 이웃 방식으로 정렬
+        stOutLine_ObjectData[] NearestNeighborSort(stOutLine_ObjectData[] array)
+        {
+            if (array == null || array.Length <= 1)
+                return array;
+
+            var result = new List<stOutLine_ObjectData>();
+            var used = new bool[array.Length];
+            int currentIndex = 0; // 시작점(0번 인덱스)에서 시작
+            result.Add(array[currentIndex]);
+            used[currentIndex] = true;
+
+            for (int step = 1; step < array.Length; step++)
+            {
+                double minDist = double.MaxValue;
+                int nextIndex = -1;
+                for (int j = 0; j < array.Length; j++)
+                {
+                    if (used[j]) continue;
+                    double dist = GetDistance2(array[currentIndex].dObjectCenter, array[j].dObjectCenter);
+                    if (dist < minDist)
+                    {
+                        minDist = dist;
+                        nextIndex = j;
+                    }
+                }
+                if (nextIndex == -1)
+                    break;
+                result.Add(array[nextIndex]);
+                used[nextIndex] = true;
+                currentIndex = nextIndex;
+            }
+            return result.ToArray();
         }
 
 
