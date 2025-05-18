@@ -23496,6 +23496,7 @@ namespace QMC.Common.Modules
 
 
                 case (int)LaserDrilling_Step.DrillingData_SocketAlign_CompleteCheck:              //  가공 할 Socket Align 완료 확인
+
                     if (m_bAlignCompleted )
                     {
                         if((m_nSocketAlign_MainStep == (int)SocketAlign_Step.None))
@@ -23543,13 +23544,16 @@ namespace QMC.Common.Modules
                                     //  Thruhole Layer 가 있으면, 가공하지 않도록 Flag 를 false 로 변경한다.
                                     if (m_stThruHole_SocketData_ProcessingFlag != null)
                                     {
-                                        if (m_stThruHole_SocketData_ProcessingFlag.Length == m_stDividedRegion_GroupData.Length)
+                                        if(m_AlignMode == AlignMode.Socket)
                                         {
-                                            m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
-                                        }
-                                        else
-                                        {
-                                            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole 과 Hole1 의 Socket 개수가 다릅니다.");
+                                            if (m_stThruHole_SocketData_ProcessingFlag.Length == m_stDividedRegion_GroupData.Length)
+                                            {
+                                                m_stThruHole_SocketData_ProcessingFlag[m_nDrillingWork_Group_Count].bProcessing = false;        //  true:가공, false:Skip
+                                            }
+                                            else
+                                            {
+                                                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Thruhole 과 Hole1 의 Socket 개수가 다릅니다.");
+                                            }
                                         }
                                     }
                                     else
@@ -29681,7 +29685,8 @@ namespace QMC.Common.Modules
                 Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "가공할 Socket 이 남아 있지 않음. 진행할 Layer 가 있는지 확인.");
 
                 //  Thruhole, Outline, Marking 등의 Layer 가 있는지 체크. 
-                //  Socket Align 에 실패하여 가공하지 않고 건너 뛴 Socket 의 Thruhole 데이터도 무조건 가공해야 하기 때문에 얼라인 보정이 필요하다. (Press 합착을 위한 가이드 Pin 위치이기 때문에)
+                //  Socket Align 에 실패하여 가공하지 않고 건너 뛴 Socket 의 Thruhole 데이터도
+                //  무조건 가공해야 하기 때문에 얼라인 보정이 필요하다. (Press 합착을 위한 가이드 Pin 위치이기 때문에)
                 bool m_bPassedSocket_Exist = false;
                 m_nSocketNum_forFailedSocket_Align = -1;
                 if (m_stThruHole_SocketData_ProcessingFlag != null)
@@ -33734,7 +33739,7 @@ namespace QMC.Common.Modules
             int m_nListCount = 0;
 
 
-            //  소켓 얼라인 실패한 것의 Thruhole, Outline, Marking 등의 그룹 데이터를 Select 하기 위함
+            //  소켓 얼라인 실패한 것의 Thruhole, Outline, Marking 등의 그룹 데이터를 Select 하기 위함.
             m_nListCount = 0;
             if (m_stThruHole_SocketData_ProcessingFlag.Length > 0)
             {

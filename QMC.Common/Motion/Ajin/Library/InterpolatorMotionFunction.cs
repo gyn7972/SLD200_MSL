@@ -399,7 +399,7 @@ namespace QMC.Common.Motion.Ajin.Motions
 
                 // Unloader รเ
                 foreach (Unloader.nAxis axis in Enum.GetValues(typeof(Unloader.nAxis)))
-                {
+                 {
                     list.Add(new AxisInfo
                     {
                         UnitName = "Unloader",
