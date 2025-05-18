@@ -101,7 +101,7 @@ namespace QMC.Common.Modules
             X = 2,
             Y = 3,
             Z = 4,
-            MASK_Y = 0,                     //  UV 에서는 없는 축이지만, CO2 와 프로그램을 통일하기 위해서 남겨둠. 실제로 사용하지는 않음.
+            MASK_Y = 13,  //  UV 에서는 없는 축이지만, CO2 와 프로그램을 통일하기 위해서 남겨둠. 실제로 사용하지는 않음.
         }
 #endif
 
@@ -22960,8 +22960,10 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DrillingData_StageXY_SocketCenter_MovetoLaserHeightSensorPos_DoneCheck:                            //  가공 할 Socket Center 위치를 Laser Height Sensor 위치로 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
-                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.X) && 
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.X, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.X]) &&
+                        MC_Func.MC_GetDone((int)WorkStage.nAxis.Y) && 
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Y, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Y]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage XY축, Laser Height Check 위치로 이동 완료.");
 
@@ -23063,7 +23065,8 @@ namespace QMC.Common.Modules
 
                 case (int)LaserDrilling_Step.DrillingData_SocketDrillingHeight_ZOffset_Move_DoneCheck:           //  Socket 가공 높이 보정 이동 완료 확인
 
-                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
+                    if (MC_Func.MC_GetDone((int)WorkStage.nAxis.Z) && 
+                        MC_Func.MC_PosTolerance((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z]))
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Socket 가공 Focus 조정 완료.");
 
@@ -23413,7 +23416,7 @@ namespace QMC.Common.Modules
                     //  얼라인 하려는 소켓 번호
                     m_nSocketNum_forAlign = m_nDrillingWork_Group_Count;  //  Group 이 Socket 이다. (Group 번호가 Socket 번호)
 
-                    m_AlignMode = AlignMode.Socket;
+                    //m_AlignMode = AlignMode.Socket; <- 여기서 하면 안됨.!
                     m_nSocketAlign_MainStep = (int)SocketAlign_Step.Start;
 
                     TickCount_Start((int)TickType.TICK_MAIN);
@@ -23573,14 +23576,11 @@ namespace QMC.Common.Modules
                     if(Equipment.stLayerRecipeSet[0].ProcessOption_GoldPowderAlign_Use &&
                        m_AlignMode == AlignMode.Socket)
                     {
-                        Thread.Sleep(100);
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Reload;
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlignProcess_Complete;
                     }
                     else 
                     {
-
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_DrillingHeight_ZOffset_Move;                //  Fiducial 검사를 위해 조정했던 초점 높이를 가공 높이로 변경
-
                     }
                     break;
 
@@ -23745,9 +23745,7 @@ namespace QMC.Common.Modules
                        m_AlignMode == AlignMode.GoldPowder)
                     {
                         //ProcessOption_GoldPowderAlign_Use 였으면 Hole1 가공은 안한다!!
-                        //m_AlignMode = AlignMode.Socket;
-                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.GoldPowderAlign_CompleteCheck;
-                        //m_AlignMode = AlignMode.Socket;
+                        m_AlignMode = AlignMode.Socket;
                         m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DividedRegion_DrillingWork_Start;                       //  분할 영역 Drilling 작업 시작
                     }
                     else
@@ -23761,20 +23759,14 @@ namespace QMC.Common.Modules
                     {
                         Log.Write("SLD-200", Equipment.User_Name, "LaserDrilling_Step", "GoldPowderAlign_start");
 
-                        m_bAlignCompleted = false;
-                        m_bSocketAlign_OK = false;
-
                         m_AlignMode = AlignMode.GoldPowder;
-                        m_nSocketNum_forAlign = m_nDrillingWork_Group_Count;  //  Group 이 Socket 이다. (Group 번호가 Socket 번호)
-                        m_nSocketAlign_MainStep = (int)SocketAlign_Step.Start;
-
                         TickCount_Start((int)TickType.TICK_MAIN);
-                        
-                        // 어디로 가야하낭
-                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_CompleteCheck;
-                        
+                        //여기서 변위센서 위치로 보낸다.
+                        m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_Socket_AlignHeight_ZOffset_Move;
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.DrillingData_SocketAlign_CompleteCheck;
+
                         //아래 Test용. Test하고 막자.
-                       //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.GoldPowderAlign_CompleteCheck;
+                        //m_nLaserDrilling_MainStep = (int)LaserDrilling_Step.GoldPowderAlign_CompleteCheck;
                     }
                     break;
 
@@ -28928,11 +28920,20 @@ namespace QMC.Common.Modules
 
         private void LaserDrilling_StepDrillingData_Socket_AlignHeight_ZOffset_Move(out string m_strTemp, out double lfVelocity, out double lfAccDec, out double m_dOffset)
         {
-            Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Fiducial Align 을 위한 실리콘 두께 조정 시작.");
-
-            m_strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Silicon Thickness({3:0.000})",
-                                                m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness);
-
+            string strTemp = "";
+            if (m_AlignMode == AlignMode.Socket)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, Fiducial Align 을 위한 실리콘 두께 조정 시작.");
+                strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Silicon Thickness({3:0.000})",
+                                                    m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness);
+            }
+            else if (m_AlignMode == AlignMode.GoldPowder)
+            {
+                Log.Write("SLD-200", Equipment.User_Name, "Auto Run", "Stage Z 축, GoldPowder Align 을 위한 실리콘 두께 조정 시작.");
+                strTemp = string.Format("Stage Z 축, Socket 높이 측정 후, Socket Index ({0}), Laser Sensor Value ({1:0.000}), Laser Focus 편차 ({2:0.000}), Silicon Thickness({3:0.000})",
+                                                    m_nDrillingWork_Group_Count, m_dLaserHeightSensorSocket_Value, m_dZOffset_SocketHeightCheck, Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Thickness);
+            }
+            m_strTemp = strTemp;
             Log.Write("SLD-200", "Auto Run", m_strTemp);
 
             workStageParameter.stWorkStagePosParam = workStageParameter.GetPositionInformation("Processing");
@@ -28942,7 +28943,14 @@ namespace QMC.Common.Modules
             lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
 
             // 실리콘 두께만큼 초점 이동.
-            m_dOffset = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness;
+            if(m_AlignMode == AlignMode.Socket)
+            {
+                m_dOffset = Equipment.stLayerRecipeSet[0].ModuleInformation_Silicon_Thickness;
+            }
+            else
+            {
+                m_dOffset = Equipment.stLayerRecipeSet[0].ModuleInformation_GoldPowder_Thickness;
+            }
 
             //  좌표계 (기존)
             //workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = MC_Func.MC_GetEncPos((int)WorkStage.nAxis.Z) - m_dOffset;
@@ -29387,7 +29395,8 @@ namespace QMC.Common.Modules
             lfAccDec = Equipment.stAxisParam[(int)WorkStage.nAxis.Z].Common_Acceleration_Fine;
 
             //  Target 위치 변경 : Laser Height Check
-            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos].Vision_Z;
+            workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z] = 
+                vision.stVisionTeachingPos[(int)Vision.Vision_TeachingPosList.Laser_Sensor_HeightCheckPos].Vision_Z;
 
             MC_Func.MC_MovePosition((int)WorkStage.nAxis.Z, workStageParameter.stWorkStagePosParam.dTarget[(int)WorkStageParameter.MotionKey.Z],
                                   lfVelocity, lfAccDec, lfAccDec);

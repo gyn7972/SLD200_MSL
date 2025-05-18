@@ -35,6 +35,12 @@
             this.tabControl_Recipe = new System.Windows.Forms.TabControl();
             this.tabPage_Recipe = new System.Windows.Forms.TabPage();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType = new System.Windows.Forms.ComboBox();
+            this.label22 = new System.Windows.Forms.Label();
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width = new System.Windows.Forms.TextBox();
+            this.label18 = new System.Windows.Forms.Label();
             this.textBox_Recipe_TabRecipe_CustomMarking_Data = new System.Windows.Forms.TextBox();
             this.label16 = new System.Windows.Forms.Label();
             this.button_Recipe_TabRecipe_SiriusTemplateFile = new System.Windows.Forms.Button();
@@ -281,12 +287,9 @@
             this.button_Recipe_SaveAs = new System.Windows.Forms.Button();
             this.button_Recipe_Save = new System.Windows.Forms.Button();
             this.button_Recipe_Cancel = new System.Windows.Forms.Button();
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width = new System.Windows.Forms.TextBox();
-            this.label18 = new System.Windows.Forms.Label();
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height = new System.Windows.Forms.TextBox();
-            this.label19 = new System.Windows.Forms.Label();
-            this.label22 = new System.Windows.Forms.Label();
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType = new System.Windows.Forms.ComboBox();
+            this.button_GoldPowderThickness = new System.Windows.Forms.Button();
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness = new System.Windows.Forms.TextBox();
+            this.label_GoldPowderHeight = new System.Windows.Forms.Label();
             this.tabControl_Recipe.SuspendLayout();
             this.tabPage_Recipe.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -427,6 +430,76 @@
             this.groupBox6.TabIndex = 92;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = " Marking Layer Data (If a marking layer exists) ";
+            // 
+            // comboBox_Recipe_TabRecipe_CustomMarking_DataType
+            // 
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Font = new System.Drawing.Font("Tahoma", 11F);
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.FormattingEnabled = true;
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Items.AddRange(new object[] {
+            "Text",
+            "SiriusText",
+            "1D Barcode",
+            "DataMatrix",
+            "QR"});
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Location = new System.Drawing.Point(365, 55);
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Name = "comboBox_Recipe_TabRecipe_CustomMarking_DataType";
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Size = new System.Drawing.Size(130, 26);
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.TabIndex = 117;
+            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Text = "Text";
+            // 
+            // label22
+            // 
+            this.label22.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label22.Location = new System.Drawing.Point(259, 56);
+            this.label22.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(104, 24);
+            this.label22.TabIndex = 85;
+            this.label22.Text = "Marking Type :";
+            this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height
+            // 
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Location = new System.Drawing.Point(365, 136);
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Name = "textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height";
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Size = new System.Drawing.Size(130, 24);
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.TabIndex = 84;
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text = "5.0";
+            // 
+            // label19
+            // 
+            this.label19.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label19.Location = new System.Drawing.Point(259, 135);
+            this.label19.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(104, 24);
+            this.label19.TabIndex = 83;
+            this.label19.Text = "Height (mm) :";
+            this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width
+            // 
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Location = new System.Drawing.Point(365, 110);
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Name = "textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width";
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Size = new System.Drawing.Size(130, 24);
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.TabIndex = 82;
+            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text = "5.0";
+            // 
+            // label18
+            // 
+            this.label18.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label18.Location = new System.Drawing.Point(259, 109);
+            this.label18.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(104, 24);
+            this.label18.TabIndex = 81;
+            this.label18.Text = "Width (mm) :";
+            this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // textBox_Recipe_TabRecipe_CustomMarking_Data
             // 
@@ -731,7 +804,7 @@
             this.groupBox14.Controls.Add(this.textBox_Recipe_TabRecipe_DustCollectorFrequency_Lower);
             this.groupBox14.Controls.Add(this.label48);
             this.groupBox14.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox14.Location = new System.Drawing.Point(694, 237);
+            this.groupBox14.Location = new System.Drawing.Point(694, 259);
             this.groupBox14.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox14.Name = "groupBox14";
             this.groupBox14.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -886,7 +959,7 @@
             this.groupBox11.Controls.Add(this.textBox_Recipe_TabRecipe_SpiralParam_OuterDiameter);
             this.groupBox11.Controls.Add(this.label42);
             this.groupBox11.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox11.Location = new System.Drawing.Point(694, 395);
+            this.groupBox11.Location = new System.Drawing.Point(694, 407);
             this.groupBox11.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox11.Name = "groupBox11";
             this.groupBox11.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -1058,7 +1131,7 @@
             this.groupBox10.Controls.Add(this.textBox_Recipe_TabRecipe_ModuleInformation_Width);
             this.groupBox10.Controls.Add(this.label34);
             this.groupBox10.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox10.Location = new System.Drawing.Point(946, 237);
+            this.groupBox10.Location = new System.Drawing.Point(946, 259);
             this.groupBox10.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox10.Name = "groupBox10";
             this.groupBox10.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -1176,8 +1249,11 @@
             // 
             // groupBox9
             // 
+            this.groupBox9.Controls.Add(this.button_GoldPowderThickness);
             this.groupBox9.Controls.Add(this.checkBox_Recipe_TabRecipe_ProcessOptions_GoldPowderAlign);
+            this.groupBox9.Controls.Add(this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness);
             this.groupBox9.Controls.Add(this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetY);
+            this.groupBox9.Controls.Add(this.label_GoldPowderHeight);
             this.groupBox9.Controls.Add(this.label85);
             this.groupBox9.Controls.Add(this.textBox_Recipe_TabRecipe_SocketHeightCheckPosition_OffsetX);
             this.groupBox9.Controls.Add(this.label76);
@@ -1188,7 +1264,7 @@
             this.groupBox9.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox9.Size = new System.Drawing.Size(231, 211);
+            this.groupBox9.Size = new System.Drawing.Size(231, 240);
             this.groupBox9.TabIndex = 87;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = " Process Options ";
@@ -3436,75 +3512,37 @@
             this.button_Recipe_Cancel.Text = "Cancel";
             this.button_Recipe_Cancel.UseVisualStyleBackColor = true;
             // 
-            // textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width
+            // button_GoldPowderThickness
             // 
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Location = new System.Drawing.Point(365, 110);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Name = "textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width";
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Size = new System.Drawing.Size(130, 24);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.TabIndex = 82;
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Width.Text = "5.0";
+            this.button_GoldPowderThickness.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.button_GoldPowderThickness.Location = new System.Drawing.Point(175, 210);
+            this.button_GoldPowderThickness.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.button_GoldPowderThickness.Name = "button_GoldPowderThickness";
+            this.button_GoldPowderThickness.Size = new System.Drawing.Size(35, 25);
+            this.button_GoldPowderThickness.TabIndex = 33;
+            this.button_GoldPowderThickness.Text = "#";
+            this.button_GoldPowderThickness.UseVisualStyleBackColor = true;
             // 
-            // label18
+            // textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness
             // 
-            this.label18.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label18.Location = new System.Drawing.Point(259, 109);
-            this.label18.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(104, 24);
-            this.label18.TabIndex = 81;
-            this.label18.Text = "Width (mm) :";
-            this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Location = new System.Drawing.Point(126, 210);
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Name = "textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness";
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Size = new System.Drawing.Size(45, 24);
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.TabIndex = 32;
+            this.textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness.Text = "0.0";
             // 
-            // textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height
+            // label_GoldPowderHeight
             // 
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Location = new System.Drawing.Point(365, 136);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Name = "textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height";
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Size = new System.Drawing.Size(130, 24);
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.TabIndex = 84;
-            this.textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height.Text = "5.0";
-            // 
-            // label19
-            // 
-            this.label19.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label19.Location = new System.Drawing.Point(259, 135);
-            this.label19.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(104, 24);
-            this.label19.TabIndex = 83;
-            this.label19.Text = "Height (mm) :";
-            this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label22
-            // 
-            this.label22.Font = new System.Drawing.Font("Tahoma", 10F);
-            this.label22.Location = new System.Drawing.Point(259, 56);
-            this.label22.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(104, 24);
-            this.label22.TabIndex = 85;
-            this.label22.Text = "Marking Type :";
-            this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // comboBox_Recipe_TabRecipe_CustomMarking_DataType
-            // 
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Font = new System.Drawing.Font("Tahoma", 11F);
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.FormattingEnabled = true;
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Items.AddRange(new object[] {
-            "Text",
-            "SiriusText",
-            "1D Barcode",
-            "DataMatrix",
-            "QR"});
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Location = new System.Drawing.Point(365, 55);
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Name = "comboBox_Recipe_TabRecipe_CustomMarking_DataType";
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Size = new System.Drawing.Size(130, 26);
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.TabIndex = 117;
-            this.comboBox_Recipe_TabRecipe_CustomMarking_DataType.Text = "Text";
+            this.label_GoldPowderHeight.Font = new System.Drawing.Font("Tahoma", 10F);
+            this.label_GoldPowderHeight.Location = new System.Drawing.Point(17, 197);
+            this.label_GoldPowderHeight.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.label_GoldPowderHeight.Name = "label_GoldPowderHeight";
+            this.label_GoldPowderHeight.Size = new System.Drawing.Size(96, 37);
+            this.label_GoldPowderHeight.TabIndex = 31;
+            this.label_GoldPowderHeight.Text = "GoldPowder Height (mm) :";
+            this.label_GoldPowderHeight.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FormNew_Recipe
             // 
@@ -3830,5 +3868,8 @@
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_CustomMarking_DataSize_Height;
         private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Button button_GoldPowderThickness;
+        private System.Windows.Forms.TextBox textBox_Recipe_TabRecipe_ModuleInformation_GoldPowderThickness;
+        private System.Windows.Forms.Label label_GoldPowderHeight;
     }
 }

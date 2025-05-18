@@ -483,6 +483,8 @@ namespace QMC.Common
             public double ModuleInformation_Module_Height;              //  Module Height (mm)
             public double ModuleInformation_Silicon_Thickness;          //  Silicon Thickness (mm)
 
+            public double ModuleInformation_GoldPowder_Thickness;          //  Silicon Thickness (mm)
+
             public double SpiralParam_OuterDiameter;                    //  Spiral Outer Diameter (mm)
             public double SpiralParam_InnerDiameter;                    //  Spiral Inner Diameter (mm)
             public double SpiralParam_Revolutions;                      //  Spiral Revolutions
@@ -1192,6 +1194,8 @@ namespace QMC.Common
                 stLayerRecipeSet[i].ModuleInformation_Module_Width = 0.0;                           //  Module Width (mm)
                 stLayerRecipeSet[i].ModuleInformation_Module_Height = 0.0;                          //  Module Height (mm)
                 stLayerRecipeSet[i].ModuleInformation_Silicon_Thickness = 0.0;                      //  Silicon Thickness (mm)
+                
+                stLayerRecipeSet[i].ModuleInformation_GoldPowder_Thickness = 0.0;
 
                 //  Spiral Parameter
                 stLayerRecipeSet[i].SpiralParam_OuterDiameter = 0.0;                                //  Spiral Outer Diameter Resizing (mm)

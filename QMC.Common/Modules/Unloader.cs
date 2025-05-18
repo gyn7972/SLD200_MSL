@@ -32,7 +32,6 @@ namespace QMC.Common.Modules
         public enum nAxis                                                       //  SLD-200C 에서 사용하는 축 번호    
         {
             //  축 번호 변경 전 (Z0:10,   Z1:11,  TR_X:12,    TR_Z:13)
-            //  축 번호 변경 후 (Z0:10,   Z1:11,  TR_X:12,    TR_Z:13) - 변동 없음
 
             Z0 = 10,
             Z1,
@@ -43,7 +42,7 @@ namespace QMC.Common.Modules
         public enum nAxis                                                       //  SLD-200U 에서 사용하는 축 번호   
         {
             //  축 번호 변경 전 (Z0:10,   Z1:11,  TR_X:12,    TR_Z:13)
-            //  축 번호 변경 후 (Z0:10,   Z1:11,  TR_X:12,    TR_Z:13) - 변동 없음
+            //  축 번호 변경 후 (Z0:9,   Z1:10,  TR_X:11,    TR_Z:12) 
 
             Z0 = 9,
             Z1,
