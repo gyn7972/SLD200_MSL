@@ -40878,6 +40878,8 @@ namespace QMC.Common.Modules
             m_st4PointAlign_Result.dCenterOffsetY = dOffsetY;
             m_st4PointAlign_Result.dRotationAngle = 0;
 
+
+
             return m_st4PointAlign_Result;
         }
 
