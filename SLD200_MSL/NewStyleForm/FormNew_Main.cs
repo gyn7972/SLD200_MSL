@@ -2648,8 +2648,6 @@ namespace SLD200_MSL
 
         private void button_Main_Reset_Click(object sender, EventArgs e)
         {
-            //  임시
-
             var mb = new MessageBoxYesNo();
             if (DialogResult.Yes != mb.ShowDialog("Question ?", "모든 데이터를 리셋 하시겠습니까?\r\n\r\n[Loader 부터 다시 시작]"))
                 return;
@@ -2791,9 +2789,45 @@ namespace SLD200_MSL
             workStage.ResetRecovery();
             unloader.ResetRecovery();
             loader.ResetRecovery();
-            
 
+            //I/O - Off
+            if (workStage.workStageParameter.DI_Stage_Vacuum_Check())
+            {
+                workStage.workStageParameter.DO_Stage_Vacuum(false);
+
+                mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Reset", "workStage - 자재 확인 바랍니다.");
+            }
+
+            if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Center))
+            {
+                loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Center, false);
+
+                mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Reset", "Loader_Aligner - 자재 확인 바랍니다.");
+            }
+
+            if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Inner))
+                loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Inner, false);
+
+            if (loader.loaderParameter.DI_Loader_Aligner_VacuumCheck((int)LoaderParameter.MAlignerVacuumPos.Outer))
+                loader.loaderParameter.DO_Loader_Aligner_Vacuum((int)LoaderParameter.MAlignerVacuumPos.Outer, false);
+
+            if (loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
+                loader.loaderParameter.DI_Loader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+            {
+                mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Reset", "Loader Picker - 자재 확인 및 버큠 Off 바랍니다.");
+            }
+
+            if (unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Inner) ||
+                unloader.unloaderParameter.DI_Unloader_Picker_VacuumCheck((int)LoaderParameter.PickerVacuumPos.Outer))
+            {
+                mb1 = new MessageBoxOk();
+                mb1.ShowDialog("Reset", "Unloader Picker - 자재 확인 및 버큠 Off 바랍니다.");
+            }
         }
+            
 
         private void checkBox_Main_Loader_Transfer_Pause_CheckedChanged(object sender, EventArgs e)
         {

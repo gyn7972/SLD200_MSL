@@ -191,6 +191,7 @@
     <Compile Include="Global\HoleAlignHelper.cs" />
     <Compile Include="Global\LayerInfo.cs" />
     <Compile Include="Global\ProcessManager.cs" />
+    <Compile Include="Global\ProcessManagerExtended.cs" />
     <Compile Include="Global\SocketInfo.cs" />
     <Compile Include="Interpolator\DrawingResizeForPerspectiveProjection.cs" />
     <Compile Include="ListParam.cs" />

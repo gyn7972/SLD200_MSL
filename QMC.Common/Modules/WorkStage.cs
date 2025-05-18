@@ -14046,10 +14046,10 @@ namespace QMC.Common.Modules
                             if ((nSocketNum >= 0) && (nSocketNum < m_stDividedRegion_GroupData[0].nGroup_Num))
                             {
                                 var alignPositions = HoleAlignHelper.CalculateAlignmentPoints(nSocketNum, m_stDividedRegion_GroupData);
-                                AlignPoint bl = alignPositions[0];
-                                AlignPoint tl = alignPositions[1];
-                                AlignPoint tr = alignPositions[2];
-                                AlignPoint br = alignPositions[3];
+                                //AlignPoint bl = alignPositions[0];
+                                //AlignPoint tl = alignPositions[1];
+                                //AlignPoint tr = alignPositions[2];
+                                //AlignPoint br = alignPositions[3];
 
                                 for (int i = 0; i < 4; i++)
                                 {
@@ -14398,7 +14398,7 @@ namespace QMC.Common.Modules
                     }
                     else if (alignMode == AlignMode.GoldPowder)
                     {
-                        //TEST CODE :: 위치 확인 위해서.
+                        //Todo: TEST CODE :: 위치 확인 위해서.
                         if (true)
                         {
                             Log.Write("SLD-200", Equipment.User_Name, "Socket Align", "Align 마크 찾기 성공");
@@ -14541,7 +14541,7 @@ namespace QMC.Common.Modules
                     }
                     else if( alignMode == AlignMode.GoldPowder)
                     {
-                        //Test Code :: 위치 확인 위해서.
+                        //Todo: //Test Code :: 위치 확인 위해서.
                         m_bSocketAlign_OK = true;
                         m_bIsFirstAlign = false;
                         m_st4PointPosition_DwgPos_LastSuccess = m_st4PointPosition_DwgPos.ToArray();
@@ -18361,7 +18361,7 @@ namespace QMC.Common.Modules
                                 dFiducialPosY = m_stThruHole_SocketData[0].dPreAlignPos[i].Y;
                                 dFiducialWidth = m_stThruHole_SocketData[0].dPreAlignWidth[i];
                                 dFiducialHeight = m_stThruHole_SocketData[0].dPreAlignHeight[i];
-                                stPreAlignList.Add(new PreAlignData(dFiducialPosX, dFiducialPosY, dFiducialWidth, dFiducialHeight));
+                                stPreAlignList.Add(new Equipment.PreAlignData(dFiducialPosX, dFiducialPosY, dFiducialWidth, dFiducialHeight));
                             }
 
                             //너무 Data를 빨리 던져서 문제가 아닌지 Test.
@@ -19865,7 +19865,7 @@ namespace QMC.Common.Modules
                                 dFiducialWidth = m_stOutLine_SocketData[0].dPreAlignWidth[i];
                                 dFiducialHeight = m_stOutLine_SocketData[0].dPreAlignHeight[i];
 
-                                stPreAlignList.Add(new PreAlignData(dFiducialPosX, dFiducialPosY, dFiducialWidth, dFiducialHeight));
+                                stPreAlignList.Add(new Equipment.PreAlignData(dFiducialPosX, dFiducialPosY, dFiducialWidth, dFiducialHeight));
                             }
 
                             //Pre Align은 Socket의 2, 3번 Mark로 수행.
@@ -21395,7 +21395,7 @@ namespace QMC.Common.Modules
                                 dFiducialWidth = m_stMarking_SocketData.m_stMarking_ObjectData[0].dPreAlignWidth[i];
                                 dFiducialHeight = m_stMarking_SocketData.m_stMarking_ObjectData[0].dPreAlignHeight[i];
 
-                                stPreAlignList.Add(new PreAlignData(dFiducialPosX, dFiducialPosY, dFiducialWidth, dFiducialHeight));
+                                stPreAlignList.Add(new Equipment.PreAlignData(dFiducialPosX, dFiducialPosY, dFiducialWidth, dFiducialHeight));
                             }
 
                             //Pre Align은 Socket의 2, 3번 Mark로 수행.
@@ -23208,7 +23208,7 @@ namespace QMC.Common.Modules
                                 dFiducialWidth = m_stDividedRegion_GroupData[0].dPreAlignWidth[i];
                                 dFiducialHeight = m_stDividedRegion_GroupData[0].dPreAlignHeight[i];
 
-                                stPreAlignList.Add(new PreAlignData(dFiducialPosX, dFiducialPosY, dFiducialWidth, dFiducialHeight));   
+                                stPreAlignList.Add(new Equipment.PreAlignData(dFiducialPosX, dFiducialPosY, dFiducialWidth, dFiducialHeight));   
                             }
 
                             // 처음에는 여기서 0, 1번으로 진행 하자.
