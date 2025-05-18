@@ -1390,6 +1390,7 @@ namespace QMC.Common.Hmi
 
         public void Display()
         {
+            return;
             try
             {
                 if (Simulated != true)
