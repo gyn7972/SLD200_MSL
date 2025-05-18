@@ -1119,9 +1119,9 @@ namespace SLD200_MSL
                 m_bNeedAutoRunStop = true;
             }
 
-            UpdateInitStatusFromComm();
+            if (workStage.m_bHomeOK)
+                UpdateInitStatusFromComm();
 
-            
         }
 
         // -----------------------
@@ -1299,9 +1299,7 @@ namespace SLD200_MSL
             SetValue(label_Main_EPRO_Absorption_Judgment_Pressure, Equipment.stLayerRecipeSet[0].EPRO_ModuleAbsorptionLevel.ToString("0.0000"));
 
             // 장비 상태 UI에 반영
-
-            if(workStage.m_bHomeOK)
-                UpdateDeviceStatusImages();
+            UpdateDeviceStatusImages();
         }
 
         
@@ -3426,9 +3424,9 @@ namespace SLD200_MSL
         private void button_TEST12_Click(object sender, EventArgs e)
         {
             //  테스트용 코드
-           // workStage.m_LaserDrillingWork_Start = true;
-            //workStage.m_ProductAlign_Start = true;
-            ////////workStage.m_nSocketAlign_MainStep = 1;
+            //workStage.m_LaserDrillingWork_Start = true;
+            workStage.m_ProductAlign_Start = true;
+            workStage.m_nSocketAlign_MainStep = 1;
             return;
             //#region Marker Test (load from sirius file)
             //var dlg = new OpenFileDialog();
